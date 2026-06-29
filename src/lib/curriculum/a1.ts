@@ -37,7 +37,7 @@ export const a1: Level = {
             listening: {
               summary: "Recognise spoken greetings and distinguish formal vs informal",
               exercises: [
-                { id: "a1-ch1-c1-l1", title: "Listen and Respond", type: "multiple-choice", prompt: "You hear: 'Salut, \u00e7a va?' What is the appropriate response?", options: ["Oui, \u00e7a va bien, merci", "Au revoir", "Bonne nuit", "Je suis m\u00e9decin"], correctAnswer: "Oui, \u00e7a va bien, merci" },
+                { id: "a1-ch1-c1-l1", title: "Listen and Respond", type: "multiple-choice", prompt: "Teacher says: 'Bonjour tout le monde! Je m'appelle Antoine. Je suis votre professeur de fran\u00e7ais... non, ne pleurez pas, c'est facile! Je suis tr\u00e8s content d'\u00eatre ici. Et vous, comment allez-vous? Fatigu\u00e9s? Stress\u00e9s? Mais non, vous \u00eates formidables!' What is the teacher's name and how does he feel?", options: ["Antoine, tr\u00e8s content", "Pierre, fatigu\u00e9", "Marc, stress\u00e9", "Jean, triste"], correctAnswer: "Antoine, tr\u00e8s content" },
                 { id: "a1-ch1-c1-l2", title: "Formal or Informal?", type: "multiple-choice", prompt: "You hear colleagues at the office: 'Bonjour Monsieur Dupont. - Bonjour Madame Martin, comment allez-vous?' What level of formality is this?", options: ["Formal", "Informal", "Very casual", "Angry"], correctAnswer: "Formal" },
                 { id: "a1-ch1-c1-l3", title: "Time of Day", type: "multiple-choice", prompt: "You hear someone say 'Bonne nuit' as you leave. What should you reply?", options: ["Bonne nuit", "Bonjour", "Bonsoir", "Salut"], correctAnswer: "Bonne nuit" }
               ]
@@ -63,7 +63,9 @@ export const a1: Level = {
               summary: "Read introductions and identify people and relationships",
               exercises: [
                 { id: "a1-ch1-c2-r1", title: "Who is Who?", type: "comprehension", prompt: "Read: 'Voici Marie. Elle est fran\u00e7aise.' Who is being introduced and what is their nationality?" },
-                { id: "a1-ch1-c2-r2", title: "Match Questions & Answers", type: "match", prompt: "Match 'Comment t'appelles-tu?' to 'Je m'appelle Sophie', '\u00c7a va?' to 'Oui, \u00e7a va bien'" }
+                { id: "a1-ch1-c2-r2", title: "Match Questions & Answers", type: "match", prompt: "Match 'Comment t'appelles-tu?' to 'Je m'appelle Sophie', '\u00c7a va?' to 'Oui, \u00e7a va bien'" },
+                { id: "a1-ch1-c2-r3", title: "Short Story: Une nouvelle rencontre", type: "comprehension", prompt: "Read: 'Salut! Je m'appelle Thomas. J'ai vingt-cinq ans. Je suis \u00e9tudiant \u00e0 Paris. J'ai deux soeurs, elles s'appellent Alice et Julie. Aujourd'hui, je rencontre une nouvelle amie. Elle s'appelle Sofia. Elle est italienne et elle est tr\u00e8s sympathique!' Question: Comment s'appelle la nouvelle amie de Thomas?" },
+                { id: "a1-ch1-c2-r4", title: "Story Questions", type: "multiple-choice", prompt: "Pourquoi le chat Minou est-il gros?", options: ["Parce qu'il mange le fromage du p\u00e8re", "Parce qu'il dort beaucoup", "Parce qu'il est vieux", "Parce qu'il ne mange pas"], correctAnswer: "Parce qu'il mange le fromage du p\u00e8re" }
               ]
             },
             writing: {
@@ -124,7 +126,7 @@ export const a1: Level = {
               summary: "Understand numbers spoken aloud",
               exercises: [
                 { id: "a1-ch2-c1-l1", title: "Number Dictation", type: "dictation", prompt: "You hear: 'quarante-deux, soixante-dix-huit, quatre-vingt-treize'. Write the numbers.", hint: "quarante-deux=42, soixante-dix-huit=78, quatre-vingt-treize=93" },
-                { id: "a1-ch2-c1-l2", title: "Train Announcement", type: "comprehension", prompt: "You hear: 'Le train num\u00e9ro 452 partira \u00e0 seize heures trente du quai num\u00e9ro douze.' What is the train number, time, and platform?" },
+                { id: "a1-ch2-c1-l2", title: "Train Announcement", type: "comprehension", prompt: "Station announcement: 'Attention s'il vous pla\u00eet. Le train num\u00e9ro 452 \u00e0 destination de Paris Gare du Nord partira \u00e0 seize heures trente du quai num\u00e9ro douze. Je r\u00e9p\u00e8te: seize heures trente, quai douze. Attention, ce train est souvent en retard, c'est la France!' What is the train number, departure time, and platform?" },
                 { id: "a1-ch2-c1-l3", title: "Price Check", type: "multiple-choice", prompt: "You hear: '\u00c7a fait quarante-cinq euros.' How much does it cost?", options: ["35\u20ac", "45\u20ac", "55\u20ac", "65\u20ac"], correctAnswer: "45\u20ac" }
               ]
             },
@@ -206,7 +208,7 @@ export const a1: Level = {
             listening: {
               summary: "Understand spoken family descriptions",
               exercises: [
-                { id: "a1-ch3-c1-l1", title: "Photo Description", type: "comprehension", prompt: "You hear: 'C'est ma grand-m\u00e8re. Elle a quatre-vingts ans.' Who is 80 years old?" },
+                { id: "a1-ch3-c1-l1", title: "Photo Description", type: "comprehension", prompt: "You hear: 'Sur cette photo, c'est ma famille. Voici mes parents, Robert et Catherine. Mon fr\u00e8re Paul est \u00e0 gauche. Il a dix-neuf ans et il est tr\u00e8s bruyant. Ma soeur L\u00e9a est \u00e0 droite. Elle a vingt-quatre ans. Et le petit chien, c'est Snoopy! Snoopy est le membre le plus intelligent de la famille.' Name three family members mentioned." },
                 { id: "a1-ch3-c1-l2", title: "Family Details", type: "multiple-choice", prompt: "You hear: 'Mon fr\u00e8re Paul a dix-neuf ans. Ma s\u0153ur L\u00e9a a vingt-quatre ans.' Who is older?", options: ["Paul", "L\u00e9a", "Same age", "Unknown"], correctAnswer: "L\u00e9a" }
               ]
             },
@@ -311,7 +313,8 @@ export const a1: Level = {
               summary: "Read daily routine descriptions",
               exercises: [
                 { id: "a1-ch4-c2-r1", title: "Morning Routine", type: "comprehension", prompt: "Read: 'Je me r\u00e9veille \u00e0 six heures. Je me douche et je m'habille. Ensuite, je prends mon petit-d\u00e9jeuner.' What does the person do after showering?" },
-                { id: "a1-ch4-c2-r2", title: "Routine Order", type: "multiple-choice", prompt: "Read: 'Le matin, je me l\u00e8ve, je me douche, je prends le petit-d\u00e9jeuner.' What comes first?", options: ["Shower", "Get up", "Breakfast", "Get dressed"], correctAnswer: "Get up" }
+                { id: "a1-ch4-c2-r2", title: "Routine Order", type: "multiple-choice", prompt: "Read: 'Le matin, je me l\u00e8ve, je me douche, je prends le petit-d\u00e9jeuner.' What comes first?", options: ["Shower", "Get up", "Breakfast", "Get dressed"], correctAnswer: "Get up" },
+                { id: "a1-ch4-c2-r3", title: "Short Story: La journ\u00e9e de Marie", type: "comprehension", prompt: "Read: 'Marie habite dans un appartement \u00e0 Lyon. Il pleut et il y a du vent. Marie d\u00e9teste la pluie. Tous les jours, elle se l\u00e8ve \u00e0 sept heures et quart. Elle se douche et elle se pr\u00e9pare. Elle est assez petite et elle a les cheveux blonds. Elle prend son caf\u00e9 dans le salon, sur le canap\u00e9.' Question: Quel temps fait-il dans l'histoire?" }
               ]
             },
             writing: {
@@ -324,7 +327,7 @@ export const a1: Level = {
             listening: {
               summary: "Understand spoken descriptions of daily routines",
               exercises: [
-                { id: "a1-ch4-c2-l1", title: "Listen to the Routine", type: "comprehension", prompt: "You hear: 'D'habitude, je me l\u00e8ve t\u00f4t, vers six heures et demie.' What time does the person get up?" },
+                { id: "a1-ch4-c2-l1", title: "Listen to the Routine", type: "comprehension", prompt: "You hear: 'D'habitude, je me l\u00e8ve t\u00f4t, vers six heures et demie. C'est horrible. Je prends une douche et je m'habille. Je ne prends pas de petit-d\u00e9jeuner \u00e0 la maison car je n'ai pas le temps. J'ach\u00e8te un gros croissant et un caf\u00e9 pr\u00e8s du bureau \u00e0 huit heures. C'est mon moment pr\u00e9f\u00e9r\u00e9 de la journ\u00e9e.' What time does the person get up and what is their favorite moment?" },
                 { id: "a1-ch4-c2-l2", title: "Missing Breakfast", type: "comprehension", prompt: "You hear: 'Je ne prends pas de petit-d\u00e9jeuner \u00e0 la maison car je n'ai pas le temps.' Why doesn't the person eat at home?" }
               ]
             },
@@ -369,7 +372,7 @@ export const a1: Level = {
             listening: {
               summary: "Understand food orders and market conversations",
               exercises: [
-                { id: "a1-ch5-c1-l1", title: "Market Shopping", type: "comprehension", prompt: "You hear: 'Je voudrais deux kilos d'oranges et un morceau de fromage.' What does the person want?" },
+                { id: "a1-ch5-c1-l1", title: "Market Shopping", type: "comprehension", prompt: "At the market: 'Bonjour Monsieur, je voudrais deux kilos d'oranges et un morceau de fromage, s'il vous pla\u00eet. \u00c7a fait combien? - Dix euros, Madame.' What does the person buy and what is the total price?" },
                 { id: "a1-ch5-c1-l2", title: "Morning Drinks", type: "comprehension", prompt: "You hear: 'Je bois du caf\u00e9 le matin. Ma soeur boit du th\u00e9.' What does the speaker drink?" }
               ]
             },
@@ -437,7 +440,9 @@ export const a1: Level = {
               summary: "Read clothing descriptions",
               exercises: [
                 { id: "a1-ch6-c1-r1", title: "Shopping Description", type: "comprehension", prompt: "Read: 'Cette veste rouge est tr\u00e8s belle, mais elle co\u00fbte quatre-vingts euros.' What color is the jacket and how much?" },
-                { id: "a1-ch6-c1-r2", title: "Color Agreement", type: "multiple-choice", prompt: "Read: 'Une robe _____ (blanc).' Choose the correct form.", options: ["blanc", "blanche", "blanches", "blancs"], correctAnswer: "blanche" }
+                { id: "a1-ch6-c1-r2", title: "Color Agreement", type: "multiple-choice", prompt: "Read: 'Une robe _____ (blanc).' Choose the correct form.", options: ["blanc", "blanche", "blanches", "blancs"], correctAnswer: "blanche" },
+                { id: "a1-ch6-c1-r3", title: "Short Story: Au march\u00e9 de Provence", type: "comprehension", prompt: "Read: 'C'est samedi matin. Lucas va au march\u00e9 \u00e0 pied. Il porte un tee-shirt bleu et un short gris. Au march\u00e9, il y a beaucoup de gens. Lucas ach\u00e8te du fromage, de la baguette et des fraises. Il voit une belle \u00e9charpe jaune pour sa grand-m\u00e8re.' Question: Comment Lucas va-t-il au march\u00e9?" },
+                { id: "a1-ch6-c1-r4", title: "Story Details", type: "multiple-choice", prompt: "Combien co\u00fbte l'\u00e9charpe?", options: ["Dix euros", "Quinze euros", "Vingt euros", "Cinq euros"], correctAnswer: "Quinze euros" }
               ]
             },
             writing: {
@@ -451,8 +456,8 @@ export const a1: Level = {
             listening: {
               summary: "Understand clothing conversations",
               exercises: [
-                { id: "a1-ch6-c1-l1", title: "Fashion Talk", type: "comprehension", prompt: "You hear: 'Regarde cette veste, elle est super! Elle co\u00fbte soixante-neuf euros.' How much is the jacket?" },
-                { id: "a1-ch6-c1-l2", title: "Size Problem", type: "comprehension", prompt: "You hear: 'Je vais l'essayer en taille M. Oh non, c'est trop petit.' What's wrong?" }
+                { id: "a1-ch6-c1-l1", title: "Fashion Talk", type: "comprehension", prompt: "You hear: 'Regarde cette veste, elle est super! - Oui, mais elle est un peu ch\u00e8re, non? - Elle co\u00fbte soixante-neuf euros. C'est raisonnable pour du cuir. - Tu as raison. Je vais l'essayer en taille M. Oh non, c'est trop petit. Je suis trop muscl\u00e9 pour cette veste!' What is the price and why doesn't size M fit?" },
+                { id: "a1-ch6-c1-l2", title: "Size Problem", type: "multiple-choice", prompt: "Pourquoi la taille M ne va pas?", options: ["Trop grand", "Trop petit", "Trop cher", "Mauvaise couleur"], correctAnswer: "Trop petit" }
               ]
             },
             speaking: {
@@ -513,14 +518,16 @@ export const a1: Level = {
           id: "a1-ch7-c1",
           title: "Les activit\u00e9s de loisirs",
           description: "Leisure activities and adverbs of frequency",
-          grammarFocus: "Verb: faire; Adverbs of frequency; Jouer \u00e0 vs Jouer de",
+          grammarFocus: "Verb: faire; Adverbs of frequency; Jouer \u00e0 (sports) vs Jouer de (instruments)",
           vocabularyTheme: "Hobbies, sports, musical instruments, frequency",
           skills: {
             reading: {
               summary: "Read about people's hobbies",
               exercises: [
                 { id: "a1-ch7-c1-r1", title: "Weekend Activities", type: "comprehension", prompt: "Read: 'Tous les samedis, je joue au tennis. Le dimanche, je fais du v\u00e9lo.' What does the person do on Saturdays?" },
-                { id: "a1-ch7-c1-r2", title: "Hobby Match", type: "match", prompt: "Match: 'faire du v\u00e9lo', 'jouer au tennis', 'jouer de la guitare'" }
+                { id: "a1-ch7-c1-r2", title: "Hobby Match", type: "match", prompt: "Match: 'faire du v\u00e9lo', 'jouer au tennis', 'jouer de la guitare'" },
+                { id: "a1-ch7-c1-r3", title: "Short Story: Les passions de Th\u00e9o", type: "comprehension", prompt: "Read: 'Th\u00e9o adore la musique et il joue souvent de la guitare. Le week-end, il fait du v\u00e9lo avec son fr\u00e8re. Mais aujourd'hui, Th\u00e9o est triste. Pourquoi? Parce qu'il a mal \u00e0 la jambe! Il tombe de son v\u00e9lo dimanche. Le m\u00e9decin dit: Tu dois rester au lit et te reposer.' Question: Pourquoi Th\u00e9o est-il triste?" },
+                { id: "a1-ch7-c1-r4", title: "Story Health", type: "multiple-choice", prompt: "Quel est le conseil du m\u00e9decin?", options: ["Faire du sport", "Rester au lit et se reposer", "Manger du g\u00e2teau", "Aller \u00e0 la plage"], correctAnswer: "Rester au lit et se reposer" }
               ]
             },
             writing: {
@@ -534,7 +541,7 @@ export const a1: Level = {
             listening: {
               summary: "Understand spoken hobby descriptions",
               exercises: [
-                { id: "a1-ch7-c1-l1", title: "Weekend Plans", type: "comprehension", prompt: "You hear: 'Samedi, je joue au tennis. Dimanche, je vais au cin\u00e9ma.' What happens Sunday?" },
+                { id: "a1-ch7-c1-l1", title: "Weekend Plans", type: "comprehension", prompt: "Dialogue: 'Qu'est-ce que tu fais ce week-end? - Samedi, je joue au tennis. Dimanche, je vais au cin\u00e9ma pour voir un film d'horreur. Et toi? - Moi, je reste \u00e0 la maison. Je d\u00e9teste le sport et j'ai peur des films d'horreur. Je vais juste dormir et manger.' What does the first person do on Sunday?" },
                 { id: "a1-ch7-c1-l2", title: "Extreme Tastes", type: "comprehension", prompt: "You hear: 'Je d\u00e9teste le froid, j'adore voyager dans les pays chauds.' What does the person love?" }
               ]
             },
@@ -615,8 +622,8 @@ export const a1: Level = {
             listening: {
               summary: "Understand location descriptions",
               exercises: [
-                { id: "a1-ch8-c1-l1", title: "Lost Tourist", type: "comprehension", prompt: "You hear: 'Pour aller au Louvre? Vous devez prendre le m\u00e9tro, ligne un.' Which line?" },
-                { id: "a1-ch8-c1-l2", title: "Metro Announcement", type: "comprehension", prompt: "You hear: 'Prochaine station: H\u00f4tel de Ville. Correspondance ligne un.' What is the transfer for?" }
+                { id: "a1-ch8-c1-l1", title: "Lost Tourist", type: "comprehension", prompt: "Tourist: 'Pardon madame, pour aller au Mus\u00e9e du Louvre, s'il vous pla\u00eet?' - Local: 'Oh, c'est loin! Vous devez prendre le m\u00e9tro, ligne un. - C'est direct? - Oui, c'est direct. Mais attention aux pickpockets, gardez votre sac ferm\u00e9!' Which metro line should they take and what warning is given?" },
+                { id: "a1-ch8-c1-l2", title: "Metro Announcement", type: "comprehension", prompt: "You hear: 'Prochaine station: H\u00f4tel de Ville. Correspondance avec la ligne un. Attention \u00e0 la marche en descendant du train.' What is the station name and which line can you connect to?" }
               ]
             },
             speaking: {
@@ -696,7 +703,7 @@ export const a1: Level = {
             listening: {
               summary: "Understand spoken descriptions",
               exercises: [
-                { id: "a1-ch9-c1-l1", title: "Roommate Description", type: "comprehension", prompt: "You hear: 'Mon colocataire Bruno est grand avec une barbe \u00e9norme.' What does Bruno look like?" },
+                { id: "a1-ch9-c1-l1", title: "Roommate Description", type: "comprehension", prompt: "You hear: 'Mon nouveau colocataire s'appelle Bruno. Il est tr\u00e8s grand et il a une barbe \u00e9norme. Il ressemble \u00e0 un pirate! Il est tr\u00e8s sympa mais il parle beaucoup. Aujourd'hui, il fait tr\u00e8s chaud, alors Bruno porte un chapeau de soleil ridicule.' What does Bruno look like and why is he wearing a hat?" },
                 { id: "a1-ch9-c1-l2", title: "Appearance Details", type: "multiple-choice", prompt: "You hear: 'Paul est grand, cheveux bruns, yeux bleus.' What eye color?", options: ["Brown", "Blue", "Green", "Black"], correctAnswer: "Blue" }
               ]
             },
@@ -778,7 +785,7 @@ export const a1: Level = {
             listening: {
               summary: "Understand health conversations",
               exercises: [
-                { id: "a1-ch10-c1-l1", title: "Medical Appointment", type: "comprehension", prompt: "You hear: 'Je voudrais un rendez-vous pour mon fils. Il a mal aux oreilles.' Who has an earache?" },
+                { id: "a1-ch10-c1-l1", title: "Medical Appointment", type: "comprehension", prompt: "Phone call: 'Cabinet m\u00e9dical, j'\u00e9coute. - Bonjour, je voudrais un rendez-vous pour mon fils. Il a tr\u00e8s mal aux oreilles depuis ce matin. - Est-ce qu'il a de la fi\u00e8vre? - Oui, un peu. Trente-huit cinq. - D'accord, venez \u00e0 seize heures trente.' Who needs the appointment, what are their symptoms, and what is the temperature?" },
                 { id: "a1-ch10-c1-l2", title: "Symptoms Check", type: "comprehension", prompt: "You hear: 'J'ai mal \u00e0 la t\u00eate et j'ai de la fi\u00e8vre.' What symptoms?" }
               ]
             },
