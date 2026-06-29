@@ -8,13 +8,14 @@ import {
 import type { ReactNode } from "react";
 
 import appCss from "~/styles/app.css?url";
+import { TrainingWheelsProvider, useTrainingWheels } from "~/lib/training-wheels";
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "FrancPrep – Master French from A1 to C2" },
+      { title: "FrancPrep \u2013 Master French from A1 to C2" },
     ],
     links: [{ rel: "stylesheet", href: appCss }],
   }),
@@ -31,9 +32,29 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   return (
-    <RootDocument>
-      <Outlet />
-    </RootDocument>
+    <TrainingWheelsProvider>
+      <RootDocument>
+        <Outlet />
+      </RootDocument>
+    </TrainingWheelsProvider>
+  );
+}
+
+function NavToggle() {
+  const { mode, toggle } = useTrainingWheels();
+  return (
+    <button
+      onClick={toggle}
+      className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+        mode === "visible"
+          ? "bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900/50 dark:text-indigo-300"
+          : "bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400"
+      }`}
+      title={mode === "visible" ? "Hide translations for immersion practice" : "Show translations"}
+    >
+      <span className="text-sm">{mode === "visible" ? "\ud83d\ude8c" : "\ud83d\udee4\ufe0f"}</span>
+      <span>Training Wheels {mode === "visible" ? "ON" : "OFF"}</span>
+    </button>
   );
 }
 
@@ -53,9 +74,10 @@ function RootDocument({ children }: { children: ReactNode }) {
               <Link to="/coaching" className="text-gray-600 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400">
                 Coaching
               </Link>
-              <Link to="/" className="text-gray-600 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400">
+              <Link to="/exam" className="text-gray-600 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400">
                 Exam Simulator
               </Link>
+              <NavToggle />
             </div>
           </div>
         </nav>
