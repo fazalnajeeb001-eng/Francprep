@@ -7,7 +7,7 @@ node_modules
 .output
 .nitro
 .tanstack
-
+.vercel/output
 /dist/
 /dist-ssr/
 

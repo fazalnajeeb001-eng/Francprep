@@ -1,1 +1,0 @@
-function d(n,s){const e=s[n];if(!e)return null;const r=e.chapters.reduce((t,c)=>t+c.concepts.length,0),i=e.chapters.reduce((t,c)=>t+c.concepts.reduce((l,u)=>l+Object.values(u.skills).reduce((o,p)=>o+p.exercises.length,0),0),0);return{id:e.id,title:e.title,subtitle:e.subtitle,description:e.description,chapterCount:e.chapters.length,conceptCount:r,exerciseCount:i}}export{d as g};
