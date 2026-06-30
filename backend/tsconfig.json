@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "ES2020",
     "module": "commonjs",
-    "lib": ["ES2022"],
+    "lib": ["ES2020"],
     "outDir": "./dist",
-    "rootDir": ".",
+    "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -16,5 +16,5 @@
     "moduleResolution": "node"
   },
   "include": ["src/**/*", "server.ts"],
-  "exclude": ["node_modules", "dist", ".env"]
+  "exclude": ["node_modules", "dist"]
 }
