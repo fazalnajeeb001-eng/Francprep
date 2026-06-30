@@ -1,4 +1,6 @@
 // Vercel serverless function adapter for TanStack Start SSR
-import createHandler from '../dist/server/server.js'
+import server from '../dist/server/server.js'
 
-export default createHandler as (req: Request) => Response | Promise<Response>
+export default async function handler(req: Request): Promise<Response> {
+  return server.fetch(req)
+}
