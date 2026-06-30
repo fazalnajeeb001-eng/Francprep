@@ -13,6 +13,7 @@ import {
 import User from '../models/User';
 import Lesson from '../models/Lesson';
 import Exercise from '../models/Exercise';
+import Syllabus from '../models/Syllabus';
 import StudentProgress from '../models/StudentProgress';
 import { AuthRequest } from '../types';
 import { Response, NextFunction } from 'express';
@@ -282,6 +283,84 @@ router.put('/exercises/:id', validate(updateExerciseSchema), (req, res, next) =>
 router.delete('/exercises/:id', (req, res, next) =>
   exerciseController.delete(req, res, next)
 );
+
+// ============ Syllabus Management ============
+
+/**
+ * GET /api/admin/syllabi - List all syllabi
+ */
+router.get('/syllabi', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const level = req.query.level as string;
+    const filter: any = {};
+    if (level) filter.level = level;
+    const skip = (page - 1) * limit;
+    const [syllabi, total] = await Promise.all([
+      Syllabus.find(filter).populate('lessons', 'title order category').sort('order').skip(skip).limit(limit),
+      Syllabus.countDocuments(filter),
+    ]);
+    res.status(200).json({
+      success: true,
+      data: syllabi,
+      pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * POST /api/admin/syllabi - Create a syllabus
+ */
+router.post('/syllabi', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const syllabus = await Syllabus.create(req.body);
+    res.status(201).json({
+      success: true,
+      data: syllabus.toJSON(),
+      message: 'Syllabus created successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * PUT /api/admin/syllabi/:id - Update a syllabus
+ */
+router.put('/syllabi/:id', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const syllabus = await Syllabus.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!syllabus) {
+      res.status(404).json({ success: false, error: 'Syllabus not found' });
+      return;
+    }
+    res.status(200).json({ success: true, data: syllabus.toJSON(), message: 'Syllabus updated successfully' });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * DELETE /api/admin/syllabi/:id - Delete a syllabus
+ */
+router.delete('/syllabi/:id', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const syllabus = await Syllabus.findByIdAndDelete(req.params.id);
+    if (!syllabus) {
+      res.status(404).json({ success: false, error: 'Syllabus not found' });
+      return;
+    }
+    res.status(200).json({ success: true, message: 'Syllabus deleted successfully' });
+  } catch (error) {
+    next(error);
+  }
+});
 
 // ============ Progress (Admin View) ============
 
