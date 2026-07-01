@@ -2,14 +2,25 @@ import cors from 'cors';
 import { env } from '../config/env';
 
 /**
- * CORS configuration - scoped to frontend domain only
+ * CORS configuration - allows frontend domains
  */
 const corsOptions: cors.CorsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (server-to-server, mobile apps, curl)
-    const allowedOrigins = [env.frontendUrl];
-
-    if (!origin || allowedOrigins.includes(origin) || env.nodeEnv === 'development') {
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+    // Allow vercel.app subdomains and the exact frontend URL
+    const allowedOrigins = [
+      env.frontendUrl,
+      'https://francprep.vercel.app',
+    ];
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.endsWith('.vercel.app') ||
+      env.nodeEnv === 'development'
+    ) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
