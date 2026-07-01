@@ -22,3 +22,5 @@ dbfinal.js
 finalize.js
 check.js
 fixData.js
+.vercel
+.env*

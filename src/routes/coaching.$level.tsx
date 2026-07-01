@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/coaching/$level")({
@@ -35,12 +35,17 @@ interface Lesson {
   tags: string[];
 }
 
+
 function LevelPage() {
   const { level } = Route.useParams();
   const levelId = level.toUpperCase();
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const router = useRouterState();
+  const isRootLevel = router.location.pathname.split("/").filter(Boolean).length === 2;
+  if (!isRootLevel) return <Outlet />;
+
 
   useEffect(() => {
     const fetchLessons = async () => {

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/coaching")({
@@ -22,6 +22,8 @@ const levelMeta = [
 function CoachingHub() {
   const [stats, setStats] = useState<Record<string, LevelStats>>({});
   const [loading, setLoading] = useState(true);
+  const router = useRouterState();
+  const isIndex = router.location.pathname === "/coaching";
 
   useEffect(() => {
     const API = import.meta.env.VITE_API_URL || "https://francprep-production.up.railway.app/api";
@@ -47,6 +49,11 @@ function CoachingHub() {
     };
     fetchAll();
   }, []);
+
+  // If a child route is matched (e.g. /coaching/a1), render only the Outlet (child content)
+  if (!isIndex) {
+    return <Outlet />;
+  }
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-12">
