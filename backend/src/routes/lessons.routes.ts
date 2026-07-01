@@ -15,7 +15,7 @@ router.get('/:id', optionalAuth, (req, res, next) =>
 );
 
 // GET /api/lessons/:id/exercises - Get exercises for a lesson
-router.get('/:id/exercises', authenticate, (req, res, next) =>
+router.get('/:id/exercises', optionalAuth, (req, res, next) =>
   lessonController.getExercises(req, res, next)
 );
 
