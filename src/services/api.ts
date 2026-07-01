@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// In production (Vercel), set VITE_API_URL to your Railway backend URL
+const API_BASE = import.meta.env.VITE_API_URL || 'https://francprep-production.up.railway.app/api';
 
 export const api = axios.create({
   baseURL: API_BASE,
