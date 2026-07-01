@@ -129,11 +129,7 @@ function LessonPage() {
       {lesson.content && (
         <div className="mb-8 rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
           <h2 className="text-lg font-bold mb-3">Lesson Content</h2>
-          <div className="prose prose-sm max-w-none dark:prose-invert">
-            {lesson.content.split('\n').map((line, i) => (
-              <p key={i} className="mb-2">{line}</p>
-            ))}
-          </div>
+          <div className="prose prose-sm max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: lesson.content }} />
         </div>
       )}
 
