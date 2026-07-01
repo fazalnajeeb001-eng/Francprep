@@ -5,10 +5,9 @@ export const Route = createFileRoute("/coaching")({
   component: CoachingHub,
 });
 
-interface SyllabusData {
+interface LevelStats {
   level: string;
   lessonCount: number;
-  exerciseCount: number;
 }
 
 const levelMeta = [
@@ -21,34 +20,32 @@ const levelMeta = [
 ];
 
 function CoachingHub() {
-  const [data, setData] = useState<SyllabusData[]>([]);
+  const [stats, setStats] = useState<Record<string, LevelStats>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const API = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-    fetch(`${API}/admin/syllabi`)
-      .then(r => r.json())
-      .then(res => {
-        if (res.success && Array.isArray(res.data)) {
-          const mapped = res.data.map((s: any) => ({
-            level: s.level,
-            lessonCount: s.lessons?.length || 0,
-            exerciseCount: 0,
-          }));
-          // Count exercises per level
-          Promise.all(
-            mapped.map(async (m: SyllabusData) => {
-              const lr = await fetch(`${API}/lessons?level=${m.level}&limit=1`);
-              const ld = await lr.json();
-              return { ...m, totalLessons: ld.pagination?.total || 0 };
-            })
-          ).then(setData);
-        } else {
-          setData([]);
+    const API = import.meta.env.VITE_API_URL || "https://francprep-production.up.railway.app/api";
+
+    // Fetch lesson counts for each level from the public lessons API
+    const fetchAll = async () => {
+      const results: Record<string, LevelStats> = {};
+      for (const level of ["A1", "A2", "B1", "B2", "C1", "C2"]) {
+        try {
+          const res = await fetch(`${API}/lessons?level=${level}&limit=1`);
+          const data = await res.json();
+          if (data.success && data.pagination) {
+            results[level] = { level, lessonCount: data.pagination.total };
+          } else {
+            results[level] = { level, lessonCount: 0 };
+          }
+        } catch {
+          results[level] = { level, lessonCount: 0 };
         }
-      })
-      .catch(() => setData([]))
-      .finally(() => setLoading(false));
+      }
+      setStats(results);
+      setLoading(false);
+    };
+    fetchAll();
   }, []);
 
   return (
@@ -62,8 +59,6 @@ function CoachingHub() {
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
           FrancPrep's structured A1–C2 curriculum guides you from absolute beginner to mastery.
-          Each level develops reading, writing, listening, and speaking skills through
-          comprehensive exercises.
         </p>
       </div>
 
@@ -73,7 +68,7 @@ function CoachingHub() {
         <>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {levelMeta.map((level) => {
-              const stats = data.find(d => d.level === level.id);
+              const s = stats[level.id];
               return (
                 <Link
                   key={level.id}
@@ -87,8 +82,7 @@ function CoachingHub() {
                     <h2 className="mt-3 text-2xl font-bold">{level.id}</h2>
                     <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400">{level.title}</p>
                     <div className="mt-4 flex gap-4 text-xs text-gray-500">
-                      <span>{stats?.lessonCount || 0} lessons</span>
-                      <span>{stats?.exerciseCount || 0} exercises</span>
+                      <span>{s?.lessonCount || 0} lessons</span>
                     </div>
                   </div>
                 </Link>
