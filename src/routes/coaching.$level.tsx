@@ -1,105 +1,140 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { curriculum, getLevelSummary } from "~/lib/curriculum/index";
-import type { CEFRLevel } from "~/lib/curriculum/types";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/coaching/$level")({
   component: LevelPage,
 });
 
-const skillIcons: Record<string, string> = {
-  reading: "📖",
-  writing: "✍️",
-  listening: "🎧",
-  speaking: "🗣️",
+const API = import.meta.env.VITE_API_URL || "https://francprep-production.up.railway.app/api";
+
+const categoryLabels: Record<string, string> = {
+  reading: "📖 Reading",
+  writing: "✍️ Writing",
+  listening: "🎧 Listening",
+  speaking: "🗣️ Speaking",
+  grammar: "📐 Grammar",
+  vocabulary: "📚 Vocabulary",
 };
+
+const levelTitles: Record<string, string> = {
+  A1: "Beginner – Découverte",
+  A2: "Elementary – Progrès",
+  B1: "Intermediate – Indépendance",
+  B2: "Upper-Intermediate – Autonomie",
+  C1: "Advanced – Maîtrise",
+  C2: "Mastery – Perfectionnement",
+};
+
+interface Lesson {
+  _id: string;
+  title: string;
+  description: string;
+  category: string;
+  order: number;
+  estimatedDuration: number;
+  tags: string[];
+}
 
 function LevelPage() {
   const { level } = Route.useParams();
-  const levelId = level.toUpperCase() as CEFRLevel;
-  const levelData = curriculum[levelId];
+  const levelId = level.toUpperCase();
+  const [lessons, setLessons] = useState<Lesson[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  if (!levelData) {
+  useEffect(() => {
+    const fetchLessons = async () => {
+      try {
+        const res = await fetch(`${API}/lessons?level=${levelId}&limit=100&sort=order`);
+        const data = await res.json();
+        if (data.success) {
+          setLessons(data.data || []);
+        } else {
+          setError("Failed to load lessons");
+        }
+      } catch {
+        setError("Unable to reach server");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLessons();
+  }, [levelId]);
+
+  const grouped = lessons.reduce<Record<string, Lesson[]>>((acc, lesson) => {
+    const cat = lesson.category || "other";
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push(lesson);
+    return acc;
+  }, {});
+
+  if (loading) {
     return (
-      <div className="flex min-h-[60dvh] items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-2">Level not found</h2>
-          <Link to="/coaching" className="text-indigo-600 hover:underline">Back to levels</Link>
-        </div>
+      <div className="mx-auto max-w-4xl px-4 py-20 text-center">
+        <div className="text-gray-500 text-lg">Loading lessons...</div>
       </div>
     );
   }
 
-  const summary = getLevelSummary(levelId, curriculum);
-
-  const allConcepts = levelData.chapters.flatMap(ch => ch.concepts);
-  const readingCount = allConcepts.reduce((s, c) => s + c.skills.reading.exercises.length, 0);
-  const writingCount = allConcepts.reduce((s, c) => s + c.skills.writing.exercises.length, 0);
-  const listeningCount = allConcepts.reduce((s, c) => s + c.skills.listening.exercises.length, 0);
-  const speakingCount = allConcepts.reduce((s, c) => s + c.skills.speaking.exercises.length, 0);
+  if (error) {
+    return (
+      <div className="mx-auto max-w-4xl px-4 py-20 text-center">
+        <div className="text-red-500 text-lg">{error}</div>
+        <Link to="/coaching" className="text-indigo-600 hover:underline mt-4 inline-block">← Back to levels</Link>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10">
       <Link to="/coaching" className="mb-6 inline-flex items-center text-sm text-indigo-600 hover:underline dark:text-indigo-400">
         ← All Levels
       </Link>
-
       <div className="mb-8">
-        <h1 className="text-4xl font-bold">{levelId}: {levelData.title}</h1>
-        <p className="mt-2 text-lg text-gray-600 dark:text-gray-400">{levelData.description}</p>
-        <div className="mt-4 flex flex-wrap gap-3 text-sm">
-          <span className="rounded-full bg-indigo-100 px-3 py-1 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
-            {summary?.chapterCount} Chapters
-          </span>
-          <span className="rounded-full bg-green-100 px-3 py-1 text-green-700 dark:bg-green-950 dark:text-green-300">
-            {summary?.conceptCount} Concepts
-          </span>
-          <span className="rounded-full bg-amber-100 px-3 py-1 text-amber-700 dark:bg-amber-950 dark:text-amber-300">
-            {summary?.exerciseCount} Exercises
-          </span>
-        </div>
-        <div className="mt-3 flex flex-wrap gap-4 text-sm text-gray-500">
-          <span>{skillIcons.reading} {readingCount} reading</span>
-          <span>{skillIcons.writing} {writingCount} writing</span>
-          <span>{skillIcons.listening} {listeningCount} listening</span>
-          <span>{skillIcons.speaking} {speakingCount} speaking</span>
-        </div>
+        <h1 className="text-4xl font-bold">{levelId}: {levelTitles[levelId] || levelId}</h1>
+        <p className="mt-2 text-lg text-gray-600 dark:text-gray-400">
+          {lessons.length} lessons available
+        </p>
       </div>
 
-      <div className="space-y-8">
-        {levelData.chapters.map((chapter) => (
-          <div key={chapter.id} className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
-            <h2 className="text-xl font-bold">{chapter.title}</h2>
-            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{chapter.description}</p>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {chapter.concepts.map((concept) => {
-                const totalEx = Object.values(concept.skills).reduce((s, sk) => s + sk.exercises.length, 0);
-                return (
+      {lessons.length === 0 ? (
+        <div className="text-center py-12 text-gray-500">
+          No lessons available for this level yet.
+        </div>
+      ) : (
+        <div className="space-y-8">
+          {Object.entries(grouped).map(([category, catLessons]) => (
+            <div key={category} className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+              <h2 className="text-xl font-bold mb-1">
+                {categoryLabels[category] || category}
+              </h2>
+              <p className="text-sm text-gray-500 mb-4">{catLessons.length} lessons</p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {catLessons.map((lesson) => (
                   <Link
-                    key={concept.id}
+                    key={lesson._id}
                     to="/coaching/$level/$concept"
-                    params={{ level: level.toLowerCase(), concept: concept.id }}
+                    params={{ level: level.toLowerCase(), concept: lesson._id }}
                     className="rounded-xl border border-gray-100 bg-gray-50 p-4 transition hover:border-indigo-200 hover:bg-white hover:shadow-sm dark:border-gray-800 dark:bg-gray-800 dark:hover:border-indigo-800 dark:hover:bg-gray-800"
                   >
-                    <h3 className="font-semibold">{concept.title}</h3>
-                    <p className="mt-1 text-xs text-gray-500">{concept.description}</p>
-                    {concept.grammarFocus && (
-                      <p className="mt-1 text-xs text-indigo-600 dark:text-indigo-400">Grammar: {concept.grammarFocus}</p>
-                    )}
+                    <h3 className="font-semibold">{lesson.title}</h3>
+                    <p className="mt-1 text-xs text-gray-500 line-clamp-2">{lesson.description}</p>
                     <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
-                      <span>{totalEx} exercises</span>
-                      <span>·</span>
-                      <span>📖{concept.skills.reading.exercises.length}</span>
-                      <span>✍️{concept.skills.writing.exercises.length}</span>
-                      <span>🎧{concept.skills.listening.exercises.length}</span>
-                      <span>🗣️{concept.skills.speaking.exercises.length}</span>
+                      <span>⏱ {lesson.estimatedDuration} min</span>
+                      {lesson.tags?.length > 0 && (
+                        <>
+                          <span>·</span>
+                          <span className="truncate">{lesson.tags.slice(0, 2).join(", ")}</span>
+                        </>
+                      )}
                     </div>
                   </Link>
-                );
-              })}
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
