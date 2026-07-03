@@ -88,7 +88,7 @@ function storeAuthData(user: User, accessToken: string, refreshToken: string): v
 
 const API_BASE_URL: string =
   (typeof window !== "undefined" && (import.meta as Record<string, any>).env?.VITE_API_URL) ||
-  "http://localhost:5000/api";
+  "https://francprep-production.up.railway.app/api";
 
 console.log("[auth] API base URL:", API_BASE_URL);
 
