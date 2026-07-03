@@ -1,5 +1,6 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useRequireAuth } from "~/lib/useRequireAuth";
 
 export const Route = createFileRoute("/coaching")({
   component: CoachingHub,
@@ -23,6 +24,7 @@ function CoachingHub() {
   const [stats, setStats] = useState<Record<string, LevelStats>>({});
   const [loading, setLoading] = useState(true);
   const router = useRouterState();
+  useRequireAuth();
   const isIndex = router.location.pathname === "/coaching";
 
   useEffect(() => {

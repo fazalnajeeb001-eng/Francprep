@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { useRequireAuth } from "~/lib/useRequireAuth";
 
 export const Route = createFileRoute("/exam")({
   component: ExamPage,
@@ -13,6 +14,7 @@ const versions = [
 ];
 
 function ExamPage() {
+  useRequireAuth();
   const [practiceMode, setPracticeMode] = useState<"practice" | "full" | null>(null);
 
   return (
