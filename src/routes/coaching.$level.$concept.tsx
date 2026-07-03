@@ -1,11 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useRequireAuth } from "~/lib/useRequireAuth";
+import { apiFetch } from "~/lib/apiFetch";
+
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/coaching/$level/$concept")({
   component: LessonPage,
 });
 
-const API = import.meta.env.VITE_API_URL || "https://francprep-production.up.railway.app/api";
+
 
 interface Question {
   _id?: string;
@@ -47,6 +51,7 @@ const typeIcons: Record<string, string> = {
 };
 
 function LessonPage() {
+  useRequireAuth();
   const { level, concept: lessonId } = Route.useParams();
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -59,8 +64,8 @@ function LessonPage() {
       try {
         // Fetch lesson + exercises in parallel
         const [lessonRes, exercisesRes] = await Promise.all([
-          fetch(`${API}/lessons/${lessonId}`),
-          fetch(`${API}/lessons/${lessonId}/exercises`),
+          apiFetch(`/lessons/${lessonId}`),
+          apiFetch(`/lessons/${lessonId}/exercises`),
         ]);
         const lessonData = await lessonRes.json();
         const exercisesData = await exercisesRes.json();

@@ -1,6 +1,7 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useRequireAuth } from "~/lib/useRequireAuth";
+import { apiFetch } from "~/lib/apiFetch";
 
 export const Route = createFileRoute("/coaching")({
   component: CoachingHub,
@@ -24,18 +25,19 @@ function CoachingHub() {
   const [stats, setStats] = useState<Record<string, LevelStats>>({});
   const [loading, setLoading] = useState(true);
   const router = useRouterState();
-  useRequireAuth();
+  const { isLoading: authLoading } = useRequireAuth();
+  if (authLoading) return <div className="flex min-h-screen items-center justify-center text-gray-500">Loading...</div>;
   const isIndex = router.location.pathname === "/coaching";
 
   useEffect(() => {
-    const API = import.meta.env.VITE_API_URL || "https://francprep-production.up.railway.app/api";
+    
 
     // Fetch lesson counts for each level from the public lessons API
     const fetchAll = async () => {
       const results: Record<string, LevelStats> = {};
       for (const level of ["A1", "A2", "B1", "B2", "C1", "C2"]) {
         try {
-          const res = await fetch(`${API}/lessons?level=${level}&limit=1`);
+          const res = await apiFetch(`/lessons?level=${level}&limit=1`);
           const data = await res.json();
           if (data.success && data.pagination) {
             results[level] = { level, lessonCount: data.pagination.total };

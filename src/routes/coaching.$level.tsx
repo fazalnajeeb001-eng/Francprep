@@ -1,11 +1,13 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useRequireAuth } from "~/lib/useRequireAuth";
+import { apiFetch } from "~/lib/apiFetch";
 
 export const Route = createFileRoute("/coaching/$level")({
   component: LevelPage,
 });
 
-const API = import.meta.env.VITE_API_URL || "https://francprep-production.up.railway.app/api";
+
 
 const categoryLabels: Record<string, string> = {
   reading: "📖 Reading",
@@ -37,6 +39,7 @@ interface Lesson {
 
 
 function LevelPage() {
+  useRequireAuth();
   const { level } = Route.useParams();
   const levelId = level.toUpperCase();
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -50,7 +53,7 @@ function LevelPage() {
   useEffect(() => {
     const fetchLessons = async () => {
       try {
-        const res = await fetch(`${API}/lessons?level=${levelId}&limit=100&sort=order`);
+        const res = await apiFetch(`/lessons?level=${levelId}&limit=100&sort=order`);
         const data = await res.json();
         if (data.success) {
           setLessons(data.data || []);
