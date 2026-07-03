@@ -9,30 +9,47 @@ export const Route = createFileRoute("/signup")({
 function SignupPage() {
   const { signup } = useAuth();
   const navigate = useNavigate();
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const passwordChecks = {
+    length: password.length >= 8,
+    upper: /[A-Z]/.test(password),
+    lower: /[a-z]/.test(password),
+    number: /\d/.test(password),
+  };
+  const allPass = Object.values(passwordChecks).every(Boolean);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
     if (password !== confirm) {
       setError("Passwords do not match");
       return;
     }
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+    if (!allPass) {
+      setError("Password must be 8+ characters with uppercase, lowercase, and a number");
       return;
     }
+
     setLoading(true);
     try {
-      await signup({ name, email, password });
+      await signup({ firstName, lastName, email, password });
       navigate({ to: "/coaching" });
     } catch (err: any) {
-      setError(err?.response?.data?.error || err?.message || "Signup failed");
+      const msg = err?.response?.data?.error || err?.message || "Signup failed";
+      const details = err?.response?.data?.details;
+      if (details) {
+        setError(details.map((d: any) => d.message).join(". "));
+      } else {
+        setError(msg);
+      }
     } finally {
       setLoading(false);
     }
@@ -51,16 +68,29 @@ function SignupPage() {
           </div>
         )}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
-            <input
-              type="text"
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800"
-              placeholder="Your name"
-            />
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">First Name</label>
+              <input
+                type="text"
+                required
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800"
+                placeholder="John"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Last Name</label>
+              <input
+                type="text"
+                required
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800"
+                placeholder="Doe"
+              />
+            </div>
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
@@ -81,8 +111,19 @@ function SignupPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800"
-              placeholder="Min 6 characters"
+              placeholder="Min 8 characters"
             />
+            <div className="mt-1.5 space-y-1 text-xs">
+              <p className={passwordChecks.length ? "text-green-600" : "text-gray-400"}>
+                ✓ At least 8 characters
+              </p>
+              <p className={passwordChecks.upper && passwordChecks.lower ? "text-green-600" : "text-gray-400"}>
+                ✓ Uppercase + lowercase letters
+              </p>
+              <p className={passwordChecks.number ? "text-green-600" : "text-gray-400"}>
+                ✓ At least one number
+              </p>
+            </div>
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Confirm Password</label>
@@ -97,7 +138,7 @@ function SignupPage() {
           </div>
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !allPass}
             className="w-full rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-50"
           >
             {loading ? "Creating account..." : "Create Account"}
