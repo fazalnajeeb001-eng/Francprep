@@ -1,30 +1,30 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Crown, LayoutDashboard, BookOpen, BookText, Languages, Headphones, Mic, PenTool, FileText, Sparkles, GraduationCap, Award, Calendar, ScrollText, Settings, HelpCircle, BarChart3 } from "lucide-react";
+import { Crown, LayoutDashboard, BookOpen, FileText, Headphones, Mic, PenTool, Languages, Sparkles, GraduationCap, Award, Calendar, Settings, HelpCircle, BarChart3 } from "lucide-react";
 
 const navGroups = [
   { section: "School", items: [
     { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard", active: true },
-    { label: "My Level", icon: BarChart3, href: "#" },
+    { label: "My Level", icon: BarChart3, href: "/coaching" },
     { label: "Lessons", icon: BookOpen, href: "/coaching" },
-    { label: "Vocabulary", icon: BookText, href: "#" },
-    { label: "Grammar", icon: Languages, href: "#" },
-    { label: "Reading", icon: FileText, href: "#" },
-    { label: "Listening", icon: Headphones, href: "#" },
-    { label: "Speaking", icon: Mic, href: "#" },
-    { label: "Writing", icon: PenTool, href: "#" },
+    { label: "Vocabulary", icon: BookOpen, href: "/coaching" },
+    { label: "Grammar", icon: Languages, href: "/coaching" },
+    { label: "Reading", icon: FileText, href: "/coaching" },
+    { label: "Listening", icon: Headphones, href: "/coaching" },
+    { label: "Speaking", icon: Mic, href: "/coaching" },
+    { label: "Writing", icon: PenTool, href: "/coaching" },
   ]},
   { section: "Practice", items: [
-    { label: "Flashcards", icon: Sparkles, href: "#" },
-    { label: "Exercises", icon: FileText, href: "#" },
-    { label: "Mock Exams", icon: GraduationCap, href: "#" },
+    { label: "Exercises", icon: FileText, href: "/exam" },
+    { label: "Mock Exams", icon: GraduationCap, href: "/exam" },
   ]},
-  { section: "Achievements", items: [
+  { section: "Exam Simulator", items: [
+    { label: "TCF Canada", icon: GraduationCap, href: "/exam" },
+    { label: "TEF Canada", icon: GraduationCap, href: "/exam" },
+  ]},
+  { section: "More", items: [
     { label: "Achievements", icon: Award, href: "#" },
     { label: "Calendar", icon: Calendar, href: "/dashboard/calendar" },
-    { label: "Certificates", icon: ScrollText, href: "#" },
-  ]},
-  { section: "Support", items: [
     { label: "Settings", icon: Settings, href: "/dashboard/settings" },
     { label: "Help", icon: HelpCircle, href: "#" },
   ]},
@@ -68,7 +68,7 @@ export function Sidebar({ open, onClose, dark }: { open: boolean; onClose: () =>
             <Crown className="w-8 h-8 mx-auto text-amber-400" />
             <p className={`text-xs font-semibold mt-1 ${dark ? "text-gray-200" : "text-gray-700"}`}>Go Premium</p>
             <p className={`text-[10px] ${dark ? "text-gray-500" : "text-gray-400"} mb-2`}>Unlock all features</p>
-            <button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold py-2.5 rounded-xl hover:opacity-90 shadow-lg shadow-purple-500/25">Upgrade Now</button>
+            <button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold py-2.5 rounded-xl hover:opacity-90 shadow-lg shadow-purple-500/25 transition-all">Upgrade Now</button>
           </div>
         </div>
       </aside>

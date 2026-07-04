@@ -12,14 +12,10 @@ import { JourneyBanner } from "~/components/dashboard/widgets/JourneyBanner";
 import { StatCard } from "~/components/dashboard/widgets/StatCard";
 import { TodayPlan } from "~/components/dashboard/widgets/TodayPlan";
 import { ContinueLearning } from "~/components/dashboard/widgets/ContinueLearning";
-import { MilestoneCard } from "~/components/dashboard/widgets/MilestoneCard";
-import { WeeklyGoal } from "~/components/dashboard/widgets/WeeklyGoal";
 import { ActivityChart } from "~/components/dashboard/widgets/ActivityChart";
 import { CalendarHeatmap } from "~/components/dashboard/widgets/CalendarHeatmap";
-import { AchievementCard } from "~/components/dashboard/widgets/AchievementCard";
 import { ExamCard } from "~/components/dashboard/widgets/ExamCard";
-import { } from "~/components/dashboard/types";
-import { Flame, Diamond, Timer, Bell, BookOpen, BookText, Languages, Target, TrendingUp, Zap, Brain, Award, BarChart3, Sparkles, Settings } from "lucide-react";
+import { Flame, Diamond, Timer, Bell, BookOpen, BookText, Languages, Target, TrendingUp, Brain, Award, BarChart3, Sparkles, Zap } from "lucide-react";
 import type { DashboardData } from "~/components/dashboard/types";
 
 export const Route = createFileRoute("/dashboard")({ component: DashboardPage });
@@ -27,14 +23,8 @@ export const Route = createFileRoute("/dashboard")({ component: DashboardPage })
 function useTheme() {
   const [dark, setDark] = useState(true);
   const toggle = () => setDark(d => !d);
-  useEffect(() => {
-    const stored = localStorage.getItem("fp_theme");
-    if (stored === "light") setDark(false);
-  }, []);
-  useEffect(() => {
-    localStorage.setItem("fp_theme", dark ? "dark" : "light");
-    document.documentElement.classList.toggle("dark", dark);
-  }, [dark]);
+  useEffect(() => { const stored = localStorage.getItem("fp_theme"); if (stored === "light") setDark(false); }, []);
+  useEffect(() => { localStorage.setItem("fp_theme", dark ? "dark" : "light"); document.documentElement.classList.toggle("dark", dark); }, [dark]);
   return { dark, toggle };
 }
 
@@ -48,11 +38,8 @@ function DashboardPage() {
   useEffect(() => {
     if (authLoading || !user) return;
     (async () => {
-      try {
-        const res = await apiFetch("/dashboard");
-        const json = await res.json();
-        if (json.success) setData(json.data);
-      } catch (e) { console.error(e); }
+      try { const res = await apiFetch("/dashboard"); const json = await res.json(); if (json.success) setData(json.data); }
+      catch (e) { console.error(e); }
       finally { setLoading(false); }
     })();
   }, [user, authLoading]);
@@ -62,14 +49,12 @@ function DashboardPage() {
 
   const b = dark ? "bg-[#070B17] text-white" : "bg-gray-50 text-gray-900";
   const txtSec = dark ? "text-gray-400" : "text-gray-500";
-  const borderCls = dark ? "border-[#1e2a4a]" : "border-gray-200";
 
   return (
     <div className={`min-h-screen ${b} transition-colors duration-300`}>
       <div className="flex">
         <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} dark={dark} />
         <div className="flex-1 min-h-screen">
-          {/* Top Nav */}
           <header className={`sticky top-0 z-30 ${dark ? "bg-[#070B17]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200"} backdrop-blur-xl border-b transition-colors`}>
             <div className="flex items-center justify-between px-4 md:px-6 py-3">
               <div className="flex items-center gap-4">
@@ -97,29 +82,11 @@ function DashboardPage() {
                 </div>
                 <button className={`relative p-2 rounded-xl ${dark ? "hover:bg-white/5" : "hover:bg-gray-100"} transition-colors`} aria-label="Notifications">
                   <Bell className={`w-5 h-5 ${txtSec}`} />
-                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-pink-500 rounded-full text-[9px] flex items-center justify-center text-white font-bold">3</span>
                 </button>
                 <ProfileDropdown firstName={data.user.firstName} dark={dark} />
               </div>
             </div>
           </header>
-
-          {/* Mobile Bottom Nav */}
-          <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-2 py-2 border-t backdrop-blur-xl transition-colors"
-            style={{ background: dark ? "rgba(7,11,23,0.95)" : "rgba(255,255,255,0.95)", borderColor: dark ? "#1e2a4a" : "#e5e7eb" }}>
-            {[
-              { icon: <BarChart3 className="w-5 h-5" />, label: "Dashboard" },
-              { icon: <BookOpen className="w-5 h-5" />, label: "Lessons" },
-              { icon: <Zap className="w-5 h-5" />, label: "Practice" },
-              { icon: <Award className="w-5 h-5" />, label: "Achieve" },
-              { icon: <Settings className="w-5 h-5" />, label: "More" },
-            ].map((item) => (
-              <button key={item.label} className={`flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl transition-colors ${dark ? "text-gray-400" : "text-gray-500"}`} aria-label={item.label}>
-                {item.icon}
-                <span className="text-[9px]">{item.label}</span>
-              </button>
-            ))}
-          </nav>
 
           <main className="p-4 md:p-6 lg:p-8 space-y-6 max-w-[1440px] mx-auto pb-20 lg:pb-8">
             {/* Row 1: Hero */}
@@ -138,19 +105,16 @@ function DashboardPage() {
               <StatCard dark={dark} index={5} color="from-indigo-500 to-purple-500" icon={<TrendingUp className="w-5 h-5 text-white" />} label="Avg Score" value={`${data.averageScore}%`} progress={data.averageScore} />
             </div>
 
-            {/* Row 3: Plan + Continue + Milestone + Goal */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Row 3: Plan + Continue */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <TodayPlan plans={data.todayPlan} dark={dark} />
               <ContinueLearning cl={data.continueLearning} dark={dark} />
-              <MilestoneCard dark={dark} completed={data.lessonsCompleted.completed} total={data.lessonsCompleted.total} />
-              <WeeklyGoal dark={dark} minutes={data.stats.totalStudyTime} />
             </div>
 
-            {/* Row 4: Charts + Achievements + Exams */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Row 4: Charts + Exams */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <ActivityChart activities={data.weeklyActivity} dark={dark} />
               <CalendarHeatmap calendar={data.streakCalendar} dark={dark} />
-              <AchievementCard achievements={data.recentAchievements} dark={dark} />
               <ExamCard dark={dark} />
             </div>
 
