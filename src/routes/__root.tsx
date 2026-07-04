@@ -2,20 +2,16 @@ import { HeadContent, Outlet, Scripts, Link, createRootRoute } from "@tanstack/r
 import type { ReactNode } from "react";
 import appCss from "~/styles/app.css?url";
 import { AuthProvider, useAuth } from "~/lib/AuthContext";
-import { GraduationCap, LogOut, User } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 
 export const Route = createRootRoute({
   head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "FrancPrep - TCF/TEF Exam Prep & French Coaching" },
-    ],
+    meta: [{ charSet: "utf-8" }, { name: "viewport", content: "width=device-width, initial-scale=1" }, { title: "FrancPrep - TCF/TEF Exam Prep & French Coaching" }],
     links: [{ rel: "stylesheet", href: appCss }],
   }),
   notFoundComponent: () => (
-    <div className="min-h-screen bg-[#070B17] dark:bg-[#070B17] flex items-center justify-center">
-      <div className="text-center"><p className="text-4xl mb-4">🔍</p><p className="text-lg text-gray-400">Page not found</p><Link to="/" className="text-purple-400 text-sm mt-2 inline-block">Go home</Link></div>
+    <div className="min-h-screen dark:bg-[#070B17] bg-gray-50 flex items-center justify-center">
+      <div className="text-center"><p className="text-4xl mb-4">🔍</p><p className="text-lg dark:text-gray-400 text-gray-600">Page not found</p><Link to="/" className="text-purple-400 text-sm mt-2 inline-block">Go home</Link></div>
     </div>
   ),
   component: RootComponent,
@@ -24,7 +20,7 @@ export const Route = createRootRoute({
 function NavBar() {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   return (
-    <nav className="sticky top-0 z-50 border-b border-[#1e2a4a] dark:border-[#1e2a4a] bg-[#070B17]/80 dark:bg-[#070B17]/80 backdrop-blur-xl">
+    <nav className="sticky top-0 z-50 border-b dark:border-[#1e2a4a] border-gray-200 dark:bg-[#070B17]/80 bg-white/80 backdrop-blur-xl transition-colors duration-300">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
         <div className="flex items-center gap-6">
           <Link to="/" className="flex items-center gap-2 text-lg font-bold">
@@ -33,25 +29,25 @@ function NavBar() {
           </Link>
           {isAuthenticated && (
             <div className="hidden sm:flex items-center gap-4 text-sm">
-              <Link to="/dashboard" className="text-gray-400 hover:text-white transition-colors">Dashboard</Link>
-              <Link to="/coaching" className="text-gray-400 hover:text-white transition-colors">Coaching</Link>
-              <Link to="/exam" className="text-gray-400 hover:text-white transition-colors">Exam</Link>
+              <Link to="/dashboard" className="dark:text-gray-400 text-gray-600 hover:text-purple-400 transition-colors">Dashboard</Link>
+              <Link to="/coaching" className="dark:text-gray-400 text-gray-600 hover:text-purple-400 transition-colors">Coaching</Link>
+              <Link to="/exam" className="dark:text-gray-400 text-gray-600 hover:text-purple-400 transition-colors">Exam</Link>
             </div>
           )}
         </div>
         <div className="flex items-center gap-3 text-sm">
           {isLoading ? null : isAuthenticated && user ? (
             <div className="flex items-center gap-3">
-              <Link to="/dashboard" className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#101828] dark:bg-[#101828] border border-[#1e2a4a] dark:border-[#1e2a4a] text-gray-300 hover:text-white transition-colors">
+              <Link to="/dashboard" className="flex items-center gap-2 px-3 py-1.5 rounded-xl dark:bg-[#101828] bg-gray-100 dark:border-[#1e2a4a] border-gray-200 border dark:text-gray-300 text-gray-700 hover:text-purple-400 transition-colors">
                 <User className="w-3.5 h-3.5" /><span className="hidden sm:inline">{user.firstName}</span>
               </Link>
-              <button onClick={() => logout()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#1e2a4a] text-gray-400 hover:text-red-400 transition-all">
+              <button onClick={() => logout()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border dark:border-[#1e2a4a] border-gray-200 dark:text-gray-400 text-gray-600 hover:text-red-400 transition-all">
                 <LogOut className="w-3.5 h-3.5" /><span className="hidden sm:inline">Logout</span>
               </button>
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <Link to="/login" className="px-4 py-1.5 rounded-xl border border-[#1e2a4a] dark:border-[#1e2a4a] text-gray-400 hover:text-white hover:border-purple-500/30 transition-all">Login</Link>
+              <Link to="/login" className="px-4 py-1.5 rounded-xl border dark:border-[#1e2a4a] border-gray-200 dark:text-gray-400 text-gray-600 hover:text-purple-400 transition-all">Login</Link>
               <Link to="/signup" className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">Sign Up</Link>
             </div>
           )}
@@ -81,7 +77,7 @@ function RootDocument({ children }: { children: ReactNode }) {
           __html: `(function(){try{var t=localStorage.getItem("fp_theme");if(t==="light"){document.documentElement.classList.remove("dark")}}catch(e){}})()`
         }} />
       </head>
-      <body className="bg-[#070B17] dark:bg-[#070B17] text-white antialiased transition-colors duration-300">
+      <body className="dark:bg-[#070B17] bg-gray-50 text-white antialiased transition-colors duration-300 overflow-x-hidden">
         {children}
         <Scripts />
       </body>
