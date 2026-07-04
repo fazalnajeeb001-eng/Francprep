@@ -19,7 +19,7 @@ import { CalendarHeatmap } from "~/components/dashboard/widgets/CalendarHeatmap"
 import { AchievementCard } from "~/components/dashboard/widgets/AchievementCard";
 import { ExamCard } from "~/components/dashboard/widgets/ExamCard";
 import { } from "~/components/dashboard/types";
-import { Flame, Diamond, Timer, Bell, BookOpen, BookText, Languages, Target, TrendingUp, Zap, Brain, Award, BarChart3, Sparkles } from "lucide-react";
+import { Flame, Diamond, Timer, Bell, BookOpen, BookText, Languages, Target, TrendingUp, Zap, Brain, Award, BarChart3, Sparkles, Settings } from "lucide-react";
 import type { DashboardData } from "~/components/dashboard/types";
 
 export const Route = createFileRoute("/dashboard")({ component: DashboardPage });
