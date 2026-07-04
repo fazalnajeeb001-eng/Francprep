@@ -1,99 +1,89 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useRequireAuth } from "~/lib/useRequireAuth";
+import { motion } from "framer-motion";
+import { Target, BookOpen, ChevronRight, Sparkles, Clock, Award } from "lucide-react";
 
-export const Route = createFileRoute("/exam")({
-  component: ExamPage,
-});
+export const Route = createFileRoute("/exam")({ component: ExamHub });
 
-const versions = [
-  { id: "v1", name: "Version 1", subtitle: "First Steps", desc: "Greetings, introductions, numbers, alphabet" },
-  { id: "v2", name: "Version 2", subtitle: "Daily Life", desc: "Family, routine, shopping, directions" },
-  { id: "v3", name: "Version 3", subtitle: "Social & Travel", desc: "Hobbies, weather, city, transport" },
-  { id: "v4", name: "Version 4", subtitle: "Professional & Health", desc: "Body, health, work, invitations" },
+const examTypes = [
+  { id: "tcf", name: "TCF Canada", flag: "🇨🇦", desc: "Test de Connaissance du Français — comprehensive assessment for Canadian immigration", color: "from-purple-500 to-pink-500", icon: "🎯" },
+  { id: "tef", name: "TEF Canada", flag: "🇨🇦", desc: "Test d'Évaluation de Français — accepted for citizenship and permanent residency", color: "from-blue-500 to-indigo-500", icon: "📋" },
 ];
 
-function ExamPage() {
-  useRequireAuth();
-  const [practiceMode, setPracticeMode] = useState<"practice" | "full" | null>(null);
+function ExamHub() {
+  const { isLoading: authLoading } = useRequireAuth();
+  const router = useRouterState();
+  if (authLoading) return <div className="min-h-screen bg-[#070B17] flex items-center justify-center"><div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" /></div>;
+
+  const isIndex = router.location.pathname === "/exam";
+  if (!isIndex) return <Outlet />;
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10">
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-          TCF/TEF Exam Simulator
-        </h1>
-        <p className="mt-2 text-gray-600 dark:text-gray-400">
-          Prepare for the official French proficiency exams with realistic practice and timed full exams.
-        </p>
-      </div>
+    <div className="min-h-screen bg-[#070B17]">
+      <div className="mx-auto max-w-5xl px-4 py-12">
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
+          <span className="inline-block rounded-full bg-purple-500/10 border border-purple-500/30 px-3 py-1 text-sm font-medium text-purple-400">
+            Exam Simulator
+          </span>
+          <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            Practice Exams
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-500">
+            Full-length mock exams for TCF Canada and TEF Canada with real-time scoring.
+          </p>
+        </motion.div>
 
-      {/* Practice Mode */}
-      <section className="mb-10 rounded-xl border border-indigo-200 bg-indigo-50 p-6 dark:border-indigo-800 dark:bg-indigo-950/30">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-indigo-700 dark:text-indigo-300">Practice Mode</h2>
-            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-              Quick 12-question warm-up with instant feedback. No timer, no pressure.
-            </p>
-          </div>
-          <Link
-            to="/exam/practice"
-            className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 transition-colors"
-          >
-            Start Practice
-          </Link>
-        </div>
-      </section>
-
-      {/* Full Exam Mode */}
-      <section className="mb-10 rounded-xl border border-amber-200 bg-amber-50 p-6 dark:border-amber-800 dark:bg-amber-950/30">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-amber-700 dark:text-amber-300">Full Exam Mode</h2>
-            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-              Timed, 100-point exam covering Listening, Reading, Writing, and Speaking. 
-              Pass with 50/100 to unlock the next level!
-            </p>
-          </div>
-          <Link
-            to="/exam/full"
-            className="rounded-lg bg-amber-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-amber-700 transition-colors"
-          >
-            Start Full Exam
-          </Link>
-        </div>
-      </section>
-
-      {/* Exam Versions */}
-      <section>
-        <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">Available Exam Versions</h2>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {versions.map((v) => (
-            <div key={v.id} className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
-              <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">{v.name}</div>
-              <h3 className="text-base font-bold text-gray-900 dark:text-white">{v.subtitle}</h3>
-              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{v.desc}</p>
-              <div className="mt-3 flex gap-2">
-                <Link to="/exam/practice" className="text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400">Practice</Link>
-                <span className="text-gray-300 dark:text-gray-600">|</span>
-                <Link to="/exam/full" className="text-xs font-medium text-amber-600 hover:underline dark:text-amber-400">Full Exam</Link>
+        <div className="grid gap-6 md:grid-cols-2">
+          {examTypes.map((ex, i) => (
+            <motion.div key={ex.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
+              <div className="relative overflow-hidden rounded-2xl border border-[#1e2a4a] bg-[#101828]/80 backdrop-blur-lg p-6 transition-all hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/10">
+                <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${ex.color}`} />
+                <div className="flex items-start gap-4 mt-1">
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${ex.color} flex items-center justify-center text-2xl shadow-lg`}>
+                    {ex.icon}
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-xl font-bold text-white">{ex.flag} {ex.name}</h2>
+                    <p className="text-sm text-gray-500 mt-1">{ex.desc}</p>
+                    <div className="flex items-center gap-4 mt-4 text-xs text-gray-500">
+                      <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> ~3 hours</span>
+                      <span className="flex items-center gap-1"><Award className="w-3 h-3" /> 6 sections</span>
+                    </div>
+                    <div className="flex gap-3 mt-4">
+                      <Link to="/exam/full" className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold hover:opacity-90 shadow-lg shadow-purple-500/25 transition-all">
+                        Full Exam
+                      </Link>
+                      <Link to="/exam/practice" className="px-4 py-2 rounded-xl border border-[#1e2a4a] text-gray-300 text-xs font-semibold hover:bg-white/5 transition-all">
+                        Practice
+                      </Link>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </section>
 
-      {/* Gatekeeper Info */}
-      <section className="mt-10 rounded-lg border border-gray-200 bg-gray-50 p-5 dark:border-gray-700 dark:bg-gray-900">
-        <h2 className="font-bold text-gray-900 dark:text-white">How Progression Works</h2>
-        <ul className="mt-2 space-y-1 text-sm text-gray-600 dark:text-gray-400">
-          <li>\u2022 Complete all chapters in a level through Coaching</li>
-          <li>\u2022 Take the Full Exam to prove your mastery</li>
-          <li>\u2022 Score <strong>50/100</strong> total AND <strong>5/25</strong> in each section to pass</li>
-          <li>\u2022 Passing unlocks the next CEFR level</li>
-        </ul>
-      </section>
+        {/* Quick Stats */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
+          className="mt-12 rounded-2xl border border-[#1e2a4a] bg-[#101828]/80 backdrop-blur-lg p-6">
+          <h2 className="text-lg font-semibold text-white mb-4">📊 Your Exam Stats</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { label: "Exams Taken", value: "0", icon: <Target className="w-4 h-4 text-purple-400" /> },
+              { label: "Avg Score", value: "—", icon: <Award className="w-4 h-4 text-amber-400" /> },
+              { label: "Best Score", value: "—", icon: <Sparkles className="w-4 h-4 text-emerald-400" /> },
+              { label: "Study Time", value: "0h", icon: <Clock className="w-4 h-4 text-blue-400" /> },
+            ].map((stat) => (
+              <div key={stat.label} className="text-center p-3 rounded-xl bg-[#070B17]">
+                <div className="flex justify-center mb-1">{stat.icon}</div>
+                <p className="text-lg font-bold text-white">{stat.value}</p>
+                <p className="text-[10px] text-gray-500">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 }
