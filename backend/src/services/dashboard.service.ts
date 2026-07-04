@@ -31,9 +31,21 @@ function generateWeeklyActivity(progressRecords: any[]): Array<{ day: string; mi
   return result;
 }
 
-function generateStreakCalendar(): Array<{ date: string; count: number }> {
+function generateStreakCalendar(progressRecords: any[]): Array<{ date: string; count: number }> {
   const result: Array<{ date: string; count: number }> = []; const today = new Date();
-  for (let i = 27; i >= 0; i--) { const d = new Date(today); d.setDate(d.getDate() - i); result.push({ date: d.toISOString().slice(0, 10), count: Math.random() > 0.55 ? Math.floor(Math.random() * 5) + 1 : 0 }); }
+  // Build a map of date → activity count from real progress records
+  const activityMap = new Map<string, number>();
+  for (const record of progressRecords) {
+    if (record.lastAccessedAt) {
+      const dateKey = new Date(record.lastAccessedAt).toISOString().slice(0, 10);
+      activityMap.set(dateKey, (activityMap.get(dateKey) || 0) + 1);
+    }
+  }
+  for (let i = 27; i >= 0; i--) {
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const dateKey = d.toISOString().slice(0, 10);
+    result.push({ date: dateKey, count: activityMap.get(dateKey) || 0 });
+  }
   return result;
 }
 
@@ -67,7 +79,7 @@ export class DashboardService {
     const xp = user.xp || 0;
     const hearts = Math.max(1, 3 - Math.floor(completedLessons / 5));
     const weeklyActivity = generateWeeklyActivity(progressRecords);
-    const streakCalendar = generateStreakCalendar();
+    const streakCalendar = generateStreakCalendar(progressRecords);
     const incompleteLessonDocs = await Lesson.find({ _id: { $nin: progressRecords.filter((p) => p.status === 'completed').map((p) => p.lessonId) }, isPublished: true }).sort({ order: 1 }).limit(4);
     const todayPlan = incompleteLessonDocs.map((l) => ({ id: l._id.toString(), title: l.title, type: l.category, completed: false }));
     const inProgress = progressRecords.find((p) => p.status === 'in_progress');
