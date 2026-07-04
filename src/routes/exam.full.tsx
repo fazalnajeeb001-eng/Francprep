@@ -40,7 +40,7 @@ function FullExamPage() {
               <AlertTriangle className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
               <p className="text-xs text-amber-300">Find a quiet space. You cannot pause once started.</p>
             </div>
-            <button className="mt-5 w-full rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold py-3 hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2">
+            <button className="mt-5 w-full rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold py-3 min-h-[44px] hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2">
               <Play className="w-4 h-4" /> Start Full Exam
             </button>
           </div>

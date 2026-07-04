@@ -41,8 +41,8 @@ function ExamHub() {
                       <span className="flex items-center gap-1"><Award className="w-3 h-3" /> 6 sections</span>
                     </div>
                     <div className="flex gap-3 mt-4">
-                      <Link to="/exam/full" className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold hover:opacity-90 shadow-lg shadow-purple-500/25 transition-all">Full Exam</Link>
-                      <Link to="/exam/practice" className="px-4 py-2 rounded-xl border dark:border-[#1e2a4a] border-gray-200 dark:text-gray-300 text-gray-600 text-xs font-semibold dark:hover:bg-white/5 hover:bg-gray-100 transition-all">Practice</Link>
+                      <Link to="/exam/full" className="px-4 py-2 rounded-xl min-h-[44px] bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold hover:opacity-90 shadow-lg shadow-purple-500/25 transition-all">Full Exam</Link>
+                      <Link to="/exam/practice" className="px-4 py-2 rounded-xl min-h-[44px] border dark:border-[#1e2a4a] border-gray-200 dark:text-gray-300 text-gray-600 text-xs font-semibold dark:hover:bg-white/5 hover:bg-gray-100 transition-all">Practice</Link>
                     </div>
                   </div>
                 </div>
@@ -55,7 +55,7 @@ function ExamHub() {
           <h2 className="text-base sm:text-lg font-semibold dark:text-white text-gray-900 mb-4">📊 Your Exam Stats</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
             {[{ label: "Exams Taken", value: "0", icon: <Target className="w-4 h-4 text-purple-400" /> }, { label: "Avg Score", value: "—", icon: <Award className="w-4 h-4 text-amber-400" /> }, { label: "Best Score", value: "—", icon: <Sparkles className="w-4 h-4 text-emerald-400" /> }, { label: "Study Time", value: "0h", icon: <Clock className="w-4 h-4 text-blue-400" /> }].map((stat) => (
-              <div key={stat.label} className="text-center p-3 rounded-xl dark:bg-[#070B17] bg-gray-50">
+              <div key={stat.label} className="text-center p-3 rounded-xl min-h-[44px] dark:bg-[#070B17] bg-gray-50">
                 <div className="flex justify-center mb-1">{stat.icon}</div>
                 <p className="text-base sm:text-lg font-bold dark:text-white text-gray-900">{stat.value}</p>
                 <p className="text-[10px] dark:text-gray-500 text-gray-400">{stat.label}</p>
