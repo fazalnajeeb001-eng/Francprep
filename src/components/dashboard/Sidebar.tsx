@@ -21,7 +21,7 @@ const navGroups = [
   ]},
   { section: "Achievements", items: [
     { label: "Achievements", icon: Award, href: "#" },
-    { label: "Calendar", icon: Calendar, href: "#" },
+    { label: "Calendar", icon: Calendar, href: "/dashboard/calendar" },
     { label: "Certificates", icon: ScrollText, href: "#" },
   ]},
   { section: "Support", items: [
