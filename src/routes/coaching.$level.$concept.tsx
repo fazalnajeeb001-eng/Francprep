@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useRequireAuth } from "~/lib/useRequireAuth";
 import { apiFetch } from "~/lib/apiFetch";
 
-import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/coaching/$level/$concept")({
   component: LessonPage,
