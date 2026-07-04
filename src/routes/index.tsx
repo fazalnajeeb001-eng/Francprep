@@ -15,7 +15,7 @@ function Home() {
     if (!isAuthenticated) {
       navigate({ to: "/login" });
     } else {
-      navigate({ to: "/coaching" });
+      navigate({ to: "/dashboard" });
     }
   }, [isAuthenticated, isLoading, navigate]);
 
