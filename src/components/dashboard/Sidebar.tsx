@@ -1,18 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Crown, LayoutDashboard, BookOpen, FileText, Headphones, Mic, PenTool, Languages, Sparkles, GraduationCap, Award, Calendar, Settings, HelpCircle, BarChart3 } from "lucide-react";
+import { Crown, LayoutDashboard, BookOpen, FileText, Sparkles, GraduationCap, Calendar, Settings, BarChart3 } from "lucide-react";
 
 const navGroups = [
   { section: "School", items: [
     { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard", active: true },
     { label: "My Level", icon: BarChart3, href: "/coaching" },
     { label: "Lessons", icon: BookOpen, href: "/coaching" },
-    { label: "Vocabulary", icon: BookOpen, href: "/coaching" },
-    { label: "Grammar", icon: Languages, href: "/coaching" },
-    { label: "Reading", icon: FileText, href: "/coaching" },
-    { label: "Listening", icon: Headphones, href: "/coaching" },
-    { label: "Speaking", icon: Mic, href: "/coaching" },
-    { label: "Writing", icon: PenTool, href: "/coaching" },
   ]},
   { section: "Practice", items: [
     { label: "Exercises", icon: FileText, href: "/exam" },
@@ -23,10 +17,8 @@ const navGroups = [
     { label: "TEF Canada", icon: GraduationCap, href: "/exam" },
   ]},
   { section: "More", items: [
-    { label: "Achievements", icon: Award, href: "#" },
     { label: "Calendar", icon: Calendar, href: "/dashboard/calendar" },
     { label: "Settings", icon: Settings, href: "/dashboard/settings" },
-    { label: "Help", icon: HelpCircle, href: "#" },
   ]},
 ];
 
