@@ -41,7 +41,7 @@ function SignupPage() {
     setLoading(true);
     try {
       await signup({ firstName, lastName, email, password });
-      navigate({ to: "/coaching" });
+      navigate({ to: "/dashboard" });
     } catch (err: any) {
       const msg = err?.response?.data?.error || err?.message || "Signup failed";
       const details = err?.response?.data?.details;

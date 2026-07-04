@@ -20,7 +20,7 @@ function LoginPage() {
     setLoading(true);
     try {
       await login({ email, password });
-      navigate({ to: "/coaching" });
+      navigate({ to: "/dashboard" });
     } catch (err: any) {
       setError(err?.response?.data?.error || err?.message || "Login failed");
     } finally {
