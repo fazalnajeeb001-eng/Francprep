@@ -15,6 +15,27 @@ export const signupSchema = z.object({
   lastName: z.string().min(1, 'Last name is required').max(50),
 });
 
+export const adminCreateUserSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(8).max(128).optional(),
+  firstName: z.string().min(1).max(50),
+  lastName: z.string().min(1).max(50),
+  role: z.enum(['student', 'admin']).default('student'),
+  subscriptionTier: z.enum(['free', 'premium', 'exam_prep']).default('free'),
+  isActive: z.boolean().default(true),
+});
+
+export const resetPasswordSchema = z.object({
+  newPassword: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .max(128)
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+      'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+    ),
+});
+
 export const loginSchema = z.object({
   email: z.string().email('Invalid email format'),
   password: z.string().min(1, 'Password is required'),

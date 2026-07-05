@@ -9,6 +9,8 @@ import {
   updateLessonSchema,
   createExerciseSchema,
   updateExerciseSchema,
+  adminCreateUserSchema,
+  resetPasswordSchema,
 } from '../utils/validators';
 import User from '../models/User';
 import Lesson from '../models/Lesson';
@@ -17,6 +19,7 @@ import Syllabus from '../models/Syllabus';
 import StudentProgress from '../models/StudentProgress';
 import { AuthRequest } from '../types';
 import { Response, NextFunction } from 'express';
+import crypto from 'crypto';
 
 const router = Router();
 
@@ -63,17 +66,30 @@ router.get('/dashboard', async (_req: AuthRequest, res: Response, next: NextFunc
 // ============ User Management ============
 
 /**
- * GET /api/admin/users
+ * GET /api/admin/users — list users with optional search & pagination
+ * Supports ?search=, ?page=, ?limit=
  */
 router.get('/users', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 20;
+    const search = (req.query.search as string) || '';
     const skip = (page - 1) * limit;
 
+    const filter: any = {};
+    if (search) {
+      const specialChars = /[.*+?^${}()|[\]\\]/g;
+      const escaped = search.replace(specialChars, '\\$&');
+      filter.$or = [
+        { firstName: { $regex: escaped, $options: 'i' } },
+        { lastName: { $regex: escaped, $options: 'i' } },
+        { email: { $regex: escaped, $options: 'i' } },
+      ];
+    }
+
     const [users, total] = await Promise.all([
-      User.find().sort('-createdAt').skip(skip).limit(limit),
-      User.countDocuments(),
+      User.find(filter).sort('-createdAt').skip(skip).limit(limit),
+      User.countDocuments(filter),
     ]);
 
     res.status(200).json({
@@ -85,6 +101,60 @@ router.get('/users', async (req: AuthRequest, res: Response, next: NextFunction)
         total,
         totalPages: Math.ceil(total / limit),
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * POST /api/admin/users/create — admin creates a user
+ * If password not provided, generates a random one.
+ */
+router.post('/users/create', validate(adminCreateUserSchema), async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const data = req.body;
+
+    // Auto-generate password if not provided
+    if (!data.password) {
+      data.password = crypto.randomBytes(12).toString('hex') + 'A1!';
+    }
+
+    // Check for duplicate email
+    const existing = await User.findOne({ email: data.email });
+    if (existing) {
+      res.status(409).json({ success: false, error: 'A user with this email already exists' });
+      return;
+    }
+
+    const user = await User.create(data);
+    res.status(201).json({
+      success: true,
+      data: user.toJSON(),
+      message: 'User created successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * POST /api/admin/users/:id/reset-password — admin-initiated password reset
+ */
+router.post('/users/:id/reset-password', validate(resetPasswordSchema), async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const user = await User.findById(req.params.id).select('+password');
+    if (!user) {
+      res.status(404).json({ success: false, error: 'User not found' });
+      return;
+    }
+
+    user.password = req.body.newPassword;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Password reset successfully',
     });
   } catch (error) {
     next(error);
