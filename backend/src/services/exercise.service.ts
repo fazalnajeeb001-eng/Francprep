@@ -112,11 +112,11 @@ export class ExerciseService {
           status: percentage >= 60 ? 'completed' : 'in_progress',
           score: percentage,
           totalPoints: exercise.points,
-          $inc: { exercisesCompleted: 1 },
           totalExercises: lessonExercises,
           lastAccessedAt: new Date(),
           ...(percentage >= 60 ? { completedAt: new Date() } : {}),
         },
+        $inc: { exercisesCompleted: 1 },
         $setOnInsert: { startedAt: new Date() },
       },
       { upsert: true, new: true }
