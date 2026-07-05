@@ -80,6 +80,24 @@ export interface IStudentProgress {
   updatedAt: Date;
 }
 
+// ─── Nested syllabus types ────────────────────────────────────────────────
+
+export interface ISyllabusChapter {
+  id: string;
+  chapter_name: string;
+  chapter_description: string;
+  chapter_order: number;
+  lessons: string[]; // lesson IDs
+}
+
+export interface ISyllabusUnit {
+  id: string;
+  unit_name: string;
+  unit_description: string;
+  unit_order: number;
+  chapters: ISyllabusChapter[];
+}
+
 // Syllabus interface
 export interface ISyllabus {
   _id: string;
@@ -87,7 +105,8 @@ export interface ISyllabus {
   title: string;
   description: string;
   objectives: string[];
-  lessons: string[]; // lesson IDs
+  lessons: string[]; // lesson IDs (flat list, for backward compatibility)
+  units?: ISyllabusUnit[]; // hierarchical unit → chapter → lessons structure
   order: number;
   isPublished: boolean;
   examType: 'TCF' | 'TEF' | 'both';

@@ -287,6 +287,23 @@ router.delete('/exercises/:id', (req, res, next) =>
 // ============ Syllabus Management ============
 
 /**
+ * Recursively extracts all lesson ObjectIds from the nested units structure,
+ * returning a flat deduplicated array. Used to sync `lessons` when `units` is provided.
+ */
+function extractLessonIdsFromUnits(units?: any[]): string[] {
+  if (!units) return [];
+  const ids = new Set<string>();
+  for (const unit of units) {
+    for (const chapter of unit.chapters || []) {
+      for (const lessonId of chapter.lessons || []) {
+        if (lessonId) ids.add(lessonId.toString());
+      }
+    }
+  }
+  return Array.from(ids);
+}
+
+/**
  * GET /api/admin/syllabi - List all syllabi
  */
 router.get('/syllabi', async (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -298,7 +315,16 @@ router.get('/syllabi', async (req: AuthRequest, res: Response, next: NextFunctio
     if (level) filter.level = level;
     const skip = (page - 1) * limit;
     const [syllabi, total] = await Promise.all([
-      Syllabus.find(filter).populate('lessons', 'title order category').sort('order').skip(skip).limit(limit),
+      Syllabus.find(filter)
+        .populate('lessons', 'title order category')
+        .populate({
+          path: 'units.chapters.lessons',
+          select: 'title order category level',
+          model: 'Lesson',
+        })
+        .sort('order')
+        .skip(skip)
+        .limit(limit),
       Syllabus.countDocuments(filter),
     ]);
     res.status(200).json({
@@ -313,10 +339,18 @@ router.get('/syllabi', async (req: AuthRequest, res: Response, next: NextFunctio
 
 /**
  * POST /api/admin/syllabi - Create a syllabus
+ * If `units` is provided, auto-populates the flat `lessons` array from nested lesson IDs.
  */
 router.post('/syllabi', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const syllabus = await Syllabus.create(req.body);
+    const body = { ...req.body };
+
+    // If units are provided, sync the flat lessons field
+    if (body.units) {
+      body.lessons = extractLessonIdsFromUnits(body.units);
+    }
+
+    const syllabus = await Syllabus.create(body);
     res.status(201).json({
       success: true,
       data: syllabus.toJSON(),
@@ -329,10 +363,18 @@ router.post('/syllabi', async (req: AuthRequest, res: Response, next: NextFuncti
 
 /**
  * PUT /api/admin/syllabi/:id - Update a syllabus
+ * If `units` is provided in the update, auto-syncs the flat `lessons` array.
  */
 router.put('/syllabi/:id', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const syllabus = await Syllabus.findByIdAndUpdate(req.params.id, req.body, {
+    const body = { ...req.body };
+
+    // If units are provided, sync the flat lessons field
+    if (body.units) {
+      body.lessons = extractLessonIdsFromUnits(body.units);
+    }
+
+    const syllabus = await Syllabus.findByIdAndUpdate(req.params.id, body, {
       new: true,
       runValidators: true,
     });

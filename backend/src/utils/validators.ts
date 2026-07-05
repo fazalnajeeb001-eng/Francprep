@@ -88,12 +88,29 @@ export const updateProgressSchema = z.object({
 });
 
 // Syllabus validators
+export const chapterSchema = z.object({
+  id: z.string().min(1),
+  chapter_name: z.string().min(1).max(200),
+  chapter_description: z.string().min(1),
+  chapter_order: z.number().int().positive(),
+  lessons: z.array(z.string()).default([]),
+});
+
+export const unitSchema = z.object({
+  id: z.string().min(1),
+  unit_name: z.string().min(1).max(200),
+  unit_description: z.string().min(1),
+  unit_order: z.number().int().positive(),
+  chapters: z.array(chapterSchema).default([]),
+});
+
 export const createSyllabusSchema = z.object({
   level: z.enum(['A1', 'A2', 'B1', 'B2', 'C1', 'C2']),
   title: z.string().min(1).max(200),
   description: z.string().min(1),
   objectives: z.array(z.string()).min(1),
   lessons: z.array(z.string()).default([]),
+  units: z.array(unitSchema).optional(),
   order: z.number().int().positive(),
   isPublished: z.boolean().default(false),
   examType: z.enum(['TCF', 'TEF', 'both']),
