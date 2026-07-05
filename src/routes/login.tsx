@@ -16,8 +16,10 @@ function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); setError(""); setLoading(true);
-    try { await login({ email, password }); navigate({ to: "/dashboard" }); }
-    catch (err: any) { setError(err?.response?.data?.error || err?.message || "Login failed"); }
+    try {
+      const user = await login({ email, password });
+      navigate({ to: user.role === "admin" ? "/admin" : "/dashboard" });
+    } catch (err: any) { setError(err?.response?.data?.error || err?.message || "Login failed"); }
     finally { setLoading(false); }
   };
 
