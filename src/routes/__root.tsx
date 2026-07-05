@@ -2,7 +2,7 @@ import { HeadContent, Outlet, Scripts, Link, createRootRoute } from "@tanstack/r
 import type { ReactNode } from "react";
 import appCss from "~/styles/app.css?url";
 import { AuthProvider, useAuth } from "~/lib/AuthContext";
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, Shield } from "lucide-react";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -33,6 +33,11 @@ function NavBar() {
               <Link to="/dashboard" className="px-3 py-2 min-h-[44px] flex items-center dark:text-gray-400 text-gray-600 hover:text-purple-400 transition-colors rounded-xl">Dashboard</Link>
               <Link to="/coaching" className="px-3 py-2 min-h-[44px] flex items-center dark:text-gray-400 text-gray-600 hover:text-purple-400 transition-colors rounded-xl">Coaching</Link>
               <Link to="/exam" className="px-3 py-2 min-h-[44px] flex items-center dark:text-gray-400 text-gray-600 hover:text-purple-400 transition-colors rounded-xl">Exam</Link>
+              {user?.role === "admin" && (
+                <Link to="/admin" className="px-3 py-2 min-h-[44px] flex items-center gap-1.5 text-purple-400 hover:text-purple-300 bg-purple-500/10 border border-purple-500/30 rounded-xl transition-all">
+                  <Shield className="w-3.5 h-3.5" /> Admin
+                </Link>
+              )}
             </div>
           )}
         </div>
