@@ -4,7 +4,7 @@ import { greetingLesson } from "~/lib/lessons/a1-greetings";
 import { ArrowLeft } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 
-export const Route = createFileRoute("/coaching/chapter/lesson/")({
+export const Route = createFileRoute("/coaching/chapter/$chapterId/lesson/$lessonId")({
   component: LessonPage,
 });
 

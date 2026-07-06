@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { BookOpen, ChevronRight, Clock, Award, ArrowLeft } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 
-export const Route = createFileRoute("/coaching/chapter/")({
+export const Route = createFileRoute("/coaching/chapter/$chapterId")({
   component: ChapterPage,
 });
 
