@@ -46,13 +46,15 @@ function AdminLessonsPage() {
   const [error, setError] = useState("");
   const [levelFilter, setLevelFilter] = useState<string>("");
   const [search, setSearch] = useState("");
+  const [searchTimeout, setSearchTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
 
-  const fetchLessons = async (p: number) => {
+  const fetchLessons = async (p: number, q?: string) => {
     setLoading(true);
     setError("");
     try {
       const params = new URLSearchParams({ page: String(p), limit: "20" });
       if (levelFilter) params.set("level", levelFilter);
+      if (q) params.set("search", q);
       const res = await apiFetch(`/admin/lessons?${params}`);
       const json: PaginatedResponse = await res.json();
       if (json.success) {
@@ -70,11 +72,16 @@ function AdminLessonsPage() {
     }
   };
 
-  useEffect(() => { fetchLessons(page); }, [page, levelFilter]);
+  useEffect(() => { fetchLessons(page, search); }, [page, levelFilter]);
 
-  const filtered = search
-    ? lessons.filter(l => l.title.toLowerCase().includes(search.toLowerCase()))
-    : lessons;
+  const handleSearch = (val: string) => {
+    setSearch(val);
+    if (searchTimeout) clearTimeout(searchTimeout);
+    setSearchTimeout(setTimeout(() => {
+      setPage(1);
+      fetchLessons(1, val);
+    }, 400));
+  };
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
@@ -84,16 +91,16 @@ function AdminLessonsPage() {
           <h1 className="text-2xl font-bold dark:text-white text-gray-900">Lesson Management</h1>
           <p className="text-sm dark:text-gray-400 text-gray-500 mt-1">{total} total lessons</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
+        <Link to="/admin/lessons/new" className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
           <Plus className="w-4 h-4" /> New Lesson
-        </button>
+        </Link>
       </div>
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
+          <input type="text" value={search} onChange={(e) => handleSearch(e.target.value)}
             placeholder="Search lessons..."
             className="w-full rounded-xl dark:bg-[#070B17] bg-white dark:border-[#1e2a4a] border-gray-300 border pl-9 pr-4 py-2.5 text-sm dark:text-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all" />
         </div>
@@ -141,7 +148,7 @@ function AdminLessonsPage() {
       ) : (
         <>
           {/* Lesson cards */}
-          {filtered.length === 0 ? (
+          {lessons.length === 0 ? (
             <div className="rounded-2xl dark:bg-[#101828]/80 bg-white/80 border dark:border-[#1e2a4a] border-gray-200 p-8 text-center">
               <BookOpen className="w-12 h-12 mx-auto dark:text-gray-600 text-gray-400 mb-3" />
               <p className="text-sm dark:text-gray-400 text-gray-500">
@@ -150,9 +157,10 @@ function AdminLessonsPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {filtered.map((lesson, i) => (
-                <motion.div key={lesson._id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
-                  className="relative overflow-hidden rounded-2xl dark:bg-[#101828]/80 bg-white/80 backdrop-blur-lg border dark:border-[#1e2a4a] border-gray-200 p-5 transition-all hover:border-purple-500/50 hover:shadow-lg group">
+              {lessons.map((lesson, i) => (
+                <motion.div key={lesson._id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}>
+                  <Link to={`/admin/lessons/${lesson._id}/edit`}
+                    className="relative overflow-hidden rounded-2xl dark:bg-[#101828]/80 bg-white/80 backdrop-blur-lg border dark:border-[#1e2a4a] border-gray-200 p-5 transition-all hover:border-purple-500/50 hover:shadow-lg group block">
                   <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${levelColors[lesson.level] || "from-purple-500 to-pink-500"}`} />
                   <div className="flex items-start justify-between mt-1">
                     <div className="flex-1 min-w-0">
@@ -187,6 +195,7 @@ function AdminLessonsPage() {
                       </span>
                     </div>
                   </div>
+                  </Link>
                 </motion.div>
               ))}
             </div>
