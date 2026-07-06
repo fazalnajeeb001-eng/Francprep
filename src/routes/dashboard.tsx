@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "~/lib/AuthContext";
 import { apiFetch } from "~/lib/apiFetch";
@@ -34,6 +34,8 @@ function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { dark, toggle } = useTheme();
+  const router = useRouterState();
+  const isIndex = router.location.pathname === "/dashboard";
 
   useEffect(() => {
     if (authLoading || !user) return;
@@ -44,7 +46,23 @@ function DashboardPage() {
     })();
   }, [user, authLoading]);
 
-  if (authLoading || loading) return <LoadingSkeleton dark={dark} />;
+  if (authLoading) return <LoadingSkeleton dark={dark} />;
+
+  // For child routes (settings, calendar), render sidebar + header + Outlet
+  if (!isIndex) {
+    return (
+      <div className={`min-h-screen ${dark ? "bg-[#070B17] text-white" : "bg-gray-50 text-gray-900"} transition-colors duration-300`}>
+        <div className="flex">
+          <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} dark={dark} />
+          <div className="flex-1 min-h-screen">
+            <Outlet />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) return <LoadingSkeleton dark={dark} />;
   if (!data) return <ErrorState dark={dark} />;
 
   const b = dark ? "bg-[#070B17] text-white" : "bg-gray-50 text-gray-900";
