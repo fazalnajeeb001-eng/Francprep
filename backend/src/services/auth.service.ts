@@ -110,6 +110,37 @@ export class AuthService {
     }
     return user.toJSON();
   }
+
+  /**
+   * Update profile (firstName, lastName)
+   */
+  async updateProfile(userId: string, data: { firstName?: string; lastName?: string }) {
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $set: data },
+      { new: true, runValidators: true }
+    );
+    if (!user) {
+      throw { statusCode: 404, message: 'User not found' };
+    }
+    return user.toJSON();
+  }
+
+  /**
+   * Change password
+   */
+  async changePassword(userId: string, currentPassword: string, newPassword: string) {
+    const user = await User.findById(userId).select('+password');
+    if (!user) {
+      throw { statusCode: 404, message: 'User not found' };
+    }
+    const isValid = await user.comparePassword(currentPassword);
+    if (!isValid) {
+      throw { statusCode: 400, message: 'Current password is incorrect' };
+    }
+    user.password = newPassword;
+    await user.save();
+  }
 }
 
 export const authService = new AuthService();

@@ -1,9 +1,9 @@
 import { HeadContent, Outlet, Scripts, Link, createRootRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import appCss from "~/styles/app.css?url";
 import { AuthProvider, useAuth } from "~/lib/AuthContext";
-import { LogOut, User, Shield, Sun, Moon } from "lucide-react";
+import { LogOut, User, Shield, Settings } from "lucide-react";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -20,6 +20,18 @@ export const Route = createRootRoute({
 
 function NavBarInner({ dark, onToggleTheme }: { dark: boolean; onToggleTheme: () => void }) {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
   return (
     <nav className="sticky top-0 z-50 border-b dark:border-[#1e2a4a] border-gray-200 dark:bg-[#070B17]/80 bg-white/80 backdrop-blur-xl transition-colors duration-300"
       style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}>
@@ -31,7 +43,6 @@ function NavBarInner({ dark, onToggleTheme }: { dark: boolean; onToggleTheme: ()
           </Link>
           {isAuthenticated && (
             <div className="hidden sm:flex items-center gap-1 text-sm">
-              <Link to="/dashboard" className="px-3 py-2 min-h-[44px] flex items-center dark:text-gray-400 text-gray-600 hover:text-purple-400 transition-colors rounded-xl">Dashboard</Link>
               <Link to="/coaching" className="px-3 py-2 min-h-[44px] flex items-center dark:text-gray-400 text-gray-600 hover:text-purple-400 transition-colors rounded-xl">Coaching</Link>
               <Link to="/exam" className="px-3 py-2 min-h-[44px] flex items-center dark:text-gray-400 text-gray-600 hover:text-purple-400 transition-colors rounded-xl">Exam</Link>
               {user?.role === "admin" && (
@@ -43,22 +54,27 @@ function NavBarInner({ dark, onToggleTheme }: { dark: boolean; onToggleTheme: ()
           )}
         </div>
         <div className="flex items-center gap-2 sm:gap-3 text-sm">
-          {/* Theme toggle — visible on ALL pages */}
-          <button onClick={onToggleTheme}
-            className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] rounded-xl dark:bg-[#101828] bg-gray-100 dark:border-[#1e2a4a] border-gray-200 border dark:text-gray-400 text-gray-600 hover:text-purple-400 transition-all"
-            aria-label={`Switch to ${dark ? "light" : "dark"} mode`}
-          >
-            {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            <span className="hidden sm:inline text-xs">{dark ? "Light" : "Dark"}</span>
-          </button>
           {isLoading ? null : isAuthenticated && user ? (
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Link to="/dashboard" className="flex items-center gap-2 px-3 py-2 min-h-[44px] rounded-xl dark:bg-[#101828] bg-gray-100 dark:border-[#1e2a4a] border-gray-200 border dark:text-gray-300 text-gray-700 hover:text-purple-400 transition-colors">
-                <User className="w-4 h-4" /><span className="hidden sm:inline text-sm">{user.firstName}</span>
-              </Link>
-              <button onClick={() => logout()} className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] rounded-xl border dark:border-[#1e2a4a] border-gray-200 dark:text-gray-400 text-gray-600 hover:text-red-400 transition-all">
-                <LogOut className="w-4 h-4" /><span className="hidden sm:inline text-sm">Logout</span>
+            <div className="relative" ref={menuRef}>
+              <button onClick={() => setMenuOpen(!menuOpen)}
+                className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold shadow-lg hover:opacity-90 transition-all"
+                aria-label="User menu"
+              >
+                {user.firstName[0]}{user.lastName[0]}
               </button>
+              {menuOpen && (
+                <div className="absolute right-0 top-full mt-2 z-50 w-44 rounded-xl dark:bg-[#101828] bg-white border dark:border-[#1e2a4a] border-gray-200 shadow-xl py-1 overflow-hidden">
+                  <Link to="/dashboard/settings" onClick={() => setMenuOpen(false)}
+                    className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm dark:text-gray-300 text-gray-700 hover:dark:bg-white/5 hover:bg-gray-50 transition-colors text-left">
+                    <Settings className="w-4 h-4" /> Settings
+                  </Link>
+                  <hr className="dark:border-[#1e2a4a] border-gray-200" />
+                  <button onClick={() => { setMenuOpen(false); logout(); }}
+                    className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm dark:text-gray-300 text-gray-700 hover:dark:bg-white/5 hover:bg-gray-50 transition-colors text-left">
+                    <LogOut className="w-4 h-4" /> Logout
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex items-center gap-2">

@@ -1,24 +1,16 @@
 import { Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
-import { Crown, LayoutDashboard, BookOpen, FileText, Sparkles, GraduationCap, Calendar, Settings, BarChart3 } from "lucide-react";
+import { BookOpen, Calendar, BarChart3, Target } from "lucide-react";
 
 const navGroups = [
-  { section: "School", items: [
-    { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard", active: true },
-    { label: "My Level", icon: BarChart3, href: "/coaching" },
+  { section: "Learning", items: [
     { label: "Lessons", icon: BookOpen, href: "/coaching" },
-  ]},
-  { section: "Practice", items: [
-    { label: "Exercises", icon: FileText, href: "/exam" },
-    { label: "Mock Exams", icon: GraduationCap, href: "/exam" },
+    { label: "Progress", icon: BarChart3, href: "/dashboard" },
   ]},
   { section: "Exam Simulator", items: [
-    { label: "TCF Canada", icon: GraduationCap, href: "/exam" },
-    { label: "TEF Canada", icon: GraduationCap, href: "/exam" },
+    { label: "TCF / TEF", icon: LayoutDashboard, href: "/exam" },
   ]},
-  { section: "More", items: [
+  { section: "Plan", items: [
     { label: "Calendar", icon: Calendar, href: "/dashboard/calendar" },
-    { label: "Settings", icon: Settings, href: "/dashboard/settings" },
   ]},
 ];
 
@@ -54,14 +46,6 @@ export function Sidebar({ open, onClose, dark }: { open: boolean; onClose: () =>
               </div>
             </div>
           ))}
-        </div>
-        <div className={`p-3 border-t ${border}`}>
-          <div className={`${dark ? "bg-gradient-to-br from-purple-900/50 to-pink-900/30" : "bg-gradient-to-br from-purple-100 to-pink-50"} rounded-2xl p-4 text-center`}>
-            <Crown className="w-8 h-8 mx-auto text-amber-400" />
-            <p className={`text-xs font-semibold mt-1 ${dark ? "text-gray-200" : "text-gray-700"}`}>Go Premium</p>
-            <p className={`text-[10px] ${dark ? "text-gray-500" : "text-gray-400"} mb-2`}>Unlock all features</p>
-            <button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold py-2.5 rounded-xl hover:opacity-90 shadow-lg shadow-purple-500/25 transition-all">Upgrade Now</button>
-          </div>
         </div>
       </aside>
     </>

@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import { useAuth } from "~/lib/AuthContext";
 import { apiFetch } from "~/lib/apiFetch";
 import { Sidebar } from "~/components/dashboard/Sidebar";
-import { ProfileDropdown } from "~/components/dashboard/ProfileDropdown";
-import { ThemeToggle } from "~/components/dashboard/ThemeToggle";
 import { LoadingSkeleton } from "~/components/dashboard/LoadingSkeleton";
 import { ErrorState } from "~/components/dashboard/ErrorState";
 import { LevelProgress } from "~/components/dashboard/widgets/LevelProgress";
@@ -15,7 +13,7 @@ import { ContinueLearning } from "~/components/dashboard/widgets/ContinueLearnin
 import { ActivityChart } from "~/components/dashboard/widgets/ActivityChart";
 import { CalendarHeatmap } from "~/components/dashboard/widgets/CalendarHeatmap";
 import { ExamCard } from "~/components/dashboard/widgets/ExamCard";
-import { Flame, Diamond, Timer, Bell, BookOpen, BookText, Languages, Target, TrendingUp } from "lucide-react";
+import { Flame, Diamond, Timer, BookOpen, BookText, Languages, Target, TrendingUp } from "lucide-react";
 import type { DashboardData } from "~/components/dashboard/types";
 
 export const Route = createFileRoute("/dashboard")({ component: DashboardPage });
@@ -85,7 +83,6 @@ function DashboardPage() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <ThemeToggle dark={dark} onToggle={toggle} />
                 <div className={`hidden sm:flex items-center gap-1.5 ${dark ? "bg-amber-500/10 border-amber-500/30" : "bg-amber-50 border-amber-200"} border px-3 py-1.5 rounded-full`}>
                   <Flame className="w-3.5 h-3.5 text-amber-400" />
                   <span className="text-amber-500 font-bold text-sm">{data.stats.streak}</span>
@@ -98,10 +95,6 @@ function DashboardPage() {
                   <Timer className="w-3.5 h-3.5 text-purple-400" />
                   <span className="text-purple-400 font-bold text-sm">{Math.floor(data.stats.totalStudyTime / 60)}h</span>
                 </div>
-                <button className={`relative p-2 rounded-xl ${dark ? "hover:bg-white/5" : "hover:bg-gray-100"} transition-colors`} aria-label="Notifications">
-                  <Bell className={`w-5 h-5 ${txtSec}`} />
-                </button>
-                <ProfileDropdown firstName={data.user.firstName} dark={dark} />
               </div>
             </div>
           </header>

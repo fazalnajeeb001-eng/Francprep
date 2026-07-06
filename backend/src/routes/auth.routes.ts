@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { authController } from '../controllers/auth.controller';
 import { authenticate } from '../middleware/auth';
 import { validate } from '../middleware/validation';
-import { loginSchema, refreshTokenSchema, signupSchema } from '../utils/validators';
+import { loginSchema, refreshTokenSchema, signupSchema, updateProfileSchema, changePasswordSchema } from '../utils/validators';
 import rateLimit from 'express-rate-limit';
 
 const router = Router();
@@ -37,6 +37,16 @@ router.post('/logout', authenticate, (req, res, next) =>
 // GET /api/auth/me
 router.get('/me', authenticate, (req, res, next) =>
   authController.getMe(req, res, next)
+);
+
+// PUT /api/auth/profile — update name
+router.put('/profile', authenticate, validate(updateProfileSchema), (req, res, next) =>
+  authController.updateProfile(req, res, next)
+);
+
+// PUT /api/auth/password — change password
+router.put('/password', authenticate, validate(changePasswordSchema), (req, res, next) =>
+  authController.changePassword(req, res, next)
 );
 
 // POST /api/auth/refresh-token
