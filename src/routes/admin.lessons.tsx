@@ -159,7 +159,7 @@ function AdminLessonsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {lessons.map((lesson, i) => (
                 <motion.div key={lesson._id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}>
-                  <Link to={`/admin/lessons/${lesson._id}/edit`}
+                  <Link to="/admin/lessons/$id/edit" params={{ id: lesson._id }}
                     className="relative overflow-hidden rounded-2xl dark:bg-[#101828]/80 bg-white/80 backdrop-blur-lg border dark:border-[#1e2a4a] border-gray-200 p-5 transition-all hover:border-purple-500/50 hover:shadow-lg group block">
                   <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${levelColors[lesson.level] || "from-purple-500 to-pink-500"}`} />
                   <div className="flex items-start justify-between mt-1">

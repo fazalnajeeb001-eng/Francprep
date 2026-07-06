@@ -1,7 +1,7 @@
 import type { DashboardData } from "../types";
 
 export function CalendarHeatmap({ calendar, dark }: { calendar: DashboardData["streakCalendar"]; dark: boolean }) {
-  const weeks: typeof calendar = [];
+  const weeks: Array<Array<{ date: string; count: number }>> = [];
   for (let i = 0; i < calendar.length; i += 7) weeks.push(calendar.slice(i, i + 7));
   const getColor = (count: number) => {
     if (count === 0) return dark ? "bg-[#1e2a4a]" : "bg-gray-200";

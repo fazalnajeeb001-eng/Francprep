@@ -15,10 +15,12 @@ const corsOptions: cors.CorsOptions = {
     const allowedOrigins = [
       env.frontendUrl,
       'https://francprep.vercel.app',
+      'https://d1ddeb40d7bda5af877310b51d376d7f.ctonew.app',
     ];
     if (
       allowedOrigins.includes(origin) ||
       origin.endsWith('.vercel.app') ||
+      origin.endsWith('.ctonew.app') ||
       env.nodeEnv === 'development'
     ) {
       callback(null, true);

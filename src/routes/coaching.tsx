@@ -44,7 +44,7 @@ function CoachingHub() {
                 const s = stats[level.id];
                 return (
                   <motion.div key={level.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                    <Link to={`/coaching/${level.id.toLowerCase()}`}
+                    <Link to="/coaching/$level" params={{ level: level.id.toLowerCase() }}
                       className="group block relative overflow-hidden rounded-2xl dark:bg-[#101828]/80 bg-white/80 backdrop-blur-lg border dark:border-[#1e2a4a] border-gray-200 p-5 sm:p-6 transition-all hover:border-purple-500/50 hover:shadow-lg hover:-translate-y-1">
                       <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${level.color}`} />
                       <div className="mt-1">

@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { BookOpen, Calendar, BarChart3, Target } from "lucide-react";
+import { BookOpen, Calendar, BarChart3, LayoutDashboard } from "lucide-react";
 
 const navGroups = [
   { section: "Learning", items: [
@@ -35,9 +35,7 @@ export function Sidebar({ open, onClose, dark }: { open: boolean; onClose: () =>
                 {g.items.map((item) => (
                   <Link key={item.label} to={item.href as any}
                     className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all ${
-                      item.active
-                        ? dark ? "bg-purple-500/20 text-white border border-purple-500/30 shadow-[0_0_15px_rgba(124,58,237,0.15)]" : "bg-purple-100 text-purple-700 border border-purple-200"
-                        : dark ? "text-gray-400 hover:text-white hover:bg-white/5" : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      dark ? "text-gray-400 hover:text-white hover:bg-white/5" : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                     }`}
                   >
                     <item.icon className="w-4 h-4" /> {item.label}

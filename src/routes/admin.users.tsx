@@ -502,7 +502,7 @@ function AdminUsersPage() {
                         </td>
                         <td className="px-5 py-3.5 text-xs dark:text-gray-400 text-gray-500 hidden sm:table-cell">{new Date(user.createdAt).toLocaleDateString()}</td>
                         <td className="px-3 py-3.5" onClick={(e) => e.stopPropagation()}>
-                          <ActionDropdown user={user} onAction={handleAction} />
+                          <ActionDropdown user={user} currentUserId={currentUser?._id || ""} onAction={handleAction} />
                         </td>
                       </tr>
                     ))
