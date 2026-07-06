@@ -12,7 +12,6 @@ function LessonPage() {
   const { chapterId, lessonId } = Route.useParams();
   const { dark } = useTheme();
 
-  // For now only lesson 1 exists
   if (chapterId !== "a1-1-1-1" || lessonId !== "1") {
     return (
       <div className="min-h-screen dark:bg-[#070B17] bg-gray-50 flex items-center justify-center p-4">
