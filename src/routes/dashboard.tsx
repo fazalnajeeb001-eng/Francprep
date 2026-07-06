@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "~/lib/AuthContext";
+import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
 import { Sidebar } from "~/components/dashboard/Sidebar";
 import { LoadingSkeleton } from "~/components/dashboard/LoadingSkeleton";
@@ -18,20 +19,12 @@ import type { DashboardData } from "~/components/dashboard/types";
 
 export const Route = createFileRoute("/dashboard")({ component: DashboardPage });
 
-function useTheme() {
-  const [dark, setDark] = useState(true);
-  const toggle = () => setDark(d => !d);
-  useEffect(() => { const stored = localStorage.getItem("fp_theme"); if (stored === "light") setDark(false); }, []);
-  useEffect(() => { localStorage.setItem("fp_theme", dark ? "dark" : "light"); document.documentElement.classList.toggle("dark", dark); }, [dark]);
-  return { dark, toggle };
-}
-
 function DashboardPage() {
   const { user, isLoading: authLoading } = useAuth();
+  const { dark } = useTheme();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { dark, toggle } = useTheme();
   const router = useRouterState();
   const isIndex = router.location.pathname === "/dashboard";
 
@@ -77,7 +70,7 @@ function DashboardPage() {
                 <button className="lg:hidden text-xl" onClick={() => setSidebarOpen(true)} aria-label="Open menu">☰</button>
                 <div>
                   <h1 className={`text-lg md:text-xl font-bold ${dark ? "text-white" : "text-gray-900"}`}>
-                    Bonjour, <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">{data.user.firstName}</span>!
+                    Dashboard
                   </h1>
                   <p className={`text-xs ${txtSec}`}>Ready for today's lesson?</p>
                 </div>

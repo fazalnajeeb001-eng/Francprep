@@ -1,9 +1,10 @@
 import { HeadContent, Outlet, Scripts, Link, createRootRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { useState, useEffect, useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import appCss from "~/styles/app.css?url";
 import { AuthProvider, useAuth } from "~/lib/AuthContext";
-import { LogOut, User, Shield, Settings } from "lucide-react";
+import { ThemeProvider } from "~/lib/ThemeContext";
+import { LogOut, Shield, Settings } from "lucide-react";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -18,7 +19,7 @@ export const Route = createRootRoute({
   component: RootComponent,
 });
 
-function NavBarInner({ dark, onToggleTheme }: { dark: boolean; onToggleTheme: () => void }) {
+function NavBarInner() {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -89,23 +90,15 @@ function NavBarInner({ dark, onToggleTheme }: { dark: boolean; onToggleTheme: ()
 }
 
 function RootComponent() {
-  const [dark, setDark] = useState(true);
-  useEffect(() => {
-    const stored = localStorage.getItem("fp_theme");
-    if (stored === "light") setDark(false);
-  }, []);
-  useEffect(() => {
-    localStorage.setItem("fp_theme", dark ? "dark" : "light");
-    document.documentElement.classList.toggle("dark", dark);
-  }, [dark]);
-  const toggle = () => setDark(d => !d);
   return (
-    <AuthProvider>
-      <RootDocument>
-        <NavBarInner dark={dark} onToggleTheme={toggle} />
-        <Outlet />
-      </RootDocument>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <RootDocument>
+          <NavBarInner />
+          <Outlet />
+        </RootDocument>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useAuth } from "~/lib/AuthContext";
+import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
 import { Moon, Sun, Shield, Key, CreditCard, Check, AlertTriangle, RefreshCw } from "lucide-react";
 import { motion } from "framer-motion";
@@ -9,7 +10,7 @@ export const Route = createFileRoute("/dashboard/settings")({ component: Setting
 
 function SettingsPage() {
   const { user } = useAuth();
-  const [dark, setDark] = useState(true);
+  const { dark, toggle: toggleTheme } = useTheme();
   const [firstName, setFirstName] = useState(user?.firstName || "");
   const [lastName, setLastName] = useState(user?.lastName || "");
   const [currentPassword, setCurrentPassword] = useState("");
@@ -22,10 +23,7 @@ function SettingsPage() {
   const [profileError, setProfileError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  useEffect(() => { const stored = localStorage.getItem("fp_theme"); if (stored === "light") setDark(false); }, []);
   useEffect(() => { setFirstName(user?.firstName || ""); setLastName(user?.lastName || ""); }, [user]);
-
-  const toggleTheme = () => { const nd = !dark; setDark(nd); localStorage.setItem("fp_theme", nd ? "dark" : "light"); document.documentElement.classList.toggle("dark", nd); };
 
   const saveProfile = async () => {
     setProfileSaving(true); setProfileMsg(""); setProfileError("");

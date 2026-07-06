@@ -1,10 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { BookOpen, Calendar, BarChart3, LayoutDashboard } from "lucide-react";
+import { BookOpen, Calendar, LayoutDashboard } from "lucide-react";
 
 const navGroups = [
-  { section: "Learning", items: [
+  { section: "School", items: [
     { label: "Lessons", icon: BookOpen, href: "/coaching" },
-    { label: "Progress", icon: BarChart3, href: "/dashboard" },
   ]},
   { section: "Exam Simulator", items: [
     { label: "TCF / TEF", icon: LayoutDashboard, href: "/exam" },
