@@ -3,13 +3,13 @@ import { useState, useEffect } from "react";
 import { useAuth } from "~/lib/AuthContext";
 import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
-import { Moon, Sun, Shield, Key, CreditCard, Check, AlertTriangle, RefreshCw } from "lucide-react";
+import { Moon, Sun, Shield, Key, CreditCard, Check, AlertTriangle, RefreshCw, ChevronDown, ChevronUp } from "lucide-react";
 import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/dashboard/settings")({ component: SettingsPage });
 
 function SettingsPage() {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const { dark, toggle: toggleTheme } = useTheme();
   const [firstName, setFirstName] = useState(user?.firstName || "");
   const [lastName, setLastName] = useState(user?.lastName || "");
@@ -22,6 +22,7 @@ function SettingsPage() {
   const [passwordMsg, setPasswordMsg] = useState("");
   const [profileError, setProfileError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [passwordOpen, setPasswordOpen] = useState(false);
 
   useEffect(() => { setFirstName(user?.firstName || ""); setLastName(user?.lastName || ""); }, [user]);
 
@@ -33,8 +34,10 @@ function SettingsPage() {
         body: JSON.stringify({ firstName, lastName }),
       });
       const json = await res.json();
-      if (json.success) setProfileMsg("Profile updated successfully");
-      else setProfileError(json.error || "Failed to update profile");
+      if (json.success) {
+        setProfileMsg("Profile updated successfully");
+        if (json.data) updateUser(json.data);
+      } else setProfileError(json.error || "Failed to update profile");
     } catch (e: any) { setProfileError(e.message || "Network error"); }
     finally { setProfileSaving(false); }
   };
@@ -74,29 +77,34 @@ function SettingsPage() {
             <div><label className={`text-xs ${txtSec} block mb-1`} htmlFor="ln">Last Name</label><input id="ln" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm ${dark ? "text-white" : "text-gray-900"} focus:outline-none focus:ring-2 focus:ring-purple-500`} /></div>
             <div className="md:col-span-2"><label className={`text-xs ${txtSec} block mb-1`} htmlFor="em">Email</label><input id="em" type="email" defaultValue={user?.email} readOnly className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm text-gray-400 cursor-not-allowed`} /><p className={`text-[10px] ${txtSec} mt-1`}>Email cannot be changed</p></div>
           </div>
-          {profileMsg && <p className="text-xs text-emerald-400 flex items-center gap-1"><Check className="w-3 h-3" /> {profileMsg}</p>}
-          {profileError && <p className="text-xs text-red-400 flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> {profileError}</p>}
+          {profileMsg && <p className="text-xs text-emerald-400 flex items-center gap-1 mt-2"><Check className="w-3 h-3" /> {profileMsg}</p>}
+          {profileError && <p className="text-xs text-red-400 flex items-center gap-1 mt-2"><AlertTriangle className="w-3 h-3" /> {profileError}</p>}
           <button onClick={saveProfile} disabled={profileSaving}
             className="mt-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-6 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 disabled:opacity-50 flex items-center gap-2">
             {profileSaving ? <RefreshCw className="w-4 h-4 animate-spin" /> : null}
             {profileSaving ? "Saving..." : "Save Changes"}
           </button>
         </motion.div>
-        {/* Password */}
+        {/* Password (collapsible) */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>
-          <div className="flex items-center gap-3 mb-4"><Key className="w-5 h-5 text-purple-400" /><h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Password</h2></div>
-          <div className="space-y-3">
-            <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Current Password" aria-label="Current Password" className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${dark ? "text-white" : "text-gray-900"}`} />
-            <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="New Password (min 8 chars)" aria-label="New Password" className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${dark ? "text-white" : "text-gray-900"}`} />
-            <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm New Password" aria-label="Confirm New Password" className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${dark ? "text-white" : "text-gray-900"}`} />
-          </div>
-          {passwordMsg && <p className="text-xs text-emerald-400 flex items-center gap-1 mt-2"><Check className="w-3 h-3" /> {passwordMsg}</p>}
-          {passwordError && <p className="text-xs text-red-400 flex items-center gap-1 mt-2"><AlertTriangle className="w-3 h-3" /> {passwordError}</p>}
-          <button onClick={changePassword} disabled={passwordSaving}
-            className="mt-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-6 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 disabled:opacity-50 flex items-center gap-2">
-            {passwordSaving ? <RefreshCw className="w-4 h-4 animate-spin" /> : null}
-            {passwordSaving ? "Updating..." : "Update Password"}
+          <button onClick={() => setPasswordOpen(!passwordOpen)} className="w-full flex items-center justify-between">
+            <div className="flex items-center gap-3"><Key className="w-5 h-5 text-purple-400" /><h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Password</h2></div>
+            {passwordOpen ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
           </button>
+          {passwordOpen && (
+            <div className="mt-4 space-y-3">
+              <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Current Password" aria-label="Current Password" className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${dark ? "text-white" : "text-gray-900"}`} />
+              <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="New Password (min 8 chars)" aria-label="New Password" className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${dark ? "text-white" : "text-gray-900"}`} />
+              <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm New Password" aria-label="Confirm New Password" className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${dark ? "text-white" : "text-gray-900"}`} />
+              {passwordMsg && <p className="text-xs text-emerald-400 flex items-center gap-1"><Check className="w-3 h-3" /> {passwordMsg}</p>}
+              {passwordError && <p className="text-xs text-red-400 flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> {passwordError}</p>}
+              <button onClick={changePassword} disabled={passwordSaving}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-6 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 disabled:opacity-50 flex items-center gap-2">
+                {passwordSaving ? <RefreshCw className="w-4 h-4 animate-spin" /> : null}
+                {passwordSaving ? "Updating..." : "Update Password"}
+              </button>
+            </div>
+          )}
         </motion.div>
         {/* Theme */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>

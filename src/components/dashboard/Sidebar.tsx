@@ -23,7 +23,7 @@ export function Sidebar({ open, onClose, dark }: { open: boolean; onClose: () =>
         <div className={`p-5 border-b ${border}`}>
           <Link to="/dashboard" className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold">F</div>
-            <span className={`text-lg font-bold ${dark ? "text-white" : "text-gray-900"}`}>FrancPrep</span>
+            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent text-lg font-bold">FrancPrep</span>
           </Link>
         </div>
         <div className="flex-1 overflow-y-auto p-3 space-y-5">

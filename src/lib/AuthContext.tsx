@@ -34,6 +34,8 @@ export interface AuthContextValue {
   signup: (payload: SignupPayload) => Promise<User>;
   /** Log out and clear all stored tokens. */
   logout: () => Promise<void>;
+  /** Update the current user object in context (e.g. after profile save). */
+  updateUser: (updated: User) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -83,6 +85,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
+  const updateUser = useCallback((updated: User) => setUser(updated), []);
+
   const value: AuthContextValue = {
     user,
     isAuthenticated: user !== null,
@@ -90,6 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     login,
     signup,
     logout,
+    updateUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
