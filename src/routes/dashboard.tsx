@@ -11,7 +11,7 @@ import { JourneyBanner } from "~/components/dashboard/widgets/JourneyBanner";
 import { StatCard } from "~/components/dashboard/widgets/StatCard";
 import { TodayPlan } from "~/components/dashboard/widgets/TodayPlan";
 import { DailyChallenge } from "~/components/dashboard/widgets/DailyChallenge";
-import { ActivityChart } from "~/components/dashboard/widgets/ActivityChart";
+import { WeeklyPlanner } from "~/components/dashboard/widgets/WeeklyPlanner";
 import { CalendarHeatmap } from "~/components/dashboard/widgets/CalendarHeatmap";
 import { ExamCard } from "~/components/dashboard/widgets/ExamCard";
 import { Flame, Diamond, Timer, BookOpen, BookText, Languages, Target, TrendingUp } from "lucide-react";
@@ -115,9 +115,9 @@ function DashboardPage() {
               <DailyChallenge dark={dark} />
             </div>
 
-            {/* Row 4: Charts + Exams */}
+            {/* Row 4: Charts + Planner + Exams */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <ActivityChart activities={data.weeklyActivity} dark={dark} />
+              <WeeklyPlanner dark={dark} />
               <CalendarHeatmap calendar={data.streakCalendar} dark={dark} />
               <ExamCard dark={dark} />
             </div>
