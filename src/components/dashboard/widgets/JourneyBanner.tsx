@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Crown, BookOpen } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 export function JourneyBanner({ dark, firstName, streak, overallProgress }: { dark: boolean; firstName: string; streak: number; overallProgress: number }) {
   const hasProgress = overallProgress > 0;
@@ -43,12 +44,12 @@ export function JourneyBanner({ dark, firstName, streak, overallProgress }: { da
       )}
 
       <div className="flex gap-3 mt-4">
-        <button className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
+        <Link to="/coaching" className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 text-center">
           Continue Learning
-        </button>
-        <button className={`flex-1 border ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"} py-2.5 rounded-xl text-sm font-semibold transition-colors`}>
+        </Link>
+        <Link to="/coaching" className={`flex-1 border ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"} py-2.5 rounded-xl text-sm font-semibold transition-colors text-center`}>
           View Progress
-        </button>
+        </Link>
       </div>
     </motion.div>
   );

@@ -10,7 +10,7 @@ import { LevelProgress } from "~/components/dashboard/widgets/LevelProgress";
 import { JourneyBanner } from "~/components/dashboard/widgets/JourneyBanner";
 import { StatCard } from "~/components/dashboard/widgets/StatCard";
 import { TodayPlan } from "~/components/dashboard/widgets/TodayPlan";
-import { ContinueLearning } from "~/components/dashboard/widgets/ContinueLearning";
+import { DailyChallenge } from "~/components/dashboard/widgets/DailyChallenge";
 import { ActivityChart } from "~/components/dashboard/widgets/ActivityChart";
 import { CalendarHeatmap } from "~/components/dashboard/widgets/CalendarHeatmap";
 import { ExamCard } from "~/components/dashboard/widgets/ExamCard";
@@ -109,10 +109,10 @@ function DashboardPage() {
               <StatCard dark={dark} index={5} color="from-indigo-500 to-purple-500" icon={<TrendingUp className="w-5 h-5 text-white" />} label="Avg Score" value={`${data.averageScore}%`} progress={data.averageScore} />
             </div>
 
-            {/* Row 3: Plan + Continue */}
+            {/* Row 3: Plan + Daily Challenge */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <TodayPlan plans={data.todayPlan} dark={dark} />
-              <ContinueLearning cl={data.continueLearning} dark={dark} />
+              <DailyChallenge dark={dark} />
             </div>
 
             {/* Row 4: Charts + Exams */}
