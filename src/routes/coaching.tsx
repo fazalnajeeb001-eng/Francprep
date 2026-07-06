@@ -56,7 +56,7 @@ function CoachingHub() {
                           <span className="text-xs dark:text-gray-500 text-gray-500">{s?.lessonCount || 0} lessons</span>
                           <div className="flex items-center gap-2">
                             {level.id === "A1" && (
-                              <Link to="/coaching/lesson"
+                              <Link to="/coaching/chapter/a1-1-1-1"
                                 className="text-[10px] bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-lg hover:opacity-80 transition-all font-semibold">
                                 Start Chapter 1 →
                               </Link>
