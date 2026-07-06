@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, useCallback } from "react";
 import { apiFetch } from "~/lib/apiFetch";
+import { useAuth } from "~/lib/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Users, Search, ChevronLeft, ChevronRight, Shield,
@@ -82,15 +83,16 @@ function ConfirmModal({ open, onClose, onConfirm, title, message, confirmLabel, 
 
 // ─── Action Dropdown ────────────────────────────────────────────────────
 
-function ActionDropdown({ user, onAction }: { user: AdminUser; onAction: (action: string, user: AdminUser) => void }) {
+function ActionDropdown({ user, currentUserId, onAction }: { user: AdminUser; currentUserId: string; onAction: (action: string, user: AdminUser) => void }) {
   const [open, setOpen] = useState(false);
+  const isSelf = user._id === currentUserId;
 
   const actions = [
-    { id: "detail", label: "View Details", icon: Eye, color: "text-blue-400" },
-    { id: "toggle-ban", label: user.isActive ? "Ban User" : "Unban User", icon: Ban, color: user.isActive ? "text-red-400" : "text-emerald-400" },
-    { id: "change-role", label: `Make ${user.role === "admin" ? "Student" : "Admin"}`, icon: UserCog, color: "text-purple-400" },
-    { id: "reset-password", label: "Reset Password", icon: Key, color: "text-amber-400" },
-    { id: "delete", label: "Delete User", icon: Trash2, color: "text-red-500" },
+    { id: "detail", label: "View Details", icon: Eye, color: "text-blue-400", disabled: false },
+    { id: "toggle-ban", label: user.isActive ? "Ban User" : "Unban User", icon: Ban, color: user.isActive ? "text-red-400" : "text-emerald-400", disabled: isSelf },
+    { id: "change-role", label: `Make ${user.role === "admin" ? "Student" : "Admin"}`, icon: UserCog, color: "text-purple-400", disabled: isSelf },
+    { id: "reset-password", label: "Reset Password", icon: Key, color: "text-amber-400", disabled: false },
+    { id: "delete", label: "Delete User", icon: Trash2, color: "text-red-500", disabled: isSelf },
   ];
 
   return (
@@ -102,12 +104,17 @@ function ActionDropdown({ user, onAction }: { user: AdminUser; onAction: (action
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full mt-1 z-50 w-44 rounded-xl dark:bg-[#101828] bg-white border dark:border-[#1e2a4a] border-gray-200 shadow-xl py-1 overflow-hidden">
+          <div className="absolute right-0 top-full mt-1 z-50 w-52 rounded-xl dark:bg-[#101828] bg-white border dark:border-[#1e2a4a] border-gray-200 shadow-xl py-1 overflow-hidden">
             {actions.map((a) => (
-              <button key={a.id} onClick={() => { setOpen(false); onAction(a.id, user); }}
-                className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm dark:text-gray-300 text-gray-700 hover:dark:bg-white/5 hover:bg-gray-50 transition-colors text-left">
-                <a.icon className={`w-4 h-4 ${a.color}`} />
+              <button key={a.id} onClick={() => { if (!a.disabled) { setOpen(false); onAction(a.id, user); } }}
+                className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-left transition-colors ${
+                  a.disabled
+                    ? "dark:text-gray-600 text-gray-400 cursor-not-allowed"
+                    : "dark:text-gray-300 text-gray-700 hover:dark:bg-white/5 hover:bg-gray-50"
+                }`}>
+                <a.icon className={`w-4 h-4 ${a.disabled ? "dark:text-gray-600 text-gray-400" : a.color}`} />
                 <span>{a.label}</span>
+                {a.disabled && <span className="ml-auto text-[9px] dark:text-gray-600 text-gray-400">(you)</span>}
               </button>
             ))}
           </div>
@@ -292,6 +299,7 @@ function UserDetailPanel({ user, onClose, onAction }: { user: AdminUser; onClose
 // ─── Main Page ──────────────────────────────────────────────────────────
 
 function AdminUsersPage() {
+  const { user: currentUser } = useAuth();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);

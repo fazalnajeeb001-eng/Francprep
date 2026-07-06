@@ -15,7 +15,7 @@ import { ContinueLearning } from "~/components/dashboard/widgets/ContinueLearnin
 import { ActivityChart } from "~/components/dashboard/widgets/ActivityChart";
 import { CalendarHeatmap } from "~/components/dashboard/widgets/CalendarHeatmap";
 import { ExamCard } from "~/components/dashboard/widgets/ExamCard";
-import { Flame, Diamond, Timer, Bell, BookOpen, BookText, Languages, Target, TrendingUp, Brain, Award, BarChart3, Sparkles, Zap } from "lucide-react";
+import { Flame, Diamond, Timer, Bell, BookOpen, BookText, Languages, Target, TrendingUp } from "lucide-react";
 import type { DashboardData } from "~/components/dashboard/types";
 
 export const Route = createFileRoute("/dashboard")({ component: DashboardPage });
@@ -110,7 +110,7 @@ function DashboardPage() {
             {/* Row 1: Hero */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <LevelProgress levels={data.levelProgress} dark={dark} overall={data.overallProgress} />
-              <JourneyBanner dark={dark} firstName={data.user.firstName} streak={data.stats.streak} hearts={data.stats.hearts} />
+              <JourneyBanner dark={dark} firstName={data.user.firstName} streak={data.stats.streak} overallProgress={data.overallProgress} />
             </div>
 
             {/* Row 2: 6 Stat Cards */}
@@ -136,24 +136,23 @@ function DashboardPage() {
               <ExamCard dark={dark} />
             </div>
 
-            {/* Utility Panel */}
-            <div className={`${dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200"} backdrop-blur-lg border rounded-2xl p-5 transition-colors`}>
-              <h3 className={`text-sm font-semibold mb-4 ${dark ? "text-gray-300" : "text-gray-700"}`}>💡 Daily Tips</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {[
-                  { icon: <Brain className="w-5 h-5 text-purple-400" />, title: "Practice daily for 15min", desc: "Consistency beats cramming" },
-                  { icon: <Award className="w-5 h-5 text-amber-400" />, title: "Review weak topics", desc: "Focus on grammar this week" },
-                  { icon: <BarChart3 className="w-5 h-5 text-emerald-400" />, title: "Next milestone: B1", desc: `${Math.max(0, data.lessonsCompleted.total - data.lessonsCompleted.completed)} lessons remaining` },
-                  { icon: <Sparkles className="w-5 h-5 text-pink-400" />, title: "Word of the day", desc: '"Aujourd\'hui" — today' },
-                ].map((tip) => (
-                  <div key={tip.title} className={`${dark ? "bg-[#070B17]" : "bg-gray-50"} rounded-xl p-3`}>
-                    {tip.icon}
-                    <p className={`text-xs font-semibold mt-1 ${dark ? "text-white" : "text-gray-900"}`}>{tip.title}</p>
-                    <p className={`text-[10px] ${txtSec} mt-0.5`}>{tip.desc}</p>
-                  </div>
-                ))}
+            {/* Achievements — shown only when real data exists */}
+            {data.recentAchievements && data.recentAchievements.length > 0 && (
+              <div className={`${dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200"} backdrop-blur-lg border rounded-2xl p-5 transition-colors`}>
+                <h3 className={`text-sm font-semibold mb-4 ${dark ? "text-gray-300" : "text-gray-700"}`}>🏆 Recent Achievements</h3>
+                <div className="space-y-3">
+                  {data.recentAchievements.map((ach) => (
+                    <div key={ach.id} className="flex items-center gap-3">
+                      <span className="text-lg">{ach.icon}</span>
+                      <div>
+                        <p className={`text-sm font-semibold ${dark ? "text-gray-200" : "text-gray-800"}`}>{ach.title}</p>
+                        <p className={`text-xs ${dark ? "text-gray-500" : "text-gray-400"}`}>{ach.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </main>
         </div>
       </div>
