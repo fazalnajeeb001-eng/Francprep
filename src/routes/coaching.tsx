@@ -54,7 +54,15 @@ function CoachingHub() {
                         <p className="mt-2 text-xs sm:text-sm dark:text-gray-400 text-gray-600 leading-relaxed">{level.desc}</p>
                         <div className="mt-4 flex items-center justify-between">
                           <span className="text-xs dark:text-gray-500 text-gray-500">{s?.lessonCount || 0} lessons</span>
-                          <ChevronRight className="w-4 h-4 dark:text-gray-600 text-gray-400 group-hover:text-purple-400 group-hover:translate-x-1 transition-all" />
+                          <div className="flex items-center gap-2">
+                            {level.id === "A1" && (
+                              <Link to="/coaching/lesson"
+                                className="text-[10px] bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-lg hover:opacity-80 transition-all font-semibold">
+                                Start Chapter 1 →
+                              </Link>
+                            )}
+                            <ChevronRight className="w-4 h-4 dark:text-gray-600 text-gray-400 group-hover:text-purple-400 group-hover:translate-x-1 transition-all" />
+                          </div>
                         </div>
                       </div>
                     </Link>
