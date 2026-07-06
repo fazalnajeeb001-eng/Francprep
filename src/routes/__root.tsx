@@ -1,8 +1,9 @@
 import { HeadContent, Outlet, Scripts, Link, createRootRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { useState, useEffect } from "react";
 import appCss from "~/styles/app.css?url";
 import { AuthProvider, useAuth } from "~/lib/AuthContext";
-import { LogOut, User, Shield } from "lucide-react";
+import { LogOut, User, Shield, Sun, Moon } from "lucide-react";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -17,7 +18,7 @@ export const Route = createRootRoute({
   component: RootComponent,
 });
 
-function NavBar() {
+function NavBarInner({ dark, onToggleTheme }: { dark: boolean; onToggleTheme: () => void }) {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   return (
     <nav className="sticky top-0 z-50 border-b dark:border-[#1e2a4a] border-gray-200 dark:bg-[#070B17]/80 bg-white/80 backdrop-blur-xl transition-colors duration-300"
@@ -42,6 +43,14 @@ function NavBar() {
           )}
         </div>
         <div className="flex items-center gap-2 sm:gap-3 text-sm">
+          {/* Theme toggle — visible on ALL pages */}
+          <button onClick={onToggleTheme}
+            className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] rounded-xl dark:bg-[#101828] bg-gray-100 dark:border-[#1e2a4a] border-gray-200 border dark:text-gray-400 text-gray-600 hover:text-purple-400 transition-all"
+            aria-label={`Switch to ${dark ? "light" : "dark"} mode`}
+          >
+            {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            <span className="hidden sm:inline text-xs">{dark ? "Light" : "Dark"}</span>
+          </button>
           {isLoading ? null : isAuthenticated && user ? (
             <div className="flex items-center gap-2 sm:gap-3">
               <Link to="/dashboard" className="flex items-center gap-2 px-3 py-2 min-h-[44px] rounded-xl dark:bg-[#101828] bg-gray-100 dark:border-[#1e2a4a] border-gray-200 border dark:text-gray-300 text-gray-700 hover:text-purple-400 transition-colors">
@@ -64,10 +73,20 @@ function NavBar() {
 }
 
 function RootComponent() {
+  const [dark, setDark] = useState(true);
+  useEffect(() => {
+    const stored = localStorage.getItem("fp_theme");
+    if (stored === "light") setDark(false);
+  }, []);
+  useEffect(() => {
+    localStorage.setItem("fp_theme", dark ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", dark);
+  }, [dark]);
+  const toggle = () => setDark(d => !d);
   return (
     <AuthProvider>
       <RootDocument>
-        <NavBar />
+        <NavBarInner dark={dark} onToggleTheme={toggle} />
         <Outlet />
       </RootDocument>
     </AuthProvider>
