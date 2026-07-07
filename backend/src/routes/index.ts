@@ -3,6 +3,7 @@ import authRoutes from './auth.routes';
 import lessonRoutes from './lessons.routes';
 import exerciseRoutes from './exercises.routes';
 import progressRoutes from './progress.routes';
+import chapterRoutes from './chapters.routes';
 import adminRoutes from './admin.routes';
 import dashboardRoutes from './dashboard.routes';
 
@@ -12,6 +13,7 @@ router.get('/health', (_req, res) => {
 });
 router.use('/auth', authRoutes);
 router.use('/lessons', lessonRoutes);
+router.use('/chapters', chapterRoutes);
 router.use('/exercises', exerciseRoutes);
 router.use('/progress', progressRoutes);
 router.use('/admin', adminRoutes);

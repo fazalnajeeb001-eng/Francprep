@@ -4,6 +4,7 @@ import { validate } from '../middleware/validation';
 import { lessonController } from '../controllers/lesson.controller';
 import { exerciseController } from '../controllers/exercise.controller';
 import { progressController } from '../controllers/progress.controller';
+import { chapterController } from '../controllers/chapter.controller';
 import {
   createLessonSchema,
   updateLessonSchema,
@@ -353,6 +354,28 @@ router.put('/exercises/:id', validate(updateExerciseSchema), (req, res, next) =>
 router.delete('/exercises/:id', (req, res, next) =>
   exerciseController.delete(req, res, next)
 );
+
+// ============ Chapter Management ============
+
+/**
+ * GET /api/admin/chapters
+ */
+router.get('/chapters', (req, res, next) => chapterController.getAll(req, res, next));
+
+/**
+ * POST /api/admin/chapters
+ */
+router.post('/chapters', (req, res, next) => chapterController.create(req, res, next));
+
+/**
+ * PUT /api/admin/chapters/:id
+ */
+router.put('/chapters/:id', (req, res, next) => chapterController.update(req, res, next));
+
+/**
+ * DELETE /api/admin/chapters/:id
+ */
+router.delete('/chapters/:id', (req, res, next) => chapterController.delete(req, res, next));
 
 // ============ Syllabus Management ============
 
