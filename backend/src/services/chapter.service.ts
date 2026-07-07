@@ -2,6 +2,7 @@ import Chapter from '../models/Chapter';
 import Lesson from '../models/Lesson';
 import Vocabulary from '../models/Vocabulary';
 import Exercise from '../models/Exercise';
+import mongoose from 'mongoose';
 
 const CEFR_LEVELS = [
   { level: 'A1', title: 'French A1 — Beginner', description: 'Can understand and use familiar everyday expressions and very basic phrases. Can introduce themselves and others, and can ask and answer simple questions about personal details.' },
@@ -95,27 +96,48 @@ export class ChapterService {
     };
   }
 
-  // Public - get published chapters grouped by all 6 CEFR levels
+  // Public - get published chapters grouped by CEFR level
+  // Uses raw DB queries to avoid Mongoose populate issues with .lean()
   async getPublishedChapters(filters: any) {
     try {
+      const db = mongoose.connection.db;
+      if (!db) throw new Error('No database connection');
+
+      // Get all published chapters with lesson counts
       const chapters = await Chapter.find({ isPublished: true })
         .populate({
           path: 'lessons',
           select: 'title order level category skill estimatedDuration',
           match: { isPublished: true },
         })
-        .populate({
-          path: 'moduleId',
-          select: 'courseId title',
-          populate: { path: 'courseId', model: 'Course', select: 'level name description' },
-        })
         .sort({ order: 1 })
         .lean();
 
+      // Build a map of moduleId -> course level by querying directly
+      const moduleIds = [...new Set(chapters.map((ch: any) => ch.moduleId?.toString()).filter(Boolean))];
+      const modules = await db.collection('modules').find({ _id: { $in: moduleIds.map((id: string) => new mongoose.Types.ObjectId(id)) } }).toArray();
+      const courseIds = [...new Set(modules.map((m: any) => m.courseId?.toString()).filter(Boolean))];
+      const courses = await db.collection('courses').find({ _id: { $in: courseIds.map((id: string) => new mongoose.Types.ObjectId(id)) } }).toArray();
+
+      // Map: moduleId -> course level
+      const moduleLevelMap: Record<string, string> = {};
+      const courseMap: Record<string, any> = {};
+      for (const c of courses) {
+        courseMap[c._id.toString()] = c;
+      }
+      for (const m of modules) {
+        const course = courseMap[m.courseId?.toString()];
+        if (course) {
+          moduleLevelMap[m._id.toString()] = course.level;
+        }
+      }
+
+      // Group chapters by level
       const grouped: Record<string, any[]> = {};
       for (const ch of chapters as any[]) {
-        const lvl = ch.moduleId?.courseId?.level;
-        if (!lvl) continue; // skip chapters whose level can't be determined
+        const modId = ch.moduleId?.toString();
+        const lvl = moduleLevelMap[modId];
+        if (!lvl) continue;
         if (!grouped[lvl]) grouped[lvl] = [];
         grouped[lvl].push({
           _id: ch._id,
@@ -128,6 +150,7 @@ export class ChapterService {
         });
       }
 
+      // Build response with all 6 levels
       const data = CEFR_LEVELS.map((info) => ({
         level: info.level,
         title: info.title,
@@ -138,34 +161,7 @@ export class ChapterService {
       return { success: true, data };
     } catch (err) {
       console.error('getPublishedChapters error:', err);
-      // Fallback: return all chapters as A1
-      const chapters = await Chapter.find({ isPublished: true })
-        .populate({
-          path: 'lessons',
-          select: 'title order level category skill estimatedDuration',
-          match: { isPublished: true },
-        })
-        .sort({ order: 1 })
-        .lean();
-
-      const chData = (chapters as any[]).map((ch) => ({
-        _id: ch._id,
-        title: ch.title,
-        order: ch.order,
-        estimatedTime: ch.estimatedTime,
-        objectives: ch.objectives || [],
-        lessons: ch.lessons || [],
-        lessonCount: (ch.lessons || []).filter((l: any) => l).length,
-      }));
-
-      const data = CEFR_LEVELS.map((info) => ({
-        level: info.level,
-        title: info.title,
-        description: info.description,
-        chapters: info.level === 'A1' ? chData : [],
-      }));
-
-      return { success: true, data };
+      return { success: true, data: CEFR_LEVELS.map((info) => ({ level: info.level, title: info.title, description: info.description, chapters: [] })) };
     }
   }
 }
