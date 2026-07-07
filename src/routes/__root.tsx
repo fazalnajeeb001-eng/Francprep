@@ -1,10 +1,13 @@
 import { HeadContent, Outlet, Scripts, Link, createRootRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useRef, useState, useEffect } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import appCss from "~/styles/app.css?url";
 import { AuthProvider, useAuth } from "~/lib/AuthContext";
 import { ThemeProvider } from "~/lib/ThemeContext";
 import { LogOut, Shield, Settings } from "lucide-react";
+
+const queryClient = new QueryClient();
 
 export const Route = createRootRoute({
   head: () => ({
@@ -87,14 +90,16 @@ function NavBarInner() {
 
 function RootComponent() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <RootDocument>
-          <NavBarInner />
-          <Outlet />
-        </RootDocument>
-      </AuthProvider>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <AuthProvider>
+          <RootDocument>
+            <NavBarInner />
+            <Outlet />
+          </RootDocument>
+        </AuthProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
 
