@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { Play, Pause, Volume2 } from "lucide-react";
+import { useTheme } from "~/lib/ThemeContext";
 import { QuizComponent } from "./QuizComponent";
 
 interface AudioPlayerProps {
@@ -9,7 +10,8 @@ interface AudioPlayerProps {
   showTranscript?: boolean;
 }
 
-export function AudioPlayer({ src, label, transcript, showTranscript: _showTranscript }: AudioPlayerProps) {
+export function AudioPlayer({ src, label, transcript }: AudioPlayerProps) {
+  const { dark } = useTheme();
   const [playing, setPlaying] = useState(false);
   const [showTrans, setShowTrans] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -21,7 +23,7 @@ export function AudioPlayer({ src, label, transcript, showTranscript: _showTrans
   };
 
   return (
-    <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl p-4 border border-purple-100">
+    <div className={`rounded-2xl p-4 border ${dark ? "bg-purple-500/10 border-purple-500/30" : "bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-100"}`}>
       <audio ref={audioRef} src={src} onEnded={() => setPlaying(false)} />
       <div className="flex items-center gap-3">
         <button onClick={togglePlay}
@@ -29,13 +31,13 @@ export function AudioPlayer({ src, label, transcript, showTranscript: _showTrans
           {playing ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
         </button>
         <div className="flex-1 min-w-0">
-          <div className="text-sm font-medium">{label || "Listen"}</div>
+          <div className={`text-sm font-medium ${dark ? "text-gray-200" : "text-gray-800"}`}>{label || "Listen"}</div>
           <div className="flex items-center gap-3 mt-1">
-            <div className="flex-1 h-1.5 bg-white/60 rounded-full overflow-hidden">
+            <div className={`flex-1 h-1.5 ${dark ? "bg-gray-700" : "bg-white/60"} rounded-full overflow-hidden`}>
               <div className={`h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full transition-all ${playing ? "w-full animate-pulse" : "w-0"}`} />
             </div>
             {transcript && (
-              <button onClick={() => setShowTrans(!showTrans)} className="text-xs text-purple-600 hover:text-purple-700 flex items-center gap-1 whitespace-nowrap">
+              <button onClick={() => setShowTrans(!showTrans)} className={`text-xs ${dark ? "text-purple-400" : "text-purple-600"} flex items-center gap-1 whitespace-nowrap`}>
                 <Volume2 className="w-3 h-3" /> {showTrans ? "Hide" : "Transcript"}
               </button>
             )}
@@ -43,7 +45,7 @@ export function AudioPlayer({ src, label, transcript, showTranscript: _showTrans
         </div>
       </div>
       {showTrans && transcript && (
-        <div className="mt-3 p-3 bg-white/60 rounded-xl border border-purple-100 text-sm text-gray-700 leading-relaxed">
+        <div className={`mt-3 p-3 rounded-xl border text-sm leading-relaxed ${dark ? "bg-[#0a0e1a] border-purple-500/20 text-gray-300" : "bg-white/60 border-purple-100 text-gray-700"}`}>
           {transcript}
         </div>
       )}
@@ -61,18 +63,20 @@ export function SpeakingRecorder({ onSave }: { onSave?: (blob: Blob) => void }) 
       mediaRef.current?.stop();
       setRecording(false);
     } else {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
-      chunksRef.current = [];
-      recorder.ondataavailable = (e) => chunksRef.current.push(e.data);
-      recorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
-        onSave?.(blob);
-        stream.getTracks().forEach(t => t.stop());
-      };
-      recorder.start();
-      mediaRef.current = recorder;
-      setRecording(true);
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const recorder = new MediaRecorder(stream);
+        chunksRef.current = [];
+        recorder.ondataavailable = (e) => chunksRef.current.push(e.data);
+        recorder.onstop = () => {
+          const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+          onSave?.(blob);
+          stream.getTracks().forEach(t => t.stop());
+        };
+        recorder.start();
+        mediaRef.current = recorder;
+        setRecording(true);
+      } catch { /* permission denied */ }
     }
   };
 
@@ -85,11 +89,16 @@ export function SpeakingRecorder({ onSave }: { onSave?: (blob: Blob) => void }) 
 }
 
 export function WritingSubmission({ onSubmit }: { onSubmit?: (text: string) => void }) {
+  const { dark } = useTheme();
   const [text, setText] = useState("");
   return (
     <div className="space-y-3">
       <textarea value={text} onChange={(e) => setText(e.target.value)}
-        className="w-full h-32 p-4 rounded-xl border border-gray-200 text-sm resize-none focus:border-purple-300 focus:ring-2 focus:ring-purple-100 outline-none transition-all"
+        className={`w-full h-32 p-4 rounded-xl border text-sm resize-none outline-none transition-all ${
+          dark
+            ? "bg-[#0a0e1a] border-[#1e2a4a] text-gray-200 focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 placeholder-gray-500"
+            : "border-gray-200 focus:border-purple-300 focus:ring-2 focus:ring-purple-100 placeholder-gray-400"
+        }`}
         placeholder="Write your answer in French..." />
       <button onClick={() => { onSubmit?.(text); setText(""); }}
         disabled={!text.trim()}
@@ -101,9 +110,12 @@ export function WritingSubmission({ onSubmit }: { onSubmit?: (text: string) => v
 }
 
 export function ReadingExercise({ passage, questions }: { passage: string; questions: any[] }) {
+  const { dark } = useTheme();
   return (
     <div className="space-y-4">
-      <div className="p-5 bg-white rounded-2xl border border-gray-200 text-sm leading-relaxed text-gray-800 whitespace-pre-line">
+      <div className={`p-5 rounded-2xl border text-sm leading-relaxed whitespace-pre-line ${
+        dark ? "bg-[#101828]/80 border-[#1e2a4a] text-gray-300" : "bg-white border-gray-200 text-gray-800"
+      }`}>
         {passage}
       </div>
       {questions.length > 0 && <QuizComponent questions={questions} type="multiple_choice" />}
@@ -114,18 +126,23 @@ export function ReadingExercise({ passage, questions }: { passage: string; quest
 export function ListeningExercise({ src, transcript, questions }: { src: string; transcript?: string; questions: any[] }) {
   return (
     <div className="space-y-4">
-      <AudioPlayer src={src} label="Listen to the audio" transcript={transcript} showTranscript />
+      <AudioPlayer src={src} label="Listen to the audio" transcript={transcript} />
       {questions.length > 0 && <QuizComponent questions={questions} type="multiple_choice" />}
     </div>
   );
 }
 
 export function ProgressTracker({ completed, total, label }: { completed: number; total: number; label?: string }) {
+  const { dark } = useTheme();
   const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
   return (
     <div className="space-y-1.5">
-      {label && <div className="flex items-center justify-between text-xs text-gray-500"><span>{label}</span><span>{pct}%</span></div>}
-      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+      {label && (
+        <div className={`flex items-center justify-between text-xs ${dark ? "text-gray-400" : "text-gray-500"}`}>
+          <span>{label}</span><span>{pct}%</span>
+        </div>
+      )}
+      <div className={`h-2 ${dark ? "bg-gray-700" : "bg-gray-200"} rounded-full overflow-hidden`}>
         <div className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
       </div>
     </div>
