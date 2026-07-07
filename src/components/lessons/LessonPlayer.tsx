@@ -441,19 +441,20 @@ function ShortAnswerExercise({ qas, dark }: { qas: { question: string; modelAnsw
   );
 }
 
-function ReviewSection({ section, dark }: { section: LessonSection; dark: boolean }) {
+function ReviewSection({ section, dark, lessonNumber }: { section: LessonSection; dark: boolean; lessonNumber: number }) {
+  const nextLesson = lessonNumber + 1;
   return (
     <div className={`${dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200"} backdrop-blur-lg border rounded-2xl p-5 transition-colors`}>
       <div className="flex items-center gap-3 mb-3"><Star className="w-5 h-5 text-amber-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{section.title}</h3></div>
       <p className={`text-sm leading-relaxed ${dark ? "text-gray-300" : "text-gray-700"}`}>{section.content}</p>
-      <Link to="/coaching" className="inline-flex items-center gap-2 mt-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
+      <Link to={`/lesson/${nextLesson}`} className="inline-flex items-center gap-2 mt-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
         <BookOpen className="w-4 h-4" /> Next Lesson
       </Link>
     </div>
   );
 }
 
-function SelfCheckSection({ section, dark }: { section: LessonSection; dark: boolean }) {
+function SelfCheckSection({ section, dark, lessonNumber }: { section: LessonSection; dark: boolean; lessonNumber: number }) {
   const [checked, setChecked] = useState<Record<number, boolean>>({});
   const sc = section.selfCheck || [];
   const allChecked = sc.length > 0 && sc.every((_, i) => checked[i]);
@@ -535,8 +536,8 @@ export function LessonPlayer({ lesson }: { lesson: LessonData }) {
       case "speaking": return <SpeakingSection section={sec} dark={dark} />;
       case "writing": return <WritingSection section={sec} dark={dark} />;
       case "practice": return <PracticeSection section={sec} dark={dark} />;
-      case "review": return <ReviewSection section={sec} dark={dark} />;
-      case "selfcheck": return <SelfCheckSection section={sec} dark={dark} />;
+      case "review": return <ReviewSection section={sec} dark={dark} lessonNumber={lesson.lessonNumber} />;
+      case "selfcheck": return <SelfCheckSection section={sec} dark={dark} lessonNumber={lesson.lessonNumber} />;
       default: return null;
     }
   };
@@ -549,7 +550,7 @@ export function LessonPlayer({ lesson }: { lesson: LessonData }) {
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <Link to="/coaching" className={`text-xs ${dark ? "text-gray-400 hover:text-purple-400" : "text-gray-600 hover:text-purple-600"} transition-colors`}>
-                <ArrowLeft className="w-4 h-4 inline mr-1" />{lesson.chapter}
+                <ArrowLeft className="w-4 h-4 inline mr-1" />Chapter 1
               </Link>
             </div>
             <span className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"}`}>{currentSection + 1} / {sections.length}</span>
@@ -577,8 +578,8 @@ export function LessonPlayer({ lesson }: { lesson: LessonData }) {
             <ChevronLeft className="w-4 h-4" /> Previous
           </button>
           {sec.type === "selfcheck" ? (
-            <Link to="/coaching" className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 shadow-lg shadow-purple-500/25">
-              Complete <Award className="w-4 h-4" />
+            <Link to={lesson.lessonNumber >= 4 ? "/coaching" : `/lesson/${lesson.lessonNumber + 1}`} className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 shadow-lg shadow-purple-500/25">
+              {lesson.lessonNumber >= 4 ? "🎉 Complete" : "Next Lesson"} <Award className="w-4 h-4" />
             </Link>
           ) : (
             <button onClick={goNext}
