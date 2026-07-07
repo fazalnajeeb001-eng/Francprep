@@ -17,7 +17,7 @@ interface QuizProps {
   onComplete?: (score: number, total: number) => void;
 }
 
-export function QuizComponent({ questions, type, onComplete }: QuizProps) {
+export function QuizComponent({ questions, type: _type, onComplete }: QuizProps) {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const [submitted, setSubmitted] = useState<Record<string, boolean>>({});

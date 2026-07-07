@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { Play, Pause, Volume2 } from "lucide-react";
+import { QuizComponent } from "./QuizComponent";
 
 interface AudioPlayerProps {
   src: string;
@@ -8,7 +9,7 @@ interface AudioPlayerProps {
   showTranscript?: boolean;
 }
 
-export function AudioPlayer({ src, label, transcript, showTranscript }: AudioPlayerProps) {
+export function AudioPlayer({ src, label, transcript, showTranscript: _showTranscript }: AudioPlayerProps) {
   const [playing, setPlaying] = useState(false);
   const [showTrans, setShowTrans] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);

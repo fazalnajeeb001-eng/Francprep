@@ -2,10 +2,8 @@ import { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "~/lib/apiFetch";
 import { motion } from "framer-motion";
-import { CheckCircle2, Volume2, ChevronDown, ChevronUp, ArrowLeft, Headphones, BookOpen, PenTool, Mic, MessageCircle, RepeatIcon, XCircle } from "lucide-react";
-import { AudioPlayer, ProgressTracker, QuizComponent, SpeakingRecorder, WritingSubmission } from "./LearningComponents";
-import { VocabularyCard, FlashcardComponent } from "./VocabularyCard";
-import { GrammarCard, CalloutBox } from "./GrammarCard";
+import { CheckCircle2, ArrowLeft, BookOpen, XCircle, Volume2 } from "lucide-react";
+import { AudioPlayer, ProgressTracker, SpeakingRecorder, WritingSubmission } from "./LearningComponents";
 
 interface SectionData {
   type: string;
@@ -29,11 +27,16 @@ interface LessonData {
 }
 
 export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: () => void }) {
-  const [completedSections, setCompletedSections] = useState<string[]>([]);
+  const [completedSections, _setCompletedSections] = useState<string[]>([]);
   const [showTranslation, setShowTranslation] = useState<Record<string, boolean>>({});
   const [selfAssessments, setSelfAssessments] = useState<Record<string, boolean>>({});
   const [drillAnswers, setDrillAnswers] = useState<Record<string, Record<number, string>>>({});
   const [drillResults, setDrillResults] = useState<Record<string, Record<number, boolean | null>>>({});
+  // Fetch lesson data
+  const { data } = useQuery({
+    queryKey: ["lesson", lessonId],
+    queryFn: () => apiFetch(`/lessons/${lessonId}`).then((res) => res.json()).then((json) => json.data as LessonData),
+  });
 
   // Grammar drill: renders ____ in body as fillable inputs
   // Format: word|answer — the answer is hidden in a comment marker
@@ -224,7 +227,7 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
     review: ({ section }) => {
       // Parse self-assessment items (lines starting with ✓ or I can)
       const lines = section.body.split("\n").filter(l => l.trim());
-      const items = lines.map(l => l.replace(/^[✓✅]\s*/, "").trim()).filter(l => l.length > 0);
+      const items = lines.map(l => l.replace(/^[\u2713\u2705]\s*/, "").trim()).filter(l => l.length > 0);
 
       return (
         <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-5 border border-green-200">
@@ -262,6 +265,16 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
     },
   };
 
+  if (!data) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-8">
+        <div className="flex items-center justify-center py-16">
+          <div className="text-gray-400 text-sm">Loading lesson...</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       {/* Header */}
@@ -272,18 +285,17 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
           </button>
         )}
         <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white">
-          <SkillIcon className="w-5 h-5" />
+          <BookOpen className="w-5 h-5" />
         </div>
         <div>
           <h1 className="text-xl font-bold">{data.title}</h1>
           <div className="flex items-center gap-2 text-xs text-gray-500">
             <span>Lesson {data.order}</span>
-            <span>·</span>
+            <span>&middot;</span>
             <span>{data.estimatedDuration} min</span>
           </div>
         </div>
       </div>
-
       {/* Objectives */}
       {data.objectives?.length > 0 && (
         <div className="bg-purple-50 rounded-2xl p-4 border border-purple-100 mb-6">
@@ -291,13 +303,12 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
           <ul className="space-y-1">
             {data.objectives.map((obj, i) => (
               <li key={i} className="text-xs text-gray-700 flex items-start gap-2">
-                <span className="text-purple-400 mt-0.5">•</span>{obj}
+                <span className="text-purple-400 mt-0.5">{'\u2022'}</span>{obj}
               </li>
             ))}
           </ul>
         </div>
       )}
-
       {/* Sections */}
       <div className="space-y-4">
         {data.sections?.map((section, i) => {
@@ -310,7 +321,6 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
           );
         })}
       </div>
-
       {/* Progress */}
       <div className="mt-8">
         <ProgressTracker completed={completedSections.length} total={data.sections?.length || 0} label="Lesson Progress" />
