@@ -286,13 +286,13 @@ Enchanté(e)|nice to meet you|ahn-shahn-TAY`,
             title: 'Être — Je suis / Tu es',
             body: `This lesson introduces only a small, fixed piece of the verb être ("to be"): the pattern Je suis + [name] = "I am [name]." The full conjugation is built across this chapter.
 
-Je suis + [name] — "I am [name]."
-Tu es + [name] — "You are [name]." (informal)
+Je ____[answer:suis] + [name] — "I am [name]."
+Tu ____[answer:es] + [name] — "You are [name]." (informal)
 
 Examples:
-— Bonjour, je suis Antoine.
-— Bonsoir, je suis Madame Lefèvre.
-— Salut, je suis Léa !
+— Bonjour, ____[answer:je suis] Antoine.
+— Bonsoir, ____[answer:je suis] Madame Lefèvre.
+— Salut, ____[answer:je suis] Léa !
 
 Common mistake: ❌ Je suis à Claire → ✅ Je suis Claire (no preposition before a name with être)`,
           },
@@ -453,15 +453,15 @@ We're also extending être: il est / elle est ("he is" / "she is") lets you talk
             title: 'S\'appeler + Être (Third Person)',
             body: `S'appeler is a reflexive verb — you "call yourself" a name. At A1, you only need these forms:
 
-Je m'appelle — "I am called / My name is"
-Tu t'appelles — "You are called" (informal)
-Il/Elle s'appelle — "He/She is called"
-Il/Elle est — "He/She is"
+Je ____[answer:m'appelle] — "I am called / My name is"
+Tu ____[answer:t'appelles] — "You are called" (informal)
+Il/Elle ____[answer:s'appelle] — "He/She is called"
+Il/Elle ____[answer:est] — "He/She is"
 
 Examples:
-— Je m'appelle Hugo. Et toi ?
-— Elle s'appelle Inès. (Her name is Inès.)
-— Il est content. (He is happy.)
+— Je ____[answer:m'appelle] Hugo. Et toi ?
+— Elle ____[answer:s'appelle] Inès. (Her name is Inès.)
+— Il ____[answer:est] content. (He is happy.)
 
 Common mistakes:
 ❌ Je m'appelle est Marc. → ✅ Je m'appelle Marc. (No est needed with s'appeler.)

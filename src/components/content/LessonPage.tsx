@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "~/lib/apiFetch";
 import { motion } from "framer-motion";
-import { CheckCircle2, Volume2, ChevronDown, ChevronUp, ArrowLeft, Headphones, BookOpen, PenTool, Mic, MessageCircle, RepeatIcon } from "lucide-react";
+import { CheckCircle2, Volume2, ChevronDown, ChevronUp, ArrowLeft, Headphones, BookOpen, PenTool, Mic, MessageCircle, RepeatIcon, XCircle } from "lucide-react";
 import { AudioPlayer, ProgressTracker, QuizComponent, SpeakingRecorder, WritingSubmission } from "./LearningComponents";
 import { VocabularyCard, FlashcardComponent } from "./VocabularyCard";
 import { GrammarCard, CalloutBox } from "./GrammarCard";
@@ -31,21 +31,83 @@ interface LessonData {
 export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: () => void }) {
   const [completedSections, setCompletedSections] = useState<string[]>([]);
   const [showTranslation, setShowTranslation] = useState<Record<string, boolean>>({});
+  const [selfAssessments, setSelfAssessments] = useState<Record<string, boolean>>({});
+  const [drillAnswers, setDrillAnswers] = useState<Record<string, Record<number, string>>>({});
+  const [drillResults, setDrillResults] = useState<Record<string, Record<number, boolean | null>>>({});
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["lesson", lessonId],
-    queryFn: async () => {
-      const res = await apiFetch(`/lessons/${lessonId}`);
-      const json = await res.json();
-      return json.data as LessonData;
-    },
-  });
+  // Grammar drill: renders ____ in body as fillable inputs
+  // Format: word|answer — the answer is hidden in a comment marker
+  const GrammarDrillRenderer = useCallback(({ sectionId, body }: { sectionId: string; body: string }) => {
+    // Parse drill answers from the body using [answer:...] markers
+    const parts: { text: string; isBlank: boolean; index: number }[] = [];
+    const answerMap: Record<number, string> = {};
+    let idx = 0;
+    const regex = /____\[answer:(.*?)\]/g;
+    let lastIndex = 0;
+    let match;
+    while ((match = regex.exec(body)) !== null) {
+      if (match.index > lastIndex) parts.push({ text: body.slice(lastIndex, match.index), isBlank: false, index: -1 });
+      parts.push({ text: "", isBlank: true, index: idx });
+      answerMap[idx] = match[1];
+      idx++;
+      lastIndex = match.index + match[0].length;
+    }
+    if (lastIndex < body.length) parts.push({ text: body.slice(lastIndex), isBlank: false, index: -1 });
 
-  if (isLoading) return <div className="animate-pulse p-8"><div className="h-8 w-64 bg-gray-200 rounded mb-4" /><div className="h-4 w-96 bg-gray-200 rounded mb-8" /><div className="space-y-4">{Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-32 bg-gray-100 rounded-2xl" />)}</div></div>;
-  if (!data) return <div className="p-8 text-gray-500">Lesson not found</div>;
+    const answers = drillAnswers[sectionId] || {};
+    const results = drillResults[sectionId] || {};
 
-  const skillIcons: Record<string, any> = { R: BookOpen, W: PenTool, L: Headphones, S: Mic, INT: MessageCircle, REV: RepeatIcon };
-  const SkillIcon = skillIcons[data.skill] || BookOpen;
+    const checkDrill = (blankIdx: number) => {
+      const newResults = { ...drillResults[sectionId] || {} };
+      const userAns = (drillAnswers[sectionId] || {})[blankIdx]?.trim().toLowerCase() || "";
+      const correctAns = answerMap[blankIdx]?.trim().toLowerCase() || "";
+      newResults[blankIdx] = userAns === correctAns;
+      setDrillResults(prev => ({ ...prev, [sectionId]: newResults }));
+    };
+
+    const updateAnswer = (blankIdx: number, val: string) => {
+      setDrillAnswers(prev => ({
+        ...prev,
+        [sectionId]: { ...(prev[sectionId] || {}), [blankIdx]: val }
+      }));
+      // Clear result when user edits
+      setDrillResults(prev => {
+        const r = { ...(prev[sectionId] || {}) };
+        delete r[blankIdx];
+        return { ...prev, [sectionId]: r };
+      });
+    };
+
+    return (
+      <p className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">
+        {parts.map((part, i) =>
+          part.isBlank ? (
+            <span key={i} className="inline-flex items-center gap-1 mx-0.5">
+              <input
+                type="text"
+                value={answers[part.index] || ""}
+                onChange={(e) => updateAnswer(part.index, e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && checkDrill(part.index)}
+                className={`w-28 inline-block px-2 py-0.5 text-sm border-b-2 bg-transparent focus:outline-none text-center ${
+                  results[part.index] === true ? "border-emerald-400 text-emerald-400" :
+                  results[part.index] === false ? "border-red-400 text-red-400" :
+                  "border-purple-300 text-gray-800"
+                }`}
+                placeholder="______"
+              />
+              {results[part.index] !== undefined && (
+                <span className="text-xs">
+                  {results[part.index] ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 inline" /> : <XCircle className="w-3.5 h-3.5 text-red-400 inline" />}
+                </span>
+              )}
+            </span>
+          ) : (
+            <span key={i}>{part.text}</span>
+          )
+        )}
+      </p>
+    );
+  }, [drillAnswers, drillResults]);
 
   const sectionComponents: Record<string, React.FC<{ section: SectionData }>> = {
     warmup: ({ section }) => (
@@ -96,12 +158,28 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
         </div>
       );
     },
-    grammar: ({ section }) => (
-      <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
-        <h3 className="text-sm font-semibold mb-3">{section.title}</h3>
-        <div className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">{section.body}</div>
-      </div>
-    ),
+    grammar: ({ section }) => {
+      const hasDrills = section.body.includes("____[answer:");
+      return (
+        <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
+          <h3 className="text-sm font-semibold mb-3">{section.title}</h3>
+          {hasDrills ? (
+            <GrammarDrillRenderer sectionId={section.title} body={section.body} />
+          ) : (
+            <div className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">{section.body}</div>
+          )}
+          {section.translation && (
+            <div className="mt-3">
+              <button onClick={() => setShowTranslation({ ...showTranslation, [section.title]: !showTranslation[section.title] })}
+                className="text-xs text-purple-600 hover:text-purple-700">
+                {showTranslation[section.title] ? "Hide English" : "Show English translation"}
+              </button>
+              {showTranslation[section.title] && <p className="text-xs text-gray-500 mt-1 italic">{section.translation}</p>}
+            </div>
+          )}
+        </div>
+      );
+    },
     reading: ({ section }) => (
       <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
         <h3 className="text-sm font-semibold mb-3">{section.title}</h3>
@@ -143,15 +221,45 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
         <p className="text-sm text-gray-700 whitespace-pre-line">{section.body}</p>
       </div>
     ),
-    review: ({ section }) => (
-      <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-5 border border-green-200">
-        <div className="flex items-center gap-2 mb-2">
-          <CheckCircle2 className="w-5 h-5 text-green-500" />
-          <h3 className="text-sm font-semibold text-green-700">{section.title}</h3>
+    review: ({ section }) => {
+      // Parse self-assessment items (lines starting with ✓ or I can)
+      const lines = section.body.split("\n").filter(l => l.trim());
+      const items = lines.map(l => l.replace(/^[✓✅]\s*/, "").trim()).filter(l => l.length > 0);
+
+      return (
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-5 border border-green-200">
+          <div className="flex items-center gap-2 mb-3">
+            <CheckCircle2 className="w-5 h-5 text-green-500" />
+            <h3 className="text-sm font-semibold text-green-700">{section.title}</h3>
+          </div>
+          {items.length > 0 ? (
+            <div className="space-y-2">
+              {items.map((item, i) => {
+                const key = `${section.title}_${i}`;
+                return (
+                  <label key={i} className="flex items-start gap-3 cursor-pointer group" onClick={() => setSelfAssessments(prev => ({ ...prev, [key]: !prev[key] }))}>
+                    <div className={`mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                      selfAssessments[key]
+                        ? "bg-green-500 border-green-500"
+                        : "border-gray-300 group-hover:border-green-400 bg-white/60"
+                    }`}>
+                      {selfAssessments[key] && (
+                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/></svg>
+                      )}
+                    </div>
+                    <span className={`text-sm transition-colors ${selfAssessments[key] ? "text-green-700 line-through decoration-green-400" : "text-gray-700"}`}>
+                      {item}
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-700 whitespace-pre-line">{section.body}</p>
+          )}
         </div>
-        <p className="text-sm text-gray-700 whitespace-pre-line">{section.body}</p>
-      </div>
-    ),
+      );
+    },
   };
 
   return (
