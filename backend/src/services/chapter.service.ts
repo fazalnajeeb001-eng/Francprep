@@ -106,15 +106,16 @@ export class ChapterService {
         })
         .populate({
           path: 'moduleId',
-          select: 'courseId',
-          populate: { path: 'courseId', select: 'level name description' },
+          select: 'courseId title',
+          populate: { path: 'courseId', model: 'Course', select: 'level name description' },
         })
         .sort({ order: 1 })
         .lean();
 
       const grouped: Record<string, any[]> = {};
       for (const ch of chapters as any[]) {
-        const lvl = ch.moduleId?.courseId?.level || 'A1';
+        const lvl = ch.moduleId?.courseId?.level;
+        if (!lvl) continue; // skip chapters whose level can't be determined
         if (!grouped[lvl]) grouped[lvl] = [];
         grouped[lvl].push({
           _id: ch._id,
