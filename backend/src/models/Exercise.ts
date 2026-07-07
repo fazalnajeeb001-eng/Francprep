@@ -10,10 +10,10 @@ export interface IQuestion {
 }
 
 export interface IExerciseDocument extends Document {
-  lessonId: mongoose.Types.ObjectId;
+  lessonId?: mongoose.Types.ObjectId;
   title: string;
   type: 'multiple_choice' | 'fill_blank' | 'matching' | 'listening' | 'writing';
-  instructions: string;
+  instructions?: string;
   questions: IQuestion[];
   timeLimit?: number;
   points: number;
@@ -59,7 +59,6 @@ const exerciseSchema = new Schema<IExerciseDocument>(
     lessonId: {
       type: Schema.Types.ObjectId,
       ref: 'Lesson',
-      required: [true, 'Lesson ID is required'],
     },
     title: {
       type: String,
@@ -74,7 +73,6 @@ const exerciseSchema = new Schema<IExerciseDocument>(
     },
     instructions: {
       type: String,
-      required: [true, 'Instructions are required'],
     },
     questions: {
       type: [questionSchema],

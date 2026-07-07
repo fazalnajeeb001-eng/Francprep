@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IVocabularyDocument extends Document {
-  lessonId: mongoose.Types.ObjectId;
+  lessonId?: mongoose.Types.ObjectId;
   french: string;
   english: string;
   pronunciation?: string;
@@ -16,7 +16,6 @@ const vocabularySchema = new Schema<IVocabularyDocument>(
     lessonId: {
       type: Schema.Types.ObjectId,
       ref: 'Lesson',
-      required: [true, 'Lesson ID is required'],
     },
     french: {
       type: String,
