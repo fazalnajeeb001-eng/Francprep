@@ -3,6 +3,15 @@ import Lesson from '../models/Lesson';
 import Vocabulary from '../models/Vocabulary';
 import Exercise from '../models/Exercise';
 
+const CEFR_LEVELS = [
+  { level: 'A1', title: 'French A1 — Beginner', description: 'Can understand and use familiar everyday expressions and very basic phrases. Can introduce themselves and others, and can ask and answer simple questions about personal details.' },
+  { level: 'A2', title: 'French A2 — Elementary', description: 'Can understand sentences and frequently used expressions related to areas of immediate relevance. Can communicate in simple and routine tasks requiring a direct exchange of information.' },
+  { level: 'B1', title: 'French B1 — Intermediate', description: 'Can understand the main points of clear standard input on familiar matters. Can deal with most situations likely to arise while travelling in a French-speaking area.' },
+  { level: 'B2', title: 'French B2 — Upper Intermediate', description: 'Can understand the main ideas of complex text on both concrete and abstract topics. Can interact with a degree of fluency and spontaneity that makes regular interaction possible.' },
+  { level: 'C1', title: 'French C1 — Advanced', description: 'Can understand a wide range of demanding, longer texts and recognise implicit meaning. Can express ideas fluently and spontaneously without much obvious searching for expressions.' },
+  { level: 'C2', title: 'French C2 — Mastery', description: 'Can understand with ease virtually everything heard or read. Can summarise information from different spoken and written sources, reconstructing arguments in a coherent presentation.' },
+];
+
 export class ChapterService {
   async getChapterById(chapterId: string) {
     const chapter = await Chapter.findById(chapterId)
@@ -87,17 +96,52 @@ export class ChapterService {
     };
   }
 
-  // Public - get published chapters grouped by level
+  // Public - get published chapters grouped by CEFR level
   async getPublishedChapters(filters: any) {
+    // Get all published chapters with their module -> course -> level chain
     const chapters = await Chapter.find({ isPublished: true })
       .populate({
         path: 'lessons',
         select: 'title order level category skill estimatedDuration',
         match: { isPublished: true },
       })
-      .sort({ order: 1 });
+      .populate({
+        path: 'moduleId',
+        select: 'courseId',
+        populate: {
+          path: 'courseId',
+          model: 'Course',
+          select: 'level name description',
+        },
+      })
+      .sort({ order: 1 })
+      .lean();
 
-    return { success: true, data: [{ level: 'A1', title: 'French A1', chapters }] };
+    // Group chapters by CEFR level
+    const grouped: Record<string, any[]> = {};
+    for (const ch of chapters as any[]) {
+      const level = ch.moduleId?.courseId?.level || 'A1';
+      if (!grouped[level]) grouped[level] = [];
+      grouped[level].push({
+        _id: ch._id,
+        title: ch.title,
+        order: ch.order,
+        estimatedTime: ch.estimatedTime,
+        objectives: ch.objectives,
+        lessons: ch.lessons || [],
+        lessonCount: (ch.lessons || []).filter((l: any) => l).length,
+      });
+    }
+
+    // Build response for all 6 levels
+    const data = CEFR_LEVELS.map((info) => ({
+      level: info.level,
+      title: info.title,
+      description: info.description,
+      chapters: grouped[info.level] || [],
+    }));
+
+    return { success: true, data };
   }
 }
 
