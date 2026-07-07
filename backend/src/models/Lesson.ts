@@ -1,10 +1,28 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
+export interface ISectionContent {
+  type: 'warmup' | 'explanation' | 'vocabulary' | 'grammar' | 'reading' | 'listening' | 'speaking' | 'writing' | 'practice' | 'review';
+  title: string;
+  body: string;
+  translation?: string;
+  media?: {
+    audio?: string[];
+    images?: string[];
+  };
+}
+
 export interface ILessonDocument extends Document {
+  chapterId: mongoose.Types.ObjectId;
   title: string;
   description: string;
   level: 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
   category: 'grammar' | 'vocabulary' | 'listening' | 'reading' | 'writing' | 'speaking';
+  skill: 'R' | 'W' | 'L' | 'S' | 'INT' | 'REV';
+  objectives: string[];
+  grammarTopics: string[];
+  vocabulary: mongoose.Types.ObjectId[];
+  sections: ISectionContent[];
+  activities: mongoose.Types.ObjectId[];
   content: string;
   order: number;
   isPublished: boolean;
@@ -15,8 +33,38 @@ export interface ILessonDocument extends Document {
   updatedAt: Date;
 }
 
+const sectionContentSchema = new Schema<ISectionContent>(
+  {
+    type: {
+      type: String,
+      required: true,
+      enum: ['warmup', 'explanation', 'vocabulary', 'grammar', 'reading', 'listening', 'speaking', 'writing', 'practice', 'review'],
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    body: {
+      type: String,
+      required: true,
+    },
+    translation: {
+      type: String,
+    },
+    media: {
+      audio: [String],
+      images: [String],
+    },
+  },
+  { _id: false }
+);
+
 const lessonSchema = new Schema<ILessonDocument>(
   {
+    chapterId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Chapter',
+    },
     title: {
       type: String,
       required: [true, 'Title is required'],
@@ -38,6 +86,34 @@ const lessonSchema = new Schema<ILessonDocument>(
       required: [true, 'Category is required'],
       enum: ['grammar', 'vocabulary', 'listening', 'reading', 'writing', 'speaking'],
     },
+    skill: {
+      type: String,
+      enum: ['R', 'W', 'L', 'S', 'INT', 'REV'],
+    },
+    objectives: {
+      type: [String],
+      default: [],
+    },
+    grammarTopics: {
+      type: [String],
+      default: [],
+    },
+    vocabulary: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Vocabulary',
+      },
+    ],
+    sections: {
+      type: [sectionContentSchema],
+      default: [],
+    },
+    activities: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Exercise',
+      },
+    ],
     content: {
       type: String,
       required: [true, 'Content is required'],
@@ -70,8 +146,8 @@ const lessonSchema = new Schema<ILessonDocument>(
   }
 );
 
-// Compound index for level + order sorting
 lessonSchema.index({ level: 1, order: 1 });
+lessonSchema.index({ chapterId: 1, order: 1 });
 lessonSchema.index({ category: 1, isPublished: 1 });
 
 lessonSchema.set('toJSON', {
