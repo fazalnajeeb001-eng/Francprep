@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { LessonPlayer } from "~/components/lessons/LessonPlayer";
-import { greetingLesson } from "~/lib/lessons/a1-greetings";
+import { lessons } from "~/lib/lessons/a1-greetings";
 import { ArrowLeft } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 
@@ -11,8 +11,9 @@ export const Route = createFileRoute("/coaching/chapter/$chapterId/lesson/$lesso
 function LessonPage() {
   const { chapterId, lessonId } = Route.useParams();
   const { dark } = useTheme();
+  const lesson = lessons[lessonId];
 
-  if (chapterId !== "a1-1-1-1" || lessonId !== "1") {
+  if (!lesson) {
     return (
       <div className="min-h-screen dark:bg-[#070B17] bg-gray-50 flex items-center justify-center p-4">
         <div className="text-center">
@@ -24,5 +25,5 @@ function LessonPage() {
     );
   }
 
-  return <LessonPlayer lesson={greetingLesson} />;
+  return <LessonPlayer lesson={lesson} />;
 }
