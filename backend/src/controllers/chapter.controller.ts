@@ -39,6 +39,16 @@ export class ChapterController {
     }
   }
 
+  // Public - list published chapters grouped by level
+  async listPublished(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const result = await chapterService.getPublishedChapters(req.query);
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   // Admin
   async getAll(req: AuthRequest, res: Response, next: NextFunction) {
     try {

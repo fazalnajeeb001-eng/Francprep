@@ -102,6 +102,9 @@ export class ExerciseService {
     const percentage = Math.round((totalScore / exercise.points) * 100);
 
     // Update or create progress record
+    if (!exercise.lessonId) {
+      throw { statusCode: 400, message: 'Exercise is not linked to a lesson' };
+    }
     const lessonId = exercise.lessonId.toString();
     const lessonExercises = await Exercise.countDocuments({ lessonId });
 

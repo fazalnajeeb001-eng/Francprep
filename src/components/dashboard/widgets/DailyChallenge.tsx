@@ -64,7 +64,7 @@ export function DailyChallenge({ dark }: { dark: boolean }) {
         )}
       </div>
 
-      <Link to="/coaching" className={`mt-3 text-xs font-semibold flex items-center gap-1 transition-colors ${dark ? "text-purple-400 hover:text-purple-300" : "text-purple-600 hover:text-purple-700"}`}>
+      <Link to="/learn" className={`mt-3 text-xs font-semibold flex items-center gap-1 transition-colors ${dark ? "text-purple-400 hover:text-purple-300" : "text-purple-600 hover:text-purple-700"}`}>
         More practice <ChevronRight className="w-3 h-3" />
       </Link>
     </div>

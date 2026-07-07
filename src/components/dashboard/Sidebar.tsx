@@ -3,7 +3,7 @@ import { BookOpen, Calendar, LayoutDashboard } from "lucide-react";
 
 const navGroups = [
   { section: "School", items: [
-    { label: "Lessons", icon: BookOpen, href: "/coaching" },
+    { label: "Lessons", icon: BookOpen, href: "/learn" },
   ]},
   { section: "Exam Simulator", items: [
     { label: "TCF / TEF", icon: LayoutDashboard, href: "/exam" },

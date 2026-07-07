@@ -549,7 +549,7 @@ export function LessonPlayer({ lesson }: { lesson: LessonData }) {
         <div className="max-w-3xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <Link to="/coaching" className={`text-xs ${dark ? "text-gray-400 hover:text-purple-400" : "text-gray-600 hover:text-purple-600"} transition-colors`}>
+              <Link to="/learn" className={`text-xs ${dark ? "text-gray-400 hover:text-purple-400" : "text-gray-600 hover:text-purple-600"} transition-colors`}>
                 <ArrowLeft className="w-4 h-4 inline mr-1" />Chapter 1
               </Link>
             </div>
@@ -578,7 +578,7 @@ export function LessonPlayer({ lesson }: { lesson: LessonData }) {
             <ChevronLeft className="w-4 h-4" /> Previous
           </button>
           {sec.type === "selfcheck" ? (
-            <Link to={lesson.lessonNumber >= 4 ? "/coaching" : `/lesson/${lesson.lessonNumber + 1}`} className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 shadow-lg shadow-purple-500/25">
+            <Link to={lesson.lessonNumber >= 4 ? "/learn" : `/lesson/${lesson.lessonNumber + 1}`} className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 shadow-lg shadow-purple-500/25">
               {lesson.lessonNumber >= 4 ? "🎉 Complete" : "Next Lesson"} <Award className="w-4 h-4" />
             </Link>
           ) : (

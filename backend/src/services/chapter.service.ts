@@ -9,8 +9,7 @@ export class ChapterService {
       .populate({
         path: 'lessons',
         select: 'title order skill estimatedDuration isPublished sections',
-      })
-      .populate({ path: 'moduleId', select: 'title' });
+      });
     if (!chapter) {
       throw { status: 404, message: 'Chapter not found' };
     }
@@ -86,6 +85,19 @@ export class ChapterService {
       data: chapters,
       pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
     };
+  }
+
+  // Public - get published chapters grouped by level
+  async getPublishedChapters(filters: any) {
+    const chapters = await Chapter.find({ isPublished: true })
+      .populate({
+        path: 'lessons',
+        select: 'title order level category skill estimatedDuration',
+        match: { isPublished: true },
+      })
+      .sort({ order: 1 });
+
+    return { success: true, data: [{ level: 'A1', title: 'French A1', chapters }] };
   }
 }
 

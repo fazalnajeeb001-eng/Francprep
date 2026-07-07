@@ -21,14 +21,14 @@ export function ContinueLearning({ cl, dark }: { cl: DashboardData["continueLear
             </div>
             <span className="text-purple-400 text-xs font-bold">{cl.progress}%</span>
           </div>
-          <Link to="/coaching" className="mt-4 w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2">
+          <Link to="/learn" className="mt-4 w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2">
             <Play className="w-4 h-4" /> Resume Lesson
           </Link>
         </div>
       ) : (
         <div className="text-center py-6">
           <p className={`text-sm ${dark ? "text-gray-500" : "text-gray-400"} mb-3`}>No lessons in progress yet</p>
-          <Link to="/coaching" className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
+          <Link to="/learn" className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
             <Play className="w-4 h-4" /> Start Learning
           </Link>
         </div>
