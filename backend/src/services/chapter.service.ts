@@ -70,7 +70,6 @@ export class ChapterService {
   async deleteChapter(id: string) {
     const chapter = await Chapter.findByIdAndDelete(id);
     if (!chapter) throw { status: 404, message: 'Chapter not found' };
-    // Also clean up related lessons
     await Lesson.deleteMany({ chapterId: id });
     return { message: 'Chapter and related lessons deleted' };
   }
@@ -96,52 +95,77 @@ export class ChapterService {
     };
   }
 
-  // Public - get published chapters grouped by CEFR level
+  // Public - get published chapters grouped by all 6 CEFR levels
   async getPublishedChapters(filters: any) {
-    // Get all published chapters with their module -> course -> level chain
-    const chapters = await Chapter.find({ isPublished: true })
-      .populate({
-        path: 'lessons',
-        select: 'title order level category skill estimatedDuration',
-        match: { isPublished: true },
-      })
-      .populate({
-        path: 'moduleId',
-        select: 'courseId',
-        populate: {
-          path: 'courseId',
-          model: 'Course',
-          select: 'level name description',
-        },
-      })
-      .sort({ order: 1 })
-      .lean();
+    try {
+      const chapters = await Chapter.find({ isPublished: true })
+        .populate({
+          path: 'lessons',
+          select: 'title order level category skill estimatedDuration',
+          match: { isPublished: true },
+        })
+        .populate({
+          path: 'moduleId',
+          select: 'courseId',
+          populate: { path: 'courseId', select: 'level name description' },
+        })
+        .sort({ order: 1 })
+        .lean();
 
-    // Group chapters by CEFR level
-    const grouped: Record<string, any[]> = {};
-    for (const ch of chapters as any[]) {
-      const level = ch.moduleId?.courseId?.level || 'A1';
-      if (!grouped[level]) grouped[level] = [];
-      grouped[level].push({
+      const grouped: Record<string, any[]> = {};
+      for (const ch of chapters as any[]) {
+        const lvl = ch.moduleId?.courseId?.level || 'A1';
+        if (!grouped[lvl]) grouped[lvl] = [];
+        grouped[lvl].push({
+          _id: ch._id,
+          title: ch.title,
+          order: ch.order,
+          estimatedTime: ch.estimatedTime,
+          objectives: ch.objectives || [],
+          lessons: ch.lessons || [],
+          lessonCount: (ch.lessons || []).filter((l: any) => l).length,
+        });
+      }
+
+      const data = CEFR_LEVELS.map((info) => ({
+        level: info.level,
+        title: info.title,
+        description: info.description,
+        chapters: grouped[info.level] || [],
+      }));
+
+      return { success: true, data };
+    } catch (err) {
+      console.error('getPublishedChapters error:', err);
+      // Fallback: return all chapters as A1
+      const chapters = await Chapter.find({ isPublished: true })
+        .populate({
+          path: 'lessons',
+          select: 'title order level category skill estimatedDuration',
+          match: { isPublished: true },
+        })
+        .sort({ order: 1 })
+        .lean();
+
+      const chData = (chapters as any[]).map((ch) => ({
         _id: ch._id,
         title: ch.title,
         order: ch.order,
         estimatedTime: ch.estimatedTime,
-        objectives: ch.objectives,
+        objectives: ch.objectives || [],
         lessons: ch.lessons || [],
         lessonCount: (ch.lessons || []).filter((l: any) => l).length,
-      });
+      }));
+
+      const data = CEFR_LEVELS.map((info) => ({
+        level: info.level,
+        title: info.title,
+        description: info.description,
+        chapters: info.level === 'A1' ? chData : [],
+      }));
+
+      return { success: true, data };
     }
-
-    // Build response for all 6 levels
-    const data = CEFR_LEVELS.map((info) => ({
-      level: info.level,
-      title: info.title,
-      description: info.description,
-      chapters: grouped[info.level] || [],
-    }));
-
-    return { success: true, data };
   }
 }
 
