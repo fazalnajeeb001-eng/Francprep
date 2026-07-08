@@ -245,10 +245,10 @@ const GrammarDrill = memo(function GrammarDrill({ drill, dark, index, onResult }
       )}
     </div>
   );
-}
+  });
 
-function ReadingSection({ section, dark }: { section: LessonSection; dark: boolean }) {
-  const [answers, setAnswers] = useState<Record<number, string>>({});
+  function ReadingSection({ section, dark }: { section: LessonSection; dark: boolean }) {
+    const [answers, setAnswers] = useState<Record<number, string>>({});
   const [revealed, setRevealed] = useState<Record<number, boolean>>({});
   const qs = section.comprehensionQuestions || [];
 
