@@ -11,4 +11,7 @@ router.get('/:id/lessons', optionalAuth, (req, res, next) => chapterController.g
 router.get('/:id/vocabulary', optionalAuth, (req, res, next) => chapterController.getVocabulary(req, res, next));
 router.get('/:id/exercises', optionalAuth, (req, res, next) => chapterController.getExercises(req, res, next));
 
+// Chapter completion (authenticated)
+router.post('/:id/complete', authenticate, (req, res, next) => chapterController.completeChapter(req, res, next));
+
 export default router;

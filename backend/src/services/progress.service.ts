@@ -1,6 +1,8 @@
 import StudentProgress from '../models/StudentProgress';
 import Lesson from '../models/Lesson';
+import Chapter from '../models/Chapter';
 import User from '../models/User';
+import mongoose from 'mongoose';
 import { updateProgressSchema } from '../utils/validators';
 import { z } from 'zod';
 
@@ -59,6 +61,70 @@ export class ProgressService {
 
   async getAllProgressForUser(userId: string) {
     return StudentProgress.find({ userId }).populate('lessonId', 'title level category').sort('-lastAccessedAt');
+  }
+
+  /**
+   * GET /api/progress/levels — Get progress grouped by CEFR level (chapters completed / total chapters)
+   */
+  async getLevelsProgress(userId: string) {
+    const levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+    const allChapters = await Chapter.find({ isPublished: true }).populate('lessons').lean();
+
+    // Map each chapter to its CEFR level via module → course hierarchy
+    const db = mongoose.connection.db;
+    if (!db) throw new Error('No database connection');
+
+    const moduleIds = [...new Set(allChapters.map((ch: any) => ch.moduleId?.toString()).filter(Boolean))];
+    const modules = await db.collection('modules').find({ _id: { $in: moduleIds.map((id: string) => new mongoose.Types.ObjectId(id)) } }).toArray();
+    const courseIds = [...new Set(modules.map((m: any) => m.courseId?.toString()).filter(Boolean))];
+    const courses = await db.collection('courses').find({ _id: { $in: courseIds.map((id: string) => new mongoose.Types.ObjectId(id)) } }).toArray();
+
+    const courseLevelMap: Record<string, string> = {};
+    for (const c of courses) {
+      courseLevelMap[c._id.toString()] = c.level;
+    }
+    const moduleLevelMap: Record<string, string> = {};
+    for (const m of modules) {
+      moduleLevelMap[m._id.toString()] = courseLevelMap[m.courseId?.toString()] || '';
+    }
+
+    // Get user's completed lessons
+    const completedLessons = await StudentProgress.find({
+      userId,
+      status: 'completed',
+    }).select('lessonId');
+
+    const completedLessonIds = new Set(completedLessons.map((p) => p.lessonId.toString()));
+
+    // For each level, count chapters where ALL lessons are completed
+    const result = levels.map((level) => {
+      const chaptersForLevel = allChapters.filter((ch: any) => {
+        const modId = ch.moduleId?.toString();
+        return moduleLevelMap[modId] === level;
+      });
+
+      let chaptersCompleted = 0;
+      for (const ch of chaptersForLevel) {
+        const lessonIds = (ch as any).lessons || [];
+        if (lessonIds.length === 0) continue;
+        const allDone = lessonIds.every((l: any) => {
+          const id = typeof l === 'object' && l._id ? l._id.toString() : l.toString();
+          return completedLessonIds.has(id);
+        });
+        if (allDone) chaptersCompleted++;
+      }
+
+      return {
+        level,
+        totalChapters: chaptersForLevel.length,
+        chaptersCompleted,
+        progressPercent: chaptersForLevel.length > 0
+          ? Math.round((chaptersCompleted / chaptersForLevel.length) * 100)
+          : 0,
+      };
+    });
+
+    return result;
   }
 }
 export const progressService = new ProgressService();

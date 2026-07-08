@@ -54,7 +54,9 @@ export function AudioPlayer({ src, label, transcript }: AudioPlayerProps) {
 }
 
 export function SpeakingRecorder({ onSave }: { onSave?: (blob: Blob) => void }) {
+  const { dark } = useTheme();
   const [recording, setRecording] = useState(false);
+  const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
   const mediaRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
 
@@ -64,12 +66,14 @@ export function SpeakingRecorder({ onSave }: { onSave?: (blob: Blob) => void }) 
       setRecording(false);
     } else {
       try {
+        setRecordedBlob(null);
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const recorder = new MediaRecorder(stream);
         chunksRef.current = [];
         recorder.ondataavailable = (e) => chunksRef.current.push(e.data);
         recorder.onstop = () => {
           const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+          setRecordedBlob(blob);
           onSave?.(blob);
           stream.getTracks().forEach(t => t.stop());
         };
@@ -80,11 +84,35 @@ export function SpeakingRecorder({ onSave }: { onSave?: (blob: Blob) => void }) 
     }
   };
 
+  const handleDownload = () => {
+    if (!recordedBlob) return;
+    const url = URL.createObjectURL(recordedBlob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `recording-${Date.now()}.webm`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
-    <button onClick={toggleRecord}
-      className={`w-16 h-16 rounded-full flex items-center justify-center transition-all shadow-md ${recording ? "bg-red-500 animate-pulse" : "bg-gradient-to-br from-purple-500 to-indigo-500 hover:opacity-90"}`}>
-      <div className={`w-6 h-6 ${recording ? "bg-white rounded-sm" : "bg-white rounded-full"}`} />
-    </button>
+    <div className="flex flex-col items-center gap-3">
+      <button onClick={toggleRecord}
+        className={`w-16 h-16 rounded-full flex items-center justify-center transition-all shadow-md ${recording ? "bg-red-500 animate-pulse" : "bg-gradient-to-br from-purple-500 to-indigo-500 hover:opacity-90"}`}>
+        <div className={`w-6 h-6 ${recording ? "bg-white rounded-sm" : "bg-white rounded-full"}`} />
+      </button>
+      <div className="flex items-center gap-2">
+        {recordedBlob && (
+          <button onClick={handleDownload}
+            className="text-xs px-3 py-1.5 bg-emerald-500 text-white rounded-lg hover:opacity-80 transition-all">
+            💾 Download Recording
+          </button>
+        )}
+        {!recording && !recordedBlob && (
+          <span className={`text-xs ${dark ? "text-gray-500" : "text-gray-400"}`}>Tap to start recording</span>
+        )}
+        {recording && <span className="text-xs text-red-400 animate-pulse">Recording...</span>}
+      </div>
+    </div>
   );
 }
 

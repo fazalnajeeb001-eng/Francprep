@@ -11,12 +11,73 @@ import type { LessonData, LessonSection, VocabWord } from "~/lib/lessons/a1-gree
 
 // ─── Speak helper ─────────────────────────────────────────────────────────
 function speak(text: string, lang = "fr-FR") {
-  if (typeof window === "undefined") return;
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = lang;
-  u.rate = 0.85;
-  window.speechSynthesis.speak(u);
+  if (typeof window === "undefined" || !window.speechSynthesis) return false;
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = lang;
+    u.rate = 0.85;
+    // Prefer female French voice if available
+    const voices = window.speechSynthesis.getVoices();
+    const femaleVoice = voices.find(
+      v => v.lang.startsWith("fr") && (v.name.toLowerCase().includes("female") || v.name.includes("Samantha") || v.name.includes("Audrey") || v.name.includes("Amélie") || v.name.includes("Julie") || v.name.includes("Marie"))
+    );
+    if (femaleVoice) u.voice = femaleVoice;
+    window.speechSynthesis.speak(u);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function useSpeak() {
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const checkInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const speakWithState = useCallback((text: string, lang = "fr-FR") => {
+    speak(text, lang);
+    setIsSpeaking(true);
+    if (checkInterval.current) clearInterval(checkInterval.current);
+    checkInterval.current = setInterval(() => {
+      if (!window.speechSynthesis || !window.speechSynthesis.speaking) {
+        setIsSpeaking(false);
+        if (checkInterval.current) {
+          clearInterval(checkInterval.current);
+          checkInterval.current = null;
+        }
+      }
+    }, 200);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (checkInterval.current) clearInterval(checkInterval.current);
+    };
+  }, []);
+
+  return { speak: speakWithState, isSpeaking };
+}
+
+// ─── Translation Toggle ─────────────────────────────────────────────────
+function TranslationToggle({ enabled, onToggle, dark }: { enabled: boolean; onToggle: () => void; dark: boolean }) {
+  return (
+    <button onClick={onToggle}
+      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold border transition-all ${
+        enabled
+          ? "bg-purple-500/20 border-purple-500/40 text-purple-400 shadow-sm shadow-purple-500/20"
+          : dark
+          ? "border-[#1e2a4a] text-gray-500 hover:text-gray-300"
+          : "border-gray-200 text-gray-400 hover:text-gray-600"
+      }`}
+      aria-label={enabled ? "Hide translations" : "Show translations"}
+    >
+      <span className={enabled ? "opacity-100" : "opacity-50"}>🇫🇷</span>
+      <span className={`relative w-7 h-3.5 rounded-full transition-colors ${enabled ? "bg-purple-500" : dark ? "bg-[#1e2a4a]" : "bg-gray-300"}`}>
+        <span className={`absolute top-0.5 w-2.5 h-2.5 rounded-full bg-white transition-all ${enabled ? "left-[calc(100%-10px)]" : "left-0.5"}`} />
+      </span>
+      <span className={enabled ? "opacity-100" : "opacity-50"}>🇬🇧</span>
+    </button>
+  );
 }
 
 // ─── Section components ───────────────────────────────────────────────────
@@ -44,7 +105,7 @@ function Explanation({ section, dark }: { section: LessonSection; dark: boolean 
   );
 }
 
-function VocabSection({ section, dark }: { section: LessonSection; dark: boolean }) {
+function VocabSection({ section, dark, showTranslation }: { section: LessonSection; dark: boolean; showTranslation?: boolean }) {
   const voc = section.vocabulary || [];
   return (
     <div className={`${dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200"} backdrop-blur-lg border rounded-2xl p-5 transition-colors`}>
@@ -61,7 +122,14 @@ function VocabSection({ section, dark }: { section: LessonSection; dark: boolean
             <div className="flex-1 min-w-0">
               <span className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{v.french}</span>
               <span className={`text-[10px] ml-2 ${dark ? "text-gray-500" : "text-gray-400"}`}>{v.pronunciation}</span>
-              <p className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"}`}>{v.english}</p>
+              <motion.p
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: showTranslation ? 1 : 0, height: showTranslation ? "auto" : 0 }}
+                transition={{ duration: 0.3 }}
+                className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"} overflow-hidden`}
+              >
+                {v.english}
+              </motion.p>
             </div>
             <button onClick={() => speak(v.example)}
               className={`text-[10px] px-2 py-1 rounded-lg border flex-shrink-0 ${dark ? "border-[#1e2a4a] text-gray-400 hover:text-purple-400" : "border-gray-200 text-gray-500 hover:text-purple-600"} transition-colors`}
@@ -76,6 +144,10 @@ function VocabSection({ section, dark }: { section: LessonSection; dark: boolean
 }
 
 function GrammarSection({ section, dark }: { section: LessonSection; dark: boolean }) {
+  const [drillResults, setDrillResults] = useState<boolean[]>([]);
+  const allChecked = drillResults.length === (section.grammarDrills?.length || 0) && drillResults.length > 0;
+  const correctCount = drillResults.filter(Boolean).length;
+
   return (
     <div className={`${dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200"} backdrop-blur-lg border rounded-2xl p-5 transition-colors`}>
       <h3 className={`text-sm font-semibold mb-3 ${dark ? "text-white" : "text-gray-900"}`}>{section.title}</h3>
@@ -103,18 +175,59 @@ function GrammarSection({ section, dark }: { section: LessonSection; dark: boole
           <p className={`text-xs font-semibold mb-2 ${dark ? "text-purple-400" : "text-purple-700"}`}>✏️ Mini Drills</p>
           <div className="space-y-2">
             {section.grammarDrills.map((d, i) => (
-              <GrammarDrill key={i} drill={d} dark={dark} index={i} />
+              <GrammarDrill key={i} drill={d} dark={dark} index={i} onResult={(correct) => {
+                setDrillResults(prev => {
+                  const n = [...prev];
+                  n[i] = correct;
+                  return n;
+                });
+              }} />
             ))}
           </div>
+          {allChecked && (
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+              className={`mt-3 p-3 rounded-xl text-center text-sm font-semibold ${
+                correctCount === drillResults.length
+                  ? `${dark ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30" : "bg-emerald-50 text-emerald-700 border-emerald-300"} border`
+                  : correctCount >= drillResults.length / 2
+                  ? `${dark ? "bg-amber-500/10 text-amber-400 border-amber-500/30" : "bg-amber-50 text-amber-700 border-amber-300"} border`
+                  : `${dark ? "bg-red-500/10 text-red-400 border-red-500/30" : "bg-red-50 text-red-700 border-red-300"} border`
+              }`}>
+              You got {correctCount}/{drillResults.length} correct!
+              {correctCount === drillResults.length ? " 🎉" : correctCount >= drillResults.length / 2 ? " 👍" : " 💪"}
+            </motion.div>
+          )}
         </div>
       )}
     </div>
   );
 }
 
-function GrammarDrill({ drill, dark, index }: { drill: { prompt: string; answer: string }; dark: boolean; index: number }) {
+function GrammarDrill({ drill, dark, index, onResult }: { drill: { prompt: string; answer: string }; dark: boolean; index: number; onResult?: (correct: boolean) => void }) {
   const [revealed, setRevealed] = useState(false);
   const [userAnswer, setUserAnswer] = useState("");
+  const isTemplate = drill.answer.includes("[your name]");
+  const prefix = isTemplate ? drill.answer.replace(/\s*\[your name\].*/, "").toLowerCase().trim() : "";
+
+  function normalize(s: string) {
+    return s.replace(/\s+([?.!,])/g, "$1").toLowerCase().trim();
+  }
+
+  function isCorrect(input: string, expected: string): boolean {
+    const n = normalize(input);
+    const e = normalize(expected);
+    if (isTemplate) {
+      return n.length > 0 && n.startsWith(prefix) && n.length > prefix.length;
+    }
+    return n === e;
+  }
+
+  const handleCheck = () => {
+    const correct = isCorrect(userAnswer, drill.answer);
+    setRevealed(true);
+    onResult?.(correct);
+  };
+
   return (
     <div className={`${dark ? "bg-[#070B17] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"} rounded-xl p-3 border`}>
       <p className={`text-sm mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{drill.prompt}</p>
@@ -122,12 +235,12 @@ function GrammarDrill({ drill, dark, index }: { drill: { prompt: string; answer:
         <input value={userAnswer} onChange={(e) => setUserAnswer(e.target.value)}
           className={`flex-1 text-sm rounded-lg px-3 py-1.5 ${dark ? "bg-[#101828] border-[#1e2a4a] text-white" : "bg-white border-gray-200 text-gray-900"} border focus:outline-none focus:ring-1 focus:ring-purple-500`}
           placeholder="Type your answer..." />
-        <button onClick={() => { setRevealed(true); }} disabled={!userAnswer.trim()}
+        <button onClick={handleCheck} disabled={!userAnswer.trim()}
           className="px-3 py-1.5 text-xs bg-purple-500 text-white rounded-lg hover:opacity-80 disabled:opacity-30 transition-all">Check</button>
       </div>
       {revealed && (
-        <p className={`text-xs mt-2 ${userAnswer.trim().toLowerCase() === drill.answer.toLowerCase() ? "text-emerald-400" : "text-red-400"}`}>
-          {userAnswer.trim().toLowerCase() === drill.answer.toLowerCase() ? "✅ Correct!" : `❌ Answer: ${drill.answer}`}
+        <p className={`text-xs mt-2 ${isCorrect(userAnswer, drill.answer) ? "text-emerald-400" : "text-red-400"}`}>
+          {isCorrect(userAnswer, drill.answer) ? "✅ Correct!" : `❌ Answer: ${drill.answer}`}
         </p>
       )}
     </div>
@@ -171,18 +284,28 @@ function ListeningSection({ section, dark }: { section: LessonSection; dark: boo
   const [showTranscript, setShowTranscript] = useState(false);
   const [tfAnswers, setTfAnswers] = useState<Record<number, boolean | null>>({});
   const [tfRevealed, setTfRevealed] = useState(false);
+  const [mcqAnswers, setMcqAnswers] = useState<Record<number, number | null>>({});
+  const [fbAnswers, setFbAnswers] = useState<Record<number, string>>({});
+  const [fbChecked, setFbChecked] = useState<Record<number, boolean>>({});
+  const { speak: speakWithState, isSpeaking } = useSpeak();
   const tfs = section.listeningTrueFalse || [];
+  const mcqs = section.listeningMCQ || [];
+  const fbs = section.listeningFillBlank || [];
 
   const playListening = () => {
     const lines = (section.listeningTranscript || "").replace(/\*\*/g, "").split("\n").filter(Boolean);
     const fullText = lines.join(". ");
-    speak(fullText);
+    speakWithState(fullText);
   };
 
   const tfCorrect = (idx: number) => {
     if (tfAnswers[idx] === undefined) return "";
     return tfAnswers[idx] === tfs[idx].answer ? "✅" : "❌";
   };
+
+  function normalize(s: string) {
+    return s.replace(/\s+([?.!,])/g, "$1").toLowerCase().trim();
+  }
 
   return (
     <div className={`${dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200"} backdrop-blur-lg border rounded-2xl p-5 transition-colors`}>
@@ -192,8 +315,8 @@ function ListeningSection({ section, dark }: { section: LessonSection; dark: boo
       </div>
       <div className="flex gap-3 mb-4">
         <button onClick={playListening}
-          className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
-          <Volume2 className="w-4 h-4" /> Play Audio
+          className={`flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 ${isSpeaking ? "opacity-80 animate-pulse" : ""}`}>
+          <Volume2 className={`w-4 h-4 ${isSpeaking ? "animate-bounce" : ""}`} /> {isSpeaking ? "Playing..." : "Play Audio"}
         </button>
         <button onClick={() => setShowTranscript(!showTranscript)}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
@@ -206,24 +329,77 @@ function ListeningSection({ section, dark }: { section: LessonSection; dark: boo
           {section.listeningTranscript}
         </motion.div>
       )}
-      <div className="space-y-2">
-        <p className={`text-xs font-semibold ${dark ? "text-purple-400" : "text-purple-700"}`}>True or False</p>
-        {tfs.map((tf, i) => (
-          <div key={i} className={`${dark ? "bg-[#070B17] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"} rounded-xl p-3 border`}>
-            <p className={`text-sm mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{tf.statement}</p>
-            <div className="flex gap-2">
-              <button onClick={() => setTfAnswers({ ...tfAnswers, [i]: true })}
-                className={`px-4 py-1.5 text-xs rounded-lg font-semibold transition-all ${tfAnswers[i] === true ? "bg-emerald-500 text-white" : dark ? "bg-white/5 text-gray-400" : "bg-gray-200 text-gray-600"}`}>True</button>
-              <button onClick={() => setTfAnswers({ ...tfAnswers, [i]: false })}
-                className={`px-4 py-1.5 text-xs rounded-lg font-semibold transition-all ${tfAnswers[i] === false ? "bg-red-500 text-white" : dark ? "bg-white/5 text-gray-400" : "bg-gray-200 text-gray-600"}`}>False</button>
-              {tfAnswers[i] !== undefined && <span className="text-sm">{tfCorrect(i)}</span>}
+
+      {/* Listening True/False */}
+      {tfs.length > 0 && (
+        <div className="space-y-2 mb-4">
+          <p className={`text-xs font-semibold ${dark ? "text-purple-400" : "text-purple-700"}`}>True or False</p>
+          {tfs.map((tf, i) => (
+            <div key={i} className={`${dark ? "bg-[#070B17] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"} rounded-xl p-3 border`}>
+              <p className={`text-sm mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{tf.statement}</p>
+              <div className="flex gap-2">
+                <button onClick={() => setTfAnswers({ ...tfAnswers, [i]: true })}
+                  className={`px-4 py-1.5 text-xs rounded-lg font-semibold transition-all ${tfAnswers[i] === true ? "bg-emerald-500 text-white" : dark ? "bg-white/5 text-gray-400" : "bg-gray-200 text-gray-600"}`}>True</button>
+                <button onClick={() => setTfAnswers({ ...tfAnswers, [i]: false })}
+                  className={`px-4 py-1.5 text-xs rounded-lg font-semibold transition-all ${tfAnswers[i] === false ? "bg-red-500 text-white" : dark ? "bg-white/5 text-gray-400" : "bg-gray-200 text-gray-600"}`}>False</button>
+                {tfAnswers[i] !== undefined && <span className="text-sm">{tfCorrect(i)}</span>}
+              </div>
+              {tfAnswers[i] !== undefined && tfAnswers[i] !== tfs[i].answer && (
+                <p className="text-xs text-red-400 mt-1">{tfs[i].explanation}</p>
+              )}
             </div>
-            {tfAnswers[i] !== undefined && tfAnswers[i] !== tfs[i].answer && (
-              <p className="text-xs text-red-400 mt-1">{tfs[i].explanation}</p>
-            )}
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
+
+      {/* Listening MCQ (Lesson 3) */}
+      {mcqs.length > 0 && (
+        <div className="space-y-2 mb-4">
+          <p className={`text-xs font-semibold ${dark ? "text-purple-400" : "text-purple-700"}`}>Multiple Choice</p>
+          {mcqs.map((q, i) => (
+            <div key={i} className={`${dark ? "bg-[#070B17] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"} rounded-xl p-3 border`}>
+              <p className={`text-sm mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{q.question}</p>
+              <div className="space-y-1">
+                {q.options.map((opt, oi) => (
+                  <button key={oi} onClick={() => setMcqAnswers({ ...mcqAnswers, [i]: oi })}
+                    className={`w-full text-left text-sm px-3 py-2 rounded-lg transition-all ${mcqAnswers[i] === oi ? (oi === q.correctIndex ? "bg-emerald-500/20 text-emerald-400 border-emerald-500" : "bg-red-500/20 text-red-400 border-red-500") : dark ? "bg-white/5 text-gray-400 hover:bg-white/10" : "bg-gray-100 text-gray-600 hover:bg-gray-200"} border border-transparent`}>
+                    {opt}
+                  </button>
+                ))}
+              </div>
+              {mcqAnswers[i] !== undefined && mcqAnswers[i] !== null && (
+                <p className={`text-xs mt-1 ${mcqAnswers[i] === q.correctIndex ? "text-emerald-400" : "text-red-400"}`}>
+                  {mcqAnswers[i] === q.correctIndex ? "✅ Correct!" : "❌ Incorrect."}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Listening Fill-in-the-Blank (Lesson 4) */}
+      {fbs.length > 0 && (
+        <div className="space-y-2">
+          <p className={`text-xs font-semibold ${dark ? "text-purple-400" : "text-purple-700"}`}>Fill in the Blank</p>
+          {fbs.map((fb, i) => (
+            <div key={i} className={`${dark ? "bg-[#070B17] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"} rounded-xl p-3 border`}>
+              <p className={`text-sm mb-2 ${dark ? "text-gray-300" : "text-gray-700"}`}>{fb.text}</p>
+              <div className="flex gap-2">
+                <input value={fbAnswers[i] || ""} onChange={(e) => setFbAnswers({ ...fbAnswers, [i]: e.target.value })}
+                  className={`flex-1 text-sm rounded-lg px-3 py-1.5 ${dark ? "bg-[#101828] border-[#1e2a4a] text-white" : "bg-white border-gray-200 text-gray-900"} border focus:outline-none focus:ring-1 focus:ring-purple-500`}
+                  placeholder="Type your answer..." />
+                <button onClick={() => setFbChecked({ ...fbChecked, [i]: true })}
+                  className="px-3 py-1.5 text-xs bg-purple-500 text-white rounded-lg hover:opacity-80 transition-all">Check</button>
+              </div>
+              {fbChecked[i] && (
+                <p className={`text-xs mt-1 ${normalize(fbAnswers[i] || "") === normalize(fb.answer) ? "text-emerald-400" : "text-red-400"}`}>
+                  {normalize(fbAnswers[i] || "") === normalize(fb.answer) ? "✅ Correct!" : `❌ Answer: ${fb.answer}`}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -316,37 +492,109 @@ function MCQExercise({ mcq, dark }: { mcq: { question: string; options: string[]
 }
 
 function MatchingExercise({ pairs, dark }: { pairs: { left: string; right: string }[]; dark: boolean }) {
-  const [selected, setSelected] = useState<string | null>(null);
-  const [matched, setMatched] = useState<Record<number, number>>({});
+  const [selectedLeft, setSelectedLeft] = useState<number | null>(null);
+  const [matches, setMatches] = useState<Record<number, number>>({});
   const [showResults, setShowResults] = useState(false);
+  const [leftShuffled] = useState(() => [...pairs].sort(() => Math.random() - 0.5));
+  const [rightShuffled] = useState(() => [...pairs].sort(() => Math.random() - 0.5));
 
-  const shuffledLeft = [...pairs];
-  const shuffledRight = [...pairs].sort(() => Math.random() - 0.5);
+  const matchedLeftIndices = new Set(Object.keys(matches).map(Number));
+  const matchedRightIndices = new Set(Object.values(matches));
+
+  const handleLeftClick = (leftIdx: number) => {
+    if (matchedLeftIndices.has(leftIdx)) return;
+    setSelectedLeft(selectedLeft === leftIdx ? null : leftIdx);
+  };
+
+  const handleRightClick = (rightIdx: number) => {
+    if (matchedRightIndices.has(rightIdx)) return;
+    if (selectedLeft === null) return;
+    // Pair the selected left with this right item
+    setMatches(prev => ({ ...prev, [selectedLeft]: rightIdx }));
+    setSelectedLeft(null);
+  };
+
+  // Remove a match by clicking a paired left item
+  const handleMatchedLeftClick = (leftIdx: number) => {
+    setMatches(prev => {
+      const n = { ...prev };
+      delete n[leftIdx];
+      return n;
+    });
+  };
+
+  const allMatched = Object.keys(matches).length === pairs.length;
+  const correctCount = pairs.filter((_, i) => matches[i] !== undefined && rightShuffled[matches[i]].left === pairs[i].left && rightShuffled[matches[i]].right === pairs[i].right).length;
 
   return (
     <div className="mb-4">
       <p className={`text-xs font-semibold mb-2 ${dark ? "text-purple-400" : "text-purple-700"}`}>2. Matching</p>
+      <p className={`text-[10px] mb-2 ${dark ? "text-gray-500" : "text-gray-400"}`}>Click a left item, then click its match on the right.</p>
       <div className="grid grid-cols-2 gap-2">
         <div className="space-y-1">
-          {shuffledLeft.map((p, i) => (
-            <div key={`l-${i}`} className={`text-xs px-3 py-2 rounded-lg ${dark ? "bg-[#070B17] text-gray-300" : "bg-gray-50 text-gray-700"} border ${dark ? "border-[#1e2a4a]" : "border-gray-200"}`}>
-              {p.left}
-            </div>
-          ))}
+          {leftShuffled.map((p, i) => {
+            const isSelected = selectedLeft === i;
+            const isMatched = matchedLeftIndices.has(i);
+            const matchedRightIdx = matches[i];
+            const isCorrectPair = isMatched && rightShuffled[matchedRightIdx]?.left === pairs[i].left;
+            return (
+              <button key={`l-${i}`} onClick={() => isMatched ? handleMatchedLeftClick(i) : handleLeftClick(i)}
+                className={`w-full text-left text-xs px-3 py-2 rounded-lg border transition-all ${
+                  isMatched
+                    ? isCorrectPair
+                      ? "bg-emerald-500/20 text-emerald-400 border-emerald-500"
+                      : "bg-red-500/20 text-red-400 border-red-500"
+                    : isSelected
+                    ? "bg-purple-500/20 text-purple-400 border-purple-500 ring-1 ring-purple-500"
+                    : dark
+                    ? "bg-[#070B17] text-gray-300 border-[#1e2a4a] hover:border-purple-500/40"
+                    : "bg-gray-50 text-gray-700 border-gray-200 hover:border-purple-400"
+                }`}>
+                {p.left}
+              </button>
+            );
+          })}
         </div>
         <div className="space-y-1">
-          {shuffledRight.map((p, i) => (
-            <div key={`r-${i}`} className={`text-xs px-3 py-2 rounded-lg ${dark ? "bg-[#070B17] text-gray-300" : "bg-gray-50 text-gray-700"} border ${dark ? "border-[#1e2a4a]" : "border-gray-200"}`}>
-              {p.right}
-            </div>
-          ))}
+          {rightShuffled.map((p, i) => {
+            const isMatched = matchedRightIndices.has(i);
+            const matchedLeftIdx = Object.entries(matches).find(([_, v]) => v === i)?.[0];
+            const isCorrectPair = matchedLeftIdx !== undefined && p.left === pairs[Number(matchedLeftIdx)].left;
+            return (
+              <button key={`r-${i}`} onClick={() => handleRightClick(i)}
+                disabled={isMatched}
+                className={`w-full text-left text-xs px-3 py-2 rounded-lg border transition-all ${
+                  isMatched
+                    ? isCorrectPair
+                      ? "bg-emerald-500/20 text-emerald-400 border-emerald-500"
+                      : "bg-red-500/20 text-red-400 border-red-500"
+                    : dark
+                    ? "bg-[#070B17] text-gray-300 border-[#1e2a4a] hover:border-purple-500/40 disabled:opacity-50"
+                    : "bg-gray-50 text-gray-700 border-gray-200 hover:border-purple-400 disabled:opacity-50"
+                }`}>
+                {p.right}
+              </button>
+            );
+          })}
         </div>
       </div>
-      <p className={`text-[10px] mt-2 ${dark ? "text-gray-500" : "text-gray-400"}`}>Match items in your mind, then check the key below.</p>
-      <button onClick={() => setShowResults(!showResults)}
-        className="text-xs text-purple-400 hover:text-purple-300 mt-1 font-semibold">
-        {showResults ? "Hide" : "Show"} Answer Key
-      </button>
+      <div className="flex items-center gap-2 mt-2">
+        {allMatched && (
+          <span className={`text-xs font-semibold ${correctCount === pairs.length ? "text-emerald-400" : "text-amber-400"}`}>
+            {correctCount === pairs.length ? "�� All correct!" : `${correctCount}/${pairs.length} correct`}
+          </span>
+        )}
+        <button onClick={() => setShowResults(!showResults)}
+          className="text-xs text-purple-400 hover:text-purple-300 font-semibold">
+          {showResults ? "Hide" : "Show"} Answer Key
+        </button>
+        {Object.keys(matches).length > 0 && (
+          <button onClick={() => { setMatches({}); setSelectedLeft(null); }}
+            className="text-xs text-gray-400 hover:text-gray-300 font-semibold">
+            Reset
+          </button>
+        )}
+      </div>
       {showResults && (
         <div className={`${dark ? "bg-emerald-500/5 border-emerald-500/20" : "bg-emerald-50 border-emerald-200"} rounded-xl p-3 border mt-2`}>
           {pairs.map((p, i) => (
@@ -361,6 +609,10 @@ function MatchingExercise({ pairs, dark }: { pairs: { left: string; right: strin
 function FillBlankExercise({ fills, dark }: { fills: { text: string; answer: string }[]; dark: boolean }) {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [checked, setChecked] = useState<Record<number, boolean>>({});
+
+  function normalize(s: string) {
+    return s.replace(/\s+([?.!,])/g, "$1").toLowerCase().trim();
+  }
   return (
     <div className="mb-4">
       <p className={`text-xs font-semibold mb-2 ${dark ? "text-purple-400" : "text-purple-700"}`}>3. Fill in the Blank</p>
@@ -375,8 +627,8 @@ function FillBlankExercise({ fills, dark }: { fills: { text: string; answer: str
               className="px-3 py-1.5 text-xs bg-purple-500 text-white rounded-lg hover:opacity-80 transition-all">Check</button>
           </div>
           {checked[i] && (
-            <p className={`text-xs mt-1 ${(answers[i] || "").toLowerCase().trim() === f.answer.toLowerCase().trim() ? "text-emerald-400" : "text-red-400"}`}>
-              {(answers[i] || "").toLowerCase().trim() === f.answer.toLowerCase().trim() ? "✅ Correct!" : `❌ Answer: ${f.answer}`}
+            <p className={`text-xs mt-1 ${normalize(answers[i] || "") === normalize(f.answer) ? "text-emerald-400" : "text-red-400"}`}>
+              {normalize(answers[i] || "") === normalize(f.answer) ? "✅ Correct!" : `❌ Answer: ${f.answer}`}
             </p>
           )}
         </div>
@@ -388,7 +640,9 @@ function FillBlankExercise({ fills, dark }: { fills: { text: string; answer: str
 function OrderingExercise({ items, dark }: { items: { text: string }[]; dark: boolean }) {
   const [order, setOrder] = useState<number[]>([...Array(items.length).keys()].sort(() => Math.random() - 0.5));
   const [checked, setChecked] = useState(false);
+  // Items are stored in their correct sequence in the data, so sequential indices = correct order
   const correct = [...Array(items.length).keys()];
+  const isCorrect = order.join(",") === correct.join(",");
 
   return (
     <div className="mb-4">
@@ -410,8 +664,8 @@ function OrderingExercise({ items, dark }: { items: { text: string }[]; dark: bo
       <button onClick={() => setChecked(true)}
         className="text-xs text-purple-400 hover:text-purple-300 mt-2 font-semibold">Check Order</button>
       {checked && (
-        <p className={`text-xs mt-1 ${order.join(",") === correct.join(",") ? "text-emerald-400" : "text-red-400"}`}>
-          {order.join(",") === correct.join(",") ? "✅ Correct order!" : "❌ Try again — think about the logical sequence of a greeting."}
+        <p className={`text-xs mt-1 ${isCorrect ? "text-emerald-400" : "text-red-400"}`}>
+          {isCorrect ? "✅ Correct order!" : `❌ Incorrect — try reordering the items.`}
         </p>
       )}
     </div>
@@ -442,12 +696,11 @@ function ShortAnswerExercise({ qas, dark }: { qas: { question: string; modelAnsw
 }
 
 function ReviewSection({ section, dark, lessonNumber }: { section: LessonSection; dark: boolean; lessonNumber: number }) {
-  const nextLesson = lessonNumber + 1;
   return (
     <div className={`${dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200"} backdrop-blur-lg border rounded-2xl p-5 transition-colors`}>
       <div className="flex items-center gap-3 mb-3"><Star className="w-5 h-5 text-amber-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{section.title}</h3></div>
       <p className={`text-sm leading-relaxed ${dark ? "text-gray-300" : "text-gray-700"}`}>{section.content}</p>
-      <Link to={`/lesson/${nextLesson}`} className="inline-flex items-center gap-2 mt-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
+      <Link to={lessonNumber >= 4 ? "/learn" : `/lesson/${lessonNumber + 1}`} className="inline-flex items-center gap-2 mt-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
         <BookOpen className="w-4 h-4" /> Next Lesson
       </Link>
     </div>
@@ -458,6 +711,13 @@ function SelfCheckSection({ section, dark, lessonNumber }: { section: LessonSect
   const [checked, setChecked] = useState<Record<number, boolean>>({});
   const sc = section.selfCheck || [];
   const allChecked = sc.length > 0 && sc.every((_, i) => checked[i]);
+
+  // When lesson 4 (last of ch1) is completed, save the flag
+  useEffect(() => {
+    if (allChecked && lessonNumber >= 4) {
+      localStorage.setItem("fp_ch1_complete", "true");
+    }
+  }, [allChecked, lessonNumber]);
 
   return (
     <div className={`${dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200"} backdrop-blur-lg border rounded-2xl p-5 transition-colors`}>
@@ -476,6 +736,36 @@ function SelfCheckSection({ section, dark, lessonNumber }: { section: LessonSect
           className="mt-4 text-center">
           <p className="text-lg mb-2">🎉</p>
           <p className="text-sm font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Chapter Complete!</p>
+          {/* XP Popup */}
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 200, damping: 12, delay: 0.3 }}
+            className="inline-flex items-center gap-2 mt-3 px-5 py-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold shadow-lg shadow-amber-500/30"
+          >
+            <Star className="w-5 h-5 fill-white" />
+            <span className="text-lg">+50 XP</span>
+          </motion.div>
+          {/* Confetti particles */}
+          <div className="relative h-20 overflow-hidden mt-2">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{ x: 0, y: 0, opacity: 1, rotate: 0 }}
+                animate={{
+                  x: Math.random() * 200 - 100,
+                  y: Math.random() * -80 - 20,
+                  opacity: [1, 0.8, 0],
+                  rotate: Math.random() * 360,
+                }}
+                transition={{ duration: 1 + Math.random() * 0.5, delay: 0.5 + Math.random() * 0.3 }}
+                className="absolute left-1/2 bottom-0 w-2 h-2 rounded-full"
+                style={{
+                  backgroundColor: ["#a855f7", "#ec4899", "#f59e0b", "#10b981", "#3b82f6", "#ef4444"][i % 6],
+                }}
+              />
+            ))}
+          </div>
         </motion.div>
       )}
     </div>
@@ -502,10 +792,11 @@ export function LessonPlayer({ lesson }: { lesson: LessonData }) {
   const { dark } = useTheme();
   const [currentSection, setCurrentSection] = useState(0);
   const [completedSections, setCompletedSections] = useState<Set<number>>(new Set());
+  const [showTranslation, setShowTranslation] = useState(false);
   const topRef = useRef<HTMLDivElement>(null);
 
   const sections = lesson.sections;
-  const progress = sections.length > 0 ? Math.round((currentSection / sections.length) * 100) : 0;
+  const progress = sections.length > 0 ? Math.round(((currentSection + 1) / sections.length) * 100) : 0;
   const isLast = currentSection >= sections.length - 1;
 
   const goNext = useCallback(() => {
@@ -529,7 +820,7 @@ export function LessonPlayer({ lesson }: { lesson: LessonData }) {
     switch (sec.type) {
       case "warmup": return <WarmUp section={sec} dark={dark} />;
       case "explanation": return <Explanation section={sec} dark={dark} />;
-      case "vocabulary": return <VocabSection section={sec} dark={dark} />;
+      case "vocabulary": return <VocabSection section={sec} dark={dark} showTranslation={showTranslation} />;
       case "grammar": return <GrammarSection section={sec} dark={dark} />;
       case "reading": return <ReadingSection section={sec} dark={dark} />;
       case "listening": return <ListeningSection section={sec} dark={dark} />;
@@ -553,7 +844,10 @@ export function LessonPlayer({ lesson }: { lesson: LessonData }) {
                 <ArrowLeft className="w-4 h-4 inline mr-1" />Chapter 1
               </Link>
             </div>
-            <span className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"}`}>{currentSection + 1} / {sections.length}</span>
+            <div className="flex items-center gap-3">
+              <TranslationToggle enabled={showTranslation} onToggle={() => setShowTranslation(!showTranslation)} dark={dark} />
+              <span className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"}`}>{currentSection + 1} / {sections.length}</span>
+            </div>
           </div>
           <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
             <motion.div initial={{ width: 0 }} animate={{ width: `${progress}%` }}

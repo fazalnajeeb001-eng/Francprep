@@ -56,6 +56,21 @@ export class ProgressController {
     }
   }
 
+  /**
+   * GET /api/progress/levels
+   */
+  async getLevelsProgress(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const levels = await progressService.getLevelsProgress(req.user!.userId);
+      res.status(200).json({
+        success: true,
+        data: levels,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   // --- Admin endpoints ---
 
   /**

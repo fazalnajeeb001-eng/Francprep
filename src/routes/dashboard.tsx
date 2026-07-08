@@ -13,6 +13,7 @@ import { TodayPlan } from "~/components/dashboard/widgets/TodayPlan";
 import { DailyChallenge } from "~/components/dashboard/widgets/DailyChallenge";
 import { WeeklyPlanner } from "~/components/dashboard/widgets/WeeklyPlanner";
 import { CalendarHeatmap } from "~/components/dashboard/widgets/CalendarHeatmap";
+import { StreakWidget } from "~/components/dashboard/widgets/StreakWidget";
 import { ExamCard } from "~/components/dashboard/widgets/ExamCard";
 import { Flame, Diamond, Timer, BookOpen, BookText, Languages, Target, TrendingUp } from "lucide-react";
 import type { DashboardData } from "~/components/dashboard/types";
@@ -115,9 +116,34 @@ function DashboardPage() {
               <DailyChallenge dark={dark} />
             </div>
 
-            {/* Row 4: Charts + Planner + Exams */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Row 3.5: Per-Level Progress */}
+            <div className={`${dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200"} backdrop-blur-lg border rounded-2xl p-5 transition-colors`}>
+              <h3 className={`text-sm font-semibold mb-4 ${dark ? "text-gray-300" : "text-gray-700"}`}>📊 Level Progress</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {data.levelProgress.map((lvl) => (
+                  <div key={lvl.level} className={`rounded-xl p-4 border ${dark ? "bg-[#070B17] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>
+                        {["🌱","🌿","🌳","🔥","⭐","👑"]["ABCDE".indexOf(lvl.level[0])] || "📖"} {lvl.level}
+                      </span>
+                      <span className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"}`}>{lvl.completed}/{lvl.total} chapters</span>
+                    </div>
+                    <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-700"
+                        style={{ width: `${lvl.total > 0 ? (lvl.completed / lvl.total) * 100 : 0}%` }} />
+                    </div>
+                    <p className={`text-[10px] mt-1.5 ${dark ? "text-gray-500" : "text-gray-400"}`}>
+                      {lvl.completed === lvl.total ? "✅ Complete!" : `You're ${lvl.completed}/${lvl.total} chapters into ${lvl.level}`}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Row 4: Charts + Planner + Streak + Exams */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <WeeklyPlanner dark={dark} />
+              <StreakWidget calendar={data.streakCalendar} streak={data.stats.streak} dark={dark} />
               <CalendarHeatmap calendar={data.streakCalendar} dark={dark} />
               <ExamCard dark={dark} />
             </div>

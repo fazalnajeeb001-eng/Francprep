@@ -49,6 +49,18 @@ export class ChapterController {
     }
   }
 
+  /**
+   * POST /api/chapters/:id/complete — Mark all lessons in a chapter as completed
+   */
+  async completeChapter(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const result = await chapterService.completeChapter(req.user!.userId, req.params.id);
+      res.status(200).json({ success: true, data: result, message: 'Chapter completed' });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   // Admin
   async getAll(req: AuthRequest, res: Response, next: NextFunction) {
     try {

@@ -6,6 +6,11 @@ import { updateProgressSchema } from '../utils/validators';
 
 const router = Router();
 
+// GET /api/progress/levels - Get progress grouped by CEFR level
+router.get('/levels', authenticate, (req, res, next) =>
+  progressController.getLevelsProgress(req, res, next)
+);
+
 // GET /api/progress - Get overall user progress
 router.get('/', authenticate, (req, res, next) =>
   progressController.getAll(req, res, next)

@@ -2,6 +2,8 @@ import Chapter from '../models/Chapter';
 import Lesson from '../models/Lesson';
 import Vocabulary from '../models/Vocabulary';
 import Exercise from '../models/Exercise';
+import StudentProgress from '../models/StudentProgress';
+import User from '../models/User';
 import mongoose from 'mongoose';
 
 const CEFR_LEVELS = [
@@ -73,6 +75,66 @@ export class ChapterService {
     if (!chapter) throw { status: 404, message: 'Chapter not found' };
     await Lesson.deleteMany({ chapterId: id });
     return { message: 'Chapter and related lessons deleted' };
+  }
+
+  /**
+   * POST /api/chapters/:id/complete — Mark all lessons in a chapter as completed for a user
+   */
+  async completeChapter(userId: string, chapterId: string) {
+    const chapter = await Chapter.findById(chapterId).populate('lessons');
+    if (!chapter) throw { status: 404, message: 'Chapter not found' };
+
+    const lessonIds = chapter.lessons;
+    if (!lessonIds || lessonIds.length === 0) {
+      throw { status: 400, message: 'Chapter has no lessons' };
+    }
+
+    const now = new Date();
+    const results = [];
+
+    for (const lessonId of lessonIds) {
+      const progress = await StudentProgress.findOneAndUpdate(
+        { userId, lessonId },
+        {
+          $set: {
+            status: 'completed',
+            completedAt: now,
+            lastAccessedAt: now,
+            score: 100,
+            exercisesCompleted: 0,
+            totalExercises: 0,
+            timeSpent: 0,
+          },
+          $setOnInsert: { startedAt: now },
+        },
+        { upsert: true, new: true }
+      );
+      results.push(progress);
+    }
+
+    // Update user streak and XP
+    const user = await User.findById(userId);
+    if (user) {
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      user.xp = (user.xp || 0) + (lessonIds.length * 10);
+      if (user.lastStudyDate) {
+        const last = new Date(user.lastStudyDate); last.setHours(0, 0, 0, 0);
+        const diff = (today.getTime() - last.getTime()) / 86400000;
+        if (diff === 1) user.streak = (user.streak || 0) + 1;
+        else if (diff > 1) user.streak = 1;
+      } else {
+        user.streak = 1;
+      }
+      user.lastStudyDate = new Date();
+      await user.save();
+    }
+
+    return {
+      chapterId: chapter._id,
+      chapterTitle: chapter.title,
+      lessonsCompleted: lessonIds.length,
+      progress: results.map((r) => ({ lessonId: r.lessonId, status: r.status })),
+    };
   }
 
   async getAllChapters(filters: any) {

@@ -159,11 +159,10 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
   // Handle exercise completion from QuizComponent
   const handleExerciseComplete = useCallback((exerciseId: string, score: number, total: number) => {
     setExercisesCompleted(prev => prev + 1);
-    
-    // Submit to backend
+    // Submit actual score to backend
     apiFetch(`/exercises/${exerciseId}/submit`, {
       method: 'POST',
-      body: JSON.stringify({ answers: [] }), // answers handled by QuizComponent
+      body: JSON.stringify({ score, total, timestamp: Date.now() }),
     }).catch(() => {});
   }, []);
 
@@ -355,7 +354,7 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4">
                   <QuizComponent
                     questions={section.questions.map(q => ({
-                      _id: q.id,
+                      id: q.id,
                       type: q.type,
                       question: q.question,
                       options: q.options,
@@ -416,7 +415,7 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4">
                   <QuizComponent
                     questions={section.questions.map(q => ({
-                      _id: q.id,
+                      id: q.id,
                       type: q.type,
                       question: q.question,
                       options: q.options,
@@ -580,7 +579,7 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
                   )}
                   <QuizComponent
                     questions={exercise.questions.map(q => ({
-                      _id: q.id,
+                      id: q.id,
                       type: q.type,
                       question: q.question,
                       options: q.options,
