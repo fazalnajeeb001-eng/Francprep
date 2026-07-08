@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import {
@@ -203,7 +203,7 @@ function GrammarSection({ section, dark }: { section: LessonSection; dark: boole
   );
 }
 
-function GrammarDrill({ drill, dark, index, onResult }: { drill: { prompt: string; answer: string }; dark: boolean; index: number; onResult?: (correct: boolean) => void }) {
+const GrammarDrill = memo(function GrammarDrill({ drill, dark, index, onResult }: { drill: { prompt: string; answer: string }; dark: boolean; index: number; onResult?: (correct: boolean) => void }) {
   const [revealed, setRevealed] = useState(false);
   const [userAnswer, setUserAnswer] = useState("");
   const isTemplate = drill.answer.includes("[your name]");
@@ -581,7 +581,7 @@ function MatchingExercise({ pairs, dark }: { pairs: { left: string; right: strin
       <div className="flex items-center gap-2 mt-2">
         {allMatched && (
           <span className={`text-xs font-semibold ${correctCount === pairs.length ? "text-emerald-400" : "text-amber-400"}`}>
-            {correctCount === pairs.length ? "�� All correct!" : `${correctCount}/${pairs.length} correct`}
+            {correctCount === pairs.length ? "��� All correct!" : `${correctCount}/${pairs.length} correct`}
           </span>
         )}
         <button onClick={() => setShowResults(!showResults)}
