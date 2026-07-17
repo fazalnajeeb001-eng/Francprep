@@ -84,19 +84,19 @@ interface SectionDef {
   hasContent: boolean;
 }
 
-function buildSections(lesson: LessonData): SectionDef[] {
+function buildSections(_lesson: LessonData): SectionDef[] {
   return [
-    { key: 'warmUp', label: 'Warm-Up', icon: <HelpCircle className="w-3.5 h-3.5" />, hasContent: !!lesson.warmUp?.content },
-    { key: 'explanation', label: 'Lesson', icon: <FileText className="w-3.5 h-3.5" />, hasContent: !!lesson.explanation?.content },
-    { key: 'vocabulary', label: 'Vocab', icon: <Languages className="w-3.5 h-3.5" />, hasContent: lesson.vocabItems?.length > 0 },
-    { key: 'grammar', label: 'Grammar', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: !!lesson.grammar?.explanation || lesson.grammarDrills?.questions?.length > 0 },
-    { key: 'reading', label: 'Reading', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: !!lesson.reading?.text },
-    { key: 'listening', label: 'Listening', icon: <Headphones className="w-3.5 h-3.5" />, hasContent: !!lesson.listening?.transcript || lesson.listening?.questions?.length > 0 },
-    { key: 'speaking', label: 'Speaking', icon: <Mic className="w-3.5 h-3.5" />, hasContent: !!lesson.speaking?.guidedActivity },
-    { key: 'writing', label: 'Writing', icon: <PenTool className="w-3.5 h-3.5" />, hasContent: !!lesson.writing?.task },
-    { key: 'practice', label: 'Practice', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: lesson.practiceExercises?.questions?.length > 0 },
-    { key: 'review', label: 'Review', icon: <Star className="w-3.5 h-3.5" />, hasContent: !!lesson.miniReview?.content || lesson.selfAssessment?.length > 0 },
-  ].filter(s => s.hasContent);
+    { key: 'warmUp', label: 'Warm-Up', icon: <HelpCircle className="w-3.5 h-3.5" />, hasContent: true },
+    { key: 'explanation', label: 'Lesson', icon: <FileText className="w-3.5 h-3.5" />, hasContent: true },
+    { key: 'vocabulary', label: 'Vocab', icon: <Languages className="w-3.5 h-3.5" />, hasContent: true },
+    { key: 'grammar', label: 'Grammar', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: true },
+    { key: 'reading', label: 'Reading', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: true },
+    { key: 'listening', label: 'Listening', icon: <Headphones className="w-3.5 h-3.5" />, hasContent: true },
+    { key: 'speaking', label: 'Speaking', icon: <Mic className="w-3.5 h-3.5" />, hasContent: true },
+    { key: 'writing', label: 'Writing', icon: <PenTool className="w-3.5 h-3.5" />, hasContent: true },
+    { key: 'practice', label: 'Practice', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: true },
+    { key: 'review', label: 'Review', icon: <Star className="w-3.5 h-3.5" />, hasContent: true },
+  ];
 }
 
 // ─── Main Component ────────────────────────────────────────────────────────
@@ -210,8 +210,19 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
   function renderCurrentSection(): React.ReactNode {
     if (!currentSection) return null;
 
+    const emptyState = (label: string) => (
+      <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-8 text-center`}>
+        <div className={`w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center ${dark ? "bg-white/5" : "bg-gray-100"}`}>
+          {currentSection.icon}
+        </div>
+        <p className={`text-sm font-medium ${dark ? "text-gray-300" : "text-gray-700"}`}>{label}</p>
+        <p className={`text-xs ${textSec} mt-1`}>Content will be added soon</p>
+      </div>
+    );
+
     switch (currentSection.key) {
       case 'warmUp':
+        if (!lesson!.warmUp?.content) return emptyState('Warm-Up');
         return (
           <div className={`${dark ? "bg-indigo-500/5 border-indigo-500/20" : "bg-indigo-50 border-indigo-200"} rounded-2xl p-5 border`}>
             <div className="flex items-center gap-2 mb-3"><HelpCircle className="w-5 h-5 text-indigo-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Warm-Up</h3></div>
@@ -220,6 +231,7 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
         );
 
       case 'explanation':
+        if (!lesson!.explanation?.content) return emptyState('Lesson Explanation');
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
             <h3 className={`text-sm font-semibold mb-3 ${dark ? "text-white" : "text-gray-900"}`}>Lesson Explanation</h3>
@@ -232,6 +244,7 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
         );
 
       case 'vocabulary':
+        if (!lesson!.vocabItems?.length) return emptyState('Vocabulary');
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
             <h3 className={`text-sm font-semibold mb-4 ${dark ? "text-white" : "text-gray-900"}`}>Vocabulary</h3>
@@ -263,17 +276,21 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
         );
 
       case 'grammar':
+        if (!lesson!.grammar?.explanation && !lesson!.grammarDrills?.questions?.length) return emptyState('Grammar');
         return <GrammarSection lesson={lesson!} dark={dark} cardBg={cardBg} innerBg={innerBg} textBody={textBody} textSec={textSec} />;
 
       case 'reading':
+        if (!lesson!.reading?.text) return emptyState('Reading');
         return <ReadingSection lesson={lesson!} dark={dark} cardBg={cardBg} innerBg={innerBg} textBody={textBody} textSec={textSec} textMuted={textMuted}
           showTranslation={showTranslation} setShowTranslation={setShowTranslation} />;
 
       case 'listening':
+        if (!lesson!.listening?.transcript && !lesson!.listening?.questions?.length) return emptyState('Listening');
         return <ListeningSection lesson={lesson!} dark={dark} cardBg={cardBg} innerBg={innerBg} textBody={textBody} textSec={textSec} textMuted={textMuted}
           showTranslation={showTranslation} setShowTranslation={setShowTranslation} />;
 
       case 'speaking':
+        if (!lesson!.speaking?.guidedActivity) return emptyState('Speaking Practice');
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl overflow-hidden`}>
             <div className="p-5 border-b dark:border-[#1e2a4a] border-gray-200">
@@ -292,10 +309,12 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
         );
 
       case 'writing':
+        if (!lesson!.writing?.task) return emptyState('Writing Task');
         return <WritingSection lesson={lesson!} dark={dark} cardBg={cardBg} innerBg={innerBg} textBody={textBody}
           onComplete={() => markSectionComplete(currentSectionIdx)} />;
 
       case 'practice':
+        if (!lesson!.practiceExercises?.questions?.length) return emptyState('Practice Exercises');
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
             <div className="flex items-center gap-3 mb-4"><Repeat className="w-5 h-5 text-purple-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Practice Exercises</h3></div>
@@ -309,15 +328,16 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
         );
 
       case 'review':
+        if (!lesson!.miniReview?.content && !lesson!.selfAssessment?.length) return emptyState('Review');
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
-            {lesson!.miniReview.content && (
+            {lesson!.miniReview?.content && (
               <>
                 <div className="flex items-center gap-3 mb-3"><Star className="w-5 h-5 text-amber-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Mini Review</h3></div>
                 <p className={`text-sm leading-relaxed ${textBody} mb-4`}>{lesson!.miniReview.content}</p>
               </>
             )}
-            {lesson!.selfAssessment.length > 0 && (
+            {lesson!.selfAssessment?.length > 0 && (
               <SelfAssessmentSection items={lesson!.selfAssessment} dark={dark} title="Self-Assessment" />
             )}
           </div>
