@@ -1069,6 +1069,14 @@ async function main() {
   }
   console.log(`  A1 total: ${a1Total} lessons, ${a1Created} created, ${a1Skipped} skipped, ${a1Errors} errors\n`);
 
+  // Publish all A1 lessons (markdown import sets isPublished=false by default)
+  console.log('Publishing all A1 lessons...');
+  const publishResult = await db.collection('lessons').updateMany(
+    { level: 'A1', isPublished: false },
+    { $set: { isPublished: true } }
+  );
+  console.log(`  Published ${publishResult.modifiedCount} A1 lessons\n`);
+
   // Step 2.5: Build chapter lookup for linking lessons to chapters
   console.log('Building chapter lookup for lesson linking...');
   const allChapters = await db.collection('chapters').find().toArray();
