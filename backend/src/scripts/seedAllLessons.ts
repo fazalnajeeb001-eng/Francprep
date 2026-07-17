@@ -1069,6 +1069,48 @@ async function main() {
   }
   console.log(`  A1 total: ${a1Total} lessons, ${a1Created} created, ${a1Skipped} skipped, ${a1Errors} errors\n`);
 
+  // Step 2.5: Build chapter lookup for linking lessons to chapters
+  console.log('Building chapter lookup for lesson linking...');
+  const allChapters = await db.collection('chapters').find().toArray();
+  const allModules = await db.collection('modules').find().toArray();
+  const allCourses = await db.collection('courses').find().toArray();
+
+  const modToCourse: Record<string, string> = {};
+  for (const m of allModules) modToCourse[m._id.toString()] = m.courseId?.toString();
+  const courseToLevel: Record<string, string> = {};
+  for (const c of allCourses) courseToLevel[c._id.toString()] = c.level;
+
+  const chapsByLevel: Record<string, any[]> = {};
+  for (const ch of allChapters) {
+    const courseId = modToCourse[ch.moduleId?.toString()];
+    const level = courseToLevel[courseId];
+    if (!level) continue;
+    if (!chapsByLevel[level]) chapsByLevel[level] = [];
+    chapsByLevel[level].push(ch);
+  }
+
+  const chapterLookup: Record<string, any> = {};
+  for (const [level, chs] of Object.entries(chapsByLevel)) {
+    chs.sort((a: any, b: any) => a.order - b.order);
+    chs.forEach((ch: any, idx: number) => {
+      chapterLookup[`${level.toLowerCase()}-ch${idx + 1}`] = ch._id;
+    });
+    console.log(`  ${level}: ${chs.length} chapters mapped`);
+  }
+
+  // Link A1 markdown lessons to chapters
+  console.log('\nLinking A1 lessons to chapters...');
+  let a1Linked = 0;
+  for (const lesson of await db.collection('lessons').find({ level: 'A1' }).toArray()) {
+    if (!lesson.lessonId) continue;
+    const chId = chapterLookup[lesson.lessonId.replace(/-l\d+$/, '')];
+    if (chId) {
+      await db.collection('lessons').updateOne({ _id: lesson._id }, { $set: { chapterId: chId } });
+      a1Linked++;
+    }
+  }
+  console.log(`  Linked ${a1Linked} A1 lessons to chapters\n`);
+
   // Step 3: Seed skeleton lessons for A2-C2
   console.log('Step 3: Creating skeleton lessons for A2-C2...');
   const skeleton = buildSkeleton();
@@ -1087,7 +1129,9 @@ async function main() {
           continue;
         }
 
-        const doc = {
+        const chId = chapterLookup[lessonId.replace(/-l\d+$/, '')];
+
+        const doc: Record<string, any> = {
           lessonId,
           title: lesson.title,
           level: chapter.level,
@@ -1120,6 +1164,8 @@ async function main() {
           miniReview: { content: '' },
           selfAssessment: [],
         };
+
+        if (chId) doc.chapterId = chId;
 
         await db.collection('lessons').insertOne(doc);
         skeletonCreated++;
