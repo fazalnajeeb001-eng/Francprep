@@ -1,0 +1,812 @@
+import { useState, useCallback, useRef, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { apiFetch } from "~/lib/apiFetch";
+import { useTheme } from "~/lib/ThemeContext";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  CheckCircle2, ArrowLeft, BookOpen, Volume2, Trophy, Award,
+  ChevronLeft, ChevronRight, HelpCircle, Star, Headphones, PenTool, Mic,
+  Repeat, Globe, FileText, Languages
+} from "lucide-react";
+import { WritingSubmission } from "./LearningComponents";
+import { SpeakingDrill } from "./SpeakingDrill";
+import { speak, useSpeak } from "~/lib/speech";
+
+// ─── Canonical Interfaces (matches lesson.schema.json) ─────────────────────
+
+interface LessonQuestion {
+  id: string;
+  type: 'multiple_choice' | 'true_false' | 'fill_blank' | 'matching' | 'ordering' | 'short_answer' | 'translation';
+  prompt: string;
+  correctAnswer: string | string[] | { left: string; right: string }[];
+  explanation: string;
+  options?: string[];
+  pairs?: { left: string; right: string }[];
+  items?: string[];
+}
+
+interface VocabItem {
+  french: string;
+  english: string;
+  pronunciation: string;
+  example: string;
+  formality?: string;
+  usageNote?: string;
+}
+
+interface LessonData {
+  _id: string;
+  lessonId: string;
+  title: string;
+  level: string;
+  skill: string;
+  anchorSkill: string;
+  durationMinutes: number;
+  objectives: string[];
+  grammarFocus: string;
+  vocabularyFocus: string;
+  warmUp: { content: string };
+  explanation: { content: string };
+  vocabItems: VocabItem[];
+  grammar: {
+    explanation: string;
+    formation: string;
+    usage: string;
+    examples: string[];
+    commonMistakes: { wrong: string; correct: string; why: string }[];
+  };
+  grammarDrills: { questions: LessonQuestion[] };
+  reading: { title: string; text: string; translation?: string; questions: LessonQuestion[] };
+  listening: { title: string; transcript: string; translation?: string; questions: LessonQuestion[] };
+  speaking: { guidedActivity: string; roleplay?: string; pronunciationTip?: string };
+  writing: { task: string; modelAnswer: string; checklist: string[] };
+  practiceExercises: { questions: LessonQuestion[] };
+  miniReview: { content: string };
+  selfAssessment: string[];
+  order: number;
+  isPublished: boolean;
+}
+
+interface ProgressData {
+  status: string;
+  exercisesCompleted: number;
+  totalExercises: number;
+  timeSpent: number;
+  score?: number;
+}
+
+// ─── Section Definition ────────────────────────────────────────────────────
+
+interface SectionDef {
+  key: string;
+  label: string;
+  icon: React.ReactNode;
+  hasContent: boolean;
+}
+
+function buildSections(lesson: LessonData): SectionDef[] {
+  return [
+    { key: 'warmUp', label: 'Warm-Up', icon: <HelpCircle className="w-3.5 h-3.5" />, hasContent: !!lesson.warmUp?.content },
+    { key: 'explanation', label: 'Lesson', icon: <FileText className="w-3.5 h-3.5" />, hasContent: !!lesson.explanation?.content },
+    { key: 'vocabulary', label: 'Vocab', icon: <Languages className="w-3.5 h-3.5" />, hasContent: lesson.vocabItems?.length > 0 },
+    { key: 'grammar', label: 'Grammar', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: !!lesson.grammar?.explanation || lesson.grammarDrills?.questions?.length > 0 },
+    { key: 'reading', label: 'Reading', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: !!lesson.reading?.text },
+    { key: 'listening', label: 'Listening', icon: <Headphones className="w-3.5 h-3.5" />, hasContent: !!lesson.listening?.transcript || lesson.listening?.questions?.length > 0 },
+    { key: 'speaking', label: 'Speaking', icon: <Mic className="w-3.5 h-3.5" />, hasContent: !!lesson.speaking?.guidedActivity },
+    { key: 'writing', label: 'Writing', icon: <PenTool className="w-3.5 h-3.5" />, hasContent: !!lesson.writing?.task },
+    { key: 'practice', label: 'Practice', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: lesson.practiceExercises?.questions?.length > 0 },
+    { key: 'review', label: 'Review', icon: <Star className="w-3.5 h-3.5" />, hasContent: !!lesson.miniReview?.content || lesson.selfAssessment?.length > 0 },
+  ].filter(s => s.hasContent);
+}
+
+// ─── Main Component ────────────────────────────────────────────────────────
+
+export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: () => void }) {
+  const { dark } = useTheme();
+  const [currentSectionIdx, setCurrentSectionIdx] = useState(0);
+  const [completedSections, setCompletedSections] = useState<Set<number>>(new Set());
+  const [showTranslation, setShowTranslation] = useState(false);
+  const [quizResults] = useState<Record<string, { correct: boolean; shown: boolean }>>({});
+  const [exercisesCompleted] = useState(0);
+  const [lessonCompleted, setLessonCompleted] = useState(false);
+  const [lessonScore, setLessonScore] = useState<number | null>(null);
+  const [startTime] = useState(Date.now());
+  const topRef = useRef<HTMLDivElement>(null);
+
+  const pageBg = dark ? "bg-[#070B17] text-white" : "bg-gray-50 text-gray-900";
+  const cardBg = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200";
+  const innerBg = dark ? "bg-[#070B17] border-[#1e2a4a]" : "bg-gray-50 border-gray-200";
+  const textSec = dark ? "text-gray-400" : "text-gray-500";
+  const textBody = dark ? "text-gray-300" : "text-gray-700";
+  const textMuted = dark ? "text-gray-500" : "text-gray-400";
+  const btnHover = dark ? "hover:bg-white/5" : "hover:bg-gray-100";
+
+  const { data: lesson } = useQuery({
+    queryKey: ["lesson", lessonId],
+    queryFn: () => apiFetch(`/lessons/${lessonId}`).then((res) => res.json()).then((json) => json.data as LessonData),
+  });
+
+  const { data: progressData, refetch: refetchProgress } = useQuery({
+    queryKey: ["lesson-progress", lessonId],
+    queryFn: () => apiFetch(`/progress/${lessonId}`).then((res) => res.json()).then((json) => {
+      const prog = json?.data?.progress || json?.data;
+      return prog as ProgressData;
+    }),
+    enabled: !!lessonId,
+  });
+  const progress = progressData;
+
+  useEffect(() => {
+    if (lessonId && !progress) {
+      apiFetch(`/progress/${lessonId}/update`, {
+        method: 'POST',
+        body: JSON.stringify({ status: 'in_progress', timeSpent: 0 }),
+      }).catch(() => {});
+    }
+  }, [lessonId]);
+
+  useEffect(() => {
+    if (!lessonId || lessonCompleted) return;
+    const interval = setInterval(() => {
+      const timeSpent = Math.round((Date.now() - startTime) / 60000);
+      apiFetch(`/progress/${lessonId}/update`, {
+        method: 'POST',
+        body: JSON.stringify({ status: 'in_progress', timeSpent, exercisesCompleted }),
+      }).catch(() => {});
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [lessonId, exercisesCompleted, lessonCompleted, startTime]);
+
+  const markSectionComplete = useCallback((idx: number) => {
+    setCompletedSections(prev => new Set(prev).add(idx));
+  }, []);
+
+  const completeLesson = useCallback(async () => {
+    const timeSpent = Math.round((Date.now() - startTime) / 60000);
+    const total = Object.keys(quizResults).length;
+    const correct = Object.values(quizResults).filter(r => r.correct).length;
+    const score = total > 0 ? Math.round((correct / total) * 100) : undefined;
+    setLessonScore(score ?? null);
+    setLessonCompleted(true);
+    await apiFetch(`/progress/${lessonId}/update`, {
+      method: 'POST',
+      body: JSON.stringify({ status: 'completed', score: score ?? 0, timeSpent, exercisesCompleted }),
+    }).catch(() => {});
+    refetchProgress();
+  }, [lessonId, exercisesCompleted, quizResults, startTime, refetchProgress]);
+
+  if (!lesson) {
+    return (
+      <div ref={topRef} className={`${pageBg} min-h-screen`}>
+        <div className="max-w-3xl mx-auto px-4 py-8">
+          <div className="flex items-center justify-center py-16"><div className={textSec}>Loading lesson...</div></div>
+        </div>
+      </div>
+    );
+  }
+
+  const sections = buildSections(lesson);
+  const currentSection = sections[currentSectionIdx] || sections[0];
+  const sectionProgress = sections.length > 0 ? Math.round(((currentSectionIdx + 1) / sections.length) * 100) : 0;
+  const isLast = currentSectionIdx >= sections.length - 1;
+
+  const goNext = useCallback(() => {
+    markSectionComplete(currentSectionIdx);
+    if (!isLast) {
+      setCurrentSectionIdx(s => s + 1);
+      topRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [currentSectionIdx, isLast, markSectionComplete]);
+
+  const goPrev = useCallback(() => {
+    if (currentSectionIdx > 0) {
+      setCurrentSectionIdx(s => s - 1);
+      topRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [currentSectionIdx]);
+
+  // ─── Render Section Content ──────────────────────────────────────────
+
+  function renderCurrentSection(): React.ReactNode {
+    if (!currentSection) return null;
+
+    switch (currentSection.key) {
+      case 'warmUp':
+        return (
+          <div className={`${dark ? "bg-indigo-500/5 border-indigo-500/20" : "bg-indigo-50 border-indigo-200"} rounded-2xl p-5 border`}>
+            <div className="flex items-center gap-2 mb-3"><HelpCircle className="w-5 h-5 text-indigo-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Warm-Up</h3></div>
+            <p className={`text-sm leading-relaxed ${textBody}`}>{lesson!.warmUp.content}</p>
+          </div>
+        );
+
+      case 'explanation':
+        return (
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+            <h3 className={`text-sm font-semibold mb-3 ${dark ? "text-white" : "text-gray-900"}`}>Lesson Explanation</h3>
+            <div className={`text-sm leading-relaxed whitespace-pre-line ${textBody}`}>
+              {lesson!.explanation.content.split("\n").map((line, i) => (
+                line.trim() ? <p key={i} className="mb-2">{line}</p> : null
+              ))}
+            </div>
+          </div>
+        );
+
+      case 'vocabulary':
+        return (
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+            <h3 className={`text-sm font-semibold mb-4 ${dark ? "text-white" : "text-gray-900"}`}>Vocabulary</h3>
+            <div className="space-y-2">
+              {lesson!.vocabItems.map((v, i) => (
+                <motion.div key={v.french + i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
+                  className={`flex items-center gap-3 p-3 rounded-xl ${btnHover} transition-colors`}>
+                  <button onClick={() => speak(v.french)}
+                    className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white hover:opacity-80 transition-all flex-shrink-0">
+                    <Volume2 className="w-4 h-4" />
+                  </button>
+                  <div className="flex-1 min-w-0">
+                    <span className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{v.french}</span>
+                    <span className={`text-[10px] ml-2 ${textMuted}`}>{v.pronunciation}</span>
+                    {showTranslation && <p className={`text-xs ${textSec}`}>{v.english}</p>}
+                    {v.formality && <span className={`text-[10px] ml-2 px-1.5 py-0.5 rounded ${dark ? "bg-white/5 text-gray-400" : "bg-gray-100 text-gray-500"}`}>{v.formality}</span>}
+                    {v.usageNote && showTranslation && <p className={`text-[10px] ${textMuted} italic mt-0.5`}>{v.usageNote}</p>}
+                  </div>
+                  {v.example && (
+                    <button onClick={() => speak(v.example)}
+                      className={`text-[10px] px-2 py-1 rounded-lg border flex-shrink-0 ${dark ? "border-[#1e2a4a] text-gray-400 hover:text-purple-400" : "border-gray-200 text-gray-500 hover:text-purple-600"} transition-colors`}>
+                      ▶ Example
+                    </button>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case 'grammar':
+        return <GrammarSection lesson={lesson!} dark={dark} cardBg={cardBg} innerBg={innerBg} textBody={textBody} textSec={textSec} />;
+
+      case 'reading':
+        return <ReadingSection lesson={lesson!} dark={dark} cardBg={cardBg} innerBg={innerBg} textBody={textBody} textSec={textSec} textMuted={textMuted}
+          showTranslation={showTranslation} setShowTranslation={setShowTranslation} />;
+
+      case 'listening':
+        return <ListeningSection lesson={lesson!} dark={dark} cardBg={cardBg} innerBg={innerBg} textBody={textBody} textSec={textSec} textMuted={textMuted}
+          showTranslation={showTranslation} setShowTranslation={setShowTranslation} />;
+
+      case 'speaking':
+        return (
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl overflow-hidden`}>
+            <div className="p-5 border-b dark:border-[#1e2a4a] border-gray-200">
+              <div className="flex items-center gap-3 mb-3"><Mic className="w-5 h-5 text-purple-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Speaking Practice</h3></div>
+              <p className={`text-sm ${textBody}`}>{lesson!.speaking.guidedActivity}</p>
+              {lesson!.speaking.pronunciationTip && (
+                <p className={`text-xs ${textSec} mt-2 italic`}>Tip: {lesson!.speaking.pronunciationTip}</p>
+              )}
+            </div>
+            <SpeakingDrill
+              lessonLevel={lesson!.level}
+              lessonTopic={lesson!.title}
+              onComplete={() => markSectionComplete(currentSectionIdx)}
+            />
+          </div>
+        );
+
+      case 'writing':
+        return <WritingSection lesson={lesson!} dark={dark} cardBg={cardBg} innerBg={innerBg} textBody={textBody}
+          onComplete={() => markSectionComplete(currentSectionIdx)} />;
+
+      case 'practice':
+        return (
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+            <div className="flex items-center gap-3 mb-4"><Repeat className="w-5 h-5 text-purple-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Practice Exercises</h3></div>
+            <div className="space-y-4">
+              {lesson!.practiceExercises.questions.map((q, i) => (
+                <PracticeQuestion key={q.id} question={q} index={i} dark={dark} innerBg={innerBg} textBody={textBody} textSec={textSec}
+                  quizResults={quizResults} />
+              ))}
+            </div>
+          </div>
+        );
+
+      case 'review':
+        return (
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+            {lesson!.miniReview.content && (
+              <>
+                <div className="flex items-center gap-3 mb-3"><Star className="w-5 h-5 text-amber-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Mini Review</h3></div>
+                <p className={`text-sm leading-relaxed ${textBody} mb-4`}>{lesson!.miniReview.content}</p>
+              </>
+            )}
+            {lesson!.selfAssessment.length > 0 && (
+              <SelfAssessmentSection items={lesson!.selfAssessment} dark={dark} title="Self-Assessment" />
+            )}
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  }
+
+  return (
+    <div ref={topRef} className={`${pageBg} min-h-screen pb-20`}>
+      {/* Sticky Header with Progress */}
+      <div className="sticky top-0 z-40 bg-gradient-to-r from-purple-900/50 to-pink-900/50 backdrop-blur-xl border-b dark:border-[#1e2a4a] border-gray-200">
+        <div className="max-w-3xl mx-auto px-4 py-3">
+          <div className="flex items-center justify-between mb-2">
+            <button onClick={onBack} className={`text-xs ${dark ? "text-gray-400 hover:text-purple-400" : "text-gray-600 hover:text-purple-600"} transition-colors`}>
+              <ArrowLeft className="w-4 h-4 inline mr-1" />Back
+            </button>
+            <div className="flex items-center gap-3">
+              <button onClick={() => setShowTranslation(!showTranslation)}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold border transition-all ${
+                  showTranslation
+                    ? "bg-purple-500/20 border-purple-500/40 text-purple-400"
+                    : dark ? "border-[#1e2a4a] text-gray-500 hover:text-gray-300" : "border-gray-200 text-gray-400 hover:text-gray-600"
+                }`}>
+                <Globe className="w-3 h-3" /> {showTranslation ? "EN" : "FR"}
+              </button>
+              <span className={`text-xs ${textSec}`}>{currentSectionIdx + 1} / {sections.length}</span>
+            </div>
+          </div>
+          <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+            <motion.div initial={{ width: 0 }} animate={{ width: `${sectionProgress}%` }}
+              className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all" />
+          </div>
+        </div>
+      </div>
+
+      {/* Section Tabs */}
+      <div className="max-w-3xl mx-auto px-4 pt-4">
+        <div className="flex gap-1 overflow-x-auto pb-2 scrollbar-hide">
+          {sections.map((s, i) => (
+            <button key={s.key} onClick={() => { setCurrentSectionIdx(i); topRef.current?.scrollIntoView({ behavior: "smooth" }); }}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap transition-all ${
+                i === currentSectionIdx
+                  ? "bg-purple-500/20 text-purple-400 border border-purple-500/40"
+                  : completedSections.has(i)
+                  ? `${dark ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30" : "bg-emerald-50 text-emerald-600 border border-emerald-200"}`
+                  : `${dark ? "text-gray-500 hover:text-gray-300 border border-transparent" : "text-gray-400 hover:text-gray-600 border border-transparent"}`
+              }`}>
+              {completedSections.has(i) ? <CheckCircle2 className="w-3 h-3" /> : s.icon}
+              {s.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-3xl mx-auto px-4 py-6">
+        {/* Lesson Header */}
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white">
+              <BookOpen className="w-5 h-5" />
+            </div>
+            <div>
+              <h1 className={`text-xl font-bold ${dark ? "text-white" : "text-gray-900"}`}>{lesson.title}</h1>
+              <div className={`flex items-center gap-2 text-xs ${textSec}`}>
+                <span>Lesson {lesson.order}</span>
+                <span>&middot;</span>
+                <span>{lesson.durationMinutes} min</span>
+                {progress?.status === 'completed' && <span className="text-emerald-400 font-semibold">&#9679; Completed</span>}
+              </div>
+            </div>
+          </div>
+          {lesson.objectives?.length > 0 && (
+            <div className={`rounded-2xl p-4 border mt-3 ${dark ? "bg-purple-500/10 border-purple-500/30" : "bg-purple-50 border-purple-100"}`}>
+              <p className={`text-xs font-semibold mb-2 ${dark ? "text-purple-300" : "text-purple-700"}`}>What you'll learn:</p>
+              <ul className="space-y-1">
+                {lesson.objectives.map((obj, i) => (
+                  <li key={i} className={`text-xs ${textBody} flex items-start gap-2`}>
+                    <span className="text-purple-400 mt-0.5">•</span>{obj}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        {/* Section Content */}
+        <AnimatePresence mode="wait">
+          <motion.div key={currentSection?.key} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+            {renderCurrentSection()}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Complete Lesson */}
+        {!lessonCompleted && isLast && (
+          <div className="mt-8 text-center">
+            <button onClick={completeLesson}
+              className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white text-sm font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-emerald-500/25">
+              Complete Lesson
+            </button>
+          </div>
+        )}
+
+        {/* Completion Screen */}
+        {lessonCompleted && (
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+            className="mt-8 rounded-2xl p-6 border bg-gradient-to-br from-emerald-500/10 to-green-500/10 border-emerald-500/30 text-center">
+            <Trophy className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
+            <h2 className={`text-lg font-bold mb-1 ${dark ? "text-white" : "text-gray-900"}`}>Lesson Complete!</h2>
+            {lessonScore !== null && (
+              <div className="flex items-center justify-center gap-2 mt-2">
+                <Award className="w-5 h-5 text-amber-400" />
+                <span className="text-2xl font-bold text-emerald-400">{lessonScore}%</span>
+              </div>
+            )}
+            <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 12, delay: 0.3 }}
+              className="inline-flex items-center gap-2 mt-3 px-5 py-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold shadow-lg shadow-amber-500/30">
+              <Star className="w-5 h-5 fill-white" /><span className="text-lg">+50 XP</span>
+            </motion.div>
+            <button onClick={onBack}
+              className="mt-4 px-6 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-all">
+              Back to Chapters
+            </button>
+          </motion.div>
+        )}
+
+        {/* Section Navigation */}
+        <div className="flex items-center justify-between mt-6">
+          <button onClick={goPrev} disabled={currentSectionIdx === 0}
+            className="flex items-center gap-1 text-sm font-semibold disabled:opacity-30 dark:text-gray-400 text-gray-600 hover:text-purple-400 transition-colors">
+            <ChevronLeft className="w-4 h-4" /> Previous
+          </button>
+          {!lessonCompleted && (
+            <button onClick={goNext}
+              className="flex items-center gap-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 shadow-lg shadow-purple-500/25 transition-all">
+              {isLast ? "Finish" : "Next"} <ChevronRight className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Practice Question (renders each question from canonical format) ────────
+
+function PracticeQuestion({ question, index, dark, innerBg, textBody, textSec, quizResults }: {
+  question: LessonQuestion; index: number; dark: boolean; innerBg: string; textBody: string; textSec: string;
+  quizResults: Record<string, { correct: boolean; shown: boolean }>;
+}) {
+  const result = quizResults[question.id];
+  const typeLabels: Record<string, string> = {
+    multiple_choice: 'Multiple Choice', true_false: 'True / False', fill_blank: 'Fill in the Blank',
+    matching: 'Matching', ordering: 'Ordering', short_answer: 'Short Answer', translation: 'Translation',
+  };
+
+  return (
+    <div className={`${innerBg} rounded-xl p-4 border`}>
+      <div className="flex items-center gap-2 mb-2">
+        <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${dark ? "bg-purple-500/20 text-purple-300" : "bg-purple-100 text-purple-600"}`}>
+          {typeLabels[question.type] || question.type}
+        </span>
+        <span className={`text-xs ${textSec}`}>Q{index + 1}</span>
+      </div>
+      <p className={`text-sm mb-3 ${textBody}`}>{question.prompt}</p>
+
+      {question.type === 'multiple_choice' && question.options && (
+        <div className="space-y-1.5">
+          {question.options.map((opt, i) => {
+            const letter = String.fromCharCode(97 + i);
+            return (
+              <div key={i} className={`text-xs px-3 py-2 rounded-lg border ${dark ? "border-[#1e2a4a] text-gray-300" : "border-gray-200 text-gray-700"}`}>
+                {letter}) {opt}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {question.type === 'matching' && question.pairs && (
+        <div className="space-y-1">
+          {question.pairs.map((p, i) => (
+            <div key={i} className={`flex items-center gap-2 text-xs ${textBody}`}>
+              <span className={`px-2 py-1 rounded ${dark ? "bg-white/5" : "bg-gray-100"}`}>{p.left}</span>
+              <span className={textSec}>→</span>
+              <span className={`px-2 py-1 rounded ${dark ? "bg-purple-500/10 text-purple-300" : "bg-purple-50 text-purple-700"}`}>{p.right}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {question.type === 'ordering' && question.items && (
+        <div className="space-y-1">
+          {question.items.map((item, i) => (
+            <div key={i} className={`text-xs px-3 py-1.5 rounded-lg border ${dark ? "border-[#1e2a4a] text-gray-300" : "border-gray-200 text-gray-700"}`}>
+              {String.fromCharCode(97 + i)}) {item}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {question.type === 'fill_blank' && (
+        <div className={`text-xs px-3 py-2 rounded-lg border border-dashed ${dark ? "border-purple-500/40 text-purple-300" : "border-purple-300 text-purple-700"}`}>
+          {question.prompt}
+        </div>
+      )}
+
+      {result?.shown && (
+        <div className={`mt-2 text-xs ${result.correct ? "text-emerald-400" : "text-red-400"}`}>
+          {result.correct ? "✓ Correct" : `✗ Answer: ${String(question.correctAnswer).slice(0, 100)}`}
+          {question.explanation && <p className={`mt-1 ${textSec}`}>{question.explanation}</p>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Grammar Section ───────────────────────────────────────────────────────
+
+function GrammarSection({ lesson, dark, cardBg, innerBg, textBody, textSec }: {
+  lesson: LessonData; dark: boolean; cardBg: string; innerBg: string; textBody: string; textSec: string;
+}) {
+  const grammar = lesson.grammar;
+  const drills = lesson.grammarDrills?.questions || [];
+
+  return (
+    <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+      <h3 className={`text-sm font-semibold mb-3 ${dark ? "text-white" : "text-gray-900"}`}>Grammar</h3>
+
+      {grammar.explanation && (
+        <div className={`text-sm leading-relaxed ${textBody} mb-4`}>
+          {grammar.explanation.split("\n").map((line, i) => (
+            line.trim() ? <p key={i} className="mb-2">{line}</p> : null
+          ))}
+        </div>
+      )}
+
+      {grammar.formation && (
+        <div className={`${innerBg} rounded-xl p-3 border mb-3`}>
+          <p className={`text-xs font-semibold mb-1 ${dark ? "text-purple-400" : "text-purple-600"}`}>Formation:</p>
+          <p className={`text-xs ${textBody}`}>{grammar.formation}</p>
+        </div>
+      )}
+
+      {grammar.usage && (
+        <div className={`${innerBg} rounded-xl p-3 border mb-3`}>
+          <p className={`text-xs font-semibold mb-1 ${dark ? "text-purple-400" : "text-purple-600"}`}>Usage:</p>
+          <p className={`text-xs ${textBody}`}>{grammar.usage}</p>
+        </div>
+      )}
+
+      {grammar.examples.length > 0 && (
+        <div className="mb-3">
+          <p className={`text-xs font-semibold mb-1.5 ${dark ? "text-purple-400" : "text-purple-600"}`}>Examples:</p>
+          {grammar.examples.map((ex, i) => (
+            <p key={i} className={`text-xs ${textBody} ml-2 mb-1`}>• {ex}</p>
+          ))}
+        </div>
+      )}
+
+      {grammar.commonMistakes.length > 0 && (
+        <div className="mb-3">
+          <p className={`text-xs font-semibold mb-1.5 ${dark ? "text-red-400" : "text-red-600"}`}>Common Mistakes:</p>
+          {grammar.commonMistakes.map((m, i) => (
+            <div key={i} className={`text-xs p-2 rounded-lg mb-1 ${dark ? "bg-red-500/5" : "bg-red-50"}`}>
+              <span className="text-red-400">✗</span> {m.wrong} → <span className="text-emerald-400">✓</span> {m.correct}
+              {m.why && <span className={`ml-1 ${textSec}`}>({m.why})</span>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {drills.length > 0 && (
+        <div className="mt-4">
+          <p className={`text-xs font-semibold mb-2 ${dark ? "text-purple-400" : "text-purple-700"}`}>Mini Drills</p>
+          <div className="space-y-2">
+            {drills.map((q) => (
+              <div key={q.id} className={`${innerBg} rounded-xl p-3 border`}>
+                <p className={`text-sm mb-2 ${textBody}`}>{q.prompt}</p>
+                {q.correctAnswer && (
+                  <p className={`text-xs ${textSec}`}>Answer: {String(q.correctAnswer)}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Reading Section ───────────────────────────────────────────────────────
+
+function ReadingSection({ lesson, dark, cardBg, innerBg, textBody, textSec, textMuted, showTranslation, setShowTranslation }: {
+  lesson: LessonData; dark: boolean; cardBg: string; innerBg: string; textBody: string; textSec: string; textMuted: string;
+  showTranslation: boolean; setShowTranslation: (v: boolean) => void;
+}) {
+  const reading = lesson.reading;
+
+  return (
+    <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+      <h3 className={`text-sm font-semibold mb-3 ${dark ? "text-white" : "text-gray-900"}`}>{reading.title || 'Reading'}</h3>
+      <div className={`${innerBg} rounded-xl p-4 border mb-4 whitespace-pre-line text-sm leading-relaxed ${textBody}`}>{reading.text}</div>
+
+      {reading.translation && (
+        <div className="mt-3 mb-3">
+          <button onClick={() => setShowTranslation(!showTranslation)}
+            className={`text-xs ${dark ? "text-purple-400" : "text-purple-600"} hover:underline`}>
+            {showTranslation ? "Hide English translation" : "Show English translation"}
+          </button>
+          {showTranslation && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-2">
+              <p className={`text-xs ${textMuted} italic p-3 rounded-xl border ${innerBg}`}>{reading.translation}</p>
+            </motion.div>
+          )}
+        </div>
+      )}
+
+      {reading.questions.length > 0 && (
+        <div className="space-y-3 mt-4">
+          <p className={`text-xs font-semibold ${dark ? "text-purple-400" : "text-purple-700"}`}>Comprehension Questions</p>
+          {reading.questions.map((q) => (
+            <div key={q.id} className={`${innerBg} rounded-xl p-3 border`}>
+              <p className={`text-sm mb-2 ${textBody}`}>{q.prompt}</p>
+              {q.correctAnswer && <p className="text-xs text-emerald-400 mt-1">{String(q.correctAnswer)}</p>}
+              {q.explanation && <p className={`text-xs ${textSec} mt-1`}>{q.explanation}</p>}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Listening Section ─────────────────────────────────────────────────────
+
+function ListeningSection({ lesson, dark, cardBg, innerBg, textBody, textSec, textMuted, showTranslation, setShowTranslation }: {
+  lesson: LessonData; dark: boolean; cardBg: string; innerBg: string; textBody: string; textSec: string; textMuted: string;
+  showTranslation: boolean; setShowTranslation: (v: boolean) => void;
+}) {
+  const [showTranscript, setShowTranscript] = useState(false);
+  const listening = lesson.listening;
+  const { speak: speakWithState, isSpeaking } = useSpeak();
+
+  const cleanedTranscript = (listening.transcript || "").replace(/\*\*/g, "").trim();
+
+  return (
+    <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+      <div className="flex items-center gap-3 mb-4">
+        <Headphones className="w-5 h-5 text-purple-400" />
+        <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{listening.title || 'Listening'}</h3>
+      </div>
+
+      {cleanedTranscript && (
+        <div className="flex gap-3 mb-4">
+          <button onClick={() => speakWithState(cleanedTranscript)}
+            className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
+            <Volume2 className="w-4 h-4" /> {isSpeaking ? "Playing..." : "Play Audio"}
+          </button>
+          <button onClick={() => setShowTranscript(!showTranscript)}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
+            {showTranscript ? "Hide" : "Show"} Transcript
+          </button>
+        </div>
+      )}
+
+      {showTranscript && cleanedTranscript && (
+        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }}
+          className={`${innerBg} rounded-xl p-4 border mb-4 whitespace-pre-line text-sm ${textSec}`}>
+          {cleanedTranscript}
+        </motion.div>
+      )}
+
+      {listening.translation && (
+        <div className="mb-3">
+          <button onClick={() => setShowTranslation(!showTranslation)}
+            className={`text-xs ${dark ? "text-purple-400" : "text-purple-600"} hover:underline`}>
+            {showTranslation ? "Hide English translation" : "Show English translation"}
+          </button>
+          {showTranslation && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-2">
+              <p className={`text-xs ${textMuted} italic p-3 rounded-xl border ${innerBg}`}>{listening.translation}</p>
+            </motion.div>
+          )}
+        </div>
+      )}
+
+      {listening.questions.length > 0 && (
+        <div className="space-y-3 mt-4">
+          <p className={`text-xs font-semibold ${dark ? "text-purple-400" : "text-purple-700"}`}>Questions</p>
+          {listening.questions.map((q) => (
+            <div key={q.id} className={`${innerBg} rounded-xl p-3 border`}>
+              <p className={`text-sm mb-2 ${textBody}`}>{q.prompt}</p>
+              {q.type === 'true_false' && q.options && (
+                <div className="flex gap-2">
+                  {q.options.map((opt) => (
+                    <span key={opt} className={`text-xs px-3 py-1 rounded-lg ${dark ? "bg-white/5 text-gray-400" : "bg-gray-100 text-gray-600"}`}>{opt}</span>
+                  ))}
+                </div>
+              )}
+              {q.correctAnswer && <p className="text-xs text-emerald-400 mt-1">{String(q.correctAnswer)}</p>}
+              {q.explanation && <p className={`text-xs ${textSec} mt-1`}>{q.explanation}</p>}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Writing Section ───────────────────────────────────────────────────────
+
+function WritingSection({ lesson, dark, cardBg, innerBg, textBody, onComplete }: {
+  lesson: LessonData; dark: boolean; cardBg: string; innerBg: string; textBody: string; onComplete: () => void;
+}) {
+  const [showModel, setShowModel] = useState(false);
+  const writing = lesson.writing;
+
+  return (
+    <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+      <div className="flex items-center gap-3 mb-3"><PenTool className="w-5 h-5 text-purple-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Writing Practice</h3></div>
+      {writing.task && <p className={`text-sm ${textBody} mb-3 whitespace-pre-line`}>{writing.task}</p>}
+
+      {writing.checklist.length > 0 && (
+        <div className={`${innerBg} rounded-xl p-3 border mb-3`}>
+          <p className={`text-xs font-semibold mb-1.5 ${dark ? "text-purple-400" : "text-purple-600"}`}>Checklist:</p>
+          {writing.checklist.map((item, i) => (
+            <p key={i} className={`text-xs ${textBody} flex items-start gap-1.5 mb-0.5`}>
+              <span className="text-emerald-400">&#10003;</span>{item}
+            </p>
+          ))}
+        </div>
+      )}
+
+      {writing.modelAnswer && (
+        <div className="mb-3">
+          <button onClick={() => setShowModel(!showModel)}
+            className={`text-xs font-semibold ${dark ? "text-purple-400 hover:text-purple-300" : "text-purple-600 hover:text-purple-700"} transition-colors`}>
+            {showModel ? "Hide" : "Show"} Model Answer
+          </button>
+          {showModel && (
+            <div className={`${innerBg} rounded-xl p-3 border mt-2`}>
+              <p className={`text-xs ${textBody} whitespace-pre-line`}>{writing.modelAnswer}</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      <WritingSubmission onSubmit={onComplete} lessonTitle={lesson.title}
+        expectedAnswer={writing.modelAnswer} checklist={writing.checklist} />
+    </div>
+  );
+}
+
+// ─── Self-Assessment Section ───────────────────────────────────────────────
+
+function SelfAssessmentSection({ items, dark, title }: { items: string[]; dark: boolean; title: string }) {
+  const [checked, setChecked] = useState<Record<number, boolean>>({});
+  const allChecked = items.length > 0 && items.every((_, i) => checked[i]);
+  const cardBg = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200";
+  const textBody = dark ? "text-gray-300" : "text-gray-700";
+
+  return (
+    <div className={`${cardBg} backdrop-blur-lg border rounded-2xl p-5 transition-colors mt-4`}>
+      <div className="flex items-center gap-3 mb-3">
+        <Award className="w-5 h-5 text-purple-400" />
+        <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{title}</h3>
+      </div>
+      <div className="space-y-2">
+        {items.map((item, i) => (
+          <label key={i} className="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" checked={checked[i] || false}
+              onChange={() => setChecked({ ...checked, [i]: !checked[i] })}
+              className="w-4 h-4 accent-purple-500 rounded" />
+            <span className={`text-sm ${checked[i] ? "line-through text-emerald-400" : textBody}`}>{item}</span>
+          </label>
+        ))}
+      </div>
+      {allChecked && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 text-center">
+          <p className="text-sm font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            Great work! You've completed all self-assessment items.
+          </p>
+        </motion.div>
+      )}
+    </div>
+  );
+}
