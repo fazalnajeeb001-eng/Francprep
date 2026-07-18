@@ -13,6 +13,12 @@ export default defineConfig({
     // masks the Host to localhost:3000, but accept any host so a dev server never
     // rejects a proxied request with "Blocked request".
     allowedHosts: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+    },
   },
   plugins: [
     tailwindcss(),
