@@ -1,7 +1,6 @@
 import Lesson from '../models/Lesson';
 import Chapter from '../models/Chapter';
 import { createLessonSchema, updateLessonSchema } from '../utils/validators';
-import { transformLesson } from './lessonTransform';
 import { z } from 'zod';
 
 export class LessonService {
@@ -45,6 +44,7 @@ export class LessonService {
 
   /**
    * Get lesson by ID with full content
+   * Returns canonical format matching lesson.schema.json for the frontend.
    */
   async getLessonById(id: string) {
     // Try lessonId string first (e.g. "a1-ch1-l1"), then ObjectId
@@ -54,13 +54,24 @@ export class LessonService {
       throw { statusCode: 404, message: 'Lesson not found' };
     }
     const obj: any = lesson.toJSON();
+
+    // If lesson has canonical data, return it directly with metadata fields
     if (obj.canonical) {
-      return transformLesson(obj);
+      const canonical = { ...obj.canonical };
+      canonical._id = obj._id;
+      canonical.order = obj.order || 1;
+      canonical.isPublished = obj.isPublished;
+      canonical.chapterId = obj.chapterId?.toString?.() || obj.chapterId || canonical.chapterId;
+      return canonical;
     }
+
     // Old-format lessons with sections[] but no canonical fields — transform to canonical shape
     if (!obj.warmUp && obj.sections && obj.sections.length > 0) {
       return this.sectionsToCanonical(obj);
     }
+
+    // If lesson has no content at all, return what we have (title, level, etc.)
+    // The frontend will show "Content will be added soon" for empty sections
     return obj;
   }
 

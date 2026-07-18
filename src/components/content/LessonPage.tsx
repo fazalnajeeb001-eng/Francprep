@@ -90,6 +90,7 @@ function buildSections(_lesson: LessonData): SectionDef[] {
     { key: 'explanation', label: 'Lesson', icon: <FileText className="w-3.5 h-3.5" />, hasContent: true },
     { key: 'vocabulary', label: 'Vocab', icon: <Languages className="w-3.5 h-3.5" />, hasContent: true },
     { key: 'grammar', label: 'Grammar', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: true },
+    { key: 'grammarDrill', label: 'Drill', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: true },
     { key: 'reading', label: 'Reading', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: true },
     { key: 'listening', label: 'Listening', icon: <Headphones className="w-3.5 h-3.5" />, hasContent: true },
     { key: 'speaking', label: 'Speaking', icon: <Mic className="w-3.5 h-3.5" />, hasContent: true },
@@ -294,8 +295,26 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
         );
 
       case 'grammar':
-        if (!lesson!.grammar?.explanation && !lesson!.grammarDrills?.questions?.length) return emptyState('Grammar');
-        return <GrammarSection lesson={lesson!} dark={dark} cardBg={cardBg} innerBg={innerBg} textBody={textBody} textSec={textSec} />;
+        if (!lesson!.grammar?.explanation) return emptyState('Grammar');
+        return <GrammarSection grammar={lesson!.grammar} dark={dark} cardBg={cardBg} innerBg={innerBg} textBody={textBody} textSec={textSec} />;
+
+      case 'grammarDrill':
+        if (!lesson!.grammarDrills?.questions?.length) return emptyState('Grammar Drill');
+        return (
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+            <div className="flex items-center gap-3 mb-4">
+              <Repeat className="w-5 h-5 text-purple-400" />
+              <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Grammar Drill</h3>
+            </div>
+            <p className={`text-sm ${textSec} mb-4`}>Apply what you just learned. Complete each question below.</p>
+            <div className="space-y-4">
+              {lesson!.grammarDrills.questions.map((q, i) => (
+                <PracticeQuestion key={q.id} question={q} index={i} dark={dark} innerBg={innerBg} textBody={textBody} textSec={textSec}
+                  quizResults={quizResults} />
+              ))}
+            </div>
+          </div>
+        );
 
       case 'reading':
         if (!lesson!.reading?.text) return emptyState('Reading');
@@ -579,12 +598,9 @@ function PracticeQuestion({ question, index, dark, innerBg, textBody, textSec, q
 
 // ─── Grammar Section ───────────────────────────────────────────────────────
 
-function GrammarSection({ lesson, dark, cardBg, innerBg, textBody, textSec }: {
-  lesson: LessonData; dark: boolean; cardBg: string; innerBg: string; textBody: string; textSec: string;
+function GrammarSection({ grammar, dark, cardBg, innerBg, textBody, textSec }: {
+  grammar: LessonData['grammar']; dark: boolean; cardBg: string; innerBg: string; textBody: string; textSec: string;
 }) {
-  const grammar = lesson.grammar;
-  const drills = lesson.grammarDrills?.questions || [];
-
   return (
     <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
       <h3 className={`text-sm font-semibold mb-3 ${dark ? "text-white" : "text-gray-900"}`}>Grammar</h3>
@@ -629,22 +645,6 @@ function GrammarSection({ lesson, dark, cardBg, innerBg, textBody, textSec }: {
               {m.why && <span className={`ml-1 ${textSec}`}>({m.why})</span>}
             </div>
           ))}
-        </div>
-      )}
-
-      {drills.length > 0 && (
-        <div className="mt-4">
-          <p className={`text-xs font-semibold mb-2 ${dark ? "text-purple-400" : "text-purple-700"}`}>Mini Drills</p>
-          <div className="space-y-2">
-            {drills.map((q) => (
-              <div key={q.id} className={`${innerBg} rounded-xl p-3 border`}>
-                <p className={`text-sm mb-2 ${textBody}`}>{q.prompt}</p>
-                {q.correctAnswer && (
-                  <p className={`text-xs ${textSec}`}>Answer: {String(q.correctAnswer)}</p>
-                )}
-              </div>
-            ))}
-          </div>
         </div>
       )}
     </div>

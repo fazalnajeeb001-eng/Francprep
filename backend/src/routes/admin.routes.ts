@@ -558,4 +558,8 @@ router.post('/fix-exercise-categories', async (_req: AuthRequest, res: Response,
   }
 });
 
+// ============ Content Pipeline ============
+import contentPipelineRoutes from './admin.contentPipeline';
+router.use(contentPipelineRoutes);
+
 export default router;

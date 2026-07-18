@@ -15,12 +15,37 @@ node_modules
 src/routeTree.gen.ts
 .env
 backend/.env
-check-db.js
-breakdown.js
-cleanup.js
-dbfinal.js
-finalize.js
-check.js
-fixData.js
 .vercel
 .env*
+
+# Large binary files (models, renders, references)
+*.fbx
+*.glb
+*.gltf
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.ico
+*.svg
+*.mp4
+*.mp3
+*.wav
+*.pdf
+*.zip
+*.rar
+
+# Keep specific directories that need images
+!public/draco/**
+!public/images/**
+!src/**/*.png
+!src/**/*.jpg
+!src/**/*.svg
+
+# Reference/rendered files
+rendered leo/
+refernce folder/
+reference for avatar placement/
+screenshot/
+full a1 content including ledger and course skeleton/
