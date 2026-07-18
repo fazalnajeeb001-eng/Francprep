@@ -4,7 +4,15 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 // Load the schema JSON at module init time
-const schemaPath = path.resolve(__dirname, '..', 'schemas', 'lesson.schema.json');
+let schemaPath = path.resolve(__dirname, '..', 'schemas', 'lesson.schema.json');
+if (!fs.existsSync(schemaPath)) {
+  // If in dist/ (production), try to go up to src/
+  schemaPath = path.resolve(__dirname, '..', '..', '..', 'src', 'schemas', 'lesson.schema.json');
+}
+if (!fs.existsSync(schemaPath)) {
+  // Try process.cwd() fallback
+  schemaPath = path.resolve(process.cwd(), 'src', 'schemas', 'lesson.schema.json');
+}
 const lessonSchema = JSON.parse(fs.readFileSync(schemaPath, 'utf-8'));
 
 const ajv = new Ajv({ allErrors: true, strict: false });
