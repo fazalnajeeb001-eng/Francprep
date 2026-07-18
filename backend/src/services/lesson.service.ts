@@ -1,6 +1,7 @@
 import Lesson from '../models/Lesson';
 import Chapter from '../models/Chapter';
 import { createLessonSchema, updateLessonSchema } from '../utils/validators';
+import { validateLesson } from '../utils/validateLesson';
 import { z } from 'zod';
 
 /**
@@ -239,6 +240,14 @@ export class LessonService {
    * Create a new lesson (admin)
    */
   async createLesson(data: z.infer<typeof createLessonSchema>) {
+    // Validate canonical lesson data against lesson.schema.json if present
+    if (data.warmUp) {
+      const { valid, errors } = validateLesson(data);
+      if (!valid) {
+        throw { statusCode: 400, message: `Lesson validation failed: ${errors.join('; ')}` };
+      }
+    }
+
     const lesson = await Lesson.create(data);
     
     // Sync to chapter if chapterId is provided
@@ -258,6 +267,14 @@ export class LessonService {
     const oldLesson = await Lesson.findById(id);
     if (!oldLesson) {
       throw { statusCode: 404, message: 'Lesson not found' };
+    }
+
+    // Validate canonical lesson data against lesson.schema.json if present
+    if (data.warmUp) {
+      const { valid, errors } = validateLesson(data);
+      if (!valid) {
+        throw { statusCode: 400, message: `Lesson validation failed: ${errors.join('; ')}` };
+      }
     }
 
     const lesson = await Lesson.findByIdAndUpdate(id, data, {

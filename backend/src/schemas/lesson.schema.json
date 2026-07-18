@@ -1,0 +1,234 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://francprep.com/schemas/lesson.schema.json",
+  "title": "FrancPrep Lesson",
+  "description": "Canonical shape for one lesson document. Every one of the 436 A1-C2 lessons must validate against this schema before insert. No additional top-level properties are allowed, and no section's content may be merged into another section's field.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "lessonId", "chapterId", "level", "title", "anchorSkill", "durationMinutes",
+    "objectives", "grammarFocus", "vocabularyFocus",
+    "warmUp", "explanation", "vocabulary", "grammar", "grammarDrills",
+    "reading", "listening", "speaking", "writing", "practiceExercises",
+    "miniReview", "selfAssessment"
+  ],
+  "properties": {
+    "lessonId": { "type": "string", "description": "e.g. 'a1-ch1-l1'" },
+    "chapterId": { "type": "string", "description": "e.g. 'a1-ch1'" },
+    "level": { "type": "string", "enum": ["A0", "A1", "A2", "B1", "B2", "C1", "C2"] },
+    "title": { "type": "string" },
+    "anchorSkill": { "type": "string", "enum": ["reading", "writing", "listening", "speaking", "integrated", "review"] },
+    "durationMinutes": { "type": "integer", "minimum": 5, "maximum": 90 },
+    "objectives": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "grammarFocus": { "type": "string" },
+    "vocabularyFocus": { "type": "string" },
+
+    "warmUp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["content"],
+      "properties": { "content": { "type": "string", "minLength": 1 } }
+    },
+
+    "explanation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["content"],
+      "properties": { "content": { "type": "string", "minLength": 1 } }
+    },
+
+    "vocabulary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["french", "english", "pronunciation", "example"],
+        "properties": {
+          "french": { "type": "string" },
+          "english": { "type": "string" },
+          "pronunciation": { "type": "string" },
+          "example": { "type": "string" },
+          "formality": { "type": "string" },
+          "usageNote": { "type": "string" }
+        }
+      }
+    },
+
+    "grammar": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["explanation", "formation", "usage", "examples", "commonMistakes"],
+      "properties": {
+        "explanation": { "type": "string", "minLength": 1 },
+        "formation": { "type": "string", "minLength": 1 },
+        "usage": { "type": "string", "minLength": 1 },
+        "examples": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "commonMistakes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["wrong", "correct", "why"],
+            "properties": {
+              "wrong": { "type": "string" },
+              "correct": { "type": "string" },
+              "why": { "type": "string" },
+              "tip": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+
+    "grammarDrills": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["questions"],
+      "properties": { "questions": { "$ref": "#/definitions/questionArray" } }
+    },
+
+    "reading": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "text", "questions"],
+      "properties": {
+        "title": { "type": "string" },
+        "text": { "type": "string", "minLength": 1 },
+        "translation": { "type": "string" },
+        "questions": { "$ref": "#/definitions/questionArray" }
+      }
+    },
+
+    "listening": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "transcript", "questions"],
+      "properties": {
+        "title": { "type": "string" },
+        "transcript": { "type": "string", "minLength": 1 },
+        "translation": { "type": "string" },
+        "audioUrl": { "type": "string" },
+        "questions": { "$ref": "#/definitions/questionArray" }
+      }
+    },
+
+    "speaking": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["guidedActivity"],
+      "properties": {
+        "guidedActivity": { "type": "string", "minLength": 1 },
+        "roleplay": { "type": "string" },
+        "pronunciationTip": { "type": "string" }
+      }
+    },
+
+    "writing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task", "modelAnswer", "checklist"],
+      "properties": {
+        "task": { "type": "string", "minLength": 1 },
+        "modelAnswer": { "type": "string", "minLength": 1 },
+        "checklist": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+      }
+    },
+
+    "practiceExercises": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["questions"],
+      "properties": { "questions": { "$ref": "#/definitions/questionArray" } }
+    },
+
+    "miniReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["content"],
+      "properties": { "content": { "type": "string", "minLength": 1 } }
+    },
+
+    "selfAssessment": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    }
+  },
+
+  "definitions": {
+    "questionArray": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/question" }
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "prompt", "correctAnswer", "explanation"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": {
+          "type": "string",
+          "enum": ["multiple_choice", "true_false", "fill_blank", "matching", "ordering", "short_answer", "translation"]
+        },
+        "prompt": { "type": "string", "minLength": 1 },
+        "options": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Required for multiple_choice and true_false; omit otherwise."
+        },
+        "pairs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["left", "right"],
+            "properties": { "left": { "type": "string" }, "right": { "type": "string" } }
+          },
+          "description": "Required for matching; omit otherwise."
+        },
+        "items": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Required for ordering (the scrambled items to reorder); omit otherwise."
+        },
+        "correctAnswer": {
+          "description": "String for multiple_choice/true_false/fill_blank/short_answer/translation. Array of strings (correct left-to-right order) for ordering. Array of {left,right} pairs for matching.",
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["left", "right"],
+                "properties": { "left": { "type": "string" }, "right": { "type": "string" } }
+              }
+            }
+          ]
+        },
+        "explanation": { "type": "string", "minLength": 1 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "multiple_choice" } } },
+          "then": { "required": ["options"] }
+        },
+        {
+          "if": { "properties": { "type": { "const": "true_false" } } },
+          "then": { "required": ["options"] }
+        },
+        {
+          "if": { "properties": { "type": { "const": "matching" } } },
+          "then": { "required": ["pairs"] }
+        },
+        {
+          "if": { "properties": { "type": { "const": "ordering" } } },
+          "then": { "required": ["items"] }
+        }
+      ]
+    }
+  }
+}

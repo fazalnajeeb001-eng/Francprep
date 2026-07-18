@@ -13,6 +13,7 @@
 const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
+const { validateLesson } = require('./src/utils/validateLesson.cjs');
 
 const MONGODB_URI = 'mongodb+srv://fazalnajeeb001_db_user:Allahisgreat1@francprep.qwpghaf.mongodb.net/?appName=Francprep';
 const CONTENT_DIR = path.join(__dirname, '..', 'full a1 content including ledger and course skeleton');
@@ -682,6 +683,13 @@ async function main() {
         console.log(`   ⚠ Lesson ${lesson.lessonId} not found in MongoDB`);
         totalNotFound++;
         continue;
+      }
+
+      // Validate lesson against schema before inserting
+      const { valid, errors } = validateLesson(lesson);
+      if (!valid) {
+        console.error(`❌ Lesson ${lesson.lessonId} failed validation:`, errors);
+        continue; // skip this lesson, don't insert
       }
 
       // Store parsed data as canonical field
