@@ -82,6 +82,9 @@ export interface ILessonDocument extends Document {
   miniReview?: { content: string };
   selfAssessment?: string[];
 
+  // Raw canonical blob (migration/pipeline writes this; service reads it)
+  canonical?: any;
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -219,6 +222,9 @@ const lessonSchema = new Schema<ILessonDocument>(
       default: undefined,
     },
     selfAssessment: { type: [String], default: undefined },
+
+    // Raw canonical blob stored by migration scripts / admin pipeline
+    canonical: { type: Schema.Types.Mixed, default: undefined },
   },
   { timestamps: true }
 );
