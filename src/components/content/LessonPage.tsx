@@ -121,9 +121,12 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
   const textMuted = dark ? "text-gray-500" : "text-gray-400";
   const btnHover = dark ? "hover:bg-white/5" : "hover:bg-gray-100";
 
-  const { data: lesson } = useQuery({
+  const { data: lesson, isError: lessonError } = useQuery({
     queryKey: ["lesson", lessonId],
-    queryFn: () => apiFetch(`/lessons/${lessonId}`).then((res) => res.json()).then((json) => json.data as LessonData),
+    queryFn: () => apiFetch(`/lessons/${lessonId}`).then((res) => {
+      if (!res.ok) throw new Error("Failed to load lesson");
+      return res.json();
+    }).then((json) => json.data as LessonData),
   });
 
   const { data: progressData, refetch: refetchProgress } = useQuery({
@@ -174,6 +177,21 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
     }).catch(() => {});
     refetchProgress();
   }, [lessonId, exercisesCompleted, quizResults, startTime, refetchProgress]);
+
+  if (lessonError) {
+    return (
+      <div ref={topRef} className={`${pageBg} min-h-screen`}>
+        <div className="max-w-3xl mx-auto px-4 py-8">
+          <div className="flex items-center justify-center py-16">
+            <div className="text-center">
+              <p className={`text-sm font-medium ${dark ? "text-red-400" : "text-red-600"}`}>Failed to load lesson</p>
+              <button onClick={() => onBack?.()} className={`mt-3 text-xs ${textSec} hover:underline`}>Go back</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!lesson) {
     return (
