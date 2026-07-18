@@ -477,4 +477,133 @@ router.post('/content-pipeline/bulk-import', async (req: AuthRequest, res: Respo
   }
 });
 
+// ─── POST /lessons/parse ──────────────────────────────────────────────────
+// Parse markdown into canonical JSON (preview/validation only — no DB write)
+router.post('/lessons/parse', async (req: AuthRequest, res: Response) => {
+  try {
+    const { markdown, metadata } = req.body;
+
+    if (!markdown || !metadata) {
+      res.status(400).json({
+        success: false,
+        error: 'Missing required fields: markdown, metadata',
+      });
+      return;
+    }
+
+    const requiredMeta = ['lessonId', 'chapterId', 'level', 'title', 'anchorSkill', 'durationMinutes', 'objectives', 'grammarFocus', 'vocabularyFocus'];
+    const missing = requiredMeta.filter(f => metadata[f] === undefined || metadata[f] === null);
+    if (missing.length > 0) {
+      res.status(400).json({
+        success: false,
+        error: `Missing metadata fields: ${missing.join(', ')}`,
+      });
+      return;
+    }
+
+    // Dynamic import to avoid issues with ESM/CJS interop in Express context
+    const { parseLessonMarkdown } = await import('../services/lessonParser');
+
+    const result = parseLessonMarkdown(markdown, metadata);
+
+    if (!result.success) {
+      res.status(422).json(result);
+      return;
+    }
+
+    res.json(result);
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ─── POST /lessons/seed ───────────────────────────────────────────────────
+// Parse markdown, validate, and write to MongoDB (upsert by lessonId)
+router.post('/lessons/seed', async (req: AuthRequest, res: Response) => {
+  try {
+    const { markdown, metadata } = req.body;
+
+    if (!markdown || !metadata) {
+      res.status(400).json({
+        success: false,
+        error: 'Missing required fields: markdown, metadata',
+      });
+      return;
+    }
+
+    const requiredMeta = ['lessonId', 'chapterId', 'level', 'title', 'anchorSkill', 'durationMinutes', 'objectives', 'grammarFocus', 'vocabularyFocus'];
+    const missing = requiredMeta.filter(f => metadata[f] === undefined || metadata[f] === null);
+    if (missing.length > 0) {
+      res.status(400).json({
+        success: false,
+        error: `Missing metadata fields: ${missing.join(', ')}`,
+      });
+      return;
+    }
+
+    const { parseLessonMarkdown } = await import('../services/lessonParser');
+
+    const result = parseLessonMarkdown(markdown, metadata);
+
+    if (!result.success) {
+      res.status(422).json({
+        success: false,
+        error: 'Validation failed — lesson not written to MongoDB',
+        errors: result.errors,
+        warnings: result.warnings,
+      });
+      return;
+    }
+
+    const canonical = result.lesson;
+
+    // Upsert into MongoDB: find by lessonId, update or insert
+    const existing = await Lesson.findOne({ lessonId: canonical.lessonId });
+
+    if (existing) {
+      existing.set('canonical', canonical);
+      existing.set('title', canonical.title);
+      existing.set('level', canonical.level);
+      existing.set('isPublished', true);
+      await existing.save();
+
+      res.json({
+        success: true,
+        message: `Lesson ${canonical.lessonId} updated successfully`,
+        data: {
+          lessonId: canonical.lessonId,
+          title: canonical.title,
+          action: 'updated',
+        },
+        warnings: result.warnings,
+      });
+    } else {
+      await Lesson.create({
+        lessonId: canonical.lessonId,
+        chapterId: canonical.chapterId,
+        title: canonical.title,
+        level: canonical.level,
+        order: parseInt(canonical.lessonId.split('-l')[1]) || 1,
+        anchorSkill: canonical.anchorSkill,
+        durationMinutes: canonical.durationMinutes,
+        isPublished: true,
+        canonical,
+      });
+
+      res.status(201).json({
+        success: true,
+        message: `Lesson ${canonical.lessonId} created successfully`,
+        data: {
+          lessonId: canonical.lessonId,
+          title: canonical.title,
+          action: 'created',
+        },
+        warnings: result.warnings,
+      });
+    }
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 export default router;
