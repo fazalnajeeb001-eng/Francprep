@@ -684,8 +684,6 @@ function ReadingSection({ lesson, dark, cardBg, innerBg, textBody, textSec, text
           {reading.questions.map((q) => (
             <div key={q.id} className={`${innerBg} rounded-xl p-3 border`}>
               <p className={`text-sm mb-2 ${textBody}`}>{q.prompt}</p>
-              {q.correctAnswer && <p className="text-xs text-emerald-400 mt-1">{String(q.correctAnswer)}</p>}
-              {q.explanation && <p className={`text-xs ${textSec} mt-1`}>{q.explanation}</p>}
             </div>
           ))}
         </div>
@@ -760,8 +758,6 @@ function ListeningSection({ lesson, dark, cardBg, innerBg, textBody, textSec, te
                   ))}
                 </div>
               )}
-              {q.correctAnswer && <p className="text-xs text-emerald-400 mt-1">{String(q.correctAnswer)}</p>}
-              {q.explanation && <p className={`text-xs ${textSec} mt-1`}>{q.explanation}</p>}
             </div>
           ))}
         </div>

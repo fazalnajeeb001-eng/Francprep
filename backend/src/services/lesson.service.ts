@@ -3,6 +3,35 @@ import Chapter from '../models/Chapter';
 import { createLessonSchema, updateLessonSchema } from '../utils/validators';
 import { z } from 'zod';
 
+/**
+ * Recursively walk a lesson object and remove `correctAnswer` and `explanation`
+ * from every item inside any `questions[]` array anywhere in the tree.
+ * This mutates the passed object in place.
+ */
+function stripAnswers(obj: any): void {
+  if (obj == null || typeof obj !== 'object') return;
+
+  if (Array.isArray(obj)) {
+    for (const item of obj) stripAnswers(item);
+    return;
+  }
+
+  // If this object has a `questions` array, strip each question in it
+  if (Array.isArray(obj.questions)) {
+    for (const q of obj.questions) {
+      if (q && typeof q === 'object') {
+        delete q.correctAnswer;
+        delete q.explanation;
+      }
+    }
+  }
+
+  // Recurse into all values
+  for (const value of Object.values(obj)) {
+    stripAnswers(value);
+  }
+}
+
 export class LessonService {
   /**
    * Get all published lessons with optional filtering
@@ -62,16 +91,20 @@ export class LessonService {
       canonical.order = obj.order || 1;
       canonical.isPublished = obj.isPublished;
       canonical.chapterId = obj.chapterId?.toString?.() || obj.chapterId || canonical.chapterId;
+      stripAnswers(canonical);
       return canonical;
     }
 
     // Old-format lessons with sections[] but no canonical fields — transform to canonical shape
     if (!obj.warmUp && obj.sections && obj.sections.length > 0) {
-      return this.sectionsToCanonical(obj);
+      const canonical = this.sectionsToCanonical(obj);
+      stripAnswers(canonical);
+      return canonical;
     }
 
     // If lesson has no content at all, return what we have (title, level, etc.)
     // The frontend will show "Content will be added soon" for empty sections
+    stripAnswers(obj);
     return obj;
   }
 
