@@ -532,7 +532,7 @@ function buildPracticeQuestion(n, type, promptText) {
   if (type === 'ordering') {
     const items = [];
     const inlineText = promptText.replace(/\n/g, ' ');
-    const inlineMatches = inlineText.matchAll(/\(?([a-z])\)?\)\s*(.+?)(?=\s*\(?[a-z]\)?\)|$)/gi);
+    const inlineMatches = inlineText.matchAll(/\(([a-z])\)\s*(.+?)(?=\s*\([a-z]\)|$)/gi);
     for (const im of inlineMatches) {
       const item = stripMd(im[2]).trim();
       if (item && !items.includes(item)) items.push(item);
@@ -760,7 +760,10 @@ function parseLessonFromMarkdown(markdown, level, chapterNum) {
       const h = s.header.toLowerCase();
       if (h === 'warm-up' || h === 'warm up') lesson.warmUp.content = clean(s.body.split('\n').filter(l => l.trim()).map(l => l.trim()).join(' '));
       else if (h === 'lesson explanation') lesson.explanation.content = clean(s.body);
-      else if (h === 'vocabulary') lesson.vocabulary = parseVocabTable(s.body);
+      else if (h === 'vocabulary') {
+        const vocabResult = parseVocabTable(s.body);
+        if (vocabResult.length > 0) lesson.vocabulary = vocabResult;
+      }
       else if (h.startsWith('grammar')) { lesson.grammar = parseGrammar(s.body); lesson.grammarDrills.questions = parseGrammarDrills(s.body); }
       else if (h === 'reading') lesson.reading = parseReading(s.body);
       else if (h === 'listening') lesson.listening = parseListening(s.body);
@@ -785,10 +788,13 @@ function parseLessonFromMarkdown(markdown, level, chapterNum) {
       }
     }
 
-    // Sanitize all lessons — fills in defaults only for missing/empty fields
-    const sanitized = sanitizeLesson(lesson);
+    // Prefix question IDs with lessonId for canonical uniqueness
+    for (const q of lesson.grammarDrills.questions) q.id = `${lessonId}-${q.id}`;
+    for (const q of lesson.reading.questions) q.id = `${lessonId}-${q.id}`;
+    for (const q of lesson.listening.questions) q.id = `${lessonId}-${q.id}`;
+    for (const q of lesson.practiceExercises.questions) q.id = `${lessonId}-${q.id}`;
 
-    lessons.push(sanitized);
+    lessons.push(lesson);
   }
   return lessons;
 }

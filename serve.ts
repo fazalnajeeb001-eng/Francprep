@@ -29,6 +29,24 @@ Bun.serve({
   hostname: HOST,
   async fetch(req) {
     const { pathname } = new URL(req.url);
+
+    // Proxy /api requests to the local backend
+    if (pathname.startsWith("/api")) {
+      try {
+        const backendUrl = `http://localhost:80${pathname}${new URL(req.url).search}`;
+        return await fetch(backendUrl, {
+          method: req.method,
+          headers: req.headers,
+          body: req.method !== "GET" && req.method !== "HEAD" ? await req.text() : undefined,
+        });
+      } catch {
+        return new Response(JSON.stringify({ success: false, error: "Backend unavailable" }), {
+          status: 502,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+    }
+
     if (pathname !== "/") {
       const file = Bun.file(CLIENT_DIR + pathname);
       if (await file.exists()) return new Response(file);

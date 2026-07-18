@@ -6,7 +6,7 @@ const STORAGE_KEY = "francprep_access_token";
 const API_BASE =
   (typeof window !== "undefined" &&
     (import.meta as Record<string, any>).env?.VITE_API_URL) ||
-  "https://francprep-production.up.railway.app/api";
+  "/api";
 
 export async function apiFetch(
   path: string,

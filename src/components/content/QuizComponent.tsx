@@ -439,11 +439,38 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
     </div>
   );
 
+  // ─── RENDER: TRUE / FALSE ───
+  const renderTrueFalse = (q: Question, qId: string) => {
+    const options = q.options || ['True', 'False'];
+    return (
+      <div className="space-y-2">
+        {options.map((opt, i) => {
+          const isSelected = userAnswer === opt;
+          const isCorrect = resultForQ?.correct && isSelected;
+          const isWrong = resultForQ && !resultForQ.correct && isSelected;
+          const showCorrect = resultForQ && !resultForQ.correct && opt === q.correctAnswer?.toString();
+          return (
+            <button key={i} onClick={() => !submitted && setAnswer(qId, opt)}
+              disabled={submitted}
+              className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${
+                submitted ? (isCorrect ? "border-emerald-500 bg-emerald-500/20 text-emerald-300" : isWrong ? "border-red-500 bg-red-500/20 text-red-300" : showCorrect ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400" : dark ? "border-[#1e2a4a] text-gray-500" : "border-gray-200 text-gray-400")
+                : isSelected ? (dark ? "border-purple-500 bg-purple-500/20 text-purple-300" : "border-purple-400 bg-purple-50 text-purple-700")
+                : dark ? "border-[#1e2a4a] text-gray-300 hover:border-purple-500/50" : "border-gray-200 text-gray-700 hover:border-gray-300"
+              }`}>
+              {opt}
+            </button>
+          );
+        })}
+      </div>
+    );
+  };
+
   // ─── RENDER QUESTION BY TYPE ───
   const renderQuestion = (q: Question, qId: string) => {
     const qType = q.type || _type;
     switch (qType) {
       case 'multiple_choice': return renderMultipleChoice(q, qId);
+      case 'true_false': return renderTrueFalse(q, qId);
       case 'fill_blank':
       case 'fill_in_blank': return renderFillBlank(q, qId);
       case 'matching': return renderMatching(q, qId);
@@ -518,11 +545,18 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
               )}
             </>
           ) : (
-            <button onClick={() => current < questions.length - 1 && setCurrent(current + 1)}
-              disabled={current >= questions.length - 1}
-              className="px-6 py-2 bg-indigo-500 text-white text-sm rounded-lg hover:bg-indigo-600 transition-all flex items-center gap-1 disabled:opacity-30">
-              Next <ChevronRight className="w-4 h-4" />
-            </button>
+            <div className="flex gap-2">
+              <button onClick={() => { setAnswers({}); setSubmitted(false); setResults(null); setCurrent(0); }}
+                className={`px-4 py-2 text-sm border rounded-lg transition-all ${
+                  dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-50"
+                }`}>
+                Try Again
+              </button>
+              <button onClick={() => onComplete?.(results?.filter(r => r.correct).length || 0, results?.length || 0)}
+                className="px-4 py-2 bg-purple-500 text-white text-sm rounded-lg hover:bg-purple-600 transition-all">
+                Continue
+              </button>
+            </div>
           )}
         </div>
       </div>

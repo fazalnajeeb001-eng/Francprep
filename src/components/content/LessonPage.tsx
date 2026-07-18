@@ -92,8 +92,9 @@ function adaptQuestions(questions: LessonQuestion[]) {
     options: q.options,
     correctAnswer: q.correctAnswer as string | string[] | undefined,
     explanation: q.explanation,
-    pairs: q.pairs ? Object.fromEntries(q.pairs.map(p => [p.left, p.right])) : undefined,
+    pairs: q.pairs ? (Array.isArray(q.pairs) ? Object.fromEntries(q.pairs.map(p => [p.left, p.right])) : q.pairs) : undefined,
     items: q.items,
+    correctOrder: Array.isArray(q.correctAnswer) && q.type === 'ordering' ? q.correctAnswer as string[] : undefined,
     points: 1,
   }));
 }
