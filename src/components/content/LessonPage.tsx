@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { WritingSubmission } from "./LearningComponents";
 import { SpeakingDrill } from "./SpeakingDrill";
+import { QuizComponent } from "./QuizComponent";
 import { speak, useSpeak } from "~/lib/speech";
 
 // ─── Canonical Interfaces (matches lesson.schema.json) ─────────────────────
@@ -75,6 +76,28 @@ interface ProgressData {
   score?: number;
 }
 
+interface BlockResult {
+  score: number;
+  total: number;
+  completed: boolean;
+}
+
+// ─── Adapter: LessonQuestion → QuizComponent-compatible shape ────────────────
+
+function adaptQuestions(questions: LessonQuestion[]) {
+  return questions.map(q => ({
+    id: q.id,
+    text: q.prompt,
+    type: q.type,
+    options: q.options,
+    correctAnswer: q.correctAnswer as string | string[] | undefined,
+    explanation: q.explanation,
+    pairs: q.pairs ? Object.fromEntries(q.pairs.map(p => [p.left, p.right])) : undefined,
+    items: q.items,
+    points: 1,
+  }));
+}
+
 // ─── Section Definition ────────────────────────────────────────────────────
 
 interface SectionDef {
@@ -107,8 +130,7 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
   const [currentSectionIdx, setCurrentSectionIdx] = useState(0);
   const [completedSections, setCompletedSections] = useState<Set<number>>(new Set());
   const [showTranslation, setShowTranslation] = useState(false);
-  const [quizResults] = useState<Record<string, { correct: boolean; shown: boolean }>>({});
-  const [exercisesCompleted] = useState(0);
+  const [blockResults, setBlockResults] = useState<Record<string, BlockResult>>({});
   const [lessonCompleted, setLessonCompleted] = useState(false);
   const [lessonScore, setLessonScore] = useState<number | null>(null);
   const [startTime] = useState(Date.now());
@@ -153,31 +175,41 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
     if (!lessonId || lessonCompleted) return;
     const interval = setInterval(() => {
       const timeSpent = Math.round((Date.now() - startTime) / 60000);
+      const completedBlocks = ['grammarDrill', 'reading', 'listening', 'practice'].filter(k => blockResults[k]?.completed).length;
       apiFetch(`/progress/${lessonId}/update`, {
         method: 'POST',
-        body: JSON.stringify({ status: 'in_progress', timeSpent, exercisesCompleted }),
+        body: JSON.stringify({ status: 'in_progress', timeSpent, exercisesCompleted: completedBlocks }),
       }).catch(() => {});
     }, 30000);
     return () => clearInterval(interval);
-  }, [lessonId, exercisesCompleted, lessonCompleted, startTime]);
+  }, [lessonId, blockResults, lessonCompleted, startTime]);
 
   const markSectionComplete = useCallback((idx: number) => {
     setCompletedSections(prev => new Set(prev).add(idx));
   }, []);
 
+  const handleBlockComplete = useCallback((blockKey: string, score: number, total: number) => {
+    setBlockResults(prev => ({
+      ...prev,
+      [blockKey]: { score, total, completed: true },
+    }));
+  }, []);
+
   const completeLesson = useCallback(async () => {
     const timeSpent = Math.round((Date.now() - startTime) / 60000);
-    const total = Object.keys(quizResults).length;
-    const correct = Object.values(quizResults).filter(r => r.correct).length;
-    const score = total > 0 ? Math.round((correct / total) * 100) : undefined;
+    const gradedBlocks = ['grammarDrill', 'reading', 'listening', 'practice'];
+    const totalScore = gradedBlocks.reduce((sum, k) => sum + (blockResults[k]?.score || 0), 0);
+    const totalMax = gradedBlocks.reduce((sum, k) => sum + (blockResults[k]?.total || 0), 0);
+    const score = totalMax > 0 ? Math.round((totalScore / totalMax) * 100) : undefined;
     setLessonScore(score ?? null);
     setLessonCompleted(true);
+    const exercisesCompleted = gradedBlocks.filter(k => blockResults[k]?.completed).length;
     await apiFetch(`/progress/${lessonId}/update`, {
       method: 'POST',
       body: JSON.stringify({ status: 'completed', score: score ?? 0, timeSpent, exercisesCompleted }),
     }).catch(() => {});
     refetchProgress();
-  }, [lessonId, exercisesCompleted, quizResults, startTime, refetchProgress]);
+  }, [lessonId, blockResults, startTime, refetchProgress]);
 
   if (lessonError) {
     return (
@@ -307,24 +339,49 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
               <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Grammar Drill</h3>
             </div>
             <p className={`text-sm ${textSec} mb-4`}>Apply what you just learned. Complete each question below.</p>
-            <div className="space-y-4">
-              {lesson!.grammarDrills.questions.map((q, i) => (
-                <PracticeQuestion key={q.id} question={q} index={i} dark={dark} innerBg={innerBg} textBody={textBody} textSec={textSec}
-                  quizResults={quizResults} />
-              ))}
-            </div>
+            <QuizComponent
+              questions={adaptQuestions(lesson!.grammarDrills.questions)}
+              type="grammarDrill"
+              onComplete={(score, total) => handleBlockComplete('grammarDrill', score, total)}
+            />
           </div>
         );
 
       case 'reading':
         if (!lesson!.reading?.text) return emptyState('Reading');
-        return <ReadingSection lesson={lesson!} dark={dark} cardBg={cardBg} innerBg={innerBg} textBody={textBody} textSec={textSec} textMuted={textMuted}
-          showTranslation={showTranslation} setShowTranslation={setShowTranslation} />;
+        return (
+          <>
+            <ReadingSection lesson={lesson!} dark={dark} cardBg={cardBg} innerBg={innerBg} textBody={textBody} textMuted={textMuted}
+              showTranslation={showTranslation} setShowTranslation={setShowTranslation} />
+            {lesson!.reading.questions?.length > 0 && (
+              <div className="mt-6">
+                <QuizComponent
+                  questions={adaptQuestions(lesson!.reading.questions)}
+                  type="reading"
+                  onComplete={(score, total) => handleBlockComplete('reading', score, total)}
+                />
+              </div>
+            )}
+          </>
+        );
 
       case 'listening':
         if (!lesson!.listening?.transcript && !lesson!.listening?.questions?.length) return emptyState('Listening');
-        return <ListeningSection lesson={lesson!} dark={dark} cardBg={cardBg} innerBg={innerBg} textBody={textBody} textSec={textSec} textMuted={textMuted}
-          showTranslation={showTranslation} setShowTranslation={setShowTranslation} />;
+        return (
+          <>
+            <ListeningSection lesson={lesson!} dark={dark} cardBg={cardBg} innerBg={innerBg} textSec={textSec} textMuted={textMuted}
+              showTranslation={showTranslation} setShowTranslation={setShowTranslation} />
+            {lesson!.listening.questions?.length > 0 && (
+              <div className="mt-6">
+                <QuizComponent
+                  questions={adaptQuestions(lesson!.listening.questions)}
+                  type="listening"
+                  onComplete={(score, total) => handleBlockComplete('listening', score, total)}
+                />
+              </div>
+            )}
+          </>
+        );
 
       case 'speaking':
         if (!lesson!.speaking?.guidedActivity) return emptyState('Speaking Practice');
@@ -355,12 +412,11 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
             <div className="flex items-center gap-3 mb-4"><Repeat className="w-5 h-5 text-purple-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Practice Exercises</h3></div>
-            <div className="space-y-4">
-              {lesson!.practiceExercises.questions.map((q, i) => (
-                <PracticeQuestion key={q.id} question={q} index={i} dark={dark} innerBg={innerBg} textBody={textBody} textSec={textSec}
-                  quizResults={quizResults} />
-              ))}
-            </div>
+            <QuizComponent
+              questions={adaptQuestions(lesson!.practiceExercises.questions)}
+              type="practice"
+              onComplete={(score, total) => handleBlockComplete('practice', score, total)}
+            />
           </div>
         );
 
@@ -475,9 +531,13 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
         {!lessonCompleted && isLast && (
           <div className="mt-8 text-center">
             <button onClick={completeLesson}
-              className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white text-sm font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-emerald-500/25">
+              disabled={!['grammarDrill', 'reading', 'listening', 'practice'].every(k => blockResults[k]?.completed)}
+              className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white text-sm font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-emerald-500/25 disabled:opacity-30 disabled:cursor-not-allowed">
               Complete Lesson
             </button>
+            {!['grammarDrill', 'reading', 'listening', 'practice'].every(k => blockResults[k]?.completed) && (
+              <p className={`text-xs ${textSec} mt-2`}>Complete all exercise blocks to finish the lesson.</p>
+            )}
           </div>
         )}
 
@@ -519,79 +579,6 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
           )}
         </div>
       </div>
-    </div>
-  );
-}
-
-// ─── Practice Question (renders each question from canonical format) ────────
-
-function PracticeQuestion({ question, index, dark, innerBg, textBody, textSec, quizResults }: {
-  question: LessonQuestion; index: number; dark: boolean; innerBg: string; textBody: string; textSec: string;
-  quizResults: Record<string, { correct: boolean; shown: boolean }>;
-}) {
-  const result = quizResults[question.id];
-  const typeLabels: Record<string, string> = {
-    multiple_choice: 'Multiple Choice', true_false: 'True / False', fill_blank: 'Fill in the Blank',
-    matching: 'Matching', ordering: 'Ordering', short_answer: 'Short Answer', translation: 'Translation',
-  };
-
-  return (
-    <div className={`${innerBg} rounded-xl p-4 border`}>
-      <div className="flex items-center gap-2 mb-2">
-        <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${dark ? "bg-purple-500/20 text-purple-300" : "bg-purple-100 text-purple-600"}`}>
-          {typeLabels[question.type] || question.type}
-        </span>
-        <span className={`text-xs ${textSec}`}>Q{index + 1}</span>
-      </div>
-      <p className={`text-sm mb-3 ${textBody}`}>{question.prompt}</p>
-
-      {question.type === 'multiple_choice' && question.options && (
-        <div className="space-y-1.5">
-          {question.options.map((opt, i) => {
-            const letter = String.fromCharCode(97 + i);
-            return (
-              <div key={i} className={`text-xs px-3 py-2 rounded-lg border ${dark ? "border-[#1e2a4a] text-gray-300" : "border-gray-200 text-gray-700"}`}>
-                {letter}) {opt}
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {question.type === 'matching' && question.pairs && (
-        <div className="space-y-1">
-          {question.pairs.map((p, i) => (
-            <div key={i} className={`flex items-center gap-2 text-xs ${textBody}`}>
-              <span className={`px-2 py-1 rounded ${dark ? "bg-white/5" : "bg-gray-100"}`}>{p.left}</span>
-              <span className={textSec}>→</span>
-              <span className={`px-2 py-1 rounded ${dark ? "bg-purple-500/10 text-purple-300" : "bg-purple-50 text-purple-700"}`}>{p.right}</span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {question.type === 'ordering' && question.items && (
-        <div className="space-y-1">
-          {question.items.map((item, i) => (
-            <div key={i} className={`text-xs px-3 py-1.5 rounded-lg border ${dark ? "border-[#1e2a4a] text-gray-300" : "border-gray-200 text-gray-700"}`}>
-              {String.fromCharCode(97 + i)}) {item}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {question.type === 'fill_blank' && (
-        <div className={`text-xs px-3 py-2 rounded-lg border border-dashed ${dark ? "border-purple-500/40 text-purple-300" : "border-purple-300 text-purple-700"}`}>
-          {question.prompt}
-        </div>
-      )}
-
-      {result?.shown && (
-        <div className={`mt-2 text-xs ${result.correct ? "text-emerald-400" : "text-red-400"}`}>
-          {result.correct ? "✓ Correct" : `✗ Answer: ${String(question.correctAnswer).slice(0, 100)}`}
-          {question.explanation && <p className={`mt-1 ${textSec}`}>{question.explanation}</p>}
-        </div>
-      )}
     </div>
   );
 }
@@ -653,8 +640,8 @@ function GrammarSection({ grammar, dark, cardBg, innerBg, textBody, textSec }: {
 
 // ─── Reading Section ───────────────────────────────────────────────────────
 
-function ReadingSection({ lesson, dark, cardBg, innerBg, textBody, textSec, textMuted, showTranslation, setShowTranslation }: {
-  lesson: LessonData; dark: boolean; cardBg: string; innerBg: string; textBody: string; textSec: string; textMuted: string;
+function ReadingSection({ lesson, dark, cardBg, innerBg, textBody, textMuted, showTranslation, setShowTranslation }: {
+  lesson: LessonData; dark: boolean; cardBg: string; innerBg: string; textBody: string; textMuted: string;
   showTranslation: boolean; setShowTranslation: (v: boolean) => void;
 }) {
   const reading = lesson.reading;
@@ -677,25 +664,14 @@ function ReadingSection({ lesson, dark, cardBg, innerBg, textBody, textSec, text
           )}
         </div>
       )}
-
-      {reading.questions.length > 0 && (
-        <div className="space-y-3 mt-4">
-          <p className={`text-xs font-semibold ${dark ? "text-purple-400" : "text-purple-700"}`}>Comprehension Questions</p>
-          {reading.questions.map((q) => (
-            <div key={q.id} className={`${innerBg} rounded-xl p-3 border`}>
-              <p className={`text-sm mb-2 ${textBody}`}>{q.prompt}</p>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
 
 // ─── Listening Section ─────────────────────────────────────────────────────
 
-function ListeningSection({ lesson, dark, cardBg, innerBg, textBody, textSec, textMuted, showTranslation, setShowTranslation }: {
-  lesson: LessonData; dark: boolean; cardBg: string; innerBg: string; textBody: string; textSec: string; textMuted: string;
+function ListeningSection({ lesson, dark, cardBg, innerBg, textSec, textMuted, showTranslation, setShowTranslation }: {
+  lesson: LessonData; dark: boolean; cardBg: string; innerBg: string; textSec: string; textMuted: string;
   showTranslation: boolean; setShowTranslation: (v: boolean) => void;
 }) {
   const [showTranscript, setShowTranscript] = useState(false);
@@ -742,24 +718,6 @@ function ListeningSection({ lesson, dark, cardBg, innerBg, textBody, textSec, te
               <p className={`text-xs ${textMuted} italic p-3 rounded-xl border ${innerBg}`}>{listening.translation}</p>
             </motion.div>
           )}
-        </div>
-      )}
-
-      {listening.questions.length > 0 && (
-        <div className="space-y-3 mt-4">
-          <p className={`text-xs font-semibold ${dark ? "text-purple-400" : "text-purple-700"}`}>Questions</p>
-          {listening.questions.map((q) => (
-            <div key={q.id} className={`${innerBg} rounded-xl p-3 border`}>
-              <p className={`text-sm mb-2 ${textBody}`}>{q.prompt}</p>
-              {q.type === 'true_false' && q.options && (
-                <div className="flex gap-2">
-                  {q.options.map((opt) => (
-                    <span key={opt} className={`text-xs px-3 py-1 rounded-lg ${dark ? "bg-white/5 text-gray-400" : "bg-gray-100 text-gray-600"}`}>{opt}</span>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
         </div>
       )}
     </div>
