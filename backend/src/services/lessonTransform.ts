@@ -51,15 +51,12 @@ function serializeGrammar(doc: LessonDoc): string {
         .join('\n')}`
     );
   }
-  // Grammar drills become inline ____[answer:...] markers the UI parses.
+  // Grammar drills become inline ____ markers (answers stripped — they only live in questions[]).
   const drills = doc.grammarDrills.questions || [];
   if (drills.length) {
     parts.push(
       `Mini Drills:\n${drills
-        .map((d) => {
-          const ans = Array.isArray(d.correctAnswer) ? JSON.stringify(d.correctAnswer) : d.correctAnswer;
-          return `${d.prompt} ____[answer:${ans}]`;
-        })
+        .map((d) => `${d.prompt} ____`)
         .join('\n')}`
     );
   }
@@ -138,13 +135,10 @@ export function transformLesson(lesson: any): TransformedLesson {
   const drills = doc.grammarDrills?.questions || [];
   const grammarDrillsText = drills.length
     ? `\n\nMini Drills:\n${drills
-        .map(d => {
-          const ans = Array.isArray(d.correctAnswer) ? JSON.stringify(d.correctAnswer) : d.correctAnswer;
-          return `${d.prompt} ____[answer:${ans}]`;
-        })
+        .map(d => `${d.prompt} ____`)
         .join('\n')}`
     : '';
-  
+
   const grammarBody = [grammarExplanation, grammarExamples, grammarMistakes, grammarDrillsText]
     .filter(Boolean)
     .join('\n\n');
@@ -156,7 +150,6 @@ export function transformLesson(lesson: any): TransformedLesson {
   }
   if (readingQs.length) {
     readingBodyParts.push(`\nComprehension Questions:\n${readingQs.map((q, i) => `${i + 1}. ${q.prompt}`).join('\n')}`);
-    readingBodyParts.push(`\nAnswer Key:\n${readingQs.map((q, i) => `${i + 1}. ${q.correctAnswer}`).join('\n')}`);
   }
   const readingBody = readingBodyParts.join('\n');
 
@@ -167,7 +160,6 @@ export function transformLesson(lesson: any): TransformedLesson {
   }
   if (listeningQs.length) {
     listeningBodyParts.push(`\nListening Activity:\n${listeningQs.map((q, i) => `${i + 1}. ${q.prompt}`).join('\n')}`);
-    listeningBodyParts.push(`\nAnswer Key:\n${listeningQs.map((q, i) => `${i + 1}. ${q.correctAnswer}${q.explanation ? ' (' + q.explanation + ')' : ''}`).join('\n')}`);
   }
   const listeningBody = listeningBodyParts.join('\n');
 

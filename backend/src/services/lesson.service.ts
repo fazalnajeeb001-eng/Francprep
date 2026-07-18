@@ -85,7 +85,7 @@ export class LessonService {
     }
     const obj: any = lesson.toJSON();
 
-    // If lesson has canonical data, return it directly with metadata fields
+    // If lesson has canonical data, return it with metadata + frontend field names
     if (obj.canonical) {
       const canonical = { ...obj.canonical };
       canonical._id = obj._id;
@@ -93,147 +93,25 @@ export class LessonService {
       canonical.isPublished = obj.isPublished;
       canonical.chapterId = obj.chapterId?.toString?.() || obj.chapterId || canonical.chapterId;
       stripAnswers(canonical);
+
+      // Remap schema field names → frontend field names (see LessonPage.tsx LessonData interface)
+      // canonical.vocabulary (lesson.schema.json) → vocabItems (frontend)
+      if (canonical.vocabulary && !canonical.vocabItems) {
+        canonical.vocabItems = canonical.vocabulary;
+        delete canonical.vocabulary;
+      }
+      // canonical.anchorSkill → skill (frontend reads `skill` for display)
+      if (canonical.anchorSkill && !canonical.skill) {
+        canonical.skill = canonical.anchorSkill;
+      }
+
       return canonical;
     }
 
-    // Old-format lessons with sections[] but no canonical fields — transform to canonical shape
-    if (!obj.warmUp && obj.sections && obj.sections.length > 0) {
-      const canonical = this.sectionsToCanonical(obj);
-      stripAnswers(canonical);
-      return canonical;
-    }
-
-    // If lesson has no content at all, return what we have (title, level, etc.)
-    // The frontend will show "Content will be added soon" for empty sections
+    // No canonical field — return the document directly.
+    // Structured fields (warmUp, vocabItems, grammar, etc.) already match what the frontend expects.
     stripAnswers(obj);
     return obj;
-  }
-
-  /**
-   * Convert old-format sections[] into the canonical shape the frontend reads
-   */
-  private sectionsToCanonical(obj: any) {
-    const sections = obj.sections || [];
-    const findSection = (type: string) => sections.find((s: any) => s.type === type);
-
-    const warmup = findSection('warmup');
-    const explanation = findSection('explanation');
-    const vocabulary = findSection('vocabulary');
-    const grammar = findSection('grammar');
-    const reading = findSection('reading');
-    const listening = findSection('listening');
-    const speaking = findSection('speaking');
-    const writing = findSection('writing');
-    const practice = findSection('practice');
-    const review = findSection('review');
-
-    // Parse vocabulary from pipe-delimited markdown table
-    const vocabItems: any[] = [];
-    if (vocabulary?.body) {
-      const lines = vocabulary.body.split('\n').filter((l: string) => l.includes('|'));
-      for (const line of lines) {
-        const cells = line.split('|').map((c: string) => c.trim()).filter(Boolean);
-        if (cells.length >= 2 && !cells[0].includes('---') && cells[0].toLowerCase() !== 'french') {
-          vocabItems.push({
-            french: cells[0],
-            english: cells[1],
-            pronunciation: cells[2] || '',
-            example: cells[3] || '',
-          });
-        }
-      }
-    }
-
-    // Parse questions from reading/listening body text
-    const parseQuestions = (body: string): any[] => {
-      if (!body) return [];
-      const questions: any[] = [];
-      const qMatches = body.match(/\d+\.\s+.+/g) || [];
-      const answerKeyMatch = body.match(/Answer Key:\s*\n([\s\S]*?)(?:\n\n|$)/i);
-      const answers = answerKeyMatch ? answerKeyMatch[1].match(/\d+\.\s+.+/g) || [] : [];
-      for (let i = 0; i < qMatches.length && i < 10; i++) {
-        const prompt = qMatches[i].replace(/^\d+\.\s+/, '').trim();
-        if (prompt.length < 5 || prompt.startsWith('Answer')) continue;
-        const answerLine = answers[i]?.replace(/^\d+\.\s+/, '').trim() || '';
-        questions.push({
-          id: `q-${obj.lessonId || obj._id}-${i}`,
-          type: 'short_answer',
-          prompt,
-          correctAnswer: answerLine,
-          explanation: '',
-        });
-      }
-      return questions;
-    };
-
-    // Build reading text (without Q&A)
-    let readingText = reading?.body || '';
-    const readingQIdx = readingText.indexOf('Comprehension Questions:');
-    if (readingQIdx > 0) readingText = readingText.slice(0, readingQIdx).trim();
-    const readingTranslationIdx = readingText.indexOf('English Translation:');
-    let readingTranslation: string | undefined;
-    if (readingTranslationIdx > 0) {
-      readingTranslation = readingText.slice(readingTranslationIdx + 'English Translation:'.length).trim();
-      readingText = readingText.slice(0, readingTranslationIdx).trim();
-    }
-
-    // Build listening text
-    let listeningText = listening?.body || '';
-    const listeningQIdx = listeningText.indexOf('Listening Activity:');
-    if (listeningQIdx > 0) listeningText = listeningText.slice(0, listeningQIdx).trim();
-    const listeningTranslationIdx = listeningText.indexOf('English Translation:');
-    let listeningTranslation: string | undefined;
-    if (listeningTranslationIdx > 0) {
-      listeningTranslation = listeningText.slice(listeningTranslationIdx + 'English Translation:'.length).trim();
-      listeningText = listeningText.slice(0, listeningTranslationIdx).trim();
-    }
-
-    // Parse writing from body
-    const writingBody = writing?.body || '';
-    const writingTaskMatch = writingBody.match(/Task:\s*\n([\s\S]*?)(?=\nModel Answer:|$)/i);
-    const writingModelMatch = writingBody.match(/Model Answer:\s*\n([\s\S]*?)(?=\nChecklist:|$)/i);
-    const writingChecklistMatch = writingBody.match(/Checklist:\s*\n([\s\S]*?)$/i);
-
-    return {
-      ...obj,
-      warmUp: { content: warmup?.body || '' },
-      explanation: { content: explanation?.body || '' },
-      vocabItems,
-      grammar: {
-        explanation: grammar?.body || '',
-        formation: '',
-        usage: '',
-        examples: [],
-        commonMistakes: [],
-      },
-      grammarDrills: { questions: [] },
-      reading: reading ? {
-        title: reading.title || 'Reading',
-        text: readingText,
-        translation: readingTranslation,
-        questions: parseQuestions(reading.body || ''),
-      } : undefined,
-      listening: listening ? {
-        title: listening.title || 'Listening',
-        transcript: listeningText,
-        translation: listeningTranslation,
-        questions: parseQuestions(listening.body || ''),
-      } : undefined,
-      speaking: speaking ? {
-        guidedActivity: speaking.body || '',
-      } : undefined,
-      writing: writing ? {
-        task: writingTaskMatch?.[1]?.trim() || writing.body || '',
-        modelAnswer: writingModelMatch?.[1]?.trim() || '',
-        checklist: writingChecklistMatch?.[1]?.trim().split('\n').map((l: string) => l.replace(/^-\s*/, '').trim()).filter(Boolean) || [],
-      } : undefined,
-      practiceExercises: { questions: parseQuestions(practice?.body || '') },
-      miniReview: { content: review?.body || '' },
-      selfAssessment: [],
-      // Ensure old fields still present
-      sections: obj.sections,
-      content: obj.content,
-    };
   }
 
   /**

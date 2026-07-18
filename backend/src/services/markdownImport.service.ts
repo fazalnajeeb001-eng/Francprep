@@ -42,6 +42,8 @@ export function parsedLessonToDocument(lesson: ParsedLesson): Record<string, any
     practiceExercises: lesson.practiceExercises,
     miniReview: lesson.miniReview,
     selfAssessment: lesson.selfAssessment,
+    // Store the full ParsedLesson as the canonical field for the API path
+    canonical: lesson,
     // Old fields set to defaults for backward compatibility
     category: mapCategoryCode(lesson.anchorSkill),
     isPublished: false,
