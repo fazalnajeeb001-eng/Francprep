@@ -173,6 +173,96 @@ function MatchingQuestion({ q, qId, dark, submitted, setAnswer }: {
   );
 }
 
+// ─── ORDERING QUESTION COMPONENT (with HTML5 drag-and-drop & shuffle) ───
+function OrderingQuestion({ q, qId, dark, submitted, setAnswer, userAnswer, resultForQ }: {
+  q: Question;
+  qId: string;
+  dark: boolean;
+  submitted: boolean;
+  setAnswer: (id: string, answer: string | string[]) => void;
+  userAnswer?: string | string[];
+  resultForQ?: ResultItem;
+}) {
+  const items = q.items || [];
+  const [shuffledItems] = useState(() => [...items].sort(() => Math.random() - 0.5));
+  const currentOrder = (userAnswer as string[]) || shuffledItems;
+
+  const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
+
+  const moveItem = (fromIdx: number, toIdx: number) => {
+    if (submitted) return;
+    const newOrder = [...currentOrder];
+    const [moved] = newOrder.splice(fromIdx, 1);
+    newOrder.splice(toIdx, 0, moved);
+    setAnswer(qId, newOrder);
+  };
+
+  useEffect(() => {
+    if (!userAnswer) {
+      setAnswer(qId, shuffledItems);
+    }
+  }, [shuffledItems, userAnswer, qId, setAnswer]);
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    if (submitted) return;
+    setDraggedIdx(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent, targetIndex: number) => {
+    e.preventDefault();
+    if (draggedIdx === null || draggedIdx === targetIndex) return;
+    moveItem(draggedIdx, targetIndex);
+    setDraggedIdx(null);
+  };
+
+  return (
+    <div className="space-y-2">
+      <p className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"}`}>Drag and drop to reorder, or click the arrows:</p>
+      <div className="space-y-1">
+        {currentOrder.map((item, i) => (
+          <div
+            key={i}
+            draggable={!submitted}
+            onDragStart={(e) => handleDragStart(e, i)}
+            onDragOver={(e) => handleDragOver(e, i)}
+            onDrop={(e) => handleDrop(e, i)}
+            className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all cursor-grab active:cursor-grabbing ${
+              submitted && resultForQ?.correct
+                ? "border-emerald-500/50 bg-emerald-500/10"
+                : submitted && !resultForQ?.correct
+                ? "border-red-500/50 bg-red-500/10"
+                : dark ? "border-[#1e2a4a] bg-[#0a0e1a] hover:border-purple-500/30" : "border-gray-200 bg-white hover:border-purple-400"
+            }`}
+          >
+            <GripVertical className={`w-4 h-4 flex-shrink-0 cursor-grab ${dark ? "text-gray-500" : "text-gray-400"}`} />
+            <span className={`flex-1 text-sm ${dark ? "text-gray-300" : "text-gray-700"}`}>{item}</span>
+            <div className="flex gap-1">
+              <button onClick={() => moveItem(i, i - 1)} disabled={i === 0 || submitted}
+                className={`p-1 rounded ${dark ? "hover:bg-white/10" : "hover:bg-gray-100"} disabled:opacity-30`}>
+                <ChevronLeft className="w-3.5 h-3.5 rotate-90" />
+              </button>
+              <button onClick={() => moveItem(i, i + 1)} disabled={i === currentOrder.length - 1 || submitted}
+                className={`p-1 rounded ${dark ? "hover:bg-white/10" : "hover:bg-gray-100"} disabled:opacity-30`}>
+                <ChevronRight className="w-3.5 h-3.5 rotate-90" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+      {submitted && !resultForQ?.correct && q.correctOrder && (
+        <p className={`text-xs ${dark ? "text-emerald-400" : "text-emerald-600"}`}>
+          Correct order: {q.correctOrder.join(' → ')}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function QuizComponent({ questions, type: _type, onComplete, onAnswer, onSubmit }: QuizProps) {
   const { dark } = useTheme();
   const [current, setCurrent] = useState(0);
@@ -181,6 +271,12 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
   const [results, setResults] = useState<ResultItem[] | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  // Immediate question-by-question grading states
+  const [questionAttempts, setQuestionAttempts] = useState<Record<string, number>>({});
+  const [questionResults, setQuestionResults] = useState<Record<string, ResultItem>>({});
+  const [checkingQuestion, setCheckingQuestion] = useState<Record<string, boolean>>({});
+  const [revealedAnswers, setRevealedAnswers] = useState<Record<string, boolean>>({});
+
   const q = questions[current];
   if (!q) return <div className={`text-sm p-4 ${dark ? "text-gray-400" : "text-gray-500"}`}>No questions</div>;
 
@@ -188,11 +284,59 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
   const qText = q.text || (q as any).question || '';
   const userAnswer = answers[qId];
 
-  const resultForQ = results?.find(r => r.questionId === qId);
+  const resultForQ = results?.find(r => r.questionId === qId) || questionResults[qId];
 
   const setAnswer = useCallback((qId: string, val: string | string[]) => {
     setAnswers(prev => ({ ...prev, [qId]: val }));
   }, []);
+
+  // ─── CHECK ANSWER (SINGLE QUESTION) ───
+  const handleCheckQuestion = async (targetQId: string) => {
+    const val = answers[targetQId];
+    if (val === undefined) return;
+
+    setCheckingQuestion(prev => ({ ...prev, [targetQId]: true }));
+    try {
+      const targetQ = questions.find(question => (question.id || (question as any)._id) === targetQId);
+      if (!targetQ) return;
+
+      if (targetQ.type === 'matching') {
+        const pairs = targetQ.pairs || {};
+        try {
+          const userMatches = JSON.parse(val as string);
+          const allCorrect = Object.entries(pairs).every(([left, correctRight]) => userMatches[left] === correctRight);
+          const mockResult: ResultItem = {
+            questionId: targetQId,
+            correct: allCorrect,
+            points: allCorrect ? (targetQ.points || 1) : 0,
+            maxPoints: targetQ.points || 1,
+            explanation: allCorrect ? "All pairs matched correctly!" : `Correct pairs: ${Object.entries(pairs).map(([k, v]) => `${k} ↔ ${v}`).join(', ')}`,
+          };
+          setQuestionResults(prev => ({ ...prev, [targetQId]: mockResult }));
+          if (!allCorrect) {
+            setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
+          }
+        } catch {
+          // ignore
+        }
+      } else {
+        if (onSubmit) {
+          const res = await onSubmit({ [targetQId]: val });
+          if (res && res.results && res.results.length > 0) {
+            const singleResult = res.results[0];
+            setQuestionResults(prev => ({ ...prev, [targetQId]: singleResult }));
+            if (!singleResult.correct) {
+              setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Check answer failed:', e);
+    } finally {
+      setCheckingQuestion(prev => ({ ...prev, [targetQId]: false }));
+    }
+  };
 
   // ─── SUBMIT ALL ANSWERS TO BACKEND ───
   const handleSubmitAll = useCallback(async () => {
@@ -501,7 +645,7 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
           <p className={`text-sm font-semibold leading-relaxed ${dark ? "text-gray-200" : "text-gray-800"}`}>{qText}</p>
           {renderQuestion(q, qId)}
 
-          {/* Feedback after submit */}
+          {/* Feedback after check or submit */}
           {resultForQ && (
             <div className={`p-4 rounded-xl border ${
               resultForQ.correct
@@ -514,7 +658,21 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
                   {resultForQ.correct ? "Correct!" : "Not quite"}
                 </span>
               </div>
-              <p className={`text-xs ${resultForQ.correct ? (dark ? "text-emerald-400" : "text-emerald-600") : (dark ? "text-red-400" : "text-red-600")}`}>{resultForQ.explanation}</p>
+              
+              {/* Show explanation only if correct, OR if unlocked via button, OR if whole form is submitted */}
+              {(resultForQ.correct || revealedAnswers[qId] || submitted) ? (
+                <p className={`text-xs ${resultForQ.correct ? (dark ? "text-emerald-400" : "text-emerald-600") : (dark ? "text-red-400" : "text-red-600")}`}>{resultForQ.explanation}</p>
+              ) : (
+                <div className="mt-2 flex flex-col items-start gap-1">
+                  <p className={`text-xs ${dark ? "text-red-400" : "text-red-500"}`}>Attempts: {questionAttempts[qId] || 0} / 3</p>
+                  {(questionAttempts[qId] || 0) >= 3 && (
+                    <button onClick={() => setRevealedAnswers(prev => ({ ...prev, [qId]: true }))}
+                      className="text-xs text-purple-400 hover:text-purple-300 font-semibold underline mt-1">
+                      Reveal Explanation & Correct Answer
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </motion.div>
@@ -532,6 +690,14 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
         <div className="flex items-center gap-2">
           {!submitted ? (
             <>
+              {/* Check Answer Button */}
+              {userAnswer !== undefined && !resultForQ?.correct && (
+                <button onClick={() => handleCheckQuestion(qId)} disabled={checkingQuestion[qId]}
+                  className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm rounded-lg transition-all shadow-md shadow-indigo-600/20">
+                  {checkingQuestion[qId] ? "Checking..." : "Check Answer"}
+                </button>
+              )}
+
               {current < questions.length - 1 ? (
                 <button onClick={() => setCurrent(current + 1)}
                   className="px-6 py-2 bg-purple-500 text-white text-sm rounded-lg hover:bg-purple-600 transition-all flex items-center gap-1">
@@ -546,7 +712,7 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
             </>
           ) : (
             <div className="flex gap-2">
-              <button onClick={() => { setAnswers({}); setSubmitted(false); setResults(null); setCurrent(0); }}
+              <button onClick={() => { setAnswers({}); setSubmitted(false); setResults(null); setCurrent(0); setQuestionAttempts({}); setQuestionResults({}); setRevealedAnswers({}); }}
                 className={`px-4 py-2 text-sm border rounded-lg transition-all ${
                   dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-50"
                 }`}>

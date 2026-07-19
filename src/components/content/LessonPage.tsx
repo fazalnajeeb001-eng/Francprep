@@ -109,20 +109,22 @@ interface SectionDef {
   hasContent: boolean;
 }
 
-function buildSections(_lesson: LessonData): SectionDef[] {
-  return [
-    { key: 'warmUp', label: 'Warm-Up', icon: <HelpCircle className="w-3.5 h-3.5" />, hasContent: true },
-    { key: 'explanation', label: 'Lesson', icon: <FileText className="w-3.5 h-3.5" />, hasContent: true },
-    { key: 'vocabulary', label: 'Vocab', icon: <Languages className="w-3.5 h-3.5" />, hasContent: true },
-    { key: 'grammar', label: 'Grammar', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: true },
-    { key: 'grammarDrill', label: 'Drill', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: true },
-    { key: 'reading', label: 'Reading', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: true },
-    { key: 'listening', label: 'Listening', icon: <Headphones className="w-3.5 h-3.5" />, hasContent: true },
-    { key: 'speaking', label: 'Speaking', icon: <Mic className="w-3.5 h-3.5" />, hasContent: true },
-    { key: 'writing', label: 'Writing', icon: <PenTool className="w-3.5 h-3.5" />, hasContent: true },
-    { key: 'practice', label: 'Practice', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: true },
-    { key: 'review', label: 'Review', icon: <Star className="w-3.5 h-3.5" />, hasContent: true },
+function buildSections(lesson: LessonData): SectionDef[] {
+  const sections: SectionDef[] = [
+    { key: 'warmUp', label: 'Warm-Up', icon: <HelpCircle className="w-3.5 h-3.5" />, hasContent: !!lesson.warmUp?.content && lesson.warmUp.content !== '—' },
+    { key: 'explanation', label: 'Lesson', icon: <FileText className="w-3.5 h-3.5" />, hasContent: !!lesson.explanation?.content && lesson.explanation.content !== '—' },
+    { key: 'vocabulary', label: 'Vocab', icon: <Languages className="w-3.5 h-3.5" />, hasContent: !!lesson.vocabItems?.length && lesson.vocabItems[0]?.french !== '—' },
+    { key: 'grammar', label: 'Grammar', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: !!lesson.grammar?.explanation && !lesson.grammar.explanation.startsWith('No new grammar') },
+    { key: 'grammarDrill', label: 'Drill', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: !!lesson.grammarDrills?.questions?.length && !lesson.grammarDrills.questions[0]?.id?.includes('gd-dummy') },
+    { key: 'reading', label: 'Reading', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: !!lesson.reading?.text && lesson.reading.text !== '—' },
+    { key: 'listening', label: 'Listening', icon: <Headphones className="w-3.5 h-3.5" />, hasContent: !!lesson.listening?.transcript && lesson.listening.transcript !== '—' },
+    { key: 'speaking', label: 'Speaking', icon: <Mic className="w-3.5 h-3.5" />, hasContent: !!lesson.speaking?.guidedActivity && !lesson.speaking.guidedActivity.startsWith('Practice pronunciation') },
+    { key: 'writing', label: 'Writing', icon: <PenTool className="w-3.5 h-3.5" />, hasContent: !!lesson.writing?.task && !lesson.writing.task.startsWith('Write a short summary') },
+    { key: 'practice', label: 'Practice', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: !!lesson.practiceExercises?.questions?.length && !lesson.practiceExercises.questions[0]?.id?.includes('pe-dummy') },
+    { key: 'review', label: 'Review', icon: <Star className="w-3.5 h-3.5" />, hasContent: (!!lesson.miniReview?.content && lesson.miniReview.content !== '—') || !!lesson.selfAssessment?.length },
   ];
+
+  return sections.filter(s => s.hasContent);
 }
 
 // ─── Main Component ────────────────────────────────────────────────────────
