@@ -276,6 +276,7 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
   const [questionResults, setQuestionResults] = useState<Record<string, ResultItem>>({});
   const [checkingQuestion, setCheckingQuestion] = useState<Record<string, boolean>>({});
   const [revealedAnswers, setRevealedAnswers] = useState<Record<string, boolean>>({});
+  const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
 
   const q = questions[current];
   if (!q) return <div className={`text-sm p-4 ${dark ? "text-gray-400" : "text-gray-500"}`}>No questions</div>;
@@ -283,6 +284,17 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
   const qId = q.id || (q as any)._id || String(current);
   const qText = q.text || (q as any).question || '';
   const userAnswer = answers[qId];
+
+  // Shuffle ordering items on load if not already answered
+  useEffect(() => {
+    if (q && q.type === 'ordering') {
+      const currentQId = q.id || (q as any)._id || String(current);
+      if (!answers[currentQId] && q.items) {
+        const shuffled = [...q.items].sort(() => Math.random() - 0.5);
+        setAnswers(prev => ({ ...prev, [currentQId]: shuffled }));
+      }
+    }
+  }, [current, q]);
 
   const resultForQ = results?.find(r => r.questionId === qId) || questionResults[qId];
 
@@ -505,17 +517,50 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
       setAnswer(qId, newOrder);
     };
 
+    const handleDragStart = (e: React.DragEvent, index: number) => {
+      if (submitted) return;
+      e.dataTransfer.effectAllowed = "move";
+      setDraggedIdx(index);
+    };
+
+    const handleDragOver = (e: React.DragEvent, index: number) => {
+      if (submitted) return;
+      e.preventDefault();
+    };
+
+    const handleDrop = (e: React.DragEvent, targetIdx: number) => {
+      if (submitted || draggedIdx === null) return;
+      e.preventDefault();
+      const newOrder = [...currentOrder];
+      const [moved] = newOrder.splice(draggedIdx, 1);
+      newOrder.splice(targetIdx, 0, moved);
+      setAnswer(qId, newOrder);
+    };
+
+    const handleDragEnd = () => {
+      setDraggedIdx(null);
+    };
+
     return (
       <div className="space-y-2">
         <p className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"}`}>Drag or use arrows to reorder:</p>
         {currentOrder.map((item, i) => (
-          <div key={i} className={`flex items-center gap-2 p-2 rounded-xl border ${
-            submitted && resultForQ?.correct
-              ? "border-emerald-500/50 bg-emerald-500/10"
-              : submitted && !resultForQ?.correct
-              ? "border-red-500/50 bg-red-500/10"
-              : dark ? "border-[#1e2a4a] bg-[#0a0e1a]" : "border-gray-200 bg-white"
-          }`}>
+          <div key={i}
+            draggable={!submitted}
+            onDragStart={(e) => handleDragStart(e, i)}
+            onDragOver={(e) => handleDragOver(e, i)}
+            onDrop={(e) => handleDrop(e, i)}
+            onDragEnd={handleDragEnd}
+            className={`flex items-center gap-2 p-2 rounded-xl border select-none transition-all ${
+              draggedIdx === i ? "opacity-40 scale-95 border-purple-500 bg-purple-500/10" : ""
+            } ${
+              submitted && resultForQ?.correct
+                ? "border-emerald-500/50 bg-emerald-500/10"
+                : submitted && !resultForQ?.correct
+                ? "border-red-500/50 bg-red-500/10"
+                : dark ? "border-[#1e2a4a] bg-[#0a0e1a] cursor-move hover:border-purple-500/30" : "border-gray-200 bg-white cursor-move hover:border-purple-300"
+            }`}
+          >
             <GripVertical className={`w-4 h-4 flex-shrink-0 ${dark ? "text-gray-500" : "text-gray-400"}`} />
             <span className={`flex-1 text-sm ${dark ? "text-gray-300" : "text-gray-700"}`}>{item}</span>
             <div className="flex gap-1">
