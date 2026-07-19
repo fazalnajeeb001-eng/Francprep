@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://francprep.com/schemas/lesson-integrated.schema.json",
+  "title": "FrancPrep Integrated Practice Lesson (Lesson 7)",
+  "description": "Integrated practice lesson combining multiple skills. Same structure as standard but anchorSkill must be 'integrated'.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "lessonId", "chapterId", "level", "title", "anchorSkill", "durationMinutes",
+    "objectives", "grammarFocus", "vocabularyFocus",
+    "warmUp", "explanation", "vocabulary", "grammar", "grammarDrills",
+    "reading", "listening", "speaking", "writing", "practiceExercises",
+    "miniReview", "selfAssessment"
+  ],
+  "properties": {
+    "lessonId": { "type": "string" },
+    "chapterId": { "type": "string" },
+    "level": { "type": "string", "enum": ["A0", "A1", "A2", "B1", "B2", "C1", "C2"] },
+    "title": { "type": "string" },
+    "anchorSkill": { "type": "string", "enum": ["integrated"] },
+    "durationMinutes": { "type": "integer", "minimum": 5, "maximum": 90 },
+    "objectives": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "grammarFocus": { "type": "string" },
+    "vocabularyFocus": { "type": "string" },
+    "warmUp": { "type": "object", "additionalProperties": false, "required": ["content"], "properties": { "content": { "type": "string", "minLength": 1 } } },
+    "explanation": { "type": "object", "additionalProperties": false, "required": ["content"], "properties": { "content": { "type": "string", "minLength": 1 } } },
+    "vocabulary": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["french", "english", "pronunciation", "example"],
+        "properties": {
+          "french": { "type": "string" }, "english": { "type": "string" },
+          "pronunciation": { "type": "string" }, "example": { "type": "string" },
+          "formality": { "type": "string" }, "usageNote": { "type": "string" }
+        }
+      }
+    },
+    "grammar": { "$ref": "#/definitions/grammarBlock" },
+    "grammarDrills": { "type": "object", "additionalProperties": false, "required": ["questions"], "properties": { "questions": { "$ref": "#/definitions/questionArray" } } },
+    "reading": { "type": "object", "additionalProperties": false, "required": ["title", "text", "questions"], "properties": { "title": { "type": "string" }, "text": { "type": "string", "minLength": 1 }, "translation": { "type": "string" }, "questions": { "$ref": "#/definitions/questionArray" } } },
+    "listening": { "type": "object", "additionalProperties": false, "required": ["title", "transcript", "questions"], "properties": { "title": { "type": "string" }, "transcript": { "type": "string", "minLength": 1 }, "translation": { "type": "string" }, "audioUrl": { "type": "string" }, "questions": { "$ref": "#/definitions/questionArray" } } },
+    "speaking": { "type": "object", "additionalProperties": false, "required": ["guidedActivity"], "properties": { "guidedActivity": { "type": "string", "minLength": 1 }, "roleplay": { "type": "string" }, "pronunciationTip": { "type": "string" } } },
+    "writing": { "type": "object", "additionalProperties": false, "required": ["task", "modelAnswer", "checklist"], "properties": { "task": { "type": "string", "minLength": 1 }, "modelAnswer": { "type": "string", "minLength": 1 }, "checklist": { "type": "array", "items": { "type": "string" }, "minItems": 1 } } },
+    "practiceExercises": { "type": "object", "additionalProperties": false, "required": ["questions"], "properties": { "questions": { "$ref": "#/definitions/questionArray" } } },
+    "miniReview": { "type": "object", "additionalProperties": false, "required": ["content"], "properties": { "content": { "type": "string", "minLength": 1 } } },
+    "selfAssessment": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+  },
+  "definitions": {
+    "grammarBlock": {
+      "type": "object", "additionalProperties": false,
+      "required": ["explanation", "formation", "usage", "examples", "commonMistakes"],
+      "properties": {
+        "explanation": { "type": "string", "minLength": 1 },
+        "formation": { "type": "string", "minLength": 1 },
+        "usage": { "type": "string", "minLength": 1 },
+        "examples": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "commonMistakes": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["wrong", "correct", "why"], "properties": { "wrong": { "type": "string" }, "correct": { "type": "string" }, "why": { "type": "string" }, "tip": { "type": "string" } } } }
+      }
+    },
+    "questionArray": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "type", "prompt", "correctAnswer", "explanation"],
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string", "enum": ["multiple_choice", "true_false", "fill_blank", "matching", "ordering", "short_answer", "translation"] },
+          "prompt": { "type": "string", "minLength": 1 },
+          "options": { "type": "array", "items": { "type": "string" } },
+          "pairs": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["left", "right"], "properties": { "left": { "type": "string" }, "right": { "type": "string" } } } },
+          "items": { "type": "array", "items": { "type": "string" } },
+          "correctAnswer": { "oneOf": [ { "type": "string" }, { "type": "array", "items": { "type": "string" } }, { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["left", "right"], "properties": { "left": { "type": "string" }, "right": { "type": "string" } } } } ] },
+          "explanation": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}
