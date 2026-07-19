@@ -218,9 +218,13 @@ function OrderingQuestion({ q, qId, dark, submitted, setAnswer, userAnswer, resu
   const handleDrop = (e: React.DragEvent, targetIndex: number) => {
     e.preventDefault();
     if (submitted) return;
-    const sourceIdx = Number(e.dataTransfer.getData("text/plain"));
-    if (isNaN(sourceIdx) || sourceIdx === targetIndex) return;
+    let sourceIdx = Number(e.dataTransfer.getData("text/plain"));
+    if (isNaN(sourceIdx) || e.dataTransfer.getData("text/plain") === "") {
+      sourceIdx = isDragging !== null ? isDragging : -1;
+    }
+    if (sourceIdx === -1 || sourceIdx === targetIndex) return;
     moveItem(sourceIdx, targetIndex);
+    setIsDragging(null);
   };
 
   const handleDragEnd = () => {
@@ -239,7 +243,7 @@ function OrderingQuestion({ q, qId, dark, submitted, setAnswer, userAnswer, resu
             onDragOver={(e) => handleDragOver(e, i)}
             onDrop={(e) => handleDrop(e, i)}
             onDragEnd={handleDragEnd}
-            className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all cursor-grab active:cursor-grabbing ${
+            className={`flex items-center gap-2 p-2.5 rounded-xl border select-none transition-all cursor-grab active:cursor-grabbing ${
               isDragging === i ? "opacity-30 scale-[0.98] border-purple-500 bg-purple-500/10" : ""
             } ${
               submitted && resultForQ?.correct
