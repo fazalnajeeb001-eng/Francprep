@@ -644,14 +644,14 @@ router.get('/curriculum/audit', async (req: AuthRequest, res: Response, next: Ne
       const canonical = (lesson as any).canonical;
       if (!canonical) {
         errors.push('Missing canonical JSON document');
-        auditResults.push({ lessonId: lesson.lessonId, title: lesson.title, level: lesson.level, errors, warnings });
+        auditResults.push({ lessonId: lesson.lessonId as string, title: lesson.title, level: lesson.level, errors, warnings });
         continue;
       }
 
-      const isValid = validateLesson(canonical);
-      if (!isValid && validateLesson.errors) {
-        for (const err of validateLesson.errors) {
-          errors.push(`${err.instancePath || '/'} ${err.message}`);
+      const lessonResult = validateLesson(canonical);
+      if (!lessonResult.valid) {
+        for (const err of lessonResult.errors) {
+          errors.push(err);
         }
       }
 
@@ -662,12 +662,12 @@ router.get('/curriculum/audit', async (req: AuthRequest, res: Response, next: Ne
           if (!vocabularyMap.has(key)) {
             vocabularyMap.set(key, []);
           }
-          vocabularyMap.get(key)!.push(lesson.lessonId);
+          vocabularyMap.get(key)!.push(lesson.lessonId as string);
         }
       }
 
       auditResults.push({
-        lessonId: lesson.lessonId,
+        lessonId: lesson.lessonId as string,
         title: lesson.title,
         level: lesson.level,
         errors,

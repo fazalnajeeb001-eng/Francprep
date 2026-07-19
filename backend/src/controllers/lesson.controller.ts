@@ -22,7 +22,7 @@ export class LessonController {
       if (req.user && req.user.role !== 'admin' && result.data) {
         const filtered: any[] = [];
         for (const lesson of result.data) {
-          const accessState = await getTargetAccessState(req.user.id, lesson.level, 'level');
+          const accessState = await getTargetAccessState(req.user.userId, lesson.level, 'level');
           if (accessState !== 'hidden') {
             filtered.push(lesson);
           }
@@ -47,7 +47,7 @@ export class LessonController {
       const lesson = await lessonService.getLessonById(req.params.id);
 
       if (req.user && req.user.role !== 'admin') {
-        const accessState = await getTargetAccessState(req.user.id, lesson.level, 'level');
+        const accessState = await getTargetAccessState(req.user.userId, lesson.level, 'level');
         if (accessState === 'hidden') {
           return res.status(403).json({ success: false, message: 'Access denied: Level is hidden' });
         }

@@ -1,5 +1,5 @@
 import { StudentAccess } from '../models/StudentAccess';
-import { User } from '../models/User';
+import User from '../models/User';
 
 export async function getTargetAccessState(
   userId: string,
@@ -20,11 +20,11 @@ export async function getTargetAccessState(
   if (studentOverride) return studentOverride.state;
 
   // 2. Check Cohort Scope Override
-  if (user.cohort || (user as any).cohortId) {
+  if ((user as any).cohort || (user as any).cohortId) {
     const cohortOverride = await StudentAccess.findOne({
       targetId,
       scope: 'cohort',
-      cohortId: user.cohort || (user as any).cohortId,
+      cohortId: (user as any).cohort || (user as any).cohortId,
     });
     if (cohortOverride) return cohortOverride.state;
   }
