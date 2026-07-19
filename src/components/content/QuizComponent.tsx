@@ -323,10 +323,12 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
         if (onSubmit) {
           const res = await onSubmit({ [targetQId]: val });
           if (res && res.results && res.results.length > 0) {
-            const singleResult = res.results[0];
-            setQuestionResults(prev => ({ ...prev, [targetQId]: singleResult }));
-            if (!singleResult.correct) {
-              setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
+            const singleResult = res.results.find((r: any) => r.questionId === targetQId);
+            if (singleResult) {
+              setQuestionResults(prev => ({ ...prev, [targetQId]: singleResult }));
+              if (!singleResult.correct) {
+                setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
+              }
             }
           }
         }
