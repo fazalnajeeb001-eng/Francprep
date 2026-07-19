@@ -243,12 +243,12 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
   const sections = lesson ? buildSections(lesson) : [];
 
   const isLesson8 = lesson?.lessonNumber === 8 || lesson?.title?.toLowerCase().includes('review');
-  const lesson7Id = lessonId ? lessonId.replace(/-l8$/i, '-l7') : '';
+  const lesson7Id = lesson?.lessonId ? lesson.lessonId.replace(/-l8$/i, '-l7') : '';
 
   const { data: lesson7 } = useQuery({
     queryKey: ["lesson", lesson7Id],
     queryFn: () => apiFetch(`/lessons/${lesson7Id}`).then(res => res.json()).then(json => json.data as LessonData),
-    enabled: isLesson8 && !!lessonId && !draftId
+    enabled: isLesson8 && !!lesson7Id && !draftId
   });
 
   useEffect(() => {
