@@ -274,7 +274,7 @@ export class LessonService {
       questions = canonical.reading?.questions || [];
     } else if (blockType === 'listening') {
       questions = canonical.listening?.questions || [];
-    } else if (blockType === 'practice') {
+    } else if (blockType === 'practice' || blockType === 'delf') {
       questions = canonical.practiceExercises?.questions || [];
     } else {
       throw { statusCode: 400, message: `Invalid block type: ${blockType}` };
