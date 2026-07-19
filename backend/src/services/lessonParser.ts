@@ -629,25 +629,24 @@ function parseDelfExercises(text: string, lessonId: string): Question[] {
   }
 
   for (const sec of sections) {
-    if (!sec.trim()) continue;
+    const textToParse = sec.trim();
+    if (!textToParse) continue;
     
-    const lines = sec.split('\n');
-    const firstLine = lines[0].trim();
-    const titleMatch = firstLine.match(/^(\d+)\s*[-—]\s*(.+?)(?::\*\*|\*\*)/i);
+    const titleMatch = textToParse.match(/^(\d+)\s*[-—]\s*(.+?)(?::\*\*|\*\*)/i);
     if (!titleMatch) continue;
 
     const sectionNum = titleMatch[1];
-    const sectionTitle = titleMatch[2].replace(/\*\*$/, '').trim();
+    let sectionTitle = titleMatch[2].replace(/:$/, '').trim();
 
-    // Rest of the lines before Answer Key
-    const promptLines: string[] = [];
-    for (const line of lines.slice(1)) {
-      if (line.trim().startsWith('**Answer Key')) break;
-      promptLines.push(line.trim());
+    // Rest of the text is the prompt
+    let bodyText = textToParse.slice(titleMatch[0].length).trim();
+    
+    // Remove Answer Key if it is included in the last section
+    if (bodyText.includes('**Answer Key')) {
+      bodyText = bodyText.split('**Answer Key')[0].trim();
     }
 
-    const filteredPromptLines = promptLines.filter(l => l);
-    const fullPrompt = `**Section ${sectionNum} — ${sectionTitle}**\n\n` + filteredPromptLines.join('\n');
+    const fullPrompt = `**Section ${sectionNum} — ${sectionTitle}**\n\n` + bodyText;
 
     const type = 'short_answer';
 

@@ -804,33 +804,99 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
 function GrammarSection({ grammar, dark, cardBg, innerBg, textBody, textSec }: {
   grammar: LessonData['grammar']; dark: boolean; cardBg: string; innerBg: string; textBody: string; textSec: string;
 }) {
+  const isPlaceholderFormation = !grammar.formation || grammar.formation.includes('See grammar summary') || grammar.formation.includes('Recycled from');
+  const isPlaceholderUsage = !grammar.usage || grammar.usage.includes('Review all grammar') || grammar.usage.includes('See explanation');
+  const isPlaceholderExamples = !grammar.examples?.length || grammar.examples[0]?.includes('Refer to the');
+
+  const parseExplanationContent = (text: string) => {
+    const lines = text.split('\n');
+    const elements: React.ReactNode[] = [];
+    let currentTableRows: string[][] = [];
+
+    const flushTable = (key: number) => {
+      if (currentTableRows.length === 0) return;
+      const headers = currentTableRows[0];
+      const dataRows = currentTableRows.slice(2); // Skip separator row |---|---|
+      elements.push(
+        <div key={`table-${key}`} className="overflow-x-auto my-4 rounded-xl border border-gray-250 dark:border-[#1e2a4a]">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-[#1e2a4a] text-xs">
+            <thead className={dark ? "bg-white/5" : "bg-gray-50"}>
+              <tr>
+                {headers.map((h, idx) => (
+                  <th key={idx} className={`px-4 py-2 text-left font-bold ${dark ? "text-purple-300" : "text-purple-700"}`}>{h.trim()}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className={`divide-y divide-gray-200 dark:divide-[#1e2a4a] ${dark ? "bg-black/20" : "bg-white"}`}>
+              {dataRows.map((row, rIdx) => (
+                <tr key={rIdx}>
+                  {row.map((cell, cIdx) => (
+                    <td key={cIdx} className={`px-4 py-2 font-medium ${dark ? "text-gray-300" : "text-gray-700"}`}>{cell.trim()}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+      currentTableRows = [];
+    };
+
+    lines.forEach((line, idx) => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('|')) {
+        const cells = trimmed.split('|').slice(1, -1);
+        currentTableRows.push(cells);
+      } else {
+        if (currentTableRows.length > 0) {
+          flushTable(idx);
+        }
+        if (trimmed) {
+          if (trimmed.startsWith('###')) {
+            elements.push(<h4 key={idx} className={`text-xs font-bold mt-4 mb-2 ${dark ? "text-white" : "text-gray-900"}`}>{trimmed.replace('###', '').trim()}</h4>);
+          } else if (trimmed.startsWith('##')) {
+            elements.push(<h3 key={idx} className={`text-sm font-bold mt-4 mb-2 ${dark ? "text-white" : "text-gray-900"}`}>{trimmed.replace('##', '').trim()}</h3>);
+          } else if (trimmed.startsWith('-') || trimmed.startsWith('*')) {
+            elements.push(<li key={idx} className={`text-xs ${textBody} ml-4 list-disc mb-1`}>{trimmed.slice(1).trim()}</li>);
+          } else {
+            elements.push(<p key={idx} className={`text-xs ${textBody} mb-2 leading-relaxed`}>{trimmed}</p>);
+          }
+        }
+      }
+    });
+
+    if (currentTableRows.length > 0) {
+      flushTable(lines.length);
+    }
+
+    return elements;
+  };
+
   return (
     <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
       <h3 className={`text-sm font-semibold mb-3 ${dark ? "text-white" : "text-gray-900"}`}>Grammar</h3>
 
       {grammar.explanation && (
-        <div className={`text-sm leading-relaxed ${textBody} mb-4`}>
-          {grammar.explanation.split("\n").map((line, i) => (
-            line.trim() ? <p key={i} className="mb-2">{line}</p> : null
-          ))}
+        <div className="mb-4">
+          {parseExplanationContent(grammar.explanation)}
         </div>
       )}
 
-      {grammar.formation && (
+      {grammar.formation && !isPlaceholderFormation && (
         <div className={`${innerBg} rounded-xl p-3 border mb-3`}>
           <p className={`text-xs font-semibold mb-1 ${dark ? "text-purple-400" : "text-purple-600"}`}>Formation:</p>
           <p className={`text-xs ${textBody}`}>{grammar.formation}</p>
         </div>
       )}
 
-      {grammar.usage && (
+      {grammar.usage && !isPlaceholderUsage && (
         <div className={`${innerBg} rounded-xl p-3 border mb-3`}>
           <p className={`text-xs font-semibold mb-1 ${dark ? "text-purple-400" : "text-purple-600"}`}>Usage:</p>
           <p className={`text-xs ${textBody}`}>{grammar.usage}</p>
         </div>
       )}
 
-      {grammar.examples.length > 0 && (
+      {grammar.examples.length > 0 && !isPlaceholderExamples && (
         <div className="mb-3">
           <p className={`text-xs font-semibold mb-1.5 ${dark ? "text-purple-400" : "text-purple-600"}`}>Examples:</p>
           {grammar.examples.map((ex, i) => (
