@@ -288,6 +288,11 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
 
   const setAnswer = useCallback((qId: string, val: string | string[]) => {
     setAnswers(prev => ({ ...prev, [qId]: val }));
+    setQuestionResults(prev => {
+      const next = { ...prev };
+      delete next[qId];
+      return next;
+    });
   }, []);
 
   // ─── CHECK ANSWER (SINGLE QUESTION) ───
