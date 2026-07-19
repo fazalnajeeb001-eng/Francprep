@@ -12,6 +12,11 @@ import { z } from 'zod';
 function stripAnswers(obj: any): void {
   if (obj == null || typeof obj !== 'object') return;
 
+  // Skip recursion for Mongoose ObjectIds and Dates
+  if (obj.constructor && (obj.constructor.name === 'ObjectID' || obj.constructor.name === 'ObjectId' || obj instanceof Date)) {
+    return;
+  }
+
   if (Array.isArray(obj)) {
     for (const item of obj) stripAnswers(item);
     return;
