@@ -257,7 +257,8 @@ export class LessonService {
    * Securely grade a section of questions on the backend
    */
   async submitBlock(id: string, blockType: string, answers: Record<string, any>) {
-    const lesson = await Lesson.findById(id);
+    let lesson = await Lesson.findOne({ lessonId: id });
+    if (!lesson) lesson = await Lesson.findById(id);
     if (!lesson) {
       throw { statusCode: 404, message: 'Lesson not found' };
     }
