@@ -243,7 +243,7 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
   const sections = lesson ? buildSections(lesson) : [];
 
   const isLesson8 = lesson?.lessonNumber === 8 || lesson?.title?.toLowerCase().includes('review');
-  const lesson7Id = lessonId ? lessonId.replace('-l8', '-l7') : '';
+  const lesson7Id = lessonId ? lessonId.replace(/-l8$/i, '-l7') : '';
 
   const { data: lesson7 } = useQuery({
     queryKey: ["lesson", lesson7Id],
