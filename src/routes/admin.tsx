@@ -4,7 +4,8 @@ import { useAuth } from "~/lib/AuthContext";
 import { motion } from "framer-motion";
 import {
   LayoutDashboard, Users, BookOpen, FileText, Crown, Shield,
-  ChevronLeft, Menu, GraduationCap, Settings, Wand2, Megaphone, CreditCard, BarChart3, Sliders, Layers
+  ChevronLeft, Menu, GraduationCap, Settings, Wand2, Megaphone, CreditCard, BarChart3, Sliders, Layers,
+  ChevronDown, ChevronUp
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
@@ -15,18 +16,33 @@ export const Route = createFileRoute("/admin")({
   },
 });
 
-const navItems = [
-  { label: "Dashboard", icon: LayoutDashboard, href: "/admin" },
-  { label: "Users", icon: Users, href: "/admin/users" },
-  { label: "Syllabus", icon: BookOpen, href: "/admin/syllabi" },
-  { label: "Lessons", icon: FileText, href: "/admin/lessons" },
-  { label: "Exercises", icon: GraduationCap, href: "/admin/exercises" },
-  { label: "Content Pipeline", icon: Layers, href: "/admin/pipeline" },
-  { label: "Content Generator", icon: Wand2, href: "/admin/content" },
-  { label: "Announcements", icon: Megaphone, href: "/admin/announcements" },
-  { label: "Subscriptions", icon: CreditCard, href: "/admin/subscriptions" },
-  { label: "Analytics", icon: BarChart3, href: "/admin/analytics" },
-  { label: "API Settings", icon: Sliders, href: "/admin/settings" },
+const navGroups = [
+  {
+    title: "Content Pipeline",
+    items: [
+      { label: "Dashboard", icon: LayoutDashboard, href: "/admin" },
+      { label: "Pipeline Queue", icon: Layers, href: "/admin/pipeline" },
+      { label: "AI Generator", icon: Wand2, href: "/admin/content" },
+    ]
+  },
+  {
+    title: "In-House Editing",
+    items: [
+      { label: "Syllabi", icon: BookOpen, href: "/admin/syllabi" },
+      { label: "Lessons", icon: FileText, href: "/admin/lessons" },
+      { label: "Exercises", icon: GraduationCap, href: "/admin/exercises" },
+    ]
+  },
+  {
+    title: "Platform Management",
+    items: [
+      { label: "Users", icon: Users, href: "/admin/users" },
+      { label: "Subscriptions", icon: CreditCard, href: "/admin/subscriptions" },
+      { label: "Announcements", icon: Megaphone, href: "/admin/announcements" },
+      { label: "Analytics", icon: BarChart3, href: "/admin/analytics" },
+      { label: "API Settings", icon: Sliders, href: "/admin/settings" },
+    ]
+  }
 ];
 
 function AdminLayout() {
@@ -34,6 +50,16 @@ function AdminLayout() {
   const router = useRouterState();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const dark = true;
+
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
+    "Content Pipeline": true,
+    "In-House Editing": true,
+    "Platform Management": true,
+  });
+
+  const toggleGroup = (title: string) => {
+    setOpenGroups(prev => ({ ...prev, [title]: !prev[title] }));
+  };
 
   // Auth guard
   if (isLoading) {
@@ -93,23 +119,39 @@ function AdminLayout() {
           </div>
 
           {/* Nav items */}
-          <div className="flex-1 overflow-y-auto p-3 space-y-1 mt-2">
-            {navItems.map((item) => {
-              const isActive = item.href === "/admin"
-                ? currentPath === "/admin" || currentPath === "/admin/"
-                : currentPath.startsWith(item.href);
+          <div className="flex-1 overflow-y-auto p-3 space-y-4 mt-2">
+            {navGroups.map((group) => {
+              const isOpen = openGroups[group.title];
               return (
-                <Link key={item.label} to={item.href as any}
-                  onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all ${
-                    isActive
-                      ? "dark:bg-purple-500/20 text-white border border-purple-500/30 shadow-[0_0_15px_rgba(124,58,237,0.15)]"
-                      : "dark:text-gray-400 text-gray-600 hover:text-white hover:dark:bg-white/5 hover:bg-gray-100"
-                  }`}
-                >
-                  <item.icon className="w-4 h-4" />
-                  <span>{item.label}</span>
-                </Link>
+                <div key={group.title} className="space-y-1">
+                  <button onClick={() => toggleGroup(group.title)}
+                    className={`w-full flex items-center justify-between px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider ${dark ? "text-gray-500 hover:text-gray-300" : "text-gray-400 hover:text-gray-600"} transition-colors`}>
+                    <span>{group.title}</span>
+                    {isOpen ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
+                  </button>
+                  {isOpen && (
+                    <div className="space-y-1">
+                      {group.items.map((item) => {
+                        const isActive = item.href === "/admin"
+                          ? currentPath === "/admin" || currentPath === "/admin/"
+                          : currentPath.startsWith(item.href);
+                        return (
+                          <Link key={item.label} to={item.href as any}
+                            onClick={() => setSidebarOpen(false)}
+                            className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all ${
+                              isActive
+                                ? "dark:bg-purple-500/20 text-white border border-purple-500/30 shadow-[0_0_15px_rgba(124,58,237,0.15)]"
+                                : "dark:text-gray-400 text-gray-600 hover:text-white hover:dark:bg-white/5 hover:bg-gray-100"
+                            }`}
+                          >
+                            <item.icon className="w-4 h-4" />
+                            <span>{item.label}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               );
             })}
           </div>
