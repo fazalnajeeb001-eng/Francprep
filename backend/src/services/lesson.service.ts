@@ -4,6 +4,7 @@ import { createLessonSchema, updateLessonSchema } from '../utils/validators';
 import { validateLesson } from '../utils/validateLesson';
 import { z } from 'zod';
 import { env } from '../config/env';
+import mongoose from 'mongoose';
 
 /**
  * Recursively walk a lesson object and remove `correctAnswer` and `explanation`
@@ -258,7 +259,9 @@ export class LessonService {
    */
   async submitBlock(id: string, blockType: string, answers: Record<string, any>) {
     let lesson = await Lesson.findOne({ lessonId: id });
-    if (!lesson) lesson = await Lesson.findById(id);
+    if (!lesson && mongoose.isValidObjectId(id)) {
+      lesson = await Lesson.findById(id);
+    }
     if (!lesson) {
       throw { statusCode: 404, message: 'Lesson not found' };
     }
