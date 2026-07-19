@@ -642,7 +642,20 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
       {/* Question */}
       <AnimatePresence mode="wait">
         <motion.div key={current} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
-          <p className={`text-sm font-semibold leading-relaxed ${dark ? "text-gray-200" : "text-gray-800"}`}>{qText}</p>
+          {(() => {
+            if (qText.includes('**English Translation:**')) {
+              const parts = qText.split('**English Translation:**');
+              const mainText = parts[0].trim();
+              const translationText = parts[1].trim();
+              return (
+                <div className="space-y-2">
+                  <p className={`text-sm font-semibold leading-relaxed whitespace-pre-line ${dark ? "text-gray-200" : "text-gray-850"}`}>{mainText}</p>
+                  <TranslationToggle translation={translationText} dark={dark} />
+                </div>
+              );
+            }
+            return <p className={`text-sm font-semibold leading-relaxed whitespace-pre-line ${dark ? "text-gray-200" : "text-gray-850"}`}>{qText}</p>;
+          })()}
           {renderQuestion(q, qId)}
 
           {/* Feedback after check or submit */}
@@ -739,6 +752,22 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
           <p className={`text-xs mt-1 ${dark ? "text-gray-400" : "text-gray-500"}`}>
             {results.filter(r => r.correct).length === results.length ? 'Perfect score!' : 'Review the explanations above.'}
           </p>
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
+function TranslationToggle({ translation, dark }: { translation: string; dark: boolean }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="mt-2">
+      <button onClick={() => setShow(!show)} className={`text-xs ${dark ? "text-purple-400 hover:text-purple-300" : "text-purple-600 hover:text-purple-700"} hover:underline font-semibold`}>
+        {show ? "Hide English Translation" : "Show English Translation"}
+      </button>
+      {show && (
+        <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className={`text-xs mt-1 italic p-2.5 rounded-lg border ${dark ? "bg-white/5 border-[#1e2a4a] text-gray-400" : "bg-gray-50 border-gray-200 text-gray-600"}`}>
+          {translation}
         </motion.div>
       )}
     </div>

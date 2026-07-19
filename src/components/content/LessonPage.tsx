@@ -213,6 +213,15 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
 
   const sections = lesson ? buildSections(lesson) : [];
 
+  const isLesson8 = lesson?.lessonNumber === 8 || lesson?.title?.toLowerCase().includes('review');
+  const lesson7Id = lessonId ? lessonId.replace('-l8', '-l7') : '';
+
+  const { data: lesson7 } = useQuery({
+    queryKey: ["lesson", lesson7Id],
+    queryFn: () => apiFetch(`/lessons/${lesson7Id}`).then(res => res.json()).then(json => json.data as LessonData),
+    enabled: isLesson8 && !!lessonId && !draftId
+  });
+
   useEffect(() => {
     if (lessonId && !progress) {
       apiFetch(`/progress/${lessonId}/update`, {
@@ -415,18 +424,55 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
       case 'delf':
         const delfQuestions = lesson!.practiceExercises?.questions?.filter(q => q.id.includes('delf')) || [];
         return (
-          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
-            <div className="flex items-center gap-3 mb-4">
-              <Award className="w-5 h-5 text-purple-400" />
-              <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>DELF A1-Style Mini-Assessment</h3>
+          <div className="space-y-6">
+            {lesson7 && (lesson7.reading?.text || lesson7.listening?.transcript) && (
+              <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5 border border-purple-500/20 bg-purple-500/5`}>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Headphones className="w-4 h-4 text-purple-400" />
+                    <span className={`text-xs font-bold uppercase tracking-wider ${dark ? "text-purple-300" : "text-purple-700"}`}>
+                      Reference: Lesson 7 Dialogue
+                    </span>
+                  </div>
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full ${dark ? "bg-purple-500/10 text-purple-300" : "bg-purple-100 text-purple-700"}`}>
+                    Required for Section 1
+                  </span>
+                </div>
+                <div className="flex gap-2.5 mb-3">
+                  <button onClick={() => speak(lesson7.reading?.text || lesson7.listening?.transcript || "")}
+                    className="flex items-center gap-1.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg hover:opacity-90 transition-all shadow-sm">
+                    <Volume2 className="w-3.5 h-3.5" /> Listen to Dialogue
+                  </button>
+                  <button onClick={() => setShowTranslation(!showTranslation)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
+                    {showTranslation ? "Hide" : "Show"} English Translation
+                  </button>
+                </div>
+                <div className={`rounded-xl p-3 border text-xs max-h-40 overflow-y-auto whitespace-pre-line ${dark ? "bg-black/40 border-[#1e2a4a] text-gray-300" : "bg-white border-gray-200 text-gray-700"}`}>
+                  {lesson7.reading?.text || lesson7.listening?.transcript}
+                </div>
+                {showTranslation && (lesson7.reading?.translation || lesson7.listening?.translation) && (
+                  <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="mt-3">
+                    <p className={`text-[11px] ${textMuted} italic p-3 rounded-lg border ${innerBg}`}>
+                      {lesson7.reading?.translation || lesson7.listening?.translation}
+                    </p>
+                  </motion.div>
+                )}
+              </div>
+            )}
+            <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+              <div className="flex items-center gap-3 mb-4">
+                <Award className="w-5 h-5 text-purple-400" />
+                <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>DELF A1-Style Mini-Assessment</h3>
+              </div>
+              <p className={`text-sm ${textSec} mb-4`}>Complete the exam-style questions below. Your answers will be compared against model responses.</p>
+              <QuizComponent
+                questions={adaptQuestions(delfQuestions)}
+                type="delf"
+                onComplete={(score, total) => handleBlockComplete('delf', score, total)}
+                onSubmit={(answers) => handleSubmitBlock('delf', answers)}
+              />
             </div>
-            <p className={`text-sm ${textSec} mb-4`}>Complete the exam-style questions below. Your answers will be compared against model responses.</p>
-            <QuizComponent
-              questions={adaptQuestions(delfQuestions)}
-              type="delf"
-              onComplete={(score, total) => handleBlockComplete('delf', score, total)}
-              onSubmit={(answers) => handleSubmitBlock('delf', answers)}
-            />
           </div>
         );
 
