@@ -371,6 +371,7 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
         );
 
       case 'dialogue':
+        const dialogueQuestions = [...(lesson!.reading?.questions || []), ...(lesson!.listening?.questions || [])];
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
             <div className="flex items-center gap-3 mb-4">
@@ -396,6 +397,17 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
                   {lesson!.reading?.translation || lesson!.listening?.translation}
                 </p>
               </motion.div>
+            )}
+            {dialogueQuestions.length > 0 && (
+              <div className="mt-6 border-t dark:border-[#1e2a4a] border-gray-200 pt-6">
+                <p className={`text-xs font-semibold mb-3 ${dark ? "text-purple-400" : "text-purple-600"}`}>Comprehension Questions:</p>
+                <QuizComponent
+                  questions={adaptQuestions(dialogueQuestions)}
+                  type="listening"
+                  onComplete={(score, total) => handleBlockComplete('listening', score, total)}
+                  onSubmit={(answers) => handleSubmitBlock('listening', answers)}
+                />
+              </div>
             )}
           </div>
         );
