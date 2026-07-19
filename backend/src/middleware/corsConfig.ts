@@ -19,8 +19,6 @@ const corsOptions: cors.CorsOptions = {
     ];
     if (
       allowedOrigins.includes(origin) ||
-      origin.endsWith('.vercel.app') ||
-      origin.endsWith('.ctonew.app') ||
       env.nodeEnv === 'development'
     ) {
       callback(null, true);

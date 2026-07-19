@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-const URI = 'mongodb+srv://fazalnajeeb001_db_user:Allahisgreat1@francprep.qwpghaf.mongodb.net/?appName=Francprep';
+const URI = 'mongodb+srv://${MONGODB_USER}:${MONGODB_PASS}@francprep.qwpghaf.mongodb.net/?appName=Francprep';
 
 const INFO: Record<string, [string, string]> = {
   A1: ['French A1 — Beginner', 'Can understand and use familiar everyday expressions.'],

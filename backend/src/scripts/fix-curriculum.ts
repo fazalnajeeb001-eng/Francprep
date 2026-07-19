@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://fazalnajeeb001_db_user:Allahisgreat1@francprep.qwpghaf.mongodb.net/?appName=Francprep';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://${MONGODB_USER}:${MONGODB_PASS}@francprep.qwpghaf.mongodb.net/?appName=Francprep';
 
 // ── Curriculum Structure Blueprint (from skeleton) ──
 type LessonDef = { title: string; anchor: string; category: string };

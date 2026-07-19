@@ -15,7 +15,7 @@ const fs = require('fs');
 const path = require('path');
 const { validateLesson } = require('./src/utils/validateLesson.cjs');
 
-const MONGODB_URI = 'mongodb+srv://fazalnajeeb001_db_user:Allahisgreat1@francprep.qwpghaf.mongodb.net/?appName=Francprep';
+const MONGODB_URI = 'mongodb+srv://${MONGODB_USER}:${MONGODB_PASS}@francprep.qwpghaf.mongodb.net/?appName=Francprep';
 const CONTENT_DIR = path.join(__dirname, '..', 'full a1 content including ledger and course skeleton');
 
 const A1_CHAPTERS = [

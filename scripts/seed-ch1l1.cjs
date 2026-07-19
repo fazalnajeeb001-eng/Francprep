@@ -5,7 +5,7 @@
  */
 const { MongoClient } = require('mongodb');
 
-const MONGODB_URI = 'mongodb+srv://fazalnajeeb001_db_user:Allahisgreat1@francprep.qwpghaf.mongodb.net/?appName=Francprep';
+const MONGODB_URI = 'mongodb+srv://CREDENTIALS_REMOVED_USE_ENV_VAR@francprep.qwpghaf.mongodb.net/?appName=Francprep';
 
 const CANONICAL = {
   lessonId: 'a1-ch1-l1',

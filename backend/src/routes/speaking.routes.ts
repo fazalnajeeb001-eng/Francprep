@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { env } from '../config/env';
+import { authenticate } from '../middleware/auth';
 
 const router = Router();
 
@@ -45,7 +46,7 @@ Student: "Je m'appelle Marie."
 Tutor: "Enchantée, Marie ! Tu es d'où ?"`;
 }
 
-router.post('/chat', async (req: Request, res: Response) => {
+router.post('/chat', authenticate, async (req: Request, res: Response) => {
   try {
     const apiKey = env.openRouterKey;
     if (!apiKey) {

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { validateLesson } = require('./src/utils/validateLesson.cjs');
 
 async function check() {
-  await mongoose.connect('mongodb+srv://fazalnajeeb001_db_user:Allahisgreat1@francprep.qwpghaf.mongodb.net/?appName=Francprep');
+  await mongoose.connect('mongodb+srv://${MONGODB_USER}:${MONGODB_PASS}@francprep.qwpghaf.mongodb.net/?appName=Francprep');
   const db = mongoose.connection.db;
 
   // Pick 3 lessons from different chapters

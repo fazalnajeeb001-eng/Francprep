@@ -8,7 +8,7 @@
  * Dry run by default. Add --apply to make changes.
  */
 const mongoose = require('mongoose');
-const MONGO_URI = process.env.MONGODB_URI || 'mongodb+srv://fazalnajeeb001_db_user:Allahisgreat1@francprep.qwpghaf.mongodb.net/?appName=Francprep';
+const MONGO_URI = process.env.MONGODB_URI || 'mongodb+srv://${MONGODB_USER}:${MONGODB_PASS}@francprep.qwpghaf.mongodb.net/?appName=Francprep';
 
 const APPLY = process.argv.includes('--apply');
 

@@ -23,7 +23,6 @@ export class AuthController {
         data: {
           user: result.user,
           accessToken: result.accessToken,
-          refreshToken: result.refreshToken,
         },
         message: 'Account created successfully',
       });
@@ -52,7 +51,6 @@ export class AuthController {
         data: {
           user: result.user,
           accessToken: result.accessToken,
-          refreshToken: result.refreshToken,
         },
         message: 'Login successful',
       });
@@ -122,7 +120,6 @@ export class AuthController {
         data: {
           user: result.user,
           accessToken: result.accessToken,
-          refreshToken: result.refreshToken,
         },
       });
     } catch (error) {
