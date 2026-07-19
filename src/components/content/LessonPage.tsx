@@ -110,6 +110,30 @@ interface SectionDef {
 }
 
 function buildSections(lesson: LessonData): SectionDef[] {
+  const isLesson7 = lesson.lessonNumber === 7 || lesson.title?.toLowerCase().includes('integrated');
+  const isLesson8 = lesson.lessonNumber === 8 || lesson.title?.toLowerCase().includes('review');
+
+  if (isLesson8) {
+    return [
+      { key: 'vocabBank', label: 'Vocab Bank', icon: <Languages className="w-3.5 h-3.5" />, hasContent: !!lesson.vocabItems?.length && lesson.vocabItems[0]?.french !== '—' },
+      { key: 'grammarSummary', label: 'Grammar Summary', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: !!lesson.grammar?.explanation && !lesson.grammar.explanation.startsWith('No new grammar') },
+      { key: 'practice', label: 'Mixed Practice', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: !!lesson.practiceExercises?.questions?.some(q => !q.id.includes('delf')) },
+      { key: 'delf', label: 'DELF Assessment', icon: <Award className="w-3.5 h-3.5" />, hasContent: !!lesson.practiceExercises?.questions?.some(q => q.id.includes('delf')) },
+      { key: 'review', label: 'Reflection', icon: <Star className="w-3.5 h-3.5" />, hasContent: (!!lesson.miniReview?.content && lesson.miniReview.content !== '—') || !!lesson.selfAssessment?.length },
+    ].filter(s => s.hasContent);
+  }
+
+  if (isLesson7) {
+    return [
+      { key: 'warmUp', label: 'Warm-Up', icon: <HelpCircle className="w-3.5 h-3.5" />, hasContent: !!lesson.warmUp?.content && lesson.warmUp.content !== '—' },
+      { key: 'dialogue', label: 'Dialogue', icon: <Headphones className="w-3.5 h-3.5" />, hasContent: !!lesson.reading?.text || !!lesson.listening?.transcript },
+      { key: 'speaking', label: 'Speaking', icon: <Mic className="w-3.5 h-3.5" />, hasContent: !!lesson.speaking?.guidedActivity && !lesson.speaking.guidedActivity.startsWith('Practice pronunciation') },
+      { key: 'writing', label: 'Writing', icon: <PenTool className="w-3.5 h-3.5" />, hasContent: !!lesson.writing?.task && !lesson.writing.task.startsWith('Write a short summary') },
+      { key: 'practice', label: 'Quiz', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: !!lesson.practiceExercises?.questions?.length && !lesson.practiceExercises.questions[0]?.id?.includes('pe-dummy') },
+      { key: 'review', label: 'Review', icon: <Star className="w-3.5 h-3.5" />, hasContent: (!!lesson.miniReview?.content && lesson.miniReview.content !== '—') || !!lesson.selfAssessment?.length },
+    ].filter(s => s.hasContent);
+  }
+
   const sections: SectionDef[] = [
     { key: 'warmUp', label: 'Warm-Up', icon: <HelpCircle className="w-3.5 h-3.5" />, hasContent: !!lesson.warmUp?.content && lesson.warmUp.content !== '—' },
     { key: 'explanation', label: 'Lesson', icon: <FileText className="w-3.5 h-3.5" />, hasContent: !!lesson.explanation?.content && lesson.explanation.content !== '—' },
@@ -238,7 +262,8 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
 
   const completeLesson = useCallback(async () => {
     const timeSpent = Math.round((Date.now() - startTime) / 60000);
-    const gradedBlocks = ['grammarDrill', 'reading', 'listening', 'practice'];
+    const possibleGraded = ['grammarDrill', 'reading', 'listening', 'practice', 'delf'];
+    const gradedBlocks = possibleGraded.filter(k => sections.some(s => s.key === k));
     const totalScore = gradedBlocks.reduce((sum, k) => sum + (blockResults[k]?.score || 0), 0);
     const totalMax = gradedBlocks.reduce((sum, k) => sum + (blockResults[k]?.total || 0), 0);
     const score = totalMax > 0 ? Math.round((totalScore / totalMax) * 100) : undefined;
@@ -250,7 +275,7 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
       body: JSON.stringify({ status: 'completed', score: score ?? 0, timeSpent, exercisesCompleted }),
     }).catch(() => {});
     refetchProgress();
-  }, [lessonId, blockResults, startTime, refetchProgress]);
+  }, [lessonId, blockResults, startTime, refetchProgress, sections]);
 
   const sections = lesson ? buildSections(lesson) : [];
   const currentSection = sections[currentSectionIdx] || sections[0];
@@ -313,6 +338,85 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
     );
 
     switch (currentSection.key) {
+      case 'vocabBank':
+        return (
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+            <h3 className={`text-sm font-semibold mb-2 ${dark ? "text-white" : "text-gray-900"}`}>Chapter Vocabulary Bank</h3>
+            <p className={`text-xs ${textSec} mb-4`}>Review the consolidated vocabulary list for this chapter. Click any word to hear its pronunciation.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {lesson!.vocabItems.map((v, i) => (
+                <motion.div key={v.french + i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}
+                  className={`flex items-center gap-3 p-3 rounded-xl border ${dark ? "border-[#1e2a4a] bg-[#101828]/50" : "border-gray-100 bg-gray-50/50"} hover:border-purple-500/50 transition-all`}>
+                  <button onClick={() => speak(v.french)}
+                    className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white hover:opacity-80 transition-all flex-shrink-0">
+                    <Volume2 className="w-4 h-4" />
+                  </button>
+                  <div className="flex-1 min-w-0">
+                    <span className={`text-sm font-semibold block ${dark ? "text-white" : "text-gray-900"}`}>{v.french}</span>
+                    <span className={`text-xs ${textSec}`}>{v.english.replace(' (see chapter vocabulary)', '')}</span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case 'grammarSummary':
+        return (
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+            <h3 className={`text-sm font-semibold mb-4 ${dark ? "text-white" : "text-gray-900"}`}>Chapter Grammar Summary</h3>
+            <GrammarSection grammar={lesson!.grammar!} dark={dark} cardBg={cardBg} innerBg={innerBg} textBody={textBody} textSec={textSec} />
+          </div>
+        );
+
+      case 'dialogue':
+        return (
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+            <div className="flex items-center gap-3 mb-4">
+              <Headphones className="w-5 h-5 text-purple-400" />
+              <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Scenario Dialogue: {lesson!.reading?.title || "Une Rencontre"}</h3>
+            </div>
+            <div className="flex gap-3 mb-4">
+              <button onClick={() => speak(lesson!.reading?.text || lesson!.listening?.transcript || "")}
+                className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
+                <Volume2 className="w-4 h-4" /> Listen to Dialogue
+              </button>
+              <button onClick={() => setShowTranslation(!showTranslation)}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
+                {showTranslation ? "Hide" : "Show"} English Translation
+              </button>
+            </div>
+            <div className={`${innerBg} rounded-xl p-4 border whitespace-pre-line text-sm leading-relaxed ${textBody} font-medium`}>
+              {lesson!.reading?.text || lesson!.listening?.transcript}
+            </div>
+            {showTranslation && (lesson!.reading?.translation || lesson!.listening?.translation) && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4">
+                <p className={`text-xs ${textMuted} italic p-4 rounded-xl border ${innerBg}`}>
+                  {lesson!.reading?.translation || lesson!.listening?.translation}
+                </p>
+              </motion.div>
+            )}
+          </div>
+        );
+
+      case 'delf':
+        const delfQuestions = lesson!.practiceExercises?.questions?.filter(q => q.id.includes('delf')) || [];
+        return (
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+            <div className="flex items-center gap-3 mb-4">
+              <Award className="w-5 h-5 text-purple-400" />
+              <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>DELF A1-Style Mini-Assessment</h3>
+            </div>
+            <p className={`text-sm ${textSec} mb-4`}>Complete the exam-style questions below. Your answers will be compared against model responses.</p>
+            <QuizComponent
+              questions={adaptQuestions(delfQuestions)}
+              type="delf"
+              onComplete={(score, total) => handleBlockComplete('delf', score, total)}
+              onSubmit={(answers) => handleSubmitBlock('delf', answers)}
+            />
+          </div>
+        );
+
       case 'warmUp':
         if (!lesson!.warmUp?.content) return emptyState('Warm-Up');
         return (
@@ -452,12 +556,16 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
           onComplete={() => markSectionComplete(currentSectionIdx)} />;
 
       case 'practice':
-        if (!lesson!.practiceExercises?.questions?.length) return emptyState('Practice Exercises');
+        const isL8 = lesson!.lessonNumber === 8 || lesson!.title?.toLowerCase().includes('review');
+        const practiceQuestions = isL8
+          ? (lesson!.practiceExercises?.questions?.filter(q => !q.id.includes('delf')) || [])
+          : (lesson!.practiceExercises?.questions || []);
+        if (!practiceQuestions.length) return emptyState('Practice Exercises');
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
-            <div className="flex items-center gap-3 mb-4"><Repeat className="w-5 h-5 text-purple-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Practice Exercises</h3></div>
+            <div className="flex items-center gap-3 mb-4"><Repeat className="w-5 h-5 text-purple-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{isL8 ? "Mixed Practice Exercises" : "Practice Exercises"}</h3></div>
             <QuizComponent
-              questions={adaptQuestions(lesson!.practiceExercises?.questions)}
+              questions={adaptQuestions(practiceQuestions)}
               type="practice"
               onComplete={(score, total) => handleBlockComplete('practice', score, total)}
               onSubmit={(answers) => handleSubmitBlock('practice', answers)}
@@ -573,18 +681,22 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
         </AnimatePresence>
 
         {/* Complete Lesson */}
-        {!lessonCompleted && isLast && (
-          <div className="mt-8 text-center">
-            <button onClick={completeLesson}
-              disabled={!['grammarDrill', 'reading', 'listening', 'practice'].every(k => blockResults[k]?.completed)}
-              className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white text-sm font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-emerald-500/25 disabled:opacity-30 disabled:cursor-not-allowed">
-              Complete Lesson
-            </button>
-            {!['grammarDrill', 'reading', 'listening', 'practice'].every(k => blockResults[k]?.completed) && (
-              <p className={`text-xs ${textSec} mt-2`}>Complete all exercise blocks to finish the lesson.</p>
-            )}
-          </div>
-        )}
+        {!lessonCompleted && isLast && (() => {
+          const requiredGraded = ['grammarDrill', 'reading', 'listening', 'practice', 'delf'].filter(k => sections.some(s => s.key === k));
+          const allDone = requiredGraded.every(k => blockResults[k]?.completed);
+          return (
+            <div className="mt-8 text-center">
+              <button onClick={completeLesson}
+                disabled={!allDone}
+                className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white text-sm font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-emerald-500/25 disabled:opacity-30 disabled:cursor-not-allowed">
+                Complete Lesson
+              </button>
+              {!allDone && (
+                <p className={`text-xs ${textSec} mt-2`}>Complete all exercise blocks to finish the lesson.</p>
+              )}
+            </div>
+          );
+        })()}
 
         {/* Completion Screen */}
         {lessonCompleted && (

@@ -761,6 +761,92 @@ function fillPlaceholders(lesson: ParsedLesson): void {
   }
 }
 
+function parseVocabList(text: string): ILessonVocabularyItem[] {
+  const words = text.split(/[,\n]/).map(w => w.trim()).filter(w => w && !w.startsWith('#') && !w.startsWith('**'));
+  return words.map(w => ({
+    french: stripMd(w),
+    english: stripMd(w) + ' (see chapter vocabulary)',
+    pronunciation: '—',
+    example: stripMd(w) || '—',
+  }));
+}
+
+function parseGrammarSummary(text: string) {
+  const explanation = clean(text.split('\n').filter(l => l.trim() && !l.includes('|---') && !l.includes('| Pronoun')).slice(0, 5).join(' '));
+  const examples: string[] = [];
+  const lines = text.split('\n');
+  for (const l of lines) {
+    const t = l.trim();
+    if (t && !t.includes('|') && !t.startsWith('**') && !t.startsWith('#') && t.length > 10 &&
+        !t.match(/^(Question|Adjective|Tu\/vous|The|A basic)/i)) {
+      examples.push(stripMd(t));
+    }
+  }
+
+  return {
+    explanation: explanation || 'Consolidated grammar reference from this chapter.',
+    formation: 'See grammar summary tables above.',
+    usage: 'Review all grammar points covered in this chapter.',
+    examples: examples.length > 0 ? examples.slice(0, 3) : ['Refer to the grammar summary.'],
+    commonMistakes: [],
+  };
+}
+
+function parseDelfExercises(text: string, lessonId: string): ILessonQuestion[] {
+  const qs: ILessonQuestion[] = [];
+  const sections = text.split(/\*\*Section\s+/i);
+  
+  // Look for Answer Key block
+  let answersBlock = '';
+  const akMatch = text.match(/\*\*Answer Key\s*[-—]\s*Sections[\s\S]+$/i);
+  if (akMatch) {
+    answersBlock = akMatch[0];
+  }
+
+  for (const sec of sections) {
+    if (!sec.trim()) continue;
+    
+    const lines = sec.split('\n');
+    const firstLine = lines[0].trim();
+    const titleMatch = firstLine.match(/^(\d+)\s*[-—]\s*(.+?)(?::\*\*|\*\*)/i);
+    if (!titleMatch) continue;
+
+    const sectionNum = titleMatch[1];
+    const sectionTitle = titleMatch[2].replace(/\*\*$/, '').trim();
+
+    // Rest of the lines before Answer Key
+    const promptLines: string[] = [];
+    for (const line of lines.slice(1)) {
+      if (line.trim().startsWith('**Answer Key')) break;
+      promptLines.push(line.trim());
+    }
+
+    const filteredPromptLines = promptLines.filter(l => l);
+    const fullPrompt = `**Section ${sectionNum} — ${sectionTitle}**\n\n` + filteredPromptLines.join('\n');
+
+    const type = 'short_answer';
+
+    let explanation = 'Practice exercise';
+    if (answersBlock) {
+      const escapedNum = sectionNum.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+      const ansRegex = new RegExp(`(?:^|\\n)${escapedNum}\\.\\s*([\\s\\S]+?)(?=\\n\\d+\\.|\\n\\-\\-\\-|$|\\n\\*\\*)`, 'i');
+      const ansMatch = answersBlock.match(ansRegex);
+      if (ansMatch) {
+        explanation = ansMatch[1].trim();
+      }
+    }
+
+    qs.push({
+      id: `${lessonId}-pe-delf-${sectionNum}`,
+      type: type as any,
+      prompt: fullPrompt,
+      correctAnswer: explanation,
+      explanation: explanation,
+    });
+  }
+  return qs;
+}
+
 export function parseLessonFromMarkdown(markdown: string, level: string, chapterNum: number): ParsedLesson[] {
   const normalizedMarkdown = markdown.replace(/\r/g, '');
   const lessons: ParsedLesson[] = [];
@@ -800,14 +886,22 @@ export function parseLessonFromMarkdown(markdown: string, level: string, chapter
       if (h === 'warm-up' || h === 'warm up') lesson.warmUp.content = clean(s.body.split('\n').filter(l => l.trim()).map(l => l.trim()).join(' '));
       else if (h === 'lesson explanation') lesson.explanation.content = clean(s.body);
       else if (h === 'vocabulary') lesson.vocabulary = parseVocabTable(s.body);
-      else if (h.startsWith('grammar')) { lesson.grammar = parseGrammar(s.body); lesson.grammarDrills.questions = parseGrammarDrills(s.body); }
+      else if (h.startsWith('grammar') && !h.includes('summary')) { lesson.grammar = parseGrammar(s.body); lesson.grammarDrills.questions = parseGrammarDrills(s.body); }
       else if (h === 'reading') lesson.reading = parseReading(s.body);
       else if (h === 'listening') lesson.listening = parseListening(s.body);
       else if (h === 'speaking') lesson.speaking = parseSpeaking(s.body);
       else if (h === 'writing') lesson.writing = parseWriting(s.body);
-      else if (h === 'practice exercises') lesson.practiceExercises.questions = parsePracticeExercises(s.body);
-      else if (h === 'mini review') lesson.miniReview.content = clean(s.body.split('\n').filter(l => l.trim()).map(l => l.trim()).join(' '));
-      else if (h === 'self assessment' || h === 'self-reflection') {
+      else if (h === 'practice exercises' || h.startsWith('mixed practice exercises')) lesson.practiceExercises.questions = parsePracticeExercises(s.body);
+      else if (h.startsWith('chapter vocabulary bank')) {
+        lesson.vocabulary = parseVocabList(s.body);
+      } else if (h.startsWith('grammar summary')) {
+        lesson.grammar = parseGrammarSummary(s.body);
+      } else if (h === 'mini review' || h.startsWith('chapter review') || h.includes('mini review by can-do')) {
+        lesson.miniReview.content = clean(s.body.split('\n').filter(l => l.trim()).map(l => l.trim()).join(' '));
+      } else if (h.startsWith('delf')) {
+        const delfQuestions = parseDelfExercises(s.body, lessonId);
+        lesson.practiceExercises.questions = [...lesson.practiceExercises.questions, ...delfQuestions];
+      } else if (h === 'self assessment' || h === 'self-reflection') {
         const items: string[] = [];
         for (const l of s.body.split('\n')) { const c = l.replace(/^\s*-\s*\[[ x]\]\s*/, '').replace(/^\s*[-•*]\s*/, '').trim(); if (c && c !== '--' && c !== '---') items.push(stripMd(c)); }
         lesson.selfAssessment = items;

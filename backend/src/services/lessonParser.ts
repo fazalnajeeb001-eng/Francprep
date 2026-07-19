@@ -146,8 +146,8 @@ function parseVocabList(text: string): VocabItem[] {
   return words.map(w => ({
     french: stripMd(w),
     english: stripMd(w) + ' (see chapter vocabulary)',
-    pronunciation: '',
-    example: stripMd(w),
+    pronunciation: '—',
+    example: stripMd(w) || '—',
   }));
 }
 
@@ -617,6 +617,61 @@ function buildPracticeQuestion(n: number, type: string, promptText: string, less
   };
 }
 
+function parseDelfExercises(text: string, lessonId: string): Question[] {
+  const qs: Question[] = [];
+  const sections = text.split(/\*\*Section\s+/i);
+  
+  // Look for Answer Key block
+  let answersBlock = '';
+  const akMatch = text.match(/\*\*Answer Key\s*[-—]\s*Sections[\s\S]+$/i);
+  if (akMatch) {
+    answersBlock = akMatch[0];
+  }
+
+  for (const sec of sections) {
+    if (!sec.trim()) continue;
+    
+    const lines = sec.split('\n');
+    const firstLine = lines[0].trim();
+    const titleMatch = firstLine.match(/^(\d+)\s*[-—]\s*(.+?)(?::\*\*|\*\*)/i);
+    if (!titleMatch) continue;
+
+    const sectionNum = titleMatch[1];
+    const sectionTitle = titleMatch[2].replace(/\*\*$/, '').trim();
+
+    // Rest of the lines before Answer Key
+    const promptLines: string[] = [];
+    for (const line of lines.slice(1)) {
+      if (line.trim().startsWith('**Answer Key')) break;
+      promptLines.push(line.trim());
+    }
+
+    const filteredPromptLines = promptLines.filter(l => l);
+    const fullPrompt = `**Section ${sectionNum} — ${sectionTitle}**\n\n` + filteredPromptLines.join('\n');
+
+    const type = 'short_answer';
+
+    let explanation = 'Practice exercise';
+    if (answersBlock) {
+      const escapedNum = sectionNum.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+      const ansRegex = new RegExp(`(?:^|\\n)${escapedNum}\\.\\s*([\\s\\S]+?)(?=\\n\\d+\\.|\\n\\-\\-\\-|$|\\n\\*\\*)`, 'i');
+      const ansMatch = answersBlock.match(ansRegex);
+      if (ansMatch) {
+        explanation = ansMatch[1].trim();
+      }
+    }
+
+    qs.push({
+      id: `${lessonId}-pe-delf-${sectionNum}`,
+      type: type as any,
+      prompt: fullPrompt,
+      correctAnswer: explanation,
+      explanation: explanation,
+    });
+  }
+  return qs;
+}
+
 function parsePracticeExercises(text: string, lessonId: string): Question[] {
   const qs: Question[] = [];
   const lines = text.split('\n');
@@ -995,7 +1050,7 @@ export function parseLessonMarkdown(
         lesson.practiceExercises.questions = parsePracticeExercises(s.body, metadata.lessonId);
       } else if (h.startsWith('delf')) {
         foundSections.add('practiceExercises');
-        const delfQuestions = parsePracticeExercises(s.body, metadata.lessonId);
+        const delfQuestions = parseDelfExercises(s.body, metadata.lessonId);
         lesson.practiceExercises.questions = [...lesson.practiceExercises.questions, ...delfQuestions];
       }
       // ── L7 (Integrated Practice) — may have fewer sections ───────────────
