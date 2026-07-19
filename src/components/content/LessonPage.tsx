@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "~/lib/apiFetch";
 import { useTheme } from "~/lib/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
@@ -26,46 +26,37 @@ interface LessonQuestion {
   items?: string[];
 }
 
-interface VocabItem {
-  french: string;
-  english: string;
-  pronunciation: string;
-  example: string;
-  formality?: string;
-  usageNote?: string;
-}
-
 interface LessonData {
   _id: string;
   lessonId: string;
-  title: string;
+  chapterId: string;
   level: string;
-  skill: string;
-  anchorSkill: string;
+  title: string;
+  skill: 'R' | 'W' | 'L' | 'S' | 'INT' | 'REV';
+  order: number;
   durationMinutes: number;
   objectives: string[];
   grammarFocus: string;
   vocabularyFocus: string;
   warmUp: { content: string };
   explanation: { content: string };
-  vocabItems: VocabItem[];
+  vocabItems: { french: string; english: string; pronunciation: string; example?: string; formality?: string; usageNote?: string }[];
   grammar: {
     explanation: string;
     formation: string;
     usage: string;
     examples: string[];
-    commonMistakes: { wrong: string; correct: string; why: string }[];
+    commonMistakes: { wrong: string; correct: string; why?: string; tip?: string }[];
   };
   grammarDrills: { questions: LessonQuestion[] };
-  reading: { title: string; text: string; translation?: string; questions: LessonQuestion[] };
-  listening: { title: string; transcript: string; translation?: string; questions: LessonQuestion[] };
-  speaking: { guidedActivity: string; roleplay?: string; pronunciationTip?: string };
-  writing: { task: string; modelAnswer: string; checklist: string[] };
+  reading?: { title: string; text: string; translation?: string; questions: LessonQuestion[] };
+  listening?: { title: string; transcript: string; translation?: string; questions: LessonQuestion[] };
+  speaking?: { guidedActivity: string; roleplay?: string; pronunciationTip?: string };
+  writing?: { task: string; modelAnswer: string; checklist: string[] };
   practiceExercises: { questions: LessonQuestion[] };
   miniReview: { content: string };
   selfAssessment: string[];
-  order: number;
-  isPublished: boolean;
+  lessonNumber?: number;
 }
 
 interface ProgressData {
@@ -183,6 +174,7 @@ function buildSections(lesson: LessonData): SectionDef[] {
 // ─── Main Component ────────────────────────────────────────────────────────
 
 export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; draftId?: string; onBack?: () => void }) {
+  const queryClient = useQueryClient();
   const { dark } = useTheme();
   const [currentSectionIdx, setCurrentSectionIdx] = useState(0);
   const [completedSections, setCompletedSections] = useState<Set<number>>(new Set());
@@ -193,6 +185,91 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
   const [lessonScore, setLessonScore] = useState<number | null>(null);
   const [startTime] = useState(Date.now());
   const topRef = useRef<HTMLDivElement>(null);
+
+  const [isAdminPreview, setIsAdminPreview] = useState(false);
+
+  useEffect(() => {
+    const checkPreview = () => {
+      setIsAdminPreview(localStorage.getItem("fp_admin_preview") === "true");
+    };
+    checkPreview();
+    window.addEventListener("admin-preview-changed", checkPreview);
+    return () => window.removeEventListener("admin-preview-changed", checkPreview);
+  }, []);
+
+  const handleInlineSave = async (fieldPath: string, value: any) => {
+    if (!lesson) return;
+    try {
+      const activeId = lesson._id || lesson.lessonId;
+      const canonical = { ...lesson };
+
+      const keys = fieldPath.split(/[.\[\]]/).filter(Boolean);
+      let currentObj: any = canonical;
+      for (let i = 0; i < keys.length - 1; i++) {
+        const k = keys[i];
+        if (currentObj[k] === undefined) {
+          currentObj[k] = {};
+        } else {
+          currentObj[k] = { ...currentObj[k] };
+        }
+        currentObj = currentObj[k];
+      }
+      currentObj[keys[keys.length - 1]] = value;
+
+      queryClient.setQueryData(
+        draftId ? ["draft", draftId] : ["lesson", lessonId],
+        canonical
+      );
+
+      await apiFetch(`/admin/lessons/${activeId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(canonical),
+      });
+    } catch (err) {
+      console.error("Inline save failed:", err);
+    }
+  };
+
+  const EditableText = ({
+    fieldPath,
+    value,
+    className = "",
+    as: Tag = "span",
+    placeholder = "Edit..."
+  }: {
+    fieldPath: string;
+    value: string;
+    className?: string;
+    as?: any;
+    placeholder?: string;
+  }) => {
+    if (!isAdminPreview) {
+      return <Tag className={className}>{value || placeholder}</Tag>;
+    }
+    return (
+      <Tag
+        contentEditable
+        suppressContentEditableWarning
+        onBlur={(e: React.FocusEvent<HTMLSpanElement>) => {
+          const newVal = e.currentTarget.textContent || "";
+          if (newVal !== value) {
+            handleInlineSave(fieldPath, newVal);
+          }
+        }}
+        onKeyDown={(e: React.KeyboardEvent<HTMLSpanElement>) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            e.currentTarget.blur();
+          }
+        }}
+        placeholder={placeholder}
+        className={`${className} border-b border-dashed border-purple-500/40 hover:border-purple-500/80 focus:border-purple-500 focus:bg-purple-500/5 focus:outline-none rounded transition-all px-1 cursor-text select-text`}
+      >
+        {value}
+      </Tag>
+    );
+  };
 
   const pageBg = dark ? "bg-[#070B17] text-white" : "bg-gray-50 text-gray-900";
   const cardBg = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200";
@@ -384,7 +461,7 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
             <h3 className={`text-sm font-semibold mb-2 ${dark ? "text-white" : "text-gray-900"}`}>Chapter Vocabulary Bank</h3>
             <p className={`text-xs ${textSec} mb-4`}>Review the consolidated vocabulary list for this chapter. Click any word to hear its pronunciation.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {lesson!.vocabItems.map((v, i) => (
+              {lesson!.vocabItems.map((v: any, i: number) => (
                 <motion.div key={v.french + i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}
                   className={`flex items-center gap-3 p-3 rounded-xl border ${dark ? "border-[#1e2a4a] bg-[#101828]/50" : "border-gray-100 bg-gray-50/50"} hover:border-purple-500/50 transition-all`}>
                   <button onClick={() => speak(v.french)}
@@ -410,14 +487,21 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
         );
 
       case 'dialogue':
-        const dialogueQuestions = [...(lesson!.reading?.questions || []), ...(lesson!.listening?.questions || [])].filter(q => !q.id.includes('dummy'));
+        const dialogueQuestions = [...(lesson!.reading?.questions || []), ...(lesson!.listening?.questions || [])].filter((q: any) => !q.id.includes('dummy'));
         const dialText = getDialogueText(lesson!);
         const dialTrans = getDialogueTranslation(lesson!);
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
             <div className="flex items-center gap-3 mb-4">
               <Headphones className="w-5 h-5 text-purple-400" />
-              <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Scenario Dialogue: {lesson!.reading?.title || lesson!.listening?.title || "Une Rencontre"}</h3>
+              <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>
+                Scenario Dialogue:{" "}
+                {lesson!.reading?.text ? (
+                  <EditableText fieldPath="reading.title" value={lesson!.reading?.title || "Reading Title"} />
+                ) : (
+                  <EditableText fieldPath="listening.title" value={lesson!.listening?.title || "Listening Title"} />
+                )}
+              </h3>
             </div>
             {dialText && (
               <>
@@ -433,13 +517,21 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
                     </button>
                   )}
                 </div>
-                <div className={`${innerBg} rounded-xl p-4 border whitespace-pre-line text-sm leading-relaxed ${textBody} font-medium`}>
-                  {dialText}
+                <div className={`${innerBg} rounded-xl p-4 border text-sm leading-relaxed ${textBody} font-medium`}>
+                  {lesson!.reading?.text ? (
+                    <EditableText as="div" fieldPath="reading.text" value={lesson!.reading.text} className="w-full whitespace-pre-line" />
+                  ) : (
+                    <EditableText as="div" fieldPath="listening.transcript" value={lesson!.listening?.transcript || ""} className="w-full whitespace-pre-line" />
+                  )}
                 </div>
                 {showTranslation && dialTrans && (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4">
                     <p className={`text-xs ${textMuted} italic p-4 rounded-xl border ${innerBg}`}>
-                      {dialTrans}
+                      {lesson!.reading?.text ? (
+                        <EditableText as="span" fieldPath="reading.translation" value={lesson!.reading?.translation || ""} />
+                      ) : (
+                        <EditableText as="span" fieldPath="listening.translation" value={lesson!.listening?.translation || ""} />
+                      )}
                     </p>
                   </motion.div>
                 )}
@@ -460,7 +552,7 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
         );
 
       case 'delf':
-        const delfQuestions = lesson!.practiceExercises?.questions?.filter(q => q.id.includes('delf')) || [];
+        const delfQuestions = lesson!.practiceExercises?.questions?.filter((q: any) => q.id.includes('delf')) || [];
         const l7DialText = getDialogueText(lesson7);
         const l7DialTrans = getDialogueTranslation(lesson7);
         return (
@@ -529,7 +621,7 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
         return (
           <div className={`${dark ? "bg-indigo-500/5 border-indigo-500/20" : "bg-indigo-50 border-indigo-200"} rounded-2xl p-5 border`}>
             <div className="flex items-center gap-2 mb-3"><HelpCircle className="w-5 h-5 text-indigo-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Warm-Up</h3></div>
-            <p className={`text-sm leading-relaxed ${textBody}`}>{lesson!.warmUp.content}</p>
+            <EditableText as="p" fieldPath="warmUp.content" value={lesson!.warmUp.content} className={`text-sm leading-relaxed ${textBody}`} />
           </div>
         );
 
@@ -539,9 +631,7 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
             <h3 className={`text-sm font-semibold mb-3 ${dark ? "text-white" : "text-gray-900"}`}>Lesson Explanation</h3>
             <div className={`text-sm leading-relaxed whitespace-pre-line ${textBody}`}>
-              {lesson!.explanation.content.split("\n").map((line, i) => (
-                line.trim() ? <p key={i} className="mb-2">{line}</p> : null
-              ))}
+              <EditableText as="div" fieldPath="explanation.content" value={lesson!.explanation.content} className="w-full whitespace-pre-line" />
             </div>
           </div>
         );
@@ -552,7 +642,7 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
             <h3 className={`text-sm font-semibold mb-4 ${dark ? "text-white" : "text-gray-900"}`}>Vocabulary</h3>
             <div className="space-y-2">
-              {lesson!.vocabItems.map((v, i) => (
+              {lesson!.vocabItems.map((v: any, i: number) => (
                 <motion.div key={v.french + i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
                   className={`flex items-center gap-3 p-3 rounded-xl ${btnHover} transition-colors`}>
                   <button onClick={() => speak(v.french)}
@@ -560,9 +650,13 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
                     <Volume2 className="w-4 h-4" />
                   </button>
                   <div className="flex-1 min-w-0">
-                    <span className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{v.french}</span>
-                    <span className={`text-[10px] ml-2 ${textMuted}`}>{v.pronunciation}</span>
-                    {showTranslation && <p className={`text-xs ${textSec}`}>{v.english}</p>}
+                    <EditableText as="span" fieldPath={`vocabItems[${i}].french`} value={v.french} className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`} />
+                    <EditableText as="span" fieldPath={`vocabItems[${i}].pronunciation`} value={v.pronunciation} className={`text-[10px] ml-2 ${textMuted}`} />
+                    {showTranslation && (
+                      <p className={`text-xs ${textSec}`}>
+                        <EditableText fieldPath={`vocabItems[${i}].english`} value={v.english} />
+                      </p>
+                    )}
                     {v.formality && <span className={`text-[10px] ml-2 px-1.5 py-0.5 rounded ${dark ? "bg-white/5 text-gray-400" : "bg-gray-100 text-gray-500"}`}>{v.formality}</span>}
                     {v.usageNote && showTranslation && <p className={`text-[10px] ${textMuted} italic mt-0.5`}>{v.usageNote}</p>}
                   </div>
@@ -665,7 +759,7 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
       case 'practice':
         const isL8 = lesson!.lessonNumber === 8 || lesson!.title?.toLowerCase().includes('review');
         const practiceQuestions = isL8
-          ? (lesson!.practiceExercises?.questions?.filter(q => !q.id.includes('delf')) || [])
+          ? (lesson!.practiceExercises?.questions?.filter((q: any) => !q.id.includes('delf')) || [])
           : (lesson!.practiceExercises?.questions || []);
         if (!practiceQuestions.length) return emptyState('Practice Exercises');
         return (
@@ -757,7 +851,7 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
               <BookOpen className="w-5 h-5" />
             </div>
             <div>
-              <h1 className={`text-xl font-bold ${dark ? "text-white" : "text-gray-900"}`}>{lesson.title}</h1>
+              <EditableText as="h1" fieldPath="title" value={lesson.title} className={`text-xl font-bold ${dark ? "text-white" : "text-gray-900"}`} />
               <div className={`flex items-center gap-2 text-xs ${textSec}`}>
                 <span>Lesson {lesson.order}</span>
                 <span>&middot;</span>
@@ -770,9 +864,10 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
             <div className={`rounded-2xl p-4 border mt-3 ${dark ? "bg-purple-500/10 border-purple-500/30" : "bg-purple-50 border-purple-100"}`}>
               <p className={`text-xs font-semibold mb-2 ${dark ? "text-purple-300" : "text-purple-700"}`}>What you'll learn:</p>
               <ul className="space-y-1">
-                {lesson.objectives.map((obj, i) => (
+                {lesson.objectives.map((obj: string, i: number) => (
                   <li key={i} className={`text-xs ${textBody} flex items-start gap-2`}>
-                    <span className="text-purple-400 mt-0.5">•</span>{obj}
+                    <span className="text-purple-400 mt-0.5">•</span>
+                    <EditableText fieldPath={`objectives[${i}]`} value={obj} />
                   </li>
                 ))}
               </ul>
@@ -974,7 +1069,7 @@ function ReadingSection({ lesson, dark, cardBg, innerBg, textBody, textMuted, sh
   lesson: LessonData; dark: boolean; cardBg: string; innerBg: string; textBody: string; textMuted: string;
   showTranslation: boolean; setShowTranslation: (v: boolean) => void;
 }) {
-  const reading = lesson.reading;
+  const reading = lesson.reading || { title: '', text: '', translation: '', questions: [] };
 
   return (
     <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
@@ -1005,7 +1100,7 @@ function ListeningSection({ lesson, dark, cardBg, innerBg, textSec, textMuted, s
   showTranslation: boolean; setShowTranslation: (v: boolean) => void;
 }) {
   const [showTranscript, setShowTranscript] = useState(false);
-  const listening = lesson.listening;
+  const listening = lesson.listening || { title: '', transcript: '', translation: '', questions: [] };
   const { speak: speakWithState, isSpeaking } = useSpeak();
 
   const cleanedTranscript = (listening.transcript || "").replace(/\*\*/g, "").trim();
@@ -1060,7 +1155,7 @@ function WritingSection({ lesson, dark, cardBg, innerBg, textBody, onComplete }:
   lesson: LessonData; dark: boolean; cardBg: string; innerBg: string; textBody: string; onComplete: () => void;
 }) {
   const [showModel, setShowModel] = useState(false);
-  const writing = lesson.writing;
+  const writing = lesson.writing || { task: '', modelAnswer: '', checklist: [] };
 
   return (
     <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>

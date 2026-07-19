@@ -558,6 +558,149 @@ router.post('/fix-exercise-categories', async (_req: AuthRequest, res: Response,
   }
 });
 
+// ============ Access Control Management ============
+import { StudentAccess } from '../models/StudentAccess';
+
+/**
+ * GET /api/admin/student-access - List all access overrides
+ */
+router.get('/student-access', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const overrides = await StudentAccess.find({}).populate('studentId', 'firstName lastName email');
+    res.status(200).json({ success: true, data: overrides });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * POST /api/admin/student-access - Save or update access override
+ */
+router.post('/student-access', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { scope, targetId, targetType, studentId, cohortId, state } = req.body;
+    
+    if (!scope || !targetId || !targetType || !state) {
+      res.status(400).json({ success: false, error: 'Missing required override properties' });
+      return;
+    }
+
+    const filter: any = { scope, targetId, targetType };
+    if (scope === 'student') filter.studentId = studentId;
+    if (scope === 'cohort') filter.cohortId = cohortId;
+
+    const override = await StudentAccess.findOneAndUpdate(
+      filter,
+      { scope, targetId, targetType, studentId: studentId || undefined, cohortId: cohortId || undefined, state },
+      { upsert: true, new: true }
+    );
+
+    res.status(200).json({ success: true, data: override, message: 'Access override saved successfully' });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * DELETE /api/admin/student-access/:id - Delete override (revert to defaults)
+ */
+router.delete('/student-access/:id', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    await StudentAccess.findByIdAndDelete(req.params.id);
+    res.status(200).json({ success: true, message: 'Access override reverted to default' });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * GET /api/admin/cohorts - Get distinct student cohorts list
+ */
+router.get('/cohorts', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const cohorts = await User.distinct('cohort');
+    res.status(200).json({ success: true, data: cohorts.filter(Boolean) });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ============ Curriculum Audit Ledger ============
+import { validateLesson } from '../utils/validateLesson';
+
+/**
+ * GET /api/admin/curriculum/audit - Audit whole curriculum structure & duplicates
+ */
+router.get('/curriculum/audit', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const lessons = await Lesson.find({ isPublished: true });
+    const auditResults: Array<{ lessonId: string; title: string; level: string; errors: string[]; warnings: string[] }> = [];
+    const vocabularyMap = new Map<string, string[]>();
+
+    for (const lesson of lessons) {
+      const errors: string[] = [];
+      const warnings: string[] = [];
+      
+      const canonical = (lesson as any).canonical;
+      if (!canonical) {
+        errors.push('Missing canonical JSON document');
+        auditResults.push({ lessonId: lesson.lessonId, title: lesson.title, level: lesson.level, errors, warnings });
+        continue;
+      }
+
+      const isValid = validateLesson(canonical);
+      if (!isValid && validateLesson.errors) {
+        for (const err of validateLesson.errors) {
+          errors.push(`${err.instancePath || '/'} ${err.message}`);
+        }
+      }
+
+      const vocabList = canonical.vocabItems || canonical.vocabulary || [];
+      for (const item of vocabList) {
+        if (item.french && item.french !== '—') {
+          const key = item.french.toLowerCase().trim();
+          if (!vocabularyMap.has(key)) {
+            vocabularyMap.set(key, []);
+          }
+          vocabularyMap.get(key)!.push(lesson.lessonId);
+        }
+      }
+
+      auditResults.push({
+        lessonId: lesson.lessonId,
+        title: lesson.title,
+        level: lesson.level,
+        errors,
+        warnings,
+      });
+    }
+
+    const duplicates: Array<{ word: string; lessons: string[] }> = [];
+    for (const [word, lessonIds] of vocabularyMap.entries()) {
+      if (lessonIds.length > 1) {
+        duplicates.push({ word, lessons: Array.from(new Set(lessonIds)) });
+        for (const lessonId of lessonIds) {
+          const audit = auditResults.find(a => a.lessonId === lessonId);
+          if (audit) {
+            audit.warnings.push(`Vocabulary word "${word}" is also taught in other lessons: ${lessonIds.filter(id => id !== lessonId).join(', ')}`);
+          }
+        }
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totalLessonsChecked: lessons.length,
+        lessons: auditResults,
+        duplicates,
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // ============ Content Pipeline ============
 import contentPipelineRoutes from './admin.contentPipeline';
 router.use(contentPipelineRoutes);

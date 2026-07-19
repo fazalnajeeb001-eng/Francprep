@@ -2,6 +2,7 @@ import { Response, NextFunction } from 'express';
 import { lessonService } from '../services/lesson.service';
 import { AuthRequest } from '../types';
 import { createLessonSchema, updateLessonSchema } from '../utils/validators';
+import { getTargetAccessState } from '../services/access.service';
 
 export class LessonController {
   /**
@@ -18,6 +19,17 @@ export class LessonController {
         sort,
       });
 
+      if (req.user && req.user.role !== 'admin' && result.data) {
+        const filtered: any[] = [];
+        for (const lesson of result.data) {
+          const accessState = await getTargetAccessState(req.user.id, lesson.level, 'level');
+          if (accessState !== 'hidden') {
+            filtered.push(lesson);
+          }
+        }
+        result.data = filtered;
+      }
+
       res.status(200).json({
         success: true,
         ...result,
@@ -33,6 +45,17 @@ export class LessonController {
   async getById(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const lesson = await lessonService.getLessonById(req.params.id);
+
+      if (req.user && req.user.role !== 'admin') {
+        const accessState = await getTargetAccessState(req.user.id, lesson.level, 'level');
+        if (accessState === 'hidden') {
+          return res.status(403).json({ success: false, message: 'Access denied: Level is hidden' });
+        }
+        if (accessState === 'locked') {
+          return res.status(403).json({ success: false, message: 'Access denied: Level is locked' });
+        }
+      }
+
       res.status(200).json({
         success: true,
         data: lesson,

@@ -2,6 +2,7 @@ import StudentProgress from '../models/StudentProgress';
 import Lesson from '../models/Lesson';
 import User from '../models/User';
 import Exercise from '../models/Exercise';
+import { getTargetAccessState } from './access.service';
 
 export interface DashboardData {
   user: { firstName: string; lastName: string; email: string; subscriptionTier: string; learningGoal: string; avatarUrl: string; avatarFeatures: any; onboardingComplete: boolean; rpmGlbUrl: string };
@@ -62,14 +63,23 @@ export class DashboardService {
     const totalStudyTime = progressRecords.reduce((sum, p) => sum + p.timeSpent, 0);
     const levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
     const levelProgress: Array<{ level: string; total: number; completed: number; status: string }> = [];
-    let allPreviousCompleted = true;
     for (const level of levels) {
       const levelLessons = await Lesson.countDocuments({ level, isPublished: true });
       const completedLevelLessons = progressRecords.filter((p) => { const lesson = p.lessonId as any; return lesson && lesson.level === level && p.status === 'completed'; }).length;
+      
+      const accessState = await getTargetAccessState(userId, level, 'level');
+      if (accessState === 'hidden') {
+        continue;
+      }
+      
       let status = 'locked';
-      if (completedLevelLessons === levelLessons && levelLessons > 0) status = 'completed';
-      else if (allPreviousCompleted) { status = 'active'; allPreviousCompleted = false; }
-      else status = completedLevelLessons > 0 ? 'active' : 'locked';
+      if (accessState === 'unlocked') {
+        if (completedLevelLessons === levelLessons && levelLessons > 0) {
+          status = 'completed';
+        } else {
+          status = 'active';
+        }
+      }
       levelProgress.push({ level, total: levelLessons, completed: completedLevelLessons, status });
     }
     const completedLessonDocs = await Lesson.find({ _id: { $in: progressRecords.filter((p) => p.status === 'completed').map((p) => p.lessonId) } });

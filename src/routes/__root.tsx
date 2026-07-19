@@ -27,6 +27,28 @@ function NavBarInner() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
   const [avatarGender, setAvatarGender] = useState<string | null>(null);
+  const [isAdminPreview, setIsAdminPreview] = useState(false);
+
+  useEffect(() => {
+    const val = localStorage.getItem("fp_admin_preview") === "true";
+    setIsAdminPreview(val);
+    if (val) {
+      document.documentElement.classList.add("admin-preview-active");
+    } else {
+      document.documentElement.classList.remove("admin-preview-active");
+    }
+  }, []);
+
+  const togglePreview = (checked: boolean) => {
+    setIsAdminPreview(checked);
+    localStorage.setItem("fp_admin_preview", checked ? "true" : "false");
+    if (checked) {
+      document.documentElement.classList.add("admin-preview-active");
+    } else {
+      document.documentElement.classList.remove("admin-preview-active");
+    }
+    window.dispatchEvent(new Event("admin-preview-changed"));
+  };
 
   useEffect(() => {
     try {
@@ -50,8 +72,26 @@ function NavBarInner() {
   }, []);
 
   return (
-    <nav className="sticky top-0 z-50 border-b dark:border-[#1e2a4a] border-gray-200 dark:bg-[#070B17]/80 bg-white/80 backdrop-blur-xl transition-colors duration-300"
-      style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}>
+    <>
+      {isAuthenticated && user?.role === "admin" && (
+        <div className="bg-gradient-to-r from-purple-950 to-indigo-950 border-b border-purple-800 text-white px-4 py-2 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="bg-purple-600 px-1.5 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider animate-pulse">Preview Mode</span>
+            <span>Browse as student, click and edit any content in place to stage drafts.</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-purple-300">Edit-in-Place Controls:</span>
+            <button type="button" onClick={() => togglePreview(!isAdminPreview)}
+              className="relative w-8 h-4.5 rounded-full transition-all bg-gray-600"
+              style={{ backgroundColor: isAdminPreview ? "#10b981" : "#4b5563" }}>
+              <div className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-white shadow transition-all ${isAdminPreview ? "left-4" : "left-0.5"}`} />
+            </button>
+            <span className="font-semibold">{isAdminPreview ? "Active" : "Inactive"}</span>
+          </div>
+        </div>
+      )}
+      <nav className="sticky top-0 z-50 border-b dark:border-[#1e2a4a] border-gray-200 dark:bg-[#070B17]/80 bg-white/80 backdrop-blur-xl transition-colors duration-300"
+        style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}>
       <div className="mx-auto flex h-14 min-h-[44px] max-w-7xl items-center justify-between px-4">
         <div className="flex items-center gap-4 sm:gap-6">
           <Link to="/" className="flex items-center gap-2 text-lg font-bold min-h-[44px]">
@@ -89,6 +129,7 @@ function NavBarInner() {
         </div>
       </div>
     </nav>
+    </>
   );
 }
 
