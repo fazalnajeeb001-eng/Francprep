@@ -91,12 +91,50 @@ export class LessonController {
   async update(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const validatedData = updateLessonSchema.parse(req.body);
-      const lesson = await lessonService.updateLesson(req.params.id, validatedData);
+      const LessonModel = (await import('../models/Lesson')).default;
+      const lesson = await LessonModel.findById(req.params.id);
+      if (!lesson) {
+        res.status(404).json({ success: false, error: 'Lesson not found' });
+        return;
+      }
+
+      const DraftModel = (await import('../models/Draft')).default;
+      const existingDraft = await DraftModel.findOne({
+        lessonId: lesson.lessonId,
+        status: { $in: ['draft', 'review', 'validated'] },
+      });
+
+      const parsedData = {
+        ...lesson.toJSON(),
+        ...validatedData,
+      };
+
+      let draft;
+      if (existingDraft) {
+        existingDraft.content = JSON.stringify(parsedData, null, 2);
+        existingDraft.parsedData = parsedData;
+        existingDraft.status = 'draft';
+        existingDraft.version = existingDraft.version + 1;
+        draft = await existingDraft.save();
+      } else {
+        draft = await DraftModel.create({
+          lessonId: lesson.lessonId,
+          chapterId: lesson.chapterId || null,
+          level: lesson.level,
+          title: validatedData.title || lesson.title,
+          content: JSON.stringify(parsedData, null, 2),
+          parsedData,
+          validationErrors: [],
+          status: 'draft',
+          origin: 'in_house_edit',
+          createdBy: req.user?.email || 'admin',
+        });
+      }
 
       res.status(200).json({
         success: true,
-        data: lesson,
-        message: 'Lesson updated successfully',
+        data: draft,
+        message: 'Changes staged as a draft in the content pipeline',
       });
     } catch (error) {
       next(error);

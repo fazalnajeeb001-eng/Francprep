@@ -59,8 +59,8 @@ function NavBarInner() {
             <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent hidden sm:inline">FrancPrep</span>
           </Link>
           {isAuthenticated && user?.role === "admin" && (
-            <div className="hidden sm:flex items-center gap-1 text-sm">
-              <Link to="/admin" className="px-3 py-2 min-h-[44px] flex items-center gap-1.5 text-purple-400 hover:text-purple-300 bg-purple-500/10 border border-purple-500/30 rounded-xl transition-all">
+            <div className="flex items-center gap-1 text-sm">
+              <Link to="/admin" className="px-3 py-1.5 sm:py-2 min-h-[44px] sm:min-h-0 flex items-center gap-1.5 text-purple-400 hover:text-purple-300 bg-purple-500/10 border border-purple-500/30 rounded-xl transition-all text-xs sm:text-sm">
                 <Shield className="w-3.5 h-3.5" /> Admin
               </Link>
             </div>

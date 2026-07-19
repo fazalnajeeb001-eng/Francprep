@@ -4,6 +4,8 @@ import { lessonService } from '../services/lesson.service';
 import axios from 'axios';
 import Settings from '../models/Settings';
 import Draft from '../models/Draft';
+import { generateAICompletion } from '../services/aiProvider';
+import Lesson from '../models/Lesson';
 
 export async function getExistingVocabulary(_req: Request, res: Response) {
   try {
@@ -177,7 +179,6 @@ export async function validateJson(req: Request, res: Response) {
       return;
     }
 
-    // Remap vocabulary for JSON schema validation if needed
     const validateData = { ...parsed };
     if (validateData.vocabItems && !validateData.vocabulary) {
       validateData.vocabulary = validateData.vocabItems;
@@ -213,7 +214,6 @@ export async function importJson(req: Request, res: Response) {
 
     let parsed = typeof json === 'string' ? JSON.parse(json) : json;
 
-    // Map vocabulary -> vocabItems for the DB shape if needed
     if (parsed.vocabulary && !parsed.vocabItems) {
       parsed.vocabItems = parsed.vocabulary;
     }
@@ -222,7 +222,6 @@ export async function importJson(req: Request, res: Response) {
     if (order !== undefined) parsed.order = order;
     if (isPublished !== undefined) parsed.isPublished = isPublished;
 
-    // Validate draft
     const validateData = { ...parsed };
     if (validateData.vocabItems && !validateData.vocabulary) {
       validateData.vocabulary = validateData.vocabItems;
@@ -267,21 +266,8 @@ export async function importJson(req: Request, res: Response) {
 
 export async function generateContent(req: Request, res: Response) {
   try {
-    const { level, category, topic, vocabCount, exerciseCount } = req.body;
-    
-    // Get Anthropic API key from DB settings
-    const settings = await Settings.findOne();
-    const apiKey = settings?.anthropicApiKey || process.env.ANTHROPIC_API_KEY;
+    const { level, category, topic, vocabCount, exerciseCount, model = 'gpt-4o-mini' } = req.body;
 
-    if (!apiKey) {
-      res.status(400).json({
-        success: false,
-        error: 'Anthropic API key is not configured. Please add it to your API Settings.'
-      });
-      return;
-    }
-
-    // Generate prompt text
     const prompt = `Generate a CEFR ${level || 'A1'} lesson in French on the topic "${topic || 'First Contact'}".
 The category of the lesson is "${category || 'vocabulary'}".
 The lesson must conform EXACTLY to the following JSON structure:
@@ -319,25 +305,12 @@ The lesson must conform EXACTLY to the following JSON structure:
 Ensure the output contains ONLY the JSON payload without any backticks, markdown markers, or other explanatory text.
 Ensure there are exactly ${vocabCount || 10} vocabulary items, and ${exerciseCount || 3} questions per section.`;
 
-    const response = await axios.post(
-      'https://api.anthropic.com/v1/messages',
-      {
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 4000,
-        messages: [{ role: 'user', content: prompt }]
-      },
-      {
-        headers: {
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'content-type': 'application/json'
-        }
-      }
-    );
+    const generatedText = await generateAICompletion({
+      model,
+      prompt,
+      systemPrompt: "You are a curriculum writer. Respond strictly with raw JSON.",
+    });
 
-    const generatedText = response.data?.content?.[0]?.text || '';
-    
-    // Attempt to extract JSON in case Claude wrapped it in markdown codeblocks
     let cleanJson = generatedText;
     const match = generatedText.match(/```json\s*([\s\S]*?)\s*```/);
     if (match) {
@@ -357,7 +330,152 @@ Ensure there are exactly ${vocabCount || 10} vocabulary items, and ${exerciseCou
       }
     });
   } catch (err: any) {
-    const errorMsg = err.response?.data?.error?.message || err.message;
-    res.status(500).json({ success: false, error: `Anthropic API error: ${errorMsg}` });
+    res.status(500).json({ success: false, error: err.message });
+  }
+}
+
+export async function extendLesson(req: Request, res: Response) {
+  try {
+    const { lessonId, instruction, model = 'gpt-4o-mini' } = req.body;
+    if (!lessonId || !instruction) {
+      return res.status(400).json({ success: false, error: 'lessonId and instruction are required' });
+    }
+
+    const lesson = await Lesson.findById(lessonId);
+    if (!lesson) {
+      return res.status(404).json({ success: false, error: 'Lesson not found' });
+    }
+
+    const prompt = `We have this active French lesson in JSON format:
+${JSON.stringify(lesson.canonical || lesson.toJSON(), null, 2)}
+
+Your task is to modify or extend it based on the following instruction:
+"${instruction}"
+
+Requirements:
+1. Conform strictly to the original JSON schema.
+2. Return the COMPLETE updated lesson JSON.
+3. Output ONLY the JSON. No backticks, no markdown, no explanation.`;
+
+    const generatedText = await generateAICompletion({
+      model,
+      prompt,
+      systemPrompt: "You are a professional French editor. Output strictly valid JSON.",
+    });
+
+    let cleanJson = generatedText;
+    const match = generatedText.match(/```json\s*([\s\S]*?)\s*```/);
+    if (match) cleanJson = match[1];
+    else {
+      const matchRaw = generatedText.match(/```\s*([\s\S]*?)\s*```/);
+      if (matchRaw) cleanJson = matchRaw[1];
+    }
+
+    const parsed = JSON.parse(cleanJson);
+    
+    // Save as a draft revision in staging
+    const draft = await Draft.create({
+      lessonId: parsed.lessonId || lesson.lessonId,
+      chapterId: parsed.chapterId || lesson.chapterId,
+      level: parsed.level || lesson.level,
+      title: parsed.title || lesson.title,
+      content: JSON.stringify(parsed, null, 2),
+      parsedData: parsed,
+      validationErrors: [],
+      status: 'draft',
+      origin: 'ai_generator',
+      createdBy: (req as any).user?.email || 'admin',
+      notes: `Extended via AI prompt: ${instruction}`,
+    });
+
+    res.json({ success: true, data: draft });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+}
+
+export async function generatePlacement(req: Request, res: Response) {
+  try {
+    const { model = 'gpt-4o-mini' } = req.body;
+
+    const prompt = `Generate a CEFR French Placement Test with exactly 15 progressive multiple choice questions.
+Question 1-3: A1 level.
+Question 4-6: A2 level.
+Question 7-9: B1 level.
+Question 10-12: B2 level.
+Question 13-15: C1 level.
+
+Conform exactly to the following JSON structure:
+{
+  "lessonId": "placement-test",
+  "chapterId": "placement",
+  "level": "A1",
+  "title": "French Placement Test",
+  "anchorSkill": "integrated",
+  "durationMinutes": 30,
+  "objectives": ["Identify CEFR levels A1-C1"],
+  "grammarFocus": "Placement assessment",
+  "vocabularyFocus": "Placement assessment",
+  "warmUp": { "content": "Welcome to the Placement Test!" },
+  "explanation": { "content": "Answer the questions to gauge your level." },
+  "vocabulary": [],
+  "grammar": { "explanation": "Mixed", "formation": "", "usage": "", "examples": [], "commonMistakes": [] },
+  "grammarDrills": { "questions": [] },
+  "reading": { "title": "Comprehension", "text": "Assess reading level", "questions": [] },
+  "listening": { "title": "Comprehension", "transcript": "Assess listening", "questions": [] },
+  "speaking": { "guidedActivity": "Activity" },
+  "writing": { "task": "Task", "modelAnswer": "Model", "checklist": [] },
+  "practiceExercises": {
+    "questions": [
+      {
+        "id": "placement-q1",
+        "type": "multiple_choice",
+        "prompt": "Greeting question...",
+        "options": ["Bonjour", "Salut", "Au revoir", "Merci"],
+        "correctAnswer": "Bonjour",
+        "explanation": "Bonjour is a standard A1 greeting."
+      }
+    ]
+  },
+  "miniReview": { "content": "Review" },
+  "selfAssessment": []
+}
+
+Output ONLY the raw JSON. No explanatory texts.`;
+
+    const generatedText = await generateAICompletion({
+      model,
+      prompt,
+      systemPrompt: "You are a professional curriculum designer. Output strictly raw JSON.",
+    });
+
+    let cleanJson = generatedText;
+    const match = generatedText.match(/```json\s*([\s\S]*?)\s*```/);
+    if (match) cleanJson = match[1];
+    else {
+      const matchRaw = generatedText.match(/```\s*([\s\S]*?)\s*```/);
+      if (matchRaw) cleanJson = matchRaw[1];
+    }
+
+    const parsed = JSON.parse(cleanJson);
+
+    // Save as a draft staging placement test
+    const draft = await Draft.create({
+      lessonId: "placement-test",
+      chapterId: "placement",
+      level: "A1",
+      title: "French Placement Test",
+      content: JSON.stringify(parsed, null, 2),
+      parsedData: parsed,
+      validationErrors: [],
+      status: 'draft',
+      origin: 'ai_generator',
+      createdBy: (req as any).user?.email || 'admin',
+      notes: "Generated new Placement Test draft.",
+    });
+
+    res.json({ success: true, data: draft });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
   }
 }

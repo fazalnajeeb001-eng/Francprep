@@ -184,8 +184,9 @@ function AdminLayout() {
                   <Crown className="w-3.5 h-3.5 text-amber-400" />
                   <span className="text-xs font-semibold text-amber-500">{user.firstName} {user.lastName}</span>
                 </div>
-                <Link to="/dashboard" className="p-2 rounded-xl dark:hover:bg-white/5 hover:bg-gray-100 transition-colors">
-                  <Settings className="w-5 h-5 dark:text-gray-400 text-gray-600" />
+                <Link to="/dashboard" className="px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/20 text-xs font-semibold flex items-center gap-1.5 transition-all">
+                  <GraduationCap className="w-4 h-4" />
+                  <span>Student View</span>
                 </Link>
               </div>
             </div>

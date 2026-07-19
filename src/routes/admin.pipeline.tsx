@@ -4,9 +4,8 @@ import { apiFetch } from "~/lib/apiFetch";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "~/lib/ThemeContext";
 import {
-  ArrowLeft, Layers, Play, CheckCircle2, AlertCircle, Trash2, Check,
-  ChevronRight, RefreshCw, Eye, EyeOff, LayoutTemplate, HelpCircle,
-  AlertTriangle, CheckCircle, Info, Database
+  ArrowLeft, Layers, CheckCircle2, AlertCircle, Trash2,
+  RefreshCw, Eye, AlertTriangle, CheckCircle, Info, Database, Upload, Brain
 } from "lucide-react";
 import { LessonPage } from "~/components/content/LessonPage";
 
@@ -22,7 +21,7 @@ interface DraftItem {
   parsedData?: any;
   validationErrors: string[];
   validationWarnings: string[];
-  status: 'draft' | 'review' | 'validated' | 'imported' | 'published' | 'rejected';
+  status: 'draft' | 'review' | 'validated' | 'imported' | 'published' | 'rejected' | 'superseded';
   version: number;
   createdBy: string;
   updatedAt: string;
@@ -39,6 +38,18 @@ function PipelineDashboardPage() {
   const [publishConfirmId, setPublishConfirmId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [actionStatus, setActionStatus] = useState({ loading: false, error: "", success: "" });
+
+  // Paste Markdown Staging States
+  const [showImportPanel, setShowImportPanel] = useState(false);
+  const [importMarkdown, setImportMarkdown] = useState("");
+  const [importLevel, setImportLevel] = useState("");
+  const [importChapter, setImportChapter] = useState("");
+  const [importingMarkdown, setImportingMarkdown] = useState(false);
+
+  // AI Verification states
+  const [verifyingAI, setVerifyingAI] = useState(false);
+  const [aiReport, setAiReport] = useState<{ passed: boolean; errors: string[]; suggestions: string[] } | null>(null);
+  const [selectedModel, setSelectedModel] = useState("gpt-4o-mini");
 
   const fetchDrafts = async () => {
     setLoading(true);
@@ -57,6 +68,57 @@ function PipelineDashboardPage() {
   useEffect(() => {
     fetchDrafts();
   }, []);
+
+  const handleImportMarkdown = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!importMarkdown.trim()) return;
+    setImportingMarkdown(true);
+    setActionStatus({ loading: true, error: "", success: "" });
+    try {
+      const res = await apiFetch("/admin/content-pipeline/import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          markdown: importMarkdown,
+          level: importLevel || undefined,
+          chapterNum: importChapter || undefined,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setActionStatus({ loading: false, error: "", success: `Successfully parsed and staged ${json.data.results?.length || 1} lesson draft(s) in queue!` });
+        setImportMarkdown("");
+        setShowImportPanel(false);
+        fetchDrafts();
+      } else {
+        setActionStatus({ loading: false, error: json.error || "Failed to parse markdown", success: "" });
+      }
+    } catch (err: any) {
+      setActionStatus({ loading: false, error: err.message || "Network error", success: "" });
+    }
+    setImportingMarkdown(false);
+  };
+
+  const handleAIVerify = async (id: string) => {
+    setVerifyingAI(true);
+    setAiReport(null);
+    try {
+      const res = await apiFetch(`/admin/content-pipeline/drafts/${id}/ai-verify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model: selectedModel }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setAiReport(json.data);
+      } else {
+        setActionStatus({ loading: false, error: json.error || "AI Verification failed", success: "" });
+      }
+    } catch (err: any) {
+      setActionStatus({ loading: false, error: err.message || "Network error", success: "" });
+    }
+    setVerifyingAI(false);
+  };
 
   const handleValidate = async (id: string) => {
     setActionStatus({ loading: true, error: "", success: "" });
@@ -119,9 +181,7 @@ function PipelineDashboardPage() {
 
   const bg = dark ? "bg-[#070B17]" : "bg-gray-50";
   const card = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200";
-  const border = dark ? "border-[#1e2a4a]" : "border-gray-200";
   const txtSec = dark ? "text-gray-400" : "text-gray-500";
-  const textBody = dark ? "text-gray-300" : "text-gray-700";
 
   // If in preview mode, render fullscreen overlay of the student LessonPage
   if (previewDraftId) {
@@ -187,10 +247,60 @@ function PipelineDashboardPage() {
                 <h2 className="text-base font-bold text-white flex items-center gap-2">
                   <Database className="w-4 h-4 text-purple-400" /> Active Drafts Queue ({drafts.length})
                 </h2>
-                <button onClick={fetchDrafts} disabled={loading} className={`p-2 rounded-xl ${dark ? "hover:bg-white/5" : "hover:bg-gray-100"} text-gray-400`}>
-                  <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-                </button>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setShowImportPanel(!showImportPanel)}
+                    className="px-3 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 border border-purple-500/30 text-xs font-semibold flex items-center gap-1.5 transition-all">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>Paste Claude Markdown</span>
+                  </button>
+                  <button onClick={fetchDrafts} disabled={loading} className={`p-2 rounded-xl ${dark ? "hover:bg-white/5" : "hover:bg-gray-100"} text-gray-400`}>
+                    <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                  </button>
+                </div>
               </div>
+
+              {showImportPanel && (
+                <form onSubmit={handleImportMarkdown} className={`p-4 rounded-xl border ${dark ? "bg-[#070B17] border-purple-500/30" : "bg-gray-50 border-purple-400"} space-y-4`}>
+                  <div className="flex items-center gap-2 text-sm font-semibold text-purple-400">
+                    <Upload className="w-4 h-4" />
+                    <span>Paste Raw Claude Markdown</span>
+                  </div>
+                  <textarea
+                    required
+                    value={importMarkdown}
+                    onChange={(e) => setImportMarkdown(e.target.value)}
+                    className={`w-full h-40 rounded-xl px-3 py-2 text-xs font-mono border ${dark ? "bg-[#0c1224] border-[#1e2a4a] text-gray-200" : "bg-white border-gray-300 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-purple-500`}
+                    placeholder="# LESSON 1 - Greet someone formally...&#10;**Level:** A1&#10;**Chapter:** 1&#10;**Lesson Title:** Form greetings...&#10;..."
+                  />
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[10px] text-gray-400 mb-1">Level (Optional - Auto Detects)</label>
+                      <select value={importLevel} onChange={(e) => setImportLevel(e.target.value)}
+                        className={`w-full rounded-lg px-2 py-1.5 text-xs border ${dark ? "bg-[#0c1224] border-[#1e2a4a] text-white" : "bg-white border-gray-300 text-gray-900"}`}>
+                        <option value="">Auto Detect Level</option>
+                        {["A1", "A2", "B1", "B2", "C1", "C2"].map(l => <option key={l} value={l}>{l}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-gray-400 mb-1">Chapter (Optional - Auto Detects)</label>
+                      <input type="number" min={1} value={importChapter} onChange={(e) => setImportChapter(e.target.value)}
+                        className={`w-full rounded-lg px-2 py-1.5 text-xs border ${dark ? "bg-[#0c1224] border-[#1e2a4a] text-white" : "bg-white border-gray-300 text-gray-900"}`}
+                        placeholder="e.g. 1" />
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button type="submit" disabled={importingMarkdown}
+                      className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold transition-all disabled:opacity-50 flex items-center gap-1">
+                      {importingMarkdown ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+                      <span>Stage Draft</span>
+                    </button>
+                    <button type="button" onClick={() => setShowImportPanel(false)}
+                      className="px-4 py-2 rounded-lg bg-gray-500/10 hover:bg-gray-500/20 text-gray-300 text-xs">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              )}
 
               {loading ? (
                 <div className="py-12 flex justify-center">
@@ -208,7 +318,7 @@ function PipelineDashboardPage() {
                     const warningCount = d.validationWarnings.length;
                     
                     return (
-                      <div key={d._id} onClick={() => setSelectedDraft(d)}
+                      <div key={d._id} onClick={() => { setSelectedDraft(d); setAiReport(null); }}
                         className={`p-4 rounded-xl border cursor-pointer transition-all ${
                           isSelected ? "bg-purple-500/10 border-purple-500/40" :
                           dark ? "bg-[#0c1224] border-[#1e2a4a] hover:border-purple-500/20" : "bg-white border-gray-200 hover:bg-gray-50"
@@ -342,6 +452,56 @@ function PipelineDashboardPage() {
                       </div>
                     );
                   })()}
+
+                  {/* AI Verification Check */}
+                  <div className={`p-3 rounded-xl border space-y-2.5 ${aiReport ? (aiReport.passed ? 'bg-emerald-500/5 border-emerald-500/10' : 'bg-red-500/5 border-red-500/10') : 'bg-purple-500/5 border-purple-500/10'}`}>
+                    <div className="flex items-start gap-2.5">
+                      <Brain className="w-4 h-4 text-purple-400 mt-0.5 shrink-0" />
+                      <div className="flex-1">
+                        <p className="text-xs font-bold text-white">4. AI Verification Check</p>
+                        <p className="text-[10px] text-gray-400 mt-0.5">Verify curriculum structure and grammatical accuracy.</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-1.5 pt-1">
+                      <select value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)}
+                        className={`text-[10px] rounded px-1.5 py-1 ${dark ? 'bg-[#0c1224] border-[#1e2a4a] text-white' : 'bg-white border-gray-300 text-gray-900'} border`}>
+                        <option value="gpt-4o-mini">GPT-4o Mini (Default)</option>
+                        <option value="claude-sonnet">Claude 3.5 Sonnet</option>
+                        <option value="claude-haiku">Claude Haiku</option>
+                        <option value="gemini-flash">Gemini 1.5 Flash (Fast)</option>
+                        <option value="mistral-large">Mistral Large (FR)</option>
+                        <option value="llama-70b">Llama 3.1 70B</option>
+                      </select>
+                      <button onClick={() => handleAIVerify(selectedDraft._id)} disabled={verifyingAI}
+                        className="px-2 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded text-[10px] font-bold flex items-center gap-1 disabled:opacity-50 transition-all ml-auto">
+                        {verifyingAI ? <RefreshCw className="w-2.5 h-2.5 animate-spin" /> : <Brain className="w-2.5 h-2.5" />}
+                        <span>{verifyingAI ? "Verifying..." : "Run AI Check"}</span>
+                      </button>
+                    </div>
+
+                    {aiReport && (
+                      <div className="border-t border-gray-800/60 pt-2 space-y-1.5">
+                        <div className="flex items-center gap-1">
+                          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${aiReport.passed ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
+                            {aiReport.passed ? "Passed" : "Flags Found"}
+                          </span>
+                        </div>
+                        {aiReport.errors && aiReport.errors.length > 0 && (
+                          <div className="space-y-0.5">
+                            <p className="text-[9px] font-bold text-red-400">Errors:</p>
+                            {aiReport.errors.map((err, idx) => <p key={idx} className="text-[9px] text-red-300/90 font-mono leading-tight">- {err}</p>)}
+                          </div>
+                        )}
+                        {aiReport.suggestions && aiReport.suggestions.length > 0 && (
+                          <div className="space-y-0.5">
+                            <p className="text-[9px] font-bold text-amber-400">Suggestions:</p>
+                            {aiReport.suggestions.map((sug, idx) => <p key={idx} className="text-[9px] text-gray-300 leading-tight">- {sug}</p>)}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Action Buttons */}

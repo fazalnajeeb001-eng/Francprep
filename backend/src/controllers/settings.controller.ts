@@ -18,7 +18,7 @@ export async function getSettings(_req: Request, res: Response) {
 
 export async function updateSettings(req: Request, res: Response) {
   try {
-    const allowed = ['stripeSecretKey', 'stripePublishableKey', 'stripePremiumPriceId', 'stripeExamPrepPriceId', 'stripeWebhookSecret', 'anthropicApiKey', 'frontendUrl'];
+    const allowed = ['stripeSecretKey', 'stripePublishableKey', 'stripePremiumPriceId', 'stripeExamPrepPriceId', 'stripeWebhookSecret', 'anthropicApiKey', 'openRouterApiKey', 'frontendUrl'];
     const updates: any = {};
     for (const key of allowed) {
       if (req.body[key] !== undefined) updates[key] = req.body[key];
@@ -70,6 +70,37 @@ export async function testAnthropic(_req: Request, res: Response) {
     } else {
       const err = await response.text();
       res.json({ success: false, error: `API returned ${response.status}: ${err.slice(0, 200)}` });
+    }
+  } catch (err: any) {
+    res.json({ success: false, error: err.message });
+  }
+}
+
+export async function testOpenRouter(_req: Request, res: Response) {
+  try {
+    const settings = await getOrCreate();
+    const apiKey = settings.openRouterApiKey || process.env.OPENROUTER_API_KEY;
+    if (!apiKey) {
+      return res.json({ success: false, error: "OpenRouter API key not configured" });
+    }
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "google/gemini-flash-1.5-8b",
+        messages: [{ role: "user", content: "Say 'OpenRouter connection successful' in exactly 3 words." }],
+        max_tokens: 20,
+      }),
+    });
+    if (response.ok) {
+      const data: any = await response.json();
+      res.json({ success: true, data: { response: data.choices?.[0]?.message?.content || "OK" } });
+    } else {
+      const err = await response.text();
+      res.json({ success: false, error: `OpenRouter returned ${response.status}: ${err.slice(0, 200)}` });
     }
   } catch (err: any) {
     res.json({ success: false, error: err.message });

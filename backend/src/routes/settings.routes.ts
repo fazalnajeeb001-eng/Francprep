@@ -8,6 +8,7 @@ router.get('/', authenticate, authorize('admin'), settingsController.getSettings
 router.put('/', authenticate, authorize('admin'), settingsController.updateSettings);
 router.post('/test-stripe', authenticate, authorize('admin'), settingsController.testStripe);
 router.post('/test-anthropic', authenticate, authorize('admin'), settingsController.testAnthropic);
+router.post('/test-openrouter', authenticate, authorize('admin'), settingsController.testOpenRouter);
 router.get('/stripe-keys', settingsController.getStripeKeys);
 
 export default router;

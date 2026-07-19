@@ -13,8 +13,10 @@ function AdminSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [stripeTesting, setStripeTesting] = useState(false);
   const [anthropicTesting, setAnthropicTesting] = useState(false);
+  const [openRouterTesting, setOpenRouterTesting] = useState(false);
   const [stripeResult, setStripeResult] = useState<{ ok: boolean; msg: string } | null>(null);
   const [anthropicResult, setAnthropicResult] = useState<{ ok: boolean; msg: string } | null>(null);
+  const [openRouterResult, setOpenRouterResult] = useState<{ ok: boolean; msg: string } | null>(null);
   const [saveMsg, setSaveMsg] = useState("");
   const [showKeys, setShowKeys] = useState<Record<string, boolean>>({});
 
@@ -25,6 +27,7 @@ function AdminSettingsPage() {
     stripeExamPrepPriceId: "",
     stripeWebhookSecret: "",
     anthropicApiKey: "",
+    openRouterApiKey: "",
     frontendUrl: "",
   });
 
@@ -43,6 +46,7 @@ function AdminSettingsPage() {
           stripeExamPrepPriceId: j.data.stripeExamPrepPriceId || "",
           stripeWebhookSecret: j.data.stripeWebhookSecret || "",
           anthropicApiKey: j.data.anthropicApiKey || "",
+          openRouterApiKey: j.data.openRouterApiKey || "",
           frontendUrl: j.data.frontendUrl || "",
         });
       }
@@ -81,6 +85,16 @@ function AdminSettingsPage() {
       setAnthropicResult(json.success ? { ok: true, msg: `Connected! Response: "${json.data.response}"` } : { ok: false, msg: json.error });
     } catch { setAnthropicResult({ ok: false, msg: "Network error" }); }
     setAnthropicTesting(false);
+  };
+
+  const testOpenRouter = async () => {
+    setOpenRouterTesting(true); setOpenRouterResult(null);
+    try {
+      const res = await apiFetch("/settings/test-openrouter", { method: "POST" });
+      const json = await res.json();
+      setOpenRouterResult(json.success ? { ok: true, msg: `Connected! Response: "${json.data.response}"` } : { ok: false, msg: json.error });
+    } catch { setOpenRouterResult({ ok: false, msg: "Network error" }); }
+    setOpenRouterTesting(false);
   };
 
   const toggleShow = (key: string) => setShowKeys({ ...showKeys, [key]: !showKeys[key] });
@@ -176,6 +190,29 @@ function AdminSettingsPage() {
           )}
           <KeyInput label="Anthropic API Key" field="anthropicApiKey" placeholder="sk-ant-..." />
           <p className={`text-[10px] ${txtSec}`}>Used by the Content Generator to create lessons directly from the admin panel.</p>
+        </motion.div>
+
+        {/* OpenRouter Section */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 space-y-4`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Zap className="w-5 h-5 text-purple-400" />
+              <h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>OpenRouter AI (Free & Premium Models)</h2>
+            </div>
+            <button onClick={testOpenRouter} disabled={openRouterTesting}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-500/20 text-purple-400 text-xs font-semibold hover:bg-purple-500/30 transition-all disabled:opacity-50">
+              {openRouterTesting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Zap className="w-3 h-3" />}
+              Test Connection
+            </button>
+          </div>
+          {openRouterResult && (
+            <div className={`flex items-center gap-2 text-xs px-3 py-2 rounded-xl ${openRouterResult.ok ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-red-500/10 text-red-400 border border-red-500/20"}`}>
+              {openRouterResult.ok ? <CheckCircle2 className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
+              {openRouterResult.msg}
+            </div>
+          )}
+          <KeyInput label="OpenRouter API Key" field="openRouterApiKey" placeholder="sk-or-v1-..." />
+          <p className={`text-[10px] ${txtSec}`}>Used for multi-LLM lesson validation, automated reviews, and written exercise grading.</p>
         </motion.div>
 
         {/* Save */}

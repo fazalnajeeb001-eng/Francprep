@@ -5,6 +5,7 @@ import Draft from '../models/Draft';
 import Lesson from '../models/Lesson';
 import { parseLessonFromMarkdown } from '../services/markdownLessonParser';
 import Ajv from 'ajv';
+import { generateAICompletion } from '../services/aiProvider';
 
 const router = Router();
 
@@ -137,16 +138,34 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
   try {
     const { markdown, level, chapterNum, lessonId: targetLessonId } = req.body;
 
-    if (!markdown || !level || !chapterNum) {
+    if (!markdown) {
       res.status(400).json({
         success: false,
-        error: 'Missing required fields: markdown, level, chapterNum',
+        error: 'Missing required field: markdown',
       });
       return;
     }
 
+    let detectedLevel = level;
+    let detectedChapterNum = chapterNum;
+
+    if (!detectedLevel) {
+      const levelMatch = markdown.match(/Level:\s*(A0|A1|A2|B1|B2|C1|C2)/i);
+      if (levelMatch) {
+        detectedLevel = levelMatch[1].toUpperCase();
+      } else {
+        const genericMatch = markdown.match(/\b(A0|A1|A2|B1|B2|C1|C2)\b/);
+        detectedLevel = genericMatch ? genericMatch[1].toUpperCase() : 'A1';
+      }
+    }
+
+    if (!detectedChapterNum) {
+      const chapterMatch = markdown.match(/Chapter\s*(\d+)/i);
+      detectedChapterNum = chapterMatch ? parseInt(chapterMatch[1]) : 1;
+    }
+
     // Parse markdown into lessons
-    const parsedLessons = parseLessonFromMarkdown(markdown, level, parseInt(chapterNum));
+    const parsedLessons = parseLessonFromMarkdown(markdown, detectedLevel, parseInt(detectedChapterNum));
 
     if (parsedLessons.length === 0) {
       res.status(400).json({ success: false, error: 'No lessons found in the provided markdown' });
@@ -328,6 +347,67 @@ router.post('/content-pipeline/drafts/:id/validate', async (req: AuthRequest, re
         warnings,
         isValid: errors.length === 0,
       },
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ─── POST /content-pipeline/drafts/:id/ai-verify ────────────────────────────
+// Run deep AI verification on a parsed draft
+router.post('/content-pipeline/drafts/:id/ai-verify', async (req: AuthRequest, res: Response) => {
+  try {
+    const { model = 'gpt-4o-mini' } = req.body;
+    const draft = await Draft.findById(req.params.id);
+    if (!draft) {
+      res.status(404).json({ success: false, error: 'Draft not found' });
+      return;
+    }
+
+    if (!draft.parsedData) {
+      res.status(400).json({ success: false, error: 'Draft has no parsed data to verify' });
+      return;
+    }
+
+    const verificationPrompt = `You are a French CEFR curriculum coordinator. Inspect the following JSON lesson draft. 
+Ensure:
+1. Every section is populated logically.
+2. The questions match the grammar/vocabulary focus of the lesson.
+3. Check for any French spelling, accent, or formatting errors in the exercises, examples, vocabulary, and reading/listening transcript texts.
+4. Verify if the content fits the CEFR level ${draft.level} (e.g. not too hard, not too easy).
+
+Provide your report STRICTLY in the following JSON format:
+{
+  "passed": true or false,
+  "errors": ["List of any severe format/spelling errors found"],
+  "suggestions": ["List of constructive suggestions or enhancements"]
+}
+
+Draft JSON:
+${JSON.stringify(draft.parsedData, null, 2)}`;
+
+    const responseText = await generateAICompletion({
+      model,
+      prompt: verificationPrompt,
+      systemPrompt: "You are a precise CEFR curriculum verifier. Respond strictly with valid JSON.",
+      temperature: 0.1,
+    });
+
+    let result;
+    try {
+      const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
+      result = JSON.parse(cleanJson);
+    } catch {
+      result = {
+        passed: true,
+        errors: [],
+        suggestions: [responseText]
+      };
+    }
+
+    res.json({
+      success: true,
+      data: result
     });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });

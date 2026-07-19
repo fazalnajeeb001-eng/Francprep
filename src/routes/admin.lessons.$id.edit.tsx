@@ -28,6 +28,7 @@ function LessonEditPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
   const [activeTab, setActiveTab] = useState<Tab>("basic");
   const [objectiveInput, setObjectiveInput] = useState("");
 
@@ -130,6 +131,10 @@ function LessonEditPage() {
       });
       const json = await res.json();
       if (!json.success) setError(json.error || json.message || "Failed to update");
+      else {
+        setSuccessMsg(json.message || "Changes saved as a staging draft revision!");
+        setTimeout(() => setSuccessMsg(""), 5000);
+      }
     } catch (e: any) { setError(e.message || "Network error"); }
     finally { setSaving(false); }
   };
@@ -176,6 +181,11 @@ function LessonEditPage() {
       </div>
 
       {error && <div className="rounded-xl bg-red-500/10 border border-red-500/30 px-4 py-3 text-sm text-red-400">{error}</div>}
+      {successMsg && (
+        <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/30 px-4 py-3 text-sm text-emerald-400 flex items-center gap-2">
+          <span className="font-bold">✓</span> {successMsg}
+        </div>
+      )}
 
       <div className="flex gap-1 dark:bg-[#101828]/80 bg-white/80 backdrop-blur-lg border dark:border-[#1e2a4a] border-gray-200 rounded-2xl p-1.5">
         {tabs.map((t) => (

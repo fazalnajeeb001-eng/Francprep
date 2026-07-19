@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { apiFetch } from "~/lib/apiFetch";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   ArrowLeft, Upload, Check, AlertTriangle, FileText, Sparkles,
-  Loader2, Copy, Wand2, Code, Clipboard,
+  Loader2, Wand2, Code, Clipboard,
   CheckCircle2, XCircle, AlertCircle, Info, Brain
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
@@ -43,16 +43,43 @@ function ContentGeneratorPage() {
   const [warnings, setWarnings] = useState<ValidationError[]>([]);
   const [importResult, setImportResult] = useState<any>(null);
   const [apiError, setApiError] = useState("");
-  const [promptCopied, setPromptCopied] = useState(false);
 
   const [chapters, setChapters] = useState<any[]>([]);
-  const [promptText, setPromptText] = useState("");
   const [showJSONExample, setShowJSONExample] = useState(false);
   const [generating, setGenerating] = useState(false);
+
+  // AI Generator Upgrades
+  const [lessons, setLessons] = useState<any[]>([]);
+  const [selectedLessonId, setSelectedLessonId] = useState("");
+  const [extendInstruction, setExtendInstruction] = useState("");
+  const [generatorType, setGeneratorType] = useState<"new" | "extend" | "placement" | "settings">("new");
+  const [selectedModel, setSelectedModel] = useState("gpt-4o-mini");
+
+  // Inline AI settings configuration states
+  const [stripeForm, setStripeForm] = useState<any>({});
+  const [anthropicKey, setAnthropicKey] = useState("");
+  const [openRouterKey, setOpenRouterKey] = useState("");
+  const [saveSettingsSuccess, setSaveSettingsSuccess] = useState("");
+  const [testClaudeLoading, setTestClaudeLoading] = useState(false);
+  const [testClaudeResult, setTestClaudeResult] = useState("");
+  const [testORLoading, setTestORLoading] = useState(false);
+  const [testORResult, setTestORResult] = useState("");
 
   useEffect(() => {
     apiFetch("/chapters").then((r) => r.json()).then((j) => {
       if (j.success) setChapters(j.data || []);
+    }).catch(() => {});
+
+    apiFetch("/lessons?limit=100").then((r) => r.json()).then((j) => {
+      if (j.success) setLessons(j.data || []);
+    }).catch(() => {});
+
+    apiFetch("/settings").then((r) => r.json()).then((j) => {
+      if (j.success && j.data) {
+        setStripeForm(j.data);
+        setAnthropicKey(j.data.anthropicApiKey || "");
+        setOpenRouterKey(j.data.openRouterApiKey || "");
+      }
     }).catch(() => {});
   }, []);
 
@@ -61,23 +88,6 @@ function ContentGeneratorPage() {
   const inp = `w-full rounded-xl ${dark ? "bg-[#070B17] border-[#1e2a4a] text-white" : "bg-white border-gray-300 text-gray-900"} border px-4 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all`;
   const txtSec = dark ? "text-gray-400" : "text-gray-500";
 
-  const generatePrompt = async () => {
-    try {
-      const params = new URLSearchParams({ level, category, topic: topic || "French basics", vocabCount: String(vocabCount), exerciseCount: String(exerciseCount) });
-      const res = await apiFetch(`/content/prompt?${params}`);
-      const json = await res.json();
-      if (json.success) setPromptText(json.data.prompt);
-    } catch {}
-  };
-
-  useEffect(() => { if (step === "prompt") generatePrompt(); }, [step, level, category, topic, vocabCount, exerciseCount]);
-
-  const copyPrompt = () => {
-    navigator.clipboard.writeText(promptText);
-    setPromptCopied(true);
-    setTimeout(() => setPromptCopied(false), 2000);
-  };
-
   const handleGenerateWithAI = async () => {
     if (!topic.trim()) { setApiError("Please enter a topic first"); return; }
     setGenerating(true); setApiError("");
@@ -85,7 +95,7 @@ function ContentGeneratorPage() {
       const res = await apiFetch("/content/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ level, category, topic, vocabCount, exerciseCount }),
+        body: JSON.stringify({ level, category, topic, vocabCount, exerciseCount, model: selectedModel }),
       });
       const json = await res.json();
       if (json.success && json.data) {
@@ -102,6 +112,96 @@ function ContentGeneratorPage() {
       setApiError(e.message || "Network error");
     }
     setGenerating(false);
+  };
+
+  const handleExtendLesson = async () => {
+    if (!selectedLessonId || !extendInstruction.trim()) {
+      setApiError("Please select a lesson and enter instructions.");
+      return;
+    }
+    setGenerating(true); setApiError("");
+    try {
+      const res = await apiFetch("/content/extend-lesson", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lessonId: selectedLessonId, instruction: extendInstruction, model: selectedModel }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setImportResult(json.data);
+        setStep("done");
+      } else {
+        setApiError(json.error || "Extension failed");
+      }
+    } catch (e: any) {
+      setApiError(e.message || "Network error");
+    }
+    setGenerating(false);
+  };
+
+  const handleGeneratePlacement = async () => {
+    setGenerating(true); setApiError("");
+    try {
+      const res = await apiFetch("/content/generate-placement", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model: selectedModel }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setImportResult(json.data);
+        setStep("done");
+      } else {
+        setApiError(json.error || "Placement test generation failed");
+      }
+    } catch (e: any) {
+      setApiError(e.message || "Network error");
+    }
+    setGenerating(false);
+  };
+
+  const handleSaveAISettings = async () => {
+    setSaveSettingsSuccess("");
+    try {
+      const res = await apiFetch("/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...stripeForm,
+          anthropicApiKey: anthropicKey,
+          openRouterApiKey: openRouterKey,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setSaveSettingsSuccess("AI API Keys updated successfully!");
+        setTimeout(() => setSaveSettingsSuccess(""), 4000);
+      } else {
+        setApiError(json.error || "Failed to update API keys");
+      }
+    } catch (err: any) {
+      setApiError(err.message || "Network error");
+    }
+  };
+
+  const handleTestClaude = async () => {
+    setTestClaudeLoading(true); setTestClaudeResult("");
+    try {
+      const res = await apiFetch("/settings/test-anthropic", { method: "POST" });
+      const json = await res.json();
+      setTestClaudeResult(json.success ? "Connection Successful!" : json.error);
+    } catch { setTestClaudeResult("Network error"); }
+    setTestClaudeLoading(false);
+  };
+
+  const handleTestOpenRouter = async () => {
+    setTestORLoading(true); setTestORResult("");
+    try {
+      const res = await apiFetch("/settings/test-openrouter", { method: "POST" });
+      const json = await res.json();
+      setTestORResult(json.success ? "Connection Successful!" : json.error);
+    } catch { setTestORResult("Network error"); }
+    setTestORLoading(false);
   };
 
   const handleValidate = async () => {
@@ -203,75 +303,228 @@ function ContentGeneratorPage() {
             <div className={`${card} backdrop-blur-lg border rounded-2xl p-6 space-y-4`}>
               <div className="flex items-center gap-2 mb-2">
                 <Wand2 className="w-5 h-5 text-purple-400" />
-                <h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Configure Your Lesson</h2>
+                <h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>AI Generator Suite</h2>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className={`block text-xs font-medium ${txtSec} mb-1`}>Level</label>
-                  <select value={level} onChange={(e) => setLevel(e.target.value)} className={inp}>
-                    {levels.map((l) => <option key={l} value={l}>{l}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className={`block text-xs font-medium ${txtSec} mb-1`}>Category</label>
-                  <select value={category} onChange={(e) => setCategory(e.target.value)} className={inp}>
-                    {categories.map((c) => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className={`block text-xs font-medium ${txtSec} mb-1`}>Topic</label>
-                <input value={topic} onChange={(e) => setTopic(e.target.value)} className={inp} placeholder="e.g. French greetings, Present tense, Colors and shapes..." />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className={`block text-xs font-medium ${txtSec} mb-1`}>Vocabulary Words</label>
-                  <input type="number" min={5} max={50} value={vocabCount} onChange={(e) => setVocabCount(parseInt(e.target.value) || 10)} className={inp} />
-                </div>
-                <div>
-                  <label className={`block text-xs font-medium ${txtSec} mb-1`}>Exercise Count</label>
-                  <input type="number" min={1} max={10} value={exerciseCount} onChange={(e) => setExerciseCount(parseInt(e.target.value) || 3)} className={inp} />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className={`block text-xs font-medium ${txtSec} mb-1`}>Chapter (optional)</label>
-                  <select value={chapterId} onChange={(e) => setChapterId(e.target.value)} className={inp}>
-                    <option value="">No chapter</option>
-                    {chapters.map((ch: any) => <option key={ch._id} value={ch._id}>{ch.title}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className={`block text-xs font-medium ${txtSec} mb-1`}>Order</label>
-                  <input type="number" min={1} value={order} onChange={(e) => setOrder(parseInt(e.target.value) || 1)} className={inp} />
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <button type="button" onClick={() => setIsPublished(!isPublished)}
-                  className={`relative w-10 h-5 rounded-full transition-all ${isPublished ? "bg-emerald-500" : dark ? "bg-[#1e2a4a]" : "bg-gray-300"}`}>
-                  <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all ${isPublished ? "left-5" : "left-0.5"}`} />
+              {/* Generator Sub-Tabs */}
+              <div className="flex border-b border-gray-800 pb-3 gap-4 overflow-x-auto whitespace-nowrap">
+                <button type="button" onClick={() => setGeneratorType("new")}
+                  className={`text-sm font-semibold transition-all pb-1.5 ${generatorType === "new" ? "text-purple-400 border-b-2 border-purple-400" : "text-gray-400 hover:text-white"}`}>
+                  Create New Lesson
                 </button>
-                <span className={`text-xs ${txtSec}`}>{isPublished ? "Published" : "Draft"}</span>
+                <button type="button" onClick={() => setGeneratorType("extend")}
+                  className={`text-sm font-semibold transition-all pb-1.5 ${generatorType === "extend" ? "text-purple-400 border-b-2 border-purple-400" : "text-gray-400 hover:text-white"}`}>
+                  Extend Existing Lesson
+                </button>
+                <button type="button" onClick={() => setGeneratorType("placement")}
+                  className={`text-sm font-semibold transition-all pb-1.5 ${generatorType === "placement" ? "text-purple-400 border-b-2 border-purple-400" : "text-gray-400 hover:text-white"}`}>
+                  Placement Test
+                </button>
+                <button type="button" onClick={() => setGeneratorType("settings")}
+                  className={`text-sm font-semibold transition-all pb-1.5 ${generatorType === "settings" ? "text-purple-400 border-b-2 border-purple-400" : "text-gray-400 hover:text-white"}`}>
+                  ⚙️ AI Settings
+                </button>
               </div>
+
+              {/* Engine Selection */}
+              {generatorType !== "settings" && (
+                <div>
+                  <label className={`block text-xs font-medium ${txtSec} mb-1`}>AI Model / LLM Engine</label>
+                  <select value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)} className={inp}>
+                    <option value="gpt-4o-mini">GPT-4o Mini (Default - Fast & Economic)</option>
+                    <option value="claude-sonnet">Claude 3.5 Sonnet (Premium Curriculum structuring)</option>
+                    <option value="claude-haiku">Claude Haiku (Fast & Accurate)</option>
+                    <option value="gemini-flash">Gemini 1.5 Flash (Google Free/Low-cost Tier)</option>
+                    <option value="gemini-pro">Gemini 1.5 Pro (Deep logical checks)</option>
+                    <option value="mistral-large">Mistral Large (French Native nuances)</option>
+                    <option value="llama-70b">Llama 3.1 70B (Open-Source Model)</option>
+                  </select>
+                </div>
+              )}
+
+              {/* RENDER MODE: New Lesson */}
+              {generatorType === "new" && (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className={`block text-xs font-medium ${txtSec} mb-1`}>Level</label>
+                      <select value={level} onChange={(e) => setLevel(e.target.value)} className={inp}>
+                        {levels.map((l) => <option key={l} value={l}>{l}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className={`block text-xs font-medium ${txtSec} mb-1`}>Category</label>
+                      <select value={category} onChange={(e) => setCategory(e.target.value)} className={inp}>
+                        {categories.map((c) => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className={`block text-xs font-medium ${txtSec} mb-1`}>Topic / Syllabus Objective</label>
+                    <input value={topic} onChange={(e) => setTopic(e.target.value)} className={inp} placeholder="e.g. Present tense verbs, Greeting a business client..." />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className={`block text-xs font-medium ${txtSec} mb-1`}>Vocabulary Words Count</label>
+                      <input type="number" min={5} max={50} value={vocabCount} onChange={(e) => setVocabCount(parseInt(e.target.value) || 10)} className={inp} />
+                    </div>
+                    <div>
+                      <label className={`block text-xs font-medium ${txtSec} mb-1`}>Drills / Questions Per Section</label>
+                      <input type="number" min={1} max={10} value={exerciseCount} onChange={(e) => setExerciseCount(parseInt(e.target.value) || 3)} className={inp} />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className={`block text-xs font-medium ${txtSec} mb-1`}>Chapter Target (optional)</label>
+                      <select value={chapterId} onChange={(e) => setChapterId(e.target.value)} className={inp}>
+                        <option value="">No chapter</option>
+                        {chapters.map((ch: any) => <option key={ch._id} value={ch._id}>{ch.title}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className={`block text-xs font-medium ${txtSec} mb-1`}>Order</label>
+                      <input type="number" min={1} value={order} onChange={(e) => setOrder(parseInt(e.target.value) || 1)} className={inp} />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <button type="button" onClick={() => setIsPublished(!isPublished)}
+                      className={`relative w-10 h-5 rounded-full transition-all ${isPublished ? "bg-emerald-500" : dark ? "bg-gray-800" : "bg-gray-300"}`}>
+                      <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all ${isPublished ? "left-5" : "left-0.5"}`} />
+                    </button>
+                    <span className={`text-xs ${txtSec}`}>{isPublished ? "Published" : "Stage as Draft"}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* RENDER MODE: Extend Lesson */}
+              {generatorType === "extend" && (
+                <div className="space-y-4">
+                  <div>
+                    <label className={`block text-xs font-medium ${txtSec} mb-1`}>Target Lesson to Extend</label>
+                    <select value={selectedLessonId} onChange={(e) => setSelectedLessonId(e.target.value)} className={inp}>
+                      <option value="">-- Select Active Lesson --</option>
+                      {lessons.map((l: any) => (
+                        <option key={l._id} value={l._id}>[{l.level}] {l.title} ({l.lessonId})</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className={`block text-xs font-medium ${txtSec} mb-1`}>What to add or modify? (AI Prompt)</label>
+                    <textarea value={extendInstruction} onChange={(e) => setExtendInstruction(e.target.value)}
+                      className="w-full h-24 rounded-xl border border-gray-800 bg-[#070B17] px-4 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 font-mono"
+                      placeholder="e.g. Add 2 reading multiple choice questions testing French greeting verbs. Or add translation exercise." />
+                  </div>
+                </div>
+              )}
+
+              {/* RENDER MODE: Placement Test */}
+              {generatorType === "placement" && (
+                <div className="space-y-2 py-4">
+                  <p className="text-xs text-amber-400 flex items-center gap-1.5">
+                    <Info className="w-4 h-4 shrink-0" />
+                    <span>This generates a structured skippable onboarding test (15 questions from A1 up to C1 levels).</span>
+                  </p>
+                  <p className="text-[10px] text-gray-500 leading-relaxed">
+                    Once generated and published, students logging in for the first time will be prompted to take this test to assess their current standing, though they will still start learning journey at level A1.
+                  </p>
+                </div>
+              )}
+
+              {/* RENDER MODE: AI Settings */}
+              {generatorType === "settings" && (
+                <div className="space-y-4 pt-2">
+                  {saveSettingsSuccess && (
+                    <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 text-xs text-emerald-400">
+                      {saveSettingsSuccess}
+                    </div>
+                  )}
+
+                  <div className="space-y-3">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-xs font-semibold text-gray-300">Anthropic API Key (Claude)</label>
+                        <button type="button" onClick={handleTestClaude} disabled={testClaudeLoading}
+                          className="text-[10px] text-purple-400 hover:underline disabled:opacity-50 flex items-center gap-1">
+                          {testClaudeLoading && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
+                          <span>{testClaudeLoading ? "Testing..." : "Test Connection"}</span>
+                        </button>
+                      </div>
+                      <input type="password" value={anthropicKey} onChange={(e) => setAnthropicKey(e.target.value)}
+                        className={inp} placeholder="sk-ant-..." />
+                      {testClaudeResult && (
+                        <p className={`text-[10px] mt-1 ${testClaudeResult.includes("Successful") ? "text-emerald-400" : "text-red-400"}`}>
+                          {testClaudeResult}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-xs font-semibold text-gray-300">OpenRouter API Key (GPT, Gemini, Mistral, Llama)</label>
+                        <button type="button" onClick={handleTestOpenRouter} disabled={testORLoading}
+                          className="text-[10px] text-purple-400 hover:underline disabled:opacity-50 flex items-center gap-1">
+                          {testORLoading && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
+                          <span>{testORLoading ? "Testing..." : "Test Connection"}</span>
+                        </button>
+                      </div>
+                      <input type="password" value={openRouterKey} onChange={(e) => setOpenRouterKey(e.target.value)}
+                        className={inp} placeholder="sk-or-v1-..." />
+                      {testORResult && (
+                        <p className={`text-[10px] mt-1 ${testORResult.includes("Successful") ? "text-emerald-400" : "text-red-400"}`}>
+                          {testORResult}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex items-center gap-3">
+                    <button type="button" onClick={handleSaveAISettings}
+                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold transition-all shadow-lg shadow-purple-500/20">
+                      Save AI Settings
+                    </button>
+                    <p className="text-[10px] text-gray-500 leading-tight flex-1">
+                      💡 These API keys are used securely to power all generator scripts and student grader prompts.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Two action buttons */}
+            {/* AI Action trigger buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <button onClick={handleGenerateWithAI} disabled={!topic.trim() || generating}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold hover:opacity-90 transition-all disabled:opacity-50 shadow-lg shadow-purple-500/25">
-                {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Brain className="w-4 h-4" />}
-                {generating ? "Generating with Claude..." : "Generate with AI"}
-              </button>
+              {generatorType === "new" && (
+                <>
+                  <button onClick={handleGenerateWithAI} disabled={!topic.trim() || generating}
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold hover:opacity-90 transition-all disabled:opacity-50 shadow-lg shadow-purple-500/25">
+                    {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Brain className="w-4 h-4" />}
+                    <span>{generating ? "Generating..." : "Generate Lesson with AI"}</span>
+                  </button>
+                  <button onClick={() => { setStep("paste"); }} disabled={!topic.trim()}
+                    className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl border ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"} text-sm transition-all disabled:opacity-50`}>
+                    <Clipboard className="w-4 h-4" /> Paste JSON Manually
+                  </button>
+                </>
+              )}
 
-              <button onClick={() => { setStep("paste"); }} disabled={!topic.trim()}
-                className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl border ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"} text-sm transition-all disabled:opacity-50`}>
-                <Clipboard className="w-4 h-4" /> Paste JSON Manually
-              </button>
+              {generatorType === "extend" && (
+                <button onClick={handleExtendLesson} disabled={!selectedLessonId || !extendInstruction.trim() || generating}
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold hover:opacity-90 transition-all disabled:opacity-50 shadow-lg shadow-purple-500/25">
+                  {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
+                  <span>{generating ? "Extending Lesson..." : "Extend Lesson (Save Draft)"}</span>
+                </button>
+              )}
+
+              {generatorType === "placement" && (
+                <button onClick={handleGeneratePlacement} disabled={generating}
+                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold hover:opacity-90 transition-all disabled:opacity-50 shadow-lg shadow-purple-500/25">
+                  {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                  <span>{generating ? "Generating Placement Test..." : "Generate & Stage Placement Test Draft"}</span>
+                </button>
+              )}
             </div>
 
             {generating && (
