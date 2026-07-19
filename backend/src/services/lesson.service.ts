@@ -3,6 +3,7 @@ import Chapter from '../models/Chapter';
 import { createLessonSchema, updateLessonSchema } from '../utils/validators';
 import { validateLesson } from '../utils/validateLesson';
 import { z } from 'zod';
+import { env } from '../config/env';
 
 /**
  * Recursively walk a lesson object and remove `correctAnswer` and `explanation`
@@ -280,15 +281,24 @@ export class LessonService {
       throw { statusCode: 400, message: `Invalid block type: ${blockType}` };
     }
 
-    const results = questions.map((q: any) => {
+    const results = await Promise.all(questions.map(async (q: any) => {
       const qId = q.id;
       const userAns = answers[qId];
       const correct = q.correctAnswer;
       
       let isCorrect = false;
-      if (q.type === 'short_answer' || q.type === 'translation') {
-        // Self-graded, always marked true for validation progress
-        isCorrect = true;
+      let aiFeedback = '';
+      
+      if ((q.type === 'short_answer' || q.type === 'translation') && userAns) {
+        const correctStr = Array.isArray(correct) ? correct.join(' or ') : String(correct || '');
+        const aiResult = await checkAnswerWithAI(q.prompt || q.text || q.question || '', String(userAns), correctStr);
+        if (aiResult) {
+          isCorrect = aiResult.correct;
+          aiFeedback = aiResult.explanation;
+        } else {
+          // Fallback if AI fails: always true for short answer/translation progress
+          isCorrect = true;
+        }
       } else if (correct !== undefined && userAns !== undefined) {
         const normalize = (s: string) => String(s).trim().toLowerCase();
         if (Array.isArray(correct)) {
@@ -303,10 +313,10 @@ export class LessonService {
         correct: isCorrect,
         points: isCorrect ? (q.points || 1) : 0,
         maxPoints: q.points || 1,
-        explanation: q.explanation || `The correct answer is: ${Array.isArray(correct) ? correct.join(' or ') : correct}`,
+        explanation: aiFeedback || q.explanation || `The correct answer is: ${Array.isArray(correct) ? correct.join(' or ') : correct}`,
         text: q.prompt,
       };
-    });
+    }));
 
     const totalScore = results.reduce((sum, r) => sum + r.points, 0);
     const maxPoints = results.reduce((sum, r) => sum + r.maxPoints, 0);
@@ -321,6 +331,52 @@ export class LessonService {
       passed
     };
   }
+}
+
+async function checkAnswerWithAI(prompt: string, studentAnswer: string, correctAnswer: string) {
+  const apiKey = env.openRouterKey;
+  if (!apiKey) return null;
+  try {
+    const apiPrompt = `You are a French tutor. Grade the student's written response to a question/prompt.
+Question/Prompt: "${prompt}"
+Student's Answer: "${studentAnswer}"
+Expected Model Answer: "${correctAnswer}"
+
+Requirements:
+- Determine if the student's answer is semantically correct, grammatically acceptable, and fits the prompt.
+- Allow slight variations, but correct major spelling or grammatical errors.
+- Respond STRICTLY with a raw JSON object and no other text:
+{
+  "correct": true or false,
+  "explanation": "Brief correction feedback in English. Keep it under 2 sentences."
+}`;
+
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'HTTP-Referer': env.frontendUrl || 'https://francprep.com',
+        'X-Title': 'FrancPrep',
+      },
+      body: JSON.stringify({
+        model: 'openai/gpt-4o-mini',
+        messages: [{ role: 'user', content: apiPrompt }],
+        temperature: 0.1,
+        max_tokens: 200,
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json() as any;
+      const content = data.choices?.[0]?.message?.content || '';
+      const cleanJson = content.replace(/```json/g, '').replace(/```/g, '').trim();
+      return JSON.parse(cleanJson) as { correct: boolean; explanation: string };
+    }
+  } catch (e) {
+    console.error('AI grading fetch error:', e);
+  }
+  return null;
 }
 
 export const lessonService = new LessonService();
