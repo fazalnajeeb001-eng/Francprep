@@ -100,6 +100,35 @@ function adaptQuestions(questions: LessonQuestion[]) {
   }));
 }
 
+function getDialogueText(lesson: any): string {
+  if (!lesson) return "";
+  const rText = lesson.reading?.text?.trim() || "";
+  const lText = lesson.listening?.transcript?.trim() || "";
+  const rOk = rText && rText !== "---" && rText.length > 10;
+  const lOk = lText && lText !== "---" && lText.length > 10;
+  if (rOk && lOk) {
+    return rText.length >= lText.length ? rText : lText;
+  }
+  if (rOk) return rText;
+  if (lOk) return lText;
+  return rText || lText || "";
+}
+
+function getDialogueTranslation(lesson: any): string {
+  if (!lesson) return "";
+  const rTrans = lesson.reading?.translation?.trim() || "";
+  const lTrans = lesson.listening?.translation?.trim() || "";
+  const clean = (s: string) => s.replace(/^[\s*\-]+/, '').replace(/[\s*\-]+$/, '').trim();
+  const rt = rTrans && rTrans !== "---" ? clean(rTrans) : "";
+  const lt = lTrans && lTrans !== "---" ? clean(lTrans) : "";
+  if (rt && lt) {
+    return rt.length >= lt.length ? rt : lt;
+  }
+  if (rt) return rt;
+  if (lt) return lt;
+  return "";
+}
+
 // ─── Section Definition ────────────────────────────────────────────────────
 
 interface SectionDef {
@@ -380,32 +409,40 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
         );
 
       case 'dialogue':
-        const dialogueQuestions = [...(lesson!.reading?.questions || []), ...(lesson!.listening?.questions || [])];
+        const dialogueQuestions = [...(lesson!.reading?.questions || []), ...(lesson!.listening?.questions || [])].filter(q => !q.id.includes('dummy'));
+        const dialText = getDialogueText(lesson!);
+        const dialTrans = getDialogueTranslation(lesson!);
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
             <div className="flex items-center gap-3 mb-4">
               <Headphones className="w-5 h-5 text-purple-400" />
-              <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Scenario Dialogue: {lesson!.reading?.title || "Une Rencontre"}</h3>
+              <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Scenario Dialogue: {lesson!.reading?.title || lesson!.listening?.title || "Une Rencontre"}</h3>
             </div>
-            <div className="flex gap-3 mb-4">
-              <button onClick={() => speak(lesson!.reading?.text || lesson!.listening?.transcript || "")}
-                className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
-                <Volume2 className="w-4 h-4" /> Listen to Dialogue
-              </button>
-              <button onClick={() => setShowTranslation(!showTranslation)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
-                {showTranslation ? "Hide" : "Show"} English Translation
-              </button>
-            </div>
-            <div className={`${innerBg} rounded-xl p-4 border whitespace-pre-line text-sm leading-relaxed ${textBody} font-medium`}>
-              {lesson!.reading?.text || lesson!.listening?.transcript}
-            </div>
-            {showTranslation && (lesson!.reading?.translation || lesson!.listening?.translation) && (
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4">
-                <p className={`text-xs ${textMuted} italic p-4 rounded-xl border ${innerBg}`}>
-                  {lesson!.reading?.translation || lesson!.listening?.translation}
-                </p>
-              </motion.div>
+            {dialText && (
+              <>
+                <div className="flex gap-3 mb-4">
+                  <button onClick={() => speak(dialText)}
+                    className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
+                    <Volume2 className="w-4 h-4" /> Listen to Dialogue
+                  </button>
+                  {dialTrans && (
+                    <button onClick={() => setShowTranslation(!showTranslation)}
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
+                      {showTranslation ? "Hide" : "Show"} English Translation
+                    </button>
+                  )}
+                </div>
+                <div className={`${innerBg} rounded-xl p-4 border whitespace-pre-line text-sm leading-relaxed ${textBody} font-medium`}>
+                  {dialText}
+                </div>
+                {showTranslation && dialTrans && (
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4">
+                    <p className={`text-xs ${textMuted} italic p-4 rounded-xl border ${innerBg}`}>
+                      {dialTrans}
+                    </p>
+                  </motion.div>
+                )}
+              </>
             )}
             {dialogueQuestions.length > 0 && (
               <div className="mt-6 border-t dark:border-[#1e2a4a] border-gray-200 pt-6">
@@ -423,9 +460,11 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
 
       case 'delf':
         const delfQuestions = lesson!.practiceExercises?.questions?.filter(q => q.id.includes('delf')) || [];
+        const l7DialText = getDialogueText(lesson7);
+        const l7DialTrans = getDialogueTranslation(lesson7);
         return (
           <div className="space-y-6">
-            {lesson7 && (lesson7.reading?.text || lesson7.listening?.transcript) && (
+            {lesson7 && l7DialText && (
               <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5 border border-purple-500/20 bg-purple-500/5`}>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
@@ -439,22 +478,24 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
                   </span>
                 </div>
                 <div className="flex gap-2.5 mb-3">
-                  <button onClick={() => speak(lesson7.reading?.text || lesson7.listening?.transcript || "")}
+                  <button onClick={() => speak(l7DialText)}
                     className="flex items-center gap-1.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg hover:opacity-90 transition-all shadow-sm">
                     <Volume2 className="w-3.5 h-3.5" /> Listen to Dialogue
                   </button>
-                  <button onClick={() => setShowTranslation(!showTranslation)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
-                    {showTranslation ? "Hide" : "Show"} English Translation
-                  </button>
+                  {l7DialTrans && (
+                    <button onClick={() => setShowTranslation(!showTranslation)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
+                      {showTranslation ? "Hide" : "Show"} English Translation
+                    </button>
+                  )}
                 </div>
                 <div className={`rounded-xl p-3 border text-xs max-h-40 overflow-y-auto whitespace-pre-line ${dark ? "bg-black/40 border-[#1e2a4a] text-gray-300" : "bg-white border-gray-200 text-gray-700"}`}>
-                  {lesson7.reading?.text || lesson7.listening?.transcript}
+                  {l7DialText}
                 </div>
-                {showTranslation && (lesson7.reading?.translation || lesson7.listening?.translation) && (
+                {showTranslation && l7DialTrans && (
                   <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="mt-3">
                     <p className={`text-[11px] ${textMuted} italic p-3 rounded-lg border ${innerBg}`}>
-                      {lesson7.reading?.translation || lesson7.listening?.translation}
+                      {l7DialTrans}
                     </p>
                   </motion.div>
                 )}

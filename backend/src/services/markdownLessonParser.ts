@@ -255,12 +255,13 @@ function parseListening(text: string): { title: string; transcript: string; tran
 
   // Detect activity type from header
   const activityHeader = tp[1] || '';
-  let activityType: 'true_false' | 'short_answer' | 'multiple_choice' | 'fill_blank' = 'true_false';
+  let activityType: 'true_false' | 'short_answer' | 'multiple_choice' | 'fill_blank' = 'short_answer';
   if (/answer the questions/i.test(activityHeader)) activityType = 'short_answer';
   else if (/multiple choice/i.test(activityHeader)) activityType = 'multiple_choice';
   else if (/fill in the blank/i.test(activityHeader)) activityType = 'fill_blank';
   else if (/true or false/i.test(activityHeader)) activityType = 'true_false';
   else if (/short answer/i.test(activityHeader)) activityType = 'short_answer';
+  else if (/comprehension questions/i.test(activityHeader)) activityType = 'short_answer';
 
   // Split questions and answers
   const ap = activityHeader.split(/\*\*Answer Key/i);
