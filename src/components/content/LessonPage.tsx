@@ -211,6 +211,8 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
   });
   const progress = progressData;
 
+  const sections = lesson ? buildSections(lesson) : [];
+
   useEffect(() => {
     if (lessonId && !progress) {
       apiFetch(`/progress/${lessonId}/update`, {
@@ -277,7 +279,6 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
     refetchProgress();
   }, [lessonId, blockResults, startTime, refetchProgress, sections]);
 
-  const sections = lesson ? buildSections(lesson) : [];
   const currentSection = sections[currentSectionIdx] || sections[0];
   const sectionProgress = sections.length > 0 ? Math.round(((currentSectionIdx + 1) / sections.length) * 100) : 0;
   const isLast = currentSectionIdx >= sections.length - 1;
