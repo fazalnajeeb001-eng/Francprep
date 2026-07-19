@@ -187,6 +187,7 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
   const [currentSectionIdx, setCurrentSectionIdx] = useState(0);
   const [completedSections, setCompletedSections] = useState<Set<number>>(new Set());
   const [showTranslation, setShowTranslation] = useState(false);
+  const [showTranscript, setShowTranscript] = useState(false);
   const [blockResults, setBlockResults] = useState<Record<string, BlockResult>>({});
   const [lessonCompleted, setLessonCompleted] = useState(false);
   const [lessonScore, setLessonScore] = useState<number | null>(null);
@@ -482,6 +483,10 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
                     className="flex items-center gap-1.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg hover:opacity-90 transition-all shadow-sm">
                     <Volume2 className="w-3.5 h-3.5" /> Listen to Dialogue
                   </button>
+                  <button onClick={() => setShowTranscript(!showTranscript)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
+                    {showTranscript ? "Hide" : "Show"} French Transcript
+                  </button>
                   {l7DialTrans && (
                     <button onClick={() => setShowTranslation(!showTranslation)}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
@@ -489,9 +494,11 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
                     </button>
                   )}
                 </div>
-                <div className={`rounded-xl p-3 border text-xs max-h-40 overflow-y-auto whitespace-pre-line ${dark ? "bg-black/40 border-[#1e2a4a] text-gray-300" : "bg-white border-gray-200 text-gray-700"}`}>
-                  {l7DialText}
-                </div>
+                {showTranscript && (
+                  <div className={`rounded-xl p-3 border text-xs max-h-40 overflow-y-auto whitespace-pre-line ${dark ? "bg-black/40 border-[#1e2a4a] text-gray-300" : "bg-white border-gray-200 text-gray-700"}`}>
+                    {l7DialText}
+                  </div>
+                )}
                 {showTranslation && l7DialTrans && (
                   <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="mt-3">
                     <p className={`text-[11px] ${textMuted} italic p-3 rounded-lg border ${innerBg}`}>
