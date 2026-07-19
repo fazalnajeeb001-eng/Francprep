@@ -5,7 +5,7 @@ import Ajv from 'ajv';
 
 const mdPath = path.resolve(__dirname, '../../../full a1 content including ledger and course skeleton/FrancPrep_A1_Chapter1_Greetings_First_Contact.md');
 const schemaPath = path.resolve(__dirname, '../../../STructure for parsing/lesson.schema.json');
-const lessons = parseChapterFile(mdPath, 'A1', 1);
+const lessons: any[] = parseChapterFile(mdPath, 'A1', 1);
 
 console.log(`\nParsed ${lessons.length} lessons from Chapter 1\n`);
 
@@ -14,7 +14,7 @@ for (const lesson of lessons) {
   console.log(`  Anchor Skill: ${lesson.anchorSkill}`);
   console.log(`  Warm-Up: ${lesson.warmUp.content.slice(0, 60)}...`);
   console.log(`  Explanation: ${lesson.explanation.content.slice(0, 60)}...`);
-  console.log(`  Vocabulary: ${lesson.vocabItems.length} items`);
+  console.log(`  Vocabulary: ${lesson.vocabulary.length} items`);
   console.log(`  Grammar drills: ${lesson.grammarDrills.questions.length} questions`);
   for (const q of lesson.grammarDrills.questions) {
     console.log(`    [${q.id}] ${q.prompt.slice(0, 60)} → answer: "${q.correctAnswer}"`);
@@ -45,12 +45,7 @@ const validate = ajv.compile(schema);
 let passCount = 0;
 let failCount = 0;
 for (const lesson of lessons) {
-  const schemaCompatible: any = {
-    ...lesson,
-    vocabulary: lesson.vocabItems,
-  };
-  delete schemaCompatible.vocabItems;
-  const valid = validate(schemaCompatible);
+  const valid = validate(lesson as any);
   if (valid) {
     passCount++;
     console.log(`  ✓ ${lesson.lessonId}: valid`);

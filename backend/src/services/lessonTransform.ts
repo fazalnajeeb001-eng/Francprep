@@ -29,7 +29,7 @@ function serializeVocabulary(doc: LessonDoc): string {
   // UI's parseVocabulary splits each "|"-containing line by "|" into
   // [french, english, pronunciation, example]. No header/separator rows
   // (a header row would be rendered as a bogus vocabulary card).
-  return doc.vocabItems
+  return doc.vocabulary
     .map((v: { french: string; english: string; pronunciation?: string; example?: string }) =>
       `| ${v.french} | ${v.english} | ${v.pronunciation || '—'} | ${v.example || '—'} |`)
     .join('\n');

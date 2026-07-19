@@ -76,24 +76,57 @@ const lessonSchema = {
 
 const validateLesson = ajv.compile(lessonSchema);
 
-function validateParsedLesson(lesson: any): { errors: string[]; warnings: string[] } {
+async function validateParsedLesson(lesson: any): Promise<{ errors: string[]; warnings: string[] }> {
   const errors: string[] = [];
   const warnings: string[] = [];
 
-  const valid = validateLesson(lesson);
+  const validateData = { ...lesson };
+  if (validateData.vocabItems && !validateData.vocabulary) {
+    validateData.vocabulary = validateData.vocabItems;
+    delete validateData.vocabItems;
+  }
+
+  const valid = validateLesson(validateData);
   if (!valid && validateLesson.errors) {
     for (const err of validateLesson.errors) {
       errors.push(`${err.instancePath || '/'} ${err.message}`);
     }
   }
 
-  // Warnings for non-critical issues
-  if (!lesson.objectives || lesson.objectives.length === 0) warnings.push('No objectives defined');
-  if (!lesson.grammarFocus) warnings.push('No grammar focus defined');
-  if (!lesson.vocabularyFocus) warnings.push('No vocabulary focus defined');
-  if (lesson.durationMinutes < 15) warnings.push('Duration seems short (< 15 min)');
-  if (lesson.vocabItems && lesson.vocabItems.length < 3) warnings.push('Few vocabulary items (< 3)');
-  if (lesson.practiceExercises?.questions?.length < 2) warnings.push('Few practice exercises (< 2)');
+  // 1. Rendering Checks (11 sections)
+  if (!lesson.warmUp?.content || lesson.warmUp.content === '—' || lesson.warmUp.content.trim() === '') warnings.push('Warm-Up section has empty/placeholder content');
+  if (!lesson.explanation?.content || lesson.explanation.content === '—' || lesson.explanation.content.trim() === '') warnings.push('Lesson Explanation section has empty/placeholder content');
+  if (!lesson.vocabulary || lesson.vocabulary.length === 0 || lesson.vocabulary[0]?.french === '—') warnings.push('Vocabulary section has empty/placeholder items');
+  if (!lesson.grammar?.explanation || lesson.grammar.explanation.startsWith('No new grammar') || lesson.grammar.explanation.trim() === '') warnings.push('Grammar section explanation has empty/placeholder content');
+  if (!lesson.grammarDrills?.questions || lesson.grammarDrills.questions.length === 0 || lesson.grammarDrills.questions[0]?.id?.includes('gd-dummy')) warnings.push('Grammar Drills section has empty/placeholder questions');
+  if (!lesson.reading?.text || lesson.reading.text === '—' || lesson.reading.text.trim() === '') warnings.push('Reading section text is empty/placeholder');
+  if (!lesson.reading?.questions || lesson.reading.questions.length === 0 || lesson.reading.questions[0]?.id?.includes('r-dummy')) warnings.push('Reading section comprehension questions are empty/placeholder');
+  if (!lesson.listening?.transcript || lesson.listening.transcript === '—' || lesson.listening.transcript.trim() === '') warnings.push('Listening section transcript is empty/placeholder');
+  if (!lesson.listening?.questions || lesson.listening.questions.length === 0 || lesson.listening.questions[0]?.id?.includes('l-dummy')) warnings.push('Listening section questions are empty/placeholder');
+  if (!lesson.speaking?.guidedActivity || lesson.speaking.guidedActivity.startsWith('Practice pronunciation') || lesson.speaking.guidedActivity.trim() === '') warnings.push('Speaking section guided activity is empty/placeholder');
+  if (!lesson.writing?.task || lesson.writing.task.startsWith('Write a short summary') || lesson.writing.task.trim() === '') warnings.push('Writing section task instructions are empty/placeholder');
+  if (!lesson.practiceExercises?.questions || lesson.practiceExercises.questions.length === 0 || lesson.practiceExercises.questions[0]?.id?.includes('pe-dummy')) warnings.push('Practice Exercises section has empty/placeholder questions');
+  if (!lesson.miniReview?.content || lesson.miniReview.content === '—' || lesson.miniReview.content.trim() === '') warnings.push('Mini Review section has empty/placeholder content');
+  if (!lesson.selfAssessment || lesson.selfAssessment.length === 0 || lesson.selfAssessment[0]?.includes('completed this lesson')) warnings.push('Self Assessment section has empty/placeholder content');
+
+  // 2. Ledger Consistency Checks (duplicate check in other published lessons)
+  try {
+    const vocabList = lesson.vocabulary || lesson.vocabItems || [];
+    const existingLessons = await Lesson.find({ lessonId: { $ne: lesson.lessonId } }, 'lessonId canonical').lean() as any[];
+    
+    for (const item of vocabList) {
+      const cleanWord = (item.french || '').trim().toLowerCase();
+      if (!cleanWord || cleanWord === '—' || cleanWord === 'n/a') continue;
+      for (const other of existingLessons) {
+        const otherVocab = other.canonical?.vocabulary || other.canonical?.vocabItems || [];
+        if (otherVocab.some((v: any) => (v.french || '').trim().toLowerCase() === cleanWord)) {
+          warnings.push(`Ledger Warning: Vocabulary word "${item.french}" duplicates a word in published lesson ${other.lessonId}`);
+        }
+      }
+    }
+  } catch (err: any) {
+    console.error('Ledger check error:', err);
+  }
 
   return { errors, warnings };
 }
@@ -128,7 +161,7 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
     const results = [];
 
     for (const parsedLesson of lessonsToProcess) {
-      const { errors, warnings } = validateParsedLesson(parsedLesson);
+      const { errors, warnings } = await validateParsedLesson(parsedLesson);
 
       // Check if a draft already exists for this lesson
       const existingDraft = await Draft.findOne({
@@ -249,7 +282,7 @@ router.put('/content-pipeline/drafts/:id', async (req: AuthRequest, res: Respons
     }
 
     if (parsedData) {
-      const { errors, warnings } = validateParsedLesson(parsedData);
+      const { errors, warnings } = await validateParsedLesson(parsedData);
       draft.parsedData = parsedData;
       draft.validationErrors = errors;
       draft.validationWarnings = warnings;
@@ -281,7 +314,7 @@ router.post('/content-pipeline/drafts/:id/validate', async (req: AuthRequest, re
       return;
     }
 
-    const { errors, warnings } = validateParsedLesson(draft.parsedData);
+    const { errors, warnings } = await validateParsedLesson(draft.parsedData);
     draft.validationErrors = errors;
     draft.validationWarnings = warnings;
     draft.status = errors.length === 0 ? 'validated' : 'draft';
@@ -326,7 +359,7 @@ router.post('/content-pipeline/drafts/:id/publish', async (req: AuthRequest, res
     }
 
     // Validate before publishing
-    const { errors } = validateParsedLesson(draft.parsedData);
+    const { errors } = await validateParsedLesson(draft.parsedData);
     if (errors.length > 0) {
       res.status(400).json({
         success: false,
@@ -363,10 +396,27 @@ router.post('/content-pipeline/drafts/:id/publish', async (req: AuthRequest, res
       });
     }
 
+    // Supersede previously published drafts
+    const previouslyPublishedDrafts = await Draft.find({
+      lessonId: canonical.lessonId,
+      status: 'published',
+      _id: { $ne: draft._id }
+    });
+
+    const previousIds: any[] = [];
+    for (const oldDraft of previouslyPublishedDrafts) {
+      oldDraft.status = 'superseded';
+      await oldDraft.save();
+      previousIds.push(oldDraft._id);
+    }
+
     // Update draft status
     draft.status = 'published';
     draft.publishedAt = new Date();
     draft.publishedBy = req.user?.email || 'admin';
+    if (previousIds.length > 0) {
+      draft.previousVersions = [...(draft.previousVersions || []), ...previousIds];
+    }
     await draft.save();
 
     res.json({
@@ -425,7 +475,7 @@ router.post('/content-pipeline/bulk-import', async (req: AuthRequest, res: Respo
       const parsedLessons = parseLessonFromMarkdown(markdown, level, parseInt(chapterNum));
 
       for (const parsedLesson of parsedLessons) {
-        const { errors, warnings } = validateParsedLesson(parsedLesson);
+        const { errors, warnings } = await validateParsedLesson(parsedLesson);
 
         const existingDraft = await Draft.findOne({
           lessonId: parsedLesson.lessonId,

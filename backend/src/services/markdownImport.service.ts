@@ -32,7 +32,7 @@ export function parsedLessonToDocument(lesson: ParsedLesson): Record<string, any
     vocabularyFocus: lesson.vocabularyFocus,
     warmUp: lesson.warmUp,
     explanation: lesson.explanation,
-    vocabItems: lesson.vocabItems,
+    vocabItems: lesson.vocabulary,
     grammar: lesson.grammar,
     grammarDrills: lesson.grammarDrills,
     reading: lesson.reading,

@@ -19,4 +19,9 @@ router.get('/:id/exercises', optionalAuth, (req, res, next) =>
   lessonController.getExercises(req, res, next)
 );
 
+// POST /api/lessons/:id/submit-block - Submit a block of answers for grading
+router.post('/:id/submit-block', optionalAuth, (req, res, next) =>
+  lessonController.submitBlock(req, res, next)
+);
+
 export default router;

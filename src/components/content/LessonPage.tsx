@@ -85,6 +85,7 @@ interface BlockResult {
 // ─── Adapter: LessonQuestion → QuizComponent-compatible shape ────────────────
 
 function adaptQuestions(questions: LessonQuestion[]) {
+  if (!questions) return [];
   return questions.map(q => ({
     id: q.id,
     text: q.prompt,
@@ -126,7 +127,7 @@ function buildSections(_lesson: LessonData): SectionDef[] {
 
 // ─── Main Component ────────────────────────────────────────────────────────
 
-export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: () => void }) {
+export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; draftId?: string; onBack?: () => void }) {
   const { dark } = useTheme();
   const [currentSectionIdx, setCurrentSectionIdx] = useState(0);
   const [completedSections, setCompletedSections] = useState<Set<number>>(new Set());
@@ -146,20 +147,41 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
   const btnHover = dark ? "hover:bg-white/5" : "hover:bg-gray-100";
 
   const { data: lesson, isError: lessonError } = useQuery({
-    queryKey: ["lesson", lessonId],
-    queryFn: () => apiFetch(`/lessons/${lessonId}`).then((res) => {
-      if (!res.ok) throw new Error("Failed to load lesson");
-      return res.json();
-    }).then((json) => json.data as LessonData),
+    queryKey: draftId ? ["draft", draftId] : ["lesson", lessonId],
+    queryFn: () => {
+      const url = draftId ? `/admin/content-pipeline/drafts/${draftId}` : `/lessons/${lessonId}`;
+      return apiFetch(url).then((res) => {
+        if (!res.ok) throw new Error("Failed to load content");
+        return res.json();
+      }).then((json) => {
+        const data = json.data;
+        if (draftId && data?.parsedData) {
+          const canonical = { ...data.parsedData };
+          canonical._id = data._id;
+          if (canonical.vocabulary && !canonical.vocabItems) {
+            canonical.vocabItems = canonical.vocabulary;
+            delete canonical.vocabulary;
+          }
+          if (canonical.anchorSkill && !canonical.skill) {
+            canonical.skill = canonical.anchorSkill;
+          }
+          return canonical;
+        }
+        return data as LessonData;
+      });
+    }
   });
 
   const { data: progressData, refetch: refetchProgress } = useQuery({
-    queryKey: ["lesson-progress", lessonId],
-    queryFn: () => apiFetch(`/progress/${lessonId}`).then((res) => res.json()).then((json) => {
-      const prog = json?.data?.progress || json?.data;
-      return prog as ProgressData;
-    }),
-    enabled: !!lessonId,
+    queryKey: ["lesson-progress", lessonId || draftId],
+    queryFn: () => {
+      if (draftId) return { status: 'in_progress', exercisesCompleted: 0, totalExercises: 0, timeSpent: 0 };
+      return apiFetch(`/progress/${lessonId}`).then((res) => res.json()).then((json) => {
+        const prog = json?.data?.progress || json?.data;
+        return prog as ProgressData;
+      });
+    },
+    enabled: !!lessonId || !!draftId,
   });
   const progress = progressData;
 
@@ -195,6 +217,22 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
       [blockKey]: { score, total, completed: true },
     }));
   }, []);
+
+  const handleSubmitBlock = useCallback(async (blockType: string, answers: Record<string, string | string[]>) => {
+    try {
+      const res = await apiFetch(`/lessons/${lesson!._id}/submit-block`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ blockType, answers }),
+      });
+      if (!res.ok) throw new Error("Failed to submit block");
+      const json = await res.json();
+      return json.data;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  }, [lesson]);
 
   const completeLesson = useCallback(async () => {
     const timeSpent = Math.round((Date.now() - startTime) / 60000);
@@ -341,9 +379,10 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
             </div>
             <p className={`text-sm ${textSec} mb-4`}>Apply what you just learned. Complete each question below.</p>
             <QuizComponent
-              questions={adaptQuestions(lesson!.grammarDrills.questions)}
+              questions={adaptQuestions(lesson!.grammarDrills?.questions)}
               type="grammarDrill"
               onComplete={(score, total) => handleBlockComplete('grammarDrill', score, total)}
+              onSubmit={(answers) => handleSubmitBlock('grammarDrill', answers)}
             />
           </div>
         );
@@ -357,9 +396,10 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
             {lesson!.reading.questions?.length > 0 && (
               <div className="mt-6">
                 <QuizComponent
-                  questions={adaptQuestions(lesson!.reading.questions)}
+                  questions={adaptQuestions(lesson!.reading?.questions || [])}
                   type="reading"
                   onComplete={(score, total) => handleBlockComplete('reading', score, total)}
+                  onSubmit={(answers) => handleSubmitBlock('reading', answers)}
                 />
               </div>
             )}
@@ -375,9 +415,10 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
             {lesson!.listening.questions?.length > 0 && (
               <div className="mt-6">
                 <QuizComponent
-                  questions={adaptQuestions(lesson!.listening.questions)}
+                  questions={adaptQuestions(lesson!.listening?.questions || [])}
                   type="listening"
                   onComplete={(score, total) => handleBlockComplete('listening', score, total)}
+                  onSubmit={(answers) => handleSubmitBlock('listening', answers)}
                 />
               </div>
             )}
@@ -414,9 +455,10 @@ export function LessonPage({ lessonId, onBack }: { lessonId: string; onBack?: ()
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
             <div className="flex items-center gap-3 mb-4"><Repeat className="w-5 h-5 text-purple-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Practice Exercises</h3></div>
             <QuizComponent
-              questions={adaptQuestions(lesson!.practiceExercises.questions)}
+              questions={adaptQuestions(lesson!.practiceExercises?.questions)}
               type="practice"
               onComplete={(score, total) => handleBlockComplete('practice', score, total)}
+              onSubmit={(answers) => handleSubmitBlock('practice', answers)}
             />
           </div>
         );

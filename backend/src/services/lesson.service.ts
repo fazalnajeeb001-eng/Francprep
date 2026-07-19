@@ -120,7 +120,12 @@ export class LessonService {
   async createLesson(data: z.infer<typeof createLessonSchema>) {
     // Validate canonical lesson data against lesson.schema.json if present
     if (data.warmUp) {
-      const { valid, errors } = validateLesson(data);
+      const validateData = {
+        ...data,
+        vocabulary: data.vocabItems,
+      };
+      delete (validateData as any).vocabItems;
+      const { valid, errors } = validateLesson(validateData);
       if (!valid) {
         throw { statusCode: 400, message: `Lesson validation failed: ${errors.join('; ')}` };
       }
@@ -149,7 +154,12 @@ export class LessonService {
 
     // Validate canonical lesson data against lesson.schema.json if present
     if (data.warmUp) {
-      const { valid, errors } = validateLesson(data);
+      const validateData = {
+        ...data,
+        vocabulary: data.vocabItems,
+      };
+      delete (validateData as any).vocabItems;
+      const { valid, errors } = validateLesson(validateData);
       if (!valid) {
         throw { statusCode: 400, message: `Lesson validation failed: ${errors.join('; ')}` };
       }
@@ -234,6 +244,76 @@ export class LessonService {
         total,
         totalPages: Math.ceil(total / limit),
       },
+    };
+  }
+
+  /**
+   * Securely grade a section of questions on the backend
+   */
+  async submitBlock(id: string, blockType: string, answers: Record<string, any>) {
+    const lesson = await Lesson.findById(id);
+    if (!lesson) {
+      throw { statusCode: 404, message: 'Lesson not found' };
+    }
+
+    const canonical = lesson.get('canonical');
+    if (!canonical) {
+      throw { statusCode: 400, message: 'Lesson has no canonical content to grade' };
+    }
+
+    // Identify which questions list we are grading
+    let questions: any[] = [];
+    if (blockType === 'grammarDrill') {
+      questions = canonical.grammarDrills?.questions || [];
+    } else if (blockType === 'reading') {
+      questions = canonical.reading?.questions || [];
+    } else if (blockType === 'listening') {
+      questions = canonical.listening?.questions || [];
+    } else if (blockType === 'practice') {
+      questions = canonical.practiceExercises?.questions || [];
+    } else {
+      throw { statusCode: 400, message: `Invalid block type: ${blockType}` };
+    }
+
+    const results = questions.map((q: any) => {
+      const qId = q.id;
+      const userAns = answers[qId];
+      const correct = q.correctAnswer;
+      
+      let isCorrect = false;
+      if (q.type === 'short_answer' || q.type === 'translation') {
+        // Self-graded, always marked true for validation progress
+        isCorrect = true;
+      } else if (correct !== undefined && userAns !== undefined) {
+        const normalize = (s: string) => String(s).trim().toLowerCase();
+        if (Array.isArray(correct)) {
+          isCorrect = correct.some(c => normalize(c as string) === normalize(userAns as string));
+        } else {
+          isCorrect = normalize(correct as string) === normalize(userAns as string);
+        }
+      }
+
+      return {
+        questionId: qId,
+        correct: isCorrect,
+        points: isCorrect ? (q.points || 1) : 0,
+        maxPoints: q.points || 1,
+        explanation: q.explanation || `The correct answer is: ${Array.isArray(correct) ? correct.join(' or ') : correct}`,
+        text: q.prompt,
+      };
+    });
+
+    const totalScore = results.reduce((sum, r) => sum + r.points, 0);
+    const maxPoints = results.reduce((sum, r) => sum + r.maxPoints, 0);
+    const percentage = maxPoints > 0 ? (totalScore / maxPoints) * 100 : 0;
+    const passed = percentage >= 60;
+
+    return {
+      results,
+      totalScore,
+      maxPoints,
+      percentage,
+      passed
     };
   }
 }

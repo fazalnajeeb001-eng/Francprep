@@ -9,7 +9,7 @@ export interface IDraftDocument extends Document {
   parsedData?: any;
   validationErrors?: string[];
   validationWarnings?: string[];
-  status: 'draft' | 'review' | 'validated' | 'imported' | 'published' | 'rejected';
+  status: 'draft' | 'review' | 'validated' | 'imported' | 'published' | 'rejected' | 'superseded';
   origin: 'structural' | 'ai_polish' | 'paste_import' | 'ai_generator';
   version: number;
   previousVersions: mongoose.Types.ObjectId[];
@@ -33,7 +33,7 @@ const draftSchema = new Schema<IDraftDocument>(
     validationWarnings: { type: [String], default: [] },
     status: {
       type: String,
-      enum: ['draft', 'review', 'validated', 'imported', 'published', 'rejected'],
+      enum: ['draft', 'review', 'validated', 'imported', 'published', 'rejected', 'superseded'],
       default: 'draft',
     },
     origin: {

@@ -4,7 +4,7 @@ import { useAuth } from "~/lib/AuthContext";
 import { motion } from "framer-motion";
 import {
   LayoutDashboard, Users, BookOpen, FileText, Crown, Shield,
-  ChevronLeft, Menu, GraduationCap, Settings, Wand2, Megaphone, CreditCard, BarChart3, Sliders
+  ChevronLeft, Menu, GraduationCap, Settings, Wand2, Megaphone, CreditCard, BarChart3, Sliders, Layers
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
@@ -21,6 +21,7 @@ const navItems = [
   { label: "Syllabus", icon: BookOpen, href: "/admin/syllabi" },
   { label: "Lessons", icon: FileText, href: "/admin/lessons" },
   { label: "Exercises", icon: GraduationCap, href: "/admin/exercises" },
+  { label: "Content Pipeline", icon: Layers, href: "/admin/pipeline" },
   { label: "Content Generator", icon: Wand2, href: "/admin/content" },
   { label: "Announcements", icon: Megaphone, href: "/admin/announcements" },
   { label: "Subscriptions", icon: CreditCard, href: "/admin/subscriptions" },

@@ -117,6 +117,26 @@ export class LessonController {
       next(error);
     }
   }
+
+  /**
+   * POST /api/lessons/:id/submit-block
+   */
+  async submitBlock(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const { blockType, answers } = req.body;
+      if (!blockType || !answers) {
+        res.status(400).json({ success: false, error: 'Missing required fields: blockType, answers' });
+        return;
+      }
+      const gradingResult = await lessonService.submitBlock(req.params.id, blockType, answers);
+      res.status(200).json({
+        success: true,
+        data: gradingResult,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const lessonController = new LessonController();

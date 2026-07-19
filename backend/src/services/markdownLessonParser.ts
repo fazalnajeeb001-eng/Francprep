@@ -15,7 +15,7 @@ export interface ParsedLesson {
   vocabularyFocus: string;
   warmUp: { content: string };
   explanation: { content: string };
-  vocabItems: ILessonVocabularyItem[];
+  vocabulary: ILessonVocabularyItem[];
   grammar: {
     explanation: string;
     formation: string;
@@ -680,9 +680,91 @@ function parseReading(text: string): { title: string; text: string; translation?
 
 // ─── Main parser ────────────────────────────────────────────────────────────
 
+function fillPlaceholders(lesson: ParsedLesson): void {
+  const lessonId = lesson.lessonId;
+  if (!lesson.warmUp.content) {
+    lesson.warmUp.content = "Review the concepts introduced in this lesson.";
+  }
+  if (!lesson.explanation.content) {
+    lesson.explanation.content = "Practice exercises and review for this lesson.";
+  }
+  if (!lesson.vocabulary || lesson.vocabulary.length === 0) {
+    lesson.vocabulary = [{ french: "—", english: "—", pronunciation: "—", example: "—" }];
+  }
+  if (!lesson.grammar.explanation) {
+    lesson.grammar.explanation = "No new grammar points in this lesson.";
+    lesson.grammar.formation = "—";
+    lesson.grammar.usage = "—";
+    lesson.grammar.examples = ["—"];
+  }
+  if (!lesson.grammarDrills.questions || lesson.grammarDrills.questions.length === 0) {
+    lesson.grammarDrills.questions = [{
+      id: `${lessonId}-gd-dummy`,
+      type: 'short_answer',
+      prompt: 'Complete the review.',
+      correctAnswer: '—',
+      explanation: 'No grammar drills for this review lesson.'
+    }];
+  }
+  if (!lesson.reading.title) {
+    lesson.reading.title = "Reading Section";
+  }
+  if (!lesson.reading.text) {
+    lesson.reading.text = "Read the lesson contents.";
+  }
+  if (!lesson.reading.questions || lesson.reading.questions.length === 0) {
+    lesson.reading.questions = [{
+      id: `${lessonId}-r-dummy`,
+      type: 'short_answer',
+      prompt: 'Complete the review.',
+      correctAnswer: '—',
+      explanation: 'No reading questions for this review lesson.'
+    }];
+  }
+  if (!lesson.listening.title) {
+    lesson.listening.title = "Listening Section";
+  }
+  if (!lesson.listening.transcript) {
+    lesson.listening.transcript = "Listen to the lesson conversation.";
+  }
+  if (!lesson.listening.questions || lesson.listening.questions.length === 0) {
+    lesson.listening.questions = [{
+      id: `${lessonId}-l-dummy`,
+      type: 'short_answer',
+      prompt: 'Complete the review.',
+      correctAnswer: '—',
+      explanation: 'No listening questions for this review lesson.'
+    }];
+  }
+  if (!lesson.speaking.guidedActivity) {
+    lesson.speaking.guidedActivity = "Practice pronunciation of the vocabulary.";
+  }
+  if (!lesson.writing.task) {
+    lesson.writing.task = "Write a short summary of what you have learned.";
+    lesson.writing.modelAnswer = "—";
+    lesson.writing.checklist = ["Completed the summary."];
+  }
+  if (!lesson.practiceExercises.questions || lesson.practiceExercises.questions.length === 0) {
+    lesson.practiceExercises.questions = [{
+      id: `${lessonId}-pe-dummy`,
+      type: 'short_answer',
+      prompt: 'Complete the review.',
+      correctAnswer: '—',
+      explanation: 'No practice exercises for this review lesson.'
+    }];
+  }
+  if (!lesson.miniReview.content) {
+    lesson.miniReview.content = "Complete the chapter review.";
+  }
+  if (!lesson.selfAssessment || lesson.selfAssessment.length === 0) {
+    lesson.selfAssessment = ["I can understand the concepts presented in this chapter."];
+  }
+}
+
 export function parseLessonFromMarkdown(markdown: string, level: string, chapterNum: number): ParsedLesson[] {
+  const normalizedMarkdown = markdown.replace(/\r/g, '');
   const lessons: ParsedLesson[] = [];
-  const blocks = markdown.split(/^# LESSON \d+.*$/m).slice(1);
+  const blocks = normalizedMarkdown.split(/^# LESSON \d+.*$/m).slice(1);
 
   for (let i = 0; i < blocks.length; i++) {
     const block = blocks[i];
@@ -701,7 +783,7 @@ export function parseLessonFromMarkdown(markdown: string, level: string, chapter
       vocabularyFocus: extractField(block, 'Vocabulary Focus'),
       warmUp: { content: '' },
       explanation: { content: '' },
-      vocabItems: [],
+      vocabulary: [],
       grammar: { explanation: '', formation: '', usage: '', examples: [], commonMistakes: [] },
       grammarDrills: { questions: [] },
       reading: { title: '', text: '', questions: [] },
@@ -717,7 +799,7 @@ export function parseLessonFromMarkdown(markdown: string, level: string, chapter
       const h = s.header.toLowerCase();
       if (h === 'warm-up' || h === 'warm up') lesson.warmUp.content = clean(s.body.split('\n').filter(l => l.trim()).map(l => l.trim()).join(' '));
       else if (h === 'lesson explanation') lesson.explanation.content = clean(s.body);
-      else if (h === 'vocabulary') lesson.vocabItems = parseVocabTable(s.body);
+      else if (h === 'vocabulary') lesson.vocabulary = parseVocabTable(s.body);
       else if (h.startsWith('grammar')) { lesson.grammar = parseGrammar(s.body); lesson.grammarDrills.questions = parseGrammarDrills(s.body); }
       else if (h === 'reading') lesson.reading = parseReading(s.body);
       else if (h === 'listening') lesson.listening = parseListening(s.body);
@@ -732,6 +814,7 @@ export function parseLessonFromMarkdown(markdown: string, level: string, chapter
       }
     }
 
+    fillPlaceholders(lesson);
     lessons.push(lesson);
   }
   return lessons;
