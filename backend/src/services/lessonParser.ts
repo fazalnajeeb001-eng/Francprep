@@ -197,22 +197,11 @@ function parseGrammar(text: string): GrammarSection {
 }
 
 function parseGrammarSummary(text: string): GrammarSection {
-  const explanation = clean(text.split('\n').filter(l => l.trim() && !l.includes('|---') && !l.includes('| Pronoun')).slice(0, 5).join(' '));
-  const examples: string[] = [];
-  const lines = text.split('\n');
-  for (const l of lines) {
-    const t = l.trim();
-    if (t && !t.includes('|') && !t.startsWith('**') && !t.startsWith('#') && t.length > 10 &&
-        !t.match(/^(Question|Adjective|Tu\/vous|The|A basic)/i)) {
-      examples.push(stripMd(t));
-    }
-  }
-
   return {
-    explanation: explanation || 'Consolidated grammar reference from this chapter.',
+    explanation: text.trim() || 'Consolidated grammar reference from this chapter.',
     formation: 'See grammar summary tables above.',
     usage: 'Review all grammar points covered in this chapter.',
-    examples: examples.length > 0 ? examples.slice(0, 3) : ['Refer to the grammar summary.'],
+    examples: ['Refer to the grammar summary.'],
     commonMistakes: [],
   };
 }
