@@ -670,7 +670,17 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
       case 'fill_blank':
       case 'fill_in_blank': return renderFillBlank(q, qId);
       case 'matching': return renderMatching(q, qId);
-      case 'ordering': return renderOrdering(q, qId);
+      case 'ordering': return (
+        <OrderingQuestion
+          q={q}
+          qId={qId}
+          dark={dark}
+          submitted={submitted}
+          setAnswer={setAnswer}
+          userAnswer={userAnswer}
+          resultForQ={resultForQ}
+        />
+      );
       case 'short_answer': return renderShortAnswer(q, qId);
       case 'listening': return renderListening(q, qId);
       case 'speaking_prompt':

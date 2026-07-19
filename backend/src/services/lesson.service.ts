@@ -293,22 +293,28 @@ export class LessonService {
       let isCorrect = false;
       let aiFeedback = '';
       
-      if ((q.type === 'short_answer' || q.type === 'translation') && userAns) {
-        const correctStr = Array.isArray(correct) ? correct.join(' or ') : String(correct || '');
-        const aiResult = await checkAnswerWithAI(q.prompt || q.text || q.question || '', String(userAns), correctStr);
-        if (aiResult) {
-          isCorrect = aiResult.correct;
-          aiFeedback = aiResult.explanation;
-        } else {
-          // Fallback if AI fails: always true for short answer/translation progress
-          isCorrect = true;
-        }
-      } else if (correct !== undefined && userAns !== undefined) {
+      const isTextQuestion = q.type === 'short_answer' || q.type === 'translation' || q.type === 'fill_blank' || q.type === 'fill_in_blank';
+
+      // 1. First, check if there is an exact string match (case-insensitive, trimmed)
+      if (correct !== undefined && userAns !== undefined) {
         const normalize = (s: string) => String(s).trim().toLowerCase();
         if (Array.isArray(correct)) {
           isCorrect = correct.some(c => normalize(c as string) === normalize(userAns as string));
         } else {
           isCorrect = normalize(correct as string) === normalize(userAns as string);
+        }
+      }
+
+      // 2. If it does not match exactly, and it's a text question, evaluate using AI
+      if (!isCorrect && isTextQuestion && userAns) {
+        const correctStr = Array.isArray(correct) ? correct.join(' or ') : String(correct || '');
+        const aiResult = await checkAnswerWithAI(q.prompt || q.text || q.question || '', String(userAns), correctStr);
+        if (aiResult) {
+          isCorrect = aiResult.correct;
+          aiFeedback = aiResult.explanation;
+        } else if (q.type === 'short_answer' || q.type === 'translation') {
+          // Fallback if AI fails for self-graded types
+          isCorrect = true;
         }
       }
 
