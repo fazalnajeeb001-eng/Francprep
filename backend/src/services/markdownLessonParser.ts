@@ -13,24 +13,25 @@ export interface ParsedLesson {
   objectives: string[];
   grammarFocus: string;
   vocabularyFocus: string;
-  warmUp: { content: string };
-  explanation: { content: string };
-  vocabulary: ILessonVocabularyItem[];
-  grammar: {
+  warmUp?: { content: string };
+  explanation?: { content: string };
+  vocabulary?: ILessonVocabularyItem[];
+  grammar?: {
     explanation: string;
     formation: string;
     usage: string;
     examples: string[];
     commonMistakes: { wrong: string; correct: string; why?: string; tip?: string }[];
   };
-  grammarDrills: { questions: ILessonQuestion[] };
-  reading: { title: string; text: string; translation?: string; questions: ILessonQuestion[] };
-  listening: { title: string; transcript: string; translation?: string; questions: ILessonQuestion[] };
-  speaking: { guidedActivity: string; roleplay?: string; pronunciationTip?: string };
-  writing: { task: string; modelAnswer: string; checklist: string[] };
+  grammarDrills?: { questions: ILessonQuestion[] };
+  reading?: { title: string; text: string; translation?: string; questions: ILessonQuestion[] };
+  listening?: { title: string; transcript: string; translation?: string; questions: ILessonQuestion[] };
+  speaking?: { guidedActivity: string; roleplay?: string; pronunciationTip?: string };
+  writing?: { task: string; modelAnswer: string; checklist: string[] };
   practiceExercises: { questions: ILessonQuestion[] };
   miniReview: { content: string };
   selfAssessment: string[];
+  needsManualConfirmation?: boolean;
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -683,68 +684,98 @@ function parseReading(text: string): { title: string; text: string; translation?
 
 function fillPlaceholders(lesson: ParsedLesson): void {
   const lessonId = lesson.lessonId;
-  if (!lesson.warmUp.content) {
-    lesson.warmUp.content = "Review the concepts introduced in this lesson.";
+  const isL7 = lessonId.endsWith('-l7');
+  const isL8 = lessonId.endsWith('-l8');
+
+  if (isL7) {
+    // Lesson 7 has no Vocabulary or Grammar
+    delete lesson.vocabulary;
+    delete lesson.grammar;
   }
-  if (!lesson.explanation.content) {
-    lesson.explanation.content = "Practice exercises and review for this lesson.";
+
+  if (isL8) {
+    // Lesson 8 has no warmUp, explanation, grammarDrills, reading, listening, speaking, writing
+    delete lesson.warmUp;
+    delete lesson.explanation;
+    delete lesson.grammarDrills;
+    delete lesson.reading;
+    delete lesson.listening;
+    delete lesson.speaking;
+    delete lesson.writing;
   }
-  if (!lesson.vocabulary || lesson.vocabulary.length === 0) {
-    lesson.vocabulary = [{ french: "—", english: "—", pronunciation: "—", example: "—" }];
+
+  // Populate remaining required sections if standard
+  if (!isL8) {
+    if (lesson.warmUp && !lesson.warmUp.content) {
+      lesson.warmUp.content = "Review the concepts introduced in this lesson.";
+    }
+    if (lesson.explanation && !lesson.explanation.content) {
+      lesson.explanation.content = "Practice exercises and review for this lesson.";
+    }
   }
-  if (!lesson.grammar.explanation) {
-    lesson.grammar.explanation = "No new grammar points in this lesson.";
-    lesson.grammar.formation = "—";
-    lesson.grammar.usage = "—";
-    lesson.grammar.examples = ["—"];
+
+  if (!isL7) {
+    if (lesson.vocabulary && (lesson.vocabulary.length === 0 || !lesson.vocabulary[0])) {
+      lesson.vocabulary = [{ french: "—", english: "—", pronunciation: "—", example: "—" }];
+    }
+    if (lesson.grammar && !lesson.grammar.explanation) {
+      lesson.grammar.explanation = "No new grammar points in this lesson.";
+      lesson.grammar.formation = "—";
+      lesson.grammar.usage = "—";
+      lesson.grammar.examples = ["—"];
+    }
   }
-  if (!lesson.grammarDrills.questions || lesson.grammarDrills.questions.length === 0) {
-    lesson.grammarDrills.questions = [{
-      id: `${lessonId}-gd-dummy`,
-      type: 'short_answer',
-      prompt: 'Complete the review.',
-      correctAnswer: '—',
-      explanation: 'No grammar drills for this review lesson.'
-    }];
+
+  if (!isL8) {
+    if (lesson.grammarDrills && (!lesson.grammarDrills.questions || lesson.grammarDrills.questions.length === 0)) {
+      lesson.grammarDrills.questions = [{
+        id: `${lessonId}-gd-dummy`,
+        type: 'short_answer',
+        prompt: 'Complete the review.',
+        correctAnswer: '—',
+        explanation: 'No grammar drills for this review lesson.'
+      }];
+    }
+    if (lesson.reading && !lesson.reading.title) {
+      lesson.reading.title = "Reading Section";
+    }
+    if (lesson.reading && !lesson.reading.text) {
+      lesson.reading.text = "Read the lesson contents.";
+    }
+    if (lesson.reading && (!lesson.reading.questions || lesson.reading.questions.length === 0)) {
+      lesson.reading.questions = [{
+        id: `${lessonId}-r-dummy`,
+        type: 'short_answer',
+        prompt: 'Complete the review.',
+        correctAnswer: '—',
+        explanation: 'No reading questions for this review lesson.'
+      }];
+    }
+    if (lesson.listening && !lesson.listening.title) {
+      lesson.listening.title = "Listening Section";
+    }
+    if (lesson.listening && !lesson.listening.transcript) {
+      lesson.listening.transcript = "Listen to the lesson conversation.";
+    }
+    if (lesson.listening && (!lesson.listening.questions || lesson.listening.questions.length === 0)) {
+      lesson.listening.questions = [{
+        id: `${lessonId}-l-dummy`,
+        type: 'short_answer',
+        prompt: 'Complete the review.',
+        correctAnswer: '—',
+        explanation: 'No listening questions for this review lesson.'
+      }];
+    }
+    if (lesson.speaking && !lesson.speaking.guidedActivity) {
+      lesson.speaking.guidedActivity = "Practice pronunciation of the vocabulary.";
+    }
+    if (lesson.writing && !lesson.writing.task) {
+      lesson.writing.task = "Write a short summary of what you have learned.";
+      lesson.writing.modelAnswer = "—";
+      lesson.writing.checklist = ["Completed the summary."];
+    }
   }
-  if (!lesson.reading.title) {
-    lesson.reading.title = "Reading Section";
-  }
-  if (!lesson.reading.text) {
-    lesson.reading.text = "Read the lesson contents.";
-  }
-  if (!lesson.reading.questions || lesson.reading.questions.length === 0) {
-    lesson.reading.questions = [{
-      id: `${lessonId}-r-dummy`,
-      type: 'short_answer',
-      prompt: 'Complete the review.',
-      correctAnswer: '—',
-      explanation: 'No reading questions for this review lesson.'
-    }];
-  }
-  if (!lesson.listening.title) {
-    lesson.listening.title = "Listening Section";
-  }
-  if (!lesson.listening.transcript) {
-    lesson.listening.transcript = "Listen to the lesson conversation.";
-  }
-  if (!lesson.listening.questions || lesson.listening.questions.length === 0) {
-    lesson.listening.questions = [{
-      id: `${lessonId}-l-dummy`,
-      type: 'short_answer',
-      prompt: 'Complete the review.',
-      correctAnswer: '—',
-      explanation: 'No listening questions for this review lesson.'
-    }];
-  }
-  if (!lesson.speaking.guidedActivity) {
-    lesson.speaking.guidedActivity = "Practice pronunciation of the vocabulary.";
-  }
-  if (!lesson.writing.task) {
-    lesson.writing.task = "Write a short summary of what you have learned.";
-    lesson.writing.modelAnswer = "—";
-    lesson.writing.checklist = ["Completed the summary."];
-  }
+
   if (!lesson.practiceExercises.questions || lesson.practiceExercises.questions.length === 0) {
     lesson.practiceExercises.questions = [{
       id: `${lessonId}-pe-dummy`,
@@ -836,26 +867,127 @@ function parseDelfExercises(text: string, lessonId: string): ILessonQuestion[] {
   return qs;
 }
 
+function populateLessonSections(lesson: ParsedLesson, sections: any[], lessonId: string) {
+  for (const s of sections) {
+    const h = s.header.toLowerCase();
+    if (h === 'warm-up' || h === 'warm up') {
+      if (lesson.warmUp) lesson.warmUp.content = clean(s.body.split('\n').filter((l: string) => l.trim()).map((l: string) => l.trim()).join(' '));
+    }
+    else if (h === 'lesson explanation') {
+      if (lesson.explanation) lesson.explanation.content = clean(s.body);
+    }
+    else if (h === 'vocabulary') {
+      lesson.vocabulary = parseVocabTable(s.body);
+    }
+    else if (h.startsWith('grammar') && !h.includes('summary')) {
+      lesson.grammar = parseGrammar(s.body);
+      if (lesson.grammarDrills) lesson.grammarDrills.questions = parseGrammarDrills(s.body);
+    }
+    else if (h === 'reading') {
+      if (lesson.reading) lesson.reading = parseReading(s.body);
+    }
+    else if (h === 'listening') {
+      if (lesson.listening) lesson.listening = parseListening(s.body);
+    }
+    else if (h === 'speaking') {
+      if (lesson.speaking) lesson.speaking = parseSpeaking(s.body);
+    }
+    else if (h === 'writing') {
+      if (lesson.writing) lesson.writing = parseWriting(s.body);
+    }
+    else if (h === 'practice exercises' || h.startsWith('mixed practice exercises')) {
+      lesson.practiceExercises.questions = parsePracticeExercises(s.body);
+    }
+    else if (h.startsWith('chapter vocabulary bank')) {
+      lesson.vocabulary = parseVocabList(s.body);
+    } else if (h.startsWith('grammar summary')) {
+      lesson.grammar = parseGrammarSummary(s.body);
+    } else if (h === 'mini review' || h.startsWith('chapter review') || h.includes('mini review by can-do')) {
+      lesson.miniReview.content = clean(s.body.split('\n').filter((l: string) => l.trim()).map((l: string) => l.trim()).join(' '));
+    } else if (h.startsWith('delf')) {
+      const delfQuestions = parseDelfExercises(s.body, lessonId);
+      lesson.practiceExercises.questions = [...lesson.practiceExercises.questions, ...delfQuestions];
+    } else if (h === 'self assessment' || h === 'self-reflection') {
+      const items: string[] = [];
+      for (const l of s.body.split('\n')) {
+        const c = l.replace(/^\s*-\s*\[[ x]\]\s*/, '').replace(/^\s*[-•*]\s*/, '').trim();
+        if (c && c !== '--' && c !== '---') items.push(stripMd(c));
+      }
+      lesson.selfAssessment = items;
+    }
+  }
+}
+
 export function parseLessonFromMarkdown(markdown: string, level: string, chapterNum: number): ParsedLesson[] {
   const normalizedMarkdown = markdown.replace(/\r/g, '');
   const lessons: ParsedLesson[] = [];
-  const blocks = normalizedMarkdown.split(/^# LESSON \d+.*$/m).slice(1);
 
-  for (let i = 0; i < blocks.length; i++) {
-    const block = blocks[i];
-    const lessonNum = i + 1;
-    const sections = splitSections(block);
+  // Match all lesson headers: e.g. "# LESSON 7 — Integrated Practice"
+  const headerRegex = /^# LESSON (\d+)(.*)$/gim;
+  const matches = [...normalizedMarkdown.matchAll(headerRegex)];
+
+  if (matches.length === 0) {
+    // FALLBACK: If headers are missing entirely, treat the entire file as a single lesson.
+    // Default to Lesson 1, and tag the draft as requiring manual confirmation.
+    const lessonNum = 1;
     const lessonId = `${level.toLowerCase()}-ch${chapterNum}-l${lessonNum}`;
     const chapterId = `${level.toLowerCase()}-ch${chapterNum}`;
 
     const lesson: ParsedLesson = {
       lessonId, chapterId, level,
-      title: extractField(block, 'Lesson Title') || `Lesson ${lessonNum}`,
-      anchorSkill: extractField(block, 'Anchor Skill').replace(/\(.*\)/, '').trim().toLowerCase(),
+      title: extractField(normalizedMarkdown, 'Lesson Title') || `Lesson 1 (Unconfirmed Header)`,
+      anchorSkill: extractField(normalizedMarkdown, 'Anchor Skill').replace(/\(.*\)/, '').trim().toLowerCase() || 'reading',
       durationMinutes: 22,
-      objectives: [extractField(block, 'Lesson Objectives')],
-      grammarFocus: extractField(block, 'Grammar Focus'),
-      vocabularyFocus: extractField(block, 'Vocabulary Focus'),
+      objectives: [extractField(normalizedMarkdown, 'Lesson Objectives') || 'Review course material'],
+      grammarFocus: extractField(normalizedMarkdown, 'Grammar Focus') || 'General Review',
+      vocabularyFocus: extractField(normalizedMarkdown, 'Vocabulary Focus') || 'General Review',
+      warmUp: { content: '' },
+      explanation: { content: '' },
+      vocabulary: [],
+      grammar: { explanation: '', formation: '', usage: '', examples: [], commonMistakes: [] },
+      grammarDrills: { questions: [] },
+      reading: { title: '', text: '', questions: [] },
+      listening: { title: '', transcript: '', questions: [] },
+      speaking: { guidedActivity: '' },
+      writing: { task: '', modelAnswer: '', checklist: [] },
+      practiceExercises: { questions: [] },
+      miniReview: { content: '' },
+      selfAssessment: [],
+      needsManualConfirmation: true, // Flagged for manual level/chapter confirmation
+    };
+
+    const sections = splitSections(normalizedMarkdown);
+    populateLessonSections(lesson, sections, lessonId);
+    fillPlaceholders(lesson);
+    lessons.push(lesson);
+    return lessons;
+  }
+
+  for (let i = 0; i < matches.length; i++) {
+    const match = matches[i];
+    const lessonNum = parseInt(match[1]);
+    const startIdx = match.index! + match[0].length;
+    const endIdx = (i + 1 < matches.length) ? matches[i + 1].index! : normalizedMarkdown.length;
+    const block = normalizedMarkdown.substring(startIdx, endIdx);
+
+    const lessonId = `${level.toLowerCase()}-ch${chapterNum}-l${lessonNum}`;
+    const chapterId = `${level.toLowerCase()}-ch${chapterNum}`;
+
+    let anchorSkill = extractField(block, 'Anchor Skill').replace(/\(.*\)/, '').trim().toLowerCase();
+    if (!anchorSkill) {
+      if (lessonNum === 7) anchorSkill = 'integrated';
+      else if (lessonNum === 8) anchorSkill = 'review';
+      else anchorSkill = 'reading';
+    }
+
+    const lesson: ParsedLesson = {
+      lessonId, chapterId, level,
+      title: extractField(block, 'Lesson Title') || `Lesson ${lessonNum}`,
+      anchorSkill,
+      durationMinutes: 22,
+      objectives: [extractField(block, 'Lesson Objectives') || 'Practice skills'],
+      grammarFocus: extractField(block, 'Grammar Focus') || '',
+      vocabularyFocus: extractField(block, 'Vocabulary Focus') || '',
       warmUp: { content: '' },
       explanation: { content: '' },
       vocabulary: [],
@@ -870,36 +1002,12 @@ export function parseLessonFromMarkdown(markdown: string, level: string, chapter
       selfAssessment: [],
     };
 
-    for (const s of sections) {
-      const h = s.header.toLowerCase();
-      if (h === 'warm-up' || h === 'warm up') lesson.warmUp.content = clean(s.body.split('\n').filter(l => l.trim()).map(l => l.trim()).join(' '));
-      else if (h === 'lesson explanation') lesson.explanation.content = clean(s.body);
-      else if (h === 'vocabulary') lesson.vocabulary = parseVocabTable(s.body);
-      else if (h.startsWith('grammar') && !h.includes('summary')) { lesson.grammar = parseGrammar(s.body); lesson.grammarDrills.questions = parseGrammarDrills(s.body); }
-      else if (h === 'reading') lesson.reading = parseReading(s.body);
-      else if (h === 'listening') lesson.listening = parseListening(s.body);
-      else if (h === 'speaking') lesson.speaking = parseSpeaking(s.body);
-      else if (h === 'writing') lesson.writing = parseWriting(s.body);
-      else if (h === 'practice exercises' || h.startsWith('mixed practice exercises')) lesson.practiceExercises.questions = parsePracticeExercises(s.body);
-      else if (h.startsWith('chapter vocabulary bank')) {
-        lesson.vocabulary = parseVocabList(s.body);
-      } else if (h.startsWith('grammar summary')) {
-        lesson.grammar = parseGrammarSummary(s.body);
-      } else if (h === 'mini review' || h.startsWith('chapter review') || h.includes('mini review by can-do')) {
-        lesson.miniReview.content = clean(s.body.split('\n').filter(l => l.trim()).map(l => l.trim()).join(' '));
-      } else if (h.startsWith('delf')) {
-        const delfQuestions = parseDelfExercises(s.body, lessonId);
-        lesson.practiceExercises.questions = [...lesson.practiceExercises.questions, ...delfQuestions];
-      } else if (h === 'self assessment' || h === 'self-reflection') {
-        const items: string[] = [];
-        for (const l of s.body.split('\n')) { const c = l.replace(/^\s*-\s*\[[ x]\]\s*/, '').replace(/^\s*[-•*]\s*/, '').trim(); if (c && c !== '--' && c !== '---') items.push(stripMd(c)); }
-        lesson.selfAssessment = items;
-      }
-    }
-
+    const sections = splitSections(block);
+    populateLessonSections(lesson, sections, lessonId);
     fillPlaceholders(lesson);
     lessons.push(lesson);
   }
+
   return lessons;
 }
 

@@ -26,9 +26,7 @@ function anchorToSkill(anchor: string): 'R' | 'W' | 'L' | 'S' | 'INT' | 'REV' {
 }
 
 function serializeVocabulary(doc: LessonDoc): string {
-  // UI's parseVocabulary splits each "|"-containing line by "|" into
-  // [french, english, pronunciation, example]. No header/separator rows
-  // (a header row would be rendered as a bogus vocabulary card).
+  if (!doc.vocabulary) return '';
   return doc.vocabulary
     .map((v: { french: string; english: string; pronunciation?: string; example?: string }) =>
       `| ${v.french} | ${v.english} | ${v.pronunciation || '—'} | ${v.example || '—'} |`)
@@ -37,6 +35,7 @@ function serializeVocabulary(doc: LessonDoc): string {
 
 function serializeGrammar(doc: LessonDoc): string {
   const g = doc.grammar;
+  if (!g) return '';
   const parts: string[] = [];
   if (g.explanation) parts.push(g.explanation.trim());
   if (g.formation) parts.push(`Formation:\n${g.formation.trim()}`);
@@ -52,7 +51,7 @@ function serializeGrammar(doc: LessonDoc): string {
     );
   }
   // Grammar drills become inline ____ markers (answers stripped — they only live in questions[]).
-  const drills = doc.grammarDrills.questions || [];
+  const drills = doc.grammarDrills?.questions || [];
   if (drills.length) {
     parts.push(
       `Mini Drills:\n${drills
@@ -64,6 +63,7 @@ function serializeGrammar(doc: LessonDoc): string {
 }
 
 function serializeSpeaking(doc: LessonDoc): string {
+  if (!doc.speaking) return '';
   const parts: string[] = [];
   if (doc.speaking.guidedActivity) parts.push(doc.speaking.guidedActivity.trim());
   if (doc.speaking.roleplay) parts.push(`Roleplay:\n${doc.speaking.roleplay.trim()}`);
@@ -73,13 +73,14 @@ function serializeSpeaking(doc: LessonDoc): string {
 
 function serializeWriting(doc: LessonDoc): string {
   const w = doc.writing;
+  if (!w) return '';
   const checklist = (w.checklist || []).map((c) => `- ${c}`).join('\n');
   return [`Task:\n${w.task.trim()}`, `Model Answer:\n${w.modelAnswer.trim()}`, `Checklist:\n${checklist}`].join('\n\n');
 }
 
 function serializeReview(doc: LessonDoc): string {
   const parts: string[] = [];
-  if (doc.miniReview.content) parts.push(doc.miniReview.content.trim());
+  if (doc.miniReview?.content) parts.push(doc.miniReview.content.trim());
   if (doc.selfAssessment && doc.selfAssessment.length) {
     parts.push(`Self-Assessment:\n${doc.selfAssessment.filter((s) => s && s.trim()).map((s) => `- ${s}`).join('\n')}`);
   }
@@ -116,17 +117,18 @@ export interface TransformedLesson {
 export function transformLesson(lesson: any): TransformedLesson {
   const doc: LessonDoc = lesson.canonical;
   
-  // Build grammar section WITH drills merged in (frontend parses ____[answer:] from body)
-  const grammarExplanation = [doc.grammar.explanation, doc.grammar.formation, doc.grammar.usage]
-    .filter(Boolean)
-    .map(s => s.trim())
-    .join('\n\n');
+  const grammarExplanation = doc.grammar
+    ? [doc.grammar.explanation, doc.grammar.formation, doc.grammar.usage]
+        .filter(Boolean)
+        .map(s => s.trim())
+        .join('\n\n')
+    : '';
   
-  const grammarExamples = doc.grammar.examples?.length
+  const grammarExamples = doc.grammar?.examples?.length
     ? `Examples:\n${doc.grammar.examples.map(e => `- ${e}`).join('\n')}`
     : '';
   
-  const grammarMistakes = doc.grammar.commonMistakes?.length
+  const grammarMistakes = doc.grammar?.commonMistakes?.length
     ? `Common Mistakes:\n${doc.grammar.commonMistakes
         .map(m => `❌ ${m.wrong} → ✅ ${m.correct}${m.why ? ` (${m.why})` : ''}`)
         .join('\n')}`
@@ -163,32 +165,50 @@ export function transformLesson(lesson: any): TransformedLesson {
   }
   const listeningBody = listeningBodyParts.join('\n');
 
-  const sections: TransformedSection[] = [
-    { type: 'warmup', title: 'Warm-Up', body: doc.warmUp?.content || '' },
-    { type: 'explanation', title: 'Lesson Explanation', body: doc.explanation?.content || '' },
-    { type: 'vocabulary', title: 'Vocabulary', body: serializeVocabulary(doc) },
-    { type: 'grammar', title: 'Grammar', body: grammarBody || serializeGrammar(doc) },
-    {
+  const sectionsList: TransformedSection[] = [];
+  
+  if (doc.warmUp) {
+    sectionsList.push({ type: 'warmup', title: 'Warm-Up', body: doc.warmUp.content || '' });
+  }
+  if (doc.explanation) {
+    sectionsList.push({ type: 'explanation', title: 'Lesson Explanation', body: doc.explanation.content || '' });
+  }
+  if (doc.vocabulary) {
+    sectionsList.push({ type: 'vocabulary', title: 'Vocabulary', body: serializeVocabulary(doc) });
+  }
+  if (doc.grammar) {
+    sectionsList.push({ type: 'grammar', title: 'Grammar', body: grammarBody || serializeGrammar(doc) });
+  }
+  if (doc.reading) {
+    sectionsList.push({
       type: 'reading',
-      title: doc.reading?.title || 'Reading',
+      title: doc.reading.title || 'Reading',
       body: readingBody,
-      translation: doc.reading?.translation,
-    },
-    {
+      translation: doc.reading.translation,
+    });
+  }
+  if (doc.listening) {
+    sectionsList.push({
       type: 'listening',
-      title: doc.listening?.title || 'Listening',
+      title: doc.listening.title || 'Listening',
       body: listeningBody,
-      translation: doc.listening?.translation,
-    },
-    { type: 'speaking', title: 'Speaking', body: serializeSpeaking(doc) },
-    { type: 'writing', title: 'Writing', body: serializeWriting(doc) },
-    {
-      type: 'practice',
-      title: 'Practice Exercises',
-      body: 'Complete the exercises below to practice everything you have learned in this lesson.',
-    },
-    { type: 'review', title: 'Mini Review & Self-Assessment', body: serializeReview(doc) },
-  ];
+      translation: doc.listening.translation,
+    });
+  }
+  if (doc.speaking) {
+    sectionsList.push({ type: 'speaking', title: 'Speaking', body: serializeSpeaking(doc) });
+  }
+  if (doc.writing) {
+    sectionsList.push({ type: 'writing', title: 'Writing', body: serializeWriting(doc) });
+  }
+  
+  sectionsList.push({
+    type: 'practice',
+    title: 'Practice Exercises',
+    body: 'Complete the exercises below to practice everything you have learned in this lesson.',
+  });
+  
+  sectionsList.push({ type: 'review', title: 'Mini Review & Self-Assessment', body: serializeReview(doc) });
 
   return {
     _id: lesson._id?.toString?.() || lesson._id,
@@ -199,7 +219,7 @@ export function transformLesson(lesson: any): TransformedLesson {
     level: doc.level,
     objectives: doc.objectives || [],
     grammarTopics: doc.grammarFocus ? [doc.grammarFocus] : [],
-    sections,
+    sections: sectionsList,
     content: lesson.content || '',
     estimatedDuration: doc.durationMinutes,
   };

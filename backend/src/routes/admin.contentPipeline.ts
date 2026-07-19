@@ -95,19 +95,19 @@ async function validateParsedLesson(lesson: any): Promise<{ errors: string[]; wa
   }
 
   // 1. Rendering Checks (11 sections)
-  if (!lesson.warmUp?.content || lesson.warmUp.content === '—' || lesson.warmUp.content.trim() === '') warnings.push('Warm-Up section has empty/placeholder content');
-  if (!lesson.explanation?.content || lesson.explanation.content === '—' || lesson.explanation.content.trim() === '') warnings.push('Lesson Explanation section has empty/placeholder content');
+  if (!lesson.warmUp?.content || lesson.warmUp?.content === '—' || lesson.warmUp?.content.trim() === '') warnings.push('Warm-Up section has empty/placeholder content');
+  if (!lesson.explanation?.content || lesson.explanation?.content === '—' || lesson.explanation?.content.trim() === '') warnings.push('Lesson Explanation section has empty/placeholder content');
   if (!lesson.vocabulary || lesson.vocabulary.length === 0 || lesson.vocabulary[0]?.french === '—') warnings.push('Vocabulary section has empty/placeholder items');
-  if (!lesson.grammar?.explanation || lesson.grammar.explanation.startsWith('No new grammar') || lesson.grammar.explanation.trim() === '') warnings.push('Grammar section explanation has empty/placeholder content');
-  if (!lesson.grammarDrills?.questions || lesson.grammarDrills.questions.length === 0 || lesson.grammarDrills.questions[0]?.id?.includes('gd-dummy')) warnings.push('Grammar Drills section has empty/placeholder questions');
-  if (!lesson.reading?.text || lesson.reading.text === '—' || lesson.reading.text.trim() === '') warnings.push('Reading section text is empty/placeholder');
-  if (!lesson.reading?.questions || lesson.reading.questions.length === 0 || lesson.reading.questions[0]?.id?.includes('r-dummy')) warnings.push('Reading section comprehension questions are empty/placeholder');
-  if (!lesson.listening?.transcript || lesson.listening.transcript === '—' || lesson.listening.transcript.trim() === '') warnings.push('Listening section transcript is empty/placeholder');
-  if (!lesson.listening?.questions || lesson.listening.questions.length === 0 || lesson.listening.questions[0]?.id?.includes('l-dummy')) warnings.push('Listening section questions are empty/placeholder');
-  if (!lesson.speaking?.guidedActivity || lesson.speaking.guidedActivity.startsWith('Practice pronunciation') || lesson.speaking.guidedActivity.trim() === '') warnings.push('Speaking section guided activity is empty/placeholder');
-  if (!lesson.writing?.task || lesson.writing.task.startsWith('Write a short summary') || lesson.writing.task.trim() === '') warnings.push('Writing section task instructions are empty/placeholder');
-  if (!lesson.practiceExercises?.questions || lesson.practiceExercises.questions.length === 0 || lesson.practiceExercises.questions[0]?.id?.includes('pe-dummy')) warnings.push('Practice Exercises section has empty/placeholder questions');
-  if (!lesson.miniReview?.content || lesson.miniReview.content === '—' || lesson.miniReview.content.trim() === '') warnings.push('Mini Review section has empty/placeholder content');
+  if (!lesson.grammar?.explanation || lesson.grammar?.explanation.startsWith('No new grammar') || lesson.grammar?.explanation.trim() === '') warnings.push('Grammar section explanation has empty/placeholder content');
+  if (!lesson.grammarDrills?.questions || lesson.grammarDrills?.questions?.length === 0 || lesson.grammarDrills?.questions?.[0]?.id?.includes('gd-dummy')) warnings.push('Grammar Drills section has empty/placeholder questions');
+  if (!lesson.reading?.text || lesson.reading?.text === '—' || lesson.reading?.text.trim() === '') warnings.push('Reading section text is empty/placeholder');
+  if (!lesson.reading?.questions || lesson.reading?.questions?.length === 0 || lesson.reading?.questions?.[0]?.id?.includes('r-dummy')) warnings.push('Reading section comprehension questions are empty/placeholder');
+  if (!lesson.listening?.transcript || lesson.listening?.transcript === '—' || lesson.listening?.transcript.trim() === '') warnings.push('Listening section transcript is empty/placeholder');
+  if (!lesson.listening?.questions || lesson.listening?.questions?.length === 0 || lesson.listening?.questions?.[0]?.id?.includes('l-dummy')) warnings.push('Listening section questions are empty/placeholder');
+  if (!lesson.speaking?.guidedActivity || lesson.speaking?.guidedActivity.startsWith('Practice pronunciation') || lesson.speaking?.guidedActivity.trim() === '') warnings.push('Speaking section guided activity is empty/placeholder');
+  if (!lesson.writing?.task || lesson.writing?.task.startsWith('Write a short summary') || lesson.writing?.task.trim() === '') warnings.push('Writing section task instructions are empty/placeholder');
+  if (!lesson.practiceExercises?.questions || lesson.practiceExercises?.questions?.length === 0 || lesson.practiceExercises?.questions?.[0]?.id?.includes('pe-dummy')) warnings.push('Practice Exercises section has empty/placeholder questions');
+  if (!lesson.miniReview?.content || lesson.miniReview?.content === '—' || lesson.miniReview?.content.trim() === '') warnings.push('Mini Review section has empty/placeholder content');
   if (!lesson.selfAssessment || lesson.selfAssessment.length === 0 || lesson.selfAssessment[0]?.includes('completed this lesson')) warnings.push('Self Assessment section has empty/placeholder content');
 
   // 2. Ledger Consistency Checks (duplicate check in other published lessons)

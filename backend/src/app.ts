@@ -11,10 +11,10 @@ const app = express();
 // Trust proxy (required for express-rate-limit behind Railway/nginx)
 app.set('trust proxy', 1);
 
-// Global rate limiter — 100 requests per 15 minutes per IP
+// Global rate limiter — 2000 requests per 15 minutes per IP
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 2000,
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, error: 'Too many requests, please try again later.' },

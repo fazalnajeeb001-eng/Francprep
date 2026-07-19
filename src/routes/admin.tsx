@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAuth } from "~/lib/AuthContext";
 import { motion } from "framer-motion";
 import {
-  LayoutDashboard, Users, BookOpen, FileText, Crown, Shield,
+  Users, BookOpen, FileText, Crown, Shield,
   ChevronLeft, Menu, GraduationCap, Settings, Wand2, Megaphone, CreditCard, BarChart3, Sliders, Layers,
   ChevronDown, ChevronUp
 } from "lucide-react";

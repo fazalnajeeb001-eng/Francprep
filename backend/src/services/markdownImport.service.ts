@@ -76,7 +76,7 @@ export async function importChapterMarkdown(
       const doc = parsedLessonToDocument(lesson);
 
       // Skip review chapters that have no real content
-      if (lesson.lessonId.endsWith('-l8') && lesson.warmUp.content === '...') {
+      if (lesson.lessonId.endsWith('-l8') && lesson.warmUp?.content === '...') {
         skipped++;
         continue;
       }
