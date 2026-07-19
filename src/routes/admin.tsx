@@ -20,13 +20,17 @@ const navGroups = [
   {
     title: "Content Pipeline",
     items: [
-      { label: "Dashboard", icon: LayoutDashboard, href: "/admin" },
       { label: "Pipeline Queue", icon: Layers, href: "/admin/pipeline" },
-      { label: "AI Generator", icon: Wand2, href: "/admin/content" },
     ]
   },
   {
-    title: "In-House Editing",
+    title: "AI Generator",
+    items: [
+      { label: "Content Generator", icon: Wand2, href: "/admin/content" },
+    ]
+  },
+  {
+    title: "In-House Edit",
     items: [
       { label: "Syllabi", icon: BookOpen, href: "/admin/syllabi" },
       { label: "Lessons", icon: FileText, href: "/admin/lessons" },
@@ -53,8 +57,9 @@ function AdminLayout() {
 
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     "Content Pipeline": true,
-    "In-House Editing": true,
-    "Platform Management": true,
+    "AI Generator": true,
+    "In-House Edit": true,
+    "Platform Management": false,
   });
 
   const toggleGroup = (title: string) => {
