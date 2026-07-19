@@ -250,6 +250,26 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
     refetchProgress();
   }, [lessonId, blockResults, startTime, refetchProgress]);
 
+  const sections = lesson ? buildSections(lesson) : [];
+  const currentSection = sections[currentSectionIdx] || sections[0];
+  const sectionProgress = sections.length > 0 ? Math.round(((currentSectionIdx + 1) / sections.length) * 100) : 0;
+  const isLast = currentSectionIdx >= sections.length - 1;
+
+  const goNext = useCallback(() => {
+    markSectionComplete(currentSectionIdx);
+    if (!isLast) {
+      setCurrentSectionIdx(s => s + 1);
+      topRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [currentSectionIdx, isLast, markSectionComplete]);
+
+  const goPrev = useCallback(() => {
+    if (currentSectionIdx > 0) {
+      setCurrentSectionIdx(s => s - 1);
+      topRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [currentSectionIdx]);
+
   if (lessonError) {
     return (
       <div ref={topRef} className={`${pageBg} min-h-screen`}>
@@ -274,26 +294,6 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
       </div>
     );
   }
-
-  const sections = buildSections(lesson);
-  const currentSection = sections[currentSectionIdx] || sections[0];
-  const sectionProgress = sections.length > 0 ? Math.round(((currentSectionIdx + 1) / sections.length) * 100) : 0;
-  const isLast = currentSectionIdx >= sections.length - 1;
-
-  const goNext = useCallback(() => {
-    markSectionComplete(currentSectionIdx);
-    if (!isLast) {
-      setCurrentSectionIdx(s => s + 1);
-      topRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [currentSectionIdx, isLast, markSectionComplete]);
-
-  const goPrev = useCallback(() => {
-    if (currentSectionIdx > 0) {
-      setCurrentSectionIdx(s => s - 1);
-      topRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [currentSectionIdx]);
 
   // ─── Render Section Content ──────────────────────────────────────────
 
