@@ -187,7 +187,7 @@ function OrderingQuestion({ q, qId, dark, submitted, setAnswer, userAnswer, resu
   const [shuffledItems] = useState(() => [...items].sort(() => Math.random() - 0.5));
   const currentOrder = (userAnswer as string[]) || shuffledItems;
 
-  const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState<number | null>(null);
 
   const moveItem = (fromIdx: number, toIdx: number) => {
     if (submitted) return;
@@ -205,19 +205,26 @@ function OrderingQuestion({ q, qId, dark, submitted, setAnswer, userAnswer, resu
 
   const handleDragStart = (e: React.DragEvent, index: number) => {
     if (submitted) return;
-    setDraggedIdx(index);
-    e.dataTransfer.effectAllowed = 'move';
+    setIsDragging(index);
+    e.dataTransfer.setData("text/plain", index.toString());
+    e.dataTransfer.effectAllowed = "move";
   };
 
   const handleDragOver = (e: React.DragEvent, index: number) => {
+    if (submitted) return;
     e.preventDefault();
   };
 
   const handleDrop = (e: React.DragEvent, targetIndex: number) => {
     e.preventDefault();
-    if (draggedIdx === null || draggedIdx === targetIndex) return;
-    moveItem(draggedIdx, targetIndex);
-    setDraggedIdx(null);
+    if (submitted) return;
+    const sourceIdx = Number(e.dataTransfer.getData("text/plain"));
+    if (isNaN(sourceIdx) || sourceIdx === targetIndex) return;
+    moveItem(sourceIdx, targetIndex);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(null);
   };
 
   return (
@@ -231,7 +238,10 @@ function OrderingQuestion({ q, qId, dark, submitted, setAnswer, userAnswer, resu
             onDragStart={(e) => handleDragStart(e, i)}
             onDragOver={(e) => handleDragOver(e, i)}
             onDrop={(e) => handleDrop(e, i)}
+            onDragEnd={handleDragEnd}
             className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all cursor-grab active:cursor-grabbing ${
+              isDragging === i ? "opacity-30 scale-[0.98] border-purple-500 bg-purple-500/10" : ""
+            } ${
               submitted && resultForQ?.correct
                 ? "border-emerald-500/50 bg-emerald-500/10"
                 : submitted && !resultForQ?.correct
