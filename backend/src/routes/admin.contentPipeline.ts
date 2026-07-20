@@ -12,106 +12,12 @@ const router = Router();
 // All content pipeline routes require admin auth
 router.use(authenticate, authorize('admin'));
 
+import lessonSchema from '../schemas/lesson.schema.json';
+import lessonIntegratedSchema from '../schemas/lesson-integrated.schema.json';
+import lessonReviewSchema from '../schemas/lesson-review.schema.json';
+
 // ─── Schema validator (loaded once) ────────────────────────────────────────
 const ajv = new Ajv({ allErrors: true, strict: false });
-
-// 1. Standard Schema (Lessons 1-6)
-const lessonSchema = {
-  type: 'object',
-  additionalProperties: false,
-  required: [
-    'lessonId', 'chapterId', 'level', 'title', 'anchorSkill', 'durationMinutes',
-    'objectives', 'grammarFocus', 'vocabularyFocus',
-    'warmUp', 'explanation', 'vocabulary', 'grammar', 'grammarDrills',
-    'reading', 'listening', 'speaking', 'writing', 'practiceExercises',
-    'miniReview', 'selfAssessment',
-  ],
-  properties: {
-    lessonId: { type: 'string' },
-    chapterId: { type: 'string' },
-    level: { type: 'string', enum: ['A0', 'A1', 'A2', 'B1', 'B2', 'C1', 'C2'] },
-    title: { type: 'string' },
-    anchorSkill: { type: 'string', enum: ['reading', 'writing', 'listening', 'speaking', 'integrated', 'review'] },
-    durationMinutes: { type: 'integer', minimum: 5, maximum: 90 },
-    objectives: { type: 'array', items: { type: 'string' }, minItems: 1 },
-    grammarFocus: { type: 'string' },
-    vocabularyFocus: { type: 'string' },
-    warmUp: { type: 'object', additionalProperties: false, required: ['content'], properties: { content: { type: 'string', minLength: 1 } } },
-    explanation: { type: 'object', additionalProperties: false, required: ['content'], properties: { content: { type: 'string', minLength: 1 } } },
-    vocabulary: { type: 'array' },
-    grammar: { type: 'object', additionalProperties: false, required: ['explanation', 'formation', 'usage', 'examples', 'commonMistakes'], properties: {
-      explanation: { type: 'string', minLength: 1 },
-      formation: { type: 'string', minLength: 1 },
-      usage: { type: 'string', minLength: 1 },
-      examples: { type: 'array', items: { type: 'string' }, minItems: 1 },
-      commonMistakes: { type: 'array', items: { type: 'object' } },
-    }},
-    grammarDrills: { type: 'object', additionalProperties: false, required: ['questions'], properties: { questions: { type: 'array', minItems: 1 } } },
-    reading: { type: 'object', additionalProperties: false, required: ['title', 'text', 'questions'], properties: {
-      title: { type: 'string' },
-      text: { type: 'string', minLength: 1 },
-      translation: { type: 'string' },
-      questions: { type: 'array', minItems: 1 },
-    }},
-    listening: { type: 'object', additionalProperties: false, required: ['title', 'transcript', 'questions'], properties: {
-      title: { type: 'string' },
-      transcript: { type: 'string', minLength: 1 },
-      translation: { type: 'string' },
-      questions: { type: 'array', minItems: 1 },
-    }},
-    speaking: { type: 'object', additionalProperties: false, required: ['guidedActivity'], properties: {
-      guidedActivity: { type: 'string', minLength: 1 },
-      roleplay: { type: 'string' },
-      pronunciationTip: { type: 'string' },
-    }},
-    writing: { type: 'object', additionalProperties: false, required: ['task', 'modelAnswer', 'checklist'], properties: {
-      task: { type: 'string', minLength: 1 },
-      modelAnswer: { type: 'string', minLength: 1 },
-      checklist: { type: 'array', items: { type: 'string' }, minItems: 1 },
-    }},
-    practiceExercises: { type: 'object', additionalProperties: false, required: ['questions'], properties: { questions: { type: 'array', minItems: 1 } } },
-    miniReview: { type: 'object', additionalProperties: false, required: ['content'], properties: { content: { type: 'string', minLength: 1 } } },
-    selfAssessment: { type: 'array', items: { type: 'string' }, minItems: 1 },
-  },
-};
-
-// 2. Integrated Schema (Lesson 7 - No vocabulary, grammar, or grammarDrills)
-const lessonIntegratedSchema = {
-  type: 'object',
-  additionalProperties: false,
-  required: [
-    'lessonId', 'chapterId', 'level', 'title', 'anchorSkill', 'durationMinutes',
-    'objectives', 'grammarFocus', 'vocabularyFocus',
-    'warmUp', 'explanation',
-    'reading', 'listening', 'speaking', 'writing', 'practiceExercises',
-    'miniReview', 'selfAssessment',
-  ],
-  properties: {
-    ...lessonSchema.properties,
-    vocabulary: { type: 'array', maxItems: 0 },
-    grammar: { type: 'object', maxProperties: 0 },
-    grammarDrills: { type: 'object', maxProperties: 0 },
-  },
-};
-
-// 3. Review Schema (Lesson 8 - No reading, listening, speaking, writing)
-const lessonReviewSchema = {
-  type: 'object',
-  additionalProperties: false,
-  required: [
-    'lessonId', 'chapterId', 'level', 'title', 'anchorSkill', 'durationMinutes',
-    'objectives', 'grammarFocus', 'vocabularyFocus',
-    'warmUp', 'explanation', 'vocabulary', 'grammar',
-    'practiceExercises', 'miniReview', 'selfAssessment',
-  ],
-  properties: {
-    ...lessonSchema.properties,
-    reading: { type: 'object', maxProperties: 0 },
-    listening: { type: 'object', maxProperties: 0 },
-    speaking: { type: 'object', maxProperties: 0 },
-    writing: { type: 'object', maxProperties: 0 },
-  },
-};
 
 const validateStandard = ajv.compile(lessonSchema);
 const validateIntegrated = ajv.compile(lessonIntegratedSchema);

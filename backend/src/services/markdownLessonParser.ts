@@ -272,17 +272,17 @@ function parseGrammarDrills(text: string): ILessonQuestion[] {
 // Bug 5: defaults to 'False' → proper error handling
 
 function parseListening(text: string): { title: string; transcript: string; translation?: string; questions: ILessonQuestion[] } {
-  const tm = text.match(/\*\*(.*?)\*\*/);
+  const tm = text.match(/(?:\*\*|)?(.*?)(?:\*\*|)?/);
   const title = tm ? stripMd(tm[1]).replace(/^Transcript:\s*/i, '').replace(/^"/, '').replace(/"$/, '') : 'Listening';
 
-  const parts = text.split(/\*\*English Translation:\*\*/i);
+  const parts = text.split(/(?:\*\*|)?English Translation:(?:\*\*|)?/i);
   const transPart = parts[0] || '';
   const afterTrans = parts[1] || '';
 
   // Extract transcript
   const tLines = transPart.split('\n').filter(l => {
     const t = l.trim();
-    return t && !t.match(/^\*\*Listening/i) && !t.startsWith('**Answer Key') && !t.match(/^\d+\./) && !t.startsWith('(No audio');
+    return t && !t.match(/^(?:\*\*|)?Listening/i) && !t.match(/^(?:\*\*|)?Answer Key/i) && !t.match(/^\d+\./) && !t.startsWith('(No audio');
   });
   const transcript = tLines.map(l => l.replace(/^\*+/, '').replace(/\*+$/, '').replace(/\*\*/g, '').trim()).filter(l => l && l !== title && !l.startsWith('Transcript:')).join('\n');
 
@@ -291,7 +291,7 @@ function parseListening(text: string): { title: string; transcript: string; tran
 
   // Try splitting on English Translation first, then fall back to searching for activity directly
   const activitySource = afterTrans || text;
-  const tp = activitySource.split(/\*\*Listening(?:\/Reading)?\s*Activity/i);
+  const tp = activitySource.split(/(?:\*\*|)?Listening(?:\/Reading)?\s*Activity/i);
   if (!afterTrans && tp.length > 1) {
     translation = undefined;
   } else {
@@ -309,7 +309,7 @@ function parseListening(text: string): { title: string; transcript: string; tran
   else if (/comprehension questions/i.test(activityHeader)) activityType = 'short_answer';
 
   // Split questions and answers
-  const ap = activityHeader.split(/\*\*Answer Key/i);
+  const ap = activityHeader.split(/(?:\*\*|)?Answer Key/i);
   // Strip leading colon/whitespace from answer section (from "**Answer Key:**")
   const answerSection = (ap[1] || '').replace(/^:\s*/, '');
   const answerLines = answerSection.split('\n');
@@ -462,7 +462,7 @@ function parsePracticeExercises(text: string): ILessonQuestion[] {
     const t = line.trim();
 
     // Answer Key marker
-    if (t.match(/^\*\*Answer Key/i)) {
+    if (t.match(/^(?:\*\*)?Answer Key/i)) {
       inAK = true;
       // Push any pending question
       if (curPromptLines.length > 0 && curType) {
@@ -481,8 +481,8 @@ function parsePracticeExercises(text: string): ILessonQuestion[] {
       continue;
     }
 
-    // Question type header: **1. Multiple Choice** or **2. Communicative Practice:**
-    const tm = t.match(/^\*\*\d+\.\s*([\w\s]+?)(?:\*\*:|\*\*)/i);
+    // Question type header: **1. Multiple Choice** or **2. Communicative Practice:** (allow optional **)
+    const tm = t.match(/^(?:\*\*)?\d+\.\s*([\w\s]+?)(?::?\*\*|:)?$/i);
     if (tm && knownTypes.test(tm[1])) {
       // Push any pending question
       if (curPromptLines.length > 0 && curType) {
@@ -688,16 +688,16 @@ function buildPracticeQuestion(n: number, type: string, promptText: string): ILe
 }
 
 function parseReading(text: string): { title: string; text: string; translation?: string; questions: ILessonQuestion[] } {
-  const tm = text.match(/\*\*(.*?)\*\*/);
+  const tm = text.match(/(?:\*\*|)?(.*?)(?:\*\*|)?/);
   const title = tm ? stripMd(tm[1]) : 'Reading';
 
-  const parts = text.split(/\*\*English Translation:\*\*/i);
+  const parts = text.split(/(?:\*\*|)?English Translation:(?:\*\*|)?/i);
   const passagePart = parts[0] || '';
   const afterTrans = parts[1] || '';
 
   const passageLines = passagePart.split('\n').filter(l => {
     const t = l.trim();
-    return t && !t.startsWith('**Comprehension Questions') && !t.startsWith('**Answer Key') && !t.match(/^\d+\./);
+    return t && !t.match(/^(?:\*\*|)?Comprehension Questions/i) && !t.match(/^(?:\*\*|)?Answer Key/i) && !t.match(/^\d+\./);
   });
   const passage = passageLines.map(l => l.replace(/^\*+/, '').replace(/\*+$/, '').trim()).filter(l => l && l !== title).join('\n');
 
@@ -705,11 +705,11 @@ function parseReading(text: string): { title: string; text: string; translation?
   const questions: ILessonQuestion[] = [];
 
   if (afterTrans) {
-    const tp = afterTrans.split(/\*\*Comprehension Questions/i);
+    const tp = afterTrans.split(/(?:\*\*|)?Comprehension Questions/i);
     translation = (tp[0] || '').split('\n').filter(l => l.trim()).map(l => l.replace(/^\*+/, '').replace(/\*+$/, '').replace(/\(.*?A1.*?support.*?\)/i, '').trim()).filter(l => l && !l.startsWith('(')).join('\n').trim() || undefined;
 
     const qp = tp[1] || '';
-    const ap = qp.split(/\*\*Answer Key/i);
+    const ap = qp.split(/(?:\*\*|)?Answer Key/i);
     const aLines = (ap[1] || '').split('\n');
     const answers: string[] = [];
     for (const l of aLines) { const m = l.trim().match(/^\d+\.\s*(.+)/); if (m) answers.push(stripMd(m[1])); }
@@ -732,9 +732,10 @@ function fillPlaceholders(lesson: ParsedLesson): void {
   const isL8 = lessonId.endsWith('-l8');
 
   if (isL7) {
-    // Lesson 7 has no Vocabulary or Grammar
+    // Lesson 7 has no Vocabulary or Grammar, and grammarDrills must be empty object
     delete lesson.vocabulary;
     delete lesson.grammar;
+    lesson.grammarDrills = {} as any;
   }
 
   if (isL8) {
@@ -767,10 +768,11 @@ function fillPlaceholders(lesson: ParsedLesson): void {
       lesson.grammar.formation = "—";
       lesson.grammar.usage = "—";
       lesson.grammar.examples = ["—"];
+      lesson.grammar.commonMistakes = [];
     }
   }
 
-  if (!isL8) {
+  if (!isL8 && !isL7) {
     if (lesson.grammarDrills && (!lesson.grammarDrills.questions || lesson.grammarDrills.questions.length === 0)) {
       lesson.grammarDrills.questions = [{
         id: `${lessonId}-gd-dummy`,
