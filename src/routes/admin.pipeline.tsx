@@ -35,7 +35,23 @@ function PipelineDashboardPage() {
   const [selectedDraft, setSelectedDraft] = useState<DraftItem | null>(null);
   const [previewDraftId, setPreviewDraftId] = useState<string | null>(null);
 
+  // Sync tab with URL search parameter
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get("tab") as any;
+      if (tabParam && ["import", "drafts", "integrated", "history"].includes(tabParam)) {
+        setPipelineTab(tabParam);
+      }
+    }
+  }, [typeof window !== "undefined" ? window.location.search : ""]);
+
   // Safety Confirmation
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [loading, setLoading] = useState(false);
+
   const [publishConfirmId, setPublishConfirmId] = useState<string | null>(null);
   const [safetyWordInput, setSafetyWordInput] = useState("");
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
@@ -62,21 +78,36 @@ function PipelineDashboardPage() {
   // Comparison State (1.a Merged Preview)
   const [publishedLessonData, setPublishedLessonData] = useState<any | null>(null);
 
-  const fetchDrafts = async () => {
+  const fetchDrafts = async (page: number = 1) => {
+    setLoading(true);
     try {
-      const res = await apiFetch("/admin/content-pipeline/drafts?limit=100");
+      let query = `?limit=15&page=${page}`;
+      if (pipelineTab === "drafts") {
+        query += `&status=draft,review,validated,imported&origin=!ai_generator`;
+      } else if (pipelineTab === "integrated") {
+        query += `&status=draft,review,validated,imported&origin=ai_generator`;
+      } else if (pipelineTab === "history") {
+        query += `&status=superseded`;
+      } else {
+        query += `&status=draft,review,validated,imported`;
+      }
+      const res = await apiFetch(`/admin/content-pipeline/drafts${query}`);
       const json = await res.json();
       if (json.success) {
         setDrafts(json.data || []);
+        setCurrentPage(json.pagination.page);
+        setTotalPages(json.pagination.totalPages);
+        setTotalItems(json.pagination.total);
       }
     } catch (e) {
       console.error('Failed to fetch drafts:', e);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
-    fetchDrafts();
-  }, []);
+    fetchDrafts(1);
+  }, [pipelineTab]);
 
   // Fetch corresponding published lesson for comparison if selecting an integrated draft
   useEffect(() => {
@@ -124,7 +155,7 @@ function PipelineDashboardPage() {
         setImportMarkdown("");
         setOverrideForm({ level: "", chapterNum: "", lessonNum: "", title: "", anchorSkill: "" });
         setPipelineTab("drafts");
-        fetchDrafts();
+        fetchDrafts(1);
       } else {
         setActionStatus({ loading: false, error: json.error || "Failed to parse markdown", success: "" });
       }
@@ -174,7 +205,7 @@ function PipelineDashboardPage() {
         setPublishConfirmId(null);
         setSafetyWordInput("");
         setSelectedDraft(null);
-        fetchDrafts();
+        fetchDrafts(currentPage);
       } else {
         setActionStatus({ loading: false, error: json.error || "Publishing failed", success: "" });
       }
@@ -192,7 +223,7 @@ function PipelineDashboardPage() {
         setActionStatus({ loading: false, error: "", success: "Draft deleted." });
         setDeleteConfirmId(null);
         setSelectedDraft(null);
-        fetchDrafts();
+        fetchDrafts(currentPage);
       } else {
         setActionStatus({ loading: false, error: json.error || "Delete failed", success: "" });
       }
@@ -209,7 +240,7 @@ function PipelineDashboardPage() {
       if (json.success) {
         setActionStatus({ loading: false, error: "", success: "Lesson version restored successfully!" });
         setRestoreConfirmId(null);
-        fetchDrafts();
+        fetchDrafts(currentPage);
       } else {
         setActionStatus({ loading: false, error: json.error || "Restore failed", success: "" });
       }
@@ -245,10 +276,6 @@ function PipelineDashboardPage() {
     );
   }
 
-  // Filter drafts list based on current active tab
-  const activeStagedDrafts = drafts.filter(d => d.status !== 'superseded' && d.status !== 'published' && d.origin !== 'ai_generator');
-  const integratedDrafts = drafts.filter(d => d.status !== 'superseded' && d.status !== 'published' && d.origin === 'ai_generator');
-  const supersededDrafts = drafts.filter(d => d.status === 'superseded');
 
   return (
     <div className={`min-h-screen ${bg} transition-colors duration-300`}>
@@ -292,15 +319,15 @@ function PipelineDashboardPage() {
           </button>
           <button onClick={() => { setPipelineTab("drafts"); setSelectedDraft(null); }}
             className={`pb-3 font-semibold transition-all border-b-2 ${pipelineTab === "drafts" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
-            📂 1.c Staged Drafts ({activeStagedDrafts.length})
+            📂 1.c Staged Drafts {pipelineTab === "drafts" ? `(${totalItems})` : ""}
           </button>
           <button onClick={() => { setPipelineTab("integrated"); setSelectedDraft(null); }}
             className={`pb-3 font-semibold transition-all border-b-2 ${pipelineTab === "integrated" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
-            🔄 1.a Integrated Additions ({integratedDrafts.length})
+            🔄 1.a Integrated Additions {pipelineTab === "integrated" ? `(${totalItems})` : ""}
           </button>
           <button onClick={() => { setPipelineTab("history"); setSelectedDraft(null); }}
             className={`pb-3 font-semibold transition-all border-b-2 ${pipelineTab === "history" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
-            📜 Version History ({supersededDrafts.length})
+            📜 Version History {pipelineTab === "history" ? `(${totalItems})` : ""}
           </button>
         </div>
 
@@ -404,39 +431,55 @@ function PipelineDashboardPage() {
                 <h3 className="text-sm font-bold text-white border-b pb-3 flex items-center gap-2">
                   <Database className="w-4 h-4 text-purple-400" /> Staging Queue (Unlimited Drafts)
                 </h3>
-                {activeStagedDrafts.length === 0 ? (
+                {loading ? (
+                  <div className="py-12 text-center text-gray-500 text-xs flex items-center justify-center gap-2">
+                    <RefreshCw className="w-4 h-4 animate-spin text-purple-400" /> Loading drafts...
+                  </div>
+                ) : drafts.length === 0 ? (
                   <div className="py-12 text-center text-gray-500 text-xs">
                     Staging queue is empty. Go to the "Import Parser" tab to parse new content!
                   </div>
                 ) : (
-                  <div className="space-y-3">
-                    {activeStagedDrafts.map((d) => {
-                      const isSelected = selectedDraft?._id === d._id;
-                      const errors = d.validationErrors.length;
-                      return (
-                        <div key={d._id} onClick={() => { setSelectedDraft(d); setAiReport(null); }}
-                          className={`p-4 rounded-xl border cursor-pointer transition-all ${
-                            isSelected ? "bg-purple-500/10 border-purple-500/40" : "hover:border-purple-500/20"
-                          } ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-white border-gray-200"}`}>
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400">{d.level}</span>
-                                <span className="text-[10px] font-mono text-gray-400">{d.lessonId}</span>
-                                <span className="text-[9px] px-1.5 py-0.5 rounded bg-gray-500/10 text-gray-400">v{d.version}</span>
+                  <>
+                    <div className="space-y-3">
+                      {drafts.map((d) => {
+                        const isSelected = selectedDraft?._id === d._id;
+                        const errors = d.validationErrors.length;
+                        return (
+                          <div key={d._id} onClick={() => { setSelectedDraft(d); setAiReport(null); }}
+                            className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                              isSelected ? "bg-purple-500/10 border-purple-500/40" : "hover:border-purple-500/20"
+                            } ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-white border-gray-200"}`}>
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400">{d.level}</span>
+                                  <span className="text-[10px] font-mono text-gray-400">{d.lessonId}</span>
+                                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-gray-500/10 text-gray-400">v{d.version}</span>
+                                </div>
+                                <h4 className="text-xs font-bold text-white mt-1.5">{d.title}</h4>
                               </div>
-                              <h4 className="text-xs font-bold text-white mt-1.5">{d.title}</h4>
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                                errors === 0 ? "bg-emerald-500/10 text-emerald-400" : "bg-red-500/10 text-red-400"
+                              }`}>
+                                {errors === 0 ? "✓ Schema Valid" : `❌ ${errors} Schema Errors`}
+                              </span>
                             </div>
-                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                              errors === 0 ? "bg-emerald-500/10 text-emerald-400" : "bg-red-500/10 text-red-400"
-                            }`}>
-                              {errors === 0 ? "✓ Schema Valid" : `❌ ${errors} Schema Errors`}
-                            </span>
                           </div>
+                        );
+                      })}
+                    </div>
+
+                    {totalPages > 1 && (
+                      <div className="flex items-center justify-between border-t border-[#1e2a4a] pt-4 mt-2">
+                        <span className="text-[10px] text-gray-500">Page {currentPage} of {totalPages} ({totalItems} items)</span>
+                        <div className="flex gap-2">
+                          <button onClick={() => fetchDrafts(currentPage - 1)} disabled={currentPage <= 1} className="px-2.5 py-1 rounded bg-[#1e2a4a] text-white text-[10px] disabled:opacity-40">Prev</button>
+                          <button onClick={() => fetchDrafts(currentPage + 1)} disabled={currentPage >= totalPages} className="px-2.5 py-1 rounded bg-[#1e2a4a] text-white text-[10px] disabled:opacity-40">Next</button>
                         </div>
-                      );
-                    })}
-                  </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             )}
@@ -448,33 +491,49 @@ function PipelineDashboardPage() {
                   <Sparkles className="w-4 h-4 text-purple-400" /> Integrated Additions Layer (AI-Generated additions)
                 </h3>
                 <p className="text-xs text-gray-400">These drafts are targeted to existing lessons and will be merged into the existing published lesson.</p>
-                {integratedDrafts.length === 0 ? (
+                {loading ? (
+                  <div className="py-12 text-center text-gray-500 text-xs flex items-center justify-center gap-2">
+                    <RefreshCw className="w-4 h-4 animate-spin text-purple-400" /> Loading additions...
+                  </div>
+                ) : drafts.length === 0 ? (
                   <div className="py-12 text-center text-gray-500 text-xs">
                     No integrated AI drafts staged in queue.
                   </div>
                 ) : (
-                  <div className="space-y-3">
-                    {integratedDrafts.map((d) => {
-                      const isSelected = selectedDraft?._id === d._id;
-                      return (
-                        <div key={d._id} onClick={() => { setSelectedDraft(d); setAiReport(null); }}
-                          className={`p-4 rounded-xl border cursor-pointer transition-all ${
-                            isSelected ? "bg-purple-500/10 border-purple-500/40" : "hover:border-purple-500/20"
-                          } ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-white border-gray-200"}`}>
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400">{d.level}</span>
-                                <span className="text-[10px] font-mono text-gray-400">{d.lessonId}</span>
+                  <>
+                    <div className="space-y-3">
+                      {drafts.map((d) => {
+                        const isSelected = selectedDraft?._id === d._id;
+                        return (
+                          <div key={d._id} onClick={() => { setSelectedDraft(d); setAiReport(null); }}
+                            className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                              isSelected ? "bg-purple-500/10 border-purple-500/40" : "hover:border-purple-500/20"
+                            } ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-white border-gray-200"}`}>
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400">{d.level}</span>
+                                  <span className="text-[10px] font-mono text-gray-400">{d.lessonId}</span>
+                                </div>
+                                <h4 className="text-xs font-bold text-white mt-1.5">{d.title}</h4>
                               </div>
-                              <h4 className="text-xs font-bold text-white mt-1.5">{d.title}</h4>
+                              <span className="text-[9px] px-2 py-0.5 rounded bg-purple-600/20 text-purple-300 font-bold">Merge Addition</span>
                             </div>
-                            <span className="text-[9px] px-2 py-0.5 rounded bg-purple-600/20 text-purple-300 font-bold">Merge Addition</span>
                           </div>
+                        );
+                      })}
+                    </div>
+
+                    {totalPages > 1 && (
+                      <div className="flex items-center justify-between border-t border-[#1e2a4a] pt-4 mt-2">
+                        <span className="text-[10px] text-gray-500">Page {currentPage} of {totalPages} ({totalItems} items)</span>
+                        <div className="flex gap-2">
+                          <button onClick={() => fetchDrafts(currentPage - 1)} disabled={currentPage <= 1} className="px-2.5 py-1 rounded bg-[#1e2a4a] text-white text-[10px] disabled:opacity-40">Prev</button>
+                          <button onClick={() => fetchDrafts(currentPage + 1)} disabled={currentPage >= totalPages} className="px-2.5 py-1 rounded bg-[#1e2a4a] text-white text-[10px] disabled:opacity-40">Next</button>
                         </div>
-                      );
-                    })}
-                  </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             )}
@@ -486,34 +545,50 @@ function PipelineDashboardPage() {
                   <History className="w-4 h-4 text-purple-400" /> Lesson Version Archives (Previously Published)
                 </h3>
                 <p className="text-xs text-gray-400">Previous published versions. Select a historical record to restore it as the active version.</p>
-                {supersededDrafts.length === 0 ? (
+                {loading ? (
+                  <div className="py-12 text-center text-gray-500 text-xs flex items-center justify-center gap-2">
+                    <RefreshCw className="w-4 h-4 animate-spin text-purple-400" /> Loading archives...
+                  </div>
+                ) : drafts.length === 0 ? (
                   <div className="py-12 text-center text-gray-500 text-xs">
                     No historical versions archived yet.
                   </div>
                 ) : (
-                  <div className="space-y-3">
-                    {supersededDrafts.map((d) => {
-                      const isSelected = selectedDraft?._id === d._id;
-                      return (
-                        <div key={d._id} onClick={() => { setSelectedDraft(d); setAiReport(null); }}
-                          className={`p-4 rounded-xl border cursor-pointer transition-all ${
-                            isSelected ? "bg-purple-500/10 border-purple-500/40" : "hover:border-purple-500/20"
-                          } ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-white border-gray-200"}`}>
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-500/20 text-gray-400">{d.level}</span>
-                                <span className="text-[10px] font-mono text-gray-400">{d.lessonId}</span>
-                                <span className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-300">v{d.version}</span>
+                  <>
+                    <div className="space-y-3">
+                      {drafts.map((d) => {
+                        const isSelected = selectedDraft?._id === d._id;
+                        return (
+                          <div key={d._id} onClick={() => { setSelectedDraft(d); setAiReport(null); }}
+                            className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                              isSelected ? "bg-purple-500/10 border-purple-500/40" : "hover:border-purple-500/20"
+                            } ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-white border-gray-200"}`}>
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-500/20 text-gray-400">{d.level}</span>
+                                  <span className="text-[10px] font-mono text-gray-400">{d.lessonId}</span>
+                                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-300">v{d.version}</span>
+                                </div>
+                                <h4 className="text-xs font-bold text-white mt-1.5">{d.title}</h4>
                               </div>
-                              <h4 className="text-xs font-bold text-white mt-1.5">{d.title}</h4>
+                              <span className="text-[9px] text-gray-500">Archived Version</span>
                             </div>
-                            <span className="text-[9px] text-gray-500">Archived Version</span>
                           </div>
+                        );
+                      })}
+                    </div>
+
+                    {totalPages > 1 && (
+                      <div className="flex items-center justify-between border-t border-[#1e2a4a] pt-4 mt-2">
+                        <span className="text-[10px] text-gray-500">Page {currentPage} of {totalPages} ({totalItems} items)</span>
+                        <div className="flex gap-2">
+                          <button onClick={() => fetchDrafts(currentPage - 1)} disabled={currentPage <= 1} className="px-2.5 py-1 rounded bg-[#1e2a4a] text-white text-[10px] disabled:opacity-40">Prev</button>
+                          <button onClick={() => fetchDrafts(currentPage + 1)} disabled={currentPage >= totalPages} className="px-2.5 py-1 rounded bg-[#1e2a4a] text-white text-[10px] disabled:opacity-40">Next</button>
                         </div>
-                      );
-                    })}
-                  </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             )}
