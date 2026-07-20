@@ -44,6 +44,7 @@ function PipelineDashboardPage() {
 
   // Paste Markdown Staging States (1.b Pipeline)
   const [importMarkdown, setImportMarkdown] = useState("");
+  const [importFormat, setImportFormat] = useState<"markdown" | "json">("markdown");
   const [overrideForm, setOverrideForm] = useState({
     level: "",
     chapterNum: "",
@@ -113,7 +114,8 @@ function PipelineDashboardPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           markdown: importMarkdown,
-          manualOverrides: overridesPayload
+          manualOverrides: overridesPayload,
+          format: importFormat
         }),
       });
       const json = await res.json();
@@ -317,8 +319,24 @@ function PipelineDashboardPage() {
                   <span className="text-[10px] text-gray-400">Zero AI involvement by default</span>
                 </div>
 
+                <div className="space-y-3">
+                  <label className="block text-xs font-semibold text-gray-400">Select Input Format</label>
+                  <div className="flex gap-4">
+                    <label className="flex items-center gap-2 text-xs text-white cursor-pointer">
+                      <input type="radio" name="importFormat" checked={importFormat === "markdown"} onChange={() => setImportFormat("markdown")} className="accent-purple-500" />
+                      Plain English Markdown
+                    </label>
+                    <label className="flex items-center gap-2 text-xs text-white cursor-pointer">
+                      <input type="radio" name="importFormat" checked={importFormat === "json"} onChange={() => setImportFormat("json")} className="accent-purple-500" />
+                      Pre-Parsed JSON Document
+                    </label>
+                  </div>
+                </div>
+
                 <div className="space-y-2">
-                  <label className="block text-xs font-semibold text-gray-400">Paste Claude-Generated Lesson Markdown</label>
+                  <label className="block text-xs font-semibold text-gray-400">
+                    {importFormat === "markdown" ? "Paste Claude-Generated Lesson Markdown" : "Paste Schema-Compliant Lesson JSON"}
+                  </label>
                   <textarea
                     required
                     value={importMarkdown}

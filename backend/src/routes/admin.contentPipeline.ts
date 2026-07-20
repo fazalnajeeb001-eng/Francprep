@@ -190,10 +190,10 @@ async function validateParsedLesson(lesson: any): Promise<{ errors: string[]; wa
 }
 
 // ─── POST /content-pipeline/import ─────────────────────────────────────────
-// Import markdown content, parse it, validate, and save as draft(s)
+// Import markdown or JSON content, parse/validate, and save as draft(s)
 router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) => {
   try {
-    const { markdown, level, chapterNum, lessonId: targetLessonId, manualOverrides } = req.body;
+    const { markdown, level, chapterNum, lessonId: targetLessonId, manualOverrides, format = 'markdown' } = req.body;
 
     if (!markdown) {
       res.status(400).json({
@@ -203,40 +203,62 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
       return;
     }
 
-    let detectedLevel = level || manualOverrides?.level;
-    let detectedChapterNum = chapterNum || manualOverrides?.chapterNum;
+    let parsedLessons: any[] = [];
 
-    if (!detectedLevel) {
-      const levelMatch = markdown.match(/Level:\s*(A0|A1|A2|B1|B2|C1|C2)/i);
-      if (levelMatch) {
-        detectedLevel = levelMatch[1].toUpperCase();
-      } else {
-        const genericMatch = markdown.match(/\b(A0|A1|A2|B1|B2|C1|C2)\b/);
-        detectedLevel = genericMatch ? genericMatch[1].toUpperCase() : 'A1';
+    if (format === 'json') {
+      try {
+        const rawJson = JSON.parse(markdown);
+        parsedLessons = Array.isArray(rawJson) ? rawJson : [rawJson];
+        
+        // Apply manual overrides to properties if specified
+        for (const lesson of parsedLessons) {
+          if (manualOverrides?.level) lesson.level = manualOverrides.level;
+          if (manualOverrides?.chapterNum) lesson.chapterId = `${manualOverrides.level.toLowerCase()}-ch${manualOverrides.chapterNum}`;
+          if (manualOverrides?.lessonNum) {
+            const finalLvl = (manualOverrides.level || lesson.level || 'a1').toLowerCase();
+            lesson.lessonId = `${finalLvl}-ch${manualOverrides.chapterNum || 1}-l${manualOverrides.lessonNum}`;
+          }
+          if (manualOverrides?.title) lesson.title = manualOverrides.title;
+          if (manualOverrides?.anchorSkill) lesson.anchorSkill = manualOverrides.anchorSkill;
+        }
+      } catch (jsonErr: any) {
+        res.status(400).json({ success: false, error: `Invalid JSON format: ${jsonErr.message}` });
+        return;
+      }
+    } else {
+      let detectedLevel = level || manualOverrides?.level;
+      let detectedChapterNum = chapterNum || manualOverrides?.chapterNum;
+
+      if (!detectedLevel) {
+        const levelMatch = markdown.match(/Level:\s*(A0|A1|A2|B1|B2|C1|C2)/i);
+        if (levelMatch) {
+          detectedLevel = levelMatch[1].toUpperCase();
+        } else {
+          const genericMatch = markdown.match(/\b(A0|A1|A2|B1|B2|C1|C2)\b/);
+          detectedLevel = genericMatch ? genericMatch[1].toUpperCase() : 'A1';
+        }
+      }
+
+      if (!detectedChapterNum) {
+        const chapterMatch = markdown.match(/Chapter\s*(\d+)/i);
+        detectedChapterNum = chapterMatch ? parseInt(chapterMatch[1]) : 1;
+      }
+
+      try {
+        parsedLessons = parseLessonFromMarkdown(
+          markdown,
+          detectedLevel,
+          parseInt(detectedChapterNum),
+          manualOverrides
+        );
+      } catch (parseErr: any) {
+        res.status(400).json({ success: false, error: parseErr.message });
+        return;
       }
     }
 
-    if (!detectedChapterNum) {
-      const chapterMatch = markdown.match(/Chapter\s*(\d+)/i);
-      detectedChapterNum = chapterMatch ? parseInt(chapterMatch[1]) : 1;
-    }
-
-    // Parse markdown into lessons with overrides
-    let parsedLessons;
-    try {
-      parsedLessons = parseLessonFromMarkdown(
-        markdown,
-        detectedLevel,
-        parseInt(detectedChapterNum),
-        manualOverrides
-      );
-    } catch (parseErr: any) {
-      res.status(400).json({ success: false, error: parseErr.message });
-      return;
-    }
-
     if (parsedLessons.length === 0) {
-      res.status(400).json({ success: false, error: 'No lessons found in the provided markdown' });
+      res.status(400).json({ success: false, error: 'No lessons found or parsed from content' });
       return;
     }
 
