@@ -337,11 +337,11 @@ function parseListening(text: string): { title: string; transcript: string; tran
   // Parse questions
   let n = 0;
   for (const l of questionLines) {
-    const m = l.trim().match(/^\d+\.\s*(.+)/);
-    if (!m) continue;
-    n++;
+    const t = l.trim();
+    if (!t || t.startsWith('*') || t === '---' || t === '--' || t.startsWith('Comprehension') || t.startsWith('Listening')) continue;
 
-    const qPrompt = stripMd(m[1]);
+    n++;
+    const qPrompt = stripMd(t.replace(/^\d+[\.\)]\s*/, ''));
     const answer = answers[n - 1] || { correct: '', explanation: '' };
 
     if (activityType === 'true_false') {
@@ -476,8 +476,9 @@ function parsePracticeExercises(text: string): ILessonQuestion[] {
 
     // In answer key section — collect answers
     if (inAK) {
-      const m = t.match(/^\d+\.\s*(.+)/);
-      if (m) answers.push(m[1].trim());
+      if (t && t !== '---' && t !== '--' && !t.startsWith('*')) {
+        answers.push(t.replace(/^\d+[\.\)]\s*/, '').trim());
+      }
       continue;
     }
 
@@ -586,7 +587,7 @@ function buildPracticeQuestion(n: number, type: string, promptText: string): ILe
   if (type === 'multiple_choice') {
     // Extract options from prompt: "a) Option1 b) Option2 c) Option3 d) Option4"
     const options: string[] = [];
-    const optionMatches = promptText.matchAll(/[a-d]\)\s*(.+?)(?=\s+[b-d]\)|$)/gi);
+    const optionMatches = promptText.matchAll(/[a-d]\)\s*(.+?)(?=\s+[a-z]\)|$)/gi);
     for (const om of optionMatches) {
       options.push(stripMd(om[1]));
     }
@@ -617,23 +618,22 @@ function buildPracticeQuestion(n: number, type: string, promptText: string): ILe
 
     for (const line of promptText.split('\n')) {
       const trimmed = line.trim();
-      if (!trimmed) continue;
+      if (!trimmed || trimmed === '---' || trimmed === '--') continue;
 
-      // Match numbered left item: "1. LeftText"
-      const numMatch = trimmed.match(/^(\d+)\.\s+(.+)/);
-      if (numMatch) {
-        const leftText = numMatch[2];
-        // Check if there's a dash + letter) on the same line
-        // Split on em-dash (U+2014), en-dash (U+2013), or hyphen followed by a letter)
-        const dashSplit = leftText.split(/\s+[\u2014\u2013-]\s+(?=[a-z]\))/i);
-        if (dashSplit.length >= 2) {
-          leftItems.push(stripMd(dashSplit[0]));
-          // Extract right side: "a) RightText" → "RightText"
-          const rightPart = dashSplit[1];
-          const rightClean = rightPart.replace(/^[a-z]\)\s*/i, '').trim();
-          rightItems.push(stripMd(rightClean));
-        } else {
-          leftItems.push(stripMd(leftText));
+      // Split on em-dash (U+2014), en-dash (U+2013), or hyphen followed by a letter)
+      const dashSplit = trimmed.split(/\s+[\u2014\u2013-]\s+(?=[a-z]\))/i);
+      if (dashSplit.length >= 2) {
+        // Strip leading number if present (e.g. "1. Salut" -> "Salut")
+        const leftPart = dashSplit[0].replace(/^\d+[\.\)]\s*/, '').trim();
+        leftItems.push(stripMd(leftPart));
+        // Extract right side: "a) RightText" → "RightText"
+        const rightPart = dashSplit[1];
+        const rightClean = rightPart.replace(/^[a-z]\)\s*/i, '').trim();
+        rightItems.push(stripMd(rightClean));
+      } else {
+        const leftPart = trimmed.replace(/^\d+[\.\)]\s*/, '').trim();
+        if (leftPart) {
+          leftItems.push(stripMd(leftPart));
         }
       }
     }
@@ -712,12 +712,26 @@ function parseReading(text: string): { title: string; text: string; translation?
     const ap = qp.split(/(?:\*\*|)?Answer Key/i);
     const aLines = (ap[1] || '').split('\n');
     const answers: string[] = [];
-    for (const l of aLines) { const m = l.trim().match(/^\d+\.\s*(.+)/); if (m) answers.push(stripMd(m[1])); }
+    for (const l of aLines) {
+      const t = l.trim();
+      if (t && t !== '---' && t !== '--' && !t.startsWith('*')) {
+        answers.push(stripMd(t.replace(/^\d+[\.\)]\s*/, '')));
+      }
+    }
 
     let n = 0;
     for (const l of (ap[0] || '').split('\n')) {
-      const m = l.trim().match(/^\d+\.\s*(.+)/);
-      if (m) { n++; questions.push({ id: `r-${n}`, type: 'short_answer', prompt: stripMd(m[1]), correctAnswer: answers[n - 1] || '', explanation: answers[n - 1] ? `The answer is: ${answers[n - 1]}` : 'Refer to the reading passage.' }); }
+      const t = l.trim();
+      if (t && t !== '---' && t !== '--' && !t.startsWith('*') && !t.startsWith('Comprehension')) {
+        n++;
+        questions.push({
+          id: `r-${n}`,
+          type: 'short_answer',
+          prompt: stripMd(t.replace(/^\d+[\.\)]\s*/, '')),
+          correctAnswer: answers[n - 1] || '',
+          explanation: answers[n - 1] ? `The answer is: ${answers[n - 1]}` : 'Refer to the reading passage.'
+        });
+      }
     }
   }
 
