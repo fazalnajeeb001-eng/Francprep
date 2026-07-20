@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import {
   Users, BookOpen, FileText, Crown, Shield,
   ChevronLeft, Menu, GraduationCap, Settings, Wand2, Megaphone, CreditCard, BarChart3, Sliders,
-  ChevronDown, ChevronUp, Upload, Database, Sparkles, History
+  ChevronDown, ChevronUp, Layers
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
@@ -20,10 +20,7 @@ const navGroups = [
   {
     title: "Content Pipeline",
     items: [
-      { label: "1.b Import Parser", icon: Upload, href: "/admin/pipeline?tab=import" },
-      { label: "1.c Staged Drafts", icon: Database, href: "/admin/pipeline?tab=drafts" },
-      { label: "1.a Integrated Additions", icon: Sparkles, href: "/admin/pipeline?tab=integrated" },
-      { label: "Version History", icon: History, href: "/admin/pipeline?tab=history" },
+      { label: "Content Pipeline", icon: Layers, href: "/admin/pipeline" },
     ]
   },
   {

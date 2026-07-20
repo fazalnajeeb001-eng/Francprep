@@ -330,46 +330,16 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
 // List all drafts with optional filtering
 router.get('/content-pipeline/drafts', async (req: AuthRequest, res: Response) => {
   try {
-    const { status, level, lessonId, origin, page = '1', limit = '20' } = req.query as any;
+    const { level, lessonId, limit = '200' } = req.query as any;
     const filter: any = {};
-    
-    if (status) {
-      if (status.includes(',')) {
-        filter.status = { $in: status.split(',') };
-      } else {
-        filter.status = status;
-      }
-    }
-    
     if (level) filter.level = level;
     if (lessonId) filter.lessonId = lessonId;
-    
-    if (origin) {
-      if (origin.startsWith('!')) {
-        filter.origin = { $ne: origin.substring(1) };
-      } else {
-        filter.origin = origin;
-      }
-    }
 
-    const pageNum = parseInt(page);
-    const limitNum = parseInt(limit);
-    const skip = (pageNum - 1) * limitNum;
-
-    const [drafts, total] = await Promise.all([
-      Draft.find(filter).sort({ updatedAt: -1 }).skip(skip).limit(limitNum),
-      Draft.countDocuments(filter),
-    ]);
+    const drafts = await Draft.find(filter).sort({ updatedAt: -1 }).limit(parseInt(limit));
 
     res.json({
       success: true,
       data: drafts,
-      pagination: {
-        page: pageNum,
-        limit: limitNum,
-        total,
-        totalPages: Math.ceil(total / limitNum),
-      },
     });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
