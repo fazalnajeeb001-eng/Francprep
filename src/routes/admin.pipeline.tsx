@@ -84,26 +84,35 @@ function PipelineDashboardPage() {
   const fetchDrafts = async (page: number = 1) => {
     setLoading(true);
     try {
-      let query = `?limit=15&page=${page}`;
+      const params = new URLSearchParams();
+      params.append("limit", "15");
+      params.append("page", String(page));
+
       if (pipelineTab === "drafts") {
-        query += `&status=draft,review,validated,imported&origin=!ai_generator`;
+        params.append("status", "draft,review,validated,imported");
+        params.append("origin", "!ai_generator");
       } else if (pipelineTab === "integrated") {
-        query += `&status=draft,review,validated,imported&origin=ai_generator`;
+        params.append("status", "draft,review,validated,imported");
+        params.append("origin", "ai_generator");
       } else if (pipelineTab === "history") {
-        query += `&status=superseded`;
+        params.append("status", "superseded");
       } else {
-        query += `&status=draft,review,validated,imported`;
+        params.append("status", "draft,review,validated,imported");
       }
-      const res = await apiFetch(`/admin/content-pipeline/drafts${query}`);
+
+      const res = await apiFetch(`/admin/content-pipeline/drafts?${params.toString()}`);
       const json = await res.json();
       if (json.success) {
         setDrafts(json.data || []);
         setCurrentPage(json.pagination.page);
         setTotalPages(json.pagination.totalPages);
         setTotalItems(json.pagination.total);
+      } else {
+        setActionStatus({ loading: false, error: json.error || "Failed to load drafts queue", success: "" });
       }
     } catch (e) {
       console.error('Failed to fetch drafts:', e);
+      setActionStatus({ loading: false, error: "Network error loading drafts queue", success: "" });
     }
     setLoading(false);
   };
