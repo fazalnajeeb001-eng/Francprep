@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { apiFetch } from "~/lib/apiFetch";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,7 +9,14 @@ import {
 } from "lucide-react";
 import { LessonPage } from "~/components/content/LessonPage";
 
-export const Route = createFileRoute("/admin/pipeline")({ component: PipelineDashboardPage });
+export const Route = createFileRoute("/admin/pipeline")({
+  component: PipelineDashboardPage,
+  validateSearch: (search: Record<string, unknown>) => {
+    return {
+      tab: (search.tab as string) || "import",
+    };
+  },
+});
 
 interface DraftItem {
   _id: string;
@@ -30,21 +37,17 @@ interface DraftItem {
 
 function PipelineDashboardPage() {
   const { dark } = useTheme();
-  const [pipelineTab, setPipelineTab] = useState<"import" | "drafts" | "integrated" | "history">("import");
+  const navigate = useNavigate();
+  const { tab } = Route.useSearch();
+  const pipelineTab = (tab || "import") as "import" | "drafts" | "integrated" | "history";
+  
+  const setPipelineTab = (newTab: "import" | "drafts" | "integrated" | "history") => {
+    navigate({ to: "/admin/pipeline", search: { tab: newTab } });
+  };
+
   const [drafts, setDrafts] = useState<DraftItem[]>([]);
   const [selectedDraft, setSelectedDraft] = useState<DraftItem | null>(null);
   const [previewDraftId, setPreviewDraftId] = useState<string | null>(null);
-
-  // Sync tab with URL search parameter
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const tabParam = params.get("tab") as any;
-      if (tabParam && ["import", "drafts", "integrated", "history"].includes(tabParam)) {
-        setPipelineTab(tabParam);
-      }
-    }
-  }, [typeof window !== "undefined" ? window.location.search : ""]);
 
   // Safety Confirmation
   const [currentPage, setCurrentPage] = useState(1);
