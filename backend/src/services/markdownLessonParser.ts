@@ -45,7 +45,8 @@ function clean(t: string): string {
 }
 
 function extractField(text: string, name: string): string {
-  const m = text.match(new RegExp(`\\*\\*${name}:\\*\\*\\s*([\\s\\S]*?)(?=\\n\\*\\*[^\\*]|$)`, 'i'));
+  const escName = name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  const m = text.match(new RegExp(`(?:\\*\\*)?${escName}:(?:\\*\\*)?\\s*([\\s\\S]*?)(?=\\n(?:\\*\\*)?[^:\\*]+:|$)`, 'i'));
   return m ? stripMd(m[1].trim()) : '';
 }
 
@@ -124,13 +125,13 @@ function parseGrammar(text: string) {
   const usage = clean(extractField(text, 'Usage'));
 
   let formation = '';
-  const fm = text.match(/\*\*Formation[^:]*:\*\*\s*([\s\S]*?)(?=\n\*\*Usage|\n\*\*Examples|\n\*\*Common|\n\*\*Mini|$)/i);
+  const fm = text.match(/(?:\*\*|)?Formation[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=\n(?:\*\*|)?Usage|\n(?:\*\*|)?Examples|\n(?:\*\*|)?Common|\n(?:\*\*|)?Mini|$)/i);
   if (fm) {
     formation = fm[1].replace(/^\s*[-•*]\s*/gm, '').replace(/\|[^|]*\|/g, '').split('\n').filter(l => l.trim()).map(l => l.trim()).join('; ');
   }
 
   const examples: string[] = [];
-  const em = text.match(/\*\*Examples?:\*\*\s*([\s\S]*?)(?=\n\*\*Common|\n\*\*Mini|$)/i);
+  const em = text.match(/(?:\*\*|)?Examples?:(?:\*\*|)?\s*([\s\S]*?)(?=\n(?:\*\*|)?Common|\n(?:\*\*|)?Mini|$)/i);
   if (em) {
     for (const line of em[1].split('\n')) {
       const c = line.replace(/^\s*\d+\.\s*/, '').replace(/^\s*[-•*]\s*/, '').trim();
@@ -139,7 +140,7 @@ function parseGrammar(text: string) {
   }
 
   const commonMistakes: { wrong: string; correct: string; why?: string }[] = [];
-  const mm = text.match(/\*\*Common Mistakes?:\*\*\s*([\s\S]*?)(?=\n\*\*Mini|\n#|$)/i);
+  const mm = text.match(/(?:\*\*|)?Common Mistakes?:(?:\*\*|)?\s*([\s\S]*?)(?=\n(?:\*\*|)?Mini|\n#|$)/i);
   if (mm) {
     for (const line of mm[1].split('\n')) {
       const c = line.replace(/^\s*[-•*]\s*/, '').trim();
@@ -406,12 +407,12 @@ function parseListening(text: string): { title: string; transcript: string; tran
 }
 
 function parseSpeaking(text: string) {
-  const parts = text.split(/\*\*Roleplay/i);
+  const parts = text.split(/(?:\*\*|)?Roleplay/i);
   const mainPart = parts[0] || '';
   const roleplayPart = parts[1] || '';
 
   let guidedActivity = '';
-  const gm = mainPart.match(/Guided Activity[^:]*:\*\*\s*([\s\S]*?)(?=\*\*|$)/i);
+  const gm = mainPart.match(/Guided Activity[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=(?:\*\*|)?|$)/i);
   if (gm) guidedActivity = gm[1].split('\n').filter(l => l.trim()).map(l => l.trim()).join(' ');
   else guidedActivity = clean(mainPart.split('\n').filter(l => l.trim() && !l.startsWith('**')).map(l => l.trim()).join(' '));
 
@@ -419,10 +420,10 @@ function parseSpeaking(text: string) {
   let pronunciationTip: string | undefined;
 
   if (roleplayPart) {
-    const rpLines = roleplayPart.split(/\*\*Pronunciation Tip/i);
-    roleplay = rpLines[0].replace(/:\*\*\s*/, '').split('\n').filter(l => l.trim()).map(l => l.replace(/^[-•*]\s*/, '').trim()).join(' ');
+    const rpLines = roleplayPart.split(/(?:\*\*|)?Pronunciation Tip/i);
+    roleplay = rpLines[0].replace(/:(?:\*\*|)\s*/, '').split('\n').filter(l => l.trim()).map(l => l.replace(/^[-•*]\s*/, '').trim()).join(' ');
     if (rpLines[1]) {
-      pronunciationTip = rpLines[1].split('\n').filter(l => l.trim()).map(l => l.replace(/^:\*\*\s*/, '').trim()).filter(l => l && l !== '---').join(' ').replace(/\s*---\s*$/, '').trim();
+      pronunciationTip = rpLines[1].split('\n').filter(l => l.trim()).map(l => l.replace(/^:(?:\*\*|)\s*/, '').trim()).filter(l => l && l !== '---').join(' ').replace(/\s*---\s*$/, '').trim();
     }
   }
 
@@ -430,10 +431,10 @@ function parseSpeaking(text: string) {
 }
 
 function parseWriting(text: string) {
-  const task = (text.match(/\*\*Task:\*\*\s*([\s\S]*?)(?=\*\*Model|\*\*Writing|$)/i)?.[1] || '').split('\n').filter(l => l.trim()).map(l => l.trim()).join(' ');
-  const modelAnswer = (text.match(/\*\*Model Answer:\*\*\s*([\s\S]*?)(?=\*\*Writing Checklist|\*\*Checklist|$)/i)?.[1] || '').split('\n').filter(l => l.trim()).map(l => l.trim()).join(' ');
+  const task = (text.match(/(?:\*\*|)?Task:(?:\*\*|)?\s*([\s\S]*?)(?=(?:\*\*|)?Model|(?:\*\*|)?Writing|$)/i)?.[1] || '').split('\n').filter(l => l.trim()).map(l => l.trim()).join(' ');
+  const modelAnswer = (text.match(/(?:\*\*|)?Model Answer:(?:\*\*|)?\s*([\s\S]*?)(?=(?:\*\*|)?(?:Writing )?Checklist|$)/i)?.[1] || '').split('\n').filter(l => l.trim()).map(l => l.trim()).join(' ');
   const checklist: string[] = [];
-  const cm = text.match(/\*\*(?:Writing )?Checklist:\*\*\s*([\s\S]*?)$/i);
+  const cm = text.match(/(?:\*\*|)?(?:Writing )?Checklist:(?:\*\*|)?\s*([\s\S]*?)$/i);
   if (cm) {
     for (const l of cm[1].split('\n')) {
       const c = l.replace(/^\s*-\s*\[ ?\]\s*/, '').replace(/^\s*[-•*]\s*/, '').trim();
@@ -746,10 +747,9 @@ function fillPlaceholders(lesson: ParsedLesson): void {
   const isL8 = lessonId.endsWith('-l8');
 
   if (isL7) {
-    // Lesson 7 has no Vocabulary or Grammar, and grammarDrills must be empty object
+    // Lesson 7 has no Vocabulary or Grammar
     delete lesson.vocabulary;
     delete lesson.grammar;
-    lesson.grammarDrills = {} as any;
   }
 
   if (isL8) {
