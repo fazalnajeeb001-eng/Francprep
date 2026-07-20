@@ -1,28 +1,8 @@
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
-import * as fs from 'fs';
-import * as path from 'path';
-
-function loadSchema(filename: string): any {
-  // Try several directories
-  const paths = [
-    path.resolve(__dirname, '..', 'schemas', filename),
-    path.resolve(__dirname, '..', '..', '..', 'src', 'schemas', filename),
-    path.resolve(process.cwd(), 'src', 'schemas', filename),
-    path.resolve(process.cwd(), 'backend', 'src', 'schemas', filename),
-    path.resolve(process.cwd(), 'backend', 'dist', 'schemas', filename)
-  ];
-  for (const p of paths) {
-    if (fs.existsSync(p)) {
-      return JSON.parse(fs.readFileSync(p, 'utf-8'));
-    }
-  }
-  throw new Error(`Schema file not found: ${filename}. Tried paths: ${JSON.stringify(paths, null, 2)}`);
-}
-
-const standardSchema = loadSchema('lesson.schema.json');
-const integratedSchema = loadSchema('lesson-integrated.schema.json');
-const reviewSchema = loadSchema('lesson-review.schema.json');
+import standardSchema from '../schemas/lesson.schema.json';
+import integratedSchema from '../schemas/lesson-integrated.schema.json';
+import reviewSchema from '../schemas/lesson-review.schema.json';
 
 const ajv = new Ajv({ allErrors: true, strict: false });
 addFormats(ajv);
