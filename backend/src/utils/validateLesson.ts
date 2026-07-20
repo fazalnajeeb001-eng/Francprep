@@ -17,7 +17,7 @@ function loadSchema(filename: string): any {
       return JSON.parse(fs.readFileSync(p, 'utf-8'));
     }
   }
-  throw new Error(`Schema file not found: ${filename}`);
+  throw new Error(`Schema file not found: ${filename}. Tried paths: ${JSON.stringify(paths, null, 2)}`);
 }
 
 const standardSchema = loadSchema('lesson.schema.json');
