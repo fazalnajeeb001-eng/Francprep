@@ -15,7 +15,7 @@ router.use(authenticate, authorize('admin'));
 // ─── Schema validator (loaded once) ────────────────────────────────────────
 const ajv = new Ajv({ allErrors: true, strict: false });
 
-// Inline lesson schema (matches lesson.schema.json)
+// 1. Standard Schema (Lessons 1-6)
 const lessonSchema = {
   type: 'object',
   additionalProperties: false,
@@ -75,7 +75,47 @@ const lessonSchema = {
   },
 };
 
-const validateLesson = ajv.compile(lessonSchema);
+// 2. Integrated Schema (Lesson 7 - No vocabulary, grammar, or grammarDrills)
+const lessonIntegratedSchema = {
+  type: 'object',
+  additionalProperties: false,
+  required: [
+    'lessonId', 'chapterId', 'level', 'title', 'anchorSkill', 'durationMinutes',
+    'objectives', 'grammarFocus', 'vocabularyFocus',
+    'warmUp', 'explanation',
+    'reading', 'listening', 'speaking', 'writing', 'practiceExercises',
+    'miniReview', 'selfAssessment',
+  ],
+  properties: {
+    ...lessonSchema.properties,
+    vocabulary: { type: 'array', maxItems: 0 },
+    grammar: { type: 'object', maxProperties: 0 },
+    grammarDrills: { type: 'object', maxProperties: 0 },
+  },
+};
+
+// 3. Review Schema (Lesson 8 - No reading, listening, speaking, writing)
+const lessonReviewSchema = {
+  type: 'object',
+  additionalProperties: false,
+  required: [
+    'lessonId', 'chapterId', 'level', 'title', 'anchorSkill', 'durationMinutes',
+    'objectives', 'grammarFocus', 'vocabularyFocus',
+    'warmUp', 'explanation', 'vocabulary', 'grammar',
+    'practiceExercises', 'miniReview', 'selfAssessment',
+  ],
+  properties: {
+    ...lessonSchema.properties,
+    reading: { type: 'object', maxProperties: 0 },
+    listening: { type: 'object', maxProperties: 0 },
+    speaking: { type: 'object', maxProperties: 0 },
+    writing: { type: 'object', maxProperties: 0 },
+  },
+};
+
+const validateStandard = ajv.compile(lessonSchema);
+const validateIntegrated = ajv.compile(lessonIntegratedSchema);
+const validateReview = ajv.compile(lessonReviewSchema);
 
 async function validateParsedLesson(lesson: any): Promise<{ errors: string[]; warnings: string[] }> {
   const errors: string[] = [];
@@ -87,9 +127,26 @@ async function validateParsedLesson(lesson: any): Promise<{ errors: string[]; wa
     delete validateData.vocabItems;
   }
 
-  const valid = validateLesson(validateData);
-  if (!valid && validateLesson.errors) {
-    for (const err of validateLesson.errors) {
+  // Determine which schema variant applies
+  const isL7 = lesson.lessonId?.endsWith('-l7') || lesson.anchorSkill === 'integrated';
+  const isL8 = lesson.lessonId?.endsWith('-l8') || lesson.anchorSkill === 'review';
+
+  let isValid = false;
+  let validatorErrors = null;
+
+  if (isL7) {
+    isValid = validateIntegrated(validateData);
+    validatorErrors = validateIntegrated.errors;
+  } else if (isL8) {
+    isValid = validateReview(validateData);
+    validatorErrors = validateReview.errors;
+  } else {
+    isValid = validateStandard(validateData);
+    validatorErrors = validateStandard.errors;
+  }
+
+  if (!isValid && validatorErrors) {
+    for (const err of validatorErrors) {
       errors.push(`${err.instancePath || '/'} ${err.message}`);
     }
   }
@@ -136,7 +193,7 @@ async function validateParsedLesson(lesson: any): Promise<{ errors: string[]; wa
 // Import markdown content, parse it, validate, and save as draft(s)
 router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) => {
   try {
-    const { markdown, level, chapterNum, lessonId: targetLessonId } = req.body;
+    const { markdown, level, chapterNum, lessonId: targetLessonId, manualOverrides } = req.body;
 
     if (!markdown) {
       res.status(400).json({
@@ -146,8 +203,8 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
       return;
     }
 
-    let detectedLevel = level;
-    let detectedChapterNum = chapterNum;
+    let detectedLevel = level || manualOverrides?.level;
+    let detectedChapterNum = chapterNum || manualOverrides?.chapterNum;
 
     if (!detectedLevel) {
       const levelMatch = markdown.match(/Level:\s*(A0|A1|A2|B1|B2|C1|C2)/i);
@@ -164,15 +221,25 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
       detectedChapterNum = chapterMatch ? parseInt(chapterMatch[1]) : 1;
     }
 
-    // Parse markdown into lessons
-    const parsedLessons = parseLessonFromMarkdown(markdown, detectedLevel, parseInt(detectedChapterNum));
+    // Parse markdown into lessons with overrides
+    let parsedLessons;
+    try {
+      parsedLessons = parseLessonFromMarkdown(
+        markdown,
+        detectedLevel,
+        parseInt(detectedChapterNum),
+        manualOverrides
+      );
+    } catch (parseErr: any) {
+      res.status(400).json({ success: false, error: parseErr.message });
+      return;
+    }
 
     if (parsedLessons.length === 0) {
       res.status(400).json({ success: false, error: 'No lessons found in the provided markdown' });
       return;
     }
 
-    // If targeting a specific lesson, filter to just that one
     const lessonsToProcess = targetLessonId
       ? parsedLessons.filter(l => l.lessonId === targetLessonId)
       : parsedLessons;
@@ -182,7 +249,6 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
     for (const parsedLesson of lessonsToProcess) {
       const { errors, warnings } = await validateParsedLesson(parsedLesson);
 
-      // Check if a draft already exists for this lesson
       const existingDraft = await Draft.findOne({
         lessonId: parsedLesson.lessonId,
         status: { $in: ['draft', 'review', 'validated'] },
@@ -190,7 +256,6 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
 
       let draft;
       if (existingDraft) {
-        // Update existing draft with new parsed data
         existingDraft.content = markdown;
         existingDraft.parsedData = parsedLesson;
         existingDraft.validationErrors = errors;
@@ -199,7 +264,6 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
         existingDraft.version = existingDraft.version + 1;
         draft = await existingDraft.save();
       } else {
-        // Create new draft
         draft = await Draft.create({
           lessonId: parsedLesson.lessonId,
           chapterId: parsedLesson.chapterId,
@@ -731,6 +795,72 @@ router.post('/lessons/seed', async (req: AuthRequest, res: Response) => {
         warnings: result.warnings,
       });
     }
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ─── POST /content-pipeline/drafts/:id/restore ──────────────────────────────
+// Restore a superseded draft to active published status
+router.post('/content-pipeline/drafts/:id/restore', async (req: AuthRequest, res: Response) => {
+  try {
+    const draft = await Draft.findById(req.params.id);
+    if (!draft) {
+      res.status(404).json({ success: false, error: 'Draft not found' });
+      return;
+    }
+
+    if (!draft.parsedData) {
+      res.status(400).json({ success: false, error: 'Draft has no parsed data to restore' });
+      return;
+    }
+
+    const canonical = draft.parsedData;
+    const existingLesson = await Lesson.findOne({ lessonId: canonical.lessonId });
+
+    if (existingLesson) {
+      existingLesson.set('canonical', canonical);
+      existingLesson.set('title', canonical.title);
+      existingLesson.set('level', canonical.level);
+      existingLesson.set('isPublished', true);
+      await existingLesson.save();
+    } else {
+      await Lesson.create({
+        lessonId: canonical.lessonId,
+        chapterId: canonical.chapterId,
+        title: canonical.title,
+        level: canonical.level,
+        order: parseInt(canonical.lessonId.split('-l')[1]) || 1,
+        anchorSkill: canonical.anchorSkill,
+        durationMinutes: canonical.durationMinutes,
+        isPublished: true,
+        canonical,
+      });
+    }
+
+    // Mark current active published drafts for this lesson as superseded
+    const activeDrafts = await Draft.find({
+      lessonId: canonical.lessonId,
+      status: 'published',
+      _id: { $ne: draft._id }
+    });
+
+    for (const d of activeDrafts) {
+      d.status = 'superseded';
+      await d.save();
+    }
+
+    // Set this draft to published
+    draft.status = 'published';
+    draft.publishedAt = new Date();
+    draft.publishedBy = req.user?.email || 'admin';
+    await draft.save();
+
+    res.json({
+      success: true,
+      message: `Lesson ${canonical.lessonId} restored successfully`,
+      data: draft,
+    });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
   }

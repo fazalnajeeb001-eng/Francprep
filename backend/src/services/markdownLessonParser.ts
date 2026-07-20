@@ -918,7 +918,18 @@ function populateLessonSections(lesson: ParsedLesson, sections: any[], lessonId:
   }
 }
 
-export function parseLessonFromMarkdown(markdown: string, level: string, chapterNum: number): ParsedLesson[] {
+export function parseLessonFromMarkdown(
+  markdown: string,
+  level: string,
+  chapterNum: number,
+  manualOverrides?: {
+    level?: string;
+    chapterNum?: number;
+    lessonNum?: number;
+    title?: string;
+    anchorSkill?: string;
+  }
+): ParsedLesson[] {
   const normalizedMarkdown = markdown.replace(/\r/g, '');
   const lessons: ParsedLesson[] = [];
 
@@ -927,20 +938,27 @@ export function parseLessonFromMarkdown(markdown: string, level: string, chapter
   const matches = [...normalizedMarkdown.matchAll(headerRegex)];
 
   if (matches.length === 0) {
-    // FALLBACK: If headers are missing entirely, treat the entire file as a single lesson.
-    // Default to Lesson 1, and tag the draft as requiring manual confirmation.
-    const lessonNum = 1;
-    const lessonId = `${level.toLowerCase()}-ch${chapterNum}-l${lessonNum}`;
-    const chapterId = `${level.toLowerCase()}-ch${chapterNum}`;
+    // strict check: if headers are missing and manual overrides are not provided, throw error
+    if (!manualOverrides || !manualOverrides.level || !manualOverrides.chapterNum || !manualOverrides.lessonNum) {
+      throw new Error("Lesson headers matching '# LESSON [number]' are missing in the markdown text. Please fix the headers or enter the Level, Chapter, and Lesson number manually to parse successfully.");
+    }
+    
+    const lessonNum = manualOverrides.lessonNum;
+    const finalLevel = manualOverrides.level;
+    const finalChapterNum = manualOverrides.chapterNum;
+    const lessonId = `${finalLevel.toLowerCase()}-ch${finalChapterNum}-l${lessonNum}`;
+    const chapterId = `${finalLevel.toLowerCase()}-ch${finalChapterNum}`;
 
     const lesson: ParsedLesson = {
-      lessonId, chapterId, level,
-      title: extractField(normalizedMarkdown, 'Lesson Title') || `Lesson 1 (Unconfirmed Header)`,
-      anchorSkill: extractField(normalizedMarkdown, 'Anchor Skill').replace(/\(.*\)/, '').trim().toLowerCase() || 'reading',
+      lessonId,
+      chapterId,
+      level: finalLevel,
+      title: manualOverrides.title || extractField(normalizedMarkdown, 'Lesson Title') || `Lesson ${lessonNum}`,
+      anchorSkill: manualOverrides.anchorSkill || extractField(normalizedMarkdown, 'Anchor Skill').replace(/\(.*\)/, '').trim().toLowerCase() || 'reading',
       durationMinutes: 22,
-      objectives: [extractField(normalizedMarkdown, 'Lesson Objectives') || 'Review course material'],
-      grammarFocus: extractField(normalizedMarkdown, 'Grammar Focus') || 'General Review',
-      vocabularyFocus: extractField(normalizedMarkdown, 'Vocabulary Focus') || 'General Review',
+      objectives: [extractField(normalizedMarkdown, 'Lesson Objectives') || 'Practice skills'],
+      grammarFocus: extractField(normalizedMarkdown, 'Grammar Focus') || '',
+      vocabularyFocus: extractField(normalizedMarkdown, 'Vocabulary Focus') || '',
       warmUp: { content: '' },
       explanation: { content: '' },
       vocabulary: [],
@@ -953,7 +971,6 @@ export function parseLessonFromMarkdown(markdown: string, level: string, chapter
       practiceExercises: { questions: [] },
       miniReview: { content: '' },
       selfAssessment: [],
-      needsManualConfirmation: true, // Flagged for manual level/chapter confirmation
     };
 
     const sections = splitSections(normalizedMarkdown);
@@ -965,15 +982,22 @@ export function parseLessonFromMarkdown(markdown: string, level: string, chapter
 
   for (let i = 0; i < matches.length; i++) {
     const match = matches[i];
-    const lessonNum = parseInt(match[1]);
+    let lessonNum = parseInt(match[1]);
     const startIdx = match.index! + match[0].length;
     const endIdx = (i + 1 < matches.length) ? matches[i + 1].index! : normalizedMarkdown.length;
     const block = normalizedMarkdown.substring(startIdx, endIdx);
 
-    const lessonId = `${level.toLowerCase()}-ch${chapterNum}-l${lessonNum}`;
-    const chapterId = `${level.toLowerCase()}-ch${chapterNum}`;
+    // Apply manual overrides if matching this loop iteration
+    const finalLevel = manualOverrides?.level || level;
+    const finalChapterNum = manualOverrides?.chapterNum || chapterNum;
+    if (manualOverrides?.lessonNum && matches.length === 1) {
+      lessonNum = manualOverrides.lessonNum;
+    }
 
-    let anchorSkill = extractField(block, 'Anchor Skill').replace(/\(.*\)/, '').trim().toLowerCase();
+    const lessonId = `${finalLevel.toLowerCase()}-ch${finalChapterNum}-l${lessonNum}`;
+    const chapterId = `${finalLevel.toLowerCase()}-ch${finalChapterNum}`;
+
+    let anchorSkill = manualOverrides?.anchorSkill || extractField(block, 'Anchor Skill').replace(/\(.*\)/, '').trim().toLowerCase();
     if (!anchorSkill) {
       if (lessonNum === 7) anchorSkill = 'integrated';
       else if (lessonNum === 8) anchorSkill = 'review';
@@ -981,8 +1005,10 @@ export function parseLessonFromMarkdown(markdown: string, level: string, chapter
     }
 
     const lesson: ParsedLesson = {
-      lessonId, chapterId, level,
-      title: extractField(block, 'Lesson Title') || `Lesson ${lessonNum}`,
+      lessonId,
+      chapterId,
+      level: finalLevel,
+      title: manualOverrides?.title || extractField(block, 'Lesson Title') || `Lesson ${lessonNum}`,
       anchorSkill,
       durationMinutes: 22,
       objectives: [extractField(block, 'Lesson Objectives') || 'Practice skills'],
