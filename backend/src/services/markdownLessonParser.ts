@@ -299,8 +299,13 @@ function parseListening(text: string): { title: string; transcript: string; tran
     translation = (tp[0] || '').split('\n').filter(l => l.trim()).map(l => l.replace(/^\*+/, '').replace(/\*+$/, '').replace(/\(.*?A1.*?support.*?\)/i, '').trim()).filter(l => l && !l.startsWith('(')).join('\n').trim() || undefined;
   }
 
+  // Clean up activityHeader
+  let activityHeader = (tp[1] || '').trim();
+  if (activityHeader.startsWith(':')) {
+    activityHeader = activityHeader.slice(1).trim();
+  }
+
   // Detect activity type from header
-  const activityHeader = tp[1] || '';
   let activityType: 'true_false' | 'short_answer' | 'multiple_choice' | 'fill_blank' = 'short_answer';
   if (/answer the questions/i.test(activityHeader)) activityType = 'short_answer';
   else if (/multiple choice/i.test(activityHeader)) activityType = 'multiple_choice';
@@ -311,9 +316,9 @@ function parseListening(text: string): { title: string; transcript: string; tran
 
   // Split questions and answers
   const ap = activityHeader.split(/(?:\*\*|)?Answer Key/i);
-  // Strip leading colon/whitespace from answer section (from "**Answer Key:**")
-  const answerSection = (ap[1] || '').replace(/^:\s*/, '');
-  const answerLines = answerSection.split('\n');
+  const answerSection = (ap[1] || '').trim();
+  const cleanAnswerSection = answerSection.startsWith(':') ? answerSection.slice(1).trim() : answerSection;
+  const answerLines = cleanAnswerSection.split('\n');
   const questionLines = (ap[0] || '').split('\n');
 
   // Parse answers based on activity type
@@ -339,7 +344,7 @@ function parseListening(text: string): { title: string; transcript: string; tran
   let n = 0;
   for (const l of questionLines) {
     const t = l.trim();
-    if (!t || t.startsWith('*') || t === '---' || t === '--' || t.startsWith('Comprehension') || t.startsWith('Listening')) continue;
+    if (!t || t.startsWith('*') || t === '---' || t === '--' || t.match(/^(?:Comprehension|Listening|Activity|Short Answer|Multiple Choice|True or False|Fill in the Blank|Matching|Sentence Ordering|Translation)/i)) continue;
 
     n++;
     const qPrompt = stripMd(t.replace(/^\d+[\.\)]\s*/, ''));
@@ -711,7 +716,9 @@ function parseReading(text: string): { title: string; text: string; translation?
 
     const qp = tp[1] || '';
     const ap = qp.split(/(?:\*\*|)?Answer Key/i);
-    const aLines = (ap[1] || '').split('\n');
+    const answerSection = (ap[1] || '').trim();
+    const cleanAnswerSection = answerSection.startsWith(':') ? answerSection.slice(1).trim() : answerSection;
+    const aLines = cleanAnswerSection.split('\n');
     const answers: string[] = [];
     for (const l of aLines) {
       const t = l.trim();
@@ -723,7 +730,7 @@ function parseReading(text: string): { title: string; text: string; translation?
     let n = 0;
     for (const l of (ap[0] || '').split('\n')) {
       const t = l.trim();
-      if (t && t !== '---' && t !== '--' && !t.startsWith('*') && !t.startsWith('Comprehension')) {
+      if (t && t !== '---' && t !== '--' && !t.startsWith('*') && !t.match(/^(?:Comprehension|Answer Key)/i)) {
         n++;
         questions.push({
           id: `r-${n}`,
