@@ -53,10 +53,54 @@ function splitSections(body: string): { header: string; body: string }[] {
   const out: { header: string; body: string }[] = [];
   const lines = body.split('\n');
   let h = '', c: string[] = [];
+  
+  const knownLower = [
+    'warm-up', 'warm up',
+    'lesson explanation',
+    'vocabulary',
+    'reading',
+    'listening',
+    'speaking',
+    'writing',
+    'practice exercises',
+    'mixed practice exercises',
+    'chapter vocabulary bank',
+    'grammar summary',
+    'mini review',
+    'chapter review',
+    'mini review by can-do',
+    'delf',
+    'self assessment',
+    'self-reflection',
+    'lesson information'
+  ];
+
   for (const l of lines) {
-    const m = l.match(/^# (.+)$/);
-    if (m) { if (h) out.push({ header: h, body: c.join('\n').trim() }); h = m[1].trim(); c = []; }
-    else c.push(l);
+    const trimmed = l.trim();
+    let headerName = '';
+
+    // 1. Markdown header match: e.g. "## Vocabulary" or "### Warm-Up"
+    const hashMatch = trimmed.match(/^#+\s*(.+)$/);
+    if (hashMatch) {
+      headerName = hashMatch[1].trim();
+    } else {
+      // 2. Plain text header match: check if line is short and matches a known header
+      const lower = trimmed.toLowerCase().replace(/[\*\_\`]/g, '').trim();
+      const isKnown = knownLower.some(k => lower === k || lower.startsWith(k + ' ') || lower.startsWith(k + '(') || lower.startsWith(k + ' -') || lower.startsWith(k + ':'));
+      const isGrammarGeneric = lower === 'grammar' || lower.startsWith('grammar ');
+      
+      if ((isKnown || isGrammarGeneric) && trimmed.length < 60) {
+        headerName = trimmed;
+      }
+    }
+
+    if (headerName) {
+      if (h) out.push({ header: h, body: c.join('\n').trim() });
+      h = headerName;
+      c = [];
+    } else {
+      c.push(l);
+    }
   }
   if (h) out.push({ header: h, body: c.join('\n').trim() });
   return out;
@@ -933,8 +977,8 @@ export function parseLessonFromMarkdown(
   const normalizedMarkdown = markdown.replace(/\r/g, '');
   const lessons: ParsedLesson[] = [];
 
-  // Match all lesson headers: e.g. "# LESSON 7 — Integrated Practice"
-  const headerRegex = /^# LESSON (\d+)(.*)$/gim;
+  // Match all lesson headers: e.g. "# LESSON 7 — Integrated Practice" or "LESSON 1"
+  const headerRegex = /^(?:#+\s*)?LESSON\s+(\d+)(.*)$/gim;
   const matches = [...normalizedMarkdown.matchAll(headerRegex)];
 
   if (matches.length === 0) {
