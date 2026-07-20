@@ -546,6 +546,7 @@ function TimeBasedLights() {
       <directionalLight position={[-2, 3, 3]} intensity={c.fillIntensity} color={c.fill} />
       <directionalLight position={[0, -1, 3]} intensity={0.2} color="#f0e6ff" />
       <pointLight position={[0, 2, 2]} intensity={0.3} color={c.rim} distance={5} />
+      {/* @ts-ignore */}
       <hemisphereLight skyColor={c.key} groundColor="#333333" intensity={0.35} />
     </>
   );

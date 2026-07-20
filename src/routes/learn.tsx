@@ -180,7 +180,7 @@ function LearnPage() {
               const skColor = dark ? sk.dark : sk.light;
               return (
                 <motion.div key={lesson._id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                  <Link to={`/lessons/${lesson._id}`}
+                  <Link to={`/lessons/${lesson._id}` as any}
                     className={`block rounded-2xl ${cardBg} backdrop-blur-lg border p-5 ${cardHover} transition-all duration-300 group`}>
                     <div className="flex items-center gap-4">
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${skColor}`}>

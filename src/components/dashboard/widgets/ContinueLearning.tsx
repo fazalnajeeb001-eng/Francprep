@@ -21,7 +21,7 @@ export function ContinueLearning({ cl, dark }: { cl: DashboardData["continueLear
             </div>
             <span className="text-purple-400 text-xs font-bold">{cl.progress}%</span>
           </div>
-          <Link to={`/lessons/${cl.lessonId}`} className="mt-4 w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2">
+          <Link to={`/lessons/${cl.lessonId}` as any} className="mt-4 w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2">
             <Play className="w-4 h-4" /> Resume Lesson
           </Link>
         </div>

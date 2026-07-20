@@ -92,7 +92,7 @@ function Water({ x, y, width }: { x: number; y: number; width: number }) {
 }
 
 export function CefrScene({ level, width = 400, height = 160 }: SceneProps) {
-  const scenes: Record<string, JSX.Element> = {
+  const scenes: Record<string, React.ReactNode> = {
     A1: (
       <g>
         {/* Sky */}
