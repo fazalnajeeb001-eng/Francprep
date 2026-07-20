@@ -131,6 +131,22 @@ export class LessonController {
       next(error);
     }
   }
+
+  /**
+   * POST /api/lessons/:id/submit-block
+   */
+  async submitBlock(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const { blockType, answers } = req.body;
+      const result = await lessonService.submitBlock(req.params.id, blockType, answers);
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const lessonController = new LessonController();
