@@ -118,6 +118,14 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
         
         // Apply manual overrides to properties if specified
         for (const lesson of parsedLessons) {
+          // Normalize vocabulary fields
+          if (lesson.vocabulary && !lesson.vocabItems) {
+            lesson.vocabItems = lesson.vocabulary;
+          }
+          if (lesson.vocabItems && !lesson.vocabulary) {
+            lesson.vocabulary = lesson.vocabItems;
+          }
+
           if (manualOverrides?.level) lesson.level = manualOverrides.level;
           if (manualOverrides?.chapterNum) lesson.chapterId = `${manualOverrides.level.toLowerCase()}-ch${manualOverrides.chapterNum}`;
           if (manualOverrides?.lessonNum) {

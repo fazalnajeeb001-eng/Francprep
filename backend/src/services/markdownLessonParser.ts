@@ -435,7 +435,7 @@ function parseSpeaking(text: string) {
   return { guidedActivity, roleplay, pronunciationTip };
 }
 
-function parseWriting(text: string) {
+export function parseWriting(text: string) {
   const task = (text.match(/(?:\*\*|)?Task:(?:\*\*|)?\s*([\s\S]*?)(?=(?:\*\*|)?Model|(?:\*\*|)?Writing|$)/i)?.[1] || '').split('\n').filter(l => l.trim()).map(l => l.trim()).join(' ');
   const modelAnswer = (text.match(/(?:\*\*|)?Model Answer:(?:\*\*|)?\s*([\s\S]*?)(?=(?:\*\*|)?(?:Writing )?Checklist|$)/i)?.[1] || '').split('\n').filter(l => l.trim()).map(l => l.trim()).join(' ');
   const checklist: string[] = [];
