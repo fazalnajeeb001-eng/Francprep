@@ -1008,6 +1008,9 @@ function fillPlaceholders(lesson: ParsedLesson): void {
       lesson.writing.modelAnswer = "—";
       lesson.writing.checklist = ["Completed the summary."];
     }
+    if (lesson.writing && (!lesson.writing.checklist || lesson.writing.checklist.length === 0)) {
+      lesson.writing.checklist = ["Completed the summary."];
+    }
   }
 
   if (!lesson.practiceExercises.questions || lesson.practiceExercises.questions.length === 0) {
