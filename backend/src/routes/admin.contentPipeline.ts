@@ -1109,8 +1109,9 @@ router.get('/content-pipeline/audit-all', async (req: AuthRequest, res: Response
       const { errors, warnings } = await validateParsedLesson(canonical);
       const qualityWarnings: string[] = [...warnings];
 
-      const isL7 = l.lessonId.endsWith('-l7');
-      const isL8 = l.lessonId.endsWith('-l8');
+      const lessonIdStr = l.lessonId || '';
+      const isL7 = lessonIdStr.endsWith('-l7');
+      const isL8 = lessonIdStr.endsWith('-l8');
 
       // Check for missing vocabulary (placeholder dashes or empty array) on non-L7/L8 lessons
       if (!isL7 && !isL8) {
@@ -1172,8 +1173,9 @@ router.post('/content-pipeline/auto-fix', async (req: AuthRequest, res: Response
       if (!canonical) continue;
 
       let modified = false;
-      const isL7 = lessonDoc.lessonId.endsWith('-l7');
-      const isL8 = lessonDoc.lessonId.endsWith('-l8');
+      const lessonIdStr = lessonDoc.lessonId || '';
+      const isL7 = lessonIdStr.endsWith('-l7');
+      const isL8 = lessonIdStr.endsWith('-l8');
 
       // 1. Clean up illegal properties on Lesson 7
       if (isL7) {
