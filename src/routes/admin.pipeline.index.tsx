@@ -30,11 +30,14 @@ interface DraftItem {
 
 function PipelineDashboardPage() {
   const { dark } = useTheme();
-  const [pipelineTab, setPipelineTab] = useState<"import" | "drafts" | "integrated" | "history">("import");
+  const [pipelineTab, setPipelineTab] = useState<"import" | "drafts" | "integrated" | "published">("import");
   
   const [drafts, setDrafts] = useState<DraftItem[]>([]);
+  const [publishedLessons, setPublishedLessons] = useState<any[]>([]);
   const [selectedDraft, setSelectedDraft] = useState<DraftItem | null>(null);
+  const [selectedPublished, setSelectedPublished] = useState<any | null>(null);
   const [previewDraftId, setPreviewDraftId] = useState<string | null>(null);
+  const [previewLessonId, setPreviewLessonId] = useState<string | null>(null);
 
   // Safety Confirmation
   const [loading, setLoading] = useState(false);
@@ -76,6 +79,11 @@ function PipelineDashboardPage() {
       const json = await res.json();
       if (json.success) {
         setDrafts(json.data || []);
+      }
+      const pubRes = await apiFetch("/lessons?limit=10");
+      const pubJson = await pubRes.json();
+      if (pubJson.success) {
+        setPublishedLessons(pubJson.data || []);
       }
     } catch (e) {
       console.error(e);
@@ -242,6 +250,26 @@ function PipelineDashboardPage() {
   const txtSec = dark ? "text-gray-400" : "text-gray-500";
   const inp = `w-full rounded-xl ${dark ? "bg-[#070B17] border-[#1e2a4a] text-white" : "bg-white border-gray-300 text-gray-900"} border px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all`;
 
+  if (previewLessonId) {
+    return (
+      <div className="fixed inset-0 z-50 bg-[#070B17] overflow-y-auto">
+        <div className="sticky top-0 z-50 bg-[#101828]/90 border-b border-[#1e2a4a] px-6 py-3 flex items-center justify-between backdrop-blur-md">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
+              Published Lesson Read-Only Preview
+            </span>
+          </div>
+          <button onClick={() => setPreviewLessonId(null)} className="px-4 py-1.5 bg-[#1e2a4a] hover:bg-[#283863] text-white text-xs font-semibold rounded-lg transition-colors">
+            Close Preview
+          </button>
+        </div>
+        <div className="p-4 md:p-8">
+          <LessonPage lessonId={previewLessonId} onBack={() => setPreviewLessonId(null)} />
+        </div>
+      </div>
+    );
+  }
+
   if (previewDraftId) {
     return (
       <div className="fixed inset-0 z-50 bg-[#070B17] overflow-y-auto">
@@ -309,17 +337,21 @@ function PipelineDashboardPage() {
 
         {/* Tabs Bar */}
         <div className="flex border-b border-[#1e2a4a] gap-6 text-sm">
-          <button onClick={() => { setPipelineTab("import"); setSelectedDraft(null); }}
+          <button onClick={() => { setPipelineTab("import"); setSelectedDraft(null); setSelectedPublished(null); }}
             className={`pb-3 font-semibold transition-all border-b-2 ${pipelineTab === "import" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
             📥 Import Parser Workspace
           </button>
-          <button onClick={() => { setPipelineTab("drafts"); setSelectedDraft(null); }}
+          <button onClick={() => { setPipelineTab("drafts"); setSelectedDraft(null); setSelectedPublished(null); }}
             className={`pb-3 font-semibold transition-all border-b-2 ${pipelineTab === "drafts" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
             📂 Latest Staged Drafts ({activeStagedDrafts.slice(0, 1).length})
           </button>
-          <button onClick={() => { setPipelineTab("integrated"); setSelectedDraft(null); }}
+          <button onClick={() => { setPipelineTab("integrated"); setSelectedDraft(null); setSelectedPublished(null); }}
             className={`pb-3 font-semibold transition-all border-b-2 ${pipelineTab === "integrated" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
             🔄 Latest Integrated Drafts ({integratedDrafts.slice(0, 1).length})
+          </button>
+          <button onClick={() => { setPipelineTab("published"); setSelectedDraft(null); setSelectedPublished(null); }}
+            className={`pb-3 font-semibold transition-all border-b-2 ${pipelineTab === "published" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
+            👑 Latest Published Content ({publishedLessons.slice(0, 1).length})
           </button>
         </div>
 
@@ -433,7 +465,7 @@ function PipelineDashboardPage() {
               </form>
             )}
 
-            {/* TAB 2 & 3: Staged & Integrated List */}
+            {/* TAB 2, 3, & 4: Staged, Integrated, & Published Latest List */}
             {pipelineTab !== "import" && (
               <div className={`${card} border rounded-2xl p-5 space-y-4`}>
                 <div className="flex items-center justify-between border-b border-[#1e2a4a] pb-3">
@@ -445,38 +477,69 @@ function PipelineDashboardPage() {
                   </span>
                 </div>
 
-                {(pipelineTab === "drafts" ? activeStagedDrafts.slice(0, 1) : integratedDrafts.slice(0, 1)).length === 0 ? (
-                  <div className="py-12 text-center text-gray-500 text-xs">
-                    No active {pipelineTab} pushed yet. Use the Import Parser to create one.
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {(pipelineTab === "drafts" ? activeStagedDrafts.slice(0, 1) : integratedDrafts.slice(0, 1)).map((d) => {
-                      const isSelected = selectedDraft?._id === d._id;
-                      const hasErrors = d.validationErrors && d.validationErrors.length > 0;
-                      return (
-                        <div key={d._id} onClick={() => setSelectedDraft(d)}
+                {pipelineTab === "published" ? (
+                  publishedLessons.slice(0, 1).length === 0 ? (
+                    <div className="py-12 text-center text-gray-500 text-xs">
+                      No published lesson records found in database.
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {publishedLessons.slice(0, 1).map((l) => (
+                        <div key={l._id} onClick={() => { setSelectedPublished(l); setSelectedDraft(null); }}
                           className={`p-4 rounded-xl border cursor-pointer transition-all ${
-                            isSelected ? "bg-purple-500/10 border-purple-500/40" : "hover:border-purple-500/20"
+                            selectedPublished?._id === l._id ? "bg-amber-500/10 border-amber-500/40" : "hover:border-amber-500/20"
                           } ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-white border-gray-200"}`}>
                           <div className="flex justify-between items-start">
                             <div>
                               <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400">{d.level}</span>
-                                <span className="text-[10px] font-mono text-gray-400">{d.lessonId}</span>
+                                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400">{l.level}</span>
+                                <span className="text-[10px] font-mono text-gray-400">{l.lessonId}</span>
                               </div>
-                              <h4 className="text-xs font-bold text-white mt-1.5">{d.title}</h4>
+                              <h4 className="text-xs font-bold text-white mt-1.5">{l.title}</h4>
+                              <p className="text-[10px] text-gray-500 mt-1">Last published {new Date(l.updatedAt).toLocaleString()}</p>
                             </div>
-                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                              hasErrors ? "bg-red-500/10 text-red-400" : "bg-emerald-500/10 text-emerald-400"
-                            }`}>
-                              {hasErrors ? `❌ ${d.validationErrors.length} Schema Errors` : "✓ Schema Valid"}
+                            <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-500/10 text-emerald-400">
+                              Live Catalog
                             </span>
                           </div>
                         </div>
-                      );
-                    })}
-                  </div>
+                      ))}
+                    </div>
+                  )
+                ) : (
+                  (pipelineTab === "drafts" ? activeStagedDrafts.slice(0, 1) : integratedDrafts.slice(0, 1)).length === 0 ? (
+                    <div className="py-12 text-center text-gray-500 text-xs">
+                      No active {pipelineTab} pushed yet. Use the Import Parser to create one.
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {(pipelineTab === "drafts" ? activeStagedDrafts.slice(0, 1) : integratedDrafts.slice(0, 1)).map((d) => {
+                        const isSelected = selectedDraft?._id === d._id;
+                        const hasErrors = d.validationErrors && d.validationErrors.length > 0;
+                        return (
+                          <div key={d._id} onClick={() => { setSelectedDraft(d); setSelectedPublished(null); }}
+                            className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                              isSelected ? "bg-purple-500/10 border-purple-500/40" : "hover:border-purple-500/20"
+                            } ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-white border-gray-200"}`}>
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400">{d.level}</span>
+                                  <span className="text-[10px] font-mono text-gray-400">{d.lessonId}</span>
+                                </div>
+                                <h4 className="text-xs font-bold text-white mt-1.5">{d.title}</h4>
+                              </div>
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                                hasErrors ? "bg-red-500/10 text-red-400" : "bg-emerald-500/10 text-emerald-400"
+                              }`}>
+                                {hasErrors ? `❌ ${d.validationErrors.length} Schema Errors` : "✓ Schema Valid"}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )
                 )}
               </div>
             )}
@@ -484,7 +547,23 @@ function PipelineDashboardPage() {
 
           {/* Right Inspector Panel */}
           <div className="lg:col-span-1">
-            {selectedDraft ? (
+            {selectedPublished ? (
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className={`${card} border rounded-2xl p-5 space-y-5 sticky top-24`}>
+                <div className="border-b border-[#1e2a4a] pb-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-400 font-mono">{selectedPublished.lessonId}</span>
+                    <span className="text-[10px] font-bold text-amber-400 px-2 py-0.5 rounded-full bg-amber-500/10">Live Published</span>
+                  </div>
+                  <h2 className="text-base font-bold text-white mt-1">{selectedPublished.title}</h2>
+                  
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    <button onClick={() => setPreviewLessonId(selectedPublished.lessonId)} className="px-3 py-1 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 text-xs font-semibold rounded-lg transition-all flex items-center gap-1">
+                      <Eye className="w-3.5 h-3.5" /> Read-Only Preview
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ) : selectedDraft ? (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className={`${card} border rounded-2xl p-5 space-y-5 sticky top-24`}>
                 <div className="border-b border-[#1e2a4a] pb-3">
                   <div className="flex items-center justify-between">
@@ -514,7 +593,7 @@ function PipelineDashboardPage() {
               </motion.div>
             ) : (
               <div className={`${card} border rounded-2xl p-6 text-center text-gray-500 text-xs`}>
-                Select a draft item from the list to view schema diagnostics & actions.
+                Select an item from the list to view details & actions.
               </div>
             )}
           </div>
