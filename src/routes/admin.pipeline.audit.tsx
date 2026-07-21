@@ -63,7 +63,7 @@ function AuditsAndQualityPage() {
     runAudit(selectedLevel);
   }, [selectedLevel]);
 
-  const handleAutoFix = async () => {
+  const handleAutoFix = async (mode: 'ai' | 'quick' = 'ai') => {
     setFixing(true);
     setActionStatus({ loading: true, error: "", success: "" });
     try {
@@ -71,14 +71,14 @@ function AuditsAndQualityPage() {
       const res = await apiFetch("/admin/content-pipeline/auto-fix", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lessonIds: failedIds }),
+        body: JSON.stringify({ lessonIds: failedIds, mode, model: "claude-sonnet" }),
       });
       const json = await res.json();
       if (json.success) {
         setActionStatus({
           loading: false,
           error: "",
-          success: `Auto-repair complete! ${json.repairedCount} lesson records repaired cleanly in MongoDB.`,
+          success: `Auto-repair complete using ${mode === 'ai' ? 'AI Smart-Repair (Claude 3.5 Sonnet)' : 'Quick Clean'}! ${json.repairedCount} lesson records repaired cleanly.`,
         });
         runAudit(selectedLevel);
       } else {
@@ -185,11 +185,18 @@ function AuditsAndQualityPage() {
               <h3 className="text-xl font-extrabold text-red-400 mt-1">{failedCount}</h3>
             </div>
             {failedCount > 0 ? (
-              <button onClick={handleAutoFix} disabled={fixing}
-                className="px-3 py-1.5 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold rounded-xl shadow-md flex items-center gap-1">
-                {fixing ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Wrench className="w-3 h-3" />}
-                <span>Fix All Automatically</span>
-              </button>
+              <div className="flex flex-col gap-1.5">
+                <button onClick={() => handleAutoFix('ai')} disabled={fixing}
+                  className="px-3 py-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white text-[10px] font-bold rounded-xl shadow-md flex items-center gap-1">
+                  {fixing ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                  <span>🤖 AI Smart-Repair</span>
+                </button>
+                <button onClick={() => handleAutoFix('quick')} disabled={fixing}
+                  className="px-3 py-1 bg-gray-500/10 hover:bg-gray-500/20 text-gray-300 text-[9px] font-bold rounded-xl border border-gray-500/20 flex items-center justify-center gap-1">
+                  <Wrench className="w-2.5 h-2.5" />
+                  <span>⚡ Quick Clean</span>
+                </button>
+              </div>
             ) : (
               <Shield className="w-8 h-8 text-emerald-400 opacity-40" />
             )}

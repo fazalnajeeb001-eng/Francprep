@@ -1159,10 +1159,10 @@ router.get('/content-pipeline/audit-all', async (req: AuthRequest, res: Response
 });
 
 // ─── POST /content-pipeline/auto-fix ────────────────────────────────────────
-// One-click repair engine for flagged audit errors
+// Repair engine for flagged audit errors (supports mode: 'quick' or mode: 'ai')
 router.post('/content-pipeline/auto-fix', async (req: AuthRequest, res: Response) => {
   try {
-    const { lessonIds } = req.body;
+    const { lessonIds, mode = 'ai', model = 'claude-sonnet' } = req.body;
     const filter: any = Array.isArray(lessonIds) && lessonIds.length > 0 ? { lessonId: { $in: lessonIds } } : { level: 'A1' };
     const lessons = await Lesson.find(filter);
     let repairedCount = 0;
@@ -1189,8 +1189,63 @@ router.post('/content-pipeline/auto-fix', async (req: AuthRequest, res: Response
         }
       }
 
-      // 3. Fix multiple choice / true false questions with missing options
+      // 3. Check for missing vocabulary (placeholder dashes or empty)
+      const vocab = canonical.vocabulary || canonical.vocabItems;
+      const needsVocabFix = !isL7 && !isL8 && (!vocab || vocab.length === 0 || (vocab.length === 1 && vocab[0]?.french === '—'));
+
+      // 4. Check for multiple choice / true false questions with missing options
+      let needsOptionsFix = false;
       const exerciseBlocks = [canonical.grammarDrills, canonical.reading, canonical.listening, canonical.practiceExercises];
+      for (const block of exerciseBlocks) {
+        if (block?.questions) {
+          for (const q of block.questions) {
+            if ((q.type === 'multiple_choice' || q.type === 'true_false') && (!q.options || q.options.length === 0)) {
+              needsOptionsFix = true;
+              break;
+            }
+          }
+        }
+      }
+
+      if (mode === 'ai' && (needsVocabFix || needsOptionsFix)) {
+        try {
+          const prompt = `You are a French CEFR level ${lessonDoc.level} curriculum coordinator.
+Fix the missing content fields in this lesson JSON.
+Lesson Title: "${canonical.title}"
+Lesson Objectives: "${(canonical.objectives || []).join(', ')}"
+Grammar Focus: "${canonical.grammarFocus || ''}"
+Vocabulary Focus: "${canonical.vocabularyFocus || ''}"
+
+Issues to fix:
+${needsVocabFix ? '- Generate 4 to 6 authentic CEFR A1 French vocabulary items matching the title/focus. Format: [{"french": "...", "english": "...", "pronunciation": "...", "example": "..."}]' : ''}
+${needsOptionsFix ? '- For any multiple_choice question with empty options, populate 4 plausible options array including the correctAnswer.' : ''}
+
+Respond ONLY with valid JSON of the fixed fields to merge:
+{
+  ${needsVocabFix ? '"vocabulary": [{"french": "...", "english": "...", "pronunciation": "...", "example": "..."}]' : ''}
+}
+`;
+
+          const aiReply = await generateAICompletion({
+            model,
+            prompt,
+            systemPrompt: 'You are a precise CEFR curriculum repair assistant. Respond strictly with valid JSON.',
+            temperature: 0.2,
+          });
+
+          const cleanJson = aiReply.replace(/```json/g, '').replace(/```/g, '').trim();
+          const parsedFix = JSON.parse(cleanJson);
+
+          if (needsVocabFix && parsedFix.vocabulary?.length) {
+            canonical.vocabulary = parsedFix.vocabulary;
+            modified = true;
+          }
+        } catch (aiErr) {
+          console.error(`AI repair fallback for ${lessonDoc.lessonId}:`, aiErr);
+        }
+      }
+
+      // Fast deterministic fallbacks if AI mode wasn't used or fallback needed
       for (const block of exerciseBlocks) {
         if (block?.questions) {
           for (const q of block.questions) {
@@ -1214,7 +1269,7 @@ router.post('/content-pipeline/auto-fix', async (req: AuthRequest, res: Response
 
     res.json({
       success: true,
-      message: `Repaired ${repairedCount} lesson records successfully in MongoDB`,
+      message: `Repaired ${repairedCount} lesson records successfully using ${mode === 'ai' ? 'AI Smart-Repair' : 'Quick Clean'}`,
       repairedCount,
     });
   } catch (error: any) {
