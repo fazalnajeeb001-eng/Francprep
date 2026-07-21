@@ -209,47 +209,20 @@ function PublishedContentSubSectionPage() {
                   <div className="p-3 rounded-xl border bg-emerald-500/5 border-emerald-500/10 flex items-start gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-xs font-bold text-white">Active in Student Catalog</p>
-                      <p className="text-[10px] text-emerald-400/80 mt-0.5">Lesson is published and accessible to registered students.</p>
+                      <p className="text-xs font-bold text-white">Active Production Catalog Record</p>
+                      <p className="text-[10px] text-emerald-400/80 mt-0.5">This lesson is live and locked. To edit or re-publish prior versions, visit the Published History sub-section.</p>
                     </div>
                   </div>
-                </div>
-
-                <div className="flex gap-2 border-t pt-4">
-                  <button onClick={() => setRepublishConfirmId(selectedLesson._id)}
-                    className="flex-1 py-2.5 bg-gradient-to-r from-amber-500 to-yellow-500 text-white text-xs font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-1">
-                    <Edit3 className="w-3.5 h-3.5" />
-                    <span>Re-Publish Updates</span>
-                  </button>
                 </div>
               </motion.div>
             ) : (
               <div className={`${card} border rounded-2xl p-6 text-center text-gray-500 text-xs`}>
-                Select a published lesson record to view actions.
+                Select a live published lesson record to view metadata.
               </div>
             )}
           </div>
         </div>
       </div>
-
-      <AnimatePresence>
-        {republishConfirmId && selectedLesson && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
-              className={`${card} border rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl`}>
-              <div className="text-center">
-                <Crown className="w-12 h-12 text-amber-400 mx-auto mb-2" />
-                <h3 className="text-base font-bold text-white">Confirm Catalog Re-Publish</h3>
-                <p className="text-xs text-gray-400 mt-2">Re-publishing will update the live catalog version accessible to students.</p>
-              </div>
-              <div className="flex gap-2">
-                <button onClick={() => setRepublishConfirmId(null)} className="flex-1 py-2 bg-[#1e2a4a] text-gray-300 text-xs font-semibold rounded-lg">Cancel</button>
-                <button onClick={() => handleRepublish(selectedLesson)} className="flex-1 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-white text-xs font-bold rounded-lg">Confirm Re-Publish</button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
