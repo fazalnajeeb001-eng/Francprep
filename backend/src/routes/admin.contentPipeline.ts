@@ -345,14 +345,24 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
 
       if (!detectedChapterNum) {
         const chapterMatch = markdown.match(/Chapter\s*(\d+)/i);
-        detectedChapterNum = chapterMatch ? parseInt(chapterMatch[1]) : 1;
+        detectedChapterNum = chapterMatch ? parseInt(chapterMatch[1], 10) : 1;
+      } else if (typeof detectedChapterNum === 'string') {
+        const numMatch = (detectedChapterNum as string).match(/\d+/);
+        detectedChapterNum = numMatch ? parseInt(numMatch[0], 10) : 1;
+      }
+
+      if (manualOverrides && manualOverrides.chapterNum) {
+        if (typeof manualOverrides.chapterNum === 'string') {
+          const mNum = (manualOverrides.chapterNum as any).match(/\d+/);
+          manualOverrides.chapterNum = mNum ? parseInt(mNum[0], 10) : 1;
+        }
       }
 
       try {
         parsedLessons = parseLessonFromMarkdown(
           markdown,
           detectedLevel,
-          parseInt(detectedChapterNum),
+          typeof detectedChapterNum === 'number' ? detectedChapterNum : parseInt(detectedChapterNum, 10),
           manualOverrides
         );
       } catch (parseErr: any) {
