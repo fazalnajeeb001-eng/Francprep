@@ -157,25 +157,25 @@ function buildSections(lesson: LessonData): SectionDef[] {
 
   if (isLesson8) {
     return [
-      { key: 'vocabBank', label: 'Vocab Bank', icon: <Languages className="w-3.5 h-3.5" />, hasContent: !!lesson.vocabularyBank?.items?.length && lesson.vocabularyBank.items[0] !== '—' },
-      { key: 'grammarSummary', label: 'Grammar Summary', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: !!lesson.grammarSummary?.content && lesson.grammarSummary.content !== 'Consolidated grammar reference from this chapter.' },
-      { key: 'canDoReview', label: 'Can-Do Review', icon: <CheckCircle2 className="w-3.5 h-3.5" />, hasContent: !!lesson.canDoReview?.length },
-      { key: 'mixedPractice', label: 'Mixed Practice', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: !!lesson.mixedPracticeExercises?.questions?.length && !lesson.mixedPracticeExercises.questions[0]?.id?.includes('mpe-dummy') },
-      { key: 'assessment', label: 'DELF Assessment', icon: <Award className="w-3.5 h-3.5" />, hasContent: !!lesson.assessment?.sections?.length },
-      { key: 'selfReflection', label: 'Reflection', icon: <Star className="w-3.5 h-3.5" />, hasContent: !!lesson.selfReflection?.length },
-      { key: 'completion', label: 'Complete', icon: <Trophy className="w-3.5 h-3.5" />, hasContent: !!lesson.completionSummary?.content },
-    ].filter(s => s.hasContent);
+      { key: 'vocabBank', label: 'Vocab Bank', icon: <Languages className="w-3.5 h-3.5" />, hasContent: true },
+      { key: 'grammarSummary', label: 'Grammar Summary', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: true },
+      { key: 'canDoReview', label: 'Can-Do Review', icon: <CheckCircle2 className="w-3.5 h-3.5" />, hasContent: true },
+      { key: 'mixedPractice', label: 'Mixed Practice', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: true },
+      { key: 'assessment', label: 'DELF Assessment', icon: <Award className="w-3.5 h-3.5" />, hasContent: true },
+      { key: 'selfReflection', label: 'Reflection', icon: <Star className="w-3.5 h-3.5" />, hasContent: true },
+      { key: 'completion', label: 'Complete', icon: <Trophy className="w-3.5 h-3.5" />, hasContent: true },
+    ];
   }
 
   if (isLesson7) {
     return [
-      { key: 'warmUp', label: 'Warm-Up', icon: <HelpCircle className="w-3.5 h-3.5" />, hasContent: !!lesson.warmUp?.content && lesson.warmUp.content !== '—' },
-      { key: 'scene', label: 'Scene', icon: <Headphones className="w-3.5 h-3.5" />, hasContent: !!lesson.scene?.text },
-      { key: 'speakingL7', label: 'Speaking', icon: <Mic className="w-3.5 h-3.5" />, hasContent: !!lesson.speaking?.roleplay && !lesson.speaking.roleplay.startsWith('Practice the dialogue') },
-      { key: 'writing', label: 'Writing', icon: <PenTool className="w-3.5 h-3.5" />, hasContent: !!lesson.writing?.task && !lesson.writing.task.startsWith('Write a short paragraph') },
-      { key: 'practice', label: 'Quiz', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: !!lesson.practiceExercises?.questions?.length && !lesson.practiceExercises.questions[0]?.id?.includes('pe-dummy') },
-      { key: 'review', label: 'Review', icon: <Star className="w-3.5 h-3.5" />, hasContent: (!!lesson.miniReview?.content && lesson.miniReview.content !== '—') || !!lesson.selfAssessment?.length },
-    ].filter(s => s.hasContent);
+      { key: 'warmUp', label: 'Warm-Up', icon: <HelpCircle className="w-3.5 h-3.5" />, hasContent: true },
+      { key: 'scene', label: 'Scene', icon: <Headphones className="w-3.5 h-3.5" />, hasContent: true },
+      { key: 'speakingL7', label: 'Speaking', icon: <Mic className="w-3.5 h-3.5" />, hasContent: true },
+      { key: 'writing', label: 'Writing', icon: <PenTool className="w-3.5 h-3.5" />, hasContent: true },
+      { key: 'practice', label: 'Quiz', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: true },
+      { key: 'review', label: 'Review', icon: <Star className="w-3.5 h-3.5" />, hasContent: true },
+    ];
   }
 
   const sections: SectionDef[] = [

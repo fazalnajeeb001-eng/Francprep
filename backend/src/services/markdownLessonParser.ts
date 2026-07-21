@@ -468,7 +468,10 @@ export function parseWriting(text: string) {
       if (c && c !== '--' && c !== '---') checklist.push(stripMd(c));
     }
   }
-  return { task, modelAnswer, checklist };
+  if (checklist.length === 0) {
+    checklist.push('Used target vocabulary', 'Used correct grammar structures', 'Clear and coherent writing');
+  }
+  return { task: task || 'Write a short paragraph using the vocabulary and grammar from this lesson.', modelAnswer: modelAnswer || '—', checklist };
 }
 
 // ─── FIXED: parsePracticeExercises ─────────────────────────────────────────
@@ -922,7 +925,7 @@ function fillPlaceholders(lesson: ParsedLesson): void {
       content: lesson.miniReview?.content || `Congratulations on completing this chapter! You have practiced all four skills. Move on to the next chapter to continue your French journey.`,
     };
 
-    // 8. Remove L8-illegal fields (set to safe defaults since they're required by interface)
+    // 8. Remove L8-illegal fields so schema validation passes
     delete (lesson as any).warmUp;
     delete (lesson as any).explanation;
     delete (lesson as any).vocabulary;
