@@ -102,12 +102,12 @@ function PipelineDashboardPage() {
     setActionStatus({ loading: true, error: "", success: "" });
 
     try {
-      const res = await apiFetch("/admin/content-pipeline/import-markdown", {
+      const res = await apiFetch("/admin/content-pipeline/import", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          markdownText: importMarkdown,
-          importFormat,
+          markdown: importMarkdown,
+          format: importFormat,
           manualOverrides: importOverrides
         })
       });
@@ -149,14 +149,14 @@ function PipelineDashboardPage() {
     setVerifyingAI(true);
     setAiReport(null);
     try {
-      const res = await apiFetch(`/admin/content-pipeline/drafts/${draftId}/verify-ai`, {
+      const res = await apiFetch(`/admin/content-pipeline/drafts/${draftId}/ai-verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ model: selectedModel })
       });
       const json = await res.json();
       if (json.success) {
-        setAiReport(json.report);
+        setAiReport(json.data || json.report);
       }
     } catch (e: any) {
       console.error(e);
