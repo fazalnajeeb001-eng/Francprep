@@ -90,7 +90,6 @@ const API_BASE_URL: string =
   (typeof window !== "undefined" && (import.meta as Record<string, any>).env?.VITE_API_URL) ||
   (typeof window === "undefined" ? "https://francprep-production.up.railway.app/api" : "/api");
 
-console.log("[auth] API base URL:", API_BASE_URL);
 
 export const api: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,

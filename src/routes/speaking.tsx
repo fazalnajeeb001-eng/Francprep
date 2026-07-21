@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Volume2, ArrowLeft, Mic, CheckCircle2, XCircle, ChevronLeft, ChevronRight, Shuffle } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
+import { speak as speakText } from "~/lib/speech";
 
 export const Route = createFileRoute("/speaking")({ component: SpeakingPage });
 
@@ -64,20 +65,8 @@ function SpeakingPage() {
   const currentPhrase = cardPhrases[current];
   const hasRecognition = typeof window !== "undefined" && (window.SpeechRecognition || window.webkitSpeechRecognition);
 
-  const speak = (text: string) => {
-    if (typeof window === "undefined" || !window.speechSynthesis) return;
-    try {
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = "fr-FR";
-      u.rate = 0.85;
-      const voices = window.speechSynthesis.getVoices();
-      const femaleVoice = voices.find(
-        v => v.lang.startsWith("fr") && (v.name.toLowerCase().includes("female") || v.name.includes("Samantha") || v.name.includes("Audrey") || v.name.includes("Amélie") || v.name.includes("Julie") || v.name.includes("Marie"))
-      );
-      if (femaleVoice) u.voice = femaleVoice;
-      window.speechSynthesis.speak(u);
-    } catch { /* ignore */ }
+  const handleSpeak = (text: string) => {
+    speakText(text);
   };
 
   const startListening = useCallback(() => {
@@ -204,7 +193,7 @@ function SpeakingPage() {
           <p className={`text-sm mb-6 ${textSec}`}>{currentPhrase.english}</p>
 
           {/* Speaker button */}
-          <button onClick={() => speak(currentPhrase.french)}
+          <button onClick={() => handleSpeak(currentPhrase.french)}
             className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white hover:opacity-80 transition-all shadow-lg shadow-purple-500/25 mx-auto mb-8">
             <Volume2 className="w-5 h-5" />
           </button>

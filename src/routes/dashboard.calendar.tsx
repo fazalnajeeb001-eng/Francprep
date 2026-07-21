@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useAuth } from "~/lib/AuthContext";
 import { apiFetch } from "~/lib/apiFetch";
+import { useTheme } from "~/lib/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Flame, Calendar as CalendarIcon, BookOpen, ArrowLeft, TrendingUp, Target } from "lucide-react";
 
@@ -19,17 +20,12 @@ const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function CalendarPage() {
   const { user, isLoading: authLoading } = useAuth();
+  const { dark } = useTheme();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
-  const [dark, setDark] = useState(true);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("fp_theme");
-    if (stored === "light") setDark(false);
-  }, []);
 
   useEffect(() => {
     if (authLoading || !user) return;

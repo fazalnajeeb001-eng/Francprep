@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { apiFetch } from "~/lib/apiFetch";
+import { useTheme } from "~/lib/ThemeContext";
 import { motion } from "framer-motion";
 import {
   Search, Filter, Plus, ChevronLeft, ChevronRight, Clock, BookOpen,
@@ -42,6 +43,7 @@ const categoryIcons: Record<string, string> = {
 const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
 function AdminLessonsPage() {
+  const { dark } = useTheme();
   const [activeTab, setActiveTab] = useState<"list" | "access" | "audit">("list");
   
   // Lesson List States
@@ -165,7 +167,6 @@ function AdminLessonsPage() {
     }, 400));
   };
 
-  const dark = true;
   const cardBg = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200";
   const inp = `w-full rounded-xl ${dark ? "bg-[#070B17] border-[#1e2a4a] text-white" : "bg-white border-gray-300 text-gray-900"} border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all`;
 

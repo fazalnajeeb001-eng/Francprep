@@ -21,7 +21,6 @@
     "axios": "^1.18.1",
     "framer-motion": "^12.42.2",
     "lucide-react": "^1.23.0",
-    "mongoose": "^9.7.4",
     "nitro": "npm:nitro-nightly@^3.0.1-20260629-191608-8b0b9576",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",

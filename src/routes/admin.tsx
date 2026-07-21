@@ -1,6 +1,7 @@
 import { createFileRoute, Link, Outlet, useRouterState, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { useAuth } from "~/lib/AuthContext";
+import { useTheme } from "~/lib/ThemeContext";
 import { motion } from "framer-motion";
 import {
   Users, BookOpen, FileText, Crown, Shield,
@@ -39,7 +40,7 @@ const navGroups = [
     items: [
       { label: "Syllabi", icon: BookOpen, href: "/admin/syllabi" },
       { label: "Lessons", icon: FileText, href: "/admin/lessons" },
-      { label: "Exercises", icon: GraduationCap, href: "/admin/exercises" },
+
     ]
   },
   {
@@ -56,9 +57,9 @@ const navGroups = [
 
 function AdminLayout() {
   const { user, isAuthenticated, isLoading } = useAuth();
+  const { dark } = useTheme();
   const router = useRouterState();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const dark = true;
 
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     "Content Pipeline": true,
