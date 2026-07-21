@@ -26,11 +26,33 @@ export interface ParsedLesson {
   grammarDrills?: { questions: ILessonQuestion[] };
   reading?: { title: string; text: string; translation?: string; questions: ILessonQuestion[] };
   listening?: { title: string; transcript: string; translation?: string; questions: ILessonQuestion[] };
-  speaking?: { guidedActivity: string; roleplay?: string; pronunciationTip?: string };
+  speaking?: { guidedActivity?: string; roleplay?: string; extensionTask?: string; pronunciationTip?: string };
   writing?: { task: string; modelAnswer: string; checklist: string[] };
   practiceExercises: { questions: ILessonQuestion[] };
   miniReview: { content: string };
   selfAssessment: string[];
+  // L7 Integrated fields
+  scene?: { title: string; text: string; translation?: string; audioUrl?: string };
+  comprehensionQuestions?: ILessonQuestion[];
+  // L8 Review fields
+  vocabularyBank?: { items: string[]; cumulativeNote: string };
+  grammarSummary?: { content: string };
+  canDoReview?: { statement: string; lessonRef: string }[];
+  mixedPracticeExercises?: { questions: ILessonQuestion[] };
+  assessment?: {
+    examStyle: string;
+    sections: {
+      title: string;
+      skill: string;
+      points: number;
+      instructions: string;
+      sourceText?: string;
+      questions?: ILessonQuestion[];
+      answerKeyNotes?: string;
+    }[];
+  };
+  selfReflection?: string[];
+  completionSummary?: { content: string };
   needsManualConfirmation?: boolean;
 }
 
@@ -87,7 +109,7 @@ function splitSections(body: string): { header: string; body: string }[] {
     } else {
       // 2. Plain text header match: check if line is short and matches a known header
       const lower = trimmed.toLowerCase().replace(/[\*\_\`]/g, '').trim();
-      const isKnown = knownLower.some(k => lower === k || lower.startsWith(k + ' ') || lower.startsWith(k + '(') || lower.startsWith(k + ' -') || lower.startsWith(k + ':'));
+      const isKnown = knownLower.some(k => lower === k || lower.startsWith(k + '(') || lower.startsWith(k + ' -') || lower.startsWith(k + ':'));
       const isGrammarGeneric = lower === 'grammar' || lower.startsWith('grammar ');
       
       if ((isKnown || isGrammarGeneric) && trimmed.length < 60) {
@@ -754,23 +776,168 @@ function fillPlaceholders(lesson: ParsedLesson): void {
   const isL8 = lessonId.endsWith('-l8');
 
   if (isL7) {
-    // Lesson 7 has no Vocabulary or Grammar
-    delete lesson.vocabulary;
-    delete lesson.grammar;
+    // ── L7 Integrated Practice: transform standard fields → L7 schema ──
+    // 1. scene = combined reading.text + listening.transcript
+    const rText = lesson.reading?.text?.trim() || '';
+    const lText = lesson.listening?.transcript?.trim() || '';
+    const sceneText = rText || lText;
+    const rTitle = lesson.reading?.title || lesson.listening?.title || 'Scene';
+    lesson.scene = {
+      title: rTitle,
+      text: sceneText || 'Complete the integrated practice activities.',
+      translation: lesson.reading?.translation || lesson.listening?.translation || undefined,
+    };
+
+    // 2. comprehensionQuestions = combined reading.questions + listening.questions
+    const rQs = lesson.reading?.questions || [];
+    const lQs = lesson.listening?.questions || [];
+    const allComprehension = [...rQs, ...lQs].filter(q => !q.id.includes('dummy'));
+    lesson.comprehensionQuestions = allComprehension.length > 0 ? allComprehension : [{
+      id: `${lessonId}-cq-dummy`,
+      type: 'short_answer' as const,
+      prompt: 'Answer the comprehension questions based on the scene.',
+      correctAnswer: '—',
+      explanation: 'Refer to the scene text.',
+    }];
+
+    // 3. speaking: ensure roleplay is populated
+    if (lesson.speaking) {
+      if (!lesson.speaking.roleplay && lesson.speaking.guidedActivity) {
+        lesson.speaking.roleplay = lesson.speaking.guidedActivity;
+      }
+      if (!lesson.speaking.roleplay) {
+        lesson.speaking.roleplay = 'Practice the dialogue with a partner.';
+      }
+    } else {
+      lesson.speaking = { roleplay: 'Practice the dialogue with a partner.' };
+    }
+
+    // 4. writing: ensure checklist is populated
+    if (lesson.writing) {
+      if (!lesson.writing.task) {
+        lesson.writing.task = 'Write a short paragraph using the vocabulary and grammar from this chapter.';
+        lesson.writing.modelAnswer = '—';
+      }
+      if (!lesson.writing.checklist || lesson.writing.checklist.length === 0) {
+        lesson.writing.checklist = ['Used target vocabulary', 'Used correct grammar structures', 'Clear and coherent writing'];
+      }
+    } else {
+      lesson.writing = {
+        task: 'Write a short paragraph using the vocabulary and grammar from this chapter.',
+        modelAnswer: '—',
+        checklist: ['Used target vocabulary', 'Used correct grammar structures', 'Clear and coherent writing'],
+      };
+    }
+
+    // 5. Remove L7-illegal fields
+    delete (lesson as any).vocabulary;
+    delete (lesson as any).grammar;
+    delete (lesson as any).explanation;
+    delete (lesson as any).grammarDrills;
+    delete (lesson as any).reading;
+    delete (lesson as any).listening;
   }
 
   if (isL8) {
-    // Lesson 8 has no warmUp, explanation, grammarDrills, reading, listening, speaking, writing
-    delete lesson.warmUp;
-    delete lesson.explanation;
-    delete lesson.grammarDrills;
-    delete lesson.reading;
-    delete lesson.listening;
-    delete lesson.speaking;
-    delete lesson.writing;
+    // ── L8 Review & Mini-Assessment: transform standard fields → L8 schema ──
+    // 1. vocabularyBank from vocabulary array
+    const vocabList = lesson.vocabulary || [];
+    if (vocabList.length > 0) {
+      lesson.vocabularyBank = {
+        items: vocabList.map(v => `${v.french} — ${v.english}`),
+        cumulativeNote: `Vocabulary consolidated from Lessons 1-6. No duplication across chapters. Any polysemy cases are deliberate.`,
+      };
+    } else {
+      lesson.vocabularyBank = {
+        items: ['—'],
+        cumulativeNote: 'Vocabulary pending generation.',
+      };
+    }
+
+    // 2. grammarSummary from grammar object
+    const g = lesson.grammar;
+    if (g && (g.explanation || g.formation)) {
+      const parts = [g.explanation, g.formation, g.usage].filter(Boolean);
+      if (g.examples?.length) parts.push('Examples: ' + g.examples.join('; '));
+      lesson.grammarSummary = { content: parts.join('\n\n') || 'Consolidated grammar reference from this chapter.' };
+    } else {
+      lesson.grammarSummary = { content: 'Consolidated grammar reference from this chapter.' };
+    }
+
+    // 3. canDoReview from objectives
+    if (!lesson.canDoReview || lesson.canDoReview.length === 0) {
+      lesson.canDoReview = (lesson.objectives || []).map((obj, i) => ({
+        statement: obj,
+        lessonRef: `Lessons 1-${Math.min(6, (lesson.objectives || []).length)}`,
+      }));
+    }
+
+    // 4. mixedPracticeExercises = practiceExercises (rename)
+    lesson.mixedPracticeExercises = lesson.practiceExercises || { questions: [] };
+    if (!lesson.mixedPracticeExercises.questions || lesson.mixedPracticeExercises.questions.length === 0) {
+      lesson.mixedPracticeExercises.questions = [{
+        id: `${lessonId}-mpe-dummy`,
+        type: 'short_answer' as const,
+        prompt: 'Complete the mixed practice exercises.',
+        correctAnswer: '—',
+        explanation: 'Practice exercises pending.',
+      }];
+    }
+
+    // 5. assessment from DELF questions in practiceExercises
+    const delfQs = (lesson.practiceExercises?.questions || []).filter(q => q.id.includes('delf'));
+    const otherQs = (lesson.practiceExercises?.questions || []).filter(q => !q.id.includes('delf'));
+    if (delfQs.length > 0) {
+      lesson.assessment = {
+        examStyle: `DELF ${lesson.level}`,
+        sections: delfQs.map((q, i) => ({
+          title: `Section ${i + 1}`,
+          skill: 'reading',
+          points: 10,
+          instructions: q.prompt,
+          questions: [q],
+        })),
+      };
+    } else {
+      lesson.assessment = {
+        examStyle: `DELF ${lesson.level}`,
+        sections: [{
+          title: 'Comprehensive Assessment',
+          skill: 'reading',
+          points: 20,
+          instructions: 'Complete all questions based on the chapter content.',
+          questions: [],
+          answerKeyNotes: 'Grade based on accuracy and completeness.',
+        }],
+      };
+    }
+
+    // 6. selfReflection = selfAssessment items
+    lesson.selfReflection = lesson.selfAssessment?.length > 0
+      ? lesson.selfAssessment
+      : ['I can describe my progress in this chapter.'];
+
+    // 7. completionSummary
+    lesson.completionSummary = {
+      content: lesson.miniReview?.content || `Congratulations on completing this chapter! You have practiced all four skills. Move on to the next chapter to continue your French journey.`,
+    };
+
+    // 8. Remove L8-illegal fields (set to safe defaults since they're required by interface)
+    delete (lesson as any).warmUp;
+    delete (lesson as any).explanation;
+    delete (lesson as any).vocabulary;
+    delete (lesson as any).grammar;
+    delete (lesson as any).grammarDrills;
+    delete (lesson as any).reading;
+    delete (lesson as any).listening;
+    delete (lesson as any).speaking;
+    delete (lesson as any).writing;
+    delete (lesson as any).practiceExercises;
+    delete (lesson as any).miniReview;
+    delete (lesson as any).selfAssessment;
   }
 
-  // Populate remaining required sections if standard
+  // ── Standard lessons (L1-L6): fill defaults ──
   if (!isL8) {
     if (lesson.warmUp && !lesson.warmUp.content) {
       lesson.warmUp.content = "Review the concepts introduced in this lesson.";

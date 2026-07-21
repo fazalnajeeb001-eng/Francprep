@@ -361,7 +361,7 @@ function PipelineDashboardPage() {
           </button>
           <button onClick={() => { setPipelineTab("drafts"); setSelectedDraft(null); setSelectedPublished(null); }}
             className={`pb-3 font-semibold transition-all border-b-2 ${pipelineTab === "drafts" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
-            📂 Latest Staged Drafts ({activeStagedDrafts.slice(0, 1).length})
+            📂 Latest Staged Drafts ({activeStagedDrafts.length})
           </button>
           <button onClick={() => { setPipelineTab("integrated"); setSelectedDraft(null); setSelectedPublished(null); }}
             className={`pb-3 font-semibold transition-all border-b-2 ${pipelineTab === "integrated" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
@@ -525,15 +525,16 @@ function PipelineDashboardPage() {
                     </div>
                   )
                 ) : (
-                  (pipelineTab === "drafts" ? activeStagedDrafts.slice(0, 1) : integratedDrafts.slice(0, 1)).length === 0 ? (
+                  (pipelineTab === "drafts" ? activeStagedDrafts : integratedDrafts).length === 0 ? (
                     <div className="py-12 text-center text-gray-500 text-xs">
                       No active {pipelineTab} pushed yet. Use the Import Parser to create one.
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      {(pipelineTab === "drafts" ? activeStagedDrafts.slice(0, 1) : integratedDrafts.slice(0, 1)).map((d) => {
+                      {(pipelineTab === "drafts" ? activeStagedDrafts : integratedDrafts).map((d) => {
                         const isSelected = selectedDraft?._id === d._id;
                         const hasErrors = d.validationErrors && d.validationErrors.length > 0;
+                        const lessonNum = d.lessonId?.match(/-l(\d+)$/)?.[1] || '';
                         return (
                           <div key={d._id} onClick={() => { setSelectedDraft(d); setSelectedPublished(null); }}
                             className={`p-4 rounded-xl border cursor-pointer transition-all ${
@@ -544,13 +545,14 @@ function PipelineDashboardPage() {
                                 <div className="flex items-center gap-2">
                                   <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400">{d.level}</span>
                                   <span className="text-[10px] font-mono text-gray-400">{d.lessonId}</span>
+                                  {lessonNum && <span className="text-[10px] font-bold text-gray-500">L{lessonNum}</span>}
                                 </div>
                                 <h4 className="text-xs font-bold text-white mt-1.5">{d.title}</h4>
                               </div>
                               <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
                                 hasErrors ? "bg-red-500/10 text-red-400" : "bg-emerald-500/10 text-emerald-400"
                               }`}>
-                                {hasErrors ? `❌ ${d.validationErrors.length} Schema Errors` : "✓ Schema Valid"}
+                                {hasErrors ? `❌ ${d.validationErrors.length} Errors` : "✓ Valid"}
                               </span>
                             </div>
                           </div>

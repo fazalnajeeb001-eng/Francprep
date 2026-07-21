@@ -1,152 +1,123 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://francprep.com/schemas/lesson-review.schema.json",
-  "title": "FrancPrep Review Lesson",
-  "description": "Canonical shape for Lesson 8 Review & Mini-Assessment. Omit required warmUp, explanation, grammarDrills, reading, listening, speaking, writing.",
+  "title": "FrancPrep Lesson 8 - Chapter Review & Mini-Assessment",
+  "description": "Shape for every chapter's Lesson 8. Structurally different from both Standard lessons and Lesson 7: consolidates the whole chapter's vocabulary and grammar, adds a Can-Do review mapped to lessons, mixed practice exercises, a formal DELF/DALF-style Mini-Assessment with scored sections, and self-reflection prompts.",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "lessonId", "chapterId", "level", "title", "anchorSkill", "durationMinutes",
     "objectives", "grammarFocus", "vocabularyFocus",
-    "vocabulary", "grammar", "practiceExercises", "miniReview", "selfAssessment"
+    "vocabularyBank", "grammarSummary", "canDoReview", "mixedPracticeExercises",
+    "assessment", "selfReflection", "completionSummary"
   ],
   "properties": {
     "lessonId": { "type": "string" },
     "chapterId": { "type": "string" },
     "level": { "type": "string", "enum": ["A0", "A1", "A2", "B1", "B2", "C1", "C2"] },
     "title": { "type": "string" },
-    "anchorSkill": { "type": "string" },
+    "anchorSkill": { "type": "string", "const": "review" },
     "durationMinutes": { "type": "integer", "minimum": 5, "maximum": 90 },
     "objectives": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
     "grammarFocus": { "type": "string" },
     "vocabularyFocus": { "type": "string" },
-    "warmUp": {
+
+    "vocabularyBank": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["items", "cumulativeNote"],
+      "description": "Full consolidated vocabulary list for the chapter, plus the mandatory duplication/polysemy note.",
+      "properties": {
+        "items": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "cumulativeNote": { "type": "string", "minLength": 1, "description": "Must explicitly confirm no duplication against prior chapters and flag any deliberate polysemy cases." }
+      }
+    },
+
+    "grammarSummary": {
       "type": "object",
       "additionalProperties": false,
       "required": ["content"],
-      "properties": { "content": { "type": "string" } }
+      "properties": {
+        "content": { "type": "string", "minLength": 1, "description": "Full consolidated reference - conjugation tables, rule summaries, etc., rendered as structured text/markdown tables." }
+      }
     },
-    "explanation": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["content"],
-      "properties": { "content": { "type": "string" } }
-    },
-    "vocabulary": {
+
+    "canDoReview": {
       "type": "array",
       "minItems": 1,
+      "description": "Maps each chapter can-do statement to the lesson(s) that taught it.",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["french", "english", "pronunciation", "example"],
+        "required": ["statement", "lessonRef"],
         "properties": {
-          "french": { "type": "string" },
-          "english": { "type": "string" },
-          "pronunciation": { "type": "string" },
-          "example": { "type": "string" },
-          "formality": { "type": "string" },
-          "usageNote": { "type": "string" }
+          "statement": { "type": "string", "minLength": 1 },
+          "lessonRef": { "type": "string", "description": "e.g. 'Lesson 1' or 'Lessons 2-3'" }
         }
       }
     },
-    "grammar": {
+
+    "mixedPracticeExercises": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["explanation", "formation", "usage", "examples", "commonMistakes"],
+      "required": ["questions"],
       "properties": {
-        "explanation": { "type": "string" },
-        "formation": { "type": "string" },
-        "usage": { "type": "string" },
-        "examples": { "type": "array", "items": { "type": "string" } },
-        "commonMistakes": {
+        "questions": {
           "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/question" }
+        }
+      }
+    },
+
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["examStyle", "sections"],
+      "description": "The formal DELF/DALF-style mini-assessment.",
+      "properties": {
+        "examStyle": { "type": "string", "description": "e.g. 'DELF A1', 'DELF A2', 'DELF B1', 'DELF B2', 'DALF C1', 'DALF C2'" },
+        "sections": {
+          "type": "array",
+          "minItems": 1,
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["wrong", "correct", "why"],
+            "required": ["title", "skill", "points", "instructions"],
             "properties": {
-              "wrong": { "type": "string" },
-              "correct": { "type": "string" },
-              "why": { "type": "string" },
-              "tip": { "type": "string" }
+              "title": { "type": "string" },
+              "skill": { "type": "string", "enum": ["listening", "reading", "writing", "speaking"] },
+              "points": { "type": "integer", "minimum": 1 },
+              "instructions": { "type": "string", "minLength": 1 },
+              "sourceText": { "type": "string", "description": "Passage or transcript this section is based on, if applicable." },
+              "questions": {
+                "type": "array",
+                "items": { "$ref": "#/definitions/question" },
+                "description": "Present for auto-gradable sections (listening/reading). Omit for open written/oral production sections, which are graded via the answerKeyNotes field instead."
+              },
+              "answerKeyNotes": { "type": "string", "description": "Open-ended grading guidance for written/oral production sections." }
             }
           }
         }
       }
     },
-    "grammarDrills": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["questions"],
-      "properties": { "questions": { "$ref": "#/definitions/questionArray" } }
-    },
-    "reading": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["title", "text", "questions"],
-      "properties": {
-        "title": { "type": "string" },
-        "text": { "type": "string" },
-        "translation": { "type": "string" },
-        "questions": { "$ref": "#/definitions/questionArray" }
-      }
-    },
-    "listening": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["title", "transcript", "questions"],
-      "properties": {
-        "title": { "type": "string" },
-        "transcript": { "type": "string" },
-        "translation": { "type": "string" },
-        "audioUrl": { "type": "string" },
-        "questions": { "$ref": "#/definitions/questionArray" }
-      }
-    },
-    "speaking": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["guidedActivity"],
-      "properties": {
-        "guidedActivity": { "type": "string" },
-        "roleplay": { "type": "string" },
-        "pronunciationTip": { "type": "string" }
-      }
-    },
-    "writing": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["task", "modelAnswer", "checklist"],
-      "properties": {
-        "task": { "type": "string" },
-        "modelAnswer": { "type": "string" },
-        "checklist": { "type": "array", "items": { "type": "string" } }
-      }
-    },
-    "practiceExercises": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["questions"],
-      "properties": { "questions": { "$ref": "#/definitions/questionArray" } }
-    },
-    "miniReview": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["content"],
-      "properties": { "content": { "type": "string", "minLength": 1 } }
-    },
-    "selfAssessment": {
+
+    "selfReflection": {
       "type": "array",
       "items": { "type": "string" },
       "minItems": 1
+    },
+
+    "completionSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["content"],
+      "properties": {
+        "content": { "type": "string", "minLength": 1, "description": "The 'Chapter Complete' closing statement, including the bridge to the next chapter." }
+      }
     }
   },
   "definitions": {
-    "questionArray": {
-      "type": "array",
-      "minItems": 1,
-      "items": { "$ref": "#/definitions/question" }
-    },
     "question": {
       "type": "object",
       "additionalProperties": false,

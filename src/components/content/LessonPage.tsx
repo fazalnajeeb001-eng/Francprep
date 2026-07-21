@@ -32,7 +32,7 @@ interface LessonData {
   chapterId: string;
   level: string;
   title: string;
-  skill: 'R' | 'W' | 'L' | 'S' | 'INT' | 'REV';
+  skill: 'R' | 'W' | 'L' | 'S' | 'INT' | 'REV' | 'integrated' | 'review';
   order: number;
   durationMinutes: number;
   objectives: string[];
@@ -51,11 +51,33 @@ interface LessonData {
   grammarDrills: { questions: LessonQuestion[] };
   reading?: { title: string; text: string; translation?: string; questions: LessonQuestion[] };
   listening?: { title: string; transcript: string; translation?: string; questions: LessonQuestion[] };
-  speaking?: { guidedActivity: string; roleplay?: string; pronunciationTip?: string };
+  speaking?: { guidedActivity?: string; roleplay?: string; extensionTask?: string; pronunciationTip?: string };
   writing?: { task: string; modelAnswer: string; checklist: string[] };
   practiceExercises: { questions: LessonQuestion[] };
   miniReview: { content: string };
   selfAssessment: string[];
+  // L7 Integrated
+  scene?: { title: string; text: string; translation?: string; audioUrl?: string };
+  comprehensionQuestions?: LessonQuestion[];
+  // L8 Review
+  vocabularyBank?: { items: string[]; cumulativeNote: string };
+  grammarSummary?: { content: string };
+  canDoReview?: { statement: string; lessonRef: string }[];
+  mixedPracticeExercises?: { questions: LessonQuestion[] };
+  assessment?: {
+    examStyle: string;
+    sections: {
+      title: string;
+      skill: string;
+      points: number;
+      instructions: string;
+      sourceText?: string;
+      questions?: LessonQuestion[];
+      answerKeyNotes?: string;
+    }[];
+  };
+  selfReflection?: string[];
+  completionSummary?: { content: string };
   lessonNumber?: number;
 }
 
@@ -130,25 +152,27 @@ interface SectionDef {
 }
 
 function buildSections(lesson: LessonData): SectionDef[] {
-  const isLesson7 = lesson.lessonNumber === 7 || lesson.title?.toLowerCase().includes('integrated');
-  const isLesson8 = lesson.lessonNumber === 8 || lesson.title?.toLowerCase().includes('review');
+  const isLesson7 = lesson.lessonId?.endsWith('-l7') || lesson.lessonNumber === 7;
+  const isLesson8 = lesson.lessonId?.endsWith('-l8') || lesson.lessonNumber === 8;
 
   if (isLesson8) {
     return [
-      { key: 'vocabBank', label: 'Vocab Bank', icon: <Languages className="w-3.5 h-3.5" />, hasContent: !!lesson.vocabItems?.length && lesson.vocabItems[0]?.french !== '—' },
-      { key: 'grammarSummary', label: 'Grammar Summary', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: !!lesson.grammar?.explanation && !lesson.grammar.explanation.startsWith('No new grammar') },
-      { key: 'practice', label: 'Mixed Practice', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: !!lesson.practiceExercises?.questions?.some(q => !q.id.includes('delf')) },
-      { key: 'delf', label: 'DELF Assessment', icon: <Award className="w-3.5 h-3.5" />, hasContent: !!lesson.practiceExercises?.questions?.some(q => q.id.includes('delf')) },
-      { key: 'review', label: 'Reflection', icon: <Star className="w-3.5 h-3.5" />, hasContent: (!!lesson.miniReview?.content && lesson.miniReview.content !== '—') || !!lesson.selfAssessment?.length },
+      { key: 'vocabBank', label: 'Vocab Bank', icon: <Languages className="w-3.5 h-3.5" />, hasContent: !!lesson.vocabularyBank?.items?.length && lesson.vocabularyBank.items[0] !== '—' },
+      { key: 'grammarSummary', label: 'Grammar Summary', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: !!lesson.grammarSummary?.content && lesson.grammarSummary.content !== 'Consolidated grammar reference from this chapter.' },
+      { key: 'canDoReview', label: 'Can-Do Review', icon: <CheckCircle2 className="w-3.5 h-3.5" />, hasContent: !!lesson.canDoReview?.length },
+      { key: 'mixedPractice', label: 'Mixed Practice', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: !!lesson.mixedPracticeExercises?.questions?.length && !lesson.mixedPracticeExercises.questions[0]?.id?.includes('mpe-dummy') },
+      { key: 'assessment', label: 'DELF Assessment', icon: <Award className="w-3.5 h-3.5" />, hasContent: !!lesson.assessment?.sections?.length },
+      { key: 'selfReflection', label: 'Reflection', icon: <Star className="w-3.5 h-3.5" />, hasContent: !!lesson.selfReflection?.length },
+      { key: 'completion', label: 'Complete', icon: <Trophy className="w-3.5 h-3.5" />, hasContent: !!lesson.completionSummary?.content },
     ].filter(s => s.hasContent);
   }
 
   if (isLesson7) {
     return [
       { key: 'warmUp', label: 'Warm-Up', icon: <HelpCircle className="w-3.5 h-3.5" />, hasContent: !!lesson.warmUp?.content && lesson.warmUp.content !== '—' },
-      { key: 'dialogue', label: 'Dialogue', icon: <Headphones className="w-3.5 h-3.5" />, hasContent: !!lesson.reading?.text || !!lesson.listening?.transcript },
-      { key: 'speaking', label: 'Speaking', icon: <Mic className="w-3.5 h-3.5" />, hasContent: !!lesson.speaking?.guidedActivity && !lesson.speaking.guidedActivity.startsWith('Practice pronunciation') },
-      { key: 'writing', label: 'Writing', icon: <PenTool className="w-3.5 h-3.5" />, hasContent: !!lesson.writing?.task && !lesson.writing.task.startsWith('Write a short summary') },
+      { key: 'scene', label: 'Scene', icon: <Headphones className="w-3.5 h-3.5" />, hasContent: !!lesson.scene?.text },
+      { key: 'speakingL7', label: 'Speaking', icon: <Mic className="w-3.5 h-3.5" />, hasContent: !!lesson.speaking?.roleplay && !lesson.speaking.roleplay.startsWith('Practice the dialogue') },
+      { key: 'writing', label: 'Writing', icon: <PenTool className="w-3.5 h-3.5" />, hasContent: !!lesson.writing?.task && !lesson.writing.task.startsWith('Write a short paragraph') },
       { key: 'practice', label: 'Quiz', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: !!lesson.practiceExercises?.questions?.length && !lesson.practiceExercises.questions[0]?.id?.includes('pe-dummy') },
       { key: 'review', label: 'Review', icon: <Star className="w-3.5 h-3.5" />, hasContent: (!!lesson.miniReview?.content && lesson.miniReview.content !== '—') || !!lesson.selfAssessment?.length },
     ].filter(s => s.hasContent);
@@ -465,33 +489,50 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
 
     switch (currentSection.key) {
       case 'vocabBank':
+        const vocabItems = lesson!.vocabularyBank?.items || lesson!.vocabItems?.map((v: any) => `${v.french} — ${v.english}`) || [];
+        const vocabNote = lesson!.vocabularyBank?.cumulativeNote || '';
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
             <h3 className={`text-sm font-semibold mb-2 ${dark ? "text-white" : "text-gray-900"}`}>Chapter Vocabulary Bank</h3>
-            <p className={`text-xs ${textSec} mb-4`}>Review the consolidated vocabulary list for this chapter. Click any word to hear its pronunciation.</p>
+            <p className={`text-xs ${textSec} mb-4`}>Review the consolidated vocabulary list for this chapter.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {lesson!.vocabItems.map((v: any, i: number) => (
-                <motion.div key={v.french + i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}
-                  className={`flex items-center gap-3 p-3 rounded-xl border ${dark ? "border-[#1e2a4a] bg-[#101828]/50" : "border-gray-100 bg-gray-50/50"} hover:border-purple-500/50 transition-all`}>
-                  <button onClick={() => speak(v.french)}
-                    className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white hover:opacity-80 transition-all flex-shrink-0">
-                    <Volume2 className="w-4 h-4" />
-                  </button>
-                  <div className="flex-1 min-w-0">
-                    <span className={`text-sm font-semibold block ${dark ? "text-white" : "text-gray-900"}`}>{v.french}</span>
-                    <span className={`text-xs ${textSec}`}>{v.english.replace(' (see chapter vocabulary)', '')}</span>
-                  </div>
-                </motion.div>
-              ))}
+              {vocabItems.map((item: string, i: number) => {
+                const parts = item.split(' — ');
+                const french = parts[0]?.trim() || item;
+                const english = parts.slice(1).join(' — ').trim() || '';
+                return (
+                  <motion.div key={item + i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}
+                    className={`flex items-center gap-3 p-3 rounded-xl border ${dark ? "border-[#1e2a4a] bg-[#101828]/50" : "border-gray-100 bg-gray-50/50"} hover:border-purple-500/50 transition-all`}>
+                    <button onClick={() => speak(french)}
+                      className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white hover:opacity-80 transition-all flex-shrink-0">
+                      <Volume2 className="w-4 h-4" />
+                    </button>
+                    <div className="flex-1 min-w-0">
+                      <span className={`text-sm font-semibold block ${dark ? "text-white" : "text-gray-900"}`}>{french}</span>
+                      <span className={`text-xs ${textSec}`}>{english}</span>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
+            {vocabNote && (
+              <div className={`mt-4 p-3 rounded-xl border ${dark ? "bg-purple-500/5 border-purple-500/20" : "bg-purple-50 border-purple-100"}`}>
+                <p className={`text-[11px] ${dark ? "text-purple-300" : "text-purple-700"}`}>{vocabNote}</p>
+              </div>
+            )}
           </div>
         );
 
       case 'grammarSummary':
+        const grammarContent = lesson!.grammarSummary?.content || lesson!.grammar?.explanation || '';
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
             <h3 className={`text-sm font-semibold mb-4 ${dark ? "text-white" : "text-gray-900"}`}>Chapter Grammar Summary</h3>
-            <GrammarSection grammar={lesson!.grammar!} dark={dark} cardBg={cardBg} innerBg={innerBg} textBody={textBody} textSec={textSec} />
+            {lesson!.grammar ? (
+              <GrammarSection grammar={lesson!.grammar!} dark={dark} cardBg={cardBg} innerBg={innerBg} textBody={textBody} textSec={textSec} />
+            ) : (
+              <div className={`text-sm leading-relaxed whitespace-pre-line ${textBody}`}>{grammarContent}</div>
+            )}
           </div>
         );
 
@@ -557,6 +598,191 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
                 />
               </div>
             )}
+          </div>
+        );
+
+      case 'scene':
+        const sceneText = lesson!.scene?.text || '';
+        const sceneTrans = lesson!.scene?.translation || '';
+        const sceneTitle = lesson!.scene?.title || 'Scene';
+        const cqQuestions = lesson!.comprehensionQuestions || [];
+        return (
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+            <div className="flex items-center gap-3 mb-4">
+              <Headphones className="w-5 h-5 text-purple-400" />
+              <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{sceneTitle}</h3>
+            </div>
+            {sceneText && (
+              <>
+                <div className="flex gap-3 mb-4">
+                  <button onClick={() => speak(sceneText)}
+                    className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
+                    <Volume2 className="w-4 h-4" /> Listen to Scene
+                  </button>
+                  {sceneTrans && (
+                    <button onClick={() => setShowTranslation(!showTranslation)}
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
+                      {showTranslation ? "Hide" : "Show"} English Translation
+                    </button>
+                  )}
+                </div>
+                <div className={`${innerBg} rounded-xl p-4 border text-sm leading-relaxed ${textBody} font-medium whitespace-pre-line`}>
+                  {sceneText}
+                </div>
+                {showTranslation && sceneTrans && (
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4">
+                    <p className={`text-xs ${textMuted} italic p-4 rounded-xl border ${innerBg}`}>{sceneTrans}</p>
+                  </motion.div>
+                )}
+              </>
+            )}
+            {cqQuestions.length > 0 && !cqQuestions[0]?.id?.includes('cq-dummy') && (
+              <div className="mt-6 border-t dark:border-[#1e2a4a] border-gray-200 pt-6">
+                <p className={`text-xs font-semibold mb-3 ${dark ? "text-purple-400" : "text-purple-600"}`}>Comprehension Questions:</p>
+                <QuizComponent
+                  questions={adaptQuestions(cqQuestions)}
+                  type="listening"
+                  onComplete={(score, total) => handleBlockComplete('listening', score, total)}
+                  onSubmit={(answers) => handleSubmitBlock('listening', answers)}
+                />
+              </div>
+            )}
+          </div>
+        );
+
+      case 'speakingL7':
+        const roleplayText = lesson!.speaking?.roleplay || '';
+        return (
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl overflow-hidden`}>
+            <div className="p-5 border-b dark:border-[#1e2a4a] border-gray-200">
+              <div className="flex items-center gap-3 mb-3"><Mic className="w-5 h-5 text-purple-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Speaking Practice</h3></div>
+              <p className={`text-sm ${textBody}`}>{roleplayText}</p>
+              {lesson!.speaking?.extensionTask && (
+                <p className={`text-xs ${textSec} mt-2 italic`}>Extension: {lesson!.speaking.extensionTask}</p>
+              )}
+            </div>
+            <SpeakingDrill
+              lessonLevel={lesson!.level}
+              lessonTopic={lesson!.title}
+              onComplete={() => markSectionComplete(currentSectionIdx)}
+            />
+          </div>
+        );
+
+      case 'canDoReview':
+        const canDoItems = lesson!.canDoReview || [];
+        return (
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+            <div className="flex items-center gap-3 mb-4">
+              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+              <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Can-Do Review</h3>
+            </div>
+            <p className={`text-xs ${textSec} mb-4`}>Each chapter goal mapped to the lesson(s) that taught it.</p>
+            <div className="space-y-3">
+              {canDoItems.map((item: { statement: string; lessonRef: string }, i: number) => (
+                <div key={i} className={`p-3 rounded-xl border ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"}`}>
+                  <p className={`text-sm ${dark ? "text-white" : "text-gray-900"}`}>{item.statement}</p>
+                  <p className={`text-[10px] mt-1 ${dark ? "text-purple-400" : "text-purple-600"}`}>Taught in {item.lessonRef}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case 'mixedPractice':
+        const mixedQs = lesson!.mixedPracticeExercises?.questions || [];
+        if (!mixedQs.length) return emptyState('Mixed Practice Exercises');
+        return (
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+            <div className="flex items-center gap-3 mb-4"><Repeat className="w-5 h-5 text-purple-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Mixed Practice Exercises</h3></div>
+            <QuizComponent
+              questions={adaptQuestions(mixedQs)}
+              type="practice"
+              onComplete={(score, total) => handleBlockComplete('mixedPractice', score, total)}
+              onSubmit={(answers) => handleSubmitBlock('mixedPractice', answers)}
+            />
+          </div>
+        );
+
+      case 'assessment':
+        const assessmentData = lesson!.assessment;
+        const assessmentSections = assessmentData?.sections || [];
+        return (
+          <div className="space-y-6">
+            {lesson7 && (
+              <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5 border border-purple-500/20 bg-purple-500/5`}>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Headphones className="w-4 h-4 text-purple-400" />
+                    <span className={`text-xs font-bold uppercase tracking-wider ${dark ? "text-purple-300" : "text-purple-700"}`}>
+                      Reference: Lesson 7 Scene
+                    </span>
+                  </div>
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full ${dark ? "bg-purple-500/10 text-purple-300" : "bg-purple-100 text-purple-700"}`}>
+                    Required for Assessment
+                  </span>
+                </div>
+                {lesson7.scene?.text && (
+                  <p className={`text-xs ${textBody} whitespace-pre-line max-h-32 overflow-y-auto`}>{lesson7.scene.text}</p>
+                )}
+              </div>
+            )}
+            <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+              <div className="flex items-center gap-3 mb-4">
+                <Award className="w-5 h-5 text-purple-400" />
+                <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>
+                  {assessmentData?.examStyle || 'DELF'} Mini-Assessment
+                </h3>
+              </div>
+              <p className={`text-sm ${textSec} mb-4`}>Complete the exam-style sections below.</p>
+              {assessmentSections.map((sec: any, i: number) => (
+                <div key={i} className={`p-4 rounded-xl border mb-4 ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"}`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className={`text-xs font-bold ${dark ? "text-white" : "text-gray-900"}`}>{sec.title} ({sec.skill})</h4>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full ${dark ? "bg-purple-500/10 text-purple-300" : "bg-purple-100 text-purple-700"}`}>{sec.points} pts</span>
+                  </div>
+                  <p className={`text-xs ${textBody} mb-3`}>{sec.instructions}</p>
+                  {sec.sourceText && (
+                    <div className={`p-3 rounded-lg text-xs whitespace-pre-line mb-3 ${dark ? "bg-black/40 text-gray-300" : "bg-white text-gray-700"}`}>{sec.sourceText}</div>
+                  )}
+                  {sec.questions && sec.questions.length > 0 && (
+                    <QuizComponent
+                      questions={adaptQuestions(sec.questions)}
+                      type="assessment"
+                      onComplete={(score, total) => handleBlockComplete(`assessment-${i}`, score, total)}
+                      onSubmit={(answers) => handleSubmitBlock(`assessment-${i}`, answers)}
+                    />
+                  )}
+                  {sec.answerKeyNotes && (
+                    <p className={`text-[11px] mt-2 italic ${dark ? "text-gray-400" : "text-gray-500"}`}>Grading: {sec.answerKeyNotes}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case 'selfReflection':
+        const reflectionItems = lesson!.selfReflection || lesson!.selfAssessment || [];
+        if (!reflectionItems.length) return emptyState('Self-Reflection');
+        return (
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+            <div className="flex items-center gap-3 mb-4">
+              <Star className="w-5 h-5 text-amber-400" />
+              <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Self-Reflection</h3>
+            </div>
+            <p className={`text-xs ${textSec} mb-4`}>Consider how well you achieved each of these goals.</p>
+            <SelfAssessmentSection items={reflectionItems} dark={dark} title="Self-Reflection" />
+          </div>
+        );
+
+      case 'completion':
+        const completionText = lesson!.completionSummary?.content || '';
+        return (
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-6 text-center`}>
+            <Trophy className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
+            <h3 className={`text-base font-bold mb-2 ${dark ? "text-white" : "text-gray-900"}`}>Chapter Complete!</h3>
+            <p className={`text-sm leading-relaxed ${textBody}`}>{completionText}</p>
           </div>
         );
 

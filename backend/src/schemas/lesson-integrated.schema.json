@@ -1,78 +1,64 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://francprep.com/schemas/lesson-integrated.schema.json",
-  "title": "FrancPrep Integrated Practice Lesson",
-  "description": "Canonical shape for Lesson 7 Integrated Practice. Omit required vocabulary and grammar sections.",
+  "title": "FrancPrep Lesson 7 - Integrated Practice",
+  "description": "Shape for every chapter's Lesson 7 (Integrated Practice). Structurally different from Lessons 1-6: no Vocabulary or Grammar sections; Reading and Listening share one combined scene and one combined comprehension-question set.",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "lessonId", "chapterId", "level", "title", "anchorSkill", "durationMinutes",
     "objectives", "grammarFocus", "vocabularyFocus",
-    "warmUp", "explanation", "grammarDrills",
-    "reading", "listening", "speaking", "writing", "practiceExercises",
-    "miniReview", "selfAssessment"
+    "warmUp", "scene", "comprehensionQuestions", "speaking", "writing",
+    "practiceExercises", "miniReview", "selfAssessment"
   ],
   "properties": {
     "lessonId": { "type": "string" },
     "chapterId": { "type": "string" },
     "level": { "type": "string", "enum": ["A0", "A1", "A2", "B1", "B2", "C1", "C2"] },
     "title": { "type": "string" },
-    "anchorSkill": { "type": "string" },
+    "anchorSkill": { "type": "string", "const": "integrated" },
     "durationMinutes": { "type": "integer", "minimum": 5, "maximum": 90 },
     "objectives": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
-    "grammarFocus": { "type": "string" },
-    "vocabularyFocus": { "type": "string" },
+    "grammarFocus": { "type": "string", "description": "Consolidation statement — no new grammar, references what's being combined from Lessons 1-6." },
+    "vocabularyFocus": { "type": "string", "description": "Consolidation statement, not new vocabulary." },
+
     "warmUp": {
       "type": "object",
       "additionalProperties": false,
       "required": ["content"],
       "properties": { "content": { "type": "string", "minLength": 1 } }
     },
-    "explanation": {
+
+    "scene": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["content"],
-      "properties": { "content": { "type": "string", "minLength": 1 } }
-    },
-    "grammarDrills": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["questions"],
-      "properties": { "questions": { "$ref": "#/definitions/questionArray" } }
-    },
-    "reading": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["title", "text", "questions"],
+      "required": ["title", "text"],
+      "description": "The single shared dialogue/passage that doubles as both the Reading and Listening source for this lesson.",
       "properties": {
         "title": { "type": "string" },
         "text": { "type": "string", "minLength": 1 },
         "translation": { "type": "string" },
-        "questions": { "$ref": "#/definitions/questionArray" }
+        "audioUrl": { "type": "string" }
       }
     },
-    "listening": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["title", "transcript", "questions"],
-      "properties": {
-        "title": { "type": "string" },
-        "transcript": { "type": "string", "minLength": 1 },
-        "translation": { "type": "string" },
-        "audioUrl": { "type": "string" },
-        "questions": { "$ref": "#/definitions/questionArray" }
-      }
+
+    "comprehensionQuestions": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Combined Reading+Listening comprehension questions based on the shared scene. Same question object shape as the Standard lesson schema's questionArray.",
+      "items": { "$ref": "#/definitions/question" }
     },
+
     "speaking": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["guidedActivity"],
+      "required": ["roleplay"],
       "properties": {
-        "guidedActivity": { "type": "string", "minLength": 1 },
-        "roleplay": { "type": "string" },
-        "pronunciationTip": { "type": "string" }
+        "roleplay": { "type": "string", "minLength": 1 },
+        "extensionTask": { "type": "string" }
       }
     },
+
     "writing": {
       "type": "object",
       "additionalProperties": false,
@@ -83,18 +69,27 @@
         "checklist": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
       }
     },
+
     "practiceExercises": {
       "type": "object",
       "additionalProperties": false,
       "required": ["questions"],
-      "properties": { "questions": { "$ref": "#/definitions/questionArray" } }
+      "properties": {
+        "questions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/question" }
+        }
+      }
     },
+
     "miniReview": {
       "type": "object",
       "additionalProperties": false,
       "required": ["content"],
       "properties": { "content": { "type": "string", "minLength": 1 } }
     },
+
     "selfAssessment": {
       "type": "array",
       "items": { "type": "string" },
@@ -102,11 +97,6 @@
     }
   },
   "definitions": {
-    "questionArray": {
-      "type": "array",
-      "minItems": 1,
-      "items": { "$ref": "#/definitions/question" }
-    },
     "question": {
       "type": "object",
       "additionalProperties": false,
