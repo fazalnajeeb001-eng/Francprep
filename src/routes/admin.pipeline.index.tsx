@@ -113,10 +113,16 @@ function PipelineDashboardPage() {
       });
       const json = await res.json();
       if (json.success) {
-        setActionStatus({ loading: false, error: "", success: `Draft ${json.data.lessonId} staged successfully!` });
+        const totalCount = json.data?.totalParsed || 1;
+        const stagedDraft = json.data?.results?.[0] || json.data;
+        setActionStatus({
+          loading: false,
+          error: "",
+          success: `Successfully parsed & staged ${totalCount} lesson(s) into Content Pipeline!`,
+        });
         setImportMarkdown("");
         fetchDrafts();
-        setSelectedDraft(json.data);
+        if (stagedDraft) setSelectedDraft(stagedDraft);
         setPipelineTab("drafts");
       } else {
         setActionStatus({ loading: false, error: json.error || "Parsing failed", success: "" });

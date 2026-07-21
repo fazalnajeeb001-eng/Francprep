@@ -1000,8 +1000,8 @@ export function parseLessonFromMarkdown(
   const normalizedMarkdown = markdown.replace(/\r/g, '');
   const lessons: ParsedLesson[] = [];
 
-  // Match all lesson headers: e.g. "# LESSON 7 — Integrated Practice" or "LESSON 1"
-  const headerRegex = /^(?:#+\s*)?LESSON\s+(\d+)(.*)$/gim;
+  // Match all lesson headers: e.g. "# LESSON 7", "**LESSON 1**", "Lesson 1:", "CHAPTER 1 — LESSON 2"
+  const headerRegex = /^(?:#+\s*|\*\*|#*\s*CHAPTER\s+\d+[\s—:-]+)?LESSON\s+(\d+)(?:[\s—:-]+.*)?$/gim;
   const matches = [...normalizedMarkdown.matchAll(headerRegex)];
 
   if (matches.length === 0) {
