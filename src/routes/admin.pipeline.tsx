@@ -423,9 +423,28 @@ function PipelineDashboardPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-xs font-semibold text-gray-400">
-                    {importFormat === "markdown" ? "Paste Claude-Generated Lesson Markdown" : "Paste Schema-Compliant Lesson JSON"}
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-semibold text-gray-400">
+                      {importFormat === "markdown" ? "Paste or Drop Claude Lesson File (.md / .json)" : "Paste or Drop Schema-Compliant Lesson JSON"}
+                    </label>
+                    <label className="text-[10px] text-purple-400 cursor-pointer hover:underline flex items-center gap-1">
+                      <Upload className="w-3 h-3" /> Drag & Drop File
+                      <input type="file" accept=".md,.json,.txt" className="hidden" onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = (evt) => {
+                          const text = evt.target?.result as string;
+                          if (text) {
+                            setImportMarkdown(text);
+                            if (file.name.endsWith('.json')) setImportFormat('json');
+                            else setImportFormat('markdown');
+                          }
+                        };
+                        reader.readAsText(file);
+                      }} />
+                    </label>
+                  </div>
                   <textarea
                     required
                     value={importMarkdown}
@@ -832,12 +851,40 @@ function PipelineDashboardPage() {
         {chatOpen && (
           <motion.div initial={{ opacity: 0, x: 300 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 300 }}
             className={`fixed right-0 top-0 bottom-0 w-80 sm:w-96 z-50 ${card} border-l shadow-2xl flex flex-col backdrop-blur-xl`}>
-            <div className="p-4 border-b border-[#1e2a4a] flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-purple-400" />
-                <h3 className="text-sm font-bold text-white">Curriculum Coordinator</h3>
+            <div className="p-4 border-b border-[#1e2a4a] space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-purple-400" />
+                  <h3 className="text-sm font-bold text-white">Curriculum Coordinator</h3>
+                </div>
+                <button onClick={() => setChatOpen(false)} className="text-xs text-gray-400 hover:text-white">✕</button>
               </div>
-              <button onClick={() => setChatOpen(false)} className="text-xs text-gray-400 hover:text-white">✕</button>
+
+              <div className="flex items-center justify-between pt-1">
+                <span className="text-[10px] text-gray-400">Select LLM Provider:</span>
+                <select value={selectedModel} onChange={e => setSelectedModel(e.target.value)}
+                  className={`text-[10px] rounded px-2 py-0.5 ${dark ? 'bg-[#0c1224] border-[#1e2a4a] text-white' : 'bg-white border-gray-300 text-gray-900'} border`}>
+                  <option value="claude-sonnet">Claude 3.5 Sonnet</option>
+                  <option value="gpt-4o-mini">GPT-4o Mini</option>
+                  <option value="gemini-flash">Gemini Flash</option>
+                  <option value="llama-70b">Llama 70B</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="p-2 border-b border-[#1e2a4a] bg-purple-500/5 flex flex-wrap gap-1.5">
+              {[
+                "🔍 Audit selected draft",
+                "📝 Verify CEFR level fit",
+                "💡 Suggest 3 extra exercises",
+                "📚 Check vocabulary ledger"
+              ].map((chip, idx) => (
+                <button key={idx} onClick={() => {
+                  setChatInput(chip);
+                }} className="text-[9px] px-2 py-1 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/20 transition-all">
+                  {chip}
+                </button>
+              ))}
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
