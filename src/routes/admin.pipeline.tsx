@@ -61,8 +61,62 @@ function PipelineDashboardPage() {
   const [aiReport, setAiReport] = useState<{ passed: boolean; errors: string[]; suggestions: string[] } | null>(null);
   const [selectedModel, setSelectedModel] = useState("gpt-4o-mini");
 
-  // Comparison State (1.a Merged Preview)
-  const [publishedLessonData, setPublishedLessonData] = useState<any | null>(null);
+  // Audit and Assistant Chatbot states
+  const [auditing, setAuditing] = useState(false);
+  const [auditReport, setAuditReport] = useState<any | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([
+    { role: 'assistant', content: 'Bonjour! I am your FrancPrep Curriculum Coordinator. Ask me anything about lesson parsing, CEFR standards, or content completeness!' }
+  ]);
+  const [chatInput, setChatInput] = useState("");
+  const [sendingChat, setSendingChat] = useState(false);
+
+  const handleRunAudit = async () => {
+    setAuditing(true);
+    setActionStatus({ loading: true, error: "", success: "" });
+    try {
+      const res = await apiFetch("/admin/content-pipeline/audit-all");
+      const json = await res.json();
+      if (json.success) {
+        setAuditReport(json);
+        setActionStatus({ loading: false, error: "", success: `Audit complete: ${json.passed}/${json.totalAudited} A1 lessons passed schema validation perfectly!` });
+      } else {
+        setActionStatus({ loading: false, error: json.error || "Audit failed", success: "" });
+      }
+    } catch (err: any) {
+      setActionStatus({ loading: false, error: err.message || "Network error running audit", success: "" });
+    }
+    setAuditing(false);
+  };
+
+  const handleSendChat = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chatInput.trim() || sendingChat) return;
+    const userMsg = chatInput.trim();
+    setChatInput("");
+    setChatMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+    setSendingChat(true);
+
+    try {
+      const res = await apiFetch("/admin/content-pipeline/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: userMsg,
+          lessonId: selectedDraft?.lessonId
+        })
+      });
+      const json = await res.json();
+      if (json.success && json.reply) {
+        setChatMessages(prev => [...prev, { role: 'assistant', content: json.reply }]);
+      } else {
+        setChatMessages(prev => [...prev, { role: 'assistant', content: `Error: ${json.error || "Failed to get reply"}` }]);
+      }
+    } catch (err: any) {
+      setChatMessages(prev => [...prev, { role: 'assistant', content: `Network error: ${err.message}` }]);
+    }
+    setSendingChat(false);
+  };
 
   const fetchDrafts = async () => {
     setLoading(true);
@@ -244,6 +298,9 @@ function PipelineDashboardPage() {
   const txtSec = dark ? "text-gray-400" : "text-gray-500";
   const inp = `w-full rounded-xl ${dark ? "bg-[#070B17] border-[#1e2a4a] text-white" : "bg-white border-gray-300 text-gray-900"} border px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all`;
 
+  // Comparison State (1.a Merged Preview)
+  const [publishedLessonData, setPublishedLessonData] = useState<any | null>(null);
+
   // Render Full Live Preview
   if (previewDraftId) {
     return (
@@ -276,15 +333,30 @@ function PipelineDashboardPage() {
           <Link to="/admin" className={`inline-flex items-center gap-1 text-xs ${txtSec} hover:text-purple-400 transition-colors mb-2`}>
             <ArrowLeft className="w-3 h-3" /> Back to Admin
           </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
-              <Layers className="w-5 h-5" />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                <Layers className="w-5 h-5" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  Content Pipeline
+                </h1>
+                <p className={`text-sm ${txtSec} mt-0.5`}>deterministic parser queue & stage controls</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Content Pipeline
-              </h1>
-              <p className={`text-sm ${txtSec} mt-0.5`}>deterministic parser queue & stage controls</p>
+
+            <div className="flex items-center gap-2">
+              <button onClick={handleRunAudit} disabled={auditing}
+                className="px-3 py-2 rounded-xl bg-purple-500/10 border border-purple-500/30 hover:bg-purple-500/20 text-purple-400 text-xs font-bold transition-all flex items-center gap-1.5 disabled:opacity-50">
+                {auditing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Brain className="w-3.5 h-3.5" />}
+                <span>Audit A1 Lessons</span>
+              </button>
+              <button onClick={() => setChatOpen(!chatOpen)}
+                className="px-3 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Curriculum Assistant</span>
+              </button>
             </div>
           </div>
         </motion.div>
@@ -752,6 +824,37 @@ function PipelineDashboardPage() {
               </div>
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* CURRICULUM ASSISTANT CHATBOT DRAWER */}
+      <AnimatePresence>
+        {chatOpen && (
+          <motion.div initial={{ opacity: 0, x: 300 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 300 }}
+            className={`fixed right-0 top-0 bottom-0 w-80 sm:w-96 z-50 ${card} border-l shadow-2xl flex flex-col backdrop-blur-xl`}>
+            <div className="p-4 border-b border-[#1e2a4a] flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-purple-400" />
+                <h3 className="text-sm font-bold text-white">Curriculum Coordinator</h3>
+              </div>
+              <button onClick={() => setChatOpen(false)} className="text-xs text-gray-400 hover:text-white">✕</button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+              {chatMessages.map((m, idx) => (
+                <div key={idx} className={`p-3 rounded-xl text-xs ${m.role === 'user' ? 'bg-purple-600/20 text-purple-200 border border-purple-500/30 ml-6' : 'bg-[#0c1224] text-gray-200 border border-[#1e2a4a] mr-6'}`}>
+                  {m.content}
+                </div>
+              ))}
+            </div>
+
+            <form onSubmit={handleSendChat} className="p-3 border-t border-[#1e2a4a] flex gap-2">
+              <input type="text" value={chatInput} onChange={e => setChatInput(e.target.value)} placeholder="Ask about curriculum..." className={inp} />
+              <button type="submit" disabled={sendingChat} className="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-xl disabled:opacity-50">
+                {sendingChat ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : "Send"}
+              </button>
+            </form>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

@@ -978,4 +978,183 @@ router.post('/content-pipeline/drafts/:id/restore', async (req: AuthRequest, res
   }
 });
 
+// ─── POST /content-pipeline/drafts/:id/merge ────────────────────────────────
+// Merge an integrated draft into an existing lesson's canonical JSON
+router.post('/content-pipeline/drafts/:id/merge', async (req: AuthRequest, res: Response) => {
+  try {
+    const draft = await Draft.findById(req.params.id);
+    if (!draft || !draft.parsedData) {
+      res.status(404).json({ success: false, error: 'Draft or parsed data not found' });
+      return;
+    }
+
+    const { targetLessonId } = req.body;
+    const lessonIdToMerge = targetLessonId || draft.lessonId;
+
+    const existingLesson = await Lesson.findOne({ lessonId: lessonIdToMerge });
+    if (!existingLesson || !existingLesson.canonical) {
+      res.status(404).json({ success: false, error: `Published target lesson ${lessonIdToMerge} not found` });
+      return;
+    }
+
+    const baseCanonical = JSON.parse(JSON.stringify(existingLesson.canonical));
+    const additionCanonical = draft.parsedData;
+
+    // Merge practice exercises (append new unique questions)
+    if (additionCanonical.practiceExercises?.questions?.length) {
+      const existingQs = baseCanonical.practiceExercises?.questions || [];
+      const newQs = additionCanonical.practiceExercises.questions;
+      const combined = [...existingQs];
+
+      for (const q of newQs) {
+        if (!combined.some(eq => eq.prompt === q.prompt)) {
+          combined.push({
+            ...q,
+            id: `${lessonIdToMerge}-pe-${combined.length + 1}`
+          });
+        }
+      }
+      baseCanonical.practiceExercises = { questions: combined };
+    }
+
+    // Merge vocabulary (append non-duplicate French words)
+    if (additionCanonical.vocabulary?.length) {
+      const existingVocab = baseCanonical.vocabulary || [];
+      const newVocab = additionCanonical.vocabulary;
+      const combinedVocab = [...existingVocab];
+
+      for (const v of newVocab) {
+        if (v.french && v.french !== '—' && !combinedVocab.some(ev => ev.french?.toLowerCase() === v.french?.toLowerCase())) {
+          combinedVocab.push(v);
+        }
+      }
+      baseCanonical.vocabulary = combinedVocab;
+    }
+
+    // Validate merged canonical document
+    const { errors, warnings } = await validateParsedLesson(baseCanonical);
+
+    draft.parsedData = baseCanonical;
+    draft.validationErrors = errors;
+    draft.validationWarnings = warnings;
+    draft.status = errors.length === 0 ? 'validated' : 'draft';
+    await draft.save();
+
+    res.json({
+      success: true,
+      message: `Integrated draft merged with ${lessonIdToMerge} successfully`,
+      data: draft
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ─── PUT /content-pipeline/drafts/:id/update-fields ─────────────────────────
+// Inline update specific fields of a parsed draft (e.g. from preview live editor)
+router.put('/content-pipeline/drafts/:id/update-fields', async (req: AuthRequest, res: Response) => {
+  try {
+    const draft = await Draft.findById(req.params.id);
+    if (!draft || !draft.parsedData) {
+      res.status(404).json({ success: false, error: 'Draft not found' });
+      return;
+    }
+
+    const { updatedParsedData } = req.body;
+    if (!updatedParsedData) {
+      res.status(400).json({ success: false, error: 'Missing updatedParsedData' });
+      return;
+    }
+
+    const { errors, warnings } = await validateParsedLesson(updatedParsedData);
+
+    draft.parsedData = updatedParsedData;
+    draft.validationErrors = errors;
+    draft.validationWarnings = warnings;
+    draft.status = errors.length === 0 ? 'validated' : 'draft';
+    await draft.save();
+
+    res.json({
+      success: true,
+      data: draft
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ─── GET /content-pipeline/audit-all ───────────────────────────────────────
+// Audit all 80 A1 lessons in MongoDB to check for schema errors or missing options
+router.get('/content-pipeline/audit-all', async (_req: AuthRequest, res: Response) => {
+  try {
+    const lessons = await Lesson.find({ level: 'A1' }).lean();
+    const reports = [];
+
+    for (const l of lessons) {
+      const canonical = l.canonical;
+      if (!canonical) {
+        reports.push({ lessonId: l.lessonId, status: 'error', issue: 'Missing canonical object' });
+        continue;
+      }
+
+      const { errors, warnings } = await validateParsedLesson(canonical);
+      reports.push({
+        lessonId: l.lessonId,
+        title: l.title,
+        status: errors.length === 0 ? 'pass' : 'fail',
+        errors,
+        warnings
+      });
+    }
+
+    res.json({
+      success: true,
+      totalAudited: lessons.length,
+      passed: reports.filter(r => r.status === 'pass').length,
+      failed: reports.filter(r => r.status === 'fail').length,
+      reports
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ─── POST /content-pipeline/chat ───────────────────────────────────────────
+// Curriculum assistant chatbot for admins
+router.post('/content-pipeline/chat', async (req: AuthRequest, res: Response) => {
+  try {
+    const { message, lessonId } = req.body;
+    if (!message) {
+      res.status(400).json({ success: false, error: 'Missing user message' });
+      return;
+    }
+
+    let lessonContext = '';
+    if (lessonId) {
+      const l = await Lesson.findOne({ lessonId }).lean();
+      if (l) {
+        lessonContext = `Target Lesson Context (${lessonId}):\n${JSON.stringify(l.canonical, null, 2)}`;
+      }
+    }
+
+    const systemPrompt = `You are the FrancPrep Master Curriculum Coordinator and Assistant. You help non-developer admins maintain French language course quality (CEFR A1-C2). Keep responses concise, supportive, structured, and clear.`;
+    const prompt = `${lessonContext}\n\nAdmin Question: ${message}`;
+
+    const reply = await generateAICompletion({
+      model: 'gpt-4o-mini',
+      prompt,
+      systemPrompt,
+      temperature: 0.3
+    });
+
+    res.json({
+      success: true,
+      reply
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 export default router;
+

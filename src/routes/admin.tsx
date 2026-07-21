@@ -21,6 +21,9 @@ const navGroups = [
     title: "Content Pipeline",
     items: [
       { label: "Content Pipeline", icon: Layers, href: "/admin/pipeline" },
+      { label: "Drafts", icon: FileText, href: "/admin/pipeline/drafts" },
+      { label: "Integrated Drafts", icon: Wand2, href: "/admin/pipeline/integrated" },
+      { label: "Published Content", icon: Crown, href: "/admin/pipeline/published" },
     ]
   },
   {
@@ -139,6 +142,8 @@ function AdminLayout() {
                       {group.items.map((item) => {
                         const isActive = item.href === "/admin"
                           ? currentPath === "/admin" || currentPath === "/admin/"
+                          : item.href === "/admin/pipeline"
+                          ? currentPath === "/admin/pipeline" || currentPath === "/admin/pipeline/"
                           : currentPath.startsWith(item.href);
                         return (
                           <Link key={item.label} to={item.href as any}

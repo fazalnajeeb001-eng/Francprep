@@ -221,15 +221,24 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
         canonical
       );
 
-      await apiFetch(`/admin/lessons/${activeId}`, {
-        method: "PUT",
+      const url = draftId 
+        ? `/admin/content-pipeline/drafts/${draftId}/update-fields` 
+        : `/admin/lessons/${activeId}`;
+
+      const payload = draftId
+        ? { updatedParsedData: canonical }
+        : canonical;
+
+      await apiFetch(url, {
+        method: draftId ? "PUT" : "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(canonical),
+        body: JSON.stringify(payload),
       });
     } catch (err) {
       console.error("Inline save failed:", err);
     }
   };
+
 
   const EditableText = ({
     fieldPath,
