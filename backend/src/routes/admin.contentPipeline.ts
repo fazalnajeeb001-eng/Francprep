@@ -114,16 +114,50 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
     if (format === 'json') {
       try {
         const rawJson = JSON.parse(markdown);
-        parsedLessons = Array.isArray(rawJson) ? rawJson : [rawJson];
+        let parentLevel = rawJson.level || '';
+        let parentChapterNum = rawJson.module?.unit?.chapter?.id || rawJson.chapter?.id || rawJson.chapterNum;
         
-        // Apply manual overrides to properties if specified
-        for (const lesson of parsedLessons) {
-          // Normalize vocabulary fields
-          if (lesson.vocabulary && !lesson.vocabItems) {
-            lesson.vocabItems = lesson.vocabulary;
+        let lessonsArray = Array.isArray(rawJson) ? rawJson : null;
+        if (!lessonsArray) {
+          if (Array.isArray(rawJson.lessons)) {
+            lessonsArray = rawJson.lessons;
+          } else if (rawJson.module?.unit?.chapter?.lessons && Array.isArray(rawJson.module.unit.chapter.lessons)) {
+            lessonsArray = rawJson.module.unit.chapter.lessons;
+          } else {
+            const findLessonsArray = (val: any): any[] | null => {
+              if (!val || typeof val !== 'object') return null;
+              if (Array.isArray(val)) {
+                if (val.length > 0 && (val[0].lessonId || val[0].lessonNumber || val[0].anchorSkill)) {
+                  return val;
+                }
+              }
+              for (const k of Object.keys(val)) {
+                const res = findLessonsArray(val[k]);
+                if (res) return res;
+              }
+              return null;
+            };
+            lessonsArray = findLessonsArray(rawJson);
           }
-          if (lesson.vocabItems && !lesson.vocabulary) {
-            lesson.vocabulary = lesson.vocabItems;
+        }
+
+        if (!lessonsArray) {
+          lessonsArray = [rawJson];
+        }
+
+        for (const rawLesson of lessonsArray) {
+          const lesson = { ...rawLesson };
+          if (!lesson.level && parentLevel) lesson.level = parentLevel;
+          
+          const chNum = parentChapterNum || manualOverrides?.chapterNum || 1;
+          const lvl = (lesson.level || manualOverrides?.level || 'A1').toUpperCase();
+          
+          if (!lesson.chapterId) {
+            lesson.chapterId = `${lvl.toLowerCase()}-ch${chNum}`;
+          }
+          if (!lesson.lessonId && (lesson.lessonNumber || lesson.lessonNum)) {
+            const num = lesson.lessonNumber || lesson.lessonNum;
+            lesson.lessonId = `${lvl.toLowerCase()}-ch${chNum}-l${num}`;
           }
 
           if (manualOverrides?.level) lesson.level = manualOverrides.level;
@@ -134,6 +168,162 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
           }
           if (manualOverrides?.title) lesson.title = manualOverrides.title;
           if (manualOverrides?.anchorSkill) lesson.anchorSkill = manualOverrides.anchorSkill;
+
+          // Normalize anchorSkill casing
+          if (lesson.anchorSkill) {
+            lesson.anchorSkill = lesson.anchorSkill.toLowerCase();
+          }
+
+          // Normalize vocabulary fields
+          if (lesson.vocabulary && !lesson.vocabItems) {
+            lesson.vocabItems = lesson.vocabulary;
+          }
+          if (lesson.vocabItems && !lesson.vocabulary) {
+            lesson.vocabulary = lesson.vocabItems;
+          }
+
+          // Transform simple string content sections
+          if (typeof lesson.warmUp === 'string') {
+            lesson.warmUp = { content: lesson.warmUp };
+          }
+          if (typeof lesson.explanation === 'string') {
+            lesson.explanation = { content: lesson.explanation };
+          }
+          if (typeof lesson.miniReview === 'string') {
+            lesson.miniReview = { content: lesson.miniReview };
+          }
+
+          // Serialize vocabulary focus array to string if generated as array
+          if (Array.isArray(lesson.vocabularyFocus)) {
+            lesson.vocabularyFocus = lesson.vocabularyFocus.join(', ');
+          }
+
+          // Transform Reading Questions
+          if (lesson.reading) {
+            const readQ = lesson.reading.comprehensionQuestions || lesson.reading.questions;
+            const readA = lesson.reading.answerKey;
+            if (Array.isArray(readQ)) {
+              lesson.reading.questions = readQ.map((q: any, idx: number) => {
+                if (typeof q === 'string') {
+                  return {
+                    id: `${lesson.lessonId}-r-${idx + 1}`,
+                    type: 'short_answer',
+                    prompt: q,
+                    correctAnswer: (readA && readA[idx]) || '—',
+                    explanation: 'Comprehension check.'
+                  };
+                }
+                return q;
+              });
+              delete lesson.reading.comprehensionQuestions;
+              delete lesson.reading.answerKey;
+            }
+          }
+
+          // Transform Listening Questions
+          if (lesson.listening) {
+            const listQ = lesson.listening.questions;
+            const listA = lesson.listening.answerKey;
+            if (Array.isArray(listQ)) {
+              lesson.listening.questions = listQ.map((q: any, idx: number) => {
+                if (typeof q === 'string') {
+                  return {
+                    id: `${lesson.lessonId}-l-${idx + 1}`,
+                    type: 'short_answer',
+                    prompt: q,
+                    correctAnswer: (listA && listA[idx]) || '—',
+                    explanation: 'Listening check.'
+                  };
+                }
+                return q;
+              });
+              delete lesson.listening.answerKey;
+            }
+          }
+
+          // Transform Grammar Drills
+          if (!lesson.grammarDrills || !lesson.grammarDrills.questions || lesson.grammarDrills.questions.length === 0) {
+            const drills = lesson.grammar?.miniDrills || lesson.miniDrills;
+            if (Array.isArray(drills)) {
+              lesson.grammarDrills = {
+                questions: drills.map((d: any, idx: number) => {
+                  return {
+                    id: `${lesson.lessonId}-gd-${idx + 1}`,
+                    type: 'fill_blank',
+                    prompt: d,
+                    correctAnswer: '—',
+                    explanation: 'Grammar practice.'
+                  };
+                })
+              };
+              if (lesson.grammar) delete lesson.grammar.miniDrills;
+              delete lesson.miniDrills;
+            }
+          }
+
+          // Transform Practice Exercises
+          if (Array.isArray(lesson.practiceExercises)) {
+            const rawPE = lesson.practiceExercises;
+            const peAns = lesson.exerciseAnswerKey || [];
+            
+            lesson.practiceExercises = {
+              questions: rawPE.map((q: any, idx: number) => {
+                let qType = 'short_answer';
+                const rawType = String(q.type || '').toLowerCase();
+                if (rawType.includes('multiple')) qType = 'multiple_choice';
+                else if (rawType.includes('matching')) qType = 'matching';
+                else if (rawType.includes('fill')) qType = 'fill_blank';
+                else if (rawType.includes('order')) qType = 'ordering';
+                else if (rawType.includes('true')) qType = 'true_false';
+
+                let opts = q.options;
+                if (Array.isArray(opts)) {
+                  opts = opts.map((o: string) => o.replace(/^[a-d]\)\s*/i, '').trim());
+                }
+
+                let pairs = q.pairs;
+                if (Array.isArray(pairs)) {
+                  pairs = pairs.map((p: any) => {
+                    if (typeof p === 'string') {
+                      const parts = p.split(/—|-/);
+                      return {
+                        left: (parts[0] || '').trim(),
+                        right: (parts[1] || '').trim()
+                      };
+                    }
+                    return p;
+                  });
+                }
+
+                let items = q.items;
+                if (Array.isArray(items)) {
+                  items = items.map((it: string) => it.replace(/^\([a-d]\)\s*/i, '').trim());
+                }
+
+                let rawAns = peAns[idx] || '—';
+                if (typeof rawAns === 'string') {
+                  rawAns = rawAns.replace(/^\d+\.\s*/, '').trim();
+                  if (qType === 'multiple_choice') {
+                    rawAns = rawAns.replace(/^[a-d]\)\s*/i, '').trim();
+                  }
+                }
+
+                return {
+                  id: `${lesson.lessonId}-pe-${idx + 1}`,
+                  type: qType,
+                  prompt: q.prompt || q.question || 'Complete the exercise.',
+                  options: opts,
+                  pairs: pairs,
+                  items: items,
+                  correctAnswer: rawAns,
+                  explanation: 'Practice practice.'
+                };
+              })
+            };
+            delete lesson.exerciseAnswerKey;
+          }
+
+          parsedLessons.push(lesson);
         }
       } catch (jsonErr: any) {
         res.status(400).json({ success: false, error: `Invalid JSON format: ${jsonErr.message}` });
