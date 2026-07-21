@@ -114,15 +114,27 @@ function PipelineDashboardPage() {
       const json = await res.json();
       if (json.success) {
         const totalCount = json.data?.totalParsed || 1;
-        const stagedDraft = json.data?.results?.[0] || json.data;
+        const stagedResult = json.data?.results?.[0];
         setActionStatus({
           loading: false,
           error: "",
           success: `Successfully parsed & staged ${totalCount} lesson(s) into Content Pipeline!`,
         });
         setImportMarkdown("");
-        fetchDrafts();
-        if (stagedDraft) setSelectedDraft(stagedDraft);
+        
+        // Fetch latest drafts and select the newly staged draft
+        const freshRes = await apiFetch("/admin/content-pipeline/drafts");
+        const freshJson = await freshRes.json();
+        if (freshJson.success && freshJson.data) {
+          setDrafts(freshJson.data);
+          if (stagedResult?.draftId) {
+            const found = freshJson.data.find((d: any) => d._id === stagedResult.draftId);
+            if (found) setSelectedDraft(found);
+          } else if (freshJson.data.length > 0) {
+            setSelectedDraft(freshJson.data[0]);
+          }
+        }
+        
         setPipelineTab("drafts");
       } else {
         setActionStatus({ loading: false, error: json.error || "Parsing failed", success: "" });
