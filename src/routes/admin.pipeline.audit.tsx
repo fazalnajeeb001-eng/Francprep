@@ -32,7 +32,40 @@ function AuditsAndQualityPage() {
   const [selectedReport, setSelectedReport] = useState<AuditReportItem | null>(null);
   const [previewLessonId, setPreviewLessonId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedModel, setSelectedModel] = useState("claude-sonnet");
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatInput, setChatInput] = useState("");
+  const [chatMessages, setChatMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([
+    { role: 'assistant', content: 'Bonjour! I am your FrancPrep Curriculum Coordinator. Ask me anything about audit results or content quality fixes!' }
+  ]);
+  const [sendingChat, setSendingChat] = useState(false);
   const [actionStatus, setActionStatus] = useState({ loading: false, error: "", success: "" });
+
+  const handleSendChat = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chatInput.trim() || sendingChat) return;
+    const userMsg = chatInput.trim();
+    setChatInput("");
+    setChatMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+    setSendingChat(true);
+
+    try {
+      const res = await apiFetch('/admin/content-pipeline/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userMsg, lessonId: selectedReport?.lessonId })
+      });
+      const json = await res.json();
+      if (json.success) {
+        setChatMessages(prev => [...prev, { role: 'assistant', content: json.reply }]);
+      } else {
+        setChatMessages(prev => [...prev, { role: 'assistant', content: "Sorry, I couldn't process that request right now." }]);
+      }
+    } catch (err) {
+      setChatMessages(prev => [...prev, { role: 'assistant', content: "Error communicating with Curriculum Coordinator assistant." }]);
+    }
+    setSendingChat(false);
+  };
 
   const runAudit = async (level: string) => {
     setAuditing(true);
@@ -156,6 +189,11 @@ function AuditsAndQualityPage() {
                 className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition-all flex items-center gap-1.5 disabled:opacity-50">
                 {auditing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
                 <span>Re-Audit</span>
+              </button>
+              <button onClick={() => setChatOpen(!chatOpen)}
+                className="px-3 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Curriculum Assistant</span>
               </button>
             </div>
           </div>
@@ -321,6 +359,65 @@ function AuditsAndQualityPage() {
           </div>
         </div>
       </div>
+
+      {/* CURRICULUM ASSISTANT CHATBOT DRAWER */}
+      <AnimatePresence>
+        {chatOpen && (
+          <motion.div initial={{ opacity: 0, x: 300 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 300 }}
+            className={`fixed right-0 top-0 bottom-0 w-80 sm:w-96 z-50 ${card} border-l shadow-2xl flex flex-col backdrop-blur-xl`}>
+            <div className="p-4 border-b border-[#1e2a4a] space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-purple-400" />
+                  <h3 className="text-sm font-bold text-white">Curriculum Coordinator</h3>
+                </div>
+                <button onClick={() => setChatOpen(false)} className="text-xs text-gray-400 hover:text-white">✕</button>
+              </div>
+
+              <div className="flex items-center justify-between pt-1">
+                <span className="text-[10px] text-gray-400">Select LLM Provider:</span>
+                <select value={selectedModel} onChange={e => setSelectedModel(e.target.value)}
+                  className={`text-[10px] rounded px-2 py-0.5 ${dark ? 'bg-[#0c1224] border-[#1e2a4a] text-white' : 'bg-white border-gray-300 text-gray-900'} border`}>
+                  <option value="claude-sonnet">Claude 3.5 Sonnet</option>
+                  <option value="gpt-4o-mini">GPT-4o Mini</option>
+                  <option value="gemini-flash">Gemini Flash</option>
+                  <option value="llama-70b">Llama 70B</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="p-2 border-b border-[#1e2a4a] bg-purple-500/5 flex flex-wrap gap-1.5">
+              {[
+                "🔍 Explain flagged issues",
+                "🤖 Run AI Smart-Repair",
+                "📝 Verify CEFR level fit",
+                "📚 Check vocabulary ledger"
+              ].map((chip, idx) => (
+                <button key={idx} onClick={() => {
+                  setChatInput(chip);
+                }} className="text-[9px] px-2 py-1 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/20 transition-all">
+                  {chip}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+              {chatMessages.map((m, idx) => (
+                <div key={idx} className={`p-3 rounded-xl text-xs ${m.role === 'user' ? 'bg-purple-600/20 text-purple-200 border border-purple-500/30 ml-6' : 'bg-[#0c1224] text-gray-200 border border-[#1e2a4a] mr-6'}`}>
+                  {m.content}
+                </div>
+              ))}
+            </div>
+
+            <form onSubmit={handleSendChat} className="p-3 border-t border-[#1e2a4a] flex gap-2">
+              <input type="text" value={chatInput} onChange={e => setChatInput(e.target.value)} placeholder="Ask about audit or repairs..." className={inp} />
+              <button type="submit" disabled={sendingChat} className="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-xl disabled:opacity-50">
+                {sendingChat ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : "Send"}
+              </button>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

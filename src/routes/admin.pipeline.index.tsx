@@ -319,7 +319,7 @@ function PipelineDashboardPage() {
           </button>
           <button onClick={() => { setPipelineTab("integrated"); setSelectedDraft(null); }}
             className={`pb-3 font-semibold transition-all border-b-2 ${pipelineTab === "integrated" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
-            🔄 Latest Integrated Additions ({integratedDrafts.slice(0, 1).length})
+            🔄 Latest Integrated Drafts ({integratedDrafts.slice(0, 1).length})
           </button>
         </div>
 
