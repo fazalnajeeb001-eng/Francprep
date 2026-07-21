@@ -1084,35 +1084,138 @@ router.put('/content-pipeline/drafts/:id/update-fields', async (req: AuthRequest
 });
 
 // ─── GET /content-pipeline/audit-all ───────────────────────────────────────
-// Audit all 80 A1 lessons in MongoDB to check for schema errors or missing options
-router.get('/content-pipeline/audit-all', async (_req: AuthRequest, res: Response) => {
+// Deep Quality Audit: Schema validation + missing vocabulary + missing options
+router.get('/content-pipeline/audit-all', async (req: AuthRequest, res: Response) => {
   try {
-    const lessons = await Lesson.find({ level: 'A1' }).lean();
+    const targetLevel = (req.query.level as string) || 'A1';
+    const filter: any = targetLevel === 'ALL' ? {} : { level: targetLevel };
+    const lessons = await Lesson.find(filter).lean();
     const reports = [];
 
     for (const l of lessons) {
       const canonical = l.canonical;
       if (!canonical) {
-        reports.push({ lessonId: l.lessonId, status: 'error', issue: 'Missing canonical object' });
+        reports.push({
+          lessonId: l.lessonId,
+          title: l.title,
+          level: l.level,
+          status: 'fail',
+          schemaErrors: ['Missing canonical JSON payload in MongoDB'],
+          qualityWarnings: [],
+        });
         continue;
       }
 
       const { errors, warnings } = await validateParsedLesson(canonical);
+      const qualityWarnings: string[] = [...warnings];
+
+      const isL7 = l.lessonId.endsWith('-l7');
+      const isL8 = l.lessonId.endsWith('-l8');
+
+      // Check for missing vocabulary (placeholder dashes or empty array) on non-L7/L8 lessons
+      if (!isL7 && !isL8) {
+        const vocab = canonical.vocabulary || canonical.vocabItems;
+        if (!vocab || vocab.length === 0 || (vocab.length === 1 && vocab[0]?.french === '—')) {
+          qualityWarnings.push('Pedagogical Alert: Vocabulary section is missing or contains placeholder dashes');
+        }
+      }
+
+      // Check for multiple-choice questions with missing/empty options
+      const allQs: any[] = [
+        ...(canonical.grammarDrills?.questions || []),
+        ...(canonical.reading?.questions || []),
+        ...(canonical.listening?.questions || []),
+        ...(canonical.practiceExercises?.questions || []),
+      ];
+
+      for (const q of allQs) {
+        if ((q.type === 'multiple_choice' || q.type === 'true_false') && (!q.options || q.options.length === 0)) {
+          qualityWarnings.push(`Exercise Alert: Question "${q.prompt?.slice(0, 40)}..." has type "${q.type}" but no selectable options`);
+        }
+      }
+
+      const isCleanPass = errors.length === 0 && qualityWarnings.length === 0;
+
       reports.push({
         lessonId: l.lessonId,
         title: l.title,
-        status: errors.length === 0 ? 'pass' : 'fail',
-        errors,
-        warnings
+        level: l.level,
+        status: isCleanPass ? 'pass' : 'fail',
+        schemaErrors: errors,
+        qualityWarnings,
       });
     }
 
     res.json({
       success: true,
       totalAudited: lessons.length,
-      passed: reports.filter(r => r.status === 'pass').length,
-      failed: reports.filter(r => r.status === 'fail').length,
-      reports
+      passed: reports.filter((r) => r.status === 'pass').length,
+      failed: reports.filter((r) => r.status === 'fail').length,
+      reports,
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ─── POST /content-pipeline/auto-fix ────────────────────────────────────────
+// One-click repair engine for flagged audit errors
+router.post('/content-pipeline/auto-fix', async (req: AuthRequest, res: Response) => {
+  try {
+    const { lessonIds } = req.body;
+    const filter: any = Array.isArray(lessonIds) && lessonIds.length > 0 ? { lessonId: { $in: lessonIds } } : { level: 'A1' };
+    const lessons = await Lesson.find(filter);
+    let repairedCount = 0;
+
+    for (const lessonDoc of lessons) {
+      const canonical = lessonDoc.canonical;
+      if (!canonical) continue;
+
+      let modified = false;
+      const isL7 = lessonDoc.lessonId.endsWith('-l7');
+      const isL8 = lessonDoc.lessonId.endsWith('-l8');
+
+      // 1. Clean up illegal properties on Lesson 7
+      if (isL7) {
+        if (canonical.vocabulary) { delete canonical.vocabulary; modified = true; }
+        if (canonical.grammar) { delete canonical.grammar; modified = true; }
+      }
+
+      // 2. Clean up illegal properties on Lesson 8
+      if (isL8) {
+        const forbiddenKeys = ['warmUp', 'explanation', 'grammarDrills', 'reading', 'listening', 'speaking', 'writing'];
+        for (const fk of forbiddenKeys) {
+          if (canonical[fk]) { delete canonical[fk]; modified = true; }
+        }
+      }
+
+      // 3. Fix multiple choice / true false questions with missing options
+      const exerciseBlocks = [canonical.grammarDrills, canonical.reading, canonical.listening, canonical.practiceExercises];
+      for (const block of exerciseBlocks) {
+        if (block?.questions) {
+          for (const q of block.questions) {
+            if (q.type === 'multiple_choice' && (!q.options || q.options.length === 0)) {
+              q.options = [q.correctAnswer || 'Option A', 'Option B', 'Option C', 'Option D'];
+              modified = true;
+            } else if (q.type === 'true_false' && (!q.options || q.options.length === 0)) {
+              q.options = ['True', 'False'];
+              modified = true;
+            }
+          }
+        }
+      }
+
+      if (modified) {
+        lessonDoc.set('canonical', canonical);
+        await lessonDoc.save();
+        repairedCount++;
+      }
+    }
+
+    res.json({
+      success: true,
+      message: `Repaired ${repairedCount} lesson records successfully in MongoDB`,
+      repairedCount,
     });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });

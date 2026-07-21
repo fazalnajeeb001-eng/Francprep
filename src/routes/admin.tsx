@@ -24,6 +24,7 @@ const navGroups = [
       { label: "Drafts", icon: FileText, href: "/admin/pipeline/drafts" },
       { label: "Integrated Drafts", icon: Wand2, href: "/admin/pipeline/integrated" },
       { label: "Published Content", icon: Crown, href: "/admin/pipeline/published" },
+      { label: "Audits & Quality", icon: Shield, href: "/admin/pipeline/audit" },
     ]
   },
   {
