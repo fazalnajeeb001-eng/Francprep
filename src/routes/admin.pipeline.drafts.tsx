@@ -58,8 +58,17 @@ function DraftsSubSectionPage() {
     fetchDrafts();
   }, []);
 
-  const stagedDrafts = drafts.filter(
-    (d) => d.status !== "superseded" && d.status !== "published" && d.origin !== "ai_generator"
+  // Group active staged drafts by lessonId and keep only the latest updated version per lessonId
+  const stagedDrafts = Object.values(
+    drafts
+      .filter((d) => d.status !== "superseded" && d.status !== "published" && d.origin !== "ai_generator")
+      .reduce((acc, current) => {
+        const existing = acc[current.lessonId];
+        if (!existing || new Date(current.updatedAt).getTime() > new Date(existing.updatedAt).getTime()) {
+          acc[current.lessonId] = current;
+        }
+        return acc;
+      }, {} as Record<string, typeof drafts[0]>)
   );
 
   const filteredDrafts = stagedDrafts.filter(d => 
