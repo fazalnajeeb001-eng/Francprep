@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "ts-node server.ts",
-    "build": "npx -y tsc && node -e \"const fs = require('fs'); const path = require('path'); fs.mkdirSync('dist/src/schemas', { recursive: true }); fs.readdirSync('src/schemas').forEach(f => fs.copyFileSync(path.join('src/schemas', f), path.join('dist/src/schemas', f)))\"",
+    "build": "tsc && node -e \"const fs = require('fs'); const path = require('path'); fs.mkdirSync('dist/src/schemas', { recursive: true }); fs.readdirSync('src/schemas').forEach(f => fs.copyFileSync(path.join('src/schemas', f), path.join('dist/src/schemas', f)))\"",
     "start": "node dist/server.js",
     "lint": "eslint src/**/*.ts",
     "seed": "npx ts-node src/scripts/seedCurriculum.ts"
