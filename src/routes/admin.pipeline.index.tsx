@@ -259,7 +259,18 @@ function PipelineDashboardPage() {
     setSendingChat(false);
   };
 
-  const activeStagedDrafts = drafts.filter(d => d.status === 'draft' || d.status === 'validated' || d.status === 'review');
+  // Deduplicate activeStagedDrafts to show only the single latest draft per lessonId in main pipeline workspace
+  const activeStagedDrafts = Object.values(
+    drafts
+      .filter(d => (d.status === 'draft' || d.status === 'validated' || d.status === 'review') && d.origin !== 'ai_generator')
+      .reduce((acc, current) => {
+        const existing = acc[current.lessonId];
+        if (!existing || new Date(current.updatedAt).getTime() > new Date(existing.updatedAt).getTime()) {
+          acc[current.lessonId] = current;
+        }
+        return acc;
+      }, {} as Record<string, typeof drafts[0]>)
+  );
   const integratedDrafts = drafts.filter(d => d.origin === 'ai_generator' || d.origin === 'ai_polish');
   const supersededDrafts = drafts.filter(d => d.status === 'superseded');
 
