@@ -166,24 +166,36 @@ function parseGrammar(text: string) {
   if (mm) {
     for (const line of mm[1].split('\n')) {
       const c = line.replace(/^\s*[-•*]\s*/, '').trim();
-      if (!c || (!c.includes('→') && !c.includes('->'))) continue;
-      
-      // Match "❌ wrong -> ✓ correct (why)" or "✗ wrong -> ✓ correct. (why)"
-      const parts = c.split(/→|->/);
-      const wrong = stripMd(parts[0].replace(/^[❌✗xX\s]+/, '')).trim();
-      const rightPart = parts[1] ? parts[1].replace(/^[✅✓\s]+/, '').trim() : '';
-      
-      const parenMatch = rightPart.match(/^(.+?)\s*\((.+?)\)\s*$/);
-      let correct = stripMd(rightPart);
-      let why = '';
-      if (parenMatch) {
-        correct = stripMd(parenMatch[1]);
-        why = stripMd(parenMatch[2]);
+      if (!c) continue;
+
+      if (c.includes('→') || c.includes('->')) {
+        // Arrow format: "❌ Il n'y a pas un balcon. → ✅ Il n'y a pas de balcon. (article becomes de)"
+        const parts = c.split(/→|->/);
+        const wrong = stripMd(parts[0].replace(/^[❌✗xX\s]+/, '')).trim();
+        const rightPart = parts[1] ? parts[1].replace(/^[✅✓\s]+/, '').trim() : '';
+
+        const parenMatch = rightPart.match(/^(.+?)\s*\((.+?)\)\s*$/);
+        let correct = stripMd(rightPart);
+        let why = '';
+        if (parenMatch) {
+          correct = stripMd(parenMatch[1]);
+          why = stripMd(parenMatch[2]);
+        } else {
+          why = `Use "${correct}" instead.`;
+        }
+        if (wrong && correct) {
+          commonMistakes.push({ wrong, correct, why });
+        }
       } else {
-        why = `Use "${correct}" instead.`;
-      }
-      if (wrong && correct) {
-        commonMistakes.push({ wrong, correct, why });
+        // Standalone note format: "❌ Y a-t-il... is a valid but more formal/written inversion form..."
+        const noteText = stripMd(c.replace(/^[❌✗xX\s]+/, '')).trim();
+        if (noteText) {
+          commonMistakes.push({
+            wrong: noteText,
+            correct: 'Note / Avoid in spoken French',
+            why: noteText,
+          });
+        }
       }
     }
   }
@@ -209,7 +221,21 @@ function parseGrammarDrills(text: string): ILessonQuestion[] {
   if (!drillsMatch) return qs;
 
   const drillsText = drillsMatch[1];
-  const lines = drillsText.split('\n');
+  const parts = drillsText.split(/(?:\*\*|)?Answer Key/i);
+  const questionBlock = parts[0] || '';
+  const answerBlock = parts[1] || '';
+
+  const answers: string[] = [];
+  if (answerBlock) {
+    for (const l of answerBlock.split('\n')) {
+      const c = l.trim().replace(/^\d+[\.\)]\s*/, '');
+      if (c && c !== '---' && !c.startsWith('*')) {
+        answers.push(stripMd(c));
+      }
+    }
+  }
+
+  const lines = questionBlock.split('\n');
 
   // Extract instruction line (first non-empty line that's not numbered)
   let instruction = '';
@@ -229,7 +255,7 @@ function parseGrammarDrills(text: string): ILessonQuestion[] {
 
     const rawPrompt = m[1];
     const prompt = stripMd(rawPrompt);
-    let correctAnswer = '';
+    let correctAnswer = answers[n] || '';
     let explanation = instruction || 'Complete the drill.';
 
     // Pattern 1: Parenthetical hint → "_________ (je m'appelle) Sarah"
@@ -286,10 +312,9 @@ function parseGrammarDrills(text: string): ILessonQuestion[] {
         explanation = instruction;
       }
     }
-    // Pattern 5: No blank visible — might be a full sentence exercise
-    else {
-      correctAnswer = '';
-      explanation = instruction;
+    if (answers[n]) {
+      correctAnswer = answers[n];
+      explanation = `Correct answer: ${correctAnswer}`;
     }
 
     n++;
