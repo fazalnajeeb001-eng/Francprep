@@ -968,7 +968,7 @@ function fillPlaceholders(lesson: ParsedLesson): void {
       lesson.grammarDrills.questions = [{
         id: `${lessonId}-gd-dummy`,
         type: 'short_answer',
-        prompt: 'Complete the review.',
+        prompt: 'Complete the grammar drills.',
         correctAnswer: '—',
         explanation: 'No grammar drills for this review lesson.'
       }];
@@ -983,7 +983,7 @@ function fillPlaceholders(lesson: ParsedLesson): void {
       lesson.reading.questions = [{
         id: `${lessonId}-r-dummy`,
         type: 'short_answer',
-        prompt: 'Complete the review.',
+        prompt: 'Complete the reading exercise.',
         correctAnswer: '—',
         explanation: 'No reading questions for this review lesson.'
       }];
@@ -998,12 +998,12 @@ function fillPlaceholders(lesson: ParsedLesson): void {
       lesson.listening.questions = [{
         id: `${lessonId}-l-dummy`,
         type: 'short_answer',
-        prompt: 'Complete the review.',
+        prompt: 'Complete the listening exercise.',
         correctAnswer: '—',
         explanation: 'No listening questions for this review lesson.'
       }];
     }
-    if (lesson.speaking && !lesson.speaking.guidedActivity) {
+    if (lesson.speaking && (!lesson.speaking.guidedActivity || lesson.speaking.guidedActivity.trim() === '')) {
       lesson.speaking.guidedActivity = "Practice pronunciation of the vocabulary.";
     }
     if (lesson.writing && !lesson.writing.task) {
