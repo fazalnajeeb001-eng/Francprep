@@ -869,7 +869,7 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
           {!submitted ? (
             <>
               {/* Check Answer Button */}
-              {userAnswer !== undefined && !resultForQ?.correct && (
+              {userAnswer !== undefined && (
                 <button onClick={() => handleCheckQuestion(qId)} disabled={checkingQuestion[qId]}
                   className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm rounded-lg transition-all shadow-md shadow-indigo-600/20">
                   {checkingQuestion[qId] ? "Checking..." : "Check Answer"}
