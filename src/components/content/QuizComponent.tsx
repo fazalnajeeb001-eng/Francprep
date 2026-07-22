@@ -367,11 +367,17 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
           const correct = targetQ.correctAnswer;
           let isCorrect = false;
           if (correct !== undefined && val !== undefined) {
-            const normalize = (s: string) => String(s).trim().toLowerCase();
+            const normalize = (s: string) => String(s).trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").replace(/\s+/g, " ");
+            const userStr = normalize(val as string);
+
             if (Array.isArray(correct)) {
-              isCorrect = correct.some(c => normalize(c as string) === normalize(val as string));
+              isCorrect = correct.some(c => {
+                const targetStr = normalize(c as string);
+                return userStr === targetStr || userStr.includes(targetStr) || targetStr.includes(userStr);
+              });
             } else {
-              isCorrect = normalize(correct as string) === normalize(val as string);
+              const targetStr = normalize(correct as string);
+              isCorrect = userStr === targetStr || (userStr.length > 3 && (userStr.includes(targetStr) || targetStr.includes(userStr)));
             }
           }
           const singleResult: ResultItem = {
