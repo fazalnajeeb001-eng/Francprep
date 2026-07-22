@@ -409,9 +409,10 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
     for (const parsedLesson of lessonsToProcess) {
       const { errors, warnings } = await validateParsedLesson(parsedLesson);
 
+      // Find any existing draft that is active (NOT published and NOT superseded)
       const existingDraft = await Draft.findOne({
         lessonId: parsedLesson.lessonId,
-        status: { $in: ['draft', 'review', 'validated'] },
+        status: { $nin: ['published', 'superseded'] },
       });
 
       let draft;

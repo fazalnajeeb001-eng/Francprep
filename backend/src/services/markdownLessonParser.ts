@@ -1173,6 +1173,29 @@ export function parseLessonFromMarkdown(
   const normalizedMarkdown = markdown.replace(/\r/g, '');
   const lessons: ParsedLesson[] = [];
 
+  // Auto-detect Level and Chapter from markdown text if not manually overridden
+  let detectedLevel = level;
+  if (!manualOverrides?.level) {
+    const levelMatch = normalizedMarkdown.match(/LEVEL\s*(A0|A1|A2|B1|B2|C1|C2)/i);
+    if (levelMatch) {
+      detectedLevel = levelMatch[1].toUpperCase();
+    }
+  } else {
+    detectedLevel = manualOverrides.level;
+  }
+
+  let detectedChapterNum = chapterNum;
+  if (!manualOverrides?.chapterNum) {
+    const chapterMatch = normalizedMarkdown.match(/Chapter\s*(\d+)/i);
+    if (chapterMatch) {
+      detectedChapterNum = parseInt(chapterMatch[1], 10);
+    }
+  } else {
+    detectedChapterNum = typeof manualOverrides.chapterNum === 'string' 
+      ? parseInt((manualOverrides.chapterNum as string).match(/\d+/)?.[0] || '1', 10) 
+      : manualOverrides.chapterNum;
+  }
+
   // Match all lesson headers: e.g. "LESSON 1", "# LESSON 7", "**LESSON 1**", "Lesson 1:", "CHAPTER 1 — LESSON 2"
   const headerRegex = /(?:^|\n)(?:#+\s*|\*\*|#*\s*CHAPTER\s+\d+[\s—:-]+)?LESSON\s+(\d+)\b[^\n]*/gim;
   const matches = [...normalizedMarkdown.matchAll(headerRegex)];
@@ -1184,8 +1207,8 @@ export function parseLessonFromMarkdown(
     }
     
     const lessonNum = manualOverrides.lessonNum;
-    const finalLevel = manualOverrides.level;
-    const finalChapterNum = manualOverrides.chapterNum;
+    const finalLevel = detectedLevel;
+    const finalChapterNum = detectedChapterNum;
     const lessonId = `${finalLevel.toLowerCase()}-ch${finalChapterNum}-l${lessonNum}`;
     const chapterId = `${finalLevel.toLowerCase()}-ch${finalChapterNum}`;
 
@@ -1228,8 +1251,8 @@ export function parseLessonFromMarkdown(
     const block = normalizedMarkdown.substring(startIdx, endIdx);
 
     // Apply manual overrides if matching this loop iteration
-    const finalLevel = manualOverrides?.level || level;
-    const finalChapterNum = manualOverrides?.chapterNum || chapterNum;
+    const finalLevel = detectedLevel;
+    const finalChapterNum = detectedChapterNum;
     if (manualOverrides?.lessonNum && matches.length === 1) {
       lessonNum = manualOverrides.lessonNum;
     }
