@@ -362,8 +362,67 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
               }
             }
           }
+        } else if (targetQ.type === 'fill_blank' || targetQ.type === 'fill_in_blank' || targetQ.type === 'short_answer' || targetQ.type === 'translation') {
+          // Call backend AI endpoint /writing/grammar-check for LLM evaluation of typed answers
+          try {
+            const apiRes = await apiFetch('/writing/grammar-check', {
+              method: 'POST',
+              body: JSON.stringify({
+                prompt: targetQ.prompt || targetQ.question || '',
+                answer: val,
+                expectedAnswer: targetQ.correctAnswer ? String(targetQ.correctAnswer) : '',
+              }),
+            });
+            const json = await apiRes.json();
+            if (json.success && json.data) {
+              const aiResult: ResultItem = {
+                questionId: targetQId,
+                correct: !!json.data.correct,
+                points: json.data.correct ? (targetQ.points || 1) : 0,
+                maxPoints: targetQ.points || 1,
+                explanation: json.data.feedback || (json.data.correct ? "Correct!" : `Expected: ${targetQ.correctAnswer}`),
+                text: targetQ.prompt,
+              };
+              setQuestionResults(prev => ({ ...prev, [targetQId]: aiResult }));
+              if (!aiResult.correct) {
+                setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
+              }
+            } else {
+              throw new Error('AI check failed');
+            }
+          } catch {
+            // Local evaluation fallback if AI service fails or is unconfigured
+            const correct = targetQ.correctAnswer;
+            let isCorrect = false;
+            if (correct !== undefined && val !== undefined) {
+              const normalize = (s: string) => String(s).trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").replace(/\s+/g, " ");
+              const userStr = normalize(val as string);
+
+              if (Array.isArray(correct)) {
+                isCorrect = correct.some(c => {
+                  const targetStr = normalize(c as string);
+                  return userStr === targetStr || userStr.includes(targetStr) || targetStr.includes(userStr);
+                });
+              } else {
+                const targetStr = normalize(correct as string);
+                isCorrect = userStr === targetStr || (userStr.length > 3 && (userStr.includes(targetStr) || targetStr.includes(userStr)));
+              }
+            }
+            const singleResult: ResultItem = {
+              questionId: targetQId,
+              correct: isCorrect,
+              points: isCorrect ? (targetQ.points || 1) : 0,
+              maxPoints: targetQ.points || 1,
+              explanation: isCorrect ? "Correct!" : (targetQ.explanation || `Expected: ${correct}`),
+              text: targetQ.prompt,
+            };
+            setQuestionResults(prev => ({ ...prev, [targetQId]: singleResult }));
+            if (!isCorrect) {
+              setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
+            }
+          }
         } else {
-          // Local evaluation fallback if onSubmit prop is not passed (e.g. preview mode)
+          // Local evaluation fallback for multiple_choice / true_false
           const correct = targetQ.correctAnswer;
           let isCorrect = false;
           if (correct !== undefined && val !== undefined) {
