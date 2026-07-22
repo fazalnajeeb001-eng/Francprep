@@ -629,6 +629,10 @@ function buildPracticeQuestion(n: number, type: string, promptText: string): ILe
         if (om) options.push(stripMd(om[1]));
       }
     }
+    // Fallback options if parsing failed to find options
+    if (options.length < 2) {
+      options.push("Option A", "Option B");
+    }
     return {
       id: `pe-${n}`,
       type: 'multiple_choice',
@@ -676,6 +680,10 @@ function buildPracticeQuestion(n: number, type: string, promptText: string): ILe
       });
     }
 
+    if (pairs.length === 0) {
+      pairs.push({ left: 'Item 1', right: 'Option A' });
+    }
+
     return {
       id: `pe-${n}`,
       type: 'matching',
@@ -696,6 +704,9 @@ function buildPracticeQuestion(n: number, type: string, promptText: string): ILe
     for (const im of inlineMatches) {
       const item = stripMd(im[2]).trim();
       if (item && !items.includes(item)) items.push(item);
+    }
+    if (items.length === 0) {
+      items.push('Item 1', 'Item 2');
     }
 
     return {
