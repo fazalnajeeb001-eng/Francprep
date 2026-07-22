@@ -351,19 +351,10 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
           // ignore
         }
       } else {
-        if (onSubmit) {
-          const res = await onSubmit({ [targetQId]: val });
-          if (res && res.results && res.results.length > 0) {
-            const singleResult = res.results.find((r: any) => r.questionId === targetQId);
-            if (singleResult) {
-              setQuestionResults(prev => ({ ...prev, [targetQId]: singleResult }));
-              if (!singleResult.correct) {
-                setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
-              }
-            }
-          }
-        } else if (targetQ.type === 'fill_blank' || targetQ.type === 'fill_in_blank' || targetQ.type === 'short_answer' || targetQ.type === 'translation') {
-          // Call backend AI endpoint /writing/grammar-check for LLM evaluation of typed answers
+        // For all typed or open questions, prioritize backend AI grading via /writing/grammar-check
+        const isTypedQuestion = ['fill_blank', 'fill_in_blank', 'short_answer', 'translation', 'speaking_prompt', 'speaking'].includes(targetQ.type || _type);
+        
+        if (isTypedQuestion) {
           try {
             const apiRes = await apiFetch('/writing/grammar-check', {
               method: 'POST',
@@ -380,7 +371,7 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
                 correct: !!json.data.correct,
                 points: json.data.correct ? (targetQ.points || 1) : 0,
                 maxPoints: targetQ.points || 1,
-                explanation: json.data.feedback || (json.data.correct ? "Correct!" : `Expected: ${targetQ.correctAnswer}`),
+                explanation: json.data.feedback || (json.data.correct ? "Correct!" : `Expected: ${targetQ.correctAnswer || 'N/A'}`),
                 text: targetQ.prompt,
               };
               setQuestionResults(prev => ({ ...prev, [targetQId]: aiResult }));
@@ -388,10 +379,11 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
                 setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
               }
             } else {
-              throw new Error('AI check failed');
+              throw new Error('AI evaluation returned unsuccessful');
             }
-          } catch {
-            // Local evaluation fallback if AI service fails or is unconfigured
+          } catch (aiErr) {
+            console.warn('AI check fallback to local check:', aiErr);
+            // Fallback to local evaluation if AI service is offline or unconfigured
             const correct = targetQ.correctAnswer;
             let isCorrect = false;
             if (correct !== undefined && val !== undefined) {
@@ -421,8 +413,19 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
               setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
             }
           }
+        } else if (onSubmit) {
+          const res = await onSubmit({ [targetQId]: val });
+          if (res && res.results && res.results.length > 0) {
+            const singleResult = res.results.find((r: any) => r.questionId === targetQId);
+            if (singleResult) {
+              setQuestionResults(prev => ({ ...prev, [targetQId]: singleResult }));
+              if (!singleResult.correct) {
+                setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
+              }
+            }
+          }
         } else {
-          // Local evaluation fallback for multiple_choice / true_false
+          // Local evaluation fallback for multiple choice / true-false
           const correct = targetQ.correctAnswer;
           let isCorrect = false;
           if (correct !== undefined && val !== undefined) {
