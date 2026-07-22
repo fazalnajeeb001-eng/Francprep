@@ -1016,7 +1016,7 @@ function fillPlaceholders(lesson: ParsedLesson): void {
     }
   }
 
-  if (!lesson.practiceExercises.questions || lesson.practiceExercises.questions.length === 0) {
+  if (lesson.practiceExercises && (!lesson.practiceExercises.questions || lesson.practiceExercises.questions.length === 0)) {
     lesson.practiceExercises.questions = [{
       id: `${lessonId}-pe-dummy`,
       type: 'short_answer',
@@ -1025,7 +1025,7 @@ function fillPlaceholders(lesson: ParsedLesson): void {
       explanation: 'No practice exercises for this review lesson.'
     }];
   }
-  if (!lesson.miniReview.content) {
+  if (lesson.miniReview && !lesson.miniReview.content) {
     lesson.miniReview.content = "Complete the chapter review.";
   }
   if (!lesson.selfAssessment || lesson.selfAssessment.length === 0) {
@@ -1136,6 +1136,7 @@ function populateLessonSections(lesson: ParsedLesson, sections: any[], lessonId:
       if (lesson.writing) lesson.writing = parseWriting(s.body);
     }
     else if (h === 'practice exercises' || h.startsWith('mixed practice exercises')) {
+      if (!lesson.practiceExercises) lesson.practiceExercises = { questions: [] };
       lesson.practiceExercises.questions = parsePracticeExercises(s.body);
     }
     else if (h.startsWith('chapter vocabulary bank')) {
@@ -1143,8 +1144,11 @@ function populateLessonSections(lesson: ParsedLesson, sections: any[], lessonId:
     } else if (h.startsWith('grammar summary')) {
       lesson.grammar = parseGrammarSummary(s.body);
     } else if (h === 'mini review' || h.startsWith('chapter review') || h.includes('mini review by can-do')) {
+      if (!lesson.miniReview) lesson.miniReview = { content: '' };
       lesson.miniReview.content = clean(s.body.split('\n').filter((l: string) => l.trim()).map((l: string) => l.trim()).join(' '));
     } else if (h.startsWith('delf')) {
+      if (!lesson.practiceExercises) lesson.practiceExercises = { questions: [] };
+      if (!lesson.practiceExercises.questions) lesson.practiceExercises.questions = [];
       const delfQuestions = parseDelfExercises(s.body, lessonId);
       lesson.practiceExercises.questions = [...lesson.practiceExercises.questions, ...delfQuestions];
     } else if (h === 'self assessment' || h === 'self-reflection') {
