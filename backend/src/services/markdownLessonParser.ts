@@ -814,16 +814,16 @@ function fillPlaceholders(lesson: ParsedLesson): void {
       explanation: 'Refer to the scene text.',
     }];
 
-    // 3. speaking: ensure roleplay is populated
+    // 3. speaking: ensure roleplay is populated and strip extra standard properties
+    let roleplayVal = 'Practice the dialogue with a partner.';
+    let extensionTaskVal: string | undefined = undefined;
     if (lesson.speaking) {
-      if (!lesson.speaking.roleplay && lesson.speaking.guidedActivity) {
-        lesson.speaking.roleplay = lesson.speaking.guidedActivity;
-      }
-      if (!lesson.speaking.roleplay) {
-        lesson.speaking.roleplay = 'Practice the dialogue with a partner.';
-      }
-    } else {
-      lesson.speaking = { roleplay: 'Practice the dialogue with a partner.' };
+      roleplayVal = lesson.speaking.roleplay || lesson.speaking.guidedActivity || roleplayVal;
+      extensionTaskVal = lesson.speaking.extensionTask;
+    }
+    lesson.speaking = { roleplay: roleplayVal };
+    if (extensionTaskVal) {
+      lesson.speaking.extensionTask = extensionTaskVal;
     }
 
     // 4. writing: ensure checklist is populated
@@ -1039,8 +1039,10 @@ function fillPlaceholders(lesson: ParsedLesson): void {
   if (lesson.miniReview && !lesson.miniReview.content) {
     lesson.miniReview.content = "Complete the chapter review.";
   }
-  if (!lesson.selfAssessment || lesson.selfAssessment.length === 0) {
-    lesson.selfAssessment = ["I can understand the concepts presented in this chapter."];
+  if (!isL8) {
+    if (!lesson.selfAssessment || lesson.selfAssessment.length === 0) {
+      lesson.selfAssessment = ["I can understand the concepts presented in this chapter."];
+    }
   }
 }
 
@@ -1275,8 +1277,17 @@ export function parseLessonFromMarkdown(
     const lessonId = `${finalLevel.toLowerCase()}-ch${finalChapterNum}-l${lessonNum}`;
     const chapterId = `${finalLevel.toLowerCase()}-ch${finalChapterNum}`;
 
-    let anchorSkill = manualOverrides?.anchorSkill || extractField(block, 'Anchor Skill').replace(/\(.*\)/, '').trim().toLowerCase();
-    if (!anchorSkill) {
+    let rawSkill = manualOverrides?.anchorSkill || extractField(block, 'Anchor Skill').replace(/\(.*\)/, '').trim().toLowerCase();
+    const skillMap: Record<string, string> = {
+      'r': 'reading',
+      'w': 'writing',
+      'l': 'listening',
+      's': 'speaking',
+      'int': 'integrated',
+      'rev': 'review',
+    };
+    let anchorSkill = skillMap[rawSkill] || rawSkill;
+    if (!anchorSkill || !['reading', 'writing', 'listening', 'speaking', 'integrated', 'review'].includes(anchorSkill)) {
       if (lessonNum === 7) anchorSkill = 'integrated';
       else if (lessonNum === 8) anchorSkill = 'review';
       else anchorSkill = 'reading';
