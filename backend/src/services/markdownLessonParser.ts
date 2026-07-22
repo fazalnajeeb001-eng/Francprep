@@ -166,9 +166,25 @@ function parseGrammar(text: string) {
   if (mm) {
     for (const line of mm[1].split('\n')) {
       const c = line.replace(/^\s*[-•*]\s*/, '').trim();
-      if (!c) continue;
-      const am = c.match(/❌\s*(.+?)\s*→\s*✅\s*(.+?)(?:\s*\((.+?)\))?$/);
-      if (am) commonMistakes.push({ wrong: stripMd(am[1]), correct: stripMd(am[2]), why: am[3] ? stripMd(am[3]) : `Use "${stripMd(am[2])}" instead.` });
+      if (!c || (!c.includes('→') && !c.includes('->'))) continue;
+      
+      // Match "❌ wrong -> ✓ correct (why)" or "✗ wrong -> ✓ correct. (why)"
+      const parts = c.split(/→|->/);
+      const wrong = stripMd(parts[0].replace(/^[❌✗xX\s]+/, '')).trim();
+      const rightPart = parts[1] ? parts[1].replace(/^[✅✓\s]+/, '').trim() : '';
+      
+      const parenMatch = rightPart.match(/^(.+?)\s*\((.+?)\)\s*$/);
+      let correct = stripMd(rightPart);
+      let why = '';
+      if (parenMatch) {
+        correct = stripMd(parenMatch[1]);
+        why = stripMd(parenMatch[2]);
+      } else {
+        why = `Use "${correct}" instead.`;
+      }
+      if (wrong && correct) {
+        commonMistakes.push({ wrong, correct, why });
+      }
     }
   }
 
@@ -362,11 +378,11 @@ function parseListening(text: string): { title: string; transcript: string; tran
     }
   }
 
-  // Parse questions
+  // Parse questions - only consider lines that explicitly start with a number (e.g. "1. ", "2)")
   let n = 0;
   for (const l of questionLines) {
     const t = l.trim();
-    if (!t || t.startsWith('*') || t === '---' || t === '--' || t.match(/^(?:Comprehension|Listening|Activity|Short Answer|Multiple Choice|True or False|Fill in the Blank|Matching|Sentence Ordering|Translation)/i)) continue;
+    if (!t || !t.match(/^\d+[\.\)]\s*/)) continue;
 
     n++;
     const qPrompt = stripMd(t.replace(/^\d+[\.\)]\s*/, ''));

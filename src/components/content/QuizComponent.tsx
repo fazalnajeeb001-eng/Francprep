@@ -362,6 +362,30 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
               }
             }
           }
+        } else {
+          // Local evaluation fallback if onSubmit prop is not passed (e.g. preview mode)
+          const correct = targetQ.correctAnswer;
+          let isCorrect = false;
+          if (correct !== undefined && val !== undefined) {
+            const normalize = (s: string) => String(s).trim().toLowerCase();
+            if (Array.isArray(correct)) {
+              isCorrect = correct.some(c => normalize(c as string) === normalize(val as string));
+            } else {
+              isCorrect = normalize(correct as string) === normalize(val as string);
+            }
+          }
+          const singleResult: ResultItem = {
+            questionId: targetQId,
+            correct: isCorrect,
+            points: isCorrect ? (targetQ.points || 1) : 0,
+            maxPoints: targetQ.points || 1,
+            explanation: isCorrect ? "Correct!" : (targetQ.explanation || `Expected: ${correct}`),
+            text: targetQ.prompt,
+          };
+          setQuestionResults(prev => ({ ...prev, [targetQId]: singleResult }));
+          if (!isCorrect) {
+            setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
+          }
         }
       }
     } catch (e) {

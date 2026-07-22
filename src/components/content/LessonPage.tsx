@@ -887,13 +887,11 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
                   <div className="flex-1 min-w-0">
                     <EditableText as="span" fieldPath={`vocabItems[${i}].french`} value={v.french} className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`} />
                     <EditableText as="span" fieldPath={`vocabItems[${i}].pronunciation`} value={v.pronunciation} className={`text-[10px] ml-2 ${textMuted}`} />
-                    {showTranslation && (
-                      <p className={`text-xs ${textSec}`}>
-                        <EditableText fieldPath={`vocabItems[${i}].english`} value={v.english} />
-                      </p>
-                    )}
+                    <p className={`text-xs ${textSec}`}>
+                      <EditableText fieldPath={`vocabItems[${i}].english`} value={v.english} />
+                    </p>
                     {v.formality && <span className={`text-[10px] ml-2 px-1.5 py-0.5 rounded ${dark ? "bg-white/5 text-gray-400" : "bg-gray-100 text-gray-500"}`}>{v.formality}</span>}
-                    {v.usageNote && showTranslation && <p className={`text-[10px] ${textMuted} italic mt-0.5`}>{v.usageNote}</p>}
+                    {v.usageNote && <p className={`text-[10px] ${textMuted} italic mt-0.5`}>{v.usageNote}</p>}
                   </div>
                   {v.example && (
                     <button onClick={() => speak(v.example)}
