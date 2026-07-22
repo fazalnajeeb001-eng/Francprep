@@ -417,6 +417,9 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
 
       let draft;
       if (existingDraft) {
+        existingDraft.title = parsedLesson.title;
+        existingDraft.level = parsedLesson.level;
+        existingDraft.chapterId = parsedLesson.chapterId;
         existingDraft.content = markdown;
         existingDraft.parsedData = parsedLesson;
         existingDraft.validationErrors = errors;
