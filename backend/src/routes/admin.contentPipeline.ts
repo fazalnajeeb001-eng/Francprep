@@ -417,16 +417,25 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
 
       let draft;
       if (existingDraft) {
-        existingDraft.title = parsedLesson.title;
-        existingDraft.level = parsedLesson.level;
-        existingDraft.chapterId = parsedLesson.chapterId;
-        existingDraft.content = markdown;
-        existingDraft.parsedData = parsedLesson;
-        existingDraft.validationErrors = errors;
-        existingDraft.validationWarnings = warnings;
-        existingDraft.status = errors.length === 0 ? 'validated' : 'draft';
-        existingDraft.version = existingDraft.version + 1;
-        draft = await existingDraft.save();
+        // Mark existing draft as superseded for version history
+        existingDraft.status = 'superseded';
+        await existingDraft.save();
+
+        // Create new active draft document for the new push
+        draft = await Draft.create({
+          lessonId: parsedLesson.lessonId,
+          chapterId: parsedLesson.chapterId,
+          level: parsedLesson.level,
+          title: parsedLesson.title,
+          content: markdown,
+          parsedData: parsedLesson,
+          validationErrors: errors,
+          validationWarnings: warnings,
+          status: errors.length === 0 ? 'validated' : 'draft',
+          origin: 'paste_import',
+          version: (existingDraft.version || 1) + 1,
+          createdBy: req.user?.email || 'admin',
+        });
       } else {
         draft = await Draft.create({
           lessonId: parsedLesson.lessonId,
