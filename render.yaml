@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: francprep-frontend
+    env: node
+    buildCommand: NITRO_PRESET=node-server npm run build
+    startCommand: node .output/server/index.mjs
+    envVars:
+      - key: NODE_ENV
+        value: production
