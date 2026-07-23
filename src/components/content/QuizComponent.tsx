@@ -386,18 +386,20 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
             // Fallback to local evaluation if AI service is offline or unconfigured
             const correct = targetQ.correctAnswer;
             let isCorrect = false;
-            if (correct !== undefined && val !== undefined) {
+            if (correct !== undefined && correct !== null && val !== undefined) {
               const normalize = (s: string) => String(s).trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").replace(/\s+/g, " ");
               const userStr = normalize(val as string);
+              const targetStr = normalize(String(correct));
 
-              if (Array.isArray(correct)) {
-                isCorrect = correct.some(c => {
-                  const targetStr = normalize(c as string);
-                  return userStr === targetStr || userStr.includes(targetStr) || targetStr.includes(userStr);
-                });
-              } else {
-                const targetStr = normalize(correct as string);
-                isCorrect = userStr === targetStr || (userStr.length > 3 && (userStr.includes(targetStr) || targetStr.includes(userStr)));
+              if (userStr && targetStr) {
+                if (Array.isArray(correct)) {
+                  isCorrect = correct.some(c => {
+                    const normC = normalize(c);
+                    return normC && (userStr === normC || (userStr.length > 3 && normC.length > 3 && (userStr.includes(normC) || normC.includes(userStr))));
+                  });
+                } else {
+                  isCorrect = userStr === targetStr || (targetStr.length > 3 && userStr.length > 3 && (userStr.includes(targetStr) || targetStr.includes(userStr)));
+                }
               }
             }
             const singleResult: ResultItem = {
@@ -405,7 +407,7 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
               correct: isCorrect,
               points: isCorrect ? (targetQ.points || 1) : 0,
               maxPoints: targetQ.points || 1,
-              explanation: isCorrect ? "Correct!" : (targetQ.explanation || `Expected: ${correct}`),
+              explanation: isCorrect ? "Correct!" : (targetQ.explanation || (correct ? `Expected: ${correct}` : "Incorrect. Try again!")),
               text: targetQ.prompt,
             };
             setQuestionResults(prev => ({ ...prev, [targetQId]: singleResult }));
@@ -428,18 +430,20 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
           // Local evaluation fallback for multiple choice / true-false
           const correct = targetQ.correctAnswer;
           let isCorrect = false;
-          if (correct !== undefined && val !== undefined) {
+          if (correct !== undefined && correct !== null && val !== undefined) {
             const normalize = (s: string) => String(s).trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").replace(/\s+/g, " ");
             const userStr = normalize(val as string);
+            const targetStr = normalize(String(correct));
 
-            if (Array.isArray(correct)) {
-              isCorrect = correct.some(c => {
-                const targetStr = normalize(c as string);
-                return userStr === targetStr || userStr.includes(targetStr) || targetStr.includes(userStr);
-              });
-            } else {
-              const targetStr = normalize(correct as string);
-              isCorrect = userStr === targetStr || (userStr.length > 3 && (userStr.includes(targetStr) || targetStr.includes(userStr)));
+            if (userStr && targetStr) {
+              if (Array.isArray(correct)) {
+                isCorrect = correct.some(c => {
+                  const normC = normalize(c);
+                  return normC && (userStr === normC || (userStr.length > 3 && normC.length > 3 && (userStr.includes(normC) || normC.includes(userStr))));
+                });
+              } else {
+                isCorrect = userStr === targetStr || (targetStr.length > 3 && userStr.length > 3 && (userStr.includes(targetStr) || targetStr.includes(userStr)));
+              }
             }
           }
           const singleResult: ResultItem = {
@@ -447,7 +451,7 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
             correct: isCorrect,
             points: isCorrect ? (targetQ.points || 1) : 0,
             maxPoints: targetQ.points || 1,
-            explanation: isCorrect ? "Correct!" : (targetQ.explanation || `Expected: ${correct}`),
+            explanation: isCorrect ? "Correct!" : (targetQ.explanation || (correct ? `Expected: ${correct}` : "Incorrect. Try again!")),
             text: targetQ.prompt,
           };
           setQuestionResults(prev => ({ ...prev, [targetQId]: singleResult }));
