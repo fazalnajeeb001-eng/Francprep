@@ -496,6 +496,7 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
                 prompt: promptText,
                 answer: val,
                 expectedAnswer: expectedStr,
+                lessonTitle: targetQ.category || _type || 'French Lesson Drill',
               }),
             });
             const json = await apiRes.json();

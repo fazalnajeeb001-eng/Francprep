@@ -118,7 +118,7 @@ Respond in JSON format:
     }
   }
 
-  async checkGrammar(prompt: string, answer: string, expectedAnswer?: string): Promise<GrammarCheckResult> {
+  async checkGrammar(prompt: string, answer: string, expectedAnswer?: string, lessonTitle?: string): Promise<GrammarCheckResult> {
     const apiKey = await this.getOpenRouterKey();
     const normalize = (s: string) => String(s).trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").replace(/\s+/g, " ");
     const userStr = normalize(answer);
@@ -145,16 +145,17 @@ Respond in JSON format:
 
     const llmPrompt = `You are a warm, encouraging French language tutor evaluating a student's typed answer to an exercise/drill.
 
+Lesson Context: "${lessonTitle || 'French Beginner Drill'}"
 Exercise Prompt: "${prompt}"
 Reference Model Answer: "${expectedAnswer && expectedAnswer !== 'N/A' && !expectedAnswer.toLowerCase().includes('open-ended') ? expectedAnswer : 'Evaluate based on French grammar & prompt (Open-ended)'}"
 Student's Typed Answer: "${answer}"
 
-Rules for AI Evaluation:
-1. THE REFERENCE MODEL ANSWER IS A GUIDE ONLY. Typed French answers are subjective and flexible.
-2. Accept ANY valid, grammatically correct French expression that answers the prompt correctly (e.g., accepting "Je m'appelle Marc", "Je suis Marc", "Moi, c'est Marc").
+Rules for Pedagogical AI Evaluation:
+1. SCOPED STRICTLY TO LESSON & CEFR LEVEL: Keep explanations strictly aligned with what a student at this level has learned in this lesson. Do NOT use advanced grammatical jargon (e.g., subjunctive, passé simple, pluperfect, complex syntax) or advanced vocabulary outside the scope of this lesson level.
+2. THE REFERENCE MODEL ANSWER IS A GUIDE ONLY. Accept ANY valid, grammatically correct French expression suited for this lesson level (e.g., accepting "Je m'appelle Marc", "Je suis Marc", "Moi, c'est Marc").
 3. Accept minor capitalization, accent, or punctuation differences.
 4. If no model answer exists or if it is marked open-ended, evaluate the student's answer strictly against standard French grammar and the prompt instructions.
-5. If the student typed gibberish, incorrect French, or misunderstood the prompt, explain gently why it is incorrect, point out the specific grammar or vocabulary mistake, and provide the correct French words to use.
+5. If the student made a mistake, explain it simply, clearly, and gently using ONLY concepts appropriate for this lesson, pointing out the exact word or phrase to use.
 6. Provide a clear, helpful 1-2 sentence AI Review in English explaining WHY it is correct or incorrect.
 
 Respond STRICTLY with a raw JSON object:

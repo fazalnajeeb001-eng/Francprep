@@ -25,14 +25,14 @@ export class WritingController {
 
   async grammarCheck(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { prompt, answer, expectedAnswer } = req.body;
+      const { prompt, answer, expectedAnswer, lessonTitle } = req.body;
       
       if (!prompt || !answer) {
         res.status(400).json({ success: false, error: 'Please provide prompt and answer.' });
         return;
       }
 
-      const result = await writingService.checkGrammar(prompt, answer, expectedAnswer);
+      const result = await writingService.checkGrammar(prompt, answer, expectedAnswer, lessonTitle);
       
       res.status(200).json({
         success: true,
