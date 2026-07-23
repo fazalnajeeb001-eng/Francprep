@@ -1,7 +1,7 @@
 const GOAL_KEY = "fp_learning_goal";
 const AVATAR_KEY = "fp_user_avatar";
 
-export type LearningGoal = "A2" | "B1" | "B2" | "C1" | "C2" | "TCF_B2" | "TEF_B2" | "DELF_B2" | "DALF_C1" | "none";
+export type LearningGoal = "A1" | "A2" | "B1" | "B2" | "C1" | "C2" | "TCF_B2" | "TEF_B2" | "none";
 
 export interface GoalData {
   goal: LearningGoal;
@@ -10,10 +10,15 @@ export interface GoalData {
 }
 
 const GOAL_LABELS: Record<LearningGoal, string> = {
-  A2: "Reach A2", B1: "Reach B1", B2: "Reach B2", C1: "Reach C1", C2: "Reach C2",
-  TCF_B2: "Pass TCF Canada (B2)", TEF_B2: "Pass TEF Canada (B2)",
-  DELF_B2: "Pass DELF (B2)", DALF_C1: "Pass DALF (C1)",
-  none: "No goal for now",
+  TCF_B2: "Pass TCF Canada (B2)",
+  TEF_B2: "Pass TEF Canada (B2)",
+  A1: "DELF A1 (Discovery)",
+  A2: "DELF A2 (Breakthrough)",
+  B1: "DELF B1 (Threshold)",
+  B2: "DELF B2 (Vantage)",
+  C1: "DALF C1 (Autonomous)",
+  C2: "DALF C2 (Mastery)",
+  none: "No goal set",
 };
 
 export function getGoal(): GoalData | null {
@@ -25,7 +30,7 @@ export function getGoal(): GoalData | null {
 }
 
 export function setGoal(goal: LearningGoal): GoalData {
-  const data: GoalData = { goal, label: GOAL_LABELS[goal], setAt: Date.now() };
+  const data: GoalData = { goal, label: GOAL_LABELS[goal] || goal, setAt: Date.now() };
   localStorage.setItem(GOAL_KEY, JSON.stringify(data));
   window.dispatchEvent(new Event("goal-changed"));
   return data;
@@ -63,14 +68,13 @@ export function clearAvatar() {
 export const GOAL_OPTIONS: Array<{ value: LearningGoal; label: string; emoji: string }> = [
   { value: "TCF_B2", label: "Pass TCF Canada (B2)", emoji: "📋" },
   { value: "TEF_B2", label: "Pass TEF Canada (B2)", emoji: "📝" },
-  { value: "DELF_B2", label: "Pass DELF (B2)", emoji: "🎓" },
-  { value: "DALF_C1", label: "Pass DALF (C1)", emoji: "📜" },
-  { value: "A2", label: "Reach A2 Breakthrough", emoji: "🌱" },
-  { value: "B1", label: "Reach B1 Threshold", emoji: "🌿" },
-  { value: "B2", label: "Reach B2 Vantage", emoji: "🌳" },
-  { value: "C1", label: "Reach C1 Autonomous", emoji: "🏙️" },
-  { value: "C2", label: "Reach C2 Mastery", emoji: "🏆" },
-  { value: "none", label: "No goal for now", emoji: "✨" },
+  { value: "A1", label: "DELF A1 (Discovery)", emoji: "🌱" },
+  { value: "A2", label: "DELF A2 (Breakthrough)", emoji: "🌿" },
+  { value: "B1", label: "DELF B1 (Threshold)", emoji: "☕" },
+  { value: "B2", label: "DELF B2 (Vantage)", emoji: "🗼" },
+  { value: "C1", label: "DALF C1 (Autonomous)", emoji: "🌅" },
+  { value: "C2", label: "DALF C2 (Mastery)", emoji: "🎆" },
+  { value: "none", label: "No goal set", emoji: "✨" },
 ];
 
 export const CEFR_ORDER = ["A1", "A2", "B1", "B2", "C1", "C2"] as const;
