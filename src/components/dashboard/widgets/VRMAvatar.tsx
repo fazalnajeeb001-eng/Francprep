@@ -64,64 +64,21 @@ function smoothStep(edge0: number, edge1: number, x: number) {
   return t * t * (3 - 2 * t);
 }
 
-function injectMouthMorphTarget(scene: THREE.Group) {
+function findMorphTargets(scene: THREE.Group) {
   const morphMeshes: { mesh: THREE.Mesh; index: number }[] = [];
-
   scene.traverse((child: any) => {
-    if (child.isMesh && child.geometry) {
-      if (child.morphTargetDictionary && child.morphTargetInfluences) {
-        const idx =
-          child.morphTargetDictionary["mouthOpen"] ??
-          child.morphTargetDictionary["A"] ??
-          child.morphTargetDictionary["vrm_a"] ??
-          child.morphTargetDictionary["a"] ??
-          child.morphTargetDictionary["Fcl_MTH_A"];
-        if (idx !== undefined) {
-          morphMeshes.push({ mesh: child, index: idx });
-        }
-      } else {
-        const geo = child.geometry as THREE.BufferGeometry;
-        const pos = geo.attributes.position;
-        if (!pos) return;
-
-        geo.computeBoundingBox();
-        const bbox = geo.boundingBox;
-        if (!bbox) return;
-
-        const minY = bbox.min.y;
-        const maxY = bbox.max.y;
-        const h = maxY - minY;
-        if (h <= 0) return;
-
-        const count = pos.count;
-        const morphPos = new Float32Array(count * 3);
-        let countAffected = 0;
-
-        for (let i = 0; i < count; i++) {
-          const x = pos.getX(i);
-          const y = pos.getY(i);
-          const z = pos.getZ(i);
-
-          const normY = (y - minY) / h;
-          // Target mouth/lower jaw vertices: front face, lower face zone
-          if (z > 0.015 && normY > 0.72 && normY < 0.86 && Math.abs(x) < 0.18) {
-            const factor = Math.sin(((normY - 0.72) / 0.14) * Math.PI);
-            morphPos[i * 3 + 1] = -0.04 * factor; // Pull down lower jaw/mouth
-            morphPos[i * 3 + 2] = -0.01 * factor;  // Pull slightly back
-            countAffected++;
-          }
-        }
-
-        if (countAffected > 0) {
-          geo.morphAttributes.position = [new THREE.BufferAttribute(morphPos, 3)];
-          child.morphTargetInfluences = [0];
-          child.morphTargetDictionary = { mouthOpen: 0 };
-          morphMeshes.push({ mesh: child, index: 0 });
-        }
+    if (child.isMesh && child.morphTargetDictionary && child.morphTargetInfluences) {
+      const idx =
+        child.morphTargetDictionary["mouthOpen"] ??
+        child.morphTargetDictionary["A"] ??
+        child.morphTargetDictionary["vrm_a"] ??
+        child.morphTargetDictionary["a"] ??
+        child.morphTargetDictionary["Fcl_MTH_A"];
+      if (idx !== undefined) {
+        morphMeshes.push({ mesh: child, index: idx });
       }
     }
   });
-
   return morphMeshes;
 }
 
@@ -221,7 +178,7 @@ function VRMModel({
             const cameraCenterY = targetHeight * 0.56;
             setModelInfo({ centerY: cameraCenterY, height: targetHeight });
             bonesRef.current = findBones(scene);
-            morphMeshesRef.current = injectMouthMorphTarget(scene);
+            morphMeshesRef.current = findMorphTargets(scene);
 
             const rps: Record<string, THREE.Euler> = {};
             for (const [k, v] of Object.entries(bonesRef.current)) {
