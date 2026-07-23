@@ -979,30 +979,56 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
                 </span>
               </div>
               
-              {/* AI Review / Feedback is ALWAYS shown whenever available */}
-              {resultForQ.explanation && (
-                <p className={`text-xs mt-1 leading-relaxed ${resultForQ.correct ? (dark ? "text-emerald-400" : "text-emerald-600") : (dark ? "text-red-400" : "text-red-600")}`}>
+              {/* Correct Answer AI Review (Shown immediately for correct responses) */}
+              {resultForQ.correct && resultForQ.explanation && (
+                <p className={`text-xs mt-1 leading-relaxed ${dark ? "text-emerald-400" : "text-emerald-600"}`}>
                   {resultForQ.explanation}
                 </p>
               )}
 
+              {/* Incorrect Answer Flow: Attempts counter on 1 & 2; Single Unified Reveal on Attempt 3 */}
               {!resultForQ.correct && !submitted && (
                 <div className="mt-2.5 pt-2 border-t dark:border-red-500/20 border-red-200/60 flex flex-col items-start gap-1">
                   <p className={`text-xs ${dark ? "text-red-400" : "text-red-500"}`}>Attempts: {questionAttempts[qId] || 0} / 3</p>
+                  
                   {(questionAttempts[qId] || 0) >= 3 && !revealedAnswers[qId] && (
-                    <button onClick={() => setRevealedAnswers(prev => ({ ...prev, [qId]: true }))}
-                      className="text-xs text-purple-400 hover:text-purple-300 font-semibold underline mt-1">
-                      Reveal Explanation & Correct Answer
+                    <button
+                      onClick={() => setRevealedAnswers(prev => ({ ...prev, [qId]: true }))}
+                      className="text-xs text-purple-400 hover:text-purple-300 font-semibold underline mt-1"
+                    >
+                      Reveal AI Review & Correct Answer
                     </button>
                   )}
-                  {revealedAnswers[qId] && (() => {
+
+                  {/* Unified Single Reveal (Shown ONLY when student clicks reveal on Attempt 3 or final quiz submission) */}
+                  {(revealedAnswers[qId] || submitted) && (() => {
+                    const aiFeedback = resultForQ.explanation;
                     const rawKey = q.correctAnswer || q.sampleAnswer;
                     const keyStr = rawKey ? (Array.isArray(rawKey) ? rawKey.join(" / ") : String(rawKey)) : "";
-                    const isGenericOpenEnded = !keyStr || keyStr.toLowerCase().includes("open-ended") || keyStr === "N/A";
+                    const hasValidKey = keyStr && !keyStr.toLowerCase().includes("open-ended") && keyStr !== "N/A";
+
+                    if (aiFeedback && aiFeedback.length > 5) {
+                      return (
+                        <div className={`mt-2 p-3 rounded-lg border text-xs leading-relaxed ${
+                          dark ? "bg-purple-500/10 border-purple-500/30 text-purple-300" : "bg-purple-50 border-purple-200 text-purple-800"
+                        }`}>
+                          <p className="font-semibold mb-1">💡 AI Tutor Explanation & Model Answer:</p>
+                          <p>{aiFeedback}</p>
+                        </div>
+                      );
+                    }
+
+                    if (hasValidKey) {
+                      return (
+                        <p className={`text-xs font-medium mt-1 ${dark ? "text-purple-300" : "text-purple-700"}`}>
+                          Model Answer: <span className="font-bold">{keyStr}</span>
+                        </p>
+                      );
+                    }
 
                     return (
                       <p className={`text-xs font-medium mt-1 ${dark ? "text-purple-300" : "text-purple-700"}`}>
-                        Model Answer: <span className="font-bold">{isGenericOpenEnded ? "Open-ended exercise (See AI Tutor review above for valid French examples)" : keyStr}</span>
+                        Model Answer: <span className="font-bold">Open-ended exercise (Evaluate for accuracy)</span>
                       </p>
                     );
                   })()}
