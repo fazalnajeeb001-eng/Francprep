@@ -173,33 +173,33 @@ export function AvatarCoachesSection() {
       </div>
 
       {/* Live 3D Avatar Interactive Coach Feature Card */}
-      <div className="p-8 md:p-10 rounded-3xl border border-gray-200 dark:border-white/10 bg-gradient-to-br from-slate-900 via-purple-950/40 to-slate-900 text-white shadow-2xl relative overflow-hidden">
+      <div className="p-8 md:p-10 rounded-3xl border border-gray-200 dark:border-white/10 bg-white/90 dark:bg-gradient-to-br dark:from-slate-900 dark:via-purple-950/40 dark:to-slate-900 text-gray-900 dark:text-white shadow-2xl relative overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Avatar Details */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold text-purple-300">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 dark:bg-white/10 text-xs font-semibold text-purple-700 dark:text-purple-300">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Interactive 3D Avatar Language Coaches</span>
             </div>
 
-            <h3 className="text-2xl md:text-4xl font-extrabold tracking-tight">
+            <h3 className="text-2xl md:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
               Meet Your 3D AI Conversation Coaches
             </h3>
 
-            <p className="text-xs md:text-sm text-slate-300 leading-relaxed font-normal">
+            <p className="text-xs md:text-sm text-gray-600 dark:text-slate-300 leading-relaxed font-normal">
               Instead of static text, every lesson features 3D VRM avatars that speak in native French accents, animate their expressions, and guide your speaking drills based on the current lesson level.
             </p>
 
             {/* Avatar & Level Switcher */}
             <div className="space-y-4">
               <div className="flex flex-wrap items-center gap-3">
-                <span className="text-xs font-bold text-slate-300">Choose Coach:</span>
+                <span className="text-xs font-bold text-gray-700 dark:text-slate-300">Choose Coach:</span>
                 <button
                   onClick={() => setSelectedAvatar("male")}
                   className={`px-4 py-2.5 text-xs font-bold rounded-xl border transition-all active:scale-95 touch-manipulation ${
                     selectedAvatar === "male"
                       ? "border-purple-500 bg-purple-600 text-white shadow-md shadow-purple-500/30"
-                      : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10"
+                      : "border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-white/10"
                   }`}
                 >
                   Coach Leo (Male 3D)
@@ -209,7 +209,7 @@ export function AvatarCoachesSection() {
                   className={`px-4 py-2.5 text-xs font-bold rounded-xl border transition-all active:scale-95 touch-manipulation ${
                     selectedAvatar === "female"
                       ? "border-purple-500 bg-purple-600 text-white shadow-md shadow-purple-500/30"
-                      : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10"
+                      : "border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-white/10"
                   }`}
                 >
                   Coach Camille / Chloe (Female 3D)
@@ -218,15 +218,15 @@ export function AvatarCoachesSection() {
 
               {/* CEFR Level Speech Speed Toggle */}
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-bold text-slate-300">Speech Pace:</span>
+                <span className="text-xs font-bold text-gray-700 dark:text-slate-300">Speech Pace:</span>
                 {(["A1", "B2", "C2"] as const).map((lvl) => (
                   <button
                     key={lvl}
                     onClick={() => setSelectedLevel(lvl)}
                     className={`px-3 py-1.5 text-xs font-bold rounded-lg border transition-all ${
                       selectedLevel === lvl
-                        ? "border-emerald-500 bg-emerald-500/20 text-emerald-300"
-                        : "border-white/10 bg-white/5 text-slate-400 hover:bg-white/10"
+                        ? "border-emerald-500 bg-emerald-500/20 text-emerald-700 dark:text-emerald-300"
+                        : "border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-white/10"
                     }`}
                   >
                     {lvl} Level Pace
@@ -260,27 +260,27 @@ export function AvatarCoachesSection() {
                 </button>
               </div>
 
-              <p className="text-[11px] text-purple-300 font-mono">
+              <p className="text-[11px] text-purple-700 dark:text-purple-300 font-mono">
                 {levelSpeeches[selectedLevel].label}
               </p>
 
               {/* Live Mic Transcript & AI Response Display */}
               {recordedText && (
-                <div className="p-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-xs space-y-1">
-                  <p className="text-[11px] font-bold text-emerald-300 uppercase tracking-wider">Your Spoken Voice:</p>
-                  <p className="italic text-slate-100">"{recordedText}"</p>
+                <div className="p-3 rounded-xl border border-emerald-300 dark:border-emerald-500/30 bg-emerald-50 dark:bg-emerald-500/10 text-xs space-y-1">
+                  <p className="text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">Your Spoken Voice:</p>
+                  <p className="italic text-gray-800 dark:text-slate-100">"{recordedText}"</p>
                 </div>
               )}
 
               {aiFeedback && (
-                <div className="p-3 rounded-xl border border-purple-500/30 bg-purple-500/10 text-xs space-y-1">
+                <div className="p-3 rounded-xl border border-purple-200 dark:border-purple-500/30 bg-purple-50 dark:bg-purple-500/10 text-xs space-y-1">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-purple-300">💡 AI Tutor Review:</span>
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">
+                    <span className="font-bold text-purple-800 dark:text-purple-300">💡 AI Tutor Review:</span>
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold">
                       Score: {aiFeedback.score}%
                     </span>
                   </div>
-                  <p className="text-slate-200">{aiFeedback.text}</p>
+                  <p className="text-gray-800 dark:text-slate-200">{aiFeedback.text}</p>
                 </div>
               )}
             </div>

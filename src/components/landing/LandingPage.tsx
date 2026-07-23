@@ -22,6 +22,7 @@ import { CEFRRoadmap } from "./CEFRRoadmap";
 import { GatedProgression } from "./GatedProgression";
 import { PRPointsCalculator } from "./PRPointsCalculator";
 import { AvatarCoachesSection } from "./AvatarCoachesSection";
+import { useTheme } from "~/lib/ThemeContext";
 
 // Central Brand Configuration - Change here anytime!
 export const BRAND_CONFIG = {
@@ -31,13 +32,9 @@ export const BRAND_CONFIG = {
 };
 
 export function LandingPage() {
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
+  const { dark: isDarkMode, toggle: toggleTheme } = useTheme();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("annual");
   const [faqOpen, setFaqOpen] = useState<{ [key: number]: boolean }>({ 0: true, 1: true });
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
 
   const toggleFaq = (index: number) => {
     setFaqOpen((prev) => ({ ...prev, [index]: !prev[index] }));
