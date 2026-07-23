@@ -134,7 +134,7 @@ function NavBarInner() {
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}>
       <div className="mx-auto flex h-14 min-h-[44px] max-w-7xl items-center justify-between px-4">
         <div className="flex items-center gap-4 sm:gap-6">
-          <Link to="/" className="flex items-center gap-2 text-lg font-bold min-h-[44px]">
+          <Link to={isAuthenticated ? "/dashboard" : "/"} className="flex items-center gap-2 text-lg font-bold min-h-[44px]">
             <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">F</div>
             <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent hidden sm:inline">FrancPrep</span>
           </Link>
