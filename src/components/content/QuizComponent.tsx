@@ -481,16 +481,21 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
         }
       } else {
         // For all typed or open questions, prioritize backend AI grading via /writing/grammar-check
-        const isTypedQuestion = ['fill_blank', 'fill_in_blank', 'short_answer', 'translation', 'speaking_prompt', 'speaking'].includes(targetQ.type || _type);
+        const isChoiceOrInteractive = ['multiple_choice', 'true_false', 'matching', 'ordering'].includes(targetQ.type || _type);
+        const isTypedQuestion = !isChoiceOrInteractive || (typeof val === 'string' && !targetQ.options && !targetQ.pairs && !targetQ.items);
         
         if (isTypedQuestion) {
           try {
+            const promptText = targetQ.prompt || targetQ.question || (targetQ as any).text || qText || '';
+            const expectedStr = targetQ.correctAnswer ? (Array.isArray(targetQ.correctAnswer) ? targetQ.correctAnswer.join(' / ') : String(targetQ.correctAnswer)) : '';
+
             const apiRes = await apiFetch('/writing/grammar-check', {
               method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                prompt: targetQ.prompt || targetQ.question || '',
+                prompt: promptText,
                 answer: val,
-                expectedAnswer: targetQ.correctAnswer ? String(targetQ.correctAnswer) : '',
+                expectedAnswer: expectedStr,
               }),
             });
             const json = await apiRes.json();
@@ -500,8 +505,8 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
                 correct: !!json.data.correct,
                 points: json.data.correct ? (targetQ.points || 1) : 0,
                 maxPoints: targetQ.points || 1,
-                explanation: json.data.feedback || (json.data.correct ? "Correct!" : `Expected: ${targetQ.correctAnswer || 'N/A'}`),
-                text: targetQ.prompt,
+                explanation: json.data.feedback || (json.data.correct ? "Correct!" : `Expected: ${expectedStr || 'N/A'}`),
+                text: promptText,
               };
               setQuestionResults(prev => ({ ...prev, [targetQId]: aiResult }));
               if (!aiResult.correct) {
