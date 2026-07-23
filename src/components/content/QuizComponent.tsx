@@ -840,17 +840,26 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
                 </span>
               </div>
               
-              {/* Show explanation only if correct, OR if unlocked via button, OR if whole form is submitted */}
-              {(resultForQ.correct || revealedAnswers[qId] || submitted) ? (
-                <p className={`text-xs ${resultForQ.correct ? (dark ? "text-emerald-400" : "text-emerald-600") : (dark ? "text-red-400" : "text-red-600")}`}>{resultForQ.explanation}</p>
-              ) : (
-                <div className="mt-2 flex flex-col items-start gap-1">
+              {/* AI Review / Feedback is ALWAYS shown whenever available */}
+              {resultForQ.explanation && (
+                <p className={`text-xs mt-1 leading-relaxed ${resultForQ.correct ? (dark ? "text-emerald-400" : "text-emerald-600") : (dark ? "text-red-400" : "text-red-600")}`}>
+                  {resultForQ.explanation}
+                </p>
+              )}
+
+              {!resultForQ.correct && !submitted && (
+                <div className="mt-2.5 pt-2 border-t dark:border-red-500/20 border-red-200/60 flex flex-col items-start gap-1">
                   <p className={`text-xs ${dark ? "text-red-400" : "text-red-500"}`}>Attempts: {questionAttempts[qId] || 0} / 3</p>
-                  {(questionAttempts[qId] || 0) >= 3 && (
+                  {(questionAttempts[qId] || 0) >= 3 && !revealedAnswers[qId] && q.correctAnswer && (
                     <button onClick={() => setRevealedAnswers(prev => ({ ...prev, [qId]: true }))}
                       className="text-xs text-purple-400 hover:text-purple-300 font-semibold underline mt-1">
-                      Reveal Explanation & Correct Answer
+                      Show Official Model Answer Key
                     </button>
+                  )}
+                  {revealedAnswers[qId] && q.correctAnswer && (
+                    <p className={`text-xs font-medium mt-1 ${dark ? "text-purple-300" : "text-purple-700"}`}>
+                      Model Answer: <span className="font-bold">{Array.isArray(q.correctAnswer) ? q.correctAnswer.join(" / ") : String(q.correctAnswer)}</span>
+                    </p>
                   )}
                 </div>
               )}

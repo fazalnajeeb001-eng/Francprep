@@ -258,11 +258,20 @@ function parseGrammarDrills(text: string): ILessonQuestion[] {
     let correctAnswer = answers[n] || '';
     let explanation = instruction || 'Complete the drill.';
 
-    // Pattern 1: Parenthetical hint → "_________ (je m'appelle) Sarah"
+    // Pattern 1: Parenthetical hint → "_________ (je m'appelle) Sarah" vs English hint "(above)"
     const hintMatch = rawPrompt.match(/_{3,}\s*\((.+?)\)/);
     if (hintMatch) {
-      correctAnswer = stripMd(hintMatch[1]);
-      explanation = `Fill in with: ${correctAnswer}`;
+      const hintText = stripMd(hintMatch[1]);
+      const isEnglishHint = /^[a-zA-Z\s,;:\-'\?]+$/.test(hintText) &&
+        !/\b(je|tu|il|elle|on|nous|vous|ils|elles|suis|es|est|sommes|êtes|sont|ai|as|a|avons|avez|ont|du|des|le|la|les|un|une|de|m'appelle|t'appelles|s'appelle)\b/i.test(hintText);
+
+      if (!isEnglishHint) {
+        correctAnswer = hintText;
+        explanation = `Fill in with: ${correctAnswer}`;
+      } else {
+        correctAnswer = answers[n] || '';
+        explanation = instruction || `Fill in with French for: ${hintText}`;
+      }
     }
     // Pattern 2: Arrow transformation → "Transform: *Tu es Camille.* → __________"
     else if (rawPrompt.includes('→')) {
