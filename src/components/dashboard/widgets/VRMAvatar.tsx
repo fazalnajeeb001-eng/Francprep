@@ -25,11 +25,11 @@ interface VRMAvatarProps {
 function CameraController({ modelCenterY, modelHeight }: { modelCenterY: number; modelHeight: number }) {
   const { camera } = useThree();
   useEffect(() => {
-    // Focus camera on head and upper chest for clean AI avatar coach presentation
-    const portraitCenterY = modelHeight * 0.72;
-    const fov = 32;
-    camera.position.set(0, portraitCenterY, 1.25);
-    camera.lookAt(0, portraitCenterY - 0.05, 0);
+    // Exactly center Leo's head, face, and chest in frame with generous margins (no top head cropping!)
+    const headCenterY = modelHeight * 0.56;
+    const fov = 35;
+    camera.position.set(0, headCenterY, 1.85);
+    camera.lookAt(0, headCenterY, 0);
     (camera as THREE.PerspectiveCamera).fov = fov;
     (camera as THREE.PerspectiveCamera).updateProjectionMatrix();
   }, [camera, modelCenterY, modelHeight]);
@@ -64,6 +64,67 @@ function smoothStep(edge0: number, edge1: number, x: number) {
   return t * t * (3 - 2 * t);
 }
 
+function injectMouthMorphTarget(scene: THREE.Group) {
+  const morphMeshes: { mesh: THREE.Mesh; index: number }[] = [];
+
+  scene.traverse((child: any) => {
+    if (child.isMesh && child.geometry) {
+      if (child.morphTargetDictionary && child.morphTargetInfluences) {
+        const idx =
+          child.morphTargetDictionary["mouthOpen"] ??
+          child.morphTargetDictionary["A"] ??
+          child.morphTargetDictionary["vrm_a"] ??
+          child.morphTargetDictionary["a"] ??
+          child.morphTargetDictionary["Fcl_MTH_A"];
+        if (idx !== undefined) {
+          morphMeshes.push({ mesh: child, index: idx });
+        }
+      } else {
+        const geo = child.geometry as THREE.BufferGeometry;
+        const pos = geo.attributes.position;
+        if (!pos) return;
+
+        geo.computeBoundingBox();
+        const bbox = geo.boundingBox;
+        if (!bbox) return;
+
+        const minY = bbox.min.y;
+        const maxY = bbox.max.y;
+        const h = maxY - minY;
+        if (h <= 0) return;
+
+        const count = pos.count;
+        const morphPos = new Float32Array(count * 3);
+        let countAffected = 0;
+
+        for (let i = 0; i < count; i++) {
+          const x = pos.getX(i);
+          const y = pos.getY(i);
+          const z = pos.getZ(i);
+
+          const normY = (y - minY) / h;
+          // Target mouth/lower jaw vertices: front face, lower face zone
+          if (z > 0.015 && normY > 0.72 && normY < 0.86 && Math.abs(x) < 0.18) {
+            const factor = Math.sin(((normY - 0.72) / 0.14) * Math.PI);
+            morphPos[i * 3 + 1] = -0.04 * factor; // Pull down lower jaw/mouth
+            morphPos[i * 3 + 2] = -0.01 * factor;  // Pull slightly back
+            countAffected++;
+          }
+        }
+
+        if (countAffected > 0) {
+          geo.morphAttributes.position = [new THREE.BufferAttribute(morphPos, 3)];
+          child.morphTargetInfluences = [0];
+          child.morphTargetDictionary = { mouthOpen: 0 };
+          morphMeshes.push({ mesh: child, index: 0 });
+        }
+      }
+    }
+  });
+
+  return morphMeshes;
+}
+
 function VRMModel({
   modelUrl,
   animate,
@@ -80,6 +141,7 @@ function VRMModel({
   const [modelInfo, setModelInfo] = useState({ centerY: 0.9, height: 1.85 });
   const bonesRef = useRef<Record<string, THREE.Object3D>>({});
   const restposesRef = useRef<Record<string, THREE.Euler>>({});
+  const morphMeshesRef = useRef<{ mesh: THREE.Mesh; index: number }[]>([]);
   const blinkRef = useRef(0);
   const animStartRef = useRef(0);
   const prevAnimRef = useRef(animate);
@@ -159,6 +221,8 @@ function VRMModel({
             const cameraCenterY = targetHeight * 0.56;
             setModelInfo({ centerY: cameraCenterY, height: targetHeight });
             bonesRef.current = findBones(scene);
+            morphMeshesRef.current = injectMouthMorphTarget(scene);
+
             const rps: Record<string, THREE.Euler> = {};
             for (const [k, v] of Object.entries(bonesRef.current)) {
               rps[k] = v.rotation.clone();
@@ -330,28 +394,43 @@ function VRMModel({
       if (bones.hips) { const rp2 = rp.hips || bones.hips.rotation; bones.hips.rotation.y = rp2.y + Math.sin(t * 4) * 0.05; }
 
     } else if (animate === "speak") {
-      const speakTempo = t * 10;
-      const mouthOpen = Math.abs(Math.sin(speakTempo)) * 0.08;
-      const headNod = Math.sin(t * 3) * 0.03;
-      const headTilt = Math.sin(t * 1.5) * 0.02;
+      const speakTempo = t * 12;
+      const mouthAmount = Math.abs(Math.sin(speakTempo)) * 0.9;
+      const speakCadence = Math.sin(t * 12) * 0.05 + Math.cos(t * 6) * 0.03;
+      const headNod = Math.sin(t * 4) * 0.04 + speakCadence;
+      const headTilt = Math.sin(t * 1.8) * 0.025;
 
-      g.position.y = Math.sin(t * 2) * 0.004;
+      g.position.y = Math.sin(t * 2) * 0.003;
+
+      // Animate 3D facial mouth morph targets for physical mouth opening/closing!
+      for (const item of morphMeshesRef.current) {
+        if (item.mesh.morphTargetInfluences) {
+          item.mesh.morphTargetInfluences[item.index] = mouthAmount;
+        }
+      }
 
       if (bones.head) {
         const rp2 = rp.head || bones.head.rotation;
-        bones.head.rotation.x = rp2.x + headNod + mouthOpen * 0.2;
+        bones.head.rotation.x = rp2.x + headNod;
         bones.head.rotation.y = rp2.y + headTilt;
         bones.head.rotation.z = rp2.z + Math.sin(t * 2.5) * 0.015;
       }
-      if (bones.leftArm) {
-        const rp2 = rp.leftArm || bones.leftArm.rotation;
-        bones.leftArm.rotation.z = rp2.z + 0.15 + Math.sin(t * 2) * 0.04;
-        bones.leftArm.rotation.x = rp2.x - 0.1 + Math.sin(t * 1.8) * 0.03;
+      if (bones.neck) {
+        const rp2 = rp.neck || bones.neck.rotation;
+        bones.neck.rotation.x = rp2.x + headNod * 0.4;
       }
       if (bones.rightArm) {
         const rp2 = rp.rightArm || bones.rightArm.rotation;
-        bones.rightArm.rotation.z = rp2.z - 0.15 - Math.sin(t * 2.2) * 0.04;
-        bones.rightArm.rotation.x = rp2.x - 0.1 + Math.sin(t * 1.5) * 0.03;
+        bones.rightArm.rotation.x = rp2.x - 0.25 + Math.sin(t * 3.5) * 0.06;
+        bones.rightArm.rotation.z = rp2.z - 0.2;
+      }
+      if (bones.rightForearm) {
+        const rp2 = rp.rightForearm || bones.rightForearm.rotation;
+        bones.rightForearm.rotation.x = rp2.x - 0.35 + Math.sin(t * 3.5) * 0.08;
+      }
+      if (bones.leftArm) {
+        const rp2 = rp.leftArm || bones.leftArm.rotation;
+        bones.leftArm.rotation.x = rp2.x - 0.1 + Math.sin(t * 2) * 0.03;
       }
 
     } else if (animate === "chapterComplete") {
@@ -432,6 +511,14 @@ function VRMModel({
         if (bones.rightForearm) { const rp2 = rp.rightForearm || bones.rightForearm.rotation; bones.rightForearm.rotation.x = rp2.x - 0.5; }
         if (bones.head) { const rp2 = rp.head || bones.head.rotation; bones.head.rotation.x = rp2.x - 0.08; bones.head.rotation.z = rp2.z + Math.sin(t * 2) * 0.03; }
         if (bones.spine) { const rp2 = rp.spine || bones.spine.rotation; bones.spine.rotation.x = rp2.x - 0.04; }
+      }
+    }
+
+    if (animate !== "speak") {
+      for (const item of morphMeshesRef.current) {
+        if (item.mesh.morphTargetInfluences) {
+          item.mesh.morphTargetInfluences[item.index] = 0;
+        }
       }
     }
   });
