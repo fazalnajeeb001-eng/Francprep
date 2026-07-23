@@ -113,27 +113,27 @@ export function AvatarCoachesSection() {
             </p>
 
             {/* Avatar Switcher */}
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <span className="text-xs font-bold text-slate-300">Choose Coach:</span>
               <button
                 onClick={() => setSelectedAvatar("male")}
-                className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all ${
+                className={`px-4 py-2.5 text-xs font-bold rounded-xl border transition-all active:scale-95 touch-manipulation ${
                   selectedAvatar === "male"
                     ? "border-purple-500 bg-purple-600 text-white shadow-md shadow-purple-500/30"
                     : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10"
                 }`}
               >
-                Coach Leo (Male)
+                Coach Leo (Male 3D)
               </button>
               <button
                 onClick={() => setSelectedAvatar("female")}
-                className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all ${
+                className={`px-4 py-2.5 text-xs font-bold rounded-xl border transition-all active:scale-95 touch-manipulation ${
                   selectedAvatar === "female"
                     ? "border-purple-500 bg-purple-600 text-white shadow-md shadow-purple-500/30"
                     : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10"
                 }`}
               >
-                Coach Camille (Female)
+                Coach Camille (Female 3D)
               </button>
             </div>
 

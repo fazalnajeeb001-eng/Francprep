@@ -66,6 +66,7 @@ export function AvatarFallback({ size, gender }: { size: number; gender: string 
 }
 
 interface SmartAvatarProps {
+  gender?: "male" | "female";
   features?: {
     gender?: string;
     skinTone?: string;
@@ -78,8 +79,8 @@ interface SmartAvatarProps {
   animate?: string;
 }
 
-export function SmartAvatar({ features, size = 80, animate = "idle" }: SmartAvatarProps) {
-  const gender = features?.gender || "female";
+export function SmartAvatar({ gender: propGender, features, size = 80, animate = "idle" }: SmartAvatarProps) {
+  const gender = propGender || features?.gender || "female";
   const containerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
