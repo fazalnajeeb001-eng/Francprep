@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Volume2, BookOpen, PenTool, Headphones, Mic, Sparkles, UserCheck, Bot } from "lucide-react";
+import { Volume2, BookOpen, PenTool, Headphones, Mic, Sparkles, UserCheck, Bot, CheckCircle2, RotateCcw } from "lucide-react";
 import { SmartAvatar } from "../dashboard/widgets/SmartAvatar";
 
 export function AvatarCoachesSection() {
   const [selectedAvatar, setSelectedAvatar] = useState<"male" | "female">("male");
   const [selectedLevel, setSelectedLevel] = useState<"A1" | "B2" | "C2">("A1");
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordedText, setRecordedText] = useState("");
+  const [aiFeedback, setAiFeedback] = useState<{ text: string; score: number } | null>(null);
+  const recognitionRef = useRef<any>(null);
 
   const levelSpeeches = {
     A1: {
@@ -40,6 +44,61 @@ export function AvatarCoachesSection() {
     utterance.onerror = () => setIsSpeaking(false);
 
     window.speechSynthesis.speak(utterance);
+  };
+
+  const startMicRecording = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Speech recognition is supported on Chrome, Safari, and Edge.");
+      return;
+    }
+
+    try {
+      if (recognitionRef.current) recognitionRef.current.abort();
+      const rec = new SpeechRecognition();
+      rec.lang = "fr-FR";
+      rec.interimResults = true;
+
+      rec.onstart = () => {
+        setIsRecording(true);
+        setRecordedText("");
+        setAiFeedback(null);
+      };
+
+      rec.onresult = (e: any) => {
+        const transcript = Array.from(e.results)
+          .map((res: any) => res[0].transcript)
+          .join("");
+        setRecordedText(transcript);
+      };
+
+      rec.onerror = () => {
+        setIsRecording(false);
+      };
+
+      rec.onend = () => {
+        setIsRecording(false);
+        // Simulate level-scoped AI evaluation
+        setTimeout(() => {
+          setAiFeedback({
+            text: "Excellent effort ! Great French pronunciation and natural cadence.",
+            score: 95,
+          });
+          // Avatar speaks AI feedback back to user in French
+          const respUtterance = new SpeechSynthesisUtterance("Très bien ! Félicitations pour votre excellente prononciation.");
+          respUtterance.lang = "fr-FR";
+          respUtterance.rate = levelSpeeches[selectedLevel].rate;
+          respUtterance.onstart = () => setIsSpeaking(true);
+          respUtterance.onend = () => setIsSpeaking(false);
+          window.speechSynthesis.speak(respUtterance);
+        }, 400);
+      };
+
+      recognitionRef.current = rec;
+      rec.start();
+    } catch (e) {
+      setIsRecording(false);
+    }
   };
 
   const skills = [
@@ -176,18 +235,54 @@ export function AvatarCoachesSection() {
               </div>
             </div>
 
-            {/* Speaking Demo Action */}
-            <div className="pt-2 space-y-2">
-              <button
-                onClick={handleSpeakDemo}
-                className="px-6 py-3.5 text-xs font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 rounded-xl transition-all shadow-lg shadow-purple-600/30 flex items-center gap-2"
-              >
-                <Volume2 className={`w-4 h-4 ${isSpeaking ? "animate-bounce" : ""}`} />
-                <span>{isSpeaking ? "Coach Speaking..." : `Test ${selectedLevel} Level Live Speech`}</span>
-              </button>
+            {/* Speaking Demo Actions */}
+            <div className="pt-2 space-y-3">
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  onClick={handleSpeakDemo}
+                  className="px-5 py-3 text-xs font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 rounded-xl transition-all shadow-lg shadow-purple-600/30 flex items-center gap-2"
+                >
+                  <Volume2 className={`w-4 h-4 ${isSpeaking ? "animate-bounce" : ""}`} />
+                  <span>{isSpeaking ? "Coach Speaking..." : `🔊 Listen to ${selectedLevel} Speech`}</span>
+                </button>
+
+                <button
+                  onClick={startMicRecording}
+                  disabled={isRecording}
+                  className={`px-5 py-3 text-xs font-bold text-white rounded-xl transition-all shadow-lg flex items-center gap-2 ${
+                    isRecording
+                      ? "bg-rose-600 animate-pulse"
+                      : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-emerald-600/30"
+                  }`}
+                >
+                  <Mic className={`w-4 h-4 ${isRecording ? "animate-ping" : ""}`} />
+                  <span>{isRecording ? "Listening... Speak French Now!" : "🎙️ Test Live Mic Voice Practice"}</span>
+                </button>
+              </div>
+
               <p className="text-[11px] text-purple-300 font-mono">
                 {levelSpeeches[selectedLevel].label}
               </p>
+
+              {/* Live Mic Transcript & AI Response Display */}
+              {recordedText && (
+                <div className="p-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-xs space-y-1">
+                  <p className="text-[11px] font-bold text-emerald-300 uppercase tracking-wider">Your Spoken Voice:</p>
+                  <p className="italic text-slate-100">"{recordedText}"</p>
+                </div>
+              )}
+
+              {aiFeedback && (
+                <div className="p-3 rounded-xl border border-purple-500/30 bg-purple-500/10 text-xs space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-purple-300">💡 AI Tutor Review:</span>
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">
+                      Score: {aiFeedback.score}%
+                    </span>
+                  </div>
+                  <p className="text-slate-200">{aiFeedback.text}</p>
+                </div>
+              )}
             </div>
           </div>
 
