@@ -306,7 +306,7 @@ function parseGrammarDrills(text: string): ILessonQuestion[] {
     }
 
     if (!correctAnswer || correctAnswer.trim() === '') {
-      correctAnswer = 'Open-ended (e.g. Je suis [Name])';
+      correctAnswer = 'Open-ended drill';
       if (!explanation || explanation === 'Complete the drill.') {
         explanation = instruction || 'Complete the drill with your own answer.';
       }

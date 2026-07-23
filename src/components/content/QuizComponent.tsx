@@ -723,7 +723,6 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
 
   // ─── RENDER: FILL IN THE BLANK ───
   const renderFillBlank = (q: Question, qId: string) => {
-    const isAnswerRevealed = submitted || !!revealedAnswers[qId];
     return (
       <div className="space-y-3">
         <p className={`text-sm ${dark ? "text-gray-300" : "text-gray-600"}`}>{q.prompt || 'Fill in the blank:'}</p>
@@ -741,11 +740,6 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
               : dark ? "border-[#1e2a4a] bg-[#0a0e1a] text-gray-200 focus:border-purple-500/50" : "border-gray-200 bg-white focus:border-purple-300"
           } outline-none`}
         />
-        {isAnswerRevealed && !resultForQ?.correct && q.correctAnswer && (
-          <p className={`text-xs ${dark ? "text-emerald-400" : "text-emerald-600"}`}>
-            Correct answer: <span className="font-semibold">{Array.isArray(q.correctAnswer) ? q.correctAnswer.join(' / ') : q.correctAnswer.toString()}</span>
-          </p>
-        )}
       </div>
     );
   };
@@ -837,7 +831,6 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
 
   // ─── RENDER: SHORT ANSWER ───
   const renderShortAnswer = (q: Question, qId: string) => {
-    const isAnswerRevealed = submitted || !!revealedAnswers[qId];
     return (
       <div className="space-y-3">
         <textarea
@@ -853,12 +846,6 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
               : dark ? "border-[#1e2a4a] bg-[#0a0e1a] text-gray-200 focus:border-purple-500/50" : "border-gray-200 bg-white focus:border-purple-300"
           }`}
         />
-        {isAnswerRevealed && !resultForQ?.correct && q.sampleAnswer && (
-          <div className={`p-3 rounded-xl border text-xs ${dark ? "bg-emerald-500/10 border-emerald-500/30" : "bg-emerald-50 border-emerald-200"}`}>
-            <p className={`font-semibold mb-1 ${dark ? "text-emerald-300" : "text-emerald-700"}`}>Sample answer:</p>
-            <p className={dark ? "text-emerald-400" : "text-emerald-600"}>{q.sampleAnswer}</p>
-          </div>
-        )}
       </div>
     );
   };
@@ -1008,11 +995,17 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
                       Reveal Explanation & Correct Answer
                     </button>
                   )}
-                  {revealedAnswers[qId] && (
-                    <p className={`text-xs font-medium mt-1 ${dark ? "text-purple-300" : "text-purple-700"}`}>
-                      Model Answer: <span className="font-bold">{q.correctAnswer ? (Array.isArray(q.correctAnswer) ? q.correctAnswer.join(" / ") : String(q.correctAnswer)) : "See AI Explanation above"}</span>
-                    </p>
-                  )}
+                  {revealedAnswers[qId] && (() => {
+                    const rawKey = q.correctAnswer || q.sampleAnswer;
+                    const keyStr = rawKey ? (Array.isArray(rawKey) ? rawKey.join(" / ") : String(rawKey)) : "";
+                    const isGenericOpenEnded = !keyStr || keyStr.toLowerCase().includes("open-ended") || keyStr === "N/A";
+
+                    return (
+                      <p className={`text-xs font-medium mt-1 ${dark ? "text-purple-300" : "text-purple-700"}`}>
+                        Model Answer: <span className="font-bold">{isGenericOpenEnded ? "Open-ended exercise (See AI Tutor review above for valid French examples)" : keyStr}</span>
+                      </p>
+                    );
+                  })()}
                 </div>
               )}
             </div>
