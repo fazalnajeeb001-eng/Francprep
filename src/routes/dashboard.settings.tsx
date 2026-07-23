@@ -6,7 +6,7 @@ import { apiFetch } from "~/lib/apiFetch";
 import { createCheckout, createPortal, getSubscription, type Subscription } from "~/lib/paymentsApi";
 import { Moon, Sun, Shield, Key, CreditCard, Check, AlertTriangle, RefreshCw, ChevronDown, ChevronUp, Target, User, LogOut, Zap, Crown, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-import { GOAL_OPTIONS, type LearningGoal, setGoal as saveGoalToStorage, getGoal } from "~/components/dashboard/utils/userPrefs";
+import { GOAL_OPTIONS, type LearningGoal, setGoal as saveGoalToStorage, getGoal, getDailyStudyGoal, setDailyStudyGoal } from "~/components/dashboard/utils/userPrefs";
 
 export const Route = createFileRoute("/dashboard/settings")({ component: SettingsPage });
 
@@ -155,14 +155,14 @@ function SettingsPage() {
 
         {/* Learning Goal */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>
-          <div className="flex items-center gap-3 mb-4"><Target className="w-5 h-5 text-purple-400" /><h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Learning Goal</h2></div>
-          <p className={`text-xs mb-4 ${txtSec}`}>Set a target to stay motivated. This appears on your learning journey.</p>
+          <div className="flex items-center gap-3 mb-4"><Target className="w-5 h-5 text-purple-400" /><h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Learning Goal & Exam Target</h2></div>
+          <p className={`text-xs mb-4 ${txtSec}`}>Set your target exam or CEFR level. You can change this anytime.</p>
           <div className="grid grid-cols-2 gap-2">
             {GOAL_OPTIONS.map((opt) => (
               <button key={opt.value} onClick={() => saveGoal(opt.value)} disabled={goalSaving}
                 className={`flex items-center gap-2 p-3 rounded-xl text-left transition-all ${
                   currentGoal === opt.value
-                    ? "bg-purple-500/20 border-2 border-purple-500 text-white"
+                    ? "bg-purple-500/20 border-2 border-purple-500 text-white shadow-md"
                     : `${inputBg} border hover:border-purple-500/50 ${dark ? "text-gray-300" : "text-gray-700"}`
                 }`}>
                 <span className="text-lg">{opt.emoji}</span>
@@ -172,6 +172,30 @@ function SettingsPage() {
             ))}
           </div>
           {goalMsg && <p className="text-xs text-emerald-400 flex items-center gap-1 mt-3"><Check className="w-3 h-3" /> {goalMsg}</p>}
+
+          <div className="mt-6 pt-5 border-t border-gray-200 dark:border-white/10">
+            <h3 className={`text-sm font-semibold mb-1 ${dark ? "text-white" : "text-gray-900"}`}>Daily Study Pace Goal</h3>
+            <p className={`text-xs mb-3 ${txtSec}`}>Select how many minutes per day you commit to studying.</p>
+            <div className="grid grid-cols-4 gap-2">
+              {[15, 30, 45, 60].map((mins) => (
+                <button
+                  key={mins}
+                  onClick={() => {
+                    setDailyStudyGoal(mins);
+                    setGoalMsg(`Daily goal set to ${mins} mins/day!`);
+                    setTimeout(() => setGoalMsg(""), 2000);
+                  }}
+                  className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
+                    getDailyStudyGoal() === mins
+                      ? "bg-purple-500/20 border-purple-500 text-purple-400"
+                      : `${inputBg} hover:border-purple-500/40 ${dark ? "text-gray-300" : "text-gray-700"}`
+                  }`}
+                >
+                  {mins} mins
+                </button>
+              ))}
+            </div>
+          </div>
         </motion.div>
 
         {/* Avatar */}

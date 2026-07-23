@@ -31,6 +31,22 @@ export function setGoal(goal: LearningGoal): GoalData {
   return data;
 }
 
+const DAILY_GOAL_KEY = "fp_daily_study_goal_mins";
+
+export function getDailyStudyGoal(): number {
+  try {
+    const val = localStorage.getItem(DAILY_GOAL_KEY);
+    return val ? parseInt(val, 10) : 30;
+  } catch {
+    return 30;
+  }
+}
+
+export function setDailyStudyGoal(mins: number) {
+  localStorage.setItem(DAILY_GOAL_KEY, String(mins));
+  window.dispatchEvent(new Event("daily-goal-changed"));
+}
+
 export function getAvatar(): string | null {
   try { return localStorage.getItem(AVATAR_KEY); }
   catch { return null; }

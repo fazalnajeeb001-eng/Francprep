@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Target, Plus, X, Check } from "lucide-react";
+import { Target, Plus, X, Check, Clock } from "lucide-react";
 import { useWidgets } from "~/lib/WidgetsContext";
+import { getDailyStudyGoal } from "../utils/userPrefs";
 
 const PRESET_GOALS = [
   "Complete 3 lessons",
@@ -16,6 +17,14 @@ export function WeeklyGoal({ dark }: { dark: boolean }) {
   const goal = widgets?.weeklyGoal || null;
   const [showSetup, setShowSetup] = useState(false);
   const [customText, setCustomText] = useState("");
+  const [dailyMins, setDailyMins] = useState(30);
+
+  useEffect(() => {
+    setDailyMins(getDailyStudyGoal());
+    const onDailyGoalChange = () => setDailyMins(getDailyStudyGoal());
+    window.addEventListener("daily-goal-changed", onDailyGoalChange);
+    return () => window.removeEventListener("daily-goal-changed", onDailyGoalChange);
+  }, []);
 
   const setPresetGoal = (text: string) => {
     updateWeeklyGoal({ text, current: 0, target: 1, completed: false });
@@ -48,11 +57,17 @@ export function WeeklyGoal({ dark }: { dark: boolean }) {
           <Target className="w-4 h-4 text-purple-400" />
           <h3 className={`text-sm font-semibold ${dark ? "text-gray-300" : "text-gray-700"}`}>Weekly Goal</h3>
         </div>
-        {goal && !goal.completed && (
-          <button onClick={resetGoal} className={`text-[10px] ${dark ? "text-gray-500 hover:text-red-400" : "text-gray-400 hover:text-red-500"} transition-colors`}>
-            <X className="w-3.5 h-3.5" />
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${dark ? "bg-purple-500/20 text-purple-300" : "bg-purple-100 text-purple-700"}`}>
+            <Clock className="w-3 h-3" />
+            <span>{dailyMins}m / day</span>
+          </span>
+          {goal && !goal.completed && (
+            <button onClick={resetGoal} className={`text-[10px] ${dark ? "text-gray-500 hover:text-red-400" : "text-gray-400 hover:text-red-500"} transition-colors`}>
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
       </div>
 
       {!goal && !showSetup && (

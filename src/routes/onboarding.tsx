@@ -18,7 +18,8 @@ import {
   GraduationCap
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
-import { GOAL_OPTIONS, setGoal as saveGoalToStorage, type LearningGoal } from "~/components/dashboard/utils/userPrefs";
+import { apiFetch } from "~/lib/apiFetch";
+import { GOAL_OPTIONS, setGoal as saveGoalToStorage, setDailyStudyGoal, type LearningGoal } from "~/components/dashboard/utils/userPrefs";
 
 export const Route = createFileRoute("/onboarding")({ component: OnboardingPage });
 
@@ -161,15 +162,24 @@ export function OnboardingPage() {
     }
   };
 
-  const handleFinishOnboarding = (levelOverride?: string) => {
+  const handleFinishOnboarding = async (levelOverride?: string) => {
     const finalLevel = levelOverride || (step === "result" ? evaluatedLevel : "A1");
 
     // 1. Save goal directly via userPrefs (triggers 'goal-changed' event for Dashboard!)
     saveGoalToStorage(selectedGoal);
+    setDailyStudyGoal(selectedPace);
 
-    // 2. Save onboarding level & pace
+    // 2. Persist to backend database so profile syncs
+    try {
+      await apiFetch("/user/profile/goal", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ goal: selectedGoal }),
+      });
+    } catch {}
+
+    // 3. Save onboarding level
     localStorage.setItem("francprep_onboarding_completed", "true");
-    localStorage.setItem("francprep_user_pace", String(selectedPace));
     localStorage.setItem("francprep_user_level", finalLevel);
 
     navigate({ to: "/dashboard" });
