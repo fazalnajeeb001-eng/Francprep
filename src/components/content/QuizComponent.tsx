@@ -686,62 +686,68 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
   }, [answers, questions, onSubmit, onAnswer, onComplete]);
 
   // ─── RENDER: MULTIPLE CHOICE ───
-  const renderMultipleChoice = (q: Question, qId: string) => (
-    <div className="space-y-2">
-      {q.options?.map((opt, i) => {
-        const isSelected = userAnswer === opt;
-        const isCorrect = resultForQ?.correct && isSelected;
-        const isWrong = resultForQ && !resultForQ.correct && isSelected;
-        const showCorrect = resultForQ && !resultForQ.correct && opt === q.correctAnswer?.toString();
+  const renderMultipleChoice = (q: Question, qId: string) => {
+    const isAnswerRevealed = submitted || !!revealedAnswers[qId];
+    return (
+      <div className="space-y-2">
+        {q.options?.map((opt, i) => {
+          const isSelected = userAnswer === opt;
+          const isCorrect = (resultForQ?.correct || isAnswerRevealed) && isSelected && opt === q.correctAnswer?.toString();
+          const isWrong = resultForQ && !resultForQ.correct && isSelected;
+          const showCorrect = isAnswerRevealed && !resultForQ?.correct && opt === q.correctAnswer?.toString();
 
-        return (
-          <button key={i} onClick={() => !submitted && setAnswer(qId, opt)}
-            disabled={submitted}
-            className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${
-              submitted
-                ? isCorrect ? "border-emerald-500 bg-emerald-500/20 text-emerald-300"
-                : isWrong ? "border-red-500 bg-red-500/20 text-red-300"
-                : showCorrect ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400"
-                : dark ? "border-[#1e2a4a] text-gray-500" : "border-gray-200 text-gray-400"
-                : isSelected
-                ? dark ? "border-purple-500 bg-purple-500/20 text-purple-300" : "border-purple-400 bg-purple-50 text-purple-700"
-                : dark ? "border-[#1e2a4a] text-gray-300 hover:border-purple-500/50" : "border-gray-200 text-gray-700 hover:border-gray-300"
-            }`}>
-            <div className="flex items-center gap-2">
-              {submitted && (isCorrect ? <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" /> : isWrong ? <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" /> : showCorrect ? <CheckCircle2 className="w-4 h-4 text-emerald-400/50 flex-shrink-0" /> : null)}
-              {opt}
-            </div>
-          </button>
-        );
-      })}
-    </div>
-  );
+          return (
+            <button key={i} onClick={() => !submitted && setAnswer(qId, opt)}
+              disabled={submitted}
+              className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${
+                resultForQ
+                  ? isCorrect ? "border-emerald-500 bg-emerald-500/20 text-emerald-300 font-medium"
+                  : isWrong ? "border-red-500 bg-red-500/20 text-red-300"
+                  : showCorrect ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-medium"
+                  : dark ? "border-[#1e2a4a] text-gray-500" : "border-gray-200 text-gray-400"
+                  : isSelected
+                  ? dark ? "border-purple-500 bg-purple-500/20 text-purple-300 ring-1 ring-purple-500/40" : "border-purple-400 bg-purple-50 text-purple-700 ring-1 ring-purple-400/40"
+                  : dark ? "border-[#1e2a4a] text-gray-300 hover:border-purple-500/50" : "border-gray-200 text-gray-700 hover:border-gray-300"
+              }`}>
+              <div className="flex items-center gap-2">
+                {resultForQ && (isCorrect ? <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" /> : isWrong ? <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" /> : showCorrect ? <CheckCircle2 className="w-4 h-4 text-emerald-400/50 flex-shrink-0" /> : null)}
+                {opt}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    );
+  };
 
   // ─── RENDER: FILL IN THE BLANK ───
-  const renderFillBlank = (q: Question, qId: string) => (
-    <div className="space-y-3">
-      <p className={`text-sm ${dark ? "text-gray-300" : "text-gray-600"}`}>{q.prompt || 'Fill in the blank:'}</p>
-      <input
-        type="text"
-        value={(userAnswer as string) || ''}
-        onChange={(e) => setAnswer(qId, e.target.value)}
-        disabled={submitted}
-        placeholder="Type your answer..."
-        className={`w-full p-3 rounded-xl border text-sm transition-all ${
-          submitted
-            ? resultForQ?.correct
-              ? "border-emerald-500 bg-emerald-500/10 text-emerald-300"
-              : "border-red-500 bg-red-500/10 text-red-300"
-            : dark ? "border-[#1e2a4a] bg-[#0a0e1a] text-gray-200 focus:border-purple-500/50" : "border-gray-200 bg-white focus:border-purple-300"
-        } outline-none`}
-      />
-      {submitted && !resultForQ?.correct && q.correctAnswer && (
-        <p className={`text-xs ${dark ? "text-emerald-400" : "text-emerald-600"}`}>
-          Correct answer: <span className="font-semibold">{q.correctAnswer.toString()}</span>
-        </p>
-      )}
-    </div>
-  );
+  const renderFillBlank = (q: Question, qId: string) => {
+    const isAnswerRevealed = submitted || !!revealedAnswers[qId];
+    return (
+      <div className="space-y-3">
+        <p className={`text-sm ${dark ? "text-gray-300" : "text-gray-600"}`}>{q.prompt || 'Fill in the blank:'}</p>
+        <input
+          type="text"
+          value={(userAnswer as string) || ''}
+          onChange={(e) => setAnswer(qId, e.target.value)}
+          disabled={submitted}
+          placeholder="Type your answer..."
+          className={`w-full p-3 rounded-xl border text-sm transition-all ${
+            resultForQ
+              ? resultForQ?.correct
+                ? "border-emerald-500 bg-emerald-500/10 text-emerald-300"
+                : "border-red-500 bg-red-500/10 text-red-300"
+              : dark ? "border-[#1e2a4a] bg-[#0a0e1a] text-gray-200 focus:border-purple-500/50" : "border-gray-200 bg-white focus:border-purple-300"
+          } outline-none`}
+        />
+        {isAnswerRevealed && !resultForQ?.correct && q.correctAnswer && (
+          <p className={`text-xs ${dark ? "text-emerald-400" : "text-emerald-600"}`}>
+            Correct answer: <span className="font-semibold">{Array.isArray(q.correctAnswer) ? q.correctAnswer.join(' / ') : q.correctAnswer.toString()}</span>
+          </p>
+        )}
+      </div>
+    );
+  };
 
   // ─── RENDER: MATCHING (click-to-match from LessonPlayer) ───
   const renderMatching = (q: Question, qId: string) => (
@@ -829,29 +835,32 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
   };
 
   // ─── RENDER: SHORT ANSWER ───
-  const renderShortAnswer = (q: Question, qId: string) => (
-    <div className="space-y-3">
-      <textarea
-        value={(userAnswer as string) || ''}
-        onChange={(e) => setAnswer(qId, e.target.value)}
-        disabled={submitted}
-        placeholder="Write your answer in French..."
-        className={`w-full h-24 p-3 rounded-xl border text-sm resize-none outline-none transition-all ${
-          submitted
-            ? resultForQ?.correct
-              ? "border-emerald-500 bg-emerald-500/10 text-emerald-300"
-              : "border-red-500 bg-red-500/10 text-red-300"
-            : dark ? "border-[#1e2a4a] bg-[#0a0e1a] text-gray-200 focus:border-purple-500/50" : "border-gray-200 bg-white focus:border-purple-300"
-        }`}
-      />
-      {submitted && !resultForQ?.correct && q.sampleAnswer && (
-        <div className={`p-3 rounded-xl border text-xs ${dark ? "bg-emerald-500/10 border-emerald-500/30" : "bg-emerald-50 border-emerald-200"}`}>
-          <p className={`font-semibold mb-1 ${dark ? "text-emerald-300" : "text-emerald-700"}`}>Sample answer:</p>
-          <p className={dark ? "text-emerald-400" : "text-emerald-600"}>{q.sampleAnswer}</p>
-        </div>
-      )}
-    </div>
-  );
+  const renderShortAnswer = (q: Question, qId: string) => {
+    const isAnswerRevealed = submitted || !!revealedAnswers[qId];
+    return (
+      <div className="space-y-3">
+        <textarea
+          value={(userAnswer as string) || ''}
+          onChange={(e) => setAnswer(qId, e.target.value)}
+          disabled={submitted}
+          placeholder="Write your answer in French..."
+          className={`w-full h-24 p-3 rounded-xl border text-sm resize-none outline-none transition-all ${
+            resultForQ
+              ? resultForQ?.correct
+                ? "border-emerald-500 bg-emerald-500/10 text-emerald-300"
+                : "border-red-500 bg-red-500/10 text-red-300"
+              : dark ? "border-[#1e2a4a] bg-[#0a0e1a] text-gray-200 focus:border-purple-500/50" : "border-gray-200 bg-white focus:border-purple-300"
+          }`}
+        />
+        {isAnswerRevealed && !resultForQ?.correct && q.sampleAnswer && (
+          <div className={`p-3 rounded-xl border text-xs ${dark ? "bg-emerald-500/10 border-emerald-500/30" : "bg-emerald-50 border-emerald-200"}`}>
+            <p className={`font-semibold mb-1 ${dark ? "text-emerald-300" : "text-emerald-700"}`}>Sample answer:</p>
+            <p className={dark ? "text-emerald-400" : "text-emerald-600"}>{q.sampleAnswer}</p>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   // ─── RENDER: LISTENING (multiple choice with audio context) ───
   const renderListening = (q: Question, qId: string) => renderMultipleChoice(q, qId);
@@ -882,22 +891,26 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
   // ─── RENDER: TRUE / FALSE ───
   const renderTrueFalse = (q: Question, qId: string) => {
     const options = q.options || ['True', 'False'];
+    const isAnswerRevealed = submitted || !!revealedAnswers[qId];
     return (
       <div className="space-y-2">
         {options.map((opt, i) => {
           const isSelected = userAnswer === opt;
-          const isCorrect = resultForQ?.correct && isSelected;
+          const isCorrect = (resultForQ?.correct || isAnswerRevealed) && isSelected && opt === q.correctAnswer?.toString();
           const isWrong = resultForQ && !resultForQ.correct && isSelected;
-          const showCorrect = resultForQ && !resultForQ.correct && opt === q.correctAnswer?.toString();
+          const showCorrect = isAnswerRevealed && !resultForQ?.correct && opt === q.correctAnswer?.toString();
           return (
             <button key={i} onClick={() => !submitted && setAnswer(qId, opt)}
               disabled={submitted}
               className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${
-                submitted ? (isCorrect ? "border-emerald-500 bg-emerald-500/20 text-emerald-300" : isWrong ? "border-red-500 bg-red-500/20 text-red-300" : showCorrect ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400" : dark ? "border-[#1e2a4a] text-gray-500" : "border-gray-200 text-gray-400")
-                : isSelected ? (dark ? "border-purple-500 bg-purple-500/20 text-purple-300" : "border-purple-400 bg-purple-50 text-purple-700")
+                resultForQ ? (isCorrect ? "border-emerald-500 bg-emerald-500/20 text-emerald-300 font-medium" : isWrong ? "border-red-500 bg-red-500/20 text-red-300" : showCorrect ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-medium" : dark ? "border-[#1e2a4a] text-gray-500" : "border-gray-200 text-gray-400")
+                : isSelected ? (dark ? "border-purple-500 bg-purple-500/20 text-purple-300 ring-1 ring-purple-500/40" : "border-purple-400 bg-purple-50 text-purple-700 ring-1 ring-purple-400/40")
                 : dark ? "border-[#1e2a4a] text-gray-300 hover:border-purple-500/50" : "border-gray-200 text-gray-700 hover:border-gray-300"
               }`}>
-              {opt}
+              <div className="flex items-center gap-2">
+                {resultForQ && (isCorrect ? <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" /> : isWrong ? <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" /> : showCorrect ? <CheckCircle2 className="w-4 h-4 text-emerald-400/50 flex-shrink-0" /> : null)}
+                {opt}
+              </div>
             </button>
           );
         })}
@@ -1018,13 +1031,14 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
         <div className="flex items-center gap-2">
           {!submitted ? (
             <>
-              {/* Check Answer Button */}
-              {userAnswer !== undefined && (
-                <button onClick={() => handleCheckQuestion(qId)} disabled={checkingQuestion[qId]}
-                  className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm rounded-lg transition-all shadow-md shadow-indigo-600/20">
-                  {checkingQuestion[qId] ? "Checking..." : "Check Answer"}
-                </button>
-              )}
+              {/* Check Answer Button - Always visible for every exercise type */}
+              <button
+                onClick={() => handleCheckQuestion(qId)}
+                disabled={userAnswer === undefined || (typeof userAnswer === 'string' && !userAnswer.trim()) || checkingQuestion[qId]}
+                className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-all shadow-md shadow-indigo-600/20 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {checkingQuestion[qId] ? "Checking..." : "Check Answer"}
+              </button>
 
               {current < questions.length - 1 ? (
                 <button onClick={() => setCurrent(current + 1)}
