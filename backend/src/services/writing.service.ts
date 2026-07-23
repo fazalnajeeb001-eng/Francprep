@@ -123,27 +123,39 @@ Respond in JSON format:
     const normalize = (s: string) => String(s).trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").replace(/\s+/g, " ");
     const userStr = normalize(answer);
     const expStr = expectedAnswer ? normalize(expectedAnswer) : '';
-    const isExactMatch = Boolean(expStr && (userStr === expStr || (userStr.length > 3 && userStr.includes(expStr))));
+    
+    // Determine if expectedAnswer is open-ended or generic
+    const isOpenEnded = !expectedAnswer || expectedAnswer.trim() === '' || expectedAnswer.toLowerCase().includes('open-ended') || expectedAnswer === 'N/A' || expectedAnswer.includes('e.g.');
+
+    const isExactMatch = Boolean(
+      userStr && (
+        isOpenEnded ? userStr.length >= 2 : (expStr && (userStr === expStr || (userStr.length > 3 && (userStr.includes(expStr) || expStr.includes(userStr)))))
+      )
+    );
 
     if (!apiKey) {
       return {
         correct: isExactMatch,
-        feedback: isExactMatch ? 'Correct!' : (expectedAnswer ? `Expected: ${expectedAnswer}` : 'Answer recorded.'),
+        feedback: isExactMatch 
+          ? (isOpenEnded ? 'Answer recorded!' : 'Correct!') 
+          : (expectedAnswer ? `Expected model answer: ${expectedAnswer}` : 'Answer recorded.'),
         expectedAnswer,
       };
     }
 
-    const llmPrompt = `You are a warm, encouraging French language tutor evaluating a student's answer to an exercise/drill.
+    const llmPrompt = `You are a warm, encouraging French language tutor evaluating a student's typed answer to an exercise/drill.
 
 Exercise Prompt: "${prompt}"
-Expected Model Answer: "${expectedAnswer && expectedAnswer !== 'N/A' ? expectedAnswer : 'Evaluate based on French grammar & prompt'}"
+Reference Model Answer: "${expectedAnswer && expectedAnswer !== 'N/A' && !expectedAnswer.toLowerCase().includes('open-ended') ? expectedAnswer : 'Evaluate based on French grammar & prompt (Open-ended)'}"
 Student's Typed Answer: "${answer}"
 
-Rules for Evaluation:
-1. Determine if the student's typed answer is correct or grammatically acceptable in French for this prompt.
-2. Accept minor capitalization, accent, or punctuation differences.
-3. Accept equivalent valid French expressions that answer the prompt correctly.
-4. Provide a clear, helpful 1-2 sentence AI Review in English explaining WHY it is correct or incorrect. If incorrect, explain the grammar/vocabulary mistake gently and provide the correct French word or phrase to use.
+Rules for AI Evaluation:
+1. THE REFERENCE MODEL ANSWER IS A GUIDE ONLY. Typed French answers are subjective and flexible.
+2. Accept ANY valid, grammatically correct French expression that answers the prompt correctly (e.g., accepting "Je m'appelle Marc", "Je suis Marc", "Moi, c'est Marc").
+3. Accept minor capitalization, accent, or punctuation differences.
+4. If no model answer exists or if it is marked open-ended, evaluate the student's answer strictly against standard French grammar and the prompt instructions.
+5. If the student typed gibberish, incorrect French, or misunderstood the prompt, explain gently why it is incorrect, point out the specific grammar or vocabulary mistake, and provide the correct French words to use.
+6. Provide a clear, helpful 1-2 sentence AI Review in English explaining WHY it is correct or incorrect.
 
 Respond STRICTLY with a raw JSON object:
 {"correct": true or false, "feedback": "Your 1-2 sentence AI review/explanation here"}`;
