@@ -1,15 +1,6 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
-import { useAuth } from "~/lib/AuthContext";
+import { createFileRoute } from "@tanstack/react-router";
+import { LandingPage } from "~/components/landing/LandingPage";
 
-export const Route = createFileRoute("/")({ component: Home });
-
-function Home() {
-  const { isAuthenticated, isLoading } = useAuth();
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (isLoading) return;
-    navigate({ to: isAuthenticated ? "/dashboard" : "/login" });
-  }, [isAuthenticated, isLoading, navigate]);
-  return null;
-}
+export const Route = createFileRoute("/")({
+  component: LandingPage,
+});
