@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, XCircle, ChevronRight, ChevronLeft, GripVertical } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
+import { apiFetch } from "~/lib/apiFetch";
 
 interface Question {
   id?: string;
@@ -46,7 +47,7 @@ interface QuizProps {
   } | null>;
 }
 
-// ─── MATCHING QUESTION COMPONENT (extracted for hooks compliance) ───
+// ─── MATCHING QUESTION COMPONENT (HTML5 Drag & Drop + Click to Pair) ───
 function MatchingQuestion({ q, qId, dark, submitted, setAnswer }: {
   q: Question;
   qId: string;
@@ -57,9 +58,22 @@ function MatchingQuestion({ q, qId, dark, submitted, setAnswer }: {
   const pairs = q.pairs || {};
   const leftItems = Object.keys(pairs);
   const rightItems = Object.values(pairs);
-  const [shuffledRight] = useState(() => [...rightItems].sort(() => Math.random() - 0.5));
+  
+  // Right side items start shuffled/mismatched by default
+  const [shuffledRight] = useState(() => {
+    const arr = [...rightItems];
+    // Fisher-Yates shuffle
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  });
+
   const [selectedLeft, setSelectedLeft] = useState<number | null>(null);
   const [matches, setMatches] = useState<Record<number, number>>({});
+  const [draggedRightIdx, setDraggedRightIdx] = useState<number | null>(null);
+  const [dragOverLeftIdx, setDragOverLeftIdx] = useState<number | null>(null);
   const [showKey, setShowKey] = useState(false);
 
   const matchedLeftIndices = new Set(Object.keys(matches).map(Number));
@@ -91,81 +105,196 @@ function MatchingQuestion({ q, qId, dark, submitted, setAnswer }: {
     setSelectedLeft(null);
   };
 
-  const handleMatchedClick = (leftIdx: number) => {
+  const handleUnpair = (leftIdx: number) => {
     if (submitted) return;
-    setMatches(prev => { const n = { ...prev }; delete n[leftIdx]; return n; });
+    setMatches(prev => {
+      const next = { ...prev };
+      delete next[leftIdx];
+      return next;
+    });
+  };
+
+  // Drag & Drop handlers
+  const handleDragStart = (e: React.DragEvent, rightIdx: number) => {
+    if (submitted || matchedRightIndices.has(rightIdx)) return;
+    setDraggedRightIdx(rightIdx);
+    e.dataTransfer.setData("text/plain", rightIdx.toString());
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragOver = (e: React.DragEvent, leftIdx: number) => {
+    if (submitted) return;
+    e.preventDefault();
+    setDragOverLeftIdx(leftIdx);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverLeftIdx(null);
+  };
+
+  const handleDrop = (e: React.DragEvent, leftIdx: number) => {
+    e.preventDefault();
+    setDragOverLeftIdx(null);
+    if (submitted) return;
+
+    let rightIdx = Number(e.dataTransfer.getData("text/plain"));
+    if (isNaN(rightIdx) || rightIdx === undefined) {
+      rightIdx = draggedRightIdx !== null ? draggedRightIdx : -1;
+    }
+
+    if (rightIdx >= 0 && rightIdx < shuffledRight.length) {
+      setMatches(prev => ({ ...prev, [leftIdx]: rightIdx }));
+      setDraggedRightIdx(null);
+      if (selectedLeft === leftIdx) setSelectedLeft(null);
+    }
   };
 
   return (
     <div className="space-y-3">
-      <p className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"}`}>Click a left item, then click its match on the right.</p>
-      <div className="grid grid-cols-2 gap-2">
-        <div className="space-y-1">
+      <div className={`p-2.5 rounded-xl border text-xs flex items-center justify-between ${
+        dark ? "bg-purple-500/10 border-purple-500/20 text-purple-300" : "bg-purple-50 border-purple-200 text-purple-800"
+      }`}>
+        <p>🖐️ <strong>Drag & Drop</strong> right answers to match left questions, or click a pair to connect.</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {/* Left Column: Question Items & Drop Target Slots */}
+        <div className="space-y-2">
+          <span className={`text-xs font-semibold uppercase tracking-wider block ${dark ? "text-gray-400" : "text-gray-500"}`}>Questions / Prompts</span>
           {leftItems.map((left, i) => {
             const isSelected = selectedLeft === i;
             const isMatched = matchedLeftIndices.has(i);
             const matchedRightIdx = matches[i];
             const isCorrect = isMatched && shuffledRight[matchedRightIdx] === pairs[left];
+            const isHovered = dragOverLeftIdx === i;
+
             return (
-              <button key={`l-${i}`} onClick={() => isMatched ? handleMatchedClick(i) : handleLeftClick(i)}
-                className={`w-full text-left text-xs px-3 py-2 rounded-lg border transition-all ${
-                  isMatched
+              <div
+                key={`l-${i}`}
+                onClick={() => !isMatched && handleLeftClick(i)}
+                onDragOver={(e) => handleDragOver(e, i)}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, i)}
+                className={`p-3 rounded-xl border transition-all text-xs flex flex-col gap-1.5 cursor-pointer ${
+                  isHovered
+                    ? "border-purple-400 bg-purple-500/20 ring-2 ring-purple-400"
+                    : isMatched
                     ? isCorrect
-                      ? "bg-emerald-500/20 text-emerald-400 border-emerald-500"
-                      : "bg-red-500/20 text-red-400 border-red-500"
+                      ? "bg-emerald-500/15 border-emerald-500 text-emerald-300"
+                      : "bg-red-500/15 border-red-500 text-red-300"
                     : isSelected
-                    ? "bg-purple-500/20 text-purple-400 border-purple-500 ring-1 ring-purple-500"
+                    ? "bg-purple-500/20 text-purple-300 border-purple-500 ring-2 ring-purple-500/40"
                     : dark
-                    ? "bg-[#070B17] text-gray-300 border-[#1e2a4a] hover:border-purple-500/40"
-                    : "bg-gray-50 text-gray-700 border-gray-200 hover:border-purple-400"
-                }`}>
-                {left}
-              </button>
+                    ? "bg-[#070B17] text-gray-200 border-[#1e2a4a] hover:border-purple-500/50"
+                    : "bg-gray-50 text-gray-800 border-gray-200 hover:border-purple-400"
+                }`}
+              >
+                <div className="flex items-center justify-between font-medium">
+                  <span>{left}</span>
+                  {isMatched && !submitted && (
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); handleUnpair(i); }}
+                      className="text-xs text-red-400 hover:text-red-300 font-bold px-1.5 py-0.5 rounded hover:bg-red-500/20"
+                      title="Unpair item"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+
+                {/* Paired Target Answer Preview / Drop Slot */}
+                {isMatched ? (
+                  <div className={`text-xs px-2.5 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 ${
+                    isCorrect
+                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                      : "bg-red-500/20 text-red-300 border border-red-500/40"
+                  }`}>
+                    <span>→ {shuffledRight[matchedRightIdx]}</span>
+                  </div>
+                ) : (
+                  <div className={`text-[11px] border border-dashed rounded-lg px-2 py-1 text-center italic ${
+                    isHovered
+                      ? "border-purple-400 text-purple-300 bg-purple-500/10"
+                      : dark ? "border-gray-700 text-gray-500" : "border-gray-300 text-gray-400"
+                  }`}>
+                    {selectedLeft === i ? "Selected — now click target answer on right" : "Drop matching answer here"}
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>
-        <div className="space-y-1">
+
+        {/* Right Column: Shuffled Target Answers (Draggable Cards) */}
+        <div className="space-y-2">
+          <span className={`text-xs font-semibold uppercase tracking-wider block ${dark ? "text-gray-400" : "text-gray-500"}`}>Target Answers (Drag or Click)</span>
           {shuffledRight.map((right, i) => {
             const isMatched = matchedRightIndices.has(i);
-            const matchedLeftIdx = Number(Object.entries(matches).find(([_, v]) => v === i)?.[0] || -1);
+            const matchedLeftIdx = Number(Object.entries(matches).find(([_, v]) => v === i)?.[0] ?? -1);
             const isCorrect = matchedLeftIdx >= 0 && right === pairs[leftItems[matchedLeftIdx]];
+
             return (
-              <button key={`r-${i}`} onClick={() => handleRightClick(i)}
-                disabled={isMatched || submitted}
-                className={`w-full text-left text-xs px-3 py-2 rounded-lg border transition-all ${
+              <div
+                key={`r-${i}`}
+                draggable={!isMatched && !submitted}
+                onDragStart={(e) => handleDragStart(e, i)}
+                onClick={() => handleRightClick(i)}
+                className={`p-3 rounded-xl border text-xs select-none transition-all ${
                   isMatched
                     ? isCorrect
-                      ? "bg-emerald-500/20 text-emerald-400 border-emerald-500"
-                      : "bg-red-500/20 text-red-400 border-red-500"
+                      ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-400/60 opacity-60 cursor-not-allowed"
+                      : "bg-red-500/10 border-red-500/40 text-red-400/60 opacity-60 cursor-not-allowed"
                     : dark
-                    ? "bg-[#070B17] text-gray-300 border-[#1e2a4a] hover:border-purple-500/40 disabled:opacity-50"
-                    : "bg-gray-50 text-gray-700 border-gray-200 hover:border-purple-400 disabled:opacity-50"
-                }`}>
-                {right}
-              </button>
+                    ? "bg-[#0c1222] text-gray-200 border-[#1e2a4a] hover:border-purple-500/60 hover:bg-purple-500/10 cursor-grab active:cursor-grabbing shadow-sm"
+                    : "bg-white text-gray-800 border-gray-200 hover:border-purple-400 hover:bg-purple-50/50 cursor-grab active:cursor-grabbing shadow-sm"
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-medium">{right}</span>
+                  {!isMatched && (
+                    <GripVertical className={`w-3.5 h-3.5 opacity-50 ${dark ? "text-gray-400" : "text-gray-500"}`} />
+                  )}
+                </div>
+              </div>
             );
           })}
         </div>
       </div>
-      <div className="flex items-center gap-2 mt-2">
+
+      <div className="flex items-center gap-3 mt-3">
         {allMatched && (
-          <span className={`text-xs font-semibold ${correctCount === leftItems.length ? "text-emerald-400" : "text-amber-400"}`}>
-            {correctCount === leftItems.length ? "All correct!" : `${correctCount}/${leftItems.length} correct`}
+          <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${
+            correctCount === leftItems.length ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+          }`}>
+            {correctCount === leftItems.length ? "✓ All pairs matched!" : `${correctCount}/${leftItems.length} matched correctly`}
           </span>
         )}
-        <button onClick={() => setShowKey(!showKey)}
-          className="text-xs text-purple-400 hover:text-purple-300 font-semibold">
+        <button
+          type="button"
+          onClick={() => setShowKey(!showKey)}
+          className="text-xs text-purple-400 hover:text-purple-300 font-semibold underline"
+        >
           {showKey ? "Hide" : "Show"} Answer Key
         </button>
         {Object.keys(matches).length > 0 && !submitted && (
-          <button onClick={() => { setMatches({}); setSelectedLeft(null); }}
-            className="text-xs text-gray-400 hover:text-gray-300 font-semibold">Reset</button>
+          <button
+            type="button"
+            onClick={() => { setMatches({}); setSelectedLeft(null); }}
+            className="text-xs text-gray-400 hover:text-gray-300 font-semibold underline"
+          >
+            Reset Matches
+          </button>
         )}
       </div>
+
       {showKey && (
-        <div className={`${dark ? "bg-emerald-500/5 border-emerald-500/20" : "bg-emerald-50 border-emerald-200"} rounded-xl p-3 border mt-2`}>
+        <div className={`${dark ? "bg-emerald-500/10 border-emerald-500/30" : "bg-emerald-50 border-emerald-200"} rounded-xl p-3 border mt-2 space-y-1`}>
+          <p className="text-xs font-semibold text-emerald-400 mb-1">Expected Match Key:</p>
           {leftItems.map((left, i) => (
-            <p key={i} className={`text-xs ${dark ? "text-gray-400" : "text-gray-600"}`}>{left} ↔ {pairs[left]}</p>
+            <p key={i} className={`text-xs ${dark ? "text-gray-300" : "text-gray-700"}`}>
+              • <strong className="text-emerald-400">{left}</strong> ↔ {pairs[left]}
+            </p>
           ))}
         </div>
       )}
