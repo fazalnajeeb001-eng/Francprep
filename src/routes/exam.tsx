@@ -37,9 +37,9 @@ export function ExamHubPage() {
 
   const handleLaunchPaper = (paperId: string) => {
     navigate({
-      to: "/exam/$paperId" as any,
+      to: "/exam/$paperId",
       params: { paperId },
-      search: { mode: selectedMode } as any,
+      search: { mode: selectedMode },
     });
   };
 

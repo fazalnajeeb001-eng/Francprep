@@ -31,13 +31,20 @@ import {
 import { useTheme } from "~/lib/ThemeContext";
 import { getExamRegistry, type ExamPaper, type ExamMode } from "~/lib/examSchema";
 
-export const Route = createFileRoute("/exam/$paperId")({ component: AuthenticCBTExamPage });
+export const Route = createFileRoute("/exam/$paperId")({
+  validateSearch: (search: Record<string, unknown>) => {
+    return {
+      mode: (search.mode as ExamMode) || "PRACTICE",
+    };
+  },
+  component: AuthenticCBTExamPage,
+});
 
 export function AuthenticCBTExamPage() {
   const navigate = useNavigate();
   const { paperId } = Route.useParams();
-  const search = Route.useSearch() as any;
-  const mode: ExamMode = (search?.mode as ExamMode) || "PRACTICE";
+  const search = Route.useSearch();
+  const mode: ExamMode = search.mode || "PRACTICE";
   const { dark } = useTheme();
 
   // Test-Center High-Contrast Toggle (Default light CBT canvas for authentic exam day feel)

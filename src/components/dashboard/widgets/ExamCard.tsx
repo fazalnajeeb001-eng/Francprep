@@ -38,7 +38,7 @@ export function ExamCard({ averageScore, dark }: { averageScore: number; dark: b
             <TrendingUp className="w-3.5 h-3.5 text-purple-400" />
             <span className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"}`}>Estimated TCF/TEF: <span className="font-bold text-purple-400">{animatedScore}/100</span></span>
           </div>
-          <Link to={"/exam" as any}
+          <Link to="/exam"
             className="w-full block bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 text-center">
             Take a Mock Exam
           </Link>
@@ -50,7 +50,7 @@ export function ExamCard({ averageScore, dark }: { averageScore: number; dark: b
           <p className={`text-xs ${dark ? "text-gray-500" : "text-gray-400"} mt-1 mb-4`}>
             Practice with TCF or TEF full-length mock exams
           </p>
-          <Link to={"/exam" as any}
+          <Link to="/exam"
             className="w-full block bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 text-center">
             Start Simulator
           </Link>
