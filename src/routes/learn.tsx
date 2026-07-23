@@ -50,8 +50,8 @@ function LearnPage() {
   const pageBg = dark ? "bg-[#070B17] text-white" : "bg-gray-50 text-gray-900";
   const cardBg = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200";
   const cardHover = dark ? "hover:border-purple-500/50 hover:shadow-purple-500/5" : "hover:border-purple-400 hover:shadow-purple-200/50";
-  const textSec = dark ? "text-gray-400" : "text-gray-500";
-  const textMuted = dark ? "text-gray-500" : "text-gray-400";
+  const textSec = dark ? "text-gray-400" : "text-gray-700";
+  const textMuted = dark ? "text-gray-500" : "text-gray-600";
   const border = dark ? "border-[#1e2a4a]" : "border-gray-200";
   const mutedBg = dark ? "bg-[#0a0e1a]/60" : "bg-gray-100/60";
   const mutedBorder = dark ? "border-[#1a1f35]" : "border-gray-200";

@@ -138,12 +138,12 @@ export function DailyChallenge({ dark }: { dark: boolean }) {
             </div>
             {!showHint ? (
               <button onClick={() => setShowHint(true)}
-                className="mt-2 text-xs text-purple-400 hover:text-purple-300 font-semibold transition-colors">
+                className={`mt-2 text-xs font-semibold transition-colors ${dark ? "text-purple-400 hover:text-purple-300" : "text-purple-600 hover:text-purple-700"}`}>
                 Need a hint?
               </button>
             ) : (
               <motion.p initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}
-                className={`text-xs mt-2 ${dark ? "text-gray-500" : "text-gray-400"} italic`}>
+                className={`text-xs mt-2 ${dark ? "text-gray-400" : "text-gray-600"} italic`}>
                 💡 {challenge.hint}
               </motion.p>
             )}
@@ -155,19 +155,19 @@ export function DailyChallenge({ dark }: { dark: boolean }) {
               : dark ? "bg-red-500/10 border-red-500/20" : "bg-red-50 border-red-200"
             } rounded-xl p-3 border`}>
               <div className="flex items-center gap-2">
-                {isCorrect ? <Check className="w-4 h-4 text-emerald-400" /> : <RotateCcw className="w-4 h-4 text-red-400" />}
-                <p className={`text-sm font-semibold ${isCorrect ? "text-emerald-400" : "text-red-400"}`}>
+                {isCorrect ? <Check className={`w-4 h-4 ${dark ? "text-emerald-400" : "text-emerald-600"}`} /> : <RotateCcw className={`w-4 h-4 ${dark ? "text-red-400" : "text-red-600"}`} />}
+                <p className={`text-sm font-semibold ${isCorrect ? (dark ? "text-emerald-400" : "text-emerald-800") : (dark ? "text-red-400" : "text-red-800")}`}>
                   {isCorrect ? "Correct!" : "Not quite"}
                 </p>
               </div>
               {!isCorrect && (
-                <p className={`text-xs mt-1 ${dark ? "text-gray-400" : "text-gray-500"}`}>
+                <p className={`text-xs mt-1 ${dark ? "text-gray-400" : "text-gray-600"}`}>
                   Answer: <span className={`font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{challenge.a}</span>
                 </p>
               )}
             </div>
             <button onClick={reset}
-              className="mt-2 text-xs text-purple-400 hover:text-purple-300 font-semibold transition-colors flex items-center gap-1">
+              className={`mt-2 text-xs font-semibold transition-colors flex items-center gap-1 ${dark ? "text-purple-400 hover:text-purple-300" : "text-purple-600 hover:text-purple-700"}`}>
               <RotateCcw className="w-3 h-3" /> Try another
             </button>
           </motion.div>
