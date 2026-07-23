@@ -63,11 +63,11 @@ export function LandingPage() {
   ];
 
   return (
-    <div className={`min-h-screen font-sans selection:bg-purple-500 selection:text-white transition-colors duration-300 ${
+    <div className={`min-h-screen w-full max-w-[100vw] overflow-x-hidden relative font-sans selection:bg-purple-500 selection:text-white transition-colors duration-300 ${
       isDarkMode ? "bg-slate-950 text-slate-100 dark" : "bg-slate-50 text-slate-900"
     }`}>
       {/* Background ambient lighting */}
-      <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] rounded-full blur-[140px] pointer-events-none ${
+      <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1000px] h-[600px] rounded-full blur-[140px] pointer-events-none ${
         isDarkMode ? "bg-gradient-to-tr from-purple-600/20 via-indigo-500/10 to-blue-600/20" : "bg-gradient-to-tr from-purple-300/30 via-indigo-200/20 to-blue-300/30"
       }`} />
 

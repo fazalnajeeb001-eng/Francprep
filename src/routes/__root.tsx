@@ -48,7 +48,11 @@ class ErrorBoundary extends Component<
 
 export const Route = createRootRoute({
   head: () => ({
-    meta: [{ charSet: "utf-8" }, { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" }, { title: "FrancPrep - TCF/TEF Exam Prep & French Coaching" }],
+    meta: [
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover" },
+      { title: "FrancPrep - TCF/TEF Exam Prep & French Coaching" }
+    ],
     links: [{ rel: "stylesheet", href: appCss }],
   }),
   notFoundComponent: () => (
