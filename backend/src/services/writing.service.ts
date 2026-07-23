@@ -1,4 +1,5 @@
 import { env } from '../config/env';
+import Settings from '../models/Settings';
 
 interface FeedbackResult {
   feedback: string;
@@ -29,14 +30,26 @@ interface SpeakingChatResult {
 }
 
 export class WritingService {
+  private async getOpenRouterKey(): Promise<string> {
+    try {
+      const settings = await Settings.findOne();
+      if (settings?.openRouterApiKey) {
+        return settings.openRouterApiKey;
+      }
+    } catch (e) {
+      console.warn('Could not read Settings model for OpenRouter key:', e);
+    }
+    return env.openRouterKey || process.env.OPENROUTER_API_KEY || '';
+  }
+
   async getFeedback(text: string, lessonTitle?: string, expectedAnswer?: string, checklist?: string[]): Promise<FeedbackResult> {
-    const apiKey = env.openRouterKey;
+    const apiKey = await this.getOpenRouterKey();
     if (!apiKey) {
       return {
-        feedback: 'AI feedback is not configured. Please set up OpenRouter.',
+        feedback: 'AI feedback is not configured. Please set up OpenRouter API Key in Admin Settings or Environment variables.',
         score: 0,
         corrections: [],
-        tips: ['Set OPENROUTER_API_KEY in your environment to enable AI feedback.'],
+        tips: ['Set OPENROUTER_API_KEY in your environment or Admin Settings to enable AI feedback.'],
       };
     }
 
@@ -134,7 +147,7 @@ Respond in JSON format:
   }
 
   async checkGrammar(prompt: string, answer: string, expectedAnswer?: string): Promise<GrammarCheckResult> {
-    const apiKey = env.openRouterKey;
+    const apiKey = await this.getOpenRouterKey();
     if (!apiKey) {
       const isCorrect = expectedAnswer ? answer.trim().toLowerCase() === expectedAnswer.trim().toLowerCase() : false;
       return { correct: isCorrect, feedback: 'AI not configured. Falling back to exact match.', expectedAnswer };
@@ -194,7 +207,7 @@ Respond with ONLY a JSON object:
   }
 
   async analyzeSpeaking(transcription: string, expectedText: string, lessonTitle?: string): Promise<SpeakingResult> {
-    const apiKey = env.openRouterKey;
+    const apiKey = await this.getOpenRouterKey();
     if (!apiKey) {
       return {
         transcription,
@@ -203,7 +216,7 @@ Respond with ONLY a JSON object:
         accuracy: 0,
         fluency: 0,
         corrections: [],
-        tips: ['Set OPENROUTER_API_KEY to enable AI feedback.'],
+        tips: ['Set OPENROUTER_API_KEY in environment or Admin Settings to enable AI feedback.'],
       };
     }
 
@@ -308,7 +321,7 @@ Respond in JSON format:
   }
 
   async chatWithTutor(messages: { role: string; content: string }[], lessonLevel?: string, lessonTopic?: string): Promise<SpeakingChatResult> {
-    const apiKey = env.openRouterKey;
+    const apiKey = await this.getOpenRouterKey();
     if (!apiKey) {
       return { reply: 'AI service not configured. Please set OPENROUTER_API_KEY.', model: '' };
     }
