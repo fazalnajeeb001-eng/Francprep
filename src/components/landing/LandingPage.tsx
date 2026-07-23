@@ -21,6 +21,7 @@ import { InteractiveHeroDemo } from "./InteractiveHeroDemo";
 import { CEFRRoadmap } from "./CEFRRoadmap";
 import { GatedProgression } from "./GatedProgression";
 import { PRPointsCalculator } from "./PRPointsCalculator";
+import { AvatarCoachesSection } from "./AvatarCoachesSection";
 
 // Central Brand Configuration - Change here anytime!
 export const BRAND_CONFIG = {
@@ -188,6 +189,11 @@ export function LandingPage() {
             <InteractiveHeroDemo />
           </div>
         </div>
+      </section>
+
+      {/* 4 CORE SKILLS & 3D AI AVATARS SECTION */}
+      <section className="py-24 max-w-7xl mx-auto px-6 border-t border-white/5" id="coaches">
+        <AvatarCoachesSection />
       </section>
 
       {/* 436 LESSON ROADMAP SECTION */}

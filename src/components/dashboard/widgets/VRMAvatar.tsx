@@ -416,6 +416,31 @@ function VRMModel({
       if (bones.spine) { const rp2 = rp.spine || bones.spine.rotation; bones.spine.rotation.x = rp2.x + Math.sin(t * 4) * 0.04; bones.spine.rotation.z = rp2.z + Math.sin(t * 3) * 0.02; }
       if (bones.hips) { const rp2 = rp.hips || bones.hips.rotation; bones.hips.rotation.y = rp2.y + Math.sin(t * 4) * 0.05; }
 
+    } else if (animate === "speak") {
+      const speakTempo = t * 10;
+      const mouthOpen = Math.abs(Math.sin(speakTempo)) * 0.08;
+      const headNod = Math.sin(t * 3) * 0.03;
+      const headTilt = Math.sin(t * 1.5) * 0.02;
+
+      g.position.y = Math.sin(t * 2) * 0.004;
+
+      if (bones.head) {
+        const rp2 = rp.head || bones.head.rotation;
+        bones.head.rotation.x = rp2.x + headNod + mouthOpen * 0.2;
+        bones.head.rotation.y = rp2.y + headTilt;
+        bones.head.rotation.z = rp2.z + Math.sin(t * 2.5) * 0.015;
+      }
+      if (bones.leftArm) {
+        const rp2 = rp.leftArm || bones.leftArm.rotation;
+        bones.leftArm.rotation.z = rp2.z + 0.15 + Math.sin(t * 2) * 0.04;
+        bones.leftArm.rotation.x = rp2.x - 0.1 + Math.sin(t * 1.8) * 0.03;
+      }
+      if (bones.rightArm) {
+        const rp2 = rp.rightArm || bones.rightArm.rotation;
+        bones.rightArm.rotation.z = rp2.z - 0.15 - Math.sin(t * 2.2) * 0.04;
+        bones.rightArm.rotation.x = rp2.x - 0.1 + Math.sin(t * 1.5) * 0.03;
+      }
+
     } else if (animate === "chapterComplete") {
       const walkDur = 1.5;
       const stopDur = 0.5;
