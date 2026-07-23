@@ -207,8 +207,8 @@ function MatchingQuestion({ q, qId, dark, submitted, setAnswer }: {
                 {isMatched ? (
                   <div className={`text-xs px-2.5 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 ${
                     isCorrect
-                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
-                      : "bg-red-500/20 text-red-300 border border-red-500/40"
+                      ? dark ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40" : "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                      : dark ? "bg-red-500/20 text-red-300 border border-red-500/40" : "bg-red-100 text-red-800 border border-red-300"
                   }`}>
                     <span>→ {shuffledRight[matchedRightIdx]}</span>
                   </div>
@@ -216,7 +216,7 @@ function MatchingQuestion({ q, qId, dark, submitted, setAnswer }: {
                   <div className={`text-[11px] border border-dashed rounded-lg px-2 py-1 text-center italic ${
                     isHovered
                       ? "border-purple-400 text-purple-300 bg-purple-500/10"
-                      : dark ? "border-gray-700 text-gray-500" : "border-gray-300 text-gray-400"
+                      : dark ? "border-gray-700 text-gray-500" : "border-gray-300 text-gray-500"
                   }`}>
                     {selectedLeft === i ? "Selected — now click target answer on right" : "Drop matching answer here"}
                   </div>
@@ -228,7 +228,7 @@ function MatchingQuestion({ q, qId, dark, submitted, setAnswer }: {
 
         {/* Right Column: Shuffled Target Answers (Draggable Cards) */}
         <div className="space-y-2">
-          <span className={`text-xs font-semibold uppercase tracking-wider block ${dark ? "text-gray-400" : "text-gray-500"}`}>Target Answers (Drag or Click)</span>
+          <span className={`text-xs font-semibold uppercase tracking-wider block ${dark ? "text-gray-400" : "text-gray-600"}`}>Target Answers (Drag or Click)</span>
           {shuffledRight.map((right, i) => {
             const isMatched = matchedRightIndices.has(i);
             const matchedLeftIdx = Number(Object.entries(matches).find(([_, v]) => v === i)?.[0] ?? -1);
@@ -243,11 +243,11 @@ function MatchingQuestion({ q, qId, dark, submitted, setAnswer }: {
                 className={`p-3 rounded-xl border text-xs select-none transition-all ${
                   isMatched
                     ? isCorrect
-                      ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-400/60 opacity-60 cursor-not-allowed"
-                      : "bg-red-500/10 border-red-500/40 text-red-400/60 opacity-60 cursor-not-allowed"
+                      ? dark ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-400/60 opacity-60 cursor-not-allowed" : "bg-emerald-50 border-emerald-300 text-emerald-700 opacity-60 cursor-not-allowed"
+                      : dark ? "bg-red-500/10 border-red-500/40 text-red-400/60 opacity-60 cursor-not-allowed" : "bg-red-50 border-red-300 text-red-700 opacity-60 cursor-not-allowed"
                     : dark
                     ? "bg-[#0c1222] text-gray-200 border-[#1e2a4a] hover:border-purple-500/60 hover:bg-purple-500/10 cursor-grab active:cursor-grabbing shadow-sm"
-                    : "bg-white text-gray-800 border-gray-200 hover:border-purple-400 hover:bg-purple-50/50 cursor-grab active:cursor-grabbing shadow-sm"
+                    : "bg-white text-gray-900 border-gray-200 hover:border-purple-400 hover:bg-purple-50/50 cursor-grab active:cursor-grabbing shadow-sm"
                 }`}
               >
                 <div className="flex items-center justify-between">
@@ -273,7 +273,7 @@ function MatchingQuestion({ q, qId, dark, submitted, setAnswer }: {
         <button
           type="button"
           onClick={() => setShowKey(!showKey)}
-          className="text-xs text-purple-400 hover:text-purple-300 font-semibold underline"
+          className="text-xs text-purple-600 dark:text-purple-400 hover:underline font-semibold"
         >
           {showKey ? "Hide" : "Show"} Answer Key
         </button>
@@ -281,7 +281,7 @@ function MatchingQuestion({ q, qId, dark, submitted, setAnswer }: {
           <button
             type="button"
             onClick={() => { setMatches({}); setSelectedLeft(null); }}
-            className="text-xs text-gray-400 hover:text-gray-300 font-semibold underline"
+            className="text-xs text-gray-500 dark:text-gray-400 hover:underline font-semibold"
           >
             Reset Matches
           </button>
@@ -290,10 +290,10 @@ function MatchingQuestion({ q, qId, dark, submitted, setAnswer }: {
 
       {showKey && (
         <div className={`${dark ? "bg-emerald-500/10 border-emerald-500/30" : "bg-emerald-50 border-emerald-200"} rounded-xl p-3 border mt-2 space-y-1`}>
-          <p className="text-xs font-semibold text-emerald-400 mb-1">Expected Match Key:</p>
+          <p className={`text-xs font-semibold ${dark ? "text-emerald-400" : "text-emerald-800"} mb-1`}>Expected Match Key:</p>
           {leftItems.map((left, i) => (
             <p key={i} className={`text-xs ${dark ? "text-gray-300" : "text-gray-700"}`}>
-              • <strong className="text-emerald-400">{left}</strong> ↔ {pairs[left]}
+              • <strong className={dark ? "text-emerald-400" : "text-emerald-800"}>{left}</strong> ↔ {pairs[left]}
             </p>
           ))}
         </div>
@@ -702,16 +702,16 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
               disabled={submitted}
               className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${
                 resultForQ
-                  ? isCorrect ? "border-emerald-500 bg-emerald-500/20 text-emerald-300 font-medium"
-                  : isWrong ? "border-red-500 bg-red-500/20 text-red-300"
-                  : showCorrect ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-medium"
-                  : dark ? "border-[#1e2a4a] text-gray-500" : "border-gray-200 text-gray-400"
+                  ? isCorrect ? dark ? "border-emerald-500 bg-emerald-500/20 text-emerald-300 font-medium" : "border-emerald-500 bg-emerald-100 text-emerald-900 font-semibold"
+                  : isWrong ? dark ? "border-red-500 bg-red-500/20 text-red-300" : "border-red-500 bg-red-100 text-red-900 font-semibold"
+                  : showCorrect ? dark ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-medium" : "border-emerald-500/50 bg-emerald-50 text-emerald-800 font-semibold"
+                  : dark ? "border-[#1e2a4a] text-gray-500" : "border-gray-200 text-gray-500"
                   : isSelected
-                  ? dark ? "border-purple-500 bg-purple-500/20 text-purple-300 ring-1 ring-purple-500/40" : "border-purple-400 bg-purple-50 text-purple-700 ring-1 ring-purple-400/40"
-                  : dark ? "border-[#1e2a4a] text-gray-300 hover:border-purple-500/50" : "border-gray-200 text-gray-700 hover:border-gray-300"
+                  ? dark ? "border-purple-500 bg-purple-500/20 text-purple-300 ring-1 ring-purple-500/40" : "border-purple-500 bg-purple-50 text-purple-900 font-semibold ring-1 ring-purple-400/40"
+                  : dark ? "border-[#1e2a4a] text-gray-300 hover:border-purple-500/50" : "border-gray-200 text-gray-800 hover:border-purple-300 hover:bg-gray-50"
               }`}>
               <div className="flex items-center gap-2">
-                {resultForQ && (isCorrect ? <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" /> : isWrong ? <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" /> : showCorrect ? <CheckCircle2 className="w-4 h-4 text-emerald-400/50 flex-shrink-0" /> : null)}
+                {resultForQ && (isCorrect ? <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" /> : isWrong ? <XCircle className="w-4 h-4 text-red-500 flex-shrink-0" /> : showCorrect ? <CheckCircle2 className="w-4 h-4 text-emerald-500/60 flex-shrink-0" /> : null)}
                 {opt}
               </div>
             </button>
@@ -725,7 +725,7 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
   const renderFillBlank = (q: Question, qId: string) => {
     return (
       <div className="space-y-3">
-        <p className={`text-sm ${dark ? "text-gray-300" : "text-gray-600"}`}>{q.prompt || 'Fill in the blank:'}</p>
+        <p className={`text-sm ${dark ? "text-gray-300" : "text-gray-700"}`}>{q.prompt || 'Fill in the blank:'}</p>
         <input
           type="text"
           value={(userAnswer as string) || ''}
@@ -735,9 +735,9 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
           className={`w-full p-3 rounded-xl border text-sm transition-all ${
             resultForQ
               ? resultForQ?.correct
-                ? "border-emerald-500 bg-emerald-500/10 text-emerald-300"
-                : "border-red-500 bg-red-500/10 text-red-300"
-              : dark ? "border-[#1e2a4a] bg-[#0a0e1a] text-gray-200 focus:border-purple-500/50" : "border-gray-200 bg-white focus:border-purple-300"
+                ? dark ? "border-emerald-500 bg-emerald-500/10 text-emerald-300" : "border-emerald-500 bg-emerald-50 text-emerald-900 font-semibold"
+                : dark ? "border-red-500 bg-red-500/10 text-red-300" : "border-red-500 bg-red-50 text-red-900 font-semibold"
+              : dark ? "border-[#1e2a4a] bg-[#0a0e1a] text-gray-200 focus:border-purple-500/50" : "border-gray-300 bg-white text-gray-900 placeholder:text-gray-400 focus:border-purple-500"
           } outline-none`}
         />
       </div>
@@ -788,7 +788,7 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
 
     return (
       <div className="space-y-2">
-        <p className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"}`}>Drag or use arrows to reorder:</p>
+        <p className={`text-xs ${dark ? "text-gray-400" : "text-gray-600"}`}>Drag or use arrows to reorder:</p>
         {currentOrder.map((item, i) => (
           <div key={i}
             draggable={!submitted}
@@ -800,14 +800,14 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
               draggedIdx === i ? "opacity-40 scale-95 border-purple-500 bg-purple-500/10" : ""
             } ${
               submitted && resultForQ?.correct
-                ? "border-emerald-500/50 bg-emerald-500/10"
+                ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-800"
                 : submitted && !resultForQ?.correct
-                ? "border-red-500/50 bg-red-500/10"
-                : dark ? "border-[#1e2a4a] bg-[#0a0e1a] cursor-move hover:border-purple-500/30" : "border-gray-200 bg-white cursor-move hover:border-purple-300"
+                ? "border-red-500/50 bg-red-500/10 text-red-800"
+                : dark ? "border-[#1e2a4a] bg-[#0a0e1a] text-gray-200 cursor-move hover:border-purple-500/30" : "border-gray-200 bg-white text-gray-900 cursor-move hover:border-purple-300"
             }`}
           >
             <GripVertical className={`w-4 h-4 flex-shrink-0 ${dark ? "text-gray-500" : "text-gray-400"}`} />
-            <span className={`flex-1 text-sm ${dark ? "text-gray-300" : "text-gray-700"}`}>{item}</span>
+            <span className={`flex-1 text-sm ${dark ? "text-gray-300" : "text-gray-800"}`}>{item}</span>
             <div className="flex gap-1">
               <button onClick={() => moveItem(i, i - 1)} disabled={i === 0 || submitted}
                 className={`p-1 rounded ${dark ? "hover:bg-white/10" : "hover:bg-gray-100"} disabled:opacity-30`}>
@@ -821,7 +821,7 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
           </div>
         ))}
         {submitted && !resultForQ?.correct && q.correctOrder && (
-          <p className={`text-xs ${dark ? "text-emerald-400" : "text-emerald-600"}`}>
+          <p className={`text-xs ${dark ? "text-emerald-400" : "text-emerald-700 font-semibold"}`}>
             Correct order: {q.correctOrder.join(' → ')}
           </p>
         )}
@@ -841,9 +841,9 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
           className={`w-full h-24 p-3 rounded-xl border text-sm resize-none outline-none transition-all ${
             resultForQ
               ? resultForQ?.correct
-                ? "border-emerald-500 bg-emerald-500/10 text-emerald-300"
-                : "border-red-500 bg-red-500/10 text-red-300"
-              : dark ? "border-[#1e2a4a] bg-[#0a0e1a] text-gray-200 focus:border-purple-500/50" : "border-gray-200 bg-white focus:border-purple-300"
+                ? dark ? "border-emerald-500 bg-emerald-500/10 text-emerald-300" : "border-emerald-500 bg-emerald-50 text-emerald-900 font-semibold"
+                : dark ? "border-red-500 bg-red-500/10 text-red-300" : "border-red-500 bg-red-50 text-red-900 font-semibold"
+              : dark ? "border-[#1e2a4a] bg-[#0a0e1a] text-gray-200 focus:border-purple-500/50" : "border-gray-300 bg-white text-gray-900 placeholder:text-gray-400 focus:border-purple-500"
           }`}
         />
       </div>
