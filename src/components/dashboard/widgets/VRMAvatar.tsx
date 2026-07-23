@@ -21,16 +21,15 @@ interface VRMAvatarProps {
   };
 }
 
-/* ─── Camera: frames avatar only ─── */
+/* ─── Camera: frames upper torso and head for 3D AI Coach ─── */
 function CameraController({ modelCenterY, modelHeight }: { modelCenterY: number; modelHeight: number }) {
   const { camera } = useThree();
   useEffect(() => {
-    const halfH = modelHeight / 2;
-    const fov = 36;
-    const fovRad = (fov / 2) * (Math.PI / 180);
-    const neededZ = halfH / Math.tan(fovRad) * 1.3;
-    camera.position.set(0, modelCenterY, Math.max(neededZ, 2.8));
-    camera.lookAt(0, modelCenterY * 0.7, 0);
+    // Focus camera on head and upper chest for clean AI avatar coach presentation
+    const portraitCenterY = modelHeight * 0.72;
+    const fov = 32;
+    camera.position.set(0, portraitCenterY, 1.25);
+    camera.lookAt(0, portraitCenterY - 0.05, 0);
     (camera as THREE.PerspectiveCamera).fov = fov;
     (camera as THREE.PerspectiveCamera).updateProjectionMatrix();
   }, [camera, modelCenterY, modelHeight]);
@@ -214,107 +213,30 @@ function VRMModel({
     const animT = t - animStartRef.current;
 
     if (animate === "idle") {
-      const wanderCycle = 10;
-      const wanderPhase = t % wanderCycle;
-      const isWalking = wanderPhase < 4.5;
-      const walkRaw = isWalking
-        ? Math.min(wanderPhase, 4.5 - wanderPhase)
-        : 0;
-      const walkBlend = smoothStep(0, 0.7, walkRaw);
+      // Natural grounded AI Coach posture (no floaty walking/drifting)
+      const breathe = Math.sin(t * 1.4) * 0.002;
+      g.position.x = 0;
+      g.position.z = 0;
+      g.position.y = breathe;
 
-      const walkFreq = 1.8;
-      const stride = Math.sin(t * walkFreq) * walkBlend;
-
-      const driftX = Math.sin(t * 0.28) * 0.05 * walkBlend;
-      const driftZ = Math.sin(t * 0.56) * 0.025 * walkBlend;
-      g.position.x = driftX;
-      g.position.z = driftZ;
-
-      const walkBounce = Math.abs(Math.sin(t * walkFreq)) * 0.018 * walkBlend;
-      const breathe = Math.sin(t * 1.05) * 0.003;
-      g.position.y = walkBounce + breathe;
-
-      const walkAngle = Math.atan2(
-        Math.cos(t * 0.28) * 0.28,
-        Math.cos(t * 0.56) * 0.56
-      );
-      g.rotation.y = walkBlend > 0.01
-        ? walkAngle * 0.2 * walkBlend
-        : noise.v2 * 0.3;
-      g.rotation.z = noise.v3 * 0.08;
-
-      g.scale.y = 1 + breathe * 0.4;
-      g.scale.x = 1 - breathe * 0.1;
-
-      if (bones.hips) {
-        const rp2 = rp.hips || bones.hips.rotation;
-        bones.hips.rotation.y = rp2.y + stride * 0.06 + noise.v1 * 0.01;
-        bones.hips.rotation.z = rp2.z + Math.sin(t * walkFreq) * 0.012 * walkBlend;
-        bones.hips.rotation.x = rp2.x + Math.cos(t * walkFreq) * 0.006 * walkBlend;
-      }
+      g.rotation.x = 0;
+      g.rotation.y = Math.sin(t * 0.4) * 0.02;
+      g.rotation.z = 0;
 
       if (bones.spine) {
         const rp2 = rp.spine || bones.spine.rotation;
-        bones.spine.rotation.y = rp2.y - stride * 0.035;
-        bones.spine.rotation.z = rp2.z + Math.sin(t * walkFreq + 1.5) * 0.008 * walkBlend;
-        bones.spine.rotation.x = rp2.x + breathe * 0.35;
-      }
-
-      if (bones.leftUpLeg) {
-        const rp2 = rp.leftUpLeg || bones.leftUpLeg.rotation;
-        bones.leftUpLeg.rotation.x = rp2.x + stride * 0.22;
-      }
-      if (bones.rightUpLeg) {
-        const rp2 = rp.rightUpLeg || bones.rightUpLeg.rotation;
-        bones.rightUpLeg.rotation.x = rp2.x - stride * 0.22;
-      }
-      if (bones.leftLeg) {
-        const rp2 = rp.leftLeg || bones.leftLeg.rotation;
-        bones.leftLeg.rotation.x = rp2.x - Math.max(0, stride) * 0.28 * walkBlend;
-      }
-      if (bones.rightLeg) {
-        const rp2 = rp.rightLeg || bones.rightLeg.rotation;
-        bones.rightLeg.rotation.x = rp2.x - Math.max(0, -stride) * 0.28 * walkBlend;
-      }
-
-      if (bones.leftArm) {
-        const rp2 = rp.leftArm || bones.leftArm.rotation;
-        bones.leftArm.rotation.x = rp2.x - stride * 0.2;
-        bones.leftArm.rotation.z = rp2.z + 0.05 + Math.abs(stride) * 0.015 * walkBlend;
-      }
-      if (bones.leftForearm) {
-        const rp2 = rp.leftForearm || bones.leftForearm.rotation;
-        bones.leftForearm.rotation.x = rp2.x - 0.05 - Math.max(0, stride) * 0.1 * walkBlend;
-      }
-      if (bones.rightArm) {
-        const rp2 = rp.rightArm || bones.rightArm.rotation;
-        bones.rightArm.rotation.x = rp2.x + stride * 0.2;
-        bones.rightArm.rotation.z = rp2.z - 0.05 - Math.abs(stride) * 0.015 * walkBlend;
-      }
-      if (bones.rightForearm) {
-        const rp2 = rp.rightForearm || bones.rightForearm.rotation;
-        bones.rightForearm.rotation.x = rp2.x - 0.05 - Math.max(0, -stride) * 0.1 * walkBlend;
+        bones.spine.rotation.x = rp2.x + breathe * 0.2;
+        bones.spine.rotation.y = rp2.y;
+        bones.spine.rotation.z = rp2.z;
       }
 
       if (bones.head) {
         const rp2 = rp.head || bones.head.rotation;
-        const headStabilize = -Math.sin(t * walkFreq) * 0.015 * walkBlend;
-        const idleLookY = noise.v1 * 0.25 + Math.sin(t * 0.13) * 0.03;
-        const idleLookX = noise.v2 * 0.15 + Math.sin(t * 0.09 + 0.5) * 0.02;
-        const glancePhase = t % 6.3;
-        const glance = glancePhase < 0.35
-          ? Math.sin(glancePhase * 9) * 0.07 * smoothStep(0, 0.12, glancePhase) * (1 - smoothStep(0.22, 0.35, glancePhase))
-          : 0;
-
-        bones.head.rotation.x = rp2.x + idleLookX + headStabilize;
-        bones.head.rotation.y = rp2.y + idleLookY + glance;
-        bones.head.rotation.z = rp2.z + noise.v3 * 0.06;
-      }
-
-      if (bones.neck) {
-        const rp2 = rp.neck || bones.neck.rotation;
-        bones.neck.rotation.x = rp2.x + noise.v2 * 0.06;
-        bones.neck.rotation.z = rp2.z + noise.v3 * 0.04;
+        const subtleNod = Math.sin(t * 1.2) * 0.02;
+        const subtleLook = Math.sin(t * 0.6) * 0.025;
+        bones.head.rotation.x = rp2.x + subtleNod;
+        bones.head.rotation.y = rp2.y + subtleLook;
+        bones.head.rotation.z = rp2.z;
       }
 
     } else if (animate === "wave") {
