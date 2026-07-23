@@ -854,15 +854,15 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
               {!resultForQ.correct && !submitted && (
                 <div className="mt-2.5 pt-2 border-t dark:border-red-500/20 border-red-200/60 flex flex-col items-start gap-1">
                   <p className={`text-xs ${dark ? "text-red-400" : "text-red-500"}`}>Attempts: {questionAttempts[qId] || 0} / 3</p>
-                  {(questionAttempts[qId] || 0) >= 3 && !revealedAnswers[qId] && q.correctAnswer && (
+                  {(questionAttempts[qId] || 0) >= 3 && !revealedAnswers[qId] && (
                     <button onClick={() => setRevealedAnswers(prev => ({ ...prev, [qId]: true }))}
                       className="text-xs text-purple-400 hover:text-purple-300 font-semibold underline mt-1">
-                      Show Official Model Answer Key
+                      Reveal Explanation & Correct Answer
                     </button>
                   )}
-                  {revealedAnswers[qId] && q.correctAnswer && (
+                  {revealedAnswers[qId] && (
                     <p className={`text-xs font-medium mt-1 ${dark ? "text-purple-300" : "text-purple-700"}`}>
-                      Model Answer: <span className="font-bold">{Array.isArray(q.correctAnswer) ? q.correctAnswer.join(" / ") : String(q.correctAnswer)}</span>
+                      Model Answer: <span className="font-bold">{q.correctAnswer ? (Array.isArray(q.correctAnswer) ? q.correctAnswer.join(" / ") : String(q.correctAnswer)) : "See AI Explanation above"}</span>
                     </p>
                   )}
                 </div>
