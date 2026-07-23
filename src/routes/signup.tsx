@@ -19,7 +19,7 @@ function SignupPage() {
     if (password !== confirm) { setError("Passwords do not match"); return; }
     if (!allPass) { setError("Password must meet requirements"); return; }
     setLoading(true);
-    try { await signup({ firstName, lastName, email, password }); navigate({ to: "/dashboard" }); }
+    try { await signup({ firstName, lastName, email, password }); navigate({ to: "/onboarding" }); }
     catch (err: any) { const d = err?.response?.data; setError(d?.details ? d.details.map((x: any) => x.message).join(". ") : d?.error || err?.message || "Signup failed"); }
     finally { setLoading(false); }
   };
