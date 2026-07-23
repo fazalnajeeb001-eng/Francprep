@@ -40,24 +40,15 @@ function CameraController({ modelCenterY, modelHeight }: { modelCenterY: number;
 function findBones(scene: THREE.Group) {
   const bones: Record<string, THREE.Object3D> = {};
   const keywords: Record<string, string[]> = {
-    head: ["mixamorig:Head", "mixamorigHead", "Head"],
-    spine: ["mixamorig:Spine", "mixamorigSpine", "Spine"],
-    spine1: ["mixamorig:Spine1", "mixamorigSpine1"],
-    spine2: ["mixamorig:Spine2", "mixamorigSpine2"],
-    leftArm: ["mixamorig:LeftArm", "mixamorigLeftArm", "LeftArm"],
-    rightArm: ["mixamorig:RightArm", "mixamorigRightArm", "RightArm"],
-    leftForearm: ["mixamorig:LeftForeArm", "mixamorigLeftForeArm", "LeftForeArm"],
-    rightForearm: ["mixamorig:RightForeArm", "mixamorigRightForeArm", "RightForeArm"],
-    leftHand: ["mixamorig:LeftHand", "mixamorigLeftHand"],
-    rightHand: ["mixamorig:RightHand", "mixamorigRightHand"],
-    hips: ["mixamorig:Hips", "mixamorigHips", "Hips"],
-    leftUpLeg: ["mixamorig:LeftUpLeg", "mixamorigLeftUpLeg"],
-    rightUpLeg: ["mixamorig:RightUpLeg", "mixamorigRightUpLeg"],
-    leftLeg: ["mixamorig:LeftLeg", "mixamorigLeftLeg"],
-    rightLeg: ["mixamorig:RightLeg", "mixamorigRightLeg"],
-    leftFoot: ["mixamorig:LeftFoot", "mixamorigLeftFoot"],
-    rightFoot: ["mixamorig:RightFoot", "mixamorigRightFoot"],
-    neck: ["mixamorig:Neck", "mixamorigNeck"],
+    head: ["mixamorig:Head", "mixamorigHead", "Head", "J_Bip_C_Head", "head", "HEAD"],
+    jaw: ["mixamorig:Jaw", "mixamorigJaw", "Jaw", "J_Bip_C_Jaw", "jaw", "JAW"],
+    neck: ["mixamorig:Neck", "mixamorigNeck", "Neck", "J_Bip_C_Neck", "neck"],
+    spine: ["mixamorig:Spine", "mixamorigSpine", "Spine", "J_Bip_C_Spine", "spine"],
+    leftArm: ["mixamorig:LeftArm", "mixamorigLeftArm", "LeftArm", "J_Bip_L_UpperArm", "leftArm"],
+    rightArm: ["mixamorig:RightArm", "mixamorigRightArm", "RightArm", "J_Bip_R_UpperArm", "rightArm"],
+    leftForearm: ["mixamorig:LeftForeArm", "mixamorigLeftForeArm", "LeftForeArm", "J_Bip_L_LowerArm"],
+    rightForearm: ["mixamorig:RightForeArm", "mixamorigRightForeArm", "RightForeArm", "J_Bip_R_LowerArm"],
+    hips: ["mixamorig:Hips", "mixamorigHips", "Hips", "J_Bip_C_Hips", "hips"],
   };
   scene.traverse((child) => {
     for (const [key, names] of Object.entries(keywords)) {

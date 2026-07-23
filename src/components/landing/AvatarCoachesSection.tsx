@@ -5,16 +5,35 @@ import { SmartAvatar } from "../dashboard/widgets/SmartAvatar";
 
 export function AvatarCoachesSection() {
   const [selectedAvatar, setSelectedAvatar] = useState<"male" | "female">("male");
+  const [selectedLevel, setSelectedLevel] = useState<"A1" | "B2" | "C2">("A1");
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [speechText, setSpeechText] = useState("Bonjour ! Bienvenue sur FrancPrep. Ensemble, nous allons maîtriser le français !");
+
+  const levelSpeeches = {
+    A1: {
+      text: "Bonjour ! Je m'appelle Coach Leo. Bienvenue au niveau débutant A1. Comment allez-vous ?",
+      rate: 0.75,
+      label: "A1 Beginner Pace (Clear & Deliberate)",
+    },
+    B2: {
+      text: "Bonjour ! En niveau B2, nous nous préparons intensément aux épreuves d'expression et de compréhension du TCF et TEF Canada.",
+      rate: 0.9,
+      label: "B2 Exam Pace (TCF/TEF Standard)",
+    },
+    C2: {
+      text: "En niveau C2, nous analysons les nuances de la langue française, la rhétorique et les débats philosophiques avec une fluidité totale.",
+      rate: 1.0,
+      label: "C2 Native Pace (Full Fluency)",
+    },
+  };
 
   const handleSpeakDemo = () => {
     if (!window.speechSynthesis) return;
 
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(speechText);
+    const currentConfig = levelSpeeches[selectedLevel];
+    const utterance = new SpeechSynthesisUtterance(currentConfig.text);
     utterance.lang = "fr-FR";
-    utterance.rate = 0.9;
+    utterance.rate = currentConfig.rate;
 
     utterance.onstart = () => setIsSpeaking(true);
     utterance.onend = () => setIsSpeaking(false);
@@ -112,40 +131,63 @@ export function AvatarCoachesSection() {
               Instead of static text, every lesson features 3D VRM avatars that speak in native French accents, animate their expressions, and guide your speaking drills based on the current lesson level.
             </p>
 
-            {/* Avatar Switcher */}
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="text-xs font-bold text-slate-300">Choose Coach:</span>
-              <button
-                onClick={() => setSelectedAvatar("male")}
-                className={`px-4 py-2.5 text-xs font-bold rounded-xl border transition-all active:scale-95 touch-manipulation ${
-                  selectedAvatar === "male"
-                    ? "border-purple-500 bg-purple-600 text-white shadow-md shadow-purple-500/30"
-                    : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10"
-                }`}
-              >
-                Coach Leo (Male 3D)
-              </button>
-              <button
-                onClick={() => setSelectedAvatar("female")}
-                className={`px-4 py-2.5 text-xs font-bold rounded-xl border transition-all active:scale-95 touch-manipulation ${
-                  selectedAvatar === "female"
-                    ? "border-purple-500 bg-purple-600 text-white shadow-md shadow-purple-500/30"
-                    : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10"
-                }`}
-              >
-                Coach Camille (Female 3D)
-              </button>
+            {/* Avatar & Level Switcher */}
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="text-xs font-bold text-slate-300">Choose Coach:</span>
+                <button
+                  onClick={() => setSelectedAvatar("male")}
+                  className={`px-4 py-2.5 text-xs font-bold rounded-xl border transition-all active:scale-95 touch-manipulation ${
+                    selectedAvatar === "male"
+                      ? "border-purple-500 bg-purple-600 text-white shadow-md shadow-purple-500/30"
+                      : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10"
+                  }`}
+                >
+                  Coach Leo (Male 3D)
+                </button>
+                <button
+                  onClick={() => setSelectedAvatar("female")}
+                  className={`px-4 py-2.5 text-xs font-bold rounded-xl border transition-all active:scale-95 touch-manipulation ${
+                    selectedAvatar === "female"
+                      ? "border-purple-500 bg-purple-600 text-white shadow-md shadow-purple-500/30"
+                      : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10"
+                  }`}
+                >
+                  Coach Camille / Chloe (Female 3D)
+                </button>
+              </div>
+
+              {/* CEFR Level Speech Speed Toggle */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-bold text-slate-300">Speech Pace:</span>
+                {(["A1", "B2", "C2"] as const).map((lvl) => (
+                  <button
+                    key={lvl}
+                    onClick={() => setSelectedLevel(lvl)}
+                    className={`px-3 py-1.5 text-xs font-bold rounded-lg border transition-all ${
+                      selectedLevel === lvl
+                        ? "border-emerald-500 bg-emerald-500/20 text-emerald-300"
+                        : "border-white/10 bg-white/5 text-slate-400 hover:bg-white/10"
+                    }`}
+                  >
+                    {lvl} Level Pace
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Speaking Demo Action */}
-            <div className="pt-2">
+            <div className="pt-2 space-y-2">
               <button
                 onClick={handleSpeakDemo}
                 className="px-6 py-3.5 text-xs font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 rounded-xl transition-all shadow-lg shadow-purple-600/30 flex items-center gap-2"
               >
                 <Volume2 className={`w-4 h-4 ${isSpeaking ? "animate-bounce" : ""}`} />
-                <span>{isSpeaking ? "Coach Speaking..." : "Test 3D Avatar Live French Speech"}</span>
+                <span>{isSpeaking ? "Coach Speaking..." : `Test ${selectedLevel} Level Live Speech`}</span>
               </button>
+              <p className="text-[11px] text-purple-300 font-mono">
+                {levelSpeeches[selectedLevel].label}
+              </p>
             </div>
           </div>
 
