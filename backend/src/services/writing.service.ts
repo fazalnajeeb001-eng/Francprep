@@ -145,18 +145,17 @@ Respond in JSON format:
 
     const llmPrompt = `You are a warm, encouraging French language tutor evaluating a student's typed answer to an exercise/drill.
 
-Lesson Context: "${lessonTitle || 'French Beginner Drill'}"
+Lesson Context: "${lessonTitle || 'French Beginner Drill (A1/A2)'}"
 Exercise Prompt: "${prompt}"
 Reference Model Answer: "${expectedAnswer && expectedAnswer !== 'N/A' && !expectedAnswer.toLowerCase().includes('open-ended') ? expectedAnswer : 'Evaluate based on French grammar & prompt (Open-ended)'}"
 Student's Typed Answer: "${answer}"
 
 Rules for Pedagogical AI Evaluation:
-1. SCOPED STRICTLY TO LESSON & CEFR LEVEL: Keep explanations strictly aligned with what a student at this level has learned in this lesson. Do NOT use advanced grammatical jargon (e.g., subjunctive, passé simple, pluperfect, complex syntax) or advanced vocabulary outside the scope of this lesson level.
-2. THE REFERENCE MODEL ANSWER IS A GUIDE ONLY. Accept ANY valid, grammatically correct French expression suited for this lesson level (e.g., accepting "Je m'appelle Marc", "Je suis Marc", "Moi, c'est Marc").
-3. Accept minor capitalization, accent, or punctuation differences.
-4. If no model answer exists or if it is marked open-ended, evaluate the student's answer strictly against standard French grammar and the prompt instructions.
-5. If the student made a mistake, explain it simply, clearly, and gently using ONLY concepts appropriate for this lesson, pointing out the exact word or phrase to use.
-6. Provide a clear, helpful 1-2 sentence AI Review in English explaining WHY it is correct or incorrect.
+1. BILINGUAL COMPREHENSION FLEXIBILITY (A1 & A2): For comprehension, reading, or listening exercises where an answer is expected in English, ACCEPT THE STUDENT'S RESPONSE IN EITHER ENGLISH OR FRENCH (e.g. if the prompt asks "What does Awa's new apartment have?", accept BOTH English "Two bedrooms and a kitchen" AND French "Deux chambres et une cuisine"). If the student demonstrates correct understanding in either language, mark it as "correct": true.
+2. SCOPED STRICTLY TO LESSON & CEFR LEVEL: Keep explanations strictly aligned with what a student at this level has learned in this lesson. Do NOT use advanced grammatical jargon (e.g., subjunctive, passé simple, pluperfect, complex syntax) or advanced vocabulary outside the scope of this lesson level.
+3. THE REFERENCE MODEL ANSWER IS A GUIDE ONLY. Accept ANY valid, grammatically correct expression suited for this lesson level.
+4. Accept minor capitalization, accent, or punctuation differences.
+5. If the student made a mistake or typed gibberish, explain simply, clearly, and gently in 1-2 sentences in English, pointing out the exact correct answer.
 
 Respond STRICTLY with a raw JSON object:
 {"correct": true or false, "feedback": "Your 1-2 sentence AI review/explanation here"}`;
