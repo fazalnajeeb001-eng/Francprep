@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -274,13 +274,15 @@ export function ExamHubPage() {
                   </div>
                 </div>
 
-                <button
-                  onClick={() => handleLaunchPaper(paper.id)}
+                <Link
+                  to="/exam/$paperId"
+                  params={{ paperId: paper.id }}
+                  search={{ mode: selectedMode }}
                   className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-xl shadow-purple-600/25 flex items-center justify-center gap-2 shrink-0"
                 >
                   <Play className="w-4 h-4 fill-white" />
                   <span>Launch in {selectedMode === "EXAM" ? "Exam Mode" : "Practice Mode"}</span>
-                </button>
+                </Link>
               </div>
             ))}
           </div>
