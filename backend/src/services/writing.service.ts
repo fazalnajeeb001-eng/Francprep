@@ -1,5 +1,6 @@
 import { env } from '../config/env';
 import Settings from '../models/Settings';
+import { generateAICompletion } from './aiProvider';
 
 interface FeedbackResult {
   feedback: string;
@@ -87,48 +88,19 @@ Respond in JSON format:
 }`;
 
     try {
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-          'HTTP-Referer': env.frontendUrl,
-          'X-Title': 'FrancPrep',
-        },
-        body: JSON.stringify({
-          model: 'openai/gpt-4o-mini',
-          messages: [{ role: 'user', content: prompt }],
-          temperature: 0.3,
-          max_tokens: 800,
-        }),
+      const content = await generateAICompletion({
+        model: 'gpt-4o-mini',
+        prompt,
+        systemPrompt: "You are a French language tutor evaluating a student's writing exercise.",
+        temperature: 0.3,
+        maxTokens: 800,
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('OpenRouter API error:', response.status, errorText);
-        let msg = 'Unable to get AI feedback at this time.';
-        try {
-          const err = JSON.parse(errorText);
-          if (err.error?.message) msg += ' ' + err.error.message;
-        } catch {}
-        return {
-          feedback: msg,
-          score: 0,
-          corrections: [],
-          tips: ['Check your OpenRouter key or try again later.'],
-        };
-      }
-
-      const data = await response.json() as any;
-      const content = data.choices?.[0]?.message?.content || '';
-      
-      // Parse JSON from the response
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         return JSON.parse(jsonMatch[0]) as FeedbackResult;
       }
 
-      // Fallback if JSON parsing fails
       return {
         feedback: content.slice(0, 200),
         score: 0,
@@ -136,21 +108,29 @@ Respond in JSON format:
         tips: [],
       };
     } catch (error) {
-      console.error('OpenRouter request failed:', error);
+      console.error('AI feedback request failed:', error);
       return {
-        feedback: 'Unable to connect to AI service. Please try again later.',
+        feedback: 'Unable to connect to AI service. Please check API Key in Admin Settings.',
         score: 0,
         corrections: [],
-        tips: ['Check your internet connection and try again.'],
+        tips: ['Ensure OPENROUTER_API_KEY is configured in Admin Settings.'],
       };
     }
   }
 
   async checkGrammar(prompt: string, answer: string, expectedAnswer?: string): Promise<GrammarCheckResult> {
     const apiKey = await this.getOpenRouterKey();
+    const normalize = (s: string) => String(s).trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").replace(/\s+/g, " ");
+    const userStr = normalize(answer);
+    const expStr = expectedAnswer ? normalize(expectedAnswer) : '';
+    const isExactMatch = Boolean(expStr && (userStr === expStr || (userStr.length > 3 && userStr.includes(expStr))));
+
     if (!apiKey) {
-      const isCorrect = expectedAnswer ? answer.trim().toLowerCase() === expectedAnswer.trim().toLowerCase() : false;
-      return { correct: isCorrect, feedback: 'AI not configured. Falling back to exact match.', expectedAnswer };
+      return {
+        correct: isExactMatch,
+        feedback: isExactMatch ? 'Correct!' : (expectedAnswer ? `Expected: ${expectedAnswer}` : 'Answer recorded.'),
+        expectedAnswer,
+      };
     }
 
     const llmPrompt = `You are a warm, encouraging French language tutor evaluating a student's answer to an exercise/drill.
@@ -169,40 +149,28 @@ Respond STRICTLY with a raw JSON object:
 {"correct": true or false, "feedback": "Your 1-2 sentence AI review/explanation here"}`;
 
     try {
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-          'HTTP-Referer': env.frontendUrl,
-          'X-Title': 'FrancPrep',
-        },
-        body: JSON.stringify({
-          model: 'openai/gpt-4o-mini',
-          messages: [{ role: 'user', content: llmPrompt }],
-          temperature: 0.1,
-          max_tokens: 200,
-        }),
+      const content = await generateAICompletion({
+        model: 'gpt-4o-mini',
+        prompt: llmPrompt,
+        systemPrompt: 'You are a warm, encouraging French language tutor evaluating student drill responses.',
+        temperature: 0.1,
+        maxTokens: 250,
       });
 
-      if (!response.ok) {
-        const isCorrect = expectedAnswer ? answer.trim().toLowerCase() === expectedAnswer.trim().toLowerCase() : false;
-        return { correct: isCorrect, feedback: 'AI check failed, using exact match.', expectedAnswer };
-      }
-
-      const data = await response.json() as any;
-      const content = data.choices?.[0]?.message?.content || '';
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
         return { correct: !!parsed.correct, feedback: parsed.feedback || '', expectedAnswer };
       }
 
-      const isCorrect = expectedAnswer ? answer.trim().toLowerCase() === expectedAnswer.trim().toLowerCase() : false;
-      return { correct: isCorrect, feedback: content.slice(0, 100), expectedAnswer };
+      return { correct: isExactMatch, feedback: content.slice(0, 150), expectedAnswer };
     } catch (error) {
-      const isCorrect = expectedAnswer ? answer.trim().toLowerCase() === expectedAnswer.trim().toLowerCase() : false;
-      return { correct: isCorrect, feedback: 'AI unavailable, using exact match.', expectedAnswer };
+      console.warn('AI check error, using exact match fallback:', error);
+      return {
+        correct: isExactMatch,
+        feedback: isExactMatch ? 'Correct!' : (expectedAnswer ? `Expected: ${expectedAnswer}` : 'Incorrect.'),
+        expectedAnswer,
+      };
     }
   }
 
