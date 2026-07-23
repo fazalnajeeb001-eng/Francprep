@@ -97,23 +97,25 @@ async function validateParsedLesson(lesson: any): Promise<{ errors: string[]; wa
     if (!lesson.selfAssessment || lesson.selfAssessment.length === 0 || lesson.selfAssessment[0]?.includes('completed this lesson')) warnings.push('Self Assessment section has empty/placeholder content');
   }
 
-  // 2. Ledger Consistency Checks (duplicate check in other published lessons)
-  try {
-    const vocabList = lesson.vocabulary || lesson.vocabItems || [];
-    const existingLessons = await Lesson.find({ lessonId: { $ne: lesson.lessonId } }, 'lessonId canonical').lean() as any[];
-    
-    for (const item of vocabList) {
-      const cleanWord = (item.french || '').trim().toLowerCase();
-      if (!cleanWord || cleanWord === '—' || cleanWord === 'n/a') continue;
-      for (const other of existingLessons) {
-        const otherVocab = other.canonical?.vocabulary || other.canonical?.vocabItems || [];
-        if (otherVocab.some((v: any) => (v.french || '').trim().toLowerCase() === cleanWord)) {
-          warnings.push(`Ledger Warning: Vocabulary word "${item.french}" duplicates a word in published lesson ${other.lessonId}`);
+  // 2. Ledger Consistency Checks (duplicate check in other published lessons - L1-L6 only)
+  if (!isL7 && !isL8) {
+    try {
+      const vocabList = lesson.vocabulary || lesson.vocabItems || [];
+      const existingLessons = await Lesson.find({ lessonId: { $ne: lesson.lessonId } }, 'lessonId canonical').lean() as any[];
+      
+      for (const item of vocabList) {
+        const cleanWord = (item.french || '').trim().toLowerCase();
+        if (!cleanWord || cleanWord === '—' || cleanWord === 'n/a') continue;
+        for (const other of existingLessons) {
+          const otherVocab = other.canonical?.vocabulary || other.canonical?.vocabItems || [];
+          if (otherVocab.some((v: any) => (v.french || '').trim().toLowerCase() === cleanWord)) {
+            warnings.push(`Ledger Warning: Vocabulary word "${item.french}" duplicates a word in published lesson ${other.lessonId}`);
+          }
         }
       }
+    } catch (err: any) {
+      console.error('Ledger check error:', err);
     }
-  } catch (err: any) {
-    console.error('Ledger check error:', err);
   }
 
   return { errors, warnings };

@@ -305,6 +305,13 @@ function parseGrammarDrills(text: string): ILessonQuestion[] {
       explanation = `Correct answer: ${correctAnswer}`;
     }
 
+    if (!correctAnswer || correctAnswer.trim() === '') {
+      correctAnswer = 'Open-ended (e.g. Je suis [Name])';
+      if (!explanation || explanation === 'Complete the drill.') {
+        explanation = instruction || 'Complete the drill with your own answer.';
+      }
+    }
+
     n++;
     qs.push({
       id: `gd-${n}`,
@@ -682,7 +689,7 @@ function buildPracticeQuestion(n: number, type: string, promptText: string): ILe
 
     for (const line of promptText.split('\n')) {
       const trimmed = line.trim();
-      if (!trimmed || trimmed === '---' || trimmed === '--') continue;
+      if (!trimmed || trimmed === '---' || trimmed === '--' || trimmed.toLowerCase().startsWith('match ')) continue;
 
       // Split on em-dash (U+2014), en-dash (U+2013), or hyphen followed by a letter)
       const dashSplit = trimmed.split(/\s+[\u2014\u2013-]\s+(?=[a-z]\))/i);
@@ -694,7 +701,7 @@ function buildPracticeQuestion(n: number, type: string, promptText: string): ILe
         const rightPart = dashSplit[1];
         const rightClean = rightPart.replace(/^[a-z]\)\s*/i, '').trim();
         rightItems.push(stripMd(rightClean));
-      } else {
+      } else if (/^\d+[\.\)]/.test(trimmed)) {
         const leftPart = trimmed.replace(/^\d+[\.\)]\s*/, '').trim();
         if (leftPart) {
           leftItems.push(stripMd(leftPart));
@@ -795,12 +802,13 @@ function parseReading(text: string): { title: string; text: string; translation?
     let n = 0;
     for (const l of (ap[0] || '').split('\n')) {
       const t = l.trim();
-      if (t && t !== '---' && t !== '--' && !t.startsWith('*') && !t.match(/^(?:Comprehension|Answer Key)/i)) {
+      const cleanPrompt = stripMd(t.replace(/^[:\s*]+/, '').replace(/^\d+[\.\)]\s*/, ''));
+      if (t && t !== '---' && t !== '--' && !t.startsWith('*') && !t.match(/^(?:Comprehension|Answer Key)/i) && cleanPrompt.length >= 3 && cleanPrompt !== ':') {
         n++;
         questions.push({
           id: `r-${n}`,
           type: 'short_answer',
-          prompt: stripMd(t.replace(/^\d+[\.\)]\s*/, '')),
+          prompt: cleanPrompt,
           correctAnswer: answers[n - 1] || '',
           explanation: answers[n - 1] ? `The answer is: ${answers[n - 1]}` : 'Refer to the reading passage.'
         });
