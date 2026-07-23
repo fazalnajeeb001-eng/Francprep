@@ -73,30 +73,53 @@ export async function generateAICompletion({
     const apiKey = settings?.openRouterApiKey || process.env.OPENROUTER_API_KEY;
     if (!apiKey) throw new Error('OpenRouter API key is not configured. Add it in API Settings.');
 
-    const response = await axios.post(
-      'https://openrouter.ai/api/v1/chat/completions',
-      {
-        model: targetModel,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: prompt }
-        ],
-        temperature,
-        max_tokens: maxTokens,
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-          'HTTP-Referer': settings?.frontendUrl || 'https://francprep.com',
-          'X-Title': 'FrancPrep Admin Panel',
-        },
-      }
-    );
+    const modelsToTry = [
+      targetModel,
+      'google/gemini-2.0-flash-lite-preview-02-05:free',
+      'meta-llama/llama-3.3-70b-instruct:free',
+      'qwen/qwen-2.5-72b-instruct:free',
+    ];
 
-    if (response.data?.error) {
-      throw new Error(response.data.error.message || 'OpenRouter error occurred');
+    // Remove duplicates
+    const uniqueModels = Array.from(new Set(modelsToTry));
+
+    let lastError: any = null;
+    for (const m of uniqueModels) {
+      try {
+        const response = await axios.post(
+          'https://openrouter.ai/api/v1/chat/completions',
+          {
+            model: m,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: prompt }
+            ],
+            temperature,
+            max_tokens: maxTokens,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`,
+              'HTTP-Referer': settings?.frontendUrl || 'https://francprep.com',
+              'X-Title': 'FrancPrep Admin Panel',
+            },
+            timeout: 15000,
+          }
+        );
+
+        if (response.data?.error) {
+          throw new Error(response.data.error.message || 'OpenRouter error occurred');
+        }
+
+        const content = response.data?.choices?.[0]?.message?.content;
+        if (content) return content;
+      } catch (err: any) {
+        lastError = err;
+        console.warn(`OpenRouter model ${m} failed:`, err?.response?.data?.error?.message || err?.message || err);
+      }
     }
-    return response.data?.choices?.[0]?.message?.content || '';
+
+    throw lastError || new Error('All OpenRouter models failed');
   }
 }

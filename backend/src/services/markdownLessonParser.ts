@@ -288,38 +288,17 @@ function parseGrammarDrills(text: string): ILessonQuestion[] {
       }
       explanation = instruction || stripMd(source);
     }
-    // Pattern 3: Blank with context after → "A woman says she is tired: Je suis __________."
+    // Pattern 3: Blank with context after → "Ask if there's an elevator: __________ un ascenseur ?"
     else if ((rawPrompt.includes('__________') || rawPrompt.includes('______')) && rawPrompt.includes(':')) {
       const parts = rawPrompt.split(':');
       const context = parts[0].trim();
-      const afterColon = parts.slice(1).join(':').trim();
-      // The answer is what goes in the blank, which is AFTER the existing text
-      const afterBlank = afterColon.split(/_{3,}/)[1]?.trim()?.replace(/^[.!?,;:\s]+/, '') || '';
-      correctAnswer = stripMd(afterBlank);
-      explanation = stripMd(context);
+      correctAnswer = answers[n] || '';
+      explanation = stripMd(context) || instruction || 'Complete the sentence.';
     }
     // Pattern 4: Blank at end → "Bonjour, __________."
     else if (rawPrompt.includes('__________') || rawPrompt.includes('______')) {
-      const beforeBlank = rawPrompt.split(/_{3,}/)[0].trim();
-      const afterBlank = rawPrompt.split(/_{3,}/)[1]?.trim() || '';
-
-      // Clean punctuation from afterBlank (e.g., "!" or "." after the blank)
-      const cleanAfterBlank = afterBlank.replace(/^[.!?,;:\s]+/, '').trim();
-
-      // Check instruction for answer pattern
-      if (instruction.toLowerCase().includes('je suis')) {
-        correctAnswer = 'Je suis [your name]';
-        explanation = 'Complete with Je suis + your name.';
-      } else if (cleanAfterBlank) {
-        correctAnswer = stripMd(cleanAfterBlank);
-        explanation = instruction;
-      } else if (beforeBlank) {
-        correctAnswer = stripMd(beforeBlank);
-        explanation = instruction;
-      } else {
-        correctAnswer = '';
-        explanation = instruction;
-      }
+      correctAnswer = answers[n] || '';
+      explanation = instruction || 'Complete the blank.';
     }
     if (answers[n]) {
       correctAnswer = answers[n];
