@@ -1,6 +1,6 @@
 [build]
-  command = "NITRO_PRESET=netlify npm run build"
-  publish = ".netlify/functions-internal"
+  command = "npm run build"
+  publish = ".output/public"
 
 [[redirects]]
   from = "/api/*"
@@ -10,5 +10,5 @@
 
 [[redirects]]
   from = "/*"
-  to = "/.netlify/functions/server"
+  to = "/.netlify/functions-internal/server"
   status = 200
