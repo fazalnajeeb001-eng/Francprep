@@ -1,26 +1,24 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Compass,
   Award,
-  ShieldCheck,
   Sparkles,
   Volume2,
   CheckCircle2,
   ArrowRight,
-  RotateCcw,
   Target,
   Clock,
   BookOpen,
-  GraduationCap,
-  Play,
   SkipForward,
   ChevronRight,
   Flame,
-  Globe
+  FileCheck2,
+  GraduationCap
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
+import { GOAL_OPTIONS, setGoal as saveGoalToStorage, type LearningGoal } from "~/components/dashboard/utils/userPrefs";
 
 export const Route = createFileRoute("/onboarding")({ component: OnboardingPage });
 
@@ -31,7 +29,6 @@ interface Question {
   options: string[];
   correct: number;
   explanation: string;
-  audioPrompt?: string;
 }
 
 const PLACEMENT_QUESTIONS: Question[] = [
@@ -72,10 +69,10 @@ const PLACEMENT_QUESTIONS: Question[] = [
   {
     id: 4,
     level: "B1",
-    question: "Listen/Read: 'Bien que le temps ____ mauvais, nous avons décidé de partir en excursion.'",
+    question: "Select the correct form: 'Bien que le temps ____ mauvais, nous sommes partis.'",
     options: ["est", "soit", "était", "sera"],
     correct: 1,
-    explanation: "'Bien que' always requires the Subjunctive mood ('soit')."
+    explanation: "'Bien que' requires the Subjunctive mood ('soit')."
   },
   {
     id: 5,
@@ -88,15 +85,15 @@ const PLACEMENT_QUESTIONS: Question[] = [
       "Si j'ai eu du temps, je t'aiderais."
     ],
     correct: 1,
-    explanation: "Hypothetical condition in present: Si + Imparfait ('avais') -> Conditionnel présent ('aiderais')."
+    explanation: "Condition in present: Si + Imparfait ('avais') -> Conditionnel présent ('aiderais')."
   },
   {
     id: 6,
     level: "B2",
-    question: "Identify the formal academic connector: 'Cependant, il convient de ____ ces résultats avec prudence.'",
+    question: "Identify the formal academic connector: 'Cependant, il convient de ____ ces résultats.'",
     options: ["nuancer", "regarder", "savoir", "dire"],
     correct: 0,
-    explanation: "'Nuancer' (to qualify/refine) is formal academic vocabulary required in B2/TCF essays."
+    explanation: "'Nuancer' (to qualify/refine) is formal academic vocabulary required for B2/TCF essays."
   }
 ];
 
@@ -105,56 +102,24 @@ export function OnboardingPage() {
   const { dark } = useTheme();
   const [step, setStep] = useState<"goal" | "pace" | "choice" | "test" | "result">("goal");
 
-  // Step 1: Goal
-  const [selectedGoal, setSelectedGoal] = useState<string>("pr_points");
+  // Step 1: Goal wired directly to userPrefs
+  const [selectedGoal, setSelectedGoal] = useState<LearningGoal>("TCF_B2");
 
   // Step 2: Pace
   const [selectedPace, setSelectedPace] = useState<number>(30);
 
-  // Step 4: Test State
+  // Step 4: Placement Test State
   const [currentQIndex, setCurrentQIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<{ [qId: number]: number }>({});
   const [testScore, setTestScore] = useState<number>(0);
   const [evaluatedLevel, setEvaluatedLevel] = useState<"A1" | "A2" | "B1" | "B2">("A1");
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
 
-  const goals = [
-    {
-      id: "pr_points",
-      icon: Compass,
-      title: "Canada PR Points (+50 CRS)",
-      desc: "Target NCLC 7 / B2 French for Express Entry Category Draws & Bonus Points.",
-      badge: "Most Popular",
-      color: "from-purple-500 to-indigo-600"
-    },
-    {
-      id: "delf_dalf",
-      icon: GraduationCap,
-      title: "DELF / DALF Certification",
-      desc: "Master official CEFR levels A1 to C2 for university admission and global academic proof.",
-      color: "from-blue-500 to-cyan-600"
-    },
-    {
-      id: "career",
-      icon: Target,
-      title: "Career & Workplace Mobility",
-      desc: "Bilingual business communication, email writing, and professional fluency.",
-      color: "from-emerald-500 to-teal-600"
-    },
-    {
-      id: "general",
-      icon: Globe,
-      title: "General Fluency & Travel",
-      desc: "Everyday conversational French, culture, literature, and spontaneous speaking.",
-      color: "from-amber-500 to-rose-600"
-    }
-  ];
-
   const paces = [
-    { mins: 10, label: "Casual", desc: "10 mins/day • ~1 lesson/day", icon: Clock },
-    { mins: 20, label: "Regular", desc: "20 mins/day • ~2 lessons/day", icon: BookOpen },
-    { mins: 30, label: "Serious", desc: "30 mins/day • ~3 lessons/day (Recommended)", icon: Flame, popular: true },
-    { mins: 60, label: "Intensive", desc: "60 mins/day • ~5 lessons/day", icon: Sparkles }
+    { mins: 15, label: "Regular Study", desc: "15 mins/day • ~1 lesson/day", icon: Clock },
+    { mins: 30, label: "Target Pace", desc: "30 mins/day • ~2 lessons/day (Recommended)", icon: Flame, popular: true },
+    { mins: 45, label: "Accelerated", desc: "45 mins/day • ~3 lessons/day", icon: BookOpen },
+    { mins: 60, label: "Exam Sprint", desc: "60 mins/day • ~5 lessons/day", icon: Sparkles }
   ];
 
   const handleSelectAnswer = (qId: number, optionIdx: number) => {
@@ -177,7 +142,6 @@ export function OnboardingPage() {
     if (currentQIndex < PLACEMENT_QUESTIONS.length - 1) {
       setCurrentQIndex((prev) => prev + 1);
     } else {
-      // Calculate score & level
       let score = 0;
       PLACEMENT_QUESTIONS.forEach((q) => {
         if (selectedAnswers[q.id] === q.correct) {
@@ -186,7 +150,6 @@ export function OnboardingPage() {
       });
       setTestScore(score);
 
-      // Determine level
       let level: "A1" | "A2" | "B1" | "B2" = "A1";
       if (score >= 5) level = "B2";
       else if (score >= 4) level = "B1";
@@ -200,9 +163,12 @@ export function OnboardingPage() {
 
   const handleFinishOnboarding = (levelOverride?: string) => {
     const finalLevel = levelOverride || (step === "result" ? evaluatedLevel : "A1");
-    // Save onboarding preferences locally
+
+    // 1. Save goal directly via userPrefs (triggers 'goal-changed' event for Dashboard!)
+    saveGoalToStorage(selectedGoal);
+
+    // 2. Save onboarding level & pace
     localStorage.setItem("francprep_onboarding_completed", "true");
-    localStorage.setItem("francprep_user_goal", selectedGoal);
     localStorage.setItem("francprep_user_pace", String(selectedPace));
     localStorage.setItem("francprep_user_level", finalLevel);
 
@@ -219,22 +185,22 @@ export function OnboardingPage() {
           </div>
           <div>
             <span className="font-extrabold text-base tracking-tight">FrancPrep</span>
-            <span className="text-[10px] text-purple-600 dark:text-purple-400 uppercase font-mono block">Student Onboarding</span>
+            <span className="text-[10px] text-purple-600 dark:text-purple-400 uppercase font-mono block">Exam Preparation System</span>
           </div>
         </div>
 
         {/* Step Indicator */}
         <div className="flex items-center gap-2 text-xs font-semibold text-gray-500 dark:text-gray-400">
-          <span className={step === "goal" ? "text-purple-600 dark:text-purple-400 font-bold" : ""}>1. Goal</span> ➔
-          <span className={step === "pace" ? "text-purple-600 dark:text-purple-400 font-bold" : ""}>2. Pace</span> ➔
-          <span className={step === "choice" || step === "test" || step === "result" ? "text-purple-600 dark:text-purple-400 font-bold" : ""}>3. Level</span>
+          <span className={step === "goal" ? "text-purple-600 dark:text-purple-400 font-bold" : ""}>1. Target Goal</span> ➔
+          <span className={step === "pace" ? "text-purple-600 dark:text-purple-400 font-bold" : ""}>2. Daily Pace</span> ➔
+          <span className={step === "choice" || step === "test" || step === "result" ? "text-purple-600 dark:text-purple-400 font-bold" : ""}>3. Placement</span>
         </div>
       </div>
 
       {/* Main Content Area */}
       <div className="w-full max-w-4xl mx-auto my-auto py-8">
         <AnimatePresence mode="wait">
-          {/* STEP 1: GOAL SELECTION */}
+          {/* STEP 1: TARGET GOAL SELECTION (Using exact GOAL_OPTIONS from userPrefs) */}
           {step === "goal" && (
             <motion.div
               key="step-goal"
@@ -245,53 +211,43 @@ export function OnboardingPage() {
             >
               <div className="space-y-2">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-300 text-xs font-bold">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Personalized French Pathway</span>
+                  <Target className="w-3.5 h-3.5" />
+                  <span>Academic & Exam Focus</span>
                 </div>
                 <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight">
-                  What is your primary goal for French?
+                  Select Your Primary Target Goal
                 </h1>
                 <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
-                  We customize your 436-lesson syllabus, AI reviewer feedback, and practice drills to match your specific objective.
+                  Your selected goal displays directly in your Dashboard header and configures your milestone exam targets. You can change this anytime.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                {goals.map((g) => {
-                  const IconComp = g.icon;
-                  const isSelected = selectedGoal === g.id;
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 text-left max-w-3xl mx-auto">
+                {GOAL_OPTIONS.map((g) => {
+                  const isSelected = selectedGoal === g.value;
                   return (
                     <div
-                      key={g.id}
-                      onClick={() => setSelectedGoal(g.id)}
-                      className={`p-6 rounded-3xl border transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between space-y-4 ${
+                      key={g.value}
+                      onClick={() => setSelectedGoal(g.value)}
+                      className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between space-x-3 ${
                         isSelected
-                          ? "border-purple-500 bg-purple-500/10 ring-2 ring-purple-500/30 shadow-xl"
+                          ? "border-purple-500 bg-purple-500/15 ring-2 ring-purple-500/30 text-purple-900 dark:text-purple-100 shadow-md"
                           : "border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#101828]/80 hover:border-purple-300"
                       }`}
                     >
-                      {g.badge && (
-                        <span className="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-purple-500 text-white text-[10px] font-extrabold tracking-wider uppercase">
-                          {g.badge}
-                        </span>
-                      )}
-                      <div className="space-y-3">
-                        <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${g.color} text-white flex items-center justify-center shadow-md`}>
-                          <IconComp className="w-6 h-6" />
-                        </div>
-                        <h3 className="text-lg font-bold">{g.title}</h3>
-                        <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{g.desc}</p>
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">{g.emoji}</span>
+                        <span className="text-sm font-bold">{g.label}</span>
                       </div>
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-purple-600 dark:text-purple-400">
-                        {isSelected ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <ChevronRight className="w-4 h-4" />}
-                        <span>{isSelected ? "Selected Target Goal" : "Select Goal"}</span>
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${isSelected ? "border-purple-500 bg-purple-500 text-white" : "border-gray-400"}`}>
+                        {isSelected && <CheckCircle2 className="w-3.5 h-3.5" />}
                       </div>
                     </div>
                   );
                 })}
               </div>
 
-              <div className="pt-4 flex justify-end">
+              <div className="pt-4 flex justify-end max-w-3xl mx-auto">
                 <button
                   onClick={() => setStep("pace")}
                   className="px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm shadow-xl shadow-purple-600/25 flex items-center gap-2"
@@ -315,13 +271,13 @@ export function OnboardingPage() {
               <div className="space-y-2">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-xs font-bold">
                   <Clock className="w-3.5 h-3.5" />
-                  <span>Daily Habit & Consistency</span>
+                  <span>Daily Study Habit</span>
                 </div>
                 <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight">
-                  What is your daily study commitment?
+                  Select Your Daily Exam Study Pace
                 </h1>
                 <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
-                  Consistent daily practice is the key to genuine CEFR fluency. You can change your pace goal anytime in Settings.
+                  Consistent structured practice drives rapid CEFR progress.
                 </p>
               </div>
 
@@ -341,7 +297,7 @@ export function OnboardingPage() {
                     >
                       {p.popular && (
                         <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-purple-600 text-white text-[9px] font-extrabold uppercase">
-                          Target
+                          Recommended
                         </span>
                       )}
                       <div className="space-y-2">
@@ -371,7 +327,7 @@ export function OnboardingPage() {
                   onClick={() => setStep("choice")}
                   className="px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm shadow-xl shadow-purple-600/25 flex items-center gap-2"
                 >
-                  <span>Continue to Level Placement</span>
+                  <span>Continue to Placement Choice</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
@@ -390,13 +346,13 @@ export function OnboardingPage() {
               <div className="space-y-2">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-300 text-xs font-bold">
                   <Compass className="w-3.5 h-3.5" />
-                  <span>CEFR Level Benchmark</span>
+                  <span>CEFR Diagnostic Benchmark</span>
                 </div>
                 <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight">
-                  Where should we start your French journey?
+                  Where should we start your French syllabus?
                 </h1>
                 <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
-                  Absolute zero beginners can start immediately at A1. Learners with prior experience can take the 5-minute placement test.
+                  Beginners can start immediately at A1 Discovery. Learners with prior experience can take our 5-minute placement test.
                 </p>
               </div>
 
@@ -412,14 +368,14 @@ export function OnboardingPage() {
                     </div>
                     <div>
                       <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-                        Recommended for Strong Foundations
+                        Recommended for Complete Mastery
                       </span>
                       <h3 className="text-2xl font-bold mt-1">
                         Start at A1 Discovery (Absolute Zero)
                       </h3>
                     </div>
                     <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                      Begin with greetings, basic phonetics, and initial vocabulary. Ideal if you have never studied French or want 100% complete review.
+                      Begin with phonetics, greetings, and basic sentence structures. Ideal for complete beginners or thorough review.
                     </p>
                   </div>
 
@@ -444,14 +400,14 @@ export function OnboardingPage() {
                     </div>
                     <div>
                       <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-600 dark:text-purple-300">
-                        5-Minute Adaptive Assessment
+                        5-Minute Adaptive Test
                       </span>
                       <h3 className="text-2xl font-bold mt-1">
                         Take Diagnostic Placement Test
                       </h3>
                     </div>
                     <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                      Answer 6 quick diagnostic questions to evaluate whether your current benchmark is A1, A2, B1, or B2.
+                      Answer 6 diagnostic questions to evaluate your current benchmark (A1, A2, B1, or B2).
                     </p>
                   </div>
 
@@ -523,7 +479,7 @@ export function OnboardingPage() {
                   </button>
                 </div>
 
-                {/* Multiple Choice Options */}
+                {/* Options */}
                 <div className="space-y-3 pt-2">
                   {PLACEMENT_QUESTIONS[currentQIndex].options.map((opt, idx) => {
                     const isSelected = selectedAnswers[PLACEMENT_QUESTIONS[currentQIndex].id] === idx;
@@ -582,10 +538,10 @@ export function OnboardingPage() {
 
               <div className="space-y-2">
                 <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-                  Diagnostic Evaluation Complete
+                  Diagnostic Assessment Complete
                 </span>
                 <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
-                  Your Evaluated Benchmark: {evaluatedLevel}
+                  Evaluated Level: {evaluatedLevel}
                 </h1>
                 <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
                   You scored <strong className="text-purple-600 dark:text-purple-400">{testScore} / {PLACEMENT_QUESTIONS.length}</strong> on the diagnostic assessment.
@@ -594,13 +550,13 @@ export function OnboardingPage() {
 
               <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-left space-y-2">
                 <p className="font-bold text-emerald-800 dark:text-emerald-300">
-                  💡 Benchmark Recommendation:
+                  💡 Level Recommendation:
                 </p>
                 <p className="text-gray-700 dark:text-slate-200">
                   {evaluatedLevel === "A1" && "Starting at A1 Discovery will build your core vocabulary, greetings, and basic sentence structures."}
                   {evaluatedLevel === "A2" && "Starting at A2 Breakthrough will build your conversational past tense and daily social transactions."}
                   {evaluatedLevel === "B1" && "Starting at B1 Threshold will prepare you for independent speech, essay drills, and initial TCF/TEF prep."}
-                  {evaluatedLevel === "B2" && "Starting at B2 Vantage will prepare you directly for NCLC 7 Express Entry CRS bonus draws!"}
+                  {evaluatedLevel === "B2" && "Starting at B2 Vantage will prepare you directly for NCLC 7 TCF/TEF Canada exam practice!"}
                 </p>
               </div>
 
@@ -617,7 +573,7 @@ export function OnboardingPage() {
                   onClick={() => handleFinishOnboarding("A1")}
                   className="w-full py-3 rounded-xl border border-gray-300 dark:border-white/10 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5"
                 >
-                  Start at A1 Foundations Anyway (Recommended)
+                  Start at A1 Foundations Anyway
                 </button>
               </div>
             </motion.div>
@@ -627,7 +583,7 @@ export function OnboardingPage() {
 
       {/* Bottom Footer */}
       <div className="w-full max-w-4xl mx-auto text-center text-xs text-gray-500 dark:text-gray-500 py-4 border-t border-gray-200 dark:border-white/10">
-        FrancPrep CEFR Fluency System • 436 Lessons • DELF/DALF & TCF/TEF Canada Standard
+        FrancPrep Fluency System • TCF / TEF Canada & DELF / DALF Standard
       </div>
     </div>
   );
