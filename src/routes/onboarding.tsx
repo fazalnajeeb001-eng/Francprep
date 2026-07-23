@@ -33,6 +33,7 @@ interface Question {
 }
 
 const PLACEMENT_QUESTIONS: Question[] = [
+  // ─── A1 DISCOVERY (Questions 1 to 5) ───
   {
     id: 1,
     level: "A1",
@@ -49,52 +50,190 @@ const PLACEMENT_QUESTIONS: Question[] = [
   {
     id: 2,
     level: "A1",
-    question: "Fill in the blank: 'J'____ un appartement à Paris.'",
+    question: "Select the correct form of the verb 'avoir' (to have): 'J'____ 25 ans.'",
     options: ["suis", "ai", "habite", "fait"],
     correct: 1,
-    explanation: "'J'ai' is the 1st person singular form of avoir (to have)."
+    explanation: "In French, age is expressed with 'avoir': 'J'ai 25 ans'."
   },
   {
     id: 3,
-    level: "A2",
-    question: "Which sentence is correctly written in the Passé Composé?",
-    options: [
-      "Hier, je vais au cinéma avec mes amis.",
-      "Hier, je suis allé au cinéma avec mes amis.",
-      "Hier, j'allais au cinéma avec mes amis.",
-      "Hier, je serai allé au cinéma avec mes amis."
-    ],
-    correct: 1,
-    explanation: "Verbs of movement like 'aller' take 'être' in the Passé Composé: 'je suis allé'."
+    level: "A1",
+    question: "Which option correctly completes the sentence: 'Marie a ____ beaux livres.'",
+    options: ["de", "un", "une", "des"],
+    correct: 0,
+    explanation: "Before a plural adjective preceding a noun ('beaux livres'), 'des' becomes 'de'."
   },
   {
     id: 4,
-    level: "B1",
-    question: "Select the correct form: 'Bien que le temps ____ mauvais, nous sommes partis.'",
-    options: ["est", "soit", "était", "sera"],
-    correct: 1,
-    explanation: "'Bien que' requires the Subjunctive mood ('soit')."
+    level: "A1",
+    question: "Fill in the blank: 'Où ____-vous ? — À Montréal.'",
+    options: ["habitez", "habiter", "habites", "habite"],
+    correct: 0,
+    explanation: "With subject pronoun 'vous', the regular -er verb ending is '-ez'."
   },
   {
     id: 5,
-    level: "B1",
-    question: "Which phrase correctly expresses a condition?",
-    options: [
-      "Si j'ai du temps, je t'aiderais.",
-      "Si j'avais du temps, je t'aiderais.",
-      "Si j'aurais du temps, je t'aiderais.",
-      "Si j'ai eu du temps, je t'aiderais."
-    ],
+    level: "A1",
+    question: "What is the English translation of: 'Qu'est-ce que c'est ?'",
+    options: ["Where is it?", "What is this?", "Who is it?", "How much is it?"],
     correct: 1,
-    explanation: "Condition in present: Si + Imparfait ('avais') -> Conditionnel présent ('aiderais')."
+    explanation: "'Qu'est-ce que c'est ?' means 'What is it?' or 'What is this?'."
   },
+
+  // ─── A2 BREAKTHROUGH (Questions 6 to 10) ───
   {
     id: 6,
+    level: "A2",
+    question: "Which sentence correctly uses the Passé Composé with 'être'?",
+    options: [
+      "Hier, elle a partie à huit heures.",
+      "Hier, elle est partie à huit heures.",
+      "Hier, elle allait partir à huit heures.",
+      "Hier, elle sera partie à huit heures."
+    ],
+    correct: 1,
+    explanation: "Verbs of movement like 'partir' take 'être' in Passé Composé and agree in gender: 'elle est partie'."
+  },
+  {
+    id: 7,
+    level: "A2",
+    question: "Complete with Imparfait vs Passé Composé: 'Pendant que je ____, le téléphone a sonné.'",
+    options: ["dormais", "suis dormi", "dort", "dormirai"],
+    correct: 0,
+    explanation: "Background ongoing actions use the Imparfait ('dormais') when interrupted by an event ('a sonné')."
+  },
+  {
+    id: 8,
+    level: "A2",
+    question: "Replace the object with a pronoun: 'Je vois le professeur tous les matins.'",
+    options: [
+      "Je lui vois tous les matins.",
+      "Je le vois tous les matins.",
+      "Je la vois tous les matins.",
+      "Je les vois tous les matins."
+    ],
+    correct: 1,
+    explanation: "'Le professeur' is masculine direct object, replaced by 'le'."
+  },
+  {
+    id: 9,
+    level: "A2",
+    question: "Select the correct Future Proche structure: 'Demain, nous ____ visiter le musée.'",
+    options: ["allons", "irons", "sommes", "avons"],
+    correct: 0,
+    explanation: "Le Futur Proche = Aller (present) + Infinitive: 'nous allons visiter'."
+  },
+  {
+    id: 10,
+    level: "A2",
+    question: "Choose the correct comparative: 'Ce train est ____ rapide que le bus.'",
+    options: ["plus", "très", "beaucoup", "aussi que"],
+    correct: 0,
+    explanation: "Superiority comparative format: 'plus + adjective + que'."
+  },
+
+  // ─── B1 THRESHOLD (Questions 11 to 15) ───
+  {
+    id: 11,
+    level: "B1",
+    question: "Select the correct Subjunctive form: 'Je veux que tu ____ à l'heure.'",
+    options: ["es", "sois", "étais", "seras"],
+    correct: 1,
+    explanation: "Expressions of will/desire ('Je veux que') require the Subjunctive mood ('sois')."
+  },
+  {
+    id: 12,
+    level: "B1",
+    question: "Choose the correct relative pronoun: 'C'est la ville ____ je suis né.'",
+    options: ["qui", "que", "où", "dont"],
+    correct: 2,
+    explanation: "'Où' is used as a relative pronoun for places ('la ville où je suis né')."
+  },
+  {
+    id: 13,
+    level: "B1",
+    question: "Which sentence correctly forms a present conditional hypothesis?",
+    options: [
+      "Si j'ai de l'argent, j'achèterais cette voiture.",
+      "Si j'avais de l'argent, j'achèterais cette voiture.",
+      "Si j'aurais de l'argent, j'achèterais cette voiture.",
+      "Si j’avais de l’argent, j’achèterai cette voiture."
+    ],
+    correct: 1,
+    explanation: "Present hypothesis rule: Si + Imparfait ('avais') -> Conditionnel présent ('achèterais')."
+  },
+  {
+    id: 14,
+    level: "B1",
+    question: "Identify the correct Passive Voice transformation for: 'Le ministre a signé le décret.'",
+    options: [
+      "Le décret était signé par le ministre.",
+      "Le décret a été signé par le ministre.",
+      "Le décret sera signé par le ministre.",
+      "Le décret est en train de signer par le ministre."
+    ],
+    correct: 1,
+    explanation: "Passé Composé passive: Avoir (present) + été + past participle: 'a été signé'."
+  },
+  {
+    id: 15,
+    level: "B1",
+    question: "Convert to Indirect Speech: 'Il m'a dit : \"Je viendrai demain.\"'",
+    options: [
+      "Il m'a dit qu'il viendra demain.",
+      "Il m'a dit qu'il viendrait le lendemain.",
+      "Il m'a dit qu'il est venu le lendemain.",
+      "Il m'a dit qu'il va venir demain."
+    ],
+    correct: 1,
+    explanation: "When introductory verb is past, Future ('viendrai') shifts to Conditionnel ('viendrait') and 'demain' to 'le lendemain'."
+  },
+
+  // ─── B2 VANTAGE (Questions 16 to 20) ───
+  {
+    id: 16,
     level: "B2",
-    question: "Identify the formal academic connector: 'Cependant, il convient de ____ ces résultats.'",
+    question: "Select the correct connector: '____ la pluie battante, le match a été maintenu.'",
+    options: ["Bien que", "Malgré", "Parce que", "Grâce à"],
+    correct: 1,
+    explanation: "'Malgré' is followed directly by a noun ('la pluie battante'). 'Bien que' requires a full clause with subjunctive."
+  },
+  {
+    id: 17,
+    level: "B2",
+    question: "Choose the correct Past Subjunctive form: 'Je suis ravi que vous ____ votre examen.'",
+    options: ["réussissiez", "ayez réussi", "avez réussi", "auriez réussi"],
+    correct: 1,
+    explanation: "Past Subjunctive (completed action with emotion): Avoir in Subjunctive ('ayez') + Past Participle ('réussi')."
+  },
+  {
+    id: 18,
+    level: "B2",
+    question: "Identify the formal academic connector: 'Cependant, il convient de ____ ces résultats avec prudence.'",
     options: ["nuancer", "regarder", "savoir", "dire"],
     correct: 0,
-    explanation: "'Nuancer' (to qualify/refine) is formal academic vocabulary required for B2/TCF essays."
+    explanation: "'Nuancer' (to qualify/refine) is formal academic vocabulary essential for B2/TCF essays."
+  },
+  {
+    id: 19,
+    level: "B2",
+    question: "Which sentence correctly uses the Gérondif to show cause or manner?",
+    options: [
+      "En travaillant régulièrement, il a obtenu son C1.",
+      "Pour travailler régulièrement, il a obtenu son C1.",
+      "Pendant travailler régulièrement, il a obtenu son C1.",
+      "Sur travailler régulièrement, il a obtenu son C1."
+    ],
+    correct: 0,
+    explanation: "Le Gérondif is formed with 'En + Present Participle' ('En travaillant') to express manner or means."
+  },
+  {
+    id: 20,
+    level: "B2",
+    question: "Select the formal transition for a TCF argument: '____ la mesure est impopulaire, elle demeure nécessaire.'",
+    options: ["Si bien que", "Même si", "En outre", "C'est pourquoi"],
+    correct: 1,
+    explanation: "'Même si' expresses concession followed by indicative in formal argumentation."
   }
 ];
 
@@ -143,19 +282,37 @@ export function OnboardingPage() {
     if (currentQIndex < PLACEMENT_QUESTIONS.length - 1) {
       setCurrentQIndex((prev) => prev + 1);
     } else {
-      let score = 0;
+      // Level-gated scoring evaluation for 100% accuracy
+      let a1Count = 0, a2Count = 0, b1Count = 0, b2Count = 0;
+      let totalCorrect = 0;
+
       PLACEMENT_QUESTIONS.forEach((q) => {
         if (selectedAnswers[q.id] === q.correct) {
-          score += 1;
+          totalCorrect++;
+          if (q.level === "A1") a1Count++;
+          if (q.level === "A2") a2Count++;
+          if (q.level === "B1") b1Count++;
+          if (q.level === "B2") b2Count++;
         }
       });
-      setTestScore(score);
 
+      setTestScore(totalCorrect);
+
+      // Strict Level Progression Requirement:
       let level: "A1" | "A2" | "B1" | "B2" = "A1";
-      if (score >= 5) level = "B2";
-      else if (score >= 4) level = "B1";
-      else if (score >= 2) level = "A2";
-      else level = "A1";
+
+      // To reach A2: Must score >= 4/5 on A1 and >= 3/5 on A2
+      if (a1Count >= 4 && a2Count >= 3) {
+        level = "A2";
+        // To reach B1: Must score >= 4/5 on A2 and >= 3/5 on B1
+        if (a2Count >= 4 && b1Count >= 3) {
+          level = "B1";
+          // To reach B2: Must score >= 4/5 on B1 and >= 3/5 on B2
+          if (b1Count >= 4 && b2Count >= 3) {
+            level = "B2";
+          }
+        }
+      }
 
       setEvaluatedLevel(level);
       setStep("result");
@@ -210,7 +367,7 @@ export function OnboardingPage() {
       {/* Main Content Area */}
       <div className="w-full max-w-4xl mx-auto my-auto py-8">
         <AnimatePresence mode="wait">
-          {/* STEP 1: TARGET GOAL SELECTION (Using exact GOAL_OPTIONS from userPrefs) */}
+          {/* STEP 1: TARGET GOAL SELECTION */}
           {step === "goal" && (
             <motion.div
               key="step-goal"
@@ -362,7 +519,7 @@ export function OnboardingPage() {
                   Where should we start your French syllabus?
                 </h1>
                 <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
-                  Beginners can start immediately at A1 Discovery. Learners with prior experience can take our 5-minute placement test.
+                  Beginners can start immediately at A1 Discovery. Learners with prior experience can take our 20-question comprehensive diagnostic.
                 </p>
               </div>
 
@@ -395,7 +552,7 @@ export function OnboardingPage() {
                   </div>
                 </div>
 
-                {/* Option B: Take 5-Min Test */}
+                {/* Option B: Take 20-Q Test */}
                 <div
                   onClick={() => {
                     setCurrentQIndex(0);
@@ -410,19 +567,19 @@ export function OnboardingPage() {
                     </div>
                     <div>
                       <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-600 dark:text-purple-300">
-                        5-Minute Adaptive Test
+                        20-Question CEFR Diagnostic
                       </span>
                       <h3 className="text-2xl font-bold mt-1">
                         Take Diagnostic Placement Test
                       </h3>
                     </div>
                     <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                      Answer 6 diagnostic questions to evaluate your current benchmark (A1, A2, B1, or B2).
+                      20 comprehensive diagnostic questions across A1, A2, B1, and B2 grammar, vocabulary, and sentence structures.
                     </p>
                   </div>
 
                   <div className="pt-2 flex items-center gap-2 text-xs font-bold text-purple-600 dark:text-purple-300 group-hover:translate-x-1 transition-transform">
-                    <span>Launch 5-Min Placement Test</span>
+                    <span>Launch 20-Q Diagnostic Test</span>
                     <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>
@@ -461,7 +618,7 @@ export function OnboardingPage() {
                 <div className="flex justify-between items-center text-xs font-bold text-gray-600 dark:text-gray-400">
                   <span className="flex items-center gap-2">
                     <span className="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-600 dark:text-purple-300 font-mono text-[10px]">
-                      {PLACEMENT_QUESTIONS[currentQIndex].level} Diagnostic
+                      {PLACEMENT_QUESTIONS[currentQIndex].level} Stage
                     </span>
                     <span>Question {currentQIndex + 1} of {PLACEMENT_QUESTIONS.length}</span>
                   </span>
@@ -527,7 +684,7 @@ export function OnboardingPage() {
                   onClick={handleNextQuestion}
                   className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs disabled:opacity-40 transition-all flex items-center gap-2 shadow-lg shadow-purple-600/25"
                 >
-                  <span>{currentQIndex === PLACEMENT_QUESTIONS.length - 1 ? "Submit & View Benchmark" : "Next Question"}</span>
+                  <span>{currentQIndex === PLACEMENT_QUESTIONS.length - 1 ? "Submit & View Diagnostic" : "Next Question"}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
@@ -548,13 +705,13 @@ export function OnboardingPage() {
 
               <div className="space-y-2">
                 <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-                  Diagnostic Assessment Complete
+                  Comprehensive Diagnostic Complete
                 </span>
                 <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
-                  Evaluated Level: {evaluatedLevel}
+                  Evaluated Benchmark: {evaluatedLevel}
                 </h1>
                 <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
-                  You scored <strong className="text-purple-600 dark:text-purple-400">{testScore} / {PLACEMENT_QUESTIONS.length}</strong> on the diagnostic assessment.
+                  You scored <strong className="text-purple-600 dark:text-purple-400">{testScore} / {PLACEMENT_QUESTIONS.length}</strong> on the 20-question diagnostic.
                 </p>
               </div>
 
