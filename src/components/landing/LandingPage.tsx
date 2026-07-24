@@ -15,7 +15,9 @@ import {
   Sun,
   Play,
   Check,
-  Shield
+  Shield,
+  Menu,
+  X
 } from "lucide-react";
 import { InteractiveHeroDemo } from "./InteractiveHeroDemo";
 import { CEFRRoadmap } from "./CEFRRoadmap";
@@ -35,6 +37,7 @@ export function LandingPage() {
   const { dark: isDarkMode, toggle: toggleTheme } = useTheme();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("annual");
   const [faqOpen, setFaqOpen] = useState<{ [key: number]: boolean }>({ 0: true, 1: true });
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleFaq = (index: number) => {
     setFaqOpen((prev) => ({ ...prev, [index]: !prev[index] }));
@@ -72,12 +75,12 @@ export function LandingPage() {
       <header className={`sticky top-0 z-50 backdrop-blur-xl border-b transition-colors ${
         isDarkMode ? "bg-slate-950/80 border-white/10" : "bg-white/80 border-gray-200"
       }`}>
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
               <span className="font-extrabold text-xl text-white">F</span>
             </div>
-            <span className={`font-extrabold text-2xl tracking-tight ${
+            <span className={`font-extrabold text-xl sm:text-2xl tracking-tight ${
               isDarkMode ? "bg-gradient-to-r from-white via-slate-200 to-purple-300 bg-clip-text text-transparent" : "text-slate-900"
             }`}>
               {BRAND_CONFIG.name}
@@ -94,11 +97,11 @@ export function LandingPage() {
             <a href="#faq" className="hover:text-purple-500 transition-colors">FAQ</a>
           </nav>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
-              className={`p-2.5 rounded-xl border transition-all ${
+              className={`p-2 sm:p-2.5 rounded-xl border transition-all ${
                 isDarkMode ? "border-white/10 bg-white/5 text-amber-400 hover:bg-white/10" : "border-gray-200 bg-gray-100 text-slate-700 hover:bg-gray-200"
               }`}
               title="Toggle Light/Dark Theme"
@@ -108,7 +111,7 @@ export function LandingPage() {
 
             <Link
               to="/login"
-              className={`text-sm font-semibold px-3 py-2 transition-colors ${
+              className={`hidden sm:inline-block text-sm font-semibold px-3 py-2 transition-colors ${
                 isDarkMode ? "text-slate-300 hover:text-white" : "text-slate-700 hover:text-slate-900"
               }`}
             >
@@ -117,12 +120,87 @@ export function LandingPage() {
 
             <Link
               to="/signup"
-              className="px-5 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 rounded-xl transition-all shadow-lg shadow-purple-600/30 hover:scale-[1.02]"
+              className="px-3.5 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 rounded-xl transition-all shadow-lg shadow-purple-600/30 hover:scale-[1.02]"
             >
-              Get Started Free
+              Get Started
             </Link>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className={`md:hidden p-2 rounded-xl border ${
+                isDarkMode ? "border-white/10 bg-white/5 text-gray-200" : "border-gray-200 bg-gray-100 text-slate-700"
+              }`}
+              aria-label="Toggle Navigation Menu"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Navigation Drawer */}
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className={`md:hidden border-b px-4 py-4 space-y-3 ${
+              isDarkMode ? "bg-slate-950 border-white/10 text-slate-200" : "bg-white border-gray-200 text-slate-800"
+            }`}
+          >
+            <a
+              href="#roadmap"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 rounded-lg font-semibold hover:bg-purple-500/10 hover:text-purple-400"
+            >
+              436-Lesson Roadmap
+            </a>
+            <a
+              href="#gated"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 rounded-lg font-semibold hover:bg-purple-500/10 hover:text-purple-400"
+            >
+              Gated Progression
+            </a>
+            <a
+              href="#calculator"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 rounded-lg font-semibold hover:bg-purple-500/10 hover:text-purple-400"
+            >
+              PR Calculator
+            </a>
+            <a
+              href="#pricing"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 rounded-lg font-semibold hover:bg-purple-500/10 hover:text-purple-400"
+            >
+              Pricing
+            </a>
+            <a
+              href="#faq"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 rounded-lg font-semibold hover:bg-purple-500/10 hover:text-purple-400"
+            >
+              FAQ
+            </a>
+            <div className="pt-2 border-t border-gray-200 dark:border-white/10 flex items-center gap-3">
+              <Link
+                to="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-1/2 text-center py-2 rounded-xl border border-purple-500/30 text-purple-400 font-bold text-xs"
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/signup"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-1/2 text-center py-2 rounded-xl bg-purple-600 text-white font-bold text-xs shadow-md"
+              >
+                Sign Up Free
+              </Link>
+            </div>
+          </motion.div>
+        )}
       </header>
 
       {/* HERO SECTION */}
