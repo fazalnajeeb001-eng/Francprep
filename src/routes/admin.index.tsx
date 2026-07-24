@@ -71,56 +71,56 @@ function AdminDashboardPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {stats.map((stat, i) => (
           <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-            className="relative overflow-hidden rounded-2xl dark:bg-[#101828]/80 bg-white/80 backdrop-blur-lg border dark:border-[#1e2a4a] border-gray-200 p-5 transition-all hover:shadow-lg">
-            <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${stat.color}`} />
+            className="relative overflow-hidden rounded-3xl dark:bg-[#101828]/90 bg-white backdrop-blur-xl border dark:border-[#1e2a4a] border-slate-200/90 p-6 shadow-xl shadow-slate-200/50 transition-all hover:shadow-2xl hover:border-purple-300">
+            <div className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${stat.color}`} />
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs dark:text-gray-400 text-gray-500 font-medium">{stat.label}</p>
-                <p className="text-2xl sm:text-3xl font-bold dark:text-white text-gray-900 mt-1">{stat.value}</p>
+                <p className="text-xs dark:text-gray-300 text-slate-700 font-bold">{stat.label}</p>
+                <p className="text-2xl sm:text-3xl font-extrabold dark:text-white text-slate-900 mt-1">{stat.value}</p>
               </div>
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg shrink-0`}>
+              <div className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-md shrink-0`}>
                 <stat.icon className="w-5 h-5 text-white" />
               </div>
             </div>
             <div className="flex items-center gap-1 mt-3">
-              {stat.up ? <ArrowUp className="w-3 h-3 text-emerald-400" /> : <ArrowDown className="w-3 h-3 text-red-400" />}
-              <span className={`text-xs font-medium ${stat.up ? "text-emerald-400" : "text-red-400"}`}>{stat.change}</span>
-              <span className="text-xs dark:text-gray-500 text-gray-400 ml-1">vs last month</span>
+              {stat.up ? <ArrowUp className="w-3.5 h-3.5 text-emerald-500" /> : <ArrowDown className="w-3.5 h-3.5 text-red-500" />}
+              <span className={`text-xs font-bold ${stat.up ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}>{stat.change}</span>
+              <span className="text-xs dark:text-gray-400 text-slate-600 font-semibold ml-1">vs last month</span>
             </div>
           </motion.div>
         ))}
       </div>
 
       {/* Recent users */}
-      <div className="rounded-2xl dark:bg-[#101828]/80 bg-white/80 backdrop-blur-lg border dark:border-[#1e2a4a] border-gray-200 transition-colors">
-        <div className="px-5 py-4 border-b dark:border-[#1e2a4a] border-gray-200 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <UserCheck className="w-5 h-5 text-purple-400" />
-            <h2 className="text-sm font-semibold dark:text-gray-200 text-gray-800">Recent Users</h2>
+      <div className="rounded-3xl dark:bg-[#101828]/90 bg-white backdrop-blur-xl border dark:border-[#1e2a4a] border-slate-200/90 shadow-xl shadow-slate-200/50 transition-colors">
+        <div className="px-6 py-4 border-b dark:border-[#1e2a4a] border-slate-200 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <UserCheck className="w-5 h-5 text-purple-500" />
+            <h2 className="text-base font-extrabold dark:text-gray-200 text-slate-900">Recent Users</h2>
           </div>
-          <span className="text-xs dark:text-gray-500 text-gray-400">Last 5 registered</span>
+          <span className="text-xs font-semibold dark:text-gray-400 text-slate-600">Last 5 registered</span>
         </div>
-        <div className="divide-y dark:divide-[#1e2a4a] divide-gray-200">
+        <div className="divide-y dark:divide-[#1e2a4a] divide-slate-200">
           {data.recentUsers.map((user) => (
-            <div key={user._id} className="px-5 py-3.5 flex items-center justify-between hover:dark:bg-white/5 hover:bg-gray-50 transition-colors">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
+            <div key={user._id} className="px-6 py-4 flex items-center justify-between hover:dark:bg-white/5 hover:bg-slate-50 transition-colors">
+              <div className="flex items-center gap-3.5">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-extrabold shadow-md shadow-purple-500/20">
                   {user.firstName[0]}{user.lastName[0]}
                 </div>
                 <div>
-                  <p className="text-sm font-medium dark:text-gray-200 text-gray-800">{user.firstName} {user.lastName}</p>
-                  <p className="text-xs dark:text-gray-500 text-gray-400">{user.email}</p>
+                  <p className="text-sm font-bold dark:text-gray-200 text-slate-900">{user.firstName} {user.lastName}</p>
+                  <p className="text-xs font-medium dark:text-gray-400 text-slate-600">{user.email}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className={`text-[10px] font-semibold px-2 py-1 rounded-full ${
+                <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-full ${
                   user.role === "admin"
-                    ? "bg-purple-500/20 text-purple-400 border border-purple-500/30"
-                    : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                    ? "bg-purple-500/20 text-purple-700 dark:text-purple-300 border border-purple-500/30"
+                    : "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30"
                 }`}>
                   {user.role}
                 </span>
-                <span className="text-[10px] dark:text-gray-500 text-gray-400">
+                <span className="text-xs font-semibold dark:text-gray-400 text-slate-600">
                   {new Date(user.createdAt).toLocaleDateString()}
                 </span>
               </div>

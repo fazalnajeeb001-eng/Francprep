@@ -109,23 +109,23 @@ function AdminLayout() {
   }
 
   const currentPath = router.location.pathname;
-  const bg = dark ? "bg-[#070B17]" : "bg-gray-50";
-  const border = dark ? "border-[#1e2a4a]" : "border-gray-200";
+  const bg = dark ? "bg-[#070B17]" : "bg-[#F8FAFC]";
+  const border = dark ? "border-[#1e2a4a]" : "border-slate-200";
 
   return (
     <div className={`min-h-screen ${bg} transition-colors duration-300`}>
       <div className="flex">
         {/* Mobile overlay */}
-        {sidebarOpen && <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />}
+        {sidebarOpen && <div className="fixed inset-0 bg-slate-900/50 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />}
 
         {/* Sidebar */}
         <aside className={`fixed lg:sticky top-0 z-50 lg:z-0 h-screen w-64 dark:bg-[#070B17]/95 bg-white/95 backdrop-blur-xl border-r ${border} flex flex-col transition-all duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
           {/* Logo */}
           <div className={`p-5 border-b ${border}`}>
             <Link to="/admin" className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold">F</div>
-              <span className={`text-lg font-bold ${dark ? "text-white" : "text-gray-900"}`}>FrancPrep</span>
-              <span className="ml-auto text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">Admin</span>
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold shadow-md shadow-purple-500/20">F</div>
+              <span className={`text-lg font-extrabold ${dark ? "text-white" : "text-slate-900"}`}>FrancPrep</span>
+              <span className="ml-auto text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30">Admin</span>
             </Link>
           </div>
 
@@ -136,9 +136,9 @@ function AdminLayout() {
               return (
                 <div key={group.title} className="space-y-1">
                   <button onClick={() => toggleGroup(group.title)}
-                    className={`w-full flex items-center justify-between px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider ${dark ? "text-gray-500 hover:text-gray-300" : "text-gray-400 hover:text-gray-600"} transition-colors`}>
+                    className={`w-full flex items-center justify-between px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wider ${dark ? "text-purple-400 hover:text-purple-300" : "text-purple-700 hover:text-purple-900"} transition-colors`}>
                     <span>{group.title}</span>
-                    {isOpen ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
+                    {isOpen ? <ChevronDown className="w-3.5 h-3.5 text-purple-500" /> : <ChevronUp className="w-3.5 h-3.5 text-purple-500" />}
                   </button>
                   {isOpen && (
                     <div className="space-y-1">
@@ -151,13 +151,17 @@ function AdminLayout() {
                         return (
                           <Link key={item.label} to={item.href as any}
                             onClick={() => setSidebarOpen(false)}
-                            className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all ${
+                            className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-bold transition-all ${
                               isActive
-                                ? "dark:bg-purple-500/20 text-white border border-purple-500/30 shadow-[0_0_15px_rgba(124,58,237,0.15)]"
-                                : "dark:text-gray-400 text-gray-600 hover:text-white hover:dark:bg-white/5 hover:bg-gray-100"
+                                ? dark
+                                  ? "bg-purple-500/20 text-purple-200 border border-purple-500/40 shadow-[0_0_15px_rgba(124,58,237,0.2)]"
+                                  : "bg-purple-50 text-purple-900 border border-purple-300/80 shadow-sm"
+                                : dark
+                                  ? "text-slate-300 hover:text-white hover:bg-white/10"
+                                  : "text-slate-700 hover:text-purple-700 hover:bg-purple-50/70"
                             }`}
                           >
-                            <item.icon className="w-4 h-4" />
+                            <item.icon className="w-4 h-4 text-purple-500 shrink-0" />
                             <span>{item.label}</span>
                           </Link>
                         );
@@ -172,8 +176,8 @@ function AdminLayout() {
           {/* Footer */}
           <div className={`p-3 border-t ${border}`}>
             <Link to="/dashboard"
-              className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs dark:text-gray-500 text-gray-500 hover:text-purple-400 transition-colors">
-              <ChevronLeft className="w-3 h-3" /> Back to Student View
+              className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold dark:text-gray-400 text-slate-600 hover:text-purple-600 transition-colors">
+              <ChevronLeft className="w-3.5 h-3.5 text-purple-500" /> Back to Student View
             </Link>
           </div>
         </aside>
