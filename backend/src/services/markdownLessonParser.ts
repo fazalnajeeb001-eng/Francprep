@@ -149,7 +149,7 @@ function parseGrammar(text: string) {
   let formation = '';
   const fm = text.match(/(?:\*\*|)?Formation[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=\n(?:\*\*|)?Usage|\n(?:\*\*|)?Examples|\n(?:\*\*|)?Common|\n(?:\*\*|)?Mini|$)/i);
   if (fm) {
-    formation = fm[1].replace(/^\s*[-•*]\s*/gm, '').replace(/\|[^|]*\|/g, '').split('\n').filter(l => l.trim()).map(l => l.trim()).join('; ');
+    formation = clean(fm[1]);
   }
 
   const examples: string[] = [];

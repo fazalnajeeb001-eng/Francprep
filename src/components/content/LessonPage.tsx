@@ -1365,14 +1365,14 @@ function GrammarSection({ grammar, dark, cardBg, innerBg, textBody, textSec }: {
       {grammar.formation && !isPlaceholderFormation && (
         <div className={`${innerBg} rounded-xl p-3 border mb-3`}>
           <p className={`text-xs font-semibold mb-1 ${dark ? "text-purple-400" : "text-purple-600"}`}>Formation:</p>
-          <div className={`text-xs ${textBody}`}>{renderFormattedMarkdown(grammar.formation, dark)}</div>
+          <div>{parseExplanationContent(grammar.formation)}</div>
         </div>
       )}
 
       {grammar.usage && !isPlaceholderUsage && (
         <div className={`${innerBg} rounded-xl p-3 border mb-3`}>
           <p className={`text-xs font-semibold mb-1 ${dark ? "text-purple-400" : "text-purple-600"}`}>Usage:</p>
-          <div className={`text-xs ${textBody}`}>{renderFormattedMarkdown(grammar.usage, dark)}</div>
+          <div>{parseExplanationContent(grammar.usage)}</div>
         </div>
       )}
 
