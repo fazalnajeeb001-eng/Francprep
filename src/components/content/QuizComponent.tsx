@@ -700,15 +700,15 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
           return (
             <button key={i} onClick={() => !submitted && setAnswer(qId, opt)}
               disabled={submitted}
-              className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${
+              className={`w-full text-left p-3.5 rounded-xl border text-sm transition-all ${
                 resultForQ
-                  ? isCorrect ? dark ? "border-emerald-500 bg-emerald-500/20 text-emerald-300 font-medium" : "border-emerald-500 bg-emerald-100 text-emerald-900 font-semibold"
-                  : isWrong ? dark ? "border-red-500 bg-red-500/20 text-red-300" : "border-red-500 bg-red-100 text-red-900 font-semibold"
-                  : showCorrect ? dark ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-medium" : "border-emerald-500/50 bg-emerald-50 text-emerald-800 font-semibold"
-                  : dark ? "border-[#1e2a4a] text-gray-500" : "border-gray-200 text-gray-500"
+                  ? isCorrect ? dark ? "border-emerald-500 bg-emerald-500/20 text-emerald-300 font-bold" : "border-emerald-500 bg-emerald-100 text-emerald-950 font-bold"
+                  : isWrong ? dark ? "border-red-500 bg-red-500/20 text-red-300" : "border-red-500 bg-red-100 text-red-950 font-bold"
+                  : showCorrect ? dark ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-bold" : "border-emerald-500 bg-emerald-50 text-emerald-950 font-bold"
+                  : dark ? "border-[#1e2a4a] text-gray-400" : "border-slate-200 bg-white text-slate-700"
                   : isSelected
-                  ? dark ? "border-purple-500 bg-purple-500/20 text-purple-300 ring-1 ring-purple-500/40" : "border-purple-500 bg-purple-50 text-purple-900 font-semibold ring-1 ring-purple-400/40"
-                  : dark ? "border-[#1e2a4a] text-gray-300 hover:border-purple-500/50" : "border-gray-200 text-gray-800 hover:border-purple-300 hover:bg-gray-50"
+                  ? dark ? "border-purple-500 bg-purple-500/20 text-purple-300 ring-1 ring-purple-500/40" : "border-purple-600 bg-purple-50 text-purple-950 font-extrabold ring-2 ring-purple-500/40 shadow-sm"
+                  : dark ? "border-[#1e2a4a] text-gray-200 hover:border-purple-500/50" : "border-slate-300 bg-white text-slate-900 font-bold hover:border-purple-500 hover:bg-purple-50/60 shadow-sm"
               }`}>
               <div className="flex items-center gap-2">
                 {resultForQ && (isCorrect ? <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" /> : isWrong ? <XCircle className="w-4 h-4 text-red-500 flex-shrink-0" /> : showCorrect ? <CheckCircle2 className="w-4 h-4 text-emerald-500/60 flex-shrink-0" /> : null)}
@@ -890,10 +890,10 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
           return (
             <button key={i} onClick={() => !submitted && setAnswer(qId, opt)}
               disabled={submitted}
-              className={`w-full text-left p-3 rounded-xl border text-sm transition-all ${
-                resultForQ ? (isCorrect ? "border-emerald-500 bg-emerald-500/20 text-emerald-300 font-medium" : isWrong ? "border-red-500 bg-red-500/20 text-red-300" : showCorrect ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-medium" : dark ? "border-[#1e2a4a] text-gray-500" : "border-gray-200 text-gray-400")
-                : isSelected ? (dark ? "border-purple-500 bg-purple-500/20 text-purple-300 ring-1 ring-purple-500/40" : "border-purple-400 bg-purple-50 text-purple-700 ring-1 ring-purple-400/40")
-                : dark ? "border-[#1e2a4a] text-gray-300 hover:border-purple-500/50" : "border-gray-200 text-gray-700 hover:border-gray-300"
+              className={`w-full text-left p-3.5 rounded-xl border text-sm transition-all ${
+                resultForQ ? (isCorrect ? "border-emerald-500 bg-emerald-500/20 text-emerald-300 font-bold" : isWrong ? "border-red-500 bg-red-500/20 text-red-300" : showCorrect ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-bold" : dark ? "border-[#1e2a4a] text-gray-500" : "border-slate-200 text-slate-600")
+                : isSelected ? (dark ? "border-purple-500 bg-purple-500/20 text-purple-300 ring-1 ring-purple-500/40" : "border-purple-600 bg-purple-50 text-purple-950 font-extrabold ring-2 ring-purple-500/40 shadow-sm")
+                : dark ? "border-[#1e2a4a] text-gray-200 hover:border-purple-500/50" : "border-slate-300 bg-white text-slate-900 font-bold hover:border-purple-500 hover:bg-purple-50/60 shadow-sm"
               }`}>
               <div className="flex items-center gap-2">
                 {resultForQ && (isCorrect ? <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" /> : isWrong ? <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" /> : showCorrect ? <CheckCircle2 className="w-4 h-4 text-emerald-400/50 flex-shrink-0" /> : null)}

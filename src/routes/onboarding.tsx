@@ -654,14 +654,14 @@ export function OnboardingPage() {
                       <div
                         key={idx}
                         onClick={() => handleSelectAnswer(PLACEMENT_QUESTIONS[currentQIndex].id, idx)}
-                        className={`p-4 rounded-2xl border text-sm font-semibold transition-all cursor-pointer flex items-center justify-between ${
+                        className={`p-4 rounded-2xl border text-sm font-bold transition-all cursor-pointer flex items-center justify-between ${
                           isSelected
-                            ? "border-purple-500 bg-purple-500/15 text-purple-700 dark:text-purple-300 ring-2 ring-purple-500/30"
-                            : "border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-white/5 hover:border-purple-300"
+                            ? "border-purple-600 bg-purple-50 text-purple-950 ring-2 ring-purple-500/40 dark:bg-purple-500/20 dark:text-purple-300 shadow-sm"
+                            : "border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-slate-100 hover:border-purple-500 hover:bg-purple-50/40 shadow-sm"
                         }`}
                       >
                         <span>{opt}</span>
-                        <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${isSelected ? "border-purple-500 bg-purple-500 text-white" : "border-gray-400"}`}>
+                        <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${isSelected ? "border-purple-500 bg-purple-500 text-white" : "border-slate-400"}`}>
                           {isSelected && <CheckCircle2 className="w-3.5 h-3.5" />}
                         </div>
                       </div>
