@@ -119,9 +119,9 @@ function DraftsSubSectionPage() {
     }
   };
 
-  const bg = dark ? "bg-[#070B17]" : "bg-gray-50";
-  const card = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200";
-  const txtSec = dark ? "text-gray-400" : "text-gray-500";
+  const bg = dark ? "bg-[#070B17]" : "bg-slate-50";
+  const card = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white border-slate-200 shadow-sm shadow-slate-200/50";
+  const txtSec = dark ? "text-gray-400" : "text-slate-700 font-semibold";
   const inp = `w-full rounded-xl ${dark ? "bg-[#070B17] border-[#1e2a4a] text-white" : "bg-white border-gray-300 text-gray-900"} border px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all`;
 
   if (previewDraftId) {
