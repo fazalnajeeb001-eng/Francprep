@@ -411,48 +411,34 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
     for (const parsedLesson of lessonsToProcess) {
       const { errors, warnings } = await validateParsedLesson(parsedLesson);
 
-      // Find any existing draft that is active (NOT published and NOT superseded)
-      const existingDraft = await Draft.findOne({
+      // Find highest existing version draft for versioning
+      const highestVersionDraft = await Draft.findOne({ lessonId: parsedLesson.lessonId }).sort({ version: -1 });
+      const nextVersion = highestVersionDraft ? (highestVersionDraft.version || 1) + 1 : 1;
+
+      // Automatically mark ALL previous un-published drafts for this lessonId as superseded
+      await Draft.updateMany(
+        {
+          lessonId: parsedLesson.lessonId,
+          status: { $nin: ['published', 'superseded'] },
+        },
+        { $set: { status: 'superseded' } }
+      );
+
+      // Create new active draft document for the new push
+      const draft = await Draft.create({
         lessonId: parsedLesson.lessonId,
-        status: { $nin: ['published', 'superseded'] },
+        chapterId: parsedLesson.chapterId,
+        level: parsedLesson.level,
+        title: parsedLesson.title,
+        content: markdown,
+        parsedData: parsedLesson,
+        validationErrors: errors,
+        validationWarnings: warnings,
+        status: errors.length === 0 ? 'validated' : 'draft',
+        origin: 'paste_import',
+        version: nextVersion,
+        createdBy: req.user?.email || 'admin',
       });
-
-      let draft;
-      if (existingDraft) {
-        // Mark existing draft as superseded for version history
-        existingDraft.status = 'superseded';
-        await existingDraft.save();
-
-        // Create new active draft document for the new push
-        draft = await Draft.create({
-          lessonId: parsedLesson.lessonId,
-          chapterId: parsedLesson.chapterId,
-          level: parsedLesson.level,
-          title: parsedLesson.title,
-          content: markdown,
-          parsedData: parsedLesson,
-          validationErrors: errors,
-          validationWarnings: warnings,
-          status: errors.length === 0 ? 'validated' : 'draft',
-          origin: 'paste_import',
-          version: (existingDraft.version || 1) + 1,
-          createdBy: req.user?.email || 'admin',
-        });
-      } else {
-        draft = await Draft.create({
-          lessonId: parsedLesson.lessonId,
-          chapterId: parsedLesson.chapterId,
-          level: parsedLesson.level,
-          title: parsedLesson.title,
-          content: markdown,
-          parsedData: parsedLesson,
-          validationErrors: errors,
-          validationWarnings: warnings,
-          status: errors.length === 0 ? 'validated' : 'draft',
-          origin: 'paste_import',
-          createdBy: req.user?.email || 'admin',
-        });
-      }
 
       results.push({
         lessonId: parsedLesson.lessonId,
@@ -480,19 +466,33 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
 });
 
 // ─── GET /content-pipeline/drafts ──────────────────────────────────────────
-// List all drafts with optional filtering
+// List drafts (returns latest active draft per lessonId by default)
 router.get('/content-pipeline/drafts', async (req: AuthRequest, res: Response) => {
   try {
-    const { level, lessonId, limit = '200' } = req.query as any;
+    const { level, lessonId, limit = '500', includeSuperseded } = req.query as any;
     const filter: any = {};
     if (level) filter.level = level;
     if (lessonId) filter.lessonId = lessonId;
+    if (includeSuperseded !== 'true') {
+      filter.status = { $ne: 'superseded' };
+    }
 
     const drafts = await Draft.find(filter).sort({ updatedAt: -1 }).limit(parseInt(limit));
 
+    // Deduplicate to ensure only 1 latest active draft per lessonId is returned for workspace
+    const activeDraftsMap: Record<string, typeof drafts[0]> = {};
+    for (const d of drafts) {
+      const key = d.lessonId || (d._id as any).toString();
+      if (!activeDraftsMap[key] || new Date(d.updatedAt).getTime() > new Date(activeDraftsMap[key].updatedAt).getTime()) {
+        activeDraftsMap[key] = d;
+      }
+    }
+
+    const finalDrafts = includeSuperseded === 'true' ? drafts : Object.values(activeDraftsMap);
+
     res.json({
       success: true,
-      data: drafts,
+      data: finalDrafts,
     });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
