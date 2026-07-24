@@ -244,10 +244,10 @@ export function renderFormattedMarkdown(text: string, dark: boolean) {
         return (
           <strong
             key={partIdx}
-            className={`font-bold px-1 py-0.5 rounded ${
+            className={`font-extrabold px-1.5 py-0.5 rounded transition-colors ${
               dark
-                ? "text-purple-200 bg-purple-500/20"
-                : "text-purple-900 bg-purple-100/70"
+                ? "text-purple-200 bg-purple-500/15 border border-purple-500/30"
+                : "text-purple-950 bg-purple-50/80 border border-purple-200/60"
             }`}
           >
             {part.text}
@@ -258,7 +258,7 @@ export function renderFormattedMarkdown(text: string, dark: boolean) {
         return (
           <em
             key={partIdx}
-            className={`font-semibold italic ${
+            className={`font-bold italic ${
               dark ? "text-purple-300" : "text-purple-800"
             }`}
           >
