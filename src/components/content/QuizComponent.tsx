@@ -956,12 +956,12 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
               const translationText = parts[1].trim();
               return (
                 <div className="space-y-2">
-                  <p className={`text-sm font-semibold leading-relaxed whitespace-pre-line ${dark ? "text-gray-200" : "text-gray-850"}`}>{mainText}</p>
+                  <p className={`text-sm font-bold leading-relaxed whitespace-pre-line ${dark ? "text-gray-100" : "text-slate-900"}`}>{mainText}</p>
                   <TranslationToggle translation={translationText} dark={dark} />
                 </div>
               );
             }
-            return <p className={`text-sm font-semibold leading-relaxed whitespace-pre-line ${dark ? "text-gray-200" : "text-gray-850"}`}>{qText}</p>;
+            return <p className={`text-sm font-bold leading-relaxed whitespace-pre-line ${dark ? "text-gray-100" : "text-slate-900"}`}>{qText}</p>;
           })()}
           {renderQuestion(q, qId)}
 
@@ -994,7 +994,7 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
                   {(questionAttempts[qId] || 0) >= 3 && !revealedAnswers[qId] && (
                     <button
                       onClick={() => setRevealedAnswers(prev => ({ ...prev, [qId]: true }))}
-                      className="text-xs text-purple-400 hover:text-purple-300 font-semibold underline mt-1"
+                      className="text-xs dark:text-purple-300 text-purple-700 hover:underline font-extrabold mt-1"
                     >
                       Reveal AI Review & Correct Answer
                     </button>

@@ -403,9 +403,9 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
   const pageBg = dark ? "bg-[#070B17] text-white" : "bg-[#F8FAFC] text-slate-900";
   const cardBg = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white border-slate-200 shadow-sm shadow-slate-200/50";
   const innerBg = dark ? "bg-[#070B17] border-[#1e2a4a]" : "bg-slate-50 border-slate-200";
-  const textSec = dark ? "text-gray-300" : "text-slate-700";
-  const textBody = dark ? "text-gray-200" : "text-slate-800";
-  const textMuted = dark ? "text-gray-400" : "text-slate-600";
+  const textSec = dark ? "text-gray-300" : "text-slate-700 font-semibold";
+  const textBody = dark ? "text-gray-200" : "text-slate-900 font-medium";
+  const textMuted = dark ? "text-gray-400" : "text-slate-600 font-medium";
   const btnHover = dark ? "hover:bg-white/5" : "hover:bg-slate-100";
 
   const { data: lesson, isError: lessonError } = useQuery({
