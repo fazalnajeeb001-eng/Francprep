@@ -195,6 +195,97 @@ function buildSections(lesson: LessonData): SectionDef[] {
   return sections;
 }
 
+
+// ─── Inline Markdown Parsing Helpers ────────────────────────────────────────
+
+function parseInlineMarkdown(text: string): { type: 'text' | 'bold' | 'italic'; text: string }[] {
+  const result: { type: 'text' | 'bold' | 'italic'; text: string }[] = [];
+  const regex = /(\*\*(.*?)\*\*|\*(.*?)\*)/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      result.push({ type: 'text', text: text.substring(lastIndex, match.index) });
+    }
+    if (match[2] !== undefined) {
+      result.push({ type: 'bold', text: match[2] });
+    } else if (match[3] !== undefined) {
+      result.push({ type: 'italic', text: match[3] });
+    }
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    result.push({ type: 'text', text: text.substring(lastIndex) });
+  }
+
+  return result;
+}
+
+export function renderFormattedMarkdown(text: string, dark: boolean) {
+  if (!text) return null;
+
+  const lines = text.split('\n');
+
+  return lines.map((line, lineIdx) => {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      return <div key={lineIdx} className="h-2" />;
+    }
+
+    const isBullet = trimmed.startsWith('- ') || trimmed.startsWith('* ');
+    const contentToParse = isBullet ? trimmed.slice(2) : trimmed;
+
+    const parts = parseInlineMarkdown(contentToParse);
+
+    const lineElements = parts.map((part, partIdx) => {
+      if (part.type === 'bold') {
+        return (
+          <strong
+            key={partIdx}
+            className={`font-bold px-1 py-0.5 rounded ${
+              dark
+                ? "text-purple-200 bg-purple-500/20"
+                : "text-purple-900 bg-purple-100/70"
+            }`}
+          >
+            {part.text}
+          </strong>
+        );
+      }
+      if (part.type === 'italic') {
+        return (
+          <em
+            key={partIdx}
+            className={`font-semibold italic ${
+              dark ? "text-purple-300" : "text-purple-800"
+            }`}
+          >
+            {part.text}
+          </em>
+        );
+      }
+      return <span key={partIdx}>{part.text}</span>;
+    });
+
+    if (isBullet) {
+      return (
+        <div key={lineIdx} className="flex items-start gap-2 my-1 pl-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 shrink-0" />
+          <div className="flex-1">{lineElements}</div>
+        </div>
+      );
+    }
+
+    return (
+      <p key={lineIdx} className="my-1.5 leading-relaxed">
+        {lineElements}
+      </p>
+    );
+  });
+}
+
 // ─── Main Component ────────────────────────────────────────────────────────
 
 export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; draftId?: string; onBack?: () => void }) {
@@ -269,15 +360,20 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
     value,
     className = "",
     as: Tag = "span",
-    placeholder = "Edit..."
+    placeholder = "Edit...",
+    formatMarkdown = false,
   }: {
     fieldPath: string;
     value: string;
     className?: string;
     as?: any;
     placeholder?: string;
+    formatMarkdown?: boolean;
   }) => {
     if (!isAdminPreview) {
+      if (formatMarkdown && value) {
+        return <div className={className}>{renderFormattedMarkdown(value, dark)}</div>;
+      }
       return <Tag className={className}>{value || placeholder}</Tag>;
     }
     return (
@@ -856,7 +952,7 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
         return (
           <div className={`${dark ? "bg-indigo-500/5 border-indigo-500/20" : "bg-indigo-50 border-indigo-200"} rounded-2xl p-5 border`}>
             <div className="flex items-center gap-2 mb-3"><HelpCircle className="w-5 h-5 text-indigo-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Warm-Up</h3></div>
-            <EditableText as="p" fieldPath="warmUp.content" value={lesson!.warmUp.content} className={`text-sm leading-relaxed ${textBody}`} />
+            <EditableText as="div" fieldPath="warmUp.content" value={lesson!.warmUp.content} formatMarkdown className={`text-sm leading-relaxed ${textBody}`} />
           </div>
         );
 
@@ -865,8 +961,8 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
             <h3 className={`text-sm font-semibold mb-3 ${dark ? "text-white" : "text-gray-900"}`}>Lesson Explanation</h3>
-            <div className={`text-sm leading-relaxed whitespace-pre-line ${textBody}`}>
-              <EditableText as="div" fieldPath="explanation.content" value={lesson!.explanation.content} className="w-full whitespace-pre-line" />
+            <div className={`text-sm leading-relaxed ${textBody}`}>
+              <EditableText as="div" fieldPath="explanation.content" value={lesson!.explanation.content} formatMarkdown className="w-full" />
             </div>
           </div>
         );
@@ -1233,9 +1329,17 @@ function GrammarSection({ grammar, dark, cardBg, innerBg, textBody, textSec }: {
           } else if (trimmed.startsWith('##')) {
             elements.push(<h3 key={idx} className={`text-sm font-bold mt-4 mb-2 ${dark ? "text-white" : "text-gray-900"}`}>{trimmed.replace('##', '').trim()}</h3>);
           } else if (trimmed.startsWith('-') || trimmed.startsWith('*')) {
-            elements.push(<li key={idx} className={`text-xs ${textBody} ml-4 list-disc mb-1`}>{trimmed.slice(1).trim()}</li>);
+            elements.push(
+              <div key={idx} className="ml-2">
+                {renderFormattedMarkdown(trimmed, dark)}
+              </div>
+            );
           } else {
-            elements.push(<p key={idx} className={`text-xs ${textBody} mb-2 leading-relaxed`}>{trimmed}</p>);
+            elements.push(
+              <div key={idx} className={`text-xs ${textBody} mb-1.5 leading-relaxed`}>
+                {renderFormattedMarkdown(trimmed, dark)}
+              </div>
+            );
           }
         }
       }
@@ -1261,14 +1365,14 @@ function GrammarSection({ grammar, dark, cardBg, innerBg, textBody, textSec }: {
       {grammar.formation && !isPlaceholderFormation && (
         <div className={`${innerBg} rounded-xl p-3 border mb-3`}>
           <p className={`text-xs font-semibold mb-1 ${dark ? "text-purple-400" : "text-purple-600"}`}>Formation:</p>
-          <p className={`text-xs ${textBody}`}>{grammar.formation}</p>
+          <div className={`text-xs ${textBody}`}>{renderFormattedMarkdown(grammar.formation, dark)}</div>
         </div>
       )}
 
       {grammar.usage && !isPlaceholderUsage && (
         <div className={`${innerBg} rounded-xl p-3 border mb-3`}>
           <p className={`text-xs font-semibold mb-1 ${dark ? "text-purple-400" : "text-purple-600"}`}>Usage:</p>
-          <p className={`text-xs ${textBody}`}>{grammar.usage}</p>
+          <div className={`text-xs ${textBody}`}>{renderFormattedMarkdown(grammar.usage, dark)}</div>
         </div>
       )}
 
@@ -1276,7 +1380,7 @@ function GrammarSection({ grammar, dark, cardBg, innerBg, textBody, textSec }: {
         <div className="mb-3">
           <p className={`text-xs font-semibold mb-1.5 ${dark ? "text-purple-400" : "text-purple-600"}`}>Examples:</p>
           {grammar.examples.map((ex, i) => (
-            <p key={i} className={`text-xs ${textBody} ml-2 mb-1`}>• {ex}</p>
+            <div key={i} className={`text-xs ${textBody} ml-2 mb-1`}>• {renderFormattedMarkdown(ex, dark)}</div>
           ))}
         </div>
       )}
@@ -1286,7 +1390,7 @@ function GrammarSection({ grammar, dark, cardBg, innerBg, textBody, textSec }: {
           <p className={`text-xs font-semibold mb-1.5 ${dark ? "text-red-400" : "text-red-600"}`}>Common Mistakes:</p>
           {grammar.commonMistakes.map((m, i) => (
             <div key={i} className={`text-xs p-2 rounded-lg mb-1 ${dark ? "bg-red-500/5" : "bg-red-50"}`}>
-              <span className="text-red-400">✗</span> {m.wrong} → <span className="text-emerald-400">✓</span> {m.correct}
+              <span className="text-red-400">✗</span> {renderFormattedMarkdown(m.wrong, dark)} → <span className="text-emerald-400">✓</span> {renderFormattedMarkdown(m.correct, dark)}
               {m.why && <span className={`ml-1 ${textSec}`}>({m.why})</span>}
             </div>
           ))}
