@@ -43,12 +43,16 @@ export function TodayPlan({ dark }: { dark: boolean }) {
   const totalTasks = tasks.length;
 
   return (
-    <div className={`${dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200"} backdrop-blur-lg border rounded-2xl p-5 transition-colors`}>
+    <div className={`${
+      dark
+        ? "bg-[#101828]/90 border-[#1e2a4a] shadow-xl shadow-black/10 text-white"
+        : "bg-white border border-slate-200/90 shadow-xl shadow-slate-200/50 text-slate-900"
+    } backdrop-blur-xl rounded-3xl p-6 transition-all duration-300`}>
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className={`text-sm font-semibold ${dark ? "text-gray-300" : "text-gray-700"}`}>📋 My Tasks</h3>
+          <h3 className={`text-base font-extrabold ${dark ? "text-gray-200" : "text-slate-900"}`}>📋 My Tasks</h3>
           {totalTasks > 0 && (
-            <p className={`text-[10px] ${dark ? "text-gray-500" : "text-gray-400"} mt-0.5`}>
+            <p className={`text-xs font-semibold ${dark ? "text-purple-300" : "text-purple-700"}`}>
               {doneCount}/{totalTasks} completed
             </p>
           )}

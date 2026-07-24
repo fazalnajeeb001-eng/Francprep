@@ -5,8 +5,12 @@ const formatTooltip: any = (value: number) => [`${value}m`, "Study Time"];
 
 export function ActivityChart({ activities, dark }: { activities: DashboardData["weeklyActivity"]; dark: boolean }) {
   return (
-    <div className={`${dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200"} backdrop-blur-lg border rounded-2xl p-5 transition-colors`}>
-      <h3 className={`text-sm font-semibold mb-4 ${dark ? "text-gray-300" : "text-gray-700"}`}>📈 Weekly Activity</h3>
+    <div className={`${
+      dark
+        ? "bg-[#101828]/90 border-[#1e2a4a] shadow-xl shadow-black/10 text-white"
+        : "bg-white border border-slate-200/90 shadow-xl shadow-slate-200/50 text-slate-900"
+    } backdrop-blur-xl rounded-3xl p-6 transition-all duration-300`}>
+      <h3 className={`text-base font-extrabold mb-4 ${dark ? "text-gray-200" : "text-slate-900"}`}>📈 Weekly Activity</h3>
       <ResponsiveContainer width="100%" height={120}>
         <BarChart data={activities} margin={{ top: 0, right: 0, bottom: 0, left: -10 }}>
           <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: dark ? "#6B7280" : "#9CA3AF" }} />

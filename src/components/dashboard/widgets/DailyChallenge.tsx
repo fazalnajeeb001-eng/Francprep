@@ -91,11 +91,15 @@ export function DailyChallenge({ dark }: { dark: boolean }) {
   const timerColor = timer > 30 ? "from-emerald-500 to-teal-500" : timer > 10 ? "from-amber-500 to-orange-500" : "from-red-500 to-rose-500";
 
   return (
-    <div className={`${dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200"} backdrop-blur-lg border rounded-2xl p-4 sm:p-5 transition-colors overflow-hidden`}>
+    <div className={`${
+      dark
+        ? "bg-[#101828]/90 border-[#1e2a4a] shadow-xl shadow-black/10 text-white"
+        : "bg-white border border-slate-200/90 shadow-xl shadow-slate-200/50 text-slate-900"
+    } backdrop-blur-xl rounded-3xl p-6 transition-all duration-300 overflow-hidden`}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-amber-400" />
-          <h3 className={`text-sm font-semibold ${dark ? "text-gray-300" : "text-gray-700"}`}>Daily Challenge</h3>
+          <h3 className={`text-base font-extrabold ${dark ? "text-gray-200" : "text-slate-900"}`}>Daily Challenge</h3>
         </div>
         {timerRunning && (
           <div className="flex items-center gap-1.5">

@@ -25,10 +25,14 @@ export function WeakAreas({ levels, dark }: { levels: DashboardData["levelProgre
   if (sections.length === 0) return null;
 
   return (
-    <div className={`${dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200"} backdrop-blur-lg border rounded-2xl p-5 transition-colors`}>
+    <div className={`${
+      dark
+        ? "bg-[#101828]/90 border-[#1e2a4a] shadow-xl shadow-black/10 text-white"
+        : "bg-white border border-slate-200/90 shadow-xl shadow-slate-200/50 text-slate-900"
+    } backdrop-blur-xl rounded-3xl p-6 transition-all duration-300`}>
       <div className="flex items-center gap-2 mb-4">
-        <AlertTriangle className="w-4 h-4 text-amber-400" />
-        <h3 className={`text-sm font-semibold ${dark ? "text-gray-300" : "text-gray-700"}`}>Needs Practice</h3>
+        <AlertTriangle className="w-4 h-4 text-amber-500" />
+        <h3 className={`text-base font-extrabold ${dark ? "text-gray-200" : "text-slate-900"}`}>Needs Practice</h3>
       </div>
       <div className="space-y-3">
         {sections.map((s, i) => {

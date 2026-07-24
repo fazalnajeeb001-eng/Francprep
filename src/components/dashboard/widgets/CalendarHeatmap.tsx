@@ -4,14 +4,18 @@ export function CalendarHeatmap({ calendar, dark }: { calendar: DashboardData["s
   const weeks: Array<Array<{ date: string; count: number }>> = [];
   for (let i = 0; i < calendar.length; i += 7) weeks.push(calendar.slice(i, i + 7));
   const getColor = (count: number) => {
-    if (count === 0) return dark ? "bg-[#1e2a4a]" : "bg-gray-200";
+    if (count === 0) return dark ? "bg-[#1e2a4a]" : "bg-slate-200";
     if (count <= 2) return "bg-purple-500/30";
     if (count <= 4) return "bg-purple-500/60";
     return "bg-purple-500";
   };
   return (
-    <div className={`${dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200"} backdrop-blur-lg border rounded-2xl p-5 transition-colors`}>
-      <h3 className={`text-sm font-semibold mb-4 ${dark ? "text-gray-300" : "text-gray-700"}`}>📅 Streak Calendar</h3>
+    <div className={`${
+      dark
+        ? "bg-[#101828]/90 border-[#1e2a4a] shadow-xl shadow-black/10 text-white"
+        : "bg-white border border-slate-200/90 shadow-xl shadow-slate-200/50 text-slate-900"
+    } backdrop-blur-xl rounded-3xl p-6 transition-all duration-300`}>
+      <h3 className={`text-base font-extrabold mb-4 ${dark ? "text-gray-200" : "text-slate-900"}`}>📅 Streak Calendar</h3>
       <div className="flex gap-1.5 justify-center">
         {weeks.slice(0, 4).map((week, wi) => (
           <div key={wi} className="flex flex-col gap-1">

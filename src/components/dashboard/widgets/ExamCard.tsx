@@ -14,10 +14,14 @@ export function ExamCard({ averageScore, dark }: { averageScore: number; dark: b
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-      className={`${dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200"} backdrop-blur-lg border rounded-2xl p-5 transition-colors`}>
+      className={`${
+        dark
+          ? "bg-[#101828]/90 border-[#1e2a4a] shadow-xl shadow-black/10 text-white"
+          : "bg-white border border-slate-200/90 shadow-xl shadow-slate-200/50 text-slate-900"
+      } backdrop-blur-xl rounded-3xl p-6 transition-all duration-300`}>
       <div className="flex items-center gap-2 mb-4">
         <Target className="w-4 h-4 text-purple-400" />
-        <h3 className={`text-sm font-semibold ${dark ? "text-gray-300" : "text-gray-700"}`}>Exam Simulator</h3>
+        <h3 className={`text-base font-extrabold ${dark ? "text-gray-200" : "text-slate-900"}`}>Exam Simulator</h3>
       </div>
 
       {hasData ? (
