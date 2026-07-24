@@ -129,7 +129,7 @@ export function JourneyBanner({ dark, firstName, streak, overallProgress, levels
 
         {/* CEFR Level Card */}
         <div className={`p-4 rounded-2xl backdrop-blur-xl border ${
-          dark ? "bg-[#0F1433]/70 border-[#1e2a4a]/50" : "bg-white/50 border-gray-200/50"
+          dark ? "bg-[#0F1433]/70 border-[#1e2a4a]/50" : "bg-white/90 border-purple-200/80 shadow-md shadow-purple-100/50"
         }`}>
           <div className="flex items-center justify-between mb-2">
             <div>

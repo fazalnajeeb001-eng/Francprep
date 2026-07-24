@@ -100,8 +100,8 @@ function DashboardPage() {
   if (loading) return <LoadingSkeleton dark={dark} />;
   if (!data) return <ErrorState dark={dark} />;
 
-  const b = dark ? "bg-[#070B17] text-white" : "bg-gray-50 text-gray-900";
-  const txtSec = dark ? "text-gray-400" : "text-gray-500";
+  const b = dark ? "bg-[#070B17] text-white" : "bg-[#F8FAFC] text-slate-900";
+  const txtSec = dark ? "text-gray-400" : "text-slate-600";
   const { emoji, greeting, motivational } = getGreeting();
 
   return (
@@ -109,7 +109,7 @@ function DashboardPage() {
       <div className="flex">
         <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} dark={dark} />
         <div className="flex-1 min-h-screen">
-          <header className={`sticky top-0 z-30 ${dark ? "bg-[#070B17]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200"} backdrop-blur-xl border-b transition-colors`}>
+          <header className={`sticky top-0 z-30 ${dark ? "bg-[#070B17]/80 border-[#1e2a4a]" : "bg-white/90 border-slate-200 shadow-sm shadow-slate-200/50"} backdrop-blur-xl border-b transition-colors`}>
             <div className="flex items-center justify-between px-4 md:px-6 py-3">
               <div className="flex items-center gap-4">
                 <button className="lg:hidden text-xl" onClick={() => setSidebarOpen(true)} aria-label="Open menu">☰</button>

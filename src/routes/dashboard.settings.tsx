@@ -141,33 +141,33 @@ function SettingsPage() {
     }
   };
 
-  const b = dark ? "bg-[#070B17] text-white" : "bg-gray-50 text-gray-900";
-  const txtSec = dark ? "text-gray-400" : "text-gray-500";
-  const card = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200";
-  const inputBg = dark ? "bg-[#101828] border-[#1e2a4a]" : "bg-white border-gray-200";
+  const b = dark ? "bg-[#070B17] text-white" : "bg-[#F8FAFC] text-slate-900";
+  const txtSec = dark ? "text-gray-400" : "text-slate-600";
+  const card = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white border-slate-200 shadow-sm shadow-slate-200/50";
+  const inputBg = dark ? "bg-[#101828] border-[#1e2a4a]" : "bg-slate-50 border-slate-300 text-slate-900";
   return (
     <div className={`min-h-screen ${b} transition-colors duration-300`}>
       <div className="max-w-2xl mx-auto p-6 space-y-6 pb-20">
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-4 mb-6">
-          <Link to="/dashboard" className={`${txtSec} hover:text-purple-400 text-sm transition-colors`}>← Dashboard</Link>
+          <Link to="/dashboard" className={`${txtSec} hover:text-purple-600 text-sm font-semibold transition-colors`}>← Dashboard</Link>
           <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Settings</h1>
         </motion.div>
 
         {/* Learning Goal */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>
-          <div className="flex items-center gap-3 mb-4"><Target className="w-5 h-5 text-purple-400" /><h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Learning Goal & Exam Target</h2></div>
+          <div className="flex items-center gap-3 mb-4"><Target className="w-5 h-5 text-purple-400" /><h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-slate-900"}`}>Learning Goal & Exam Target</h2></div>
           <p className={`text-xs mb-4 ${txtSec}`}>Set your target exam or CEFR level. You can change this anytime.</p>
           <div className="grid grid-cols-2 gap-2">
             {GOAL_OPTIONS.map((opt) => (
               <button key={opt.value} onClick={() => saveGoal(opt.value)} disabled={goalSaving}
                 className={`flex items-center gap-2 p-3 rounded-xl text-left transition-all ${
                   currentGoal === opt.value
-                    ? "bg-purple-500/20 border-2 border-purple-500 text-white shadow-md"
-                    : `${inputBg} border hover:border-purple-500/50 ${dark ? "text-gray-300" : "text-gray-700"}`
+                    ? "bg-purple-500/20 border-2 border-purple-500 text-purple-900 dark:text-white font-bold shadow-md"
+                    : `${inputBg} border hover:border-purple-500/50 ${dark ? "text-gray-300" : "text-slate-800"}`
                 }`}>
                 <span className="text-lg">{opt.emoji}</span>
                 <span className="text-xs font-semibold">{opt.label}</span>
-                {currentGoal === opt.value && <Check className="w-3.5 h-3.5 text-purple-400 ml-auto" />}
+                {currentGoal === opt.value && <Check className="w-3.5 h-3.5 text-purple-500 ml-auto" />}
               </button>
             ))}
           </div>

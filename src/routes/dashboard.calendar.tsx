@@ -39,9 +39,9 @@ function CalendarPage() {
     })();
   }, [user, authLoading]);
 
-  const b = dark ? "bg-[#070B17] text-white" : "bg-gray-50 text-gray-900";
-  const card = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200";
-  const txtSec = dark ? "text-gray-400" : "text-gray-500";
+  const b = dark ? "bg-[#070B17] text-white" : "bg-[#F8FAFC] text-slate-900";
+  const card = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white border-slate-200 shadow-sm shadow-slate-200/50";
+  const txtSec = dark ? "text-gray-400" : "text-slate-600";
 
   // Calendar math
   const firstDay = new Date(currentYear, currentMonth, 1).getDay();

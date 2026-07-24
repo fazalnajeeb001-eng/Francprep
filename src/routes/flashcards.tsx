@@ -52,11 +52,11 @@ function FlashcardsPage() {
   const [reviewed, setReviewed] = useState(0);
   const [mode, setMode] = useState<"all" | "due">("all");
 
-  const pageBg = dark ? "bg-[#070B17] text-white" : "bg-gray-50 text-gray-900";
-  const cardBg = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200";
-  const textSec = dark ? "text-gray-400" : "text-gray-500";
-  const textMuted = dark ? "text-gray-500" : "text-gray-400";
-  const btnHover = dark ? "hover:bg-white/5" : "hover:bg-gray-100";
+  const pageBg = dark ? "bg-[#070B17] text-white" : "bg-[#F8FAFC] text-slate-900";
+  const cardBg = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white border-slate-200 shadow-sm shadow-slate-200/50";
+  const textSec = dark ? "text-gray-300" : "text-slate-700";
+  const textMuted = dark ? "text-gray-400" : "text-slate-600";
+  const btnHover = dark ? "hover:bg-white/5" : "hover:bg-slate-100";
 
   useEffect(() => {
     collectAllVocab().then(vocab => {

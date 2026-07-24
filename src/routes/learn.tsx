@@ -47,18 +47,18 @@ function LearnPage() {
   const [loading, setLoading] = useState(true);
 
   // Theme-aware class helpers
-  const pageBg = dark ? "bg-[#070B17] text-white" : "bg-gray-50 text-gray-900";
-  const cardBg = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200";
-  const cardHover = dark ? "hover:border-purple-500/50 hover:shadow-purple-500/5" : "hover:border-purple-400 hover:shadow-purple-200/50";
-  const textSec = dark ? "text-gray-400" : "text-gray-700";
-  const textMuted = dark ? "text-gray-500" : "text-gray-600";
-  const border = dark ? "border-[#1e2a4a]" : "border-gray-200";
-  const mutedBg = dark ? "bg-[#0a0e1a]/60" : "bg-gray-100/60";
-  const mutedBorder = dark ? "border-[#1a1f35]" : "border-gray-200";
-  const headerBg = dark ? "bg-[#101828]/60 border-[#1e2a4a]" : "bg-gray-100/60 border-gray-200";
-  const linkHover = dark ? "hover:text-gray-300" : "hover:text-gray-700";
-  const btnHover = dark ? "hover:bg-white/5" : "hover:bg-gray-100";
-  const tagBg = dark ? "bg-[#101828]/50 border-[#1e2a4a]" : "bg-gray-100 border-gray-200";
+  const pageBg = dark ? "bg-[#070B17] text-white" : "bg-[#F8FAFC] text-slate-900";
+  const cardBg = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white border-slate-200/90 shadow-sm shadow-slate-200/50";
+  const cardHover = dark ? "hover:border-purple-500/50 hover:shadow-purple-500/5" : "hover:border-purple-300 hover:shadow-md hover:shadow-purple-100/60";
+  const textSec = dark ? "text-gray-300" : "text-slate-700";
+  const textMuted = dark ? "text-gray-400" : "text-slate-600";
+  const border = dark ? "border-[#1e2a4a]" : "border-slate-200";
+  const mutedBg = dark ? "bg-[#0a0e1a]/60" : "bg-slate-100/80";
+  const mutedBorder = dark ? "border-[#1a1f35]" : "border-slate-200";
+  const headerBg = dark ? "bg-[#101828]/60 border-[#1e2a4a]" : "bg-slate-100/80 border-slate-200";
+  const linkHover = dark ? "hover:text-gray-300" : "hover:text-slate-900";
+  const btnHover = dark ? "hover:bg-white/5" : "hover:bg-slate-100";
+  const tagBg = dark ? "bg-[#101828]/50 border-[#1e2a4a]" : "bg-slate-100 border-slate-200";
 
   useEffect(() => {
     (async () => {

@@ -51,11 +51,11 @@ export function WeeklyGoal({ dark }: { dark: boolean }) {
   const pct = goal ? Math.min(100, (goal.current / goal.target) * 100) : 0;
 
   return (
-    <div className={`${dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200"} backdrop-blur-lg border rounded-2xl p-5 transition-colors`}>
+    <div className={`${dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white border-slate-200 shadow-sm shadow-slate-200/50"} backdrop-blur-lg border rounded-2xl p-5 transition-colors`}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Target className="w-4 h-4 text-purple-400" />
-          <h3 className={`text-sm font-semibold ${dark ? "text-gray-300" : "text-gray-700"}`}>Weekly Goal</h3>
+          <h3 className={`text-sm font-bold ${dark ? "text-gray-300" : "text-slate-900"}`}>Weekly Goal</h3>
         </div>
         <div className="flex items-center gap-2">
           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${dark ? "bg-purple-500/20 text-purple-300" : "bg-purple-100 text-purple-700"}`}>
