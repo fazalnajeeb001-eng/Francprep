@@ -878,21 +878,21 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
         );
 
       case 'assessment':
-        const assessmentData = lesson!.assessment;
-        let assessmentSections = assessmentData?.sections || [];
+        const assessmentData = lesson?.assessment;
+        let assessmentSections = Array.isArray(assessmentData?.sections) ? assessmentData.sections : [];
 
-        const hasQuestions = assessmentSections.some((s: any) => s.questions && s.questions.length > 0);
+        const hasQuestions = assessmentSections.some((s: any) => Array.isArray(s?.questions) && s.questions.length > 0);
         if (!hasQuestions) {
-          const l = lesson! as any;
-          const fallbackQs = l.assessmentQuestions?.length ? l.assessmentQuestions
-            : l.delfQuestions?.length ? l.delfQuestions
-            : l.mixedPracticeExercises?.questions?.length ? l.mixedPracticeExercises.questions
-            : l.practiceExercises?.questions?.length ? l.practiceExercises.questions
-            : l.practice?.questions?.length ? l.practice.questions
-            : l.questions?.length ? l.questions
-            : l.comprehensionQuestions?.length ? l.comprehensionQuestions
-            : l.reading?.questions?.length ? l.reading.questions
-            : l.listening?.questions?.length ? l.listening.questions
+          const l = (lesson || {}) as any;
+          const fallbackQs = Array.isArray(l.assessmentQuestions) && l.assessmentQuestions.length ? l.assessmentQuestions
+            : Array.isArray(l.delfQuestions) && l.delfQuestions.length ? l.delfQuestions
+            : Array.isArray(l.mixedPracticeExercises?.questions) && l.mixedPracticeExercises.questions.length ? l.mixedPracticeExercises.questions
+            : Array.isArray(l.practiceExercises?.questions) && l.practiceExercises.questions.length ? l.practiceExercises.questions
+            : Array.isArray(l.practice?.questions) && l.practice.questions.length ? l.practice.questions
+            : Array.isArray(l.questions) && l.questions.length ? l.questions
+            : Array.isArray(l.comprehensionQuestions) && l.comprehensionQuestions.length ? l.comprehensionQuestions
+            : Array.isArray(l.reading?.questions) && l.reading.questions.length ? l.reading.questions
+            : Array.isArray(l.listening?.questions) && l.listening.questions.length ? l.listening.questions
             : [];
 
           if (fallbackQs.length > 0) {
@@ -910,8 +910,8 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
               points: 10,
               instructions: 'Demonstrate your overall understanding of this chapter.',
               questions: [{
-                id: `${lesson!.lessonId || 'l8'}-diag-1`,
-                type: 'short_answer',
+                id: `${lesson?.lessonId || 'l8'}-diag-1`,
+                type: 'short_answer' as const,
                 prompt: 'Summarize the key vocabulary and grammar rules introduced in this chapter.',
                 correctAnswer: 'Open-ended response',
                 explanation: 'Review your notes and practice expressing your thoughts clearly.',
@@ -919,6 +919,7 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
             }];
           }
         }
+
         const lesson7Transcript = lesson7?.scene?.text || lesson7?.reading?.text || lesson7?.listening?.transcript || '';
 
         return (
@@ -933,16 +934,26 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
               <p className={`text-sm ${textSec} mb-4`}>Complete the exam-style sections below.</p>
               
               {assessmentSections.map((sec: any, i: number) => {
-                const isListeningSec = sec.skill === 'listening' || sec.title?.toLowerCase().includes('listening') || sec.instructions?.toLowerCase().includes('lesson 7');
-                const isSpeakingSec = sec.skill === 'speaking' || sec.title?.toLowerCase().includes('oral');
+                const titleStr = typeof sec?.title === 'string' ? sec.title : (sec?.title ? String(sec.title) : '');
+                const instStr = typeof sec?.instructions === 'string' ? sec.instructions : (sec?.instructions ? String(sec.instructions) : '');
+                const skillStr = typeof sec?.skill === 'string' ? sec.skill : (sec?.skill ? String(sec.skill) : '');
+                
+                const titleLower = titleStr.toLowerCase();
+                const instLower = instStr.toLowerCase();
+                const skillLower = skillStr.toLowerCase();
+
+                const isListeningSec = skillLower === 'listening' || titleLower.includes('listening') || instLower.includes('lesson 7');
+                const isSpeakingSec = skillLower === 'speaking' || titleLower.includes('oral') || titleLower.includes('speaking');
+
+                const secQuestions = Array.isArray(sec?.questions) ? sec.questions : [];
 
                 return (
                   <div key={i} className={`p-4 rounded-xl border mb-6 ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"}`}>
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className={`text-xs font-bold ${dark ? "text-white" : "text-gray-900"}`}>{sec.title} ({sec.skill})</h4>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${dark ? "bg-purple-500/10 text-purple-300 border border-purple-500/20" : "bg-purple-100 text-purple-700"}`}>{sec.points} pts</span>
+                      <h4 className={`text-xs font-bold ${dark ? "text-white" : "text-gray-900"}`}>{titleStr || `Section ${i + 1}`} ({skillStr || 'DELF'})</h4>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${dark ? "bg-purple-500/10 text-purple-300 border border-purple-500/20" : "bg-purple-100 text-purple-700"}`}>{sec?.points || 10} pts</span>
                     </div>
-                    <p className={`text-xs ${textBody} mb-3 leading-relaxed`}>{sec.instructions}</p>
+                    {instStr && <p className={`text-xs ${textBody} mb-3 leading-relaxed`}>{instStr}</p>}
 
                     {/* Section 1 Listening: Embedded Lesson 7 Scene Reference Box & Audio Player */}
                     {isListeningSec && (
@@ -975,19 +986,19 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
                     )}
 
                     {/* Section 2 Reading: Embedded Source Passage Box */}
-                    {sec.sourceText && (
+                    {sec?.sourceText && (
                       <div className={`p-4 rounded-xl border mb-4 text-xs leading-relaxed whitespace-pre-line ${dark ? "bg-purple-500/5 border-purple-500/20 text-purple-200" : "bg-purple-50 border-purple-200 text-purple-900"}`}>
                         <p className="font-bold mb-1 flex items-center gap-1.5 text-purple-700 dark:text-purple-300">
                           <span>📖</span> Reading Passage:
                         </p>
-                        <p className="italic">{sec.sourceText}</p>
+                        <p className="italic">{String(sec.sourceText)}</p>
                       </div>
                     )}
 
                     {/* Interactive Quiz Component for Questions */}
-                    {sec.questions && sec.questions.length > 0 && (
+                    {secQuestions.length > 0 && (
                       <QuizComponent
-                        questions={adaptQuestions(sec.questions)}
+                        questions={adaptQuestions(secQuestions)}
                         type="assessment"
                         onComplete={(score, total) => handleBlockComplete(`assessment-${i}`, score, total)}
                         onSubmit={(answers) => handleSubmitBlock(`assessment-${i}`, answers)}
@@ -998,16 +1009,16 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
                     {isSpeakingSec && (
                       <div className="mt-4 border-t dark:border-[#1e2a4a] border-gray-200 pt-4">
                         <SpeakingDrill
-                          lessonLevel={lesson!.level}
-                          lessonTopic={lesson!.title}
-                          guidedActivity={sec.instructions}
+                          lessonLevel={lesson?.level || 'A1'}
+                          lessonTopic={lesson?.title || 'Oral Production'}
+                          guidedActivity={instStr}
                           onComplete={() => handleBlockComplete(`assessment-${i}`, 3, 3)}
                         />
                       </div>
                     )}
 
-                    {sec.answerKeyNotes && (
-                      <p className={`text-[11px] mt-2 italic ${dark ? "text-gray-400" : "text-gray-500"}`}>Grading: {sec.answerKeyNotes}</p>
+                    {sec?.answerKeyNotes && (
+                      <p className={`text-[11px] mt-2 italic ${dark ? "text-gray-400" : "text-gray-500"}`}>Grading: {String(sec.answerKeyNotes)}</p>
                     )}
                   </div>
                 );
