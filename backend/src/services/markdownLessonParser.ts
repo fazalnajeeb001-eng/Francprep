@@ -466,27 +466,33 @@ function parseListening(text: string): { title: string; transcript: string; tran
 }
 
 function parseSpeaking(text: string) {
-  const parts = text.split(/(?:\*\*|)?Roleplay/i);
-  const mainPart = parts[0] || '';
-  const roleplayPart = parts[1] || '';
-
   let guidedActivity = '';
-  const gm = mainPart.match(/Guided Activity[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=(?:\*\*|)?|$)/i);
-  if (gm) guidedActivity = gm[1].split('\n').filter(l => l.trim()).map(l => l.trim()).join(' ');
-  else guidedActivity = clean(mainPart.split('\n').filter(l => l.trim() && !l.startsWith('**')).map(l => l.trim()).join(' '));
-
   let roleplay: string | undefined;
   let pronunciationTip: string | undefined;
 
-  if (roleplayPart) {
-    const rpLines = roleplayPart.split(/(?:\*\*|)?Pronunciation Tip/i);
-    roleplay = rpLines[0].replace(/:(?:\*\*|)\s*/, '').split('\n').filter(l => l.trim()).map(l => l.replace(/^[-•*]\s*/, '').trim()).join(' ');
-    if (rpLines[1]) {
-      pronunciationTip = rpLines[1].split('\n').filter(l => l.trim()).map(l => l.replace(/^:(?:\*\*|)\s*/, '').trim()).filter(l => l && l !== '---').join(' ').replace(/\s*---\s*$/, '').trim();
-    }
+  const guidedMatch = text.match(/(?:\*\*|)?Guided Activity[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=(?:\*\*|)?Roleplay|(?:\*\*|)?Pronunciation Tip|(?:\*\*|)?Tip:|\n#|$)/i);
+  if (guidedMatch) {
+    guidedActivity = clean(guidedMatch[1]);
+  } else {
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('#') && !l.startsWith('**Pronunciation'));
+    guidedActivity = lines.slice(0, 2).join(' ');
   }
 
-  return { guidedActivity, roleplay, pronunciationTip };
+  const roleplayMatch = text.match(/(?:\*\*|)?Roleplay[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=(?:\*\*|)?Pronunciation Tip|(?:\*\*|)?Tip:|\n#|$)/i);
+  if (roleplayMatch) {
+    roleplay = clean(roleplayMatch[1]);
+  }
+
+  const tipMatch = text.match(/(?:\*\*|)?(?:Pronunciation )?Tip[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=\n#|$)/i);
+  if (tipMatch) {
+    pronunciationTip = clean(tipMatch[1]);
+  }
+
+  return {
+    guidedActivity: guidedActivity || 'Practice describing your thoughts using the lesson vocabulary.',
+    roleplay: roleplay || undefined,
+    pronunciationTip: pronunciationTip || undefined,
+  };
 }
 
 export function parseWriting(text: string) {
