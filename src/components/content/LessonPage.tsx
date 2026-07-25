@@ -1092,6 +1092,8 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
             <SpeakingDrill
               lessonLevel={lesson!.level}
               lessonTopic={lesson!.title}
+              guidedActivity={lesson!.speaking?.guidedActivity}
+              roleplayPrompt={lesson!.speaking?.roleplay}
               onComplete={() => markSectionComplete(currentSectionIdx)}
             />
           </div>

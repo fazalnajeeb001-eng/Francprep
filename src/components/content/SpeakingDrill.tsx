@@ -13,16 +13,18 @@ interface ChatMessage {
 interface SpeakingDrillProps {
   lessonLevel?: string;
   lessonTopic?: string;
+  guidedActivity?: string;
+  roleplayPrompt?: string;
   onComplete?: () => void;
 }
 
 const GREETINGS: Record<string, string> = {
-  A1: "Bonjour ! Je suis Madame Sophie. Comment tu t'appelles ?",
-  A2: "Salut ! Bienvenue en cours de français. Comment ça va aujourd'hui ?",
-  B1: "Bonjour ! Prêt pour une petite conversation en français ? Dis-moi, qu'est-ce que tu as fait aujourd'hui ?",
-  B2: "Bonjour ! Aujourd'hui, on va discuter. Quel est le sujet qui t'intéresse en ce moment ?",
-  C1: "Bonjour ! Je suis curieuse de savoir ce que tu penses. Quel est ton avis sur l'apprentissage des langues ?",
-  C2: "Bonjour ! Parlons de quelque chose d'interesting. Qu'est-ce qui te passionne en ce moment ?",
+  A1: "FR: Bonjour ! Je suis Madame Sophie. Comment tu t'appelles ?\nEN: (Hello! I am Madame Sophie. What is your name?)",
+  A2: "FR: Salut ! Bienvenue en cours de français. Comment ça va aujourd'hui ?\nEN: (Hi! Welcome to French class. How are you doing today?)",
+  B1: "FR: Bonjour ! Prêt pour une petite conversation en français ? Dis-moi, qu'est-ce que tu as fait aujourd'hui ?\nEN: (Hello! Ready for a quick French conversation? Tell me, what did you do today?)",
+  B2: "FR: Bonjour ! Aujourd'hui, on va discuter. Quel est le sujet qui t'intéresse en ce moment ?\nEN: (Hello! Today we will talk. What topic interests you right now?)",
+  C1: "FR: Bonjour ! Je suis curieuse de savoir ce que tu penses. Quel est ton avis sur l'apprentissage des langues ?\nEN: (Hello! I'm curious to know your thoughts. What is your opinion on language learning?)",
+  C2: "FR: Bonjour ! Parlons de quelque chose d'intéressant. Qu'est-ce qui te passionne en ce moment ?\nEN: (Hello! Let's talk about something interesting. What are you passionate about right now?)",
 };
 
 declare global {
@@ -37,7 +39,7 @@ function getSpeechRecognition(): any {
   return window.SpeechRecognition || window.webkitSpeechRecognition || null;
 }
 
-export function SpeakingDrill({ lessonLevel = "A1", lessonTopic }: SpeakingDrillProps) {
+export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity, roleplayPrompt }: SpeakingDrillProps) {
   const { dark } = useTheme();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState("");
@@ -49,24 +51,34 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic }: SpeakingDrill
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
 
-  const greeting = GREETINGS[lessonLevel] || GREETINGS.A1;
+  const initialGreeting = useMemo(() => {
+    const topicStr = lessonTopic ? `sur "${lessonTopic}"` : "";
+    const promptText = guidedActivity || roleplayPrompt || "";
+
+    if (promptText) {
+      return `FR: Bonjour ! Je suis Madame Sophie. Pour notre leçon ${topicStr}, voici ton exercice : ${promptText} Tu peux répondre à l'exercice ou me parler de ce que tu veux en français !\nEN: (Hello! I am Madame Sophie. For our lesson ${topicStr ? `on "${lessonTopic}"` : ""}, here is your exercise: ${promptText} Feel free to complete the exercise or talk about anything you like in French!)`;
+    }
+
+    return GREETINGS[lessonLevel] || GREETINGS.A1;
+  }, [lessonLevel, lessonTopic, guidedActivity, roleplayPrompt]);
+
   const hasSpeechRecognition = !!getSpeechRecognition();
 
-  // Initialize with greeting
+  // Initialize with dynamic greeting
   useEffect(() => {
-    setMessages([{ role: "assistant", content: greeting }]);
-  }, [greeting]);
+    setMessages([{ role: "assistant", content: initialGreeting }]);
+  }, [initialGreeting]);
 
   // Auto-scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isThinking]);
 
-  // Auto-speak greeting
+  // Auto-speak greeting when page loads or greeting initializes
   useEffect(() => {
-    const timer = setTimeout(() => speakText(greeting), 500);
+    const timer = setTimeout(() => speakText(initialGreeting), 400);
     return () => clearTimeout(timer);
-  }, []);
+  }, [initialGreeting]);
 
   // Cleanup on unmount
   useEffect(() => {
