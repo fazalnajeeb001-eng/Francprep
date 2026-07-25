@@ -1525,15 +1525,16 @@ function WritingSection({ lesson, dark, cardBg, innerBg, textBody, onComplete }:
   return (
     <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
       <div className="flex items-center gap-3 mb-3"><PenTool className="w-5 h-5 text-purple-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Writing Practice</h3></div>
-      {writing.task && <p className={`text-sm ${textBody} mb-3 whitespace-pre-line`}>{writing.task}</p>}
+      {writing.task && <div className={`text-sm ${textBody} mb-3 leading-relaxed`}>{renderFormattedMarkdown(writing.task, dark)}</div>}
 
       {writing.checklist.length > 0 && (
         <div className={`${innerBg} rounded-xl p-3 border mb-3`}>
           <p className={`text-xs font-semibold mb-1.5 ${dark ? "text-purple-400" : "text-purple-600"}`}>Checklist:</p>
           {writing.checklist.map((item, i) => (
-            <p key={i} className={`text-xs ${textBody} flex items-start gap-1.5 mb-0.5`}>
-              <span className="text-emerald-400">&#10003;</span>{item}
-            </p>
+            <div key={i} className={`text-xs ${textBody} flex items-start gap-1.5 mb-0.5`}>
+              <span className="text-emerald-400">&#10003;</span>
+              <span>{renderFormattedMarkdown(item, dark)}</span>
+            </div>
           ))}
         </div>
       )}
@@ -1546,7 +1547,7 @@ function WritingSection({ lesson, dark, cardBg, innerBg, textBody, onComplete }:
           </button>
           {showModel && (
             <div className={`${innerBg} rounded-xl p-3 border mt-2`}>
-              <p className={`text-xs ${textBody} whitespace-pre-line`}>{writing.modelAnswer}</p>
+              <div className={`text-xs ${textBody} leading-relaxed`}>{renderFormattedMarkdown(writing.modelAnswer, dark)}</div>
             </div>
           )}
         </div>
