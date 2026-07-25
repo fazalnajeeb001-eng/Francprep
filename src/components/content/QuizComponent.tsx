@@ -461,7 +461,10 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
 
     setCheckingQuestion(prev => ({ ...prev, [targetQId]: true }));
     try {
-      const targetQ = questions.find(question => (question.id || (question as any)._id) === targetQId);
+      const targetQ = questions.find((question, idx) => {
+        const id = question.id || (question as any)._id || String(idx);
+        return id === targetQId;
+      });
       if (!targetQ) return;
 
       if (targetQ.type === 'matching') {

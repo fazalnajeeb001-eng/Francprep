@@ -99,8 +99,8 @@ interface BlockResult {
 
 function adaptQuestions(questions: LessonQuestion[]) {
   if (!questions) return [];
-  return questions.map(q => ({
-    id: q.id,
+  return questions.map((q, idx) => ({
+    id: q.id || (q as any)._id || `q-${idx}`,
     text: q.prompt,
     type: q.type,
     options: q.options,
