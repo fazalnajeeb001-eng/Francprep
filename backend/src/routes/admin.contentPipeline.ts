@@ -411,14 +411,15 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
     for (const parsedLesson of lessonsToProcess) {
       const { errors, warnings } = await validateParsedLesson(parsedLesson);
 
-      // Find highest existing version draft for versioning
-      const highestVersionDraft = await Draft.findOne({ lessonId: parsedLesson.lessonId }).sort({ version: -1 });
+      // Find highest existing version draft for versioning (case-insensitive match)
+      const lessonIdRegex = new RegExp(`^${parsedLesson.lessonId.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}$`, 'i');
+      const highestVersionDraft = await Draft.findOne({ lessonId: { $regex: lessonIdRegex } }).sort({ version: -1 });
       const nextVersion = highestVersionDraft ? (highestVersionDraft.version || 1) + 1 : 1;
 
-      // Automatically mark ALL previous un-published drafts for this lessonId as superseded
+      // Automatically mark ALL previous un-published drafts for this lessonId as superseded (case-insensitive)
       await Draft.updateMany(
         {
-          lessonId: parsedLesson.lessonId,
+          lessonId: { $regex: lessonIdRegex },
           status: { $nin: ['published', 'superseded'] },
         },
         { $set: { status: 'superseded' } }
@@ -479,10 +480,10 @@ router.get('/content-pipeline/drafts', async (req: AuthRequest, res: Response) =
 
     const drafts = await Draft.find(filter).sort({ updatedAt: -1 }).limit(parseInt(limit));
 
-    // Deduplicate to ensure only 1 latest active draft per lessonId is returned for workspace
+    // Deduplicate to ensure only 1 latest active draft per lessonId is returned for workspace (case-insensitive)
     const activeDraftsMap: Record<string, typeof drafts[0]> = {};
     for (const d of drafts) {
-      const key = d.lessonId || (d._id as any).toString();
+      const key = (d.lessonId || (d._id as any).toString()).toLowerCase();
       if (!activeDraftsMap[key] || new Date(d.updatedAt).getTime() > new Date(activeDraftsMap[key].updatedAt).getTime()) {
         activeDraftsMap[key] = d;
       }

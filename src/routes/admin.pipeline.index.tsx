@@ -259,14 +259,15 @@ function PipelineDashboardPage() {
     setSendingChat(false);
   };
 
-  // Deduplicate activeStagedDrafts to show only the single latest draft per lessonId in main pipeline workspace
+  // Deduplicate activeStagedDrafts to show only the single latest draft per lessonId in main pipeline workspace (case-insensitive)
   const activeStagedDrafts = Object.values(
     drafts
       .filter(d => (d.status === 'draft' || d.status === 'validated' || d.status === 'review') && d.origin !== 'ai_generator')
       .reduce((acc, current) => {
-        const existing = acc[current.lessonId];
+        const key = (current.lessonId || current._id).toString().toLowerCase();
+        const existing = acc[key];
         if (!existing || new Date(current.updatedAt).getTime() > new Date(existing.updatedAt).getTime()) {
-          acc[current.lessonId] = current;
+          acc[key] = current;
         }
         return acc;
       }, {} as Record<string, typeof drafts[0]>)

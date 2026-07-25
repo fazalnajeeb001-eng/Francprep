@@ -58,14 +58,15 @@ function DraftsSubSectionPage() {
     fetchDrafts();
   }, []);
 
-  // Group active staged drafts by lessonId and keep only the latest updated version per lessonId
+  // Group active staged drafts by lessonId and keep only the latest updated version per lessonId (case-insensitive)
   const stagedDrafts = Object.values(
     drafts
       .filter((d) => d.status !== "superseded" && d.status !== "published" && d.origin !== "ai_generator")
       .reduce((acc, current) => {
-        const existing = acc[current.lessonId];
+        const key = (current.lessonId || current._id).toString().toLowerCase();
+        const existing = acc[key];
         if (!existing || new Date(current.updatedAt).getTime() > new Date(existing.updatedAt).getTime()) {
-          acc[current.lessonId] = current;
+          acc[key] = current;
         }
         return acc;
       }, {} as Record<string, typeof drafts[0]>)
