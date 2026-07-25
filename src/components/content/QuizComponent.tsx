@@ -86,12 +86,16 @@ function MatchingQuestion({ q, qId, dark, submitted, setAnswer }: {
   }).length;
 
   useEffect(() => {
-    if (allMatched) {
+    if (Object.keys(matches).length > 0) {
       const matchRecord: Record<string, string> = {};
-      leftItems.forEach((left, i) => { matchRecord[left] = shuffledRight[matches[i]] || ""; });
+      leftItems.forEach((left, i) => {
+        if (matches[i] !== undefined) {
+          matchRecord[left] = shuffledRight[matches[i]] || "";
+        }
+      });
       setAnswer(qId, JSON.stringify(matchRecord));
     }
-  }, [matches, allMatched, leftItems, shuffledRight, qId, setAnswer]);
+  }, [matches, leftItems, shuffledRight, qId, setAnswer]);
 
   const handleLeftClick = (idx: number) => {
     if (submitted || matchedLeftIndices.has(idx)) return;
@@ -463,21 +467,27 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
       if (targetQ.type === 'matching') {
         const pairs = targetQ.pairs || {};
         try {
-          const userMatches = JSON.parse(val as string);
-          const allCorrect = Object.entries(pairs).every(([left, correctRight]) => userMatches[left] === correctRight);
+          const userMatches = typeof val === 'string' ? JSON.parse(val) : (val || {});
+          const totalPairs = Object.keys(pairs).length;
+          const matchedEntries = Object.entries(userMatches).filter(([_, v]) => Boolean(v));
+          const allCorrect = totalPairs > 0 && matchedEntries.length === totalPairs && Object.entries(pairs).every(([left, correctRight]) => userMatches[left] === correctRight);
+          const correctCount = Object.entries(pairs).filter(([left, correctRight]) => userMatches[left] === correctRight).length;
+
           const mockResult: ResultItem = {
             questionId: targetQId,
             correct: allCorrect,
             points: allCorrect ? (targetQ.points || 1) : 0,
             maxPoints: targetQ.points || 1,
-            explanation: allCorrect ? "All pairs matched correctly!" : `Correct pairs: ${Object.entries(pairs).map(([k, v]) => `${k} ↔ ${v}`).join(', ')}`,
+            explanation: allCorrect
+              ? "All pairs matched correctly!"
+              : `${correctCount}/${totalPairs} matched correctly. Correct pairs: ${Object.entries(pairs).map(([k, v]) => `${k} ↔ ${v}`).join(', ')}`,
           };
           setQuestionResults(prev => ({ ...prev, [targetQId]: mockResult }));
           if (!allCorrect) {
             setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
           }
-        } catch {
-          // ignore
+        } catch (e) {
+          console.warn('Matching check parse error:', e);
         }
       } else {
         // For all typed or open questions, prioritize backend AI grading via /writing/grammar-check
@@ -1055,14 +1065,26 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
         <div className="flex items-center gap-2">
           {!submitted ? (
             <>
-              {/* Check Answer Button - Always visible for every exercise type */}
-              <button
-                onClick={() => handleCheckQuestion(qId)}
-                disabled={userAnswer === undefined || (typeof userAnswer === 'string' && !userAnswer.trim()) || checkingQuestion[qId]}
-                className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-all shadow-md shadow-indigo-600/20 disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                {checkingQuestion[qId] ? "Checking..." : "Check Answer"}
-              </button>
+              {(() => {
+                const isAnswerProvided = (() => {
+                  if (userAnswer === undefined || userAnswer === null) return false;
+                  if (typeof userAnswer === 'string') return userAnswer.trim().length > 0;
+                  if (typeof userAnswer === 'number') return true;
+                  if (Array.isArray(userAnswer)) return userAnswer.length > 0;
+                  if (typeof userAnswer === 'object') return Object.keys(userAnswer).length > 0;
+                  return false;
+                })();
+
+                return (
+                  <button
+                    onClick={() => handleCheckQuestion(qId)}
+                    disabled={!isAnswerProvided || checkingQuestion[qId]}
+                    className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold rounded-lg transition-all shadow-md shadow-indigo-600/20 disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    {checkingQuestion[qId] ? "Checking..." : "Check Answer"}
+                  </button>
+                );
+              })()}
 
               {current < questions.length - 1 ? (
                 <button onClick={() => setCurrent(current + 1)}
