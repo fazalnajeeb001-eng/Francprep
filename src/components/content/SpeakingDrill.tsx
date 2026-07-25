@@ -3,6 +3,7 @@ import { Mic, Send, Volume2, RotateCcw, Bot, User, Sparkles } from "lucide-react
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
+import { getBestVoice } from "~/lib/speech";
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -110,14 +111,8 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic }: SpeakingDrill
         chunks.push({ lang: "fr", text: cleanStr(text) });
       }
 
-      const voices = window.speechSynthesis.getVoices();
-      const frenchVoice = voices.find(
-        v => v.lang.startsWith("fr") && (v.name.includes("Google") || v.name.includes("Audrey") || v.name.includes("Amélie") || v.name.includes("Thomas") || v.name.includes("Julie") || v.name.includes("Marie"))
-      ) || voices.find(v => v.lang.startsWith("fr"));
-
-      const englishVoice = voices.find(
-        v => v.lang.startsWith("en") && (v.name.includes("Google") || v.name.includes("Samantha") || v.name.includes("Karen") || v.name.includes("Daniel") || v.name.includes("Natural") || v.name.includes("Jenny"))
-      ) || voices.find(v => v.lang.startsWith("en"));
+      const frenchVoice = getBestVoice("fr");
+      const englishVoice = getBestVoice("en");
 
       setIsSpeaking(true);
 
