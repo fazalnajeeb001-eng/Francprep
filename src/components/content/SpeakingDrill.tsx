@@ -76,35 +76,50 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic }: SpeakingDrill
     };
   }, []);
 
-  // Smart Bilingual Voice Engine: Plays French in native French voice and English in native English voice
-  const speakText = (text: string, rate: number = 0.85) => {
+  // Advanced Sub-Sentence Bilingual Audio Engine
+  const speakText = (text: string, baseRate: number = 0.85) => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
     try {
       window.speechSynthesis.cancel();
 
-      // Split text into French and English chunks based on parenthetical translations or Note callouts
       const chunks: { lang: "fr" | "en"; text: string }[] = [];
-      const regex = /\(([^)]+)\)|(?:💡\s*(?:Note|Correction|Tip):?\s*)([^.\n]+[.\n]?)/gi;
-      let lastIndex = 0;
-      let match: RegExpExecArray | null;
+      const cleanStr = (s: string) => s.replace(/^FR:\s*/i, "").replace(/^EN:\s*/i, "").replace(/[*_#`]/g, "").trim();
 
-      const cleanStr = (s: string) => s.replace(/[*_#`]/g, "").trim();
+      const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
 
-      while ((match = regex.exec(text)) !== null) {
-        if (match.index > lastIndex) {
-          const frStr = cleanStr(text.substring(lastIndex, match.index));
-          if (frStr) chunks.push({ lang: "fr", text: frStr });
+      for (const line of lines) {
+        if (/^(?:FR:|French:)/i.test(line)) {
+          const c = cleanStr(line);
+          if (c) chunks.push({ lang: "fr", text: c });
+        } else if (/^(?:EN:|English:)/i.test(line) || /^\([^)]+\)$/.test(line)) {
+          const c = cleanStr(line).replace(/^\(|\)$/g, "");
+          if (c) chunks.push({ lang: "en", text: c });
+        } else if (line.includes("💡") || /^(?:Note|Correction|Tip):/i.test(line)) {
+          // Parse notes with quoted French e.g. "💡 Note: Say 'J'ai un balcon' (I have a balcony)."
+          const parts = line.split(/(["'][^"']+["']|\([^)]+\))/g);
+          for (const part of parts) {
+            const trimmed = part.trim();
+            if (!trimmed) continue;
+            if (/^["'].*["']$/.test(trimmed)) {
+              chunks.push({ lang: "fr", text: trimmed.replace(/^["']|["']$/g, "") });
+            } else if (/^\(.*\)$/.test(trimmed)) {
+              chunks.push({ lang: "en", text: trimmed.replace(/^\(|\)$/g, "") });
+            } else {
+              chunks.push({ lang: "en", text: cleanStr(trimmed) });
+            }
+          }
+        } else {
+          // Extract any trailing parenthetical English translation
+          const parenMatch = line.match(/^(.*?)\s*\(([^)]+)\)$/);
+          if (parenMatch) {
+            const frText = cleanStr(parenMatch[1]);
+            const enText = cleanStr(parenMatch[2]);
+            if (frText) chunks.push({ lang: "fr", text: frText });
+            if (enText) chunks.push({ lang: "en", text: enText });
+          } else {
+            chunks.push({ lang: "fr", text: cleanStr(line) });
+          }
         }
-
-        const enStr = cleanStr(match[1] || match[2] || "");
-        if (enStr) chunks.push({ lang: "en", text: enStr });
-
-        lastIndex = regex.lastIndex;
-      }
-
-      if (lastIndex < text.length) {
-        const frStr = cleanStr(text.substring(lastIndex));
-        if (frStr) chunks.push({ lang: "fr", text: frStr });
       }
 
       if (chunks.length === 0) {
@@ -113,6 +128,9 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic }: SpeakingDrill
 
       const frenchVoice = getBestVoice("fr");
       const englishVoice = getBestVoice("en");
+
+      // Scale English rate relative to user's selected speed rate
+      const enRate = baseRate < 0.8 ? Math.max(0.65, baseRate * 0.95) : 0.95;
 
       setIsSpeaking(true);
 
@@ -126,11 +144,11 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic }: SpeakingDrill
         const u = new SpeechSynthesisUtterance(c.text);
         if (c.lang === "fr") {
           u.lang = "fr-FR";
-          u.rate = rate;
+          u.rate = baseRate;
           if (frenchVoice) u.voice = frenchVoice;
         } else {
           u.lang = "en-US";
-          u.rate = 0.95;
+          u.rate = enRate;
           if (englishVoice) u.voice = englishVoice;
         }
 
