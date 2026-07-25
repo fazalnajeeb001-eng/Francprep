@@ -298,7 +298,7 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
   const [blockResults, setBlockResults] = useState<Record<string, BlockResult>>({});
   const [lessonCompleted, setLessonCompleted] = useState(false);
   const [lessonScore, setLessonScore] = useState<number | null>(null);
-  const [startTime] = useState(Date.now());
+  const [showObjectives, setShowObjectives] = useState(false);
   const topRef = useRef<HTMLDivElement>(null);
 
   const [isAdminPreview, setIsAdminPreview] = useState(false);
@@ -1378,16 +1378,49 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
             </div>
           </div>
           {lesson.objectives?.length > 0 && (
-            <div className={`rounded-2xl p-4 border mt-3 ${dark ? "bg-purple-500/10 border-purple-500/30" : "bg-purple-50 border-purple-100"}`}>
-              <p className={`text-xs font-semibold mb-2 ${dark ? "text-purple-300" : "text-purple-700"}`}>What you'll learn:</p>
-              <ul className="space-y-1">
-                {lesson.objectives.map((obj: string, i: number) => (
-                  <li key={i} className={`text-xs ${textBody} flex items-start gap-2`}>
-                    <span className="text-purple-400 mt-0.5">•</span>
-                    <EditableText fieldPath={`objectives[${i}]`} value={obj} />
-                  </li>
-                ))}
-              </ul>
+            <div className={`rounded-2xl p-3 border mt-3 transition-all ${dark ? "bg-purple-500/10 border-purple-500/30" : "bg-purple-50 border-purple-100"}`}>
+              {currentSectionIdx === 0 ? (
+                <div>
+                  <p className={`text-xs font-bold mb-2 flex items-center gap-1.5 ${dark ? "text-purple-300" : "text-purple-700"}`}>
+                    <span>🎯</span> What you'll learn:
+                  </p>
+                  <ul className="space-y-1">
+                    {lesson.objectives.map((obj: string, i: number) => (
+                      <li key={i} className={`text-xs ${textBody} flex items-start gap-2`}>
+                        <span className="text-purple-400 mt-0.5">•</span>
+                        <EditableText fieldPath={`objectives[${i}]`} value={obj} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setShowObjectives(!showObjectives)}
+                    className={`w-full flex items-center justify-between text-xs font-bold ${dark ? "text-purple-300 hover:text-purple-200" : "text-purple-700 hover:text-purple-800"}`}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <span>🎯</span> Lesson Objectives ({lesson.objectives.length} items)
+                    </span>
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-500/20">
+                      {showObjectives ? "Hide ▴" : "Show ▾"}
+                    </span>
+                  </button>
+                  {showObjectives && (
+                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-2.5 pt-2 border-t dark:border-purple-500/20 border-purple-200/60">
+                      <ul className="space-y-1">
+                        {lesson.objectives.map((obj: string, i: number) => (
+                          <li key={i} className={`text-xs ${textBody} flex items-start gap-2`}>
+                            <span className="text-purple-400 mt-0.5">•</span>
+                            <EditableText fieldPath={`objectives[${i}]`} value={obj} />
+                          </li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
