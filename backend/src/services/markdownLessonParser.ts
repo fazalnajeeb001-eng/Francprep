@@ -953,31 +953,95 @@ function fillPlaceholders(lesson: ParsedLesson): void {
       }];
     }
 
-    // 5. assessment from DELF questions in practiceExercises
+    // 5. assessment from DELF / Diagnostic Mini-Assessment questions
     const delfQs = (lesson.practiceExercises?.questions || []).filter(q => q.id.includes('delf'));
-    const otherQs = (lesson.practiceExercises?.questions || []).filter(q => !q.id.includes('delf'));
+    
     if (delfQs.length > 0) {
       lesson.assessment = {
         examStyle: `DELF ${lesson.level}`,
         sections: delfQs.map((q, i) => ({
           title: `Section ${i + 1}`,
-          skill: 'reading',
+          skill: (q as any).skill || 'reading',
           points: 10,
           instructions: q.prompt,
           questions: [q],
         })),
       };
     } else {
+      // Structure standard 4-section DELF Diagnostic Mini-Assessment
       lesson.assessment = {
         examStyle: `DELF ${lesson.level}`,
-        sections: [{
-          title: 'Comprehensive Assessment',
-          skill: 'reading',
-          points: 20,
-          instructions: 'Complete all questions based on the chapter content.',
-          questions: [],
-          answerKeyNotes: 'Grade based on accuracy and completeness.',
-        }],
+        sections: [
+          {
+            title: 'Section 1 — Listening Comprehension',
+            skill: 'listening',
+            points: 4,
+            instructions: 'Listen to (read) the apartment-hunting scene from Lesson 7 again and answer: What features does the listing have, and what does the group plan to check during the visit?',
+            questions: [{
+              id: `${lessonId}-delf-sec1`,
+              type: 'short_answer' as const,
+              prompt: 'What features does the listing have, and what does the group plan to check during the visit?',
+              correctAnswer: 'Refer to Lesson 7 scene transcript.',
+              explanation: 'Based on Lesson 7 scene transcript.',
+            }],
+          },
+          {
+            title: 'Section 2 — Reading Comprehension',
+            skill: 'reading',
+            points: 4,
+            instructions: 'Read the short passage below and answer all comprehension questions.',
+            sourceText: 'Monsieur Roy cherche une nouvelle maison. Il visite une maison spacieuse avec quatre chambres. Il y a un grand jardin, mais il n\'y a pas de garage. La maison est calme, loin du centre-ville.',
+            questions: [
+              {
+                id: `${lessonId}-delf-sec2-q1`,
+                type: 'short_answer' as const,
+                prompt: '(a) What is Monsieur Roy looking for?',
+                correctAnswer: 'Une nouvelle maison (a new house).',
+                explanation: 'Passage state: Monsieur Roy cherche une nouvelle maison.',
+              },
+              {
+                id: `${lessonId}-delf-sec2-q2`,
+                type: 'short_answer' as const,
+                prompt: '(b) What does the house have and not have?',
+                correctAnswer: 'It has 4 bedrooms and a big garden, but no garage.',
+                explanation: 'Passage states: 4 chambres, un grand jardin, mais pas de garage.',
+              },
+              {
+                id: `${lessonId}-delf-sec2-q3`,
+                type: 'short_answer' as const,
+                prompt: '(c) How is the location described?',
+                correctAnswer: 'Calme, loin du centre-ville (quiet, far from city center).',
+                explanation: 'Passage states: La maison est calme, loin du centre-ville.',
+              },
+            ],
+          },
+          {
+            title: 'Section 3 — Written Production',
+            skill: 'writing',
+            points: 4,
+            instructions: 'Write a 6–8 line original description of your ideal home, using the complete il y a system, at least three prepositions of location, and at least two descriptive adjectives.',
+            questions: [{
+              id: `${lessonId}-delf-sec3`,
+              type: 'short_answer' as const,
+              prompt: 'Write a 6–8 line description of your ideal home using il y a, prepositions of location, and descriptive adjectives.',
+              correctAnswer: 'Open-ended writing task',
+              explanation: 'Evaluated for vocabulary, prepositions, and grammar.',
+            }],
+          },
+          {
+            title: 'Section 4 — Oral Production',
+            skill: 'speaking',
+            points: 3,
+            instructions: 'Describe your actual home in detail — type, rooms, furniture, and location within the home — for 1–2 minutes.',
+            questions: [{
+              id: `${lessonId}-delf-sec4`,
+              type: 'short_answer' as const,
+              prompt: 'Describe your actual home in detail for 1–2 minutes.',
+              correctAnswer: 'Open-ended oral recording',
+              explanation: 'Evaluated for pronunciation, fluency, and vocabulary.',
+            }],
+          },
+        ],
       };
     }
 

@@ -919,27 +919,10 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
             }];
           }
         }
+        const lesson7Transcript = lesson7?.scene?.text || lesson7?.reading?.text || lesson7?.listening?.transcript || '';
 
         return (
           <div className="space-y-6">
-            {lesson7 && (
-              <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5 border border-purple-500/20 bg-purple-500/5`}>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <Headphones className="w-4 h-4 text-purple-400" />
-                    <span className={`text-xs font-bold uppercase tracking-wider ${dark ? "text-purple-300" : "text-purple-700"}`}>
-                      Reference: Lesson 7 Scene
-                    </span>
-                  </div>
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full ${dark ? "bg-purple-500/10 text-purple-300" : "bg-purple-100 text-purple-700"}`}>
-                    Required for Assessment
-                  </span>
-                </div>
-                {lesson7.scene?.text && (
-                  <p className={`text-xs ${textBody} whitespace-pre-line max-h-32 overflow-y-auto`}>{lesson7.scene.text}</p>
-                )}
-              </div>
-            )}
             <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
               <div className="flex items-center gap-3 mb-4">
                 <Award className="w-5 h-5 text-purple-400" />
@@ -948,29 +931,87 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
                 </h3>
               </div>
               <p className={`text-sm ${textSec} mb-4`}>Complete the exam-style sections below.</p>
-              {assessmentSections.map((sec: any, i: number) => (
-                <div key={i} className={`p-4 rounded-xl border mb-4 ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"}`}>
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className={`text-xs font-bold ${dark ? "text-white" : "text-gray-900"}`}>{sec.title} ({sec.skill})</h4>
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full ${dark ? "bg-purple-500/10 text-purple-300" : "bg-purple-100 text-purple-700"}`}>{sec.points} pts</span>
+              
+              {assessmentSections.map((sec: any, i: number) => {
+                const isListeningSec = sec.skill === 'listening' || sec.title?.toLowerCase().includes('listening') || sec.instructions?.toLowerCase().includes('lesson 7');
+                const isSpeakingSec = sec.skill === 'speaking' || sec.title?.toLowerCase().includes('oral');
+
+                return (
+                  <div key={i} className={`p-4 rounded-xl border mb-6 ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className={`text-xs font-bold ${dark ? "text-white" : "text-gray-900"}`}>{sec.title} ({sec.skill})</h4>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${dark ? "bg-purple-500/10 text-purple-300 border border-purple-500/20" : "bg-purple-100 text-purple-700"}`}>{sec.points} pts</span>
+                    </div>
+                    <p className={`text-xs ${textBody} mb-3 leading-relaxed`}>{sec.instructions}</p>
+
+                    {/* Section 1 Listening: Embedded Lesson 7 Scene Reference Box & Audio Player */}
+                    {isListeningSec && (
+                      <div className={`p-4 rounded-xl border mb-4 space-y-3 ${dark ? "bg-purple-500/10 border-purple-500/30" : "bg-purple-50 border-purple-200"}`}>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Headphones className="w-4 h-4 text-purple-400" />
+                            <span className={`text-xs font-bold uppercase tracking-wider ${dark ? "text-purple-300" : "text-purple-700"}`}>
+                              Reference: Lesson 7 Scene Transcript
+                            </span>
+                          </div>
+                          {lesson7Transcript && (
+                            <button
+                              type="button"
+                              onClick={() => speak(lesson7Transcript)}
+                              className="flex items-center gap-1.5 px-3 py-1 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-lg shadow-md transition-all"
+                            >
+                              <Volume2 className="w-3.5 h-3.5" /> Listen to Audio
+                            </button>
+                          )}
+                        </div>
+                        {lesson7Transcript ? (
+                          <p className={`text-xs ${textBody} leading-relaxed whitespace-pre-line max-h-44 overflow-y-auto p-3 rounded-lg ${dark ? "bg-black/40 border border-purple-500/20 text-gray-200" : "bg-white border border-purple-200 text-gray-800"}`}>
+                            {lesson7Transcript}
+                          </p>
+                        ) : (
+                          <p className={`text-xs ${textSec} italic`}>Loading Lesson 7 dialogue transcript...</p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Section 2 Reading: Embedded Source Passage Box */}
+                    {sec.sourceText && (
+                      <div className={`p-4 rounded-xl border mb-4 text-xs leading-relaxed whitespace-pre-line ${dark ? "bg-purple-500/5 border-purple-500/20 text-purple-200" : "bg-purple-50 border-purple-200 text-purple-900"}`}>
+                        <p className="font-bold mb-1 flex items-center gap-1.5 text-purple-700 dark:text-purple-300">
+                          <span>📖</span> Reading Passage:
+                        </p>
+                        <p className="italic">{sec.sourceText}</p>
+                      </div>
+                    )}
+
+                    {/* Interactive Quiz Component for Questions */}
+                    {sec.questions && sec.questions.length > 0 && (
+                      <QuizComponent
+                        questions={adaptQuestions(sec.questions)}
+                        type="assessment"
+                        onComplete={(score, total) => handleBlockComplete(`assessment-${i}`, score, total)}
+                        onSubmit={(answers) => handleSubmitBlock(`assessment-${i}`, answers)}
+                      />
+                    )}
+
+                    {/* Section 4 Oral Production: Integrated Madame Sophie Voice Assistant */}
+                    {isSpeakingSec && (
+                      <div className="mt-4 border-t dark:border-[#1e2a4a] border-gray-200 pt-4">
+                        <SpeakingDrill
+                          lessonLevel={lesson!.level}
+                          lessonTopic={lesson!.title}
+                          guidedActivity={sec.instructions}
+                          onComplete={() => handleBlockComplete(`assessment-${i}`, 3, 3)}
+                        />
+                      </div>
+                    )}
+
+                    {sec.answerKeyNotes && (
+                      <p className={`text-[11px] mt-2 italic ${dark ? "text-gray-400" : "text-gray-500"}`}>Grading: {sec.answerKeyNotes}</p>
+                    )}
                   </div>
-                  <p className={`text-xs ${textBody} mb-3`}>{sec.instructions}</p>
-                  {sec.sourceText && (
-                    <div className={`p-3 rounded-lg text-xs whitespace-pre-line mb-3 ${dark ? "bg-black/40 text-gray-300" : "bg-white text-gray-700"}`}>{sec.sourceText}</div>
-                  )}
-                  {sec.questions && sec.questions.length > 0 && (
-                    <QuizComponent
-                      questions={adaptQuestions(sec.questions)}
-                      type="assessment"
-                      onComplete={(score, total) => handleBlockComplete(`assessment-${i}`, score, total)}
-                      onSubmit={(answers) => handleSubmitBlock(`assessment-${i}`, answers)}
-                    />
-                  )}
-                  {sec.answerKeyNotes && (
-                    <p className={`text-[11px] mt-2 italic ${dark ? "text-gray-400" : "text-gray-500"}`}>Grading: {sec.answerKeyNotes}</p>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         );
