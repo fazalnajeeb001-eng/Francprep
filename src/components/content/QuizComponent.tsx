@@ -537,12 +537,15 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
                 }
               }
             }
+            const fallbackExp = (correct && !String(correct).toLowerCase().includes('open-ended'))
+              ? `Expected model answer: ${correct}`
+              : "Incorrect. Review the lesson grammar pattern and try again.";
             const singleResult: ResultItem = {
               questionId: targetQId,
               correct: isCorrect,
               points: isCorrect ? (targetQ.points || 1) : 0,
               maxPoints: targetQ.points || 1,
-              explanation: isCorrect ? "Correct!" : (targetQ.explanation || (correct ? `Expected: ${correct}` : "Incorrect. Try again!")),
+              explanation: isCorrect ? "Correct!" : fallbackExp,
               text: targetQ.prompt,
             };
             setQuestionResults(prev => ({ ...prev, [targetQId]: singleResult }));
@@ -1002,34 +1005,35 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
 
                   {/* Unified Single Reveal (Shown ONLY when student clicks reveal on Attempt 3 or final quiz submission) */}
                   {(revealedAnswers[qId] || submitted) && (() => {
-                    const aiFeedback = resultForQ.explanation;
+                    const rawFeedback = resultForQ.explanation || "";
+                    const promptText = q.prompt || q.question || "";
+                    const isPromptTitle = rawFeedback && promptText && (rawFeedback.trim() === promptText.trim() || promptText.includes(rawFeedback.trim()));
+                    const aiFeedback = isPromptTitle ? "" : rawFeedback;
+
                     const rawKey = q.correctAnswer || q.sampleAnswer;
                     const keyStr = rawKey ? (Array.isArray(rawKey) ? rawKey.join(" / ") : String(rawKey)) : "";
                     const hasValidKey = keyStr && !keyStr.toLowerCase().includes("open-ended") && keyStr !== "N/A";
 
-                    if (aiFeedback && aiFeedback.length > 5) {
-                      return (
-                        <div className={`mt-2 p-3 rounded-lg border text-xs leading-relaxed ${
-                          dark ? "bg-purple-500/10 border-purple-500/30 text-purple-300" : "bg-purple-50 border-purple-200 text-purple-800"
-                        }`}>
-                          <p className="font-semibold mb-1">💡 AI Tutor Explanation & Model Answer:</p>
-                          <p>{aiFeedback}</p>
-                        </div>
-                      );
-                    }
-
-                    if (hasValidKey) {
-                      return (
-                        <p className={`text-xs font-medium mt-1 ${dark ? "text-purple-300" : "text-purple-700"}`}>
-                          Model Answer: <span className="font-bold">{keyStr}</span>
-                        </p>
-                      );
-                    }
-
                     return (
-                      <p className={`text-xs font-medium mt-1 ${dark ? "text-purple-300" : "text-purple-700"}`}>
-                        Model Answer: <span className="font-bold">Open-ended exercise (Evaluate for accuracy)</span>
-                      </p>
+                      <div className={`mt-2.5 p-3 rounded-xl border text-xs leading-relaxed w-full ${
+                        dark ? "bg-purple-500/10 border-purple-500/30 text-purple-300" : "bg-purple-50 border-purple-200 text-purple-900"
+                      }`}>
+                        <p className="font-bold mb-1 flex items-center gap-1.5 text-purple-700 dark:text-purple-300">
+                          <span>💡</span> AI Tutor Review & Model Answer:
+                        </p>
+                        {aiFeedback ? (
+                          <p className="mb-2 text-slate-800 dark:text-purple-200 font-medium">{aiFeedback}</p>
+                        ) : null}
+                        {hasValidKey ? (
+                          <p className="font-semibold text-purple-950 dark:text-purple-200 pt-1 border-t border-purple-200 dark:border-purple-500/20">
+                            Model Answer: <span className="font-extrabold underline">{keyStr}</span>
+                          </p>
+                        ) : (
+                          <p className="font-semibold text-purple-950 dark:text-purple-200 pt-1 border-t border-purple-200 dark:border-purple-500/20">
+                            Model Answer: <span className="font-bold">Open-ended exercise (Evaluate for accuracy)</span>
+                          </p>
+                        )}
+                      </div>
                     );
                   })()}
                 </div>

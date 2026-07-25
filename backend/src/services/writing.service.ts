@@ -155,10 +155,10 @@ Rules for Pedagogical AI Evaluation:
 2. SCOPED STRICTLY TO LESSON & CEFR LEVEL: Keep explanations strictly aligned with what a student at this level has learned in this lesson. Do NOT use advanced grammatical jargon (e.g., subjunctive, passé simple, pluperfect, complex syntax) or advanced vocabulary outside the scope of this lesson level.
 3. THE REFERENCE MODEL ANSWER IS A GUIDE ONLY. Accept ANY valid, grammatically correct expression suited for this lesson level.
 4. Accept minor capitalization, accent, or punctuation differences.
-5. If the student made a mistake or typed gibberish, explain simply, clearly, and gently in 1-2 sentences in English, pointing out the exact correct answer.
+5. IF THE STUDENT MADE A TYPO OR SPELLING MISTAKE (e.g. typing "qui'l" instead of "qu'il"), MARK "correct": false, point out the exact spelling/grammatical error in 1-2 clear sentences in English, and explicitly state the exact correct model answer.
 
 Respond STRICTLY with a raw JSON object:
-{"correct": true or false, "feedback": "Your 1-2 sentence AI review/explanation here"}`;
+{"correct": true or false, "feedback": "Your 1-2 sentence AI review explaining any error and stating the exact correct response."}`;
 
     try {
       const content = await generateAICompletion({

@@ -286,14 +286,12 @@ function parseGrammarDrills(text: string): ILessonQuestion[] {
       } else {
         correctAnswer = '';
       }
-      explanation = instruction || stripMd(source);
+      explanation = instruction || 'Transform the sentence into the correct form.';
     }
     // Pattern 3: Blank with context after → "Ask if there's an elevator: __________ un ascenseur ?"
     else if ((rawPrompt.includes('__________') || rawPrompt.includes('______')) && rawPrompt.includes(':')) {
-      const parts = rawPrompt.split(':');
-      const context = parts[0].trim();
       correctAnswer = answers[n] || '';
-      explanation = stripMd(context) || instruction || 'Complete the sentence.';
+      explanation = instruction || 'Fill in the blank with the correct French expression.';
     }
     // Pattern 4: Blank at end → "Bonjour, __________."
     else if (rawPrompt.includes('__________') || rawPrompt.includes('______')) {
@@ -307,9 +305,7 @@ function parseGrammarDrills(text: string): ILessonQuestion[] {
 
     if (!correctAnswer || correctAnswer.trim() === '') {
       correctAnswer = 'Open-ended drill';
-      if (!explanation || explanation === 'Complete the drill.') {
-        explanation = instruction || 'Complete the drill with your own answer.';
-      }
+      explanation = 'Complete the drill with your own answer.';
     }
 
     n++;
