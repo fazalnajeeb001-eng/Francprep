@@ -1063,15 +1063,58 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
 
       case 'speaking':
         const rawSpeaking = lesson?.speaking;
-        const speakingData = typeof rawSpeaking === 'string'
-          ? { guidedActivity: rawSpeaking, roleplay: undefined, pronunciationTip: undefined }
-          : (rawSpeaking || {});
+        let guidedAct = '';
+        let roleplayP = '';
+        let pronunTip = '';
 
-        const guidedAct = typeof speakingData.guidedActivity === 'string' ? speakingData.guidedActivity : (speakingData.guidedActivity ? String(speakingData.guidedActivity) : '');
-        const roleplayP = typeof speakingData.roleplay === 'string' ? speakingData.roleplay : (speakingData.roleplay ? String(speakingData.roleplay) : '');
-        const pronunTip = typeof speakingData.pronunciationTip === 'string' ? speakingData.pronunciationTip : (speakingData.pronunciationTip ? String(speakingData.pronunciationTip) : '');
+        if (rawSpeaking) {
+          if (typeof rawSpeaking === 'object') {
+            guidedAct = typeof rawSpeaking.guidedActivity === 'string' ? rawSpeaking.guidedActivity : (rawSpeaking.guidedActivity ? String(rawSpeaking.guidedActivity) : '');
+            roleplayP = typeof rawSpeaking.roleplay === 'string' ? rawSpeaking.roleplay : (rawSpeaking.roleplay ? String(rawSpeaking.roleplay) : '');
+            pronunTip = typeof rawSpeaking.pronunciationTip === 'string' ? rawSpeaking.pronunciationTip : (rawSpeaking.pronunciationTip ? String(rawSpeaking.pronunciationTip) : '');
 
-        if (!guidedAct && !roleplayP && !rawSpeaking) return emptyState('Speaking Practice');
+            // If guidedAct contains embedded Tip: or Roleplay: tags in legacy string imports
+            if (guidedAct && (!roleplayP || !pronunTip || guidedAct.toLowerCase().includes('tip:'))) {
+              const cleanText = guidedAct.replace(/^#+\s*Speaking[^\n]*\n?/i, '').trim();
+              const gMatch = cleanText.match(/(?:[-*•#\s]*)(?:\*\*|)?Guided Activity[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=(?:[-*•#\s]*)(?:\*\*|)?Roleplay|(?:[-*•#\s]*)(?:\*\*|)?(?:Pronunciation\s+)?Tip:|\n#|$)/i);
+              const rMatch = cleanText.match(/(?:[-*•#\s]*)(?:\*\*|)?Roleplay[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=(?:[-*•#\s]*)(?:\*\*|)?(?:Pronunciation\s+)?Tip:|\n#|$)/i);
+              const tMatch = cleanText.match(/(?:[-*•#\s]*)(?:\*\*|)?(?:Pronunciation\s+)?Tip[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=\n#|$)/i);
+
+              if (gMatch) guidedAct = gMatch[1].trim();
+              if (rMatch && !roleplayP) roleplayP = rMatch[1].trim();
+              if (tMatch && !pronunTip) pronunTip = tMatch[1].trim();
+
+              if (!gMatch && !rMatch && !tMatch) {
+                const tipIndex = cleanText.search(/(?:Pronunciation\s+)?Tip:/i);
+                if (tipIndex !== -1) {
+                  guidedAct = cleanText.substring(0, tipIndex).trim();
+                  if (!pronunTip) pronunTip = cleanText.substring(tipIndex).replace(/^(?:Pronunciation\s+)?Tip:\s*/i, '').trim();
+                }
+              }
+            }
+          } else {
+            const cleanText = String(rawSpeaking).replace(/^#+\s*Speaking[^\n]*\n?/i, '').trim();
+            const gMatch = cleanText.match(/(?:[-*•#\s]*)(?:\*\*|)?Guided Activity[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=(?:[-*•#\s]*)(?:\*\*|)?Roleplay|(?:[-*•#\s]*)(?:\*\*|)?(?:Pronunciation\s+)?Tip:|\n#|$)/i);
+            const rMatch = cleanText.match(/(?:[-*•#\s]*)(?:\*\*|)?Roleplay[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=(?:[-*•#\s]*)(?:\*\*|)?(?:Pronunciation\s+)?Tip:|\n#|$)/i);
+            const tMatch = cleanText.match(/(?:[-*•#\s]*)(?:\*\*|)?(?:Pronunciation\s+)?Tip[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=\n#|$)/i);
+
+            if (gMatch) guidedAct = gMatch[1].trim();
+            if (rMatch) roleplayP = rMatch[1].trim();
+            if (tMatch) pronunTip = tMatch[1].trim();
+
+            if (!gMatch && !rMatch && !tMatch) {
+              const tipIndex = cleanText.search(/(?:Pronunciation\s+)?Tip:/i);
+              if (tipIndex !== -1) {
+                guidedAct = cleanText.substring(0, tipIndex).trim();
+                pronunTip = cleanText.substring(tipIndex).replace(/^(?:Pronunciation\s+)?Tip:\s*/i, '').trim();
+              } else {
+                guidedAct = cleanText;
+              }
+            }
+          }
+        }
+
+        if (!guidedAct && !roleplayP && !pronunTip && !rawSpeaking) return emptyState('Speaking Practice');
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl overflow-hidden`}>
             <div className="p-5 border-b dark:border-[#1e2a4a] border-gray-200 space-y-3">
