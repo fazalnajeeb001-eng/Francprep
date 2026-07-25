@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, Component, type ErrorInfo, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "~/lib/apiFetch";
 import { useTheme } from "~/lib/ThemeContext";
@@ -286,9 +286,52 @@ export function renderFormattedMarkdown(text: any, dark: boolean) {
   });
 }
 
-// ─── Main Component ────────────────────────────────────────────────────────
+class LessonErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
 
-export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; draftId?: string; onBack?: () => void }) {
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error("[LessonPage ErrorBoundary]", error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-[#070B17] text-white flex items-center justify-center p-6">
+          <div className="max-w-md w-full text-center p-6 rounded-2xl bg-[#101828] border border-[#1e2a4a] shadow-xl">
+            <div className="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center mx-auto mb-3 text-xl">
+              📘
+            </div>
+            <h2 className="text-base font-bold text-white mb-2">Lesson Section Notice</h2>
+            <p className="text-xs text-gray-400 mb-4 leading-relaxed">
+              This lesson section is updating. Please refresh to load the latest exercises.
+            </p>
+            <button
+              onClick={() => { this.setState({ hasError: false }); window.location.reload(); }}
+              className="px-5 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold rounded-xl shadow-lg transition-all hover:opacity-90"
+            >
+              Refresh Section
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+export function LessonPage(props: { lessonId?: string; draftId?: string; onBack?: () => void }) {
+  return (
+    <LessonErrorBoundary>
+      <LessonPageInner {...props} />
+    </LessonErrorBoundary>
+  );
+}
+
+function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; draftId?: string; onBack?: () => void }) {
   const queryClient = useQueryClient();
   const { dark } = useTheme();
   const [currentSectionIdx, setCurrentSectionIdx] = useState(0);
