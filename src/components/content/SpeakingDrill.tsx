@@ -46,6 +46,7 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
   const [isRecording, setIsRecording] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [selectedSpeed, setSelectedSpeed] = useState<number>(0.85);
   const [error, setError] = useState("");
   const [interimText, setInterimText] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -76,7 +77,7 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
 
   // Auto-speak greeting when page loads or greeting initializes
   useEffect(() => {
-    const timer = setTimeout(() => speakText(initialGreeting), 400);
+    const timer = setTimeout(() => speakText(initialGreeting, selectedSpeed), 400);
     return () => clearTimeout(timer);
   }, [initialGreeting]);
 
@@ -260,7 +261,7 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
       if (data.success && data.data?.reply) {
         const assistantMsg: ChatMessage = { role: "assistant", content: data.data.reply };
         setMessages(prev => [...prev, assistantMsg]);
-        speakText(data.data.reply);
+        speakText(data.data.reply, selectedSpeed);
       } else {
         setError(data.error || "Tutor didn't respond. Try again.");
       }
@@ -286,7 +287,7 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
 
   const resetChat = () => {
     recognitionRef.current?.abort();
-    setMessages([{ role: "assistant", content: greeting }]);
+    setMessages([{ role: "assistant", content: initialGreeting }]);
     setError("");
     setInputText("");
     setIsRecording(false);
@@ -299,20 +300,46 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
 
   return (
     <div className="flex flex-col h-[500px]">
-      {/* Chat header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b dark:border-[#1e2a4a] border-gray-200">
+      {/* Chat header with interactive Speed Selector */}
+      <div className="flex items-center justify-between px-4 py-3 border-b dark:border-[#1e2a4a] border-gray-200 gap-2 flex-wrap sm:flex-nowrap">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
             <Bot className="w-4 h-4 text-white" />
           </div>
           <div>
             <p className={`text-xs font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Madame Sophie</p>
-            <p className={`text-[10px] ${textSec}`}>Your French conversation tutor</p>
+            <p className={`text-[10px] ${textSec}`}>AI French Conversation Coach</p>
           </div>
         </div>
-        <button onClick={resetChat} className={`p-1.5 rounded-lg transition-colors ${dark ? "hover:bg-white/5 text-gray-400" : "hover:bg-gray-100 text-gray-500"}`} title="Start over">
-          <RotateCcw className="w-4 h-4" />
-        </button>
+
+        {/* Speed Selector Pills */}
+        <div className="flex items-center gap-1">
+          <div className="flex items-center bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 rounded-lg p-0.5 text-[11px] font-semibold">
+            <span className="px-1.5 text-purple-700 dark:text-purple-300 hidden sm:inline">⚡ Speed:</span>
+            {[
+              { label: "0.6x 🐢", val: 0.60 },
+              { label: "0.85x", val: 0.85 },
+              { label: "1.0x", val: 1.00 },
+              { label: "1.2x 🚀", val: 1.20 },
+            ].map(s => (
+              <button
+                key={s.val}
+                onClick={() => setSelectedSpeed(s.val)}
+                className={`px-2 py-0.5 rounded-md transition-all ${
+                  selectedSpeed === s.val
+                    ? "bg-purple-600 text-white shadow-sm font-bold"
+                    : "text-purple-700 dark:text-purple-300 hover:bg-purple-200/50 dark:hover:bg-purple-500/20"
+                }`}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+
+          <button onClick={resetChat} className={`p-1.5 rounded-lg transition-colors ${dark ? "hover:bg-white/5 text-gray-400" : "hover:bg-gray-100 text-gray-500"}`} title="Start over">
+            <RotateCcw className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Messages area */}
@@ -339,18 +366,18 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
                   {msg.role === "assistant" && (
                     <div className="mt-2 pt-1 border-t dark:border-white/10 border-black/5 flex items-center gap-3 text-[11px]">
                       <button
-                        onClick={() => speakText(msg.content, 0.85)}
-                        className="inline-flex items-center gap-1 font-semibold text-purple-600 dark:text-purple-400 hover:underline"
+                        onClick={() => speakText(msg.content, selectedSpeed)}
+                        className="inline-flex items-center gap-1 font-bold text-purple-600 dark:text-purple-400 hover:underline"
                         disabled={isSpeaking}
                       >
-                        <Volume2 className="w-3.5 h-3.5" /> Listen Normal
+                        <Volume2 className="w-3.5 h-3.5" /> Play ({selectedSpeed}x)
                       </button>
                       <button
-                        onClick={() => speakText(msg.content, 0.70)}
+                        onClick={() => speakText(msg.content, 0.60)}
                         className="inline-flex items-center gap-1 font-semibold text-pink-600 dark:text-pink-400 hover:underline"
                         disabled={isSpeaking}
                       >
-                        <span>🐢</span> Slow (0.7x)
+                        <span>🐢</span> Practice Slow (0.6x)
                       </button>
                     </div>
                   )}
