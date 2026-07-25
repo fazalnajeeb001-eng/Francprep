@@ -75,23 +75,80 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic }: SpeakingDrill
     };
   }, []);
 
-  const speakText = (text: string) => {
+  // Smart Bilingual Voice Engine: Plays French in native French voice and English in native English voice
+  const speakText = (text: string, rate: number = 0.85) => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
     try {
       window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = "fr-FR";
-      u.rate = 0.85;
+
+      // Split text into French and English chunks based on parenthetical translations or Note callouts
+      const chunks: { lang: "fr" | "en"; text: string }[] = [];
+      const regex = /\(([^)]+)\)|(?:💡\s*(?:Note|Correction|Tip):?\s*)([^.\n]+[.\n]?)/gi;
+      let lastIndex = 0;
+      let match: RegExpExecArray | null;
+
+      const cleanStr = (s: string) => s.replace(/[*_#`]/g, "").trim();
+
+      while ((match = regex.exec(text)) !== null) {
+        if (match.index > lastIndex) {
+          const frStr = cleanStr(text.substring(lastIndex, match.index));
+          if (frStr) chunks.push({ lang: "fr", text: frStr });
+        }
+
+        const enStr = cleanStr(match[1] || match[2] || "");
+        if (enStr) chunks.push({ lang: "en", text: enStr });
+
+        lastIndex = regex.lastIndex;
+      }
+
+      if (lastIndex < text.length) {
+        const frStr = cleanStr(text.substring(lastIndex));
+        if (frStr) chunks.push({ lang: "fr", text: frStr });
+      }
+
+      if (chunks.length === 0) {
+        chunks.push({ lang: "fr", text: cleanStr(text) });
+      }
+
       const voices = window.speechSynthesis.getVoices();
       const frenchVoice = voices.find(
-        v => v.lang.startsWith("fr") && (v.name.includes("Audrey") || v.name.includes("Amélie") || v.name.includes("Julie") || v.name.includes("Marie") || v.name.includes("Thomas"))
-      );
-      if (frenchVoice) u.voice = frenchVoice;
-      u.onstart = () => setIsSpeaking(true);
-      u.onend = () => setIsSpeaking(false);
-      u.onerror = () => setIsSpeaking(false);
-      window.speechSynthesis.speak(u);
-    } catch { /* ignore */ }
+        v => v.lang.startsWith("fr") && (v.name.includes("Google") || v.name.includes("Audrey") || v.name.includes("Amélie") || v.name.includes("Thomas") || v.name.includes("Julie") || v.name.includes("Marie"))
+      ) || voices.find(v => v.lang.startsWith("fr"));
+
+      const englishVoice = voices.find(
+        v => v.lang.startsWith("en") && (v.name.includes("Google") || v.name.includes("Samantha") || v.name.includes("Karen") || v.name.includes("Daniel") || v.name.includes("Natural") || v.name.includes("Jenny"))
+      ) || voices.find(v => v.lang.startsWith("en"));
+
+      setIsSpeaking(true);
+
+      const playChunk = (index: number) => {
+        if (index >= chunks.length) {
+          setIsSpeaking(false);
+          return;
+        }
+
+        const c = chunks[index];
+        const u = new SpeechSynthesisUtterance(c.text);
+        if (c.lang === "fr") {
+          u.lang = "fr-FR";
+          u.rate = rate;
+          if (frenchVoice) u.voice = frenchVoice;
+        } else {
+          u.lang = "en-US";
+          u.rate = 0.95;
+          if (englishVoice) u.voice = englishVoice;
+        }
+
+        u.onend = () => playChunk(index + 1);
+        u.onerror = () => playChunk(index + 1);
+
+        window.speechSynthesis.speak(u);
+      };
+
+      playChunk(0);
+    } catch {
+      setIsSpeaking(false);
+    }
   };
 
   const startRecording = () => {
@@ -254,14 +311,23 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic }: SpeakingDrill
                   msg.role === "user" ? bubbleUser : bubbleAssistant
                 }`}>
                   {msg.content}
-                  {msg.role === "assistant" && i === messages.length - 1 && !isThinking && (
-                    <button
-                      onClick={() => speakText(msg.content)}
-                      className="ml-2 inline-flex items-center gap-1 text-[10px] opacity-60 hover:opacity-100 transition-opacity"
-                      disabled={isSpeaking}
-                    >
-                      <Volume2 className="w-3 h-3" />
-                    </button>
+                  {msg.role === "assistant" && (
+                    <div className="mt-2 pt-1 border-t dark:border-white/10 border-black/5 flex items-center gap-3 text-[11px]">
+                      <button
+                        onClick={() => speakText(msg.content, 0.85)}
+                        className="inline-flex items-center gap-1 font-semibold text-purple-600 dark:text-purple-400 hover:underline"
+                        disabled={isSpeaking}
+                      >
+                        <Volume2 className="w-3.5 h-3.5" /> Listen Normal
+                      </button>
+                      <button
+                        onClick={() => speakText(msg.content, 0.70)}
+                        className="inline-flex items-center gap-1 font-semibold text-pink-600 dark:text-pink-400 hover:underline"
+                        disabled={isSpeaking}
+                      >
+                        <span>🐢</span> Slow (0.7x)
+                      </button>
+                    </div>
                   )}
                 </div>
                 {msg.role === "user" && (
