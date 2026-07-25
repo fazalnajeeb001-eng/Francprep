@@ -223,10 +223,10 @@ function parseInlineMarkdown(text: string): { type: 'text' | 'bold' | 'italic'; 
   return result;
 }
 
-export function renderFormattedMarkdown(text: string, dark: boolean) {
+export function renderFormattedMarkdown(text: any, dark: boolean) {
   if (!text) return null;
-
-  const lines = text.split('\n');
+  const strText = typeof text === 'string' ? text : (typeof text === 'object' ? (text.text || JSON.stringify(text)) : String(text));
+  const lines = strText.split('\n');
 
   return lines.map((line, lineIdx) => {
     const trimmed = line.trim();
@@ -1062,38 +1062,47 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
         );
 
       case 'speaking':
-        if (!lesson!.speaking?.guidedActivity && !lesson!.speaking?.roleplay) return emptyState('Speaking Practice');
+        const rawSpeaking = lesson?.speaking;
+        const speakingData = typeof rawSpeaking === 'string'
+          ? { guidedActivity: rawSpeaking, roleplay: undefined, pronunciationTip: undefined }
+          : (rawSpeaking || {});
+
+        const guidedAct = typeof speakingData.guidedActivity === 'string' ? speakingData.guidedActivity : (speakingData.guidedActivity ? String(speakingData.guidedActivity) : '');
+        const roleplayP = typeof speakingData.roleplay === 'string' ? speakingData.roleplay : (speakingData.roleplay ? String(speakingData.roleplay) : '');
+        const pronunTip = typeof speakingData.pronunciationTip === 'string' ? speakingData.pronunciationTip : (speakingData.pronunciationTip ? String(speakingData.pronunciationTip) : '');
+
+        if (!guidedAct && !roleplayP && !rawSpeaking) return emptyState('Speaking Practice');
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl overflow-hidden`}>
             <div className="p-5 border-b dark:border-[#1e2a4a] border-gray-200 space-y-3">
               <div className="flex items-center gap-3"><Mic className="w-5 h-5 text-purple-400" /><h3 className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>Speaking Practice</h3></div>
               
-              {lesson!.speaking?.guidedActivity && (
+              {guidedAct && (
                 <div>
                   <p className="text-xs font-bold text-purple-700 dark:text-purple-400 mb-1">🎯 Guided Activity:</p>
-                  <div className={`text-xs ${textBody}`}>{renderFormattedMarkdown(lesson!.speaking.guidedActivity, dark)}</div>
+                  <div className={`text-xs ${textBody}`}>{renderFormattedMarkdown(guidedAct, dark)}</div>
                 </div>
               )}
               
-              {lesson!.speaking?.roleplay && (
+              {roleplayP && (
                 <div className="pt-2 border-t dark:border-[#1e2a4a] border-gray-100">
                   <p className="text-xs font-bold text-purple-700 dark:text-purple-400 mb-1">🎭 Roleplay Prompt:</p>
-                  <div className={`text-xs ${textBody}`}>{renderFormattedMarkdown(lesson!.speaking.roleplay, dark)}</div>
+                  <div className={`text-xs ${textBody}`}>{renderFormattedMarkdown(roleplayP, dark)}</div>
                 </div>
               )}
 
-              {lesson!.speaking?.pronunciationTip && (
+              {pronunTip && (
                 <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 text-xs">
                   <p className="font-bold text-purple-800 dark:text-purple-300 mb-0.5">🗣️ Pronunciation Tip:</p>
-                  <div className={textSec}>{renderFormattedMarkdown(lesson!.speaking.pronunciationTip, dark)}</div>
+                  <div className={textSec}>{renderFormattedMarkdown(pronunTip, dark)}</div>
                 </div>
               )}
             </div>
             <SpeakingDrill
               lessonLevel={lesson!.level}
               lessonTopic={lesson!.title}
-              guidedActivity={lesson!.speaking?.guidedActivity}
-              roleplayPrompt={lesson!.speaking?.roleplay}
+              guidedActivity={guidedAct}
+              roleplayPrompt={roleplayP}
               onComplete={() => markSectionComplete(currentSectionIdx)}
             />
           </div>
