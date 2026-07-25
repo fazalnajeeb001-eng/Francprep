@@ -879,7 +879,22 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
 
       case 'assessment':
         const assessmentData = lesson!.assessment;
-        const assessmentSections = assessmentData?.sections || [];
+        let assessmentSections = assessmentData?.sections || [];
+
+        const hasQuestions = assessmentSections.some((s: any) => s.questions && s.questions.length > 0);
+        if (!hasQuestions) {
+          const fallbackQs = lesson!.mixedPracticeExercises?.questions || lesson!.practiceExercises?.questions || [];
+          if (fallbackQs.length > 0) {
+            assessmentSections = [{
+              title: 'Diagnostic Mini-Assessment Exercises',
+              skill: 'reading',
+              points: 20,
+              instructions: 'Complete the diagnostic assessment exercises based on this chapter content.',
+              questions: fallbackQs,
+            }];
+          }
+        }
+
         return (
           <div className="space-y-6">
             {lesson7 && (

@@ -93,6 +93,12 @@ function splitSections(body: string): { header: string; body: string }[] {
     'chapter review',
     'mini review by can-do',
     'delf',
+    'delf assessment',
+    'delf mini-assessment',
+    'diagnostic mini-assessment',
+    'diagnostic assessment',
+    'mini-assessment',
+    'assessment',
     'self assessment',
     'self-reflection',
     'lesson information'
