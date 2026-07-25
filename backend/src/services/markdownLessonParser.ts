@@ -470,26 +470,36 @@ function parseSpeaking(text: string) {
   let roleplay: string | undefined;
   let pronunciationTip: string | undefined;
 
-  const guidedMatch = text.match(/(?:\*\*|)?Guided Activity[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=(?:\*\*|)?Roleplay|(?:\*\*|)?Pronunciation Tip|(?:\*\*|)?Tip:|\n#|$)/i);
+  const cleanText = text.replace(/^#+\s*Speaking[^\n]*\n?/i, '').trim();
+
+  // Match Guided Activity: (handles - Guided Activity:, **Guided Activity:**, ### Guided Activity: etc.)
+  const guidedMatch = cleanText.match(/(?:[-*•#\s]*)(?:\*\*|)?Guided Activity[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=(?:[-*•#\s]*)(?:\*\*|)?Roleplay|(?:[-*•#\s]*)(?:\*\*|)?(?:Pronunciation\s+)?Tip:|\n#|$)/i);
   if (guidedMatch) {
     guidedActivity = clean(guidedMatch[1]);
-  } else {
-    const lines = text.split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('#') && !l.startsWith('**Pronunciation'));
-    guidedActivity = lines.slice(0, 2).join(' ');
   }
 
-  const roleplayMatch = text.match(/(?:\*\*|)?Roleplay[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=(?:\*\*|)?Pronunciation Tip|(?:\*\*|)?Tip:|\n#|$)/i);
+  // Match Roleplay: (handles - Roleplay:, **Roleplay:**, ### Roleplay: etc.)
+  const roleplayMatch = cleanText.match(/(?:[-*•#\s]*)(?:\*\*|)?Roleplay[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=(?:[-*•#\s]*)(?:\*\*|)?(?:Pronunciation\s+)?Tip:|\n#|$)/i);
   if (roleplayMatch) {
     roleplay = clean(roleplayMatch[1]);
   }
 
-  const tipMatch = text.match(/(?:\*\*|)?(?:Pronunciation )?Tip[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=\n#|$)/i);
+  // Match Pronunciation Tip / Tip:
+  const tipMatch = cleanText.match(/(?:[-*•#\s]*)(?:\*\*|)?(?:Pronunciation\s+)?Tip[^:]*:(?:\*\*|)?\s*([\s\S]*?)(?=\n#|$)/i);
   if (tipMatch) {
     pronunciationTip = clean(tipMatch[1]);
   }
 
+  // Fallback if Guided Activity label was missing entirely
+  if (!guidedActivity) {
+    const lines = cleanText.split('\n')
+      .map(l => l.replace(/^[-*•#\s]+/, '').trim())
+      .filter(l => l && !l.toLowerCase().startsWith('speaking') && !l.toLowerCase().startsWith('roleplay') && !l.toLowerCase().includes('tip:'));
+    guidedActivity = lines.join(' ');
+  }
+
   return {
-    guidedActivity: guidedActivity || 'Practice describing your thoughts using the lesson vocabulary.',
+    guidedActivity: guidedActivity || 'Describe your thoughts using the lesson vocabulary.',
     roleplay: roleplay || undefined,
     pronunciationTip: pronunciationTip || undefined,
   };
