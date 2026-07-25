@@ -778,12 +778,8 @@ router.delete('/content-pipeline/drafts/:id', async (req: AuthRequest, res: Resp
       res.status(404).json({ success: false, error: 'Draft not found' });
       return;
     }
-    if (draft.status === 'published') {
-      res.status(400).json({ success: false, error: 'Cannot delete a published draft' });
-      return;
-    }
     await Draft.findByIdAndDelete(req.params.id);
-    res.json({ success: true, message: 'Draft deleted' });
+    res.json({ success: true, message: 'Draft deleted permanently' });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
   }

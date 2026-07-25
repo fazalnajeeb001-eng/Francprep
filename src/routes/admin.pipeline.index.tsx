@@ -693,6 +693,36 @@ function PipelineDashboardPage() {
           )}
         </AnimatePresence>
 
+        {/* Delete Confirmation Modal */}
+        {deleteConfirmId && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className={`max-w-md w-full rounded-2xl p-6 border shadow-2xl ${dark ? "bg-[#101828] border-[#1e2a4a] text-white" : "bg-white border-gray-200 text-gray-900"}`}>
+              <div className="flex items-center gap-3 text-red-500 mb-3">
+                <Trash2 className="w-6 h-6" />
+                <h3 className="text-base font-bold">Delete Staged Draft?</h3>
+              </div>
+              <p className={`text-xs ${dark ? "text-gray-300" : "text-gray-600"} leading-relaxed mb-5`}>
+                Are you sure you want to permanently delete this staged draft? This action will remove the draft record from your workspace.
+              </p>
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setDeleteConfirmId(null)}
+                  className={`px-4 py-2 text-xs font-semibold rounded-xl border ${dark ? "border-[#1e2a4a] text-gray-400 hover:bg-white/5" : "border-gray-200 text-gray-600 hover:bg-gray-100"}`}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleDelete(deleteConfirmId)}
+                  disabled={actionStatus.loading}
+                  className="px-4 py-2 text-xs font-bold rounded-xl bg-red-600 hover:bg-red-500 text-white shadow-lg shadow-red-500/20 transition-all flex items-center gap-1.5"
+                >
+                  {actionStatus.loading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : "Delete Permanently"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );
