@@ -65,32 +65,8 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
 
   const hasSpeechRecognition = !!getSpeechRecognition();
 
-  // Initialize with dynamic greeting
-  useEffect(() => {
-    setMessages([{ role: "assistant", content: initialGreeting }]);
-  }, [initialGreeting]);
-
-  // Auto-scroll
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isThinking]);
-
-  // Auto-speak greeting when page loads or greeting initializes
-  useEffect(() => {
-    const timer = setTimeout(() => speakText(initialGreeting, selectedSpeed), 400);
-    return () => clearTimeout(timer);
-  }, [initialGreeting]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      recognitionRef.current?.abort();
-      window.speechSynthesis?.cancel();
-    };
-  }, []);
-
   // Advanced Sub-Sentence Bilingual Audio Engine
-  const speakText = (text: string, baseRate: number = 0.85) => {
+  const speakText = useCallback((text: string, baseRate: number = 0.85) => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
     try {
       window.speechSynthesis.cancel();
@@ -108,7 +84,6 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
           const c = cleanStr(line).replace(/^\(|\)$/g, "");
           if (c) chunks.push({ lang: "en", text: c });
         } else if (line.includes("💡") || /^(?:Note|Correction|Tip):/i.test(line)) {
-          // Parse notes with quoted French e.g. "💡 Note: Say 'J'ai un balcon' (I have a balcony)."
           const parts = line.split(/(["'][^"']+["']|\([^)]+\))/g);
           for (const part of parts) {
             const trimmed = part.trim();
@@ -122,7 +97,6 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
             }
           }
         } else {
-          // Extract any trailing parenthetical English translation
           const parenMatch = line.match(/^(.*?)\s*\(([^)]+)\)$/);
           if (parenMatch) {
             const frText = cleanStr(parenMatch[1]);
@@ -142,7 +116,6 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
       const frenchVoice = getBestVoice("fr");
       const englishVoice = getBestVoice("en");
 
-      // Scale English rate relative to user's selected speed rate
       const enRate = baseRate < 0.8 ? Math.max(0.65, baseRate * 0.95) : 0.95;
 
       setIsSpeaking(true);
@@ -175,7 +148,31 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
     } catch {
       setIsSpeaking(false);
     }
-  };
+  }, []);
+
+  // Initialize with dynamic greeting
+  useEffect(() => {
+    setMessages([{ role: "assistant", content: initialGreeting }]);
+  }, [initialGreeting]);
+
+  // Auto-scroll
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isThinking]);
+
+  // Auto-speak greeting when page loads or greeting initializes
+  useEffect(() => {
+    const timer = setTimeout(() => speakText(initialGreeting, selectedSpeed), 400);
+    return () => clearTimeout(timer);
+  }, [initialGreeting, selectedSpeed, speakText]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      recognitionRef.current?.abort();
+      window.speechSynthesis?.cancel();
+    };
+  }, []);
 
   const startRecording = () => {
     setError("");
