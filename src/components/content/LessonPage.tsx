@@ -570,6 +570,80 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
 
   // ─── Render Section Content ──────────────────────────────────────────
 
+  function parseGrammarMarkdown(text: string) {
+    if (!text) return null;
+    const cleanText = text
+      .replace(/---\s*/g, '')
+      .replace(/See grammar summary tables above\./gi, '')
+      .replace(/Review all grammar points covered in this chapter\./gi, '')
+      .replace(/Examples:\s*Refer to the grammar summary\./gi, '')
+      .trim();
+
+    const lines = cleanText.split('\n');
+    const elements: React.ReactNode[] = [];
+    let currentTableRows: string[][] = [];
+
+    const flushTable = (key: number) => {
+      if (currentTableRows.length === 0) return;
+      const headers = currentTableRows[0];
+      const dataRows = currentTableRows.slice(2); // Skip separator row |---|---|
+      elements.push(
+        <div key={`table-${key}`} className="overflow-x-auto my-3 rounded-xl border border-gray-200 dark:border-[#1e2a4a] shadow-sm">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-[#1e2a4a] text-xs">
+            <thead className={dark ? "bg-purple-500/10" : "bg-purple-50"}>
+              <tr>
+                {headers.map((h, idx) => (
+                  <th key={idx} className={`px-4 py-2.5 text-left font-bold ${dark ? "text-purple-300" : "text-purple-700"}`}>{h.trim()}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className={`divide-y divide-gray-200 dark:divide-[#1e2a4a] ${dark ? "bg-[#070B17]/60" : "bg-white"}`}>
+              {dataRows.map((row, rIdx) => (
+                <tr key={rIdx}>
+                  {row.map((cell, cIdx) => (
+                    <td key={cIdx} className={`px-4 py-2.5 font-medium ${dark ? "text-gray-300" : "text-gray-700"}`}>{cell.trim()}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+      currentTableRows = [];
+    };
+
+    lines.forEach((line, idx) => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('|')) {
+        const cells = trimmed.split('|').slice(1, -1);
+        currentTableRows.push(cells);
+      } else {
+        if (currentTableRows.length > 0) {
+          flushTable(idx);
+        }
+        if (trimmed) {
+          if (trimmed.startsWith('###')) {
+            elements.push(<h4 key={idx} className={`text-xs font-bold mt-4 mb-2 ${dark ? "text-white" : "text-gray-900"}`}>{renderFormattedMarkdown(trimmed.replace(/^###\s*/, ''), dark)}</h4>);
+          } else if (trimmed.startsWith('##')) {
+            elements.push(<h3 key={idx} className={`text-sm font-bold mt-4 mb-2 ${dark ? "text-white" : "text-gray-900"}`}>{renderFormattedMarkdown(trimmed.replace(/^##\s*/, ''), dark)}</h3>);
+          } else {
+            elements.push(
+              <div key={idx} className={`text-xs ${textBody} mb-2 leading-relaxed`}>
+                {renderFormattedMarkdown(trimmed, dark)}
+              </div>
+            );
+          }
+        }
+      }
+    });
+
+    if (currentTableRows.length > 0) {
+      flushTable(lines.length);
+    }
+
+    return elements;
+  }
+
   function renderCurrentSection(): React.ReactNode {
     if (!currentSection) return null;
 
@@ -620,14 +694,17 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
         );
 
       case 'grammarSummary':
-        const grammarContent = lesson!.grammarSummary?.content || lesson!.grammar?.explanation || '';
+        const summaryText = lesson!.grammarSummary?.content || lesson!.grammar?.explanation || '';
         return (
-          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
-            <h3 className={`text-sm font-semibold mb-4 ${dark ? "text-white" : "text-gray-900"}`}>Chapter Grammar Summary</h3>
-            {lesson!.grammar ? (
-              <GrammarSection grammar={lesson!.grammar!} dark={dark} cardBg={cardBg} innerBg={innerBg} textBody={textBody} textSec={textSec} />
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5 space-y-4`}>
+            <div className="flex items-center gap-3 border-b dark:border-[#1e2a4a] border-gray-200 pb-3">
+              <BookOpen className="w-5 h-5 text-purple-400" />
+              <h3 className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>Chapter Grammar Summary</h3>
+            </div>
+            {summaryText ? (
+              <div>{parseGrammarMarkdown(summaryText)}</div>
             ) : (
-              <div className={`text-sm leading-relaxed whitespace-pre-line ${textBody}`}>{grammarContent}</div>
+              emptyState('Grammar Summary')
             )}
           </div>
         );
