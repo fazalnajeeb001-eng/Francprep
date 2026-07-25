@@ -883,14 +883,39 @@ export function LessonPage({ lessonId, draftId, onBack }: { lessonId?: string; d
 
         const hasQuestions = assessmentSections.some((s: any) => s.questions && s.questions.length > 0);
         if (!hasQuestions) {
-          const fallbackQs = lesson!.mixedPracticeExercises?.questions || lesson!.practiceExercises?.questions || [];
+          const l = lesson! as any;
+          const fallbackQs = l.assessmentQuestions?.length ? l.assessmentQuestions
+            : l.delfQuestions?.length ? l.delfQuestions
+            : l.mixedPracticeExercises?.questions?.length ? l.mixedPracticeExercises.questions
+            : l.practiceExercises?.questions?.length ? l.practiceExercises.questions
+            : l.practice?.questions?.length ? l.practice.questions
+            : l.questions?.length ? l.questions
+            : l.comprehensionQuestions?.length ? l.comprehensionQuestions
+            : l.reading?.questions?.length ? l.reading.questions
+            : l.listening?.questions?.length ? l.listening.questions
+            : [];
+
           if (fallbackQs.length > 0) {
             assessmentSections = [{
               title: 'Diagnostic Mini-Assessment Exercises',
-              skill: 'reading',
+              skill: 'DELF Assessment',
               points: 20,
               instructions: 'Complete the diagnostic assessment exercises based on this chapter content.',
               questions: fallbackQs,
+            }];
+          } else {
+            assessmentSections = [{
+              title: 'Diagnostic Assessment Exercise',
+              skill: 'DELF Assessment',
+              points: 10,
+              instructions: 'Demonstrate your overall understanding of this chapter.',
+              questions: [{
+                id: `${lesson!.lessonId || 'l8'}-diag-1`,
+                type: 'short_answer',
+                prompt: 'Summarize the key vocabulary and grammar rules introduced in this chapter.',
+                correctAnswer: 'Open-ended response',
+                explanation: 'Review your notes and practice expressing your thoughts clearly.',
+              }],
             }];
           }
         }
