@@ -413,17 +413,36 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
 
       // Find highest existing version draft for versioning (case-insensitive match)
       const lessonIdRegex = new RegExp(`^${parsedLesson.lessonId.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}$`, 'i');
-      const highestVersionDraft = await Draft.findOne({ lessonId: { $regex: lessonIdRegex } }).sort({ version: -1 });
+      const highestVersionDraft = await Draft.findOne({
+        $or: [
+          { lessonId: { $regex: lessonIdRegex } },
+          { 'parsedData.lessonId': { $regex: lessonIdRegex } },
+          { title: parsedLesson.title }
+        ]
+      }).sort({ version: -1 });
       const nextVersion = highestVersionDraft ? (highestVersionDraft.version || 1) + 1 : 1;
 
-      // Automatically mark ALL previous un-published drafts for this lessonId as superseded (case-insensitive)
-      await Draft.updateMany(
-        {
-          lessonId: { $regex: lessonIdRegex },
-          status: { $nin: ['published', 'superseded'] },
-        },
-        { $set: { status: 'superseded' } }
-      );
+      // Automatically mark ALL previous un-published drafts for this lesson as superseded
+      const idPattern = parsedLesson.lessonId ? `^${parsedLesson.lessonId.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}$` : '';
+      const filterOr: any[] = [];
+      if (parsedLesson.lessonId) {
+        filterOr.push({ lessonId: { $regex: new RegExp(idPattern, 'i') } });
+        filterOr.push({ 'parsedData.lessonId': { $regex: new RegExp(idPattern, 'i') } });
+      }
+      if (parsedLesson.title) {
+        filterOr.push({ title: parsedLesson.title });
+        filterOr.push({ 'parsedData.title': parsedLesson.title });
+      }
+
+      if (filterOr.length > 0) {
+        await Draft.updateMany(
+          {
+            $or: filterOr,
+            status: { $nin: ['published', 'superseded'] },
+          },
+          { $set: { status: 'superseded' } }
+        );
+      }
 
       // Create new active draft document for the new push
       const draft = await Draft.create({
@@ -466,6 +485,17 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
   }
 });
 
+// Helper function to derive a unique grouping key per lesson
+function getDraftGroupKey(d: any): string {
+  const id = d.lessonId || d.parsedData?.lessonId;
+  if (id && String(id).trim()) return String(id).trim().toLowerCase();
+  
+  const title = d.title || d.parsedData?.title;
+  if (title && String(title).trim()) return `${d.level || 'A1'}-${String(title).trim()}`.toLowerCase();
+  
+  return String(d._id).toLowerCase();
+}
+
 // ─── GET /content-pipeline/drafts ──────────────────────────────────────────
 // List drafts (returns latest active draft per lessonId by default)
 router.get('/content-pipeline/drafts', async (req: AuthRequest, res: Response) => {
@@ -480,10 +510,10 @@ router.get('/content-pipeline/drafts', async (req: AuthRequest, res: Response) =
 
     const drafts = await Draft.find(filter).sort({ updatedAt: -1 }).limit(parseInt(limit));
 
-    // Deduplicate to ensure only 1 latest active draft per lessonId is returned for workspace (case-insensitive)
+    // Deduplicate to ensure only 1 latest active draft per lesson is returned for workspace
     const activeDraftsMap: Record<string, typeof drafts[0]> = {};
     for (const d of drafts) {
-      const key = (d.lessonId || (d._id as any).toString()).toLowerCase();
+      const key = getDraftGroupKey(d);
       if (!activeDraftsMap[key] || new Date(d.updatedAt).getTime() > new Date(activeDraftsMap[key].updatedAt).getTime()) {
         activeDraftsMap[key] = d;
       }

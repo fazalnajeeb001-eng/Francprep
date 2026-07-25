@@ -63,7 +63,10 @@ function DraftsSubSectionPage() {
     drafts
       .filter((d) => d.status !== "superseded" && d.status !== "published" && d.origin !== "ai_generator")
       .reduce((acc, current) => {
-        const key = (current.lessonId || current._id).toString().toLowerCase();
+        const lessonId = current.lessonId || current.parsedData?.lessonId;
+        const key = lessonId && String(lessonId).trim()
+          ? String(lessonId).trim().toLowerCase()
+          : (current.title ? `${current.level || 'A1'}-${current.title}` : current._id).toString().toLowerCase();
         const existing = acc[key];
         if (!existing || new Date(current.updatedAt).getTime() > new Date(existing.updatedAt).getTime()) {
           acc[key] = current;
