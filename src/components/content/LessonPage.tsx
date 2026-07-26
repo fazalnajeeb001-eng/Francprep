@@ -2307,8 +2307,8 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
           </div>
         )}
 
-        {/* Questions */}
-        {secQuestions.length > 0 && (
+        {/* Questions for non-speaking sections */}
+        {!isSpeakingSec && secQuestions.length > 0 && (
           <QuizComponent
             questions={adaptQuestions(secQuestions)}
             type="assessment"
@@ -2319,7 +2319,18 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
 
         {/* Speaking Practice for Oral Section */}
         {isSpeakingSec && (
-          <div className="mt-6 border-t dark:border-[#1e2a4a] border-gray-200 pt-6">
+          <div className="space-y-4">
+            <div className={`p-4 rounded-xl border ${dark ? "bg-purple-500/10 border-purple-500/30" : "bg-purple-50 border-purple-200"}`}>
+              <div className="flex items-center gap-2 mb-2">
+                <Mic className="w-4 h-4 text-purple-400" />
+                <span className={`text-xs font-bold uppercase tracking-wider ${dark ? "text-purple-300" : "text-purple-700"}`}>
+                  Speaking Task Instructions
+                </span>
+              </div>
+              <p className={`text-xs font-medium leading-relaxed ${dark ? "text-gray-200" : "text-gray-800"}`}>
+                {secQuestions[0]?.prompt || instStr || "Describe your actual home in detail — type, rooms, furniture, and location within the home — for 1–2 minutes."}
+              </p>
+            </div>
             <SpeakingDrill
               lessonLevel={lesson?.level || 'A1'}
               lessonTopic={lesson?.title || 'Oral Production'}
