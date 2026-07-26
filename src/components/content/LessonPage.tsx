@@ -2056,7 +2056,7 @@ function SelfAssessmentSection({ items, dark, title }: { items: any[]; dark: boo
                 onChange={() => setChecked({ ...checked, [i]: !checked[i] })}
                 className="w-4 h-4 accent-purple-500 rounded mt-0.5 flex-shrink-0"
               />
-              <div className="text-xs font-medium leading-relaxed">
+              <div className={`text-xs font-medium leading-relaxed transition-all ${checked[i] ? "line-through opacity-60" : ""}`}>
                 {renderFormattedMarkdown(itemText, dark)}
               </div>
             </label>
