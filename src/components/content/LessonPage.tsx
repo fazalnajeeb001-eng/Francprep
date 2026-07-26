@@ -658,6 +658,8 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
     if (!text) return null;
     const cleanText = text
       .replace(/---\s*/g, '')
+      .replace(/^##\s*Chapter Review[^\n]*/gi, '## Chapter Grammar Summary')
+      .replace(/Chapter Review/gi, 'Grammar Summary')
       .replace(/See grammar summary tables above\./gi, '')
       .replace(/Review all grammar points covered in this chapter\./gi, '')
       .replace(/Examples:\s*Refer to the grammar summary\./gi, '')
@@ -1765,7 +1767,8 @@ function GrammarSection({ grammar, dark, cardBg, innerBg, textBody, textSec }: {
           if (trimmed.startsWith('###')) {
             elements.push(<h4 key={idx} className={`text-xs font-bold mt-4 mb-2 ${dark ? "text-white" : "text-gray-900"}`}>{trimmed.replace('###', '').trim()}</h4>);
           } else if (trimmed.startsWith('##')) {
-            elements.push(<h3 key={idx} className={`text-sm font-bold mt-4 mb-2 ${dark ? "text-white" : "text-gray-900"}`}>{trimmed.replace('##', '').trim()}</h3>);
+            const hText = trimmed.replace(/^##\s*/, '').replace(/Chapter Review/gi, 'Grammar Summary').trim();
+            elements.push(<h3 key={idx} className={`text-sm font-bold mt-4 mb-2 ${dark ? "text-white" : "text-gray-900"}`}>{hText}</h3>);
           } else if (trimmed.startsWith('-') || trimmed.startsWith('*')) {
             elements.push(
               <div key={idx} className="ml-2">
