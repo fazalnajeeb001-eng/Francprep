@@ -2109,7 +2109,7 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
 
   // Normalize Section 3 (Written Production)
   if (displaySkill === 'Writing' || activeTab === 2) {
-    sec.instructions = "Write a 6–8 line original description of your ideal home:";
+    sec.instructions = "";
     const rawQs = Array.isArray(sec.questions) ? sec.questions : [];
     if (rawQs.length > 0) {
       sec.questions = rawQs.map((q: any) => {
