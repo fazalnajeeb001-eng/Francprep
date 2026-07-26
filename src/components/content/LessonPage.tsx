@@ -547,11 +547,27 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
   const lesson7Id = computeLesson7Id(lesson);
 
-  const { data: lesson7 } = useQuery({
+  const { data: lesson7Direct } = useQuery({
     queryKey: ["lesson", lesson7Id],
     queryFn: () => apiFetch(`/lessons/${lesson7Id}`).then(res => res.json()).then(json => json.data as LessonData),
     enabled: isLesson8 && !!lesson7Id && !draftId
   });
+
+  const { data: levelLessons } = useQuery({
+    queryKey: ["level-lessons-l7", lesson?.level || 'A1'],
+    queryFn: () => apiFetch(`/lessons?level=${lesson?.level || 'A1'}&limit=100`).then(res => res.json()).then(json => json.data || []),
+    enabled: isLesson8 && !draftId
+  });
+
+  const lesson7FromList = levelLessons?.find((l: any) => {
+    const isL7 = l.order === 7 || l.lessonNumber === 7 || l.skill === 'integrated' || l.anchorSkill === 'integrated' || l.lessonId?.endsWith('l7');
+    if (!isL7) return false;
+    if (lesson?.chapterId && l.chapterId === lesson.chapterId) return true;
+    if (lesson?.lessonId && l.lessonId && l.lessonId.split('-')[0] === lesson.lessonId.split('-')[0]) return true;
+    return true;
+  });
+
+  const lesson7 = lesson7Direct || lesson7FromList;
 
   useEffect(() => {
     if (lessonId && !progress) {
@@ -1152,7 +1168,12 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
           }
         }
 
-        const lesson7Transcript = lesson7?.scene?.text || lesson7?.reading?.text || lesson7?.listening?.transcript || lesson?.scene?.text || lesson?.reading?.text || lesson?.listening?.transcript || '';
+        const DEFAULT_L7_TRANSCRIPT = `Nora : Regardez cette annonce ! C'est un studio meublé de 25 mètres carrés, à 10 minutes à pied de l'université.
+Léo : Il y a une cuisine équipée et une salle de bain privée. Le loyer est de 550 euros par mois.
+Camille : C'est moins cher que mon appartement actuel ! Et c'est disponible dès le 1er septembre.
+Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain après-midi. On vérifiera s'il y a assez d'espace pour les affaires de Nora.`;
+
+        const lesson7Transcript = lesson7?.scene?.text || lesson7?.reading?.text || lesson7?.listening?.transcript || lesson?.scene?.text || lesson?.reading?.text || lesson?.listening?.transcript || DEFAULT_L7_TRANSCRIPT;
 
         return (
           <DELFAssessmentTabbedView
