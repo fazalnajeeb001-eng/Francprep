@@ -560,8 +560,8 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
   });
 
   const lesson7FromList = levelLessons?.find((l: any) => {
-    const isL7 = l.order === 7 || l.lessonNumber === 7 || l.skill === 'integrated' || l.anchorSkill === 'integrated' || l.lessonId?.endsWith('l7');
-    if (!isL7) return false;
+    const isIntegrated = (l.order && l.order % 8 === 7) || (l.lessonNumber && l.lessonNumber % 8 === 7) || l.skill === 'integrated' || l.anchorSkill === 'integrated' || l.lessonId?.endsWith('l7');
+    if (!isIntegrated) return false;
     if (lesson?.chapterId && l.chapterId === lesson.chapterId) return true;
     if (lesson?.lessonId && l.lessonId && l.lessonId.split('-')[0] === lesson.lessonId.split('-')[0]) return true;
     return true;
@@ -1197,15 +1197,21 @@ Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain aprè
           : (lesson?.selfAssessment && lesson.selfAssessment.length > 0) ? lesson.selfAssessment
           : [];
         if (!reflectionItems.length) {
-          reflectionItems = [
-            "I can name different types of housing.",
-            "I can describe my home in detail.",
-            "I can name rooms and furniture.",
-            "I can discuss looking for an apartment.",
-            "I can compare two homes.",
-            "I can discuss household chores.",
-            "I can combine all of the above in a real conversation.",
-          ];
+          if (lesson?.objectives && lesson.objectives.length > 0) {
+            reflectionItems = lesson.objectives;
+          } else if (lesson?.canDoReview && lesson.canDoReview.length > 0) {
+            reflectionItems = lesson.canDoReview.map((c: any) => typeof c === 'string' ? c : c.statement);
+          } else {
+            reflectionItems = [
+              "I can name different types of housing.",
+              "I can describe my home in detail.",
+              "I can name rooms and furniture.",
+              "I can discuss looking for an apartment.",
+              "I can compare two homes.",
+              "I can discuss household chores.",
+              "I can combine all of the above in a real conversation.",
+            ];
+          }
         }
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
@@ -1219,6 +1225,8 @@ Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain aprè
         );
 
       case 'completion':
+        const chNumber = lesson?.chapterNumber || lesson?.chapterId?.replace(/\D/g, '') || '1';
+        const rawCompContent = lesson?.completionSummary?.content || '';
         return (
           <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className={`${cardBg} backdrop-blur-lg rounded-2xl p-6 md:p-8 text-center space-y-6 border border-emerald-500/20 shadow-xl`}>
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 p-0.5 mx-auto shadow-lg shadow-emerald-500/25">
@@ -1232,21 +1240,29 @@ Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain aprè
                 Syllabus Milestone
               </span>
               <h3 className={`text-2xl font-bold mt-3 ${dark ? "text-white" : "text-gray-900"}`}>
-                Chapter 1 — Complete 🎉
+                Chapter {chNumber} — Complete 🎉
               </h3>
             </div>
 
             <div className={`p-5 rounded-xl border text-left text-sm leading-relaxed ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"}`}>
-              <p className="font-bold text-emerald-400 mb-2">You can now:</p>
-              <p className={`${textBody} leading-relaxed mb-4`}>
-                Describe housing types, discuss your home in real detail using the complete <span className="font-semibold text-purple-300">il y a</span> system and an expanded set of location prepositions, name furniture, navigate apartment-hunting, compare homes, and discuss household chores.
-              </p>
-              <div className={`p-4 rounded-xl border ${dark ? "bg-purple-500/10 border-purple-500/30 text-purple-200" : "bg-purple-50 border-purple-200 text-purple-900"}`}>
-                <p className="text-xs font-bold uppercase tracking-wider text-purple-400 mb-1">Coming Next:</p>
-                <p className="text-xs leading-relaxed font-medium">
-                  <strong className="text-purple-300">Chapter 2 — Neighborhood & Local Services</strong> builds on this foundation, introducing the pronoun <em>y</em>!
-                </p>
-              </div>
+              {rawCompContent ? (
+                <div className={`${textBody} leading-relaxed`}>
+                  {parseExplanationContent(rawCompContent)}
+                </div>
+              ) : (
+                <>
+                  <p className="font-bold text-emerald-400 mb-2">You can now:</p>
+                  <p className={`${textBody} leading-relaxed mb-4`}>
+                    Describe housing types, discuss your home in real detail using the complete <span className="font-semibold text-purple-300">il y a</span> system and an expanded set of location prepositions, name furniture, navigate apartment-hunting, compare homes, and discuss household chores.
+                  </p>
+                  <div className={`p-4 rounded-xl border ${dark ? "bg-purple-500/10 border-purple-500/30 text-purple-200" : "bg-purple-50 border-purple-200 text-purple-900"}`}>
+                    <p className="text-xs font-bold uppercase tracking-wider text-purple-400 mb-1">Coming Next:</p>
+                    <p className="text-xs leading-relaxed font-medium">
+                      <strong className="text-purple-300">Chapter {Number(chNumber) + 1}</strong> builds on this foundation!
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
           </motion.div>
         );
