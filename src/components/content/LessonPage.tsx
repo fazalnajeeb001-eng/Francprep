@@ -1041,11 +1041,46 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
       case 'mixedPractice':
         const rawMixedQs = lesson?.mixedPracticeExercises?.questions || lesson?.practiceExercises?.questions || [];
-        const mixedQs = rawMixedQs.filter(q => !q.id?.includes('delf') && !q.id?.includes('mpe-dummy'));
+        const nonDelfQs = rawMixedQs.filter(q => !q.id?.includes('delf') && !q.id?.includes('mpe-dummy'));
+
+        // Normalize Question 2 (Matching prepositions) if split into separate entries:
+        const processedQs: LessonQuestion[] = [];
+        let matchingPairs: { left: string; right: string }[] = [];
+        let hasSeenMatching = false;
+
+        for (const q of nonDelfQs) {
+          const p = q.prompt || '';
+          if (p.includes('Au-dessus de') || p.includes('Au fond de') || p.includes('Au milieu de')) {
+            if (!hasSeenMatching) {
+              hasSeenMatching = true;
+              processedQs.push({
+                id: 'pe-2-matching',
+                type: 'matching',
+                prompt: 'Match the French prepositions of location with their English meanings:',
+                pairs: [
+                  { left: 'Au-dessus de', right: 'Above' },
+                  { left: 'Au fond de', right: 'At the back of' },
+                  { left: 'Au milieu de', right: 'In the middle of' },
+                ],
+                correctAnswer: [
+                  { left: 'Au-dessus de', right: 'Above' },
+                  { left: 'Au fond de', right: 'At the back of' },
+                  { left: 'Au milieu de', right: 'In the middle of' },
+                ],
+                explanation: 'Au-dessus de = Above, Au fond de = At the back of, Au milieu de = In the middle of.',
+              });
+            }
+            continue;
+          }
+          processedQs.push(q);
+        }
+
+        const mixedQs = processedQs.length > 0 ? processedQs : nonDelfQs;
         if (!mixedQs.length) return emptyState('Mixed Practice Exercises');
+
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
-            <div className="flex items-center gap-3 mb-4"><Repeat className="w-5 h-5 text-purple-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Mixed Practice Exercises</h3></div>
+            <div className="flex items-center gap-3 mb-4"><Repeat className="w-5 h-5 text-purple-400" /><h3 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>Mixed Practice Exercises</h3></div>
             <QuizComponent
               questions={adaptQuestions(mixedQs)}
               type="practice"

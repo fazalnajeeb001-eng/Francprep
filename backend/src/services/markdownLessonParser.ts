@@ -76,7 +76,7 @@ function splitSections(body: string): { header: string; body: string }[] {
   const out: { header: string; body: string }[] = [];
   const lines = body.split('\n');
   let h = '', c: string[] = [];
-  
+
   const knownLower = [
     'warm-up', 'warm up',
     'lesson explanation',
@@ -117,7 +117,7 @@ function splitSections(body: string): { header: string; body: string }[] {
       const lower = trimmed.toLowerCase().replace(/[\*\_\`]/g, '').trim();
       const isKnown = knownLower.some(k => lower === k || lower.startsWith(k + '(') || lower.startsWith(k + ' -') || lower.startsWith(k + ':'));
       const isGrammarGeneric = lower === 'grammar' || lower.startsWith('grammar ');
-      
+
       if ((isKnown || isGrammarGeneric) && trimmed.length < 60) {
         headerName = trimmed;
       }
@@ -1011,7 +1011,7 @@ function fillPlaceholders(lesson: ParsedLesson): void {
 
     // 5. assessment from DELF / Diagnostic Mini-Assessment questions
     const delfQs = (lesson.practiceExercises?.questions || []).filter(q => q.id.includes('delf'));
-    
+
     if (delfQs.length > 0) {
       lesson.assessment = {
         examStyle: `DELF ${lesson.level}`,
@@ -1244,7 +1244,7 @@ function parseGrammarSummary(text: string) {
 function parseDelfExercises(text: string, lessonId: string): ILessonQuestion[] {
   const qs: ILessonQuestion[] = [];
   const sections = text.split(/\*\*Section\s+/i);
-  
+
   // Look for Answer Key block
   let answersBlock = '';
   const akMatch = text.match(/\*\*Answer Key\s*[-—]\s*Sections[\s\S]+$/i);
@@ -1255,7 +1255,7 @@ function parseDelfExercises(text: string, lessonId: string): ILessonQuestion[] {
   for (const sec of sections) {
     const textToParse = sec.trim();
     if (!textToParse) continue;
-    
+
     const titleMatch = textToParse.match(/^(\d+)\s*[-—]\s*(.+?)(?::\*\*|\*\*)/i);
     if (!titleMatch) continue;
 
@@ -1264,7 +1264,7 @@ function parseDelfExercises(text: string, lessonId: string): ILessonQuestion[] {
 
     // Rest of the text is the prompt
     let bodyText = textToParse.slice(titleMatch[0].length).trim();
-    
+
     // Remove Answer Key if it is included in the last section
     if (bodyText.includes('**Answer Key')) {
       bodyText = bodyText.split('**Answer Key')[0].trim();
@@ -1383,8 +1383,8 @@ export function parseLessonFromMarkdown(
       detectedChapterNum = parseInt(chapterMatch[1], 10);
     }
   } else {
-    detectedChapterNum = typeof manualOverrides.chapterNum === 'string' 
-      ? parseInt((manualOverrides.chapterNum as string).match(/\d+/)?.[0] || '1', 10) 
+    detectedChapterNum = typeof manualOverrides.chapterNum === 'string'
+      ? parseInt((manualOverrides.chapterNum as string).match(/\d+/)?.[0] || '1', 10)
       : manualOverrides.chapterNum;
   }
 
@@ -1397,7 +1397,7 @@ export function parseLessonFromMarkdown(
     if (!manualOverrides || !manualOverrides.level || !manualOverrides.chapterNum || !manualOverrides.lessonNum) {
       throw new Error("Lesson headers matching '# LESSON [number]' are missing in the markdown text. Please fix the headers or enter the Level, Chapter, and Lesson number manually to parse successfully.");
     }
-    
+
     const lessonNum = manualOverrides.lessonNum;
     const finalLevel = detectedLevel;
     const finalChapterNum = detectedChapterNum;
