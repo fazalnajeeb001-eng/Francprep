@@ -1301,15 +1301,20 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         );
 
       case 'listening':
-        if (!lesson!.listening?.transcript && !lesson!.listening?.questions?.length) return emptyState('Listening');
+        const lTranscript = lesson?.listening?.transcript || lesson?.scene?.text || getDialogueText(lesson);
+        const lQuestions = (lesson?.listening?.questions && lesson.listening.questions.length > 0)
+          ? lesson.listening.questions
+          : (lesson?.comprehensionQuestions || []);
+
+        if (!lTranscript && !lQuestions.length) return emptyState('Listening');
         return (
           <>
             <ListeningSection lesson={lesson!} dark={dark} cardBg={cardBg} innerBg={innerBg} textSec={textSec} textMuted={textMuted}
               showTranslation={showTranslation} setShowTranslation={setShowTranslation} />
-            {lesson!.listening.questions?.length > 0 && (
+            {lQuestions.length > 0 && (
               <div className="mt-6">
                 <QuizComponent
-                  questions={adaptQuestions(lesson!.listening?.questions || [])}
+                  questions={adaptQuestions(lQuestions)}
                   type="listening"
                   onComplete={(score, total) => handleBlockComplete('listening', score, total)}
                   onSubmit={(answers) => handleSubmitBlock('listening', answers)}
