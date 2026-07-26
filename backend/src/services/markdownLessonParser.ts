@@ -139,11 +139,21 @@ function splitSections(body: string): { header: string; body: string }[] {
 
 function parseVocabTable(text: string): ILessonVocabularyItem[] {
   const out: ILessonVocabularyItem[] = [];
+  const seen = new Set<string>();
   for (const line of text.split('\n')) {
     if (!line.includes('|')) continue;
     const cells = line.split('|').map(c => c.trim()).filter(Boolean);
-    if (cells.length < 4 || cells[0] === 'French' || cells[0].match(/^[-:]+$/)) continue;
-    out.push({ french: cells[0], english: cells[1], pronunciation: cells[2], example: cells[3] });
+    if (cells.length < 2) continue;
+    const fr = cells[0].replace(/[\(（].*?see chapter vocabulary.*$/i, '').trim();
+    const en = cells[1].replace(/[\(（].*?see chapter vocabulary.*$/i, '').trim();
+    if (!fr || fr.toLowerCase() === 'french' || fr.match(/^[-:]+$/) || seen.has(fr.toLowerCase())) continue;
+    seen.add(fr.toLowerCase());
+    out.push({
+      french: fr,
+      english: en,
+      pronunciation: cells[2] || '',
+      example: cells[3] || '',
+    });
   }
   return out;
 }

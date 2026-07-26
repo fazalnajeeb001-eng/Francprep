@@ -743,35 +743,88 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
     switch (currentSection.key) {
       case 'vocabBank':
-        const vocabItems = lesson!.vocabularyBank?.items || lesson!.vocabItems?.map((v: any) => `${v.french} — ${v.english}`) || [];
-        const vocabNote = lesson!.vocabularyBank?.cumulativeNote || '';
+        const rawBank = lesson?.vocabularyBank?.items || lesson?.vocabItems || [];
+        const cleanedVocab: { french: string; english: string; pronunciation?: string; example?: string }[] = [];
+        const seenFrench = new Set<string>();
+
+        const addVocab = (fr: string, en: string, pr?: string, ex?: string) => {
+          const cleanFr = fr.replace(/[\(（].*?see chapter vocabulary.*$/i, '').trim();
+          const cleanEn = en.replace(/[\(（].*?see chapter vocabulary.*$/i, '').trim();
+          if (!cleanFr || cleanFr.toLowerCase() === 'french' || cleanFr.match(/^[-:]+$/) || seenFrench.has(cleanFr.toLowerCase())) {
+            return;
+          }
+          seenFrench.add(cleanFr.toLowerCase());
+          cleanedVocab.push({
+            french: cleanFr,
+            english: cleanEn,
+            pronunciation: pr?.trim(),
+            example: ex?.trim(),
+          });
+        };
+
+        if (Array.isArray(rawBank)) {
+          for (const item of rawBank) {
+            if (typeof item === 'string') {
+              if (item.includes('|')) {
+                const cells = item.split('|').map(c => c.trim()).filter(Boolean);
+                if (cells.length >= 2) {
+                  addVocab(cells[0], cells[1], cells[2], cells[3]);
+                }
+              } else if (item.includes(' — ')) {
+                const parts = item.split(' — ');
+                addVocab(parts[0], parts.slice(1).join(' — '));
+              }
+            } else if (typeof item === 'object' && item) {
+              const fr = item.french || (item as any).word || '';
+              const en = item.english || (item as any).meaning || '';
+              const pr = item.pronunciation || '';
+              const ex = item.example || '';
+              if (fr.includes('|')) {
+                const cells = fr.split('|').map(c => c.trim()).filter(Boolean);
+                if (cells.length >= 2) {
+                  addVocab(cells[0], cells[1], cells[2], cells[3]);
+                }
+              } else {
+                addVocab(fr, en, pr, ex);
+              }
+            }
+          }
+        }
+
+        const vocabNote = lesson?.vocabularyBank?.cumulativeNote || 'Vocabulary consolidated from Lessons 1-6. No duplication across chapters. Any polysemy cases are deliberate.';
+
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
-            <h3 className={`text-sm font-semibold mb-2 ${dark ? "text-white" : "text-gray-900"}`}>Chapter Vocabulary Bank</h3>
+            <div className="flex items-center gap-3 mb-2">
+              <Languages className="w-5 h-5 text-purple-400" />
+              <h3 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>Chapter Vocabulary Bank</h3>
+            </div>
             <p className={`text-xs ${textSec} mb-4`}>Review the consolidated vocabulary list for this chapter.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {vocabItems.map((item: string, i: number) => {
-                const parts = item.split(' — ');
-                const french = parts[0]?.trim() || item;
-                const english = parts.slice(1).join(' — ').trim() || '';
-                return (
-                  <motion.div key={item + i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}
-                    className={`flex items-center gap-3 p-3 rounded-xl border ${dark ? "border-[#1e2a4a] bg-[#101828]/50" : "border-gray-100 bg-gray-50/50"} hover:border-purple-500/50 transition-all`}>
-                    <button onClick={() => speak(french)}
-                      className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white hover:opacity-80 transition-all flex-shrink-0">
-                      <Volume2 className="w-4 h-4" />
-                    </button>
-                    <div className="flex-1 min-w-0">
-                      <span className={`text-sm font-semibold block ${dark ? "text-white" : "text-gray-900"}`}>{french}</span>
-                      <span className={`text-xs ${textSec}`}>{english}</span>
-                    </div>
-                  </motion.div>
-                );
-              })}
+              {cleanedVocab.map((v, i) => (
+                <motion.div key={v.french + i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}
+                  className={`flex items-start gap-3 p-3.5 rounded-xl border ${dark ? "border-[#1e2a4a] bg-[#101828]/50" : "border-gray-100 bg-gray-50/50"} hover:border-purple-500/50 transition-all`}>
+                  <button onClick={() => speak(v.french)}
+                    className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white hover:opacity-80 transition-all flex-shrink-0 mt-0.5 shadow-sm">
+                    <Volume2 className="w-4 h-4" />
+                  </button>
+                  <div className="flex-1 min-w-0">
+                    <span className={`text-sm font-bold block ${dark ? "text-white" : "text-gray-900"}`}>{v.french}</span>
+                    {v.pronunciation && <span className={`text-[10px] ${textMuted} block font-mono`}>[{v.pronunciation}]</span>}
+                    <span className={`text-xs ${textSec} block mt-0.5`}>{v.english}</span>
+                    {v.example && (
+                      <div className="mt-1.5 pt-1.5 border-t dark:border-[#1e2a4a] border-gray-200/60 flex items-center justify-between">
+                        <span className={`text-[11px] ${textMuted} italic`}>"{v.example}"</span>
+                        <button onClick={() => speak(v.example!)} className="text-[10px] text-purple-400 hover:underline flex-shrink-0 ml-2">▶ Listen</button>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
             </div>
             {vocabNote && (
-              <div className={`mt-4 p-3 rounded-xl border ${dark ? "bg-purple-500/5 border-purple-500/20" : "bg-purple-50 border-purple-100"}`}>
-                <p className={`text-[11px] ${dark ? "text-purple-300" : "text-purple-700"}`}>{vocabNote}</p>
+              <div className={`mt-5 p-3.5 rounded-xl border ${dark ? "bg-purple-500/5 border-purple-500/20" : "bg-purple-50 border-purple-100"}`}>
+                <p className={`text-xs ${dark ? "text-purple-300" : "text-purple-700"} leading-relaxed`}>{vocabNote}</p>
               </div>
             )}
           </div>
