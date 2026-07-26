@@ -156,15 +156,28 @@ function buildSections(lesson: LessonData): SectionDef[] {
   const isLesson8 = lesson.lessonId?.endsWith('-l8') || lesson.lessonNumber === 8;
 
   if (isLesson8) {
-    return [
+    const list: SectionDef[] = [
       { key: 'vocabBank', label: 'Vocab Bank', icon: <Languages className="w-3.5 h-3.5" />, hasContent: true },
       { key: 'grammarSummary', label: 'Grammar Summary', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: true },
       { key: 'canDoReview', label: 'Can-Do Review', icon: <CheckCircle2 className="w-3.5 h-3.5" />, hasContent: true },
+    ];
+
+    if (lesson.reading?.text || (lesson.reading?.questions && lesson.reading.questions.length > 0)) {
+      list.push({ key: 'reading', label: 'Reading', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: true });
+    }
+
+    if (lesson.listening?.transcript || (lesson.listening?.questions && lesson.listening.questions.length > 0)) {
+      list.push({ key: 'listening', label: 'Listening', icon: <Headphones className="w-3.5 h-3.5" />, hasContent: true });
+    }
+
+    list.push(
       { key: 'mixedPractice', label: 'Mixed Practice', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: true },
       { key: 'assessment', label: 'DELF Assessment', icon: <Award className="w-3.5 h-3.5" />, hasContent: true },
       { key: 'selfReflection', label: 'Reflection', icon: <Star className="w-3.5 h-3.5" />, hasContent: true },
       { key: 'completion', label: 'Complete', icon: <Trophy className="w-3.5 h-3.5" />, hasContent: true },
-    ];
+    );
+
+    return list;
   }
 
   if (isLesson7) {
