@@ -847,14 +847,78 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
 
   // ─── RENDER: SHORT ANSWER ───
   const renderShortAnswer = (q: Question, qId: string) => {
+    const promptLower = (q.text || q.prompt || '').toLowerCase();
+    const isSpeakingPrompt = /roleplay|partner|discuss|oral|speaking|2 minutes/i.test(promptLower);
+
     return (
       <div className="space-y-3">
+        {isSpeakingPrompt && (
+          <div className={`p-4 rounded-xl border mb-3 ${dark ? "bg-purple-500/10 border-purple-500/30" : "bg-purple-50 border-purple-200"}`}>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Mic className="w-4 h-4 text-purple-400" />
+                <span className={`text-xs font-bold uppercase tracking-wider ${dark ? "text-purple-300" : "text-purple-700"}`}>
+                  Speaking & Oral Roleplay Exercise
+                </span>
+              </div>
+              <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold ${dark ? "bg-purple-500/20 text-purple-300 border border-purple-500/30" : "bg-purple-100 text-purple-800"}`}>
+                Target: 2 Minutes
+              </span>
+            </div>
+            <p className={`text-xs ${dark ? "text-gray-300" : "text-gray-700"} leading-relaxed mb-3`}>
+              Practice speaking out loud! You can record your voice below using speech recognition, or write out your French dialogue transcript.
+            </p>
+            {hasSpeechRecognition && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (isRecording) {
+                    recognitionRef.current?.stop();
+                    setIsRecording(false);
+                  } else {
+                    try {
+                      const SpeechRecognition = getSpeechRecognition();
+                      if (SpeechRecognition) {
+                        const rec = new SpeechRecognition();
+                        rec.lang = 'fr-FR';
+                        rec.continuous = true;
+                        rec.interimResults = true;
+                        rec.onresult = (e: any) => {
+                          let transcript = '';
+                          for (let i = e.resultIndex; i < e.results.length; i++) {
+                            transcript += e.results[i][0].transcript;
+                          }
+                          setAnswer(qId, transcript);
+                        };
+                        rec.onend = () => setIsRecording(false);
+                        rec.start();
+                        recognitionRef.current = rec;
+                        setIsRecording(true);
+                      }
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }
+                }}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm ${
+                  isRecording
+                    ? "bg-red-500 text-white animate-pulse"
+                    : "bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90 shadow-purple-500/25"
+                }`}
+              >
+                <Mic className="w-3.5 h-3.5" />
+                {isRecording ? "Recording... (Click to Stop)" : "Record French Voice Response"}
+              </button>
+            )}
+          </div>
+        )}
+
         <textarea
           value={(userAnswer as string) || ''}
           onChange={(e) => setAnswer(qId, e.target.value)}
           disabled={submitted}
-          placeholder="Write your answer in French..."
-          className={`w-full h-24 p-3 rounded-xl border text-sm resize-none outline-none transition-all ${
+          placeholder={isSpeakingPrompt ? "Record your voice above or type your French dialogue transcript here..." : "Write your answer in French..."}
+          className={`w-full h-28 p-3 rounded-xl border text-sm resize-none outline-none transition-all ${
             resultForQ
               ? resultForQ?.correct
                 ? dark ? "border-emerald-500 bg-emerald-500/10 text-emerald-300" : "border-emerald-500 bg-emerald-50 text-emerald-900 font-semibold"
