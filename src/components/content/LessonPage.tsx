@@ -2296,7 +2296,7 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
         )}
 
         {/* Questions */}
-        {!isSpeakingSec && secQuestions.length > 0 && (
+        {secQuestions.length > 0 && (
           <QuizComponent
             questions={adaptQuestions(secQuestions)}
             type="assessment"
@@ -2307,7 +2307,7 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
 
         {/* Speaking Practice for Oral Section */}
         {isSpeakingSec && (
-          <div className="mt-2">
+          <div className="mt-6 border-t dark:border-[#1e2a4a] border-gray-200 pt-6">
             <SpeakingDrill
               lessonLevel={lesson?.level || 'A1'}
               lessonTopic={lesson?.title || 'Oral Production'}
