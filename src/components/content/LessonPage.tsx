@@ -1040,7 +1040,8 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         );
 
       case 'mixedPractice':
-        const mixedQs = lesson!.mixedPracticeExercises?.questions || [];
+        const rawMixedQs = lesson?.mixedPracticeExercises?.questions || lesson?.practiceExercises?.questions || [];
+        const mixedQs = rawMixedQs.filter(q => !q.id?.includes('delf') && !q.id?.includes('mpe-dummy'));
         if (!mixedQs.length) return emptyState('Mixed Practice Exercises');
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>

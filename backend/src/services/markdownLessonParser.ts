@@ -996,8 +996,9 @@ function fillPlaceholders(lesson: ParsedLesson): void {
       }));
     }
 
-    // 4. mixedPracticeExercises = practiceExercises (rename)
-    lesson.mixedPracticeExercises = lesson.practiceExercises || { questions: [] };
+    // 4. mixedPracticeExercises = non-DELF practiceExercises
+    const nonDelfQs = (lesson.practiceExercises?.questions || []).filter(q => !q.id.includes('delf'));
+    lesson.mixedPracticeExercises = { questions: nonDelfQs };
     if (!lesson.mixedPracticeExercises.questions || lesson.mixedPracticeExercises.questions.length === 0) {
       lesson.mixedPracticeExercises.questions = [{
         id: `${lessonId}-mpe-dummy`,
