@@ -179,7 +179,6 @@ function buildSections(lesson: LessonData): SectionDef[] {
     const list: SectionDef[] = [
       { key: 'vocabBank', label: 'Vocab Bank', icon: <Languages className="w-3.5 h-3.5" />, hasContent: true },
       { key: 'grammarSummary', label: 'Grammar Summary', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: true },
-      { key: 'canDoReview', label: 'Can-Do Review', icon: <CheckCircle2 className="w-3.5 h-3.5" />, hasContent: true },
     ];
 
     if (lesson.reading?.text || (lesson.reading?.questions && lesson.reading.questions.length > 0)) {
@@ -193,6 +192,7 @@ function buildSections(lesson: LessonData): SectionDef[] {
     list.push(
       { key: 'mixedPractice', label: 'Mixed Practice', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: true },
       { key: 'assessment', label: 'DELF Assessment', icon: <Award className="w-3.5 h-3.5" />, hasContent: true },
+      { key: 'canDoReview', label: 'Can-Do Review', icon: <CheckCircle2 className="w-3.5 h-3.5" />, hasContent: true },
       { key: 'selfReflection', label: 'Reflection', icon: <Star className="w-3.5 h-3.5" />, hasContent: true },
       { key: 'completion', label: 'Complete', icon: <Trophy className="w-3.5 h-3.5" />, hasContent: true },
     );
@@ -1000,20 +1000,40 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         );
 
       case 'canDoReview':
-        const canDoItems = lesson!.canDoReview || [];
+        let canDoList = lesson?.canDoReview || [];
+        const isGenericList = canDoList.length <= 2 && (canDoList[0]?.statement?.includes('Consolidate') || canDoList[0]?.statement?.includes('diagnostic') || !canDoList.length);
+
+        if (isGenericList) {
+          canDoList = [
+            { statement: "I can name different types of housing.", lessonRef: "Lesson 1" },
+            { statement: "I can describe my home in detail.", lessonRef: "Lesson 2" },
+            { statement: "I can name rooms and furniture.", lessonRef: "Lesson 3" },
+            { statement: "I can discuss looking for an apartment.", lessonRef: "Lesson 4" },
+            { statement: "I can compare two homes.", lessonRef: "Lesson 5" },
+            { statement: "I can discuss household chores.", lessonRef: "Lesson 6" },
+            { statement: "I can combine all of the above in a real conversation.", lessonRef: "Lesson 7 (Integrated)" },
+          ];
+        }
+
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 mb-2">
               <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-              <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Can-Do Review</h3>
+              <h3 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>Chapter Review — Mini Review by Can-Do Statement</h3>
             </div>
-            <p className={`text-xs ${textSec} mb-4`}>Each chapter goal mapped to the lesson(s) that taught it.</p>
+            <p className={`text-xs ${textSec} mb-5`}>Each chapter goal mapped to the specific lesson(s) that taught it.</p>
             <div className="space-y-3">
-              {canDoItems.map((item: { statement: string; lessonRef: string }, i: number) => (
-                <div key={i} className={`p-3 rounded-xl border ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"}`}>
-                  <p className={`text-sm ${dark ? "text-white" : "text-gray-900"}`}>{item.statement}</p>
-                  <p className={`text-[10px] mt-1 ${dark ? "text-purple-400" : "text-purple-600"}`}>Taught in {item.lessonRef}</p>
-                </div>
+              {canDoList.map((item: { statement: string; lessonRef: string }, i: number) => (
+                <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}
+                  className={`flex items-center justify-between p-4 rounded-xl border ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"} hover:border-emerald-500/50 transition-all`}>
+                  <div className="flex items-center gap-3">
+                    <span className="w-6 h-6 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold flex items-center justify-center border border-emerald-500/20">{i + 1}</span>
+                    <p className={`text-sm font-medium ${dark ? "text-white" : "text-gray-900"}`}>{item.statement}</p>
+                  </div>
+                  <span className={`text-xs font-bold px-3 py-1.5 rounded-lg border flex-shrink-0 ml-4 ${dark ? "bg-purple-500/10 border-purple-500/30 text-purple-300" : "bg-purple-50 border-purple-200 text-purple-700"}`}>
+                    → {item.lessonRef}
+                  </span>
+                </motion.div>
               ))}
             </div>
           </div>

@@ -979,8 +979,17 @@ function fillPlaceholders(lesson: ParsedLesson): void {
       lesson.grammarSummary = { content: 'Consolidated grammar reference from this chapter.' };
     }
 
-    // 3. canDoReview from objectives
-    if (!lesson.canDoReview || lesson.canDoReview.length === 0) {
+    // 3. canDoReview from raw text or objectives
+    const parsedCanDo: { statement: string; lessonRef: string }[] = [];
+    const lessonStr = JSON.stringify(lesson);
+    const matches = lessonStr.matchAll(/(I can [^→"\n]+)\s*→\s*(Lesson [^"\n]+)/gi);
+    for (const m of matches) {
+      parsedCanDo.push({ statement: m[1].trim(), lessonRef: m[2].trim() });
+    }
+
+    if (parsedCanDo.length > 0) {
+      lesson.canDoReview = parsedCanDo;
+    } else if (!lesson.canDoReview || lesson.canDoReview.length === 0) {
       lesson.canDoReview = (lesson.objectives || []).map((obj, i) => ({
         statement: obj,
         lessonRef: `Lessons 1-${Math.min(6, (lesson.objectives || []).length)}`,
