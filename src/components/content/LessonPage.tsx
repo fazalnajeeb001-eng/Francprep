@@ -2030,6 +2030,7 @@ function SelfAssessmentSection({ items, dark, title }: { items: string[]; dark: 
 
 function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7Transcript, dark, cardBg, textBody, textSec, handleBlockComplete, handleSubmitBlock, speak, lesson }: any) {
   const [activeTab, setActiveTab] = useState(0);
+  const [showTranscript, setShowTranscript] = useState(false);
 
   const getSectionSkill = (secItem: any, idx: number) => {
     const text = `${secItem?.title || ''} ${secItem?.instructions || ''} ${secItem?.skill || ''} ${secItem?.questions?.[0]?.prompt || ''}`.toLowerCase();
@@ -2206,29 +2207,44 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
         {/* Section 1 Listening Reference */}
         {isListeningSec && (
           <div className={`p-4 rounded-xl border mb-4 space-y-3 ${dark ? "bg-purple-500/10 border-purple-500/30" : "bg-purple-50 border-purple-200"}`}>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <Headphones className="w-4 h-4 text-purple-400" />
                 <span className={`text-xs font-bold uppercase tracking-wider ${dark ? "text-purple-300" : "text-purple-700"}`}>
-                  Reference: Lesson 7 Scene Transcript
+                  Reference: Lesson 7 Scene Audio
                 </span>
               </div>
-              {lesson7Transcript && (
+              <div className="flex items-center gap-2">
+                {lesson7Transcript && (
+                  <button
+                    type="button"
+                    onClick={() => speak(lesson7Transcript)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-lg shadow-md transition-all"
+                  >
+                    <Volume2 className="w-3.5 h-3.5" /> Listen to Audio
+                  </button>
+                )}
                 <button
                   type="button"
-                  onClick={() => speak(lesson7Transcript)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-lg shadow-md transition-all"
+                  onClick={() => setShowTranscript(!showTranscript)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                    dark ? "bg-purple-500/20 border-purple-500/30 text-purple-300 hover:bg-purple-500/30" : "bg-purple-100 border-purple-200 text-purple-800 hover:bg-purple-200"
+                  }`}
                 >
-                  <Volume2 className="w-3.5 h-3.5" /> Listen to Audio
+                  {showTranscript ? "Hide Transcript ▴" : "Show Transcript ▾"}
                 </button>
-              )}
+              </div>
             </div>
-            {lesson7Transcript ? (
-              <p className={`text-xs ${textBody} leading-relaxed whitespace-pre-line max-h-44 overflow-y-auto p-3 rounded-lg ${dark ? "bg-black/40 border border-purple-500/20 text-gray-200" : "bg-white border border-purple-200 text-gray-800"}`}>
-                {lesson7Transcript}
-              </p>
-            ) : (
-              <p className={`text-xs ${textSec} italic`}>Loading Lesson 7 dialogue transcript...</p>
+            {showTranscript && (
+              lesson7Transcript ? (
+                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
+                  <p className={`text-xs ${textBody} leading-relaxed whitespace-pre-line max-h-44 overflow-y-auto p-3 rounded-lg ${dark ? "bg-black/40 border border-purple-500/20 text-gray-200" : "bg-white border border-purple-200 text-gray-800"}`}>
+                    {lesson7Transcript}
+                  </p>
+                </motion.div>
+              ) : (
+                <p className={`text-xs ${textSec} italic`}>Loading Lesson 7 dialogue transcript...</p>
+              )
             )}
           </div>
         )}
