@@ -747,10 +747,28 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         const cleanedVocab: { french: string; english: string; pronunciation?: string; example?: string }[] = [];
         const seenFrench = new Set<string>();
 
+        const isProseOrNote = (str: string) => {
+          const l = str.toLowerCase();
+          return (
+            l.includes('cumulative note') ||
+            l.includes('so this bank begins') ||
+            l.includes('additive to') ||
+            l.includes('cross-checked') ||
+            l.includes('per rule') ||
+            l.includes('general-purpose') ||
+            l.includes('consistent with') ||
+            l.includes('not new entries') ||
+            l.includes('chapter vocabulary') ||
+            (l.length > 80 && !l.includes('—'))
+          );
+        };
+
         const addVocab = (fr: string, en: string, pr?: string, ex?: string) => {
+          if (isProseOrNote(fr) || isProseOrNote(en) || isProseOrNote(ex || '')) return;
+
           const cleanFr = fr.replace(/[\(（].*?see chapter vocabulary.*$/i, '').trim();
           const cleanEn = en.replace(/[\(（].*?see chapter vocabulary.*$/i, '').trim();
-          if (!cleanFr || cleanFr.toLowerCase() === 'french' || cleanFr.match(/^[-:]+$/) || seenFrench.has(cleanFr.toLowerCase())) {
+          if (!cleanFr || cleanFr.toLowerCase() === 'french' || cleanFr.match(/^[-:]+$/) || seenFrench.has(cleanFr.toLowerCase()) || isProseOrNote(cleanFr) || isProseOrNote(cleanEn)) {
             return;
           }
           seenFrench.add(cleanFr.toLowerCase());

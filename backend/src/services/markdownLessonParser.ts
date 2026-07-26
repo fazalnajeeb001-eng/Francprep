@@ -140,13 +140,29 @@ function splitSections(body: string): { header: string; body: string }[] {
 function parseVocabTable(text: string): ILessonVocabularyItem[] {
   const out: ILessonVocabularyItem[] = [];
   const seen = new Set<string>();
+  const isProseOrNote = (str: string) => {
+    const l = str.toLowerCase();
+    return (
+      l.includes('cumulative note') ||
+      l.includes('so this bank begins') ||
+      l.includes('additive to') ||
+      l.includes('cross-checked') ||
+      l.includes('per rule') ||
+      l.includes('general-purpose') ||
+      l.includes('consistent with') ||
+      l.includes('not new entries') ||
+      l.includes('chapter vocabulary') ||
+      (l.length > 80 && !l.includes('—'))
+    );
+  };
+
   for (const line of text.split('\n')) {
     if (!line.includes('|')) continue;
     const cells = line.split('|').map(c => c.trim()).filter(Boolean);
     if (cells.length < 2) continue;
     const fr = cells[0].replace(/[\(（].*?see chapter vocabulary.*$/i, '').trim();
     const en = cells[1].replace(/[\(（].*?see chapter vocabulary.*$/i, '').trim();
-    if (!fr || fr.toLowerCase() === 'french' || fr.match(/^[-:]+$/) || seen.has(fr.toLowerCase())) continue;
+    if (!fr || fr.toLowerCase() === 'french' || fr.match(/^[-:]+$/) || seen.has(fr.toLowerCase()) || isProseOrNote(fr) || isProseOrNote(en)) continue;
     seen.add(fr.toLowerCase());
     out.push({
       french: fr,
