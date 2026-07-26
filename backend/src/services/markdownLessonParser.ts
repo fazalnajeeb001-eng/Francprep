@@ -567,20 +567,40 @@ function parsePracticeExercises(text: string): ILessonQuestion[] {
       continue;
     }
 
-    // Question type header: **1. Multiple Choice** or **2. Communicative Practice:** (allow optional **)
-    const tm = t.match(/^(?:\*\*)?\d+\.\s*([\w\s]+?)(?::?\*\*|:)?$/i);
-    if (tm && knownTypes.test(tm[1])) {
-      // Push any pending question
-      if (curPromptLines.length > 0 && curType) {
-        n++;
-        qs.push(buildPracticeQuestion(n, curType, curPromptLines.join('\n')));
-        curPromptLines = [];
+    // Question type header: **1. Multiple Choice** or "1. Multiple Choice Why does Nora..." or "2. Communicative Practice: ..."
+    const tm = t.match(/^(?:\*\*)?(\d+)[\.\)]\s*(?:(Multiple Choice|Matching|Fill in the Blank|Fill Blank|Sentence Ordering|Ordering|Short Answer|Translation|True or False|Communicative Practice)(?::?\*\*|:|\s)?)?\s*(.*)$/i);
+    if (tm && (tm[2] || tm[3])) {
+      const explicitType = tm[2];
+      const inlinePrompt = tm[3]?.trim();
+
+      // If it's a new numbered question (or explicit type)
+      if (explicitType || tm[1]) {
+        // Push previous pending question
+        if (curPromptLines.length > 0 && curType) {
+          n++;
+          qs.push(buildPracticeQuestion(n, curType, curPromptLines.join('\n')));
+          curPromptLines = [];
+        }
+
+        if (explicitType) {
+          curType = explicitType.trim().toLowerCase().replace(/\s+/g, '_')
+            .replace('fill_in_the_blank', 'fill_blank')
+            .replace('sentence_ordering', 'ordering')
+            .replace('communicative_practice', 'short_answer');
+        } else {
+          // Infer type from content
+          if (inlinePrompt.match(/[a-d]\)\s*/i)) {
+            curType = 'multiple_choice';
+          } else {
+            curType = 'short_answer';
+          }
+        }
+
+        if (inlinePrompt) {
+          curPromptLines.push(inlinePrompt);
+        }
+        continue;
       }
-      curType = tm[1].trim().toLowerCase().replace(/\s+/g, '_')
-        .replace('fill_in_the_blank', 'fill_blank')
-        .replace('sentence_ordering', 'ordering')
-        .replace('communicative_practice', 'short_answer');
-      continue;
     }
 
     // Accumulate prompt lines for current question
