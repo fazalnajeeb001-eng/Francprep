@@ -11,33 +11,48 @@ export function getBestVoice(langPrefix: "fr" | "en"): SpeechSynthesisVoice | nu
   const targetVoices = voices.filter((v) => v.lang.toLowerCase().startsWith(langPrefix));
   if (!targetVoices.length) return null;
 
-  // 1. Highest Priority: HD Neural & Natural Voices (Microsoft Natural, Google, Apple Enhanced/Premium)
-  const neuralVoice = targetVoices.find((v) => {
+  if (langPrefix === "fr") {
+    // Filter for native France (fr-FR) voices first
+    const frFRVoices = targetVoices.filter((v) => v.lang.toLowerCase().includes("fr-fr") || v.lang.toLowerCase() === "fr");
+    const candidates = frFRVoices.length > 0 ? frFRVoices : targetVoices;
+
+    // 1. Preferred Female HD Neural/Natural French Voice for Madame Sophie
+    const femaleNeural = candidates.find((v) => {
+      const n = v.name.toLowerCase();
+      const isNeural = n.includes("natural") || n.includes("neural") || n.includes("google") || n.includes("premium") || n.includes("enhanced") || n.includes("online");
+      const isFemale = n.includes("denise") || n.includes("celeste") || n.includes("audrey") || n.includes("amélie") || n.includes("marie") || n.includes("lea") || n.includes("hortense") || n.includes("julie") || n.includes("female");
+      return isNeural || isFemale;
+    });
+    if (femaleNeural) return femaleNeural;
+
+    // 2. Any Neural/Natural French Voice
+    const anyNeural = candidates.find((v) => {
+      const n = v.name.toLowerCase();
+      return n.includes("natural") || n.includes("neural") || n.includes("google") || n.includes("premium") || n.includes("enhanced") || n.includes("online");
+    });
+    if (anyNeural) return anyNeural;
+
+    return candidates[0];
+  }
+
+  // English Voice selection
+  const enVoices = targetVoices.filter((v) => v.lang.toLowerCase().includes("en-us") || v.lang.toLowerCase().includes("en-gb"));
+  const candidates = enVoices.length > 0 ? enVoices : targetVoices;
+
+  const femaleNeuralEn = candidates.find((v) => {
     const n = v.name.toLowerCase();
-    return (
-      n.includes("natural") ||
-      n.includes("neural") ||
-      n.includes("google") ||
-      n.includes("premium") ||
-      n.includes("enhanced")
-    );
+    return (n.includes("natural") || n.includes("neural") || n.includes("google") || n.includes("premium") || n.includes("enhanced") || n.includes("online")) &&
+      (n.includes("jenny") || n.includes("aria") || n.includes("samantha") || n.includes("karen") || n.includes("female"));
   });
-  if (neuralVoice) return neuralVoice;
+  if (femaleNeuralEn) return femaleNeuralEn;
 
-  // 2. Second Priority: Specific native high-quality voice names
-  const preferredNames =
-    langPrefix === "fr"
-      ? ["denise", "celeste", "audrey", "amélie", "julie", "marie", "thomas", "lea", "paul"]
-      : ["jenny", "aria", "samantha", "karen", "daniel", "serena", "victoria"];
-
-  const namedVoice = targetVoices.find((v) => {
+  const anyNeuralEn = candidates.find((v) => {
     const n = v.name.toLowerCase();
-    return preferredNames.some((name) => n.includes(name));
+    return n.includes("natural") || n.includes("neural") || n.includes("google") || n.includes("premium") || n.includes("enhanced") || n.includes("online");
   });
-  if (namedVoice) return namedVoice;
+  if (anyNeuralEn) return anyNeuralEn;
 
-  // 3. Fallback: First voice matching language prefix
-  return targetVoices[0];
+  return candidates[0];
 }
 
 /**
