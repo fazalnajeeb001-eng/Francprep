@@ -1191,6 +1191,7 @@ Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain aprè
           />
         );
 
+      case 'review':
       case 'selfReflection':
         let reflectionItems = (lesson?.selfReflection && lesson.selfReflection.length > 0) ? lesson.selfReflection
           : (lesson?.selfAssessment && lesson.selfAssessment.length > 0) ? lesson.selfAssessment
