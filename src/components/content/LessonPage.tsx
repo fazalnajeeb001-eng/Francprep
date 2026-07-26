@@ -286,11 +286,11 @@ export function renderFormattedMarkdown(text: any, dark: boolean) {
   });
 }
 
-class LessonErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
-  state = { hasError: false };
+class LessonErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; error: Error | null }> {
+  state = { hasError: false, error: null as Error | null };
 
-  static getDerivedStateFromError() {
-    return { hasError: true };
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
@@ -301,16 +301,22 @@ class LessonErrorBoundary extends Component<{ children: ReactNode }, { hasError:
     if (this.state.hasError) {
       return (
         <div className="min-h-screen bg-[#070B17] text-white flex items-center justify-center p-6">
-          <div className="max-w-md w-full text-center p-6 rounded-2xl bg-[#101828] border border-[#1e2a4a] shadow-xl">
-            <div className="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center mx-auto mb-3 text-xl">
+          <div className="max-w-xl w-full text-center p-6 rounded-2xl bg-[#101828] border border-[#1e2a4a] shadow-xl space-y-4">
+            <div className="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center mx-auto text-xl">
               📘
             </div>
-            <h2 className="text-base font-bold text-white mb-2">Lesson Section Notice</h2>
-            <p className="text-xs text-gray-400 mb-4 leading-relaxed">
+            <h2 className="text-base font-bold text-white">Lesson Section Notice</h2>
+            <p className="text-xs text-gray-400 leading-relaxed">
               This lesson section is updating. Please refresh to load the latest exercises.
             </p>
+            {this.state.error && (
+              <div className="text-left p-3 rounded-xl bg-red-950/40 border border-red-500/30 text-[11px] font-mono text-red-300 overflow-x-auto max-h-40">
+                <p className="font-bold">{this.state.error.toString()}</p>
+                {this.state.error.stack && <p className="text-[10px] text-red-400/80 mt-1 whitespace-pre-wrap">{this.state.error.stack}</p>}
+              </div>
+            )}
             <button
-              onClick={() => { this.setState({ hasError: false }); window.location.reload(); }}
+              onClick={() => { this.setState({ hasError: false, error: null }); window.location.reload(); }}
               className="px-5 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold rounded-xl shadow-lg transition-all hover:opacity-90"
             >
               Refresh Section
