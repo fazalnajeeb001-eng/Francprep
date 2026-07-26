@@ -2030,26 +2030,38 @@ function WritingSection({ lesson, dark, cardBg, innerBg, textBody, onComplete }:
 
 // ─── Self-Assessment Section ───────────────────────────────────────────────
 
-function SelfAssessmentSection({ items, dark, title }: { items: string[]; dark: boolean; title: string }) {
+function SelfAssessmentSection({ items, dark, title }: { items: any[]; dark: boolean; title: string }) {
   const [checked, setChecked] = useState<Record<number, boolean>>({});
   const allChecked = items.length > 0 && items.every((_, i) => checked[i]);
   const cardBg = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200";
-  const textBody = dark ? "text-gray-300" : "text-gray-700";
 
   return (
     <div className={`${cardBg} backdrop-blur-lg border rounded-2xl p-5 transition-colors mt-4`}>
-      <div className="flex items-center gap-3 mb-3">
+      <div className="flex items-center gap-3 mb-4">
         <Award className="w-5 h-5 text-purple-400" />
         <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{title}</h3>
       </div>
-      <div className="space-y-2">
-        {items.map((item, i) => (
-          <label key={i} className="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" checked={checked[i] || false}
-              onChange={() => setChecked({ ...checked, [i]: !checked[i] })}
-              className="w-4 h-4 accent-purple-500 rounded" />
-          </label>
-        ))}
+      <div className="space-y-3">
+        {items.map((item, i) => {
+          const itemText = typeof item === 'string' ? item : (item?.statement || item?.text || item?.prompt || String(item));
+          return (
+            <label key={i} className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
+              checked[i]
+                ? (dark ? "bg-purple-500/10 border-purple-500/40 text-white" : "bg-purple-50 border-purple-300 text-purple-900")
+                : (dark ? "bg-[#0c1224] border-[#1e2a4a] text-gray-300 hover:border-purple-500/30" : "bg-gray-50 border-gray-200 text-gray-800 hover:border-gray-300")
+            }`}>
+              <input
+                type="checkbox"
+                checked={checked[i] || false}
+                onChange={() => setChecked({ ...checked, [i]: !checked[i] })}
+                className="w-4 h-4 accent-purple-500 rounded mt-0.5 flex-shrink-0"
+              />
+              <div className="text-xs font-medium leading-relaxed">
+                {renderFormattedMarkdown(itemText, dark)}
+              </div>
+            </label>
+          );
+        })}
       </div>
       {allChecked && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 text-center">
