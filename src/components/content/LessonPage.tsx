@@ -184,6 +184,7 @@ function buildSections(lesson: LessonData): SectionDef[] {
     return [
       { key: 'warmUp', label: 'Warm-Up', icon: <HelpCircle className="w-3.5 h-3.5" />, hasContent: true },
       { key: 'scene', label: 'Scene', icon: <Headphones className="w-3.5 h-3.5" />, hasContent: true },
+      { key: 'reading', label: 'Reading', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: true },
       { key: 'speakingL7', label: 'Speaking', icon: <Mic className="w-3.5 h-3.5" />, hasContent: true },
       { key: 'writing', label: 'Writing', icon: <PenTool className="w-3.5 h-3.5" />, hasContent: true },
       { key: 'practice', label: 'Quiz', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: true },
@@ -1256,15 +1257,20 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         );
 
       case 'reading':
-        if (!lesson!.reading?.text) return emptyState('Reading');
+        const rText = lesson?.reading?.text || lesson?.scene?.text || getDialogueText(lesson);
+        const rQuestions = (lesson?.reading?.questions && lesson.reading.questions.length > 0)
+          ? lesson.reading.questions
+          : (lesson?.comprehensionQuestions || []);
+
+        if (!rText && !rQuestions.length) return emptyState('Reading');
         return (
           <>
             <ReadingSection lesson={lesson!} dark={dark} cardBg={cardBg} innerBg={innerBg} textBody={textBody} textMuted={textMuted}
               showTranslation={showTranslation} setShowTranslation={setShowTranslation} />
-            {lesson!.reading.questions?.length > 0 && (
+            {rQuestions.length > 0 && (
               <div className="mt-6">
                 <QuizComponent
-                  questions={adaptQuestions(lesson!.reading?.questions || [])}
+                  questions={adaptQuestions(rQuestions)}
                   type="reading"
                   onComplete={(score, total) => handleBlockComplete('reading', score, total)}
                   onSubmit={(answers) => handleSubmitBlock('reading', answers)}
