@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, XCircle, ChevronRight, ChevronLeft, GripVertical, Mic } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
@@ -31,6 +31,11 @@ interface ResultItem {
   maxPoints: number;
   explanation: string;
   text?: string;
+}
+
+function getSpeechRecognition(): any {
+  if (typeof window === "undefined") return null;
+  return (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition || null;
 }
 
 interface QuizProps {
@@ -424,6 +429,10 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
   const [checkingQuestion, setCheckingQuestion] = useState<Record<string, boolean>>({});
   const [revealedAnswers, setRevealedAnswers] = useState<Record<string, boolean>>({});
   const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
+
+  const [isRecording, setIsRecording] = useState(false);
+  const recognitionRef = useRef<any>(null);
+  const hasSpeechRecognition = typeof window !== "undefined" && !!getSpeechRecognition();
 
   const q = questions[current];
   if (!q) return <div className={`text-sm p-4 ${dark ? "text-gray-400" : "text-gray-500"}`}>No questions</div>;
