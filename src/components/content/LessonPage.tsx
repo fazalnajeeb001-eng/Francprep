@@ -1136,108 +1136,19 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         const lesson7Transcript = lesson7?.scene?.text || lesson7?.reading?.text || lesson7?.listening?.transcript || '';
 
         return (
-          <div className="space-y-6">
-            <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
-              <div className="flex items-center gap-3 mb-4">
-                <Award className="w-5 h-5 text-purple-400" />
-                <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>
-                  {assessmentData?.examStyle || 'DELF'} Mini-Assessment
-                </h3>
-              </div>
-              <p className={`text-sm ${textSec} mb-4`}>Complete the exam-style sections below.</p>
-              
-              {assessmentSections.map((sec: any, i: number) => {
-                const titleStr = typeof sec?.title === 'string' ? sec.title : (sec?.title ? String(sec.title) : '');
-                const instStr = typeof sec?.instructions === 'string' ? sec.instructions : (sec?.instructions ? String(sec.instructions) : '');
-                const skillStr = typeof sec?.skill === 'string' ? sec.skill : (sec?.skill ? String(sec.skill) : '');
-                
-                const titleLower = titleStr.toLowerCase();
-                const instLower = instStr.toLowerCase();
-                const skillLower = skillStr.toLowerCase();
-
-                const isListeningSec = skillLower === 'listening' || titleLower.includes('listening') || instLower.includes('lesson 7');
-                const isSpeakingSec = skillLower === 'speaking' || titleLower.includes('oral') || titleLower.includes('speaking');
-
-                const secQuestions = Array.isArray(sec?.questions) ? sec.questions : [];
-
-                return (
-                  <div key={i} className={`p-4 rounded-xl border mb-6 ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"}`}>
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className={`text-xs font-bold ${dark ? "text-white" : "text-gray-900"}`}>{titleStr || `Section ${i + 1}`} ({skillStr || 'DELF'})</h4>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${dark ? "bg-purple-500/10 text-purple-300 border border-purple-500/20" : "bg-purple-100 text-purple-700"}`}>{sec?.points || 10} pts</span>
-                    </div>
-                    {instStr && <p className={`text-xs ${textBody} mb-3 leading-relaxed`}>{instStr}</p>}
-
-                    {/* Section 1 Listening: Embedded Lesson 7 Scene Reference Box & Audio Player */}
-                    {isListeningSec && (
-                      <div className={`p-4 rounded-xl border mb-4 space-y-3 ${dark ? "bg-purple-500/10 border-purple-500/30" : "bg-purple-50 border-purple-200"}`}>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <Headphones className="w-4 h-4 text-purple-400" />
-                            <span className={`text-xs font-bold uppercase tracking-wider ${dark ? "text-purple-300" : "text-purple-700"}`}>
-                              Reference: Lesson 7 Scene Transcript
-                            </span>
-                          </div>
-                          {lesson7Transcript && (
-                            <button
-                              type="button"
-                              onClick={() => speak(lesson7Transcript)}
-                              className="flex items-center gap-1.5 px-3 py-1 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-lg shadow-md transition-all"
-                            >
-                              <Volume2 className="w-3.5 h-3.5" /> Listen to Audio
-                            </button>
-                          )}
-                        </div>
-                        {lesson7Transcript ? (
-                          <p className={`text-xs ${textBody} leading-relaxed whitespace-pre-line max-h-44 overflow-y-auto p-3 rounded-lg ${dark ? "bg-black/40 border border-purple-500/20 text-gray-200" : "bg-white border border-purple-200 text-gray-800"}`}>
-                            {lesson7Transcript}
-                          </p>
-                        ) : (
-                          <p className={`text-xs ${textSec} italic`}>Loading Lesson 7 dialogue transcript...</p>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Section 2 Reading: Embedded Source Passage Box */}
-                    {sec?.sourceText && (
-                      <div className={`p-4 rounded-xl border mb-4 text-xs leading-relaxed whitespace-pre-line ${dark ? "bg-purple-500/5 border-purple-500/20 text-purple-200" : "bg-purple-50 border-purple-200 text-purple-900"}`}>
-                        <p className="font-bold mb-1 flex items-center gap-1.5 text-purple-700 dark:text-purple-300">
-                          <span>📖</span> Reading Passage:
-                        </p>
-                        <p className="italic">{String(sec.sourceText)}</p>
-                      </div>
-                    )}
-
-                    {/* Interactive Quiz Component for Questions */}
-                    {secQuestions.length > 0 && (
-                      <QuizComponent
-                        questions={adaptQuestions(secQuestions)}
-                        type="assessment"
-                        onComplete={(score, total) => handleBlockComplete(`assessment-${i}`, score, total)}
-                        onSubmit={(answers) => handleSubmitBlock(`assessment-${i}`, answers)}
-                      />
-                    )}
-
-                    {/* Section 4 Oral Production: Integrated Madame Sophie Voice Assistant */}
-                    {isSpeakingSec && (
-                      <div className="mt-4 border-t dark:border-[#1e2a4a] border-gray-200 pt-4">
-                        <SpeakingDrill
-                          lessonLevel={lesson?.level || 'A1'}
-                          lessonTopic={lesson?.title || 'Oral Production'}
-                          guidedActivity={instStr}
-                          onComplete={() => handleBlockComplete(`assessment-${i}`, 3, 3)}
-                        />
-                      </div>
-                    )}
-
-                    {sec?.answerKeyNotes && (
-                      <p className={`text-[11px] mt-2 italic ${dark ? "text-gray-400" : "text-gray-500"}`}>Grading: {String(sec.answerKeyNotes)}</p>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          <DELFAssessmentTabbedView
+            assessmentData={assessmentData}
+            assessmentSections={assessmentSections}
+            lesson7Transcript={lesson7Transcript}
+            dark={dark}
+            cardBg={cardBg}
+            textBody={textBody}
+            textSec={textSec}
+            handleBlockComplete={handleBlockComplete}
+            handleSubmitBlock={handleSubmitBlock}
+            speak={speak}
+            lesson={lesson}
+          />
         );
 
       case 'selfReflection':
@@ -2061,7 +1972,6 @@ function SelfAssessmentSection({ items, dark, title }: { items: string[]; dark: 
             <input type="checkbox" checked={checked[i] || false}
               onChange={() => setChecked({ ...checked, [i]: !checked[i] })}
               className="w-4 h-4 accent-purple-500 rounded" />
-            <span className={`text-sm ${checked[i] ? "line-through text-emerald-400" : textBody}`}>{item}</span>
           </label>
         ))}
       </div>
@@ -2072,6 +1982,173 @@ function SelfAssessmentSection({ items, dark, title }: { items: string[]; dark: 
           </p>
         </motion.div>
       )}
+    </div>
+  );
+}
+
+// ─── DELF Assessment Tabbed View ──────────────────────────────────────────
+
+function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7Transcript, dark, cardBg, textBody, textSec, handleBlockComplete, handleSubmitBlock, speak, lesson }: any) {
+  const [activeTab, setActiveTab] = useState(0);
+  const sec = assessmentSections[activeTab] || assessmentSections[0];
+  if (!sec) return null;
+
+  const titleStr = typeof sec?.title === 'string' ? sec.title : (sec?.title ? String(sec.title) : '');
+  const instStr = typeof sec?.instructions === 'string' ? sec.instructions : (sec?.instructions ? String(sec.instructions) : '');
+  const skillStr = typeof sec?.skill === 'string' ? sec.skill : (sec?.skill ? String(sec.skill) : '');
+
+  const titleLower = titleStr.toLowerCase();
+  const instLower = instStr.toLowerCase();
+  const skillLower = skillStr.toLowerCase();
+
+  const isListeningSec = skillLower === 'listening' || titleLower.includes('listening') || instLower.includes('lesson 7');
+  const isSpeakingSec = skillLower === 'speaking' || titleLower.includes('oral') || titleLower.includes('speaking');
+
+  const displaySkill = isListeningSec ? 'Listening' : isSpeakingSec ? 'Speaking' : titleLower.includes('writing') || instLower.includes('written') ? 'Writing' : 'Reading';
+
+  const secQuestions = (Array.isArray(sec?.questions) ? sec.questions : []).map((q: any) => ({
+    ...q,
+    prompt: (q.prompt || '')
+      .replace(/^\*\*Section\s*\d+\s*[-—][^\*]+\*\*\s*/gi, '')
+      .replace(/^Section\s*\d+\s*[-—][^\:]+:\s*/gi, '')
+      .trim(),
+  }));
+
+  return (
+    <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5 space-y-5`}>
+      <div className="flex items-center justify-between border-b dark:border-[#1e2a4a] border-gray-200 pb-3">
+        <div className="flex items-center gap-3">
+          <Award className="w-5 h-5 text-purple-400" />
+          <h3 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>
+            {assessmentData?.examStyle || 'DELF'} Mini-Assessment
+          </h3>
+        </div>
+        <span className={`text-xs font-bold px-3 py-1 rounded-full ${dark ? "bg-purple-500/10 text-purple-300 border border-purple-500/30" : "bg-purple-100 text-purple-700"}`}>
+          Section {activeTab + 1} of {assessmentSections.length}
+        </span>
+      </div>
+
+      {/* Section Tabs */}
+      <div className="flex gap-2 overflow-x-auto pb-1">
+        {assessmentSections.map((s: any, idx: number) => {
+          const sTitle = String(s.title || `Section ${idx + 1}`);
+          const sSkill = sTitle.toLowerCase().includes('listening') ? 'Listening'
+            : sTitle.toLowerCase().includes('oral') || sTitle.toLowerCase().includes('speaking') ? 'Speaking'
+            : sTitle.toLowerCase().includes('writing') || sTitle.toLowerCase().includes('written') ? 'Writing'
+            : 'Reading';
+          return (
+            <button
+              key={idx}
+              onClick={() => setActiveTab(idx)}
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-2 ${
+                activeTab === idx
+                  ? "bg-purple-600 text-white shadow-lg shadow-purple-500/25"
+                  : dark
+                  ? "bg-[#0c1224] text-gray-300 border border-[#1e2a4a] hover:bg-white/5"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              <span>Section {idx + 1}</span>
+              <span className="opacity-75">({sSkill})</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Active Section Content */}
+      <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`p-5 rounded-xl border ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"}`}>
+        <div className="flex items-center justify-between mb-3">
+          <h4 className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>{titleStr || `Section ${activeTab + 1}`} ({displaySkill})</h4>
+          <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${dark ? "bg-purple-500/10 text-purple-300 border border-purple-500/20" : "bg-purple-100 text-purple-700"}`}>{sec?.points || 10} points</span>
+        </div>
+
+        {instStr && <p className={`text-xs ${textBody} mb-4 leading-relaxed`}>{instStr}</p>}
+
+        {/* Section 1 Listening Reference */}
+        {isListeningSec && (
+          <div className={`p-4 rounded-xl border mb-4 space-y-3 ${dark ? "bg-purple-500/10 border-purple-500/30" : "bg-purple-50 border-purple-200"}`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Headphones className="w-4 h-4 text-purple-400" />
+                <span className={`text-xs font-bold uppercase tracking-wider ${dark ? "text-purple-300" : "text-purple-700"}`}>
+                  Reference: Lesson 7 Scene Transcript
+                </span>
+              </div>
+              {lesson7Transcript && (
+                <button
+                  type="button"
+                  onClick={() => speak(lesson7Transcript)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-lg shadow-md transition-all"
+                >
+                  <Volume2 className="w-3.5 h-3.5" /> Listen to Audio
+                </button>
+              )}
+            </div>
+            {lesson7Transcript ? (
+              <p className={`text-xs ${textBody} leading-relaxed whitespace-pre-line max-h-44 overflow-y-auto p-3 rounded-lg ${dark ? "bg-black/40 border border-purple-500/20 text-gray-200" : "bg-white border border-purple-200 text-gray-800"}`}>
+                {lesson7Transcript}
+              </p>
+            ) : (
+              <p className={`text-xs ${textSec} italic`}>Loading Lesson 7 dialogue transcript...</p>
+            )}
+          </div>
+        )}
+
+        {/* Section 2 Reading Source Passage */}
+        {sec?.sourceText && (
+          <div className={`p-4 rounded-xl border mb-4 text-xs leading-relaxed whitespace-pre-line ${dark ? "bg-purple-500/5 border-purple-500/20 text-purple-200" : "bg-purple-50 border-purple-200 text-purple-900"}`}>
+            <p className="font-bold mb-1 flex items-center gap-1.5 text-purple-700 dark:text-purple-300">
+              <span>📖</span> Reading Passage:
+            </p>
+            <p className="italic">{String(sec.sourceText)}</p>
+          </div>
+        )}
+
+        {/* Questions */}
+        {secQuestions.length > 0 && (
+          <QuizComponent
+            questions={adaptQuestions(secQuestions)}
+            type="assessment"
+            onComplete={(score, total) => handleBlockComplete(`assessment-${activeTab}`, score, total)}
+            onSubmit={(answers) => handleSubmitBlock(`assessment-${activeTab}`, answers)}
+          />
+        )}
+
+        {/* Speaking Practice for Oral Section */}
+        {isSpeakingSec && (
+          <div className="mt-4 border-t dark:border-[#1e2a4a] border-gray-200 pt-4">
+            <SpeakingDrill
+              lessonLevel={lesson?.level || 'A1'}
+              lessonTopic={lesson?.title || 'Oral Production'}
+              guidedActivity={instStr}
+              onComplete={() => handleBlockComplete(`assessment-${activeTab}`, 3, 3)}
+            />
+          </div>
+        )}
+
+        {/* Navigation between DELF sections */}
+        <div className="flex justify-between items-center mt-6 pt-4 border-t dark:border-[#1e2a4a] border-gray-200">
+          <button
+            disabled={activeTab === 0}
+            onClick={() => setActiveTab(t => Math.max(0, t - 1))}
+            className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
+              activeTab === 0
+                ? "opacity-40 cursor-not-allowed border-gray-300 text-gray-400"
+                : dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"
+            }`}
+          >
+            ← Previous Section
+          </button>
+          {activeTab < assessmentSections.length - 1 && (
+            <button
+              onClick={() => setActiveTab(t => Math.min(assessmentSections.length - 1, t + 1))}
+              className="px-5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90 shadow-lg shadow-purple-500/25 transition-all"
+            >
+              Next Section →
+            </button>
+          )}
+        </div>
+      </motion.div>
     </div>
   );
 }
