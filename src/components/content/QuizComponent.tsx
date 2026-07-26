@@ -1024,8 +1024,22 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
     }
   };
 
-  const totalAnswered = Object.keys(answers).length;
-  const allAnswered = totalAnswered === questions.length;
+  const isAnswerValid = (ans: any) => {
+    if (ans === undefined || ans === null) return false;
+    if (typeof ans === 'string') return ans.trim().length > 0;
+    if (typeof ans === 'number') return true;
+    if (Array.isArray(ans)) return ans.length > 0;
+    if (typeof ans === 'object') return Object.keys(ans).length > 0;
+    return false;
+  };
+
+  const totalAnswered = questions.filter((question, idx) => {
+    const id = question.id || (question as any)._id || String(idx);
+    const ans = answers[id] !== undefined ? answers[id] : answers[String(idx)];
+    return isAnswerValid(ans);
+  }).length;
+
+  const allAnswered = questions.length > 0 && totalAnswered === questions.length;
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -1142,14 +1156,8 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
           {!submitted ? (
             <>
               {(() => {
-                const isAnswerProvided = (() => {
-                  if (userAnswer === undefined || userAnswer === null) return false;
-                  if (typeof userAnswer === 'string') return userAnswer.trim().length > 0;
-                  if (typeof userAnswer === 'number') return true;
-                  if (Array.isArray(userAnswer)) return userAnswer.length > 0;
-                  if (typeof userAnswer === 'object') return Object.keys(userAnswer).length > 0;
-                  return false;
-                })();
+                const ans = answers[qId] !== undefined ? answers[qId] : answers[String(current)];
+                const isAnswerProvided = isAnswerValid(ans);
 
                 return (
                   <button
