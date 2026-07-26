@@ -981,19 +981,27 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         );
 
       case 'speakingL7':
-        const roleplayText = lesson!.speaking?.roleplay || '';
+        const roleplayText = lesson!.speaking?.roleplay || 'In groups of four, act out the café scene above — Nora, Léo, Camille, and Awa — focusing on correct il y a and comparison language throughout.';
+        const extTask = lesson!.speaking?.extensionTask || 'Improvise the actual apartment visit the next day, with Nora and the landlord (played by a new, one-off minor character, consistent with the cast\'s usage principle).';
         return (
-          <div className={`${cardBg} backdrop-blur-lg rounded-2xl overflow-hidden`}>
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl overflow-hidden border border-purple-500/20`}>
             <div className="p-5 border-b dark:border-[#1e2a4a] border-gray-200">
-              <div className="flex items-center gap-3 mb-3"><Mic className="w-5 h-5 text-purple-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Speaking Practice</h3></div>
-              <p className={`text-sm ${textBody}`}>{roleplayText}</p>
-              {lesson!.speaking?.extensionTask && (
-                <p className={`text-xs ${textSec} mt-2 italic`}>Extension: {lesson!.speaking.extensionTask}</p>
+              <div className="flex items-center gap-3 mb-3">
+                <Mic className="w-5 h-5 text-purple-400" />
+                <h3 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>Speaking Practice</h3>
+              </div>
+              <p className={`text-sm font-medium ${textBody} leading-relaxed mb-3`}>{roleplayText}</p>
+              {extTask && (
+                <div className={`p-3.5 rounded-xl border text-xs leading-relaxed ${dark ? "bg-purple-500/10 border-purple-500/30 text-purple-300" : "bg-purple-50 border-purple-200 text-purple-800"}`}>
+                  <span className="font-bold">Extension Task: </span>{extTask}
+                </div>
               )}
             </div>
             <SpeakingDrill
               lessonLevel={lesson!.level}
-              lessonTopic={lesson!.title}
+              lessonTopic="Apartment Hunting Roleplay"
+              guidedActivity={roleplayText}
+              roleplayPrompt={roleplayText}
               onComplete={() => markSectionComplete(currentSectionIdx)}
             />
           </div>

@@ -57,7 +57,7 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
     const promptText = guidedActivity || roleplayPrompt || "";
 
     if (promptText) {
-      return `FR: Bonjour ! Je suis Madame Sophie. Pour notre leçon ${topicStr}, voici ton exercice : ${promptText} Tu peux répondre à l'exercice ou me parler de ce que tu veux en français !\nEN: (Hello! I am Madame Sophie. For our lesson ${topicStr ? `on "${lessonTopic}"` : ""}, here is your exercise: ${promptText} Feel free to complete the exercise or talk about anything you like in French!)`;
+      return `FR: Bonjour ! Je suis Madame Sophie. Pour notre activité ${topicStr}, voici la consigne : "${promptText}". Quel rôle souhaites-tu jouer ou par quoi veux-tu commencer ?\nEN: (Hello! I am Madame Sophie. For our activity ${topicStr ? `on "${lessonTopic}"` : ""}, here is your task: "${promptText}". Which role would you like to play or how would you like to start?)`;
     }
 
     return GREETINGS[lessonLevel] || GREETINGS.A1;
