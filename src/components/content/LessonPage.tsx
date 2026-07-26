@@ -2030,21 +2030,62 @@ function SelfAssessmentSection({ items, dark, title }: { items: string[]; dark: 
 
 function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7Transcript, dark, cardBg, textBody, textSec, handleBlockComplete, handleSubmitBlock, speak, lesson }: any) {
   const [activeTab, setActiveTab] = useState(0);
-  const sec = assessmentSections[activeTab] || assessmentSections[0];
-  if (!sec) return null;
 
-  const titleStr = typeof sec?.title === 'string' ? sec.title : (sec?.title ? String(sec.title) : '');
-  const instStr = typeof sec?.instructions === 'string' ? sec.instructions : (sec?.instructions ? String(sec.instructions) : '');
-  const skillStr = typeof sec?.skill === 'string' ? sec.skill : (sec?.skill ? String(sec.skill) : '');
+  const getSectionSkill = (secItem: any, idx: number) => {
+    const text = `${secItem?.title || ''} ${secItem?.instructions || ''} ${secItem?.skill || ''} ${secItem?.questions?.[0]?.prompt || ''}`.toLowerCase();
+    if (text.includes('listening') || text.includes('lesson 7') || idx === 0) return 'Listening';
+    if (text.includes('oral') || text.includes('speaking') || idx === 3) return 'Speaking';
+    if (text.includes('writing') || text.includes('written') || idx === 2) return 'Writing';
+    return 'Reading';
+  };
 
-  const titleLower = titleStr.toLowerCase();
-  const instLower = instStr.toLowerCase();
-  const skillLower = skillStr.toLowerCase();
+  const rawSec = assessmentSections[activeTab] || assessmentSections[0];
+  if (!rawSec) return null;
 
-  const isListeningSec = skillLower === 'listening' || titleLower.includes('listening') || instLower.includes('lesson 7');
-  const isSpeakingSec = skillLower === 'speaking' || titleLower.includes('oral') || titleLower.includes('speaking');
+  const displaySkill = getSectionSkill(rawSec, activeTab);
+  const isListeningSec = displaySkill === 'Listening';
+  const isSpeakingSec = displaySkill === 'Speaking';
+  const isReadingSec = displaySkill === 'Reading';
 
-  const displaySkill = isListeningSec ? 'Listening' : isSpeakingSec ? 'Speaking' : titleLower.includes('writing') || instLower.includes('written') ? 'Writing' : 'Reading';
+  // Normalize Section 2 (Reading Comprehension) if sub-questions are combined:
+  let sec = { ...rawSec };
+  if (isReadingSec || activeTab === 1) {
+    const sourcePassage = sec.sourceText || "Monsieur Roy cherche une nouvelle maison. Il visite une maison spacieuse avec quatre chambres. Il y a un grand jardin, mais il n'y a pas de garage. La maison est calme, loin du centre-ville.";
+    sec.sourceText = sourcePassage;
+
+    const rawQs = Array.isArray(sec.questions) ? sec.questions : [];
+    const combinedPrompt = rawQs[0]?.prompt || sec.instructions || '';
+
+    if (combinedPrompt.includes('(a)') && combinedPrompt.includes('(b)') && combinedPrompt.includes('(c)')) {
+      sec.instructions = "Read the short passage below and answer all 3 comprehension questions:";
+      sec.questions = [
+        {
+          id: 'sec2-q1',
+          type: 'short_answer',
+          prompt: '(a) What is Monsieur Roy looking for?',
+          correctAnswer: 'Une nouvelle maison (A new house)',
+          explanation: 'Passage states: Monsieur Roy cherche une nouvelle maison.',
+        },
+        {
+          id: 'sec2-q2',
+          type: 'short_answer',
+          prompt: '(b) What does the house have and not have?',
+          correctAnswer: 'It has 4 bedrooms and a big garden, but no garage.',
+          explanation: 'Passage states: 4 chambres, un grand jardin, mais pas de garage.',
+        },
+        {
+          id: 'sec2-q3',
+          type: 'short_answer',
+          prompt: '(c) How is the location described?',
+          correctAnswer: 'Quiet, far from downtown (Calme, loin du centre-ville).',
+          explanation: 'Passage states: La maison est calme, loin du centre-ville.',
+        },
+      ];
+    }
+  }
+
+  const titleStr = typeof sec?.title === 'string' ? sec.title : (sec?.title ? String(sec.title) : `Section ${activeTab + 1}`);
+  const instStr = typeof sec?.instructions === 'string' ? sec.instructions : '';
 
   const secQuestions = (Array.isArray(sec?.questions) ? sec.questions : []).map((q: any) => ({
     ...q,
@@ -2071,11 +2112,7 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
       {/* Section Tabs */}
       <div className="flex gap-2 overflow-x-auto pb-1">
         {assessmentSections.map((s: any, idx: number) => {
-          const sTitle = String(s.title || `Section ${idx + 1}`);
-          const sSkill = sTitle.toLowerCase().includes('listening') ? 'Listening'
-            : sTitle.toLowerCase().includes('oral') || sTitle.toLowerCase().includes('speaking') ? 'Speaking'
-            : sTitle.toLowerCase().includes('writing') || sTitle.toLowerCase().includes('written') ? 'Writing'
-            : 'Reading';
+          const sSkill = getSectionSkill(s, idx);
           return (
             <button
               key={idx}
@@ -2098,7 +2135,7 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
       {/* Active Section Content */}
       <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`p-5 rounded-xl border ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"}`}>
         <div className="flex items-center justify-between mb-3">
-          <h4 className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>{titleStr || `Section ${activeTab + 1}`} ({displaySkill})</h4>
+          <h4 className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>{titleStr} ({displaySkill})</h4>
           <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${dark ? "bg-purple-500/10 text-purple-300 border border-purple-500/20" : "bg-purple-100 text-purple-700"}`}>{sec?.points || 10} points</span>
         </div>
 
