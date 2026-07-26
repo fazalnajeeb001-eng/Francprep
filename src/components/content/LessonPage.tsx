@@ -2047,8 +2047,30 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
   const isSpeakingSec = displaySkill === 'Speaking';
   const isReadingSec = displaySkill === 'Reading';
 
-  // Normalize Section 2 (Reading Comprehension) if sub-questions are combined:
   let sec = { ...rawSec };
+
+  // Normalize Section 1 (Listening Comprehension)
+  if (isListeningSec || activeTab === 0) {
+    sec.instructions = "Listen to (read) the apartment-hunting scene from Lesson 7 and answer the comprehension question below:";
+    const rawQs = Array.isArray(sec.questions) ? sec.questions : [];
+    if (rawQs.length > 0) {
+      sec.questions = rawQs.map((q: any) => {
+        let p = (q.prompt || '')
+          .replace(/^\*\*Section\s*\d+[^*]+\*\*\s*/gi, '')
+          .replace(/^Section\s*\d+[^:]*:\s*/gi, '')
+          .replace(/^Listen to \(read\).*?and answer:\s*/gi, '')
+          .replace(/\*\(\d+\s*points?\)\*/gi, '')
+          .replace(/\(\d+\s*points?\)/gi, '')
+          .trim();
+        if (!p || p.length < 5) {
+          p = "What features does the listing have, and what does the group plan to check during the visit?";
+        }
+        return { ...q, prompt: p };
+      });
+    }
+  }
+
+  // Normalize Section 2 (Reading Comprehension)
   if (isReadingSec || activeTab === 1) {
     const sourcePassage = sec.sourceText || "Monsieur Roy cherche une nouvelle maison. Il visite une maison spacieuse avec quatre chambres. Il y a un grand jardin, mais il n'y a pas de garage. La maison est calme, loin du centre-ville.";
     sec.sourceText = sourcePassage;
@@ -2081,6 +2103,46 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
           explanation: 'Passage states: La maison est calme, loin du centre-ville.',
         },
       ];
+    }
+  }
+
+  // Normalize Section 3 (Written Production)
+  if (displaySkill === 'Writing' || activeTab === 2) {
+    sec.instructions = "Write a 6–8 line original description of your ideal home:";
+    const rawQs = Array.isArray(sec.questions) ? sec.questions : [];
+    if (rawQs.length > 0) {
+      sec.questions = rawQs.map((q: any) => {
+        let p = (q.prompt || '')
+          .replace(/^\*\*Section\s*\d+[^*]+\*\*\s*/gi, '')
+          .replace(/^Section\s*\d+[^:]*:\s*/gi, '')
+          .replace(/\*\(\d+\s*points?\)\*/gi, '')
+          .replace(/\(\d+\s*points?\)/gi, '')
+          .trim();
+        if (!p || p.length < 5) {
+          p = "Write a 6–8 line original description of your ideal home, using the complete il y a system, at least three prepositions of location, and at least two descriptive adjectives.";
+        }
+        return { ...q, prompt: p };
+      });
+    }
+  }
+
+  // Normalize Section 4 (Oral Production)
+  if (isSpeakingSec || activeTab === 3) {
+    sec.instructions = "Describe your actual home in detail (1–2 minutes):";
+    const rawQs = Array.isArray(sec.questions) ? sec.questions : [];
+    if (rawQs.length > 0) {
+      sec.questions = rawQs.map((q: any) => {
+        let p = (q.prompt || '')
+          .replace(/^\*\*Section\s*\d+[^*]+\*\*\s*/gi, '')
+          .replace(/^Section\s*\d+[^:]*:\s*/gi, '')
+          .replace(/\*\(\d+\s*points?\)\*/gi, '')
+          .replace(/\(\d+\s*points?\)/gi, '')
+          .trim();
+        if (!p || p.length < 5) {
+          p = "Describe your actual home in detail — type, rooms, furniture, and location within the home — for 1–2 minutes.";
+        }
+        return { ...q, prompt: p };
+      });
     }
   }
 
