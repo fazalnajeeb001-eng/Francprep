@@ -533,8 +533,19 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
   const sections = lesson ? buildSections(lesson) : [];
 
-  const isLesson8 = lesson?.lessonNumber === 8 || lesson?.title?.toLowerCase().includes('review');
-  const lesson7Id = lesson?.lessonId ? lesson.lessonId.replace(/-l8$/i, '-l7') : '';
+  const isLesson8 = lesson?.lessonNumber === 8 || lesson?.order === 8 || lesson?.title?.toLowerCase().includes('review') || lesson?.skill === 'REV' || lesson?.skill === 'review';
+
+  const computeLesson7Id = (l: any) => {
+    if (!l) return '';
+    const id = (l.lessonId || l._id || '').toLowerCase();
+    if (id.includes('l8')) return id.replace('l8', 'l7');
+    if (id.includes('lesson-8')) return id.replace('lesson-8', 'lesson-7');
+    if (id.includes('_8')) return id.replace('_8', '_7');
+    if (l.chapterId) return `${l.chapterId.toLowerCase()}-l7`;
+    return '';
+  };
+
+  const lesson7Id = computeLesson7Id(lesson);
 
   const { data: lesson7 } = useQuery({
     queryKey: ["lesson", lesson7Id],
@@ -1141,7 +1152,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
           }
         }
 
-        const lesson7Transcript = lesson7?.scene?.text || lesson7?.reading?.text || lesson7?.listening?.transcript || '';
+        const lesson7Transcript = lesson7?.scene?.text || lesson7?.reading?.text || lesson7?.listening?.transcript || lesson?.scene?.text || lesson?.reading?.text || lesson?.listening?.transcript || '';
 
         return (
           <DELFAssessmentTabbedView
