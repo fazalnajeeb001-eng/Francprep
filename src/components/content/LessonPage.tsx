@@ -2202,7 +2202,7 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
           <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${dark ? "bg-purple-500/10 text-purple-300 border border-purple-500/20" : "bg-purple-100 text-purple-700"}`}>{sec?.points || 10} points</span>
         </div>
 
-        {instStr && <p className={`text-xs ${textBody} mb-4 leading-relaxed`}>{instStr}</p>}
+        {!isSpeakingSec && instStr && <p className={`text-xs ${textBody} mb-4 leading-relaxed`}>{instStr}</p>}
 
         {/* Section 1 Listening Reference */}
         {isListeningSec && (
