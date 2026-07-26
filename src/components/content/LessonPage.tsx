@@ -658,7 +658,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
     if (!text) return null;
     const cleanText = text
       .replace(/---\s*/g, '')
-      .replace(/^##\s*Chapter Review[^\n]*/gi, '## Chapter Grammar Summary')
+      .replace(/^##\s*(?:Chapter Review|Grammar Summary|Chapter Grammar Summary)[^\n]*/gi, '')
       .replace(/Chapter Review/gi, 'Grammar Summary')
       .replace(/See grammar summary tables above\./gi, '')
       .replace(/Review all grammar points covered in this chapter\./gi, '')
@@ -856,7 +856,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5 space-y-4`}>
             <div className="flex items-center gap-3 border-b dark:border-[#1e2a4a] border-gray-200 pb-3">
               <BookOpen className="w-5 h-5 text-purple-400" />
-              <h3 className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>Chapter Grammar Summary</h3>
+              <h3 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>Grammar Summary</h3>
             </div>
             {summaryText ? (
               <div>{parseGrammarMarkdown(summaryText)}</div>
