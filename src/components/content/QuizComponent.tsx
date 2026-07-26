@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, XCircle, ChevronRight, ChevronLeft, GripVertical } from "lucide-react";
+import { CheckCircle2, XCircle, ChevronRight, ChevronLeft, GripVertical, Mic } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
 
