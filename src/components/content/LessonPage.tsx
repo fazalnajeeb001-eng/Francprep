@@ -183,8 +183,8 @@ function buildSections(lesson: LessonData): SectionDef[] {
   if (isLesson7) {
     return [
       { key: 'warmUp', label: 'Warm-Up', icon: <HelpCircle className="w-3.5 h-3.5" />, hasContent: true },
-      { key: 'scene', label: 'Scene', icon: <Headphones className="w-3.5 h-3.5" />, hasContent: true },
       { key: 'reading', label: 'Reading', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: true },
+      { key: 'listening', label: 'Listening', icon: <Headphones className="w-3.5 h-3.5" />, hasContent: true },
       { key: 'speakingL7', label: 'Speaking', icon: <Mic className="w-3.5 h-3.5" />, hasContent: true },
       { key: 'writing', label: 'Writing', icon: <PenTool className="w-3.5 h-3.5" />, hasContent: true },
       { key: 'practice', label: 'Quiz', icon: <Repeat className="w-3.5 h-3.5" />, hasContent: true },
@@ -1787,47 +1787,50 @@ function ListeningSection({ lesson, dark, cardBg, innerBg, textSec, textMuted, s
   showTranslation: boolean; setShowTranslation: (v: boolean) => void;
 }) {
   const [showTranscript, setShowTranscript] = useState(false);
-  const listening = lesson.listening || { title: '', transcript: '', translation: '', questions: [] };
+  const lTitle = lesson.listening?.title || lesson.scene?.title || 'Listening Activity';
+  const lTranscript = lesson.listening?.transcript || lesson.scene?.text || getDialogueText(lesson);
+  const lTranslation = lesson.listening?.translation || lesson.scene?.translation || getDialogueTranslation(lesson);
   const { speak: speakWithState, isSpeaking } = useSpeak();
 
-  const cleanedTranscript = (listening.transcript || "").replace(/\*\*/g, "").trim();
+  const cleanedTranscript = (lTranscript || "").replace(/\*\*/g, "").trim();
 
   return (
-    <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
+    <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5 mb-4`}>
       <div className="flex items-center gap-3 mb-4">
         <Headphones className="w-5 h-5 text-purple-400" />
-        <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{listening.title || 'Listening'}</h3>
+        <h3 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>{lTitle}</h3>
       </div>
 
       {cleanedTranscript && (
-        <div className="flex gap-3 mb-4">
+        <div className="flex gap-3 mb-4 flex-wrap">
           <button onClick={() => speakWithState(cleanedTranscript)}
-            className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
-            <Volume2 className="w-4 h-4" /> {isSpeaking ? "Playing..." : "Play Audio"}
+            className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
+            <Volume2 className="w-4 h-4" /> {isSpeaking ? "Playing..." : "Play Audio Dialogue"}
           </button>
           <button onClick={() => setShowTranscript(!showTranscript)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
-            {showTranscript ? "Hide" : "Show"} Transcript
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
+            {showTranscript ? "Hide French Transcript" : "Show French Transcript"}
           </button>
         </div>
       )}
 
       {showTranscript && cleanedTranscript && (
-        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }}
-          className={`${innerBg} rounded-xl p-4 border mb-4 whitespace-pre-line text-sm ${textSec}`}>
-          {cleanedTranscript}
+        <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}
+          className={`${innerBg} rounded-xl p-4 border mb-4 whitespace-pre-line text-sm leading-relaxed ${textSec}`}>
+          {renderFormattedMarkdown(cleanedTranscript, dark)}
         </motion.div>
       )}
 
-      {listening.translation && (
-        <div className="mb-3">
+      {lTranslation && (
+        <div className="mt-3">
           <button onClick={() => setShowTranslation(!showTranslation)}
-            className={`text-xs ${dark ? "text-purple-400" : "text-purple-600"} hover:underline`}>
-            {showTranslation ? "Hide English translation" : "Show English translation"}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border transition-all ${dark ? "border-purple-500/30 text-purple-300 hover:bg-purple-500/10" : "border-purple-200 text-purple-700 hover:bg-purple-50"}`}>
+            <Globe className="w-3.5 h-3.5" />
+            {showTranslation ? "Hide English Translation" : "Show English Translation"}
           </button>
           {showTranslation && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-2">
-              <p className={`text-xs ${textMuted} italic p-3 rounded-xl border ${innerBg}`}>{listening.translation}</p>
+            <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="mt-3">
+              <p className={`text-xs ${textMuted} italic p-4 rounded-xl border ${innerBg} leading-relaxed`}>{lTranslation}</p>
             </motion.div>
           )}
         </div>
