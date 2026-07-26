@@ -1748,22 +1748,30 @@ function ReadingSection({ lesson, dark, cardBg, innerBg, textBody, textMuted, sh
   lesson: LessonData; dark: boolean; cardBg: string; innerBg: string; textBody: string; textMuted: string;
   showTranslation: boolean; setShowTranslation: (v: boolean) => void;
 }) {
-  const reading = lesson.reading || { title: '', text: '', translation: '', questions: [] };
+  const rTitle = lesson.reading?.title || lesson.scene?.title || "Reading Passage";
+  const rText = lesson.reading?.text || lesson.scene?.text || getDialogueText(lesson);
+  const rTrans = lesson.reading?.translation || lesson.scene?.translation || getDialogueTranslation(lesson);
 
   return (
-    <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
-      <h3 className={`text-sm font-semibold mb-3 ${dark ? "text-white" : "text-gray-900"}`}>{reading.title || 'Reading'}</h3>
-      <div className={`${innerBg} rounded-xl p-4 border mb-4 whitespace-pre-line text-sm leading-relaxed ${textBody}`}>{reading.text}</div>
+    <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5 mb-4`}>
+      <h3 className={`text-base font-bold mb-3 ${dark ? "text-white" : "text-gray-900"}`}>{rTitle}</h3>
 
-      {reading.translation && (
-        <div className="mt-3 mb-3">
+      {rText && (
+        <div className={`${innerBg} rounded-xl p-4 border mb-4 whitespace-pre-line text-sm leading-relaxed ${textBody}`}>
+          {renderFormattedMarkdown(rText, dark)}
+        </div>
+      )}
+
+      {rTrans && (
+        <div className="mt-3">
           <button onClick={() => setShowTranslation(!showTranslation)}
-            className={`text-xs ${dark ? "text-purple-400" : "text-purple-600"} hover:underline`}>
-            {showTranslation ? "Hide English translation" : "Show English translation"}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border transition-all ${dark ? "border-purple-500/30 text-purple-300 hover:bg-purple-500/10" : "border-purple-200 text-purple-700 hover:bg-purple-50"}`}>
+            <Globe className="w-3.5 h-3.5" />
+            {showTranslation ? "Hide English Translation" : "Show English Translation"}
           </button>
           {showTranslation && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-2">
-              <p className={`text-xs ${textMuted} italic p-3 rounded-xl border ${innerBg}`}>{reading.translation}</p>
+            <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="mt-3">
+              <p className={`text-xs ${textMuted} italic p-4 rounded-xl border ${innerBg} leading-relaxed`}>{rTrans}</p>
             </motion.div>
           )}
         </div>
