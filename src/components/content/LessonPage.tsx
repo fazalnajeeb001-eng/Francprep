@@ -348,6 +348,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
   const [lessonCompleted, setLessonCompleted] = useState(false);
   const [lessonScore, setLessonScore] = useState<number | null>(null);
   const [showObjectives, setShowObjectives] = useState(false);
+  const [startTime] = useState(Date.now());
   const topRef = useRef<HTMLDivElement>(null);
 
   const [isAdminPreview, setIsAdminPreview] = useState(false);
