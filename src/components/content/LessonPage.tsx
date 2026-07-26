@@ -1748,7 +1748,8 @@ function ReadingSection({ lesson, dark, cardBg, innerBg, textBody, textMuted, sh
   lesson: LessonData; dark: boolean; cardBg: string; innerBg: string; textBody: string; textMuted: string;
   showTranslation: boolean; setShowTranslation: (v: boolean) => void;
 }) {
-  const rTitle = lesson.reading?.title || lesson.scene?.title || "Reading Passage";
+  const rawTitle = lesson.reading?.title || lesson.scene?.title || "Reading Passage";
+  const rTitle = rawTitle.replace(/^Scene:\s*/i, 'Reading: ').replace(/^Scene$/i, 'Reading Passage');
   const rText = lesson.reading?.text || lesson.scene?.text || getDialogueText(lesson);
   const rTrans = lesson.reading?.translation || lesson.scene?.translation || getDialogueTranslation(lesson);
 
@@ -1787,7 +1788,8 @@ function ListeningSection({ lesson, dark, cardBg, innerBg, textSec, textMuted, s
   showTranslation: boolean; setShowTranslation: (v: boolean) => void;
 }) {
   const [showTranscript, setShowTranscript] = useState(false);
-  const lTitle = lesson.listening?.title || lesson.scene?.title || 'Listening Activity';
+  const rawLTitle = lesson.listening?.title || lesson.scene?.title || 'Listening Activity';
+  const lTitle = rawLTitle.replace(/^Scene:\s*/i, 'Listening: ').replace(/^Scene$/i, 'Listening Activity');
   const lTranscript = lesson.listening?.transcript || lesson.scene?.text || getDialogueText(lesson);
   const lTranslation = lesson.listening?.translation || lesson.scene?.translation || getDialogueTranslation(lesson);
   const { speak: speakWithState, isSpeaking } = useSpeak();
