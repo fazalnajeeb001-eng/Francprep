@@ -1192,27 +1192,62 @@ Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain aprè
         );
 
       case 'selfReflection':
-        const reflectionItems = lesson!.selfReflection || lesson!.selfAssessment || [];
-        if (!reflectionItems.length) return emptyState('Self-Reflection');
+        let reflectionItems = (lesson?.selfReflection && lesson.selfReflection.length > 0) ? lesson.selfReflection
+          : (lesson?.selfAssessment && lesson.selfAssessment.length > 0) ? lesson.selfAssessment
+          : [];
+        if (!reflectionItems.length) {
+          reflectionItems = [
+            "I can name different types of housing.",
+            "I can describe my home in detail.",
+            "I can name rooms and furniture.",
+            "I can discuss looking for an apartment.",
+            "I can compare two homes.",
+            "I can discuss household chores.",
+            "I can combine all of the above in a real conversation.",
+          ];
+        }
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
             <div className="flex items-center gap-3 mb-4">
               <Star className="w-5 h-5 text-amber-400" />
-              <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Self-Reflection</h3>
+              <h3 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>Self-Reflection</h3>
             </div>
-            <p className={`text-xs ${textSec} mb-4`}>Consider how well you achieved each of these goals.</p>
+            <p className={`text-xs ${textSec} mb-4`}>Consider how well you achieved each of these goals by checking off what you can do.</p>
             <SelfAssessmentSection items={reflectionItems} dark={dark} title="Self-Reflection" />
           </div>
         );
 
       case 'completion':
-        const completionText = lesson!.completionSummary?.content || '';
         return (
-          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-6 text-center`}>
-            <Trophy className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
-            <h3 className={`text-base font-bold mb-2 ${dark ? "text-white" : "text-gray-900"}`}>Chapter Complete!</h3>
-            <p className={`text-sm leading-relaxed ${textBody}`}>{completionText}</p>
-          </div>
+          <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className={`${cardBg} backdrop-blur-lg rounded-2xl p-6 md:p-8 text-center space-y-6 border border-emerald-500/20 shadow-xl`}>
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 p-0.5 mx-auto shadow-lg shadow-emerald-500/25">
+              <div className="w-full h-full bg-[#0c1224] rounded-[14px] flex items-center justify-center">
+                <Trophy className="w-8 h-8 text-emerald-400" />
+              </div>
+            </div>
+
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                Syllabus Milestone
+              </span>
+              <h3 className={`text-2xl font-bold mt-3 ${dark ? "text-white" : "text-gray-900"}`}>
+                Chapter 1 — Complete 🎉
+              </h3>
+            </div>
+
+            <div className={`p-5 rounded-xl border text-left text-sm leading-relaxed ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"}`}>
+              <p className="font-bold text-emerald-400 mb-2">You can now:</p>
+              <p className={`${textBody} leading-relaxed mb-4`}>
+                Describe housing types, discuss your home in real detail using the complete <span className="font-semibold text-purple-300">il y a</span> system and an expanded set of location prepositions, name furniture, navigate apartment-hunting, compare homes, and discuss household chores.
+              </p>
+              <div className={`p-4 rounded-xl border ${dark ? "bg-purple-500/10 border-purple-500/30 text-purple-200" : "bg-purple-50 border-purple-200 text-purple-900"}`}>
+                <p className="text-xs font-bold uppercase tracking-wider text-purple-400 mb-1">Coming Next:</p>
+                <p className="text-xs leading-relaxed font-medium">
+                  <strong className="text-purple-300">Chapter 2 — Neighborhood & Local Services</strong> builds on this foundation, introducing the pronoun <em>y</em>!
+                </p>
+              </div>
+            </div>
+          </motion.div>
         );
 
       case 'delf':
