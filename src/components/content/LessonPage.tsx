@@ -152,8 +152,28 @@ interface SectionDef {
 }
 
 function buildSections(lesson: LessonData): SectionDef[] {
-  const isLesson7 = lesson.lessonId?.endsWith('-l7') || lesson.lessonNumber === 7;
-  const isLesson8 = lesson.lessonId?.endsWith('-l8') || lesson.lessonNumber === 8;
+  const lessonIdStr = typeof lesson?.lessonId === 'string' ? lesson.lessonId.toLowerCase() : '';
+  const titleStr = typeof lesson?.title === 'string' ? lesson.title.toLowerCase() : '';
+  const skillStr = typeof lesson?.skill === 'string' ? lesson.skill.toLowerCase() : '';
+
+  const isLesson7 = Boolean(
+    lessonIdStr.endsWith('-l7') ||
+    lessonIdStr.includes('l7') ||
+    lesson?.lessonNumber === 7 ||
+    skillStr === 'integrated' ||
+    skillStr === 'int' ||
+    titleStr.includes('integrated practice') ||
+    titleStr.includes('integrated')
+  );
+
+  const isLesson8 = Boolean(
+    lessonIdStr.endsWith('-l8') ||
+    lessonIdStr.includes('l8') ||
+    lesson?.lessonNumber === 8 ||
+    skillStr === 'review' ||
+    skillStr === 'rev' ||
+    titleStr.includes('review')
+  );
 
   if (isLesson8) {
     const list: SectionDef[] = [
