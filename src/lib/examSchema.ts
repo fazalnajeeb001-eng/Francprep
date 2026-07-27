@@ -76,16 +76,86 @@ const LISTENING_TOPICS = [
 ];
 
 const READING_TOPICS = [
-  { level: "A1", text: "Horaires de la boulangerie : Ouvert du mardi au dimanche de 7h à 19h. Fermé le lundi.", q: "Quand la boulangerie est-elle fermée ?", opt: ["Le lundi", "Le dimanche", "Le mardi", "Tous les jours"], ans: 0, passEn: "Bakery hours: Open Tuesday to Sunday from 7am to 7pm. Closed Monday." },
-  { level: "A1", text: "Avis de passage du facteur : Votre colis est disponible au bureau de poste à partir de demain 14h.", q: "Où pouvez-vous récupérer le colis ?", opt: ["Au bureau de poste", "À la maison", "À la mairie", "Chez le voisin"], ans: 0, passEn: "Mail carrier notice: Your package is available at the post office starting tomorrow at 2pm." },
-  { level: "A2", text: "Règlement de la piscine : Les enfants de moins de 12 ans doivent être accompagnés d'un adulte majeur.", q: "Quelle est la règle pour les enfants de moins de 12 ans ?", opt: ["Accompagnement par un adulte obligatoire", "Entrée gratuite sans condition", "Interdiction d'entrer", "Bonnet de bain facultatif"], ans: 0, passEn: "Pool regulations: Children under 12 must be accompanied by an adult." },
-  { level: "A2", text: "Offre d'emploi : Recherche serveur bilingue français-anglais pour restaurant en centre-ville. Expérience souhaitée.", q: "Quel profil est recherché ?", opt: ["Un serveur bilingue", "Un cuisinier italien", "Un comptable", "Un chauffeur de bus"], ans: 0, passEn: "Job offer: Seeking bilingual French-English waiter for downtown restaurant. Experience preferred." },
-  { level: "B1", text: "Note d'information transport : En raison de travaux de rénovation, la ligne de tramway sera remplacée par des bus de nuit dès 22h.", q: "Par quoi le tramway est-il remplacé après 22h ?", opt: ["Par des bus de nuit", "Par des taxis gratuits", "Par le métro", "Par rien"], ans: 0, passEn: "Transit info: Due to renovation, the tram line will be replaced by night buses starting at 10pm." },
-  { level: "B1", text: "Santé et alimentation : Réduire sa consommation de sel de 3 grammes par jour diminue de 15% le risque d'hypertension artérielle.", q: "Quel est l'effet d'une baisse de consommation de sel ?", opt: ["Réduction du risque d'hypertension de 15%", "Prise de poids rapide", "Baisse de la mémoire", "Augmentation du cholestérol"], ans: 0, passEn: "Health guide: Reducing daily salt intake by 3 grams cuts hypertension risk by 15%." },
-  { level: "B2", text: "Économie québécoise : Les investissements dans les énergies renouvelables ont généré 15 000 nouveaux emplois verts cette année.", q: "Quel est l'impact des investissements verts ?", opt: ["Création de 15 000 emplois verts", "Fermeture des entreprises", "Hausse du chômage", "Baisse des salaires"], ans: 0, passEn: "Quebec economy: Investments in renewable energy generated 15,000 new green jobs this year." },
-  { level: "B2", text: "Urbanisme écologique : L'instauration de péages urbains incitatifs réduit le trafic automobile de 20% dans les centres historiques.", q: "Quel est l'effet des péages urbains incitatifs ?", opt: ["Réduction de 20% du trafic automobile", "Augmentation des embouteillages", "Interdiction des vélos", "Fermeture des commerces"], ans: 0, passEn: "Ecological urbanism: Implementing incentive urban tolls reduces car traffic by 20% in historical centers." },
-  { level: "C1", text: "Sociologie du travail : La semaine de 4 jours renforce l'efficacité professionnelle tout en réduisant de 35% le syndrome d'épuisement au travail.", q: "Quel est l'impact de la semaine de 4 jours ?", opt: ["Baisse de 35% du surmenage professionnel", "Chute de la productivité", "Augmentation des démissions", "Hausse du temps de trajet"], ans: 0, passEn: "Workplace sociology: The 4-day workweek boosts professional efficiency while reducing burnout by 35%." },
-  { level: "C2", text: "Épistémologie des sciences : La modélisation informatique avancée redéfinit la validation empirique en permettant de simuler des systèmes complexes inobservables.", q: "Que permet la modélisation informatique avancée ?", opt: ["Simuler des systèmes complexes inobservables", "Supprimer les mathématiques", "Remplacer l'esprit humain", "Automatiser la lecture"], ans: 0, passEn: "Scientific epistemology: Advanced computer modeling redefines empirical validation by simulating unobservable complex systems." }
+  { level: "A1", text: "Horaires de la boulangerie 'La Parisis' : Ouvert du mardi au dimanche de 7h00 à 19h00 sans interruption. Fermeture hebdomadaire le lundi.", q: "Quand la boulangerie est-elle fermée ?", opt: ["Le lundi", "Le dimanche", "Le mardi", "Tous les après-midis"], ans: 0, passEn: "Bakery hours 'La Parisis': Open Tuesday to Sunday from 7:00am to 7:00pm non-stop. Closed weekly on Monday." },
+  { level: "A1", text: "Avis de passage de la Poste canadienne : Votre colis recommandé est disponible au bureau central à partir de demain 14h. Veuillez vous munir d'une pièce d'identité.", q: "Où et quand récupérer votre colis ?", opt: ["Au bureau central dès demain 14h", "À la maison aujourd'hui", "À la mairie la semaine prochaine", "Chez le voisin ce soir"], ans: 0, passEn: "Canada Post delivery notice: Your registered package is available at the central branch starting tomorrow at 2pm. Bring ID." },
+  { level: "A2", text: "Règlement municipal de la piscine municipale : Les enfants âgés de moins de 12 ans doivent obligatoirement être accompagnés d'un adulte majeur dans l'enceinte des bassins.", q: "Quelle condition est exigée pour les enfants de moins de 12 ans ?", opt: ["Être accompagné par un adulte majeur", "Avoir un certificat médical", "Venir uniquement le matin", "Payer un tarif spécial"], ans: 0, passEn: "Municipal pool rule: Children under 12 must be accompanied by an adult inside the pool area." },
+  { level: "A2", text: "Offre d'emploi spécialisée : Restaurant gastronomique du Vieux-Montréal recherche un serveur bilingue français-anglais avec 2 ans d'expérience au service en salle.", q: "Quel profil correspond exactement à cette offre ?", opt: ["Un serveur bilingue expérimenté", "Un cuisinier italien débutant", "Un comptable à mi-temps", "Un gérant de magasin"], ans: 0, passEn: "Job posting: Upscale restaurant in Old Montreal seeks bilingual French-English server with 2 years table service experience." },
+  {
+    level: "B1",
+    text: `ÉCONOMIE ET NUTRITION — LE POUVOIR D'ACHAT ET LA SANTÉ AU QUÉBEC
+
+Un rapport récent de l'Institut National de Santé Publique du Québec souligne l'importance des choix alimentaires quotidiens sur la santé cardiaque. Selon les chercheurs, réduire sa consommation de sel de seulement 3 grammes par jour diminuerait de 15 % les risques d'hypertension artérielle à l'échelle nationale.
+
+Cette recommandation s'inscrit dans une campagne globale d'éducation à la nutrition. Les professionnels du secteur médical encouragent les consommateurs à privilégier les aliments frais préparés à la maison plutôt que les plats industriels transformés, souvent riches en sodium et en conservateurs artificiels.
+
+En outre, les autorités canadiennes envisagent d'imposer un étiquetage nutritionnel plus clair sur la face avant des emballages afin d'aider les familles à identifier rapidement les produits à forte teneur en sel et en sucres ajoutés.`,
+    q: "Selon l'étude, quel est l'impact direct d'une diminution quotidienne de 3 grammes de sel ?",
+    opt: [
+      "Une baisse de 15% des risques d'hypertension artérielle",
+      "Une hausse de 20% du pouvoir d'achat des ménages",
+      "La fermeture immédiate des usines agroalimentaires",
+      "Une réduction automatique de la consommation de sucre"
+    ],
+    ans: 0,
+    passEn: "HEALTH AND NUTRITION — PURCHASING POWER AND HEALTH IN QUEBEC\n\nA recent report highlights the importance of daily food choices on heart health. Reducing daily salt intake by 3 grams cuts hypertension risk by 15% nationwide.\n\nMedical professionals urge consumers to choose fresh home-cooked meals over processed industrial foods.\n\nCanadian authorities plan to mandate clearer front-of-package nutritional labeling."
+  },
+  {
+    level: "B1",
+    text: `TRANSPORT URBAIN ET MOBILITÉ DURABLE — ROULEZ VERT À MONTRÉAL
+
+La Société de Transport de Montréal (STM) a annoncé une restructuration majeure de son réseau routier nocturne. Afin de poursuivre les travaux d'électrification des infrastructures, les lignes de tramway et de métro léger seront remplacées par des bus électriques articulés dès 22h00 les soirs de semaine.
+
+Cette transition permettra non seulement d'accélérer la rénovation des voies ferroviaires, mais garantira également un niveau de bruit réduit pour les résidents des quartiers centraux. Les usagers sont invités à consulter la nouvelle application mobile pour suivre la position des bus en temps réel.
+
+Malgré quelques réticences initiales liées aux légers retards de correspondance, la majorité des voyageurs salue cette initiative moderne qui s'inscrit pleinement dans le plan climat de la métropole.`,
+    q: "Quelle mesure la Société de Transport prend-elle les soirs de semaine dès 22h00 ?",
+    opt: [
+      "Le remplacement des lignes ferroviaires par des bus électriques",
+      "La gratuité totale de l'ensemble du réseau de métro",
+      "L'arrêt complet de tous les transports collectifs",
+      "L'interdiction de circuler pour les piétons"
+    ],
+    ans: 0,
+    passEn: "URBAN TRANSIT & SUSTAINABLE MOBILITY\n\nThe STM announced major restructuring of its night network. Tram lines will be replaced by electric buses starting at 10:00pm on weeknights for infrastructure upgrades."
+  },
+  {
+    level: "B2",
+    text: `URBANISME ÉCOLOGIQUE ET CHANGER LE VISAGE DES MÉTROPOLES
+
+Dans la plupart des grandes agglomérations nord-américaines, la multiplication des îlots de chaleur constitue désormais un enjeu sanitaire et environnemental préoccupant. L'accumulation d'asphalte et de béton accentue l'absorption thermique, entraînant des températures estivales étouffantes au cœur des cités.
+
+Pour contrer ce phénomène, les urbanistes préconisent la mise en place de péages urbains incitatifs couplée à un vaste programme de végétalisation des toitures d'immeubles. Les premiers résultats observés dans les quartiers pilotes démontrent une réduction de 20 % de la circulation automobile, corrélée à une baisse mesurable de la pollution atmosphérique.
+
+Cependant, les commerçants du centre-ville expriment des inquiétudes quant à la baisse potentielle du chalandage. Les municipalités s'engagent donc à compenser ces effets en renforçant la fréquence des transports en commun et en aménageant des zones piétonnes attractives.`,
+    q: "Selon l'article, quel est l'effet combiné de la végétalisation et des péages incitatifs ?",
+    opt: [
+      "Une baisse de 20% du trafic automobile et une réduction de la pollution",
+      "La disparition complète des commerces de proximité",
+      "Une hausse de la température estivale au centre-ville",
+      "L'obligation d'utiliser uniquement des véhicules électriques"
+    ],
+    ans: 0,
+    passEn: "ECOLOGICAL URBANISM — TRANSFORMING METROPOLITAN CENTERS\n\nHeat islands pose major environmental challenges. Pilot programs combining green rooftops and incentive urban tolls reduced car traffic by 20% and measurably lowered air pollution."
+  },
+  {
+    level: "C1",
+    text: `SOCIOLOGIE DU TRAVAIL — LA MUTATION DES MODÈLES ORGANISATIONNELS
+
+L'expérimentation à grande échelle de la semaine de travail de quatre jours dans le secteur tertiaire suscite un intérêt croissant auprès des chercheurs en gestion et des décideurs économiques. Loin de nuire au rendement des entreprises, ce modèle fondé sur la réduction du temps de travail sans baisse de salaire démontre une préservation, voire une amélioration de la productivité globale.
+
+Sur le plan de la santé mentale des salariés, les données recueillies indiquent une diminution remarquable de 35 % des épisodes de surmenage professionnel et de syndrome d'épuisement (burnout). Les employés bénéficiant d'un équilibre renforcé entre vie privée et engagement professionnel affichent une fidélité accrue envers leur organisation.
+
+Néanmoins, la transposabilité de cette organisation aux secteurs industriels à feu continu ou aux services d'urgence médicale soulève des défis logistiques majeurs, nécessitant une réorganisation en profondeur du recrutement et des grilles d'horaires.`,
+    q: "Quel résultat marquant ressort de l'analyse sociologique de la semaine de 4 jours ?",
+    opt: [
+      "Une diminution de 35% du surmenage professionnel chez les salariés",
+      "Une baisse inévitable de la productivité globale de l'entreprise",
+      "Une augmentation généralisée du taux d'absentéisme",
+      "L'obligation de baisser les salaires des employés"
+    ],
+    ans: 0,
+    passEn: "WORKPLACE SOCIOLOGY — ORGANIZATIONAL MODEL MUTATION\n\nLarge-scale 4-day workweek trials show sustained productivity alongside a remarkable 35% reduction in professional burnout and stress."
+  }
 ];
 
 function generateListeningQuestions(count: number, prefix: string): ExamQuestion[] {
