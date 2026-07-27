@@ -117,16 +117,29 @@ interface BlockResult {
 
 function extractPairsFromText(text: string): { pairs: Record<string, string>; title: string } | null {
   if (!text) return null;
+  // If prompt contains blank line indicator (__________), it is a Fill in the Blank question, NOT a matching pair
+  if (text.includes('__________')) return null;
+
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
   const pairs: Record<string, string> = {};
   const nonPairLines: string[] = [];
 
   for (const line of lines) {
+    if (line.includes('__________')) {
+      nonPairLines.push(line);
+      continue;
+    }
+
     const m = line.match(/^([^—\-\:\d]+(?:[^\n—\-\:]+)?)\s*[—\-\:]+\s*(?:[a-eA-E][\.\)]\s*)?(.+)$/);
     if (m && m[1].trim() && m[2].trim()) {
       const left = m[1].replace(/^\d+[\.\)]\s*/, '').replace(/^[*•\-]\s*/, '').trim();
       const right = m[2].replace(/^[a-eA-E][\.\)]\s*/, '').trim();
-      if (left && right && left.length < 50 && right.length < 80 && !left.toLowerCase().startsWith('matching')) {
+      const leftLower = left.toLowerCase();
+
+      // Guard against instruction words being treated as pair keys
+      const isInstructionWord = ['complete', 'fill', 'fill in', 'question', 'select', 'translate', 'instructions', 'matching'].some(w => leftLower.startsWith(w));
+
+      if (left && right && left.length < 50 && right.length < 80 && !isInstructionWord) {
         pairs[left] = right;
         continue;
       }
@@ -258,9 +271,13 @@ function adaptQuestions(questions: LessonQuestion[]) {
 
     const hasDummyOptions = Array.isArray(resolvedOptions) && resolvedOptions.length > 0 && resolvedOptions.every((opt: any) => /^Option\s+[A-Z]$/i.test(String(opt).trim()));
     const hasPairs = (resolvedPairs && Object.keys(resolvedPairs).length > 0) || (q as any).pairs?.length > 0;
+    const isBlankQuestion = resolvedText.includes('__________');
 
     let resolvedType = q.type;
-    if (hasPairs) {
+    if (isBlankQuestion) {
+      resolvedType = 'fill_blank';
+      resolvedPairs = undefined;
+    } else if (hasPairs) {
       resolvedType = 'matching';
     } else if (hasDummyOptions) {
       resolvedType = 'short_answer';
