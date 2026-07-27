@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Outlet, useMatch } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -19,9 +19,19 @@ import {
   ShieldCheck
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
-import { getExamRegistry, type ExamPaper, type ExamMode, type ExamType } from "~/lib/examSchema";
+import { getExamRegistry, type ExamMode, type ExamType } from "~/lib/examSchema";
 
-export const Route = createFileRoute("/exam")({ component: ExamHubPage });
+export const Route = createFileRoute("/exam")({ component: ExamRouteLayout });
+
+function ExamRouteLayout() {
+  const isChildRoute = useMatch({ from: "/exam/$paperId", shouldThrow: false });
+
+  if (isChildRoute) {
+    return <Outlet />;
+  }
+
+  return <ExamHubPage />;
+}
 
 export function ExamHubPage() {
   const navigate = useNavigate();
