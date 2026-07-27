@@ -17,7 +17,7 @@ import {
 import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
 
-export const Route = createFileRoute("/admin/pipeline/trash" as any)({
+export const Route = createFileRoute("/admin/pipeline/trash")({
   component: AdminPipelineTrashPage,
 });
 
