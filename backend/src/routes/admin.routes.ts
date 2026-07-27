@@ -295,6 +295,29 @@ router.delete('/lessons/:id', (req, res, next) =>
 );
 
 /**
+ * POST /api/admin/lessons/bulk-delete
+ * Body: { lessonIds: string[] }
+ */
+router.post('/lessons/bulk-delete', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { lessonIds } = req.body;
+    if (!Array.isArray(lessonIds) || lessonIds.length === 0) {
+      res.status(400).json({ success: false, error: 'lessonIds array is required' });
+      return;
+    }
+
+    const deleteResult = await Lesson.deleteMany({ _id: { $in: lessonIds } });
+    res.json({
+      success: true,
+      message: `Successfully deleted ${deleteResult.deletedCount} lessons`,
+      deletedCount: deleteResult.deletedCount,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
  * POST /api/admin/lessons/import-markdown
  * Import a chapter markdown file into the database.
  * Body: { filePath: string, level: string, chapterNum: number }
