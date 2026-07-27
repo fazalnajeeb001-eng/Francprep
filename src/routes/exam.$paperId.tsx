@@ -937,20 +937,28 @@ export function AuthenticCBTExamPage() {
         {currentSection.speakingTasks && currentSection.speakingTasks.length > 0 && (
           <div className="space-y-6">
             {currentSection.speakingTasks.map((task) => (
-              <div key={task.id} className={`p-6 rounded-lg border ${cbtCard} shadow-sm space-y-5 text-center max-w-2xl mx-auto`}>
+              <div key={task.id} className="p-6 rounded-lg border bg-white border-slate-300 shadow-sm space-y-5 text-center max-w-2xl mx-auto text-[#0F172A]">
                 <div className="space-y-1">
-                  <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase">
+                  <span className="text-xs font-mono font-bold text-emerald-600 uppercase">
                     {task.title}
                   </span>
-                  <h3 className="text-lg font-bold">{task.scenario}</h3>
+                  <h3 className="text-lg font-extrabold text-[#0F172A]">{task.scenario}</h3>
+                  <div className="flex items-center justify-center gap-4 text-xs font-bold text-slate-700 pt-1">
+                    <span className="px-2.5 py-1 rounded bg-slate-100 border border-slate-300">
+                      Prep Time: {task.prepTimeMins > 0 ? `${task.prepTimeMins} Min` : "No Prep"}
+                    </span>
+                    <span className="px-2.5 py-1 rounded bg-slate-100 border border-slate-300">
+                      Speaking Limit: {task.speakingTimeMins} Mins
+                    </span>
+                  </div>
                 </div>
 
                 {mode === "PRACTICE" && task.keyPhrases && (
-                  <div className="p-3.5 rounded bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-xs text-left space-y-1.5">
-                    <p className="font-bold text-emerald-800 dark:text-emerald-300 uppercase text-[10px]">Key Expressions:</p>
+                  <div className="p-3.5 rounded bg-emerald-50 border border-emerald-200 text-xs text-left space-y-1.5">
+                    <p className="font-bold text-emerald-900 uppercase text-[10px]">Key Expressions:</p>
                     <div className="flex flex-wrap gap-1.5">
                       {task.keyPhrases.map((phrase, idx) => (
-                        <span key={idx} className="px-2 py-0.5 rounded bg-emerald-200 dark:bg-emerald-800 text-emerald-900 dark:text-emerald-100 font-semibold">
+                        <span key={idx} className="px-2 py-0.5 rounded bg-emerald-200 text-emerald-950 font-bold">
                           "{phrase}"
                         </span>
                       ))}
@@ -969,19 +977,19 @@ export function AuthenticCBTExamPage() {
                   >
                     <Mic className="w-7 h-7" />
                   </button>
-                  <p className="text-xs font-bold">
+                  <p className="text-xs font-bold text-[#0F172A]">
                     {isRecording ? "Recording Official Speech..." : "Click Mic to Begin Speaking Response"}
                   </p>
 
                   {recordedSpeechText && (
-                    <div className="p-3 rounded bg-slate-100 dark:bg-slate-800 text-xs text-left space-y-1">
-                      <p className="font-bold uppercase text-[10px] text-slate-500">Recorded Transcript:</p>
-                      <p className="italic">"{recordedSpeechText}"</p>
+                    <div className="p-3 rounded bg-slate-100 border border-slate-300 text-xs text-left space-y-1">
+                      <p className="font-bold uppercase text-[10px] text-slate-600">Recorded Transcript:</p>
+                      <p className="italic font-medium text-[#0F172A]">"{recordedSpeechText}"</p>
                     </div>
                   )}
 
                   {speakingFeedback && (
-                    <div className="p-3.5 rounded bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-300 text-xs text-emerald-800 dark:text-emerald-300 font-semibold">
+                    <div className="p-3.5 rounded bg-emerald-50 border border-emerald-300 text-xs text-emerald-900 font-bold">
                       {speakingFeedback}
                     </div>
                   )}
