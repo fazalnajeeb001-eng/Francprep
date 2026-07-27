@@ -570,6 +570,18 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
   const [startTime] = useState(Date.now());
   const topRef = useRef<HTMLDivElement>(null);
 
+  const [savedAnswers, setSavedAnswers] = useState<Record<string, Record<string, string | string[]>>>({});
+
+  const handleUpdateAnswers = useCallback((sectionKey: string, newAnswers: Record<string, string | string[]>) => {
+    setSavedAnswers(prev => ({
+      ...prev,
+      [sectionKey]: {
+        ...(prev[sectionKey] || {}),
+        ...newAnswers
+      }
+    }));
+  }, []);
+
   const [isAdminPreview, setIsAdminPreview] = useState(false);
 
   useEffect(() => {

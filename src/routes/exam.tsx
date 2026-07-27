@@ -66,22 +66,32 @@ export function ExamHubPage() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 text-xs font-bold mb-2">
               <Trophy className="w-3.5 h-3.5" />
-              <span>Official Canadian Immigration Standard</span>
+              <span>Authentic CBT Exam Practice Standard</span>
             </div>
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
               TCF & TEF Canada Exam Simulators
             </h1>
             <p className={`text-sm ${txtSec} mt-1`}>
-              Practice under real official exam conditions or guided practice mode to achieve your target NCLC 7+ B2 score.
+              Practice under authentic exam conditions or guided practice mode to achieve your target NCLC 7+ B2 score.
             </p>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
             <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-500" />
-              <span>NCLC 7+ Express Entry Ready</span>
+              <span>NCLC 7+ Practice Predictor</span>
             </span>
           </div>
+        </div>
+
+        {/* ─── INDEPENDENT PRACTICE LEGAL DISCLAIMER BANNER ─── */}
+        <div className={`p-4 rounded-2xl border text-xs leading-relaxed ${dark ? "bg-amber-500/10 border-amber-500/20 text-amber-300" : "bg-amber-50 border-amber-200 text-amber-900"}`}>
+          <p className="font-bold flex items-center gap-1.5 mb-1">
+            <span>🛑</span> Independent Diagnostic Practice Disclaimer:
+          </p>
+          <p className="opacity-90">
+            FrancPrep is an independent learning platform and is not affiliated with, endorsed by, or accredited by France Éducation International (FEI), CCI Paris Île-de-France, IRCC, or any official testing organization. This CBT simulator provides diagnostic practice for study and self-assessment purposes only and does not issue official language certificates.
+          </p>
         </div>
 
         {/* ─── 3-STEP WIZARD PROGRESS BAR ─── */}

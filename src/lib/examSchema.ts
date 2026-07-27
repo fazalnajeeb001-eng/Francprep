@@ -240,17 +240,30 @@ Néanmoins, la transposabilité de cette organisation aux secteurs industriels �
   }
 ];
 
+function getTargetLevel(questionNum: number): string {
+  if (questionNum <= 10) return "A1";
+  if (questionNum <= 18) return "A2";
+  if (questionNum <= 26) return "B1";
+  if (questionNum <= 34) return "B2";
+  if (questionNum <= 37) return "C1";
+  return "C2";
+}
+
 function generateListeningQuestions(count: number, prefix: string, seedOffset: number = 0): ExamQuestion[] {
   const qList: ExamQuestion[] = [];
   for (let i = 1; i <= count; i++) {
-    const t = LISTENING_TOPICS[(i - 1 + seedOffset) % LISTENING_TOPICS.length];
+    const targetLevel = getTargetLevel(i);
+    const matchingTopics = LISTENING_TOPICS.filter(t => t.level === targetLevel || (targetLevel === "C2" && t.level === "C1"));
+    const pool = matchingTopics.length > 0 ? matchingTopics : LISTENING_TOPICS;
+    const t = pool[(i - 1 + seedOffset) % pool.length];
+
     qList.push({
       id: `${prefix}-lis-${i}`,
       questionNumber: i,
       text: `[Question ${i} - Niveau ${t.level}] ${t.text} Quel est l'élément principal à retenir ?`,
       options: t.opt,
       correctIndex: t.ans,
-      explanation: `Explication officielle [Niveau ${t.level}] : La bonne réponse est l'option 1 ("${t.opt[t.ans]}").`,
+      explanation: `Explication pédagogique [Niveau ${t.level}] : La bonne réponse est l'option 1 ("${t.opt[t.ans]}").`,
       hint: `Indice de niveau ${t.level} : Écoutez attentivement les mots-clés de l'enregistrement.`,
       transcript: t.tr,
       transcriptEnglish: t.en
@@ -262,7 +275,11 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
 function generateReadingQuestions(count: number, prefix: string, seedOffset: number = 0): ExamQuestion[] {
   const qList: ExamQuestion[] = [];
   for (let i = 1; i <= count; i++) {
-    const t = READING_TOPICS[(i - 1 + seedOffset) % READING_TOPICS.length];
+    const targetLevel = getTargetLevel(i);
+    const matchingTopics = READING_TOPICS.filter(t => t.level === targetLevel || (targetLevel === "C2" && t.level === "C1"));
+    const pool = matchingTopics.length > 0 ? matchingTopics : READING_TOPICS;
+    const t = pool[(i - 1 + seedOffset) % pool.length];
+
     qList.push({
       id: `${prefix}-read-${i}`,
       questionNumber: i,
@@ -271,7 +288,7 @@ function generateReadingQuestions(count: number, prefix: string, seedOffset: num
       text: `Question ${i} : ${t.q}`,
       options: t.opt,
       correctIndex: t.ans,
-      explanation: `Explication officielle [Niveau ${t.level}] : Le texte indique clairement "${t.opt[t.ans]}".`,
+      explanation: `Explication pédagogique [Niveau ${t.level}] : Le texte indique clairement "${t.opt[t.ans]}".`,
       hint: `Indice de lecture [Niveau ${t.level}] : Repérez les termes clés dans le document.`
     });
   }

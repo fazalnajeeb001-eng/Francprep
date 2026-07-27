@@ -968,17 +968,34 @@ export function AuthenticCBTExamPage() {
 
                 <div className="space-y-4 pt-2">
                   <button
-                    onClick={handleStartSpeakingRecord}
-                    className={`w-16 h-16 rounded-full mx-auto flex items-center justify-center shadow-lg transition-all ${
-                      isRecording
-                        ? "bg-red-600 text-white animate-pulse ring-4 ring-red-400"
-                        : "bg-emerald-600 hover:bg-emerald-500 text-white"
-                    }`}
+                    onClick={() => {
+                      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+                        window.speechSynthesis.cancel();
+                        const utterance = new SpeechSynthesisUtterance(task.scenario);
+                        utterance.lang = "fr-FR";
+                        utterance.rate = 0.95;
+                        window.speechSynthesis.speak(utterance);
+                      }
+                    }}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-md transition-all mb-2"
                   >
-                    <Mic className="w-7 h-7" />
+                    <Volume2 className="w-4 h-4" /> ▶ Listen to AI Examiner Prompt / Debate Context
                   </button>
+
+                  <div className="flex justify-center">
+                    <button
+                      onClick={handleStartSpeakingRecord}
+                      className={`w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-all ${
+                        isRecording
+                          ? "bg-red-600 text-white animate-pulse ring-4 ring-red-400"
+                          : "bg-emerald-600 hover:bg-emerald-500 text-white"
+                      }`}
+                    >
+                      <Mic className="w-7 h-7" />
+                    </button>
+                  </div>
                   <p className="text-xs font-bold text-[#0F172A]">
-                    {isRecording ? "Recording Official Speech..." : "Click Mic to Begin Speaking Response"}
+                    {isRecording ? "Recording Candidate Oral Response..." : "Click Mic to Begin Speaking Response"}
                   </p>
 
                   {recordedSpeechText && (
@@ -1063,9 +1080,9 @@ export function AuthenticCBTExamPage() {
 
               <div className="space-y-1">
                 <span className="text-xs font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-                  Official CBT Test Evaluation ({mode === "EXAM" ? "REAL EXAM MODE" : "GUIDED PRACTICE MODE"})
+                  Diagnostic Simulator Evaluation ({mode === "EXAM" ? "REAL EXAM MODE" : "GUIDED PRACTICE MODE"})
                 </span>
-                <h2 className="text-3xl font-extrabold">NCLC Level {calculateResults().nclcLevel} ({calculateResults().cefrEquivalent})</h2>
+                <h2 className="text-3xl font-extrabold">Estimated NCLC Level {calculateResults().nclcLevel} ({calculateResults().cefrEquivalent})</h2>
                 <p className="text-xs text-slate-500">
                   Total Score: <strong>{calculateResults().percentage}%</strong> ({calculateResults().totalCorrect} / {calculateResults().totalQs} Questions Correct)
                 </p>
@@ -1077,7 +1094,7 @@ export function AuthenticCBTExamPage() {
                   : "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-300"
               }`}>
                 <p className="font-bold">
-                  🍁 Express Entry CRS Points & NCLC Evaluation:
+                  🍁 Estimated Express Entry CRS Point Contribution:
                 </p>
                 <p className="leading-relaxed font-medium">
                   {calculateResults().statusMessage}
@@ -1085,6 +1102,10 @@ export function AuthenticCBTExamPage() {
                 <p className="pt-1 text-[11px] opacity-80 border-t border-slate-300 dark:border-slate-700">
                   Calculated Express Entry CLB Point Contribution: <strong>+{calculateResults().expressEntryPoints} Points</strong>
                 </p>
+              </div>
+
+              <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-[11px] text-slate-600 dark:text-slate-400 text-left leading-relaxed">
+                🛑 <strong>Independent Practice Disclaimer:</strong> This score is a diagnostic estimation for exam preparation purposes only. FrancPrep is an independent platform and does not provide official language certification.
               </div>
 
               <button

@@ -41,6 +41,8 @@ function getSpeechRecognition(): any {
 interface QuizProps {
   questions: Question[];
   type: string;
+  initialAnswers?: Record<string, string | string[]>;
+  onAnswersChange?: (answers: Record<string, string | string[]>) => void;
   onComplete?: (score: number, total: number) => void;
   onAnswer?: (questionId: string, isCorrect: boolean) => void;
   onSubmit?: (answers: Record<string, string | string[]>) => Promise<{
@@ -415,10 +417,29 @@ function OrderingQuestion({ q, qId, dark, submitted, setAnswer, userAnswer, resu
   );
 }
 
-export function QuizComponent({ questions, type: _type, onComplete, onAnswer, onSubmit }: QuizProps) {
+export function QuizComponent({ questions, type: _type, initialAnswers, onAnswersChange, onComplete, onAnswer, onSubmit }: QuizProps) {
   const { dark } = useTheme();
   const [current, setCurrent] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
+  const [answers, setAnswersState] = useState<Record<string, string | string[]>>(() => initialAnswers || {});
+
+  const setAnswer = useCallback((qId: string, val: string | string[]) => {
+    setAnswersState(prev => {
+      const next = { ...prev, [qId]: val };
+      onAnswersChange?.(next);
+      return next;
+    });
+    setQuestionResults(prev => {
+      const next = { ...prev };
+      delete next[qId];
+      return next;
+    });
+  }, [onAnswersChange]);
+
+  useEffect(() => {
+    if (initialAnswers && Object.keys(initialAnswers).length > 0) {
+      setAnswersState(prev => ({ ...initialAnswers, ...prev }));
+    }
+  }, [initialAnswers]);
   const [submitted, setSubmitted] = useState(false);
   const [results, setResults] = useState<ResultItem[] | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -453,15 +474,6 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
   }, [current, q]);
 
   const resultForQ = results?.find(r => r.questionId === qId) || questionResults[qId];
-
-  const setAnswer = useCallback((qId: string, val: string | string[]) => {
-    setAnswers(prev => ({ ...prev, [qId]: val }));
-    setQuestionResults(prev => {
-      const next = { ...prev };
-      delete next[qId];
-      return next;
-    });
-  }, []);
 
   // ─── CHECK ANSWER (SINGLE QUESTION) ───
   const handleCheckQuestion = async (targetQId: string) => {
