@@ -64,7 +64,7 @@ function PublishedContentSubSectionPage() {
 
   // Filter lessons by search query AND active module level
   const filteredLessons = useMemo(() => {
-    return publishedLessons.filter((l) => {
+    const list = publishedLessons.filter((l) => {
       const matchSearch =
         (l.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
         (l.lessonId || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -75,6 +75,25 @@ function PublishedContentSubSectionPage() {
         (l.level || "").toUpperCase().startsWith(selectedModule);
 
       return matchSearch && matchModule;
+    });
+
+    const getSortKey = (id: string, levelStr: string) => {
+      const lvlMap: Record<string, number> = { A1: 1, A2: 2, B1: 3, B2: 4, C1: 5, C2: 6 };
+      const lvlRank = lvlMap[(levelStr || '').toUpperCase()] || 99;
+      const chMatch = id.match(/ch(\d+)/i);
+      const lMatch = id.match(/l(\d+)/i);
+      const chNum = chMatch ? parseInt(chMatch[1], 10) : 999;
+      const lNum = lMatch ? parseInt(lMatch[1], 10) : 999;
+      return { lvlRank, chNum, lNum };
+    };
+
+    return list.sort((a, b) => {
+      const keyA = getSortKey(a.lessonId, a.level);
+      const keyB = getSortKey(b.lessonId, b.level);
+      if (keyA.lvlRank !== keyB.lvlRank) return keyA.lvlRank - keyB.lvlRank;
+      if (keyA.chNum !== keyB.chNum) return keyA.chNum - keyB.chNum;
+      if (keyA.lNum !== keyB.lNum) return keyA.lNum - keyB.lNum;
+      return a.lessonId.localeCompare(b.lessonId);
     });
   }, [publishedLessons, searchQuery, selectedModule]);
 
@@ -346,7 +365,11 @@ function PublishedContentSubSectionPage() {
                             </div>
                             <h4 className="text-xs font-bold text-white mt-1.5">{l.title}</h4>
                             <p className="text-[10px] text-gray-500 mt-1">
-                              Last published {new Date(l.updatedAt).toLocaleString()}
+                              Last published {(() => {
+                                if (!l.updatedAt) return "Live Catalog";
+                                const d = new Date(l.updatedAt);
+                                return isNaN(d.getTime()) ? "Live Catalog" : d.toLocaleString();
+                              })()}
                             </p>
                           </div>
 
