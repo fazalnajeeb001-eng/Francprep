@@ -4,8 +4,8 @@ import { apiFetch } from "~/lib/apiFetch";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "~/lib/ThemeContext";
 import {
-  ArrowLeft, Layers, CheckCircle2, AlertCircle, Trash2,
-  RefreshCw, Eye, AlertTriangle, CheckCircle, Database, Upload, Brain, Sparkles, History
+  ArrowLeft, Layers, CheckCircle2, Trash2,
+  RefreshCw, Eye, AlertTriangle, CheckCircle, Upload, Sparkles
 } from "lucide-react";
 import { LessonPage } from "~/components/content/LessonPage";
 
@@ -40,7 +40,6 @@ function PipelineDashboardPage() {
   const [previewLessonId, setPreviewLessonId] = useState<string | null>(null);
 
   // Safety Confirmation
-  const [loading, setLoading] = useState(false);
   const [actionStatus, setActionStatus] = useState({ loading: false, error: "", success: "" });
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [restoreConfirmId, setRestoreConfirmId] = useState<string | null>(null);
@@ -69,11 +68,7 @@ function PipelineDashboardPage() {
   ]);
   const [sendingChat, setSendingChat] = useState(false);
 
-  // Comparison State (1.a Merged Preview)
-  const [publishedLessonData, setPublishedLessonData] = useState<any | null>(null);
-
   const fetchDrafts = async () => {
-    setLoading(true);
     try {
       const res = await apiFetch("/admin/content-pipeline/drafts");
       const json = await res.json();
@@ -88,7 +83,6 @@ function PipelineDashboardPage() {
     } catch (e) {
       console.error(e);
     }
-    setLoading(false);
   };
 
   useEffect(() => {

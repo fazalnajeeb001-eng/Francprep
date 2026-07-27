@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Volume2,
@@ -12,24 +12,17 @@ import {
   HelpCircle,
   FileText,
   CheckCircle2,
-  AlertTriangle,
-  ArrowRight,
   ArrowLeft,
-  RotateCcw,
   Sparkles,
   Trophy,
-  Award,
-  ChevronRight,
   Send,
   Flag,
   Globe,
   Sun,
-  Moon,
-  Info,
-  Maximize2
+  Moon
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
-import { getExamRegistry, type ExamPaper, type ExamMode } from "~/lib/examSchema";
+import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } from "~/lib/examSchema";
 
 export const Route = createFileRoute("/exam/$paperId")({
   validateSearch: (search: Record<string, unknown>) => {
