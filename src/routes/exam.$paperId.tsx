@@ -856,31 +856,6 @@ export function AuthenticCBTExamPage() {
               );
             })}
           </div>
-        )}                );
-                })()}
-              </div>
-
-              {/* Prev / Next Bottom Navigator */}
-              <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-700">
-                <button
-                  disabled={currentQuestionIdx === 0}
-                  onClick={() => setCurrentQuestionIdx((prev) => Math.max(0, prev - 1))}
-                  className="px-4 py-2 rounded bg-slate-200 dark:bg-slate-800 text-xs font-bold disabled:opacity-40"
-                >
-                  ← Previous Question
-                </button>
-
-                <button
-                  disabled={currentQuestionIdx === currentQuestions.length - 1}
-                  onClick={() => setCurrentQuestionIdx((prev) => Math.min(currentQuestions.length - 1, prev + 1))}
-                  className="px-4 py-2 rounded bg-blue-600 text-white text-xs font-bold disabled:opacity-40"
-                >
-                  Next Question →
-                </button>
-              </div>
-            </div>
-
-          </div>
         )}
 
         {/* WRITING SECTION WORKSPACE */}
