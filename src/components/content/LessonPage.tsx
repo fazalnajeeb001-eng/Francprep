@@ -97,10 +97,48 @@ interface BlockResult {
 
 // ─── Adapter: LessonQuestion → QuizComponent-compatible shape ────────────────
 
+function extractPairsFromText(text: string): { pairs: Record<string, string>; title: string } | null {
+  if (!text) return null;
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const pairs: Record<string, string> = {};
+  const nonPairLines: string[] = [];
+
+  for (const line of lines) {
+    const m = line.match(/^([^—\-\:\d]+(?:[^\n—\-\:]+)?)\s*[—\-\:]+\s*(?:[a-eA-E][\.\)]\s*)?(.+)$/);
+    if (m && m[1].trim() && m[2].trim()) {
+      const left = m[1].replace(/^\d+[\.\)]\s*/, '').replace(/^[*•\-]\s*/, '').trim();
+      const right = m[2].replace(/^[a-eA-E][\.\)]\s*/, '').trim();
+      if (left && right && left.length < 50 && right.length < 80 && !left.toLowerCase().startsWith('matching')) {
+        pairs[left] = right;
+        continue;
+      }
+    }
+    nonPairLines.push(line);
+  }
+
+  if (Object.keys(pairs).length >= 2) {
+    const title = nonPairLines.join(' ').trim() || 'Match each French term with its correct translation:';
+    return { pairs, title };
+  }
+
+  return null;
+}
+
 function adaptQuestions(questions: LessonQuestion[]) {
   if (!questions) return [];
   return questions.map((q, idx) => {
     let resolvedPairs = q.pairs ? (Array.isArray(q.pairs) ? Object.fromEntries(q.pairs.map((p: any) => [p.left || p[0], p.right || p[1]])) : q.pairs) : undefined;
+    let resolvedText = q.prompt || (q as any).text || '';
+
+    // Extract embedded pairs from prompt if not explicitly structured in q.pairs
+    if (!resolvedPairs || Object.keys(resolvedPairs).length === 0) {
+      const extracted = extractPairsFromText(resolvedText);
+      if (extracted) {
+        resolvedPairs = extracted.pairs;
+        resolvedText = extracted.title;
+      }
+    }
+
     const hasDummyOptions = Array.isArray(q.options) && q.options.length > 0 && q.options.every((opt: any) => /^Option\s+[A-Z]$/i.test(String(opt).trim()));
     const hasPairs = (resolvedPairs && Object.keys(resolvedPairs).length > 0) || (q as any).pairs?.length > 0;
 
@@ -113,9 +151,9 @@ function adaptQuestions(questions: LessonQuestion[]) {
 
     return {
       id: q.id || (q as any)._id || `q-${idx}`,
-      text: q.prompt,
+      text: resolvedText,
       type: resolvedType,
-      options: hasDummyOptions ? undefined : q.options,
+      options: (hasPairs || hasDummyOptions) ? undefined : q.options,
       correctAnswer: q.correctAnswer as string | string[] | undefined,
       explanation: q.explanation,
       pairs: resolvedPairs,
