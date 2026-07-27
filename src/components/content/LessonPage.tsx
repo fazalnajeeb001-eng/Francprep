@@ -99,18 +99,31 @@ interface BlockResult {
 
 function adaptQuestions(questions: LessonQuestion[]) {
   if (!questions) return [];
-  return questions.map((q, idx) => ({
-    id: q.id || (q as any)._id || `q-${idx}`,
-    text: q.prompt,
-    type: q.type,
-    options: q.options,
-    correctAnswer: q.correctAnswer as string | string[] | undefined,
-    explanation: q.explanation,
-    pairs: q.pairs ? (Array.isArray(q.pairs) ? Object.fromEntries(q.pairs.map(p => [p.left, p.right])) : q.pairs) : undefined,
-    items: q.items,
-    correctOrder: Array.isArray(q.correctAnswer) && q.type === 'ordering' ? q.correctAnswer as string[] : undefined,
-    points: 1,
-  }));
+  return questions.map((q, idx) => {
+    let resolvedPairs = q.pairs ? (Array.isArray(q.pairs) ? Object.fromEntries(q.pairs.map((p: any) => [p.left || p[0], p.right || p[1]])) : q.pairs) : undefined;
+    const hasDummyOptions = Array.isArray(q.options) && q.options.length > 0 && q.options.every((opt: any) => /^Option\s+[A-Z]$/i.test(String(opt).trim()));
+    const hasPairs = (resolvedPairs && Object.keys(resolvedPairs).length > 0) || (q as any).pairs?.length > 0;
+
+    let resolvedType = q.type;
+    if (hasPairs) {
+      resolvedType = 'matching';
+    } else if (hasDummyOptions) {
+      resolvedType = 'short_answer';
+    }
+
+    return {
+      id: q.id || (q as any)._id || `q-${idx}`,
+      text: q.prompt,
+      type: resolvedType,
+      options: hasDummyOptions ? undefined : q.options,
+      correctAnswer: q.correctAnswer as string | string[] | undefined,
+      explanation: q.explanation,
+      pairs: resolvedPairs,
+      items: q.items,
+      correctOrder: Array.isArray(q.correctAnswer) && q.type === 'ordering' ? q.correctAnswer as string[] : undefined,
+      points: 1,
+    };
+  });
 }
 
 function getDialogueText(lesson: any): string {

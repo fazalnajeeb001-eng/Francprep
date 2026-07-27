@@ -997,9 +997,20 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
 
   // ─── RENDER QUESTION BY TYPE ───
   const renderQuestion = (q: Question, qId: string) => {
-    const qType = q.type || _type;
+    let qType = q.type || _type;
+    const hasDummyOptions = Array.isArray(q.options) && q.options.length > 0 && q.options.every((opt: any) => /^Option\s+[A-Z]$/i.test(String(opt).trim()));
+    const hasPairs = (q.pairs && Object.keys(q.pairs).length > 0) || (q as any).pairs?.length > 0;
+
+    if (hasPairs) {
+      qType = 'matching';
+    } else if (hasDummyOptions) {
+      qType = 'short_answer';
+    }
+
     switch (qType) {
-      case 'multiple_choice': return renderMultipleChoice(q, qId);
+      case 'multiple_choice':
+        if (hasDummyOptions) return renderShortAnswer(q, qId);
+        return renderMultipleChoice(q, qId);
       case 'true_false': return renderTrueFalse(q, qId);
       case 'fill_blank':
       case 'fill_in_blank': return renderFillBlank(q, qId);
@@ -1020,7 +1031,10 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
       case 'speaking_prompt':
       case 'speaking': return renderSpeaking(q, qId);
       case 'translation': return renderFillBlank(q, qId);
-      default: return renderMultipleChoice(q, qId);
+      default:
+        if (hasPairs) return renderMatching(q, qId);
+        if (hasDummyOptions) return renderShortAnswer(q, qId);
+        return renderMultipleChoice(q, qId);
     }
   };
 
