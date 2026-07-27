@@ -44,6 +44,13 @@ function PipelineDashboardPage() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [restoreConfirmId, setRestoreConfirmId] = useState<string | null>(null);
 
+  // Bulk Selection & Deletion Mode States
+  const [isSelectMode, setIsSelectMode] = useState(false);
+  const [selectedDraftIds, setSelectedDraftIds] = useState<string[]>([]);
+  const [bulkDeleteModalOpen, setBulkDeleteModalOpen] = useState(false);
+  const [bulkDeleteConfirmInput, setBulkDeleteConfirmInput] = useState("");
+  const [deletingBulk, setDeletingBulk] = useState(false);
+
   // Import Parser States
   const [importFormat, setImportFormat] = useState<"markdown" | "json">("markdown");
   const [importMarkdown, setImportMarkdown] = useState("");
@@ -272,6 +279,55 @@ function PipelineDashboardPage() {
   const integratedDrafts = drafts.filter(d => d.origin === 'ai_generator' || d.origin === 'ai_polish');
   const supersededDrafts = drafts.filter(d => d.status === 'superseded');
 
+  const handleToggleSelectAll = () => {
+    if (selectedDraftIds.length === activeStagedDrafts.length) {
+      setSelectedDraftIds([]);
+    } else {
+      setSelectedDraftIds(activeStagedDrafts.map(d => d._id));
+    }
+  };
+
+  const handleToggleSelectDraft = (id: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setSelectedDraftIds(prev =>
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
+
+  const handleExecuteBulkDelete = async () => {
+    if (bulkDeleteConfirmInput !== "DELETE") return;
+    setDeletingBulk(true);
+    setActionStatus({ loading: true, error: "", success: "" });
+
+    try {
+      let count = 0;
+      for (const id of selectedDraftIds) {
+        const res = await apiFetch(`/admin/content-pipeline/drafts/${id}`, { method: "DELETE" });
+        const json = await res.json();
+        if (json.success) count++;
+      }
+
+      setActionStatus({
+        loading: false,
+        error: "",
+        success: `Successfully deleted ${count} staged draft record(s).`,
+      });
+      setSelectedDraftIds([]);
+      setSelectedDraft(null);
+      setBulkDeleteModalOpen(false);
+      setBulkDeleteConfirmInput("");
+      fetchDrafts();
+    } catch (e: any) {
+      setActionStatus({
+        loading: false,
+        error: e.message || "Network error during bulk draft deletion",
+        success: "",
+      });
+    } finally {
+      setDeletingBulk(false);
+    }
+  };
+
   const bg = dark ? "bg-[#070B17]" : "bg-slate-50";
   const card = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white border-slate-200 shadow-sm shadow-slate-200/50";
   const txtSec = dark ? "text-gray-400" : "text-slate-700 font-semibold";
@@ -495,13 +551,54 @@ function PipelineDashboardPage() {
             {/* TAB 2, 3, & 4: Staged, Integrated, & Published Latest List */}
             {pipelineTab !== "import" && (
               <div className={`${card} border rounded-2xl p-5 space-y-4`}>
-                <div className="flex items-center justify-between border-b border-[#1e2a4a] pb-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1e2a4a] pb-3">
                   <h3 className="text-sm font-bold text-white capitalize">
                     Latest {pipelineTab} Push
                   </h3>
-                  <span className="text-xs text-gray-400">
-                    See full history under sub-sections in sidebar
-                  </span>
+
+                  {pipelineTab === "drafts" && (
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        onClick={() => {
+                          setIsSelectMode(!isSelectMode);
+                          if (isSelectMode) setSelectedDraftIds([]);
+                        }}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border ${
+                          isSelectMode
+                            ? "bg-purple-600 text-white border-purple-500 shadow"
+                            : "bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700"
+                        }`}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>{isSelectMode ? "Exit Select Mode" : "Select / Bulk Delete 🗑️"}</span>
+                      </button>
+
+                      {isSelectMode && (
+                        <>
+                          <button
+                            onClick={handleToggleSelectAll}
+                            className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700"
+                          >
+                            {selectedDraftIds.length === activeStagedDrafts.length ? "Deselect All" : "Select All"}
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              if (selectedDraftIds.length > 0) {
+                                setBulkDeleteModalOpen(true);
+                                setBulkDeleteConfirmInput("");
+                              }
+                            }}
+                            disabled={selectedDraftIds.length === 0}
+                            className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-bold transition-all disabled:opacity-40 flex items-center gap-1 shadow-md shadow-red-600/20"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Delete Selected ({selectedDraftIds.length})</span>
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {pipelineTab === "published" ? (
@@ -542,23 +639,46 @@ function PipelineDashboardPage() {
                     <div className="space-y-3">
                       {(pipelineTab === "drafts" ? activeStagedDrafts : integratedDrafts).map((d) => {
                         const isSelected = selectedDraft?._id === d._id;
+                        const isChecked = selectedDraftIds.includes(d._id);
                         const hasErrors = d.validationErrors && d.validationErrors.length > 0;
                         const lessonNum = d.lessonId?.match(/-l(\d+)$/)?.[1] || '';
                         return (
-                          <div key={d._id} onClick={() => { setSelectedDraft(d); setSelectedPublished(null); }}
+                          <div key={d._id} onClick={(e) => {
+                              if (isSelectMode) {
+                                handleToggleSelectDraft(d._id, e);
+                              } else {
+                                setSelectedDraft(d);
+                                setSelectedPublished(null);
+                              }
+                            }}
                             className={`p-4 rounded-xl border cursor-pointer transition-all ${
-                              isSelected ? "bg-purple-500/10 border-purple-500/40" : "hover:border-purple-500/20"
+                              isChecked
+                                ? "bg-purple-500/20 border-purple-500 shadow-md"
+                                : isSelected
+                                ? "bg-purple-500/10 border-purple-500/40"
+                                : "hover:border-purple-500/20"
                             } ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-white border-gray-200"}`}>
-                            <div className="flex justify-between items-start">
-                              <div>
-                                <div className="flex items-center gap-2">
-                                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400">{d.level}</span>
-                                  <span className="text-[10px] font-mono text-gray-400">{d.lessonId}</span>
-                                  {lessonNum && <span className="text-[10px] font-bold text-gray-500">L{lessonNum}</span>}
+                            <div className="flex items-start gap-3 justify-between">
+                              <div className="flex items-start gap-3">
+                                {isSelectMode && (
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    onChange={(e) => handleToggleSelectDraft(d._id, e as any)}
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="w-5 h-5 mt-0.5 accent-purple-500 cursor-pointer rounded shrink-0"
+                                  />
+                                )}
+                                <div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400">{d.level}</span>
+                                    <span className="text-[10px] font-mono text-gray-400">{d.lessonId}</span>
+                                    {lessonNum && <span className="text-[10px] font-bold text-gray-500">L{lessonNum}</span>}
+                                  </div>
+                                  <h4 className="text-xs font-bold text-white mt-1.5">{d.title}</h4>
                                 </div>
-                                <h4 className="text-xs font-bold text-white mt-1.5">{d.title}</h4>
                               </div>
-                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold shrink-0 ${
                                 hasErrors ? "bg-red-500/10 text-red-400" : "bg-emerald-500/10 text-emerald-400"
                               }`}>
                                 {hasErrors ? `❌ ${d.validationErrors.length} Errors` : "✓ Valid"}
@@ -711,6 +831,48 @@ function PipelineDashboardPage() {
                   className="px-4 py-2 text-xs font-bold rounded-xl bg-red-600 hover:bg-red-500 text-white shadow-lg shadow-red-500/20 transition-all flex items-center gap-1.5"
                 >
                   {actionStatus.loading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : "Delete Permanently"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Bulk Delete Confirmation Modal */}
+        {bulkDeleteModalOpen && (
+          <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className={`max-w-md w-full rounded-2xl p-6 border shadow-2xl space-y-4 ${dark ? "bg-[#101828] border-[#1e2a4a] text-white" : "bg-white border-slate-200 text-slate-900"}`}>
+              <div className="flex items-center gap-3 text-red-500">
+                <Trash2 className="w-6 h-6" />
+                <h3 className="text-base font-bold">Bulk Delete Staged Drafts?</h3>
+              </div>
+              <p className={`text-xs ${dark ? "text-gray-300" : "text-slate-600"} leading-relaxed`}>
+                You are about to permanently delete <strong>{selectedDraftIds.length}</strong> staged draft record(s). This action cannot be undone.
+              </p>
+              <div className="space-y-2 pt-2">
+                <label className="block text-[11px] font-bold text-red-400 uppercase tracking-wider">
+                  Type "DELETE" to confirm:
+                </label>
+                <input
+                  type="text"
+                  value={bulkDeleteConfirmInput}
+                  onChange={(e) => setBulkDeleteConfirmInput(e.target.value)}
+                  placeholder="DELETE"
+                  className={inp}
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  onClick={() => { setBulkDeleteModalOpen(false); setBulkDeleteConfirmInput(""); }}
+                  className={`px-4 py-2 text-xs font-semibold rounded-xl border ${dark ? "border-[#1e2a4a] text-gray-400 hover:bg-white/5" : "border-slate-200 text-slate-600 hover:bg-slate-100"}`}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleExecuteBulkDelete}
+                  disabled={bulkDeleteConfirmInput !== "DELETE" || deletingBulk}
+                  className="px-4 py-2 text-xs font-bold rounded-xl bg-red-600 hover:bg-red-500 text-white shadow-lg shadow-red-500/20 transition-all disabled:opacity-40 flex items-center gap-1.5"
+                >
+                  {deletingBulk ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : "Delete Selected Drafts"}
                 </button>
               </div>
             </div>

@@ -60,7 +60,9 @@ function DraftsSubSectionPage() {
   });
   const [savingDraft, setSavingDraft] = useState(false);
 
+  // Safety Confirmation
   const [actionStatus, setActionStatus] = useState({ loading: false, error: "", success: "" });
+  const [isSelectMode, setIsSelectMode] = useState(false);
 
   const fetchDrafts = async () => {
     setLoading(true);
@@ -409,18 +411,36 @@ function DraftsSubSectionPage() {
             <div className={`${card} border rounded-2xl p-5 space-y-4`}>
               {/* Header & Search */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-3">
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                   <button
-                    onClick={handleToggleSelectAll}
-                    className={`flex items-center gap-1.5 text-xs font-semibold ${dark ? "text-gray-300 hover:text-white" : "text-slate-700 hover:text-slate-900"}`}
+                    onClick={() => {
+                      setIsSelectMode(!isSelectMode);
+                      if (isSelectMode) setSelectedIds([]);
+                    }}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border ${
+                      isSelectMode
+                        ? "bg-purple-600 text-white border-purple-500 shadow"
+                        : dark ? "bg-slate-800 text-slate-200 border-slate-700 hover:bg-slate-700" : "bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200"
+                    }`}
                   >
-                    {selectedIds.length > 0 && selectedIds.length === filteredDrafts.length ? (
-                      <CheckSquare className="w-4 h-4 text-purple-500" />
-                    ) : (
-                      <Square className="w-4 h-4 text-gray-400" />
-                    )}
-                    <span>Select All ({filteredDrafts.length})</span>
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>{isSelectMode ? "Exit Select Mode" : "Select / Bulk Delete 🗑️"}</span>
                   </button>
+
+                  {isSelectMode && (
+                    <button
+                      onClick={handleToggleSelectAll}
+                      className={`flex items-center gap-1.5 text-xs font-semibold ${dark ? "text-gray-300 hover:text-white" : "text-slate-700 hover:text-slate-900"}`}
+                    >
+                      {selectedIds.length > 0 && selectedIds.length === filteredDrafts.length ? (
+                        <CheckSquare className="w-4 h-4 text-purple-500" />
+                      ) : (
+                        <Square className="w-4 h-4 text-gray-400" />
+                      )}
+                      <span>Select All ({filteredDrafts.length})</span>
+                    </button>
+                  )}
+
                   <span className="text-xs text-gray-500">|</span>
                   <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
                     {selectedModule === "ALL" ? "All Drafts" : `Module ${selectedModule}`} ({filteredDrafts.length})
@@ -458,24 +478,31 @@ function DraftsSubSectionPage() {
                     return (
                       <div
                         key={d._id}
-                        onClick={() => setSelectedDraft(d)}
+                        onClick={(e) => {
+                          if (isSelectMode) {
+                            handleToggleSelectOne(d._id, e);
+                          } else {
+                            setSelectedDraft(d);
+                          }
+                        }}
                         className={`p-4 rounded-xl border cursor-pointer transition-all flex items-start gap-3 ${
-                          isSelected
+                          isChecked
+                            ? "bg-purple-500/20 border-purple-500 shadow-md"
+                            : isSelected
                             ? "bg-purple-500/10 border-purple-500/40"
                             : "hover:border-purple-500/20"
                         } ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-white border-gray-200"}`}
                       >
-                        {/* Checkbox */}
-                        <button
-                          onClick={(e) => handleToggleSelectOne(d._id, e)}
-                          className="mt-1 flex-shrink-0 text-gray-400 hover:text-purple-400"
-                        >
-                          {isChecked ? (
-                            <CheckSquare className="w-4 h-4 text-purple-500" />
-                          ) : (
-                            <Square className="w-4 h-4 text-gray-400" />
-                          )}
-                        </button>
+                        {/* Checkbox (Only visible in Select Mode) */}
+                        {isSelectMode && (
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={(e) => handleToggleSelectOne(d._id, e as any)}
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-5 h-5 mt-0.5 accent-purple-500 cursor-pointer rounded shrink-0"
+                          />
+                        )}
 
                         <div className="flex-grow flex justify-between items-start">
                           <div>
