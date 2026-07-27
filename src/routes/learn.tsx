@@ -281,61 +281,32 @@ function LearnPage() {
           ) : (
             <div className="space-y-3">
               <h2 className={`text-sm font-semibold ${textMuted} uppercase tracking-wider mb-4`}>Chapters</h2>
-              {chapters.map((ch: any, i: number) => {
-                const locked = isChapterLocked(ch, i);
-                return (
-                  <motion.div key={ch._id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                    {locked ? (
-                      <div className={`w-full text-left block rounded-2xl ${cardBg} backdrop-blur-lg border p-5 border-amber-500/30 opacity-90`}>
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                          <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold text-sm shrink-0">
-                              🔒
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2">
-                                <h3 className={`font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{ch.title}</h3>
-                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center gap-1">
-                                  🔒 DELF Milestone Locked
-                                </span>
-                              </div>
-                              <p className="text-xs text-amber-400/90 mt-1">
-                                Pass the DELF Diagnostic Exam ({gatingSettings.passingScorePercentage}%+) to unlock this chapter.
-                              </p>
-                            </div>
-                          </div>
-                          <Link to="/exam" className="px-3.5 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-black text-xs font-extrabold rounded-xl shadow flex items-center gap-1 hover:brightness-110 transition-all shrink-0">
-                            📜 Take DELF Exam
-                          </Link>
+              {chapters.map((ch: any, i: number) => (
+                <motion.div key={ch._id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                  <button onClick={() => selectChapter(ch._id)}
+                    className={`w-full text-left block rounded-2xl ${cardBg} backdrop-blur-lg border p-5 ${cardHover} transition-all duration-300 group`}>
+                    <div className="flex items-center gap-4">
+                      <div className={`w-10 h-10 rounded-xl ${dark ? "bg-purple-500/20 border-purple-500/20" : "bg-purple-100 border-purple-200"} border flex items-center justify-center ${dark ? "text-purple-400" : "text-purple-600"} font-bold text-sm shrink-0`}>
+                        {ch.order || i + 1}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className={`font-semibold ${dark ? "text-white group-hover:text-purple-400" : "text-gray-900 group-hover:text-purple-600"} transition-colors`}>{ch.title}</h3>
+                        <div className="flex items-center gap-3 mt-1.5">
+                          <span className={`flex items-center gap-1 text-xs ${textMuted}`}>
+                            <BookOpen className="w-3 h-3" />{ch.lessonCount} {ch.lessonCount === 1 ? 'lesson' : 'lessons'}
+                          </span>
+                          {ch.estimatedTime && (
+                            <span className={`flex items-center gap-1 text-xs ${textMuted}`}>
+                              <Clock className="w-3 h-3" />{ch.estimatedTime}
+                            </span>
+                          )}
                         </div>
                       </div>
-                    ) : (
-                      <button onClick={() => selectChapter(ch._id)}
-                        className={`w-full text-left block rounded-2xl ${cardBg} backdrop-blur-lg border p-5 ${cardHover} transition-all duration-300 group`}>
-                        <div className="flex items-center gap-4">
-                          <div className={`w-10 h-10 rounded-xl ${dark ? "bg-purple-500/20 border-purple-500/20" : "bg-purple-100 border-purple-200"} border flex items-center justify-center ${dark ? "text-purple-400" : "text-purple-600"} font-bold text-sm shrink-0`}>
-                            {ch.order || i + 1}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h3 className={`font-semibold ${dark ? "text-white group-hover:text-purple-400" : "text-gray-900 group-hover:text-purple-600"} transition-colors`}>{ch.title}</h3>
-                            <div className="flex items-center gap-3 mt-1.5">
-                              <span className={`flex items-center gap-1 text-xs ${textMuted}`}>
-                                <BookOpen className="w-3 h-3" />{ch.lessonCount} {ch.lessonCount === 1 ? 'lesson' : 'lessons'}
-                              </span>
-                              {ch.estimatedTime && (
-                                <span className={`flex items-center gap-1 text-xs ${textMuted}`}>
-                                  <Clock className="w-3 h-3" />{ch.estimatedTime}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          <ChevronRight className={`w-5 h-5 ${textMuted} group-hover:text-purple-500 transition-colors shrink-0`} />
-                        </div>
-                      </button>
-                    )}
-                  </motion.div>
-                );
-              })}
+                      <ChevronRight className={`w-5 h-5 ${textMuted} group-hover:text-purple-500 transition-colors shrink-0`} />
+                    </div>
+                  </button>
+                </motion.div>
+              ))}
             </div>
           )}
         </div>
@@ -371,6 +342,7 @@ function LearnPage() {
               const lvlLight = CEFR_LIGHT_STYLES[data.level] || CEFR_LIGHT_STYLES.A1;
               const icon = LEVEL_ICONS[data.level] || "📖";
               const hasContent = data.chapters.length > 0;
+              const locked = isModuleLocked(data.level);
 
               // Badge classes
               const badgeClasses = dark
@@ -379,7 +351,32 @@ function LearnPage() {
 
               return (
                 <motion.div key={data.level} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
-                  {hasContent ? (
+                  {locked ? (
+                    <div className={`w-full text-left block group relative overflow-hidden rounded-2xl border ${cardBg} border-amber-500/30 backdrop-blur-lg opacity-90 p-5 pl-7`}>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-5">
+                          <div className="w-14 h-14 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xl font-bold shrink-0">
+                            🔒
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2 mb-0.5">
+                              <span className="text-lg">{icon}</span>
+                              <h2 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>{data.title}</h2>
+                              <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                                🔒 DELF Gate Locked
+                              </span>
+                            </div>
+                            <p className="text-xs text-amber-400/90 mt-1">
+                              Pass the DELF Milestone Exam ({gatingSettings.passingScorePercentage}%+) to unlock Module {data.level}.
+                            </p>
+                          </div>
+                        </div>
+                        <Link to="/exam/delf" className="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-black text-xs font-black rounded-xl shadow flex items-center gap-1 hover:brightness-110 transition-all shrink-0">
+                          📜 Take DELF Exam
+                        </Link>
+                      </div>
+                    </div>
+                  ) : hasContent ? (
                     <button onClick={() => selectLevel(data.level)}
                       className={`w-full text-left block group relative overflow-hidden rounded-2xl border ${cardBg} backdrop-blur-lg ${cardHover} transition-all duration-300 cursor-pointer`}>
                       <div className={`absolute top-0 left-0 w-1 h-full bg-gradient-to-b ${lvlStyle.gradient} rounded-l-2xl`} />
