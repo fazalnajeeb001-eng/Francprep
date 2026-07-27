@@ -3,6 +3,7 @@ import { authenticate, authorize } from '../middleware/auth';
 import { AuthRequest } from '../types';
 import Draft from '../models/Draft';
 import Lesson from '../models/Lesson';
+import { TrashItem } from '../models/TrashItem';
 import { parseLessonFromMarkdown } from '../services/markdownLessonParser';
 import Ajv from 'ajv';
 import { generateAICompletion } from '../services/aiProvider';
@@ -1397,6 +1398,98 @@ router.post('/content-pipeline/chat', async (req: AuthRequest, res: Response) =>
       success: true,
       reply
     });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+// ─── RECYCLE BIN / TRASH ROUTES ──────────────────────────────────────────────
+
+// Move staged draft to Trash
+router.post('/content-pipeline/drafts/:id/trash', async (req: AuthRequest, res: Response) => {
+  try {
+    const draft = await Draft.findById(req.params.id);
+    if (!draft) {
+      res.status(404).json({ success: false, error: 'Draft not found' });
+      return;
+    }
+
+    const trash = await TrashItem.create({
+      title: draft.title || draft.lessonId || 'Untitled Draft',
+      lessonId: draft.lessonId || 'A1-CH1-L1',
+      level: draft.level || 'A1',
+      originalType: 'draft',
+      originalId: draft._id.toString(),
+      payload: draft.toObject(),
+      deletedBy: req.user?.email || 'admin',
+    });
+
+    await Draft.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Draft moved to 60-Day Recycle Bin', data: trash });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// GET list all items in Recycle Bin
+router.get('/content-pipeline/trash', async (req: AuthRequest, res: Response) => {
+  try {
+    const items = await TrashItem.find().sort({ deletedAt: -1 }).lean();
+    const now = Date.now();
+    const formatted = items.map((item: any) => {
+      const msLeft = new Date(item.expiresAt).getTime() - now;
+      const daysRemaining = Math.max(0, Math.ceil(msLeft / (1000 * 60 * 60 * 24)));
+      return {
+        ...item,
+        daysRemaining,
+      };
+    });
+    res.json({ success: true, data: formatted });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Restore item from Recycle Bin
+router.post('/content-pipeline/trash/:id/restore', async (req: AuthRequest, res: Response) => {
+  try {
+    const trash = await TrashItem.findById(req.params.id);
+    if (!trash) {
+      res.status(404).json({ success: false, error: 'Item not found in Recycle Bin' });
+      return;
+    }
+
+    if (trash.originalType === 'draft') {
+      const draftData = trash.payload;
+      delete draftData._id;
+      await Draft.create(draftData);
+    }
+
+    await TrashItem.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: `Successfully restored ${trash.title}` });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Permanently delete single item from Recycle Bin
+router.delete('/content-pipeline/trash/:id/permanent', async (req: AuthRequest, res: Response) => {
+  try {
+    const trash = await TrashItem.findByIdAndDelete(req.params.id);
+    if (!trash) {
+      res.status(404).json({ success: false, error: 'Item not found in Recycle Bin' });
+      return;
+    }
+    res.json({ success: true, message: 'Item permanently deleted' });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Empty entire Recycle Bin
+router.delete('/content-pipeline/trash/empty', async (req: AuthRequest, res: Response) => {
+  try {
+    await TrashItem.deleteMany({});
+    res.json({ success: true, message: 'Recycle Bin emptied successfully' });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
   }

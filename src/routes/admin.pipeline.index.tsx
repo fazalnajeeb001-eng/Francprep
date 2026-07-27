@@ -202,10 +202,10 @@ function PipelineDashboardPage() {
   const handleDelete = async (id: string) => {
     setActionStatus({ loading: true, error: "", success: "" });
     try {
-      const res = await apiFetch(`/admin/content-pipeline/drafts/${id}`, { method: "DELETE" });
+      const res = await apiFetch(`/admin/content-pipeline/drafts/${id}/trash`, { method: "POST" });
       const json = await res.json();
       if (json.success) {
-        setActionStatus({ loading: false, error: "", success: "Draft record deleted" });
+        setActionStatus({ loading: false, error: "", success: "Draft moved to 60-Day Recycle Bin" });
         setDeleteConfirmId(null);
         if (selectedDraft?._id === id) setSelectedDraft(null);
         fetchDrafts();
@@ -302,7 +302,7 @@ function PipelineDashboardPage() {
     try {
       let count = 0;
       for (const id of selectedDraftIds) {
-        const res = await apiFetch(`/admin/content-pipeline/drafts/${id}`, { method: "DELETE" });
+        const res = await apiFetch(`/admin/content-pipeline/drafts/${id}/trash`, { method: "POST" });
         const json = await res.json();
         if (json.success) count++;
       }
@@ -310,7 +310,7 @@ function PipelineDashboardPage() {
       setActionStatus({
         loading: false,
         error: "",
-        success: `Successfully deleted ${count} staged draft record(s).`,
+        success: `Successfully moved ${count} draft(s) to 60-Day Recycle Bin.`,
       });
       setSelectedDraftIds([]);
       setSelectedDraft(null);
@@ -436,6 +436,11 @@ function PipelineDashboardPage() {
             className={`pb-3 font-semibold transition-all border-b-2 ${pipelineTab === "published" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
             👑 Latest Published Content ({publishedLessons.slice(0, 1).length})
           </button>
+          <Link to="/admin/pipeline/trash"
+            className="pb-3 font-semibold transition-all border-b-2 border-transparent text-gray-500 hover:text-red-400 flex items-center gap-1.5 ml-auto">
+            <Trash2 className="w-4 h-4 text-red-500" />
+            <span>🗑️ Recycle Bin (Trash)</span>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
