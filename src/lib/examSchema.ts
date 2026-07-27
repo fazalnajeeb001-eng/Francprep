@@ -561,3 +561,68 @@ export function getExamRegistry(): ExamPaper[] {
     SAMPLE_TEF_PAPER_2
   ];
 }
+
+export interface NCLCScoreResult {
+  nclcLevel: number; // 1 to 12
+  cefrEquivalent: string; // A1, A2, B1, B2, C1, C2
+  expressEntryPoints: number; // CLB points for Express Entry
+  statusMessage: string;
+  isNCLC7TargetReached: boolean;
+}
+
+export function calculateNCLCScore(pctScore: number, examType: ExamType, sectionType: SectionType): NCLCScoreResult {
+  const pct = Math.max(0, Math.min(100, pctScore));
+  let nclcLevel = 4;
+  let cefrEquivalent = "B1";
+  let expressEntryPoints = 16;
+  let isNCLC7TargetReached = false;
+
+  if (pct >= 90) {
+    nclcLevel = 10;
+    cefrEquivalent = "C2";
+    expressEntryPoints = 34;
+    isNCLC7TargetReached = true;
+  } else if (pct >= 82) {
+    nclcLevel = 9;
+    cefrEquivalent = "C1";
+    expressEntryPoints = 31;
+    isNCLC7TargetReached = true;
+  } else if (pct >= 74) {
+    nclcLevel = 8;
+    cefrEquivalent = "C1";
+    expressEntryPoints = 23;
+    isNCLC7TargetReached = true;
+  } else if (pct >= 65) {
+    nclcLevel = 7;
+    cefrEquivalent = "B2";
+    expressEntryPoints = 17;
+    isNCLC7TargetReached = true;
+  } else if (pct >= 55) {
+    nclcLevel = 6;
+    cefrEquivalent = "B2";
+    expressEntryPoints = 12;
+    isNCLC7TargetReached = false;
+  } else if (pct >= 45) {
+    nclcLevel = 5;
+    cefrEquivalent = "B1";
+    expressEntryPoints = 6;
+    isNCLC7TargetReached = false;
+  } else {
+    nclcLevel = 4;
+    cefrEquivalent = "A2/B1";
+    expressEntryPoints = 0;
+    isNCLC7TargetReached = false;
+  }
+
+  const statusMessage = isNCLC7TargetReached
+    ? `🎉 Excellent! Score achieves NCLC ${nclcLevel} (${cefrEquivalent}) — Meets Canadian Express Entry PR Benchmark!`
+    : `💪 Good effort! NCLC ${nclcLevel} (${cefrEquivalent}). Aim for 65%+ to hit the official NCLC 7 (B2) immigration benchmark.`;
+
+  return {
+    nclcLevel,
+    cefrEquivalent,
+    expressEntryPoints,
+    statusMessage,
+    isNCLC7TargetReached
+  };
+}

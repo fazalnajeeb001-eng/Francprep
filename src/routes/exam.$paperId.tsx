@@ -179,14 +179,9 @@ export function AuthenticCBTExamPage() {
     });
 
     const percentage = totalQs > 0 ? Math.round((totalCorrect / totalQs) * 100) : 100;
-    let nclcLevel = "NCLC 7 (B2 Threshold)";
-    if (percentage >= 85) nclcLevel = "NCLC 9 (C1 Advanced)";
-    else if (percentage >= 75) nclcLevel = "NCLC 8 (B2 Vantage)";
-    else if (percentage >= 60) nclcLevel = "NCLC 7 (B2 Threshold)";
-    else if (percentage >= 45) nclcLevel = "NCLC 5 (B1)";
-    else nclcLevel = "NCLC 4 (A2)";
+    const nclcResult = calculateNCLCScore(percentage, paper.type, currentSection.type);
 
-    return { totalCorrect, totalQs, percentage, nclcLevel };
+    return { totalCorrect, totalQs, percentage, ...nclcResult };
   };
 
   const currentQuestions = currentSection.questions || [];
@@ -671,20 +666,27 @@ export function AuthenticCBTExamPage() {
 
               <div className="space-y-1">
                 <span className="text-xs font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-                  Official CBT Test Center Evaluation
+                  Official CBT Test Evaluation ({mode === "EXAM" ? "REAL EXAM MODE" : "GUIDED PRACTICE MODE"})
                 </span>
-                <h2 className="text-3xl font-extrabold">{calculateResults().nclcLevel}</h2>
+                <h2 className="text-3xl font-extrabold">NCLC Level {calculateResults().nclcLevel} ({calculateResults().cefrEquivalent})</h2>
                 <p className="text-xs text-slate-500">
-                  Total Score: <strong>{calculateResults().percentage}%</strong> ({calculateResults().totalCorrect} / {calculateResults().totalQs} Correct)
+                  Total Score: <strong>{calculateResults().percentage}%</strong> ({calculateResults().totalCorrect} / {calculateResults().totalQs} Questions Correct)
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-xs text-left space-y-2">
-                <p className="font-bold text-blue-800 dark:text-blue-300">
-                  🍁 Express Entry CRS Points Evaluation:
+              <div className={`p-4 rounded-xl text-xs text-left space-y-2 border ${
+                calculateResults().isNCLC7TargetReached
+                  ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300"
+                  : "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-300"
+              }`}>
+                <p className="font-bold">
+                  🍁 Express Entry CRS Points & NCLC Evaluation:
                 </p>
-                <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
-                  Reaching NCLC 7+ in all 4 skills qualifies you for <strong>+50 Bonus CRS Points</strong> under Canada Express Entry French Category Selection Draws!
+                <p className="leading-relaxed font-medium">
+                  {calculateResults().statusMessage}
+                </p>
+                <p className="pt-1 text-[11px] opacity-80 border-t border-slate-300 dark:border-slate-700">
+                  Calculated Express Entry CLB Point Contribution: <strong>+{calculateResults().expressEntryPoints} Points</strong>
                 </p>
               </div>
 
