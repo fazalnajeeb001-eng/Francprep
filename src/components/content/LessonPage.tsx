@@ -153,38 +153,58 @@ function adaptQuestions(questions: LessonQuestion[]) {
   for (let i = 0; i < questions.length; i++) {
     const q = questions[i];
     const p = q.prompt || (q as any).text || '';
+    const pLower = p.toLowerCase();
 
-    // Check if this is a housing matching question item (Un studio, Un immeuble, Le loyer)
-    const isHousingPair = p.includes('Un studio') || p.includes('Un immeuble') || p.includes('Le loyer') || p.includes('une maison') || p.includes('une résidence');
+    // Check if this is a housing matching question item (Un studio, Un immeuble, Le loyer, Une résidence, Le rez-de-chaussée)
+    const isHousingPair = pLower.includes('studio') || pLower.includes('immeuble') || pLower.includes('loyer') || pLower.includes('résidence') || pLower.includes('residence') || pLower.includes('rez-de-chaussée') || pLower.includes('rez');
     if (isHousingPair) {
       if (currentMatchingPairs.length === 0) {
         matchingPrompt = 'Match each French housing term with its correct English translation:';
       }
 
-      if (p.includes('Un studio')) {
-        currentMatchingPairs.push({ left: 'Un studio', right: 'A small apartment' });
-      } else if (p.includes('Un immeuble')) {
+      if (pLower.includes('studio') && !currentMatchingPairs.some(item => item.left === 'Un studio')) {
+        currentMatchingPairs.push({ left: 'Un studio', right: 'A studio apartment' });
+      }
+      if (pLower.includes('immeuble') && !currentMatchingPairs.some(item => item.left === 'Un immeuble')) {
         currentMatchingPairs.push({ left: 'Un immeuble', right: 'An apartment building' });
-      } else if (p.includes('Le loyer')) {
+      }
+      if (pLower.includes('loyer') && !currentMatchingPairs.some(item => item.left === 'Le loyer')) {
         currentMatchingPairs.push({ left: 'Le loyer', right: 'The rent' });
-      } else if (p.includes('une maison')) {
-        currentMatchingPairs.push({ left: 'Une maison', right: 'A house' });
-      } else if (p.includes('une résidence')) {
-        currentMatchingPairs.push({ left: 'Une résidence', right: 'A residential building' });
+      }
+      if ((pLower.includes('résidence') || pLower.includes('residence')) && !currentMatchingPairs.some(item => item.left === 'Une résidence')) {
+        currentMatchingPairs.push({ left: 'Une résidence', right: 'A residence' });
+      }
+      if ((pLower.includes('rez-de-chaussée') || pLower.includes('rez')) && !currentMatchingPairs.some(item => item.left === 'Le rez-de-chaussée')) {
+        currentMatchingPairs.push({ left: 'Le rez-de-chaussée', right: 'The ground floor' });
       }
 
       // If next question is not housing or this is the last, flush matching question
       const nextQ = questions[i + 1];
-      const nextP = nextQ ? (nextQ.prompt || (nextQ as any).text || '') : '';
-      const isNextHousing = nextP.includes('Un studio') || nextP.includes('Un immeuble') || nextP.includes('Le loyer') || nextP.includes('une maison') || nextP.includes('une résidence');
+      const nextP = nextQ ? (nextQ.prompt || (nextQ as any).text || '').toLowerCase() : '';
+      const isNextHousing = nextP.includes('studio') || nextP.includes('immeuble') || nextP.includes('loyer') || nextP.includes('résidence') || nextP.includes('residence') || nextP.includes('rez-de-chaussée') || nextP.includes('rez');
 
       if (!isNextHousing) {
+        // Ensure all 5 standard Lesson 1 pairs are present in Question 2 matching
+        const defaultPairs = [
+          { left: 'Un studio', right: 'A studio apartment' },
+          { left: 'Un immeuble', right: 'An apartment building' },
+          { left: 'Le loyer', right: 'The rent' },
+          { left: 'Une résidence', right: 'A residence' },
+          { left: 'Le rez-de-chaussée', right: 'The ground floor' }
+        ];
+
+        defaultPairs.forEach(dp => {
+          if (!currentMatchingPairs.some(item => item.left.toLowerCase() === dp.left.toLowerCase())) {
+            currentMatchingPairs.push(dp);
+          }
+        });
+
         normalizedQuestions.push({
           id: 'pe-housing-matching',
           type: 'matching',
           prompt: matchingPrompt,
           pairs: Object.fromEntries(currentMatchingPairs.map(item => [item.left, item.right])),
-          explanation: 'Un studio = A small apartment, Un immeuble = An apartment building, Le loyer = The rent.',
+          explanation: 'Un studio = A studio apartment, Un immeuble = An apartment building, Le loyer = The rent, Une résidence = A residence, Le rez-de-chaussée = The ground floor.',
         } as any);
         currentMatchingPairs = [];
       }
