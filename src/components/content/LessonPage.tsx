@@ -89,6 +89,24 @@ interface ProgressData {
   score?: number;
 }
 
+function formatObjectivesList(raw: any): string[] {
+  if (!raw) return [];
+  const items = Array.isArray(raw) ? raw : [String(raw)];
+  const result: string[] = [];
+
+  items.forEach((item) => {
+    if (typeof item !== "string") return;
+    const parts = item
+      .split(/\n|(?<=\.)\s*(?=[-•*])|\s*[-•*]\s+/)
+      .map((p) => p.replace(/^[-•*\s]+/, "").trim())
+      .filter((p) => p.length > 0);
+
+    result.push(...parts);
+  });
+
+  return result;
+}
+
 interface BlockResult {
   score: number;
   total: number;
@@ -1706,52 +1724,65 @@ Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain aprè
               </div>
             </div>
           </div>
-          {lesson.objectives?.length > 0 && (
-            <div className={`rounded-2xl p-3 border mt-3 transition-all ${dark ? "bg-purple-500/10 border-purple-500/30" : "bg-purple-50 border-purple-100"}`}>
-              {currentSectionIdx === 0 ? (
-                <div>
-                  <p className={`text-xs font-bold mb-2 flex items-center gap-1.5 ${dark ? "text-purple-300" : "text-purple-700"}`}>
+          {(() => {
+            const cleanObjectives = formatObjectivesList(lesson.objectives);
+            if (!cleanObjectives.length) return null;
+
+            return (
+              <div className={`rounded-2xl p-4 border mt-3 transition-all ${dark ? "bg-purple-500/10 border-purple-500/30" : "bg-purple-50 border-purple-100"}`}>
+                <div className="flex items-center justify-between">
+                  <p className={`text-xs font-bold flex items-center gap-1.5 ${dark ? "text-purple-300" : "text-purple-700"}`}>
                     <span>🎯</span> What you'll learn:
                   </p>
-                  <ul className="space-y-1">
-                    {lesson.objectives.map((obj: string, i: number) => (
-                      <li key={i} className={`text-xs ${textBody} flex items-start gap-2`}>
-                        <span className="text-purple-400 mt-0.5">•</span>
-                        <EditableText fieldPath={`objectives[${i}]`} value={obj} />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : (
-                <div>
                   <button
                     type="button"
                     onClick={() => setShowObjectives(!showObjectives)}
-                    className={`w-full flex items-center justify-between text-xs font-bold ${dark ? "text-purple-300 hover:text-purple-200" : "text-purple-700 hover:text-purple-800"}`}
+                    className={`text-[10px] font-bold px-2.5 py-1 rounded-full border transition-all ${
+                      dark
+                        ? "bg-purple-500/20 border-purple-500/40 text-purple-200 hover:bg-purple-500/30"
+                        : "bg-purple-100 border-purple-200 text-purple-800 hover:bg-purple-200"
+                    }`}
                   >
-                    <span className="flex items-center gap-1.5">
-                      <span>🎯</span> Lesson Objectives ({lesson.objectives.length} items)
-                    </span>
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-500/20">
-                      {showObjectives ? "Hide ▴" : "Show ▾"}
-                    </span>
+                    {showObjectives ? "Hide Full Overview ▴" : "Show Full Overview ▾"}
                   </button>
-                  {showObjectives && (
-                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-2.5 pt-2 border-t dark:border-purple-500/20 border-purple-200/60">
-                      <ul className="space-y-1">
-                        {lesson.objectives.map((obj: string, i: number) => (
-                          <li key={i} className={`text-xs ${textBody} flex items-start gap-2`}>
-                            <span className="text-purple-400 mt-0.5">•</span>
-                            <EditableText fieldPath={`objectives[${i}]`} value={obj} />
-                          </li>
-                        ))}
-                      </ul>
-                    </motion.div>
-                  )}
                 </div>
-              )}
-            </div>
-          )}
+
+                <ul className="space-y-1.5 mt-2.5">
+                  {cleanObjectives.map((obj: string, i: number) => (
+                    <li key={i} className={`text-xs ${textBody} flex items-start gap-2 leading-relaxed`}>
+                      <span className="text-purple-500 font-bold mt-0.5">•</span>
+                      <EditableText fieldPath={`objectives[${i}]`} value={obj} />
+                    </li>
+                  ))}
+                </ul>
+
+                {showObjectives && (
+                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-3 pt-3 border-t dark:border-purple-500/20 border-purple-200/60 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div>
+                      <span className="font-bold text-purple-700 dark:text-purple-300 block mb-0.5">📌 Anchor Skill:</span>
+                      <span className={textBody}>{lesson.skill || lesson.anchorSkill || "Reading & Listening"}</span>
+                    </div>
+                    <div>
+                      <span className="font-bold text-purple-700 dark:text-purple-300 block mb-0.5">⏱️ Estimated Time:</span>
+                      <span className={textBody}>{lesson.durationMinutes || 25} minutes</span>
+                    </div>
+                    {lesson.grammarFocus && (
+                      <div className="md:col-span-2">
+                        <span className="font-bold text-purple-700 dark:text-purple-300 block mb-0.5">📚 Grammar Focus:</span>
+                        <span className={textBody}>{lesson.grammarFocus}</span>
+                      </div>
+                    )}
+                    {(lesson.vocabularyFocus || lesson.vocabFocus) && (
+                      <div className="md:col-span-2">
+                        <span className="font-bold text-purple-700 dark:text-purple-300 block mb-0.5">🗣️ Vocabulary Focus:</span>
+                        <span className={textBody}>{lesson.vocabularyFocus || lesson.vocabFocus}</span>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </div>
+            );
+          })()}
         </div>
 
         {/* Section Content */}
