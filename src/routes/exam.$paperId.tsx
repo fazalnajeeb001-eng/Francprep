@@ -85,6 +85,14 @@ export function AuthenticCBTExamPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
 
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", cbtDark);
+    return () => {
+      const stored = typeof window !== "undefined" ? localStorage.getItem("fp_theme") : null;
+      document.documentElement.classList.toggle("dark", stored !== "light");
+    };
+  }, [cbtDark]);
+
   const handleCheckAnswer = (qId: string, correctIdx: number) => {
     const currentAttempts = (attemptsMap[qId] || 0) + 1;
     const isCorrect = selectedAnswers[qId] === correctIdx;
