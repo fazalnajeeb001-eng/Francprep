@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { apiFetch } from "~/lib/apiFetch";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "~/lib/ThemeContext";
 import {
   ArrowLeft, FileText, CheckCircle2, AlertCircle, Trash2,
-  RefreshCw, Eye, AlertTriangle, CheckCircle, Database, Search
+  RefreshCw, Eye, AlertTriangle, CheckCircle, Database, Search, Edit3, CheckSquare, Square
 } from "lucide-react";
 import { LessonPage } from "~/components/content/LessonPage";
 
@@ -28,6 +28,8 @@ interface DraftItem {
   updatedAt: string;
 }
 
+const MODULE_LEVELS = ["ALL", "A1", "A2", "B1", "B2", "C1", "C2"];
+
 function DraftsSubSectionPage() {
   const { dark } = useTheme();
   const [drafts, setDrafts] = useState<DraftItem[]>([]);
@@ -35,21 +37,30 @@ function DraftsSubSectionPage() {
   const [previewDraftId, setPreviewDraftId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedModule, setSelectedModule] = useState<string>("ALL");
+
+  // Selection & Modal States
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [publishConfirmId, setPublishConfirmId] = useState<string | null>(null);
-  const [safetyWordInput, setSafetyWordInput] = useState("");
-  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [publishWordInput, setPublishWordInput] = useState("");
+  
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [itemsToDelete, setItemsToDelete] = useState<DraftItem[]>([]);
+  const [deleteConfirmInput, setDeleteConfirmInput] = useState("");
+  const [deleting, setDeleting] = useState(false);
+
   const [actionStatus, setActionStatus] = useState({ loading: false, error: "", success: "" });
 
   const fetchDrafts = async () => {
     setLoading(true);
     try {
-      const res = await apiFetch("/admin/content-pipeline/drafts?limit=500");
+      const res = await apiFetch("/admin/content-pipeline/drafts?limit=1000");
       const json = await res.json();
       if (json.success) {
         setDrafts(json.data || []);
       }
     } catch (e) {
-      console.error('Failed to fetch drafts:', e);
+      console.error("Failed to fetch drafts:", e);
     }
     setLoading(false);
   };
@@ -58,31 +69,142 @@ function DraftsSubSectionPage() {
     fetchDrafts();
   }, []);
 
-  // Group active staged drafts by lessonId and keep only the latest updated version per lessonId (case-insensitive)
-  const stagedDrafts = Object.values(
-    drafts
-      .filter((d) => d.status !== "superseded" && d.status !== "published" && d.origin !== "ai_generator")
-      .reduce((acc, current) => {
-        const lessonId = current.lessonId || current.parsedData?.lessonId;
-        const key = lessonId && String(lessonId).trim()
-          ? String(lessonId).trim().toLowerCase()
-          : (current.title ? `${current.level || 'A1'}-${current.title}` : current._id).toString().toLowerCase();
-        const existing = acc[key];
-        if (!existing || new Date(current.updatedAt).getTime() > new Date(existing.updatedAt).getTime()) {
-          acc[key] = current;
-        }
-        return acc;
-      }, {} as Record<string, typeof drafts[0]>)
-  );
+  // Group active staged drafts by lessonId
+  const stagedDrafts = useMemo(() => {
+    return Object.values(
+      drafts
+        .filter((d) => d.status !== "superseded" && d.status !== "published" && d.origin !== "ai_generator")
+        .reduce((acc, current) => {
+          const lessonId = current.lessonId || current.parsedData?.lessonId;
+          const key = lessonId && String(lessonId).trim()
+            ? String(lessonId).trim().toLowerCase()
+            : (current.title ? `${current.level || 'A1'}-${current.title}` : current._id).toString().toLowerCase();
+          const existing = acc[key];
+          if (!existing || new Date(current.updatedAt).getTime() > new Date(existing.updatedAt).getTime()) {
+            acc[key] = current;
+          }
+          return acc;
+        }, {} as Record<string, typeof drafts[0]>)
+    );
+  }, [drafts]);
 
-  const filteredDrafts = stagedDrafts.filter(d => 
-    (d.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (d.lessonId || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (d.level || "").toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Filter drafts by search query AND active module level
+  const filteredDrafts = useMemo(() => {
+    const list = stagedDrafts.filter((d) => {
+      const matchSearch =
+        (d.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (d.lessonId || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (d.level || "").toLowerCase().includes(searchQuery.toLowerCase());
 
+      const matchModule =
+        selectedModule === "ALL" ||
+        (d.level || "").toUpperCase().startsWith(selectedModule);
+
+      return matchSearch && matchModule;
+    });
+
+    const getSortKey = (id: string, levelStr: string) => {
+      const lvlMap: Record<string, number> = { A1: 1, A2: 2, B1: 3, B2: 4, C1: 5, C2: 6 };
+      const lvlRank = lvlMap[(levelStr || '').toUpperCase()] || 99;
+      const chMatch = (id || '').match(/ch(\d+)/i);
+      const lMatch = (id || '').match(/l(\d+)/i);
+      const chNum = chMatch ? parseInt(chMatch[1], 10) : 999;
+      const lNum = lMatch ? parseInt(lMatch[1], 10) : 999;
+      return { lvlRank, chNum, lNum };
+    };
+
+    return list.sort((a, b) => {
+      const keyA = getSortKey(a.lessonId, a.level);
+      const keyB = getSortKey(b.lessonId, b.level);
+      if (keyA.lvlRank !== keyB.lvlRank) return keyA.lvlRank - keyB.lvlRank;
+      if (keyA.chNum !== keyB.chNum) return keyA.chNum - keyB.chNum;
+      if (keyA.lNum !== keyB.lNum) return keyA.lNum - keyB.lNum;
+      return (a.lessonId || '').localeCompare(b.lessonId || '');
+    });
+  }, [stagedDrafts, searchQuery, selectedModule]);
+
+  // Level counts
+  const levelCounts = useMemo(() => {
+    const counts: Record<string, number> = { ALL: stagedDrafts.length };
+    MODULE_LEVELS.forEach((m) => {
+      if (m !== "ALL") {
+        counts[m] = stagedDrafts.filter((d) =>
+          (d.level || "").toUpperCase().startsWith(m)
+        ).length;
+      }
+    });
+    return counts;
+  }, [stagedDrafts]);
+
+  // Selection Logic
+  const handleToggleSelectAll = () => {
+    if (selectedIds.length === filteredDrafts.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(filteredDrafts.map((d) => d._id));
+    }
+  };
+
+  const handleToggleSelectOne = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  // Single Delete Prompt
+  const handlePromptDeleteSingle = (draft: DraftItem, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setItemsToDelete([draft]);
+    setDeleteConfirmInput("");
+    setDeleteModalOpen(true);
+  };
+
+  // Bulk Delete Prompt
+  const handlePromptDeleteSelected = () => {
+    const items = stagedDrafts.filter((d) => selectedIds.includes(d._id));
+    setItemsToDelete(items);
+    setDeleteConfirmInput("");
+    setDeleteModalOpen(true);
+  };
+
+  // Execute Confirmed Delete
+  const handleExecuteDelete = async () => {
+    if (deleteConfirmInput !== "DELETE") return;
+    setDeleting(true);
+    setActionStatus({ loading: true, error: "", success: "" });
+
+    try {
+      let count = 0;
+      for (const item of itemsToDelete) {
+        const res = await apiFetch(`/admin/content-pipeline/drafts/${item._id}`, { method: "DELETE" });
+        const json = await res.json();
+        if (json.success) count++;
+      }
+
+      setActionStatus({
+        loading: false,
+        error: "",
+        success: `Successfully deleted ${count} draft record(s).`,
+      });
+      setSelectedIds([]);
+      setSelectedDraft(null);
+      setDeleteModalOpen(false);
+      fetchDrafts();
+    } catch (e: any) {
+      setActionStatus({
+        loading: false,
+        error: e.message || "Network error during draft deletion",
+        success: "",
+      });
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  // Execute Publish
   const handlePublish = async (id: string) => {
-    if (safetyWordInput !== "PUBLISH") return;
+    if (publishWordInput !== "PUBLISH") return;
     setActionStatus({ loading: true, error: "", success: "" });
     try {
       const res = await apiFetch(`/admin/content-pipeline/drafts/${id}/publish`, {
@@ -94,29 +216,11 @@ function DraftsSubSectionPage() {
       if (json.success) {
         setActionStatus({ loading: false, error: "", success: "Draft published successfully to production database!" });
         setPublishConfirmId(null);
-        setSafetyWordInput("");
+        setPublishWordInput("");
         setSelectedDraft(null);
         fetchDrafts();
       } else {
         setActionStatus({ loading: false, error: json.error || "Publishing failed", success: "" });
-      }
-    } catch (e: any) {
-      setActionStatus({ loading: false, error: e.message || "Network error", success: "" });
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    setActionStatus({ loading: true, error: "", success: "" });
-    try {
-      const res = await apiFetch(`/admin/content-pipeline/drafts/${id}`, { method: "DELETE" });
-      const json = await res.json();
-      if (json.success) {
-        setActionStatus({ loading: false, error: "", success: "Draft deleted permanently." });
-        setDeleteConfirmId(null);
-        setSelectedDraft(null);
-        fetchDrafts();
-      } else {
-        setActionStatus({ loading: false, error: json.error || "Delete failed", success: "" });
       }
     } catch (e: any) {
       setActionStatus({ loading: false, error: e.message || "Network error", success: "" });
@@ -136,7 +240,7 @@ function DraftsSubSectionPage() {
             <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30">
               Draft Interactive Editor
             </span>
-            <span className="text-xs text-gray-400">Click and edit any text directly to update the draft.</span>
+            <span className="text-xs text-gray-400">Previewing draft content.</span>
           </div>
           <button onClick={() => setPreviewDraftId(null)} className="px-4 py-1.5 bg-[#1e2a4a] hover:bg-[#283863] text-white text-xs font-semibold rounded-lg transition-colors">
             Close Preview
@@ -156,18 +260,59 @@ function DraftsSubSectionPage() {
           <Link to="/admin/pipeline" className={`inline-flex items-center gap-1 text-xs ${txtSec} hover:text-purple-400 transition-colors mb-2`}>
             <ArrowLeft className="w-3 h-3" /> Back to Main Pipeline Workspace
           </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
-              <FileText className="w-5 h-5" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                <FileText className="w-5 h-5" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  Staged Drafts Workspace
+                </h1>
+                <p className={`text-sm ${txtSec} mt-0.5`}>Organized by Module (A1–C2) with protected multi-select management</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Staged Drafts Sub-Section
-              </h1>
-              <p className={`text-sm ${txtSec} mt-0.5`}>Complete historical record of all imported drafts</p>
-            </div>
+
+            {selectedIds.length > 0 && (
+              <button
+                onClick={handlePromptDeleteSelected}
+                className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-red-600/20 flex items-center gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>Delete Selected ({selectedIds.length})</span>
+              </button>
+            )}
           </div>
         </motion.div>
+
+        {/* ─── MODULE LEVEL FILTER TABS ─── */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+          {MODULE_LEVELS.map((lvl) => {
+            const count = levelCounts[lvl] || 0;
+            const isSelected = selectedModule === lvl;
+
+            return (
+              <button
+                key={lvl}
+                onClick={() => setSelectedModule(lvl)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-2 border ${
+                  isSelected
+                    ? "bg-purple-600 text-white border-purple-500 shadow-md shadow-purple-600/20"
+                    : dark
+                    ? "bg-[#101828]/80 border-[#1e2a4a] text-gray-300 hover:border-purple-500/40"
+                    : "bg-white border-slate-200 text-slate-700 hover:border-purple-300"
+                }`}
+              >
+                <span>{lvl === "ALL" ? "All Modules" : `Module ${lvl}`}</span>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] ${
+                  isSelected ? "bg-white/20 text-white" : dark ? "bg-white/5 text-gray-400" : "bg-slate-100 text-slate-600"
+                }`}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
 
         {actionStatus.success && (
           <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
@@ -183,49 +328,109 @@ function DraftsSubSectionPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
           <div className="lg:col-span-2 space-y-4">
             <div className={`${card} border rounded-2xl p-5 space-y-4`}>
-              <div className="flex items-center justify-between border-b pb-3">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <Database className="w-4 h-4 text-purple-400" /> Draft Records ({filteredDrafts.length})
-                </h3>
-                <div className="relative w-48 sm:w-64">
+              {/* Header & Search */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-3">
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleToggleSelectAll}
+                    className={`flex items-center gap-1.5 text-xs font-semibold ${dark ? "text-gray-300 hover:text-white" : "text-slate-700 hover:text-slate-900"}`}
+                  >
+                    {selectedIds.length > 0 && selectedIds.length === filteredDrafts.length ? (
+                      <CheckSquare className="w-4 h-4 text-purple-500" />
+                    ) : (
+                      <Square className="w-4 h-4 text-gray-400" />
+                    )}
+                    <span>Select All ({filteredDrafts.length})</span>
+                  </button>
+                  <span className="text-xs text-gray-500">|</span>
+                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    {selectedModule === "ALL" ? "All Drafts" : `Module ${selectedModule}`} ({filteredDrafts.length})
+                  </h3>
+                </div>
+
+                <div className="relative w-full sm:w-64">
                   <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-gray-500" />
-                  <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search drafts..." className={`${inp} pl-8 py-1.5`} />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search drafts..."
+                    className={`${inp} pl-8 py-1.5`}
+                  />
                 </div>
               </div>
 
+              {/* Draft List */}
               {loading ? (
                 <div className="py-12 text-center text-gray-500 text-xs flex items-center justify-center gap-2">
-                  <RefreshCw className="w-4 h-4 animate-spin text-purple-400" /> Loading draft archive...
+                  <RefreshCw className="w-4 h-4 animate-spin text-purple-400" /> Loading drafts archive...
                 </div>
               ) : filteredDrafts.length === 0 ? (
                 <div className="py-12 text-center text-gray-500 text-xs">
-                  No staged drafts found matching query.
+                  No staged drafts found for this module filter.
                 </div>
               ) : (
                 <div className="space-y-3">
                   {filteredDrafts.map((d) => {
                     const isSelected = selectedDraft?._id === d._id;
-                    const errors = d.validationErrors.length;
+                    const isChecked = selectedIds.includes(d._id);
+                    const errors = d.validationErrors?.length || 0;
+
                     return (
-                      <div key={d._id} onClick={() => setSelectedDraft(d)}
-                        className={`p-4 rounded-xl border cursor-pointer transition-all ${
-                          isSelected ? "bg-purple-500/10 border-purple-500/40" : "hover:border-purple-500/20"
-                        } ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-white border-gray-200"}`}>
-                        <div className="flex justify-between items-start">
+                      <div
+                        key={d._id}
+                        onClick={() => setSelectedDraft(d)}
+                        className={`p-4 rounded-xl border cursor-pointer transition-all flex items-start gap-3 ${
+                          isSelected
+                            ? "bg-purple-500/10 border-purple-500/40"
+                            : "hover:border-purple-500/20"
+                        } ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-white border-gray-200"}`}
+                      >
+                        {/* Checkbox */}
+                        <button
+                          onClick={(e) => handleToggleSelectOne(d._id, e)}
+                          className="mt-1 flex-shrink-0 text-gray-400 hover:text-purple-400"
+                        >
+                          {isChecked ? (
+                            <CheckSquare className="w-4 h-4 text-purple-500" />
+                          ) : (
+                            <Square className="w-4 h-4 text-gray-400" />
+                          )}
+                        </button>
+
+                        <div className="flex-grow flex justify-between items-start">
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400">{d.level}</span>
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                                {d.level}
+                              </span>
                               <span className="text-[10px] font-mono text-gray-400">{d.lessonId}</span>
                               <span className="text-[9px] px-1.5 py-0.5 rounded bg-gray-500/10 text-gray-400">v{d.version}</span>
                             </div>
                             <h4 className="text-xs font-bold text-white mt-1.5">{d.title}</h4>
-                            <p className="text-[10px] text-gray-500 mt-1">Updated {new Date(d.updatedAt).toLocaleString()}</p>
+                            <p className="text-[10px] text-gray-500 mt-1">
+                              Updated {(() => {
+                                if (!d.updatedAt) return "Recently";
+                                const dt = new Date(d.updatedAt);
+                                return isNaN(dt.getTime()) ? "Recently" : dt.toLocaleString();
+                              })()}
+                            </p>
                           </div>
-                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                            errors === 0 ? "bg-emerald-500/10 text-emerald-400" : "bg-red-500/10 text-red-400"
-                          }`}>
-                            {errors === 0 ? "✓ Schema Valid" : `❌ ${errors} Schema Errors`}
-                          </span>
+
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={(e) => handlePromptDeleteSingle(d, e)}
+                              className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition-all text-xs flex items-center gap-1"
+                              title="Delete Staged Draft"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                              errors === 0 ? "bg-emerald-500/10 text-emerald-400" : "bg-red-500/10 text-red-400"
+                            }`}>
+                              {errors === 0 ? "✓ Valid Schema" : `❌ ${errors} Errors`}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     );
@@ -235,6 +440,7 @@ function DraftsSubSectionPage() {
             </div>
           </div>
 
+          {/* Selected Draft Details Drawer */}
           <div className="lg:col-span-1">
             {selectedDraft ? (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className={`${card} border rounded-2xl p-5 space-y-5 sticky top-24`}>
@@ -242,9 +448,11 @@ function DraftsSubSectionPage() {
                   <span className="text-xs text-gray-400 font-mono">{selectedDraft.lessonId}</span>
                   <h2 className="text-base font-bold text-white mt-1">{selectedDraft.title}</h2>
                   <div className="flex flex-wrap gap-2 mt-3">
-                    <button onClick={() => setPreviewDraftId(selectedDraft._id)}
-                      className="px-3 py-1 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-400 text-xs font-semibold rounded-lg transition-all flex items-center gap-1">
-                      <Eye className="w-3.5 h-3.5" /> Preview & Edit
+                    <button
+                      onClick={() => setPreviewDraftId(selectedDraft._id)}
+                      className="px-3 py-1 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-400 text-xs font-semibold rounded-lg transition-all flex items-center gap-1"
+                    >
+                      <Eye className="w-3.5 h-3.5" /> Preview Draft
                     </button>
                   </div>
                 </div>
@@ -254,7 +462,7 @@ function DraftsSubSectionPage() {
                   <div className={`p-3 rounded-xl border flex items-start gap-2.5 ${selectedDraft.validationErrors.length === 0 ? 'bg-emerald-500/5 border-emerald-500/10' : 'bg-red-500/5 border-red-500/10'}`}>
                     {selectedDraft.validationErrors.length === 0 ? <CheckCircle className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" /> : <AlertCircle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" />}
                     <div>
-                      <p className="text-xs font-bold text-white">JSON Schema Validation</p>
+                      <p className="text-xs font-bold text-white">Schema Compliance</p>
                       {selectedDraft.validationErrors.length === 0 ? (
                         <p className="text-[10px] text-emerald-400/80 mt-0.5">Complies perfectly with lesson schema rules.</p>
                       ) : (
@@ -269,66 +477,134 @@ function DraftsSubSectionPage() {
                 </div>
 
                 <div className="flex gap-2 border-t pt-4">
-                  <button onClick={() => setPublishConfirmId(selectedDraft._id)}
+                  <button
+                    onClick={() => setPublishConfirmId(selectedDraft._id)}
                     disabled={selectedDraft.validationErrors.length > 0}
-                    className="flex-1 py-2.5 bg-gradient-to-r from-emerald-500 to-green-500 disabled:from-gray-700 disabled:to-gray-800 disabled:opacity-30 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-emerald-500/10">
+                    className="flex-1 py-2.5 bg-gradient-to-r from-emerald-500 to-green-500 disabled:from-gray-700 disabled:to-gray-800 disabled:opacity-30 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-emerald-500/10"
+                  >
                     Publish Version
                   </button>
-                  <button onClick={() => setDeleteConfirmId(selectedDraft._id)}
+                  <button
+                    onClick={(e) => handlePromptDeleteSingle(selectedDraft, e as any)}
                     className="p-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-xs rounded-xl transition-all"
-                    title="Delete Draft">
+                    title="Delete Draft"
+                  >
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               </motion.div>
             ) : (
               <div className={`${card} border rounded-2xl p-6 text-center text-gray-500 text-xs`}>
-                Select a draft record to view options.
+                Select a draft record to view metadata, preview, publish, or delete.
               </div>
             )}
           </div>
         </div>
       </div>
 
+      {/* ─── PROTECTED PUBLISH CONFIRMATION MODAL ─── */}
       <AnimatePresence>
         {publishConfirmId && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
             <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
-              className={`${card} border rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl`}>
+              className={`${card} border rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl`}>
               <div className="text-center">
                 <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto mb-2" />
                 <h3 className="text-base font-bold text-white">Confirm Production Publish</h3>
-                <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-left">
-                  <label className="block text-[10px] font-bold text-red-400 mb-1.5">Type "PUBLISH" to confirm:</label>
-                  <input type="text" value={safetyWordInput} onChange={(e) => setSafetyWordInput(e.target.value)}
-                    className="w-full rounded-lg bg-black border border-red-500/30 px-3 py-1.5 text-xs text-white uppercase focus:outline-none" placeholder="PUBLISH" />
+                <p className="text-xs text-gray-400 mt-1">This will publish the draft directly to live student catalog.</p>
+                <div className="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-left">
+                  <label className="block text-[10px] font-bold text-emerald-400 mb-1.5">Type "PUBLISH" to confirm:</label>
+                  <input
+                    type="text"
+                    value={publishWordInput}
+                    onChange={(e) => setPublishWordInput(e.target.value)}
+                    className="w-full rounded-lg bg-black border border-emerald-500/40 px-3 py-1.5 text-xs text-white uppercase focus:outline-none font-mono text-center font-bold"
+                    placeholder="PUBLISH"
+                  />
                 </div>
               </div>
-              <div className="flex gap-2">
-                <button onClick={() => { setPublishConfirmId(null); setSafetyWordInput(""); }} className="flex-1 py-2 bg-[#1e2a4a] text-gray-300 text-xs font-semibold rounded-lg">Cancel</button>
-                <button onClick={() => handlePublish(publishConfirmId)} disabled={safetyWordInput !== "PUBLISH"} className="flex-1 py-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white text-xs font-bold rounded-lg">Confirm Publish</button>
+              <div className="flex gap-2 pt-2">
+                <button onClick={() => { setPublishConfirmId(null); setPublishWordInput(""); }} className="flex-1 py-2 bg-[#1e2a4a] text-gray-300 text-xs font-semibold rounded-xl">Cancel</button>
+                <button onClick={() => handlePublish(publishConfirmId)} disabled={publishWordInput !== "PUBLISH"} className="flex-1 py-2 bg-gradient-to-r from-emerald-500 to-green-500 disabled:opacity-30 text-white text-xs font-bold rounded-xl shadow-lg">Confirm Publish</button>
               </div>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
 
+      {/* ─── PROTECTED DELETE CONFIRMATION MODAL ─── */}
       <AnimatePresence>
-        {deleteConfirmId && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
-              className={`${card} border rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl`}>
-              <div className="text-center">
-                <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-2" />
-                <h3 className="text-base font-bold text-white">Delete Draft Record?</h3>
-                <p className="text-xs text-gray-400 mt-2">This action is permanent and cannot be undone.</p>
+        {deleteModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className={`w-full max-w-md p-6 rounded-2xl border ${
+                dark ? "bg-[#101828] border-red-500/40 text-white" : "bg-white border-red-300 text-slate-900"
+              } shadow-2xl space-y-5`}
+            >
+              <div className="flex items-center gap-3 text-red-500 border-b border-red-500/20 pb-3">
+                <AlertTriangle className="w-6 h-6 shrink-0" />
+                <h3 className="text-lg font-bold">Confirm Permanent Deletion</h3>
               </div>
-              <div className="flex gap-2">
-                <button onClick={() => setDeleteConfirmId(null)} className="flex-1 py-2 bg-[#1e2a4a] text-gray-300 text-xs font-semibold rounded-lg">Cancel</button>
-                <button onClick={() => handleDelete(deleteConfirmId)} className="flex-1 py-2 bg-red-600 text-white text-xs font-bold rounded-lg">Confirm Delete</button>
+
+              <div className="space-y-2 text-xs text-gray-400">
+                <p>
+                  You are about to permanently delete <strong>{itemsToDelete.length}</strong> staged draft record(s):
+                </p>
+                <div className="max-h-32 overflow-y-auto p-2.5 rounded-lg bg-black/30 border border-white/10 space-y-1 font-mono text-[11px]">
+                  {itemsToDelete.map((item) => (
+                    <div key={item._id} className="text-red-400">
+                      • {item.lessonId} — {item.title}
+                    </div>
+                  ))}
+                </div>
+                <p className="text-red-400 font-semibold">
+                  ⚠️ This action cannot be undone. To prevent accidental deletion, type the word <span className="font-extrabold underline text-white">DELETE</span> in the field below to activate the delete button:
+                </p>
+              </div>
+
+              <div>
+                <input
+                  type="text"
+                  value={deleteConfirmInput}
+                  onChange={(e) => setDeleteConfirmInput(e.target.value)}
+                  placeholder="Type DELETE to confirm"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-red-500/10 border border-red-500/40 text-white font-mono font-bold text-center text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-2 border-t border-white/10">
+                <button
+                  onClick={() => setDeleteModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold bg-gray-700 text-white hover:bg-gray-600 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleExecuteDelete}
+                  disabled={deleteConfirmInput !== "DELETE" || deleting}
+                  className="px-5 py-2 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-500 text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-lg shadow-red-600/30 flex items-center gap-2"
+                >
+                  {deleting ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" /> Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="w-3.5 h-3.5" /> Confirm Permanent Delete
+                    </>
+                  )}
+                </button>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
