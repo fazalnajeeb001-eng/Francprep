@@ -27,30 +27,23 @@ const navGroups = [
       { label: "Published Content", icon: Crown, href: "/admin/pipeline/published" },
       { label: "Published History", icon: Clock, href: "/admin/pipeline/history" },
       { label: "Audits & Quality", icon: Shield, href: "/admin/pipeline/audit" },
+      { label: "Recycle Bin (Trash)", icon: Layers, href: "/admin/pipeline/trash" },
     ]
   },
   {
-    title: "AI Generator",
+    title: "DELF / DALF Milestones",
     items: [
-      { label: "Content Generator", icon: Wand2, href: "/admin/content" },
-    ]
-  },
-  {
-    title: "In-House Edit",
-    items: [
-      { label: "Syllabi", icon: BookOpen, href: "/admin/syllabi" },
-      { label: "Lessons", icon: FileText, href: "/admin/lessons" },
-
+      { label: "DELF/DALF Diagnostic Exams", icon: GraduationCap, href: "/exam/delf" },
     ]
   },
   {
     title: "Platform Management",
     items: [
-      { label: "Users", icon: Users, href: "/admin/users" },
+      { label: "Module Gates & Settings 🔒", icon: Sliders, href: "/admin/settings" },
+      { label: "Users & Overrides", icon: Users, href: "/admin/users" },
       { label: "Subscriptions", icon: CreditCard, href: "/admin/subscriptions" },
       { label: "Announcements", icon: Megaphone, href: "/admin/announcements" },
       { label: "Analytics", icon: BarChart3, href: "/admin/analytics" },
-      { label: "API Settings", icon: Sliders, href: "/admin/settings" },
     ]
   }
 ];
@@ -63,9 +56,8 @@ function AdminLayout() {
 
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     "Content Pipeline": true,
-    "AI Generator": true,
-    "In-House Edit": true,
-    "Platform Management": false,
+    "DELF / DALF Milestones": true,
+    "Platform Management": true,
   });
 
   const toggleGroup = (title: string) => {
