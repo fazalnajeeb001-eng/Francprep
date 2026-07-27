@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "~/lib/ThemeContext";
 import {
   ArrowLeft, FileText, CheckCircle2, AlertCircle, Trash2,
-  RefreshCw, Eye, AlertTriangle, CheckCircle, Database, Search, Edit3, CheckSquare, Square
+  RefreshCw, Eye, AlertTriangle, CheckCircle, Database, Search, Edit3, CheckSquare, Square, Save, X
 } from "lucide-react";
 import { LessonPage } from "~/components/content/LessonPage";
 
@@ -48,6 +48,17 @@ function DraftsSubSectionPage() {
   const [itemsToDelete, setItemsToDelete] = useState<DraftItem[]>([]);
   const [deleteConfirmInput, setDeleteConfirmInput] = useState("");
   const [deleting, setDeleting] = useState(false);
+
+  // Edit Modal State
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editDraftForm, setEditDraftForm] = useState({
+    id: "",
+    lessonId: "",
+    title: "",
+    level: "A1",
+    content: "",
+  });
+  const [savingDraft, setSavingDraft] = useState(false);
 
   const [actionStatus, setActionStatus] = useState({ loading: false, error: "", success: "" });
 
@@ -152,6 +163,74 @@ function DraftsSubSectionPage() {
     );
   };
 
+  // Open Edit Draft Modal
+  const handleOpenEditModal = (draft: DraftItem, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setEditDraftForm({
+      id: draft._id,
+      lessonId: draft.lessonId || "",
+      title: draft.title || "",
+      level: draft.level || "A1",
+      content: draft.content || (draft.parsedData ? JSON.stringify(draft.parsedData, null, 2) : ""),
+    });
+    setEditModalOpen(true);
+  };
+
+  // Save Draft Modifications
+  const handleSaveDraftEdit = async () => {
+    setSavingDraft(true);
+    setActionStatus({ loading: true, error: "", success: "" });
+
+    try {
+      let parsedJson: any = null;
+      try {
+        parsedJson = JSON.parse(editDraftForm.content);
+      } catch (err) {
+        // Content is markdown or non-JSON text
+      }
+
+      const res = await apiFetch(`/admin/content-pipeline/drafts/${editDraftForm.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: editDraftForm.title,
+          level: editDraftForm.level,
+          lessonId: editDraftForm.lessonId,
+          content: editDraftForm.content,
+          parsedData: parsedJson || undefined,
+        }),
+      });
+
+      const json = await res.json();
+      if (json.success) {
+        setActionStatus({
+          loading: false,
+          error: "",
+          success: `Draft ${editDraftForm.lessonId} saved successfully! Schema errors: ${json.data?.validationErrors?.length || 0}.`,
+        });
+        setEditModalOpen(false);
+        if (selectedDraft?._id === editDraftForm.id) {
+          setSelectedDraft(json.data);
+        }
+        fetchDrafts();
+      } else {
+        setActionStatus({
+          loading: false,
+          error: json.error || "Failed to update draft",
+          success: "",
+        });
+      }
+    } catch (e: any) {
+      setActionStatus({
+        loading: false,
+        error: e.message || "Network error while saving draft",
+        success: "",
+      });
+    } finally {
+      setSavingDraft(false);
+    }
+  };
+
   // Single Delete Prompt
   const handlePromptDeleteSingle = (draft: DraftItem, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -238,7 +317,7 @@ function DraftsSubSectionPage() {
         <div className="sticky top-0 z-50 bg-[#101828]/90 border-b border-[#1e2a4a] px-6 py-3 flex items-center justify-between backdrop-blur-md">
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30">
-              Draft Interactive Editor
+              Draft Interactive View
             </span>
             <span className="text-xs text-gray-400">Previewing draft content.</span>
           </div>
@@ -269,7 +348,7 @@ function DraftsSubSectionPage() {
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
                   Staged Drafts Workspace
                 </h1>
-                <p className={`text-sm ${txtSec} mt-0.5`}>Organized by Module (A1–C2) with protected multi-select management</p>
+                <p className={`text-sm ${txtSec} mt-0.5`}>Organized by Module (A1–C2) with live editing & protected management</p>
               </div>
             </div>
 
@@ -419,6 +498,13 @@ function DraftsSubSectionPage() {
 
                           <div className="flex items-center gap-2">
                             <button
+                              onClick={(e) => handleOpenEditModal(d, e)}
+                              className="p-1.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/20 transition-all text-xs flex items-center gap-1"
+                              title="Edit Draft Content"
+                            >
+                              <Edit3 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
                               onClick={(e) => handlePromptDeleteSingle(d, e)}
                               className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition-all text-xs flex items-center gap-1"
                               title="Delete Staged Draft"
@@ -449,10 +535,16 @@ function DraftsSubSectionPage() {
                   <h2 className="text-base font-bold text-white mt-1">{selectedDraft.title}</h2>
                   <div className="flex flex-wrap gap-2 mt-3">
                     <button
-                      onClick={() => setPreviewDraftId(selectedDraft._id)}
+                      onClick={() => handleOpenEditModal(selectedDraft)}
                       className="px-3 py-1 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-400 text-xs font-semibold rounded-lg transition-all flex items-center gap-1"
                     >
-                      <Eye className="w-3.5 h-3.5" /> Preview Draft
+                      <Edit3 className="w-3.5 h-3.5" /> Edit Draft Content
+                    </button>
+                    <button
+                      onClick={() => setPreviewDraftId(selectedDraft._id)}
+                      className="px-3 py-1 bg-gray-500/10 hover:bg-gray-500/20 border border-gray-500/20 text-gray-300 text-xs font-semibold rounded-lg transition-all flex items-center gap-1"
+                    >
+                      <Eye className="w-3.5 h-3.5" /> Preview
                     </button>
                   </div>
                 </div>
@@ -495,12 +587,115 @@ function DraftsSubSectionPage() {
               </motion.div>
             ) : (
               <div className={`${card} border rounded-2xl p-6 text-center text-gray-500 text-xs`}>
-                Select a draft record to view metadata, preview, publish, or delete.
+                Select a draft record to view metadata, edit, publish, or delete.
               </div>
             )}
           </div>
         </div>
       </div>
+
+      {/* ─── LIVE DRAFT EDITOR MODAL ─── */}
+      <AnimatePresence>
+        {editModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className={`w-full max-w-3xl p-6 rounded-2xl border ${
+                dark ? "bg-[#101828] border-purple-500/40 text-white" : "bg-white border-purple-300 text-slate-900"
+              } shadow-2xl space-y-4`}
+            >
+              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                <div className="flex items-center gap-2">
+                  <Edit3 className="w-5 h-5 text-purple-400" />
+                  <h3 className="text-lg font-bold">Edit Staged Draft Content & Data</h3>
+                </div>
+                <button
+                  onClick={() => setEditModalOpen(false)}
+                  className="p-1 rounded-lg text-gray-400 hover:text-white hover:bg-white/10"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 mb-1">Lesson ID</label>
+                  <input
+                    type="text"
+                    value={editDraftForm.lessonId}
+                    onChange={(e) => setEditDraftForm({ ...editDraftForm, lessonId: e.target.value })}
+                    className={inp}
+                    placeholder="e.g. a1-ch1-l1"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 mb-1">Title</label>
+                  <input
+                    type="text"
+                    value={editDraftForm.title}
+                    onChange={(e) => setEditDraftForm({ ...editDraftForm, title: e.target.value })}
+                    className={inp}
+                    placeholder="Lesson Title"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 mb-1">Module Level</label>
+                  <select
+                    value={editDraftForm.level}
+                    onChange={(e) => setEditDraftForm({ ...editDraftForm, level: e.target.value })}
+                    className={inp}
+                  >
+                    {MODULE_LEVELS.filter((m) => m !== "ALL").map((m) => (
+                      <option key={m} value={m}>
+                        {m}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-400 mb-1">
+                  Draft Content (Markdown / JSON)
+                </label>
+                <textarea
+                  rows={14}
+                  value={editDraftForm.content}
+                  onChange={(e) => setEditDraftForm({ ...editDraftForm, content: e.target.value })}
+                  className={`${inp} font-mono text-xs leading-relaxed`}
+                  placeholder="Paste or edit raw draft markdown / JSON content..."
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-2 border-t border-white/10">
+                <button
+                  onClick={() => setEditModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold bg-gray-700 text-white hover:bg-gray-600 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveDraftEdit}
+                  disabled={savingDraft}
+                  className="px-5 py-2 rounded-xl text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white transition-all shadow-lg shadow-purple-600/30 flex items-center gap-2 disabled:opacity-40"
+                >
+                  {savingDraft ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" /> Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-3.5 h-3.5" /> Save Draft Changes
+                    </>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* ─── PROTECTED PUBLISH CONFIRMATION MODAL ─── */}
       <AnimatePresence>

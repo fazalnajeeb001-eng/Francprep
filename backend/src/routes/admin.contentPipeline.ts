@@ -546,26 +546,36 @@ router.get('/content-pipeline/drafts/:id', async (req: AuthRequest, res: Respons
 });
 
 // ─── PUT /content-pipeline/drafts/:id ──────────────────────────────────────
-// Update a draft (edit parsed data)
+// Update a draft (edit title, level, lessonId, content, or parsed data)
 router.put('/content-pipeline/drafts/:id', async (req: AuthRequest, res: Response) => {
   try {
-    const { parsedData, notes, status } = req.body;
+    const { parsedData, notes, status, content, title, level, lessonId } = req.body;
     const draft = await Draft.findById(req.params.id);
     if (!draft) {
       res.status(404).json({ success: false, error: 'Draft not found' });
       return;
     }
 
-    if (parsedData) {
-      const { errors, warnings } = await validateParsedLesson(parsedData);
-      draft.parsedData = parsedData;
+    if (title) draft.title = title;
+    if (level) draft.level = level;
+    if (lessonId) draft.lessonId = lessonId;
+    if (content !== undefined) draft.content = content;
+
+    const dataToValidate = parsedData || draft.parsedData;
+    if (dataToValidate) {
+      if (title) dataToValidate.title = title;
+      if (level) dataToValidate.level = level;
+      if (lessonId) dataToValidate.lessonId = lessonId;
+
+      const { errors, warnings } = await validateParsedLesson(dataToValidate);
+      draft.parsedData = dataToValidate;
       draft.validationErrors = errors;
       draft.validationWarnings = warnings;
       draft.status = errors.length === 0 ? 'validated' : 'draft';
     }
 
     if (notes !== undefined) draft.notes = notes;
-    if (status && ['draft', 'review', 'rejected'].includes(status)) draft.status = status;
+    if (status && ['draft', 'review', 'rejected', 'validated'].includes(status)) draft.status = status;
 
     await draft.save();
     res.json({ success: true, data: draft });
