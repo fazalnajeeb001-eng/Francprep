@@ -285,6 +285,10 @@ function UserDetailPanel({ user, onClose, onAction }: { user: AdminUser; onClose
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-amber-600/20 text-amber-400 border border-amber-500/30 hover:bg-amber-600/30 transition-all">
               <Key className="w-4 h-4" /> Reset Password
             </button>
+            <button onClick={() => { onAction("gating-override", user); onClose(); }}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-purple-600/20 text-purple-300 border border-purple-500/30 hover:bg-purple-600/30 transition-all">
+              <Lock className="w-4 h-4" /> 🔒 Module Gate Overrides
+            </button>
             <button onClick={() => { onAction("delete", user); onClose(); }}
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-red-600/20 text-red-400 border border-red-500/30 hover:bg-red-600/30 transition-all">
               <Trash2 className="w-4 h-4" /> Delete User
@@ -313,23 +317,22 @@ function AdminUsersPage() {
   const [detailUser, setDetailUser] = useState<AdminUser | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [resetPwdUser, setResetPwdUser] = useState<AdminUser | null>(null);
+  const [gatingUser, setGatingUser] = useState<AdminUser | null>(null);
   const [confirmAction, setConfirmAction] = useState<{ action: string; user: AdminUser } | null>(null);
 
   const fetchUsers = useCallback(async (p: number, q?: string) => {
     setLoading(true);
     setError("");
     try {
-      const params = new URLSearchParams({ page: String(p), limit: "20" });
-      if (q) params.set("search", q);
-      const res = await apiFetch(`/admin/users?${params}`);
-      const json: PaginatedResponse = await res.json();
+      const url = `/admin/users?page=${p}&limit=10${q ? `&q=${encodeURIComponent(q)}` : ""}`;
+      const res = await apiFetch(url);
+      const json = await res.json();
       if (json.success) {
-        setUsers(json.data);
-        setPage(json.pagination.page);
-        setTotalPages(json.pagination.totalPages);
-        setTotal(json.pagination.total);
+        setUsers(json.data.users);
+        setTotalPages(json.data.pagination.totalPages);
+        setTotal(json.data.pagination.total);
       } else {
-        setError("Failed to load users");
+        setError(json.error || "Failed to load users");
       }
     } catch (e: any) {
       setError(e.message || "Network error");
@@ -537,6 +540,9 @@ function AdminUsersPage() {
       
       <ResetPasswordModal open={resetPwdUser !== null} onClose={() => setResetPwdUser(null)}
         user={resetPwdUser} onReset={() => fetchUsers(page, search)} />
+
+      <GatingOverrideModal open={gatingUser !== null} onClose={() => setGatingUser(null)}
+        user={gatingUser} onSave={() => fetchUsers(page, search)} />
 
       {detailUser && <UserDetailPanel user={detailUser} onClose={() => setDetailUser(null)} onAction={handleAction} />}
     </motion.div>

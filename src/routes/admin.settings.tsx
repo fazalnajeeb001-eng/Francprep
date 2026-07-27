@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { apiFetch } from "~/lib/apiFetch";
 import { motion } from "framer-motion";
-import { Settings, CreditCard, Brain, Save, CheckCircle2, XCircle, Loader2, Eye, EyeOff, ArrowLeft, Zap } from "lucide-react";
+import { Settings, CreditCard, Brain, Save, CheckCircle2, XCircle, Loader2, Eye, EyeOff, ArrowLeft, Zap, Lock } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 
 export const Route = createFileRoute("/admin/settings")({ component: AdminSettingsPage });
@@ -215,7 +215,97 @@ function AdminSettingsPage() {
           <p className={`text-[10px] ${txtSec}`}>Used for multi-LLM lesson validation, automated reviews, and written exercise grading.</p>
         </motion.div>
 
-        {/* Save */}
+        {/* Module Gating & DELF Milestone Rules */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 space-y-5`}>
+          <div className="flex items-center justify-between border-b border-[#1e2a4a] pb-3">
+            <div className="flex items-center gap-2">
+              <Lock className="w-5 h-5 text-amber-400" />
+              <div>
+                <h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>
+                  Module Gating & DELF Milestone Rules
+                </h2>
+                <p className={`text-xs ${txtSec}`}>Control how students unlock next modules via DELF/DALF diagnostic milestone exams</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold mb-2">Global Module Gate Mode</label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setGatingSettings({ ...gatingSettings, gatingMode: "all_locked" })}
+                  className={`p-3.5 rounded-xl border text-left transition-all ${
+                    gatingSettings.gatingMode === "all_locked"
+                      ? "bg-purple-600/20 border-purple-500 text-white font-bold"
+                      : "bg-[#0c1224] border-[#1e2a4a] text-gray-400 hover:border-purple-500/30"
+                  }`}
+                >
+                  <div className="text-xs font-extrabold flex items-center gap-1.5">🔒 Strict Gated Progression</div>
+                  <p className="text-[10px] opacity-80 mt-1">All modules locked by default. Students MUST pass DELF exam to unlock next chapter.</p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setGatingSettings({ ...gatingSettings, gatingMode: "selective_locked" })}
+                  className={`p-3.5 rounded-xl border text-left transition-all ${
+                    gatingSettings.gatingMode === "selective_locked"
+                      ? "bg-amber-500/20 border-amber-500 text-white font-bold"
+                      : "bg-[#0c1224] border-[#1e2a4a] text-gray-400 hover:border-amber-500/30"
+                  }`}
+                >
+                  <div className="text-xs font-extrabold flex items-center gap-1.5">🎛️ Selective Chapter Gating</div>
+                  <p className="text-[10px] opacity-80 mt-1">Only lock specific chapters selected below. Rest remain unlocked.</p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setGatingSettings({ ...gatingSettings, gatingMode: "all_unlocked" })}
+                  className={`p-3.5 rounded-xl border text-left transition-all ${
+                    gatingSettings.gatingMode === "all_unlocked"
+                      ? "bg-emerald-500/20 border-emerald-500 text-white font-bold"
+                      : "bg-[#0c1224] border-[#1e2a4a] text-gray-400 hover:border-emerald-500/30"
+                  }`}
+                >
+                  <div className="text-xs font-extrabold flex items-center gap-1.5">🔓 Free Roam Mode</div>
+                  <p className="text-[10px] opacity-80 mt-1">All modules open to all registered students without restrictions.</p>
+                </button>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <div className="flex justify-between text-xs font-bold mb-1">
+                <span>DELF Exam Passing Score Threshold:</span>
+                <span className="text-purple-400 font-mono text-sm">{gatingSettings.passingScorePercentage}%</span>
+              </div>
+              <input
+                type="range"
+                min="50"
+                max="90"
+                step="5"
+                value={gatingSettings.passingScorePercentage}
+                onChange={(e) => setGatingSettings({ ...gatingSettings, passingScorePercentage: Number(e.target.value) })}
+                className="w-full accent-purple-500 cursor-pointer"
+              />
+              <p className="text-[10px] text-gray-400 mt-1">Students achieving this percentage or higher on milestone exams instantly unlock the next chapter.</p>
+            </div>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                onClick={handleSaveGating}
+                disabled={savingGating}
+                className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs shadow flex items-center gap-1.5 transition-all"
+              >
+                {savingGating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                Save Module Gate Settings
+              </button>
+              {gatingMsg && <span className="text-xs text-emerald-400 font-semibold">{gatingMsg}</span>}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Save Global */}
         <div className="flex items-center gap-3">
           <button onClick={handleSave} disabled={saving}
             className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold hover:opacity-90 transition-all disabled:opacity-50 shadow-lg shadow-purple-500/25">

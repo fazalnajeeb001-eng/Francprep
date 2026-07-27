@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { apiFetch } from "~/lib/apiFetch";
 import { useTheme } from "~/lib/ThemeContext";
 import { motion } from "framer-motion";
-import { ArrowLeft, BookOpen, ChevronRight, Sparkles, Clock, Layers, GraduationCap, Target, BookText, Pen, Headphones, MessageSquare, User } from "lucide-react";
+import { ArrowLeft, BookOpen, ChevronRight, Sparkles, Clock, Layers, GraduationCap, Target, BookText, Pen, Headphones, MessageSquare, User, Lock } from "lucide-react";
 
 export const Route = createFileRoute("/learn")({ component: LearnPage });
 
@@ -59,6 +59,28 @@ function LearnPage() {
   const linkHover = dark ? "hover:text-gray-300" : "hover:text-slate-900";
   const btnHover = dark ? "hover:bg-white/5" : "hover:bg-slate-100";
   const tagBg = dark ? "bg-[#101828]/50 border-[#1e2a4a]" : "bg-slate-100 border-slate-200";
+
+  const [gatingSettings, setGatingSettings] = useState<{ gatingMode: string; passingScorePercentage: number; lockedChapterIds: string[] }>({ gatingMode: "all_unlocked", passingScorePercentage: 70, lockedChapterIds: [] });
+  const [userExempt, setUserExempt] = useState(false);
+
+  useEffect(() => {
+    apiFetch("/admin/settings/gating").then(r => r.json()).then(j => {
+      if (j.success && j.data) setGatingSettings(j.data);
+    }).catch(() => {});
+    apiFetch("/auth/me").then(r => r.json()).then(j => {
+      if (j.success && j.data) setUserExempt(Boolean(j.data.isExemptFromGating));
+    }).catch(() => {});
+  }, []);
+
+  const isChapterLocked = (ch: any, idx: number) => {
+    if (gatingSettings.gatingMode === 'all_unlocked' || userExempt) return false;
+    if (idx === 0) return false;
+    if (gatingSettings.gatingMode === 'all_locked') return true;
+    if (gatingSettings.gatingMode === 'selective_locked') {
+      return gatingSettings.lockedChapterIds.includes(ch._id) || gatingSettings.lockedChapterIds.includes(ch.chapterId);
+    }
+    return false;
+  };
 
   useEffect(() => {
     (async () => {
@@ -259,32 +281,61 @@ function LearnPage() {
           ) : (
             <div className="space-y-3">
               <h2 className={`text-sm font-semibold ${textMuted} uppercase tracking-wider mb-4`}>Chapters</h2>
-              {chapters.map((ch: any, i: number) => (
-                <motion.div key={ch._id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                  <button onClick={() => selectChapter(ch._id)}
-                    className={`w-full text-left block rounded-2xl ${cardBg} backdrop-blur-lg border p-5 ${cardHover} transition-all duration-300 group`}>
-                    <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-xl ${dark ? "bg-purple-500/20 border-purple-500/20" : "bg-purple-100 border-purple-200"} border flex items-center justify-center ${dark ? "text-purple-400" : "text-purple-600"} font-bold text-sm shrink-0`}>
-                        {ch.order || i + 1}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className={`font-semibold ${dark ? "text-white group-hover:text-purple-400" : "text-gray-900 group-hover:text-purple-600"} transition-colors`}>{ch.title}</h3>
-                        <div className="flex items-center gap-3 mt-1.5">
-                          <span className={`flex items-center gap-1 text-xs ${textMuted}`}>
-                            <BookOpen className="w-3 h-3" />{ch.lessonCount} {ch.lessonCount === 1 ? 'lesson' : 'lessons'}
-                          </span>
-                          {ch.estimatedTime && (
-                            <span className={`flex items-center gap-1 text-xs ${textMuted}`}>
-                              <Clock className="w-3 h-3" />{ch.estimatedTime}
-                            </span>
-                          )}
+              {chapters.map((ch: any, i: number) => {
+                const locked = isChapterLocked(ch, i);
+                return (
+                  <motion.div key={ch._id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                    {locked ? (
+                      <div className={`w-full text-left block rounded-2xl ${cardBg} backdrop-blur-lg border p-5 border-amber-500/30 opacity-90`}>
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold text-sm shrink-0">
+                              🔒
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <h3 className={`font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{ch.title}</h3>
+                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center gap-1">
+                                  🔒 DELF Milestone Locked
+                                </span>
+                              </div>
+                              <p className="text-xs text-amber-400/90 mt-1">
+                                Pass the DELF Diagnostic Exam ({gatingSettings.passingScorePercentage}%+) to unlock this chapter.
+                              </p>
+                            </div>
+                          </div>
+                          <Link to="/exam" className="px-3.5 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-black text-xs font-extrabold rounded-xl shadow flex items-center gap-1 hover:brightness-110 transition-all shrink-0">
+                            📜 Take DELF Exam
+                          </Link>
                         </div>
                       </div>
-                      <ChevronRight className={`w-5 h-5 ${textMuted} group-hover:text-purple-500 transition-colors shrink-0`} />
-                    </div>
-                  </button>
-                </motion.div>
-              ))}
+                    ) : (
+                      <button onClick={() => selectChapter(ch._id)}
+                        className={`w-full text-left block rounded-2xl ${cardBg} backdrop-blur-lg border p-5 ${cardHover} transition-all duration-300 group`}>
+                        <div className="flex items-center gap-4">
+                          <div className={`w-10 h-10 rounded-xl ${dark ? "bg-purple-500/20 border-purple-500/20" : "bg-purple-100 border-purple-200"} border flex items-center justify-center ${dark ? "text-purple-400" : "text-purple-600"} font-bold text-sm shrink-0`}>
+                            {ch.order || i + 1}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className={`font-semibold ${dark ? "text-white group-hover:text-purple-400" : "text-gray-900 group-hover:text-purple-600"} transition-colors`}>{ch.title}</h3>
+                            <div className="flex items-center gap-3 mt-1.5">
+                              <span className={`flex items-center gap-1 text-xs ${textMuted}`}>
+                                <BookOpen className="w-3 h-3" />{ch.lessonCount} {ch.lessonCount === 1 ? 'lesson' : 'lessons'}
+                              </span>
+                              {ch.estimatedTime && (
+                                <span className={`flex items-center gap-1 text-xs ${textMuted}`}>
+                                  <Clock className="w-3 h-3" />{ch.estimatedTime}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <ChevronRight className={`w-5 h-5 ${textMuted} group-hover:text-purple-500 transition-colors shrink-0`} />
+                        </div>
+                      </button>
+                    )}
+                  </motion.div>
+                );
+              })}
             </div>
           )}
         </div>

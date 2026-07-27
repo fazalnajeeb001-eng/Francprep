@@ -18,6 +18,7 @@ import Lesson from '../models/Lesson';
 import Exercise from '../models/Exercise';
 import Syllabus from '../models/Syllabus';
 import StudentProgress from '../models/StudentProgress';
+import { SystemSettings } from '../models/SystemSettings';
 import { AuthRequest } from '../types';
 import { Response, NextFunction } from 'express';
 import crypto from 'crypto';
@@ -719,6 +720,62 @@ router.get('/curriculum/audit', async (req: AuthRequest, res: Response, next: Ne
         duplicates,
       }
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ============ Module Gate Settings ============
+
+// GET /api/admin/settings/gating
+router.get('/settings/gating', async (_req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    let settings = await SystemSettings.findOne({ key: 'global_settings' });
+    if (!settings) {
+      settings = await SystemSettings.create({
+        key: 'global_settings',
+        gatingMode: 'all_locked',
+        passingScorePercentage: 70,
+        lockedChapterIds: [],
+      });
+    }
+    res.json({ success: true, data: settings });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// PUT /api/admin/settings/gating
+router.put('/settings/gating', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { gatingMode, passingScorePercentage, lockedChapterIds } = req.body;
+    let settings = await SystemSettings.findOne({ key: 'global_settings' });
+    if (!settings) {
+      settings = new SystemSettings({ key: 'global_settings' });
+    }
+    if (gatingMode) settings.gatingMode = gatingMode;
+    if (passingScorePercentage !== undefined) settings.passingScorePercentage = passingScorePercentage;
+    if (lockedChapterIds !== undefined) settings.lockedChapterIds = lockedChapterIds;
+    await settings.save();
+    res.json({ success: true, data: settings });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// PUT /api/admin/users/:id/gating-override
+router.put('/users/:id/gating-override', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { unlockedChapters, isExemptFromGating } = req.body;
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      res.status(404).json({ success: false, error: 'User not found' });
+      return;
+    }
+    if (unlockedChapters !== undefined) user.unlockedChapters = unlockedChapters;
+    if (isExemptFromGating !== undefined) user.isExemptFromGating = isExemptFromGating;
+    await user.save();
+    res.json({ success: true, message: 'Student module gate overrides updated', data: user });
   } catch (error) {
     next(error);
   }

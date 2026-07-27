@@ -18,6 +18,9 @@ export interface IUserDocument extends Document {
   avatarFeatures: { gender: string; skinTone: string; faceShape: string; hairStyle: string; hairColor: string; eyeColor: string; eyeSize: string; eyebrowStyle: string; noseSize: string; lipFullness: string; facialHair: string; outfitStyle: string; outfitColor: string; accessory: string; earring: string; necklace: string };
   onboardingComplete: boolean;
   rpmGlbUrl: string;
+  unlockedChapters: string[];
+  passedMilestones: string[];
+  isExemptFromGating: boolean;
   comparePassword(candidatePassword: string): Promise<boolean>;
   createdAt: Date;
   updatedAt: Date;
@@ -58,6 +61,9 @@ const userSchema = new Schema<IUserDocument>(
     },
     onboardingComplete: { type: Boolean, default: false },
     rpmGlbUrl: { type: String, default: '' },
+    unlockedChapters: { type: [String], default: [] },
+    passedMilestones: { type: [String], default: [] },
+    isExemptFromGating: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
