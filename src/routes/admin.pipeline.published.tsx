@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "~/lib/ThemeContext";
 import {
   ArrowLeft, Crown, CheckCircle2, AlertCircle,
-  RefreshCw, Eye, AlertTriangle, Database, Search, ShieldCheck, Trash2, CheckSquare, Square
+  RefreshCw, Eye, AlertTriangle, Database, Search, ShieldCheck, Trash2, CheckSquare, Square, Edit3
 } from "lucide-react";
 import { LessonPage } from "~/components/content/LessonPage";
 
@@ -406,8 +406,15 @@ function PublishedContentSubSectionPage() {
                       onClick={() => setPreviewLessonId(selectedLesson.lessonId)}
                       className="px-3 py-1 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 text-xs font-semibold rounded-lg transition-all flex items-center gap-1"
                     >
-                      <Eye className="w-3.5 h-3.5" /> Preview & Edit Live
+                      <Eye className="w-3.5 h-3.5" /> Preview & Interactive View
                     </button>
+                    <Link
+                      to="/admin/lessons/$id/edit"
+                      params={{ id: selectedLesson._id }}
+                      className="px-3 py-1 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-400 text-xs font-semibold rounded-lg transition-all flex items-center gap-1"
+                    >
+                      <Edit3 className="w-3.5 h-3.5" /> Edit Full Lesson & Vocab
+                    </Link>
                     <button
                       onClick={(e) => handlePromptDeleteSingle(selectedLesson, e as any)}
                       className="px-3 py-1 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 text-xs font-semibold rounded-lg transition-all flex items-center gap-1"
