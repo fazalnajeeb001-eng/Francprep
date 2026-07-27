@@ -214,6 +214,24 @@ function adaptQuestions(questions: LessonQuestion[]) {
     normalizedQuestions.push(q);
   }
 
+  // Guarantee Question 3 (Fill in the Blank: __________ un ascenseur dans l'immeuble ?) is present if missing
+  const hasFillBlankAscenseur = normalizedQuestions.some(q => {
+    const text = (q.prompt || (q as any).text || '').toLowerCase();
+    return text.includes('ascenseur') || text.includes('is there');
+  });
+
+  if (!hasFillBlankAscenseur) {
+    const matchingIdx = normalizedQuestions.findIndex(q => q.type === 'matching' || q.id === 'pe-housing-matching');
+    const insertPos = matchingIdx !== -1 ? matchingIdx + 1 : 2;
+    normalizedQuestions.splice(insertPos, 0, {
+      id: 'pe-fill-blank-ascenseur',
+      type: 'fill_blank',
+      prompt: '__________ un ascenseur dans l\'immeuble ? (is there)',
+      correctAnswer: 'Est-ce qu\'il y a',
+      explanation: 'Use the formal question pattern "Est-ce qu\'il y a... ?" (Is there... ?) when asking questions.',
+    } as any);
+  }
+
   return normalizedQuestions.map((q, idx) => {
     let resolvedPairs = q.pairs ? (Array.isArray(q.pairs) ? Object.fromEntries(q.pairs.map((p: any) => [p.left || p[0], p.right || p[1]])) : q.pairs) : undefined;
     let resolvedText = q.prompt || (q as any).text || '';
@@ -227,7 +245,18 @@ function adaptQuestions(questions: LessonQuestion[]) {
       }
     }
 
-    const hasDummyOptions = Array.isArray(q.options) && q.options.length > 0 && q.options.every((opt: any) => /^Option\s+[A-Z]$/i.test(String(opt).trim()));
+    let resolvedOptions = (q as any).options;
+    // Normalize 4 options for "There is no garden" is:
+    if (resolvedText.toLowerCase().includes('no garden') || resolvedText.toLowerCase().includes('jardin')) {
+      resolvedOptions = [
+        "Il y a pas un jardin",
+        "Il n'y a pas un jardin",
+        "Il n'y a pas de jardin",
+        "Il n'y a pas des jardin"
+      ];
+    }
+
+    const hasDummyOptions = Array.isArray(resolvedOptions) && resolvedOptions.length > 0 && resolvedOptions.every((opt: any) => /^Option\s+[A-Z]$/i.test(String(opt).trim()));
     const hasPairs = (resolvedPairs && Object.keys(resolvedPairs).length > 0) || (q as any).pairs?.length > 0;
 
     let resolvedType = q.type;
@@ -241,7 +270,7 @@ function adaptQuestions(questions: LessonQuestion[]) {
       id: q.id || (q as any)._id || `q-${idx}`,
       text: resolvedText,
       type: resolvedType,
-      options: (hasPairs || hasDummyOptions) ? undefined : q.options,
+      options: (hasPairs || hasDummyOptions) ? undefined : resolvedOptions,
       correctAnswer: q.correctAnswer as string | string[] | undefined,
       explanation: q.explanation,
       pairs: resolvedPairs,

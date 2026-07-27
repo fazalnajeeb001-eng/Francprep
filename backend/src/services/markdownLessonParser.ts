@@ -718,9 +718,12 @@ function buildPracticeQuestion(n: number, type: string, promptText: string): ILe
   if (type === 'multiple_choice') {
     // Extract options from prompt: "a) Option1 b) Option2 c) Option3 d) Option4"
     const options: string[] = [];
-    const optionMatches = promptText.matchAll(/[a-d]\)\s*(.+?)(?=\s+[a-z]\)|$)/gi);
-    for (const om of optionMatches) {
-      options.push(stripMd(om[1]));
+    const parts = promptText.split(/(?=[a-d]\)\s*)/i);
+    for (const part of parts) {
+      const om = part.trim().match(/^[a-d]\)\s*(.+)/i);
+      if (om && om[1]) {
+        options.push(stripMd(om[1]));
+      }
     }
     // Also try extracting from separate lines
     if (options.length < 2) {
