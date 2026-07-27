@@ -75,6 +75,57 @@ function PipelineDashboardPage() {
   ]);
   const [sendingChat, setSendingChat] = useState(false);
 
+  // Edit Draft Modal States
+  const [editingDraft, setEditingDraft] = useState<any | null>(null);
+  const [editFields, setEditFields] = useState({ title: "", level: "A1", lessonId: "", content: "" });
+  const [savingEdit, setSavingEdit] = useState(false);
+
+  const handleOpenEditModal = (draft: any) => {
+    setEditingDraft(draft);
+    setEditFields({
+      title: draft.title || "",
+      level: draft.level || "A1",
+      lessonId: draft.lessonId || "",
+      content: draft.content || (draft.parsedData ? JSON.stringify(draft.parsedData, null, 2) : "")
+    });
+  };
+
+  const handleSaveDraftEdit = async () => {
+    if (!editingDraft) return;
+    setSavingEdit(true);
+    try {
+      let parsedData = editingDraft.parsedData;
+      if (editFields.content && editFields.content.trim().startsWith('{')) {
+        try {
+          parsedData = JSON.parse(editFields.content);
+        } catch (e) {}
+      }
+
+      const res = await apiFetch(`/admin/content-pipeline/drafts/${editingDraft._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: editFields.title,
+          level: editFields.level,
+          lessonId: editFields.lessonId,
+          content: editFields.content,
+          parsedData
+        })
+      });
+      const json = await res.json();
+      if (json.success) {
+        setActionStatus({ loading: false, error: "", success: `Draft ${editFields.lessonId} updated and re-validated!` });
+        fetchDrafts();
+        setEditingDraft(null);
+      } else {
+        setActionStatus({ loading: false, error: json.error || "Failed to save draft edits", success: "" });
+      }
+    } catch (e: any) {
+      setActionStatus({ loading: false, error: e.message || "Network error", success: "" });
+    }
+    setSavingEdit(false);
+  };
+
   const fetchDrafts = async () => {
     try {
       const res = await apiFetch("/admin/content-pipeline/drafts");
@@ -727,6 +778,9 @@ function PipelineDashboardPage() {
                   <h2 className="text-base font-bold text-white mt-1">{selectedDraft.title}</h2>
                   
                   <div className="flex flex-wrap gap-2 mt-3">
+                    <button onClick={() => handleOpenEditModal(selectedDraft)} className="px-3 py-1 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 text-xs font-bold rounded-lg transition-all flex items-center gap-1">
+                      <Sparkles className="w-3.5 h-3.5" /> ✏️ Edit Draft
+                    </button>
                     <button onClick={() => setPreviewDraftId(selectedDraft._id)} className="px-3 py-1 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-400 text-xs font-semibold rounded-lg transition-all flex items-center gap-1">
                       <Eye className="w-3.5 h-3.5" /> Live Preview
                     </button>
@@ -821,7 +875,7 @@ function PipelineDashboardPage() {
                 <h3 className="text-base font-bold">Delete Staged Draft?</h3>
               </div>
               <p className={`text-xs ${dark ? "text-gray-300" : "text-gray-600"} leading-relaxed mb-5`}>
-                Are you sure you want to permanently delete this staged draft? This action will remove the draft record from your workspace.
+                Are you sure you want to delete this staged draft? It will be moved to the 60-Day Recycle Bin where you can restore it anytime.
               </p>
               <div className="flex justify-end gap-3">
                 <button
@@ -835,8 +889,99 @@ function PipelineDashboardPage() {
                   disabled={actionStatus.loading}
                   className="px-4 py-2 text-xs font-bold rounded-xl bg-red-600 hover:bg-red-500 text-white shadow-lg shadow-red-500/20 transition-all flex items-center gap-1.5"
                 >
-                  {actionStatus.loading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : "Delete Permanently"}
+                  {actionStatus.loading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : "Move to Recycle Bin"}
                 </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* INTERACTIVE DRAFT EDITOR MODAL */}
+        {editingDraft && (
+          <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-4">
+            <div className={`max-w-3xl w-full rounded-2xl p-6 border shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto ${dark ? "bg-[#101828] border-[#1e2a4a] text-white" : "bg-white border-slate-300 text-slate-900"}`}>
+              <div className="flex items-center justify-between border-b border-[#1e2a4a] pb-3">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-purple-400" />
+                  <h3 className="text-base font-bold">Edit Staged Draft ({editingDraft.lessonId})</h3>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      setPreviewDraftId(editingDraft._id);
+                      setEditingDraft(null);
+                    }}
+                    className="px-3 py-1 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-bold rounded-lg flex items-center gap-1"
+                  >
+                    <Eye className="w-3.5 h-3.5" /> Open Visual Live-Edit Preview
+                  </button>
+                  <button onClick={() => setEditingDraft(null)} className="text-gray-400 hover:text-white text-xs">✕</button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-[10px] text-gray-400 mb-1">Title</label>
+                  <input
+                    type="text"
+                    value={editFields.title}
+                    onChange={(e) => setEditFields({ ...editFields, title: e.target.value })}
+                    className={inp}
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] text-gray-400 mb-1">Lesson ID</label>
+                  <input
+                    type="text"
+                    value={editFields.lessonId}
+                    onChange={(e) => setEditFields({ ...editFields, lessonId: e.target.value })}
+                    className={inp}
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] text-gray-400 mb-1">CEFR Level</label>
+                  <select
+                    value={editFields.level}
+                    onChange={(e) => setEditFields({ ...editFields, level: e.target.value })}
+                    className={inp}
+                  >
+                    <option value="A1">A1</option>
+                    <option value="A2">A2</option>
+                    <option value="B1">B1</option>
+                    <option value="B2">B2</option>
+                    <option value="C1">C1</option>
+                    <option value="C2">C2</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-gray-400 mb-1">Raw Markdown / JSON Content Payload</label>
+                <textarea
+                  rows={14}
+                  value={editFields.content}
+                  onChange={(e) => setEditFields({ ...editFields, content: e.target.value })}
+                  className="w-full rounded-xl px-3 py-2 text-xs font-mono border dark:bg-[#0c1224] dark:border-[#1e2a4a] text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+
+              <div className="flex items-center justify-between pt-2 border-t border-[#1e2a4a]">
+                <span className="text-[10px] text-gray-400">Saving will update draft payload and re-run validation checks.</span>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setEditingDraft(null)}
+                    className="px-4 py-2 text-xs font-semibold rounded-xl border dark:border-[#1e2a4a] text-gray-400 hover:bg-white/5"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSaveDraftEdit}
+                    disabled={savingEdit}
+                    className="px-5 py-2 text-xs font-bold rounded-xl bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-600/30 flex items-center gap-1.5"
+                  >
+                    {savingEdit ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : "💾 Save Draft Changes"}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
