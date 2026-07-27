@@ -487,31 +487,43 @@ export function AuthenticCBTExamPage() {
 
                 {/* Official Listening Audio Component */}
                 {currentSection.type === "COMPREHENSION_ORALE" && (
-                  <div className={`p-4 rounded-lg border space-y-3 ${
-                    cbtDark ? "bg-purple-950/40 border-purple-800/60 text-slate-100" : "bg-purple-50 border-purple-300 text-slate-950"
-                  }`}>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-purple-700 dark:text-purple-300 flex items-center gap-1.5">
-                        <Volume2 className="w-4 h-4" />
+                  <div className="p-4 rounded-lg border space-y-3 bg-purple-50 border-purple-300 text-slate-950">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span className="text-xs font-bold text-purple-900 flex items-center gap-1.5">
+                        <Volume2 className="w-4 h-4 text-purple-700" />
                         <span>Official Audio Document:</span>
                       </span>
-                      <button
-                        onClick={() => handlePlayAudio(currentQ.text)}
-                        className="px-4 py-2 rounded bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold flex items-center gap-1.5 shadow"
-                      >
-                        <Volume2 className={`w-4 h-4 ${isPlayingAudio ? "animate-bounce" : ""}`} />
-                        <span>{isPlayingAudio ? "Playing Audio Document..." : "Play Audio Recording"}</span>
-                      </button>
+
+                      <div className="flex items-center gap-2">
+                        {mode === "PRACTICE" && (
+                          <button
+                            type="button"
+                            onClick={() => setShowTranscripts(!showTranscripts)}
+                            className="px-3 py-1.5 rounded bg-purple-100 border border-purple-300 text-purple-950 font-bold text-xs hover:bg-purple-200 transition-all flex items-center gap-1.5 shadow-sm"
+                          >
+                            <FileText className="w-3.5 h-3.5 text-purple-700" />
+                            <span>{showTranscripts ? "Hide Transcript 🙈" : "Reveal Transcript & EN Translation 👁️"}</span>
+                          </button>
+                        )}
+
+                        <button
+                          onClick={() => handlePlayAudio(currentQ.text)}
+                          className="px-4 py-2 rounded bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold flex items-center gap-1.5 shadow"
+                        >
+                          <Volume2 className={`w-4 h-4 ${isPlayingAudio ? "animate-bounce" : ""}`} />
+                          <span>{isPlayingAudio ? "Playing Audio Document..." : "Play Audio Recording"}</span>
+                        </button>
+                      </div>
                     </div>
 
                     {showTranscripts && currentQ.transcript && (
-                      <div className="pt-3 border-t border-purple-300 dark:border-purple-800 text-xs space-y-1.5">
-                        <p className="font-bold text-purple-900 dark:text-purple-300 uppercase text-[10px]">French Audio Transcript:</p>
-                        <p className="font-serif italic font-medium text-slate-900 dark:text-slate-100">"{currentQ.transcript}"</p>
+                      <div className="pt-3 border-t border-purple-300 text-xs space-y-1.5">
+                        <p className="font-bold text-purple-900 uppercase text-[10px]">French Audio Transcript:</p>
+                        <p className="font-serif italic font-semibold text-slate-950">"{currentQ.transcript}"</p>
                         {currentQ.transcriptEnglish && (
                           <>
-                            <p className="font-bold text-blue-900 dark:text-blue-300 uppercase text-[10px] pt-1">English Translation:</p>
-                            <p className="italic text-slate-800 dark:text-slate-300">"{currentQ.transcriptEnglish}"</p>
+                            <p className="font-bold text-blue-900 uppercase text-[10px] pt-1">English Translation:</p>
+                            <p className="italic font-semibold text-slate-950">"{currentQ.transcriptEnglish}"</p>
                           </>
                         )}
                       </div>
