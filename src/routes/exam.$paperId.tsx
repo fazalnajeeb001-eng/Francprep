@@ -359,7 +359,9 @@ export function AuthenticCBTExamPage() {
 
                 {/* Official Listening Audio Component */}
                 {currentSection.type === "COMPREHENSION_ORALE" && (
-                  <div className="p-4 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/50 space-y-3">
+                  <div className={`p-4 rounded-lg border space-y-3 ${
+                    cbtDark ? "bg-purple-950/40 border-purple-800/60 text-slate-100" : "bg-purple-50 border-purple-300 text-slate-950"
+                  }`}>
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-purple-700 dark:text-purple-300 flex items-center gap-1.5">
                         <Volume2 className="w-4 h-4" />
@@ -375,13 +377,13 @@ export function AuthenticCBTExamPage() {
                     </div>
 
                     {showTranscripts && currentQ.transcript && (
-                      <div className="pt-3 border-t border-purple-200 dark:border-purple-800 text-xs space-y-1.5">
-                        <p className="font-bold text-purple-800 dark:text-purple-300 uppercase text-[10px]">French Audio Transcript:</p>
-                        <p className="font-serif italic text-slate-800 dark:text-slate-200">"{currentQ.transcript}"</p>
+                      <div className="pt-3 border-t border-purple-300 dark:border-purple-800 text-xs space-y-1.5">
+                        <p className="font-bold text-purple-900 dark:text-purple-300 uppercase text-[10px]">French Audio Transcript:</p>
+                        <p className="font-serif italic font-medium text-slate-900 dark:text-slate-100">"{currentQ.transcript}"</p>
                         {currentQ.transcriptEnglish && (
                           <>
-                            <p className="font-bold text-blue-600 dark:text-blue-300 uppercase text-[10px] pt-1">English Translation:</p>
-                            <p className="italic text-slate-600 dark:text-slate-400">"{currentQ.transcriptEnglish}"</p>
+                            <p className="font-bold text-blue-900 dark:text-blue-300 uppercase text-[10px] pt-1">English Translation:</p>
+                            <p className="italic text-slate-800 dark:text-slate-300">"{currentQ.transcriptEnglish}"</p>
                           </>
                         )}
                       </div>
@@ -391,19 +393,21 @@ export function AuthenticCBTExamPage() {
 
                 {/* Official Reading Passage Component */}
                 {currentSection.type === "COMPREHENSION_ECRITE" && currentQ.passage && (
-                  <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50 space-y-3">
-                    <span className="text-xs font-bold text-blue-700 dark:text-blue-300 flex items-center gap-1.5">
+                  <div className={`p-4 rounded-lg border space-y-3 ${
+                    cbtDark ? "bg-blue-950/40 border-blue-800/60 text-slate-100" : "bg-blue-50 border-blue-300 text-slate-950"
+                  }`}>
+                    <span className="text-xs font-bold text-blue-800 dark:text-blue-300 flex items-center gap-1.5">
                       <BookOpen className="w-4 h-4" />
                       <span>Document d'épreuve :</span>
                     </span>
-                    <p className="font-serif text-sm leading-relaxed text-slate-800 dark:text-slate-200">
+                    <p className="font-serif text-sm leading-relaxed font-medium text-slate-950 dark:text-slate-100">
                       "{currentQ.passage}"
                     </p>
 
                     {showPassageTranslation && currentQ.passageEnglish && (
-                      <div className="pt-3 border-t border-blue-200 dark:border-blue-800 text-xs text-blue-700 dark:text-blue-300">
+                      <div className="pt-3 border-t border-blue-300 dark:border-blue-800 text-xs text-blue-900 dark:text-blue-300">
                         <p className="font-bold uppercase text-[10px]">English Translation:</p>
-                        <p className="italic">"{currentQ.passageEnglish}"</p>
+                        <p className="italic font-medium">"{currentQ.passageEnglish}"</p>
                       </div>
                     )}
                   </div>
@@ -412,8 +416,8 @@ export function AuthenticCBTExamPage() {
 
               {/* Hints Display */}
               {showHints && currentQ.hint && (
-                <div className="p-3 rounded bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-xs text-amber-800 dark:text-amber-300 flex items-center gap-2">
-                  <HelpCircle className="w-4 h-4 shrink-0 text-amber-500" />
+                <div className="p-3 rounded bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-xs text-amber-950 dark:text-amber-300 flex items-center gap-2 font-medium">
+                  <HelpCircle className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-500" />
                   <span><strong>Hint:</strong> {currentQ.hint}</span>
                 </div>
               )}
@@ -422,7 +426,7 @@ export function AuthenticCBTExamPage() {
             {/* RIGHT PANEL: QUESTION & OPTIONS SELECTOR (5 COLS) */}
             <div className={`lg:col-span-5 p-5 rounded-lg border ${cbtCard} shadow-sm space-y-5 flex flex-col justify-between`}>
               <div className="space-y-4">
-                <h3 className="text-base font-bold leading-snug">
+                <h3 className="text-base font-bold leading-snug text-slate-950 dark:text-slate-100">
                   {currentQ.text}
                 </h3>
 
@@ -437,23 +441,76 @@ export function AuthenticCBTExamPage() {
                         onClick={() => handleSelectOption(currentQ.id, idx)}
                         className={`p-3.5 rounded border text-xs font-semibold cursor-pointer transition-all flex items-center justify-between ${
                           isChosen
-                            ? "bg-blue-600 text-white border-blue-600 shadow"
-                            : "bg-slate-50 dark:bg-slate-800/80 border-slate-300 dark:border-slate-700 hover:border-blue-400"
+                            ? "bg-blue-600 text-white border-blue-600 shadow-md font-bold"
+                            : cbtDark
+                            ? "bg-slate-800/80 text-slate-200 border-slate-700 hover:border-blue-400"
+                            : "bg-slate-50 text-slate-950 border-slate-300 hover:border-blue-500 hover:bg-blue-50/50"
                         }`}
                       >
                         <div className="flex items-center gap-3">
                           <span className={`w-6 h-6 rounded flex items-center justify-center font-bold text-xs ${
-                            isChosen ? "bg-white text-blue-600" : "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300"
+                            isChosen
+                              ? "bg-white text-blue-600"
+                              : cbtDark
+                              ? "bg-slate-700 text-slate-200"
+                              : "bg-slate-200 text-slate-900 font-extrabold"
                           }`}>
                             {letter}
                           </span>
-                          <span>{opt}</span>
+                          <span className={isChosen ? "text-white" : "text-slate-950 dark:text-slate-200"}>{opt}</span>
                         </div>
-                        {isChosen && <CheckCircle2 className="w-4 h-4 text-white" />}
+                        {isChosen && <CheckCircle2 className="w-4 h-4 text-white shrink-0" />}
                       </div>
                     );
                   })}
                 </div>
+
+                {/* Immediate Practice Mode Answer Reveal & Review Feedback */}
+                {mode === "PRACTICE" && selectedAnswers[currentQ.id] !== undefined && (() => {
+                  const chosenIdx = selectedAnswers[currentQ.id];
+                  const isCorrect = chosenIdx === currentQ.correctIndex;
+                  const correctLetter = String.fromCharCode(65 + currentQ.correctIndex);
+                  const correctOptionText = currentQ.options[currentQ.correctIndex];
+
+                  return (
+                    <div className={`p-4 rounded-xl border space-y-2 text-xs font-sans mt-3 ${
+                      isCorrect
+                        ? cbtDark ? "bg-emerald-950/40 border-emerald-800 text-emerald-200" : "bg-emerald-50 border-emerald-300 text-emerald-950"
+                        : cbtDark ? "bg-rose-950/40 border-rose-800 text-rose-200" : "bg-rose-50 border-rose-300 text-rose-950"
+                    }`}>
+                      <div className="flex items-center gap-2 font-extrabold text-sm">
+                        {isCorrect ? (
+                          <>
+                            <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                            <span className="text-emerald-700 dark:text-emerald-400">✓ Correct Answer!</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="text-rose-600 font-bold text-base shrink-0">✗</span>
+                            <span className="text-rose-700 dark:text-rose-400">✗ Incorrect Choice</span>
+                          </>
+                        )}
+                      </div>
+
+                      <p className="font-semibold text-slate-900 dark:text-slate-100">
+                        {isCorrect
+                          ? `Excellent! Option ${correctLetter} ("${correctOptionText}") is the correct response.`
+                          : `The correct answer is Option ${correctLetter}: "${correctOptionText}".`}
+                      </p>
+
+                      {currentQ.explanation && (
+                        <div className="pt-2 border-t border-slate-300 dark:border-slate-700/60 space-y-1">
+                          <span className="font-bold uppercase text-[10px] tracking-wider text-slate-700 dark:text-slate-300">
+                            Learning Explanation:
+                          </span>
+                          <p className="leading-relaxed font-medium text-slate-900 dark:text-slate-200">
+                            {currentQ.explanation}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
 
               {/* Prev / Next Bottom Navigator */}
