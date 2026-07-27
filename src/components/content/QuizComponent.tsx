@@ -748,13 +748,47 @@ export function QuizComponent({ questions, type: _type, onComplete, onAnswer, on
 
   // ─── RENDER: FILL IN THE BLANK ───
   const renderFillBlank = (q: Question, qId: string) => {
+    const rawText = q.text || q.prompt || 'Fill in the blank:';
+
+    if (rawText.includes('__________')) {
+      const parts = rawText.split('__________');
+      return (
+        <div className={`p-5 rounded-2xl border ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-purple-50/40 border-purple-200/80 shadow-sm"}`}>
+          <div className={`text-base font-bold leading-relaxed flex flex-wrap items-center gap-2 ${dark ? "text-white" : "text-slate-900"}`}>
+            <span>{parts[0]}</span>
+            <input
+              type="text"
+              value={(userAnswer as string) || ''}
+              onChange={(e) => setAnswer(qId, e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleCheckQuestion(qId);
+              }}
+              disabled={submitted}
+              placeholder="type answer..."
+              className={`min-w-[140px] px-3 py-1.5 rounded-lg border-2 text-sm font-bold text-center transition-all ${
+                resultForQ
+                  ? resultForQ?.correct
+                    ? "border-emerald-500 bg-emerald-500/20 text-emerald-600 dark:text-emerald-300"
+                    : "border-red-500 bg-red-500/20 text-red-600 dark:text-red-300"
+                  : dark ? "border-purple-500/40 bg-[#101828] text-purple-300 focus:border-purple-500" : "border-purple-300 bg-white text-purple-950 focus:border-purple-600 shadow-sm"
+              } outline-none`}
+            />
+            <span>{parts.slice(1).join('__________')}</span>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="space-y-3">
-        <p className={`text-sm ${dark ? "text-gray-300" : "text-gray-700"}`}>{q.prompt || 'Fill in the blank:'}</p>
+        <p className={`text-sm ${dark ? "text-gray-300" : "text-gray-700"}`}>{rawText}</p>
         <input
           type="text"
           value={(userAnswer as string) || ''}
           onChange={(e) => setAnswer(qId, e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleCheckQuestion(qId);
+          }}
           disabled={submitted}
           placeholder="Type your answer..."
           className={`w-full p-3 rounded-xl border text-sm transition-all ${
