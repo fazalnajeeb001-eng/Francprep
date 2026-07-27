@@ -53,11 +53,12 @@ export interface ExamPaper {
   id: string;
   title: string;
   type: ExamType;
-  code: string; // e.g. "TCF-CAN-01"
+  code: string; // e.g. "TCF-PRAC-01" or "TCF-EXAM-01"
   description: string;
   totalDurationMins: number;
   isSamplePaper: boolean;
   published: boolean;
+  recommendedMode?: ExamMode;
   sections: ExamSection[];
 }
 
@@ -239,10 +240,10 @@ Néanmoins, la transposabilité de cette organisation aux secteurs industriels �
   }
 ];
 
-function generateListeningQuestions(count: number, prefix: string): ExamQuestion[] {
+function generateListeningQuestions(count: number, prefix: string, seedOffset: number = 0): ExamQuestion[] {
   const qList: ExamQuestion[] = [];
   for (let i = 1; i <= count; i++) {
-    const t = LISTENING_TOPICS[(i - 1) % LISTENING_TOPICS.length];
+    const t = LISTENING_TOPICS[(i - 1 + seedOffset) % LISTENING_TOPICS.length];
     qList.push({
       id: `${prefix}-lis-${i}`,
       questionNumber: i,
@@ -258,10 +259,10 @@ function generateListeningQuestions(count: number, prefix: string): ExamQuestion
   return qList;
 }
 
-function generateReadingQuestions(count: number, prefix: string): ExamQuestion[] {
+function generateReadingQuestions(count: number, prefix: string, seedOffset: number = 0): ExamQuestion[] {
   const qList: ExamQuestion[] = [];
   for (let i = 1; i <= count; i++) {
-    const t = READING_TOPICS[(i - 1) % READING_TOPICS.length];
+    const t = READING_TOPICS[(i - 1 + seedOffset) % READING_TOPICS.length];
     qList.push({
       id: `${prefix}-read-${i}`,
       questionNumber: i,
@@ -713,19 +714,27 @@ const TCF_WRITING_SUITE = [
 export function getExamRegistry(): ExamPaper[] {
   const registry: ExamPaper[] = [];
 
-  // Generate 10 Unique TCF Canada Papers (TCF-CAN-01 to TCF-CAN-10)
+  // Generate 10 TCF Canada Papers (5 Practice Mode Papers + 5 Real Exam Mode Papers)
   for (let i = 1; i <= 10; i++) {
-    const numStr = i < 10 ? `0${i}` : `${i}`;
+    const isPractice = i <= 5;
+    const paperNum = isPractice ? i : i - 5;
+    const numStr = `0${paperNum}`;
     const writingSet = TCF_WRITING_SUITE[i - 1];
 
+    // Different question pool seed offset for Real Exam Mode to guarantee ZERO cheating
+    const seedOffset = isPractice ? (i * 3) : (i * 7 + 13);
+
     registry.push({
-      id: `tcf-canada-paper-${i}`,
-      title: `TCF Canada Official Practice Paper ${i}`,
-      code: `TCF-CAN-${numStr}`,
+      id: isPractice ? `tcf-canada-practice-paper-${paperNum}` : `tcf-canada-official-exam-paper-${paperNum}`,
+      title: isPractice ? `TCF Canada Guided Practice Paper ${paperNum}` : `TCF Canada Official Real Exam Paper ${paperNum}`,
+      code: isPractice ? `TCF-PRAC-${numStr}` : `TCF-EXAM-${numStr}`,
       type: "TCF_CANADA",
-      description: `Full-length official FEI standard simulator paper for TCF Canada Express Entry PR Points (84 Items / 119 Mins).`,
+      recommendedMode: isPractice ? "PRACTICE" : "EXAM",
+      description: isPractice
+        ? `Guided practice paper with step-by-step hints, audio transcripts, and 2-attempt answer validation (84 Items / 119 Mins).`
+        : `Strict official FEI test-center exam paper with unpausable timers, zero hints, and authentic candidate scoring (84 Items / 119 Mins).`,
       totalDurationMins: 119,
-      isSamplePaper: i <= 2,
+      isSamplePaper: paperNum <= 2,
       published: true,
       sections: [
         {
@@ -734,7 +743,7 @@ export function getExamRegistry(): ExamPaper[] {
           description: "Listen to French audio clips and answer multiple-choice questions (39 Questions / 35 Mins).",
           durationMins: 35,
           totalQuestions: 39,
-          questions: generateListeningQuestions(39, `tcf${i}`)
+          questions: generateListeningQuestions(39, `tcf${i}`, seedOffset)
         },
         {
           type: "COMPREHENSION_ECRITE",
@@ -742,7 +751,7 @@ export function getExamRegistry(): ExamPaper[] {
           description: "Read French articles, emails, administrative notices, and academic texts (39 Questions / 60 Mins).",
           durationMins: 60,
           totalQuestions: 39,
-          questions: generateReadingQuestions(39, `tcf${i}`)
+          questions: generateReadingQuestions(39, `tcf${i}`, seedOffset)
         },
         {
           type: "EXPRESSION_ECRITE",
@@ -781,7 +790,7 @@ export function getExamRegistry(): ExamPaper[] {
               id: `tcf${i}-spk-2`,
               taskNumber: 2,
               title: "Tâche 2 : Exercice en interaction (Recherche d'informations)",
-              scenario: `Vous souhaitez obtenir des informations sur un service public au Québec (Paper ${i}). Posez au moins 5 questions à l'examinateur sur les conditions d'accès, tarifs et démarches.`,
+              scenario: `Vous souhaitez obtenir des informations sur un service public au Québec (Sujet épreuve ${i}). Posez au moins 5 questions à l'examinateur sur les conditions d'accès, tarifs et démarches.`,
               prepTimeMins: 1,
               speakingTimeMins: 3.5,
               keyPhrases: ["Quels sont les documents requis ?", "Combien coûte l'inscription ?", "Est-il possible de faire les démarches en ligne ?"]
@@ -801,18 +810,26 @@ export function getExamRegistry(): ExamPaper[] {
     });
   }
 
-  // Generate 10 Unique TEF Canada Papers (TEF-CAN-01 to TEF-CAN-10)
+  // Generate 10 TEF Canada Papers (5 Practice Mode Papers + 5 Real Exam Mode Papers)
   for (let i = 1; i <= 10; i++) {
-    const numStr = i < 10 ? `0${i}` : `${i}`;
+    const isPractice = i <= 5;
+    const paperNum = isPractice ? i : i - 5;
+    const numStr = `0${paperNum}`;
+
+    // Distinct seed offset for Real Exam Mode
+    const seedOffset = isPractice ? (i * 4) : (i * 9 + 17);
 
     registry.push({
-      id: `tef-canada-paper-${i}`,
-      title: `TEF Canada Official Practice Paper ${i}`,
-      code: `TEF-CAN-${numStr}`,
+      id: isPractice ? `tef-canada-practice-paper-${paperNum}` : `tef-canada-official-exam-paper-${paperNum}`,
+      title: isPractice ? `TEF Canada Guided Practice Paper ${paperNum}` : `TEF Canada Official Real Exam Paper ${paperNum}`,
+      code: isPractice ? `TEF-PRAC-${numStr}` : `TEF-EXAM-${numStr}`,
       type: "TEF_CANADA",
-      description: `Full-length simulator paper tailored for TEF Canada Paris Chamber of Commerce (CCI) standards (84 Items / 135 Mins).`,
+      recommendedMode: isPractice ? "PRACTICE" : "EXAM",
+      description: isPractice
+        ? `Guided practice paper tailored for TEF Canada Paris Chamber of Commerce (CCI) standards with hints and transcripts (84 Items / 135 Mins).`
+        : `Strict official CCI test-center exam paper with unpausable timers, zero hints, and authentic candidate scoring (84 Items / 135 Mins).`,
       totalDurationMins: 135,
-      isSamplePaper: i <= 2,
+      isSamplePaper: paperNum <= 2,
       published: true,
       sections: [
         {
@@ -821,7 +838,7 @@ export function getExamRegistry(): ExamPaper[] {
           description: "Audio passages, public announcements, and conversations (40 Questions / 40 Mins).",
           durationMins: 40,
           totalQuestions: 40,
-          questions: generateListeningQuestions(40, `tef${i}`)
+          questions: generateListeningQuestions(40, `tef${i}`, seedOffset)
         },
         {
           type: "COMPREHENSION_ECRITE",
@@ -829,7 +846,7 @@ export function getExamRegistry(): ExamPaper[] {
           description: "Press articles, administrative documents, and synthesis questions (40 Questions / 60 Mins).",
           durationMins: 60,
           totalQuestions: 40,
-          questions: generateReadingQuestions(40, `tef${i}`)
+          questions: generateReadingQuestions(40, `tef${i}`, seedOffset)
         },
         {
           type: "EXPRESSION_ECRITE",

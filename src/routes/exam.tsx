@@ -43,7 +43,7 @@ export function ExamHubPage() {
   const [selectedMode, setSelectedMode] = useState<ExamMode>("PRACTICE");
 
   const registry = getExamRegistry();
-  const filteredPapers = registry.filter((p) => p.type === selectedType && p.published);
+  const filteredPapers = registry.filter((p) => p.type === selectedType && p.published && (p.recommendedMode === selectedMode || !p.recommendedMode));
 
   const handleLaunchPaper = (paperId: string) => {
     navigate({
