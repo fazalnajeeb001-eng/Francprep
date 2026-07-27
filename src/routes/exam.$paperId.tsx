@@ -546,7 +546,11 @@ export function AuthenticCBTExamPage() {
                 <div className="p-3 rounded bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-xs text-amber-950 dark:text-amber-300 flex items-center gap-2 font-medium">
                   <HelpCircle className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-500" />
                   <span><strong>Hint:</strong> {currentQ.hint}</span>
-                   {/* RIGHT PANEL: QUESTION & OPTIONS SELECTOR (5 COLS) */}
+                </div>
+              )}
+            </div>
+
+            {/* RIGHT PANEL: QUESTION & OPTIONS SELECTOR (5 COLS) */}
             <div className={`lg:col-span-5 p-5 rounded-lg border ${cbtCard} shadow-sm space-y-5 flex flex-col justify-between`}>
               <div className="space-y-4">
                 <h3 className="text-base font-bold leading-snug text-slate-950 dark:text-slate-100">
