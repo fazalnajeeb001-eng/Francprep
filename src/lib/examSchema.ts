@@ -655,13 +655,243 @@ export const SAMPLE_TEF_PAPER_2: ExamPaper = {
   ]
 };
 
+// ─── DYNAMIC GENERATOR FOR 10 UNIQUE TCF CANADA PAPERS & 10 UNIQUE TEF CANADA PAPERS ───
+
+const TCF_WRITING_SUITE = [
+  [
+    { title: "Tâche 1 : Message court (Problème de chauffage)", prompt: "Vous avez loué un appartement pour vos vacances mais le chauffage ne fonctionne pas. Écrivez un message au propriétaire (60 à 120 mots) pour expliquer la situation et demander une solution rapide.", min: 60, max: 120, time: 15 },
+    { title: "Tâche 2 : Compte-rendu (Récit de voyage au Canada)", prompt: "Racontez dans un journal de voyage une expérience marquante lors d'un séjour au Canada (120 à 150 mots). Décrivez le lieu, les activités faites et vos impressions.", min: 120, max: 150, time: 20 },
+    { title: "Tâche 3 : Essai argumentatif (Transports gratuits)", prompt: "Certaines villes envisagent de rendre les transports en commun entièrement gratuits. Êtes-vous pour ou contre cette mesure ? Exprimez votre point de vue dans un texte structuré (140 à 180 mots).", min: 140, max: 180, time: 25 }
+  ],
+  [
+    { title: "Tâche 1 : Demande d'informations (Atelier culinaire)", prompt: "Vous souhaitez vous inscrire à un atelier de cuisine régionale au Québec. Écrivez un courriel à l'organisateur (60 à 120 mots) pour demander les horaires, tarifs et prérequis.", min: 60, max: 120, time: 15 },
+    { title: "Tâche 2 : Article de témoignage (Festival culturel)", prompt: "Écrivez un article pour un blog de voyage (120 à 150 mots) racontant votre participation à un festival culturel local au Canada.", min: 120, max: 150, time: 20 },
+    { title: "Tâche 3 : Essai argumentatif (Langues à l'école)", prompt: "Pensez-vous que l'apprentissage des langues étrangères devrait être obligatoire dès l'école primaire ? Rédigez un texte argumenté (140 à 180 mots).", min: 140, max: 180, time: 25 }
+  ],
+  [
+    { title: "Tâche 1 : Message formel (Inscription au club de sport)", prompt: "Vous désirez vous inscrire à un club de sport à Montréal. Écrivez un courriel à l'administration (60 à 120 mots) pour demander des précisions sur les abonnements.", min: 60, max: 120, time: 15 },
+    { title: "Tâche 2 : Compte-rendu (Action bénévole)", prompt: "Rédigez un court article pour le bulletin d'information de votre quartier (120 à 150 mots) résumant une journée d'action bénévole.", min: 120, max: 150, time: 20 },
+    { title: "Tâche 3 : Essai argumentatif (Télétravail à 100%)", prompt: "Le télétravail à 100% est-il bénéfique pour l'épanouissement des salariés et la cohésion d'équipe ? Donnez votre opinion (140 à 180 mots).", min: 140, max: 180, time: 25 }
+  ],
+  [
+    { title: "Tâche 1 : Courriel de réclamation (Achat en ligne défectueux)", prompt: "Vous avez commandé du matériel informatique mais vous avez reçu un article défectueux. Écrivez au service client (60 à 120 mots) pour réclamer un échange.", min: 60, max: 120, time: 15 },
+    { title: "Tâche 2 : Récit personnel (Changement de carrière)", prompt: "Dans une lettre à un ami collègue (120 à 150 mots), expliquez les raisons qui vous ont poussé à changer de domaine professionnel.", min: 120, max: 150, time: 20 },
+    { title: "Tâche 3 : Essai argumentatif (Interdiction des véhicules à essence)", prompt: "Les gouvernements devraient-ils interdire la vente de véhicules thermiques neufs d'ici 2035 ? Présentez votre argumentation (140 à 180 mots).", min: 140, max: 180, time: 25 }
+  ],
+  [
+    { title: "Tâche 1 : Demande de renseignements (Bibliothèque municipale)", prompt: "Écrivez à la bibliothèque municipale de votre ville (60 à 120 mots) pour vous renseigner sur les horaires et le prêt numérique.", min: 60, max: 120, time: 15 },
+    { title: "Tâche 2 : Témoignage (Intégration au Québec)", prompt: "Racontez vos premiers mois d'installation au Canada dans un billet de blog (120 à 150 mots) en donnant des conseils pratiques aux nouveaux arrivants.", min: 120, max: 150, time: 20 },
+    { title: "Tâche 3 : Essai argumentatif (Intelligence Artificielle et Emploi)", prompt: "L'intelligence artificielle représente-t-elle une menace ou une opportunité majeure pour le marché du travail de demain ? (140 à 180 mots).", min: 140, max: 180, time: 25 }
+  ],
+  [
+    { title: "Tâche 1 : Message d'absence (Congé exceptionnel)", prompt: "Écrivez un message à votre responsable hiérarchique (60 à 120 mots) pour demander une autorisation d'absence exceptionnelle de 3 jours.", min: 60, max: 120, time: 15 },
+    { title: "Tâche 2 : Critique culturelle (Exposition d'art)", prompt: "Rédigez une critique d'une exposition culturelle ou d'un musée récent auquel vous avez assisté (120 à 150 mots).", min: 120, max: 150, time: 20 },
+    { title: "Tâche 3 : Essai argumentatif (Écrans et réseaux sociaux)", prompt: "Faut-il réglementer strictement l'utilisation des téléphones portables et des réseaux sociaux chez les jeunes adolescents ? (140 à 180 mots).", min: 140, max: 180, time: 25 }
+  ],
+  [
+    { title: "Tâche 1 : Invitation (Fête des voisins)", prompt: "Invitez vos voisins de quartier (60 à 120 mots) à une fête communautaire que vous organisez le mois prochain.", min: 60, max: 120, time: 15 },
+    { title: "Tâche 2 : Récit d'initiative (Jardin collectif)", prompt: "Décrivez la création d'un jardin collectif dans votre quartier (120 à 150 mots) et son impact sur la vie de quartier.", min: 120, max: 150, time: 20 },
+    { title: "Tâche 3 : Essai argumentatif (Semaine de 4 jours)", prompt: "La semaine de travail de 4 jours devrait-elle être généralisée à l'ensemble des entreprises ? Argumentez votre position (140 à 180 mots).", min: 140, max: 180, time: 25 }
+  ],
+  [
+    { title: "Tâche 1 : Demande de réservation (Chalet à la montagne)", prompt: "Écrivez un courriel à un propriétaire de chalet (60 à 120 mots) pour réserver un séjour en famille pendant les vacances d'hiver.", min: 60, max: 120, time: 15 },
+    { title: "Tâche 2 : Témoignage (Formation professionnelle)", prompt: "Racontez une formation continue récente que vous avez suivie (120 à 150 mots) et expliquez ses apports concrets.", min: 120, max: 150, time: 20 },
+    { title: "Tâche 3 : Essai argumentatif (Consommation de produits locaux)", prompt: "Acheter exclusivement des produits alimentaires locaux et de saison est-il un objectif réaliste pour tous les ménages ? (140 à 180 mots).", min: 140, max: 180, time: 25 }
+  ],
+  [
+    { title: "Tâche 1 : Remerciement formel (Fin de stage)", prompt: "Rédigez un courriel de remerciement à votre maître de stage (60 à 120 mots) à la fin de votre période en entreprise.", min: 60, max: 120, time: 15 },
+    { title: "Tâche 2 : Récit d'événement (Marathon de Montréal)", prompt: "Décrivez votre participation ou votre soutien lors d'un événement sportif populaire (120 à 150 mots).", min: 120, max: 150, time: 20 },
+    { title: "Tâche 3 : Essai argumentatif (Quotas touristiques)", prompt: "Faut-il imposer des quotas stricts d'accès à certains sites naturels et patrimoniaux pour protéger la planète ? (140 à 180 mots).", min: 140, max: 180, time: 25 }
+  ],
+  [
+    { title: "Tâche 1 : Proposition de partenariat (Association locale)", prompt: "Proposez un partenariat commercial à un commerce de quartier au nom de votre association étudiante (60 à 120 mots).", min: 60, max: 120, time: 15 },
+    { title: "Tâche 2 : Résumé de conférence (Développement durable)", prompt: "Rédigez le compte-rendu d'une conférence publique sur la transition écologique (120 à 150 mots).", min: 120, max: 150, time: 20 },
+    { title: "Tâche 3 : Essai argumentatif (Université gratuite)", prompt: "L'accès aux études supérieures devrait-il être entièrement gratuit et financé par l'État pour tous les étudiants ? (140 à 180 mots).", min: 140, max: 180, time: 25 }
+  ]
+];
+
 export function getExamRegistry(): ExamPaper[] {
-  return [
-    SAMPLE_TCF_PAPER_1,
-    SAMPLE_TCF_PAPER_2,
-    SAMPLE_TEF_PAPER_1,
-    SAMPLE_TEF_PAPER_2
-  ];
+  const registry: ExamPaper[] = [];
+
+  // Generate 10 Unique TCF Canada Papers (TCF-CAN-01 to TCF-CAN-10)
+  for (let i = 1; i <= 10; i++) {
+    const numStr = i < 10 ? `0${i}` : `${i}`;
+    const writingSet = TCF_WRITING_SUITE[i - 1];
+
+    registry.push({
+      id: `tcf-canada-paper-${i}`,
+      title: `TCF Canada Official Practice Paper ${i}`,
+      code: `TCF-CAN-${numStr}`,
+      type: "TCF_CANADA",
+      description: `Full-length official FEI standard simulator paper for TCF Canada Express Entry PR Points (84 Items / 119 Mins).`,
+      totalDurationMins: 119,
+      isSamplePaper: i <= 2,
+      published: true,
+      sections: [
+        {
+          type: "COMPREHENSION_ORALE",
+          title: "Compréhension Orale (Listening)",
+          description: "Listen to French audio clips and answer multiple-choice questions (39 Questions / 35 Mins).",
+          durationMins: 35,
+          totalQuestions: 39,
+          questions: generateListeningQuestions(39, `tcf${i}`)
+        },
+        {
+          type: "COMPREHENSION_ECRITE",
+          title: "Compréhension Écrite (Reading)",
+          description: "Read French articles, emails, administrative notices, and academic texts (39 Questions / 60 Mins).",
+          durationMins: 60,
+          totalQuestions: 39,
+          questions: generateReadingQuestions(39, `tcf${i}`)
+        },
+        {
+          type: "EXPRESSION_ECRITE",
+          title: "Expression Écrite (Writing)",
+          description: "Compose short messages, social articles, and argumentative essays (3 Tasks / 60 Mins).",
+          durationMins: 60,
+          totalQuestions: 3,
+          writingTasks: writingSet.map((wt, idx) => ({
+            id: `tcf${i}-w${idx + 1}`,
+            taskNumber: idx + 1,
+            title: wt.title,
+            prompt: wt.prompt,
+            wordCountMin: wt.min,
+            wordCountMax: wt.max,
+            timeLimitMins: wt.time,
+            guidedTips: ["Introduction claire", "Présenter 2 arguments développés", "Conclusion synthétique avec prise de position"]
+          }))
+        },
+        {
+          type: "EXPRESSION_ORALE",
+          title: "Expression Orale (Speaking)",
+          description: "Interactive oral interaction with AI examiner feedback (3 Tasks / 12 Mins).",
+          durationMins: 12,
+          totalQuestions: 3,
+          speakingTasks: [
+            {
+              id: `tcf${i}-spk-1`,
+              taskNumber: 1,
+              title: "Tâche 1 : Entretien dirigé (Personal Presentation)",
+              scenario: "Présentez-vous à l'examinateur. Parlez de votre parcours professionnel, de vos centres d'intérêt et de vos motivations pour vous installer au Canada.",
+              prepTimeMins: 0,
+              speakingTimeMins: 2,
+              keyPhrases: ["Je m'appelle...", "Actuellement, je travaille en tant que...", "Mon objectif principal au Canada est..."]
+            },
+            {
+              id: `tcf${i}-spk-2`,
+              taskNumber: 2,
+              title: "Tâche 2 : Exercice en interaction (Recherche d'informations)",
+              scenario: `Vous souhaitez obtenir des informations sur un service public au Québec (Paper ${i}). Posez au moins 5 questions à l'examinateur sur les conditions d'accès, tarifs et démarches.`,
+              prepTimeMins: 1,
+              speakingTimeMins: 3.5,
+              keyPhrases: ["Quels sont les documents requis ?", "Combien coûte l'inscription ?", "Est-il possible de faire les démarches en ligne ?"]
+            },
+            {
+              id: `tcf${i}-spk-3`,
+              taskNumber: 3,
+              title: "Tâche 3 : Expression d'un point de vue (Oral Debate)",
+              scenario: `Exprimez et défendez votre opinion à l'examinateur sur l'impact de la numérisation des services publics dans la société actuelle.`,
+              prepTimeMins: 1,
+              speakingTimeMins: 4.5,
+              keyPhrases: ["Selon moi...", "D'un côté..., mais d'un autre côté...", "Pour conclure, je dirais que..."]
+            }
+          ]
+        }
+      ]
+    });
+  }
+
+  // Generate 10 Unique TEF Canada Papers (TEF-CAN-01 to TEF-CAN-10)
+  for (let i = 1; i <= 10; i++) {
+    const numStr = i < 10 ? `0${i}` : `${i}`;
+
+    registry.push({
+      id: `tef-canada-paper-${i}`,
+      title: `TEF Canada Official Practice Paper ${i}`,
+      code: `TEF-CAN-${numStr}`,
+      type: "TEF_CANADA",
+      description: `Full-length simulator paper tailored for TEF Canada Paris Chamber of Commerce (CCI) standards (84 Items / 135 Mins).`,
+      totalDurationMins: 135,
+      isSamplePaper: i <= 2,
+      published: true,
+      sections: [
+        {
+          type: "COMPREHENSION_ORALE",
+          title: "Compréhension Orale (Listening)",
+          description: "Audio passages, public announcements, and conversations (40 Questions / 40 Mins).",
+          durationMins: 40,
+          totalQuestions: 40,
+          questions: generateListeningQuestions(40, `tef${i}`)
+        },
+        {
+          type: "COMPREHENSION_ECRITE",
+          title: "Compréhension Écrite (Reading)",
+          description: "Press articles, administrative documents, and synthesis questions (40 Questions / 60 Mins).",
+          durationMins: 60,
+          totalQuestions: 40,
+          questions: generateReadingQuestions(40, `tef${i}`)
+        },
+        {
+          type: "EXPRESSION_ECRITE",
+          title: "Expression Écrite (Writing)",
+          description: "Section A (Fait divers article) and Section B (Argumentative letter) (2 Tasks / 60 Mins).",
+          durationMins: 60,
+          totalQuestions: 2,
+          writingTasks: [
+            {
+              id: `tef${i}-w1`,
+              taskNumber: 1,
+              title: "Section A : Article de Fait Divers (Newspaper Continuation)",
+              prompt: `Terminez l'article à partir de la première phrase suivante (80 mots minimum) : 'Hier après-midi, un événement inattendu a perturbé le centre-ville de Montréal (Sujet épreuve ${i})...'`,
+              wordCountMin: 80,
+              wordCountMax: 120,
+              timeLimitMins: 25,
+              guidedTips: ["Employer le passé composé et l'imparfait", "Décrire la réaction des passants et des secours", "Conclure par un retour au calme"]
+            },
+            {
+              id: `tef${i}-w2`,
+              taskNumber: 2,
+              title: "Section B : Lettre d'opinion persuasive (Letter to Editor / Mayor)",
+              prompt: `Rédigez une lettre d'opinion au journal local (200 mots minimum) pour exprimer votre accord ou désaccord sur l'aménagement de nouvelles pistes cyclables au détriment des voies de stationnement.`,
+              wordCountMin: 200,
+              wordCountMax: 250,
+              timeLimitMins: 35,
+              guidedTips: ["Salutation formelle", "Présenter 2 arguments environnementaux et de sécurité", "Conclure par une formule de politesse adaptée"]
+            }
+          ]
+        },
+        {
+          type: "EXPRESSION_ORALE",
+          title: "Expression Orale (Speaking)",
+          description: "Section A (Information Gathering) and Section B (Persuasive Argumentation) (2 Tasks / 15 Mins).",
+          durationMins: 15,
+          totalQuestions: 2,
+          speakingTasks: [
+            {
+              id: `tef${i}-spk-1`,
+              taskNumber: 1,
+              title: "Section A : Demande d'informations (10 Questions)",
+              scenario: `Vous voyez une annonce pour une offre d'emploi ou un service à mi-temps. Appelez le responsable pour poser au moins 10 questions précises sur le poste (Épreuve ${i}).`,
+              prepTimeMins: 0,
+              speakingTimeMins: 5,
+              keyPhrases: ["Quelles sont les compétences requises ?", "Quel est le salaire horaire proposé ?", "Quand commence le contrat ?"]
+            },
+            {
+              id: `tef${i}-spk-2`,
+              taskNumber: 2,
+              title: "Section B : Convaincre un ami (Persuasive Speaking)",
+              scenario: `Un ami hésite à s'inscrire à une aventure sportive ou culturelle ce week-end. Convainquez-le d'accepter cette opportunité avec vous (Épreuve ${i}).`,
+              prepTimeMins: 1,
+              speakingTimeMins: 10,
+              keyPhrases: ["Pense à tous les bénéfices !", "Je m'occupe de la logistique.", "C'est le moment idéal de tenter l'expérience."]
+            }
+          ]
+        }
+      ]
+    });
+  }
+
+  return registry;
 }
 
 export interface NCLCScoreResult {
