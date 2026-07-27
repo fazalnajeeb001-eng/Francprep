@@ -86,12 +86,14 @@ export function AuthenticCBTExamPage() {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", cbtDark);
+    document.documentElement.classList.remove("dark");
     return () => {
       const stored = typeof window !== "undefined" ? localStorage.getItem("fp_theme") : null;
-      document.documentElement.classList.toggle("dark", stored !== "light");
+      if (stored !== "light") {
+        document.documentElement.classList.add("dark");
+      }
     };
-  }, [cbtDark]);
+  }, []);
 
   const handleCheckAnswer = (qId: string, correctIdx: number) => {
     const currentAttempts = (attemptsMap[qId] || 0) + 1;
@@ -301,10 +303,10 @@ export function AuthenticCBTExamPage() {
   const currentQuestions = currentSection.questions || [];
   const currentQ = currentQuestions[currentQuestionIdx] || currentQuestions[0];
 
-  // CBT Theme Styles
-  const cbtBg = cbtDark ? "bg-[#090D16] text-slate-100" : "bg-[#F3F4F6] text-slate-900";
-  const cbtCard = cbtDark ? "bg-[#111827] border-slate-800" : "bg-white border-slate-300";
-  const cbtHeader = cbtDark ? "bg-[#1F2937] border-slate-700 text-white" : "bg-[#1E293B] text-white";
+  // CBT Theme Styles - Official Real Exam CBT Light Mode
+  const cbtBg = "bg-[#F1F5F9] text-[#0F172A]";
+  const cbtCard = "bg-white border-slate-300 shadow-sm text-[#0F172A]";
+  const cbtHeader = "bg-[#1E293B] border-b border-slate-700 text-white";
 
   return (
     <div className={`min-h-screen ${cbtBg} flex flex-col justify-between font-sans transition-colors duration-200 select-none`}>
@@ -348,15 +350,6 @@ export function AuthenticCBTExamPage() {
               <span>OFFICIAL REAL EXAM MODE (UNPAUSABLE)</span>
             </span>
           )}
-
-          {/* High Contrast CBT Dark Mode Toggle */}
-          <button
-            onClick={() => setCbtDark(!cbtDark)}
-            className="p-1.5 rounded bg-slate-700 hover:bg-slate-600 text-white text-xs flex items-center gap-1"
-            title="Toggle High Contrast Theme"
-          >
-            {cbtDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
-          </button>
 
           {/* Official Countdown Timer */}
           <div className="flex items-center gap-2 px-3 py-1.5 rounded bg-slate-900 border border-slate-700 font-mono font-bold text-sm text-emerald-400">
