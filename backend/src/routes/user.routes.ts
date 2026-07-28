@@ -20,6 +20,36 @@ router.post('/heartbeat', authenticate, async (req: AuthRequest, res: Response, 
   } catch (error) { next(error); }
 });
 
+router.post('/milestones', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { milestoneId, level } = req.body || {};
+    const user = await User.findById(req.user!.userId);
+    if (!user) {
+      res.status(404).json({ success: false, message: 'User not found' });
+      return;
+    }
+
+    const levelCode = String(level || '').toUpperCase();
+    const tag = levelCode ? `${levelCode}_PASSED` : String(milestoneId || '');
+
+    if (tag && !user.passedMilestones.includes(tag)) {
+      user.passedMilestones.push(tag);
+    }
+    if (levelCode && !user.passedMilestones.includes(levelCode)) {
+      user.passedMilestones.push(levelCode);
+    }
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'DELF Diagnostic Milestone recorded successfully',
+      data: { passedMilestones: user.passedMilestones },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get('/profile', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const user = await User.findById(req.user!.userId).select('firstName lastName email learningGoal avatarUrl avatarFeatures onboardingComplete rpmGlbUrl');

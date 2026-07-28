@@ -99,10 +99,10 @@ export function DELFExamCanvasPage() {
 
     if (passed) {
       try {
-        await apiFetch('/admin/users/me/milestones', {
+        await apiFetch('/users/milestones', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ milestoneId: paper.id, level: paper.level }),
+          body: JSON.stringify({ milestoneId: paper.id, level: paper.level, scorePercentage: percentage }),
         });
       } catch (e) {}
     }

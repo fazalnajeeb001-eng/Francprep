@@ -321,6 +321,41 @@ function LearnPage() {
               ))}
             </div>
           )}
+
+          {/* End of Module DELF Diagnostic Exam Gate Card */}
+          <div className="mt-8 p-5 rounded-2xl border bg-gradient-to-br from-amber-500/10 via-purple-500/10 to-pink-500/10 border-amber-500/30 backdrop-blur-lg space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white text-xl font-bold shadow-md shrink-0">
+                  🏆
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className={`text-base font-extrabold ${dark ? "text-white" : "text-gray-900"}`}>
+                      DELF {view} Milestone Diagnostic Exam
+                    </h3>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                      Module Gate
+                    </span>
+                  </div>
+                  <p className={`text-xs ${textMuted} mt-0.5`}>
+                    Complete your chapter studies, then take the DELF {view} Diagnostic Exam to unlock Module {view === 'A1' ? 'A2' : view === 'A2' ? 'B1' : view === 'B1' ? 'B2' : 'C1'}.
+                  </p>
+                  <p className="text-[10px] text-gray-400 mt-1 italic">
+                    (Diagnostic evaluation exam formatted to mirror official France Éducation International (FEI) DELF standards).
+                  </p>
+                </div>
+              </div>
+
+              <Link
+                to="/exam/delf"
+                className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs rounded-xl shadow-lg flex items-center gap-2 transition-all shrink-0 hover:scale-[1.02]"
+              >
+                <span>📜 Take DELF {view} Exam</span>
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     );
