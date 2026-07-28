@@ -21,7 +21,9 @@ const navGroups = [
   {
     title: "Content Pipeline",
     items: [
-      { label: "Content Pipeline", icon: Layers, href: "/admin/pipeline" },
+      { label: "Content Pipeline Hub", icon: Layers, href: "/admin/pipeline" },
+      { label: "AI Content Generator 🪄", icon: Wand2, href: "/admin/content" },
+      { label: "In-House Lessons Catalog 📝", icon: BookOpen, href: "/admin/lessons" },
       { label: "Drafts", icon: FileText, href: "/admin/pipeline/drafts" },
       { label: "Integrated Drafts", icon: Wand2, href: "/admin/pipeline/integrated" },
       { label: "Published Content", icon: Crown, href: "/admin/pipeline/published" },
