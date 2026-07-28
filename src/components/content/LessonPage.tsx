@@ -188,7 +188,7 @@ function extractPairsFromText(text: string): { pairs: Record<string, string>; ti
 function adaptQuestions(questions: LessonQuestion[]) {
   if (!questions) return [];
 
-  return questions.map((q, idx) => {
+  const rawAdapted = questions.map((q, idx) => {
     let resolvedText = q.prompt || (q as any).text || '';
     let resolvedOptions = (q as any).options;
     let resolvedPairs = q.pairs ? (Array.isArray(q.pairs) ? Object.fromEntries(q.pairs.map((p: any) => [p.left || p[0], p.right || p[1]])) : q.pairs) : undefined;
@@ -259,6 +259,30 @@ function adaptQuestions(questions: LessonQuestion[]) {
       points: 1,
     };
   });
+
+  // Filter out redundant sub-pair line fragments (e.g. "Bonne nuit — Said only when going to bed") if preceded by a valid matching question
+  const consolidated: typeof rawAdapted = [];
+  for (let i = 0; i < rawAdapted.length; i++) {
+    const q = rawAdapted[i];
+    const text = (q.text || '').trim();
+
+    // Check if item is a lone pair line fragment with dummy options (e.g. "Bonne nuit — Said only when going to bed")
+    const isFragmentLine = text.match(/^([A-Za-zÀ-ÿ\s]+)\s*[—\-\:]+\s*(?:[a-eA-E0-9][\.\)]\s*)?(.+)$/);
+    const hasOnlyDummy = !q.options || (Array.isArray(q.options) && q.options.length === 0);
+
+    const prevMatching = consolidated.find(item => item.type === 'matching' && item.pairs);
+    if (prevMatching && prevMatching.pairs && isFragmentLine && hasOnlyDummy) {
+      const leftKey = isFragmentLine[1].replace(/^\d+[\.\)]\s*/, '').trim().toLowerCase();
+      const prevKeys = Object.keys(prevMatching.pairs).map(k => k.toLowerCase());
+      if (prevKeys.some(k => k === leftKey || leftKey.includes(k))) {
+        continue; // Filter out redundant duplicate sub-pair item!
+      }
+    }
+
+    consolidated.push(q);
+  }
+
+  return consolidated;
 }
 
 function getDialogueText(lesson: any): string {
