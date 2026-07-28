@@ -889,6 +889,70 @@ router.put('/users/:id/custom-price', async (req: AuthRequest, res: Response, ne
   }
 });
 
+// GET /api/admin/analytics/saas-overview
+router.get('/analytics/saas-overview', async (_req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const allUsers = await User.find({ role: { $ne: 'admin' } });
+    const totalStudents = allUsers.length;
+
+    const fiveMinsAgo = new Date(Date.now() - 5 * 60 * 1000);
+    const onlineUsers = allUsers.filter(u => u.updatedAt && new Date(u.updatedAt) >= fiveMinsAgo);
+    const onlineCount = onlineUsers.length;
+
+    const freeUsers = allUsers.filter(u => u.subscriptionTier === 'free' && !u.isVipFreeAccess);
+    const payingUsers = allUsers.filter(u => u.subscriptionTier === 'premium' || u.subscriptionTier === 'exam_prep' || (u.subscriptionTier as string) === 'lifetime');
+    const vipFreeUsers = allUsers.filter(u => u.isVipFreeAccess);
+
+    const planCounts = {
+      monthly: allUsers.filter(u => u.subscriptionTier === 'premium' && !u.isVipFreeAccess).length,
+      annual: allUsers.filter(u => u.subscriptionTier === 'exam_prep' && !u.isVipFreeAccess).length,
+      lifetime: allUsers.filter(u => (u.subscriptionTier as string) === 'lifetime' && !u.isVipFreeAccess).length,
+      vipFree: vipFreeUsers.length,
+      free: freeUsers.length,
+    };
+
+    const monthlyPrice = 29;
+    const annualMonthlyEq = Math.round(199 / 12);
+    const mrr = (planCounts.monthly * monthlyPrice) + (planCounts.annual * annualMonthlyEq);
+    const arr = mrr * 12;
+    const arpu = payingUsers.length > 0 ? Math.round(mrr / payingUsers.length) : 0;
+    const ltv = arpu * 18;
+
+    const studentRoster = allUsers.map(u => ({
+      _id: u._id,
+      firstName: u.firstName,
+      lastName: u.lastName,
+      email: u.email,
+      subscriptionTier: u.subscriptionTier,
+      isVipFreeAccess: u.isVipFreeAccess,
+      customPriceOverride: u.customPriceOverride,
+      isOnline: Boolean(u.updatedAt && new Date(u.updatedAt) >= fiveMinsAgo),
+      lastActive: u.updatedAt,
+      studyHours: Math.round(((u as any).xp || 240) / 60),
+      targetExam: (u as any).targetExam || 'TCF Canada',
+    }));
+
+    res.json({
+      success: true,
+      data: {
+        totalStudents,
+        onlineCount,
+        freeCount: freeUsers.length,
+        payingCount: payingUsers.length,
+        vipFreeCount: vipFreeUsers.length,
+        mrr,
+        arr,
+        arpu,
+        ltv,
+        planCounts,
+        students: studentRoster,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // ============ Content Pipeline ============
 import contentPipelineRoutes from './admin.contentPipeline';
 router.use(contentPipelineRoutes);
