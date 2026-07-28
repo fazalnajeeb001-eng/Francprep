@@ -24,9 +24,12 @@ import { getExamRegistry, type ExamMode, type ExamType } from "~/lib/examSchema"
 export const Route = createFileRoute("/exam")({ component: ExamRouteLayout });
 
 function ExamRouteLayout() {
-  const isChildRoute = useMatch({ from: "/exam/$paperId", shouldThrow: false });
+  const matchDelfIndex = useMatch({ from: "/exam/delf/", shouldThrow: false });
+  const matchDelfPaper = useMatch({ from: "/exam/delf/$paperId", shouldThrow: false });
+  const matchPaperId = useMatch({ from: "/exam/$paperId", shouldThrow: false });
+  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
 
-  if (isChildRoute) {
+  if (matchDelfIndex || matchDelfPaper || matchPaperId || pathname.includes('/exam/delf')) {
     return <Outlet />;
   }
 
