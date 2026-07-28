@@ -661,21 +661,40 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
   const { data: lesson7Direct } = useQuery({
     queryKey: ["lesson", lesson7Id],
-    queryFn: () => apiFetch(`/lessons/${lesson7Id}`).then(res => res.json()).then(json => json.data as LessonData),
+    queryFn: async () => {
+      try {
+        const res = await apiFetch(`/lessons/${lesson7Id}`);
+        if (!res.ok) return null;
+        const json = await res.json();
+        return (json?.data || json) as LessonData;
+      } catch {
+        return null;
+      }
+    },
     enabled: isLesson8 && !!lesson7Id && !draftId
   });
 
   const { data: levelLessons } = useQuery({
     queryKey: ["level-lessons-l7", lesson?.level || 'A1'],
-    queryFn: () => apiFetch(`/lessons?level=${lesson?.level || 'A1'}&limit=100`).then(res => res.json()).then(json => json.data || []),
+    queryFn: async () => {
+      try {
+        const res = await apiFetch(`/lessons?level=${lesson?.level || 'A1'}&limit=100`);
+        if (!res.ok) return [];
+        const json = await res.json();
+        return (json?.data || []) as LessonData[];
+      } catch {
+        return [];
+      }
+    },
     enabled: isLesson8 && !draftId
   });
 
   const lesson7FromList = levelLessons?.find((l: any) => {
-    const isIntegrated = (l.order && l.order % 8 === 7) || (l.lessonNumber && l.lessonNumber % 8 === 7) || l.skill === 'integrated' || l.anchorSkill === 'integrated' || l.lessonId?.endsWith('l7');
+    if (!l) return false;
+    const isIntegrated = (l.order && l.order % 8 === 7) || (l.lessonNumber && l.lessonNumber % 8 === 7) || l.skill === 'integrated' || l.anchorSkill === 'integrated' || (typeof l.lessonId === 'string' && l.lessonId.endsWith('l7'));
     if (!isIntegrated) return false;
     if (lesson?.chapterId && l.chapterId === lesson.chapterId) return true;
-    if (lesson?.lessonId && l.lessonId && l.lessonId.split('-')[0] === lesson.lessonId.split('-')[0]) return true;
+    if (typeof lesson?.lessonId === 'string' && typeof l.lessonId === 'string' && l.lessonId.split('-')[0] === lesson.lessonId.split('-')[0]) return true;
     return true;
   });
 
@@ -1006,7 +1025,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         );
 
       case 'dialogue':
-        const dialogueQuestions = [...(lesson!.reading?.questions || []), ...(lesson!.listening?.questions || [])].filter((q: any) => !q.id.includes('dummy'));
+        const dialogueQuestions = [...(lesson!.reading?.questions || []), ...(lesson!.listening?.questions || [])].filter((q: any) => Boolean(q?.id && typeof q.id === 'string' && !q.id.includes('dummy')));
         const dialText = getDialogueText(lesson!);
         const dialTrans = getDialogueTranslation(lesson!);
         return (
@@ -1380,7 +1399,7 @@ Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain aprè
         );
 
       case 'delf':
-        const delfQuestions = lesson!.practiceExercises?.questions?.filter((q: any) => q.id.includes('delf')) || [];
+        const delfQuestions = lesson!.practiceExercises?.questions?.filter((q: any) => Boolean(q?.id && typeof q.id === 'string' && q.id.includes('delf'))) || [];
         const l7DialText = getDialogueText(lesson7);
         const l7DialTrans = getDialogueTranslation(lesson7);
         return (
@@ -1666,7 +1685,7 @@ Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain aprè
       case 'practice':
         const isL8 = lesson!.lessonNumber === 8 || lesson!.title?.toLowerCase().includes('review');
         const practiceQuestions = isL8
-          ? (lesson!.practiceExercises?.questions?.filter((q: any) => !q.id.includes('delf')) || [])
+          ? (lesson!.practiceExercises?.questions?.filter((q: any) => Boolean(q?.id && typeof q.id === 'string' && !q.id.includes('delf'))) || [])
           : (lesson!.practiceExercises?.questions || []);
         if (!practiceQuestions.length) return emptyState('Practice Exercises');
         return (

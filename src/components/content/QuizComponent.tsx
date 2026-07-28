@@ -468,7 +468,8 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
       const currentQId = q.id || (q as any)._id || String(current);
       if (!answers[currentQId] && q.items) {
         const shuffled = [...q.items].sort(() => Math.random() - 0.5);
-        setAnswers(prev => ({ ...prev, [currentQId]: shuffled }));
+        setAnswersState(prev => ({ ...prev, [currentQId]: shuffled }));
+        setAnswer(currentQId, shuffled);
       }
     }
   }, [current, q]);

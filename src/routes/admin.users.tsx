@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { apiFetch } from "~/lib/apiFetch";
 import { useAuth } from "~/lib/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Users, Search, ChevronLeft, ChevronRight, Shield,
   MoreVertical, UserPlus, Ban, Trash2, Key, RefreshCw,
-  X, Check, AlertTriangle, Eye, EyeOff, UserCog, Mail
+  X, Check, AlertTriangle, Eye, EyeOff, UserCog, Mail, Lock
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin/users")({ component: AdminUsersPage });
@@ -85,7 +85,19 @@ function ConfirmModal({ open, onClose, onConfirm, title, message, confirmLabel, 
 
 function ActionDropdown({ user, currentUserId, onAction }: { user: AdminUser; currentUserId: string; onAction: (action: string, user: AdminUser) => void }) {
   const [open, setOpen] = useState(false);
+  const [dropUp, setDropUp] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
   const isSelf = user._id === currentUserId;
+
+  const handleToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!open && btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      setDropUp(spaceBelow < 260);
+    }
+    setOpen(!open);
+  };
 
   const actions = [
     { id: "detail", label: "View Details", icon: Eye, color: "text-blue-400", disabled: false },
@@ -98,14 +110,14 @@ function ActionDropdown({ user, currentUserId, onAction }: { user: AdminUser; cu
 
   return (
     <div className="relative">
-      <button onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
+      <button ref={btnRef} onClick={handleToggle}
         className="p-1.5 rounded-xl dark:hover:bg-white/5 hover:bg-gray-100 transition-colors">
         <MoreVertical className="w-4 h-4 dark:text-gray-400 text-gray-500" />
       </button>
       {open && (
         <>
           <div className="fixed inset-0 z-[70]" onClick={(e) => { e.stopPropagation(); setOpen(false); }} />
-          <div className="absolute right-0 bottom-full mb-1 z-[80] w-52 rounded-xl dark:bg-[#101828] bg-white border dark:border-[#1e2a4a] border-gray-200 shadow-2xl py-1 overflow-hidden">
+          <div className={`absolute right-0 ${dropUp ? "bottom-full mb-1" : "top-full mt-1"} z-[80] w-52 rounded-xl dark:bg-[#101828] bg-white border dark:border-[#1e2a4a] border-gray-200 shadow-2xl py-1 overflow-hidden`}>
             {actions.map((a) => (
               <button key={a.id} onClick={(e) => { e.stopPropagation(); if (!a.disabled) { setOpen(false); onAction(a.id, user); } }}
                 className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-left transition-colors ${
