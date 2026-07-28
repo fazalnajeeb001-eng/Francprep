@@ -95,11 +95,12 @@ export function AdminPipelineTrashPage() {
   });
 
   const filteredItems = trashItems.filter((item) => {
+    if (!item) return false;
     const term = searchTerm.toLowerCase();
     return (
-      item.title.toLowerCase().includes(term) ||
-      item.lessonId.toLowerCase().includes(term) ||
-      item.level.toLowerCase().includes(term)
+      (item.title || "").toLowerCase().includes(term) ||
+      (item.lessonId || "").toLowerCase().includes(term) ||
+      (item.level || "").toLowerCase().includes(term)
     );
   });
 

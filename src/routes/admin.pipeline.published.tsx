@@ -80,20 +80,21 @@ function PublishedContentSubSectionPage() {
     const getSortKey = (id: string, levelStr: string) => {
       const lvlMap: Record<string, number> = { A1: 1, A2: 2, B1: 3, B2: 4, C1: 5, C2: 6 };
       const lvlRank = lvlMap[(levelStr || '').toUpperCase()] || 99;
-      const chMatch = id.match(/ch(\d+)/i);
-      const lMatch = id.match(/l(\d+)/i);
+      const safeId = id || '';
+      const chMatch = safeId.match(/ch(\d+)/i);
+      const lMatch = safeId.match(/l(\d+)/i);
       const chNum = chMatch ? parseInt(chMatch[1], 10) : 999;
       const lNum = lMatch ? parseInt(lMatch[1], 10) : 999;
       return { lvlRank, chNum, lNum };
     };
 
     return list.sort((a, b) => {
-      const keyA = getSortKey(a.lessonId, a.level);
-      const keyB = getSortKey(b.lessonId, b.level);
+      const keyA = getSortKey(a.lessonId || a._id, a.level);
+      const keyB = getSortKey(b.lessonId || b._id, b.level);
       if (keyA.lvlRank !== keyB.lvlRank) return keyA.lvlRank - keyB.lvlRank;
       if (keyA.chNum !== keyB.chNum) return keyA.chNum - keyB.chNum;
       if (keyA.lNum !== keyB.lNum) return keyA.lNum - keyB.lNum;
-      return a.lessonId.localeCompare(b.lessonId);
+      return (a.lessonId || '').localeCompare(b.lessonId || '');
     });
   }, [publishedLessons, searchQuery, selectedModule]);
 
