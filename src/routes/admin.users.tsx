@@ -228,6 +228,76 @@ function ResetPasswordModal({ open, onClose, user, onReset }: { open: boolean; o
   );
 }
 
+// ─── Gating Override Modal ───────────────────────────────────────────────
+
+function GatingOverrideModal({ open, onClose, user, onSave }: { open: boolean; onClose: () => void; user: AdminUser | null; onSave: () => void }) {
+  const [isExempt, setIsExempt] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      setIsExempt(Boolean((user as any).isExemptFromGating));
+    }
+  }, [user]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+    setLoading(true);
+    setError("");
+    try {
+      const res = await apiFetch(`/admin/users/${user._id}/gating-override`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isExemptFromGating: isExempt }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        onSave();
+        onClose();
+      } else {
+        setError(json.error || "Failed to update gating overrides");
+      }
+    } catch (e: any) {
+      setError(e.message || "Network error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Modal open={open} onClose={onClose} title="Module Gate Overrides">
+      {user && (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {error && <div className="rounded-xl bg-red-500/10 border border-red-500/30 px-3 py-2 text-xs text-red-400">{error}</div>}
+          <p className="text-xs dark:text-gray-300 text-gray-700">
+            Configuring module gate overrides for <strong>{user.firstName} {user.lastName}</strong> ({user.email}).
+          </p>
+          <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border dark:border-white/10 bg-white/5">
+            <input
+              type="checkbox"
+              checked={isExempt}
+              onChange={(e) => setIsExempt(e.target.checked)}
+              className="accent-purple-500 w-4 h-4"
+            />
+            <span className="text-xs font-bold dark:text-white text-gray-900">
+              Grant 100% Gate Exemption (Bypass all module locks)
+            </span>
+          </label>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold py-2.5 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Save Overrides"}
+          </button>
+        </form>
+      )}
+    </Modal>
+  );
+}
+
 // ─── User Detail Panel ──────────────────────────────────────────────────
 
 function UserDetailPanel({ user, onClose, onAction }: { user: AdminUser; onClose: () => void; onAction: (action: string, user: AdminUser) => void }) {
