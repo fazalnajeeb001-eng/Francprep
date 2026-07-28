@@ -72,9 +72,9 @@ export function ChapterPage({ chapterId }: { chapterId: string }) {
       <div className="space-y-2">
         {data.lessons?.sort((a, b) => a.order - b.order).map((lesson) => (
           <Link
-            key={lesson._id}
+            key={lesson._id || lesson.lessonId}
             to="/lessons/$lessonId"
-            params={{ lessonId: lesson._id }}
+            params={{ lessonId: String(lesson._id || lesson.lessonId || lesson.id || 'a1-ch1-l1') }}
             className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-purple-50/30 transition-all group"
           >
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">

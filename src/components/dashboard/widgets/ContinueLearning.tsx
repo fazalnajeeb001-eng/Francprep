@@ -29,7 +29,7 @@ export function ContinueLearning({ cl, dark }: { cl: DashboardData["continueLear
             </div>
             <span className="text-purple-600 dark:text-purple-400 text-xs font-extrabold">{cl.progress}%</span>
           </div>
-          <Link to="/lessons/$lessonId" params={{ lessonId: cl.lessonId }} className="mt-5 w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-bold py-3 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-600/25 flex items-center justify-center gap-2">
+          <Link to="/lessons/$lessonId" params={{ lessonId: String(cl.lessonId || cl._id || 'a1-ch1-l1') }} className="mt-5 w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-bold py-3 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-600/25 flex items-center justify-center gap-2">
             <Play className="w-4 h-4 fill-white" /> Resume Lesson
           </Link>
         </div>
