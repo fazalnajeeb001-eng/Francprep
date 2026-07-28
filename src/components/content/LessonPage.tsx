@@ -689,7 +689,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
   const textMuted = dark ? "text-gray-400" : "text-slate-800 font-bold";
   const btnHover = dark ? "hover:bg-white/5" : "hover:bg-slate-100";
 
-  const { data: lesson, isError: lessonError } = useQuery({
+  const { data: lesson, isError: lessonError, refetch: refetchLesson } = useQuery({
     queryKey: draftId ? ["draft", draftId] : ["lesson", lessonId],
     queryFn: () => {
       const url = draftId ? `/admin/content-pipeline/drafts/${draftId}` : `/lessons/${lessonId}`;
@@ -697,7 +697,8 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         if (!res.ok) throw new Error("Failed to load content");
         return res.json();
       }).then((json) => {
-        const data = json.data;
+        const data = json.data || (json.title || json._id ? json : null);
+        if (!data) throw new Error("Lesson content not found");
         if (draftId && data?.parsedData) {
           const canonical = { ...data.parsedData };
           canonical._id = data._id;
@@ -712,17 +713,23 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         }
         return data as LessonData;
       });
-    }
+    },
+    enabled: !!lessonId || !!draftId,
   });
 
   const { data: progressData, refetch: refetchProgress } = useQuery({
     queryKey: ["lesson-progress", lessonId || draftId],
-    queryFn: () => {
-      if (draftId) return { status: 'in_progress', exercisesCompleted: 0, totalExercises: 0, timeSpent: 0 };
-      return apiFetch(`/progress/${lessonId}`).then((res) => res.json()).then((json) => {
+    queryFn: async () => {
+      if (draftId || !lessonId) return { status: 'in_progress', exercisesCompleted: 0, totalExercises: 0, timeSpent: 0 };
+      try {
+        const res = await apiFetch(`/progress/${lessonId}`);
+        if (!res.ok) return { status: 'in_progress', exercisesCompleted: 0, totalExercises: 0, timeSpent: 0 };
+        const json = await res.json();
         const prog = json?.data?.progress || json?.data;
         return prog as ProgressData;
-      });
+      } catch {
+        return { status: 'in_progress', exercisesCompleted: 0, totalExercises: 0, timeSpent: 0 };
+      }
     },
     enabled: !!lessonId || !!draftId,
   });

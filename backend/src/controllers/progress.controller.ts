@@ -23,8 +23,11 @@ export class ProgressController {
    */
   async getByLesson(req: AuthRequest, res: Response, next: NextFunction) {
     try {
+      if (!req.user) {
+        return res.status(200).json({ success: true, data: { status: 'not_started', timeSpent: 0 } });
+      }
       const progress = await progressService.getLessonProgress(
-        req.user!.userId,
+        req.user.userId,
         req.params.lesson_id
       );
       res.status(200).json({
@@ -41,8 +44,11 @@ export class ProgressController {
    */
   async update(req: AuthRequest, res: Response, next: NextFunction) {
     try {
+      if (!req.user) {
+        return res.status(200).json({ success: true, data: null });
+      }
       const progress = await progressService.updateProgress(
-        req.user!.userId,
+        req.user.userId,
         req.params.lesson_id,
         req.body
       );
