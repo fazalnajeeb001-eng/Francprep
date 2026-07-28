@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { apiFetch } from "~/lib/apiFetch";
 import { useTheme } from "~/lib/ThemeContext";
+import { useAuth } from "~/lib/AuthContext";
 import { motion } from "framer-motion";
 import { ArrowLeft, BookOpen, ChevronRight, Sparkles, Clock, Layers, GraduationCap, Target, BookText, Pen, Headphones, MessageSquare, User, Lock } from "lucide-react";
 
@@ -40,6 +41,9 @@ const LEVEL_ICONS: Record<string, string> = {
 
 function LearnPage() {
   const { dark } = useTheme();
+  const { user } = useAuth();
+  const passedMilestones = (user as any)?.passedMilestones || [];
+
   const [view, setView] = useState<"levels" | string>("levels");
   const [chapters, setChapters] = useState<any[]>([]);
   const [chapterData, setChapterData] = useState<any>(null);
@@ -73,13 +77,13 @@ function LearnPage() {
   }, []);
 
   const isModuleLocked = (levelCode: string) => {
-    if (user?.role === 'admin' || userExempt) return false;
+    if (user?.role === 'admin' || userExempt || (user as any)?.isVipFreeAccess || user?.subscriptionTier === 'premium' || user?.subscriptionTier === 'exam_prep') return false;
     if (gatingSettings.gatingMode === 'all_unlocked') return false;
     if (levelCode === 'A1') return false;
 
     const prevLevelMap: Record<string, string> = { A2: 'A1', B1: 'A2', B2: 'B1', C1: 'B2', C2: 'C1' };
     const requiredPrev = prevLevelMap[levelCode];
-    if (requiredPrev && passedMilestones.some((m: string) => m.toLowerCase().includes(requiredPrev.toLowerCase()))) {
+    if (requiredPrev && Array.isArray(passedMilestones) && passedMilestones.some((m: string) => typeof m === 'string' && m.toLowerCase().includes(requiredPrev.toLowerCase()))) {
       return false;
     }
 
