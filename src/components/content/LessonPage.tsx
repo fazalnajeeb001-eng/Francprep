@@ -115,29 +115,59 @@ interface BlockResult {
 
 // ─── Adapter: LessonQuestion → QuizComponent-compatible shape ────────────────
 
+function parseOptionsFromPrompt(text: string): { cleanPrompt: string; options: string[] } | null {
+  if (!text) return null;
+  const optionMatches = [...text.matchAll(/([a-d])\)\s*([^a-d\)\n]+?)(?=\s+[a-d]\)|$)/gi)];
+  if (optionMatches.length >= 2) {
+    const options = optionMatches.map(m => m[2].trim());
+    let cleanPrompt = text;
+    const firstOptionIdx = text.search(/[a-d]\)\s*/i);
+    if (firstOptionIdx > 0) {
+      cleanPrompt = text.substring(0, firstOptionIdx).trim();
+      cleanPrompt = cleanPrompt.replace(/^(?:\d+[\.\)]\s*)?(?:Multiple Choice|Matching|Fill in the Blank|Sentence Ordering|Short Answer|Communicative Practice)[:\s]*/i, '').trim();
+    }
+    return { cleanPrompt, options };
+  }
+  return null;
+}
+
+function parseOrderingFromPrompt(text: string): { cleanPrompt: string; items: string[] } | null {
+  if (!text) return null;
+  const itemMatches = [...text.matchAll(/\(([a-d1-9])\)\s*([^()]+?)(?=\s*\([a-d1-9]\)|$)/gi)];
+  if (itemMatches.length >= 2) {
+    const items = itemMatches.map(m => m[2].trim());
+    let cleanPrompt = text;
+    const firstItemIdx = text.search(/\([a-d1-9]\)\s*/i);
+    if (firstItemIdx > 0) {
+      cleanPrompt = text.substring(0, firstItemIdx).trim();
+      cleanPrompt = cleanPrompt.replace(/^(?:\d+[\.\)]\s*)?(?:Sentence Ordering|Ordering)[:\s]*/i, '').trim();
+    }
+    return { cleanPrompt, items };
+  }
+  return null;
+}
+
 function extractPairsFromText(text: string): { pairs: Record<string, string>; title: string } | null {
   if (!text) return null;
-  // If prompt contains blank line indicator (__________), it is a Fill in the Blank question, NOT a matching pair
-  if (text.includes('__________')) return null;
+  if (text.includes('__________') || text.includes('______') || /[a-d]\)\s*/i.test(text)) return null;
 
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
   const pairs: Record<string, string> = {};
   const nonPairLines: string[] = [];
 
   for (const line of lines) {
-    if (line.includes('__________')) {
+    if (line.includes('__________') || line.includes('______')) {
       nonPairLines.push(line);
       continue;
     }
 
-    const m = line.match(/^([^—\-\:\d]+(?:[^\n—\-\:]+)?)\s*[—\-\:]+\s*(?:[a-eA-E][\.\)]\s*)?(.+)$/);
+    const m = line.match(/^([^—\-\:\d]+(?:[^\n—\-\:]+)?)\s*[—\-\:]+\s*(?:[a-eA-E0-9][\.\)]\s*)?(.+)$/);
     if (m && m[1].trim() && m[2].trim()) {
       const left = m[1].replace(/^\d+[\.\)]\s*/, '').replace(/^[*•\-]\s*/, '').trim();
-      const right = m[2].replace(/^[a-eA-E][\.\)]\s*/, '').trim();
+      const right = m[2].replace(/^[a-eA-E0-9][\.\)]\s*/, '').trim();
       const leftLower = left.toLowerCase();
 
-      // Guard against instruction words being treated as pair keys
-      const isInstructionWord = ['complete', 'fill', 'fill in', 'question', 'select', 'translate', 'instructions', 'matching'].some(w => leftLower.startsWith(w));
+      const isInstructionWord = ['complete', 'fill', 'fill in', 'question', 'select', 'translate', 'instructions', 'matching', 'multiple choice'].some(w => leftLower.startsWith(w));
 
       if (left && right && left.length < 50 && right.length < 80 && !isInstructionWord) {
         pairs[left] = right;
@@ -147,8 +177,8 @@ function extractPairsFromText(text: string): { pairs: Record<string, string>; ti
     nonPairLines.push(line);
   }
 
-  if (Object.keys(pairs).length >= 1) {
-    const title = nonPairLines.join(' ').trim() || 'Match each French term with its correct translation:';
+  if (Object.keys(pairs).length >= 2) {
+    const title = nonPairLines.join(' ').replace(/^(?:\d+[\.\)]\s*)?(?:Matching)[:\s]*/i, '').trim() || 'Match each French term with its correct translation:';
     return { pairs, title };
   }
 
@@ -159,10 +189,32 @@ function adaptQuestions(questions: LessonQuestion[]) {
   if (!questions) return [];
 
   return questions.map((q, idx) => {
-    let resolvedPairs = q.pairs ? (Array.isArray(q.pairs) ? Object.fromEntries(q.pairs.map((p: any) => [p.left || p[0], p.right || p[1]])) : q.pairs) : undefined;
     let resolvedText = q.prompt || (q as any).text || '';
+    let resolvedOptions = (q as any).options;
+    let resolvedPairs = q.pairs ? (Array.isArray(q.pairs) ? Object.fromEntries(q.pairs.map((p: any) => [p.left || p[0], p.right || p[1]])) : q.pairs) : undefined;
+    let resolvedItems = q.items;
 
-    if (!resolvedPairs || Object.keys(resolvedPairs).length === 0) {
+    // 1. Check for inline options if options are missing or dummy
+    const hasDummyOptions = Array.isArray(resolvedOptions) && resolvedOptions.length > 0 && resolvedOptions.every((opt: any) => /^Option\s+[A-Z]$/i.test(String(opt).trim()));
+    if (!resolvedOptions || resolvedOptions.length < 2 || hasDummyOptions) {
+      const parsedMcq = parseOptionsFromPrompt(resolvedText);
+      if (parsedMcq) {
+        resolvedText = parsedMcq.cleanPrompt;
+        resolvedOptions = parsedMcq.options;
+      }
+    }
+
+    // 2. Check for ordering items if items missing
+    if (!resolvedItems || resolvedItems.length < 2) {
+      const parsedOrdering = parseOrderingFromPrompt(resolvedText);
+      if (parsedOrdering) {
+        resolvedText = parsedOrdering.cleanPrompt;
+        resolvedItems = parsedOrdering.items;
+      }
+    }
+
+    // 3. Check for matching pairs if pairs missing
+    if (!resolvedPairs || Object.keys(resolvedPairs).length < 2) {
       const extracted = extractPairsFromText(resolvedText);
       if (extracted) {
         resolvedPairs = extracted.pairs;
@@ -170,37 +222,40 @@ function adaptQuestions(questions: LessonQuestion[]) {
       }
     }
 
-    let resolvedOptions = (q as any).options;
-
-    const hasDummyOptions = Array.isArray(resolvedOptions) && resolvedOptions.length > 0 && resolvedOptions.every((opt: any) => /^Option\s+[A-Z]$/i.test(String(opt).trim()));
-    const hasPairs = (resolvedPairs && Object.keys(resolvedPairs).length > 0) || (q as any).pairs?.length > 0;
-    const isBlankQuestion = resolvedText.includes('__________');
+    const hasPairs = (resolvedPairs && Object.keys(resolvedPairs).length >= 2) || (q as any).pairs?.length >= 2;
+    const hasOptions = Array.isArray(resolvedOptions) && resolvedOptions.length >= 2 && !resolvedOptions.every((opt: any) => /^Option\s+[A-Z]$/i.test(String(opt).trim()));
+    const hasItems = Array.isArray(resolvedItems) && resolvedItems.length >= 2;
+    const isBlankQuestion = resolvedText.includes('__________') || resolvedText.includes('______');
 
     let resolvedType = q.type;
-    if (!resolvedType) {
-      if (isBlankQuestion) {
-        resolvedType = 'fill_blank';
-        resolvedPairs = undefined;
-      } else if (hasPairs) {
-        resolvedType = 'matching';
-      } else if (hasDummyOptions) {
-        resolvedType = 'short_answer';
-      }
-    }
-    if (isBlankQuestion && resolvedType !== 'fill_blank') {
+    if (hasOptions && (!resolvedType || resolvedType === 'short_answer' || resolvedType === 'matching')) {
+      resolvedType = 'multiple_choice';
       resolvedPairs = undefined;
+    } else if (hasItems && (!resolvedType || resolvedType === 'short_answer')) {
+      resolvedType = 'ordering';
+      resolvedPairs = undefined;
+    } else if (hasPairs && !hasOptions) {
+      resolvedType = 'matching';
+    } else if (isBlankQuestion) {
+      resolvedType = 'fill_blank';
+      resolvedPairs = undefined;
+    } else if (!resolvedType) {
+      resolvedType = 'short_answer';
     }
+
+    // Remove section headers like "1. Multiple Choice" or "2. Matching" from question prompt text
+    resolvedText = resolvedText.replace(/^(?:\d+[\.\)]\s*)?(?:Multiple Choice|Matching|Fill in the Blank|Sentence Ordering|Short Answer|Communicative Practice)[:\s]*/i, '').trim();
 
     return {
       id: q.id || (q as any)._id || `q-${idx}`,
       text: resolvedText,
       type: resolvedType,
-      options: (hasPairs || hasDummyOptions) ? undefined : resolvedOptions,
+      options: hasOptions ? resolvedOptions : undefined,
       correctAnswer: q.correctAnswer as string | string[] | undefined,
       explanation: q.explanation,
-      pairs: resolvedPairs,
-      items: q.items,
-      correctOrder: Array.isArray(q.correctAnswer) && q.type === 'ordering' ? q.correctAnswer as string[] : undefined,
+      pairs: hasPairs ? resolvedPairs : undefined,
+      items: hasItems ? resolvedItems : undefined,
+      correctOrder: Array.isArray(q.correctAnswer) && resolvedType === 'ordering' ? q.correctAnswer as string[] : undefined,
       points: 1,
     };
   });
