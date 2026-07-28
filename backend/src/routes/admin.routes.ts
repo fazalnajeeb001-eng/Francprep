@@ -918,6 +918,27 @@ router.get('/analytics/saas-overview', async (_req: AuthRequest, res: Response, 
     const arpu = payingUsers.length > 0 ? Math.round(mrr / payingUsers.length) : 0;
     const ltv = arpu * 18;
 
+    // Tally real exam goals
+    const examCounts: Record<string, number> = {};
+    allUsers.forEach(u => {
+      const goal = u.learningGoal || (u as any).targetExam || 'Not Specified';
+      examCounts[goal] = (examCounts[goal] || 0) + 1;
+    });
+
+    let topExamGoal = 'No goal set';
+    let topExamCount = 0;
+    Object.entries(examCounts).forEach(([goal, count]) => {
+      if (count > topExamCount) {
+        topExamGoal = goal;
+        topExamCount = count;
+      }
+    });
+    const topExamPercentage = totalStudents > 0 ? Math.round((topExamCount / totalStudents) * 100) : 0;
+
+    const totalXP = allUsers.reduce((sum, u) => sum + (u.xp || 0), 0);
+    const totalStudyHours = Math.round((totalXP / 60) * 10) / 10;
+    const avgSessionMinutes = totalStudents > 0 ? Math.round(totalXP / totalStudents) : 0;
+
     const studentRoster = allUsers.map(u => ({
       _id: u._id,
       firstName: u.firstName,
@@ -928,8 +949,8 @@ router.get('/analytics/saas-overview', async (_req: AuthRequest, res: Response, 
       customPriceOverride: u.customPriceOverride,
       isOnline: Boolean(u.updatedAt && new Date(u.updatedAt) >= fiveMinsAgo),
       lastActive: u.updatedAt,
-      studyHours: Math.round(((u as any).xp || 240) / 60),
-      targetExam: (u as any).targetExam || 'TCF Canada',
+      studyHours: Math.round(((u.xp || 0) / 60) * 10) / 10,
+      targetExam: u.learningGoal || (u as any).targetExam || 'Not Specified',
     }));
 
     res.json({
@@ -945,6 +966,13 @@ router.get('/analytics/saas-overview', async (_req: AuthRequest, res: Response, 
         arpu,
         ltv,
         planCounts,
+        telemetry: {
+          topExamGoal: topExamCount > 0 ? `${topExamGoal} (${topExamPercentage}%)` : 'No goal set yet',
+          examBreakdown: examCounts,
+          totalStudyHours,
+          avgSessionMinutes: `${avgSessionMinutes} Minutes`,
+          activeStudentsCount: totalStudents,
+        },
         students: studentRoster,
       },
     });

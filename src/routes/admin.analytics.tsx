@@ -48,6 +48,13 @@ interface AnalyticsOverview {
     vipFree: number;
     free: number;
   };
+  telemetry?: {
+    topExamGoal: string;
+    examBreakdown: Record<string, number>;
+    totalStudyHours: number;
+    avgSessionMinutes: string;
+    activeStudentsCount: number;
+  };
   students: Array<{
     _id: string;
     firstName: string;
@@ -218,24 +225,24 @@ export function AnalyticsPage() {
             </h3>
             <div className="grid grid-cols-2 gap-4 text-xs pt-2">
               <div className="p-3 rounded-xl border border-white/10 bg-white/5 space-y-1">
-                <span className="text-gray-400">Peak Study Hours</span>
-                <span className="text-base font-black block text-blue-400">7 PM – 10 PM</span>
-                <span className="text-[10px] text-gray-500">Highest daily active sessions</span>
+                <span className="text-gray-400">Total Study Hours</span>
+                <span className="text-base font-black block text-blue-400">{data?.telemetry?.totalStudyHours || 0} Hours</span>
+                <span className="text-[10px] text-gray-500">Across all registered students</span>
               </div>
               <div className="p-3 rounded-xl border border-white/10 bg-white/5 space-y-1">
                 <span className="text-gray-400">Avg. Daily Session</span>
-                <span className="text-base font-black block text-purple-400">42 Minutes</span>
-                <span className="text-[10px] text-gray-500">3.4 lessons completed / day</span>
+                <span className="text-base font-black block text-purple-400">{data?.telemetry?.avgSessionMinutes || "0 Minutes"}</span>
+                <span className="text-[10px] text-gray-500">Per active student account</span>
               </div>
               <div className="p-3 rounded-xl border border-white/10 bg-white/5 space-y-1">
                 <span className="text-gray-400">Top Exam Goal</span>
-                <span className="text-base font-black block text-amber-400">TCF Canada (68%)</span>
-                <span className="text-[10px] text-gray-500">TEF (22%), DELF (10%)</span>
+                <span className="text-base font-black block text-amber-400">{data?.telemetry?.topExamGoal || "No goal set yet"}</span>
+                <span className="text-[10px] text-gray-500">Live student preference tally</span>
               </div>
               <div className="p-3 rounded-xl border border-white/10 bg-white/5 space-y-1">
-                <span className="text-gray-400">Top Region</span>
-                <span className="text-base font-black block text-emerald-400">North America & EU</span>
-                <span className="text-[10px] text-gray-500">Immigration & University</span>
+                <span className="text-gray-400">Active Platform Roster</span>
+                <span className="text-base font-black block text-emerald-400">{data?.totalStudents || 0} Registered Users</span>
+                <span className="text-[10px] text-gray-500">{data?.onlineCount || 0} currently active right now</span>
               </div>
             </div>
           </div>
