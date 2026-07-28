@@ -84,9 +84,13 @@ export class LessonService {
    * Returns canonical format matching lesson.schema.json for the frontend.
    */
   async getLessonById(id: string) {
-    // Try lessonId string first (e.g. "a1-ch1-l1"), then ObjectId
     let lesson = await Lesson.findOne({ lessonId: id });
-    if (!lesson) lesson = await Lesson.findById(id);
+    if (!lesson) {
+      lesson = await Lesson.findOne({ _id: id }).catch(() => null);
+    }
+    if (!lesson && mongoose.Types.ObjectId.isValid(id)) {
+      lesson = await Lesson.findById(id);
+    }
     if (!lesson) {
       throw { statusCode: 404, message: 'Lesson not found' };
     }

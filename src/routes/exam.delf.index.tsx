@@ -48,6 +48,18 @@ export function DELFExamHubPage() {
           </div>
         </div>
 
+        {/* ─── OFFICIAL COMPLIANCE BANNER ─── */}
+        <div className="p-4 rounded-2xl border bg-amber-500/10 border-amber-500/20 text-xs space-y-1">
+          <div className="flex items-center gap-2 font-bold text-amber-400">
+            <ShieldCheck className="w-4 h-4" />
+            <span>100% Official DELF / DALF Format Alignment & Module Gate Evaluation</span>
+          </div>
+          <p className="text-amber-200/90 text-[11px] leading-relaxed">
+            All papers strictly follow the 4 official FEI skill sections (Listening, Reading, Writing & Speaking). 
+            <em> Disclaimer: FrancPrep provides official format diagnostic evaluations to unlock module progression. Official DELF/DALF diplomas are awarded by France Éducation International.</em>
+          </p>
+        </div>
+
         {/* ─── LEVEL FILTER PILLS ─── */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2">
           {["ALL", "A1", "A2", "B1", "B2", "C1", "C2"].map((level) => (
