@@ -817,6 +817,8 @@ router.get('/subscriptions/settings', async (_req: AuthRequest, res: Response, n
         annualPrice: settings.annualPrice || 199,
         lifetimePrice: settings.lifetimePrice || 299,
         freePreviewScope: settings.freePreviewScope || 'first_chapter_a1',
+        customFreeChapterIds: settings.customFreeChapterIds || [],
+        customPricingPlans: settings.customPricingPlans || [],
         paywallEnforced: settings.paywallEnforced !== false,
       },
     });
@@ -828,7 +830,7 @@ router.get('/subscriptions/settings', async (_req: AuthRequest, res: Response, n
 // PUT /api/admin/subscriptions/settings
 router.put('/subscriptions/settings', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { monthlyPrice, annualPrice, lifetimePrice, freePreviewScope, paywallEnforced } = req.body;
+    const { monthlyPrice, annualPrice, lifetimePrice, freePreviewScope, customFreeChapterIds, customPricingPlans, paywallEnforced } = req.body;
     let settings = await SystemSettings.findOne();
     if (!settings) {
       settings = new SystemSettings();
@@ -837,6 +839,8 @@ router.put('/subscriptions/settings', async (req: AuthRequest, res: Response, ne
     if (annualPrice !== undefined) settings.annualPrice = annualPrice;
     if (lifetimePrice !== undefined) settings.lifetimePrice = lifetimePrice;
     if (freePreviewScope) settings.freePreviewScope = freePreviewScope;
+    if (customFreeChapterIds !== undefined) settings.customFreeChapterIds = customFreeChapterIds;
+    if (customPricingPlans !== undefined) settings.customPricingPlans = customPricingPlans;
     if (paywallEnforced !== undefined) settings.paywallEnforced = paywallEnforced;
     await settings.save();
     res.json({ success: true, message: 'Subscription & Paywall settings updated', data: settings });
