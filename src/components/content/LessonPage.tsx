@@ -133,16 +133,22 @@ function parseOptionsFromPrompt(text: string): { cleanPrompt: string; options: s
 
 function parseOrderingFromPrompt(text: string): { cleanPrompt: string; items: string[] } | null {
   if (!text) return null;
-  const itemMatches = [...text.matchAll(/\(([a-d1-9])\)\s*([^()]+?)(?=\s*\([a-d1-9]\)|$)/gi)];
-  if (itemMatches.length >= 2) {
-    const items = itemMatches.map(m => m[2].trim());
-    let cleanPrompt = text;
-    const firstItemIdx = text.search(/\([a-d1-9]\)\s*/i);
+  const cleanStr = text.replace(/\r?\n+/g, ' ').trim();
+  const rawItems: string[] = [];
+
+  const matches = cleanStr.matchAll(/\(([a-e1-5])\)\s*([^\(\)]+?)(?=\s*\([a-e1-5]\)|$)/gi);
+  for (const m of matches) {
+    if (m[2]?.trim()) rawItems.push(m[2].trim());
+  }
+
+  if (rawItems.length >= 2) {
+    let cleanPrompt = cleanStr;
+    const firstItemIdx = cleanStr.search(/\([a-e1-5]\)/i);
     if (firstItemIdx > 0) {
-      cleanPrompt = text.substring(0, firstItemIdx).trim();
+      cleanPrompt = cleanStr.substring(0, firstItemIdx).trim();
       cleanPrompt = cleanPrompt.replace(/^(?:\d+[\.\)]\s*)?(?:Sentence Ordering|Ordering)[:\s]*/i, '').trim();
     }
-    return { cleanPrompt, items };
+    return { cleanPrompt: cleanPrompt || 'Put in a logical order:', items: rawItems };
   }
   return null;
 }
@@ -1921,6 +1927,7 @@ Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain aprè
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
             <div className="flex items-center gap-3 mb-4"><Repeat className="w-5 h-5 text-purple-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{isL8 ? "Mixed Practice Exercises" : "Practice Exercises"}</h3></div>
             <QuizComponent
+              key={`quiz-practice-${lesson?._id || 'l1'}-${practiceQuestions.length}`}
               questions={adaptQuestions(practiceQuestions)}
               type="practice"
               onComplete={(score, total) => handleBlockComplete('practice', score, total)}
