@@ -207,76 +207,104 @@ function parsePairLine(prompt: string): { left: string; right: string } | null {
 function adaptQuestions(questions: LessonQuestion[]) {
   if (!questions || !Array.isArray(questions)) return [];
 
-  // Pass 1: Pre-group matching header and multiline pair line fragments into unified matching questions
+  // Pass 1: Pre-group matching headers and look ahead to absorb all consecutive pair lines
   const grouped: any[] = [];
-  let pendingMatchingQ: any = null;
+  let i = 0;
 
-  for (let i = 0; i < questions.length; i++) {
+  while (i < questions.length) {
     const rawQ = questions[i];
     const prompt = (rawQ.prompt || (rawQ as any).text || '').trim();
     const promptLower = prompt.toLowerCase();
 
-    const isMatchingHeader = (
-      promptLower.startsWith('matching') ||
-      promptLower.startsWith('match the') ||
-      promptLower.startsWith('match each') ||
-      (rawQ.type === 'matching' && (!rawQ.pairs || Object.keys(rawQ.pairs).length === 0))
-    );
+    const isMatching = promptLower.startsWith('match') || rawQ.type === 'matching';
 
-    const pairData = parsePairLine(prompt);
-
-    if (isMatchingHeader) {
-      if (pendingMatchingQ && Object.keys(pendingMatchingQ.pairs).length > 0) {
-        grouped.push(pendingMatchingQ);
-        pendingMatchingQ = null;
+    if (isMatching) {
+      let pairsObj: Record<string, string> = {};
+      if (rawQ.pairs) {
+        if (Array.isArray(rawQ.pairs)) {
+          rawQ.pairs.forEach((p: any) => {
+            if (p.left && p.right) pairsObj[p.left] = p.right;
+          });
+        } else if (typeof rawQ.pairs === 'object') {
+          pairsObj = { ...rawQ.pairs };
+        }
       }
 
-      const title = prompt.replace(/^(?:\d+[\.\)]\s*)?(?:Matching)[:\s]*/i, '').trim() || 'Match each expression to its use:';
-      pendingMatchingQ = {
-        id: rawQ.id || `q-matching-${i}`,
-        text: title,
-        type: 'matching',
-        pairs: {},
-        explanation: 'Match each item with its correct pair.',
-        points: 1,
-      };
-      continue;
+      const extractedFromPrompt = extractPairsFromText(prompt);
+      if (extractedFromPrompt && Object.keys(extractedFromPrompt.pairs).length >= 2) {
+        pairsObj = { ...pairsObj, ...extractedFromPrompt.pairs };
+      }
+
+      // Look ahead to absorb consecutive pair line items
+      let nextIdx = i + 1;
+      while (nextIdx < questions.length) {
+        const nextQ = questions[nextIdx];
+        const nextPrompt = (nextQ?.prompt || (nextQ as any)?.text || '').trim();
+        const pair = parsePairLine(nextPrompt);
+
+        if (pair) {
+          pairsObj[pair.left] = pair.right;
+          nextIdx++;
+        } else {
+          break;
+        }
+      }
+
+      if (Object.keys(pairsObj).length >= 2) {
+        const title = prompt.replace(/^(?:\d+[\.\)]\s*)?(?:Matching)[:\s]*/i, '').trim() || 'Match each expression to its use:';
+        grouped.push({
+          id: rawQ.id || `q-matching-${i}`,
+          text: title,
+          type: 'matching',
+          pairs: pairsObj,
+          explanation: rawQ.explanation || 'Match each item with its correct pair.',
+          points: 1,
+        });
+        i = nextIdx; // Skip all absorbed pair line items!
+        continue;
+      }
     }
 
-    if (pairData) {
-      if (!pendingMatchingQ) {
-        pendingMatchingQ = {
+    // If item is a standalone orphan pair line (without a header), check if it starts a pair sequence
+    const standalonePair = parsePairLine(prompt);
+    if (standalonePair) {
+      const pairsObj: Record<string, string> = { [standalonePair.left]: standalonePair.right };
+      let nextIdx = i + 1;
+      while (nextIdx < questions.length) {
+        const nextQ = questions[nextIdx];
+        const nextPrompt = (nextQ?.prompt || (nextQ as any)?.text || '').trim();
+        const pair = parsePairLine(nextPrompt);
+        if (pair) {
+          pairsObj[pair.left] = pair.right;
+          nextIdx++;
+        } else {
+          break;
+        }
+      }
+
+      if (Object.keys(pairsObj).length >= 2) {
+        grouped.push({
           id: `q-matching-${i}`,
           text: 'Match each expression to its use:',
           type: 'matching',
-          pairs: {},
+          pairs: pairsObj,
           explanation: 'Match each item with its correct pair.',
           points: 1,
-        };
+        });
+        i = nextIdx;
+        continue;
       }
-      pendingMatchingQ.pairs[pairData.left] = pairData.right;
-      continue; // Absorb multiline pair line into pendingMatchingQ!
-    }
-
-    if (pendingMatchingQ) {
-      if (Object.keys(pendingMatchingQ.pairs).length > 0) {
-        grouped.push(pendingMatchingQ);
-      }
-      pendingMatchingQ = null;
     }
 
     grouped.push(rawQ);
+    i++;
   }
 
-  if (pendingMatchingQ && Object.keys(pendingMatchingQ.pairs).length > 0) {
-    grouped.push(pendingMatchingQ);
-  }
-
-  // Pass 2: Adapt each grouped question object into QuizComponent shape
+  // Pass 2: Adapt grouped items
   const adapted = grouped.map((q, idx) => {
     let resolvedText = q.prompt || q.text || '';
     let resolvedOptions = q.options;
-    let resolvedPairs = q.pairs ? (Array.isArray(q.pairs) ? Object.fromEntries(q.pairs.map((p: any) => [p.left || p[0], p.right || p[1]])) : q.pairs) : undefined;
+    let resolvedPairs = q.pairs;
     let resolvedItems = q.items;
 
     // Check inline options
@@ -298,16 +326,7 @@ function adaptQuestions(questions: LessonQuestion[]) {
       }
     }
 
-    // Check matching pairs
-    if (!resolvedPairs || Object.keys(resolvedPairs).length < 2) {
-      const extracted = extractPairsFromText(resolvedText);
-      if (extracted) {
-        resolvedPairs = extracted.pairs;
-        resolvedText = extracted.title;
-      }
-    }
-
-    const hasPairs = (resolvedPairs && Object.keys(resolvedPairs).length >= 2) || (q as any).pairs?.length >= 2;
+    const hasPairs = resolvedPairs && Object.keys(resolvedPairs).length >= 2;
     const hasOptions = Array.isArray(resolvedOptions) && resolvedOptions.length >= 2 && !resolvedOptions.every((opt: any) => /^Option\s+[A-Z]$/i.test(String(opt).trim()));
     const hasItems = Array.isArray(resolvedItems) && resolvedItems.length >= 2;
     const isBlankQuestion = resolvedText.includes('__________') || resolvedText.includes('______');
@@ -315,16 +334,13 @@ function adaptQuestions(questions: LessonQuestion[]) {
     let resolvedType = q.type;
     if (hasOptions && (!resolvedType || resolvedType === 'short_answer' || resolvedType === 'matching')) {
       resolvedType = 'multiple_choice';
-      resolvedPairs = undefined;
     } else if (hasItems && (!resolvedType || resolvedType === 'short_answer')) {
       resolvedType = 'ordering';
-      resolvedPairs = undefined;
-    } else if (hasPairs && !hasOptions) {
+    } else if (hasPairs) {
       resolvedType = 'matching';
     } else if (isBlankQuestion) {
       resolvedType = 'fill_blank';
-      resolvedPairs = undefined;
-    } else if (!resolvedType) {
+    } else if (!resolvedType || resolvedType === 'matching') {
       resolvedType = 'short_answer';
     }
 
@@ -345,7 +361,7 @@ function adaptQuestions(questions: LessonQuestion[]) {
     };
   });
 
-  // If first question is matching but Question 1 (Multiple Choice) was omitted in legacy DB record, prepend Question 1 MCQ
+  // Ensure Question 1 MCQ is present if missing
   const hasMcqFirst = adapted.length > 0 && adapted[0].type === 'multiple_choice';
   if (!hasMcqFirst && adapted.length > 0 && (adapted[0].text.includes('Match') || adapted[0].type === 'matching')) {
     const mcqQ = {
