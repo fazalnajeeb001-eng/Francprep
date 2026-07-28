@@ -16,6 +16,7 @@ import {
   logout as apiLogout,
   getMe as apiGetMe,
   getStoredAccessToken,
+  getStoredUser,
   clearAuthStorage,
 } from "./auth";
 
@@ -43,7 +44,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 // ─── Provider ─────────────────────────────────────────────────────────────
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => getStoredUser());
   const [isLoading, setIsLoading] = useState(true);
 
   // On initial mount, try to restore the session from stored token
@@ -51,16 +52,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const init = async () => {
       const token = getStoredAccessToken();
       if (!token) {
+        setUser(null);
         setIsLoading(false);
         return;
       }
       try {
         const currentUser = await apiGetMe();
         setUser(currentUser);
-      } catch {
-        // Token invalid or expired — clear everything
-        clearAuthStorage();
-        setUser(null);
+      } catch (err: any) {
+        // Only clear auth if server explicitly responds with 401 Unauthorized
+        if (err?.response?.status === 401) {
+          clearAuthStorage();
+          setUser(null);
+        }
       } finally {
         setIsLoading(false);
       }
