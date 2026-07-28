@@ -89,8 +89,9 @@ function ActionDropdown({ user, currentUserId, onAction }: { user: AdminUser; cu
 
   const actions = [
     { id: "detail", label: "View Details", icon: Eye, color: "text-blue-400", disabled: false },
+    { id: "gating-override", label: "🔒 Gate Overrides", icon: UserCog, color: "text-purple-400", disabled: false },
     { id: "toggle-ban", label: user.isActive ? "Ban User" : "Unban User", icon: Ban, color: user.isActive ? "text-red-400" : "text-emerald-400", disabled: isSelf },
-    { id: "change-role", label: `Make ${user.role === "admin" ? "Student" : "Admin"}`, icon: UserCog, color: "text-purple-400", disabled: isSelf },
+    { id: "change-role", label: `Make ${user.role === "admin" ? "Student" : "Admin"}`, icon: Shield, color: "text-indigo-400", disabled: isSelf },
     { id: "reset-password", label: "Reset Password", icon: Key, color: "text-amber-400", disabled: false },
     { id: "delete", label: "Delete User", icon: Trash2, color: "text-red-500", disabled: isSelf },
   ];
@@ -103,10 +104,10 @@ function ActionDropdown({ user, currentUserId, onAction }: { user: AdminUser; cu
       </button>
       {open && (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full mt-1 z-50 w-52 rounded-xl dark:bg-[#101828] bg-white border dark:border-[#1e2a4a] border-gray-200 shadow-xl py-1 overflow-hidden">
+          <div className="fixed inset-0 z-[70]" onClick={(e) => { e.stopPropagation(); setOpen(false); }} />
+          <div className="absolute right-0 bottom-full mb-1 z-[80] w-52 rounded-xl dark:bg-[#101828] bg-white border dark:border-[#1e2a4a] border-gray-200 shadow-2xl py-1 overflow-hidden">
             {actions.map((a) => (
-              <button key={a.id} onClick={() => { if (!a.disabled) { setOpen(false); onAction(a.id, user); } }}
+              <button key={a.id} onClick={(e) => { e.stopPropagation(); if (!a.disabled) { setOpen(false); onAction(a.id, user); } }}
                 className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-left transition-colors ${
                   a.disabled
                     ? "dark:text-gray-600 text-gray-400 cursor-not-allowed"
@@ -467,6 +468,9 @@ function AdminUsersPage() {
       }
       case "reset-password":
         setResetPwdUser(user);
+        break;
+      case "gating-override":
+        setGatingUser(user);
         break;
     }
   };
