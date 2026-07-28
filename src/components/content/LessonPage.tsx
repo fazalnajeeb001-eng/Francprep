@@ -1834,11 +1834,11 @@ Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain aprè
               <BookOpen className="w-5 h-5" />
             </div>
             <div>
-              <EditableText as="h1" fieldPath="title" value={lesson.title} className={`text-xl font-bold ${dark ? "text-white" : "text-gray-900"}`} />
+              <EditableText as="h1" fieldPath="title" value={lesson?.title || "French Lesson"} className={`text-xl font-bold ${dark ? "text-white" : "text-gray-900"}`} />
               <div className={`flex items-center gap-2 text-xs ${textSec}`}>
-                <span>Lesson {lesson.order}</span>
+                <span>Lesson {lesson?.order || lesson?.lessonNumber || 1}</span>
                 <span>&middot;</span>
-                <span>{lesson.durationMinutes} min</span>
+                <span>{lesson?.durationMinutes || lesson?.estimatedDuration || 25} min</span>
                 {progress?.status === 'completed' && <span className="text-emerald-400 font-semibold">&#9679; Completed</span>}
               </div>
             </div>
