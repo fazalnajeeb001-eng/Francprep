@@ -132,21 +132,36 @@ function AdminLayout() {
     <div className={`min-h-screen ${bg} transition-colors duration-300`}>
       <div className="flex">
         {/* Mobile overlay */}
-        {sidebarOpen && <div className="fixed inset-0 bg-slate-900/50 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-40 lg:hidden transition-opacity"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
 
         {/* Sidebar */}
-        <aside className={`fixed lg:sticky top-0 z-50 lg:z-0 h-screen w-64 dark:bg-[#070B17]/95 bg-white/95 backdrop-blur-xl border-r ${border} flex flex-col transition-all duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
+        <aside
+          className={`fixed lg:sticky top-0 z-50 h-screen w-72 max-w-[85vw] lg:w-64 dark:bg-[#070B17]/98 bg-white/98 backdrop-blur-xl border-r ${border} flex flex-col transition-transform duration-300 ease-in-out ${
+            sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          }`}
+        >
           {/* Logo */}
-          <div className={`p-5 border-b ${border}`}>
-            <Link to="/admin" className="flex items-center gap-3">
+          <div className={`p-4 sm:p-5 border-b ${border} flex items-center justify-between`}>
+            <Link to="/admin" className="flex items-center gap-3" onClick={() => setSidebarOpen(false)}>
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold shadow-md shadow-purple-500/20">F</div>
               <span className={`text-lg font-extrabold ${dark ? "text-white" : "text-slate-900"}`}>FrancPrep</span>
-              <span className="ml-auto text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30">Admin</span>
+              <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30">Admin</span>
             </Link>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="lg:hidden p-1.5 rounded-xl dark:hover:bg-white/10 hover:bg-gray-100 text-gray-400"
+            >
+              ✕
+            </button>
           </div>
 
           {/* Nav items */}
-          <div className="flex-1 overflow-y-auto p-3 space-y-4 mt-2">
+          <div className="flex-1 overflow-y-auto p-3 space-y-4 mt-2 scrollbar-thin">
             {navGroups.map((group) => {
               const isOpen = openGroups[group.title];
               return (
@@ -191,7 +206,7 @@ function AdminLayout() {
 
           {/* Footer */}
           <div className={`p-3 border-t ${border}`}>
-            <Link to="/dashboard"
+            <Link to="/dashboard" onClick={() => setSidebarOpen(false)}
               className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold dark:text-gray-400 text-slate-600 hover:text-purple-600 transition-colors">
               <ChevronLeft className="w-3.5 h-3.5 text-purple-500" /> Back to Student View
             </Link>
@@ -199,34 +214,34 @@ function AdminLayout() {
         </aside>
 
         {/* Main content area */}
-        <div className="flex-1 min-h-screen">
+        <div className="flex-1 min-h-screen min-w-0">
           {/* Top navbar */}
           <header className={`sticky top-0 z-30 dark:bg-[#070B17]/80 bg-white/80 backdrop-blur-xl border-b ${border} transition-colors`}>
-            <div className="flex items-center justify-between px-4 md:px-6 py-3">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between px-3 sm:px-6 py-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <button className="lg:hidden p-2 rounded-xl dark:hover:bg-white/5 hover:bg-gray-100 transition-colors" onClick={() => setSidebarOpen(true)} aria-label="Open menu">
                   <Menu className="w-5 h-5 dark:text-gray-400 text-gray-600" />
                 </button>
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30">
+                <div className="flex items-center gap-2 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30">
                   <Shield className="w-3.5 h-3.5 text-purple-400" />
                   <span className="text-xs font-semibold text-purple-400">Admin Panel</span>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full dark:bg-amber-500/10 bg-amber-50 border dark:border-amber-500/30 border-amber-200">
                   <Crown className="w-3.5 h-3.5 text-amber-400" />
                   <span className="text-xs font-semibold text-amber-500">{user.firstName} {user.lastName}</span>
                 </div>
-                <Link to="/dashboard" className="px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/20 text-xs font-semibold flex items-center gap-1.5 transition-all">
+                <Link to="/dashboard" className="px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/20 text-xs font-semibold flex items-center gap-1.5 transition-all">
                   <GraduationCap className="w-4 h-4" />
-                  <span>Student View</span>
+                  <span className="hidden xs:inline">Student View</span>
                 </Link>
               </div>
             </div>
           </header>
 
           {/* Page content */}
-          <main className="p-4 md:p-6 lg:p-8 max-w-[1440px] mx-auto">
+          <main className="p-3 sm:p-5 lg:p-8 max-w-[1440px] mx-auto min-w-0 overflow-x-hidden">
             <Outlet />
           </main>
         </div>

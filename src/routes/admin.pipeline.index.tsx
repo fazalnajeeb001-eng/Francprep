@@ -470,25 +470,25 @@ function PipelineDashboardPage() {
         )}
 
         {/* Tabs Bar */}
-        <div className="flex border-b border-[#1e2a4a] gap-6 text-sm">
+        <div className="flex border-b border-[#1e2a4a] gap-4 sm:gap-6 text-xs sm:text-sm overflow-x-auto scrollbar-hide flex-nowrap whitespace-nowrap pb-1">
           <button onClick={() => { setPipelineTab("import"); setSelectedDraft(null); setSelectedPublished(null); }}
-            className={`pb-3 font-semibold transition-all border-b-2 ${pipelineTab === "import" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
+            className={`pb-3 font-semibold transition-all border-b-2 shrink-0 ${pipelineTab === "import" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
             📥 Import Parser Workspace
           </button>
           <button onClick={() => { setPipelineTab("drafts"); setSelectedDraft(null); setSelectedPublished(null); }}
-            className={`pb-3 font-semibold transition-all border-b-2 ${pipelineTab === "drafts" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
+            className={`pb-3 font-semibold transition-all border-b-2 shrink-0 ${pipelineTab === "drafts" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
             📂 Latest Staged Drafts ({activeStagedDrafts.length})
           </button>
           <button onClick={() => { setPipelineTab("integrated"); setSelectedDraft(null); setSelectedPublished(null); }}
-            className={`pb-3 font-semibold transition-all border-b-2 ${pipelineTab === "integrated" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
+            className={`pb-3 font-semibold transition-all border-b-2 shrink-0 ${pipelineTab === "integrated" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
             🔄 Latest Integrated Drafts ({integratedDrafts.slice(0, 1).length})
           </button>
           <button onClick={() => { setPipelineTab("published"); setSelectedDraft(null); setSelectedPublished(null); }}
-            className={`pb-3 font-semibold transition-all border-b-2 ${pipelineTab === "published" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
+            className={`pb-3 font-semibold transition-all border-b-2 shrink-0 ${pipelineTab === "published" ? "border-purple-500 text-purple-400" : "border-transparent text-gray-500 hover:text-gray-300"}`}>
             👑 Latest Published Content ({publishedLessons.slice(0, 1).length})
           </button>
           <Link to="/admin/pipeline/trash"
-            className="pb-3 font-semibold transition-all border-b-2 border-transparent text-gray-500 hover:text-red-400 flex items-center gap-1.5 ml-auto">
+            className="pb-3 font-semibold transition-all border-b-2 border-transparent text-gray-500 hover:text-red-400 flex items-center gap-1.5 shrink-0 sm:ml-auto">
             <Trash2 className="w-4 h-4 text-red-500" />
             <span>🗑️ Recycle Bin (Trash)</span>
           </Link>

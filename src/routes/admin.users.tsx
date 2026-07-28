@@ -37,11 +37,11 @@ function Modal({ open, onClose, title, children }: { open: boolean; onClose: () 
   return (
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/60" onClick={onClose} />
+            className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={onClose} />
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-            className="relative w-full max-w-md rounded-2xl dark:bg-[#101828] bg-white border dark:border-[#1e2a4a] border-gray-200 shadow-2xl p-6">
+            className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl dark:bg-[#101828] bg-white border dark:border-[#1e2a4a] border-gray-200 shadow-2xl p-4 sm:p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold dark:text-white text-gray-900">{title}</h2>
               <button onClick={onClose} className="p-1.5 rounded-xl dark:hover:bg-white/5 hover:bg-gray-100 transition-colors">
