@@ -328,9 +328,11 @@ function AdminUsersPage() {
       const res = await apiFetch(url);
       const json = await res.json();
       if (json.success) {
-        setUsers(json.data.users);
-        setTotalPages(json.data.pagination.totalPages);
-        setTotal(json.data.pagination.total);
+        const userList = Array.isArray(json.data) ? json.data : (json.data?.users || []);
+        setUsers(userList);
+        const pag = json.pagination || json.data?.pagination || { page: 1, limit: 10, total: userList.length, totalPages: 1 };
+        setTotalPages(pag.totalPages || 1);
+        setTotal(pag.total || userList.length);
       } else {
         setError(json.error || "Failed to load users");
       }
