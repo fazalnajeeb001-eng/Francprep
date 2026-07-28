@@ -1766,22 +1766,6 @@ Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain aprè
           </div>
         );
 
-      case 'review':
-        if (!lesson!.miniReview?.content && !lesson!.selfAssessment?.length) return emptyState('Review');
-        return (
-          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
-            {lesson!.miniReview?.content && (
-              <>
-                <div className="flex items-center gap-3 mb-3"><Star className="w-5 h-5 text-amber-400" /><h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Mini Review</h3></div>
-                <p className={`text-sm leading-relaxed ${textBody} mb-4`}>{lesson!.miniReview.content}</p>
-              </>
-            )}
-            {lesson!.selfAssessment?.length > 0 && (
-              <SelfAssessmentSection items={lesson!.selfAssessment} dark={dark} title="Self-Assessment" />
-            )}
-          </div>
-        );
-
       default:
         return null;
     }

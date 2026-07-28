@@ -40,9 +40,10 @@ const navGroups = [
   {
     title: "Platform Management",
     items: [
-      { label: "Module Gates & Settings 🔒", icon: Sliders, href: "/admin/settings" },
+      { label: "Module Progression & Gates 🔒", icon: Sliders, href: "/admin/gating" },
+      { label: "API Keys & Integrations 🔌", icon: Settings, href: "/admin/settings" },
       { label: "Users & Overrides", icon: Users, href: "/admin/users" },
-      { label: "Subscriptions", icon: CreditCard, href: "/admin/subscriptions" },
+      { label: "Subscriptions & Pricing", icon: CreditCard, href: "/admin/subscriptions" },
       { label: "Announcements", icon: Megaphone, href: "/admin/announcements" },
       { label: "Analytics", icon: BarChart3, href: "/admin/analytics" },
     ]
