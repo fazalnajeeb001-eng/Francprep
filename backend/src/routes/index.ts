@@ -16,10 +16,33 @@ import announcementRoutes from './announcement.routes';
 import settingsRoutes from './settings.routes';
 import speakingRoutes from './speaking.routes';
 
+import { SystemSettings } from '../models/SystemSettings';
+
 const router = Router();
 router.get('/health', (_req, res) => {
   res.status(200).json({ success: true, message: 'FrancPrep API is running', timestamp: new Date().toISOString() });
 });
+
+router.get('/subscriptions/plans', async (_req, res) => {
+  try {
+    let settings = await SystemSettings.findOne();
+    if (!settings) {
+      settings = await SystemSettings.create({});
+    }
+    const activePlans = (settings.customPricingPlans || []).filter((p) => p.isActive);
+    res.json({
+      success: true,
+      data: {
+        plans: activePlans,
+        freePreviewScope: settings.freePreviewScope || 'first_chapter_a1',
+        paywallEnforced: settings.paywallEnforced !== false,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to load subscription plans' });
+  }
+});
+
 router.use('/auth', authRoutes);
 router.use('/lessons', lessonRoutes);
 router.use('/chapters', chapterRoutes);
