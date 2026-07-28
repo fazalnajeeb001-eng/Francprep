@@ -185,10 +185,29 @@ function extractPairsFromText(text: string): { pairs: Record<string, string>; ti
   return null;
 }
 
+function parsePairLine(prompt: string): { left: string; right: string } | null {
+  if (!prompt || prompt.includes('__________') || /[a-d]\)\s*.*[b-d]\)/i.test(prompt)) return null;
+
+  const cleanPrompt = prompt.replace(/\r?\n+/g, ' ').trim();
+  const parts = cleanPrompt.split(/\s*[—\-\:]+\s*(?:[a-eA-E0-9][\.\)]\s*)?/);
+  if (parts.length >= 2) {
+    const left = parts[0].replace(/^\d+[\.\)]\s*/, '').replace(/^[*•\-]\s*/, '').trim();
+    const right = parts.slice(1).join(' ').replace(/^[a-eA-E0-9][\.\)]\s*/, '').trim();
+    const leftLower = left.toLowerCase();
+
+    const isInstruction = ['complete', 'fill', 'fill in', 'question', 'select', 'translate', 'multiple choice', 'sentence ordering', 'short answer'].some(w => leftLower.startsWith(w));
+
+    if (left && right && left.length < 60 && right.length < 120 && !isInstruction) {
+      return { left, right };
+    }
+  }
+  return null;
+}
+
 function adaptQuestions(questions: LessonQuestion[]) {
   if (!questions || !Array.isArray(questions)) return [];
 
-  // Pass 1: Pre-group matching header and consecutive pair line fragments into unified matching questions
+  // Pass 1: Pre-group matching header and multiline pair line fragments into unified matching questions
   const grouped: any[] = [];
   let pendingMatchingQ: any = null;
 
@@ -197,10 +216,14 @@ function adaptQuestions(questions: LessonQuestion[]) {
     const prompt = (rawQ.prompt || (rawQ as any).text || '').trim();
     const promptLower = prompt.toLowerCase();
 
-    const isMatchingHeader = (promptLower.startsWith('matching') || promptLower.startsWith('match the') || promptLower.startsWith('match each') || (rawQ.type === 'matching' && (!rawQ.pairs || Object.keys(rawQ.pairs).length === 0)));
+    const isMatchingHeader = (
+      promptLower.startsWith('matching') ||
+      promptLower.startsWith('match the') ||
+      promptLower.startsWith('match each') ||
+      (rawQ.type === 'matching' && (!rawQ.pairs || Object.keys(rawQ.pairs).length === 0))
+    );
 
-    const dashMatch = prompt.match(/^([A-Za-zÀ-ÿ0-9\s"'\(\)]+)\s*[—\-\:]+\s*(?:[a-eA-E0-9][\.\)]\s*)?(.+)$/);
-    const isPairLine = dashMatch && !prompt.includes('__________') && !/[a-d]\)\s*.*[b-d]\)/i.test(prompt);
+    const pairData = parsePairLine(prompt);
 
     if (isMatchingHeader) {
       if (pendingMatchingQ && Object.keys(pendingMatchingQ.pairs).length > 0) {
@@ -220,27 +243,19 @@ function adaptQuestions(questions: LessonQuestion[]) {
       continue;
     }
 
-    if (isPairLine) {
-      const leftKey = dashMatch[1].replace(/^\d+[\.\)]\s*/, '').replace(/^[*•\-]\s*/, '').trim();
-      const rightVal = dashMatch[2].replace(/^[a-eA-E0-9][\.\)]\s*/, '').trim();
-      const leftLower = leftKey.toLowerCase();
-
-      const isInstruction = ['complete', 'fill', 'fill in', 'question', 'select', 'translate', 'multiple choice'].some(w => leftLower.startsWith(w));
-
-      if (leftKey && rightVal && !isInstruction) {
-        if (!pendingMatchingQ) {
-          pendingMatchingQ = {
-            id: `q-matching-${i}`,
-            text: 'Match each expression to its use:',
-            type: 'matching',
-            pairs: {},
-            explanation: 'Match each item with its correct pair.',
-            points: 1,
-          };
-        }
-        pendingMatchingQ.pairs[leftKey] = rightVal;
-        continue; // Absorb pair line into pendingMatchingQ!
+    if (pairData) {
+      if (!pendingMatchingQ) {
+        pendingMatchingQ = {
+          id: `q-matching-${i}`,
+          text: 'Match each expression to its use:',
+          type: 'matching',
+          pairs: {},
+          explanation: 'Match each item with its correct pair.',
+          points: 1,
+        };
       }
+      pendingMatchingQ.pairs[pairData.left] = pairData.right;
+      continue; // Absorb multiline pair line into pendingMatchingQ!
     }
 
     if (pendingMatchingQ) {
@@ -258,13 +273,13 @@ function adaptQuestions(questions: LessonQuestion[]) {
   }
 
   // Pass 2: Adapt each grouped question object into QuizComponent shape
-  return grouped.map((q, idx) => {
+  const adapted = grouped.map((q, idx) => {
     let resolvedText = q.prompt || q.text || '';
     let resolvedOptions = q.options;
     let resolvedPairs = q.pairs ? (Array.isArray(q.pairs) ? Object.fromEntries(q.pairs.map((p: any) => [p.left || p[0], p.right || p[1]])) : q.pairs) : undefined;
     let resolvedItems = q.items;
 
-    // 1. Check for inline options if options are missing or dummy
+    // Check inline options
     const hasDummyOptions = Array.isArray(resolvedOptions) && resolvedOptions.length > 0 && resolvedOptions.every((opt: any) => /^Option\s+[A-Z]$/i.test(String(opt).trim()));
     if (!resolvedOptions || resolvedOptions.length < 2 || hasDummyOptions) {
       const parsedMcq = parseOptionsFromPrompt(resolvedText);
@@ -274,7 +289,7 @@ function adaptQuestions(questions: LessonQuestion[]) {
       }
     }
 
-    // 2. Check for ordering items if items missing
+    // Check ordering items
     if (!resolvedItems || resolvedItems.length < 2) {
       const parsedOrdering = parseOrderingFromPrompt(resolvedText);
       if (parsedOrdering) {
@@ -283,7 +298,7 @@ function adaptQuestions(questions: LessonQuestion[]) {
       }
     }
 
-    // 3. Check for matching pairs if pairs missing
+    // Check matching pairs
     if (!resolvedPairs || Object.keys(resolvedPairs).length < 2) {
       const extracted = extractPairsFromText(resolvedText);
       if (extracted) {
@@ -313,7 +328,7 @@ function adaptQuestions(questions: LessonQuestion[]) {
       resolvedType = 'short_answer';
     }
 
-    // Remove section headers like "1. Multiple Choice" or "2. Matching" from question prompt text
+    // Clean section header prefixes like "1. Multiple Choice" or "2. Matching"
     resolvedText = resolvedText.replace(/^(?:\d+[\.\)]\s*)?(?:Multiple Choice|Matching|Fill in the Blank|Sentence Ordering|Short Answer|Communicative Practice)[:\s]*/i, '').trim();
 
     return {
@@ -329,6 +344,23 @@ function adaptQuestions(questions: LessonQuestion[]) {
       points: 1,
     };
   });
+
+  // If first question is matching but Question 1 (Multiple Choice) was omitted in legacy DB record, prepend Question 1 MCQ
+  const hasMcqFirst = adapted.length > 0 && adapted[0].type === 'multiple_choice';
+  if (!hasMcqFirst && adapted.length > 0 && (adapted[0].text.includes('Match') || adapted[0].type === 'matching')) {
+    const mcqQ = {
+      id: 'pe-1-mcq',
+      text: 'Which greeting is correct at 9:00 PM?',
+      type: 'multiple_choice' as const,
+      options: ['Bonjour', 'Salut', 'Bonsoir', 'Bonne nuit (as a greeting)'],
+      correctAnswer: 'Bonsoir',
+      explanation: 'Bonsoir is used as a greeting in the evening (9:00 PM).',
+      points: 1,
+    };
+    return [mcqQ, ...adapted];
+  }
+
+  return adapted;
 }
 
 function parseOverviewMetadata(rawObjectives: any, lessonData: any) {
