@@ -801,6 +801,90 @@ router.put('/users/:id/gating-override', async (req: AuthRequest, res: Response,
   }
 });
 
+// ============ Subscription & Custom Pricing Endpoints ============
+
+// GET /api/admin/subscriptions/settings
+router.get('/subscriptions/settings', async (_req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    let settings = await SystemSettings.findOne();
+    if (!settings) {
+      settings = await SystemSettings.create({});
+    }
+    res.json({
+      success: true,
+      data: {
+        monthlyPrice: settings.monthlyPrice || 29,
+        annualPrice: settings.annualPrice || 199,
+        lifetimePrice: settings.lifetimePrice || 299,
+        freePreviewScope: settings.freePreviewScope || 'first_chapter_a1',
+        paywallEnforced: settings.paywallEnforced !== false,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// PUT /api/admin/subscriptions/settings
+router.put('/subscriptions/settings', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { monthlyPrice, annualPrice, lifetimePrice, freePreviewScope, paywallEnforced } = req.body;
+    let settings = await SystemSettings.findOne();
+    if (!settings) {
+      settings = new SystemSettings();
+    }
+    if (monthlyPrice !== undefined) settings.monthlyPrice = monthlyPrice;
+    if (annualPrice !== undefined) settings.annualPrice = annualPrice;
+    if (lifetimePrice !== undefined) settings.lifetimePrice = lifetimePrice;
+    if (freePreviewScope) settings.freePreviewScope = freePreviewScope;
+    if (paywallEnforced !== undefined) settings.paywallEnforced = paywallEnforced;
+    await settings.save();
+    res.json({ success: true, message: 'Subscription & Paywall settings updated', data: settings });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// PUT /api/admin/users/:id/grant-free-access
+router.put('/users/:id/grant-free-access', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { isVipFreeAccess, subscriptionTier } = req.body;
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      res.status(404).json({ success: false, error: 'User not found' });
+      return;
+    }
+    if (isVipFreeAccess !== undefined) user.isVipFreeAccess = isVipFreeAccess;
+    if (subscriptionTier) user.subscriptionTier = subscriptionTier;
+    if (isVipFreeAccess) {
+      user.subscriptionTier = 'premium';
+      user.isExemptFromGating = true;
+    }
+    await user.save();
+    res.json({ success: true, message: '100% Free VIP Access Granted to Student', data: user });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// PUT /api/admin/users/:id/custom-price
+router.put('/users/:id/custom-price', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { customPriceOverride, specialDiscountRate } = req.body;
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      res.status(404).json({ success: false, error: 'User not found' });
+      return;
+    }
+    if (customPriceOverride !== undefined) user.customPriceOverride = customPriceOverride;
+    if (specialDiscountRate !== undefined) user.specialDiscountRate = specialDiscountRate;
+    await user.save();
+    res.json({ success: true, message: 'Custom Student Price Override Applied', data: user });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // ============ Content Pipeline ============
 import contentPipelineRoutes from './admin.contentPipeline';
 router.use(contentPipelineRoutes);

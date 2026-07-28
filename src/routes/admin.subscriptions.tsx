@@ -1,161 +1,443 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { apiFetch } from "~/lib/apiFetch";
-import { motion } from "framer-motion";
-import { CreditCard, Crown, Zap, AlertTriangle, Check, X, Users, Filter, ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  CreditCard,
+  Crown,
+  Gift,
+  DollarSign,
+  Search,
+  CheckCircle2,
+  XCircle,
+  Save,
+  Loader2,
+  Sliders,
+  UserCheck,
+  Zap,
+  Sparkles,
+  ArrowLeft,
+  ShieldCheck,
+  Tag
+} from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 
-export const Route = createFileRoute("/admin/subscriptions")({ component: SubscriptionsPage });
+export const Route = createFileRoute("/admin/subscriptions")({
+  component: SubscriptionsPage,
+});
 
-const tierColors: Record<string, string> = {
-  free: "bg-gray-500/10 text-gray-400 border-gray-500/20",
-  premium: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-  exam_prep: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-};
-const tierIcons: Record<string, any> = { free: Users, premium: Crown, exam_prep: Zap };
-const statusColors: Record<string, string> = {
-  active: "text-emerald-400", canceled: "text-gray-400", past_due: "text-red-400", trialing: "text-blue-400", incomplete: "text-amber-400",
-};
+interface Student {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  subscriptionTier: string;
+  isVipFreeAccess?: boolean;
+  customPriceOverride?: number;
+  specialDiscountRate?: string;
+  isExemptFromGating?: boolean;
+}
 
-function SubscriptionsPage() {
+export function SubscriptionsPage() {
   const { dark } = useTheme();
-  const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [filterTier, setFilterTier] = useState("");
-  const [page, setPage] = useState(1);
+  const [savingPrice, setSavingPrice] = useState(false);
+  const [priceMsg, setPriceMsg] = useState("");
 
-  const bg = dark ? "bg-[#070B17]" : "bg-gray-50";
-  const card = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200";
-  const txtSec = dark ? "text-gray-400" : "text-gray-500";
+  // Pricing & Trial Settings State
+  const [pricingSettings, setPricingSettings] = useState({
+    monthlyPrice: 29,
+    annualPrice: 199,
+    lifetimePrice: 299,
+    freePreviewScope: "first_chapter_a1",
+    paywallEnforced: true,
+  });
 
-  const fetchData = async () => {
+  // Students List & Search State
+  const [students, setStudents] = useState<Student[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Modal States for Custom Grants
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [grantModalOpen, setGrantModalOpen] = useState(false);
+  const [customPriceModalOpen, setCustomPriceModalOpen] = useState(false);
+  const [customPriceVal, setCustomPriceVal] = useState<number | "">("");
+  const [discountNoteVal, setDiscountNoteVal] = useState("");
+  const [actionLoading, setActionLoading] = useState(false);
+
+  const bg = dark ? "bg-[#070B17] text-white" : "bg-[#F8FAFC] text-slate-900";
+  const card = dark ? "bg-[#101828]/90 border-white/10" : "bg-white border-slate-200 shadow-sm";
+  const inp = `w-full rounded-xl ${dark ? "bg-[#070B17] border-white/10 text-white" : "bg-white border-slate-300 text-slate-900"} border px-4 py-2.5 text-xs font-mono placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all`;
+  const txtSec = dark ? "text-gray-400" : "text-slate-600";
+
+  const fetchSettingsAndStudents = async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({ page: String(page), limit: "20" });
-      if (filterTier) params.set("tier", filterTier);
-      const res = await apiFetch(`/payments/admin/subscriptions?${params}`);
-      const json = await res.json();
-      if (json.success) setData(json.data);
-    } catch {}
+      const [sRes, uRes] = await Promise.all([
+        apiFetch("/admin/subscriptions/settings"),
+        apiFetch("/admin/users"),
+      ]);
+      const sJson = await sRes.json();
+      const uJson = await uRes.json();
+
+      if (sJson.success && sJson.data) {
+        setPricingSettings(sJson.data);
+      }
+      if (uJson.success && Array.isArray(uJson.data)) {
+        setStudents(uJson.data.filter((u: any) => u.role !== "admin"));
+      }
+    } catch (e) {
+      console.error(e);
+    }
     setLoading(false);
   };
 
-  useEffect(() => { fetchData(); }, [page, filterTier]);
+  useEffect(() => {
+    fetchSettingsAndStudents();
+  }, []);
 
-  const totalSubs = data?.subscriptions?.length || 0;
-  const tierCounts = data?.tierCounts || {};
+  const handleSavePricing = async () => {
+    setSavingPrice(true);
+    setPriceMsg("");
+    try {
+      const res = await apiFetch("/admin/subscriptions/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(pricingSettings),
+      });
+      const json = await res.json();
+      if (json.success) setPriceMsg("Monetization & Pricing Settings Saved!");
+      else setPriceMsg(json.error || "Failed to save");
+    } catch {
+      setPriceMsg("Network error");
+    }
+    setSavingPrice(false);
+  };
+
+  const handleGrantFreeVIP = async (studentId: string, grant: boolean) => {
+    setActionLoading(true);
+    try {
+      const res = await apiFetch(`/admin/users/${studentId}/grant-free-access`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isVipFreeAccess: grant, subscriptionTier: grant ? "premium" : "free" }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        fetchSettingsAndStudents();
+        setGrantModalOpen(false);
+      }
+    } catch (e) {}
+    setActionLoading(false);
+  };
+
+  const handleApplyCustomPrice = async (studentId: string) => {
+    setActionLoading(true);
+    try {
+      const res = await apiFetch(`/admin/users/${studentId}/custom-price`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customPriceOverride: customPriceVal === "" ? null : Number(customPriceVal),
+          specialDiscountRate: discountNoteVal,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        fetchSettingsAndStudents();
+        setCustomPriceModalOpen(false);
+      }
+    } catch (e) {}
+    setActionLoading(false);
+  };
+
+  const filteredStudents = useMemo(() => {
+    if (!searchQuery.trim()) return students;
+    const q = searchQuery.toLowerCase();
+    return students.filter(
+      (s) =>
+        s.firstName?.toLowerCase().includes(q) ||
+        s.lastName?.toLowerCase().includes(q) ||
+        s.email?.toLowerCase().includes(q)
+    );
+  }, [students, searchQuery]);
 
   return (
-    <div className={`min-h-screen ${bg} transition-colors duration-300`}>
-      <div className="max-w-6xl mx-auto space-y-6 pb-20">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">💳 Subscriptions</h1>
-          <p className={`text-sm ${txtSec} mt-1`}>View all user subscriptions and tier distribution</p>
+    <div className={`min-h-screen ${bg} p-4 md:p-8 space-y-6 transition-colors duration-300`}>
+      <div className="max-w-6xl mx-auto space-y-6">
+
+        {/* ─── HEADER ─── */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-4 border-b border-gray-200 dark:border-white/10">
+          <div>
+            <Link to="/admin" className="text-xs text-purple-400 hover:underline flex items-center gap-1">
+              <ArrowLeft className="w-3.5 h-3.5" /> Back to Admin Dashboard
+            </Link>
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight mt-1 flex items-center gap-3">
+              <Crown className="w-8 h-8 text-amber-400" />
+              Subscriptions, Monetization & Student Pricing Hub
+            </h1>
+            <p className={`text-xs ${txtSec} mt-1`}>
+              Manage subscription pricing tiers, configure free trial preview rules, and grant per-student custom prices or 100% free VIP access.
+            </p>
+          </div>
+        </div>
+
+        {/* ─── PRICING TIERS & PAYWALL CONTROL CARD ─── */}
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className={`p-6 rounded-2xl border ${card} space-y-6`}>
+          <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-3">
+            <div>
+              <h3 className="text-base font-extrabold flex items-center gap-2">
+                <DollarSign className="w-5 h-5 text-emerald-400" /> Subscription Pricing Tiers & Free Preview Engine
+              </h3>
+              <p className={`text-xs ${txtSec} mt-0.5`}>Set global pricing rates and decide what content new students receive for free.</p>
+            </div>
+            <button
+              onClick={handleSavePricing}
+              disabled={savingPrice}
+              className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs shadow-lg shadow-emerald-500/20 flex items-center gap-1.5 transition-all"
+            >
+              {savingPrice ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              Save Pricing Rules
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="p-4 rounded-xl border dark:border-white/10 bg-white/5 space-y-2">
+              <label className="block text-xs font-bold text-emerald-400">Monthly All-Access Rate ($)</label>
+              <input
+                type="number"
+                value={pricingSettings.monthlyPrice}
+                onChange={(e) => setPricingSettings({ ...pricingSettings, monthlyPrice: Number(e.target.value) })}
+                className={inp}
+              />
+              <p className="text-[10px] text-gray-400">Standard monthly subscription billed to students.</p>
+            </div>
+
+            <div className="p-4 rounded-xl border dark:border-white/10 bg-white/5 space-y-2">
+              <label className="block text-xs font-bold text-purple-400">Annual VIP Pass Rate ($)</label>
+              <input
+                type="number"
+                value={pricingSettings.annualPrice}
+                onChange={(e) => setPricingSettings({ ...pricingSettings, annualPrice: Number(e.target.value) })}
+                className={inp}
+              />
+              <p className="text-[10px] text-gray-400">12-month annual pass rate (Recommended: $199/yr).</p>
+            </div>
+
+            <div className="p-4 rounded-xl border dark:border-white/10 bg-white/5 space-y-2">
+              <label className="block text-xs font-bold text-amber-400">Lifetime Pass Rate ($)</label>
+              <input
+                type="number"
+                value={pricingSettings.lifetimePrice}
+                onChange={(e) => setPricingSettings({ ...pricingSettings, lifetimePrice: Number(e.target.value) })}
+                className={inp}
+              />
+              <p className="text-[10px] text-gray-400">One-time lifetime access pass rate.</p>
+            </div>
+          </div>
+
+          {/* FREE PREVIEW & PAYWALL CONFIG */}
+          <div className="pt-3 border-t border-gray-200 dark:border-white/10 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold mb-1.5">Free Trial Preview Scope for New Students</label>
+              <select
+                value={pricingSettings.freePreviewScope}
+                onChange={(e) => setPricingSettings({ ...pricingSettings, freePreviewScope: e.target.value as any })}
+                className="w-full rounded-xl p-2.5 text-xs font-bold border dark:bg-[#070B17] dark:border-white/10 text-white outline-none"
+              >
+                <option value="first_chapter_a1">Chapter 1 of Module A1 Free (Recommended)</option>
+                <option value="first_two_chapters_a1">First 2 Chapters of Module A1 Free</option>
+                <option value="entire_module_a1">Entire Module A1 Free</option>
+                <option value="custom">Custom Admin Selected Scope</option>
+              </select>
+            </div>
+
+            <div className="flex items-center justify-between p-3.5 rounded-xl border dark:border-white/10 bg-white/5">
+              <div>
+                <span className="text-xs font-bold block">Enforce Platform Paywall</span>
+                <span className="text-[10px] text-gray-400">Require subscription payment after free trial scope.</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPricingSettings({ ...pricingSettings, paywallEnforced: !pricingSettings.paywallEnforced })}
+                className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${
+                  pricingSettings.paywallEnforced ? "bg-emerald-500 text-black" : "bg-gray-600 text-white"
+                }`}
+              >
+                {pricingSettings.paywallEnforced ? "🔒 Paywall Active" : "🔓 Free Mode"}
+              </button>
+            </div>
+          </div>
+
+          {priceMsg && <p className="text-xs text-emerald-400 font-bold text-right">{priceMsg}</p>}
         </motion.div>
 
-        {/* Tier summary cards */}
-        <div className="grid grid-cols-3 gap-4">
-          {["free", "premium", "exam_prep"].map((tier) => {
-            const Icon = tierIcons[tier];
-            const count = tierCounts[tier] || 0;
-            return (
-              <motion.div key={tier} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                className={`${card} backdrop-blur-lg border rounded-2xl p-5`}>
-                <div className="flex items-center justify-between mb-3">
-                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${tierColors[tier]}`}>
-                    <Icon className="w-3 h-3" /> {tier === "exam_prep" ? "Exam Prep" : tier.charAt(0).toUpperCase() + tier.slice(1)}
-                  </span>
-                </div>
-                <p className="text-3xl font-bold text-white">{count}</p>
-                <p className={`text-xs ${txtSec} mt-1`}>subscribers</p>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Filter */}
-        <div className="flex items-center gap-2">
-          <Filter className="w-3.5 h-3.5 text-gray-400" />
-          {["", "free", "premium", "exam_prep"].map((tier) => (
-            <button key={tier} onClick={() => { setFilterTier(tier); setPage(1); }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${filterTier === tier ? "bg-purple-500/20 text-purple-400 border border-purple-500/30" : dark ? "text-gray-400 hover:bg-white/5" : "text-gray-500 hover:bg-gray-100"}`}>
-              {tier ? (tier === "exam_prep" ? "Exam Prep" : tier.charAt(0).toUpperCase() + tier.slice(1)) : "All"}
-            </button>
-          ))}
-        </div>
-
-        {/* Table */}
-        {loading ? (
-          <div className="space-y-3">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className={`${card} rounded-2xl h-16 animate-pulse`} />
-            ))}
+        {/* ─── STUDENT SEARCH & PER-STUDENT CUSTOM PRICING CARD ─── */}
+        <div className={`p-6 rounded-2xl border ${card} space-y-5`}>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 dark:border-white/10 pb-3">
+            <div>
+              <h3 className="text-base font-extrabold flex items-center gap-2">
+                <Search className="w-5 h-5 text-purple-400" /> Student Search & Per-Student Custom Pricing
+              </h3>
+              <p className={`text-xs ${txtSec} mt-0.5`}>Search any student by name or Gmail address to grant free VIP access or custom prices.</p>
+            </div>
           </div>
-        ) : !data?.subscriptions?.length ? (
-          <div className={`${card} backdrop-blur-lg border rounded-2xl p-12 text-center`}>
-            <CreditCard className="w-12 h-12 mx-auto text-gray-600 mb-3" />
-            <p className={`text-sm ${txtSec}`}>No subscriptions found</p>
+
+          {/* SEARCH INPUT */}
+          <div className="relative">
+            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
+            <input
+              type="text"
+              placeholder="Search student by name or Gmail address..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full rounded-xl p-2.5 pl-10 text-xs font-mono border dark:bg-[#070B17] dark:border-white/10 text-white outline-none focus:ring-2 focus:ring-purple-500"
+            />
           </div>
-        ) : (
-          <div className={`${card} backdrop-blur-lg border rounded-2xl overflow-hidden`}>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className={`border-b ${dark ? "border-[#1e2a4a]" : "border-gray-200"}`}>
-                    <th className={`px-5 py-3 text-[10px] font-semibold uppercase tracking-wider ${txtSec}`}>User</th>
-                    <th className={`px-5 py-3 text-[10px] font-semibold uppercase tracking-wider ${txtSec}`}>Tier</th>
-                    <th className={`px-5 py-3 text-[10px] font-semibold uppercase tracking-wider ${txtSec}`}>Status</th>
-                    <th className={`px-5 py-3 text-[10px] font-semibold uppercase tracking-wider ${txtSec}`}>Period Start</th>
-                    <th className={`px-5 py-3 text-[10px] font-semibold uppercase tracking-wider ${txtSec}`}>Period End</th>
-                    <th className={`px-5 py-3 text-[10px] font-semibold uppercase tracking-wider ${txtSec}`}>Cancel at End</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.subscriptions.map((sub: any) => (
-                    <tr key={sub._id} className={`border-b ${dark ? "border-[#1e2a4a]/50 hover:bg-white/[0.02]" : "border-gray-100 hover:bg-gray-50"} transition-colors`}>
-                      <td className="px-5 py-3">
-                        <div>
-                          <p className={`text-sm font-medium ${dark ? "text-white" : "text-gray-900"}`}>
-                            {sub.userId?.firstName} {sub.userId?.lastName}
-                          </p>
-                          <p className="text-[10px] text-gray-500">{sub.userId?.email}</p>
-                        </div>
-                      </td>
-                      <td className="px-5 py-3">
-                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${tierColors[sub.tier]}`}>
-                          {sub.tier === "exam_prep" ? "Exam Prep" : sub.tier.charAt(0).toUpperCase() + sub.tier.slice(1)}
+
+          {/* STUDENTS TABLE */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead>
+                <tr className="border-b border-gray-200 dark:border-white/10 text-gray-400 uppercase font-mono text-[10px]">
+                  <th className="py-2.5 px-3">Student Name</th>
+                  <th className="py-2.5 px-3">Gmail / Email</th>
+                  <th className="py-2.5 px-3">Status</th>
+                  <th className="py-2.5 px-3">Custom Rate</th>
+                  <th className="py-2.5 px-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 dark:divide-white/10">
+                {filteredStudents.map((student) => (
+                  <tr key={student._id} className="hover:bg-white/5 transition-all">
+                    <td className="py-3 px-3 font-bold">{student.firstName} {student.lastName}</td>
+                    <td className="py-3 px-3 font-mono text-gray-400">{student.email}</td>
+                    <td className="py-3 px-3">
+                      {student.isVipFreeAccess ? (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                          🎁 100% FREE VIP
                         </span>
-                      </td>
-                      <td className="px-5 py-3">
-                        <span className={`text-xs font-medium ${statusColors[sub.status] || "text-gray-400"}`}>{sub.status}</span>
-                      </td>
-                      <td className="px-5 py-3 text-xs text-gray-400">{sub.currentPeriodStart ? new Date(sub.currentPeriodStart).toLocaleDateString() : "—"}</td>
-                      <td className="px-5 py-3 text-xs text-gray-400">{sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toLocaleDateString() : "—"}</td>
-                      <td className="px-5 py-3">
-                        {sub.cancelAtPeriodEnd ? <AlertTriangle className="w-3.5 h-3.5 text-amber-400" /> : <Check className="w-3.5 h-3.5 text-emerald-400" />}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                          {student.subscriptionTier.toUpperCase()}
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-3 px-3 font-mono text-amber-400">
+                      {student.customPriceOverride !== undefined && student.customPriceOverride !== null
+                        ? `$${student.customPriceOverride} (${student.specialDiscountRate || "Custom"})`
+                        : "Standard"}
+                    </td>
+                    <td className="py-3 px-3 text-right space-x-2">
+                      <button
+                        onClick={() => {
+                          setSelectedStudent(student);
+                          setGrantModalOpen(true);
+                        }}
+                        className="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold hover:bg-emerald-500/30 transition-all text-[11px]"
+                      >
+                        🎁 Grant Free VIP
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setSelectedStudent(student);
+                          setCustomPriceVal(student.customPriceOverride || "");
+                          setDiscountNoteVal(student.specialDiscountRate || "");
+                          setCustomPriceModalOpen(true);
+                        }}
+                        className="px-3 py-1.5 rounded-lg bg-purple-600/20 text-purple-400 font-bold hover:bg-purple-600/30 transition-all text-[11px]"
+                      >
+                        🏷️ Custom Price
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* ─── GRANT FREE VIP MODAL ─── */}
+        {grantModalOpen && selectedStudent && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+            <div className={`max-w-md w-full p-6 rounded-2xl border ${card} space-y-4 shadow-2xl`}>
+              <h3 className="text-lg font-bold">Grant 100% Free VIP Access</h3>
+              <p className="text-xs text-gray-400">
+                Grant free premium access to <strong>{selectedStudent.firstName} {selectedStudent.lastName}</strong> ({selectedStudent.email}).
+              </p>
+
+              <div className="space-y-3 pt-2">
+                <button
+                  disabled={actionLoading}
+                  onClick={() => handleGrantFreeVIP(selectedStudent._id, true)}
+                  className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs shadow-lg"
+                >
+                  {actionLoading ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : "🎁 Enable 100% Free VIP Access"}
+                </button>
+
+                <button
+                  disabled={actionLoading}
+                  onClick={() => handleGrantFreeVIP(selectedStudent._id, false)}
+                  className="w-full py-2.5 rounded-xl border border-white/10 text-gray-400 text-xs font-bold hover:bg-white/5"
+                >
+                  Revoke VIP Access
+                </button>
+              </div>
+
+              <button onClick={() => setGrantModalOpen(false)} className="w-full text-center text-xs text-gray-500 hover:underline pt-2">
+                Cancel
+              </button>
             </div>
           </div>
         )}
 
-        {/* Pagination */}
-        {data?.pagination?.pages > 1 && (
-          <div className="flex items-center justify-center gap-2">
-            <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1}
-              className={`p-2 rounded-lg ${dark ? "bg-[#1e2a4a] text-gray-400 hover:bg-white/10" : "bg-gray-200 text-gray-600 hover:bg-gray-300"} transition-all disabled:opacity-50`}>
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <span className={`text-xs ${txtSec}`}>Page {page} of {data.pagination.pages}</span>
-            <button onClick={() => setPage(Math.min(data.pagination.pages, page + 1))} disabled={page === data.pagination.pages}
-              className={`p-2 rounded-lg ${dark ? "bg-[#1e2a4a] text-gray-400 hover:bg-white/10" : "bg-gray-200 text-gray-600 hover:bg-gray-300"} transition-all disabled:opacity-50`}>
-              <ChevronRight className="w-4 h-4" />
-            </button>
+        {/* ─── CUSTOM PRICE MODAL ─── */}
+        {customPriceModalOpen && selectedStudent && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+            <div className={`max-w-md w-full p-6 rounded-2xl border ${card} space-y-4 shadow-2xl`}>
+              <h3 className="text-lg font-bold">Set Custom Price for {selectedStudent.firstName}</h3>
+
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-bold mb-1">Custom Rate ($)</label>
+                  <input
+                    type="number"
+                    value={customPriceVal}
+                    onChange={(e) => setCustomPriceVal(e.target.value === "" ? "" : Number(e.target.value))}
+                    placeholder="e.g. 15"
+                    className={inp}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold mb-1">Discount Note / Promo Reason</label>
+                  <input
+                    type="text"
+                    value={discountNoteVal}
+                    onChange={(e) => setDiscountNoteVal(e.target.value)}
+                    placeholder="e.g. Student Ambassador Rate"
+                    className={inp}
+                  />
+                </div>
+
+                <button
+                  disabled={actionLoading}
+                  onClick={() => handleApplyCustomPrice(selectedStudent._id)}
+                  className="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-xs shadow-lg"
+                >
+                  {actionLoading ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : "Save Custom Rate"}
+                </button>
+              </div>
+
+              <button onClick={() => setCustomPriceModalOpen(false)} className="w-full text-center text-xs text-gray-500 hover:underline pt-2">
+                Cancel
+              </button>
+            </div>
           </div>
         )}
+
       </div>
     </div>
   );

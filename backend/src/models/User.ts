@@ -21,6 +21,9 @@ export interface IUserDocument extends Document {
   unlockedChapters: string[];
   passedMilestones: string[];
   isExemptFromGating: boolean;
+  isVipFreeAccess?: boolean;
+  customPriceOverride?: number;
+  specialDiscountRate?: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
   createdAt: Date;
   updatedAt: Date;
@@ -64,6 +67,9 @@ const userSchema = new Schema<IUserDocument>(
     unlockedChapters: { type: [String], default: [] },
     passedMilestones: { type: [String], default: [] },
     isExemptFromGating: { type: Boolean, default: false },
+    isVipFreeAccess: { type: Boolean, default: false },
+    customPriceOverride: { type: Number, default: null },
+    specialDiscountRate: { type: String, default: '' },
   },
   { timestamps: true }
 );
