@@ -158,98 +158,10 @@ function extractPairsFromText(text: string): { pairs: Record<string, string>; ti
 function adaptQuestions(questions: LessonQuestion[]) {
   if (!questions) return [];
 
-  // Normalize contiguous matching questions (e.g., Lesson 1 housing vocabulary matching)
-  const normalizedQuestions: LessonQuestion[] = [];
-  let currentMatchingPairs: { left: string; right: string }[] = [];
-  let matchingPrompt = '';
-
-  for (let i = 0; i < questions.length; i++) {
-    const q = questions[i];
-    const p = q.prompt || (q as any).text || '';
-    const pLower = p.toLowerCase();
-
-    // Check if this is a housing matching question item (Un studio, Un immeuble, Le loyer, Une résidence, Le rez-de-chaussée)
-    const isHousingPair = pLower.includes('studio') || pLower.includes('immeuble') || pLower.includes('loyer') || pLower.includes('résidence') || pLower.includes('residence') || pLower.includes('rez-de-chaussée') || pLower.includes('rez');
-    if (isHousingPair) {
-      if (currentMatchingPairs.length === 0) {
-        matchingPrompt = 'Match each French housing term with its correct English translation:';
-      }
-
-      if (pLower.includes('studio') && !currentMatchingPairs.some(item => item.left === 'Un studio')) {
-        currentMatchingPairs.push({ left: 'Un studio', right: 'A studio apartment' });
-      }
-      if (pLower.includes('immeuble') && !currentMatchingPairs.some(item => item.left === 'Un immeuble')) {
-        currentMatchingPairs.push({ left: 'Un immeuble', right: 'An apartment building' });
-      }
-      if (pLower.includes('loyer') && !currentMatchingPairs.some(item => item.left === 'Le loyer')) {
-        currentMatchingPairs.push({ left: 'Le loyer', right: 'The rent' });
-      }
-      if ((pLower.includes('résidence') || pLower.includes('residence')) && !currentMatchingPairs.some(item => item.left === 'Une résidence')) {
-        currentMatchingPairs.push({ left: 'Une résidence', right: 'A residence' });
-      }
-      if ((pLower.includes('rez-de-chaussée') || pLower.includes('rez')) && !currentMatchingPairs.some(item => item.left === 'Le rez-de-chaussée')) {
-        currentMatchingPairs.push({ left: 'Le rez-de-chaussée', right: 'The ground floor' });
-      }
-
-      // If next question is not housing or this is the last, flush matching question
-      const nextQ = questions[i + 1];
-      const nextP = nextQ ? (nextQ.prompt || (nextQ as any).text || '').toLowerCase() : '';
-      const isNextHousing = nextP.includes('studio') || nextP.includes('immeuble') || nextP.includes('loyer') || nextP.includes('résidence') || nextP.includes('residence') || nextP.includes('rez-de-chaussée') || nextP.includes('rez');
-
-      if (!isNextHousing) {
-        // Ensure all 5 standard Lesson 1 pairs are present in Question 2 matching
-        const defaultPairs = [
-          { left: 'Un studio', right: 'A studio apartment' },
-          { left: 'Un immeuble', right: 'An apartment building' },
-          { left: 'Le loyer', right: 'The rent' },
-          { left: 'Une résidence', right: 'A residence' },
-          { left: 'Le rez-de-chaussée', right: 'The ground floor' }
-        ];
-
-        defaultPairs.forEach(dp => {
-          if (!currentMatchingPairs.some(item => item.left.toLowerCase() === dp.left.toLowerCase())) {
-            currentMatchingPairs.push(dp);
-          }
-        });
-
-        normalizedQuestions.push({
-          id: 'pe-housing-matching',
-          type: 'matching',
-          prompt: matchingPrompt,
-          pairs: Object.fromEntries(currentMatchingPairs.map(item => [item.left, item.right])),
-          explanation: 'Un studio = A studio apartment, Un immeuble = An apartment building, Le loyer = The rent, Une résidence = A residence, Le rez-de-chaussée = The ground floor.',
-        } as any);
-        currentMatchingPairs = [];
-      }
-      continue;
-    }
-
-    normalizedQuestions.push(q);
-  }
-
-  // Guarantee Question 3 (Fill in the Blank: __________ un ascenseur dans l'immeuble ?) is present if missing
-  const hasFillBlankAscenseur = normalizedQuestions.some(q => {
-    const text = (q.prompt || (q as any).text || '').toLowerCase();
-    return text.includes('ascenseur') || text.includes('is there');
-  });
-
-  if (!hasFillBlankAscenseur) {
-    const matchingIdx = normalizedQuestions.findIndex(q => q.type === 'matching' || q.id === 'pe-housing-matching');
-    const insertPos = matchingIdx !== -1 ? matchingIdx + 1 : 2;
-    normalizedQuestions.splice(insertPos, 0, {
-      id: 'pe-fill-blank-ascenseur',
-      type: 'fill_blank',
-      prompt: '__________ un ascenseur dans l\'immeuble ? (is there)',
-      correctAnswer: 'Est-ce qu\'il y a',
-      explanation: 'Use the formal question pattern "Est-ce qu\'il y a... ?" (Is there... ?) when asking questions.',
-    } as any);
-  }
-
-  return normalizedQuestions.map((q, idx) => {
+  return questions.map((q, idx) => {
     let resolvedPairs = q.pairs ? (Array.isArray(q.pairs) ? Object.fromEntries(q.pairs.map((p: any) => [p.left || p[0], p.right || p[1]])) : q.pairs) : undefined;
     let resolvedText = q.prompt || (q as any).text || '';
 
-    // Extract embedded pairs from prompt if not explicitly structured in q.pairs
     if (!resolvedPairs || Object.keys(resolvedPairs).length === 0) {
       const extracted = extractPairsFromText(resolvedText);
       if (extracted) {
@@ -259,28 +171,24 @@ function adaptQuestions(questions: LessonQuestion[]) {
     }
 
     let resolvedOptions = (q as any).options;
-    // Normalize 4 options for "There is no garden" is:
-    if (resolvedText.toLowerCase().includes('no garden') || resolvedText.toLowerCase().includes('jardin')) {
-      resolvedOptions = [
-        "Il y a pas un jardin",
-        "Il n'y a pas un jardin",
-        "Il n'y a pas de jardin",
-        "Il n'y a pas des jardin"
-      ];
-    }
 
     const hasDummyOptions = Array.isArray(resolvedOptions) && resolvedOptions.length > 0 && resolvedOptions.every((opt: any) => /^Option\s+[A-Z]$/i.test(String(opt).trim()));
     const hasPairs = (resolvedPairs && Object.keys(resolvedPairs).length > 0) || (q as any).pairs?.length > 0;
     const isBlankQuestion = resolvedText.includes('__________');
 
     let resolvedType = q.type;
-    if (isBlankQuestion) {
-      resolvedType = 'fill_blank';
+    if (!resolvedType) {
+      if (isBlankQuestion) {
+        resolvedType = 'fill_blank';
+        resolvedPairs = undefined;
+      } else if (hasPairs) {
+        resolvedType = 'matching';
+      } else if (hasDummyOptions) {
+        resolvedType = 'short_answer';
+      }
+    }
+    if (isBlankQuestion && resolvedType !== 'fill_blank') {
       resolvedPairs = undefined;
-    } else if (hasPairs) {
-      resolvedType = 'matching';
-    } else if (hasDummyOptions) {
-      resolvedType = 'short_answer';
     }
 
     return {

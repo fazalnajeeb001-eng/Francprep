@@ -1047,10 +1047,12 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
     const hasDummyOptions = Array.isArray(q.options) && q.options.length > 0 && q.options.every((opt: any) => /^Option\s+[A-Z]$/i.test(String(opt).trim()));
     const hasPairs = (q.pairs && Object.keys(q.pairs).length > 0) || (q as any).pairs?.length > 0;
 
-    if (hasPairs) {
-      qType = 'matching';
-    } else if (hasDummyOptions) {
-      qType = 'short_answer';
+    if (!q.type) {
+      if (hasPairs) {
+        qType = 'matching';
+      } else if (hasDummyOptions) {
+        qType = 'short_answer';
+      }
     }
 
     switch (qType) {
