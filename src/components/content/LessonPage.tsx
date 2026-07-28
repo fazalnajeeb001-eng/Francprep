@@ -2430,56 +2430,59 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
 
   // Normalize Section 1 (Listening Comprehension)
   if (isListeningSec || activeTab === 0) {
-    sec.instructions = "Listen to (read) the apartment-hunting scene from Lesson 7 and answer the comprehension question below:";
+    sec.instructions = "Listen to the audio scene again and answer the comprehension question below:";
+    sec.points = sec.points || 3;
     const rawQs = Array.isArray(sec.questions) ? sec.questions : [];
-    if (rawQs.length > 0) {
-      sec.questions = rawQs.map((q: any) => {
-        let p = (q.prompt || '')
-          .replace(/^\*\*Section\s*\d+[^*]+\*\*\s*/gi, '')
-          .replace(/^Section\s*\d+[^:]*:\s*/gi, '')
-          .replace(/^Listen to \(read\).*?and answer:\s*/gi, '')
-          .replace(/\*\(\d+\s*points?\)\*/gi, '')
-          .replace(/\(\d+\s*points?\)/gi, '')
-          .trim();
-        if (!p || p.length < 5) {
-          p = "What features does the listing have, and what does the group plan to check during the visit?";
+    const firstQPrompt = (rawQs[0]?.prompt || '').toLowerCase();
+    
+    if (rawQs.length === 0 || firstQPrompt.includes('match') || firstQPrompt.includes('option a') || firstQPrompt.length < 5) {
+      sec.questions = [
+        {
+          id: `${lesson?.lessonId || 'l8'}-sec1-q1`,
+          type: 'short_answer',
+          prompt: "Who uses vous with whom, and why, at each point in the conversation?",
+          correctAnswer: "Review the usage of formal vous in the dialogue.",
+          explanation: "Listen to the dialogue to identify formal address.",
         }
-        return { ...q, prompt: p };
-      });
+      ];
     }
   }
 
   // Normalize Section 2 (Reading Comprehension)
   if (isReadingSec || activeTab === 1) {
-    const sourcePassage = sec.sourceText || "Monsieur Roy cherche une nouvelle maison. Il visite une maison spacieuse avec quatre chambres. Il y a un grand jardin, mais il n'y a pas de garage. La maison est calme, loin du centre-ville.";
-    sec.sourceText = sourcePassage;
+    sec.points = sec.points || 3;
+    const rawPassage = sec.sourceText;
+    if (!rawPassage || rawPassage.includes('Monsieur Roy cherche')) {
+      sec.sourceText = "Bonsoir, Monsieur. Je m'appelle Inès. Comment allez-vous ? — Ça va bien, merci, un peu fatigué. Et vous ? — Ça va, merci !";
+      sec.translation = "Good evening, sir. My name is Inès. How are you? — I'm doing well, thank you, a little tired. And you? — I'm okay, thanks!";
+    }
 
     const rawQs = Array.isArray(sec.questions) ? sec.questions : [];
-    const combinedPrompt = rawQs[0]?.prompt || sec.instructions || '';
+    const firstQPrompt = (rawQs[0]?.prompt || '').toLowerCase();
 
-    if (combinedPrompt.includes('(a)') && combinedPrompt.includes('(b)') && combinedPrompt.includes('(c)')) {
+    if (rawQs.length === 0 || firstQPrompt.includes('match') || firstQPrompt.includes('option a') || firstQPrompt.includes('(a)') || rawQs.length < 3) {
       sec.instructions = "Read the short passage below and answer all 3 comprehension questions:";
       sec.questions = [
         {
-          id: 'sec2-q1',
+          id: `${lesson?.lessonId || 'l8'}-sec2-q1`,
           type: 'short_answer',
-          prompt: '(a) What is Monsieur Roy looking for?',
-          correctAnswer: 'Une nouvelle maison (A new house)',
-          explanation: 'Passage states: Monsieur Roy cherche une nouvelle maison.',
+          prompt: '(a) What time of day is it?',
+          correctAnswer: 'Evening (Bonsoir = Good evening)',
+          explanation: 'The passage starts with "Bonsoir" which indicates evening.',
         },
         {
-          id: 'sec2-q2',
+          id: `${lesson?.lessonId || 'l8'}-sec2-q2`,
           type: 'short_answer',
-          prompt: '(b) What does the house have and not have?',
-          correctAnswer: 'It has 4 bedrooms and a big garden, but no garage.',
-          explanation: 'Passage states: 4 chambres, un grand jardin, mais pas de garage.',
+          prompt: '(b) Is the exchange formal or informal?',
+          correctAnswer: 'Formal (uses Monsieur, Comment allez-vous ?, Et vous ?)',
+          explanation: 'Uses formal greetings and vous forms.',
         },
         {
-          id: 'sec2-q3',
+          id: `${lesson?.lessonId || 'l8'}-sec2-q3`,
           type: 'short_answer',
-          prompt: '(c) How is the location described?',
-          correctAnswer: 'Quiet, far from downtown (Calme, loin du centre-ville).',
-          explanation: 'Passage states: La maison est calme, loin du centre-ville.',
+          prompt: '(c) How does the man describe how he feels?',
+          correctAnswer: 'Doing well, a little tired (Ça va bien, un peu fatigué)',
+          explanation: 'The man says "Ça va bien, merci, un peu fatigué".',
         },
       ];
     }
@@ -2487,41 +2490,41 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
 
   // Normalize Section 3 (Written Production)
   if (displaySkill === 'Writing' || activeTab === 2) {
-    sec.instructions = "";
+    sec.points = sec.points || 4;
+    sec.instructions = "Written Production:";
     const rawQs = Array.isArray(sec.questions) ? sec.questions : [];
-    if (rawQs.length > 0) {
-      sec.questions = rawQs.map((q: any) => {
-        let p = (q.prompt || '')
-          .replace(/^\*\*Section\s*\d+[^*]+\*\*\s*/gi, '')
-          .replace(/^Section\s*\d+[^:]*:\s*/gi, '')
-          .replace(/\*\(\d+\s*points?\)\*/gi, '')
-          .replace(/\(\d+\s*points?\)/gi, '')
-          .trim();
-        if (!p || p.length < 5) {
-          p = "Write a 6–8 line original description of your ideal home, using the complete il y a system, at least three prepositions of location, and at least two descriptive adjectives.";
+    const firstQPrompt = (rawQs[0]?.prompt || '').toLowerCase();
+
+    if (rawQs.length === 0 || firstQPrompt.includes('match') || firstQPrompt.includes('option a') || firstQPrompt.length < 5) {
+      sec.questions = [
+        {
+          id: `${lesson?.lessonId || 'l8'}-sec3-q1`,
+          type: 'short_answer',
+          prompt: 'Write a 4–6 line original dialogue introducing yourself to a stranger, asking their name, and asking how they are, in the formal register.',
+          correctAnswer: 'Sample dialogue in formal register (using vous, Monsieur/Madame).',
+          explanation: 'Assess dialogue for proper formal register and 4-6 lines.',
         }
-        return { ...q, prompt: p };
-      });
+      ];
     }
   }
 
   // Normalize Section 4 (Oral Production)
   if (isSpeakingSec || activeTab === 3) {
-    sec.instructions = "Describe your actual home in detail (1–2 minutes):";
+    sec.points = sec.points || 2;
+    sec.instructions = "Oral Production (Evaluated by FrancPrep's AI speaking coach):";
     const rawQs = Array.isArray(sec.questions) ? sec.questions : [];
-    if (rawQs.length > 0) {
-      sec.questions = rawQs.map((q: any) => {
-        let p = (q.prompt || '')
-          .replace(/^\*\*Section\s*\d+[^*]+\*\*\s*/gi, '')
-          .replace(/^Section\s*\d+[^:]*:\s*/gi, '')
-          .replace(/\*\(\d+\s*points?\)\*/gi, '')
-          .replace(/\(\d+\s*points?\)/gi, '')
-          .trim();
-        if (!p || p.length < 5) {
-          p = "Describe your actual home in detail — type, rooms, furniture, and location within the home — for 1–2 minutes.";
+    const firstQPrompt = (rawQs[0]?.prompt || '').toLowerCase();
+
+    if (rawQs.length === 0 || firstQPrompt.includes('match') || firstQPrompt.includes('option a') || firstQPrompt.length < 5) {
+      sec.questions = [
+        {
+          id: `${lesson?.lessonId || 'l8'}-sec4-q1`,
+          type: 'short_answer',
+          prompt: "Introduce yourself aloud, state your name, and say how you are feeling today, using at least one adjective with correct agreement — speaking to FrancPrep's AI conversation partner.",
+          correctAnswer: 'Oral response introducing yourself with correct adjective agreement.',
+          explanation: 'Speak clearly into the microphone.',
         }
-        return { ...q, prompt: p };
-      });
+      ];
     }
   }
 
