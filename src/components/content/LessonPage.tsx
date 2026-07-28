@@ -186,11 +186,77 @@ function extractPairsFromText(text: string): { pairs: Record<string, string>; ti
 }
 
 function adaptQuestions(questions: LessonQuestion[]) {
-  if (!questions) return [];
+  if (!questions || !Array.isArray(questions)) return [];
 
-  const rawAdapted = questions.map((q, idx) => {
-    let resolvedText = q.prompt || (q as any).text || '';
-    let resolvedOptions = (q as any).options;
+  // Pass 1: Pre-group matching header and consecutive pair line fragments into unified matching questions
+  const grouped: any[] = [];
+  let pendingMatchingQ: any = null;
+
+  for (let i = 0; i < questions.length; i++) {
+    const rawQ = questions[i];
+    const prompt = (rawQ.prompt || (rawQ as any).text || '').trim();
+    const promptLower = prompt.toLowerCase();
+
+    const isMatchingHeader = promptLower.startsWith('matching') || promptLower.startsWith('match the') || (rawQ.type === 'matching' && (!rawQ.pairs || Object.keys(rawQ.pairs).length === 0));
+
+    const dashMatch = prompt.match(/^([A-Za-zÀ-ÿ0-9\s"'\(\)]+)\s*[—\-\:]+\s*(?:[a-eA-E0-9][\.\)]\s*)?(.+)$/);
+    const isPairLine = dashMatch && !prompt.includes('__________') && !/[a-d]\)\s*.*[b-d]\)/i.test(prompt);
+
+    if (isMatchingHeader) {
+      if (pendingMatchingQ) {
+        grouped.push(pendingMatchingQ);
+      }
+      const title = prompt.replace(/^(?:\d+[\.\)]\s*)?(?:Matching)[:\s]*/i, '').trim() || 'Match each expression to its use:';
+      pendingMatchingQ = {
+        id: rawQ.id || `q-matching-${i}`,
+        text: title,
+        type: 'matching',
+        pairs: {},
+        explanation: 'Match each item with its correct pair.',
+        points: 1,
+      };
+      continue;
+    }
+
+    if (isPairLine) {
+      const leftKey = dashMatch[1].replace(/^\d+[\.\)]\s*/, '').replace(/^[*•\-]\s*/, '').trim();
+      const rightVal = dashMatch[2].replace(/^[a-eA-E0-9][\.\)]\s*/, '').trim();
+
+      const leftLower = leftKey.toLowerCase();
+      const isInstruction = ['complete', 'fill', 'fill in', 'question', 'select', 'translate', 'multiple choice'].some(w => leftLower.startsWith(w));
+
+      if (leftKey && rightVal && !isInstruction) {
+        if (!pendingMatchingQ) {
+          pendingMatchingQ = {
+            id: `q-matching-${i}`,
+            text: 'Match each expression to its use:',
+            type: 'matching',
+            pairs: {},
+            explanation: 'Match each item with its correct pair.',
+            points: 1,
+          };
+        }
+        pendingMatchingQ.pairs[leftKey] = rightVal;
+        continue; // Absorb pair line into pendingMatchingQ!
+      }
+    }
+
+    if (pendingMatchingQ) {
+      grouped.push(pendingMatchingQ);
+      pendingMatchingQ = null;
+    }
+
+    grouped.push(rawQ);
+  }
+
+  if (pendingMatchingQ) {
+    grouped.push(pendingMatchingQ);
+  }
+
+  // Pass 2: Adapt each grouped question object into QuizComponent shape
+  return grouped.map((q, idx) => {
+    let resolvedText = q.prompt || q.text || '';
+    let resolvedOptions = q.options;
     let resolvedPairs = q.pairs ? (Array.isArray(q.pairs) ? Object.fromEntries(q.pairs.map((p: any) => [p.left || p[0], p.right || p[1]])) : q.pairs) : undefined;
     let resolvedItems = q.items;
 
@@ -259,30 +325,6 @@ function adaptQuestions(questions: LessonQuestion[]) {
       points: 1,
     };
   });
-
-  // Filter out redundant sub-pair line fragments (e.g. "Bonne nuit — Said only when going to bed") if preceded by a valid matching question
-  const consolidated: typeof rawAdapted = [];
-  for (let i = 0; i < rawAdapted.length; i++) {
-    const q = rawAdapted[i];
-    const text = (q.text || '').trim();
-
-    // Check if item is a lone pair line fragment with dummy options (e.g. "Bonne nuit — Said only when going to bed")
-    const isFragmentLine = text.match(/^([A-Za-zÀ-ÿ\s]+)\s*[—\-\:]+\s*(?:[a-eA-E0-9][\.\)]\s*)?(.+)$/);
-    const hasOnlyDummy = !q.options || (Array.isArray(q.options) && q.options.length === 0);
-
-    const prevMatching = consolidated.find(item => item.type === 'matching' && item.pairs);
-    if (prevMatching && prevMatching.pairs && isFragmentLine && hasOnlyDummy) {
-      const leftKey = isFragmentLine[1].replace(/^\d+[\.\)]\s*/, '').trim().toLowerCase();
-      const prevKeys = Object.keys(prevMatching.pairs).map(k => k.toLowerCase());
-      if (prevKeys.some(k => k === leftKey || leftKey.includes(k))) {
-        continue; // Filter out redundant duplicate sub-pair item!
-      }
-    }
-
-    consolidated.push(q);
-  }
-
-  return consolidated;
 }
 
 function parseOverviewMetadata(rawObjectives: any, lessonData: any) {
