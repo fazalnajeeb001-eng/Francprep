@@ -83,14 +83,16 @@ function AdminLessonsPage() {
       if (levelFilter) params.set("level", levelFilter);
       if (q) params.set("search", q);
       const res = await apiFetch(`/admin/lessons?${params}`);
-      const json: PaginatedResponse = await res.json();
+      const json = await res.json();
       if (json.success) {
-        setLessons(json.data);
-        setPage(json.pagination.page);
-        setTotalPages(json.pagination.totalPages);
-        setTotal(json.pagination.total);
+        const list = Array.isArray(json.data) ? json.data : (json.data?.lessons || []);
+        setLessons(list);
+        const pag = json.pagination || json.data?.pagination || { page: 1, limit: 20, total: list.length, totalPages: 1 };
+        setPage(pag.page || 1);
+        setTotalPages(pag.totalPages || 1);
+        setTotal(pag.total || list.length);
       } else {
-        setError("Failed to load lessons");
+        setError(json.error || "Failed to load lessons");
       }
     } catch (e: any) {
       setError(e.message || "Network error");
