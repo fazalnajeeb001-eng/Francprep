@@ -478,15 +478,19 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
 
   // ─── CHECK ANSWER (SINGLE QUESTION) ───
   const handleCheckQuestion = async (targetQId: string) => {
-    const val = answers[targetQId];
-    if (val === undefined) return;
+    let val = answers[targetQId];
+    if (val === undefined && answers[String(current)] !== undefined) {
+      val = answers[String(current)];
+    }
+    if (val === undefined || val === null) return;
 
-    setCheckingQuestion(prev => ({ ...prev, [targetQId]: true }));
+    setCheckingQuestion(prev => ({ ...prev, [targetQId]: true, [String(current)]: true }));
     try {
       const targetQ = questions.find((question, idx) => {
         const id = question.id || (question as any)._id || String(idx);
-        return id === targetQId;
-      });
+        return id === targetQId || String(idx) === targetQId || idx === current;
+      }) || questions[current];
+      
       if (!targetQ) return;
 
       if (targetQ.type === 'matching') {
@@ -507,7 +511,7 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
               ? "All pairs matched correctly!"
               : `${correctCount}/${totalPairs} matched correctly. Correct pairs: ${Object.entries(pairs).map(([k, v]) => `${k} ↔ ${v}`).join(', ')}`,
           };
-          setQuestionResults(prev => ({ ...prev, [targetQId]: mockResult }));
+          setQuestionResults(prev => ({ ...prev, [targetQId]: mockResult, [String(current)]: mockResult }));
           if (!allCorrect) {
             setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
           }
@@ -519,10 +523,12 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
         const isChoiceOrInteractive = ['multiple_choice', 'true_false', 'matching', 'ordering'].includes(targetQ.type || _type);
         const isTypedQuestion = !isChoiceOrInteractive || (typeof val === 'string' && !targetQ.options && !targetQ.pairs && !targetQ.items);
         
+        const expectedAnswerRaw = targetQ.correctAnswer || targetQ.blankAnswer || targetQ.sampleAnswer || (targetQ as any).correct_answer || (targetQ as any).answer;
+
         if (isTypedQuestion) {
           try {
             const promptText = targetQ.prompt || targetQ.question || (targetQ as any).text || qText || '';
-            const expectedStr = targetQ.correctAnswer ? (Array.isArray(targetQ.correctAnswer) ? targetQ.correctAnswer.join(' / ') : String(targetQ.correctAnswer)) : '';
+            const expectedStr = expectedAnswerRaw ? (Array.isArray(expectedAnswerRaw) ? expectedAnswerRaw.join(' / ') : String(expectedAnswerRaw)) : '';
 
             const apiRes = await apiFetch('/writing/grammar-check', {
               method: 'POST',
@@ -544,7 +550,7 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
                 explanation: json.data.feedback || (json.data.correct ? "Correct!" : `Expected: ${expectedStr || 'N/A'}`),
                 text: promptText,
               };
-              setQuestionResults(prev => ({ ...prev, [targetQId]: aiResult }));
+              setQuestionResults(prev => ({ ...prev, [targetQId]: aiResult, [String(current)]: aiResult }));
               if (!aiResult.correct) {
                 setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
               }
@@ -554,7 +560,7 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
           } catch (aiErr) {
             console.warn('AI check fallback to local check:', aiErr);
             // Fallback to local evaluation if AI service is offline or unconfigured
-            const correct = targetQ.correctAnswer;
+            const correct = expectedAnswerRaw;
             let isCorrect = false;
             if (correct !== undefined && correct !== null && val !== undefined) {
               const normalize = (s: string) => String(s).trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").replace(/\s+/g, " ");
@@ -583,7 +589,7 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
               explanation: isCorrect ? "Correct!" : fallbackExp,
               text: targetQ.prompt,
             };
-            setQuestionResults(prev => ({ ...prev, [targetQId]: singleResult }));
+            setQuestionResults(prev => ({ ...prev, [targetQId]: singleResult, [String(current)]: singleResult }));
             if (!isCorrect) {
               setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
             }
@@ -591,9 +597,9 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
         } else if (onSubmit) {
           const res = await onSubmit({ [targetQId]: val });
           if (res && res.results && res.results.length > 0) {
-            const singleResult = res.results.find((r: any) => r.questionId === targetQId);
+            const singleResult = res.results.find((r: any) => r.questionId === targetQId || r.questionId === String(current));
             if (singleResult) {
-              setQuestionResults(prev => ({ ...prev, [targetQId]: singleResult }));
+              setQuestionResults(prev => ({ ...prev, [targetQId]: singleResult, [String(current)]: singleResult }));
               if (!singleResult.correct) {
                 setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
               }
@@ -601,7 +607,7 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
           }
         } else {
           // Local evaluation fallback for multiple choice / true-false
-          const correct = targetQ.correctAnswer;
+          const correct = expectedAnswerRaw;
           let isCorrect = false;
           if (correct !== undefined && correct !== null && val !== undefined) {
             const normalize = (s: string) => String(s).trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").replace(/\s+/g, " ");
@@ -627,7 +633,7 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
             explanation: isCorrect ? "Correct!" : (targetQ.explanation || (correct ? `Expected: ${correct}` : "Incorrect. Try again!")),
             text: targetQ.prompt,
           };
-          setQuestionResults(prev => ({ ...prev, [targetQId]: singleResult }));
+          setQuestionResults(prev => ({ ...prev, [targetQId]: singleResult, [String(current)]: singleResult }));
           if (!isCorrect) {
             setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
           }
@@ -636,7 +642,7 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
     } catch (e) {
       console.error('Check answer failed:', e);
     } finally {
-      setCheckingQuestion(prev => ({ ...prev, [targetQId]: false }));
+      setCheckingQuestion(prev => ({ ...prev, [targetQId]: false, [String(current)]: false }));
     }
   };
 
@@ -1089,8 +1095,9 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
 
   const isAnswerValid = (ans: any) => {
     if (ans === undefined || ans === null) return false;
-    if (typeof ans === 'string') return ans.trim().length > 0;
+    if (typeof ans === 'boolean') return true;
     if (typeof ans === 'number') return true;
+    if (typeof ans === 'string') return ans.trim().length > 0;
     if (Array.isArray(ans)) return ans.length > 0;
     if (typeof ans === 'object') return Object.keys(ans).length > 0;
     return false;
