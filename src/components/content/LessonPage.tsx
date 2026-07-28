@@ -2116,6 +2116,66 @@ Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain aprè
   );
 }
 
+function parseExplanationContent(text: string, dark: boolean = true) {
+  if (!text) return null;
+  const lines = text.split('\n');
+  const elements: React.ReactNode[] = [];
+  let currentTableRows: string[][] = [];
+
+  const flushTable = (key: number) => {
+    if (currentTableRows.length === 0) return;
+    const headers = currentTableRows[0];
+    const dataRows = currentTableRows.slice(2);
+    elements.push(
+      <div key={`table-${key}`} className="overflow-x-auto my-4 rounded-xl border border-gray-250 dark:border-[#1e2a4a]">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-[#1e2a4a] text-xs">
+          <thead className={dark ? "bg-white/5" : "bg-gray-50"}>
+            <tr>
+              {headers.map((h, idx) => (
+                <th key={idx} className={`px-4 py-2 text-left font-bold ${dark ? "text-purple-300" : "text-purple-700"}`}>{h.trim()}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className={`divide-y divide-gray-200 dark:divide-[#1e2a4a] ${dark ? "bg-black/20" : "bg-white"}`}>
+            {dataRows.map((row, rIdx) => (
+              <tr key={rIdx}>
+                {row.map((cell, cIdx) => (
+                  <td key={cIdx} className={`px-4 py-2 font-medium ${dark ? "text-gray-300" : "text-gray-700"}`}>{cell.trim()}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+    currentTableRows = [];
+  };
+
+  lines.forEach((line, idx) => {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('|')) {
+      const cells = trimmed.split('|').slice(1, -1);
+      currentTableRows.push(cells);
+    } else {
+      if (currentTableRows.length > 0) flushTable(idx);
+      if (trimmed) {
+        if (trimmed.startsWith('###')) {
+          elements.push(<h4 key={idx} className={`text-xs font-bold mt-4 mb-2 ${dark ? "text-white" : "text-gray-900"}`}>{trimmed.replace('###', '').trim()}</h4>);
+        } else if (trimmed.startsWith('##')) {
+          const hText = trimmed.replace(/^##\s*/, '').replace(/Chapter Review/gi, 'Grammar Summary').trim();
+          elements.push(<h3 key={idx} className={`text-sm font-bold mt-4 mb-2 ${dark ? "text-white" : "text-gray-900"}`}>{hText}</h3>);
+        } else if (trimmed.startsWith('-') || trimmed.startsWith('*')) {
+          elements.push(<div key={idx} className="ml-2">{renderFormattedMarkdown(trimmed, dark)}</div>);
+        } else {
+          elements.push(<div key={idx} className={`text-xs ${dark ? "text-gray-300" : "text-gray-700"} mb-1.5 leading-relaxed`}>{renderFormattedMarkdown(trimmed, dark)}</div>);
+        }
+      }
+    }
+  });
+  if (currentTableRows.length > 0) flushTable(lines.length);
+  return elements;
+}
+
 // ─── Grammar Section ───────────────────────────────────────────────────────
 
 function GrammarSection({ grammar, dark, cardBg, innerBg, textBody, textSec }: {
@@ -2124,79 +2184,6 @@ function GrammarSection({ grammar, dark, cardBg, innerBg, textBody, textSec }: {
   const isPlaceholderFormation = !grammar.formation || grammar.formation.includes('See grammar summary') || grammar.formation.includes('Recycled from');
   const isPlaceholderUsage = !grammar.usage || grammar.usage.includes('Review all grammar') || grammar.usage.includes('See explanation');
   const isPlaceholderExamples = !grammar.examples?.length || grammar.examples[0]?.includes('Refer to the');
-
-  const parseExplanationContent = (text: string) => {
-    const lines = text.split('\n');
-    const elements: React.ReactNode[] = [];
-    let currentTableRows: string[][] = [];
-
-    const flushTable = (key: number) => {
-      if (currentTableRows.length === 0) return;
-      const headers = currentTableRows[0];
-      const dataRows = currentTableRows.slice(2); // Skip separator row |---|---|
-      elements.push(
-        <div key={`table-${key}`} className="overflow-x-auto my-4 rounded-xl border border-gray-250 dark:border-[#1e2a4a]">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-[#1e2a4a] text-xs">
-            <thead className={dark ? "bg-white/5" : "bg-gray-50"}>
-              <tr>
-                {headers.map((h, idx) => (
-                  <th key={idx} className={`px-4 py-2 text-left font-bold ${dark ? "text-purple-300" : "text-purple-700"}`}>{h.trim()}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className={`divide-y divide-gray-200 dark:divide-[#1e2a4a] ${dark ? "bg-black/20" : "bg-white"}`}>
-              {dataRows.map((row, rIdx) => (
-                <tr key={rIdx}>
-                  {row.map((cell, cIdx) => (
-                    <td key={cIdx} className={`px-4 py-2 font-medium ${dark ? "text-gray-300" : "text-gray-700"}`}>{cell.trim()}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      );
-      currentTableRows = [];
-    };
-
-    lines.forEach((line, idx) => {
-      const trimmed = line.trim();
-      if (trimmed.startsWith('|')) {
-        const cells = trimmed.split('|').slice(1, -1);
-        currentTableRows.push(cells);
-      } else {
-        if (currentTableRows.length > 0) {
-          flushTable(idx);
-        }
-        if (trimmed) {
-          if (trimmed.startsWith('###')) {
-            elements.push(<h4 key={idx} className={`text-xs font-bold mt-4 mb-2 ${dark ? "text-white" : "text-gray-900"}`}>{trimmed.replace('###', '').trim()}</h4>);
-          } else if (trimmed.startsWith('##')) {
-            const hText = trimmed.replace(/^##\s*/, '').replace(/Chapter Review/gi, 'Grammar Summary').trim();
-            elements.push(<h3 key={idx} className={`text-sm font-bold mt-4 mb-2 ${dark ? "text-white" : "text-gray-900"}`}>{hText}</h3>);
-          } else if (trimmed.startsWith('-') || trimmed.startsWith('*')) {
-            elements.push(
-              <div key={idx} className="ml-2">
-                {renderFormattedMarkdown(trimmed, dark)}
-              </div>
-            );
-          } else {
-            elements.push(
-              <div key={idx} className={`text-xs ${textBody} mb-1.5 leading-relaxed`}>
-                {renderFormattedMarkdown(trimmed, dark)}
-              </div>
-            );
-          }
-        }
-      }
-    });
-
-    if (currentTableRows.length > 0) {
-      flushTable(lines.length);
-    }
-
-    return elements;
-  };
 
   return (
     <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
