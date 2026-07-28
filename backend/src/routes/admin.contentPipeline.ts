@@ -1458,7 +1458,12 @@ router.post('/content-pipeline/trash/:id/restore', async (req: AuthRequest, res:
       return;
     }
 
-    if (trash.originalType === 'draft') {
+    if (trash.originalType === 'published') {
+      const lessonData = trash.payload;
+      delete lessonData._id;
+      const Lesson = (await import('../models/Lesson')).default;
+      await Lesson.create(lessonData);
+    } else {
       const draftData = trash.payload;
       delete draftData._id;
       await Draft.create(draftData);

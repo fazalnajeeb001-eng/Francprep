@@ -31,9 +31,10 @@ const navGroups = [
     ]
   },
   {
-    title: "DELF / DALF Milestones",
+    title: "Exam Content Management",
     items: [
-      { label: "DELF/DALF Diagnostic Exams", icon: GraduationCap, href: "/exam/delf" },
+      { label: "Exam Papers Content (TCF/TEF/DELF)", icon: GraduationCap, href: "/admin/exams" },
+      { label: "DELF/DALF Diagnostic Exams", icon: Crown, href: "/exam/delf" },
     ]
   },
   {

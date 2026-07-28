@@ -31,6 +31,14 @@ function AdminSettingsPage() {
     frontendUrl: "",
   });
 
+  const [gatingSettings, setGatingSettings] = useState({
+    gatingMode: "all_locked",
+    passingScorePercentage: 70,
+    lockedChapterIds: [] as string[],
+  });
+  const [savingGating, setSavingGating] = useState(false);
+  const [gatingMsg, setGatingMsg] = useState("");
+
   const bg = dark ? "bg-[#070B17]" : "bg-gray-50";
   const card = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200";
   const inp = `w-full rounded-xl ${dark ? "bg-[#070B17] border-[#1e2a4a] text-white" : "bg-white border-gray-300 text-gray-900"} border px-4 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-mono`;
@@ -51,7 +59,31 @@ function AdminSettingsPage() {
         });
       }
     }).catch(() => {}).finally(() => setLoading(false));
+
+    apiFetch("/admin/settings/gating").then((r) => r.json()).then((j) => {
+      if (j.success && j.data) {
+        setGatingSettings(j.data);
+      }
+    }).catch(() => {});
   }, []);
+
+  const handleSaveGating = async () => {
+    setSavingGating(true);
+    setGatingMsg("");
+    try {
+      const res = await apiFetch("/admin/settings/gating", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(gatingSettings),
+      });
+      const json = await res.json();
+      if (json.success) setGatingMsg("Module Gate Settings Saved!");
+      else setGatingMsg(json.error || "Failed to save");
+    } catch {
+      setGatingMsg("Network error");
+    }
+    setSavingGating(false);
+  };
 
   const handleSave = async () => {
     setSaving(true); setSaveMsg("");

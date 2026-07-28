@@ -72,12 +72,20 @@ function LearnPage() {
     }).catch(() => {});
   }, []);
 
-  const isChapterLocked = (ch: any, idx: number) => {
-    if (gatingSettings.gatingMode === 'all_unlocked' || userExempt) return false;
-    if (idx === 0) return false;
+  const isModuleLocked = (levelCode: string) => {
+    if (user?.role === 'admin' || userExempt) return false;
+    if (gatingSettings.gatingMode === 'all_unlocked') return false;
+    if (levelCode === 'A1') return false;
+
+    const prevLevelMap: Record<string, string> = { A2: 'A1', B1: 'A2', B2: 'B1', C1: 'B2', C2: 'C1' };
+    const requiredPrev = prevLevelMap[levelCode];
+    if (requiredPrev && passedMilestones.some((m: string) => m.toLowerCase().includes(requiredPrev.toLowerCase()))) {
+      return false;
+    }
+
     if (gatingSettings.gatingMode === 'all_locked') return true;
     if (gatingSettings.gatingMode === 'selective_locked') {
-      return gatingSettings.lockedChapterIds.includes(ch._id) || gatingSettings.lockedChapterIds.includes(ch.chapterId);
+      return gatingSettings.lockedChapterIds.includes(levelCode);
     }
     return false;
   };

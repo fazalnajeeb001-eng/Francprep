@@ -307,10 +307,27 @@ router.post('/lessons/bulk-delete', async (req: AuthRequest, res: Response, next
       return;
     }
 
+    const lessonsToTrash = await Lesson.find({ _id: { $in: lessonIds } });
+    const { TrashItem } = await import('../models/TrashItem');
+    const expiresAt = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000);
+
+    for (const l of lessonsToTrash) {
+      await TrashItem.create({
+        title: l.title || l.lessonId || 'Untitled Lesson',
+        lessonId: l.lessonId || 'A1-CH1-L1',
+        level: l.level || 'A1',
+        originalType: 'published',
+        originalId: l._id.toString(),
+        payload: l.toObject(),
+        deletedBy: req.user?.email || 'admin',
+        expiresAt,
+      });
+    }
+
     const deleteResult = await Lesson.deleteMany({ _id: { $in: lessonIds } });
     res.json({
       success: true,
-      message: `Successfully deleted ${deleteResult.deletedCount} lessons`,
+      message: `Successfully moved ${deleteResult.deletedCount} lessons to the 60-Day Recycle Bin`,
       deletedCount: deleteResult.deletedCount,
     });
   } catch (err) {
