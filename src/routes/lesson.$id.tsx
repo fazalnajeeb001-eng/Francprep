@@ -7,7 +7,16 @@ export const Route = createFileRoute("/lesson/$id")({
 
 function LessonRoute() {
   const { id } = Route.useParams() as any;
-  const { history } = useRouter();
+  const router = useRouter();
 
-  return <LessonPage lessonId={id} onBack={() => history.back()} />;
+  const handleBack = () => {
+    try {
+      if (router?.history) router.history.back();
+      else window.history.back();
+    } catch {
+      window.history.back();
+    }
+  };
+
+  return <LessonPage lessonId={id} onBack={handleBack} />;
 }

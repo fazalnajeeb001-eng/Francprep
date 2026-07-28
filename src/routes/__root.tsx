@@ -12,12 +12,12 @@ const queryClient = new QueryClient();
 
 class ErrorBoundary extends Component<
   { children: ReactNode; fallback?: ReactNode },
-  { hasError: boolean }
+  { hasError: boolean; error: Error | null }
 > {
-  state = { hasError: false };
+  state = { hasError: false, error: null as Error | null };
 
-  static getDerivedStateFromError() {
-    return { hasError: true };
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
@@ -29,11 +29,17 @@ class ErrorBoundary extends Component<
       return (
         this.props.fallback || (
           <div className="min-h-screen dark:bg-[#070B17] bg-gray-50 flex items-center justify-center p-4">
-            <div className="text-center">
+            <div className="text-center max-w-xl mx-auto">
               <p className="text-4xl mb-4">⚠️</p>
               <h1 className="text-xl font-bold dark:text-white text-gray-900 mb-2">Something went wrong</h1>
               <p className="text-sm dark:text-gray-400 text-gray-600 mb-4">An unexpected error occurred. Please try refreshing the page.</p>
-              <button onClick={() => { this.setState({ hasError: false }); window.location.reload(); }}
+              {this.state.error && (
+                <div className="text-left p-3 rounded-xl bg-red-950/80 border border-red-500/50 text-[11px] font-mono text-red-300 overflow-x-auto mb-4 whitespace-pre-wrap max-h-48">
+                  <p className="font-bold">{String(this.state.error)}</p>
+                  {this.state.error.stack && <p className="text-[10px] text-red-400/80 mt-1">{this.state.error.stack}</p>}
+                </div>
+              )}
+              <button onClick={() => { this.setState({ hasError: false, error: null }); window.location.reload(); }}
                 className="px-5 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl text-sm font-semibold hover:opacity-90 transition-all">
                 Reload Page
               </button>

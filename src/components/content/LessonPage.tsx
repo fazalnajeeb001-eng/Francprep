@@ -645,15 +645,15 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
   const sections = lesson ? buildSections(lesson) : [];
 
-  const isLesson8 = lesson?.lessonNumber === 8 || lesson?.order === 8 || lesson?.title?.toLowerCase().includes('review') || lesson?.skill === 'REV' || lesson?.skill === 'review';
+  const isLesson8 = lesson?.lessonNumber === 8 || lesson?.order === 8 || (typeof lesson?.title === 'string' && lesson.title.toLowerCase().includes('review')) || lesson?.skill === 'REV' || lesson?.skill === 'review';
 
   const computeLesson7Id = (l: any) => {
     if (!l) return '';
-    const id = (l.lessonId || l._id || '').toLowerCase();
+    const id = String(l.lessonId || l._id || '').toLowerCase();
     if (id.includes('l8')) return id.replace('l8', 'l7');
     if (id.includes('lesson-8')) return id.replace('lesson-8', 'lesson-7');
     if (id.includes('_8')) return id.replace('_8', '_7');
-    if (l.chapterId) return `${l.chapterId.toLowerCase()}-l7`;
+    if (l.chapterId) return `${String(l.chapterId).toLowerCase()}-l7`;
     return '';
   };
 
@@ -1356,7 +1356,7 @@ Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain aprè
         );
 
       case 'completion':
-        const chNumber = lesson?.chapterNumber || lesson?.chapterId?.replace(/\D/g, '') || '1';
+        const chNumber = lesson?.chapterNumber || String(lesson?.chapterId || '1').replace(/\D/g, '') || '1';
         const rawCompContent = lesson?.completionSummary?.content || '';
         return (
           <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className={`${cardBg} backdrop-blur-lg rounded-2xl p-6 md:p-8 text-center space-y-6 border border-emerald-500/20 shadow-xl`}>
