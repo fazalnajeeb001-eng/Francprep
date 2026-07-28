@@ -747,13 +747,14 @@ router.get('/curriculum/audit', async (req: AuthRequest, res: Response, next: Ne
 // GET /api/admin/settings/gating
 router.get('/settings/gating', async (_req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    let settings = await SystemSettings.findOne({ key: 'global_settings' });
+    let settings = await SystemSettings.findOne();
     if (!settings) {
       settings = await SystemSettings.create({
-        key: 'global_settings',
         gatingMode: 'all_locked',
+        lockScope: 'module',
         passingScorePercentage: 70,
         lockedChapterIds: [],
+        targetUserIds: [],
       });
     }
     res.json({ success: true, data: settings });
@@ -765,14 +766,16 @@ router.get('/settings/gating', async (_req: AuthRequest, res: Response, next: Ne
 // PUT /api/admin/settings/gating
 router.put('/settings/gating', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { gatingMode, passingScorePercentage, lockedChapterIds } = req.body;
-    let settings = await SystemSettings.findOne({ key: 'global_settings' });
+    const { gatingMode, lockScope, passingScorePercentage, lockedChapterIds, targetUserIds } = req.body;
+    let settings = await SystemSettings.findOne();
     if (!settings) {
-      settings = new SystemSettings({ key: 'global_settings' });
+      settings = new SystemSettings();
     }
     if (gatingMode) settings.gatingMode = gatingMode;
+    if (lockScope) settings.lockScope = lockScope;
     if (passingScorePercentage !== undefined) settings.passingScorePercentage = passingScorePercentage;
     if (lockedChapterIds !== undefined) settings.lockedChapterIds = lockedChapterIds;
+    if (targetUserIds !== undefined) settings.targetUserIds = targetUserIds;
     await settings.save();
     res.json({ success: true, data: settings });
   } catch (error) {

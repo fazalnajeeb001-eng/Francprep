@@ -1,22 +1,40 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface ISystemSettings extends Document {
-  key: string;
   gatingMode: 'all_locked' | 'selective_locked' | 'all_unlocked';
+  lockScope: 'module' | 'chapter' | 'lesson';
   passingScorePercentage: number;
   lockedChapterIds: string[];
+  targetUserIds: string[];
+  updatedAt: Date;
 }
 
-const SystemSettingsSchema = new Schema<ISystemSettings>(
+const SystemSettingsSchema: Schema = new Schema(
   {
-    key: { type: String, required: true, unique: true, default: 'global_settings' },
     gatingMode: {
       type: String,
       enum: ['all_locked', 'selective_locked', 'all_unlocked'],
       default: 'all_locked',
     },
-    passingScorePercentage: { type: Number, default: 70 },
-    lockedChapterIds: { type: [String], default: [] },
+    lockScope: {
+      type: String,
+      enum: ['module', 'chapter', 'lesson'],
+      default: 'module',
+    },
+    passingScorePercentage: {
+      type: Number,
+      default: 70,
+      min: 50,
+      max: 95,
+    },
+    lockedChapterIds: {
+      type: [String],
+      default: [],
+    },
+    targetUserIds: {
+      type: [String],
+      default: [],
+    },
   },
   { timestamps: true }
 );
