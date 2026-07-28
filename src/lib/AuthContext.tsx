@@ -77,7 +77,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!user) return;
     const sendHeartbeat = () => {
-      apiFetch("/users/heartbeat", { method: "POST" }).catch(() => {});
+      const currentPath = typeof window !== "undefined" ? window.location.pathname : "";
+      apiFetch("/users/heartbeat", {
+        method: "POST",
+        body: JSON.stringify({ currentPage: currentPath }),
+      }).catch(() => {});
     };
     sendHeartbeat();
     const interval = setInterval(sendHeartbeat, 40000);

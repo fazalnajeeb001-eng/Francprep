@@ -892,10 +892,22 @@ router.put('/users/:id/custom-price', async (req: AuthRequest, res: Response, ne
 // GET /api/admin/analytics/saas-overview
 router.get('/analytics/saas-overview', async (_req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const allUsers = await User.find({ role: { $ne: 'admin' } })
-      .select('firstName lastName email subscriptionTier isVipFreeAccess customPriceOverride lastActiveAt updatedAt xp learningGoal targetExam createdAt')
-      .lean();
+    const [allUsers, progressAgg] = await Promise.all([
+      User.find({ role: { $ne: 'admin' } })
+        .select('firstName lastName email subscriptionTier isVipFreeAccess customPriceOverride lastActiveAt currentPage updatedAt xp streak learningGoal targetExam createdAt')
+        .lean(),
+      StudentProgress.aggregate([
+        { $match: { status: 'completed' } },
+        { $group: { _id: '$userId', completedCount: { $sum: 1 }, totalTimeSpentSec: { $sum: '$timeSpent' } } }
+      ])
+    ]);
+
     const totalStudents = allUsers.length;
+
+    const progressMap: Record<string, { completedCount: number; totalTimeSpentSec: number }> = {};
+    progressAgg.forEach(p => {
+      progressMap[String(p._id)] = { completedCount: p.completedCount, totalTimeSpentSec: p.totalTimeSpentSec || 0 };
+    });
 
     const threeMinsAgo = new Date(Date.now() - 3 * 60 * 1000);
     const isUserOnline = (u: any) => {
@@ -924,6 +936,8 @@ router.get('/analytics/saas-overview', async (_req: AuthRequest, res: Response, 
     const arr = mrr * 12;
     const arpu = payingUsers.length > 0 ? Math.round(mrr / payingUsers.length) : 0;
     const ltv = arpu * 18;
+    const conversionRate = totalStudents > 0 ? Math.round((payingUsers.length / totalStudents) * 100) : 0;
+    const activeRetentionRate = totalStudents > 0 ? Math.round((onlineCount / totalStudents) * 100) : 0;
 
     // Tally real exam goals
     const examCounts: Record<string, number> = {};
@@ -946,19 +960,31 @@ router.get('/analytics/saas-overview', async (_req: AuthRequest, res: Response, 
     const totalStudyHours = Math.round((totalXP / 60) * 10) / 10;
     const avgSessionMinutes = totalStudents > 0 ? Math.round(totalXP / totalStudents) : 0;
 
-    const studentRoster = allUsers.map(u => ({
-      _id: u._id,
-      firstName: u.firstName,
-      lastName: u.lastName,
-      email: u.email,
-      subscriptionTier: u.subscriptionTier,
-      isVipFreeAccess: u.isVipFreeAccess,
-      customPriceOverride: u.customPriceOverride,
-      isOnline: isUserOnline(u),
-      lastActive: u.lastActiveAt || u.updatedAt,
-      studyHours: Math.round(((u.xp || 0) / 60) * 10) / 10,
-      targetExam: u.learningGoal || (u as any).targetExam || 'Not Specified',
-    }));
+    const studentRoster = allUsers.map(u => {
+      const prog = progressMap[String(u._id)] || { completedCount: 0, totalTimeSpentSec: 0 };
+      const hoursFromXP = (u.xp || 0) / 60;
+      const hoursFromProgress = prog.totalTimeSpentSec / 3600;
+      const computedStudyHours = Math.round(Math.max(hoursFromXP, hoursFromProgress) * 10) / 10;
+
+      return {
+        _id: u._id,
+        firstName: u.firstName,
+        lastName: u.lastName,
+        email: u.email,
+        subscriptionTier: u.subscriptionTier,
+        isVipFreeAccess: u.isVipFreeAccess,
+        customPriceOverride: u.customPriceOverride,
+        isOnline: isUserOnline(u),
+        lastActive: u.lastActiveAt || u.updatedAt,
+        currentPage: (u as any).currentPage || '',
+        studyHours: computedStudyHours,
+        completedLessons: prog.completedCount,
+        streakDays: u.streak || 0,
+        xp: u.xp || 0,
+        joinedAt: (u as any).createdAt,
+        targetExam: u.learningGoal || (u as any).targetExam || 'Not Specified',
+      };
+    });
 
     res.json({
       success: true,
@@ -972,6 +998,8 @@ router.get('/analytics/saas-overview', async (_req: AuthRequest, res: Response, 
         arr,
         arpu,
         ltv,
+        conversionRate,
+        activeRetentionRate,
         planCounts,
         telemetry: {
           topExamGoal: topExamCount > 0 ? `${topExamGoal} (${topExamPercentage}%)` : 'No goal set yet',

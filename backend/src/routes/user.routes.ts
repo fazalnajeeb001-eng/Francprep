@@ -9,7 +9,12 @@ const router = Router();
 router.post('/heartbeat', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (req.user?.userId) {
-      await User.updateOne({ _id: req.user.userId }, { $set: { lastActiveAt: new Date() } });
+      const { currentPage } = req.body || {};
+      const update: any = { lastActiveAt: new Date() };
+      if (typeof currentPage === 'string' && currentPage.trim()) {
+        update.currentPage = currentPage.trim();
+      }
+      await User.updateOne({ _id: req.user.userId }, { $set: update });
     }
     res.status(200).json({ success: true, timestamp: new Date() });
   } catch (error) { next(error); }
