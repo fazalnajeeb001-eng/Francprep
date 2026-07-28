@@ -285,6 +285,61 @@ function adaptQuestions(questions: LessonQuestion[]) {
   return consolidated;
 }
 
+function parseOverviewMetadata(rawObjectives: any, lessonData: any) {
+  const rawList: string[] = Array.isArray(rawObjectives)
+    ? rawObjectives.map(x => (typeof x === 'string' ? x : String(x?.text || x?.content || x)))
+    : (typeof rawObjectives === 'string' ? rawObjectives.split('\n') : []);
+
+  const cleanObjectives: string[] = [];
+  let extractedGrammar = lessonData?.grammarFocus || '';
+  let extractedVocab = lessonData?.vocabularyFocus || lessonData?.vocabFocus || '';
+  let extractedTime = lessonData?.durationMinutes || lessonData?.estimatedDuration || 0;
+
+  for (const item of rawList) {
+    const text = item.trim();
+    if (!text) continue;
+
+    // Extract embedded "Grammar Focus: ..."
+    const gMatch = text.match(/(?:📚\s*)?Grammar Focus\s*:\s*(.+?)(?=\s*(?:🗣️\s*)?Vocabulary Focus|\s*(?:⏱️\s*)?Estimated Time|$)/i);
+    if (gMatch && gMatch[1] && !extractedGrammar) {
+      extractedGrammar = gMatch[1].trim();
+    }
+
+    // Extract embedded "Vocabulary Focus: ..."
+    const vMatch = text.match(/(?:🗣️\s*)?Vocabulary Focus\s*:\s*(.+?)(?=\s*(?:⏱️\s*)?Estimated Time|\s*(?:📚\s*)?Grammar Focus|$)/i);
+    if (vMatch && vMatch[1] && !extractedVocab) {
+      extractedVocab = vMatch[1].trim();
+    }
+
+    // Extract embedded "Estimated Time: 35 minutes"
+    const tMatch = text.match(/(?:⏱️\s*)?Estimated Time\s*:\s*(\d+)\s*(?:minutes|min)?/i);
+    if (tMatch && tMatch[1] && !extractedTime) {
+      extractedTime = parseInt(tMatch[1], 10);
+    }
+
+    // Strip inline metadata tags from objective bullets
+    let bulletText = text
+      .replace(/(?:📚\s*)?Grammar Focus\s*:\s*.+?(?=\s*(?:🗣️\s*)?Vocabulary Focus|\s*(?:⏱️\s*)?Estimated Time|$)/gi, '')
+      .replace(/(?:🗣️\s*)?Vocabulary Focus\s*:\s*.+?(?=\s*(?:⏱️\s*)?Estimated Time|\s*(?:📚\s*)?Grammar Focus|$)/gi, '')
+      .replace(/(?:⏱️\s*)?Estimated Time\s*:\s*\d+\s*(?:minutes|min)?/gi, '')
+      .replace(/^[•\-\*]\s*/, '')
+      .trim();
+
+    if (bulletText.length > 3) {
+      cleanObjectives.push(bulletText);
+    }
+  }
+
+  if (!extractedTime) extractedTime = 25;
+
+  return {
+    cleanObjectives,
+    grammarFocus: extractedGrammar,
+    vocabularyFocus: extractedVocab,
+    durationMinutes: extractedTime,
+  };
+}
+
 function getDialogueText(lesson: any): string {
   if (!lesson) return "";
   const rText = lesson.reading?.text?.trim() || "";
@@ -1841,16 +1896,22 @@ Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain aprè
             </div>
             <div>
               <EditableText as="h1" fieldPath="title" value={lesson?.title || "French Lesson"} className={`text-xl font-bold ${dark ? "text-white" : "text-gray-900"}`} />
-              <div className={`flex items-center gap-2 text-xs ${textSec}`}>
-                <span>Lesson {lesson?.order || lesson?.lessonNumber || 1}</span>
-                <span>&middot;</span>
-                <span>{lesson?.durationMinutes || lesson?.estimatedDuration || 25} min</span>
-                {progress?.status === 'completed' && <span className="text-emerald-400 font-semibold">&#9679; Completed</span>}
-              </div>
+              {(() => {
+                const overview = parseOverviewMetadata(lesson.objectives, lesson);
+                return (
+                  <div className={`flex items-center gap-2 text-xs ${textSec}`}>
+                    <span>Lesson {lesson?.order || lesson?.lessonNumber || 1}</span>
+                    <span>&middot;</span>
+                    <span>{overview.durationMinutes} min</span>
+                    {progress?.status === 'completed' && <span className="text-emerald-400 font-semibold">&#9679; Completed</span>}
+                  </div>
+                );
+              })()}
             </div>
           </div>
           {(() => {
-            const cleanObjectives = formatObjectivesList(lesson.objectives);
+            const overview = parseOverviewMetadata(lesson.objectives, lesson);
+            const cleanObjectives = overview.cleanObjectives;
             if (!cleanObjectives.length) return null;
 
             return (
@@ -1889,18 +1950,18 @@ Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain aprè
                     </div>
                     <div>
                       <span className="font-bold text-purple-700 dark:text-purple-300 block mb-0.5">⏱️ Estimated Time:</span>
-                      <span className={textBody}>{lesson.durationMinutes || 25} minutes</span>
+                      <span className={textBody}>{overview.durationMinutes} minutes</span>
                     </div>
-                    {lesson.grammarFocus && (
+                    {overview.grammarFocus && (
                       <div className="md:col-span-2">
                         <span className="font-bold text-purple-700 dark:text-purple-300 block mb-0.5">📚 Grammar Focus:</span>
-                        <span className={textBody}>{lesson.grammarFocus}</span>
+                        <span className={textBody}>{overview.grammarFocus}</span>
                       </div>
                     )}
-                    {(lesson.vocabularyFocus || lesson.vocabFocus) && (
+                    {overview.vocabularyFocus && (
                       <div className="md:col-span-2">
                         <span className="font-bold text-purple-700 dark:text-purple-300 block mb-0.5">🗣️ Vocabulary Focus:</span>
-                        <span className={textBody}>{lesson.vocabularyFocus || lesson.vocabFocus}</span>
+                        <span className={textBody}>{overview.vocabularyFocus}</span>
                       </div>
                     )}
                   </motion.div>
