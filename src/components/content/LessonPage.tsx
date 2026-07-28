@@ -186,18 +186,21 @@ function extractPairsFromText(text: string): { pairs: Record<string, string>; ti
 }
 
 function parsePairLine(prompt: string): { left: string; right: string } | null {
-  if (!prompt || prompt.includes('__________') || /[a-d]\)\s*.*[b-d]\)/i.test(prompt)) return null;
+  if (!prompt) return null;
+  const str = String(prompt).replace(/\r?\n+/g, ' ').trim();
+  if (str.includes('__________') || str.includes('______') || /[a-d]\)\s*.*[b-d]\)/i.test(str)) return null;
 
-  const cleanPrompt = prompt.replace(/\r?\n+/g, ' ').trim();
-  const parts = cleanPrompt.split(/\s*[—\-\:]+\s*(?:[a-eA-E0-9][\.\)]\s*)?/);
-  if (parts.length >= 2) {
-    const left = parts[0].replace(/^\d+[\.\)]\s*/, '').replace(/^[*•\-]\s*/, '').trim();
-    const right = parts.slice(1).join(' ').replace(/^[a-eA-E0-9][\.\)]\s*/, '').trim();
+  const clean = str.replace(/^(?:\d+[\.\)]\s*)?(?:[*•\-]\s*)?(?:Matching|Multiple Choice|Fill in the Blank|Sentence Ordering|Short Answer)?[:\s]*/i, '').trim();
+
+  const m = clean.match(/^([A-Za-zÀ-ÿ0-9\s"'\(\)]+?)\s*[—\–\:-]+\s*(?:[a-eA-E0-9][\.\)]\s*)?(.+)$/);
+  if (m) {
+    const left = m[1].trim();
+    const right = m[2].trim();
     const leftLower = left.toLowerCase();
 
-    const isInstruction = ['complete', 'fill', 'fill in', 'question', 'select', 'translate', 'multiple choice', 'sentence ordering', 'short answer'].some(w => leftLower.startsWith(w));
+    const isInstruction = ['complete', 'fill', 'fill in', 'question', 'select', 'translate', 'multiple choice', 'sentence ordering', 'short answer', 'matching', 'match'].some(w => leftLower.startsWith(w));
 
-    if (left && right && left.length < 60 && right.length < 120 && !isInstruction) {
+    if (left && right && left.length > 0 && left.length < 70 && right.length > 0 && !isInstruction) {
       return { left, right };
     }
   }
@@ -207,18 +210,17 @@ function parsePairLine(prompt: string): { left: string; right: string } | null {
 function adaptQuestions(questions: LessonQuestion[]) {
   if (!questions || !Array.isArray(questions)) return [];
 
-  // Pass 1: Pre-group matching headers and look ahead to absorb all consecutive pair lines
   const grouped: any[] = [];
   let i = 0;
 
   while (i < questions.length) {
     const rawQ = questions[i];
-    const prompt = (rawQ.prompt || (rawQ as any).text || '').trim();
+    const prompt = String(rawQ?.prompt || (rawQ as any)?.text || (rawQ as any)?.question || '').trim();
     const promptLower = prompt.toLowerCase();
 
-    const isMatching = promptLower.startsWith('match') || rawQ.type === 'matching';
+    const isMatchingHeader = promptLower.startsWith('match') || rawQ.type === 'matching';
 
-    if (isMatching) {
+    if (isMatchingHeader) {
       let pairsObj: Record<string, string> = {};
       if (rawQ.pairs) {
         if (Array.isArray(rawQ.pairs)) {
@@ -230,16 +232,11 @@ function adaptQuestions(questions: LessonQuestion[]) {
         }
       }
 
-      const extractedFromPrompt = extractPairsFromText(prompt);
-      if (extractedFromPrompt && Object.keys(extractedFromPrompt.pairs).length >= 2) {
-        pairsObj = { ...pairsObj, ...extractedFromPrompt.pairs };
-      }
-
       // Look ahead to absorb consecutive pair line items
       let nextIdx = i + 1;
       while (nextIdx < questions.length) {
         const nextQ = questions[nextIdx];
-        const nextPrompt = (nextQ?.prompt || (nextQ as any)?.text || '').trim();
+        const nextPrompt = String(nextQ?.prompt || (nextQ as any)?.text || (nextQ as any)?.question || '').trim();
         const pair = parsePairLine(nextPrompt);
 
         if (pair) {
@@ -262,17 +259,21 @@ function adaptQuestions(questions: LessonQuestion[]) {
         });
         i = nextIdx; // Skip all absorbed pair line items!
         continue;
+      } else {
+        // Discard empty matching header line with 0 pairs
+        i++;
+        continue;
       }
     }
 
-    // If item is a standalone orphan pair line (without a header), check if it starts a pair sequence
+    // Check if item is an orphan pair line sequence
     const standalonePair = parsePairLine(prompt);
     if (standalonePair) {
       const pairsObj: Record<string, string> = { [standalonePair.left]: standalonePair.right };
       let nextIdx = i + 1;
       while (nextIdx < questions.length) {
         const nextQ = questions[nextIdx];
-        const nextPrompt = (nextQ?.prompt || (nextQ as any)?.text || '').trim();
+        const nextPrompt = String(nextQ?.prompt || (nextQ as any)?.text || (nextQ as any)?.question || '').trim();
         const pair = parsePairLine(nextPrompt);
         if (pair) {
           pairsObj[pair.left] = pair.right;
@@ -302,7 +303,7 @@ function adaptQuestions(questions: LessonQuestion[]) {
 
   // Pass 2: Adapt grouped items
   const adapted = grouped.map((q, idx) => {
-    let resolvedText = q.prompt || q.text || '';
+    let resolvedText = String(q.prompt || q.text || q.question || '').trim();
     let resolvedOptions = q.options;
     let resolvedPairs = q.pairs;
     let resolvedItems = q.items;
