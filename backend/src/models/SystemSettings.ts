@@ -60,7 +60,7 @@ const SystemSettingsSchema: Schema = new Schema(
     },
     passingScorePercentage: {
       type: Number,
-      default: 70,
+      default: 50,
       min: 50,
       max: 95,
     },
