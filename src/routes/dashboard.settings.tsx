@@ -10,6 +10,18 @@ import { GOAL_OPTIONS, type LearningGoal, setGoal as saveGoalToStorage, getGoal,
 
 export const Route = createFileRoute("/dashboard/settings")({ component: SettingsPage });
 
+interface DynamicPlan {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  interval: 'monthly' | 'annual' | 'one_time';
+  badge?: string;
+  features: string[];
+  accessScope: string;
+  isPopular?: boolean;
+}
+
 function SettingsPage() {
   const { user, updateUser, logout } = useAuth();
   const { dark, toggle: toggleTheme } = useTheme();
@@ -35,11 +47,24 @@ function SettingsPage() {
 
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [dynamicPlans, setDynamicPlans] = useState<DynamicPlan[]>([]);
 
   useEffect(() => { setFirstName(user?.firstName || ""); setLastName(user?.lastName || ""); }, [user]);
 
   useEffect(() => {
     getSubscription().then(setSubscription).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await apiFetch("/subscriptions/plans");
+        const json = await res.json();
+        if (json.success && json.data?.plans) {
+          setDynamicPlans(json.data.plans);
+        }
+      } catch {}
+    })();
   }, []);
 
   useEffect(() => {
@@ -317,79 +342,111 @@ function SettingsPage() {
               )}
             </div>
           </div>
-
           {/* Pricing cards */}
           <div className="space-y-3">
-            {/* Free */}
-            <div className={`p-4 rounded-xl border transition-all ${
-              subscription?.tier === "free" ? "border-purple-500/50 bg-purple-500/5" : `${inputBg}`
-            }`}>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-gray-400" />
-                  <span className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Free</span>
+            {dynamicPlans.length > 0 ? (
+              dynamicPlans.map((plan) => (
+                <div key={plan.id} className={`p-4 rounded-xl border transition-all ${
+                  subscription?.tier === plan.id ? "border-purple-500/50 bg-purple-500/5" : `${inputBg}`
+                }`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-purple-400" />
+                      <span className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{plan.title}</span>
+                      {plan.badge && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30">{plan.badge}</span>}
+                    </div>
+                    <span className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>${plan.price}<span className="text-[10px] font-normal text-gray-500">/{plan.interval === 'monthly' ? 'mo' : plan.interval === 'annual' ? 'yr' : 'one-time'}</span></span>
+                  </div>
+                  <p className="text-xs text-gray-400 mb-2">{plan.description}</p>
+                  <ul className="space-y-1 mb-3">
+                    {plan.features.map((f, i) => (
+                      <li key={i} className="flex items-center gap-1.5 text-[10px] text-gray-400"><Check className="w-3 h-3 text-purple-400" /> {f}</li>
+                    ))}
+                  </ul>
+                  {subscription?.tier === plan.id ? (
+                    <p className="text-[10px] text-purple-400 font-semibold">Current plan</p>
+                  ) : (
+                    <button onClick={() => handleUpgrade(plan.id)} disabled={checkoutLoading}
+                      className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 disabled:opacity-50">
+                      {checkoutLoading ? "Loading..." : `Subscribe to ${plan.title}`}
+                    </button>
+                  )}
                 </div>
-                <span className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>$0</span>
-              </div>
-              <ul className="space-y-1">
-                {["4 lessons", "Basic flashcards", "Daily challenge"].map((f) => (
-                  <li key={f} className="flex items-center gap-1.5 text-[10px] text-gray-400"><Check className="w-3 h-3 text-gray-500" /> {f}</li>
-                ))}
-              </ul>
-              {subscription?.tier === "free" && <p className="text-[10px] text-purple-400 mt-2 font-semibold">Current plan</p>}
-            </div>
+              ))
+            ) : (
+              <>
+                {/* Free */}
+                <div className={`p-4 rounded-xl border transition-all ${
+                  subscription?.tier === "free" ? "border-purple-500/50 bg-purple-500/5" : `${inputBg}`
+                }`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-gray-400" />
+                      <span className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Free</span>
+                    </div>
+                    <span className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>$0</span>
+                  </div>
+                  <ul className="space-y-1">
+                    {["4 lessons", "Basic flashcards", "Daily challenge"].map((f) => (
+                      <li key={f} className="flex items-center gap-1.5 text-[10px] text-gray-400"><Check className="w-3 h-3 text-gray-500" /> {f}</li>
+                    ))}
+                  </ul>
+                  {subscription?.tier === "free" && <p className="text-[10px] text-purple-400 mt-2 font-semibold">Current plan</p>}
+                </div>
 
-            {/* Premium */}
-            <div className={`p-4 rounded-xl border transition-all ${
-              subscription?.tier === "premium" ? "border-purple-500/50 bg-purple-500/5" : `${inputBg}`
-            }`}>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-purple-400" />
-                  <span className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Premium</span>
+                {/* Premium */}
+                <div className={`p-4 rounded-xl border transition-all ${
+                  subscription?.tier === "premium" ? "border-purple-500/50 bg-purple-500/5" : `${inputBg}`
+                }`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-purple-400" />
+                      <span className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Premium</span>
+                    </div>
+                    <span className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>$14.99<span className="text-[10px] font-normal text-gray-500">/mo</span></span>
+                  </div>
+                  <ul className="space-y-1 mb-3">
+                    {["All lessons", "Spaced repetition", "Speaking practice", "Writing feedback", "No ads"].map((f) => (
+                      <li key={f} className="flex items-center gap-1.5 text-[10px] text-gray-400"><Check className="w-3 h-3 text-purple-400" /> {f}</li>
+                    ))}
+                  </ul>
+                  {subscription?.tier === "premium" ? (
+                    <p className="text-[10px] text-purple-400 font-semibold">Current plan</p>
+                  ) : (
+                    <button onClick={() => handleUpgrade("premium")} disabled={checkoutLoading}
+                      className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 disabled:opacity-50">
+                      {checkoutLoading ? "Loading..." : "Upgrade to Premium"}
+                    </button>
+                  )}
                 </div>
-                <span className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>$14.99<span className="text-[10px] font-normal text-gray-500">/mo</span></span>
-              </div>
-              <ul className="space-y-1 mb-3">
-                {["All lessons", "Spaced repetition", "Speaking practice", "Writing feedback", "No ads"].map((f) => (
-                  <li key={f} className="flex items-center gap-1.5 text-[10px] text-gray-400"><Check className="w-3 h-3 text-purple-400" /> {f}</li>
-                ))}
-              </ul>
-              {subscription?.tier === "premium" ? (
-                <p className="text-[10px] text-purple-400 font-semibold">Current plan</p>
-              ) : (
-                <button onClick={() => handleUpgrade("premium")} disabled={checkoutLoading}
-                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 disabled:opacity-50">
-                  {checkoutLoading ? "Loading..." : "Upgrade to Premium"}
-                </button>
-              )}
-            </div>
 
-            {/* Exam Prep */}
-            <div className={`p-4 rounded-xl border transition-all ${
-              subscription?.tier === "exam_prep" ? "border-purple-500/50 bg-purple-500/5" : `${inputBg}`
-            }`}>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <Crown className="w-4 h-4 text-amber-400" />
-                  <span className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Exam Prep</span>
+                {/* Exam Prep */}
+                <div className={`p-4 rounded-xl border transition-all ${
+                  subscription?.tier === "exam_prep" ? "border-purple-500/50 bg-purple-500/5" : `${inputBg}`
+                }`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Crown className="w-4 h-4 text-amber-400" />
+                      <span className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Exam Prep</span>
+                    </div>
+                    <span className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>$24.99<span className="text-[10px] font-normal text-gray-500">/mo</span></span>
+                  </div>
+                  <ul className="space-y-1 mb-3">
+                    {["Everything in Premium", "Mock exams", "TCF/TEF practice", "Priority support", "Study plan"].map((f) => (
+                      <li key={f} className="flex items-center gap-1.5 text-[10px] text-gray-400"><Check className="w-3 h-3 text-amber-400" /> {f}</li>
+                    ))}
+                  </ul>
+                  {subscription?.tier === "exam_prep" ? (
+                    <p className="text-[10px] text-purple-400 font-semibold">Current plan</p>
+                  ) : (
+                    <button onClick={() => handleUpgrade("exam_prep")} disabled={checkoutLoading}
+                      className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-amber-500/25 disabled:opacity-50">
+                      {checkoutLoading ? "Loading..." : "Upgrade to Exam Prep"}
+                    </button>
+                  )}
                 </div>
-                <span className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>$24.99<span className="text-[10px] font-normal text-gray-500">/mo</span></span>
-              </div>
-              <ul className="space-y-1 mb-3">
-                {["Everything in Premium", "Mock exams", "TCF/TEF practice", "Priority support", "Study plan"].map((f) => (
-                  <li key={f} className="flex items-center gap-1.5 text-[10px] text-gray-400"><Check className="w-3 h-3 text-amber-400" /> {f}</li>
-                ))}
-              </ul>
-              {subscription?.tier === "exam_prep" ? (
-                <p className="text-[10px] text-purple-400 font-semibold">Current plan</p>
-              ) : (
-                <button onClick={() => handleUpgrade("exam_prep")} disabled={checkoutLoading}
-                  className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-amber-500/25 disabled:opacity-50">
-                  {checkoutLoading ? "Loading..." : "Upgrade to Exam Prep"}
-                </button>
-              )}
-            </div>
+              </>
+            )}
           </div>
         </motion.div>
 

@@ -19,22 +19,16 @@ export const Route = createFileRoute("/admin")({
 
 const navGroups = [
   {
-    title: "AI Content Generator",
+    title: "Content Pipeline",
     items: [
-      { label: "Generator Studio 🪄", icon: Wand2, href: "/admin/content" },
-      { label: "Staged Drafts", icon: FileText, href: "/admin/pipeline/drafts" },
-      { label: "Integrated Drafts", icon: Layers, href: "/admin/pipeline/integrated" },
-      { label: "AI Quality & Audits", icon: Shield, href: "/admin/pipeline/audit" },
-    ]
-  },
-  {
-    title: "In-House Lessons Management",
-    items: [
+      { label: "Content Pipeline Hub", icon: Layers, href: "/admin/pipeline" },
+      { label: "AI Content Generator 🪄", icon: Wand2, href: "/admin/content" },
       { label: "In-House Lessons Catalog 📝", icon: BookOpen, href: "/admin/lessons" },
-      { label: "Create New Lesson ➕", icon: FileText, href: "/admin/lessons/new" },
+      { label: "Drafts", icon: FileText, href: "/admin/pipeline/drafts" },
+      { label: "Integrated Drafts", icon: Wand2, href: "/admin/pipeline/integrated" },
       { label: "Published Content", icon: Crown, href: "/admin/pipeline/published" },
       { label: "Published History", icon: Clock, href: "/admin/pipeline/history" },
-      { label: "Syllabi & Frameworks", icon: Layers, href: "/admin/syllabi" },
+      { label: "Audits & Quality", icon: Shield, href: "/admin/pipeline/audit" },
       { label: "Recycle Bin (Trash)", icon: Layers, href: "/admin/pipeline/trash" },
     ]
   },
@@ -65,8 +59,7 @@ function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-    "AI Content Generator": true,
-    "In-House Lessons Management": true,
+    "Content Pipeline": true,
     "Exam Content Management": true,
     "Platform Management": true,
   });
