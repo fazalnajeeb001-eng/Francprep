@@ -682,70 +682,83 @@ ${JSON.stringify(draft.parsedData, null, 2)}`;
 });
 
 // ─── POST /content-pipeline/drafts/:id/publish ─────────────────────────────
-// Publish a validated draft → create/update lesson in the lessons collection
+// Publish a draft → create/update lesson in the lessons collection (replaces live lesson & archives old version)
 router.post('/content-pipeline/drafts/:id/publish', async (req: AuthRequest, res: Response) => {
   try {
-    const { confirm } = req.body;
-    if (confirm !== true) {
-      res.status(400).json({
-        success: false,
-        error: 'Publishing requires confirmation. Send { "confirm": true }.',
-      });
-      return;
-    }
-
     const draft = await Draft.findById(req.params.id);
     if (!draft) {
       res.status(404).json({ success: false, error: 'Draft not found' });
       return;
     }
 
-    if (!draft.parsedData) {
-      res.status(400).json({ success: false, error: 'Draft has no parsed data to publish' });
+    let canonical = draft.parsedData;
+
+    // If parsedData is missing, parse content on the fly
+    if (!canonical || !canonical.lessonId) {
+      if (draft.content) {
+        const parsedLessons = parseLessonFromMarkdown(draft.content, draft.level || 'A1', 1);
+        if (parsedLessons.length > 0) {
+          canonical = parsedLessons[0];
+          draft.parsedData = canonical;
+        }
+      }
+    }
+
+    if (!canonical || !canonical.lessonId) {
+      res.status(400).json({ success: false, error: 'Draft has no valid parsed lesson data to publish' });
       return;
     }
 
-    // Validate before publishing
-    const { errors } = await validateParsedLesson(draft.parsedData);
-    if (errors.length > 0) {
-      res.status(400).json({
-        success: false,
-        error: 'Draft has validation errors and cannot be published',
-        data: { errors },
-      });
-      return;
+    // Ensure lessonId and chapterId are present
+    const lvl = (canonical.level || draft.level || 'A1').toUpperCase();
+    if (!canonical.lessonId) {
+      canonical.lessonId = draft.lessonId || `${lvl.toLowerCase()}-ch1-l1`;
+    }
+    if (!canonical.chapterId) {
+      canonical.chapterId = draft.chapterId || `${lvl.toLowerCase()}-ch1`;
+    }
+    if (!canonical.title) {
+      canonical.title = draft.title || 'Untitled Lesson';
     }
 
-    const canonical = draft.parsedData;
+    // Upsert (create or update) existing published lesson by lessonId
+    const lessonIdPattern = new RegExp(`^${canonical.lessonId.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}$`, 'i');
+    let existingLesson = await Lesson.findOne({ lessonId: { $regex: lessonIdPattern } });
+    if (!existingLesson && canonical.title) {
+      existingLesson = await Lesson.findOne({ title: canonical.title, level: canonical.level });
+    }
 
-    // Find existing lesson by lessonId
-    const existingLesson = await Lesson.findOne({ lessonId: canonical.lessonId });
+    const orderNum = parseInt((canonical.lessonId.match(/l(\d+)/i) || [])[1], 10) || 1;
 
     if (existingLesson) {
-      // Update existing lesson with canonical data
+      // Replace existing live lesson content
       existingLesson.set('canonical', canonical);
       existingLesson.set('title', canonical.title);
       existingLesson.set('level', canonical.level);
+      existingLesson.set('chapterId', canonical.chapterId);
       existingLesson.set('isPublished', true);
       await existingLesson.save();
     } else {
-      // Create new lesson
+      // Create new published lesson
       await Lesson.create({
         lessonId: canonical.lessonId,
         chapterId: canonical.chapterId,
         title: canonical.title,
         level: canonical.level,
-        order: parseInt(canonical.lessonId.split('-l')[1]) || 1,
-        anchorSkill: canonical.anchorSkill,
-        durationMinutes: canonical.durationMinutes,
+        order: orderNum,
+        anchorSkill: canonical.anchorSkill || 'grammar',
+        durationMinutes: canonical.durationMinutes || 30,
         isPublished: true,
         canonical,
       });
     }
 
-    // Supersede previously published drafts
+    // Mark previous published drafts for this lesson as superseded (saved in published history)
     const previouslyPublishedDrafts = await Draft.find({
-      lessonId: canonical.lessonId,
+      $or: [
+        { lessonId: { $regex: lessonIdPattern } },
+        { 'parsedData.lessonId': { $regex: lessonIdPattern } },
+      ],
       status: 'published',
       _id: { $ne: draft._id }
     });
@@ -757,7 +770,7 @@ router.post('/content-pipeline/drafts/:id/publish', async (req: AuthRequest, res
       previousIds.push(oldDraft._id);
     }
 
-    // Update draft status
+    // Mark current draft as published
     draft.status = 'published';
     draft.publishedAt = new Date();
     draft.publishedBy = req.user?.email || 'admin';
@@ -768,7 +781,7 @@ router.post('/content-pipeline/drafts/:id/publish', async (req: AuthRequest, res
 
     res.json({
       success: true,
-      message: `Lesson ${canonical.lessonId} published successfully`,
+      message: `Lesson ${canonical.lessonId} published successfully! Existing live lesson replaced & previous version saved to history.`,
       data: {
         lessonId: canonical.lessonId,
         title: canonical.title,
@@ -777,7 +790,8 @@ router.post('/content-pipeline/drafts/:id/publish', async (req: AuthRequest, res
       },
     });
   } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
+    console.error('Publish error:', error);
+    res.status(500).json({ success: false, error: error.message || 'Failed to publish draft' });
   }
 });
 

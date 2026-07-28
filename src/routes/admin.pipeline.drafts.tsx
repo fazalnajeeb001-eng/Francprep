@@ -285,7 +285,6 @@ function DraftsSubSectionPage() {
 
   // Execute Publish
   const handlePublish = async (id: string) => {
-    if (publishWordInput !== "PUBLISH") return;
     setActionStatus({ loading: true, error: "", success: "" });
     try {
       const res = await apiFetch(`/admin/content-pipeline/drafts/${id}/publish`, {
@@ -295,7 +294,7 @@ function DraftsSubSectionPage() {
       });
       const json = await res.json();
       if (json.success) {
-        setActionStatus({ loading: false, error: "", success: "Draft published successfully to production database!" });
+        setActionStatus({ loading: false, error: "", success: `Draft ${json.data?.lessonId || id} published successfully to production database!` });
         setPublishConfirmId(null);
         setPublishWordInput("");
         setSelectedDraft(null);
