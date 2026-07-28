@@ -197,15 +197,17 @@ function adaptQuestions(questions: LessonQuestion[]) {
     const prompt = (rawQ.prompt || (rawQ as any).text || '').trim();
     const promptLower = prompt.toLowerCase();
 
-    const isMatchingHeader = promptLower.startsWith('matching') || promptLower.startsWith('match the') || (rawQ.type === 'matching' && (!rawQ.pairs || Object.keys(rawQ.pairs).length === 0));
+    const isMatchingHeader = (promptLower.startsWith('matching') || promptLower.startsWith('match the') || promptLower.startsWith('match each') || (rawQ.type === 'matching' && (!rawQ.pairs || Object.keys(rawQ.pairs).length === 0)));
 
     const dashMatch = prompt.match(/^([A-Za-zÀ-ÿ0-9\s"'\(\)]+)\s*[—\-\:]+\s*(?:[a-eA-E0-9][\.\)]\s*)?(.+)$/);
     const isPairLine = dashMatch && !prompt.includes('__________') && !/[a-d]\)\s*.*[b-d]\)/i.test(prompt);
 
     if (isMatchingHeader) {
-      if (pendingMatchingQ) {
+      if (pendingMatchingQ && Object.keys(pendingMatchingQ.pairs).length > 0) {
         grouped.push(pendingMatchingQ);
+        pendingMatchingQ = null;
       }
+
       const title = prompt.replace(/^(?:\d+[\.\)]\s*)?(?:Matching)[:\s]*/i, '').trim() || 'Match each expression to its use:';
       pendingMatchingQ = {
         id: rawQ.id || `q-matching-${i}`,
@@ -221,8 +223,8 @@ function adaptQuestions(questions: LessonQuestion[]) {
     if (isPairLine) {
       const leftKey = dashMatch[1].replace(/^\d+[\.\)]\s*/, '').replace(/^[*•\-]\s*/, '').trim();
       const rightVal = dashMatch[2].replace(/^[a-eA-E0-9][\.\)]\s*/, '').trim();
-
       const leftLower = leftKey.toLowerCase();
+
       const isInstruction = ['complete', 'fill', 'fill in', 'question', 'select', 'translate', 'multiple choice'].some(w => leftLower.startsWith(w));
 
       if (leftKey && rightVal && !isInstruction) {
@@ -242,14 +244,16 @@ function adaptQuestions(questions: LessonQuestion[]) {
     }
 
     if (pendingMatchingQ) {
-      grouped.push(pendingMatchingQ);
+      if (Object.keys(pendingMatchingQ.pairs).length > 0) {
+        grouped.push(pendingMatchingQ);
+      }
       pendingMatchingQ = null;
     }
 
     grouped.push(rawQ);
   }
 
-  if (pendingMatchingQ) {
+  if (pendingMatchingQ && Object.keys(pendingMatchingQ.pairs).length > 0) {
     grouped.push(pendingMatchingQ);
   }
 
