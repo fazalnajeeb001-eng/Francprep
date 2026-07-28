@@ -1,5 +1,6 @@
 import { StudentAccess } from '../models/StudentAccess';
 import User from '../models/User';
+import { SystemSettings } from '../models/SystemSettings';
 
 export async function getTargetAccessState(
   userId: string,
@@ -8,8 +9,16 @@ export async function getTargetAccessState(
   parentLevel?: string
 ): Promise<'unlocked' | 'locked' | 'hidden'> {
   const user = await User.findById(userId);
-  if (!user) return 'locked';
-  if (user.role === 'admin') return 'unlocked';
+  if (!user) return 'unlocked'; // Allow preview for guest / trial users
+  if (user.role === 'admin' || user.isVipFreeAccess || user.isExemptFromGating || user.subscriptionTier === 'premium' || user.subscriptionTier === 'exam_prep') {
+    return 'unlocked';
+  }
+
+  // Check SystemSettings gating mode
+  const settings = await SystemSettings.findOne();
+  if (settings && settings.gatingMode === 'all_unlocked') {
+    return 'unlocked';
+  }
 
   // 1. Check Student Scope Override
   const studentOverride = await StudentAccess.findOne({
@@ -36,9 +45,20 @@ export async function getTargetAccessState(
   });
   if (globalOverride) return globalOverride.state;
 
-  // 4. Default Rules
+  // 4. Free preview scope rules
+  if (settings) {
+    if (settings.freePreviewScope === 'first_chapter_all_levels') {
+      if (targetId?.endsWith('ch1') || targetId?.includes('ch1')) return 'unlocked';
+    }
+  }
+
+  // Default: A1 is unlocked for everyone, higher levels unlock by default unless selectively locked
   if (targetType === 'level') {
-    return targetId === 'A1' ? 'unlocked' : 'locked';
+    if (settings && settings.gatingMode === 'selective_locked') {
+      const isLockedInSettings = settings.lockedChapterIds?.includes(targetId);
+      return isLockedInSettings ? 'locked' : 'unlocked';
+    }
+    return 'unlocked';
   }
 
   // If chapter or lesson, check parent level access
