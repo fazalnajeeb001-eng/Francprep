@@ -892,11 +892,18 @@ router.put('/users/:id/custom-price', async (req: AuthRequest, res: Response, ne
 // GET /api/admin/analytics/saas-overview
 router.get('/analytics/saas-overview', async (_req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const allUsers = await User.find({ role: { $ne: 'admin' } });
+    const allUsers = await User.find({ role: { $ne: 'admin' } })
+      .select('firstName lastName email subscriptionTier isVipFreeAccess customPriceOverride lastActiveAt updatedAt xp learningGoal targetExam createdAt')
+      .lean();
     const totalStudents = allUsers.length;
 
-    const fiveMinsAgo = new Date(Date.now() - 5 * 60 * 1000);
-    const onlineUsers = allUsers.filter(u => u.updatedAt && new Date(u.updatedAt) >= fiveMinsAgo);
+    const threeMinsAgo = new Date(Date.now() - 3 * 60 * 1000);
+    const isUserOnline = (u: any) => {
+      const activeTime = u.lastActiveAt ? new Date(u.lastActiveAt).getTime() : (u.updatedAt ? new Date(u.updatedAt).getTime() : 0);
+      return activeTime >= threeMinsAgo.getTime();
+    };
+
+    const onlineUsers = allUsers.filter(isUserOnline);
     const onlineCount = onlineUsers.length;
 
     const freeUsers = allUsers.filter(u => u.subscriptionTier === 'free' && !u.isVipFreeAccess);
@@ -947,8 +954,8 @@ router.get('/analytics/saas-overview', async (_req: AuthRequest, res: Response, 
       subscriptionTier: u.subscriptionTier,
       isVipFreeAccess: u.isVipFreeAccess,
       customPriceOverride: u.customPriceOverride,
-      isOnline: Boolean(u.updatedAt && new Date(u.updatedAt) >= fiveMinsAgo),
-      lastActive: u.updatedAt,
+      isOnline: isUserOnline(u),
+      lastActive: u.lastActiveAt || u.updatedAt,
       studyHours: Math.round(((u.xp || 0) / 60) * 10) / 10,
       targetExam: u.learningGoal || (u as any).targetExam || 'Not Specified',
     }));

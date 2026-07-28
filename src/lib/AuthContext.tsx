@@ -19,6 +19,7 @@ import {
   getStoredUser,
   clearAuthStorage,
 } from "./auth";
+import { apiFetch } from "./apiFetch";
 
 // ─── Context type ─────────────────────────────────────────────────────────
 
@@ -71,6 +72,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
     init();
   }, []);
+
+  // Periodic presence heartbeat every 40s while user is logged in
+  useEffect(() => {
+    if (!user) return;
+    const sendHeartbeat = () => {
+      apiFetch("/users/heartbeat", { method: "POST" }).catch(() => {});
+    };
+    sendHeartbeat();
+    const interval = setInterval(sendHeartbeat, 40000);
+    return () => clearInterval(interval);
+  }, [user]);
 
   const login = useCallback(async (payload: LoginPayload): Promise<User> => {
     const result = await apiLogin(payload);

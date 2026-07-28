@@ -6,6 +6,15 @@ import User from '../models/User';
 
 const router = Router();
 
+router.post('/heartbeat', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    if (req.user?.userId) {
+      await User.updateOne({ _id: req.user.userId }, { $set: { lastActiveAt: new Date() } });
+    }
+    res.status(200).json({ success: true, timestamp: new Date() });
+  } catch (error) { next(error); }
+});
+
 router.get('/profile', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const user = await User.findById(req.user!.userId).select('firstName lastName email learningGoal avatarUrl avatarFeatures onboardingComplete rpmGlbUrl');

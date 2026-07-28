@@ -81,8 +81,11 @@ export function AnalyticsPage() {
   const card = dark ? "bg-[#101828]/90 border-white/10" : "bg-white border-slate-200 shadow-sm";
   const txtSec = dark ? "text-gray-400" : "text-slate-600";
 
-  const fetchAnalytics = async () => {
-    setLoading(true);
+  const [isLiveUpdating, setIsLiveUpdating] = useState(false);
+
+  const fetchAnalytics = async (silent = false) => {
+    if (!silent) setLoading(true);
+    else setIsLiveUpdating(true);
     try {
       const res = await apiFetch("/admin/analytics/saas-overview");
       const json = await res.json();
@@ -92,11 +95,16 @@ export function AnalyticsPage() {
     } catch (e) {
       console.error(e);
     }
-    setLoading(false);
+    if (!silent) setLoading(false);
+    else setTimeout(() => setIsLiveUpdating(false), 800);
   };
 
   useEffect(() => {
     fetchAnalytics();
+    const interval = setInterval(() => {
+      fetchAnalytics(true);
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   const filteredStudents = (data?.students || []).filter((s) => {
@@ -128,8 +136,12 @@ export function AnalyticsPage() {
 
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-bold text-xs">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className={`w-2.5 h-2.5 rounded-full bg-emerald-400 ${isLiveUpdating ? "scale-125 bg-emerald-300" : "animate-pulse"}`} />
               <span>{data?.onlineCount || 0} Students Online Now</span>
+            </div>
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[10px] font-bold">
+              <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-ping" />
+              <span>Live Sync (5s)</span>
             </div>
 
             <select

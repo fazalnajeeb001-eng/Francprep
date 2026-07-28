@@ -10,6 +10,7 @@ export interface IUserDocument extends Document {
   subscriptionTier: 'free' | 'premium' | 'exam_prep';
   isActive: boolean;
   lastLoginAt?: Date;
+  lastActiveAt?: Date;
   streak: number;
   xp: number;
   lastStudyDate?: Date;
@@ -39,6 +40,7 @@ const userSchema = new Schema<IUserDocument>(
     subscriptionTier: { type: String, enum: ['free', 'premium', 'exam_prep'], default: 'free' },
     isActive: { type: Boolean, default: true },
     lastLoginAt: { type: Date },
+    lastActiveAt: { type: Date },
     streak: { type: Number, default: 0 },
     xp: { type: Number, default: 0 },
     lastStudyDate: { type: Date },
