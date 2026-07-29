@@ -447,6 +447,16 @@ function parseOverviewMetadata(rawObjectives: any, lessonData: any) {
   };
 }
 
+function getCleanChapterNumber(lesson: any): string {
+  if (!lesson) return '1';
+  if (lesson.chapterNumber) return String(lesson.chapterNumber);
+  const chMatch = String(lesson.chapterId || lesson.lessonId || '').match(/ch(\d+)/i);
+  if (chMatch && chMatch[1]) return chMatch[1];
+  const numMatch = String(lesson.chapterId || '').match(/(\d+)/);
+  if (numMatch && numMatch[1]) return numMatch[1];
+  return '1';
+}
+
 function getDialogueText(lesson: any): string {
   if (!lesson) return "";
   const rText = lesson.reading?.text?.trim() || "";
@@ -1516,7 +1526,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
 
       case 'canDoReview':
-        const chNumber = lesson?.chapterNumber || String(lesson?.chapterId || '1').replace(/\D/g, '') || '1';
+        const chNumber = getCleanChapterNumber(lesson);
         const nextChNum = Number(chNumber) + 1;
         const rawCompContent = lesson?.completionSummary?.content || '';
 
@@ -1774,7 +1784,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         );
 
       case 'completion':
-        const chNumberStr = lesson?.chapterNumber || String(lesson?.chapterId || '1').replace(/\D/g, '') || '1';
+        const chNumberStr = getCleanChapterNumber(lesson);
         return (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-6 text-center">
             <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-8 border border-emerald-500/30 space-y-5 bg-gradient-to-b from-emerald-500/10 to-transparent shadow-2xl`}>
@@ -2264,7 +2274,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         </AnimatePresence>
 
         {/* Complete Lesson */}
-        {!lessonCompleted && isLast && (() => {
+        {!lessonCompleted && isLast && currentSection?.key !== 'completion' && (() => {
           const requiredGraded = ['grammarDrill', 'reading', 'listening', 'practice', 'delf'].filter(k => sections.some(s => s.key === k));
           const allDone = requiredGraded.every(k => blockResults[k]?.completed);
           return (
