@@ -1506,10 +1506,13 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
           }
         }
 
-        const DEFAULT_L7_TRANSCRIPT = `Nora : Regardez cette annonce ! C'est un studio meublé de 25 mètres carrés, à 10 minutes à pied de l'université.
-Léo : Il y a une cuisine équipée et une salle de bain privée. Le loyer est de 550 euros par mois.
-Camille : C'est moins cher que mon appartement actuel ! Et c'est disponible dès le 1er septembre.
-Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain après-midi. On vérifiera s'il y a assez d'espace pour les affaires de Nora.`;
+        const DEFAULT_L7_TRANSCRIPT = `Nora : Regardez cette annonce ! Un studio meublé, disponible en septembre.
+Léo : Est-ce qu'il y a une cuisine équipée ?
+Nora : Oui, il y a un frigo et une petite table. Et il n'y a pas de bruit — le quartier est très calme.
+Camille : C'est différent de mon appartement, alors ! Le mien est spacieux, mais bruyant.
+Nora : Je vais visiter demain avec le propriétaire. Vous voulez venir ?
+Awa : Bonne idée ! On peut vérifier s'il y a assez de place pour tes meubles.
+Nora : Merci ! Et après, il faudra faire le ménage avant d'emménager.`;
 
         const lesson7Transcript = lesson7?.scene?.text || lesson7?.reading?.text || lesson7?.listening?.transcript || lesson?.scene?.text || lesson?.reading?.text || lesson?.listening?.transcript || DEFAULT_L7_TRANSCRIPT;
 
