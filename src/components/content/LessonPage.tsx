@@ -2651,15 +2651,42 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
   // Normalize Section 2 (Reading Comprehension)
   if (isReadingSec || activeTab === 1) {
     sec.points = sec.points || 4;
-    sec.instructions = sec.instructions || "Read the passage below and answer the comprehension questions:";
     
-    // Use parsed sourceText or fall back to current lesson reading text
+    // Extract passage and translation if embedded inside instructions or question prompt text
+    const fullText = `${sec.instructions || ''} ${sec.title || ''} ${sec.questions?.[0]?.prompt || ''}`;
+    if (fullText.includes("short passage:") || fullText.includes("English Translation:")) {
+      const passageMatch = fullText.match(/short passage:\s*\*?([^*]+?)\*?\s*(?=\*\*English Translation:|\(A1[–-]A2 support|Answer:|$)/i);
+      if (passageMatch && passageMatch[1]) {
+        sec.sourceText = passageMatch[1].trim();
+      }
+
+      const transMatch = fullText.match(/English Translation:\s*\*?\s*(?:\([^)]+\)\s*)?\*?([^*]+?)\*?\s*(?=Answer:|\*\(\d+ points?\)\*|$)/i);
+      if (transMatch && transMatch[1]) {
+        sec.translation = transMatch[1].trim();
+      }
+    }
+
+    sec.instructions = "Read the short passage below and answer the comprehension questions:";
     sec.sourceText = sec.sourceText || sec.passage || sec.text || lesson?.reading?.text || lesson?.scene?.text || '';
     sec.translation = sec.translation || lesson?.reading?.translation || lesson?.scene?.translation || '';
 
-    const rawQs = Array.isArray(sec.questions) ? sec.questions : [];
-    if (rawQs.length === 0) {
-      sec.questions = [
+    let questionsList: any[] = Array.isArray(sec.questions) ? [...sec.questions] : [];
+    if (questionsList.length === 1 && typeof questionsList[0]?.prompt === 'string' && questionsList[0].prompt.includes('(a)')) {
+      const p = questionsList[0].prompt;
+      const subQs = [...p.matchAll(/\(([a-c])\)\s*([^()]+?)(?=\s*\([a-c]\)|$)/gi)];
+      if (subQs.length >= 2) {
+        questionsList = subQs.map((m, idx) => ({
+          id: `${lesson?.lessonId || 'l8'}-sec2-q${idx + 1}`,
+          type: 'short_answer' as const,
+          prompt: `(${m[1]}) ${m[2].trim()}`,
+          correctAnswer: 'Short answer response',
+          explanation: 'Refer to the reading passage above.',
+        }));
+      }
+    }
+
+    if (questionsList.length === 0) {
+      questionsList = [
         {
           id: `${lesson?.lessonId || 'l8'}-sec2-q1`,
           type: 'short_answer',
@@ -2669,6 +2696,12 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
         }
       ];
     }
+
+    sec.questions = questionsList.map((q: any) => ({
+      ...q,
+      type: 'short_answer',
+      items: undefined,
+    }));
   }
 
   // Normalize Section 3 (Written Production)
@@ -2723,6 +2756,9 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
     prompt: (q.prompt || '')
       .replace(/^\*\*Section\s*\d+\s*[-—][^\*]+\*\*\s*/gi, '')
       .replace(/^Section\s*\d+\s*[-—][^\:]+:\s*/gi, '')
+      .replace(/Read a new short passage:[^*]+(?=\*\*English|\(A1|$)/gi, '')
+      .replace(/\*\*English Translation:\*\*.*?(?=Answer:|$)/gi, '')
+      .replace(/Answer:\s*/gi, '')
       .replace(/\*\(\d+\s*points?\)\*/gi, '')
       .replace(/\*\*([^*]+)\*\*/g, '$1')
       .replace(/\*([^*]+)\*/g, '$1')
