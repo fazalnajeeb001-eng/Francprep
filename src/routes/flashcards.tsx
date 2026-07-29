@@ -95,7 +95,7 @@ function FlashcardsPage() {
   const btnHover = dark ? "hover:bg-white/10" : "hover:bg-slate-100";
 
   // Check completed chapter capstones from user progress
-  const completedChapters = new Set<number>((user as any)?.completedChapters || [1]); // Chapter 1 unlocked by default for learning
+  const completedChapters = new Set<number>((user as any)?.completedChapters || []);
 
   useEffect(() => {
     async function loadData() {
@@ -139,9 +139,7 @@ function FlashcardsPage() {
           }
 
           // Resolve lesson order (1-8) within chapter
-          const lessonOrder = Number(lesson.order || lesson.lessonNumber || lesson.lessonId?.match(/l(\d+)/i)?.[1] || 1);
-
-          const isChUnlocked = user?.role === 'admin' || completedChapters.has(chNum) || chNum === 1;
+          const isChUnlocked = user?.role === 'admin' || completedChapters.has(chNum);
 
           const vocabList = Array.isArray(lesson.vocabItems) && lesson.vocabItems.length > 0 ? lesson.vocabItems
             : Array.isArray(lesson.vocabulary) && lesson.vocabulary.length > 0 ? lesson.vocabulary
@@ -370,7 +368,7 @@ function FlashcardsPage() {
             </button>
 
             {uniqueChapters.map((chNum) => {
-              const isUnlocked = user?.role === 'admin' || completedChapters.has(chNum) || chNum === 1;
+              const isUnlocked = user?.role === 'admin' || completedChapters.has(chNum);
               const chCardsCount = allCards.filter(c => c.chapter === chNum).length;
 
               return (
