@@ -618,19 +618,8 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
               setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
             }
           }
-        } else if (onSubmit) {
-          const res = await onSubmit({ [targetQId]: val });
-          if (res && res.results && res.results.length > 0) {
-            const singleResult = res.results.find((r: any) => r.questionId === targetQId || r.questionId === String(current));
-            if (singleResult) {
-              setQuestionResults(prev => ({ ...prev, [targetQId]: singleResult, [String(current)]: singleResult }));
-              if (!singleResult.correct) {
-                setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
-              }
-            }
-          }
         } else {
-          // Local evaluation fallback for multiple choice / true-false
+          // Local evaluation for multiple choice / true-false / ordering
           const correct = expectedAnswerRaw;
           let isCorrect = false;
           if (correct !== undefined && correct !== null && val !== undefined) {
@@ -660,6 +649,14 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
           setQuestionResults(prev => ({ ...prev, [targetQId]: singleResult, [String(current)]: singleResult }));
           if (!isCorrect) {
             setQuestionAttempts(prev => ({ ...prev, [targetQId]: (prev[targetQId] || 0) + 1 }));
+          }
+
+          if (onSubmit) {
+            try {
+              onSubmit({ [targetQId]: val });
+            } catch (e) {
+              // ignore async progress sync errors
+            }
           }
         }
       }
