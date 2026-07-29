@@ -814,9 +814,10 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
       );
     }
 
+    const isDuplicateText = rawText && (rawText.trim() === qText.trim() || qText.includes(rawText.trim()));
     return (
       <div className="space-y-3">
-        <p className={`text-sm ${dark ? "text-gray-300" : "text-gray-700"}`}>{rawText}</p>
+        {!isDuplicateText && <p className={`text-sm ${dark ? "text-gray-300" : "text-gray-700"}`}>{rawText}</p>}
         <input
           type="text"
           value={(userAnswer as string) || ''}
@@ -1012,27 +1013,31 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
   const renderListening = (q: Question, qId: string) => renderMultipleChoice(q, qId);
 
   // ─── RENDER: SPEAKING PROMPT ───
-  const renderSpeaking = (q: Question, qId: string) => (
-    <div className="space-y-3">
-      {q.prompt && (
-        <div className={`p-3 rounded-xl border ${dark ? "bg-purple-500/10 border-purple-500/30" : "bg-purple-50 border-purple-200"}`}>
-          <p className={`text-sm font-semibold ${dark ? "text-purple-300" : "text-purple-700"}`}>{q.prompt}</p>
-          {q.pronunciationTip && (
-            <p className={`text-xs mt-1 ${dark ? "text-purple-400" : "text-purple-600"}`}>{q.pronunciationTip}</p>
-          )}
-        </div>
-      )}
-      <textarea
-        value={(userAnswer as string) || ''}
-        onChange={(e) => setAnswer(qId, e.target.value)}
-        disabled={submitted}
-        placeholder="Type what you would say..."
-        className={`w-full h-20 p-3 rounded-xl border text-sm resize-none outline-none transition-all ${
-          dark ? "border-[#1e2a4a] bg-[#0a0e1a] text-gray-200 focus:border-purple-500/50" : "border-gray-200 bg-white focus:border-purple-300"
-        }`}
-      />
-    </div>
-  );
+  const renderSpeaking = (q: Question, qId: string) => {
+    const promptStr = q.prompt || q.question || '';
+    const isDuplicatePrompt = promptStr && (promptStr.trim() === qText.trim() || qText.includes(promptStr.trim()));
+    return (
+      <div className="space-y-3">
+        {q.prompt && !isDuplicatePrompt && (
+          <div className={`p-3 rounded-xl border ${dark ? "bg-purple-500/10 border-purple-500/30" : "bg-purple-50 border-purple-200"}`}>
+            <p className={`text-sm font-semibold ${dark ? "text-purple-300" : "text-purple-700"}`}>{q.prompt}</p>
+            {q.pronunciationTip && (
+              <p className={`text-xs mt-1 ${dark ? "text-purple-400" : "text-purple-600"}`}>{q.pronunciationTip}</p>
+            )}
+          </div>
+        )}
+        <textarea
+          value={(userAnswer as string) || ''}
+          onChange={(e) => setAnswer(qId, e.target.value)}
+          disabled={submitted}
+          placeholder="Type what you would say..."
+          className={`w-full h-20 p-3 rounded-xl border text-sm resize-none outline-none transition-all ${
+            dark ? "border-[#1e2a4a] bg-[#0a0e1a] text-gray-200 focus:border-purple-500/50" : "border-gray-200 bg-white focus:border-purple-300"
+          }`}
+        />
+      </div>
+    );
+  };
 
   // ─── RENDER: TRUE / FALSE ───
   const renderTrueFalse = (q: Question, qId: string) => {
