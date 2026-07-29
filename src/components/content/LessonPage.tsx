@@ -3138,16 +3138,39 @@ function LessonCheatSheetModal({ lesson, dark, onClose, speak }: { lesson: any; 
   useEffect(() => {
     let isMounted = true;
     async function loadChapterData() {
-      const chNum = Number(lesson?.chapterId || lesson?.chapter || 1);
+      let chNum = 1;
+      if (typeof lesson?.chapter === 'number' && lesson.chapter > 0) {
+        chNum = lesson.chapter;
+      } else if (typeof lesson?.chapterId === 'number' && lesson.chapterId > 0) {
+        chNum = lesson.chapterId;
+      } else if (typeof lesson?.chapterId === 'string') {
+        const match = lesson.chapterId.match(/ch(\d+)/i) || lesson.chapterId.match(/chapter[-_\s]*(\d+)/i);
+        if (match) chNum = Number(match[1]);
+      } else if (typeof lesson?.lessonId === 'string') {
+        const match = lesson.lessonId.match(/c(\d+)/i) || lesson.lessonId.match(/ch(\d+)/i);
+        if (match) chNum = Number(match[1]);
+      }
+
       try {
         const res = await apiFetch("/lessons?limit=200");
         const json = await res.json();
         const allLessons = json.data || json.lessons || (Array.isArray(json) ? json : []);
         const chLessons = allLessons.filter((l: any) => {
-          const lCh = typeof l.chapter === 'number' ? l.chapter
-            : typeof l.chapterId === 'number' ? l.chapterId
-            : typeof l.chapterId === 'string' && l.chapterId.match(/ch(\d+)/i) ? Number(l.chapterId.match(/ch(\d+)/i)![1])
-            : 1;
+          let lCh = 1;
+          if (typeof l.chapter === 'number' && l.chapter > 0) {
+            lCh = l.chapter;
+          } else if (typeof l.chapterId === 'number' && l.chapterId > 0) {
+            lCh = l.chapterId;
+          } else if (typeof l.chapterId === 'string') {
+            const match = l.chapterId.match(/ch(\d+)/i) || l.chapterId.match(/chapter[-_\s]*(\d+)/i);
+            if (match) lCh = Number(match[1]);
+          } else if (typeof l.lessonId === 'string') {
+            const match = l.lessonId.match(/c(\d+)/i) || l.lessonId.match(/ch(\d+)/i);
+            if (match) lCh = Number(match[1]);
+          } else if (typeof l.title === 'string') {
+            const match = l.title.match(/chapter\s*(\d+)/i);
+            if (match) lCh = Number(match[1]);
+          }
           return lCh === chNum;
         });
 
@@ -3237,8 +3260,13 @@ function LessonCheatSheetModal({ lesson, dark, onClose, speak }: { lesson: any; 
                 <div className={`rounded-xl border overflow-hidden ${dark ? "bg-black/30 border-purple-500/20" : "bg-purple-50/50 border-purple-200"}`}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 p-3">
                     {chapterVocab.map((v: any, idx: number) => {
-                      const fr = typeof v === 'string' ? v : v.french || v.term || v.word || '';
-                      const en = typeof v === 'string' ? '' : v.english || v.translation || v.meaning || '';
+                      let fr = typeof v === 'string' ? v : v.french || v.term || v.word || '';
+                      let en = typeof v === 'string' ? '' : v.english || v.translation || v.meaning || '';
+                      if (!en && (fr.includes('→') || fr.includes('->'))) {
+                        const parts = fr.split(/→|->/);
+                        fr = parts[0]?.replace(/^[-•]\s*/, '').trim();
+                        en = parts[1]?.trim() || '';
+                      }
                       return (
                         <div key={idx} className={`p-2.5 rounded-lg border text-xs flex items-center justify-between gap-2 ${dark ? "bg-[#101828] border-purple-500/20 text-gray-200" : "bg-white border-purple-100 text-gray-800"}`}>
                           <div>
@@ -3315,16 +3343,39 @@ function ChapterFlashcardModal({ lesson, dark, onClose, speak }: { lesson: any; 
   useEffect(() => {
     let isMounted = true;
     async function loadFlashcards() {
-      const chNum = Number(lesson?.chapterId || lesson?.chapter || 1);
+      let chNum = 1;
+      if (typeof lesson?.chapter === 'number' && lesson.chapter > 0) {
+        chNum = lesson.chapter;
+      } else if (typeof lesson?.chapterId === 'number' && lesson.chapterId > 0) {
+        chNum = lesson.chapterId;
+      } else if (typeof lesson?.chapterId === 'string') {
+        const match = lesson.chapterId.match(/ch(\d+)/i) || lesson.chapterId.match(/chapter[-_\s]*(\d+)/i);
+        if (match) chNum = Number(match[1]);
+      } else if (typeof lesson?.lessonId === 'string') {
+        const match = lesson.lessonId.match(/c(\d+)/i) || lesson.lessonId.match(/ch(\d+)/i);
+        if (match) chNum = Number(match[1]);
+      }
+
       try {
         const res = await apiFetch("/lessons?limit=200");
         const json = await res.json();
         const allLessons = json.data || json.lessons || (Array.isArray(json) ? json : []);
         const chLessons = allLessons.filter((l: any) => {
-          const lCh = typeof l.chapter === 'number' ? l.chapter
-            : typeof l.chapterId === 'number' ? l.chapterId
-            : typeof l.chapterId === 'string' && l.chapterId.match(/ch(\d+)/i) ? Number(l.chapterId.match(/ch(\d+)/i)![1])
-            : 1;
+          let lCh = 1;
+          if (typeof l.chapter === 'number' && l.chapter > 0) {
+            lCh = l.chapter;
+          } else if (typeof l.chapterId === 'number' && l.chapterId > 0) {
+            lCh = l.chapterId;
+          } else if (typeof l.chapterId === 'string') {
+            const match = l.chapterId.match(/ch(\d+)/i) || l.chapterId.match(/chapter[-_\s]*(\d+)/i);
+            if (match) lCh = Number(match[1]);
+          } else if (typeof l.lessonId === 'string') {
+            const match = l.lessonId.match(/c(\d+)/i) || l.lessonId.match(/ch(\d+)/i);
+            if (match) lCh = Number(match[1]);
+          } else if (typeof l.title === 'string') {
+            const match = l.title.match(/chapter\s*(\d+)/i);
+            if (match) lCh = Number(match[1]);
+          }
           return lCh === chNum;
         });
 
@@ -3334,8 +3385,13 @@ function ChapterFlashcardModal({ lesson, dark, onClose, speak }: { lesson: any; 
             : Array.isArray(l.vocabulary) && l.vocabulary.length > 0 ? l.vocabulary : [];
 
           for (const v of vList) {
-            const fr = typeof v === 'string' ? v : v.french || v.term || v.word || '';
-            const en = typeof v === 'string' ? '' : v.english || v.translation || v.meaning || '';
+            let fr = typeof v === 'string' ? v : v.french || v.term || v.word || '';
+            let en = typeof v === 'string' ? '' : v.english || v.translation || v.meaning || '';
+            if (!en && (fr.includes('→') || fr.includes('->'))) {
+              const parts = fr.split(/→|->/);
+              fr = parts[0]?.replace(/^[-•]\s*/, '').trim();
+              en = parts[1]?.trim() || '';
+            }
             if (fr) {
               cardList.push({
                 french: fr,
