@@ -388,7 +388,7 @@ function adaptQuestions(questions: LessonQuestion[]) {
 
 function parseOverviewMetadata(rawObjectives: any, lessonData: any) {
   const rawList: string[] = Array.isArray(rawObjectives)
-    ? rawObjectives.map(x => (typeof x === 'string' ? x : String(x?.text || x?.content || x)))
+    ? rawObjectives.flatMap(x => (typeof x === 'string' ? x.split('\n') : [String(x?.text || x?.content || x)]))
     : (typeof rawObjectives === 'string' ? rawObjectives.split('\n') : []);
 
   const cleanObjectives: string[] = [];
@@ -427,7 +427,13 @@ function parseOverviewMetadata(rawObjectives: any, lessonData: any) {
       .trim();
 
     if (bulletText.length > 3) {
-      cleanObjectives.push(bulletText);
+      // Split items merged with " - " or bullet patterns: e.g. "Name housing. - Ask question. - Form negative."
+      const subParts = bulletText.split(/\s*[\-\•]\s+/).map(p => p.trim()).filter(Boolean);
+      for (const sub of subParts) {
+        if (sub.length > 3 && !cleanObjectives.includes(sub)) {
+          cleanObjectives.push(sub);
+        }
+      }
     }
   }
 

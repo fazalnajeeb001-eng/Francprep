@@ -68,8 +68,32 @@ function clean(t: string): string {
 
 function extractField(text: string, name: string): string {
   const escName = name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-  const m = text.match(new RegExp(`(?:\\*\\*)?${escName}:(?:\\*\\*)?\\s*([\\s\\S]*?)(?=\\n(?:\\*\\*)?[^:\\*]+:|$)`, 'i'));
+  // Match field up to next field header or markdown section header (#)
+  const m = text.match(new RegExp(`(?:\\*\\*)?${escName}:(?:\\*\\*)?\\s*([\\s\\S]*?)(?=\\n\\s*(?:\\*\\*)?[A-Z][A-Za-z0-9\\s]{2,25}:|\\n#|$)`, 'i'));
   return m ? stripMd(m[1].trim()) : '';
+}
+
+function extractObjectives(text: string): string[] {
+  const raw = extractField(text, 'Lesson Objectives');
+  if (!raw) return ['Practice skills'];
+
+  const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+  const objs: string[] = [];
+
+  for (const l of lines) {
+    const cleaned = l.replace(/^[-•*]\s*/, '').replace(/^\d+[\.\)]\s*/, '').trim();
+    if (cleaned && !cleaned.toLowerCase().startsWith('grammar focus') && !cleaned.toLowerCase().startsWith('vocabulary focus') && !cleaned.toLowerCase().startsWith('estimated time')) {
+      objs.push(stripMd(cleaned));
+    }
+  }
+
+  return objs.length > 0 ? objs : [stripMd(raw)];
+}
+
+function extractDuration(text: string): number {
+  const raw = extractField(text, 'Estimated Time');
+  const numMatch = raw.match(/(\d+)/);
+  return numMatch ? parseInt(numMatch[1], 10) : 25;
 }
 
 function splitSections(body: string): { header: string; body: string }[] {
@@ -1414,8 +1438,8 @@ export function parseLessonFromMarkdown(
       level: finalLevel,
       title: manualOverrides.title || extractField(normalizedMarkdown, 'Lesson Title') || `Lesson ${lessonNum}`,
       anchorSkill: manualOverrides.anchorSkill || extractField(normalizedMarkdown, 'Anchor Skill').replace(/\(.*\)/, '').trim().toLowerCase() || 'reading',
-      durationMinutes: 22,
-      objectives: [extractField(normalizedMarkdown, 'Lesson Objectives') || 'Practice skills'],
+      durationMinutes: extractDuration(normalizedMarkdown),
+      objectives: extractObjectives(normalizedMarkdown),
       grammarFocus: extractField(normalizedMarkdown, 'Grammar Focus') || '',
       vocabularyFocus: extractField(normalizedMarkdown, 'Vocabulary Focus') || '',
       warmUp: { content: '' },
@@ -1478,8 +1502,8 @@ export function parseLessonFromMarkdown(
       level: finalLevel,
       title: manualOverrides?.title || extractField(block, 'Lesson Title') || `Lesson ${lessonNum}`,
       anchorSkill,
-      durationMinutes: 22,
-      objectives: [extractField(block, 'Lesson Objectives') || 'Practice skills'],
+      durationMinutes: extractDuration(block),
+      objectives: extractObjectives(block),
       grammarFocus: extractField(block, 'Grammar Focus') || '',
       vocabularyFocus: extractField(block, 'Vocabulary Focus') || '',
       warmUp: { content: '' },
