@@ -2900,6 +2900,11 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
       .trim(),
   }));
 
+  const isDuplicateInst = Boolean(instStr && secQuestions.length === 1 && (
+    secQuestions[0]?.prompt?.toLowerCase().startsWith(instStr.toLowerCase().slice(0, 20)) ||
+    instStr.toLowerCase().startsWith(secQuestions[0]?.prompt?.toLowerCase().slice(0, 20))
+  ));
+
   return (
     <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5 space-y-5`}>
       <div className="flex items-center justify-between border-b dark:border-[#1e2a4a] border-gray-200 pb-3">
