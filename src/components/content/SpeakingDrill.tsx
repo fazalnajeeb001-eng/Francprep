@@ -5,6 +5,8 @@ import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
 import { getBestVoice } from "~/lib/speech";
 
+import { SmartAvatar } from "~/components/dashboard/widgets/SmartAvatar";
+
 interface ChatMessage {
   role: "user" | "assistant";
   content: string;
@@ -332,11 +334,11 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
       {/* Prominent Interactive Coach Avatar Banner */}
       <div className={`p-4 border-b dark:border-[#1e2a4a] border-gray-200 flex items-center justify-between gap-4 ${dark ? "bg-gradient-to-r from-purple-950/40 via-[#0c1224] to-pink-950/40" : "bg-gradient-to-r from-purple-50 via-white to-pink-50"}`}>
         <div className="flex items-center gap-3.5">
-          <div className="relative">
-            <div className={`w-14 h-14 rounded-2xl p-0.5 shadow-lg transition-all ${
+          <div className="relative flex items-center justify-center">
+            <div className={`rounded-2xl p-1 shadow-lg transition-all ${
               isSpeaking ? "bg-gradient-to-r from-emerald-400 to-teal-400 animate-pulse ring-4 ring-emerald-500/30" : "bg-gradient-to-r from-purple-500 to-pink-500"
             }`}>
-              <img src={coachAvatarImg} alt={coachName} className="w-full h-full rounded-[14px] object-cover bg-[#0c1224]" />
+              <SmartAvatar gender={avatarGender} size={56} animate={isSpeaking ? "speaking" : isThinking ? "thinking" : "idle"} />
             </div>
             <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-[#0c1224] flex items-center justify-center text-[8px] ${
               isSpeaking ? "bg-emerald-500" : isThinking ? "bg-amber-500 animate-spin" : "bg-emerald-400"

@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   CheckCircle2, ArrowLeft, BookOpen, Volume2, Trophy, Award,
   ChevronLeft, ChevronRight, HelpCircle, Star, Headphones, PenTool, Mic,
-  Repeat, Globe, FileText, Languages, Zap, Sparkles
+  Repeat, Globe, FileText, Languages, Zap, Sparkles, Printer, X
 } from "lucide-react";
 import { WritingSubmission } from "./LearningComponents";
 import { SpeakingDrill } from "./SpeakingDrill";
@@ -716,6 +716,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
   const [lessonCompleted, setLessonCompleted] = useState(false);
   const [lessonScore, setLessonScore] = useState<number | null>(null);
   const [showObjectives, setShowObjectives] = useState(false);
+  const [cheatSheetOpen, setCheatSheetOpen] = useState(false);
   const [startTime] = useState(Date.now());
   const topRef = useRef<HTMLDivElement>(null);
 
@@ -1676,7 +1677,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
                   ⚡ Quick-Review Flashcards ({parsedSkillCards.length} Cards)
                 </button>
                 <button
-                  onClick={() => window.print()}
+                  onClick={() => setCheatSheetOpen(true)}
                   className={`flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border font-extrabold text-xs transition-all ${
                     dark
                       ? "bg-purple-500/10 border-purple-500/30 text-purple-300 hover:bg-purple-500/20"
@@ -1684,7 +1685,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
                   }`}
                 >
                   <FileText className="w-4 h-4 text-purple-400" />
-                  📄 Download Lesson Cheat Sheet (PDF)
+                  📄 View & Print Lesson Cheat Sheet
                 </button>
               </div>
             </div>
@@ -2193,6 +2194,18 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
             </button>
           )}
         </div>
+
+        {/* Dedicated Interactive Lesson Cheat Sheet Modal */}
+        <AnimatePresence>
+          {cheatSheetOpen && (
+            <LessonCheatSheetModal
+              lesson={lesson}
+              dark={dark}
+              onClose={() => setCheatSheetOpen(false)}
+              speak={speak}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
@@ -2906,6 +2919,124 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
               Next Section →
             </button>
           )}
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+// ─── Lesson Cheat Sheet Modal Component ─────────────────────────────────────
+
+function LessonCheatSheetModal({ lesson, dark, onClose, speak }: { lesson: any; dark: boolean; onClose: () => void; speak: (txt: string) => void }) {
+  const vocabItems = Array.isArray(lesson?.vocabItems) && lesson.vocabItems.length > 0 ? lesson.vocabItems
+    : Array.isArray(lesson?.vocabulary) ? lesson.vocabulary : [];
+
+  const grammarRules = lesson?.grammar?.rules || [];
+  const sceneText = lesson?.scene?.text || lesson?.reading?.text || lesson?.listening?.transcript || '';
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto print:p-0 print:bg-white print:static print:z-auto">
+      <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+        className={`w-full max-w-4xl p-6 rounded-2xl border ${dark ? "bg-[#0c1224] border-purple-500/30 text-white" : "bg-white border-purple-200 text-slate-900"} shadow-2xl space-y-6 print:shadow-none print:border-none print:w-full print:max-w-none print:bg-white print:text-black`}>
+        
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-purple-500/20 pb-4 print:pb-2">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-400 print:hidden">
+              <FileText className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-purple-400">
+                French {lesson?.level || 'A1'} • Quick Reference Cheat Sheet
+              </span>
+              <h2 className="text-xl font-extrabold text-white print:text-black mt-0.5">{lesson?.title || 'Lesson Review'}</h2>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 print:hidden">
+            <button
+              onClick={() => window.print()}
+              className="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-md flex items-center gap-1.5 transition-all"
+            >
+              <Printer className="w-3.5 h-3.5" /> 🖨️ Print / Save PDF
+            </button>
+            <button
+              onClick={onClose}
+              className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/10"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Section 1: Key Vocabulary Table */}
+        {vocabItems.length > 0 && (
+          <div className="space-y-3">
+            <h3 className="text-sm font-bold flex items-center gap-2 text-purple-400 print:text-black">
+              <span>🗣️</span> Essential Vocabulary ({vocabItems.length} Terms)
+            </h3>
+            <div className={`rounded-xl border overflow-hidden ${dark ? "bg-black/30 border-purple-500/20" : "bg-purple-50/50 border-purple-200"}`}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 p-3">
+                {vocabItems.map((v: any, idx: number) => {
+                  const fr = typeof v === 'string' ? v : v.french || v.term || v.word || '';
+                  const en = typeof v === 'string' ? '' : v.english || v.translation || v.meaning || '';
+                  return (
+                    <div key={idx} className={`p-2.5 rounded-lg border text-xs flex items-center justify-between gap-2 ${dark ? "bg-[#101828] border-purple-500/20 text-gray-200" : "bg-white border-purple-100 text-gray-800"}`}>
+                      <div>
+                        <span className="font-extrabold text-purple-300 print:text-black">{fr}</span>
+                        {en && <span className="block text-[10px] text-gray-400 print:text-gray-600">{en}</span>}
+                      </div>
+                      <button onClick={() => speak(fr)} className="p-1 rounded hover:bg-purple-500/20 text-purple-400 print:hidden">
+                        <Volume2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Section 2: Grammar & Formulas */}
+        {grammarRules.length > 0 && (
+          <div className="space-y-3">
+            <h3 className="text-sm font-bold flex items-center gap-2 text-pink-400 print:text-black">
+              <span>📐</span> Grammar Rules & Formulas
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {grammarRules.map((r: any, idx: number) => (
+                <div key={idx} className={`p-3.5 rounded-xl border space-y-1.5 text-xs ${dark ? "bg-[#101828] border-pink-500/20" : "bg-pink-50/30 border-pink-200"}`}>
+                  <p className="font-extrabold text-pink-300 print:text-black">{r.rule || r.title || `Rule ${idx + 1}`}</p>
+                  {r.formula && (
+                    <div className="p-2 rounded bg-purple-950/40 border border-purple-500/30 font-mono text-[11px] text-purple-300 print:bg-gray-100 print:text-black print:border-gray-300">
+                      {r.formula}
+                    </div>
+                  )}
+                  {r.examples && (
+                    <div className="text-[11px] text-gray-300 print:text-gray-700 italic">
+                      Examples: {Array.isArray(r.examples) ? r.examples.join(' • ') : r.examples}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Section 3: Key Conversation Scene Text */}
+        {sceneText && (
+          <div className="space-y-2">
+            <h3 className="text-sm font-bold flex items-center gap-2 text-emerald-400 print:text-black">
+              <span>💬</span> Key Conversation Expressions
+            </h3>
+            <div className={`p-3.5 rounded-xl border text-xs leading-relaxed whitespace-pre-line max-h-48 overflow-y-auto ${dark ? "bg-emerald-950/20 border-emerald-500/20 text-emerald-200" : "bg-emerald-50 border-emerald-200 text-emerald-900"} print:max-h-none print:overflow-visible`}>
+              {sceneText}
+            </div>
+          </div>
+        )}
+
+        <div className="pt-2 text-center text-[10px] text-gray-500 print:text-black border-t border-purple-500/20">
+          FrancPrep French Learning Curriculum • Generated for Chapter Study
         </div>
       </motion.div>
     </div>
