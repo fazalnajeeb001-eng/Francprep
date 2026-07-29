@@ -199,8 +199,8 @@ function parsePairLine(prompt: string): { left: string; right: string } | null {
   const clean = str.replace(/^(?:\d+[\.\)]\s*)?(?:[*•\-]\s*)?(?:Matching|Multiple Choice|Fill in the Blank|Sentence Ordering|Short Answer)?[:\s]*/i, '').trim();
 
   // Match any "Left text — Right text" or "Left text — a) Right text" pattern cleanly
-  const m = clean.match(/^(.+?)\s*[\u2014\u2013]|--|\s+-\s+|\s*:\s*\s*(?:[a-eA-E0-9][\.\)]\s*|\([a-eA-E0-9]\)\s*)?(.+)$/);
-  if (m) {
+  const m = clean.match(/^(.+?)\s*(?:[\u2014\u2013]|--|\s+-\s+|\s*:\s*)\s*(?:[a-eA-E0-9][\.\)]\s*|\([a-eA-E0-9]\)\s*)?(.+)$/);
+  if (m && m[1] && m[2]) {
     const left = m[1].replace(/^\d+[\.\)]\s*/, '').replace(/^[*•\-]\s*/, '').trim();
     const right = m[2].replace(/^[a-eA-E0-9][\.\)]\s*/, '').trim();
     const leftLower = left.toLowerCase();
