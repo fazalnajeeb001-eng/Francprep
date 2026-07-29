@@ -3252,31 +3252,47 @@ function ChapterFlashcardModal({ lesson, dark, onClose, speak }: { lesson: any; 
   const [currentIdx, setCurrentIdx] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
 
-  const rawVocab = Array.isArray(lesson?.vocabItems) && lesson.vocabItems.length > 0 ? lesson.vocabItems
+  // Extract vocabulary terms cleanly from all possible payload properties
+  let rawVocab = Array.isArray(lesson?.vocabItems) && lesson.vocabItems.length > 0 ? lesson.vocabItems
     : Array.isArray(lesson?.vocabulary) && lesson.vocabulary.length > 0 ? lesson.vocabulary
-    : Array.isArray(lesson?.canDoReview) && lesson.canDoReview.length > 0 ? lesson.canDoReview.map((item: any) => ({
-        french: typeof item === 'string' ? item : item.statement || '',
-        english: typeof item === 'string' ? '' : item.lessonRef || 'Chapter Core Skill'
-      }))
-    : [
-        { french: "Bonjour ! Comment allez-vous ?", english: "Hello! How are you? (Formal)" },
-        { french: "Salut ! Ça va ?", english: "Hi! How's it going? (Informal)" },
-        { french: "Enchanté(e)", english: "Pleased to meet you" },
-        { french: "S'il vous plaît", english: "Please (Formal)" },
-        { french: "Merci beaucoup", english: "Thank you very much" },
-        { french: "Au revoir", english: "Goodbye" },
-        { french: "À bientôt", english: "See you soon" }
-      ];
+    : Array.isArray(lesson?.vocab) && lesson.vocab.length > 0 ? lesson.vocab
+    : Array.isArray(lesson?.keyTerms) && lesson.keyTerms.length > 0 ? lesson.keyTerms
+    : [];
 
+  // Transform raw items into clean French & English flashcard objects
   const cards = rawVocab.map((v: any) => {
-    if (typeof v === 'string') return { french: v, english: 'Key Term' };
+    if (typeof v === 'string') {
+      const parts = v.split('→');
+      return {
+        french: parts[0]?.replace(/^[-•]\s*/, '').trim() || v,
+        english: parts[1]?.trim() || 'Key Term'
+      };
+    }
     return {
-      french: v.french || v.term || v.word || v.statement || '',
-      english: v.english || v.translation || v.meaning || v.lessonRef || ''
+      french: v.french || v.term || v.word || v.expression || v.phrase || v.statement || '',
+      english: v.english || v.translation || v.meaning || v.definition || v.lessonRef || ''
     };
-  }).filter((c: any) => Boolean(c.french));
+  }).filter((c: any) => Boolean(c.french && c.french.trim()));
 
-  const currentCard = cards[currentIdx] || { french: "Review Complete", english: "Great job!" };
+  // Fallback to Objectives / Can-Do items if the lesson doesn't have an explicit vocab list (e.g. Capstone L8)
+  if (cards.length === 0) {
+    const rawSummary = lesson?.completionSummary?.content || '';
+    if (rawSummary) {
+      const lines = rawSummary.split(/\n+/).flatMap((l: string) => l.split(/(?=\s*[-•]\s+)/)).map((l: string) => l.trim()).filter(Boolean);
+      lines.forEach((l: string) => {
+        const clean = l.replace(/^[-•]\s*/, '').trim();
+        if (clean && !clean.toLowerCase().includes('chapter') && !clean.toLowerCase().includes('next milestone')) {
+          const parts = clean.split('→');
+          cards.push({
+            french: parts[0]?.trim() || clean,
+            english: parts[1]?.trim() || 'Chapter Objective'
+          });
+        }
+      });
+    }
+  }
+
+  const currentCard = cards[currentIdx] || { french: "Aucune carte disponible", english: "No vocabulary terms found for this lesson deck." };
 
   const handleNext = () => {
     setIsFlipped(false);
