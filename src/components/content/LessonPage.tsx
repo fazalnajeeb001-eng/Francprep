@@ -913,7 +913,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         return null;
       }
     },
-    enabled: isLesson8 && !!lesson7Id && !draftId
+    enabled: isLesson8 && !!lesson7Id
   });
 
   const { data: levelLessons } = useQuery({
@@ -2708,13 +2708,25 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
   }
 
   const titleStr = typeof sec?.title === 'string' ? sec.title : (sec?.title ? String(sec.title) : `Section ${activeTab + 1}`);
-  const instStr = typeof sec?.instructions === 'string' ? sec.instructions : '';
+  const rawInstStr = typeof sec?.instructions === 'string' ? sec.instructions : '';
+  const instStr = rawInstStr
+    .replace(/^\*\*Section\s*\d+\s*[-—][^\*]+\*\*\s*/gi, '')
+    .replace(/^Section\s*\d+\s*[-—][^\:]+:\s*/gi, '')
+    .replace(/\*\(\d+\s*points?\)\*/gi, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/[*_#]/g, '')
+    .trim();
 
   const secQuestions = (Array.isArray(sec?.questions) ? sec.questions : []).map((q: any) => ({
     ...q,
     prompt: (q.prompt || '')
       .replace(/^\*\*Section\s*\d+\s*[-—][^\*]+\*\*\s*/gi, '')
       .replace(/^Section\s*\d+\s*[-—][^\:]+:\s*/gi, '')
+      .replace(/\*\(\d+\s*points?\)\*/gi, '')
+      .replace(/\*\*([^*]+)\*\*/g, '$1')
+      .replace(/\*([^*]+)\*/g, '$1')
+      .replace(/[*_#]/g, '')
       .trim(),
   }));
 
@@ -2835,33 +2847,46 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
         )}
 
         {/* Section 2 Reading Source Passage */}
-        {sec?.sourceText && (
+        {isReadingSec && (
           <div className={`p-4 rounded-xl border mb-4 text-xs leading-relaxed whitespace-pre-line ${dark ? "bg-purple-500/5 border-purple-500/20 text-purple-200" : "bg-purple-50 border-purple-200 text-purple-900"}`}>
-            <div className="flex items-center justify-between mb-1">
-              <p className="font-bold flex items-center gap-1.5 text-purple-700 dark:text-purple-300">
-                <span>📖</span> Reading Passage:
-              </p>
-              {sec?.translation && (
-                <button
-                  type="button"
-                  onClick={() => setShowReadingTranslation(!showReadingTranslation)}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold border transition-all ${
-                    dark ? "bg-pink-500/20 border-pink-500/30 text-pink-300 hover:bg-pink-500/30" : "bg-pink-100 border-pink-200 text-pink-800 hover:bg-pink-200"
-                  }`}
-                >
-                  {showReadingTranslation ? "Hide English ▴" : "Show English ▾"}
-                </button>
-              )}
-            </div>
-            <p className="italic">{String(sec.sourceText)}</p>
-            {showReadingTranslation && sec?.translation && (
-              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-3">
-                <div className={`p-3 rounded-lg border text-xs leading-relaxed whitespace-pre-line ${dark ? "bg-purple-950/40 border-purple-500/30 text-purple-200" : "bg-purple-100/60 border-purple-200 text-purple-900"}`}>
-                  <p className="font-bold text-[11px] mb-1 text-purple-400">English Translation:</p>
-                  {String(sec.translation)}
-                </div>
-              </motion.div>
-            )}
+            {(() => {
+              const activeReadingText = sec.sourceText || sec.passage || sec.text || lesson7Transcript || lesson?.reading?.text || lesson?.scene?.text || '';
+              const activeReadingTrans = sec.translation || lesson7Translation || lesson?.reading?.translation || lesson?.scene?.translation || '';
+
+              return (
+                <>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="font-bold flex items-center gap-1.5 text-purple-700 dark:text-purple-300">
+                      <span>📖</span> Reading Passage:
+                    </p>
+                    {activeReadingTrans && (
+                      <button
+                        type="button"
+                        onClick={() => setShowReadingTranslation(!showReadingTranslation)}
+                        className={`px-3 py-1 rounded-lg text-xs font-bold border transition-all ${
+                          dark ? "bg-pink-500/20 border-pink-500/30 text-pink-300 hover:bg-pink-500/30" : "bg-pink-100 border-pink-200 text-pink-800 hover:bg-pink-200"
+                        }`}
+                      >
+                        {showReadingTranslation ? "Hide English ▴" : "Show English ▾"}
+                      </button>
+                    )}
+                  </div>
+                  {activeReadingText ? (
+                    <p className="italic">{String(activeReadingText)}</p>
+                  ) : (
+                    <p className="italic text-gray-400">Loading chapter reading passage...</p>
+                  )}
+                  {showReadingTranslation && activeReadingTrans && (
+                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-3">
+                      <div className={`p-3 rounded-lg border text-xs leading-relaxed whitespace-pre-line ${dark ? "bg-purple-950/40 border-purple-500/30 text-purple-200" : "bg-purple-100/60 border-purple-200 text-purple-900"}`}>
+                        <p className="font-bold text-[11px] mb-1 text-purple-400">English Translation:</p>
+                        {String(activeReadingTrans)}
+                      </div>
+                    </motion.div>
+                  )}
+                </>
+              );
+            })()}
           </div>
         )}
 
