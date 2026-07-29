@@ -1,8 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Volume2, ArrowLeft, Mic, CheckCircle2, XCircle, ChevronLeft, ChevronRight, Shuffle } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
+import { useAuth } from "~/lib/AuthContext";
 import { apiFetch } from "~/lib/apiFetch";
 import { speak as speakText } from "~/lib/speech";
 
@@ -45,6 +46,21 @@ declare global {
 
 function SpeakingPage() {
   const { dark } = useTheme();
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen dark:bg-[#070B17] bg-gray-50 flex items-center justify-center">
+        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+          className="w-10 h-10 border-2 border-purple-500 border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/login" replace />;
+  }
+
   const [cardPhrases, setCardPhrases] = useState<{ french: string; english: string; lesson: number }[]>([]);
   const [current, setCurrent] = useState(0);
   const [isListening, setIsListening] = useState(false);

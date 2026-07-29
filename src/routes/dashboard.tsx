@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, useRouterState, Link } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useRouterState, Link, Navigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "~/lib/AuthContext";
 import { useTheme } from "~/lib/ThemeContext";
@@ -46,7 +46,7 @@ function GoalModal({ dark, onClose }: { dark: boolean; onClose: (goal: LearningG
 }
 
 function DashboardPage() {
-  const { user, isLoading: authLoading } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const { dark } = useTheme();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -83,6 +83,7 @@ function DashboardPage() {
   }, [user, authLoading]);
 
   if (authLoading) return <LoadingSkeleton dark={dark} />;
+  if (!isAuthenticated || !user) return <Navigate to="/login" replace />;
 
   if (!isIndex) {
     return (

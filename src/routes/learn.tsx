@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { apiFetch } from "~/lib/apiFetch";
 import { useTheme } from "~/lib/ThemeContext";
@@ -41,7 +41,20 @@ const LEVEL_ICONS: Record<string, string> = {
 
 function LearnPage() {
   const { dark } = useTheme();
-  const { user } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen dark:bg-[#070B17] bg-gray-50 flex items-center justify-center">
+        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+          className="w-10 h-10 border-2 border-purple-500 border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/login" replace />;
+  }
   const passedMilestones = (user as any)?.passedMilestones || [];
 
   const [view, setView] = useState<"levels" | string>("levels");

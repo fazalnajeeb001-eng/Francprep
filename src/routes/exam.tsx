@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Outlet, useMatch } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Outlet, useMatch, Navigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -19,15 +19,30 @@ import {
   ShieldCheck
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
+import { useAuth } from "~/lib/AuthContext";
 import { getExamRegistry, type ExamMode, type ExamType } from "~/lib/examSchema";
 
 export const Route = createFileRoute("/exam")({ component: ExamRouteLayout });
 
 function ExamRouteLayout() {
+  const { user, isAuthenticated, isLoading } = useAuth();
   const matchDelfIndex = useMatch({ from: "/exam/delf/", shouldThrow: false });
   const matchDelfPaper = useMatch({ from: "/exam/delf/$paperId", shouldThrow: false });
   const matchPaperId = useMatch({ from: "/exam/$paperId", shouldThrow: false });
   const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen dark:bg-[#070B17] bg-gray-50 flex items-center justify-center">
+        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+          className="w-10 h-10 border-2 border-purple-500 border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/login" replace />;
+  }
 
   if (matchDelfIndex || matchDelfPaper || matchPaperId || pathname.includes('/exam/delf')) {
     return <Outlet />;

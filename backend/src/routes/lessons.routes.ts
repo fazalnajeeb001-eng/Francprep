@@ -10,17 +10,17 @@ router.get('/', optionalAuth, (req, res, next) =>
 );
 
 // GET /api/lessons/:id - Get lesson by ID
-router.get('/:id', optionalAuth, (req, res, next) =>
+router.get('/:id', authenticate, (req, res, next) =>
   lessonController.getById(req, res, next)
 );
 
 // GET /api/lessons/:id/exercises - Get exercises for a lesson
-router.get('/:id/exercises', optionalAuth, (req, res, next) =>
+router.get('/:id/exercises', authenticate, (req, res, next) =>
   lessonController.getExercises(req, res, next)
 );
 
 // POST /api/lessons/:id/submit-block - Submit a block of answers for grading
-router.post('/:id/submit-block', optionalAuth, (req, res, next) =>
+router.post('/:id/submit-block', authenticate, (req, res, next) =>
   lessonController.submitBlock(req, res, next)
 );
 

@@ -101,8 +101,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(async (): Promise<void> => {
-    await apiLogout();
+    clearAuthStorage();
     setUser(null);
+    try {
+      await apiLogout();
+    } catch {
+      // ignore network errors
+    } finally {
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      }
+    }
   }, []);
 
   const updateUser = useCallback((updated: User) => setUser(updated), []);
