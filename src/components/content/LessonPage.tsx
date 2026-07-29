@@ -1564,144 +1564,72 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
           ];
         }
 
+        let canDoItems = (lesson?.canDoReview && lesson.canDoReview.length > 0) ? lesson.canDoReview
+          : (lesson?.miniReview?.content) ? [lesson.miniReview.content]
+          : (lesson?.objectives && lesson.objectives.length > 0) ? lesson.objectives
+          : parsedSkillCards.map(s => s.statement);
+
         return (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="space-y-6 max-w-4xl mx-auto">
-            {/* Celebratory Hero Header */}
-            <div className={`relative overflow-hidden rounded-3xl p-8 md:p-10 text-center border shadow-2xl ${dark ? "bg-gradient-to-b from-[#101828] via-[#0c1224] to-[#070B17] border-emerald-500/30" : "bg-gradient-to-b from-white via-emerald-50/40 to-slate-50 border-emerald-200"}`}>
-              {/* Background Glow Orbs */}
-              <div className="absolute -top-20 -left-20 w-60 h-60 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute -bottom-20 -right-20 w-60 h-60 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="space-y-6 max-w-4xl mx-auto">
+            {/* Interactive Can-Do Statement Mapping Checklist */}
+            <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5 border shadow-lg space-y-4`}>
+              <div className="flex items-center gap-3 border-b dark:border-[#1e2a4a] border-gray-200 pb-3">
+                <Star className="w-5 h-5 text-amber-400" />
+                <div>
+                  <h3 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>
+                    Chapter Review — Mini Review by Can-Do Statement
+                  </h3>
+                  <p className={`text-xs ${textSec} mt-0.5`}>
+                    Each chapter goal mapped to the specific lesson(s) that taught it. Check off what you can do:
+                  </p>
+                </div>
+              </div>
 
-              {/* Animated Trophy Icon */}
-              <div className="relative inline-block mb-4">
-                <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-amber-400 via-emerald-400 to-teal-400 p-1 shadow-xl shadow-emerald-500/30">
-                  <div className={`w-full h-full rounded-[22px] flex items-center justify-center ${dark ? "bg-[#0a0e1a]" : "bg-white"}`}>
-                    <Trophy className="w-10 h-10 text-amber-400 animate-bounce" />
+              <SelfAssessmentSection items={canDoItems} dark={dark} title="Can-Do Statement Mapping" />
+            </div>
+
+            {/* Next Milestone Teaser Card */}
+            <div className={`p-6 rounded-2xl border relative overflow-hidden transition-all ${dark ? "bg-gradient-to-r from-purple-950/40 via-purple-900/20 to-pink-950/40 border-purple-500/30" : "bg-gradient-to-r from-purple-50 via-pink-50/50 to-purple-50 border-purple-200"}`}>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-5 h-5 text-purple-400" />
+                </div>
+                <div className="space-y-1 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-purple-400 px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20">
+                      Up Next
+                    </span>
+                    <h4 className={`text-xs font-extrabold uppercase tracking-wider ${dark ? "text-purple-300" : "text-purple-900"}`}>
+                      Next Chapter Milestone
+                    </h4>
                   </div>
-                </div>
-                <span className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white text-xs font-bold shadow-md">
-                  ✓
-                </span>
-              </div>
-
-              <div className="space-y-2 relative z-10">
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-extrabold uppercase tracking-wider">
-                  <Sparkles className="w-4 h-4 text-amber-400" /> Syllabus Milestone Mastered
-                </div>
-                <h2 className={`text-3xl md:text-4xl font-extrabold tracking-tight ${dark ? "text-white" : "text-slate-900"}`}>
-                  Chapter {chNumber} — Complete 🎉
-                </h2>
-                <p className={`text-sm max-w-xl mx-auto ${dark ? "text-gray-300" : "text-slate-600"}`}>
-                  Félicitations ! You have successfully completed all core lessons, interactive drills, and the DELF assessment for Chapter {chNumber}.
-                </p>
-              </div>
-
-              {/* Stats Summary Bar */}
-              <div className="grid grid-cols-3 gap-3 mt-8 pt-6 border-t dark:border-[#1e2a4a] border-emerald-100 max-w-lg mx-auto">
-                <div className={`p-3 rounded-2xl border text-center ${dark ? "bg-[#070B17]/60 border-[#1e2a4a]" : "bg-white border-slate-200"}`}>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Skills</p>
-                  <p className="text-lg font-extrabold text-emerald-400 mt-0.5">{parsedSkillCards.length} Mastered</p>
-                </div>
-                <div className={`p-3 rounded-2xl border text-center ${dark ? "bg-[#070B17]/60 border-[#1e2a4a]" : "bg-white border-slate-200"}`}>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Mastery</p>
-                  <p className="text-lg font-extrabold text-amber-400 mt-0.5">100%</p>
-                </div>
-                <div className={`p-3 rounded-2xl border text-center ${dark ? "bg-[#070B17]/60 border-[#1e2a4a]" : "bg-white border-slate-200"}`}>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">DELF Status</p>
-                  <p className="text-lg font-extrabold text-purple-400 mt-0.5">A1 Ready</p>
+                  <p className={`text-xs leading-relaxed font-semibold ${dark ? "text-gray-200" : "text-gray-800"}`}>
+                    {nextChapterText}
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* Can-Do Achievements Section */}
-            <div className={`${cardBg} backdrop-blur-lg rounded-3xl p-6 md:p-8 border shadow-xl space-y-6`}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className={`text-base font-extrabold flex items-center gap-2.5 ${dark ? "text-white" : "text-slate-900"}`}>
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                    Chapter Competencies Acquired:
-                  </h3>
-                  <p className={`text-xs mt-0.5 ${textSec}`}>Everything you are now fluent in from this chapter</p>
-                </div>
-                <span className={`text-xs font-bold px-3 py-1 rounded-full ${dark ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-emerald-100 text-emerald-800"}`}>
-                  {parsedSkillCards.length} / {parsedSkillCards.length} Badges Earned
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {parsedSkillCards.map((item, i) => (
-                  <motion.div
-                    key={i}
-                    whileHover={{ scale: 1.015, y: -2 }}
-                    className={`p-4 rounded-2xl border flex items-start justify-between gap-3 transition-all ${
-                      dark
-                        ? "bg-[#0c1224] border-[#1e2a4a] hover:border-emerald-500/40 hover:shadow-lg hover:shadow-emerald-500/5 text-gray-200"
-                        : "bg-white border-slate-200/90 hover:border-emerald-300 hover:shadow-md text-slate-800"
-                    }`}
-                  >
-                    <div className="flex items-start gap-3 flex-1 min-w-0">
-                      <div className="w-6 h-6 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shrink-0 mt-0.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                      </div>
-                      <span className="text-xs font-bold leading-relaxed">{item.statement}</span>
-                    </div>
-
-                    {item.lessonRef && (
-                      <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-lg shrink-0 border transition-all ${
-                        dark
-                          ? "bg-purple-500/15 text-purple-300 border-purple-500/30"
-                          : "bg-purple-100 text-purple-800 border-purple-200"
-                      }`}>
-                        {item.lessonRef}
-                      </span>
-                    )}
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Next Milestone Teaser Card */}
-              <div className={`p-6 rounded-2xl border relative overflow-hidden transition-all ${dark ? "bg-gradient-to-r from-purple-950/40 via-purple-900/20 to-pink-950/40 border-purple-500/30" : "bg-gradient-to-r from-purple-50 via-pink-50/50 to-purple-50 border-purple-200"}`}>
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center shrink-0">
-                    <Sparkles className="w-5 h-5 text-purple-400" />
-                  </div>
-                  <div className="space-y-1 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-purple-400 px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20">
-                        Up Next
-                      </span>
-                      <h4 className={`text-xs font-extrabold uppercase tracking-wider ${dark ? "text-purple-300" : "text-purple-900"}`}>
-                        Next Chapter Milestone
-                      </h4>
-                    </div>
-                    <p className={`text-xs leading-relaxed font-semibold ${dark ? "text-gray-200" : "text-gray-800"}`}>
-                      {nextChapterText}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Spaced Repetition Flashcards & Offline PDF Action Buttons */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                <button
-                  onClick={() => alert(`⚡ Spaced Repetition Deck Unlocked! ${parsedSkillCards.length} vocabulary flashcards ready for Chapter ${chNumber} review.`)}
-                  className="flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-extrabold text-xs shadow-lg shadow-purple-500/25 hover:opacity-90 transition-all"
-                >
-                  <Zap className="w-4 h-4 text-amber-300 animate-pulse" />
-                  ⚡ Quick-Review Flashcards ({parsedSkillCards.length} Cards)
-                </button>
-                <button
-                  onClick={() => setCheatSheetOpen(true)}
-                  className={`flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border font-extrabold text-xs transition-all ${
-                    dark
-                      ? "bg-purple-500/10 border-purple-500/30 text-purple-300 hover:bg-purple-500/20"
-                      : "bg-purple-50 border-purple-200 text-purple-800 hover:bg-purple-100"
-                  }`}
-                >
-                  <FileText className="w-4 h-4 text-purple-400" />
-                  📄 View & Print Lesson Cheat Sheet
-                </button>
-              </div>
+            {/* Spaced Repetition Flashcards & Offline PDF Action Buttons */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <button
+                onClick={() => alert(`⚡ Spaced Repetition Deck Unlocked! ${parsedSkillCards.length} vocabulary flashcards ready for Chapter ${chNumber} review.`)}
+                className="flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-extrabold text-xs shadow-lg shadow-purple-500/25 hover:opacity-90 transition-all"
+              >
+                <Zap className="w-4 h-4 text-amber-300 animate-pulse" />
+                ⚡ Quick-Review Flashcards ({parsedSkillCards.length} Cards)
+              </button>
+              <button
+                onClick={() => setCheatSheetOpen(true)}
+                className={`flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border font-extrabold text-xs transition-all ${
+                  dark
+                    ? "bg-purple-500/10 border-purple-500/30 text-purple-300 hover:bg-purple-500/20"
+                    : "bg-purple-50 border-purple-200 text-purple-800 hover:bg-purple-100"
+                }`}
+              >
+                <FileText className="w-4 h-4 text-purple-400" />
+                📄 View & Print Lesson Cheat Sheet
+              </button>
             </div>
           </motion.div>
         );
