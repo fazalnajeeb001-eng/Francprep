@@ -95,15 +95,36 @@ function FlashcardsPage() {
 
           for (const v of vocabList) {
             cardCounter++;
-            const fr = typeof v === 'string' ? v : v.french || v.term || v.word || '';
-            const en = typeof v === 'string' ? '' : v.english || v.translation || v.meaning || '';
+            let fr = '';
+            let en = '';
+            let pron = '';
+            let ex = '';
+
+            if (typeof v === 'string') {
+              const parts = v.split(/→|->/);
+              fr = parts[0]?.replace(/^[-•]\s*/, '').trim() || v;
+              en = parts[1]?.trim() || '';
+            } else if (v && typeof v === 'object') {
+              fr = v.french || v.term || v.word || v.expression || '';
+              en = v.english || v.translation || v.meaning || v.definition || '';
+              pron = v.pronunciation || '';
+              ex = v.example || '';
+
+              // If fr contains an arrow "Bonjour → Hello", split it cleanly
+              if (!en && (fr.includes('→') || fr.includes('->'))) {
+                const parts = fr.split(/→|->/);
+                fr = parts[0]?.replace(/^[-•]\s*/, '').trim();
+                en = parts[1]?.trim() || '';
+              }
+            }
+
             if (fr) {
               extracted.push({
                 id: `card-${cardCounter}-${fr}`,
                 french: fr,
-                english: en || 'Target Vocabulary',
-                pronunciation: typeof v === 'object' ? v.pronunciation || '' : '',
-                example: typeof v === 'object' ? v.example || '' : '',
+                english: en || 'Key Expression',
+                pronunciation: pron,
+                example: ex,
                 lesson: lessonOrder,
                 chapter: chNum,
                 chapterTitle: lesson.title || `Lesson ${lessonOrder}`,
