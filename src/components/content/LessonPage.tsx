@@ -2407,48 +2407,52 @@ function WritingSection({ lesson, dark, cardBg, innerBg, textBody, onComplete }:
 function parseCanDoItems(input: any): { statement: string; lessonRef?: string }[] {
   if (!input) return [];
 
-  const rawLines: string[] = [];
-
-  const processStr = (str: string) => {
-    if (!str) return;
-    const lines = str.split(/(?:\r?\n)+|(?=\b\d+[\.\)]\s*(?:\*\*)?I can|\b\d+[\.\)]\s*I can)/gi);
-    for (const l of lines) {
-      const cleanLine = l.trim();
-      if (cleanLine) rawLines.push(cleanLine);
-    }
-  };
-
+  let text = '';
   if (Array.isArray(input)) {
-    input.forEach(item => {
-      if (typeof item === 'string') processStr(item);
-      else if (item && typeof item === 'object') {
-        const stmt = item.statement || item.text || item.content || item.prompt;
-        const ref = item.lessonRef || item.lesson;
-        if (stmt) {
-          rawLines.push(ref ? `${stmt} → ${ref}` : String(stmt));
-        }
+    text = input.map(item => {
+      if (typeof item === 'string') return item;
+      if (item && typeof item === 'object') {
+        const stmt = item.statement || item.text || item.content || item.prompt || '';
+        const ref = item.lessonRef || item.lesson || '';
+        return ref ? `${stmt} → ${ref}` : String(stmt);
       }
-    });
+      return String(item || '');
+    }).join(' ');
   } else if (typeof input === 'string') {
-    processStr(input);
+    text = input;
+  } else {
+    text = String(input);
   }
+
+  // Pre-clean markdown bolding and whitespace
+  text = text.replace(/\*\*/g, '').replace(/[\r\n]+/g, ' ');
 
   const results: { statement: string; lessonRef?: string }[] = [];
 
-  for (const line of rawLines) {
-    const m = line.match(/^(?:\d+[\.\)]\s*)?(?:\*\*)?(.*?)(?:\*\*)?\s*(?:[—\–\->|]\s*|\s+-\s+)(Lesson\s*\d+.*|Lesson\s*.*)$/i);
-    if (m) {
-      const stmt = m[1].replace(/^\d+[\.\)]\s*/, '').replace(/\*+/g, '').trim();
-      const ref = m[2].replace(/\*+/g, '').trim();
-      if (stmt && stmt.length > 3) {
-        results.push({ statement: stmt, lessonRef: ref });
-        continue;
-      }
-    }
+  // Extract all occurrences of "I can ... → Lesson ..." or "... → Lesson ..."
+  const pattern = /(?:(?:\d+[\.\)]\s*)?)(I can [^→]+?|[^→]+?)\s*(?:→|--?|—|–)\s*(Lesson\s*\d+[^→]*|\bLesson\s*[^→]*)/gi;
 
-    const cleanStmt = line.replace(/^\d+[\.\)]\s*/, '').replace(/\*+/g, '').trim();
-    if (cleanStmt && cleanStmt.length > 3 && !cleanStmt.toLowerCase().startsWith('each chapter goal') && !cleanStmt.toLowerCase().startsWith('chapter review')) {
-      results.push({ statement: cleanStmt });
+  let match;
+  while ((match = pattern.exec(text)) !== null) {
+    let stmt = match[1].replace(/^\d+[\.\)]\s*/, '').trim();
+    let ref = match[2].trim();
+
+    stmt = stmt.replace(/^[\s\-–—\.]+|[\s\-–—\.]+$/g, '').trim();
+    ref = ref.replace(/^[\s\-–—\.]+|[\s\-–—\.]+$/g, '').trim();
+
+    if (stmt && stmt.length > 3 && !stmt.toLowerCase().startsWith('each chapter goal') && !stmt.toLowerCase().startsWith('chapter review')) {
+      results.push({ statement: stmt, lessonRef: ref });
+    }
+  }
+
+  // Fallback if regex pattern didn't match (e.g. simple list of statements without → Lesson)
+  if (results.length === 0) {
+    const lines = text.split(/(?=\b\d+[\.\)]\s*I can|\bI can)/gi);
+    for (const line of lines) {
+      const cleanStmt = line.replace(/^\d+[\.\)]\s*/, '').trim();
+      if (cleanStmt && cleanStmt.length > 3 && !cleanStmt.toLowerCase().startsWith('each chapter goal') && !cleanStmt.toLowerCase().startsWith('chapter review')) {
+        results.push({ statement: cleanStmt });
+      }
     }
   }
 
