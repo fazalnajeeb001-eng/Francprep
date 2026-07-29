@@ -448,16 +448,11 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
 
   const setAnswer = useCallback((qId: string, val: string | string[]) => {
     setAnswersState(prev => {
-      const next = { ...prev, [qId]: val };
+      const next = { ...prev, [qId]: val, [String(current)]: val };
       onAnswersChange?.(next);
       return next;
     });
-    setQuestionResults(prev => {
-      const next = { ...prev };
-      delete next[qId];
-      return next;
-    });
-  }, [onAnswersChange]);
+  }, [current, onAnswersChange]);
 
   useEffect(() => {
     if (initialAnswers && Object.keys(initialAnswers).length > 0) {
@@ -484,21 +479,21 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
 
   const qId = q.id || (q as any)._id || String(current);
   const qText = q.text || (q as any).question || '';
-  const userAnswer = answers[qId];
+  const userAnswer = answers[qId] !== undefined ? answers[qId] : answers[String(current)];
 
   // Shuffle ordering items on load if not already answered
   useEffect(() => {
     if (q && q.type === 'ordering') {
       const currentQId = q.id || (q as any)._id || String(current);
-      if (!answers[currentQId] && q.items) {
+      if (!answers[currentQId] && !answers[String(current)] && q.items) {
         const shuffled = [...q.items].sort(() => Math.random() - 0.5);
-        setAnswersState(prev => ({ ...prev, [currentQId]: shuffled }));
+        setAnswersState(prev => ({ ...prev, [currentQId]: shuffled, [String(current)]: shuffled }));
         setAnswer(currentQId, shuffled);
       }
     }
   }, [current, q]);
 
-  const resultForQ = results?.find(r => r.questionId === qId) || questionResults[qId];
+  const resultForQ = results?.find(r => r.questionId === qId || r.questionId === String(current)) || questionResults[qId] || questionResults[String(current)];
 
   // ─── CHECK ANSWER (SINGLE QUESTION) ───
   const handleCheckQuestion = async (targetQId: string) => {
