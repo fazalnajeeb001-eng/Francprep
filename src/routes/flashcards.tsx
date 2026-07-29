@@ -24,26 +24,26 @@ interface VocabCard {
   isUnlocked: boolean;
 }
 
-// Semantic topic categories
+// Semantic topic categories with strict regex boundary matching
 function detectCategory(fr: string, en: string): { name: string; icon: string } {
-  const text = `${fr} ${en}`.toLowerCase();
+  const text = ` ${fr} ${en} `.toLowerCase();
   
-  if (/\b(zero|un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|vingt|trente|quarante|cinquante|soixante|cent|mille|number|digits|quantit)\b/i.test(text)) {
+  if (/\b(un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|vingt|trente|quarante|cinquante|soixante|cent|mille|zero|zéro)\b/i.test(text) || /\b(number|counting|quantity|digits)\b/i.test(text)) {
     return { name: "Numbers & Counting", icon: "🔢" };
   }
-  if (/\b(bonjour|bonsoir|salut|au revoir|merci|enchant|s'il vous pla|pardon|excusez|d'accord|welcome|hello|goodbye|please|thank)\b/i.test(text)) {
+  if (/\b(bonjour|bonsoir|salut|au revoir|merci|enchanté|enchante|s'il vous plaît|s'il vous plait|pardon|excusez|d'accord|bienvenue|goodbye|hello|welcome|thanks)\b/i.test(text)) {
     return { name: "Greetings & Courtesy", icon: "👋" };
   }
-  if (/\b(rouge|bleu|vert|jaune|noir|blanc|rose|violet|orange|gris|marr|color|colour)\b/i.test(text)) {
+  if (/\b(rouge|bleu|vert|jaune|noir|blanc|rose|violet|orange|gris|marron)\b/i.test(text) || /\b(color|colour|visual)\b/i.test(text)) {
     return { name: "Colors & Visuals", icon: "🎨" };
   }
-  if (/\b(maison|appartement|chambre|cuisine|salon|lit|table|chaise|porte|fenetre|rue|ville|house|home|room)\b/i.test(text)) {
+  if (/\b(maison|appartement|chambre|cuisine|salon|lit|table|chaise|porte|fenêtre|fenetre|rue|ville|quartier|home|house|room|street|city)\b/i.test(text)) {
     return { name: "Home & Neighborhood", icon: "🏡" };
   }
-  if (/\b(manger|boir|pain|eau|cafe|thé|restaurant|menu|repas|food|drink|eat)\b/i.test(text)) {
+  if (/\b(manger|boire|pain|eau|café|cafe|thé|the|restaurant|menu|repas|serveur|food|drink|eat|meal|dish)\b/i.test(text)) {
     return { name: "Food & Dining", icon: "🥐" };
   }
-  if (/\b(suis|es|est|sommes|êtes|sont|ai|as|a|avons|avez|ont|aller|faire|pouvoir|vouloir|verb|grammar)\b/i.test(text)) {
+  if (/\b(suis|es|est|sommes|êtes|sont|ai|as|a|avons|avez|ont|aller|faire|pouvoir|vouloir|vendre|acheter|parler|verb)\b/i.test(text)) {
     return { name: "Key Verbs & Grammar", icon: "⚡" };
   }
   return { name: "Essential Vocabulary", icon: "🗣️" };
@@ -101,6 +101,19 @@ function FlashcardsPage() {
     async function loadData() {
       setLoadingData(true);
       try {
+        // Fetch chapters first to build an ObjectId -> Chapter Number lookup map
+        const chMap: Record<string, number> = {};
+        try {
+          const chRes = await apiFetch("/chapters?limit=100");
+          const chJson = await chRes.json();
+          const chList = chJson.data || chJson.chapters || (Array.isArray(chJson) ? chJson : []);
+          chList.forEach((chObj: any) => {
+            if (chObj._id && (chObj.order || chObj.chapterNum)) {
+              chMap[chObj._id.toString()] = Number(chObj.order || chObj.chapterNum);
+            }
+          });
+        } catch {}
+
         const res = await apiFetch("/lessons?limit=200");
         const json = await res.json();
         const lessons = json.data || json.lessons || (Array.isArray(json) ? json : []);
@@ -109,9 +122,11 @@ function FlashcardsPage() {
         let cardCounter = 0;
 
         for (const lesson of lessons) {
-          // Resolve chapter number reliably (supports numbers, 'ch1', ObjectId strings, and title matching)
+          // Resolve chapter number using ObjectId map or string regex
           let chNum = 1;
-          if (typeof lesson.chapter === 'number' && lesson.chapter > 0) {
+          if (lesson.chapterId && chMap[lesson.chapterId.toString()]) {
+            chNum = chMap[lesson.chapterId.toString()];
+          } else if (typeof lesson.chapter === 'number' && lesson.chapter > 0) {
             chNum = lesson.chapter;
           } else if (typeof lesson.chapterId === 'number' && lesson.chapterId > 0) {
             chNum = lesson.chapterId;
@@ -120,9 +135,6 @@ function FlashcardsPage() {
             if (match) chNum = Number(match[1]);
           } else if (typeof lesson.lessonId === 'string') {
             const match = lesson.lessonId.match(/c(\d+)/i) || lesson.lessonId.match(/ch(\d+)/i);
-            if (match) chNum = Number(match[1]);
-          } else if (typeof lesson.title === 'string') {
-            const match = lesson.title.match(/chapter\s*(\d+)/i);
             if (match) chNum = Number(match[1]);
           }
 
