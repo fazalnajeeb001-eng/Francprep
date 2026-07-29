@@ -10,15 +10,27 @@ import { reviewFlashcards, getDueCards, getFlashcardStats, type FlashcardProgres
 export const Route = createFileRoute("/flashcards")({ component: FlashcardsPage });
 
 function collectAllVocab() {
-  return apiFetch("/lessons?limit=100")
+  return apiFetch("/lessons?limit=200")
     .then(res => res.json())
     .then(json => {
-      const lessons = json.data || [];
-      const all: { french: string; english: string; pronunciation: string; example: string; lesson: number }[] = [];
+      const lessons = json.data || json.lessons || (Array.isArray(json) ? json : []);
+      const all: { french: string; english: string; pronunciation: string; example: string; lesson: number; chapter: number }[] = [];
       for (const lesson of lessons) {
-        if (lesson.vocabItems) {
-          for (const v of lesson.vocabItems) {
-            all.push({ french: v.french, english: v.english, pronunciation: v.pronunciation || "", example: v.example || "", lesson: lesson.order || 1 });
+        const vocabList = Array.isArray(lesson.vocabItems) && lesson.vocabItems.length > 0 ? lesson.vocabItems
+          : Array.isArray(lesson.vocabulary) && lesson.vocabulary.length > 0 ? lesson.vocabulary
+          : [];
+        for (const v of vocabList) {
+          const fr = typeof v === 'string' ? v : v.french || v.term || v.word || '';
+          const en = typeof v === 'string' ? '' : v.english || v.translation || v.meaning || '';
+          if (fr) {
+            all.push({
+              french: fr,
+              english: en || 'Key Term',
+              pronunciation: typeof v === 'object' ? v.pronunciation || '' : '',
+              example: typeof v === 'object' ? v.example || '' : '',
+              lesson: lesson.order || lesson.lessonNumber || 1,
+              chapter: lesson.chapterId || lesson.chapter || 1
+            });
           }
         }
       }
@@ -213,9 +225,9 @@ function FlashcardsPage() {
                   ? "bg-purple-500 text-white border-purple-500"
                   : dark ? "border-[#1e2a4a] text-gray-400 hover:border-purple-500/50" : "border-gray-200 text-gray-500 hover:border-purple-400"
               }`}>
-              All ({allVocab.length})
+              All Words ({allVocab.length})
             </button>
-            {[1, 2, 3, 4].map(n => {
+            {Array.from(new Set(allVocab.map(v => v.lesson))).sort((a, b) => a - b).map(n => {
               const count = allVocab.filter(v => v.lesson === n).length;
               return count > 0 ? (
                 <button key={n} onClick={() => filterByLesson(n)}
