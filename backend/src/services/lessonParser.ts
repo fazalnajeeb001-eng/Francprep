@@ -543,19 +543,19 @@ function buildPracticeQuestion(n: number, type: string, promptText: string, less
 
     for (const line of promptText.split('\n')) {
       const trimmed = line.trim();
-      if (!trimmed) continue;
+      if (!trimmed || trimmed === '---' || trimmed === '--' || trimmed.toLowerCase().startsWith('match ')) continue;
 
-      const numMatch = trimmed.match(/^(\d+)\.\s+(.+)/);
-      if (numMatch) {
-        const leftText = numMatch[2];
-        const dashSplit = leftText.split(/\s+[\u2014\u2013-]\s+(?=[a-z]\))/i);
-        if (dashSplit.length >= 2) {
-          leftItems.push(stripMd(dashSplit[0]));
-          const rightPart = dashSplit[1];
-          const rightClean = rightPart.replace(/^[a-z]\)\s*/i, '').trim();
-          rightItems.push(stripMd(rightClean));
-        } else {
-          leftItems.push(stripMd(leftText));
+      const dashSplit = trimmed.split(/\s+[\u2014\u2013\-:]\s+(?=(?:[a-z\d][\.\)]\s*)?[A-Za-zÀ-ÿ])/i);
+      if (dashSplit.length >= 2) {
+        const leftPart = dashSplit[0].replace(/^\d+[\.\)]\s*/, '').replace(/^[*•\-]\s*/, '').trim();
+        leftItems.push(stripMd(leftPart));
+        const rightPart = dashSplit[1];
+        const rightClean = rightPart.replace(/^[a-z\d][\.\)]\s*/i, '').trim();
+        rightItems.push(stripMd(rightClean));
+      } else if (/^\d+[\.\)]/.test(trimmed)) {
+        const leftPart = trimmed.replace(/^\d+[\.\)]\s*/, '').trim();
+        if (leftPart) {
+          leftItems.push(stripMd(leftPart));
         }
       }
     }
@@ -567,10 +567,14 @@ function buildPracticeQuestion(n: number, type: string, promptText: string, less
       });
     }
 
+    if (pairs.length === 0) {
+      pairs.push({ left: 'Item 1', right: 'Option A' });
+    }
+
     return {
       id: `${lessonId}-pe-${n}`,
       type: 'matching',
-      prompt: prompt.replace(/^\s*\d+\.\s*.+/gm, '').trim() || 'Match the items.',
+      prompt: prompt.replace(/^\s*\d+\.\s*.+/gm, '').replace(/^[A-Za-zÀ-ÿ0-9\s"'\(\)]+\s*[—\–\:-]+\s*(?:[a-eA-E0-9][\.\)]\s*)?.+$/gm, '').trim() || 'Match the items.',
       pairs,
       correctAnswer: pairs,
       explanation: '',

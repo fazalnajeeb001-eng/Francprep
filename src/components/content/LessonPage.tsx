@@ -155,7 +155,7 @@ function parseOrderingFromPrompt(text: string): { cleanPrompt: string; items: st
 
 function extractPairsFromText(text: string): { pairs: Record<string, string>; title: string } | null {
   if (!text) return null;
-  if (text.includes('__________') || text.includes('______') || /[a-d]\)\s*/i.test(text)) return null;
+  if (text.includes('__________') || text.includes('______')) return null;
 
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
   const pairs: Record<string, string> = {};
@@ -167,7 +167,7 @@ function extractPairsFromText(text: string): { pairs: Record<string, string>; ti
       continue;
     }
 
-    const m = line.match(/^([^—\-\:\d]+(?:[^\n—\-\:]+)?)\s*[—\-\:]+\s*(?:[a-eA-E0-9][\.\)]\s*)?(.+)$/);
+    const m = line.match(/^([^—\–\:-]+)\s*[—\–\:-]+\s*(?:[a-eA-E0-9][\.\)]\s*)?(.+)$/);
     if (m && m[1].trim() && m[2].trim()) {
       const left = m[1].replace(/^\d+[\.\)]\s*/, '').replace(/^[*•\-]\s*/, '').trim();
       const right = m[2].replace(/^[a-eA-E0-9][\.\)]\s*/, '').trim();
@@ -175,7 +175,7 @@ function extractPairsFromText(text: string): { pairs: Record<string, string>; ti
 
       const isInstructionWord = ['complete', 'fill', 'fill in', 'question', 'select', 'translate', 'instructions', 'matching', 'multiple choice'].some(w => leftLower.startsWith(w));
 
-      if (left && right && left.length < 50 && right.length < 80 && !isInstructionWord) {
+      if (left && right && left.length < 70 && right.length < 100 && !isInstructionWord) {
         pairs[left] = right;
         continue;
       }
@@ -194,14 +194,14 @@ function extractPairsFromText(text: string): { pairs: Record<string, string>; ti
 function parsePairLine(prompt: string): { left: string; right: string } | null {
   if (!prompt) return null;
   const str = String(prompt).replace(/\r?\n+/g, ' ').trim();
-  if (str.includes('__________') || str.includes('______') || /[a-d]\)\s*.*[b-d]\)/i.test(str)) return null;
+  if (str.includes('__________') || str.includes('______')) return null;
 
   const clean = str.replace(/^(?:\d+[\.\)]\s*)?(?:[*•\-]\s*)?(?:Matching|Multiple Choice|Fill in the Blank|Sentence Ordering|Short Answer)?[:\s]*/i, '').trim();
 
   const m = clean.match(/^([A-Za-zÀ-ÿ0-9\s"'\(\)]+?)\s*[—\–\:-]+\s*(?:[a-eA-E0-9][\.\)]\s*)?(.+)$/);
   if (m) {
-    const left = m[1].trim();
-    const right = m[2].trim();
+    const left = m[1].replace(/^\d+[\.\)]\s*/, '').replace(/^[*•\-]\s*/, '').trim();
+    const right = m[2].replace(/^[a-eA-E0-9][\.\)]\s*/, '').trim();
     const leftLower = left.toLowerCase();
 
     const isInstruction = ['complete', 'fill', 'fill in', 'question', 'select', 'translate', 'multiple choice', 'sentence ordering', 'short answer', 'matching', 'match'].some(w => leftLower.startsWith(w));

@@ -748,6 +748,7 @@ function buildPracticeQuestion(n: number, type: string, promptText: string): ILe
 
   if (type === 'matching') {
     // Extract pairs from prompt lines like:
+    // "Un studio — a) An apartment building"
     // "1. Salut — a) Formal daytime greeting"
     // "1. Salut - a) Formal daytime greeting"
     const pairs: { left: string; right: string }[] = [];
@@ -758,15 +759,15 @@ function buildPracticeQuestion(n: number, type: string, promptText: string): ILe
       const trimmed = line.trim();
       if (!trimmed || trimmed === '---' || trimmed === '--' || trimmed.toLowerCase().startsWith('match ')) continue;
 
-      // Split on em-dash (U+2014), en-dash (U+2013), or hyphen followed by a letter)
-      const dashSplit = trimmed.split(/\s+[\u2014\u2013-]\s+(?=[a-z]\))/i);
+      // Split on em-dash (U+2014), en-dash (U+2013), or hyphen/colon
+      const dashSplit = trimmed.split(/\s+[\u2014\u2013\-:]\s+(?=(?:[a-z\d][\.\)]\s*)?[A-Za-zÀ-ÿ])/i);
       if (dashSplit.length >= 2) {
         // Strip leading number if present (e.g. "1. Salut" -> "Salut")
-        const leftPart = dashSplit[0].replace(/^\d+[\.\)]\s*/, '').trim();
+        const leftPart = dashSplit[0].replace(/^\d+[\.\)]\s*/, '').replace(/^[*•\-]\s*/, '').trim();
         leftItems.push(stripMd(leftPart));
         // Extract right side: "a) RightText" → "RightText"
         const rightPart = dashSplit[1];
-        const rightClean = rightPart.replace(/^[a-z]\)\s*/i, '').trim();
+        const rightClean = rightPart.replace(/^[a-z\d][\.\)]\s*/i, '').trim();
         rightItems.push(stripMd(rightClean));
       } else if (/^\d+[\.\)]/.test(trimmed)) {
         const leftPart = trimmed.replace(/^\d+[\.\)]\s*/, '').trim();
@@ -790,7 +791,7 @@ function buildPracticeQuestion(n: number, type: string, promptText: string): ILe
     return {
       id: `pe-${n}`,
       type: 'matching',
-      prompt: prompt.replace(/^\s*\d+\.\s*.+/gm, '').trim() || 'Match the items.',
+      prompt: prompt.replace(/^\s*\d+\.\s*.+/gm, '').replace(/^[A-Za-zÀ-ÿ0-9\s"'\(\)]+\s*[—\–\:-]+\s*(?:[a-eA-E0-9][\.\)]\s*)?.+$/gm, '').trim() || 'Match the items.',
       pairs,
       correctAnswer: pairs,
       explanation: '',
