@@ -1529,42 +1529,59 @@ Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain aprè
           />
         );
 
+      case 'canDoReview':
       case 'review':
       case 'selfReflection':
-        let reflectionItems = (lesson?.selfReflection && lesson.selfReflection.length > 0) ? lesson.selfReflection
+        let reflectionItems = (lesson?.canDoReview && lesson.canDoReview.length > 0) ? lesson.canDoReview
+          : (lesson?.miniReview?.content) ? [lesson.miniReview.content]
+          : (lesson?.selfReflection && lesson.selfReflection.length > 0) ? lesson.selfReflection
           : (lesson?.selfAssessment && lesson.selfAssessment.length > 0) ? lesson.selfAssessment
           : [];
         if (!reflectionItems.length) {
           if (lesson?.objectives && lesson.objectives.length > 0) {
             reflectionItems = lesson.objectives;
-          } else if (lesson?.canDoReview && lesson.canDoReview.length > 0) {
-            reflectionItems = lesson.canDoReview.map((c: any) => typeof c === 'string' ? c : c.statement);
           } else {
             reflectionItems = [
-              "I can name different types of housing.",
-              "I can describe my home in detail.",
-              "I can name rooms and furniture.",
-              "I can discuss looking for an apartment.",
-              "I can compare two homes.",
-              "I can discuss household chores.",
-              "I can combine all of the above in a real conversation.",
+              "I can name different types of housing. → Lesson 1",
+              "I can describe my home in detail. → Lesson 2",
+              "I can name rooms and furniture. → Lesson 3",
+              "I can discuss looking for an apartment. → Lesson 4",
+              "I can compare two homes. → Lesson 5",
+              "I can discuss household chores. → Lesson 6",
+              "I can combine all of the above in a real conversation. → Lesson 7 (Integrated)",
             ];
           }
         }
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 mb-2">
               <Star className="w-5 h-5 text-amber-400" />
-              <h3 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>Self-Reflection</h3>
+              <h3 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>Chapter Review — Mini Review by Can-Do Statement</h3>
             </div>
-            <p className={`text-xs ${textSec} mb-4`}>Consider how well you achieved each of these goals by checking off what you can do.</p>
-            <SelfAssessmentSection items={reflectionItems} dark={dark} title="Self-Reflection" />
+            <p className={`text-xs ${textSec} mb-4`}>Each chapter goal mapped to the specific lesson(s) that taught it. Check off what you can do:</p>
+            <SelfAssessmentSection items={reflectionItems} dark={dark} title="Can-Do Statement Mapping" />
           </div>
         );
 
       case 'completion':
         const chNumber = lesson?.chapterNumber || String(lesson?.chapterId || '1').replace(/\D/g, '') || '1';
         const rawCompContent = lesson?.completionSummary?.content || '';
+
+        let canNowText = "describe housing types, discuss your home in real detail using the complete il y a system and an expanded set of location prepositions, name furniture, navigate apartment-hunting, compare homes, and discuss household chores.";
+        let nextChapterText = `Chapter ${Number(chNumber) + 1} — Neighborhood & Local Services — builds on this foundation, introducing the pronoun y.`;
+
+        if (rawCompContent) {
+          const compLines = rawCompContent.split(/(?=\bChapter\s*\d+|\bComing Next:|\bYou can now:)/gi);
+          if (compLines.length > 0) {
+            const cleanMain = compLines[0].replace(/^(?:Chapter\s*\d+\s*[—\-]\s*Complete\s*)?(?:You can now:?\s*)?/i, '').trim();
+            if (cleanMain) canNowText = cleanMain;
+            if (compLines[1]) {
+              const cleanNext = compLines[1].replace(/^(?:Coming Next:?\s*)?/i, '').trim();
+              if (cleanNext) nextChapterText = cleanNext;
+            }
+          }
+        }
+
         return (
           <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className={`${cardBg} backdrop-blur-lg rounded-2xl p-6 md:p-8 text-center space-y-6 border border-emerald-500/20 shadow-xl`}>
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 p-0.5 mx-auto shadow-lg shadow-emerald-500/25">
@@ -1582,25 +1599,24 @@ Awa : Parfait ! Appelons le propriétaire pour organiser une visite demain aprè
               </h3>
             </div>
 
-            <div className={`p-5 rounded-xl border text-left text-sm leading-relaxed ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"}`}>
-              {rawCompContent ? (
-                <div className={`${textBody} leading-relaxed`}>
-                  {parseExplanationContent(rawCompContent)}
-                </div>
-              ) : (
-                <>
-                  <p className="font-bold text-emerald-400 mb-2">You can now:</p>
-                  <p className={`${textBody} leading-relaxed mb-4`}>
-                    Describe housing types, discuss your home in real detail using the complete <span className="font-semibold text-purple-300">il y a</span> system and an expanded set of location prepositions, name furniture, navigate apartment-hunting, compare homes, and discuss household chores.
-                  </p>
-                  <div className={`p-4 rounded-xl border ${dark ? "bg-purple-500/10 border-purple-500/30 text-purple-200" : "bg-purple-50 border-purple-200 text-purple-900"}`}>
-                    <p className="text-xs font-bold uppercase tracking-wider text-purple-400 mb-1">Coming Next:</p>
-                    <p className="text-xs leading-relaxed font-medium">
-                      <strong className="text-purple-300">Chapter {Number(chNumber) + 1}</strong> builds on this foundation!
-                    </p>
-                  </div>
-                </>
-              )}
+            <div className={`p-5 rounded-xl border text-left text-sm leading-relaxed space-y-4 ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"}`}>
+              <div>
+                <p className="font-bold text-emerald-400 mb-1 flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" /> You can now:
+                </p>
+                <p className={`${textBody} leading-relaxed pl-5`}>
+                  {canNowText}
+                </p>
+              </div>
+
+              <div className={`p-4 rounded-xl border ${dark ? "bg-purple-500/10 border-purple-500/30 text-purple-200" : "bg-purple-50 border-purple-200 text-purple-900"}`}>
+                <p className="text-xs font-bold uppercase tracking-wider text-purple-400 mb-1 flex items-center gap-1.5">
+                  <BookOpen className="w-3.5 h-3.5 text-purple-400" /> Next Milestone:
+                </p>
+                <p className="text-xs leading-relaxed font-medium">
+                  {nextChapterText}
+                </p>
+              </div>
             </div>
           </motion.div>
         );
@@ -2373,45 +2389,107 @@ function WritingSection({ lesson, dark, cardBg, innerBg, textBody, onComplete }:
   );
 }
 
-// ─── Self-Assessment Section ───────────────────────────────────────────────
+function parseCanDoItems(input: any): { statement: string; lessonRef?: string }[] {
+  if (!input) return [];
+
+  const rawLines: string[] = [];
+
+  const processStr = (str: string) => {
+    if (!str) return;
+    const lines = str.split(/(?:\r?\n)+|(?=\b\d+[\.\)]\s*(?:\*\*)?I can|\b\d+[\.\)]\s*I can)/gi);
+    for (const l of lines) {
+      const cleanLine = l.trim();
+      if (cleanLine) rawLines.push(cleanLine);
+    }
+  };
+
+  if (Array.isArray(input)) {
+    input.forEach(item => {
+      if (typeof item === 'string') processStr(item);
+      else if (item && typeof item === 'object') {
+        const stmt = item.statement || item.text || item.content || item.prompt;
+        const ref = item.lessonRef || item.lesson;
+        if (stmt) {
+          rawLines.push(ref ? `${stmt} → ${ref}` : String(stmt));
+        }
+      }
+    });
+  } else if (typeof input === 'string') {
+    processStr(input);
+  }
+
+  const results: { statement: string; lessonRef?: string }[] = [];
+
+  for (const line of rawLines) {
+    const m = line.match(/^(?:\d+[\.\)]\s*)?(?:\*\*)?(.*?)(?:\*\*)?\s*(?:[—\–\->|]\s*|\s+-\s+)(Lesson\s*\d+.*|Lesson\s*.*)$/i);
+    if (m) {
+      const stmt = m[1].replace(/^\d+[\.\)]\s*/, '').replace(/\*+/g, '').trim();
+      const ref = m[2].replace(/\*+/g, '').trim();
+      if (stmt && stmt.length > 3) {
+        results.push({ statement: stmt, lessonRef: ref });
+        continue;
+      }
+    }
+
+    const cleanStmt = line.replace(/^\d+[\.\)]\s*/, '').replace(/\*+/g, '').trim();
+    if (cleanStmt && cleanStmt.length > 3 && !cleanStmt.toLowerCase().startsWith('each chapter goal') && !cleanStmt.toLowerCase().startsWith('chapter review')) {
+      results.push({ statement: cleanStmt });
+    }
+  }
+
+  return results;
+}
 
 function SelfAssessmentSection({ items, dark, title }: { items: any[]; dark: boolean; title: string }) {
   const [checked, setChecked] = useState<Record<number, boolean>>({});
-  const allChecked = items.length > 0 && items.every((_, i) => checked[i]);
+  const parsedItems = useMemo(() => parseCanDoItems(items), [items]);
+  const allChecked = parsedItems.length > 0 && parsedItems.every((_, i) => checked[i]);
   const cardBg = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200";
 
   return (
     <div className={`${cardBg} backdrop-blur-lg border rounded-2xl p-5 transition-colors mt-4`}>
-      <div className="flex items-center gap-3 mb-4">
-        <Award className="w-5 h-5 text-purple-400" />
-        <h3 className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{title}</h3>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <Award className="w-5 h-5 text-purple-400" />
+          <h3 className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>{title}</h3>
+        </div>
+        <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
+          {Object.keys(checked).filter(k => checked[Number(k)]).length} / {parsedItems.length} Can-Do Goals Checked
+        </span>
       </div>
       <div className="space-y-3">
-        {items.map((item, i) => {
-          const itemText = typeof item === 'string' ? item : (item?.statement || item?.text || item?.prompt || String(item));
-          return (
-            <label key={i} className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
-              checked[i]
-                ? (dark ? "bg-purple-500/10 border-purple-500/40 text-white" : "bg-purple-50 border-purple-300 text-purple-900")
-                : (dark ? "bg-[#0c1224] border-[#1e2a4a] text-gray-300 hover:border-purple-500/30" : "bg-gray-50 border-gray-200 text-gray-800 hover:border-gray-300")
-            }`}>
+        {parsedItems.map((item, i) => (
+          <label key={i} className={`flex items-start justify-between gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
+            checked[i]
+              ? (dark ? "bg-purple-500/10 border-purple-500/40 text-white" : "bg-purple-50 border-purple-300 text-purple-900")
+              : (dark ? "bg-[#0c1224] border-[#1e2a4a] text-gray-300 hover:border-purple-500/30" : "bg-gray-50 border-gray-200 text-gray-800 hover:border-gray-300")
+          }`}>
+            <div className="flex items-start gap-3 flex-1 min-w-0">
               <input
                 type="checkbox"
                 checked={checked[i] || false}
                 onChange={() => setChecked({ ...checked, [i]: !checked[i] })}
                 className="w-4 h-4 accent-purple-500 rounded mt-0.5 flex-shrink-0"
               />
-              <div className={`text-xs font-medium leading-relaxed transition-all ${checked[i] ? "line-through opacity-60" : ""}`}>
-                {renderFormattedMarkdown(itemText, dark)}
+              <div className={`text-xs font-semibold leading-relaxed transition-all ${checked[i] ? "line-through opacity-60" : ""}`}>
+                {item.statement}
               </div>
-            </label>
-          );
-        })}
+            </div>
+
+            {item.lessonRef && (
+              <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-lg shrink-0 border transition-all ${
+                dark ? "bg-purple-500/20 text-purple-300 border-purple-500/30" : "bg-purple-100 text-purple-800 border-purple-200"
+              }`}>
+                {item.lessonRef}
+              </span>
+            )}
+          </label>
+        ))}
       </div>
       {allChecked && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 text-center">
-          <p className="text-sm font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Great work! You've completed all self-assessment items.
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 text-center p-3 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20">
+          <p className="text-xs font-bold text-purple-400">
+            🎉 Outstanding! You have mastered all Can-Do statements for this chapter!
           </p>
         </motion.div>
       )}
