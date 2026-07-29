@@ -1514,13 +1514,25 @@ Nora : Je vais visiter demain avec le propriétaire. Vous voulez venir ?
 Awa : Bonne idée ! On peut vérifier s'il y a assez de place pour tes meubles.
 Nora : Merci ! Et après, il faudra faire le ménage avant d'emménager.`;
 
+        const DEFAULT_L7_TRANSLATION = `(At Julien's café, Nora shows her friends a listing.)
+
+Nora: Look at this listing! A furnished studio, available in September.
+Léo: Is there an equipped kitchen?
+Nora: Yes, there's a fridge and a small table. And there's no noise — the neighborhood is very quiet.
+Camille: That's different from my apartment, then! Mine is spacious, but noisy.
+Nora: I'm going to visit tomorrow with the landlord. Do you want to come?
+Awa: Good idea! We can check if there's enough space for your furniture.
+Nora: Thanks! And after, I'll need to clean before moving in.`;
+
         const lesson7Transcript = lesson7?.scene?.text || lesson7?.reading?.text || lesson7?.listening?.transcript || lesson?.scene?.text || lesson?.reading?.text || lesson?.listening?.transcript || DEFAULT_L7_TRANSCRIPT;
+        const lesson7Translation = lesson7?.scene?.translation || lesson7?.reading?.translation || lesson7?.listening?.translation || lesson?.scene?.translation || DEFAULT_L7_TRANSLATION;
 
         return (
           <DELFAssessmentTabbedView
             assessmentData={assessmentData}
             assessmentSections={assessmentSections}
             lesson7Transcript={lesson7Transcript}
+            lesson7Translation={lesson7Translation}
             dark={dark}
             cardBg={cardBg}
             textBody={textBody}
@@ -2502,9 +2514,10 @@ function SelfAssessmentSection({ items, dark, title }: { items: any[]; dark: boo
 
 // ─── DELF Assessment Tabbed View ──────────────────────────────────────────
 
-function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7Transcript, dark, cardBg, textBody, textSec, handleBlockComplete, handleSubmitBlock, speak, lesson }: any) {
+function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7Transcript, lesson7Translation, dark, cardBg, textBody, textSec, handleBlockComplete, handleSubmitBlock, speak, lesson }: any) {
   const [activeTab, setActiveTab] = useState(0);
   const [showTranscript, setShowTranscript] = useState(false);
+  const [showTranslation, setShowTranslation] = useState(false);
 
   const getSectionSkill = (secItem: any, idx: number) => {
     const text = `${secItem?.title || ''} ${secItem?.instructions || ''} ${secItem?.skill || ''} ${secItem?.questions?.[0]?.prompt || ''}`.toLowerCase();
@@ -2710,6 +2723,15 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
                 >
                   {showTranscript ? "Hide Transcript ▴" : "Show Transcript ▾"}
                 </button>
+                <button
+                  type="button"
+                  onClick={() => setShowTranslation(!showTranslation)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                    dark ? "bg-pink-500/20 border-pink-500/30 text-pink-300 hover:bg-pink-500/30" : "bg-pink-100 border-pink-200 text-pink-800 hover:bg-pink-200"
+                  }`}
+                >
+                  {showTranslation ? "Hide English ▴" : "Show English ▾"}
+                </button>
               </div>
             </div>
             {showTranscript && (
@@ -2722,6 +2744,16 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
               ) : (
                 <p className={`text-xs ${textSec} italic`}>Loading Lesson 7 dialogue transcript...</p>
               )
+            )}
+            {showTranslation && (
+              lesson7Translation ? (
+                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
+                  <div className={`p-3 rounded-lg border text-xs leading-relaxed whitespace-pre-line max-h-44 overflow-y-auto ${dark ? "bg-purple-950/40 border-purple-500/30 text-purple-200" : "bg-purple-100/60 border-purple-200 text-purple-900"}`}>
+                    <p className="font-bold text-[11px] mb-1 text-purple-400">English Translation:</p>
+                    {lesson7Translation}
+                  </div>
+                </motion.div>
+              ) : null
             )}
           </div>
         )}
