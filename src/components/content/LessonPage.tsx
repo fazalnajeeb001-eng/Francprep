@@ -3140,7 +3140,7 @@ function LessonCheatSheetModal({ lesson, dark, onClose, speak }: { lesson: any; 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto print:p-0 print:bg-white print:static print:z-auto">
       <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
-        className={`w-full max-w-4xl p-6 rounded-2xl border ${dark ? "bg-[#0c1224] border-purple-500/30 text-white" : "bg-white border-purple-200 text-slate-900"} shadow-2xl space-y-6 print:shadow-none print:border-none print:w-full print:max-w-none print:bg-white print:text-black`}>
+        className={`print-cheat-sheet-modal w-full max-w-4xl p-6 rounded-2xl border ${dark ? "bg-[#0c1224] border-purple-500/30 text-white" : "bg-white border-purple-200 text-slate-900"} shadow-2xl space-y-6 print:shadow-none print:border-none print:w-full print:max-w-none print:bg-white print:text-black`}>
         
         {/* Header */}
         <div className="flex items-center justify-between border-b border-purple-500/20 pb-4 print:pb-2">
