@@ -198,7 +198,8 @@ function parsePairLine(prompt: string): { left: string; right: string } | null {
 
   const clean = str.replace(/^(?:\d+[\.\)]\s*)?(?:[*•\-]\s*)?(?:Matching|Multiple Choice|Fill in the Blank|Sentence Ordering|Short Answer)?[:\s]*/i, '').trim();
 
-  const m = clean.match(/^([A-Za-zÀ-ÿ0-9\s"'\(\)]+?)\s*[—\–\:-]+\s*(?:[a-eA-E0-9][\.\)]\s*)?(.+)$/);
+  // Match any "Left text — Right text" or "Left text — a) Right text" pattern cleanly
+  const m = clean.match(/^([A-Za-zÀ-ÿ0-9\s"'\(\)]+?)\s*[\u2014\u2013\-:]\s*(?:[a-eA-E0-9][\.\)]\s*)?(.+)$/);
   if (m) {
     const left = m[1].replace(/^\d+[\.\)]\s*/, '').replace(/^[*•\-]\s*/, '').trim();
     const right = m[2].replace(/^[a-eA-E0-9][\.\)]\s*/, '').trim();
@@ -206,7 +207,7 @@ function parsePairLine(prompt: string): { left: string; right: string } | null {
 
     const isInstruction = ['complete', 'fill', 'fill in', 'question', 'select', 'translate', 'multiple choice', 'sentence ordering', 'short answer', 'matching', 'match'].some(w => leftLower.startsWith(w));
 
-    if (left && right && left.length > 0 && left.length < 70 && right.length > 0 && !isInstruction) {
+    if (left && right && left.length > 0 && left.length < 80 && right.length > 0 && !isInstruction) {
       return { left, right };
     }
   }
