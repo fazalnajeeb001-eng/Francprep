@@ -350,15 +350,15 @@ function adaptQuestions(questions: LessonQuestion[]) {
     const isBlankQuestion = resolvedText.includes('__________') || resolvedText.includes('______');
 
     let resolvedType = q.type;
-    if (hasOptions && (!resolvedType || resolvedType === 'short_answer' || resolvedType === 'matching')) {
+    if (hasPairs) {
+      resolvedType = 'matching';
+    } else if (hasOptions && (!resolvedType || resolvedType === 'short_answer')) {
       resolvedType = 'multiple_choice';
     } else if (hasItems && (!resolvedType || resolvedType === 'short_answer')) {
       resolvedType = 'ordering';
-    } else if (hasPairs) {
-      resolvedType = 'matching';
     } else if (isBlankQuestion) {
       resolvedType = 'fill_blank';
-    } else if (!resolvedType || resolvedType === 'matching') {
+    } else if (!resolvedType) {
       resolvedType = 'short_answer';
     }
 
