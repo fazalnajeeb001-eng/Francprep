@@ -1582,24 +1582,38 @@ Nora: Thanks! And after, I'll need to clean before moving in.`;
         const chNumber = lesson?.chapterNumber || String(lesson?.chapterId || '1').replace(/\D/g, '') || '1';
         const rawCompContent = lesson?.completionSummary?.content || '';
 
-        let canNowText = "describe housing types, discuss your home in real detail using the complete il y a system and an expanded set of location prepositions, name furniture, navigate apartment-hunting, compare homes, and discuss household chores.";
+        let canNowList: string[] = [
+          "Describe housing types",
+          "Discuss your home in real detail using the complete 'il y a' system and location prepositions",
+          "Name rooms and furniture",
+          "Navigate apartment-hunting conversations",
+          "Compare two homes",
+          "Discuss household chores"
+        ];
         let nextChapterText = `Chapter ${Number(chNumber) + 1} — Neighborhood & Local Services — builds on this foundation, introducing the pronoun y.`;
 
         if (rawCompContent) {
-          const compLines = rawCompContent.split(/(?=\bChapter\s*\d+|\bComing Next:|\bYou can now:)/gi);
-          if (compLines.length > 0) {
-            const cleanMain = compLines[0].replace(/^(?:Chapter\s*\d+\s*[—\-]\s*Complete\s*)?(?:You can now:?\s*)?/i, '').trim();
-            if (cleanMain) canNowText = cleanMain;
-            if (compLines[1]) {
-              const cleanNext = compLines[1].replace(/^(?:Coming Next:?\s*)?/i, '').trim();
-              if (cleanNext) nextChapterText = cleanNext;
+          const nextMatch = rawCompContent.match(/(?:Coming Next:?|Chapter\s*\d+\s*[—\-]\s*[^\.]+(?:builds[^\.]*)?)/i);
+          if (nextMatch) {
+            nextChapterText = nextMatch[0].trim();
+          }
+
+          const youCanMatch = rawCompContent.match(/You can now:?\s*([\s\S]*?)(?:Chapter\s*\d+|Coming Next:|$)/i);
+          if (youCanMatch && youCanMatch[1]) {
+            const rawSkills = youCanMatch[1].trim();
+            const splitSkills = rawSkills
+              .split(/(?:,|\n|•|;)+/)
+              .map(s => s.replace(/^(?:and\s+)?/i, '').replace(/[\.\s]+$/g, '').trim())
+              .filter(s => s.length > 3);
+            if (splitSkills.length > 0) {
+              canNowList = splitSkills.map(s => s.charAt(0).toUpperCase() + s.slice(1));
             }
           }
         }
 
         return (
-          <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className={`${cardBg} backdrop-blur-lg rounded-2xl p-6 md:p-8 text-center space-y-6 border border-emerald-500/20 shadow-xl`}>
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 p-0.5 mx-auto shadow-lg shadow-emerald-500/25">
+          <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className={`${cardBg} backdrop-blur-lg rounded-2xl p-6 md:p-8 text-center space-y-6 border border-emerald-500/30 shadow-2xl`}>
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 p-0.5 mx-auto shadow-lg shadow-emerald-500/25 flex items-center justify-center">
               <div className="w-full h-full bg-[#0c1224] rounded-[14px] flex items-center justify-center">
                 <Trophy className="w-8 h-8 text-emerald-400" />
               </div>
@@ -1607,21 +1621,29 @@ Nora: Thanks! And after, I'll need to clean before moving in.`;
 
             <div>
               <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                Syllabus Milestone
+                Syllabus Milestone Achieved
               </span>
-              <h3 className={`text-2xl font-bold mt-3 ${dark ? "text-white" : "text-gray-900"}`}>
+              <h3 className={`text-2xl md:text-3xl font-extrabold mt-3 ${dark ? "text-white" : "text-gray-900"}`}>
                 Chapter {chNumber} — Complete 🎉
               </h3>
+              <p className={`text-xs mt-1 ${textSec}`}>
+                Congratulations! You have mastered all lessons and skills in this chapter.
+              </p>
             </div>
 
-            <div className={`p-5 rounded-xl border text-left text-sm leading-relaxed space-y-4 ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"}`}>
+            <div className={`p-6 rounded-2xl border text-left space-y-5 ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"}`}>
               <div>
-                <p className="font-bold text-emerald-400 mb-1 flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" /> You can now:
+                <p className="font-bold text-sm text-emerald-400 mb-3 flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" /> You Can Now:
                 </p>
-                <p className={`${textBody} leading-relaxed pl-5`}>
-                  {canNowText}
-                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                  {canNowList.map((skill, i) => (
+                    <div key={i} className={`p-3 rounded-xl border flex items-start gap-2.5 transition-all ${dark ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-200" : "bg-emerald-50 border-emerald-200 text-emerald-900"}`}>
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                      <span className="text-xs font-semibold leading-relaxed">{skill}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className={`p-4 rounded-xl border ${dark ? "bg-purple-500/10 border-purple-500/30 text-purple-200" : "bg-purple-50 border-purple-200 text-purple-900"}`}>
