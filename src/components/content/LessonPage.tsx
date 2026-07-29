@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   CheckCircle2, ArrowLeft, BookOpen, Volume2, Trophy, Award,
   ChevronLeft, ChevronRight, HelpCircle, Star, Headphones, PenTool, Mic,
-  Repeat, Globe, FileText, Languages, Zap, Sparkles, Printer, X
+  Repeat, Globe, FileText, Languages, Zap, Sparkles, Printer, X, RotateCcw
 } from "lucide-react";
 import { WritingSubmission } from "./LearningComponents";
 import { SpeakingDrill } from "./SpeakingDrill";
