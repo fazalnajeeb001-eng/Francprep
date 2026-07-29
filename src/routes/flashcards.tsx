@@ -80,12 +80,25 @@ function FlashcardsPage() {
         let cardCounter = 0;
 
         for (const lesson of lessons) {
-          // Properly resolve lesson number (1-8 within chapter) and chapter number
+          // Resolve chapter number reliably (supports numbers, 'ch1', ObjectId strings, and title matching)
+          let chNum = 1;
+          if (typeof lesson.chapter === 'number' && lesson.chapter > 0) {
+            chNum = lesson.chapter;
+          } else if (typeof lesson.chapterId === 'number' && lesson.chapterId > 0) {
+            chNum = lesson.chapterId;
+          } else if (typeof lesson.chapterId === 'string') {
+            const match = lesson.chapterId.match(/ch(\d+)/i) || lesson.chapterId.match(/chapter[-_\s]*(\d+)/i);
+            if (match) chNum = Number(match[1]);
+          } else if (typeof lesson.lessonId === 'string') {
+            const match = lesson.lessonId.match(/c(\d+)/i) || lesson.lessonId.match(/ch(\d+)/i);
+            if (match) chNum = Number(match[1]);
+          } else if (typeof lesson.title === 'string') {
+            const match = lesson.title.match(/chapter\s*(\d+)/i);
+            if (match) chNum = Number(match[1]);
+          }
+
+          // Resolve lesson order (1-8) within chapter
           const lessonOrder = Number(lesson.order || lesson.lessonNumber || lesson.lessonId?.match(/l(\d+)/i)?.[1] || 1);
-          const chNum = typeof lesson.chapter === 'number' ? lesson.chapter
-            : typeof lesson.chapterId === 'number' ? lesson.chapterId
-            : typeof lesson.chapterId === 'string' && lesson.chapterId.match(/ch(\d+)/i) ? Number(lesson.chapterId.match(/ch(\d+)/i)![1])
-            : 1;
 
           const isChUnlocked = user?.role === 'admin' || completedChapters.has(chNum) || chNum === 1;
 
@@ -110,7 +123,6 @@ function FlashcardsPage() {
               pron = v.pronunciation || '';
               ex = v.example || '';
 
-              // If fr contains an arrow "Bonjour → Hello", split it cleanly
               if (!en && (fr.includes('→') || fr.includes('->'))) {
                 const parts = fr.split(/→|->/);
                 fr = parts[0]?.replace(/^[-•]\s*/, '').trim();
