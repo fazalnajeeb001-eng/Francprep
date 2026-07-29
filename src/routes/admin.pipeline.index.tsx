@@ -216,13 +216,29 @@ function PipelineDashboardPage() {
     setVerifyingAI(false);
   };
 
+  // Protected Publish & Success Verification States
+  const [publishConfirmId, setPublishConfirmId] = useState<string | null>(null);
+  const [publishWordInput, setPublishWordInput] = useState("");
+  const [publishedSuccessItem, setPublishedSuccessItem] = useState<{
+    lessonId: string;
+    title: string;
+    publishedAt: string;
+  } | null>(null);
+
   const handlePublish = async (draftId: string) => {
     setActionStatus({ loading: true, error: "", success: "" });
     try {
       const res = await apiFetch(`/admin/content-pipeline/drafts/${draftId}/publish`, { method: "POST" });
       const json = await res.json();
       if (json.success) {
-        setActionStatus({ loading: false, error: "", success: `Lesson ${json.data.lessonId} published to live catalog!` });
+        setPublishedSuccessItem({
+          lessonId: json.data?.lessonId || selectedDraft?.lessonId || draftId,
+          title: json.data?.title || selectedDraft?.title || "Lesson",
+          publishedAt: new Date().toLocaleTimeString(),
+        });
+        setActionStatus({ loading: false, error: "", success: `Lesson ${json.data?.lessonId || draftId} published to live catalog!` });
+        setPublishConfirmId(null);
+        setPublishWordInput("");
         fetchDrafts();
         setSelectedDraft(null);
       } else {
@@ -789,7 +805,7 @@ function PipelineDashboardPage() {
                         <CheckCircle className="w-3.5 h-3.5" /> Merge into Template
                       </button>
                     ) : (
-                      <button onClick={() => handlePublish(selectedDraft._id)} className="px-3 py-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white text-xs font-bold rounded-lg shadow-md transition-all flex items-center gap-1">
+                      <button onClick={() => setPublishConfirmId(selectedDraft._id)} className="px-3 py-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white text-xs font-bold rounded-lg shadow-md transition-all flex items-center gap-1">
                         <CheckCircle className="w-3.5 h-3.5" /> Publish to Live
                       </button>
                     )}
@@ -1028,6 +1044,94 @@ function PipelineDashboardPage() {
             </div>
           </div>
         )}
+        {/* ─── PROTECTED PUBLISH CONFIRMATION MODAL ─── */}
+        <AnimatePresence>
+          {publishConfirmId && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+              <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+                className={`${card} border border-emerald-500/40 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl`}>
+                <div className="text-center">
+                  <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto mb-3">
+                    <CheckCircle2 className="w-6 h-6 text-emerald-400" />
+                  </div>
+                  <h3 className="text-base font-extrabold text-white">Confirm Production Publish</h3>
+                  <p className="text-xs text-gray-400 mt-1">
+                    You are about to publish this draft directly to the live student catalog.
+                  </p>
+
+                  <div className="mt-3 p-3 bg-black/40 border border-white/10 rounded-xl text-left font-mono text-xs space-y-1">
+                    <p className="text-emerald-400 font-bold">• Target Lesson ID: {selectedDraft?.lessonId || publishConfirmId}</p>
+                    <p className="text-gray-300">• Title: "{selectedDraft?.title || 'Lesson'}"</p>
+                    <p className="text-amber-400 font-semibold">• Target Catalog: Live Production DB</p>
+                  </div>
+
+                  <div className="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-left">
+                    <label className="block text-[11px] font-extrabold text-emerald-400 mb-1.5 text-center">
+                      Type <span className="underline text-white">PUBLISH</span> in all caps to unlock publish button:
+                    </label>
+                    <input
+                      type="text"
+                      value={publishWordInput}
+                      onChange={(e) => setPublishWordInput(e.target.value)}
+                      className="w-full rounded-xl bg-black border border-emerald-500/50 px-3 py-2 text-sm text-white uppercase focus:outline-none font-mono text-center font-extrabold tracking-widest focus:ring-2 focus:ring-emerald-500"
+                      placeholder="PUBLISH"
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-2 pt-2">
+                  <button onClick={() => { setPublishConfirmId(null); setPublishWordInput(""); }} className="flex-1 py-2.5 bg-[#1e2a4a] hover:bg-[#283863] text-gray-300 text-xs font-semibold rounded-xl transition-all">Cancel</button>
+                  <button onClick={() => handlePublish(publishConfirmId)} disabled={publishWordInput !== "PUBLISH"} className="flex-1 py-2.5 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-400 hover:to-green-400 disabled:opacity-30 disabled:cursor-not-allowed text-white text-xs font-extrabold rounded-xl shadow-lg shadow-emerald-500/20 transition-all">Confirm & Deploy Live</button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
+        {/* ─── LIVE PRODUCTION SUCCESS VERIFICATION MODAL ─── */}
+        <AnimatePresence>
+          {publishedSuccessItem && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+                className={`${card} border border-emerald-500/50 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl text-center`}>
+                <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/20">
+                  <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 uppercase tracking-wider">
+                    🟢 Live Production Update Successful
+                  </span>
+                  <h3 className="text-base font-extrabold text-white mt-2">Lesson is Now Live for Students!</h3>
+                  <p className="text-xs text-gray-400 mt-1">
+                    The lesson draft has been compiled, validated, and deployed to live production.
+                  </p>
+                </div>
+
+                <div className="p-3.5 bg-black/50 border border-emerald-500/30 rounded-xl text-left font-mono text-xs space-y-1">
+                  <p className="text-emerald-400 font-bold">• Lesson ID: {publishedSuccessItem.lessonId}</p>
+                  <p className="text-white font-semibold">• Title: "{publishedSuccessItem.title}"</p>
+                  <p className="text-gray-400">• Live Status: 🟢 Active in Student Catalog</p>
+                  <p className="text-gray-400">• Published At: {publishedSuccessItem.publishedAt}</p>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-2 pt-2">
+                  <Link
+                    to={`/lessons/${publishedSuccessItem.lessonId}`}
+                    target="_blank"
+                    className="flex-1 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white text-xs font-extrabold rounded-xl shadow-lg shadow-purple-500/25 flex items-center justify-center gap-1.5 transition-all"
+                  >
+                    <Eye className="w-4 h-4 text-purple-300" /> 👁️ View Live Lesson in Production
+                  </Link>
+                  <button
+                    onClick={() => setPublishedSuccessItem(null)}
+                    className="px-5 py-2.5 bg-[#1e2a4a] hover:bg-[#283863] text-white text-xs font-bold rounded-xl transition-all"
+                  >
+                    Done
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
 
       </div>
     </div>
