@@ -15,26 +15,96 @@ const CEFR_LEVELS = [
 
 export class ChapterService {
   async getChapterById(chapterId: string) {
-    const chapter = await Chapter.findById(chapterId);
+    let chapter: any = null;
+    if (mongoose.Types.ObjectId.isValid(chapterId)) {
+      chapter = await Chapter.findById(chapterId);
+    }
+    if (!chapter) {
+      const numMatch = chapterId.match(/\d+/);
+      const chNum = numMatch ? parseInt(numMatch[0], 10) : 1;
+      const chLevel = (chapterId.match(/^(a0|a1|a2|b1|b2|c1|c2)/i) || [])[1]?.toUpperCase() || 'A1';
+
+      const db = mongoose.connection.db;
+      if (db) {
+        const course = await db.collection('courses').findOne({ level: chLevel });
+        if (course) {
+          const modules = await db.collection('modules').find({ courseId: course._id }).toArray();
+          const modIds = modules.map((m: any) => m._id);
+          chapter = await Chapter.findOne({ moduleId: { $in: modIds }, order: chNum });
+        }
+      }
+    }
+
+    if (!chapter) {
+      chapter = await Chapter.findOne({ order: parseInt((chapterId.match(/\d+/) || ['1'])[0], 10) });
+    }
+
     if (!chapter) {
       throw { status: 404, message: 'Chapter not found' };
     }
 
-    // Query lessons directly by chapterId instead of relying on the Chapter.lessons array
-    // This is more resilient — works even if the Chapter.lessons array is out of sync
-    const lessons = await Lesson.find({ chapterId, isPublished: true })
-      .select('title order skill estimatedDuration isPublished sections objectives grammarTopics')
+    const chObjId = chapter._id;
+    const chNum = chapter.order;
+
+    // Build module level map to ensure strict CEFR level isolation
+    const db = mongoose.connection.db;
+    let chLevel = 'A1';
+    if (db && chapter.moduleId) {
+      const mod = await db.collection('modules').findOne({ _id: chapter.moduleId });
+      if (mod && mod.courseId) {
+        const course = await db.collection('courses').findOne({ _id: mod.courseId });
+        if (course && course.level) chLevel = course.level.toUpperCase();
+      }
+    }
+
+    // Find published lessons strictly belonging to this chapter and level
+    const lessons = await Lesson.find({
+      level: chLevel,
+      $or: [
+        { chapterId: chObjId },
+        { chapterId: chObjId.toString() },
+        { lessonId: { $regex: new RegExp(`^${chLevel.toLowerCase()}-ch${chNum}-l`, 'i') } }
+      ],
+      isPublished: true,
+    })
+      .select('title order level category skill estimatedDuration isPublished sections objectives grammarTopics lessonId')
       .sort({ order: 1 })
       .lean();
 
-    const chapterObj = chapter.toJSON();
+    const chapterObj = typeof chapter.toJSON === 'function' ? chapter.toJSON() : chapter;
     chapterObj.lessons = lessons as any;
+    chapterObj.lessonCount = lessons.length;
     return chapterObj;
   }
 
   async getChapterLessons(chapterId: string) {
-    const lessons = await Lesson.find({ chapterId, isPublished: true })
-      .select('title order skill objectives grammarTopics estimatedDuration')
+    let chapter: any = null;
+    if (mongoose.Types.ObjectId.isValid(chapterId)) {
+      chapter = await Chapter.findById(chapterId);
+    }
+    const chObjId = chapter ? chapter._id : chapterId;
+    const chNum = chapter ? chapter.order : parseInt((chapterId.match(/\d+/) || ['1'])[0], 10);
+
+    const db = mongoose.connection.db;
+    let chLevel = 'A1';
+    if (db && chapter?.moduleId) {
+      const mod = await db.collection('modules').findOne({ _id: chapter.moduleId });
+      if (mod && mod.courseId) {
+        const course = await db.collection('courses').findOne({ _id: mod.courseId });
+        if (course && course.level) chLevel = course.level.toUpperCase();
+      }
+    }
+
+    const lessons = await Lesson.find({
+      level: chLevel,
+      $or: [
+        { chapterId: chObjId },
+        { chapterId: chObjId.toString() },
+        { lessonId: { $regex: new RegExp(`^${chLevel.toLowerCase()}-ch${chNum}-l`, 'i') } }
+      ],
+      isPublished: true,
+    })
+      .select('title order skill objectives grammarTopics estimatedDuration lessonId')
       .sort({ order: 1 });
     return lessons;
   }
