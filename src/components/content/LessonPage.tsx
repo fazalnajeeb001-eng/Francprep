@@ -3131,10 +3131,58 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
 // ─── Lesson Cheat Sheet Modal Component ─────────────────────────────────────
 
 function LessonCheatSheetModal({ lesson, dark, onClose, speak }: { lesson: any; dark: boolean; onClose: () => void; speak: (txt: string) => void }) {
-  const vocabItems = Array.isArray(lesson?.vocabItems) && lesson.vocabItems.length > 0 ? lesson.vocabItems
-    : Array.isArray(lesson?.vocabulary) ? lesson.vocabulary : [];
+  const [chapterVocab, setChapterVocab] = useState<any[]>([]);
+  const [chapterGrammar, setChapterGrammar] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const grammarRules = lesson?.grammar?.rules || [];
+  useEffect(() => {
+    let isMounted = true;
+    async function loadChapterData() {
+      const chNum = Number(lesson?.chapterId || lesson?.chapter || 1);
+      try {
+        const res = await apiFetch("/lessons?limit=200");
+        const json = await res.json();
+        const allLessons = json.data || json.lessons || (Array.isArray(json) ? json : []);
+        const chLessons = allLessons.filter((l: any) => {
+          const lCh = typeof l.chapter === 'number' ? l.chapter
+            : typeof l.chapterId === 'number' ? l.chapterId
+            : typeof l.chapterId === 'string' && l.chapterId.match(/ch(\d+)/i) ? Number(l.chapterId.match(/ch(\d+)/i)![1])
+            : 1;
+          return lCh === chNum;
+        });
+
+        const vList: any[] = [];
+        const gList: any[] = [];
+
+        for (const l of chLessons) {
+          const v = Array.isArray(l.vocabItems) && l.vocabItems.length > 0 ? l.vocabItems
+            : Array.isArray(l.vocabulary) && l.vocabulary.length > 0 ? l.vocabulary : [];
+          vList.push(...v);
+
+          if (Array.isArray(l.grammar?.rules)) {
+            gList.push(...l.grammar.rules);
+          } else if (l.grammar && typeof l.grammar === 'object') {
+            gList.push(l.grammar);
+          }
+        }
+
+        if (isMounted) {
+          setChapterVocab(vList.length > 0 ? vList : (lesson?.vocabItems || lesson?.vocabulary || []));
+          setChapterGrammar(gList.length > 0 ? gList : (lesson?.grammar?.rules || []));
+        }
+      } catch (err) {
+        if (isMounted) {
+          setChapterVocab(lesson?.vocabItems || lesson?.vocabulary || []);
+          setChapterGrammar(lesson?.grammar?.rules || []);
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+    loadChapterData();
+    return () => { isMounted = false; };
+  }, [lesson]);
+
   const sceneText = lesson?.scene?.text || lesson?.reading?.text || lesson?.listening?.transcript || '';
 
   return (
@@ -3150,9 +3198,9 @@ function LessonCheatSheetModal({ lesson, dark, onClose, speak }: { lesson: any; 
             </div>
             <div>
               <span className="text-[10px] font-extrabold uppercase tracking-widest text-purple-400">
-                French {lesson?.level || 'A1'} • Quick Reference Cheat Sheet
+                French {lesson?.level || 'A1'} • Chapter Study Cheat Sheet
               </span>
-              <h2 className="text-xl font-extrabold text-white print:text-black mt-0.5">{lesson?.title || 'Lesson Review'}</h2>
+              <h2 className="text-xl font-extrabold text-white print:text-black mt-0.5">{lesson?.title || 'Chapter Summary'}</h2>
             </div>
           </div>
 
@@ -3172,70 +3220,80 @@ function LessonCheatSheetModal({ lesson, dark, onClose, speak }: { lesson: any; 
           </div>
         </div>
 
-        {/* Section 1: Key Vocabulary Table */}
-        {vocabItems.length > 0 && (
-          <div className="space-y-3">
-            <h3 className="text-sm font-bold flex items-center gap-2 text-purple-400 print:text-black">
-              <span>🗣️</span> Essential Vocabulary ({vocabItems.length} Terms)
-            </h3>
-            <div className={`rounded-xl border overflow-hidden ${dark ? "bg-black/30 border-purple-500/20" : "bg-purple-50/50 border-purple-200"}`}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 p-3">
-                {vocabItems.map((v: any, idx: number) => {
-                  const fr = typeof v === 'string' ? v : v.french || v.term || v.word || '';
-                  const en = typeof v === 'string' ? '' : v.english || v.translation || v.meaning || '';
-                  return (
-                    <div key={idx} className={`p-2.5 rounded-lg border text-xs flex items-center justify-between gap-2 ${dark ? "bg-[#101828] border-purple-500/20 text-gray-200" : "bg-white border-purple-100 text-gray-800"}`}>
-                      <div>
-                        <span className="font-extrabold text-purple-300 print:text-black">{fr}</span>
-                        {en && <span className="block text-[10px] text-gray-400 print:text-gray-600">{en}</span>}
-                      </div>
-                      <button onClick={() => speak(fr)} className="p-1 rounded hover:bg-purple-500/20 text-purple-400 print:hidden">
-                        <Volume2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+        {loading ? (
+          <div className="py-12 text-center space-y-3">
+            <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+              className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full mx-auto" />
+            <p className="text-xs text-gray-400 font-medium">Generating complete chapter study sheet...</p>
           </div>
-        )}
-
-        {/* Section 2: Grammar & Formulas */}
-        {grammarRules.length > 0 && (
-          <div className="space-y-3">
-            <h3 className="text-sm font-bold flex items-center gap-2 text-pink-400 print:text-black">
-              <span>📐</span> Grammar Rules & Formulas
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {grammarRules.map((r: any, idx: number) => (
-                <div key={idx} className={`p-3.5 rounded-xl border space-y-1.5 text-xs ${dark ? "bg-[#101828] border-pink-500/20" : "bg-pink-50/30 border-pink-200"}`}>
-                  <p className="font-extrabold text-pink-300 print:text-black">{r.rule || r.title || `Rule ${idx + 1}`}</p>
-                  {r.formula && (
-                    <div className="p-2 rounded bg-purple-950/40 border border-purple-500/30 font-mono text-[11px] text-purple-300 print:bg-gray-100 print:text-black print:border-gray-300">
-                      {r.formula}
-                    </div>
-                  )}
-                  {r.examples && (
-                    <div className="text-[11px] text-gray-300 print:text-gray-700 italic">
-                      Examples: {Array.isArray(r.examples) ? r.examples.join(' • ') : r.examples}
-                    </div>
-                  )}
+        ) : (
+          <>
+            {/* Section 1: Key Vocabulary Table */}
+            {chapterVocab.length > 0 && (
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold flex items-center gap-2 text-purple-400 print:text-black">
+                  <span>🗣️</span> Essential Vocabulary ({chapterVocab.length} Terms)
+                </h3>
+                <div className={`rounded-xl border overflow-hidden ${dark ? "bg-black/30 border-purple-500/20" : "bg-purple-50/50 border-purple-200"}`}>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 p-3">
+                    {chapterVocab.map((v: any, idx: number) => {
+                      const fr = typeof v === 'string' ? v : v.french || v.term || v.word || '';
+                      const en = typeof v === 'string' ? '' : v.english || v.translation || v.meaning || '';
+                      return (
+                        <div key={idx} className={`p-2.5 rounded-lg border text-xs flex items-center justify-between gap-2 ${dark ? "bg-[#101828] border-purple-500/20 text-gray-200" : "bg-white border-purple-100 text-gray-800"}`}>
+                          <div>
+                            <span className="font-extrabold text-purple-300 print:text-black">{fr}</span>
+                            {en && <span className="block text-[10px] text-gray-400 print:text-gray-600">{en}</span>}
+                          </div>
+                          <button onClick={() => speak(fr)} className="p-1 rounded hover:bg-purple-500/20 text-purple-400 print:hidden">
+                            <Volume2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
+              </div>
+            )}
 
-        {/* Section 3: Key Conversation Scene Text */}
-        {sceneText && (
-          <div className="space-y-2">
-            <h3 className="text-sm font-bold flex items-center gap-2 text-emerald-400 print:text-black">
-              <span>💬</span> Key Conversation Expressions
-            </h3>
-            <div className={`p-3.5 rounded-xl border text-xs leading-relaxed whitespace-pre-line max-h-48 overflow-y-auto ${dark ? "bg-emerald-950/20 border-emerald-500/20 text-emerald-200" : "bg-emerald-50 border-emerald-200 text-emerald-900"} print:max-h-none print:overflow-visible`}>
-              {sceneText}
-            </div>
-          </div>
+            {/* Section 2: Grammar & Formulas */}
+            {chapterGrammar.length > 0 && (
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold flex items-center gap-2 text-pink-400 print:text-black">
+                  <span>📐</span> Grammar Rules & Formulas ({chapterGrammar.length} Rules)
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {chapterGrammar.map((r: any, idx: number) => (
+                    <div key={idx} className={`p-3.5 rounded-xl border space-y-1.5 text-xs ${dark ? "bg-[#101828] border-pink-500/20" : "bg-pink-50/30 border-pink-200"}`}>
+                      <p className="font-extrabold text-pink-300 print:text-black">{r.rule || r.title || `Rule ${idx + 1}`}</p>
+                      {r.formula && (
+                        <div className="p-2 rounded bg-purple-950/40 border border-purple-500/30 font-mono text-[11px] text-purple-300 print:bg-gray-100 print:text-black print:border-gray-300">
+                          {r.formula}
+                        </div>
+                      )}
+                      {r.examples && (
+                        <div className="text-[11px] text-gray-300 print:text-gray-700 italic">
+                          Examples: {Array.isArray(r.examples) ? r.examples.join(' • ') : r.examples}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Section 3: Key Conversation Scene Text */}
+            {sceneText && (
+              <div className="space-y-2">
+                <h3 className="text-sm font-bold flex items-center gap-2 text-emerald-400 print:text-black">
+                  <span>💬</span> Key Conversation Expressions
+                </h3>
+                <div className={`p-3.5 rounded-xl border text-xs leading-relaxed whitespace-pre-line max-h-48 overflow-y-auto ${dark ? "bg-emerald-950/20 border-emerald-500/20 text-emerald-200" : "bg-emerald-50 border-emerald-200 text-emerald-900"} print:max-h-none print:overflow-visible`}>
+                  {sceneText}
+                </div>
+              </div>
+            )}
+          </>
         )}
 
         <div className="pt-2 text-center text-[10px] text-gray-500 print:text-black border-t border-purple-500/20">
@@ -3251,46 +3309,65 @@ function LessonCheatSheetModal({ lesson, dark, onClose, speak }: { lesson: any; 
 function ChapterFlashcardModal({ lesson, dark, onClose, speak }: { lesson: any; dark: boolean; onClose: () => void; speak: (txt: string) => void }) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [cards, setCards] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Extract vocabulary terms cleanly from all possible payload properties
-  let rawVocab = Array.isArray(lesson?.vocabItems) && lesson.vocabItems.length > 0 ? lesson.vocabItems
-    : Array.isArray(lesson?.vocabulary) && lesson.vocabulary.length > 0 ? lesson.vocabulary
-    : Array.isArray(lesson?.vocab) && lesson.vocab.length > 0 ? lesson.vocab
-    : Array.isArray(lesson?.keyTerms) && lesson.keyTerms.length > 0 ? lesson.keyTerms
-    : [];
+  useEffect(() => {
+    let isMounted = true;
+    async function loadFlashcards() {
+      const chNum = Number(lesson?.chapterId || lesson?.chapter || 1);
+      try {
+        const res = await apiFetch("/lessons?limit=200");
+        const json = await res.json();
+        const allLessons = json.data || json.lessons || (Array.isArray(json) ? json : []);
+        const chLessons = allLessons.filter((l: any) => {
+          const lCh = typeof l.chapter === 'number' ? l.chapter
+            : typeof l.chapterId === 'number' ? l.chapterId
+            : typeof l.chapterId === 'string' && l.chapterId.match(/ch(\d+)/i) ? Number(l.chapterId.match(/ch(\d+)/i)![1])
+            : 1;
+          return lCh === chNum;
+        });
 
-  // Transform raw items into clean French & English flashcard objects
-  const cards = rawVocab.map((v: any) => {
-    if (typeof v === 'string') {
-      const parts = v.split('→');
-      return {
-        french: parts[0]?.replace(/^[-•]\s*/, '').trim() || v,
-        english: parts[1]?.trim() || 'Key Term'
-      };
-    }
-    return {
-      french: v.french || v.term || v.word || v.expression || v.phrase || v.statement || '',
-      english: v.english || v.translation || v.meaning || v.definition || v.lessonRef || ''
-    };
-  }).filter((c: any) => Boolean(c.french && c.french.trim()));
+        const cardList: any[] = [];
+        for (const l of chLessons) {
+          const vList = Array.isArray(l.vocabItems) && l.vocabItems.length > 0 ? l.vocabItems
+            : Array.isArray(l.vocabulary) && l.vocabulary.length > 0 ? l.vocabulary : [];
 
-  // Fallback to Objectives / Can-Do items if the lesson doesn't have an explicit vocab list (e.g. Capstone L8)
-  if (cards.length === 0) {
-    const rawSummary = lesson?.completionSummary?.content || '';
-    if (rawSummary) {
-      const lines = rawSummary.split(/\n+/).flatMap((l: string) => l.split(/(?=\s*[-•]\s+)/)).map((l: string) => l.trim()).filter(Boolean);
-      lines.forEach((l: string) => {
-        const clean = l.replace(/^[-•]\s*/, '').trim();
-        if (clean && !clean.toLowerCase().includes('chapter') && !clean.toLowerCase().includes('next milestone')) {
-          const parts = clean.split('→');
-          cards.push({
-            french: parts[0]?.trim() || clean,
-            english: parts[1]?.trim() || 'Chapter Objective'
-          });
+          for (const v of vList) {
+            const fr = typeof v === 'string' ? v : v.french || v.term || v.word || '';
+            const en = typeof v === 'string' ? '' : v.english || v.translation || v.meaning || '';
+            if (fr) {
+              cardList.push({
+                french: fr,
+                english: en || 'Target Vocabulary',
+                pronunciation: typeof v === 'object' ? v.pronunciation || '' : '',
+                example: typeof v === 'object' ? v.example || '' : ''
+              });
+            }
+          }
         }
-      });
+
+        if (isMounted) {
+          setCards(cardList.length > 0 ? cardList : [
+            { french: "Bonjour ! Comment allez-vous ?", english: "Hello! How are you? (Formal)" },
+            { french: "Enchanté(e)", english: "Pleased to meet you" },
+            { french: "S'il vous plaît", english: "Please (Formal)" }
+          ]);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setCards([
+            { french: "Bonjour !", english: "Hello!" },
+            { french: "Merci beaucoup", english: "Thank you very much" }
+          ]);
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
     }
-  }
+    loadFlashcards();
+    return () => { isMounted = false; };
+  }, [lesson]);
 
   const currentCard = cards[currentIdx] || { french: "Aucune carte disponible", english: "No vocabulary terms found for this lesson deck." };
 
