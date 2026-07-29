@@ -619,12 +619,16 @@ function parsePracticeExercises(text: string): ILessonQuestion[] {
 
     // Question type header: **1. Multiple Choice** or "1. Multiple Choice Why does Nora..." or "2. Communicative Practice: ..."
     const tm = t.match(/^(?:\*\*)?(\d+)[\.\)]\s*(?:(Multiple Choice|Matching|Fill in the Blank|Fill Blank|Sentence Ordering|Ordering|Short Answer|Translation|True or False|Communicative Practice)(?::?\*\*|:|\s)?)?\s*(.*)$/i);
-    if (tm && (tm[2] || tm[3])) {
+    
+    // Check if line is a sub-item of matching (e.g. "Un studio — a) An apartment building")
+    const isMatchingSubItem = curType === 'matching' && Boolean(t.match(/^[A-Za-zÀ-ÿ0-9\s"'\(\)]+\s*[—\–\:-]+\s*(?:[a-eA-E0-9][\.\)]\s*)?.+$/));
+
+    if (tm && (tm[2] || tm[3]) && !isMatchingSubItem) {
       const explicitType = tm[2];
       const inlinePrompt = tm[3]?.trim();
 
       // If it's a new numbered question (or explicit type)
-      if (explicitType || tm[1]) {
+      if (explicitType || (tm[1] && explicitType)) {
         // Push previous pending question
         if (curPromptLines.length > 0 && curType) {
           n++;
@@ -637,13 +641,6 @@ function parsePracticeExercises(text: string): ILessonQuestion[] {
             .replace('fill_in_the_blank', 'fill_blank')
             .replace('sentence_ordering', 'ordering')
             .replace('communicative_practice', 'short_answer');
-        } else {
-          // Infer type from content
-          if (inlinePrompt.match(/[a-d]\)\s*/i)) {
-            curType = 'multiple_choice';
-          } else {
-            curType = 'short_answer';
-          }
         }
 
         if (inlinePrompt) {
