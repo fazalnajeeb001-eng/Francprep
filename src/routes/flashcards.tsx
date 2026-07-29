@@ -16,6 +16,7 @@ interface VocabCard {
   english: string;
   pronunciation: string;
   example: string;
+  lesson: number;
   chapter: number;
   chapterTitle: string;
   isUnlocked: boolean;
@@ -79,7 +80,13 @@ function FlashcardsPage() {
         let cardCounter = 0;
 
         for (const lesson of lessons) {
-          const chNum = Number(lesson.chapterId || lesson.chapter || lesson.order || 1);
+          // Properly resolve lesson number (1-8 within chapter) and chapter number
+          const lessonOrder = Number(lesson.order || lesson.lessonNumber || lesson.lessonId?.match(/l(\d+)/i)?.[1] || 1);
+          const chNum = typeof lesson.chapter === 'number' ? lesson.chapter
+            : typeof lesson.chapterId === 'number' ? lesson.chapterId
+            : typeof lesson.chapterId === 'string' && lesson.chapterId.match(/ch(\d+)/i) ? Number(lesson.chapterId.match(/ch(\d+)/i)![1])
+            : 1;
+
           const isChUnlocked = user?.role === 'admin' || completedChapters.has(chNum) || chNum === 1;
 
           const vocabList = Array.isArray(lesson.vocabItems) && lesson.vocabItems.length > 0 ? lesson.vocabItems
@@ -97,8 +104,9 @@ function FlashcardsPage() {
                 english: en || 'Target Vocabulary',
                 pronunciation: typeof v === 'object' ? v.pronunciation || '' : '',
                 example: typeof v === 'object' ? v.example || '' : '',
+                lesson: lessonOrder,
                 chapter: chNum,
-                chapterTitle: lesson.title || `Chapter ${chNum}`,
+                chapterTitle: lesson.title || `Lesson ${lessonOrder}`,
                 isUnlocked: isChUnlocked
               });
             }
@@ -106,7 +114,6 @@ function FlashcardsPage() {
         }
 
         setAllCards(extracted);
-        // Only load unlocked cards by default
         const unlockedOnly = extracted.filter(c => c.isUnlocked);
         setActiveCards(unlockedOnly.length > 0 ? unlockedOnly : extracted);
       } catch (err) {
@@ -126,21 +133,33 @@ function FlashcardsPage() {
     loadData();
   }, [user]);
 
-  // Filter cards by selected chapter
-  const handleSelectChapter = (ch: number | 'all') => {
+  const filterCards = (ch: number | 'all', lsn: number | 'all') => {
     setSelectedChapter(ch);
+    setSelectedLesson(lsn);
     setIsFlipped(false);
     setShowRating(false);
     setCurrentIdx(0);
-    setReviewMode("all");
 
-    if (ch === 'all') {
-      const unlocked = allCards.filter(c => c.isUnlocked);
-      setActiveCards(unlocked.length > 0 ? unlocked : allCards);
+    let filtered = allCards;
+    if (ch !== 'all') {
+      filtered = filtered.filter(c => c.chapter === ch);
     } else {
-      const filtered = allCards.filter(c => c.chapter === ch);
-      setActiveCards(filtered);
+      filtered = filtered.filter(c => c.isUnlocked);
     }
+
+    if (lsn !== 'all') {
+      filtered = filtered.filter(c => c.lesson === lsn);
+    }
+
+    setActiveCards(filtered.length > 0 ? filtered : allCards);
+  };
+
+  const handleSelectChapter = (ch: number | 'all') => {
+    filterCards(ch, 'all');
+  };
+
+  const handleSelectLesson = (lsn: number | 'all') => {
+    filterCards(selectedChapter, lsn);
   };
 
   const handleShuffle = () => {
@@ -297,6 +316,41 @@ function FlashcardsPage() {
             })}
           </div>
         </div>
+
+        {/* Lesson Sub-Filter Tabs */}
+        {selectedChapter !== 'all' && (
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            <span className={`text-[11px] font-bold uppercase tracking-wider shrink-0 ${dark ? "text-gray-400" : "text-gray-600"}`}>
+              Lesson Filter:
+            </span>
+            <button
+              onClick={() => handleSelectLesson('all')}
+              className={`px-3 py-1 rounded-lg text-xs font-bold border transition-all whitespace-nowrap ${
+                selectedLesson === 'all'
+                  ? "bg-purple-500 text-white border-purple-500"
+                  : dark ? "bg-[#101828] border-purple-500/20 text-gray-400 hover:text-white" : "bg-white border-gray-200 text-gray-600 hover:bg-purple-50"
+              }`}
+            >
+              All Chapter {selectedChapter} ({allCards.filter(c => c.chapter === selectedChapter).length})
+            </button>
+            {Array.from(new Set(allCards.filter(c => c.chapter === selectedChapter).map(c => c.lesson))).sort((a, b) => a - b).map((lsnNum) => {
+              const lsnCardsCount = allCards.filter(c => c.chapter === selectedChapter && c.lesson === lsnNum).length;
+              return (
+                <button
+                  key={lsnNum}
+                  onClick={() => handleSelectLesson(lsnNum)}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold border transition-all whitespace-nowrap ${
+                    selectedLesson === lsnNum
+                      ? "bg-purple-500 text-white border-purple-500"
+                      : dark ? "bg-[#101828] border-purple-500/20 text-gray-400 hover:text-white" : "bg-white border-gray-200 text-gray-600 hover:bg-purple-50"
+                  }`}
+                >
+                  Lesson {lsnNum} ({lsnCardsCount})
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         {/* Progress Tracker Bar */}
         {activeCards.length > 0 && (
