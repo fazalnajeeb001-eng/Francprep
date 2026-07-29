@@ -16,10 +16,37 @@ interface VocabCard {
   english: string;
   pronunciation: string;
   example: string;
+  category: string;
+  categoryIcon: string;
   lesson: number;
   chapter: number;
   chapterTitle: string;
   isUnlocked: boolean;
+}
+
+// Semantic topic categories
+function detectCategory(fr: string, en: string): { name: string; icon: string } {
+  const text = `${fr} ${en}`.toLowerCase();
+  
+  if (/\b(zero|un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|vingt|trente|quarante|cinquante|soixante|cent|mille|number|digits|quantit)\b/i.test(text)) {
+    return { name: "Numbers & Counting", icon: "🔢" };
+  }
+  if (/\b(bonjour|bonsoir|salut|au revoir|merci|enchant|s'il vous pla|pardon|excusez|d'accord|welcome|hello|goodbye|please|thank)\b/i.test(text)) {
+    return { name: "Greetings & Courtesy", icon: "👋" };
+  }
+  if (/\b(rouge|bleu|vert|jaune|noir|blanc|rose|violet|orange|gris|marr|color|colour)\b/i.test(text)) {
+    return { name: "Colors & Visuals", icon: "🎨" };
+  }
+  if (/\b(maison|appartement|chambre|cuisine|salon|lit|table|chaise|porte|fenetre|rue|ville|house|home|room)\b/i.test(text)) {
+    return { name: "Home & Neighborhood", icon: "🏡" };
+  }
+  if (/\b(manger|boir|pain|eau|cafe|thé|restaurant|menu|repas|food|drink|eat)\b/i.test(text)) {
+    return { name: "Food & Dining", icon: "🥐" };
+  }
+  if (/\b(suis|es|est|sommes|êtes|sont|ai|as|a|avons|avez|ont|aller|faire|pouvoir|vouloir|verb|grammar)\b/i.test(text)) {
+    return { name: "Key Verbs & Grammar", icon: "⚡" };
+  }
+  return { name: "Essential Vocabulary", icon: "🗣️" };
 }
 
 const RATING_LABELS = [
@@ -51,6 +78,8 @@ function FlashcardsPage() {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [selectedChapter, setSelectedChapter] = useState<number | 'all'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string | 'all'>('all');
+  const [selectedLesson, setSelectedLesson] = useState<number | 'all'>('all');
   const [dueCards, setDueCards] = useState<FlashcardProgress[]>([]);
   const [showRating, setShowRating] = useState(false);
   const [stats, setStats] = useState({ total: 0, due: 0, mastered: 0 });
@@ -131,12 +160,15 @@ function FlashcardsPage() {
             }
 
             if (fr) {
+              const catInfo = detectCategory(fr, en);
               extracted.push({
                 id: `card-${cardCounter}-${fr}`,
                 french: fr,
                 english: en || 'Key Expression',
                 pronunciation: pron,
                 example: ex,
+                category: catInfo.name,
+                categoryIcon: catInfo.icon,
                 lesson: lessonOrder,
                 chapter: chNum,
                 chapterTitle: lesson.title || `Lesson ${lessonOrder}`,
@@ -166,33 +198,46 @@ function FlashcardsPage() {
     loadData();
   }, [user]);
 
-  const filterCards = (ch: number | 'all', lsn: number | 'all') => {
+  const filterCards = (ch: number | 'all', lsn: number | 'all', cat: string | 'all') => {
     setSelectedChapter(ch);
     setSelectedLesson(lsn);
+    setSelectedCategory(cat);
     setIsFlipped(false);
     setShowRating(false);
     setCurrentIdx(0);
 
     let filtered = allCards;
+
+    // Filter by Chapter
     if (ch !== 'all') {
       filtered = filtered.filter(c => c.chapter === ch);
     } else {
       filtered = filtered.filter(c => c.isUnlocked);
     }
 
+    // Filter by Lesson
     if (lsn !== 'all') {
       filtered = filtered.filter(c => c.lesson === lsn);
     }
 
-    setActiveCards(filtered.length > 0 ? filtered : allCards);
+    // Filter by Semantic Topic Category
+    if (cat !== 'all') {
+      filtered = filtered.filter(c => c.category === cat);
+    }
+
+    setActiveCards(filtered.length > 0 ? filtered : []);
   };
 
   const handleSelectChapter = (ch: number | 'all') => {
-    filterCards(ch, 'all');
+    filterCards(ch, 'all', 'all');
   };
 
   const handleSelectLesson = (lsn: number | 'all') => {
-    filterCards(selectedChapter, lsn);
+    filterCards(selectedChapter, lsn, selectedCategory);
+  };
+
+  const handleSelectCategory = (cat: string | 'all') => {
+    filterCards(selectedChapter, 'all', cat);
   };
 
   const handleShuffle = () => {
@@ -350,40 +395,45 @@ function FlashcardsPage() {
           </div>
         </div>
 
-        {/* Lesson Sub-Filter Tabs */}
-        {selectedChapter !== 'all' && (
-          <div className="flex items-center gap-2 overflow-x-auto pb-1">
-            <span className={`text-[11px] font-bold uppercase tracking-wider shrink-0 ${dark ? "text-gray-400" : "text-gray-600"}`}>
-              Lesson Filter:
-            </span>
+        {/* Topic Category Filter Chips */}
+        <div className="space-y-2">
+          <span className={`text-[11px] font-bold uppercase tracking-wider block ${dark ? "text-purple-400" : "text-purple-700"}`}>
+            Topic Category Vaults:
+          </span>
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
             <button
-              onClick={() => handleSelectLesson('all')}
-              className={`px-3 py-1 rounded-lg text-xs font-bold border transition-all whitespace-nowrap ${
-                selectedLesson === 'all'
-                  ? "bg-purple-500 text-white border-purple-500"
-                  : dark ? "bg-[#101828] border-purple-500/20 text-gray-400 hover:text-white" : "bg-white border-gray-200 text-gray-600 hover:bg-purple-50"
+              onClick={() => handleSelectCategory('all')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-extrabold border transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                selectedCategory === 'all'
+                  ? "bg-purple-600 text-white border-purple-500 shadow-md"
+                  : dark ? "bg-[#101828] border-purple-500/20 text-gray-300 hover:bg-purple-500/10" : "bg-white border-purple-200 text-slate-700 hover:bg-purple-50"
               }`}
             >
-              All Chapter {selectedChapter} ({allCards.filter(c => c.chapter === selectedChapter).length})
+              🌐 All Topics
             </button>
-            {Array.from(new Set(allCards.filter(c => c.chapter === selectedChapter).map(c => c.lesson))).sort((a, b) => a - b).map((lsnNum) => {
-              const lsnCardsCount = allCards.filter(c => c.chapter === selectedChapter && c.lesson === lsnNum).length;
-              return (
-                <button
-                  key={lsnNum}
-                  onClick={() => handleSelectLesson(lsnNum)}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold border transition-all whitespace-nowrap ${
-                    selectedLesson === lsnNum
-                      ? "bg-purple-500 text-white border-purple-500"
-                      : dark ? "bg-[#101828] border-purple-500/20 text-gray-400 hover:text-white" : "bg-white border-gray-200 text-gray-600 hover:bg-purple-50"
-                  }`}
-                >
-                  Lesson {lsnNum} ({lsnCardsCount})
-                </button>
-              );
-            })}
+            {Array.from(new Set(allCards.filter(c => c.isUnlocked).map(c => JSON.stringify({ name: c.category, icon: c.categoryIcon }))))
+              .map((str) => JSON.parse(str))
+              .map((catObj: any) => {
+                const count = allCards.filter(c => c.isUnlocked && c.category === catObj.name && (selectedChapter === 'all' || c.chapter === selectedChapter)).length;
+                if (count === 0) return null;
+
+                return (
+                  <button
+                    key={catObj.name}
+                    onClick={() => handleSelectCategory(catObj.name)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-extrabold border transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                      selectedCategory === catObj.name
+                        ? "bg-purple-600 text-white border-purple-500 shadow-md"
+                        : dark ? "bg-[#101828] border-purple-500/20 text-purple-300 hover:bg-purple-500/10" : "bg-white border-purple-200 text-purple-800 hover:bg-purple-50"
+                    }`}
+                  >
+                    <span>{catObj.icon}</span>
+                    <span>{catObj.name} ({count})</span>
+                  </button>
+                );
+              })}
           </div>
-        )}
+        </div>
 
         {/* Progress Tracker Bar */}
         {activeCards.length > 0 && (
@@ -439,6 +489,9 @@ function FlashcardsPage() {
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-[10px] font-extrabold uppercase tracking-widest text-purple-400 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20">
                       🇫🇷 FRENCH EXPRESSION
+                    </span>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-300 px-2 py-1 rounded bg-purple-900/30 border border-purple-500/20">
+                      {currentCard.categoryIcon} {currentCard.category}
                     </span>
                     <span className="text-[10px] font-extrabold uppercase tracking-wider text-gray-400 px-2 py-1 rounded bg-black/20">
                       Chapter {currentCard.chapter}
