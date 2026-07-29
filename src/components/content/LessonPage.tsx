@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   CheckCircle2, ArrowLeft, BookOpen, Volume2, Trophy, Award,
   ChevronLeft, ChevronRight, HelpCircle, Star, Headphones, PenTool, Mic,
-  Repeat, Globe, FileText, Languages, Zap
+  Repeat, Globe, FileText, Languages, Zap, Sparkles
 } from "lucide-react";
 import { WritingSubmission } from "./LearningComponents";
 import { SpeakingDrill } from "./SpeakingDrill";
@@ -1407,42 +1407,24 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         );
 
       case 'canDoReview':
-        let canDoList = lesson?.canDoReview || [];
-        const isGenericList = canDoList.length <= 2 && (canDoList[0]?.statement?.includes('Consolidate') || canDoList[0]?.statement?.includes('diagnostic') || !canDoList.length);
-
-        if (isGenericList) {
-          canDoList = [
-            { statement: "I can name different types of housing.", lessonRef: "Lesson 1" },
-            { statement: "I can describe my home in detail.", lessonRef: "Lesson 2" },
-            { statement: "I can name rooms and furniture.", lessonRef: "Lesson 3" },
-            { statement: "I can discuss looking for an apartment.", lessonRef: "Lesson 4" },
-            { statement: "I can compare two homes.", lessonRef: "Lesson 5" },
-            { statement: "I can discuss household chores.", lessonRef: "Lesson 6" },
-            { statement: "I can combine all of the above in a real conversation.", lessonRef: "Lesson 7 (Integrated)" },
-          ];
+      case 'review':
+      case 'selfReflection':
+        let reflectionItems = (lesson?.canDoReview && lesson.canDoReview.length > 0) ? lesson.canDoReview
+          : (lesson?.miniReview?.content) ? [lesson.miniReview.content]
+          : (lesson?.selfReflection && lesson.selfReflection.length > 0) ? lesson.selfReflection
+          : (lesson?.selfAssessment && lesson.selfAssessment.length > 0) ? lesson.selfAssessment
+          : [];
+        if (!reflectionItems.length && lesson?.objectives && lesson.objectives.length > 0) {
+          reflectionItems = lesson.objectives;
         }
-
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
             <div className="flex items-center gap-3 mb-2">
-              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+              <Star className="w-5 h-5 text-amber-400" />
               <h3 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>Chapter Review — Mini Review by Can-Do Statement</h3>
             </div>
-            <p className={`text-xs ${textSec} mb-5`}>Each chapter goal mapped to the specific lesson(s) that taught it.</p>
-            <div className="space-y-3">
-              {canDoList.map((item: { statement: string; lessonRef: string }, i: number) => (
-                <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}
-                  className={`flex items-center justify-between p-4 rounded-xl border ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"} hover:border-emerald-500/50 transition-all`}>
-                  <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold flex items-center justify-center border border-emerald-500/20">{i + 1}</span>
-                    <p className={`text-sm font-medium ${dark ? "text-white" : "text-gray-900"}`}>{item.statement}</p>
-                  </div>
-                  <span className={`text-xs font-bold px-3 py-1.5 rounded-lg border flex-shrink-0 ml-4 ${dark ? "bg-purple-500/10 border-purple-500/30 text-purple-300" : "bg-purple-50 border-purple-200 text-purple-700"}`}>
-                    → {item.lessonRef}
-                  </span>
-                </motion.div>
-              ))}
-            </div>
+            <p className={`text-xs ${textSec} mb-4`}>Each chapter goal mapped to the specific lesson(s) that taught it. Check off what you can do:</p>
+            <SelfAssessmentSection items={reflectionItems} dark={dark} title="Can-Do Statement Mapping" />
           </div>
         );
 
@@ -1544,39 +1526,7 @@ Nora: Thanks! And after, I'll need to clean before moving in.`;
           />
         );
 
-      case 'canDoReview':
-      case 'review':
-      case 'selfReflection':
-        let reflectionItems = (lesson?.canDoReview && lesson.canDoReview.length > 0) ? lesson.canDoReview
-          : (lesson?.miniReview?.content) ? [lesson.miniReview.content]
-          : (lesson?.selfReflection && lesson.selfReflection.length > 0) ? lesson.selfReflection
-          : (lesson?.selfAssessment && lesson.selfAssessment.length > 0) ? lesson.selfAssessment
-          : [];
-        if (!reflectionItems.length) {
-          if (lesson?.objectives && lesson.objectives.length > 0) {
-            reflectionItems = lesson.objectives;
-          } else {
-            reflectionItems = [
-              "I can name different types of housing. → Lesson 1",
-              "I can describe my home in detail. → Lesson 2",
-              "I can name rooms and furniture. → Lesson 3",
-              "I can discuss looking for an apartment. → Lesson 4",
-              "I can compare two homes. → Lesson 5",
-              "I can discuss household chores. → Lesson 6",
-              "I can combine all of the above in a real conversation. → Lesson 7 (Integrated)",
-            ];
-          }
-        }
-        return (
-          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
-            <div className="flex items-center gap-3 mb-2">
-              <Star className="w-5 h-5 text-amber-400" />
-              <h3 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>Chapter Review — Mini Review by Can-Do Statement</h3>
-            </div>
-            <p className={`text-xs ${textSec} mb-4`}>Each chapter goal mapped to the specific lesson(s) that taught it. Check off what you can do:</p>
-            <SelfAssessmentSection items={reflectionItems} dark={dark} title="Can-Do Statement Mapping" />
-          </div>
-        );
+
 
       case 'completion':
         const chNumber = lesson?.chapterNumber || String(lesson?.chapterId || '1').replace(/\D/g, '') || '1';
@@ -2530,56 +2480,55 @@ function WritingSection({ lesson, dark, cardBg, innerBg, textBody, onComplete }:
 function parseCanDoItems(input: any): { statement: string; lessonRef?: string }[] {
   if (!input) return [];
 
-  let text = '';
+  const rawList: string[] = [];
   if (Array.isArray(input)) {
-    text = input.map(item => {
-      if (typeof item === 'string') return item;
-      if (item && typeof item === 'object') {
-        const stmt = item.statement || item.text || item.content || item.prompt || '';
-        const ref = item.lessonRef || item.lesson || '';
-        return ref ? `${stmt} → ${ref}` : String(stmt);
+    input.forEach(item => {
+      if (typeof item === 'string') {
+        rawList.push(item);
+      } else if (item && typeof item === 'object') {
+        const stmt = item.statement || item.text || item.content || item.prompt || item.title || '';
+        const ref = item.lessonRef || item.lesson || item.ref || '';
+        rawList.push(ref ? `${stmt} → ${ref}` : String(stmt));
       }
-      return String(item || '');
-    }).join(' ');
+    });
   } else if (typeof input === 'string') {
-    text = input;
-  } else {
-    text = String(input);
+    rawList.push(input);
+  } else if (input && typeof input === 'object') {
+    if (input.content) rawList.push(String(input.content));
+    else if (input.text) rawList.push(String(input.text));
   }
-
-  // Pre-clean markdown bolding and linebreaks
-  text = text.replace(/\*\*/g, '').replace(/[\r\n]+/g, ' ');
 
   const results: { statement: string; lessonRef?: string }[] = [];
 
-  // Extract all occurrences of "I can ... → Lesson ..." or "... → Lesson ..."
-  const pattern = /(?:(?:\d+[\.\)]\s*)?)(I can [^→\-]+?|[^→\-]+?)\s*(?:→|--?|—|–)\s*(Lesson\s*\d+(?:\s*\([^)]+\))?|\bLesson\s*[^→\-\*]*)/gi;
+  for (const rawText of rawList) {
+    let cleanText = rawText.replace(/[\*\#\_]/g, '').trim();
 
-  let match;
-  while ((match = pattern.exec(text)) !== null) {
-    let stmt = match[1].replace(/^\d+[\.\)]\s*/, '').trim();
-    let ref = match[2].trim();
+    // Split text containing concatenated goals like "1. I can... → Lesson 1 - 2. I can... → Lesson 2"
+    const chunks = cleanText.split(/(?=(?:\b\d+[\.\)]\s*I can|\bI can\b))/gi);
 
-    stmt = stmt.replace(/^[\s\-–—\.]+|[\s\-–—\.]+$/g, '').trim();
-    ref = ref.replace(/^[\s\-–—\.]+|[\s\-–—\.]+$/g, '').trim();
+    for (const chunk of chunks) {
+      let trimmed = chunk.trim();
+      if (!trimmed) continue;
 
-    const cleanRefMatch = ref.match(/^(Lesson\s*\d+(?:\s*\([^)]+\))?|\bLesson\s*\w+)/i);
-    if (cleanRefMatch) {
-      ref = cleanRefMatch[1];
-    }
+      if (/^(Chapter Review|Mini Review|Each chapter goal|What you'll learn)/i.test(trimmed)) continue;
 
-    if (stmt && stmt.length > 3 && !stmt.toLowerCase().startsWith('each chapter goal') && !stmt.toLowerCase().startsWith('chapter review')) {
-      results.push({ statement: stmt, lessonRef: ref });
-    }
-  }
+      let lessonRef = '';
+      const refMatch = trimmed.match(/(?:→|--?|—|–|\bmapped to\b|\bLesson\b)\s*(Lesson\s*\d+(?:\s*\([^)]+\))?|\bLesson\s*\w+)/i);
+      if (refMatch) {
+        lessonRef = refMatch[1].trim();
+        trimmed = trimmed.replace(refMatch[0], '').trim();
+      }
 
-  // Fallback if regex pattern didn't match
-  if (results.length === 0) {
-    const lines = text.split(/(?=\b\d+[\.\)]\s*I can|\bI can)/gi);
-    for (const line of lines) {
-      const cleanStmt = line.replace(/^\d+[\.\)]\s*/, '').trim();
-      if (cleanStmt && cleanStmt.length > 3 && !cleanStmt.toLowerCase().startsWith('each chapter goal') && !cleanStmt.toLowerCase().startsWith('chapter review')) {
-        results.push({ statement: cleanStmt });
+      let stmt = trimmed
+        .replace(/^(?:\d+[\.\)]\s*|[\-\–\—\•\→\s]+)+/, '')
+        .replace(/[\-\–\—\•\→\s]+$/, '')
+        .trim();
+
+      if (stmt && stmt.length >= 3 && !/^(Chapter Review|Mini Review|Each chapter goal)/i.test(stmt)) {
+        results.push({
+          statement: stmt,
+          lessonRef: lessonRef || undefined,
+        });
       }
     }
   }
@@ -2594,48 +2543,64 @@ function SelfAssessmentSection({ items, dark, title }: { items: any[]; dark: boo
   const cardBg = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200";
 
   return (
-    <div className={`${cardBg} backdrop-blur-lg border rounded-2xl p-5 transition-colors mt-4`}>
-      <div className="flex items-center justify-between mb-4">
+    <div className={`${cardBg} backdrop-blur-lg border rounded-2xl p-5 transition-colors mt-4 shadow-xl`}>
+      <div className="flex items-center justify-between mb-4 pb-3 border-b border-purple-500/20">
         <div className="flex items-center gap-3">
-          <Award className="w-5 h-5 text-purple-400" />
-          <h3 className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>{title}</h3>
+          <div className="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+            <Award className="w-4 h-4 text-purple-400" />
+          </div>
+          <div>
+            <h3 className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>{title}</h3>
+            <p className="text-[11px] text-gray-400">Map your chapter goals to lessons and track your mastery:</p>
+          </div>
         </div>
-        <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
+        <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/30 font-mono shadow-sm">
           {Object.keys(checked).filter(k => checked[Number(k)]).length} / {parsedItems.length} Can-Do Goals Checked
         </span>
       </div>
       <div className="space-y-3">
         {parsedItems.map((item, i) => (
-          <label key={i} className={`flex items-start justify-between gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
-            checked[i]
-              ? (dark ? "bg-purple-500/10 border-purple-500/40 text-white" : "bg-purple-50 border-purple-300 text-purple-900")
-              : (dark ? "bg-[#0c1224] border-[#1e2a4a] text-gray-300 hover:border-purple-500/30" : "bg-gray-50 border-gray-200 text-gray-800 hover:border-gray-300")
-          }`}>
-            <div className="flex items-start gap-3 flex-1 min-w-0">
+          <motion.label
+            key={i}
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.04 }}
+            className={`flex items-center justify-between gap-4 p-4 rounded-xl border cursor-pointer transition-all ${
+              checked[i]
+                ? (dark ? "bg-emerald-500/10 border-emerald-500/40 text-white shadow-md shadow-emerald-500/5" : "bg-emerald-50 border-emerald-300 text-emerald-950")
+                : (dark ? "bg-[#0c1224] border-[#1e2a4a] text-gray-200 hover:border-purple-500/40 hover:bg-[#10182c]" : "bg-gray-50 border-gray-200 text-gray-800 hover:border-gray-300")
+            }`}
+          >
+            <div className="flex items-center gap-3.5 flex-1 min-w-0">
               <input
                 type="checkbox"
                 checked={checked[i] || false}
                 onChange={() => setChecked({ ...checked, [i]: !checked[i] })}
-                className="w-4 h-4 accent-purple-500 rounded mt-0.5 flex-shrink-0"
+                className="w-4 h-4 accent-purple-500 rounded cursor-pointer flex-shrink-0"
               />
-              <div className={`text-xs font-semibold leading-relaxed transition-all ${checked[i] ? "line-through opacity-60" : ""}`}>
+              <span className={`text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${checked[i] ? "bg-emerald-500 text-white" : (dark ? "bg-purple-500/10 text-purple-400 border border-purple-500/20" : "bg-purple-100 text-purple-700")}`}>
+                {i + 1}
+              </span>
+              <div className={`text-xs font-semibold leading-relaxed transition-all ${checked[i] ? "line-through opacity-70 text-emerald-400" : ""}`}>
                 {item.statement}
               </div>
             </div>
 
             {item.lessonRef && (
-              <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-lg shrink-0 border transition-all ${
-                dark ? "bg-purple-500/20 text-purple-300 border-purple-500/30" : "bg-purple-100 text-purple-800 border-purple-200"
+              <span className={`text-[11px] font-extrabold px-3 py-1.5 rounded-lg shrink-0 border transition-all flex items-center gap-1 shadow-sm ${
+                checked[i]
+                  ? (dark ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30" : "bg-emerald-100 text-emerald-800 border-emerald-200")
+                  : (dark ? "bg-purple-500/15 text-purple-300 border-purple-500/30" : "bg-purple-100 text-purple-800 border-purple-200")
               }`}>
-                {item.lessonRef}
+                → {item.lessonRef}
               </span>
             )}
-          </label>
+          </motion.label>
         ))}
       </div>
       {allChecked && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 text-center p-3 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20">
-          <p className="text-xs font-bold text-purple-400">
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mt-5 text-center p-4 rounded-xl bg-gradient-to-r from-emerald-500/15 via-teal-500/15 to-purple-500/15 border border-emerald-500/30 shadow-lg">
+          <p className="text-xs font-extrabold text-emerald-400 flex items-center justify-center gap-2">
             🎉 Outstanding! You have mastered all Can-Do statements for this chapter!
           </p>
         </motion.div>
