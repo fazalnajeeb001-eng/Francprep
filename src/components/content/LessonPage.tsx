@@ -1531,22 +1531,11 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         const rawCompContent = lesson?.completionSummary?.content || '';
 
         let parsedSkillCards: { statement: string; lessonRef?: string }[] = [];
-        let nextChapterText = `Chapter ${nextChNum} — Neighborhood & Local Services — builds on this foundation, introducing the pronoun y.`;
 
         if (rawCompContent) {
           let cleanCompText = rawCompContent
             .replace(/\bChapter\s*22\b/gi, `Chapter ${nextChNum}`)
             .replace(/\*\*/g, '');
-
-          const nextMatch = cleanCompText.match(/(?:Next Milestone:?|Coming Next:?|Chapter\s*\d+\s*[—\-]\s*[^\.]+(?:builds[^\.]*)?[\s\S]*)/i);
-          if (nextMatch) {
-            let extractedNext = nextMatch[0]
-              .replace(/^(?:Next Milestone:?|Coming Next:?)\s*/i, '')
-              .trim();
-            if (extractedNext.length > 5) {
-              nextChapterText = extractedNext;
-            }
-          }
 
           const skillsSection = cleanCompText.split(/(?:Next Milestone:?|Coming Next:?|Chapter\s*\d+\s*[—\-])/i)[0];
           parsedSkillCards = parseCanDoItems(skillsSection);
@@ -1586,50 +1575,6 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
               </div>
 
               <SelfAssessmentSection items={canDoItems} dark={dark} title="Can-Do Statement Mapping" />
-            </div>
-
-            {/* Next Milestone Teaser Card */}
-            <div className={`p-6 rounded-2xl border relative overflow-hidden transition-all ${dark ? "bg-gradient-to-r from-purple-950/40 via-purple-900/20 to-pink-950/40 border-purple-500/30" : "bg-gradient-to-r from-purple-50 via-pink-50/50 to-purple-50 border-purple-200"}`}>
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center shrink-0">
-                  <Sparkles className="w-5 h-5 text-purple-400" />
-                </div>
-                <div className="space-y-1 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-purple-400 px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20">
-                      Up Next
-                    </span>
-                    <h4 className={`text-xs font-extrabold uppercase tracking-wider ${dark ? "text-purple-300" : "text-purple-900"}`}>
-                      Next Chapter Milestone
-                    </h4>
-                  </div>
-                  <p className={`text-xs leading-relaxed font-semibold ${dark ? "text-gray-200" : "text-gray-800"}`}>
-                    {nextChapterText}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Spaced Repetition Flashcards & Offline PDF Action Buttons */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-              <button
-                onClick={() => alert(`⚡ Spaced Repetition Deck Unlocked! ${parsedSkillCards.length} vocabulary flashcards ready for Chapter ${chNumber} review.`)}
-                className="flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-extrabold text-xs shadow-lg shadow-purple-500/25 hover:opacity-90 transition-all"
-              >
-                <Zap className="w-4 h-4 text-amber-300 animate-pulse" />
-                ⚡ Quick-Review Flashcards ({parsedSkillCards.length} Cards)
-              </button>
-              <button
-                onClick={() => setCheatSheetOpen(true)}
-                className={`flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border font-extrabold text-xs transition-all ${
-                  dark
-                    ? "bg-purple-500/10 border-purple-500/30 text-purple-300 hover:bg-purple-500/20"
-                    : "bg-purple-50 border-purple-200 text-purple-800 hover:bg-purple-100"
-                }`}
-              >
-                <FileText className="w-4 h-4 text-purple-400" />
-                📄 View & Print Lesson Cheat Sheet
-              </button>
             </div>
           </motion.div>
         );
@@ -1713,8 +1658,28 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
       case 'completion':
         const chNumberStr = getCleanChapterNumber(lesson);
+        const nextChNumVal = Number(chNumberStr) + 1;
+        const rawComp = lesson?.completionSummary?.content || '';
+
+        let dynamicNextChapter = `Chapter ${nextChNumVal} — Neighborhood & Local Services — builds on this foundation, introducing the pronoun y.`;
+        let scriptSummary = rawComp ? rawComp.replace(/\*\*/g, '').trim() : "You have successfully consolidated all learning objectives, completed the DELF diagnostic assessment, and recorded your reflections.";
+
+        if (rawComp) {
+          const nextMatchComp = rawComp.match(/(?:Next Milestone:?|Coming Next:?|Chapter\s*\d+\s*[—\-]\s*[^\.]+(?:builds[^\.]*)?[\s\S]*)/i);
+          if (nextMatchComp) {
+            let extractedNext = nextMatchComp[0].replace(/^(?:Next Milestone:?|Coming Next:?)\s*/i, '').trim();
+            if (extractedNext.length > 5) {
+              dynamicNextChapter = extractedNext;
+            }
+          }
+        }
+
+        const cardsCount = (lesson?.canDoReview && lesson.canDoReview.length > 0)
+          ? lesson.canDoReview.length
+          : 7;
+
         return (
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-6 text-center">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-6 text-center max-w-4xl mx-auto">
             <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-8 border border-emerald-500/30 space-y-5 bg-gradient-to-b from-emerald-500/10 to-transparent shadow-2xl`}>
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center mx-auto text-white shadow-xl shadow-emerald-500/30 animate-bounce">
                 <Trophy className="w-8 h-8" />
@@ -1726,8 +1691,8 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
                 <h2 className={`text-2xl font-extrabold ${dark ? "text-white" : "text-gray-900"} mt-1`}>
                   Félicitations ! Chapter {chNumberStr} Mastered!
                 </h2>
-                <p className={`text-xs ${textSec} mt-2 max-w-lg mx-auto leading-relaxed`}>
-                  You have successfully consolidated all learning objectives, completed the DELF diagnostic assessment, and recorded your reflections.
+                <p className={`text-xs ${textSec} mt-3 max-w-2xl mx-auto leading-relaxed text-left p-4 rounded-xl border ${dark ? "bg-black/40 border-emerald-500/20 text-gray-200" : "bg-emerald-50/50 border-emerald-200 text-gray-800"}`}>
+                  {scriptSummary}
                 </p>
               </div>
 
@@ -1740,6 +1705,50 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
                   <span className="block text-xs font-bold text-gray-400">DELF Readiness</span>
                   <span className="text-xl font-extrabold text-emerald-400">100% Passed</span>
                 </div>
+              </div>
+
+              {/* Next Milestone Teaser Card */}
+              <div className={`p-5 rounded-2xl border relative overflow-hidden transition-all text-left ${dark ? "bg-gradient-to-r from-purple-950/40 via-purple-900/20 to-pink-950/40 border-purple-500/30" : "bg-gradient-to-r from-purple-50 via-pink-50/50 to-purple-50 border-purple-200"}`}>
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center shrink-0">
+                    <Sparkles className="w-5 h-5 text-purple-400" />
+                  </div>
+                  <div className="space-y-1 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-purple-400 px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20">
+                        Up Next
+                      </span>
+                      <h4 className={`text-xs font-extrabold uppercase tracking-wider ${dark ? "text-purple-300" : "text-purple-900"}`}>
+                        Next Chapter Milestone
+                      </h4>
+                    </div>
+                    <p className={`text-xs leading-relaxed font-semibold ${dark ? "text-gray-200" : "text-gray-800"}`}>
+                      {dynamicNextChapter}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Spaced Repetition Flashcards & Offline PDF Action Buttons */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                <button
+                  onClick={() => alert(`⚡ Spaced Repetition Deck Unlocked! ${cardsCount} vocabulary flashcards ready for Chapter ${chNumberStr} review.`)}
+                  className="flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-extrabold text-xs shadow-lg shadow-purple-500/25 hover:opacity-90 transition-all"
+                >
+                  <Zap className="w-4 h-4 text-amber-300 animate-pulse" />
+                  ⚡ Quick-Review Flashcards ({cardsCount} Cards)
+                </button>
+                <button
+                  onClick={() => setCheatSheetOpen(true)}
+                  className={`flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border font-extrabold text-xs transition-all ${
+                    dark
+                      ? "bg-purple-500/10 border-purple-500/30 text-purple-300 hover:bg-purple-500/20"
+                      : "bg-purple-50 border-purple-200 text-purple-800 hover:bg-purple-100"
+                  }`}
+                >
+                  <FileText className="w-4 h-4 text-purple-400" />
+                  📄 View & Print Lesson Cheat Sheet
+                </button>
               </div>
 
               <div className="pt-4">
