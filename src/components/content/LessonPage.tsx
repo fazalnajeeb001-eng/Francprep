@@ -2525,13 +2525,13 @@ function parseCanDoItems(input: any): { statement: string; lessonRef?: string }[
     text = String(input);
   }
 
-  // Pre-clean markdown bolding and whitespace
+  // Pre-clean markdown bolding and linebreaks
   text = text.replace(/\*\*/g, '').replace(/[\r\n]+/g, ' ');
 
   const results: { statement: string; lessonRef?: string }[] = [];
 
   // Extract all occurrences of "I can ... → Lesson ..." or "... → Lesson ..."
-  const pattern = /(?:(?:\d+[\.\)]\s*)?)(I can [^→]+?|[^→]+?)\s*(?:→|--?|—|–)\s*(Lesson\s*\d+[^→]*|\bLesson\s*[^→]*)/gi;
+  const pattern = /(?:(?:\d+[\.\)]\s*)?)(I can [^→\-]+?|[^→\-]+?)\s*(?:→|--?|—|–)\s*(Lesson\s*\d+(?:\s*\([^)]+\))?|\bLesson\s*[^→\-\*]*)/gi;
 
   let match;
   while ((match = pattern.exec(text)) !== null) {
@@ -2541,12 +2541,17 @@ function parseCanDoItems(input: any): { statement: string; lessonRef?: string }[
     stmt = stmt.replace(/^[\s\-–—\.]+|[\s\-–—\.]+$/g, '').trim();
     ref = ref.replace(/^[\s\-–—\.]+|[\s\-–—\.]+$/g, '').trim();
 
+    const cleanRefMatch = ref.match(/^(Lesson\s*\d+(?:\s*\([^)]+\))?|\bLesson\s*\w+)/i);
+    if (cleanRefMatch) {
+      ref = cleanRefMatch[1];
+    }
+
     if (stmt && stmt.length > 3 && !stmt.toLowerCase().startsWith('each chapter goal') && !stmt.toLowerCase().startsWith('chapter review')) {
       results.push({ statement: stmt, lessonRef: ref });
     }
   }
 
-  // Fallback if regex pattern didn't match (e.g. simple list of statements without → Lesson)
+  // Fallback if regex pattern didn't match
   if (results.length === 0) {
     const lines = text.split(/(?=\b\d+[\.\)]\s*I can|\bI can)/gi);
     for (const line of lines) {
