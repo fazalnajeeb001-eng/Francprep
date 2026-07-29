@@ -889,7 +889,11 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
   const isLesson8 = lesson?.lessonNumber === 8 || lesson?.order === 8 || (typeof lesson?.title === 'string' && lesson.title.toLowerCase().includes('review')) || lesson?.skill === 'REV' || lesson?.skill === 'review';
 
-  const computeLesson7Id = (l: any) => {
+  const computeLesson7Id = (l: any, currentDraftId?: string) => {
+    if (currentDraftId) {
+      if (currentDraftId.includes('l8')) return currentDraftId.replace('l8', 'l7');
+      if (currentDraftId.includes('lesson-8')) return currentDraftId.replace('lesson-8', 'lesson-7');
+    }
     if (!l) return '';
     const id = String(l.lessonId || l._id || '').toLowerCase();
     if (id.includes('l8')) return id.replace('l8', 'l7');
@@ -899,16 +903,18 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
     return '';
   };
 
-  const lesson7Id = computeLesson7Id(lesson);
+  const lesson7Id = computeLesson7Id(lesson, draftId);
 
   const { data: lesson7Direct } = useQuery({
-    queryKey: ["lesson", lesson7Id],
+    queryKey: draftId ? ["draft", lesson7Id] : ["lesson", lesson7Id],
     queryFn: async () => {
       try {
-        const res = await apiFetch(`/lessons/${lesson7Id}`);
+        const url = draftId ? `/admin/content-pipeline/drafts/${lesson7Id}` : `/lessons/${lesson7Id}`;
+        const res = await apiFetch(url);
         if (!res.ok) return null;
         const json = await res.json();
-        return (json?.data || json) as LessonData;
+        const data = json?.data || json;
+        return (data?.parsedData || data) as LessonData;
       } catch {
         return null;
       }
@@ -2810,14 +2816,23 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
           <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${dark ? "bg-purple-500/10 text-purple-300 border border-purple-500/20" : "bg-purple-100 text-purple-700"}`}>{sec?.points || 10} points</span>
         </div>
 
-        {!isSpeakingSec && instStr && <p className={`text-xs ${textBody} mb-4 leading-relaxed`}>{instStr}</p>}
+        {!isSpeakingSec && instStr && !isDuplicateInst && <p className={`text-xs ${textBody} mb-4 leading-relaxed`}>{instStr}</p>}
 
         {/* Section 1 Listening Reference */}
         {isListeningSec && (
           <div className={`p-4 rounded-xl border mb-4 space-y-3 ${dark ? "bg-purple-500/10 border-purple-500/30" : "bg-purple-50 border-purple-200"}`}>
             {(() => {
-              const activeTranscript = sec.sourceText || sec.transcript || lesson7Transcript || lesson?.listening?.transcript || lesson?.scene?.text || '';
-              const activeTranslation = sec.translation || lesson7Translation || lesson?.listening?.translation || lesson?.scene?.translation || '';
+              const cleanTxt = (txt: any) => {
+                if (!txt || typeof txt !== 'string') return '';
+                const trimmed = txt.trim();
+                if (trimmed.toLowerCase().includes('complete the integrated practice') || trimmed.toLowerCase().includes('complete the practice exercises')) {
+                  return '';
+                }
+                return trimmed;
+              };
+
+              const activeTranscript = cleanTxt(sec.sourceText) || cleanTxt(sec.transcript) || cleanTxt(lesson7Transcript) || cleanTxt(lesson?.listening?.transcript) || cleanTxt(lesson?.scene?.text) || '';
+              const activeTranslation = cleanTxt(sec.translation) || cleanTxt(lesson7Translation) || cleanTxt(lesson?.listening?.translation) || cleanTxt(lesson?.scene?.translation) || '';
 
               return (
                 <>
@@ -2886,8 +2901,17 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
         {isReadingSec && (
           <div className={`p-4 rounded-xl border mb-4 text-xs leading-relaxed whitespace-pre-line ${dark ? "bg-purple-500/5 border-purple-500/20 text-purple-200" : "bg-purple-50 border-purple-200 text-purple-900"}`}>
             {(() => {
-              const activeReadingText = sec.sourceText || sec.passage || sec.text || lesson7Transcript || lesson?.reading?.text || lesson?.scene?.text || '';
-              const activeReadingTrans = sec.translation || lesson7Translation || lesson?.reading?.translation || lesson?.scene?.translation || '';
+              const cleanTxt = (txt: any) => {
+                if (!txt || typeof txt !== 'string') return '';
+                const trimmed = txt.trim();
+                if (trimmed.toLowerCase().includes('complete the integrated practice') || trimmed.toLowerCase().includes('complete the practice exercises')) {
+                  return '';
+                }
+                return trimmed;
+              };
+
+              const activeReadingText = cleanTxt(sec.sourceText) || cleanTxt(sec.passage) || cleanTxt(sec.text) || cleanTxt(lesson7Transcript) || cleanTxt(lesson?.reading?.text) || cleanTxt(lesson?.scene?.text) || '';
+              const activeReadingTrans = cleanTxt(sec.translation) || cleanTxt(lesson7Translation) || cleanTxt(lesson?.reading?.translation) || cleanTxt(lesson?.scene?.translation) || '';
 
               return (
                 <>
