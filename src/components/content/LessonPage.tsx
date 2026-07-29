@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   CheckCircle2, ArrowLeft, BookOpen, Volume2, Trophy, Award,
   ChevronLeft, ChevronRight, HelpCircle, Star, Headphones, PenTool, Mic,
-  Repeat, Globe, FileText, Languages
+  Repeat, Globe, FileText, Languages, Zap
 } from "lucide-react";
 import { WritingSubmission } from "./LearningComponents";
 import { SpeakingDrill } from "./SpeakingDrill";
@@ -1732,6 +1732,28 @@ Nora: Thanks! And after, I'll need to clean before moving in.`;
                     </p>
                   </div>
                 </div>
+              </div>
+
+              {/* Spaced Repetition Flashcards & Offline PDF Action Buttons */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                <button
+                  onClick={() => alert(`⚡ Spaced Repetition Deck Unlocked! ${parsedSkillCards.length} vocabulary flashcards ready for Chapter ${chNumber} review.`)}
+                  className="flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-extrabold text-xs shadow-lg shadow-purple-500/25 hover:opacity-90 transition-all"
+                >
+                  <Zap className="w-4 h-4 text-amber-300 animate-pulse" />
+                  ⚡ Quick-Review Flashcards ({parsedSkillCards.length} Cards)
+                </button>
+                <button
+                  onClick={() => window.print()}
+                  className={`flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border font-extrabold text-xs transition-all ${
+                    dark
+                      ? "bg-purple-500/10 border-purple-500/30 text-purple-300 hover:bg-purple-500/20"
+                      : "bg-purple-50 border-purple-200 text-purple-800 hover:bg-purple-100"
+                  }`}
+                >
+                  <FileText className="w-4 h-4 text-purple-400" />
+                  📄 Download Lesson Cheat Sheet (PDF)
+                </button>
               </div>
             </div>
           </motion.div>

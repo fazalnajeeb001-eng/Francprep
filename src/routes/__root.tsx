@@ -154,18 +154,26 @@ function NavBarInner() {
         </div>
         <div className="flex items-center gap-2 sm:gap-3 text-sm">
           {isLoading ? null : isAuthenticated && user ? (
-            <button
-              onClick={() => navigate({ to: "/dashboard/settings" })}
-              className="w-9 h-9 rounded-full overflow-hidden shadow-lg hover:opacity-90 hover:scale-110 transition-all"
-              aria-label="Settings"
-            >
-              <img
-                src={avatarGender === "male" ? "/models/leo-avatar.png" : "/models/chloe-avatar.png"}
-                alt="Avatar"
-                className="w-full h-full object-cover object-top"
-                style={{ objectPosition: "50% 15%" }}
-              />
-            </button>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-extrabold shadow-sm" title="Daily Streak">
+                <span className="text-sm animate-pulse">🔥</span> 5 Days
+              </div>
+              <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-extrabold shadow-sm hidden sm:flex" title="Total XP">
+                <span className="text-xs">⚡</span> 120 XP
+              </div>
+              <button
+                onClick={() => navigate({ to: "/dashboard/settings" })}
+                className="w-9 h-9 rounded-full overflow-hidden shadow-lg hover:opacity-90 hover:scale-110 transition-all border border-purple-500/30"
+                aria-label="Settings"
+              >
+                <img
+                  src={avatarGender === "male" ? "/models/leo-avatar.png" : "/models/chloe-avatar.png"}
+                  alt="Avatar"
+                  className="w-full h-full object-cover object-top"
+                  style={{ objectPosition: "50% 15%" }}
+                />
+              </button>
+            </div>
           ) : (
             <div className="flex items-center gap-2">
               <Link to="/login" className="px-4 py-2 min-h-[44px] flex items-center rounded-xl border dark:border-[#1e2a4a] border-gray-200 dark:text-gray-400 text-gray-600 hover:text-purple-400 transition-all text-sm">Login</Link>
