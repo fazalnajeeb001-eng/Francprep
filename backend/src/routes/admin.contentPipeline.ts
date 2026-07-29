@@ -1,8 +1,10 @@
 import { Router, Response } from 'express';
+import mongoose from 'mongoose';
 import { authenticate, authorize } from '../middleware/auth';
 import { AuthRequest } from '../types';
 import Draft from '../models/Draft';
 import Lesson from '../models/Lesson';
+import Chapter from '../models/Chapter';
 import { TrashItem } from '../models/TrashItem';
 import { parseLessonFromMarkdown } from '../services/markdownLessonParser';
 import Ajv from 'ajv';
@@ -721,6 +723,28 @@ router.post('/content-pipeline/drafts/:id/publish', async (req: AuthRequest, res
       canonical.title = draft.title || 'Untitled Lesson';
     }
 
+    // Auto-resolve chapterId string slug (e.g. "a1-ch1") to MongoDB Chapter ObjectId if needed
+    let resolvedChapterId: any = canonical.chapterId;
+    if (typeof resolvedChapterId === 'string' && resolvedChapterId.includes('-ch')) {
+      const match = resolvedChapterId.match(/^(a0|a1|a2|b1|b2|c1|c2)-ch(\d+)$/i);
+      if (match) {
+        const chLevel = match[1].toUpperCase();
+        const chOrder = parseInt(match[2], 10);
+        const db = mongoose.connection.db;
+        if (db) {
+          const course = await db.collection('courses').findOne({ level: chLevel });
+          if (course) {
+            const modules = await db.collection('modules').find({ courseId: course._id }).toArray();
+            const modIds = modules.map((m: any) => m._id);
+            const chapterDoc = await db.collection('chapters').findOne({ moduleId: { $in: modIds }, order: chOrder });
+            if (chapterDoc) {
+              resolvedChapterId = chapterDoc._id;
+            }
+          }
+        }
+      }
+    }
+
     // Upsert (create or update) existing published lesson by lessonId
     const lessonIdPattern = new RegExp(`^${canonical.lessonId.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}$`, 'i');
     let existingLesson = await Lesson.findOne({ lessonId: { $regex: lessonIdPattern } });
@@ -732,7 +756,7 @@ router.post('/content-pipeline/drafts/:id/publish', async (req: AuthRequest, res
 
     const lessonPayload = {
       lessonId: canonical.lessonId,
-      chapterId: canonical.chapterId,
+      chapterId: resolvedChapterId,
       title: canonical.title,
       level: canonical.level,
       order: orderNum,
