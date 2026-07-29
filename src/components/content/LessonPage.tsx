@@ -727,6 +727,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
   const [lessonScore, setLessonScore] = useState<number | null>(null);
   const [showObjectives, setShowObjectives] = useState(false);
   const [cheatSheetOpen, setCheatSheetOpen] = useState(false);
+  const [flashcardModalOpen, setFlashcardModalOpen] = useState(false);
   const [startTime] = useState(Date.now());
   const topRef = useRef<HTMLDivElement>(null);
 
@@ -1771,7 +1772,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
               {/* Spaced Repetition Flashcards & Offline PDF Action Buttons */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <button
-                  onClick={() => alert(`⚡ Spaced Repetition Deck Unlocked! ${cardsCount} vocabulary flashcards ready for Chapter ${chNumberStr} review.`)}
+                  onClick={() => setFlashcardModalOpen(true)}
                   className="flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-extrabold text-xs shadow-lg shadow-purple-500/25 hover:opacity-90 transition-all"
                 >
                   <Zap className="w-4 h-4 text-amber-300 animate-pulse" />
@@ -2305,13 +2306,21 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
           )}
         </div>
 
-        {/* Dedicated Interactive Lesson Cheat Sheet Modal */}
+        {/* Dedicated Interactive Lesson Cheat Sheet Modal & Flashcards Modal */}
         <AnimatePresence>
           {cheatSheetOpen && (
             <LessonCheatSheetModal
               lesson={lesson}
               dark={dark}
               onClose={() => setCheatSheetOpen(false)}
+              speak={speak}
+            />
+          )}
+          {flashcardModalOpen && (
+            <ChapterFlashcardModal
+              lesson={lesson}
+              dark={dark}
+              onClose={() => setFlashcardModalOpen(false)}
               speak={speak}
             />
           )}
@@ -3231,6 +3240,142 @@ function LessonCheatSheetModal({ lesson, dark, onClose, speak }: { lesson: any; 
 
         <div className="pt-2 text-center text-[10px] text-gray-500 print:text-black border-t border-purple-500/20">
           FrancPrep French Learning Curriculum • Generated for Chapter Study
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+// ─── Interactive Chapter Flashcard Modal Component ─────────────────────────────
+
+function ChapterFlashcardModal({ lesson, dark, onClose, speak }: { lesson: any; dark: boolean; onClose: () => void; speak: (txt: string) => void }) {
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  const rawVocab = Array.isArray(lesson?.vocabItems) && lesson.vocabItems.length > 0 ? lesson.vocabItems
+    : Array.isArray(lesson?.vocabulary) && lesson.vocabulary.length > 0 ? lesson.vocabulary
+    : Array.isArray(lesson?.canDoReview) && lesson.canDoReview.length > 0 ? lesson.canDoReview.map((item: any) => ({
+        french: typeof item === 'string' ? item : item.statement || '',
+        english: typeof item === 'string' ? '' : item.lessonRef || 'Chapter Core Skill'
+      }))
+    : [
+        { french: "Bonjour ! Comment allez-vous ?", english: "Hello! How are you? (Formal)" },
+        { french: "Salut ! Ça va ?", english: "Hi! How's it going? (Informal)" },
+        { french: "Enchanté(e)", english: "Pleased to meet you" },
+        { french: "S'il vous plaît", english: "Please (Formal)" },
+        { french: "Merci beaucoup", english: "Thank you very much" },
+        { french: "Au revoir", english: "Goodbye" },
+        { french: "À bientôt", english: "See you soon" }
+      ];
+
+  const cards = rawVocab.map((v: any) => {
+    if (typeof v === 'string') return { french: v, english: 'Key Term' };
+    return {
+      french: v.french || v.term || v.word || v.statement || '',
+      english: v.english || v.translation || v.meaning || v.lessonRef || ''
+    };
+  }).filter((c: any) => Boolean(c.french));
+
+  const currentCard = cards[currentIdx] || { french: "Review Complete", english: "Great job!" };
+
+  const handleNext = () => {
+    setIsFlipped(false);
+    setCurrentIdx((prev) => (prev + 1) % cards.length);
+  };
+
+  const handlePrev = () => {
+    setIsFlipped(false);
+    setCurrentIdx((prev) => (prev - 1 + cards.length) % cards.length);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        className={`w-full max-w-lg p-6 rounded-3xl border shadow-2xl space-y-6 ${dark ? "bg-[#0c1224] border-purple-500/30 text-white" : "bg-white border-purple-200 text-slate-900"}`}
+      >
+        {/* Top Bar */}
+        <div className="flex items-center justify-between border-b border-purple-500/20 pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400">
+              <Zap className="w-5 h-5 text-amber-400 animate-pulse" />
+            </div>
+            <div>
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-purple-400">
+                Spaced Repetition Deck
+              </span>
+              <h3 className="text-sm font-extrabold">{lesson?.title || 'Chapter Flashcards'}</h3>
+            </div>
+          </div>
+          <button onClick={onClose} className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Counter & Controls */}
+        <div className="flex items-center justify-between text-xs font-bold text-gray-400">
+          <span>Card {currentIdx + 1} of {cards.length}</span>
+          <button
+            onClick={() => { setIsFlipped(false); setCurrentIdx(0); }}
+            className="flex items-center gap-1 text-purple-400 hover:underline text-[11px]"
+          >
+            <RotateCcw className="w-3.5 h-3.5" /> Restart Deck
+          </button>
+        </div>
+
+        {/* Interactive Flippable Flashcard */}
+        <div
+          onClick={() => setIsFlipped(!isFlipped)}
+          className={`h-56 rounded-2xl border-2 cursor-pointer p-6 flex flex-col items-center justify-center text-center transition-all duration-300 transform relative overflow-hidden select-none shadow-xl ${
+            isFlipped
+              ? dark
+                ? "bg-gradient-to-br from-indigo-950/80 via-purple-900/60 to-slate-900 border-indigo-500/50"
+                : "bg-gradient-to-br from-indigo-50 via-purple-50 to-white border-indigo-300"
+              : dark
+                ? "bg-gradient-to-br from-purple-950/60 via-[#101828] to-[#0c1224] border-purple-500/40 hover:border-purple-400"
+                : "bg-gradient-to-br from-purple-50 via-white to-purple-50 border-purple-200 hover:border-purple-300"
+          }`}
+        >
+          <span className="text-[10px] uppercase font-extrabold tracking-widest text-purple-400 mb-2">
+            {isFlipped ? "ENGLISH TRANSLATION" : "FRENCH EXPRESSION"}
+          </span>
+
+          <p className={`text-xl font-extrabold leading-snug px-4 ${isFlipped ? (dark ? "text-indigo-200" : "text-indigo-900") : (dark ? "text-white" : "text-gray-900")}`}>
+            {isFlipped ? currentCard.english : currentCard.french}
+          </p>
+
+          {!isFlipped && currentCard.french && (
+            <button
+              onClick={(e) => { e.stopPropagation(); speak(currentCard.french); }}
+              className="mt-4 p-2.5 rounded-full bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 border border-purple-500/30 transition-all"
+            >
+              <Volume2 className="w-4 h-4" />
+            </button>
+          )}
+
+          <div className="absolute bottom-3 text-[10px] text-gray-500 font-semibold tracking-wider flex items-center gap-1">
+            <span>Click card to flip</span>
+          </div>
+        </div>
+
+        {/* Action Controls */}
+        <div className="flex items-center justify-between gap-3 pt-2">
+          <button
+            onClick={handlePrev}
+            className={`flex-1 py-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1 ${
+              dark ? "bg-black/40 border-purple-500/30 text-gray-300 hover:bg-purple-500/20" : "bg-gray-100 border-gray-200 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            <ChevronLeft className="w-4 h-4" /> Previous
+          </button>
+          <button
+            onClick={handleNext}
+            className="flex-1 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white text-xs font-extrabold shadow-lg shadow-purple-500/25 transition-all flex items-center justify-center gap-1"
+          >
+            Next <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
       </motion.div>
     </div>
