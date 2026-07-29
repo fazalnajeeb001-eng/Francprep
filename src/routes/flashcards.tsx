@@ -407,56 +407,92 @@ function FlashcardsPage() {
               </div>
             )}
 
-            <div
-              onClick={handleFlip}
-              className={`min-h-[300px] rounded-3xl border-2 cursor-pointer p-8 flex flex-col items-center justify-center text-center transition-all duration-300 transform relative overflow-hidden select-none shadow-2xl ${
-                isFlipped
-                  ? dark
-                    ? "bg-gradient-to-br from-indigo-950/90 via-purple-900/60 to-[#0c1224] border-indigo-500/50 shadow-indigo-500/10"
-                    : "bg-gradient-to-br from-indigo-50 via-purple-50 to-white border-indigo-300 shadow-indigo-100"
-                  : dark
-                    ? "bg-gradient-to-br from-purple-950/60 via-[#101828] to-[#0c1224] border-purple-500/40 hover:border-purple-400 shadow-purple-500/10"
-                    : "bg-gradient-to-br from-purple-50 via-white to-purple-50 border-purple-200 hover:border-purple-300 shadow-purple-100"
-              }`}
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-[10px] font-extrabold uppercase tracking-widest text-purple-400 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20">
-                  {isFlipped ? "ENGLISH TRANSLATION" : "FRENCH EXPRESSION"}
-                </span>
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-gray-400 px-2 py-1 rounded bg-black/20">
-                  Chapter {currentCard.chapter}
-                </span>
-              </div>
-
-              <h2 className={`text-2xl sm:text-3xl font-extrabold leading-snug px-4 my-2 ${isFlipped ? (dark ? "text-indigo-200" : "text-indigo-900") : (dark ? "text-white" : "text-gray-900")}`}>
-                {isFlipped ? currentCard.english : currentCard.french}
-              </h2>
-
-              {!isFlipped && currentCard.pronunciation && (
-                <p className="text-xs text-purple-300 italic font-mono mb-2">
-                  /{currentCard.pronunciation}/
-                </p>
-              )}
-
-              {!isFlipped && (
-                <button
-                  onClick={(e) => { e.stopPropagation(); speak(currentCard.french); }}
-                  className="mt-3 p-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white shadow-lg shadow-purple-500/30 transition-all flex items-center gap-2 text-xs font-bold"
+            <div className="w-full relative" style={{ perspective: "1000px" }}>
+              <motion.div
+                onClick={handleFlip}
+                animate={{ rotateY: isFlipped ? 180 : 0 }}
+                transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+                className="w-full min-h-[300px] cursor-pointer relative select-none"
+                style={{ transformStyle: "preserve-3d" }}
+              >
+                {/* Front Face - French */}
+                <div
+                  className={`absolute inset-0 rounded-3xl border-2 p-8 flex flex-col items-center justify-center text-center shadow-2xl transition-colors ${
+                    dark
+                      ? "bg-gradient-to-br from-purple-950/80 via-[#101828] to-[#0c1224] border-purple-500/40 hover:border-purple-400 shadow-purple-500/10"
+                      : "bg-gradient-to-br from-purple-50 via-white to-purple-50 border-purple-200 hover:border-purple-300 shadow-purple-100"
+                  }`}
+                  style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
                 >
-                  <Volume2 className="w-4 h-4" /> Listen Audio
-                </button>
-              )}
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-purple-400 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20">
+                      🇫🇷 FRENCH EXPRESSION
+                    </span>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-gray-400 px-2 py-1 rounded bg-black/20">
+                      Chapter {currentCard.chapter}
+                    </span>
+                  </div>
 
-              {isFlipped && currentCard.example && (
-                <div className={`mt-4 p-3.5 rounded-xl border text-xs leading-relaxed max-w-md ${dark ? "bg-black/40 border-purple-500/20 text-gray-300" : "bg-purple-50/50 border-purple-200 text-gray-800"}`}>
-                  <span className="font-bold text-purple-400 block mb-0.5">Context Example:</span>
-                  "{currentCard.example}"
+                  <h2 className={`text-2xl sm:text-3xl font-extrabold leading-snug px-4 my-2 ${dark ? "text-white" : "text-gray-900"}`}>
+                    {currentCard.french}
+                  </h2>
+
+                  {currentCard.pronunciation && (
+                    <p className="text-xs text-purple-300 italic font-mono mb-2">
+                      /{currentCard.pronunciation}/
+                    </p>
+                  )}
+
+                  <button
+                    onClick={(e) => { e.stopPropagation(); speak(currentCard.french); }}
+                    className="mt-3 p-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white shadow-lg shadow-purple-500/30 transition-all flex items-center gap-2 text-xs font-bold"
+                  >
+                    <Volume2 className="w-4 h-4" /> Listen Audio
+                  </button>
+
+                  <div className="absolute bottom-4 text-[11px] text-gray-400 font-semibold tracking-wider flex items-center gap-1.5">
+                    <span>Click card to flip</span>
+                  </div>
                 </div>
-              )}
 
-              <div className="absolute bottom-4 text-[11px] text-gray-400 font-semibold tracking-wider flex items-center gap-1.5">
-                <span>Click card to flip</span>
-              </div>
+                {/* Back Face - English */}
+                <div
+                  className={`absolute inset-0 rounded-3xl border-2 p-8 flex flex-col items-center justify-center text-center shadow-2xl transition-colors ${
+                    dark
+                      ? "bg-gradient-to-br from-indigo-950/90 via-purple-900/60 to-[#0c1224] border-indigo-500/50 shadow-indigo-500/10"
+                      : "bg-gradient-to-br from-indigo-50 via-purple-50 to-white border-indigo-300 shadow-indigo-100"
+                  }`}
+                  style={{
+                    backfaceVisibility: "hidden",
+                    WebkitBackfaceVisibility: "hidden",
+                    transform: "rotateY(180deg)"
+                  }}
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-indigo-400 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20">
+                      🇬🇧 ENGLISH TRANSLATION
+                    </span>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-gray-400 px-2 py-1 rounded bg-black/20">
+                      Chapter {currentCard.chapter}
+                    </span>
+                  </div>
+
+                  <h2 className={`text-2xl sm:text-3xl font-extrabold leading-snug px-4 my-2 ${dark ? "text-indigo-200" : "text-indigo-900"}`}>
+                    {currentCard.english}
+                  </h2>
+
+                  {currentCard.example && (
+                    <div className={`mt-4 p-3.5 rounded-xl border text-xs leading-relaxed max-w-md ${dark ? "bg-black/40 border-purple-500/20 text-gray-300" : "bg-purple-50/50 border-purple-200 text-gray-800"}`}>
+                      <span className="font-bold text-purple-400 block mb-0.5">Context Example:</span>
+                      "{currentCard.example}"
+                    </div>
+                  )}
+
+                  <div className="absolute bottom-4 text-[11px] text-gray-400 font-semibold tracking-wider flex items-center gap-1.5">
+                    <span>Click to flip back</span>
+                  </div>
+                </div>
+              </motion.div>
             </div>
 
             {/* Spaced Repetition Rating Buttons */}
