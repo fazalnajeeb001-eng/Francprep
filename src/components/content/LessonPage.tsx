@@ -2546,39 +2546,39 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
 
   // Normalize Section 2 (Reading Comprehension)
   if (isReadingSec || activeTab === 1) {
-    sec.points = sec.points || 3;
+    sec.points = sec.points || 4;
     const rawPassage = sec.sourceText;
-    if (!rawPassage || rawPassage.includes('Monsieur Roy cherche')) {
-      sec.sourceText = "Bonsoir, Monsieur. Je m'appelle Inès. Comment allez-vous ? — Ça va bien, merci, un peu fatigué. Et vous ? — Ça va, merci !";
-      sec.translation = "Good evening, sir. My name is Inès. How are you? — I'm doing well, thank you, a little tired. And you? — I'm okay, thanks!";
+    if (!rawPassage || rawPassage.includes("Bonsoir, Monsieur")) {
+      sec.sourceText = "Monsieur Roy cherche une nouvelle maison. Il visite une maison spacieuse avec quatre chambres. Il y a un grand jardin, mais il n'y a pas de garage. La maison est calme, loin du centre-ville.";
+      sec.translation = "Monsieur Roy is looking for a new house. He's visiting a spacious house with four bedrooms. There's a big garden, but there's no garage. The house is quiet, far from downtown.";
     }
 
     const rawQs = Array.isArray(sec.questions) ? sec.questions : [];
     const firstQPrompt = (rawQs[0]?.prompt || '').toLowerCase();
 
-    if (rawQs.length === 0 || firstQPrompt.includes('match') || firstQPrompt.includes('option a') || firstQPrompt.includes('(a)') || rawQs.length < 3) {
+    if (rawQs.length === 0 || firstQPrompt.includes('match') || firstQPrompt.includes('option a') || firstQPrompt.includes('what time of day') || rawQs.length < 3) {
       sec.instructions = "Read the short passage below and answer all 3 comprehension questions:";
       sec.questions = [
         {
           id: `${lesson?.lessonId || 'l8'}-sec2-q1`,
           type: 'short_answer',
-          prompt: '(a) What time of day is it?',
-          correctAnswer: 'Evening (Bonsoir = Good evening)',
-          explanation: 'The passage starts with "Bonsoir" which indicates evening.',
+          prompt: '(a) What is Monsieur Roy looking for?',
+          correctAnswer: 'Une nouvelle maison / A new house',
+          explanation: 'Monsieur Roy is looking for a new house (une nouvelle maison).',
         },
         {
           id: `${lesson?.lessonId || 'l8'}-sec2-q2`,
           type: 'short_answer',
-          prompt: '(b) Is the exchange formal or informal?',
-          correctAnswer: 'Formal (uses Monsieur, Comment allez-vous ?, Et vous ?)',
-          explanation: 'Uses formal greetings and vous forms.',
+          prompt: '(b) What does the house have and not have?',
+          correctAnswer: 'Quatre chambres et un grand jardin, pas de garage / 4 bedrooms, a big garden, no garage',
+          explanation: 'The house has 4 bedrooms and a big garden, but no garage.',
         },
         {
           id: `${lesson?.lessonId || 'l8'}-sec2-q3`,
           type: 'short_answer',
-          prompt: '(c) How does the man describe how he feels?',
-          correctAnswer: 'Doing well, a little tired (Ça va bien, un peu fatigué)',
-          explanation: 'The man says "Ça va bien, merci, un peu fatigué".',
+          prompt: '(c) How is the location described?',
+          correctAnswer: 'Calme, loin du centre-ville / Quiet, far from downtown',
+          explanation: 'The location is quiet and far from downtown.',
         },
       ];
     }
