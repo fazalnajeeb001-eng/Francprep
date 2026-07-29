@@ -1662,7 +1662,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         const rawComp = lesson?.completionSummary?.content || '';
 
         let dynamicNextChapter = `Chapter ${nextChNumVal} — Neighborhood & Local Services — builds on this foundation, introducing the pronoun y.`;
-        let scriptSummary = rawComp ? rawComp.replace(/\*\*/g, '').trim() : "You have successfully consolidated all learning objectives, completed the DELF diagnostic assessment, and recorded your reflections.";
+        let rawSummaryText = rawComp ? rawComp.replace(/\*\*/g, '').trim() : "You have successfully consolidated all learning objectives, completed the DELF diagnostic assessment, and recorded your reflections.";
 
         if (rawComp) {
           const nextMatchComp = rawComp.match(/(?:Next Milestone:?|Coming Next:?|Chapter\s*\d+\s*[—\-]\s*[^\.]+(?:builds[^\.]*)?[\s\S]*)/i);
@@ -1673,6 +1673,10 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
             }
           }
         }
+
+        // Parse bullet items if rawSummaryText contains bullet points or dash items
+        const rawLines = rawSummaryText.split(/\n+/).flatMap(l => l.split(/(?=\s*[-•]\s+)/)).map(l => l.trim()).filter(Boolean);
+        const isBulletList = rawLines.some(l => l.startsWith('-') || l.startsWith('•') || l.includes('→'));
 
         const cardsCount = (lesson?.canDoReview && lesson.canDoReview.length > 0)
           ? lesson.canDoReview.length
@@ -1691,9 +1695,44 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
                 <h2 className={`text-2xl font-extrabold ${dark ? "text-white" : "text-gray-900"} mt-1`}>
                   Félicitations ! Chapter {chNumberStr} Mastered!
                 </h2>
-                <p className={`text-xs ${textSec} mt-3 max-w-2xl mx-auto leading-relaxed text-left p-4 rounded-xl border ${dark ? "bg-black/40 border-emerald-500/20 text-gray-200" : "bg-emerald-50/50 border-emerald-200 text-gray-800"}`}>
-                  {scriptSummary}
-                </p>
+
+                {isBulletList ? (
+                  <div className="mt-4 space-y-2 text-left max-w-2xl mx-auto">
+                    {rawLines.map((lineText, idx) => {
+                      const cleanLine = lineText.replace(/^[-•]\s*/, '').trim();
+                      if (!cleanLine) return null;
+
+                      const parts = cleanLine.split('→');
+                      const statement = parts[0]?.trim() || cleanLine;
+                      const lessonTag = parts[1]?.trim();
+
+                      return (
+                        <div
+                          key={idx}
+                          className={`p-3 rounded-xl border flex items-center justify-between gap-3 text-xs transition-all ${
+                            dark
+                              ? "bg-black/40 border-emerald-500/20 text-gray-200 hover:border-emerald-500/40"
+                              : "bg-emerald-50/50 border-emerald-200 text-gray-800 hover:border-emerald-300"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                            <span className="font-medium leading-relaxed">{statement}</span>
+                          </div>
+                          {lessonTag && (
+                            <span className="text-[10px] font-extrabold px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 shrink-0">
+                              {lessonTag}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className={`text-xs ${textSec} mt-3 max-w-2xl mx-auto leading-relaxed text-left p-4 rounded-xl border ${dark ? "bg-black/40 border-emerald-500/20 text-gray-200" : "bg-emerald-50/50 border-emerald-200 text-gray-800"}`}>
+                    {rawSummaryText}
+                  </p>
+                )}
               </div>
 
               <div className="flex items-center justify-center gap-4 py-2">
