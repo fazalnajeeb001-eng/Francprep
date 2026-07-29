@@ -120,14 +120,23 @@ export class ChapterService {
         chapterId: { $in: chapterIds },
         isPublished: true,
       })
-        .select('title order level category skill estimatedDuration chapterId')
+        .select('title order level category skill estimatedDuration chapterId lessonId')
         .sort({ order: 1 })
         .lean();
 
-      // Group lessons by chapterId for fast lookup
+      // Group lessons by chapter for fast lookup (supports ObjectId, string slug, and lessonId prefix matching)
       const lessonsByChapter: Record<string, any[]> = {};
       for (const lesson of publishedLessons) {
-        const chId = (lesson as any).chapterId?.toString();
+        let chId = (lesson as any).chapterId?.toString();
+        if (!chId || chId.includes('-ch')) {
+          const m = (lesson as any).lessonId?.match(/^(a0|a1|a2|b1|b2|c1|c2)-ch(\d+)/i);
+          if (m) {
+            const chLevel = m[1].toUpperCase();
+            const chOrder = parseInt(m[2], 10);
+            const foundCh = (chapters as any[]).find((ch: any) => ch.order === chOrder && moduleLevelMap[ch.moduleId?.toString()] === chLevel);
+            if (foundCh) chId = foundCh._id.toString();
+          }
+        }
         if (!chId) continue;
         if (!lessonsByChapter[chId]) lessonsByChapter[chId] = [];
         lessonsByChapter[chId].push(lesson);
