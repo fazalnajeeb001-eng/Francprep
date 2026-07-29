@@ -1380,8 +1380,8 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         );
 
       case 'speakingL7':
-        const roleplayText = lesson!.speaking?.roleplay || 'In groups of four, act out the café scene above — Nora, Léo, Camille, and Awa — focusing on correct il y a and comparison language throughout.';
-        const extTask = lesson!.speaking?.extensionTask || 'Improvise the actual apartment visit the next day, with Nora and the landlord (played by a new, one-off minor character, consistent with the cast\'s usage principle).';
+        const roleplayText = lesson!.speaking?.roleplay || lesson!.speaking?.prompt || `Practice speaking aloud applying the target expressions and key vocabulary from "${lesson?.title || 'this lesson'}".`;
+        const extTask = lesson!.speaking?.extensionTask || '';
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl overflow-hidden border border-purple-500/20`}>
             <div className="p-5 border-b dark:border-[#1e2a4a] border-gray-200">
@@ -1398,7 +1398,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
             </div>
             <SpeakingDrill
               lessonLevel={lesson!.level}
-              lessonTopic="Apartment Hunting Roleplay"
+              lessonTopic={lesson?.title || "Speaking Practice"}
               guidedActivity={roleplayText}
               roleplayPrompt={roleplayText}
               onComplete={() => markSectionComplete(currentSectionIdx)}
@@ -1488,26 +1488,8 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
           }
         }
 
-        const DEFAULT_L7_TRANSCRIPT = `Nora : Regardez cette annonce ! Un studio meublé, disponible en septembre.
-Léo : Est-ce qu'il y a une cuisine équipée ?
-Nora : Oui, il y a un frigo et une petite table. Et il n'y a pas de bruit — le quartier est très calme.
-Camille : C'est différent de mon appartement, alors ! Le mien est spacieux, mais bruyant.
-Nora : Je vais visiter demain avec le propriétaire. Vous voulez venir ?
-Awa : Bonne idée ! On peut vérifier s'il y a assez de place pour tes meubles.
-Nora : Merci ! Et après, il faudra faire le ménage avant d'emménager.`;
-
-        const DEFAULT_L7_TRANSLATION = `(At Julien's café, Nora shows her friends a listing.)
-
-Nora: Look at this listing! A furnished studio, available in September.
-Léo: Is there an equipped kitchen?
-Nora: Yes, there's a fridge and a small table. And there's no noise — the neighborhood is very quiet.
-Camille: That's different from my apartment, then! Mine is spacious, but noisy.
-Nora: I'm going to visit tomorrow with the landlord. Do you want to come?
-Awa: Good idea! We can check if there's enough space for your furniture.
-Nora: Thanks! And after, I'll need to clean before moving in.`;
-
-        const lesson7Transcript = lesson7?.scene?.text || lesson7?.reading?.text || lesson7?.listening?.transcript || lesson?.scene?.text || lesson?.reading?.text || lesson?.listening?.transcript || DEFAULT_L7_TRANSCRIPT;
-        const lesson7Translation = lesson7?.scene?.translation || lesson7?.reading?.translation || lesson7?.listening?.translation || lesson?.scene?.translation || DEFAULT_L7_TRANSLATION;
+        const lesson7Transcript = lesson7?.scene?.text || lesson7?.reading?.text || lesson7?.listening?.transcript || lesson?.scene?.text || lesson?.reading?.text || lesson?.listening?.transcript || '';
+        const lesson7Translation = lesson7?.scene?.translation || lesson7?.reading?.translation || lesson7?.listening?.translation || lesson?.scene?.translation || '';
 
         return (
           <DELFAssessmentTabbedView
