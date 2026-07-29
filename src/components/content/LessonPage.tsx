@@ -2637,19 +2637,17 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
 
   // Normalize Section 1 (Listening Comprehension)
   if (isListeningSec || activeTab === 0) {
-    sec.instructions = "Listen to the audio scene again and answer the comprehension question below:";
+    sec.instructions = sec.instructions || "Listen to the audio scene and answer the comprehension questions below:";
     sec.points = sec.points || 3;
     const rawQs = Array.isArray(sec.questions) ? sec.questions : [];
-    const firstQPrompt = (rawQs[0]?.prompt || '').toLowerCase();
-    
-    if (rawQs.length === 0 || firstQPrompt.includes('match') || firstQPrompt.includes('option a') || firstQPrompt.length < 5) {
+    if (rawQs.length === 0) {
       sec.questions = [
         {
           id: `${lesson?.lessonId || 'l8'}-sec1-q1`,
           type: 'short_answer',
-          prompt: "Who uses vous with whom, and why, at each point in the conversation?",
-          correctAnswer: "Review the usage of formal vous in the dialogue.",
-          explanation: "Listen to the dialogue to identify formal address.",
+          prompt: `Summarize the main conversation and key expressions in "${lesson?.title || 'this lesson'}".`,
+          correctAnswer: "Review the listening dialogue text.",
+          explanation: "Listen carefully to the audio dialogue.",
         }
       ];
     }
@@ -2658,39 +2656,22 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
   // Normalize Section 2 (Reading Comprehension)
   if (isReadingSec || activeTab === 1) {
     sec.points = sec.points || 4;
-    const rawPassage = sec.sourceText;
-    if (!rawPassage || rawPassage.includes("Bonsoir, Monsieur")) {
-      sec.sourceText = "Monsieur Roy cherche une nouvelle maison. Il visite une maison spacieuse avec quatre chambres. Il y a un grand jardin, mais il n'y a pas de garage. La maison est calme, loin du centre-ville.";
-      sec.translation = "Monsieur Roy is looking for a new house. He's visiting a spacious house with four bedrooms. There's a big garden, but there's no garage. The house is quiet, far from downtown.";
-    }
+    sec.instructions = sec.instructions || "Read the passage below and answer the comprehension questions:";
+    
+    // Use parsed sourceText or fall back to current lesson reading text
+    sec.sourceText = sec.sourceText || sec.passage || sec.text || lesson?.reading?.text || lesson?.scene?.text || '';
+    sec.translation = sec.translation || lesson?.reading?.translation || lesson?.scene?.translation || '';
 
     const rawQs = Array.isArray(sec.questions) ? sec.questions : [];
-    const firstQPrompt = (rawQs[0]?.prompt || '').toLowerCase();
-
-    if (rawQs.length === 0 || firstQPrompt.includes('match') || firstQPrompt.includes('option a') || firstQPrompt.includes('what time of day') || rawQs.length < 3) {
-      sec.instructions = "Read the short passage below and answer all 3 comprehension questions:";
+    if (rawQs.length === 0) {
       sec.questions = [
         {
           id: `${lesson?.lessonId || 'l8'}-sec2-q1`,
           type: 'short_answer',
-          prompt: '(a) What is Monsieur Roy looking for?',
-          correctAnswer: 'Une nouvelle maison / A new house',
-          explanation: 'Monsieur Roy is looking for a new house (une nouvelle maison).',
-        },
-        {
-          id: `${lesson?.lessonId || 'l8'}-sec2-q2`,
-          type: 'short_answer',
-          prompt: '(b) What does the house have and not have?',
-          correctAnswer: 'Quatre chambres et un grand jardin, pas de garage / 4 bedrooms, a big garden, no garage',
-          explanation: 'The house has 4 bedrooms and a big garden, but no garage.',
-        },
-        {
-          id: `${lesson?.lessonId || 'l8'}-sec2-q3`,
-          type: 'short_answer',
-          prompt: '(c) How is the location described?',
-          correctAnswer: 'Calme, loin du centre-ville / Quiet, far from downtown',
-          explanation: 'The location is quiet and far from downtown.',
-        },
+          prompt: `What is the main topic of the reading passage in "${lesson?.title || 'this lesson'}"?`,
+          correctAnswer: 'Main passage topic',
+          explanation: 'Review the text above for details.',
+        }
       ];
     }
   }
@@ -2698,18 +2679,16 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
   // Normalize Section 3 (Written Production)
   if (displaySkill === 'Writing' || activeTab === 2) {
     sec.points = sec.points || 4;
-    sec.instructions = "Written Production:";
+    sec.instructions = sec.instructions || "Written Production:";
     const rawQs = Array.isArray(sec.questions) ? sec.questions : [];
-    const firstQPrompt = (rawQs[0]?.prompt || '').toLowerCase();
-
-    if (rawQs.length === 0 || firstQPrompt.includes('match') || firstQPrompt.includes('option a') || firstQPrompt.length < 5) {
+    if (rawQs.length === 0) {
       sec.questions = [
         {
           id: `${lesson?.lessonId || 'l8'}-sec3-q1`,
           type: 'short_answer',
-          prompt: 'Write a 4–6 line original dialogue introducing yourself to a stranger, asking their name, and asking how they are, in the formal register.',
-          correctAnswer: 'Sample dialogue in formal register (using vous, Monsieur/Madame).',
-          explanation: 'Assess dialogue for proper formal register and 4-6 lines.',
+          prompt: lesson?.writing?.task || `Write a short 4–6 line paragraph applying the key vocabulary and grammar rules from "${lesson?.title || 'this chapter'}".`,
+          correctAnswer: 'Original written paragraph applying chapter topics.',
+          explanation: 'Check for grammar, vocabulary accuracy, and required line count.',
         }
       ];
     }
@@ -2718,17 +2697,15 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
   // Normalize Section 4 (Oral Production)
   if (isSpeakingSec || activeTab === 3) {
     sec.points = sec.points || 2;
-    sec.instructions = "Oral Production (Evaluated by FrancPrep's AI speaking coach):";
+    sec.instructions = sec.instructions || "Oral Production (Evaluated by FrancPrep's AI speaking coach):";
     const rawQs = Array.isArray(sec.questions) ? sec.questions : [];
-    const firstQPrompt = (rawQs[0]?.prompt || '').toLowerCase();
-
-    if (rawQs.length === 0 || firstQPrompt.includes('match') || firstQPrompt.includes('option a') || firstQPrompt.length < 5) {
+    if (rawQs.length === 0) {
       sec.questions = [
         {
           id: `${lesson?.lessonId || 'l8'}-sec4-q1`,
           type: 'short_answer',
-          prompt: "Introduce yourself aloud, state your name, and say how you are feeling today, using at least one adjective with correct agreement — speaking to FrancPrep's AI conversation partner.",
-          correctAnswer: 'Oral response introducing yourself with correct adjective agreement.',
+          prompt: lesson?.speaking?.prompt || `Speak aloud expressing your ideas on "${lesson?.title || 'this chapter'}" — speaking to FrancPrep's AI conversation partner.`,
+          correctAnswer: 'Oral response applying target expressions.',
           explanation: 'Speak clearly into the microphone.',
         }
       ];
@@ -2795,64 +2772,70 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
         {/* Section 1 Listening Reference */}
         {isListeningSec && (
           <div className={`p-4 rounded-xl border mb-4 space-y-3 ${dark ? "bg-purple-500/10 border-purple-500/30" : "bg-purple-50 border-purple-200"}`}>
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <Headphones className="w-4 h-4 text-purple-400" />
-                <span className={`text-xs font-bold uppercase tracking-wider ${dark ? "text-purple-300" : "text-purple-700"}`}>
-                  Reference: Lesson 7 Scene Audio
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                {lesson7Transcript && (
-                  <button
-                    type="button"
-                    onClick={() => speak(lesson7Transcript)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-lg shadow-md transition-all"
-                  >
-                    <Volume2 className="w-3.5 h-3.5" /> Listen to Audio
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={() => setShowTranscript(!showTranscript)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
-                    dark ? "bg-purple-500/20 border-purple-500/30 text-purple-300 hover:bg-purple-500/30" : "bg-purple-100 border-purple-200 text-purple-800 hover:bg-purple-200"
-                  }`}
-                >
-                  {showTranscript ? "Hide Transcript ▴" : "Show Transcript ▾"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowTranslation(!showTranslation)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
-                    dark ? "bg-pink-500/20 border-pink-500/30 text-pink-300 hover:bg-pink-500/30" : "bg-pink-100 border-pink-200 text-pink-800 hover:bg-pink-200"
-                  }`}
-                >
-                  {showTranslation ? "Hide English ▴" : "Show English ▾"}
-                </button>
-              </div>
-            </div>
-            {showTranscript && (
-              lesson7Transcript ? (
-                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
-                  <p className={`text-xs ${textBody} leading-relaxed whitespace-pre-line max-h-44 overflow-y-auto p-3 rounded-lg ${dark ? "bg-black/40 border border-purple-500/20 text-gray-200" : "bg-white border border-purple-200 text-gray-800"}`}>
-                    {lesson7Transcript}
-                  </p>
-                </motion.div>
-              ) : (
-                <p className={`text-xs ${textSec} italic`}>Loading Lesson 7 dialogue transcript...</p>
-              )
-            )}
-            {showTranslation && (
-              lesson7Translation ? (
-                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
-                  <div className={`p-3 rounded-lg border text-xs leading-relaxed whitespace-pre-line max-h-44 overflow-y-auto ${dark ? "bg-purple-950/40 border-purple-500/30 text-purple-200" : "bg-purple-100/60 border-purple-200 text-purple-900"}`}>
-                    <p className="font-bold text-[11px] mb-1 text-purple-400">English Translation:</p>
-                    {lesson7Translation}
+            {(() => {
+              const activeTranscript = sec.sourceText || sec.transcript || lesson7Transcript || lesson?.listening?.transcript || lesson?.scene?.text || '';
+              const activeTranslation = sec.translation || lesson7Translation || lesson?.listening?.translation || lesson?.scene?.translation || '';
+
+              return (
+                <>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <Headphones className="w-4 h-4 text-purple-400" />
+                      <span className={`text-xs font-bold uppercase tracking-wider ${dark ? "text-purple-300" : "text-purple-700"}`}>
+                        Reference: {lesson?.title || 'Chapter'} Audio Dialogue
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {activeTranscript && (
+                        <button
+                          type="button"
+                          onClick={() => speak(activeTranscript)}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-lg shadow-md transition-all"
+                        >
+                          <Volume2 className="w-3.5 h-3.5" /> Listen to Audio
+                        </button>
+                      )}
+                      {activeTranscript && (
+                        <button
+                          type="button"
+                          onClick={() => setShowTranscript(!showTranscript)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                            dark ? "bg-purple-500/20 border-purple-500/30 text-purple-300 hover:bg-purple-500/30" : "bg-purple-100 border-purple-200 text-purple-800 hover:bg-purple-200"
+                          }`}
+                        >
+                          {showTranscript ? "Hide Transcript ▴" : "Show Transcript ▾"}
+                        </button>
+                      )}
+                      {activeTranslation && (
+                        <button
+                          type="button"
+                          onClick={() => setShowTranslation(!showTranslation)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                            dark ? "bg-pink-500/20 border-pink-500/30 text-pink-300 hover:bg-pink-500/30" : "bg-pink-100 border-pink-200 text-pink-800 hover:bg-pink-200"
+                          }`}
+                        >
+                          {showTranslation ? "Hide English ▴" : "Show English ▾"}
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </motion.div>
-              ) : null
-            )}
+                  {showTranscript && activeTranscript && (
+                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
+                      <p className={`text-xs ${textBody} leading-relaxed whitespace-pre-line max-h-44 overflow-y-auto p-3 rounded-lg ${dark ? "bg-black/40 border border-purple-500/20 text-gray-200" : "bg-white border border-purple-200 text-gray-800"}`}>
+                        {activeTranscript}
+                      </p>
+                    </motion.div>
+                  )}
+                  {showTranslation && activeTranslation && (
+                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
+                      <p className={`text-xs ${textSec} italic leading-relaxed whitespace-pre-line max-h-44 overflow-y-auto p-3 rounded-lg ${dark ? "bg-purple-950/40 border border-purple-500/20 text-purple-200" : "bg-purple-50 border border-purple-200 text-purple-900"}`}>
+                        {activeTranslation}
+                      </p>
+                    </motion.div>
+                  )}
+                </>
+              );
+            })()}
           </div>
         )}
 
