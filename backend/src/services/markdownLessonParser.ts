@@ -833,7 +833,7 @@ function buildPracticeQuestion(n: number, type: string, promptText: string): ILe
     return {
       id: `pe-${n}`,
       type: 'matching',
-      prompt: prompt.replace(/^\s*\d+\.\s*.+/gm, '').replace(/^[A-Za-zÀ-ÿ0-9\s"'\(\)]+\s*[—\–\:-]+\s*(?:[a-eA-E0-9][\.\)]\s*)?.+$/gm, '').trim() || 'Match the items.',
+      prompt: prompt.replace(/^\s*\d+\.\s*.+/gm, '').replace(/^.+\s*[\u2014\u2013\:-]+\s*(?:[a-eA-E0-9][\.\)]\s*)?.+$/gm, '').trim() || 'Match the items.',
       pairs,
       correctAnswer: pairs,
       explanation: '',
