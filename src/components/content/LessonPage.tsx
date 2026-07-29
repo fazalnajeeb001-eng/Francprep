@@ -1618,58 +1618,120 @@ Nora: Thanks! And after, I'll need to clean before moving in.`;
         }
 
         return (
-          <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className={`${cardBg} backdrop-blur-lg rounded-2xl p-6 md:p-8 text-center space-y-6 border border-emerald-500/30 shadow-2xl`}>
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 p-0.5 mx-auto shadow-lg shadow-emerald-500/25 flex items-center justify-center">
-              <div className="w-full h-full bg-[#0c1224] rounded-[14px] flex items-center justify-center">
-                <Trophy className="w-8 h-8 text-emerald-400" />
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="space-y-6 max-w-4xl mx-auto">
+            {/* Celebratory Hero Header */}
+            <div className={`relative overflow-hidden rounded-3xl p-8 md:p-10 text-center border shadow-2xl ${dark ? "bg-gradient-to-b from-[#101828] via-[#0c1224] to-[#070B17] border-emerald-500/30" : "bg-gradient-to-b from-white via-emerald-50/40 to-slate-50 border-emerald-200"}`}>
+              {/* Background Glow Orbs */}
+              <div className="absolute -top-20 -left-20 w-60 h-60 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute -bottom-20 -right-20 w-60 h-60 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+
+              {/* Animated Trophy Icon */}
+              <div className="relative inline-block mb-4">
+                <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-amber-400 via-emerald-400 to-teal-400 p-1 shadow-xl shadow-emerald-500/30">
+                  <div className={`w-full h-full rounded-[22px] flex items-center justify-center ${dark ? "bg-[#0a0e1a]" : "bg-white"}`}>
+                    <Trophy className="w-10 h-10 text-amber-400 animate-bounce" />
+                  </div>
+                </div>
+                <span className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white text-xs font-bold shadow-md">
+                  ✓
+                </span>
               </div>
-            </div>
 
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                Syllabus Milestone Achieved
-              </span>
-              <h3 className={`text-2xl md:text-3xl font-extrabold mt-3 ${dark ? "text-white" : "text-gray-900"}`}>
-                Chapter {chNumber} — Complete 🎉
-              </h3>
-              <p className={`text-xs mt-1 ${textSec}`}>
-                Congratulations! You have mastered all lessons and skills in this chapter.
-              </p>
-            </div>
-
-            <div className={`p-6 rounded-2xl border text-left space-y-5 ${dark ? "bg-[#0c1224] border-[#1e2a4a]" : "bg-gray-50 border-gray-200"}`}>
-              <div>
-                <p className="font-bold text-sm text-emerald-400 mb-3 flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" /> You Can Now:
+              <div className="space-y-2 relative z-10">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-extrabold uppercase tracking-wider">
+                  <Sparkles className="w-4 h-4 text-amber-400" /> Syllabus Milestone Mastered
+                </div>
+                <h2 className={`text-3xl md:text-4xl font-extrabold tracking-tight ${dark ? "text-white" : "text-slate-900"}`}>
+                  Chapter {chNumber} — Complete 🎉
+                </h2>
+                <p className={`text-sm max-w-xl mx-auto ${dark ? "text-gray-300" : "text-slate-600"}`}>
+                  Félicitations ! You have successfully completed all core lessons, interactive drills, and the DELF assessment for Chapter {chNumber}.
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-                  {parsedSkillCards.map((item, i) => (
-                    <div key={i} className={`p-3.5 rounded-xl border flex items-start justify-between gap-3 transition-all ${
-                      dark ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-200" : "bg-emerald-50 border-emerald-200 text-emerald-900"
-                    }`}>
-                      <div className="flex items-start gap-2.5 flex-1 min-w-0">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-                        <span className="text-xs font-semibold leading-relaxed">{item.statement}</span>
-                      </div>
-                      {item.lessonRef && (
-                        <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md shrink-0 border ${
-                          dark ? "bg-purple-500/20 text-purple-300 border-purple-500/30" : "bg-purple-100 text-purple-800 border-purple-200"
-                        }`}>
-                          {item.lessonRef}
-                        </span>
-                      )}
-                    </div>
-                  ))}
+              </div>
+
+              {/* Stats Summary Bar */}
+              <div className="grid grid-cols-3 gap-3 mt-8 pt-6 border-t dark:border-[#1e2a4a] border-emerald-100 max-w-lg mx-auto">
+                <div className={`p-3 rounded-2xl border text-center ${dark ? "bg-[#070B17]/60 border-[#1e2a4a]" : "bg-white border-slate-200"}`}>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Skills</p>
+                  <p className="text-lg font-extrabold text-emerald-400 mt-0.5">{parsedSkillCards.length} Mastered</p>
+                </div>
+                <div className={`p-3 rounded-2xl border text-center ${dark ? "bg-[#070B17]/60 border-[#1e2a4a]" : "bg-white border-slate-200"}`}>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Mastery</p>
+                  <p className="text-lg font-extrabold text-amber-400 mt-0.5">100%</p>
+                </div>
+                <div className={`p-3 rounded-2xl border text-center ${dark ? "bg-[#070B17]/60 border-[#1e2a4a]" : "bg-white border-slate-200"}`}>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">DELF Status</p>
+                  <p className="text-lg font-extrabold text-purple-400 mt-0.5">A1 Ready</p>
                 </div>
               </div>
+            </div>
 
-              <div className={`p-4 rounded-xl border ${dark ? "bg-purple-500/10 border-purple-500/30 text-purple-200" : "bg-purple-50 border-purple-200 text-purple-900"}`}>
-                <p className="text-xs font-bold uppercase tracking-wider text-purple-400 mb-1 flex items-center gap-1.5">
-                  <BookOpen className="w-3.5 h-3.5 text-purple-400" /> Next Milestone:
-                </p>
-                <p className="text-xs leading-relaxed font-medium">
-                  {nextChapterText}
-                </p>
+            {/* Can-Do Achievements Section */}
+            <div className={`${cardBg} backdrop-blur-lg rounded-3xl p-6 md:p-8 border shadow-xl space-y-6`}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className={`text-base font-extrabold flex items-center gap-2.5 ${dark ? "text-white" : "text-slate-900"}`}>
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                    Chapter Competencies Acquired:
+                  </h3>
+                  <p className={`text-xs mt-0.5 ${textSec}`}>Everything you are now fluent in from this chapter</p>
+                </div>
+                <span className={`text-xs font-bold px-3 py-1 rounded-full ${dark ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-emerald-100 text-emerald-800"}`}>
+                  {parsedSkillCards.length} / {parsedSkillCards.length} Badges Earned
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {parsedSkillCards.map((item, i) => (
+                  <motion.div
+                    key={i}
+                    whileHover={{ scale: 1.015, y: -2 }}
+                    className={`p-4 rounded-2xl border flex items-start justify-between gap-3 transition-all ${
+                      dark
+                        ? "bg-[#0c1224] border-[#1e2a4a] hover:border-emerald-500/40 hover:shadow-lg hover:shadow-emerald-500/5 text-gray-200"
+                        : "bg-white border-slate-200/90 hover:border-emerald-300 hover:shadow-md text-slate-800"
+                    }`}
+                  >
+                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                      <div className="w-6 h-6 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shrink-0 mt-0.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      </div>
+                      <span className="text-xs font-bold leading-relaxed">{item.statement}</span>
+                    </div>
+
+                    {item.lessonRef && (
+                      <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-lg shrink-0 border transition-all ${
+                        dark
+                          ? "bg-purple-500/15 text-purple-300 border-purple-500/30"
+                          : "bg-purple-100 text-purple-800 border-purple-200"
+                      }`}>
+                        {item.lessonRef}
+                      </span>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Next Milestone Teaser Card */}
+              <div className={`p-6 rounded-2xl border relative overflow-hidden transition-all ${dark ? "bg-gradient-to-r from-purple-950/40 via-purple-900/20 to-pink-950/40 border-purple-500/30" : "bg-gradient-to-r from-purple-50 via-pink-50/50 to-purple-50 border-purple-200"}`}>
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center shrink-0">
+                    <Sparkles className="w-5 h-5 text-purple-400" />
+                  </div>
+                  <div className="space-y-1 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-purple-400 px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20">
+                        Up Next
+                      </span>
+                      <h4 className={`text-xs font-extrabold uppercase tracking-wider ${dark ? "text-purple-300" : "text-purple-900"}`}>
+                        Next Chapter Milestone
+                      </h4>
+                    </div>
+                    <p className={`text-xs leading-relaxed font-semibold ${dark ? "text-gray-200" : "text-gray-800"}`}>
+                      {nextChapterText}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </motion.div>
