@@ -691,14 +691,21 @@ function parsePracticeExercises(text: string, lessonId: string): Question[] {
     }
 
     const tm = t.match(/^(?:\*\*)?(\d+)[\.\)]\s*(?:(Multiple Choice|Matching|Fill in the Blank|Fill Blank|Sentence Ordering|Ordering|Short Answer|Translation|True or False|Communicative Practice)(?::?\*\*|:|\s)?)?\s*(.*)$/i);
-    const isDashPairLine = Boolean(t.match(/^[A-Za-zÀ-ÿ0-9\s"'\(\)]+\s*[\u2014\u2013\-:]\s*(?:[a-eA-E0-9][\.\)]\s*)?.+$/));
-    const isMatchingItem = curType === 'matching' && isDashPairLine && !t.match(/^(?:\*\*)?\d+[\.\)]\s*(?:Multiple Choice|Fill in the Blank|Sentence Ordering|Short Answer|Translation)/i);
+    
+    const explicitType = tm?.[2];
+    const inlinePrompt = tm?.[3]?.trim();
 
-    if (tm && (tm[2] || tm[3]) && !isMatchingItem) {
-      const explicitType = tm[2];
-      const inlinePrompt = tm[3]?.trim();
+    // If currently parsing a matching question, keep accumulating lines unless a NEW explicit question type header or Answer Key is encountered
+    if (curType === 'matching' && !explicitType) {
+      if (t && !t.startsWith('**')) {
+        curPromptLines.push(t);
+      }
+      continue;
+    }
 
-      if (explicitType || (tm[1] && explicitType)) {
+    if (tm && (explicitType || inlinePrompt)) {
+      if (explicitType || tm[1]) {
+        // Push previous pending question
         if (curPromptLines.length > 0 && curType) {
           n++;
           qs.push(buildPracticeQuestion(n, curType, curPromptLines.join('\n'), lessonId));
@@ -710,34 +717,24 @@ function parsePracticeExercises(text: string, lessonId: string): Question[] {
             .replace('fill_in_the_blank', 'fill_blank')
             .replace('sentence_ordering', 'ordering')
             .replace('communicative_practice', 'short_answer');
+        } else {
+          if (inlinePrompt?.match(/[a-d]\)\s*/i)) {
+            curType = 'multiple_choice';
+          } else if (inlinePrompt?.includes('__________') || inlinePrompt?.includes('______')) {
+            curType = 'fill_blank';
+          } else {
+            curType = 'short_answer';
+          }
         }
 
         if (inlinePrompt) {
           curPromptLines.push(inlinePrompt);
         }
         continue;
-      } else if (tm[1] && !explicitType) {
-        if (!isMatchingItem) {
-          if (curPromptLines.length > 0 && curType) {
-            n++;
-            qs.push(buildPracticeQuestion(n, curType, curPromptLines.join('\n'), lessonId));
-            curPromptLines = [];
-          }
-          if (inlinePrompt.match(/[a-d]\)\s*/i)) {
-            curType = 'multiple_choice';
-          } else if (inlinePrompt.includes('__________') || inlinePrompt.includes('______')) {
-            curType = 'fill_blank';
-          } else {
-            curType = 'short_answer';
-          }
-          if (inlinePrompt) {
-            curPromptLines.push(inlinePrompt);
-          }
-          continue;
-        }
       }
     }
 
+    // Accumulate prompt lines for current question
     if (curType && !t.startsWith('**')) {
       curPromptLines.push(t);
     }
