@@ -838,6 +838,121 @@ router.post('/content-pipeline/drafts/:id/publish', async (req: AuthRequest, res
   }
 });
 
+// ─── POST /content-pipeline/drafts/publish-bulk ─────────────────────────────
+router.post('/content-pipeline/drafts/publish-bulk', async (req: AuthRequest, res: Response) => {
+  try {
+    const { ids } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0) {
+      res.status(400).json({ success: false, error: 'No draft IDs provided for bulk publish' });
+      return;
+    }
+
+    const publishedResults: any[] = [];
+    const errors: string[] = [];
+
+    for (const draftId of ids) {
+      try {
+        const draft = await Draft.findById(draftId);
+        if (!draft) continue;
+
+        let canonical = draft.parsedData;
+        if (!canonical || !canonical.title) {
+          if (draft.content) {
+            const parsedLessons = parseLessonFromMarkdown(draft.content, draft.level || 'A1', 1);
+            if (parsedLessons.length > 0) {
+              canonical = parsedLessons[0];
+              draft.parsedData = canonical;
+            }
+          }
+        }
+
+        if (!canonical || !canonical.lessonId) continue;
+
+        const lvl = (canonical.level || draft.level || 'A1').toUpperCase();
+        if (!canonical.lessonId) canonical.lessonId = draft.lessonId || `${lvl.toLowerCase()}-ch1-l1`;
+        if (!canonical.chapterId) canonical.chapterId = draft.chapterId || `${lvl.toLowerCase()}-ch1`;
+        if (!canonical.title) canonical.title = draft.title || 'Untitled Lesson';
+
+        let resolvedChapterId: any = canonical.chapterId;
+        if (typeof resolvedChapterId === 'string' && resolvedChapterId.includes('-ch')) {
+          const match = resolvedChapterId.match(/^(a0|a1|a2|b1|b2|c1|c2)-ch(\d+)$/i);
+          if (match) {
+            const chLevel = match[1].toUpperCase();
+            const chOrder = parseInt(match[2], 10);
+            const db = mongoose.connection.db;
+            if (db) {
+              const course = await db.collection('courses').findOne({ level: chLevel });
+              if (course) {
+                const modules = await db.collection('modules').find({ courseId: course._id }).toArray();
+                const modIds = modules.map((m: any) => m._id);
+                const chapterDoc = await db.collection('chapters').findOne({ moduleId: { $in: modIds }, order: chOrder });
+                if (chapterDoc) resolvedChapterId = chapterDoc._id;
+              }
+            }
+          }
+        }
+
+        const orderNum = parseInt((canonical.lessonId.match(/l(\d+)/i) || [])[1], 10) || 1;
+
+        const lessonPayload = {
+          lessonId: canonical.lessonId,
+          chapterId: resolvedChapterId,
+          title: canonical.title,
+          level: canonical.level || draft.level || 'A1',
+          order: orderNum,
+          anchorSkill: canonical.anchorSkill || draft.origin || 'grammar',
+          durationMinutes: canonical.durationMinutes || 30,
+          warmUp: canonical.warmUp,
+          explanation: canonical.explanation,
+          vocabItems: canonical.vocabulary || canonical.vocabItems,
+          grammar: canonical.grammar,
+          grammarDrills: canonical.grammarDrills,
+          reading: canonical.reading,
+          listening: canonical.listening,
+          speaking: canonical.speaking,
+          writing: canonical.writing,
+          practiceExercises: canonical.practiceExercises,
+          miniReview: canonical.miniReview,
+          selfAssessment: canonical.selfAssessment,
+          isPublished: true,
+          canonical,
+          updatedAt: new Date(),
+        };
+
+        const lessonIdPattern = new RegExp(`^${canonical.lessonId.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}$`, 'i');
+        await Lesson.updateOne(
+          { lessonId: { $regex: lessonIdPattern } },
+          { $set: lessonPayload, $setOnInsert: { createdAt: new Date() } },
+          { upsert: true }
+        );
+
+        draft.status = 'published';
+        draft.publishedAt = new Date();
+        draft.publishedBy = req.user?.email || 'admin';
+        await draft.save();
+
+        publishedResults.push({
+          draftId: draft._id,
+          lessonId: canonical.lessonId,
+          title: canonical.title,
+        });
+      } catch (err: any) {
+        errors.push(`Draft ${draftId}: ${err.message}`);
+      }
+    }
+
+    res.json({
+      success: true,
+      count: publishedResults.length,
+      publishedLessons: publishedResults,
+      errors: errors.length > 0 ? errors : undefined,
+    });
+  } catch (error: any) {
+    console.error('Bulk publish error:', error);
+    res.status(500).json({ success: false, error: error.message || 'Failed bulk publishing' });
+  }
+});
+
 // ─── DELETE /content-pipeline/drafts/:id ───────────────────────────────────
 router.delete('/content-pipeline/drafts/:id', async (req: AuthRequest, res: Response) => {
   try {

@@ -283,36 +283,73 @@ function DraftsSubSectionPage() {
     }
   };
 
-  // Published Success Verification State
+  // Published Confirmation & Verification States
+  const [publishConfirmItem, setPublishConfirmItem] = useState<{
+    type: 'single' | 'chapter';
+    draftId?: string;
+    chapterId?: string;
+    title: string;
+    lessonId?: string;
+    draftIds?: string[];
+  } | null>(null);
+
   const [publishedSuccessItem, setPublishedSuccessItem] = useState<{
     lessonId: string;
     title: string;
     publishedAt: string;
   } | null>(null);
 
-  // Execute Publish
-  const handlePublish = async (id: string) => {
+  // Execute Publish (Single Lesson or Full Chapter)
+  const handlePublishExecute = async () => {
+    if (!publishConfirmItem && !publishConfirmId) return;
     setActionStatus({ loading: true, error: "", success: "" });
     try {
-      const res = await apiFetch(`/admin/content-pipeline/drafts/${id}/publish`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ confirm: true }),
-      });
-      const json = await res.json();
-      if (json.success) {
-        setPublishedSuccessItem({
-          lessonId: json.data?.lessonId || selectedDraft?.lessonId || id,
-          title: json.data?.title || selectedDraft?.title || "Lesson",
-          publishedAt: new Date().toLocaleTimeString(),
+      if (publishConfirmItem?.type === "chapter" && publishConfirmItem.draftIds?.length) {
+        const res = await apiFetch("/admin/content-pipeline/drafts/publish-bulk", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ids: publishConfirmItem.draftIds }),
         });
-        setActionStatus({ loading: false, error: "", success: `Draft ${json.data?.lessonId || id} published successfully to production database!` });
-        setPublishConfirmId(null);
-        setPublishWordInput("");
-        setSelectedDraft(null);
-        fetchDrafts();
+        const json = await res.json();
+        if (json.success) {
+          const firstItem = json.publishedLessons?.[0];
+          setPublishedSuccessItem({
+            lessonId: firstItem?.lessonId || publishConfirmItem.lessonId || "a1-ch1-l1",
+            title: `Entire Chapter (${json.count} Lessons Published)`,
+            publishedAt: new Date().toLocaleTimeString(),
+          });
+          setActionStatus({ loading: false, error: "", success: `All ${json.count} lessons of chapter published successfully!` });
+          setPublishConfirmItem(null);
+          setPublishConfirmId(null);
+          setPublishWordInput("");
+          setSelectedDraft(null);
+          fetchDrafts();
+        } else {
+          setActionStatus({ loading: false, error: json.error || "Chapter publish failed", success: "" });
+        }
       } else {
-        setActionStatus({ loading: false, error: json.error || "Publishing failed", success: "" });
+        const targetId = publishConfirmItem?.draftId || publishConfirmId;
+        const res = await apiFetch(`/admin/content-pipeline/drafts/${targetId}/publish`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ confirm: true }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          setPublishedSuccessItem({
+            lessonId: json.data?.lessonId || publishConfirmItem?.lessonId || selectedDraft?.lessonId || targetId || "",
+            title: json.data?.title || publishConfirmItem?.title || selectedDraft?.title || "Lesson",
+            publishedAt: new Date().toLocaleTimeString(),
+          });
+          setActionStatus({ loading: false, error: "", success: `Draft ${json.data?.lessonId || targetId} published successfully!` });
+          setPublishConfirmItem(null);
+          setPublishConfirmId(null);
+          setPublishWordInput("");
+          setSelectedDraft(null);
+          fetchDrafts();
+        } else {
+          setActionStatus({ loading: false, error: json.error || "Publishing failed", success: "" });
+        }
       }
     } catch (e: any) {
       setActionStatus({ loading: false, error: e.message || "Network error", success: "" });
@@ -565,9 +602,15 @@ function DraftsSubSectionPage() {
           </div>
 
           {/* Selected Draft Details Drawer */}
-          <div className="lg:col-span-1">
-            {selectedDraft ? (
-              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className={`${card} border rounded-2xl p-5 space-y-5 sticky top-24`}>
+          {(() => {
+            const siblingDrafts = selectedDraft
+              ? drafts.filter((d) => d.status !== "superseded" && d.status !== "published" && d.lessonId.startsWith(selectedDraft.lessonId.replace(/-l\d+$/i, "")))
+              : [];
+
+            return (
+              <div className="lg:col-span-1">
+                {selectedDraft ? (
+                  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className={`${card} border rounded-2xl p-5 space-y-5 sticky top-24`}>
                 <div className="border-b pb-3">
                   <span className="text-xs text-gray-400 font-mono">{selectedDraft.lessonId}</span>
                   <h2 className="text-base font-bold text-white mt-1">{selectedDraft.title}</h2>
@@ -606,21 +649,43 @@ function DraftsSubSectionPage() {
                   </div>
                 </div>
 
-                <div className="flex gap-2 border-t pt-4">
-                  <button
-                    onClick={() => setPublishConfirmId(selectedDraft._id)}
-                    disabled={selectedDraft.validationErrors.length > 0}
-                    className="flex-1 py-2.5 bg-gradient-to-r from-emerald-500 to-green-500 disabled:from-gray-700 disabled:to-gray-800 disabled:opacity-30 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-emerald-500/10"
-                  >
-                    Publish Version
-                  </button>
-                  <button
-                    onClick={(e) => handlePromptDeleteSingle(selectedDraft, e as any)}
-                    className="p-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-xs rounded-xl transition-all"
-                    title="Delete Draft"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                <div className="space-y-2 border-t pt-4">
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <button
+                      onClick={() => setPublishConfirmItem({
+                        type: 'single',
+                        draftId: selectedDraft._id,
+                        title: selectedDraft.title,
+                        lessonId: selectedDraft.lessonId,
+                      })}
+                      disabled={selectedDraft.validationErrors.length > 0}
+                      className="flex-1 py-2.5 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-400 hover:to-green-400 disabled:opacity-30 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-emerald-500/10 flex items-center justify-center gap-1.5"
+                    >
+                      <CheckCircle className="w-4 h-4" /> Publish Lesson Only
+                    </button>
+
+                    {siblingDrafts.length > 1 && (
+                      <button
+                        onClick={() => setPublishConfirmItem({
+                          type: 'chapter',
+                          title: `Entire Chapter (${siblingDrafts.length} Lessons)`,
+                          lessonId: selectedDraft.lessonId,
+                          draftIds: siblingDrafts.map((d: any) => d._id),
+                        })}
+                        className="flex-1 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-extrabold rounded-xl transition-all shadow-md shadow-purple-500/20 flex items-center justify-center gap-1.5"
+                      >
+                        <Database className="w-4 h-4 text-purple-300" /> Publish Entire Chapter ({siblingDrafts.length} Lessons)
+                      </button>
+                    )}
+
+                    <button
+                      onClick={(e) => handlePromptDeleteSingle(selectedDraft, e as any)}
+                      className="p-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-xs rounded-xl transition-all flex items-center justify-center"
+                      title="Delete Draft"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             ) : (
@@ -628,7 +693,9 @@ function DraftsSubSectionPage() {
                 Select a draft record to view metadata, edit, publish, or delete.
               </div>
             )}
-          </div>
+            </div>
+          );
+        })()}
         </div>
       </div>
 
@@ -737,7 +804,7 @@ function DraftsSubSectionPage() {
 
       {/* ─── PROTECTED PUBLISH CONFIRMATION MODAL ─── */}
       <AnimatePresence>
-        {publishConfirmId && (
+        {(publishConfirmItem || publishConfirmId) && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
             <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
               className={`${card} border border-emerald-500/40 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl`}>
@@ -745,15 +812,29 @@ function DraftsSubSectionPage() {
                 <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto mb-3">
                   <CheckCircle2 className="w-6 h-6 text-emerald-400" />
                 </div>
-                <h3 className="text-base font-extrabold text-white">Confirm Production Publish</h3>
+                <h3 className="text-base font-extrabold text-white">
+                  {publishConfirmItem?.type === "chapter" ? "Confirm Full Chapter Publish" : "Confirm Single Lesson Publish"}
+                </h3>
                 <p className="text-xs text-gray-400 mt-1">
-                  You are about to publish this draft directly to the live student catalog.
+                  {publishConfirmItem?.type === "chapter"
+                    ? `You are about to publish all ${publishConfirmItem.draftIds?.length} lessons of this chapter directly to live production.`
+                    : "You are about to publish this lesson draft directly to the live student catalog."}
                 </p>
 
                 <div className="mt-3 p-3 bg-black/40 border border-white/10 rounded-xl text-left font-mono text-xs space-y-1">
-                  <p className="text-emerald-400 font-bold">• Target Lesson ID: {selectedDraft?.lessonId || publishConfirmId}</p>
-                  <p className="text-gray-300">• Title: "{selectedDraft?.title || 'Lesson'}"</p>
-                  <p className="text-amber-400 font-semibold">• Target Catalog: Live Production DB</p>
+                  {publishConfirmItem?.type === "chapter" ? (
+                    <>
+                      <p className="text-purple-400 font-bold">• Mode: Full Chapter Batch Publish</p>
+                      <p className="text-emerald-400 font-bold">• Total Lessons: {publishConfirmItem.draftIds?.length} Lessons</p>
+                      <p className="text-gray-300">• Target: Live Production DB</p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-emerald-400 font-bold">• Target Lesson ID: {publishConfirmItem?.lessonId || selectedDraft?.lessonId || publishConfirmId}</p>
+                      <p className="text-gray-300">• Title: "{publishConfirmItem?.title || selectedDraft?.title || 'Lesson'}"</p>
+                      <p className="text-amber-400 font-semibold">• Target Catalog: Live Production DB</p>
+                    </>
+                  )}
                 </div>
 
                 <div className="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-left">
@@ -770,8 +851,8 @@ function DraftsSubSectionPage() {
                 </div>
               </div>
               <div className="flex gap-2 pt-2">
-                <button onClick={() => { setPublishConfirmId(null); setPublishWordInput(""); }} className="flex-1 py-2.5 bg-[#1e2a4a] hover:bg-[#283863] text-gray-300 text-xs font-semibold rounded-xl transition-all">Cancel</button>
-                <button onClick={() => handlePublish(publishConfirmId)} disabled={publishWordInput !== "PUBLISH"} className="flex-1 py-2.5 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-400 hover:to-green-400 disabled:opacity-30 disabled:cursor-not-allowed text-white text-xs font-extrabold rounded-xl shadow-lg shadow-emerald-500/20 transition-all">Confirm & Deploy Live</button>
+                <button onClick={() => { setPublishConfirmItem(null); setPublishConfirmId(null); setPublishWordInput(""); }} className="flex-1 py-2.5 bg-[#1e2a4a] hover:bg-[#283863] text-gray-300 text-xs font-semibold rounded-xl transition-all">Cancel</button>
+                <button onClick={handlePublishExecute} disabled={publishWordInput !== "PUBLISH"} className="flex-1 py-2.5 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-400 hover:to-green-400 disabled:opacity-30 disabled:cursor-not-allowed text-white text-xs font-extrabold rounded-xl shadow-lg shadow-emerald-500/20 transition-all">Confirm & Deploy Live</button>
               </div>
             </motion.div>
           </div>

@@ -217,6 +217,14 @@ function PipelineDashboardPage() {
   };
 
   // Protected Publish & Success Verification States
+  const [publishConfirmItem, setPublishConfirmItem] = useState<{
+    type: 'single' | 'chapter';
+    draftId?: string;
+    chapterId?: string;
+    title: string;
+    lessonId?: string;
+    draftIds?: string[];
+  } | null>(null);
   const [publishConfirmId, setPublishConfirmId] = useState<string | null>(null);
   const [publishWordInput, setPublishWordInput] = useState("");
   const [publishedSuccessItem, setPublishedSuccessItem] = useState<{
@@ -225,24 +233,52 @@ function PipelineDashboardPage() {
     publishedAt: string;
   } | null>(null);
 
-  const handlePublish = async (draftId: string) => {
+  const handlePublishExecute = async () => {
+    if (!publishConfirmItem && !publishConfirmId) return;
     setActionStatus({ loading: true, error: "", success: "" });
     try {
-      const res = await apiFetch(`/admin/content-pipeline/drafts/${draftId}/publish`, { method: "POST" });
-      const json = await res.json();
-      if (json.success) {
-        setPublishedSuccessItem({
-          lessonId: json.data?.lessonId || selectedDraft?.lessonId || draftId,
-          title: json.data?.title || selectedDraft?.title || "Lesson",
-          publishedAt: new Date().toLocaleTimeString(),
+      if (publishConfirmItem?.type === "chapter" && publishConfirmItem.draftIds?.length) {
+        const res = await apiFetch("/admin/content-pipeline/drafts/publish-bulk", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ids: publishConfirmItem.draftIds }),
         });
-        setActionStatus({ loading: false, error: "", success: `Lesson ${json.data?.lessonId || draftId} published to live catalog!` });
-        setPublishConfirmId(null);
-        setPublishWordInput("");
-        fetchDrafts();
-        setSelectedDraft(null);
+        const json = await res.json();
+        if (json.success) {
+          const firstItem = json.publishedLessons?.[0];
+          setPublishedSuccessItem({
+            lessonId: firstItem?.lessonId || publishConfirmItem.lessonId || "a1-ch1-l1",
+            title: `Entire Chapter (${json.count} Lessons Published)`,
+            publishedAt: new Date().toLocaleTimeString(),
+          });
+          setActionStatus({ loading: false, error: "", success: `All ${json.count} lessons of chapter published successfully!` });
+          setPublishConfirmItem(null);
+          setPublishConfirmId(null);
+          setPublishWordInput("");
+          fetchDrafts();
+          setSelectedDraft(null);
+        } else {
+          setActionStatus({ loading: false, error: json.error || "Chapter publish failed", success: "" });
+        }
       } else {
-        setActionStatus({ loading: false, error: json.error || "Publish failed", success: "" });
+        const targetId = publishConfirmItem?.draftId || publishConfirmId;
+        const res = await apiFetch(`/admin/content-pipeline/drafts/${targetId}/publish`, { method: "POST" });
+        const json = await res.json();
+        if (json.success) {
+          setPublishedSuccessItem({
+            lessonId: json.data?.lessonId || publishConfirmItem?.lessonId || selectedDraft?.lessonId || targetId || "",
+            title: json.data?.title || publishConfirmItem?.title || selectedDraft?.title || "Lesson",
+            publishedAt: new Date().toLocaleTimeString(),
+          });
+          setActionStatus({ loading: false, error: "", success: `Lesson ${json.data?.lessonId || targetId} published to live catalog!` });
+          setPublishConfirmItem(null);
+          setPublishConfirmId(null);
+          setPublishWordInput("");
+          fetchDrafts();
+          setSelectedDraft(null);
+        } else {
+          setActionStatus({ loading: false, error: json.error || "Publish failed", success: "" });
+        }
       }
     } catch (e: any) {
       setActionStatus({ loading: false, error: e.message || "Network error", success: "" });
@@ -1046,7 +1082,7 @@ function PipelineDashboardPage() {
         )}
         {/* ─── PROTECTED PUBLISH CONFIRMATION MODAL ─── */}
         <AnimatePresence>
-          {publishConfirmId && (
+          {(publishConfirmItem || publishConfirmId) && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
               <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
                 className={`${card} border border-emerald-500/40 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl`}>
@@ -1054,15 +1090,29 @@ function PipelineDashboardPage() {
                   <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto mb-3">
                     <CheckCircle2 className="w-6 h-6 text-emerald-400" />
                   </div>
-                  <h3 className="text-base font-extrabold text-white">Confirm Production Publish</h3>
+                  <h3 className="text-base font-extrabold text-white">
+                    {publishConfirmItem?.type === "chapter" ? "Confirm Full Chapter Publish" : "Confirm Single Lesson Publish"}
+                  </h3>
                   <p className="text-xs text-gray-400 mt-1">
-                    You are about to publish this draft directly to the live student catalog.
+                    {publishConfirmItem?.type === "chapter"
+                      ? `You are about to publish all ${publishConfirmItem.draftIds?.length} lessons of this chapter directly to live production.`
+                      : "You are about to publish this lesson draft directly to the live student catalog."}
                   </p>
 
                   <div className="mt-3 p-3 bg-black/40 border border-white/10 rounded-xl text-left font-mono text-xs space-y-1">
-                    <p className="text-emerald-400 font-bold">• Target Lesson ID: {selectedDraft?.lessonId || publishConfirmId}</p>
-                    <p className="text-gray-300">• Title: "{selectedDraft?.title || 'Lesson'}"</p>
-                    <p className="text-amber-400 font-semibold">• Target Catalog: Live Production DB</p>
+                    {publishConfirmItem?.type === "chapter" ? (
+                      <>
+                        <p className="text-purple-400 font-bold">• Mode: Full Chapter Batch Publish</p>
+                        <p className="text-emerald-400 font-bold">• Total Lessons: {publishConfirmItem.draftIds?.length} Lessons</p>
+                        <p className="text-gray-300">• Target: Live Production DB</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-emerald-400 font-bold">• Target Lesson ID: {publishConfirmItem?.lessonId || selectedDraft?.lessonId || publishConfirmId}</p>
+                        <p className="text-gray-300">• Title: "{publishConfirmItem?.title || selectedDraft?.title || 'Lesson'}"</p>
+                        <p className="text-amber-400 font-semibold">• Target Catalog: Live Production DB</p>
+                      </>
+                    )}
                   </div>
 
                   <div className="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-left">
@@ -1079,8 +1129,8 @@ function PipelineDashboardPage() {
                   </div>
                 </div>
                 <div className="flex gap-2 pt-2">
-                  <button onClick={() => { setPublishConfirmId(null); setPublishWordInput(""); }} className="flex-1 py-2.5 bg-[#1e2a4a] hover:bg-[#283863] text-gray-300 text-xs font-semibold rounded-xl transition-all">Cancel</button>
-                  <button onClick={() => handlePublish(publishConfirmId)} disabled={publishWordInput !== "PUBLISH"} className="flex-1 py-2.5 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-400 hover:to-green-400 disabled:opacity-30 disabled:cursor-not-allowed text-white text-xs font-extrabold rounded-xl shadow-lg shadow-emerald-500/20 transition-all">Confirm & Deploy Live</button>
+                  <button onClick={() => { setPublishConfirmItem(null); setPublishConfirmId(null); setPublishWordInput(""); }} className="flex-1 py-2.5 bg-[#1e2a4a] hover:bg-[#283863] text-gray-300 text-xs font-semibold rounded-xl transition-all">Cancel</button>
+                  <button onClick={handlePublishExecute} disabled={publishWordInput !== "PUBLISH"} className="flex-1 py-2.5 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-400 hover:to-green-400 disabled:opacity-30 disabled:cursor-not-allowed text-white text-xs font-extrabold rounded-xl shadow-lg shadow-emerald-500/20 transition-all">Confirm & Deploy Live</button>
                 </div>
               </motion.div>
             </div>
