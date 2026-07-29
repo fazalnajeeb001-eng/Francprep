@@ -2518,6 +2518,7 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
   const [activeTab, setActiveTab] = useState(0);
   const [showTranscript, setShowTranscript] = useState(false);
   const [showTranslation, setShowTranslation] = useState(false);
+  const [showReadingTranslation, setShowReadingTranslation] = useState(false);
 
   const getSectionSkill = (secItem: any, idx: number) => {
     const text = `${secItem?.title || ''} ${secItem?.instructions || ''} ${secItem?.skill || ''} ${secItem?.questions?.[0]?.prompt || ''}`.toLowerCase();
@@ -2761,10 +2762,31 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
         {/* Section 2 Reading Source Passage */}
         {sec?.sourceText && (
           <div className={`p-4 rounded-xl border mb-4 text-xs leading-relaxed whitespace-pre-line ${dark ? "bg-purple-500/5 border-purple-500/20 text-purple-200" : "bg-purple-50 border-purple-200 text-purple-900"}`}>
-            <p className="font-bold mb-1 flex items-center gap-1.5 text-purple-700 dark:text-purple-300">
-              <span>📖</span> Reading Passage:
-            </p>
+            <div className="flex items-center justify-between mb-1">
+              <p className="font-bold flex items-center gap-1.5 text-purple-700 dark:text-purple-300">
+                <span>📖</span> Reading Passage:
+              </p>
+              {sec?.translation && (
+                <button
+                  type="button"
+                  onClick={() => setShowReadingTranslation(!showReadingTranslation)}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold border transition-all ${
+                    dark ? "bg-pink-500/20 border-pink-500/30 text-pink-300 hover:bg-pink-500/30" : "bg-pink-100 border-pink-200 text-pink-800 hover:bg-pink-200"
+                  }`}
+                >
+                  {showReadingTranslation ? "Hide English ▴" : "Show English ▾"}
+                </button>
+              )}
+            </div>
             <p className="italic">{String(sec.sourceText)}</p>
+            {showReadingTranslation && sec?.translation && (
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-3">
+                <div className={`p-3 rounded-lg border text-xs leading-relaxed whitespace-pre-line ${dark ? "bg-purple-950/40 border-purple-500/30 text-purple-200" : "bg-purple-100/60 border-purple-200 text-purple-900"}`}>
+                  <p className="font-bold text-[11px] mb-1 text-purple-400">English Translation:</p>
+                  {String(sec.translation)}
+                </div>
+              </motion.div>
+            )}
           </div>
         )}
 
