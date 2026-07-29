@@ -39,7 +39,7 @@ export interface ISectionContent {
 
 export interface ILessonDocument extends Document {
   // Old fields (backward compatible)
-  chapterId: mongoose.Types.ObjectId;
+  chapterId: string | mongoose.Types.ObjectId | any;
   title: string;
   description: string;
   level: 'A0' | 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
@@ -131,7 +131,7 @@ const vocabItemSchema = new Schema<ILessonVocabularyItem>({
 const lessonSchema = new Schema<ILessonDocument>(
   {
     // Old fields
-    chapterId: { type: Schema.Types.ObjectId, ref: 'Chapter' },
+    chapterId: { type: Schema.Types.Mixed },
     title: { type: String, required: [true, 'Title is required'], trim: true, maxlength: 200 },
     description: { type: String, default: '', maxlength: 1000 },
     level: { type: String, required: [true, 'Level is required'], enum: ['A0', 'A1', 'A2', 'B1', 'B2', 'C1', 'C2'] },
