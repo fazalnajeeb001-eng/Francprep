@@ -228,6 +228,8 @@ export function SpeakingRecorder({ onSave, expectedText, lessonTitle }: {
 interface WritingFeedback {
   feedback: string;
   score: number;
+  taskCompletionScore?: number;
+  grammarScore?: number;
   corrections: string[];
   tips: string[];
 }
@@ -296,11 +298,34 @@ export function WritingSubmission({ onSubmit, lessonTitle, expectedAnswer, check
 
       {feedback && (
         <div className={`rounded-xl border p-4 space-y-3 ${dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white border-gray-200"}`}>
-          <div className="flex items-center gap-3">
-            <div className={`text-2xl font-bold ${feedback.score >= 70 ? "text-emerald-400" : feedback.score >= 40 ? "text-amber-400" : "text-red-400"}`}>
-              {feedback.score}/100
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div className="flex items-center gap-3">
+              <div className={`text-2xl font-extrabold ${feedback.score >= 70 ? "text-emerald-400" : feedback.score >= 40 ? "text-amber-400" : "text-red-400"}`}>
+                {feedback.score}/100
+              </div>
+              <div>
+                <p className={`text-xs font-bold ${dark ? "text-white" : "text-gray-900"}`}>Official DELF Examiner Score</p>
+                <p className={`text-xs ${dark ? "text-gray-300" : "text-gray-700"}`}>{feedback.feedback}</p>
+              </div>
             </div>
-            <p className={`text-sm flex-1 ${dark ? "text-gray-300" : "text-gray-700"}`}>{feedback.feedback}</p>
+
+            {/* Rubric Score Breakdown Badges */}
+            <div className="flex items-center gap-2 text-[10px] font-extrabold">
+              {typeof feedback.taskCompletionScore === "number" && (
+                <span className={`px-2.5 py-1 rounded-md border ${
+                  feedback.taskCompletionScore >= 70
+                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
+                    : "bg-red-500/10 text-red-400 border-red-500/30"
+                }`}>
+                  🎯 Task Adherence: {feedback.taskCompletionScore}%
+                </span>
+              )}
+              {typeof feedback.grammarScore === "number" && (
+                <span className="px-2.5 py-1 rounded-md border bg-purple-500/10 text-purple-400 border-purple-500/30">
+                  ✍️ Grammar: {feedback.grammarScore}%
+                </span>
+              )}
+            </div>
           </div>
 
           {feedback.corrections.length > 0 && (

@@ -1,0 +1,15 @@
+(node:18208) [MONGOOSE] Warning: Duplicate schema index on {"userId":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:18208) [MONGOOSE] Warning: Duplicate schema index on {"userId":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(node:18208) [MONGOOSE] Warning: Duplicate schema index on {"stripeCustomerId":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+MongoDB Connected: ac-91ozg4j-shard-00-00.qwpghaf.mongodb.net
+
+╔══════════════════════════════════════════╗
+║         FrancPrep API Server             ║
+║──────────────────────────────────────────║
+║  Status:   Running                        ║
+║  Port:     5000                             ║
+║  Env:      development                      ║
+║  Frontend: https://francprep.vercel.app     ║
+╚══════════════════════════════════════════╝
+      

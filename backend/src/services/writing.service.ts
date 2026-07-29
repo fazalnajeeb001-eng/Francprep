@@ -54,35 +54,34 @@ export class WritingService {
       };
     }
 
-    const prompt = `You are a French language tutor evaluating a student's writing exercise.
+    const prompt = `You are a strict DELF/DALF official exam evaluator evaluating a student's French writing submission.
 
-Context: This is for a French learning lesson about "${lessonTitle || 'French basics'}".
+CRITICAL EVALUATION RULE - PROMPT ADHERENCE & TASK COMPLETION (50% WEIGHT):
+- You MUST verify if the student directly and accurately answered ALL specific questions and requirements asked in the prompt task / expected answer / checklist.
+- IF THE STUDENT'S ANSWER IS OFF-TOPIC, IRRELEVANT, OR FAILS TO ANSWER THE QUESTIONS ASKED IN THE PROMPT, YOU MUST HEAVILY PENALIZE THE SCORE (A MAXIMUM SCORE OF 0-35 OUT OF 100).
+- Real DELF exams award 0 points for Task Completion if the candidate does not answer the specific question asked.
 
-Student's writing in French:
+Context / Task Prompt:
+Lesson: "${lessonTitle || 'French writing practice'}"
+${expectedAnswer ? `Task Prompt & Model Expectations:\n"""\n${expectedAnswer}\n"""` : ''}
+${checklist && checklist.length > 0 ? `Required Checklist Elements:\n${checklist.map((item, i) => `${i + 1}. ${item}`).join('\n')}` : ''}
+
+Student's Submitted Writing:
 """
 ${text}
 """
-${expectedAnswer ? `
-Model answer (for comparison):
-"""
-${expectedAnswer}
-"""` : ''}
-${checklist && checklist.length > 0 ? `
-Checklist items the student should address:
-${checklist.map((item, i) => `${i + 1}. ${item}`).join('\n')}` : ''}
 
-Please evaluate this writing and provide:
-1. A brief overall feedback (1-2 sentences in English)
-2. A score from 0-100 based on:
-   ${expectedAnswer ? '- How well it matches the model answer (grammar, vocabulary, structure)' : '- Correctness, grammar, and vocabulary use'}
-   ${checklist ? '- How many checklist items were addressed' : ''}
-3. Specific corrections if there are errors (list each as a separate string)
-4. Tips for improvement (list each as a separate string)
+Please evaluate strictly according to official DELF guidelines:
+1. Task Achievement / Prompt Adherence (Did they answer 100% of the questions asked?)
+2. Grammatical & Tense Accuracy
+3. Vocabulary Range & Cohesion
 
-Respond in JSON format:
+Provide output as a valid JSON object with the following fields:
 {
-  "feedback": "overall feedback here",
+  "feedback": "1-2 sentence overall DELF examiner verdict",
   "score": 85,
+  "taskCompletionScore": 90,
+  "grammarScore": 80,
   "corrections": ["correction 1", "correction 2"],
   "tips": ["tip 1", "tip 2"]
 }`;

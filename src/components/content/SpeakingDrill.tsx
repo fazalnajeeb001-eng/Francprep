@@ -52,20 +52,52 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
 
+  const [avatarGender, setAvatarGender] = useState<"female" | "male">(() => {
+    if (typeof window === "undefined") return "female";
+    try {
+      const raw = localStorage.getItem("fp_avatar_features");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed?.gender === "male") return "male";
+      }
+    } catch {}
+    return "female";
+  });
+
+  useEffect(() => {
+    const onAvatarChanged = () => {
+      try {
+        const raw = localStorage.getItem("fp_avatar_features");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed?.gender === "male") setAvatarGender("male");
+          else setAvatarGender("female");
+        }
+      } catch {}
+    };
+
+    window.addEventListener("avatar-changed", onAvatarChanged);
+    return () => window.removeEventListener("avatar-changed", onAvatarChanged);
+  }, []);
+
+  const coachName = avatarGender === "male" ? "Léo" : "Chloé";
+  const coachAvatarImg = avatarGender === "male" ? "/models/leo-avatar.png" : "/models/chloe-avatar.png";
+
   const initialGreeting = useMemo(() => {
     const topicStr = lessonTopic ? `sur "${lessonTopic}"` : "";
     const promptText = guidedActivity || roleplayPrompt || "";
 
     if (promptText) {
-      return `FR: Bonjour ! Je suis Madame Sophie. Pour notre activité ${topicStr}, voici la consigne : "${promptText}". Quel rôle souhaites-tu jouer ou par quoi veux-tu commencer ?\nEN: (Hello! I am Madame Sophie. For our activity ${topicStr ? `on "${lessonTopic}"` : ""}, here is your task: "${promptText}". Which role would you like to play or how would you like to start?)`;
+      return `FR: Bonjour ! Je suis ${coachName}. Pour notre activité ${topicStr}, voici la consigne : "${promptText}". Quel rôle souhaites-tu jouer ou par quoi veux-tu commencer ?\nEN: (Hello! I am ${coachName}. For our activity ${topicStr ? `on "${lessonTopic}"` : ""}, here is your task: "${promptText}". Which role would you like to play or how would you like to start?)`;
     }
 
-    return GREETINGS[lessonLevel] || GREETINGS.A1;
-  }, [lessonLevel, lessonTopic, guidedActivity, roleplayPrompt]);
+    const baseGreeting = GREETINGS[lessonLevel] || GREETINGS.A1;
+    return baseGreeting.replace(/Madame Sophie/g, coachName);
+  }, [lessonLevel, lessonTopic, guidedActivity, roleplayPrompt, coachName]);
 
   const hasSpeechRecognition = !!getSpeechRecognition();
 
-  // Advanced Sub-Sentence Bilingual Audio Engine
+  // Advanced Sub-Sentence Bilingual Audio Engine with Avatar Voice Matching
   const speakText = useCallback((text: string, baseRate: number = 0.85) => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
     try {
@@ -113,8 +145,8 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
         chunks.push({ lang: "fr", text: cleanStr(text) });
       }
 
-      const frenchVoice = getBestVoice("fr");
-      const englishVoice = getBestVoice("en");
+      const frenchVoice = getBestVoice("fr", avatarGender);
+      const englishVoice = getBestVoice("en", avatarGender);
 
       const enRate = baseRate < 0.8 ? Math.max(0.65, baseRate * 0.95) : 0.95;
 
@@ -299,12 +331,12 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
     <div className="flex flex-col h-[500px]">
       {/* Chat header with interactive Speed Selector */}
       <div className="flex items-center justify-between px-4 py-3 border-b dark:border-[#1e2a4a] border-gray-200 gap-2 flex-wrap sm:flex-nowrap">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
-            <Bot className="w-4 h-4 text-white" />
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 p-0.5 flex-shrink-0 shadow-md">
+            <img src={coachAvatarImg} alt={coachName} className="w-full h-full rounded-full object-cover bg-[#0c1224]" />
           </div>
           <div>
-            <p className={`text-xs font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Madame Sophie</p>
+            <p className={`text-xs font-bold ${dark ? "text-white" : "text-gray-900"}`}>{coachName}</p>
             <p className={`text-[10px] ${textSec}`}>AI French Conversation Coach</p>
           </div>
         </div>
@@ -352,8 +384,8 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
             >
               <div className={`max-w-[85%] flex items-start gap-2 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
                 {msg.role === "assistant" && (
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0 mt-1">
-                    <Bot className="w-3 h-3 text-white" />
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 p-0.5 flex-shrink-0 mt-1 shadow-sm">
+                    <img src={coachAvatarImg} alt={coachName} className="w-full h-full rounded-full object-cover bg-[#0c1224]" />
                   </div>
                 )}
                 <div className={`rounded-2xl px-3.5 py-2.5 border text-[13px] leading-relaxed whitespace-pre-wrap ${
