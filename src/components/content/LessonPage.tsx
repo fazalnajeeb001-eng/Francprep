@@ -1580,35 +1580,41 @@ Nora: Thanks! And after, I'll need to clean before moving in.`;
 
       case 'completion':
         const chNumber = lesson?.chapterNumber || String(lesson?.chapterId || '1').replace(/\D/g, '') || '1';
+        const nextChNum = Number(chNumber) + 1;
         const rawCompContent = lesson?.completionSummary?.content || '';
 
-        let canNowList: string[] = [
-          "Describe housing types",
-          "Discuss your home in real detail using the complete 'il y a' system and location prepositions",
-          "Name rooms and furniture",
-          "Navigate apartment-hunting conversations",
-          "Compare two homes",
-          "Discuss household chores"
-        ];
-        let nextChapterText = `Chapter ${Number(chNumber) + 1} — Neighborhood & Local Services — builds on this foundation, introducing the pronoun y.`;
+        let parsedSkillCards: { statement: string; lessonRef?: string }[] = [];
+        let nextChapterText = `Chapter ${nextChNum} — Neighborhood & Local Services — builds on this foundation, introducing the pronoun y.`;
 
         if (rawCompContent) {
-          const nextMatch = rawCompContent.match(/(?:Coming Next:?|Chapter\s*\d+\s*[—\-]\s*[^\.]+(?:builds[^\.]*)?)/i);
-          if (nextMatch) {
-            nextChapterText = nextMatch[0].trim();
-          }
+          let cleanCompText = rawCompContent
+            .replace(/\bChapter\s*22\b/gi, `Chapter ${nextChNum}`)
+            .replace(/\*\*/g, '');
 
-          const youCanMatch = rawCompContent.match(/You can now:?\s*([\s\S]*?)(?:Chapter\s*\d+|Coming Next:|$)/i);
-          if (youCanMatch && youCanMatch[1]) {
-            const rawSkills = youCanMatch[1].trim();
-            const splitSkills = rawSkills
-              .split(/(?:,|\n|•|;)+/)
-              .map(s => s.replace(/^(?:and\s+)?/i, '').replace(/[\.\s]+$/g, '').trim())
-              .filter(s => s.length > 3);
-            if (splitSkills.length > 0) {
-              canNowList = splitSkills.map(s => s.charAt(0).toUpperCase() + s.slice(1));
+          const nextMatch = cleanCompText.match(/(?:Next Milestone:?|Coming Next:?|Chapter\s*\d+\s*[—\-]\s*[^\.]+(?:builds[^\.]*)?[\s\S]*)/i);
+          if (nextMatch) {
+            let extractedNext = nextMatch[0]
+              .replace(/^(?:Next Milestone:?|Coming Next:?)\s*/i, '')
+              .trim();
+            if (extractedNext.length > 5) {
+              nextChapterText = extractedNext;
             }
           }
+
+          const skillsSection = cleanCompText.split(/(?:Next Milestone:?|Coming Next:?|Chapter\s*\d+\s*[—\-])/i)[0];
+          parsedSkillCards = parseCanDoItems(skillsSection);
+        }
+
+        if (parsedSkillCards.length === 0) {
+          parsedSkillCards = [
+            { statement: "Describe housing types", lessonRef: "Lesson 1" },
+            { statement: "Discuss your home in real detail using the complete 'il y a' system and location prepositions", lessonRef: "Lesson 2" },
+            { statement: "Name rooms and furniture", lessonRef: "Lesson 3" },
+            { statement: "Navigate apartment-hunting conversations", lessonRef: "Lesson 4" },
+            { statement: "Compare two homes", lessonRef: "Lesson 5" },
+            { statement: "Discuss household chores", lessonRef: "Lesson 6" },
+            { statement: "Combine all of the above in a real conversation", lessonRef: "Lesson 7 (Integrated)" },
+          ];
         }
 
         return (
@@ -1620,7 +1626,7 @@ Nora: Thanks! And after, I'll need to clean before moving in.`;
             </div>
 
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
                 Syllabus Milestone Achieved
               </span>
               <h3 className={`text-2xl md:text-3xl font-extrabold mt-3 ${dark ? "text-white" : "text-gray-900"}`}>
@@ -1637,10 +1643,21 @@ Nora: Thanks! And after, I'll need to clean before moving in.`;
                   <CheckCircle2 className="w-4 h-4 text-emerald-400" /> You Can Now:
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-                  {canNowList.map((skill, i) => (
-                    <div key={i} className={`p-3 rounded-xl border flex items-start gap-2.5 transition-all ${dark ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-200" : "bg-emerald-50 border-emerald-200 text-emerald-900"}`}>
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-                      <span className="text-xs font-semibold leading-relaxed">{skill}</span>
+                  {parsedSkillCards.map((item, i) => (
+                    <div key={i} className={`p-3.5 rounded-xl border flex items-start justify-between gap-3 transition-all ${
+                      dark ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-200" : "bg-emerald-50 border-emerald-200 text-emerald-900"
+                    }`}>
+                      <div className="flex items-start gap-2.5 flex-1 min-w-0">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                        <span className="text-xs font-semibold leading-relaxed">{item.statement}</span>
+                      </div>
+                      {item.lessonRef && (
+                        <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md shrink-0 border ${
+                          dark ? "bg-purple-500/20 text-purple-300 border-purple-500/30" : "bg-purple-100 text-purple-800 border-purple-200"
+                        }`}>
+                          {item.lessonRef}
+                        </span>
+                      )}
                     </div>
                   ))}
                 </div>
