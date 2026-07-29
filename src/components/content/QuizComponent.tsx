@@ -62,7 +62,31 @@ function MatchingQuestion({ q, qId, dark, submitted, setAnswer }: {
   submitted: boolean;
   setAnswer: (id: string, answer: string | string[]) => void;
 }) {
-  const pairs = q.pairs || {};
+  const pairs: Record<string, string> = useMemo(() => {
+    if (!q.pairs) return {};
+    if (Array.isArray(q.pairs)) {
+      const obj: Record<string, string> = {};
+      q.pairs.forEach((p: any) => {
+        if (p && typeof p === 'object' && p.left && p.right) {
+          obj[String(p.left)] = String(p.right);
+        }
+      });
+      return obj;
+    }
+    if (typeof q.pairs === 'object') {
+      const obj: Record<string, string> = {};
+      Object.entries(q.pairs).forEach(([k, v]) => {
+        if (typeof v === 'string') {
+          obj[k] = v;
+        } else if (v && typeof v === 'object' && (v as any).right) {
+          obj[k || (v as any).left] = (v as any).right;
+        }
+      });
+      return obj;
+    }
+    return {};
+  }, [q.pairs]);
+
   const leftItems = Object.keys(pairs);
   const rightItems = Object.values(pairs);
   

@@ -620,16 +620,19 @@ function parsePracticeExercises(text: string): ILessonQuestion[] {
     // Question type header: **1. Multiple Choice** or "1. Multiple Choice Why does Nora..." or "2. Communicative Practice: ..."
     const tm = t.match(/^(?:\*\*)?(\d+)[\.\)]\s*(?:(Multiple Choice|Matching|Fill in the Blank|Fill Blank|Sentence Ordering|Ordering|Short Answer|Translation|True or False|Communicative Practice)(?::?\*\*|:|\s)?)?\s*(.*)$/i);
     
-    // Check if line is a matching item pair (e.g. "Spacieux — a) Spacious" or "Faire le ménage — a) To clean")
-    const isDashPairLine = Boolean(t.match(/^[A-Za-zÀ-ÿ0-9\s"'\(\)]+\s*[\u2014\u2013\-:]\s*(?:[a-eA-E0-9][\.\)]\s*)?.+$/));
-    const isMatchingItem = curType === 'matching' && isDashPairLine && !t.match(/^(?:\*\*)?\d+[\.\)]\s*(?:Multiple Choice|Fill in the Blank|Sentence Ordering|Short Answer|Translation)/i);
+    const explicitType = tm?.[2];
+    const inlinePrompt = tm?.[3]?.trim();
 
-    if (tm && (tm[2] || tm[3]) && !isMatchingItem) {
-      const explicitType = tm[2];
-      const inlinePrompt = tm[3]?.trim();
+    // If currently parsing a matching question, keep accumulating lines unless a NEW explicit question type header or Answer Key is encountered
+    if (curType === 'matching' && !explicitType) {
+      if (t && !t.startsWith('**')) {
+        curPromptLines.push(t);
+      }
+      continue;
+    }
 
-      // If it's a new numbered question (or explicit type)
-      if (explicitType || (tm[1] && explicitType)) {
+    if (tm && (explicitType || inlinePrompt)) {
+      if (explicitType || tm[1]) {
         // Push previous pending question
         if (curPromptLines.length > 0 && curType) {
           n++;
@@ -642,32 +645,20 @@ function parsePracticeExercises(text: string): ILessonQuestion[] {
             .replace('fill_in_the_blank', 'fill_blank')
             .replace('sentence_ordering', 'ordering')
             .replace('communicative_practice', 'short_answer');
+        } else {
+          if (inlinePrompt?.match(/[a-d]\)\s*/i)) {
+            curType = 'multiple_choice';
+          } else if (inlinePrompt?.includes('__________') || inlinePrompt?.includes('______')) {
+            curType = 'fill_blank';
+          } else {
+            curType = 'short_answer';
+          }
         }
 
         if (inlinePrompt) {
           curPromptLines.push(inlinePrompt);
         }
         continue;
-      } else if (tm[1] && !explicitType) {
-        // Numbered item without explicit type header (e.g. "3. Fill in the Blank" or "3. __________ un ascenseur...")
-        if (!isMatchingItem) {
-          if (curPromptLines.length > 0 && curType) {
-            n++;
-            qs.push(buildPracticeQuestion(n, curType, curPromptLines.join('\n')));
-            curPromptLines = [];
-          }
-          if (inlinePrompt.match(/[a-d]\)\s*/i)) {
-            curType = 'multiple_choice';
-          } else if (inlinePrompt.includes('__________') || inlinePrompt.includes('______')) {
-            curType = 'fill_blank';
-          } else {
-            curType = 'short_answer';
-          }
-          if (inlinePrompt) {
-            curPromptLines.push(inlinePrompt);
-          }
-          continue;
-        }
       }
     }
 
@@ -801,13 +792,22 @@ function buildPracticeQuestion(n: number, type: string, promptText: string): ILe
       const trimmed = line.trim();
       if (!trimmed || trimmed === '---' || trimmed === '--' || trimmed.toLowerCase().startsWith('match ')) continue;
 
+      const dashMatch = trimmed.match(/^(.+?)\s*(?:[\u2014\u2013]|--|\s+-\s+|\s*:\s*)\s*(?:[a-eA-E0-9][\.\)]\s*|\([a-eA-E0-9]\)\s*)?(.+)$/);
+      if (dashMatch) {
+        const leftPart = dashMatch[1].replace(/^\d+[\.\)]\s*/, '').replace(/^[*•\-]\s*/, '').trim();
+        const rightPart = dashMatch[2].replace(/^[a-eA-E0-9][\.\)]\s*/i, '').trim();
+        if (leftPart && rightPart) {
+          leftItems.push(stripMd(leftPart));
+          rightItems.push(stripMd(rightPart));
+          continue;
+        }
+      }
+
       // Split on em-dash (U+2014), en-dash (U+2013), or hyphen/colon
       const dashSplit = trimmed.split(/\s+[\u2014\u2013\-:]\s+(?=(?:[a-z\d][\.\)]\s*)?[A-Za-zÀ-ÿ])/i);
       if (dashSplit.length >= 2) {
-        // Strip leading number if present (e.g. "1. Salut" -> "Salut")
         const leftPart = dashSplit[0].replace(/^\d+[\.\)]\s*/, '').replace(/^[*•\-]\s*/, '').trim();
         leftItems.push(stripMd(leftPart));
-        // Extract right side: "a) RightText" → "RightText"
         const rightPart = dashSplit[1];
         const rightClean = rightPart.replace(/^[a-z\d][\.\)]\s*/i, '').trim();
         rightItems.push(stripMd(rightClean));
