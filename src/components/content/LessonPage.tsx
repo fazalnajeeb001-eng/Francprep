@@ -224,7 +224,7 @@ function adaptQuestions(questions: LessonQuestion[]) {
     const prompt = String(rawQ?.prompt || (rawQ as any)?.text || (rawQ as any)?.question || '').trim();
     const promptLower = prompt.toLowerCase();
 
-    const isMatchingHeader = promptLower.startsWith('match') || rawQ.type === 'matching';
+    const isMatchingHeader = promptLower.startsWith('match') || rawQ.type === 'matching' || Boolean(rawQ.pairs && Object.keys(rawQ.pairs).length > 0);
 
     if (isMatchingHeader) {
       let pairsObj: Record<string, string> = {};
@@ -238,6 +238,14 @@ function adaptQuestions(questions: LessonQuestion[]) {
         }
       }
 
+      // Extract inline pairs from prompt text if pairs object was empty
+      if (Object.keys(pairsObj).length === 0) {
+        const extracted = extractPairsFromText(prompt);
+        if (extracted && Object.keys(extracted.pairs).length >= 2) {
+          pairsObj = extracted.pairs;
+        }
+      }
+
       // Look ahead to absorb consecutive pair line items
       let nextIdx = i + 1;
       while (nextIdx < questions.length) {
@@ -248,13 +256,20 @@ function adaptQuestions(questions: LessonQuestion[]) {
         if (pair) {
           pairsObj[pair.left] = pair.right;
           nextIdx++;
+        } else if (nextQ.type === 'matching' && nextQ.pairs) {
+          if (Array.isArray(nextQ.pairs)) {
+            nextQ.pairs.forEach((p: any) => { if (p.left && p.right) pairsObj[p.left] = p.right; });
+          } else if (typeof nextQ.pairs === 'object') {
+            Object.assign(pairsObj, nextQ.pairs);
+          }
+          nextIdx++;
         } else {
           break;
         }
       }
 
       if (Object.keys(pairsObj).length >= 2) {
-        const title = prompt.replace(/^(?:\d+[\.\)]\s*)?(?:Matching)[:\s]*/i, '').trim() || 'Match each expression to its use:';
+        const title = prompt.replace(/^(?:\d+[\.\)]\s*)?(?:Matching)[:\s]*/i, '').trim() || 'Match each item with its correct pair:';
         grouped.push({
           id: rawQ.id || `q-matching-${i}`,
           text: title,
@@ -264,10 +279,6 @@ function adaptQuestions(questions: LessonQuestion[]) {
           points: 1,
         });
         i = nextIdx; // Skip all absorbed pair line items!
-        continue;
-      } else {
-        // Discard empty matching header line with 0 pairs
-        i++;
         continue;
       }
     }
@@ -367,21 +378,6 @@ function adaptQuestions(questions: LessonQuestion[]) {
       points: 1,
     };
   });
-
-  // Ensure Question 1 MCQ is present if missing
-  const hasMcqFirst = adapted.length > 0 && adapted[0].type === 'multiple_choice';
-  if (!hasMcqFirst && adapted.length > 0 && (adapted[0].text.includes('Match') || adapted[0].type === 'matching')) {
-    const mcqQ = {
-      id: 'pe-1-mcq',
-      text: 'Which greeting is correct at 9:00 PM?',
-      type: 'multiple_choice' as const,
-      options: ['Bonjour', 'Salut', 'Bonsoir', 'Bonne nuit (as a greeting)'],
-      correctAnswer: 'Bonsoir',
-      explanation: 'Bonsoir is used as a greeting in the evening (9:00 PM).',
-      points: 1,
-    };
-    return [mcqQ, ...adapted];
-  }
 
   return adapted;
 }
@@ -1448,41 +1444,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
       case 'mixedPractice':
         const rawMixedQs = lesson?.mixedPracticeExercises?.questions || lesson?.practiceExercises?.questions || [];
-        const nonDelfQs = rawMixedQs.filter(q => !q.id?.includes('delf') && !q.id?.includes('mpe-dummy'));
-
-        // Normalize Question 2 (Matching prepositions) if split into separate entries:
-        const processedQs: LessonQuestion[] = [];
-        let matchingPairs: { left: string; right: string }[] = [];
-        let hasSeenMatching = false;
-
-        for (const q of nonDelfQs) {
-          const p = q.prompt || '';
-          if (p.includes('Au-dessus de') || p.includes('Au fond de') || p.includes('Au milieu de')) {
-            if (!hasSeenMatching) {
-              hasSeenMatching = true;
-              processedQs.push({
-                id: 'pe-2-matching',
-                type: 'matching',
-                prompt: 'Match the French prepositions of location with their English meanings:',
-                pairs: [
-                  { left: 'Au-dessus de', right: 'Above' },
-                  { left: 'Au fond de', right: 'At the back of' },
-                  { left: 'Au milieu de', right: 'In the middle of' },
-                ],
-                correctAnswer: [
-                  { left: 'Au-dessus de', right: 'Above' },
-                  { left: 'Au fond de', right: 'At the back of' },
-                  { left: 'Au milieu de', right: 'In the middle of' },
-                ],
-                explanation: 'Au-dessus de = Above, Au fond de = At the back of, Au milieu de = In the middle of.',
-              });
-            }
-            continue;
-          }
-          processedQs.push(q);
-        }
-
-        const mixedQs = processedQs.length > 0 ? processedQs : nonDelfQs;
+        const mixedQs = rawMixedQs.filter(q => !q.id?.includes('delf') && !q.id?.includes('mpe-dummy'));
         if (!mixedQs.length) return emptyState('Mixed Practice Exercises');
 
         return (
