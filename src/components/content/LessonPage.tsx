@@ -1413,9 +1413,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
           </div>
         );
 
-      case 'canDoReview':
       case 'review':
-      case 'selfReflection':
         let reflectionItems = (lesson?.canDoReview && lesson.canDoReview.length > 0) ? lesson.canDoReview
           : (lesson?.miniReview?.content) ? [lesson.miniReview.content]
           : (lesson?.selfReflection && lesson.selfReflection.length > 0) ? lesson.selfReflection
@@ -1517,7 +1515,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
 
 
-      case 'completion':
+      case 'canDoReview':
         const chNumber = lesson?.chapterNumber || String(lesson?.chapterId || '1').replace(/\D/g, '') || '1';
         const nextChNum = Number(chNumber) + 1;
         const rawCompContent = lesson?.completionSummary?.content || '';
@@ -1692,6 +1690,126 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
                 >
                   <FileText className="w-4 h-4 text-purple-400" />
                   📄 View & Print Lesson Cheat Sheet
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        );
+
+      case 'selfReflection':
+        const rawSelfRef = lesson?.selfReflection || lesson?.reflection;
+        const reflectionPrompts: string[] = Array.isArray(rawSelfRef?.prompts) && rawSelfRef.prompts.length > 0
+          ? rawSelfRef.prompts
+          : Array.isArray(rawSelfRef?.questions) && rawSelfRef.questions.length > 0
+          ? rawSelfRef.questions
+          : [
+              "Which part of this chapter felt easiest to you, and why?",
+              "Which part — greetings, vocabulary, grammar rules, or formal vs. informal (tu / vous) — do you want to review again before moving to the next chapter?",
+              "Can you think of a real situation coming up in your own life where you could actually use what you learned in this chapter?"
+            ];
+
+        const refIntroText = rawSelfRef?.instructions || rawSelfRef?.content || "Take a moment to consider, in your own words:";
+
+        return (
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-6 border space-y-5 shadow-xl`}>
+              <div className="flex items-center gap-3 border-b dark:border-[#1e2a4a] border-gray-200 pb-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white shadow-lg shadow-amber-500/25">
+                  <Star className="w-5 h-5 fill-white" />
+                </div>
+                <div>
+                  <h3 className={`text-base font-extrabold ${dark ? "text-white" : "text-gray-900"}`}>
+                    Self-Reflection
+                  </h3>
+                  <p className={`text-xs ${textSec} mt-0.5`}>
+                    {refIntroText}
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {reflectionPrompts.map((promptText: string, idx: number) => {
+                  const savedAnswerKey = `ref_q_${idx}`;
+                  const currentAnswer = (savedAnswers['selfReflection']?.[savedAnswerKey] as string) || '';
+
+                  return (
+                    <div key={idx} className={`p-4 rounded-xl border space-y-2 transition-all ${dark ? "bg-[#0c1224] border-purple-500/20" : "bg-purple-50/50 border-purple-100"}`}>
+                      <p className={`text-xs font-bold flex items-start gap-2 ${dark ? "text-purple-300" : "text-purple-900"}`}>
+                        <span className="w-5 h-5 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-[11px] shrink-0 font-extrabold mt-0.5">
+                          {idx + 1}
+                        </span>
+                        <span>{promptText}</span>
+                      </p>
+
+                      <textarea
+                        rows={3}
+                        value={currentAnswer}
+                        onChange={(e) => handleUpdateAnswers('selfReflection', { [savedAnswerKey]: e.target.value })}
+                        placeholder="Write your reflections here in your own words..."
+                        className={`w-full p-3 rounded-xl text-xs border transition-all resize-none focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
+                          dark
+                            ? "bg-black/40 border-purple-500/30 text-white placeholder-gray-500"
+                            : "bg-white border-purple-200 text-gray-900 placeholder-gray-400"
+                        }`}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="flex items-center justify-between pt-2">
+                <p className={`text-[11px] ${textMuted} italic`}>
+                  ✨ Reflections are saved to your personal study dashboard.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => handleBlockComplete('selfReflection', 1, 1)}
+                  className="px-5 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-purple-500/25 transition-all flex items-center gap-1.5"
+                >
+                  <CheckCircle2 className="w-4 h-4 text-emerald-300" /> Save Reflection Notes
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        );
+
+      case 'completion':
+        const chNumberStr = lesson?.chapterNumber || String(lesson?.chapterId || '1').replace(/\D/g, '') || '1';
+        return (
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-6 text-center">
+            <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-8 border border-emerald-500/30 space-y-5 bg-gradient-to-b from-emerald-500/10 to-transparent shadow-2xl`}>
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center mx-auto text-white shadow-xl shadow-emerald-500/30 animate-bounce">
+                <Trophy className="w-8 h-8" />
+              </div>
+              <div>
+                <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-400">
+                  Chapter Capstone Complete
+                </span>
+                <h2 className={`text-2xl font-extrabold ${dark ? "text-white" : "text-gray-900"} mt-1`}>
+                  Félicitations ! Chapter {chNumberStr} Mastered!
+                </h2>
+                <p className={`text-xs ${textSec} mt-2 max-w-lg mx-auto leading-relaxed`}>
+                  You have successfully consolidated all learning objectives, completed the DELF diagnostic assessment, and recorded your reflections.
+                </p>
+              </div>
+
+              <div className="flex items-center justify-center gap-4 py-2">
+                <div className={`p-3.5 rounded-xl border text-center ${dark ? "bg-black/30 border-purple-500/30" : "bg-purple-50 border-purple-200"}`}>
+                  <span className="block text-xs font-bold text-gray-400">XP Reward</span>
+                  <span className="text-xl font-extrabold text-amber-400">+100 XP</span>
+                </div>
+                <div className={`p-3.5 rounded-xl border text-center ${dark ? "bg-black/30 border-emerald-500/30" : "bg-emerald-50 border-emerald-200"}`}>
+                  <span className="block text-xs font-bold text-gray-400">DELF Readiness</span>
+                  <span className="text-xl font-extrabold text-emerald-400">100% Passed</span>
+                </div>
+              </div>
+
+              <div className="pt-4">
+                <button
+                  onClick={onBack}
+                  className="px-8 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white font-extrabold text-xs rounded-xl shadow-xl shadow-purple-500/30 transition-all inline-flex items-center gap-2"
+                >
+                  Return to Dashboard & Continue →
                 </button>
               </div>
             </div>
