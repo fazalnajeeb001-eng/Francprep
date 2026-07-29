@@ -730,27 +730,46 @@ router.post('/content-pipeline/drafts/:id/publish', async (req: AuthRequest, res
 
     const orderNum = parseInt((canonical.lessonId.match(/l(\d+)/i) || [])[1], 10) || 1;
 
+    const lessonPayload = {
+      lessonId: canonical.lessonId,
+      chapterId: canonical.chapterId,
+      title: canonical.title,
+      level: canonical.level,
+      order: orderNum,
+      anchorSkill: canonical.anchorSkill || 'grammar',
+      durationMinutes: canonical.durationMinutes || 30,
+      warmUp: canonical.warmUp,
+      explanation: canonical.explanation,
+      vocabItems: canonical.vocabulary || canonical.vocabItems,
+      grammar: canonical.grammar,
+      grammarDrills: canonical.grammarDrills,
+      reading: canonical.reading,
+      listening: canonical.listening,
+      speaking: canonical.speaking,
+      writing: canonical.writing,
+      practiceExercises: canonical.practiceExercises,
+      miniReview: canonical.miniReview,
+      selfAssessment: canonical.selfAssessment,
+      isPublished: true,
+      canonical,
+    };
+
     if (existingLesson) {
-      // Replace existing live lesson content
-      existingLesson.set('canonical', canonical);
-      existingLesson.set('title', canonical.title);
-      existingLesson.set('level', canonical.level);
-      existingLesson.set('chapterId', canonical.chapterId);
-      existingLesson.set('isPublished', true);
+      // Replace existing live lesson content completely
+      Object.assign(existingLesson, lessonPayload);
+      existingLesson.markModified('canonical');
+      existingLesson.markModified('practiceExercises');
+      existingLesson.markModified('vocabItems');
+      existingLesson.markModified('grammar');
+      existingLesson.markModified('grammarDrills');
+      existingLesson.markModified('reading');
+      existingLesson.markModified('listening');
+      existingLesson.markModified('speaking');
+      existingLesson.markModified('writing');
       await existingLesson.save();
     } else {
       // Create new published lesson
-      await Lesson.create({
-        lessonId: canonical.lessonId,
-        chapterId: canonical.chapterId,
-        title: canonical.title,
-        level: canonical.level,
-        order: orderNum,
-        anchorSkill: canonical.anchorSkill || 'grammar',
-        durationMinutes: canonical.durationMinutes || 30,
-        isPublished: true,
-        canonical,
-      });
+      await Lesson.create(lessonPayload);
     }
 
     // Mark previous published drafts for this lesson as superseded (saved in published history)
@@ -1029,26 +1048,47 @@ router.post('/content-pipeline/drafts/:id/restore', async (req: AuthRequest, res
     }
 
     const canonical = draft.parsedData;
-    const existingLesson = await Lesson.findOne({ lessonId: canonical.lessonId });
+    let existingLesson = await Lesson.findOne({ lessonId: canonical.lessonId });
+
+    const orderNum = parseInt((canonical.lessonId.match(/l(\d+)/i) || [])[1], 10) || 1;
+    const lessonPayload = {
+      lessonId: canonical.lessonId,
+      chapterId: canonical.chapterId,
+      title: canonical.title,
+      level: canonical.level,
+      order: orderNum,
+      anchorSkill: canonical.anchorSkill || 'grammar',
+      durationMinutes: canonical.durationMinutes || 30,
+      warmUp: canonical.warmUp,
+      explanation: canonical.explanation,
+      vocabItems: canonical.vocabulary || canonical.vocabItems,
+      grammar: canonical.grammar,
+      grammarDrills: canonical.grammarDrills,
+      reading: canonical.reading,
+      listening: canonical.listening,
+      speaking: canonical.speaking,
+      writing: canonical.writing,
+      practiceExercises: canonical.practiceExercises,
+      miniReview: canonical.miniReview,
+      selfAssessment: canonical.selfAssessment,
+      isPublished: true,
+      canonical,
+    };
 
     if (existingLesson) {
-      existingLesson.set('canonical', canonical);
-      existingLesson.set('title', canonical.title);
-      existingLesson.set('level', canonical.level);
-      existingLesson.set('isPublished', true);
+      Object.assign(existingLesson, lessonPayload);
+      existingLesson.markModified('canonical');
+      existingLesson.markModified('practiceExercises');
+      existingLesson.markModified('vocabItems');
+      existingLesson.markModified('grammar');
+      existingLesson.markModified('grammarDrills');
+      existingLesson.markModified('reading');
+      existingLesson.markModified('listening');
+      existingLesson.markModified('speaking');
+      existingLesson.markModified('writing');
       await existingLesson.save();
     } else {
-      await Lesson.create({
-        lessonId: canonical.lessonId,
-        chapterId: canonical.chapterId,
-        title: canonical.title,
-        level: canonical.level,
-        order: parseInt(canonical.lessonId.split('-l')[1]) || 1,
-        anchorSkill: canonical.anchorSkill,
-        durationMinutes: canonical.durationMinutes,
-        isPublished: true,
-        canonical,
-      });
+      await Lesson.create(lessonPayload);
     }
 
     // Mark current active published drafts for this lesson as superseded
