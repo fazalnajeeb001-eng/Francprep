@@ -3418,46 +3418,80 @@ function ChapterFlashcardModal({ lesson, dark, onClose, speak }: { lesson: any; 
           </button>
         </div>
 
-        {/* Interactive Flippable Flashcard */}
-        <div
-          onClick={() => setIsFlipped(!isFlipped)}
-          className={`h-56 rounded-2xl border-2 cursor-pointer p-6 flex flex-col items-center justify-center text-center transition-all duration-300 transform relative overflow-hidden select-none shadow-xl ${
-            isFlipped
-              ? dark
-                ? "bg-gradient-to-br from-indigo-950/80 via-purple-900/60 to-slate-900 border-indigo-500/50"
-                : "bg-gradient-to-br from-indigo-50 via-purple-50 to-white border-indigo-300"
-              : dark
-                ? "bg-gradient-to-br from-purple-950/60 via-[#101828] to-[#0c1224] border-purple-500/40 hover:border-purple-400"
-                : "bg-gradient-to-br from-purple-50 via-white to-purple-50 border-purple-200 hover:border-purple-300"
-          }`}
-        >
-          <span className="text-[10px] uppercase font-extrabold tracking-widest text-purple-400 mb-2">
-            {isFlipped ? "ENGLISH TRANSLATION" : "FRENCH EXPRESSION"}
-          </span>
-
-          <p className={`text-xl font-extrabold leading-snug px-4 ${isFlipped ? (dark ? "text-indigo-200" : "text-indigo-900") : (dark ? "text-white" : "text-gray-900")}`}>
-            {isFlipped ? currentCard.english : currentCard.french}
-          </p>
-
-          {!isFlipped && currentCard.french && (
-            <button
-              onClick={(e) => { e.stopPropagation(); speak(currentCard.french); }}
-              className="mt-4 p-2.5 rounded-full bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 border border-purple-500/30 transition-all"
-            >
-              <Volume2 className="w-4 h-4" />
-            </button>
-          )}
-
-          <div className="absolute bottom-3 text-[10px] text-gray-500 font-semibold tracking-wider flex items-center gap-1">
-            <span>Click card to flip</span>
+        {/* Interactive Flippable 3D Flashcard */}
+        {loading ? (
+          <div className="h-56 rounded-2xl border flex items-center justify-center dark:bg-black/30 border-purple-500/20">
+            <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+              className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full" />
           </div>
-        </div>
+        ) : (
+          <div className="perspective-1000" style={{ perspective: "1000px" }}>
+            <motion.div
+              onClick={() => setIsFlipped(!isFlipped)}
+              animate={{ rotateY: isFlipped ? 180 : 0 }}
+              transition={{ duration: 0.4, type: "spring", stiffness: 120 }}
+              className={`relative rounded-2xl border-2 cursor-pointer min-h-[220px] flex items-center justify-center text-center select-none shadow-xl transition-all ${
+                isFlipped
+                  ? dark
+                    ? "bg-gradient-to-br from-indigo-950/90 via-purple-900/60 to-[#0c1224] border-indigo-500/50"
+                    : "bg-gradient-to-br from-indigo-50 via-purple-50 to-white border-indigo-300"
+                  : dark
+                    ? "bg-gradient-to-br from-purple-950/60 via-[#101828] to-[#0c1224] border-purple-500/40 hover:border-purple-400"
+                    : "bg-gradient-to-br from-purple-50 via-white to-purple-50 border-purple-200 hover:border-purple-300"
+              }`}
+              style={{ transformStyle: "preserve-3d" }}
+            >
+              {/* Front - French */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center"
+                style={{ backfaceVisibility: "hidden" }}>
+                <span className="text-[10px] uppercase font-extrabold tracking-widest text-purple-400 mb-2">
+                  🇫🇷 FRENCH EXPRESSION
+                </span>
+                <p className={`text-xl font-extrabold leading-snug px-4 ${dark ? "text-white" : "text-gray-900"}`}>
+                  {currentCard.french}
+                </p>
+                {currentCard.pronunciation && (
+                  <p className="text-xs text-purple-300 italic font-mono mt-1">
+                    /{currentCard.pronunciation}/
+                  </p>
+                )}
+                <button
+                  onClick={(e) => { e.stopPropagation(); speak(currentCard.french); }}
+                  className="mt-3 p-2.5 rounded-full bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 border border-purple-500/30 transition-all"
+                >
+                  <Volume2 className="w-4 h-4" />
+                </button>
+                <span className="absolute bottom-3 text-[10px] text-gray-400 font-medium">Click card to flip</span>
+              </div>
+
+              {/* Back - English */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center"
+                style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}>
+                <span className="text-[10px] uppercase font-extrabold tracking-widest text-indigo-400 mb-2">
+                  🇬🇧 ENGLISH TRANSLATION
+                </span>
+                <p className={`text-xl font-extrabold leading-snug px-4 ${dark ? "text-indigo-200" : "text-indigo-900"}`}>
+                  {currentCard.english}
+                </p>
+                {currentCard.example && (
+                  <p className={`text-xs mt-2 italic px-3 py-1.5 rounded-lg max-w-xs ${dark ? "bg-black/30 text-gray-300" : "bg-purple-50 text-gray-700"}`}>
+                    "{currentCard.example}"
+                  </p>
+                )}
+                <span className="absolute bottom-3 text-[10px] text-gray-400 font-medium">Click to flip back</span>
+              </div>
+            </motion.div>
+          </div>
+        )}
 
         {/* Action Controls */}
         <div className="flex items-center justify-between gap-3 pt-2">
           <button
             onClick={handlePrev}
+            disabled={currentIdx === 0}
             className={`flex-1 py-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1 ${
+              currentIdx === 0 ? "opacity-30 cursor-not-allowed" : ""
+            } ${
               dark ? "bg-black/40 border-purple-500/30 text-gray-300 hover:bg-purple-500/20" : "bg-gray-100 border-gray-200 text-gray-700 hover:bg-gray-200"
             }`}
           >
@@ -3465,7 +3499,10 @@ function ChapterFlashcardModal({ lesson, dark, onClose, speak }: { lesson: any; 
           </button>
           <button
             onClick={handleNext}
-            className="flex-1 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white text-xs font-extrabold shadow-lg shadow-purple-500/25 transition-all flex items-center justify-center gap-1"
+            disabled={currentIdx >= cards.length - 1}
+            className={`flex-1 py-3 rounded-xl text-white text-xs font-extrabold shadow-lg shadow-purple-500/25 transition-all flex items-center justify-center gap-1 ${
+              currentIdx >= cards.length - 1 ? "opacity-30 cursor-not-allowed bg-gray-600" : "bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500"
+            }`}
           >
             Next <ChevronRight className="w-4 h-4" />
           </button>
