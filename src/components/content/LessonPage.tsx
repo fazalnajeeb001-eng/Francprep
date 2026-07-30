@@ -1228,7 +1228,35 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
           }
         }
 
-        const vocabNote = lesson?.vocabularyBank?.cumulativeNote || 'Vocabulary consolidated from Lessons 1-6. No duplication across chapters. Any polysemy cases are deliberate.';
+        if (cleanedVocab.length === 0) {
+          // Extract from Scene / Dialogue text
+          const sceneTxt = lesson?.scene?.text || lesson?.reading?.text || lesson?.listening?.transcript || '';
+          if (sceneTxt) {
+            const lines = sceneTxt.split('\n');
+            for (const line of lines) {
+              if (line.includes('—') || line.includes(':')) {
+                const parts = line.split(/—|:/);
+                const fr = parts[1]?.trim() || parts[0]?.trim();
+                if (fr && fr.length > 3 && fr.length < 60) {
+                  addVocab(fr, 'Key Dialogue Expression');
+                }
+              }
+            }
+          }
+
+          // Extract from Grammar examples
+          const rules = lesson?.grammar?.rules || (Array.isArray(lesson?.grammar) ? lesson?.grammar : []);
+          for (const r of rules) {
+            const exs = Array.isArray(r.examples) ? r.examples : typeof r.examples === 'string' ? [r.examples] : [];
+            for (const exStr of exs) {
+              if (typeof exStr === 'string' && exStr.trim()) {
+                addVocab(exStr.trim(), r.rule || 'Grammar Example Phrase');
+              }
+            }
+          }
+        }
+
+        const vocabNote = lesson?.vocabularyBank?.cumulativeNote || 'Review key expressions and dialogue items for this lesson.';
 
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
