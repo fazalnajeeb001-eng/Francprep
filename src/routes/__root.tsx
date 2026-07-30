@@ -133,12 +133,13 @@ function NavBarInner() {
 
     const sendOfflineBeacon = () => {
       try {
-        const token = localStorage.getItem('fp_access_token');
-        const blob = new Blob([JSON.stringify({})], { type: 'application/json' });
+        const token = localStorage.getItem('fp_access_token') || '';
+        const blob = new Blob([JSON.stringify({ token })], { type: 'application/json' });
+        const url = `/api/users/presence-off?token=${encodeURIComponent(token)}`;
         if (navigator.sendBeacon) {
-          navigator.sendBeacon('/api/users/presence-off', blob);
+          navigator.sendBeacon(url, blob);
         } else {
-          apiFetch("/users/presence-off", { method: "POST" }).catch(() => {});
+          apiFetch(url, { method: "POST" }).catch(() => {});
         }
       } catch (e) {}
     };
