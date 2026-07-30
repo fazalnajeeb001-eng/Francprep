@@ -384,17 +384,17 @@ function parseGrammarDrills(text: string): ILessonQuestion[] {
 // Bug 5: defaults to 'False' → proper error handling
 
 function parseListening(text: string): { title: string; transcript: string; translation?: string; questions: ILessonQuestion[] } {
-  const tm = text.match(/(?:\*\*|)?(.*?)(?:\*\*|)?/);
+  const tm = text.match(/(?:\*\*|#+\s*)?(.*?)(?:\*\*|)?/);
   const title = tm ? stripMd(tm[1]).replace(/^Transcript:\s*/i, '').replace(/^"/, '').replace(/"$/, '') : 'Listening';
 
-  const parts = text.split(/(?:\*\*|)?English Translation:(?:\*\*|)?/i);
+  const parts = text.split(/(?:\*\*|#+\s*)?English Translation:?(?:\*\*|)?/i);
   const transPart = parts[0] || '';
   const afterTrans = parts[1] || '';
 
   // Extract transcript
   const tLines = transPart.split('\n').filter(l => {
     const t = l.trim();
-    return t && !t.match(/^(?:\*\*|)?Listening/i) && !t.match(/^(?:\*\*|)?Answer Key/i) && !t.match(/^\d+\./) && !t.startsWith('(No audio');
+    return t && !t.match(/^(?:\*\*|#+\s*)?Listening/i) && !t.match(/^(?:\*\*|#+\s*)?Answer Key/i) && !t.match(/^\d+\./) && !t.startsWith('(No audio');
   });
   const transcript = tLines.map(l => l.replace(/^\*+/, '').replace(/\*+$/, '').replace(/\*\*/g, '').trim()).filter(l => l && l !== title && !l.startsWith('Transcript:')).join('\n');
 
@@ -403,11 +403,19 @@ function parseListening(text: string): { title: string; transcript: string; tran
 
   // Try splitting on English Translation first, then fall back to searching for activity directly
   const activitySource = afterTrans || text;
-  const tp = activitySource.split(/(?:\*\*|)?(?:Listening|Reading)?\s*(?:Activity|Comprehension Questions|Questions)/i);
+  const tp = activitySource.split(/(?:\*\*|#+\s*)?(?:Listening|Reading)?\s*(?:Activity|Comprehension Questions|Questions):?/i);
   if (!afterTrans && tp.length > 1) {
     translation = undefined;
   } else {
-    translation = (tp[0] || '').split('\n').filter(l => l.trim()).map(l => l.replace(/^\*+/, '').replace(/\*+$/, '').replace(/\(.*?A1.*?support.*?\)/i, '').trim()).filter(l => l && !l.startsWith('(')).join('\n').trim() || undefined;
+    translation = (tp[0] || '')
+      .split('\n')
+      .filter(l => l.trim())
+      .map(l => l.replace(/\([^\)]*(?:support|toggle|hide|A1[–-]A2)[^\)]*\)/gi, '').trim())
+      .filter(l => l && !l.startsWith('(') && !l.toLowerCase().startsWith('english translation'))
+      .join('\n')
+      .replace(/^["“]/, '')
+      .replace(/["”]$/, '')
+      .trim() || undefined;
   }
 
   // Clean up activityHeader
@@ -426,7 +434,7 @@ function parseListening(text: string): { title: string; transcript: string; tran
   else if (/comprehension questions/i.test(activityHeader)) activityType = 'short_answer';
 
   // Split questions and answers
-  const ap = activityHeader.split(/(?:\*\*|)?Answer Key/i);
+  const ap = activityHeader.split(/(?:\*\*|#+\s*)?Answer Key:?/i);
   const answerSection = (ap[1] || '').trim();
   const cleanAnswerSection = answerSection.startsWith(':') ? answerSection.slice(1).trim() : answerSection;
   const answerLines = cleanAnswerSection.split('\n');
@@ -527,13 +535,13 @@ function parseReading(text: string): { title: string; text: string; translation?
 
   // Extract Title if present on first line or in quotes
   let title = 'Reading Passage';
-  const titleMatch = cleanText.match(/^(?:\*\*)?["“](.+?)["”]\s*(\([^\)]+\))?(?:\*\*)?/m);
+  const titleMatch = cleanText.match(/^(?:\*\*|#+\s*)?["“](.+?)["”]\s*(\([^\)]+\))?(?:\*\*)?/m);
   if (titleMatch) {
     title = titleMatch[0].replace(/^\*+|\*+$/g, '').trim();
   }
 
   // Split on English Translation
-  const parts = cleanText.split(/(?:\*\*|)?English Translation:(?:\*\*|)?/i);
+  const parts = cleanText.split(/(?:\*\*|#+\s*)?English Translation:?(?:\*\*|)?/i);
   const frenchPart = parts[0] || '';
   const afterTrans = parts[1] || '';
 
@@ -541,9 +549,9 @@ function parseReading(text: string): { title: string; text: string; translation?
   const frenchLines = frenchPart.split('\n').filter(l => {
     const t = l.trim();
     if (!t) return false;
-    if (t.match(/^(?:\*\*|)?Reading/i)) return false;
-    if (t.match(/^(?:\*\*|)?Comprehension Questions/i)) return false;
-    if (t.match(/^(?:\*\*|)?Answer Key/i)) return false;
+    if (t.match(/^(?:\*\*|#+\s*)?Reading/i)) return false;
+    if (t.match(/^(?:\*\*|#+\s*)?Comprehension Questions/i)) return false;
+    if (t.match(/^(?:\*\*|#+\s*)?Answer Key/i)) return false;
     return true;
   });
 
@@ -562,13 +570,13 @@ function parseReading(text: string): { title: string; text: string; translation?
 
   if (afterTrans) {
     // Split translation BEFORE Comprehension Questions / Activity / Answer Key
-    const transSplit = afterTrans.split(/(?:\*\*|)?(?:Comprehension Questions|Reading Activity|Listening Activity|Questions|Answer Key)/i);
+    const transSplit = afterTrans.split(/(?:\*\*|#+\s*)?(?:Comprehension Questions|Reading Activity|Listening Activity|Questions|Answer Key):?/i);
     const rawTrans = (transSplit[0] || '').trim();
 
     translation = rawTrans
       .split('\n')
-      .map(l => l.replace(/\*?\s*\(\s*A1[–-]A2\s+support[^\)]*\)\*?/gi, '').replace(/\*?\s*\(\s*hide behind a toggle[^\)]*\)\*?/gi, '').trim())
-      .filter(l => l && !l.startsWith('(') && !l.startsWith('English Translation'))
+      .map(l => l.replace(/\([^\)]*(?:support|toggle|hide|A1[–-]A2)[^\)]*\)/gi, '').trim())
+      .filter(l => l && !l.startsWith('(') && !l.toLowerCase().startsWith('english translation'))
       .join('\n')
       .replace(/^["“]/, '')
       .replace(/["”]$/, '')
@@ -579,8 +587,8 @@ function parseReading(text: string): { title: string; text: string; translation?
 
   const questions: ILessonQuestion[] = [];
 
-  const qSectionMatch = questionsSource.match(/(?:\*\*|)?(?:Comprehension Questions|Reading Activity|Questions):?(?:\*\*|)?([\s\S]*?)(?=(?:\*\*|)?Answer Key|$)/i);
-  const akMatch = questionsSource.match(/(?:\*\*|)?Answer Key:?(?:\*\*|)?([\s\S]*?)$/i);
+  const qSectionMatch = questionsSource.match(/(?:\*\*|#+\s*)?(?:Comprehension Questions|Reading Activity|Questions):?(?:\*\*|)?([\s\S]*?)(?=(?:\*\*|#+\s*)?Answer Key|$)/i);
+  const akMatch = questionsSource.match(/(?:\*\*|#+\s*)?Answer Key:?(?:\*\*|)?([\s\S]*?)$/i);
 
   const qText = qSectionMatch ? qSectionMatch[1].trim() : '';
   const akText = akMatch ? akMatch[1].trim() : '';
@@ -588,12 +596,12 @@ function parseReading(text: string): { title: string; text: string; translation?
   const answers: string[] = akText
     .split('\n')
     .map(l => l.replace(/^\d+[\.\)]\s*/, '').replace(/^[-•*]\s*/, '').trim())
-    .filter(l => l && l !== '---' && l !== '--' && !l.startsWith('*'));
+    .filter(l => l && l !== '---' && l !== '--' && !l.startsWith('*') && !l.toLowerCase().startsWith('answer key'));
 
   const rawQLines = qText
     .split('\n')
     .map(l => l.trim())
-    .filter(l => l && l !== '---' && l !== '--');
+    .filter(l => l && l !== '---' && l !== '--' && !l.toLowerCase().startsWith('comprehension questions'));
 
   let qCount = 0;
   for (const qLine of rawQLines) {
