@@ -16,6 +16,7 @@ interface VocabCard {
   english: string;
   pronunciation: string;
   example: string;
+  level: string;
   lesson: number;
   chapter: number;
   chapterTitle: string;
@@ -50,8 +51,8 @@ function FlashcardsPage() {
   const [activeCards, setActiveCards] = useState<VocabCard[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [selectedLevel, setSelectedLevel] = useState<string>('A1');
   const [selectedChapter, setSelectedChapter] = useState<number | 'all'>('all');
-  const [selectedCategory, setSelectedCategory] = useState<string | 'all'>('all');
   const [selectedLesson, setSelectedLesson] = useState<number | 'all'>('all');
   const [dueCards, setDueCards] = useState<FlashcardProgress[]>([]);
   const [showRating, setShowRating] = useState(false);
@@ -150,12 +151,14 @@ function FlashcardsPage() {
             }
 
             if (fr) {
+              const lvl = (lesson.level || 'A1').toUpperCase();
               extracted.push({
                 id: `card-${cardCounter}-${fr}`,
                 french: fr,
                 english: en || 'Key Expression',
                 pronunciation: pron,
                 example: ex,
+                level: lvl,
                 lesson: lessonOrder,
                 chapter: chNum,
                 chapterTitle: lesson.title || `Lesson ${lessonOrder}`,
@@ -166,8 +169,8 @@ function FlashcardsPage() {
         }
 
         setAllCards(extracted);
-        const unlockedOnly = extracted.filter(c => c.isUnlocked);
-        setActiveCards(unlockedOnly.length > 0 ? unlockedOnly : extracted);
+        const a1Cards = extracted.filter(c => c.level === 'A1');
+        setActiveCards(a1Cards.length > 0 ? a1Cards : extracted);
       } catch (err) {
         console.error("Failed to load flashcard vocab", err);
       } finally {
@@ -185,14 +188,15 @@ function FlashcardsPage() {
     loadData();
   }, [user]);
 
-  const filterCards = (ch: number | 'all', lsn: number | 'all') => {
+  const filterCards = (lvl: string, ch: number | 'all', lsn: number | 'all') => {
+    setSelectedLevel(lvl);
     setSelectedChapter(ch);
     setSelectedLesson(lsn);
     setIsFlipped(false);
     setShowRating(false);
     setCurrentIdx(0);
 
-    let filtered = allCards;
+    let filtered = allCards.filter(c => c.level === lvl);
 
     // Filter by Chapter
     if (ch !== 'all') {
@@ -206,15 +210,19 @@ function FlashcardsPage() {
       filtered = filtered.filter(c => c.lesson === lsn);
     }
 
-    setActiveCards(filtered);
+    setActiveCards(filtered.length > 0 ? filtered : []);
+  };
+
+  const handleSelectLevel = (lvl: string) => {
+    filterCards(lvl, 'all', 'all');
   };
 
   const handleSelectChapter = (ch: number | 'all') => {
-    filterCards(ch, 'all');
+    filterCards(selectedLevel, ch, 'all');
   };
 
   const handleSelectLesson = (lsn: number | 'all') => {
-    filterCards(selectedChapter, lsn);
+    filterCards(selectedLevel, selectedChapter, lsn);
   };
 
   const handleShuffle = () => {
@@ -264,7 +272,9 @@ function FlashcardsPage() {
   };
 
   const currentCard = activeCards[currentIdx];
-  const uniqueChapters = Array.from(new Set(allCards.map(c => c.chapter))).sort((a, b) => a - b);
+  const uniqueLevels = ["A1", "A2", "B1", "B2", "C1", "C2"];
+  const levelCards = allCards.filter(c => c.level === selectedLevel);
+  const uniqueChapters = Array.from(new Set(levelCards.map(c => c.chapter))).sort((a, b) => a - b);
 
   return (
     <div className={`min-h-screen ${pageBg} transition-colors duration-300 pb-16`}>
@@ -310,11 +320,37 @@ function FlashcardsPage() {
           </div>
         </div>
 
+        {/* 6-Module CEFR Level Selector Tabs (A1 - C2) */}
+        <div className="space-y-2">
+          <span className={`text-xs font-bold uppercase tracking-wider block ${dark ? "text-purple-400" : "text-purple-700"}`}>
+            Select Module Level:
+          </span>
+          <div className="grid grid-cols-6 gap-2">
+            {uniqueLevels.map((lvl) => {
+              const count = allCards.filter(c => c.level === lvl).length;
+              return (
+                <button
+                  key={lvl}
+                  onClick={() => handleSelectLevel(lvl)}
+                  className={`py-2.5 px-2 rounded-xl text-xs font-extrabold border text-center transition-all ${
+                    selectedLevel === lvl
+                      ? "bg-gradient-to-r from-purple-500 to-indigo-600 text-white border-purple-500 shadow-lg shadow-purple-500/25 scale-[1.02]"
+                      : dark ? "bg-[#101828] border-purple-500/20 text-gray-300 hover:bg-purple-500/10" : "bg-white border-purple-200 text-purple-900 hover:bg-purple-50"
+                  }`}
+                >
+                  <span className="block text-sm font-black">{lvl}</span>
+                  <span className="block text-[10px] opacity-75 font-normal">{count} Cards</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Dynamic Chapter Unlock Selector */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className={`text-xs font-bold uppercase tracking-wider ${dark ? "text-purple-400" : "text-purple-700"}`}>
-              Select Chapter Deck:
+              Select {selectedLevel} Chapter Deck:
             </span>
             <span className={`text-xs ${textMuted}`}>
               {activeCards.length} Cards in Deck
@@ -331,12 +367,12 @@ function FlashcardsPage() {
               }`}
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-              All Unlocked ({allCards.filter(c => c.isUnlocked).length})
+              All Unlocked ({levelCards.filter(c => c.isUnlocked).length})
             </button>
 
             {uniqueChapters.map((chNum) => {
-              const isUnlocked = user?.role === 'admin' || completedChapters.has(chNum) || chNum === 1;
-              const chCardsCount = allCards.filter(c => c.chapter === chNum).length;
+              const isUnlocked = user?.role === 'admin' || completedChapters.has(chNum) || (selectedLevel === 'A1' && chNum === 1);
+              const chCardsCount = levelCards.filter(c => c.chapter === chNum).length;
 
               return (
                 <button
