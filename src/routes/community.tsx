@@ -887,6 +887,11 @@ function CommunityExamHubPage() {
                     Publish Thread
                   </button>
                 </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* ─── CONNECT REQUEST MODAL ─── */}
         <AnimatePresence>
           {connectModalRequest && (
