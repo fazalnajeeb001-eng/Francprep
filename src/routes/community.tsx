@@ -64,7 +64,7 @@ const OFFICIAL_CHANNELS: Channel[] = [
     id: "salon-de-discussion",
     name: "💬 #salon-de-discussion",
     icon: "💬",
-    description: "General French Conversation Lounge",
+    description: "General French Conversation Practice",
     topic: "Chat in French with fellow learners. Practice everyday expressions!",
   },
   {
@@ -82,11 +82,11 @@ const OFFICIAL_CHANNELS: Channel[] = [
     topic: "Discuss written & oral exam questions, mock tests, and scoring rubrics.",
   },
   {
-    id: "whatsapp-circles",
-    name: "📱 Official Study Circles & WhatsApp",
-    icon: "📱",
-    description: "Official FrancPrep WhatsApp Groups & Study Circles",
-    topic: "Join official WhatsApp, Telegram, and Discord study groups.",
+    id: "study-circles",
+    name: "🌐 #groupes-d-etudes",
+    icon: "🌐",
+    description: "FrancPrep Candidate Study Circles",
+    topic: "Connect with dedicated study circles for peer exam preparation.",
   },
 ];
 
@@ -355,14 +355,14 @@ function CommunityPage() {
               ))}
             </div>
 
-            {/* Official Study Circle Invite Link Card */}
+            {/* Official Study Circle Info Card */}
             <div className={`p-3 rounded-xl border ${dark ? "bg-purple-950/20 border-purple-500/20" : "bg-purple-50 border-purple-200"}`}>
               <div className="flex items-center gap-2 mb-1">
                 <MessageCircle className="w-4 h-4 text-emerald-400" />
-                <span className="text-xs font-bold text-emerald-400">Official WhatsApp & Discord</span>
+                <span className="text-xs font-bold text-emerald-400">FrancPrep Peer Study Circles</span>
               </div>
               <p className={`text-[11px] ${textMuted} leading-relaxed`}>
-                Join official FrancPrep candidate groups to find study partners and TCF/DELF study circles!
+                Connect with fellow FrancPrep candidates to practice conversation and review exam strategies together!
               </p>
             </div>
           </div>
