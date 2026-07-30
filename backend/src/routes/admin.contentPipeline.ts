@@ -102,7 +102,7 @@ async function validateParsedLesson(lesson: any): Promise<{ errors: string[]; wa
 
   if (!isValid && validatorErrors) {
     for (const err of validatorErrors) {
-      if (err.keyword === 'additionalProperties') continue;
+      if (err.keyword === 'additionalProperties' || err.message?.includes('additional properties')) continue;
       errors.push(`${err.instancePath || '/'} ${err.message}`);
     }
   }
