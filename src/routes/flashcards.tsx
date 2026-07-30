@@ -112,7 +112,8 @@ function FlashcardsPage() {
           }
 
           // Resolve lesson order (1-8) within chapter
-          const isChUnlocked = user?.role === 'admin' || completedChapters.has(chNum);
+          const lessonOrder = Number(lesson.order || lesson.lessonNumber || lesson.lessonId?.match(/l(\d+)/i)?.[1] || 1);
+          const isChUnlocked = user?.role === 'admin' || completedChapters.has(chNum) || chNum === 1;
 
           const vocabList = Array.isArray(lesson.vocabItems) && lesson.vocabItems.length > 0 ? lesson.vocabItems
             : Array.isArray(lesson.vocabulary) && lesson.vocabulary.length > 0 ? lesson.vocabulary
@@ -143,15 +144,12 @@ function FlashcardsPage() {
             }
 
             if (fr) {
-              const catInfo = detectCategory(fr, en);
               extracted.push({
                 id: `card-${cardCounter}-${fr}`,
                 french: fr,
                 english: en || 'Key Expression',
                 pronunciation: pron,
                 example: ex,
-                category: catInfo.name,
-                categoryIcon: catInfo.icon,
                 lesson: lessonOrder,
                 chapter: chNum,
                 chapterTitle: lesson.title || `Lesson ${lessonOrder}`,
@@ -331,7 +329,7 @@ function FlashcardsPage() {
             </button>
 
             {uniqueChapters.map((chNum) => {
-              const isUnlocked = user?.role === 'admin' || completedChapters.has(chNum);
+              const isUnlocked = user?.role === 'admin' || completedChapters.has(chNum) || chNum === 1;
               const chCardsCount = allCards.filter(c => c.chapter === chNum).length;
 
               return (
