@@ -1840,10 +1840,8 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
       case 'delf':
         const delfQuestions = lesson!.practiceExercises?.questions?.filter((q: any) => Boolean(q?.id && typeof q.id === 'string' && q.id.includes('delf'))) || [];
-        const fallbackL7DialText = "Le Dialogue / Scène de la leçon 7:\n- Bonjour, nous cherchons un appartement lumineux avec deux chambres près du centre-ville.\n- Parfait! J'ai une offre idéale: un trois-pièces refait à neuf avec un grand balcon et une cuisine équipée.\n- Magnifique, nous souhaitons planifier une visite dès demain!";
-        const fallbackL7DialTrans = "The Dialogue / Scene from Lesson 7:\n- Hello, we are looking for a bright apartment with two bedrooms near the city center.\n- Perfect! I have an ideal offer: a newly renovated three-room apartment with a large balcony and an equipped kitchen.\n- Wonderful, we want to schedule a visit starting tomorrow!";
-        const l7DialText = getDialogueText(lesson7) || lesson?.scene?.text || lesson?.reading?.text || lesson?.listening?.transcript || fallbackL7DialText;
-        const l7DialTrans = getDialogueTranslation(lesson7) || lesson?.scene?.translation || lesson?.reading?.translation || lesson?.listening?.translation || fallbackL7DialTrans;
+        const l7DialText = getDialogueText(lesson7) || lesson?.scene?.text || lesson?.reading?.text || lesson?.listening?.transcript || '';
+        const l7DialTrans = getDialogueTranslation(lesson7) || lesson?.scene?.translation || lesson?.reading?.translation || lesson?.listening?.translation || '';
         return (
           <div className="space-y-6">
             {l7DialText && (
@@ -2986,11 +2984,8 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
                 return trimmed;
               };
 
-              const defaultL7Transcript = "Le Dialogue / Scène de la leçon 7:\n- Bonjour, nous cherchons un appartement lumineux avec deux chambres près du centre-ville.\n- Parfait! J'ai une offre idéale: un trois-pièces refait à neuf avec un grand balcon et une cuisine équipée.\n- Magnifique, nous souhaitons planifier une visite dès demain!";
-              const defaultL7Translation = "The Dialogue / Scene from Lesson 7:\n- Hello, we are looking for a bright apartment with two bedrooms near the city center.\n- Perfect! I have an ideal offer: a newly renovated three-room apartment with a large balcony and an equipped kitchen.\n- Wonderful, we want to schedule a visit starting tomorrow!";
-
-              const activeTranscript = cleanTxt(sec.sourceText) || cleanTxt(sec.transcript) || cleanTxt(sec.text) || cleanTxt(lesson7Transcript) || cleanTxt(lesson?.listening?.transcript) || cleanTxt(lesson?.reading?.text) || cleanTxt(lesson?.scene?.text) || defaultL7Transcript;
-              const activeTranslation = cleanTxt(sec.translation) || cleanTxt(lesson7Translation) || cleanTxt(lesson?.listening?.translation) || cleanTxt(lesson?.reading?.translation) || cleanTxt(lesson?.scene?.translation) || defaultL7Translation;
+              const activeTranscript = cleanTxt(sec.sourceText) || cleanTxt(sec.transcript) || cleanTxt(sec.text) || cleanTxt(lesson7Transcript) || cleanTxt(lesson?.listening?.transcript) || cleanTxt(lesson?.reading?.text) || cleanTxt(lesson?.scene?.text) || '';
+              const activeTranslation = cleanTxt(sec.translation) || cleanTxt(lesson7Translation) || cleanTxt(lesson?.listening?.translation) || cleanTxt(lesson?.reading?.translation) || cleanTxt(lesson?.scene?.translation) || '';
 
               return (
                 <>
@@ -3068,11 +3063,8 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
                 return trimmed;
               };
 
-              const defaultL8ReadingText = "Monsieur Roy cherche une nouvelle maison. Il visite une maison spacieuse avec quatre chambres. Il y a un grand jardin, mais il n'y a pas de garage. La maison est calme, loin du centre-ville.";
-              const defaultL8ReadingTrans = "Mr. Roy is looking for a new house. He visits a spacious house with four bedrooms. There is a large garden, but there is no garage. The house is quiet, far from the city center.";
-
-              const activeReadingText = cleanTxt(sec.sourceText) || cleanTxt(sec.passage) || cleanTxt(sec.text) || cleanTxt(lesson7Transcript) || cleanTxt(lesson?.reading?.text) || cleanTxt(lesson?.scene?.text) || defaultL8ReadingText;
-              const activeReadingTrans = cleanTxt(sec.translation) || cleanTxt(lesson7Translation) || cleanTxt(lesson?.reading?.translation) || cleanTxt(lesson?.scene?.translation) || defaultL8ReadingTrans;
+              const activeReadingText = cleanTxt(sec.sourceText) || cleanTxt(sec.passage) || cleanTxt(sec.text) || cleanTxt(lesson7Transcript) || cleanTxt(lesson?.reading?.text) || cleanTxt(lesson?.scene?.text) || '';
+              const activeReadingTrans = cleanTxt(sec.translation) || cleanTxt(lesson7Translation) || cleanTxt(lesson?.reading?.translation) || cleanTxt(lesson?.scene?.translation) || '';
 
               return (
                 <>
