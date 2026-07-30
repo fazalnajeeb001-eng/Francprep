@@ -388,7 +388,7 @@ function FlashcardsPage() {
             >
               All Chapter {selectedChapter} ({allCards.filter(c => c.chapter === selectedChapter).length})
             </button>
-            {Array.from(new Set(allCards.filter(c => c.chapter === selectedChapter).map(c => c.lesson))).sort((a, b) => a - b).map((lsnNum) => {
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((lsnNum) => {
               const lsnCardsCount = allCards.filter(c => c.chapter === selectedChapter && c.lesson === lsnNum).length;
               return (
                 <button
