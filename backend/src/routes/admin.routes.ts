@@ -682,9 +682,9 @@ router.get('/curriculum/audit', async (req: AuthRequest, res: Response, next: Ne
       const errors: string[] = [];
       const warnings: string[] = [];
       
-      const canonical = (lesson as any).canonical;
-      if (!canonical) {
-        errors.push('Missing canonical JSON document');
+      const canonical = (lesson as any).canonical || lesson.toObject();
+      if (!canonical || (!canonical.title && !canonical.lessonId)) {
+        errors.push('Missing lesson document');
         auditResults.push({ lessonId: lesson.lessonId as string, title: lesson.title, level: lesson.level, errors, warnings });
         continue;
       }
