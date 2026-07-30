@@ -471,10 +471,23 @@ function getDialogueText(lesson: any): string {
   return rText || lText || "";
 }
 
+function sanitizeTranslation(raw: string | undefined): string {
+  if (!raw) return "";
+  const split = raw.split(/(?:\*\*|#+\s*)?(?:Comprehension Questions|Reading Activity|Listening Activity|Questions|Answer Key):?/i);
+  const clean = (split[0] || '')
+    .replace(/\([^\)]*(?:support|toggle|hide|A1[–-]A2)[^\)]*\)/gi, '')
+    .replace(/^(?:\*\*|#+\s*)?English Translation:?/i, '')
+    .trim()
+    .replace(/^["“]/, '')
+    .replace(/["”]$/, '')
+    .trim();
+  return clean;
+}
+
 function getDialogueTranslation(lesson: any): string {
   if (!lesson) return "";
-  const rTrans = lesson.reading?.translation?.trim() || "";
-  const lTrans = lesson.listening?.translation?.trim() || "";
+  const rTrans = sanitizeTranslation(lesson.reading?.translation);
+  const lTrans = sanitizeTranslation(lesson.listening?.translation);
   const clean = (s: string) => s.replace(/^[\s*\-]+/, '').replace(/[\s*\-]+$/, '').trim();
   const rt = rTrans && rTrans !== "---" ? clean(rTrans) : "";
   const lt = lTrans && lTrans !== "---" ? clean(lTrans) : "";
@@ -2565,7 +2578,7 @@ function ReadingSection({ lesson, dark, cardBg, innerBg, textBody, textMuted, sh
   const rawTitle = lesson.reading?.title || lesson.scene?.title || "Reading Passage";
   const rTitle = rawTitle.replace(/^Scene:\s*/i, 'Reading: ').replace(/^Scene$/i, 'Reading Passage');
   const rText = lesson.reading?.text || lesson.scene?.text || getDialogueText(lesson);
-  const rTrans = lesson.reading?.translation || lesson.scene?.translation || getDialogueTranslation(lesson);
+  const rTrans = sanitizeTranslation(lesson.reading?.translation || lesson.scene?.translation || getDialogueTranslation(lesson));
 
   return (
     <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5 mb-4`}>
@@ -2605,7 +2618,7 @@ function ListeningSection({ lesson, dark, cardBg, innerBg, textSec, textMuted, s
   const rawLTitle = lesson.listening?.title || lesson.scene?.title || 'Listening Activity';
   const lTitle = rawLTitle.replace(/^Scene:\s*/i, 'Listening: ').replace(/^Scene$/i, 'Listening Activity');
   const lTranscript = lesson.listening?.transcript || lesson.scene?.text || getDialogueText(lesson);
-  const lTranslation = lesson.listening?.translation || lesson.scene?.translation || getDialogueTranslation(lesson);
+  const lTranslation = sanitizeTranslation(lesson.listening?.translation || lesson.scene?.translation || getDialogueTranslation(lesson));
   const { speak: speakWithState, isSpeaking } = useSpeak();
 
   const cleanedTranscript = (lTranscript || "").replace(/\*\*/g, "").trim();
@@ -3341,7 +3354,7 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
               };
 
               const activeReadingText = cleanTxt(sec.sourceText) || cleanTxt(sec.passage) || cleanTxt(sec.text) || cleanTxt(lesson7Transcript) || cleanTxt(lesson?.reading?.text) || cleanTxt(lesson?.scene?.text) || '';
-              const activeReadingTrans = cleanTxt(sec.translation) || cleanTxt(lesson7Translation) || cleanTxt(lesson?.reading?.translation) || cleanTxt(lesson?.scene?.translation) || '';
+              const activeReadingTrans = sanitizeTranslation(cleanTxt(sec.translation) || cleanTxt(lesson7Translation) || cleanTxt(lesson?.reading?.translation) || cleanTxt(lesson?.scene?.translation) || '');
 
               return (
                 <>
