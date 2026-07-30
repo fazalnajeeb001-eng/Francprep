@@ -15,6 +15,7 @@ import contentRoutes from './content.routes';
 import announcementRoutes from './announcement.routes';
 import settingsRoutes from './settings.routes';
 import speakingRoutes from './speaking.routes';
+import ttsRoutes from './tts.routes';
 
 import { SystemSettings } from '../models/SystemSettings';
 
@@ -60,4 +61,5 @@ router.use('/content', contentRoutes);
 router.use('/announcements', announcementRoutes);
 router.use('/settings', settingsRoutes);
 router.use('/speaking', speakingRoutes);
+router.use('/tts', ttsRoutes);
 export default router;
