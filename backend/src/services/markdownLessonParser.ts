@@ -1370,8 +1370,23 @@ function populateLessonSections(lesson: ParsedLesson, sections: any[], lessonId:
       lesson.grammar = parseGrammar(s.body);
       if (lesson.grammarDrills) lesson.grammarDrills.questions = parseGrammarDrills(s.body);
     }
-    else if (h === 'reading') {
-      if (lesson.reading) lesson.reading = parseReading(s.body);
+    else if (h === 'reading' || h === 'scene' || h.includes('scene') || h.includes('integrated practice')) {
+      let text = s.body.trim();
+      let translation = '';
+      if (s.body.toLowerCase().includes('english translation:')) {
+        const parts = s.body.split(/english translation:?/i);
+        text = parts[0].trim();
+        translation = (parts[1] || '').trim();
+      }
+      translation = translation
+        .replace(/\*?\s*\(\s*A1[–-]A2\s+support[^\)]*\)\*?/gi, '')
+        .replace(/\*?\s*\(\s*hide behind a toggle[^\)]*\)\*?/gi, '')
+        .replace(/^[*_\s]+|[*_\s]+$/g, '')
+        .trim();
+
+      lesson.scene = { title: 'Scene', text, translation };
+      if (lesson.reading) lesson.reading = { title: 'Reading Passage', text, translation, questions: lesson.reading.questions || [] };
+      if (lesson.listening) lesson.listening = { title: 'Listening Comprehension', transcript: text, translation, questions: lesson.listening.questions || [] };
     }
     else if (h === 'listening') {
       if (lesson.listening) lesson.listening = parseListening(s.body);
