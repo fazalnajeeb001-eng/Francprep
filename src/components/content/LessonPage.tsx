@@ -3432,57 +3432,138 @@ function LessonCheatSheetModal({ lesson, dark, onClose, speak }: { lesson: any; 
   const sceneText = lesson?.scene?.text || lesson?.reading?.text || lesson?.listening?.transcript || '';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto print:p-0 print:bg-white print:static print:z-auto">
-      <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
-        className={`print-cheat-sheet-modal w-full max-w-4xl p-6 rounded-2xl border ${dark ? "bg-[#0c1224] border-purple-500/30 text-white" : "bg-white border-purple-200 text-slate-900"} shadow-2xl space-y-6 print:shadow-none print:border-none print:w-full print:max-w-none print:bg-white print:text-black`}>
-        
+  const [searchTerm, setSearchTerm] = useState('');
+  const [copiedVocab, setCopiedVocab] = useState(false);
+
+  const filteredVocab = useMemo(() => {
+    if (!searchTerm.trim()) return chapterVocab;
+    const q = searchTerm.toLowerCase();
+    return chapterVocab.filter((v: any) => {
+      let fr = typeof v === 'string' ? v : v.french || v.term || v.word || '';
+      let en = typeof v === 'string' ? '' : v.english || v.translation || v.meaning || '';
+      return fr.toLowerCase().includes(q) || en.toLowerCase().includes(q);
+    });
+  }, [chapterVocab, searchTerm]);
+
+  const handleCopyVocab = () => {
+    const textList = chapterVocab.map((v: any) => {
+      let fr = typeof v === 'string' ? v : v.french || v.term || v.word || '';
+      let en = typeof v === 'string' ? '' : v.english || v.translation || v.meaning || '';
+      return en ? `${fr} — ${en}` : fr;
+    }).join('\n');
+
+    navigator.clipboard.writeText(textList).then(() => {
+      setCopiedVocab(true);
+      setTimeout(() => setCopiedVocab(false), 2500);
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md overflow-y-auto print:p-0 print:bg-white print:static print:z-auto">
+      <motion.div
+        initial={{ scale: 0.96, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.96, opacity: 0 }}
+        className={`print-cheat-sheet-modal w-full max-w-5xl max-h-[92vh] flex flex-col p-6 sm:p-8 rounded-3xl border ${
+          dark ? "bg-[#0a0f1d] border-purple-500/30 text-white shadow-2xl shadow-purple-950/50" : "bg-white border-purple-200 text-slate-900 shadow-2xl"
+        } print:shadow-none print:border-none print:w-full print:max-w-none print:max-h-none print:bg-white print:text-black`}
+      >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-purple-500/20 pb-4 print:pb-2">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-400 print:hidden">
-              <FileText className="w-5 h-5" />
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-purple-500/20 pb-5 shrink-0 print:pb-2">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-purple-500/30 print:hidden">
+              <FileText className="w-6 h-6" />
             </div>
             <div>
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-purple-400">
-                French {lesson?.level || 'A1'} • Chapter Study Cheat Sheet
-              </span>
-              <h2 className="text-xl font-extrabold text-white print:text-black mt-0.5">{lesson?.title || 'Chapter Summary'}</h2>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-extrabold uppercase tracking-widest text-purple-400 print:text-black">
+                  French {lesson?.level || 'A1'} • Official Chapter Cheat Sheet
+                </span>
+                <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300 print:hidden">
+                  High-Print Quality
+                </span>
+              </div>
+              <h2 className="text-2xl font-black text-white print:text-black mt-0.5 tracking-tight">
+                {lesson?.title || 'Chapter Study Summary'}
+              </h2>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 print:hidden">
+          <div className="flex items-center gap-2.5 print:hidden">
             <button
               onClick={() => window.print()}
-              className="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-md flex items-center gap-1.5 transition-all"
+              className="px-5 py-2.5 bg-gradient-to-r from-purple-500 via-indigo-600 to-purple-600 hover:from-purple-400 hover:to-indigo-500 text-white text-xs font-black rounded-2xl shadow-lg shadow-purple-500/25 flex items-center gap-2 transition-all hover:scale-105 active:scale-95 cursor-pointer"
             >
-              <Printer className="w-3.5 h-3.5" /> 🖨️ Print / Save PDF
+              <Printer className="w-4 h-4 text-amber-300" />
+              <span>🖨️ Print / Save PDF</span>
             </button>
+
+            {chapterVocab.length > 0 && (
+              <button
+                onClick={handleCopyVocab}
+                className={`px-4 py-2.5 rounded-2xl border text-xs font-bold transition-all ${
+                  copiedVocab
+                    ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300"
+                    : dark
+                    ? "bg-purple-500/10 border-purple-500/30 text-purple-300 hover:bg-purple-500/20"
+                    : "bg-purple-50 border-purple-200 text-purple-800 hover:bg-purple-100"
+                }`}
+              >
+                {copiedVocab ? "✓ Vocab Copied!" : "📋 Copy Vocab"}
+              </button>
+            )}
+
             <button
               onClick={onClose}
-              className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/10"
+              className="p-2.5 rounded-2xl text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {loading ? (
-          <div className="py-12 text-center space-y-3">
-            <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-              className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full mx-auto" />
-            <p className="text-xs text-gray-400 font-medium">Generating complete chapter study sheet...</p>
-          </div>
-        ) : (
-          <>
-            {/* Section 1: Key Vocabulary Table */}
-            {chapterVocab.length > 0 && (
-              <div className="space-y-3">
-                <h3 className="text-sm font-bold flex items-center gap-2 text-purple-400 print:text-black">
-                  <span>🗣️</span> Essential Vocabulary ({chapterVocab.length} Terms)
-                </h3>
-                <div className={`rounded-xl border overflow-hidden ${dark ? "bg-black/30 border-purple-500/20" : "bg-purple-50/50 border-purple-200"}`}>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 p-3">
-                    {chapterVocab.map((v: any, idx: number) => {
+        {/* Scrollable Body Content */}
+        <div className="flex-1 overflow-y-auto py-5 pr-1 space-y-7 print:overflow-visible print:h-auto">
+          {loading ? (
+            <div className="py-16 text-center space-y-4">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                className="w-10 h-10 border-3 border-purple-500 border-t-transparent rounded-full mx-auto"
+              />
+              <p className="text-xs font-bold text-gray-400">Compiling complete chapter study cheat sheet...</p>
+            </div>
+          ) : (
+            <>
+              {/* Search Bar for Screen View */}
+              {chapterVocab.length > 6 && (
+                <div className="print:hidden flex items-center gap-3">
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="⚡ Search terms or expressions in cheat sheet..."
+                    className={`flex-1 p-3.5 rounded-2xl border text-xs font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
+                      dark
+                        ? "bg-[#0c1224] border-purple-500/30 text-white placeholder-gray-500"
+                        : "bg-purple-50/50 border-purple-200 text-gray-900 placeholder-gray-400"
+                    }`}
+                  />
+                </div>
+              )}
+
+              {/* Section 1: Key Vocabulary Grid */}
+              {chapterVocab.length > 0 && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between border-b border-purple-500/15 pb-2">
+                    <h3 className="text-base font-extrabold flex items-center gap-2.5 text-purple-300 print:text-black">
+                      <span className="p-1.5 rounded-xl bg-purple-500/20 text-purple-400 print:hidden">🗣️</span>
+                      Essential Vocabulary & Expressions ({chapterVocab.length} Terms)
+                    </h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    {filteredVocab.map((v: any, idx: number) => {
                       let fr = typeof v === 'string' ? v : v.french || v.term || v.word || '';
                       let en = typeof v === 'string' ? '' : v.english || v.translation || v.meaning || '';
                       if (!en && (fr.includes('→') || fr.includes('->'))) {
@@ -3491,64 +3572,127 @@ function LessonCheatSheetModal({ lesson, dark, onClose, speak }: { lesson: any; 
                         en = parts[1]?.trim() || '';
                       }
                       return (
-                        <div key={idx} className={`p-2.5 rounded-lg border text-xs flex items-center justify-between gap-2 ${dark ? "bg-[#101828] border-purple-500/20 text-gray-200" : "bg-white border-purple-100 text-gray-800"}`}>
-                          <div>
-                            <span className="font-extrabold text-purple-300 print:text-black">{fr}</span>
-                            {en && <span className="block text-[10px] text-gray-400 print:text-gray-600">{en}</span>}
+                        <div
+                          key={idx}
+                          className={`p-3.5 rounded-2xl border text-xs flex items-center justify-between gap-3 transition-all ${
+                            dark
+                              ? "bg-[#101828]/90 border-purple-500/25 text-gray-100 hover:border-purple-500/50"
+                              : "bg-white border-purple-100 text-gray-800 hover:border-purple-300 shadow-sm"
+                          }`}
+                        >
+                          <div className="space-y-0.5 min-w-0 flex-1">
+                            <span className="font-extrabold text-sm block text-purple-300 print:text-black leading-snug truncate">
+                              {fr}
+                            </span>
+                            {en && (
+                              <span className="block text-xs font-medium text-gray-400 print:text-gray-600 leading-snug">
+                                {en}
+                              </span>
+                            )}
                           </div>
-                          <button onClick={() => speak(fr)} className="p-1 rounded hover:bg-purple-500/20 text-purple-400 print:hidden">
-                            <Volume2 className="w-3.5 h-3.5" />
+                          <button
+                            onClick={() => speak(fr)}
+                            className="p-2 rounded-xl bg-purple-500/10 hover:bg-purple-500/30 text-purple-300 print:hidden transition-colors shrink-0"
+                            title="Listen Pronunciation"
+                          >
+                            <Volume2 className="w-4 h-4" />
                           </button>
                         </div>
                       );
                     })}
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Section 2: Grammar & Formulas */}
-            {chapterGrammar.length > 0 && (
-              <div className="space-y-3">
-                <h3 className="text-sm font-bold flex items-center gap-2 text-pink-400 print:text-black">
-                  <span>📐</span> Grammar Rules & Formulas ({chapterGrammar.length} Rules)
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {chapterGrammar.map((r: any, idx: number) => (
-                    <div key={idx} className={`p-3.5 rounded-xl border space-y-1.5 text-xs ${dark ? "bg-[#101828] border-pink-500/20" : "bg-pink-50/30 border-pink-200"}`}>
-                      <p className="font-extrabold text-pink-300 print:text-black">{r.rule || r.title || `Rule ${idx + 1}`}</p>
-                      {r.formula && (
-                        <div className="p-2 rounded bg-purple-950/40 border border-purple-500/30 font-mono text-[11px] text-purple-300 print:bg-gray-100 print:text-black print:border-gray-300">
-                          {r.formula}
+              {/* Section 2: Grammar Rules & Formulas */}
+              {chapterGrammar.length > 0 && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between border-b border-pink-500/15 pb-2">
+                    <h3 className="text-base font-extrabold flex items-center gap-2.5 text-pink-300 print:text-black">
+                      <span className="p-1.5 rounded-xl bg-pink-500/20 text-pink-400 print:hidden">📐</span>
+                      Grammar Rules & Structural Formulas ({chapterGrammar.length} Rules)
+                    </h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {chapterGrammar.map((r: any, idx: number) => (
+                      <div
+                        key={idx}
+                        className={`p-4 rounded-2xl border space-y-2.5 transition-all ${
+                          dark
+                            ? "bg-[#101828]/90 border-pink-500/25 text-gray-100 hover:border-pink-500/40"
+                            : "bg-pink-50/40 border-pink-200 text-gray-800 shadow-sm"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <p className="font-extrabold text-sm text-pink-300 print:text-black flex items-center gap-2">
+                            <span className="w-6 h-6 rounded-full bg-pink-500/20 text-pink-300 flex items-center justify-center text-xs shrink-0 font-mono">
+                              {idx + 1}
+                            </span>
+                            {r.rule || r.title || `Rule ${idx + 1}`}
+                          </p>
                         </div>
-                      )}
-                      {r.examples && (
-                        <div className="text-[11px] text-gray-300 print:text-gray-700 italic">
-                          Examples: {Array.isArray(r.examples) ? r.examples.join(' • ') : r.examples}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
-            {/* Section 3: Key Conversation Scene Text */}
-            {sceneText && (
-              <div className="space-y-2">
-                <h3 className="text-sm font-bold flex items-center gap-2 text-emerald-400 print:text-black">
-                  <span>💬</span> Key Conversation Expressions
-                </h3>
-                <div className={`p-3.5 rounded-xl border text-xs leading-relaxed whitespace-pre-line max-h-48 overflow-y-auto ${dark ? "bg-emerald-950/20 border-emerald-500/20 text-emerald-200" : "bg-emerald-50 border-emerald-200 text-emerald-900"} print:max-h-none print:overflow-visible`}>
-                  {sceneText}
-                </div>
-              </div>
-            )}
-          </>
-        )}
+                        {r.formula && (
+                          <div className="p-3 rounded-xl bg-purple-950/60 border border-purple-500/40 font-mono text-xs font-bold text-amber-300 print:bg-gray-100 print:text-black print:border-gray-300 leading-relaxed">
+                            {r.formula}
+                          </div>
+                        )}
 
-        <div className="pt-2 text-center text-[10px] text-gray-500 print:text-black border-t border-purple-500/20">
-          FrancPrep French Learning Curriculum • Generated for Chapter Study
+                        {r.explanation && (
+                          <p className="text-xs text-gray-300 print:text-gray-700 leading-relaxed font-medium">
+                            {r.explanation}
+                          </p>
+                        )}
+
+                        {r.examples && (
+                          <div className="p-2.5 rounded-xl bg-black/30 border border-pink-500/20 text-xs text-pink-200 print:bg-transparent print:text-black print:border-gray-200 italic font-medium">
+                            <strong className="not-italic text-pink-400">Example: </strong>
+                            {Array.isArray(r.examples) ? r.examples.join(' • ') : r.examples}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Section 3: Key Conversation Scene Text */}
+              {sceneText && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between border-b border-emerald-500/15 pb-2">
+                    <h3 className="text-base font-extrabold flex items-center gap-2.5 text-emerald-300 print:text-black">
+                      <span className="p-1.5 rounded-xl bg-emerald-500/20 text-emerald-400 print:hidden">💬</span>
+                      Key Dialogue & Conversation Expressions
+                    </h3>
+                  </div>
+
+                  <div
+                    className={`p-5 rounded-2xl border text-sm leading-relaxed whitespace-pre-line ${
+                      dark
+                        ? "bg-emerald-950/20 border-emerald-500/25 text-emerald-100"
+                        : "bg-emerald-50 border-emerald-200 text-emerald-950"
+                    } print:bg-white print:text-black print:border-gray-300`}
+                  >
+                    {sceneText}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="pt-4 flex items-center justify-between text-xs text-gray-400 border-t border-purple-500/20 shrink-0 print:border-gray-300 print:text-black">
+          <span className="font-semibold">
+            FrancPrep Curriculum • {lesson?.title || 'Chapter Cheat Sheet'}
+          </span>
+          <button
+            onClick={() => window.print()}
+            className="print:hidden text-purple-400 hover:text-purple-300 font-extrabold flex items-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <Printer className="w-3.5 h-3.5" /> Print / Export PDF
+          </button>
         </div>
       </motion.div>
     </div>
