@@ -403,7 +403,7 @@ function parseListening(text: string): { title: string; transcript: string; tran
 
   // Try splitting on English Translation first, then fall back to searching for activity directly
   const activitySource = afterTrans || text;
-  const tp = activitySource.split(/(?:\*\*|)?Listening(?:\/Reading)?\s*Activity/i);
+  const tp = activitySource.split(/(?:\*\*|)?(?:Listening|Reading)?\s*(?:Activity|Comprehension Questions|Questions)/i);
   if (!afterTrans && tp.length > 1) {
     translation = undefined;
   } else {
@@ -520,6 +520,104 @@ function parseListening(text: string): { title: string; transcript: string; tran
   }
 
   return { title, transcript, translation, questions };
+}
+
+function parseReading(text: string): { title: string; text: string; translation?: string; questions: ILessonQuestion[] } {
+  const cleanText = text.replace(/^#+\s*Reading[^\n]*\n?/i, '').trim();
+
+  // Extract Title if present on first line or in quotes
+  let title = 'Reading Passage';
+  const titleMatch = cleanText.match(/^(?:\*\*)?["“](.+?)["”]\s*(\([^\)]+\))?(?:\*\*)?/m);
+  if (titleMatch) {
+    title = titleMatch[0].replace(/^\*+|\*+$/g, '').trim();
+  }
+
+  // Split on English Translation
+  const parts = cleanText.split(/(?:\*\*|)?English Translation:(?:\*\*|)?/i);
+  const frenchPart = parts[0] || '';
+  const afterTrans = parts[1] || '';
+
+  // Extract French text
+  const frenchLines = frenchPart.split('\n').filter(l => {
+    const t = l.trim();
+    if (!t) return false;
+    if (t.match(/^(?:\*\*|)?Reading/i)) return false;
+    if (t.match(/^(?:\*\*|)?Comprehension Questions/i)) return false;
+    if (t.match(/^(?:\*\*|)?Answer Key/i)) return false;
+    return true;
+  });
+
+  let passageLines = frenchLines;
+  if (titleMatch && passageLines[0] && passageLines[0].includes(titleMatch[1])) {
+    passageLines = passageLines.slice(1);
+  }
+
+  const mainText = passageLines
+    .map(l => l.replace(/^["“]/, '').replace(/["”]$/, '').trim())
+    .filter(Boolean)
+    .join('\n');
+
+  let translation: string | undefined;
+  let questionsSource = text;
+
+  if (afterTrans) {
+    // Split translation BEFORE Comprehension Questions / Activity / Answer Key
+    const transSplit = afterTrans.split(/(?:\*\*|)?(?:Comprehension Questions|Reading Activity|Listening Activity|Questions|Answer Key)/i);
+    const rawTrans = (transSplit[0] || '').trim();
+
+    translation = rawTrans
+      .split('\n')
+      .map(l => l.replace(/\*?\s*\(\s*A1[–-]A2\s+support[^\)]*\)\*?/gi, '').replace(/\*?\s*\(\s*hide behind a toggle[^\)]*\)\*?/gi, '').trim())
+      .filter(l => l && !l.startsWith('(') && !l.startsWith('English Translation'))
+      .join('\n')
+      .replace(/^["“]/, '')
+      .replace(/["”]$/, '')
+      .trim() || undefined;
+
+    questionsSource = afterTrans;
+  }
+
+  const questions: ILessonQuestion[] = [];
+
+  const qSectionMatch = questionsSource.match(/(?:\*\*|)?(?:Comprehension Questions|Reading Activity|Questions):?(?:\*\*|)?([\s\S]*?)(?=(?:\*\*|)?Answer Key|$)/i);
+  const akMatch = questionsSource.match(/(?:\*\*|)?Answer Key:?(?:\*\*|)?([\s\S]*?)$/i);
+
+  const qText = qSectionMatch ? qSectionMatch[1].trim() : '';
+  const akText = akMatch ? akMatch[1].trim() : '';
+
+  const answers: string[] = akText
+    .split('\n')
+    .map(l => l.replace(/^\d+[\.\)]\s*/, '').replace(/^[-•*]\s*/, '').trim())
+    .filter(l => l && l !== '---' && l !== '--' && !l.startsWith('*'));
+
+  const rawQLines = qText
+    .split('\n')
+    .map(l => l.trim())
+    .filter(l => l && l !== '---' && l !== '--');
+
+  let qCount = 0;
+  for (const qLine of rawQLines) {
+    const cleanPrompt = stripMd(qLine.replace(/^\d+[\.\)]\s*/, '').replace(/^[-•*]\s*/, '').trim());
+    if (!cleanPrompt || cleanPrompt.toLowerCase().startsWith('comprehension') || cleanPrompt.toLowerCase().startsWith('answer key')) continue;
+
+    qCount++;
+    const ans = answers[qCount - 1] || 'Refer to reading passage.';
+
+    questions.push({
+      id: `rq-${qCount}`,
+      type: 'short_answer',
+      prompt: cleanPrompt,
+      correctAnswer: ans,
+      explanation: `Expected Answer: ${ans}`,
+    });
+  }
+
+  return {
+    title: title || 'Reading Passage',
+    text: mainText || frenchPart.trim(),
+    translation,
+    questions,
+  };
 }
 
 function parseSpeaking(text: string) {
@@ -876,59 +974,7 @@ function buildPracticeQuestion(n: number, type: string, promptText: string): ILe
   };
 }
 
-function parseReading(text: string): { title: string; text: string; translation?: string; questions: ILessonQuestion[] } {
-  const tm = text.match(/(?:\*\*|)?(.*?)(?:\*\*|)?/);
-  const title = tm ? stripMd(tm[1]) : 'Reading';
 
-  const parts = text.split(/(?:\*\*|)?English Translation:(?:\*\*|)?/i);
-  const passagePart = parts[0] || '';
-  const afterTrans = parts[1] || '';
-
-  const passageLines = passagePart.split('\n').filter(l => {
-    const t = l.trim();
-    return t && !t.match(/^(?:\*\*|)?Comprehension Questions/i) && !t.match(/^(?:\*\*|)?Answer Key/i) && !t.match(/^\d+\./);
-  });
-  const passage = passageLines.map(l => l.replace(/^\*+/, '').replace(/\*+$/, '').trim()).filter(l => l && l !== title).join('\n');
-
-  let translation: string | undefined;
-  const questions: ILessonQuestion[] = [];
-
-  if (afterTrans) {
-    const tp = afterTrans.split(/(?:\*\*|)?Comprehension Questions/i);
-    translation = (tp[0] || '').split('\n').filter(l => l.trim()).map(l => l.replace(/^\*+/, '').replace(/\*+$/, '').replace(/\(.*?A1.*?support.*?\)/i, '').trim()).filter(l => l && !l.startsWith('(')).join('\n').trim() || undefined;
-
-    const qp = tp[1] || '';
-    const ap = qp.split(/(?:\*\*|)?Answer Key/i);
-    const answerSection = (ap[1] || '').trim();
-    const cleanAnswerSection = answerSection.startsWith(':') ? answerSection.slice(1).trim() : answerSection;
-    const aLines = cleanAnswerSection.split('\n');
-    const answers: string[] = [];
-    for (const l of aLines) {
-      const t = l.trim();
-      if (t && t !== '---' && t !== '--' && !t.startsWith('*')) {
-        answers.push(stripMd(t.replace(/^\d+[\.\)]\s*/, '')));
-      }
-    }
-
-    let n = 0;
-    for (const l of (ap[0] || '').split('\n')) {
-      const t = l.trim();
-      const cleanPrompt = stripMd(t.replace(/^[:\s*]+/, '').replace(/^\d+[\.\)]\s*/, ''));
-      if (t && t !== '---' && t !== '--' && !t.startsWith('*') && !t.match(/^(?:Comprehension|Answer Key)/i) && cleanPrompt.length >= 3 && cleanPrompt !== ':') {
-        n++;
-        questions.push({
-          id: `r-${n}`,
-          type: 'short_answer',
-          prompt: cleanPrompt,
-          correctAnswer: answers[n - 1] || '',
-          explanation: answers[n - 1] ? `The answer is: ${answers[n - 1]}` : 'Refer to the reading passage.'
-        });
-      }
-    }
-  }
-
-  return { title, text: passage, translation, questions };
-}
 
 // ─── Main parser ────────────────────────────────────────────────────────────
 
@@ -1370,23 +1416,15 @@ function populateLessonSections(lesson: ParsedLesson, sections: any[], lessonId:
       lesson.grammar = parseGrammar(s.body);
       if (lesson.grammarDrills) lesson.grammarDrills.questions = parseGrammarDrills(s.body);
     }
-    else if (h === 'reading' || h === 'scene' || h.includes('scene') || h.includes('integrated practice')) {
-      let text = s.body.trim();
-      let translation = '';
-      if (s.body.toLowerCase().includes('english translation:')) {
-        const parts = s.body.split(/english translation:?/i);
-        text = parts[0].trim();
-        translation = (parts[1] || '').trim();
-      }
-      translation = translation
-        .replace(/\*?\s*\(\s*A1[–-]A2\s+support[^\)]*\)\*?/gi, '')
-        .replace(/\*?\s*\(\s*hide behind a toggle[^\)]*\)\*?/gi, '')
-        .replace(/^[*_\s]+|[*_\s]+$/g, '')
-        .trim();
-
-      lesson.scene = { title: 'Scene', text, translation };
-      if (lesson.reading) lesson.reading = { title: 'Reading Passage', text, translation, questions: lesson.reading.questions || [] };
-      if (lesson.listening) lesson.listening = { title: 'Listening Comprehension', transcript: text, translation, questions: lesson.listening.questions || [] };
+    else if (h === 'reading') {
+      const parsedR = parseReading(s.body);
+      if (lesson.reading) lesson.reading = parsedR;
+    }
+    else if (h === 'scene' || h.includes('scene') || h.includes('integrated practice')) {
+      const parsedR = parseReading(s.body);
+      lesson.scene = { title: parsedR.title || 'Scene', text: parsedR.text, translation: parsedR.translation || '' };
+      if (lesson.reading) lesson.reading = parsedR;
+      if (lesson.listening) lesson.listening = { title: 'Listening Comprehension', transcript: parsedR.text, translation: parsedR.translation, questions: parsedR.questions };
     }
     else if (h === 'listening') {
       if (lesson.listening) lesson.listening = parseListening(s.body);

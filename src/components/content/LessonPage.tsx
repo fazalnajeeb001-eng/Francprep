@@ -1473,22 +1473,61 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         );
 
       case 'review':
+        const rawSelfAssRev = lesson?.selfAssessment || (lesson as any)?.canonical?.selfAssessment;
+        const selfAssListRev = Array.isArray(rawSelfAssRev) ? rawSelfAssRev.map((s: any) => String(s).trim()).filter((s: string) => s.length >= 5) : [];
+
         let reflectionItems = (lesson?.canDoReview && lesson.canDoReview.length > 0) ? lesson.canDoReview
-          : (lesson?.miniReview?.content) ? [lesson.miniReview.content]
+          : (selfAssListRev.length > 0) ? selfAssListRev
+          : (lesson?.objectives && lesson.objectives.length > 0) ? formatObjectivesList(lesson.objectives)
           : (lesson?.selfReflection && lesson.selfReflection.length > 0) ? lesson.selfReflection
-          : (lesson?.selfAssessment && lesson.selfAssessment.length > 0) ? lesson.selfAssessment
+          : (lesson?.miniReview?.content) ? [lesson.miniReview.content]
           : [];
-        if (!reflectionItems.length && lesson?.objectives && lesson.objectives.length > 0) {
-          reflectionItems = lesson.objectives;
-        }
+
+        const isRevLessonCase = isLesson8 || lesson?.lessonNumber === 8 || skillStr === 'review' || skillStr === 'rev';
+
         return (
-          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
-            <div className="flex items-center gap-3 mb-2">
-              <Star className="w-5 h-5 text-amber-400" />
-              <h3 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>Chapter Review — Mini Review by Can-Do Statement</h3>
+          <div className="space-y-6 max-w-4xl mx-auto">
+            {/* Lesson Takeaway Card */}
+            {lesson?.miniReview?.content && (
+              <div className="p-5 rounded-2xl bg-gradient-to-r from-purple-500/10 via-amber-500/10 to-indigo-500/10 border border-purple-500/20 shadow-md flex items-start gap-4">
+                <div className="p-2.5 rounded-xl bg-purple-500/20 text-purple-300 shrink-0 mt-0.5">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className={`text-xs font-extrabold uppercase tracking-wider ${dark ? "text-purple-300" : "text-purple-800"}`}>
+                    Lesson Takeaway & Key Consolidation
+                  </h4>
+                  <p className={`text-sm font-medium leading-relaxed mt-1 ${dark ? "text-gray-200" : "text-gray-800"}`}>
+                    {lesson.miniReview.content}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Self-Assessment Checklist Card */}
+            <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5 border shadow-lg space-y-4`}>
+              <div className="flex items-center gap-3 border-b dark:border-[#1e2a4a] border-gray-200 pb-3">
+                <Star className="w-5 h-5 text-amber-400" />
+                <div>
+                  <h3 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>
+                    {isRevLessonCase ? "Chapter Review — Mini Review by Can-Do Statement" : "Lesson Self-Assessment & Mastery"}
+                  </h3>
+                  <p className={`text-xs ${textSec} mt-0.5`}>
+                    {isRevLessonCase
+                      ? "Each chapter goal mapped to the specific lesson(s) that taught it. Check off what you can do:"
+                      : "Check off the core skills and goals you've mastered in this lesson:"}
+                  </p>
+                </div>
+              </div>
+
+              <SelfAssessmentSection
+                items={reflectionItems}
+                dark={dark}
+                title={isRevLessonCase ? "Can-Do Statement Mapping" : "Self-Assessment Checklist"}
+                subtitle={isRevLessonCase ? "Map your chapter goals to lessons and track your mastery:" : "Track your skill mastery for this lesson:"}
+                isChapterReview={isRevLessonCase}
+              />
             </div>
-            <p className={`text-xs ${textSec} mb-4`}>Each chapter goal mapped to the specific lesson(s) that taught it. Check off what you can do:</p>
-            <SelfAssessmentSection items={reflectionItems} dark={dark} title="Can-Do Statement Mapping" />
           </div>
         );
 
@@ -1644,13 +1683,14 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
             canDoItems = splitList.length > 0 ? splitList : [rawContent];
           }
         } else {
-          // Standard Practice Lessons 1-7: extract all formatted objectives first
+          // Standard Practice Lessons 1-7: extract selfAssessment first, then formatted objectives
+          const rawSelfAssCanDo = lesson?.selfAssessment || (lesson as any)?.canonical?.selfAssessment;
+          const selfAss = Array.isArray(rawSelfAssCanDo) ? rawSelfAssCanDo.map((s: any) => String(s).trim()).filter((s: string) => s.length >= 5) : [];
           const formattedObjs = formatObjectivesList(lesson?.objectives);
-          const selfAss = Array.isArray(lesson?.selfAssessment) ? lesson.selfAssessment.map(s => String(s).trim()).filter(s => s.length >= 5) : [];
-          if (formattedObjs.length > 0) {
-            canDoItems = formattedObjs;
-          } else if (selfAss.length > 0) {
+          if (selfAss.length > 0) {
             canDoItems = selfAss;
+          } else if (formattedObjs.length > 0) {
+            canDoItems = formattedObjs;
           } else if (parsedSkillCards.length > 0) {
             canDoItems = parsedSkillCards.map(s => s.lessonRef ? `${s.statement} → ${s.lessonRef}` : s.statement);
           } else if (lesson?.miniReview?.content) {
@@ -1685,15 +1725,23 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
                 <Star className="w-5 h-5 text-amber-400" />
                 <div>
                   <h3 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>
-                    Chapter Review — Mini Review by Can-Do Statement
+                    {isLesson8 ? "Chapter Review — Mini Review by Can-Do Statement" : "Lesson Self-Assessment & Mastery"}
                   </h3>
                   <p className={`text-xs ${textSec} mt-0.5`}>
-                    Each chapter goal mapped to the specific lesson(s) that taught it. Check off what you can do:
+                    {isLesson8
+                      ? "Each chapter goal mapped to the specific lesson(s) that taught it. Check off what you can do:"
+                      : "Check off the core skills and goals you've mastered in this lesson:"}
                   </p>
                 </div>
               </div>
 
-              <SelfAssessmentSection items={canDoItems} dark={dark} title="Can-Do Statement Mapping" />
+              <SelfAssessmentSection
+                items={canDoItems}
+                dark={dark}
+                title={isLesson8 ? "Can-Do Statement Mapping" : "Self-Assessment Checklist"}
+                subtitle={isLesson8 ? "Map your chapter goals to lessons and track your mastery:" : "Track your skill mastery for this lesson:"}
+                isChapterReview={isLesson8}
+              />
             </div>
           </motion.div>
         );
@@ -2869,11 +2917,35 @@ function SelfReflectionCard({ lesson, lessonId, dark, cardBg, textSec, textMuted
   );
 }
 
-function SelfAssessmentSection({ items, dark, title }: { items: any[]; dark: boolean; title: string }) {
+function SelfAssessmentSection({
+  items,
+  dark,
+  title,
+  subtitle,
+  isChapterReview = false
+}: {
+  items: any[];
+  dark: boolean;
+  title: string;
+  subtitle?: string;
+  isChapterReview?: boolean;
+}) {
   const [checked, setChecked] = useState<Record<number, boolean>>({});
   const parsedItems = useMemo(() => parseCanDoItems(items), [items]);
   const allChecked = parsedItems.length > 0 && parsedItems.every((_, i) => checked[i]);
   const cardBg = dark ? "bg-[#101828]/80 border-[#1e2a4a]" : "bg-white/80 border-gray-200";
+
+  const subText = subtitle || (isChapterReview
+    ? "Map your chapter goals to lessons and track your mastery:"
+    : "Track your skill mastery for this lesson:");
+
+  const badgeText = isChapterReview
+    ? `${Object.keys(checked).filter(k => checked[Number(k)]).length} / ${parsedItems.length} Can-Do Goals Checked`
+    : `${Object.keys(checked).filter(k => checked[Number(k)]).length} / ${parsedItems.length} Goals Mastered`;
+
+  const successText = isChapterReview
+    ? "🎉 Outstanding! You have mastered all Can-Do statements for this chapter!"
+    : "🎉 Outstanding! You have mastered all self-assessment goals for this lesson!";
 
   return (
     <div className={`${cardBg} backdrop-blur-lg border rounded-2xl p-5 transition-colors mt-4 shadow-xl`}>
@@ -2884,11 +2956,11 @@ function SelfAssessmentSection({ items, dark, title }: { items: any[]; dark: boo
           </div>
           <div>
             <h3 className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>{title}</h3>
-            <p className="text-[11px] text-gray-400">Map your chapter goals to lessons and track your mastery:</p>
+            <p className="text-[11px] text-gray-400">{subText}</p>
           </div>
         </div>
         <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/30 font-mono shadow-sm">
-          {Object.keys(checked).filter(k => checked[Number(k)]).length} / {parsedItems.length} Can-Do Goals Checked
+          {badgeText}
         </span>
       </div>
       <div className="space-y-3">
@@ -2934,7 +3006,7 @@ function SelfAssessmentSection({ items, dark, title }: { items: any[]; dark: boo
       {allChecked && (
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mt-5 text-center p-4 rounded-xl bg-gradient-to-r from-emerald-500/15 via-teal-500/15 to-purple-500/15 border border-emerald-500/30 shadow-lg">
           <p className="text-xs font-extrabold text-emerald-400 flex items-center justify-center gap-2">
-            🎉 Outstanding! You have mastered all Can-Do statements for this chapter!
+            {successText}
           </p>
         </motion.div>
       )}
