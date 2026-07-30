@@ -328,10 +328,13 @@ export function OnboardingPage() {
 
     // 2. Persist to backend database so profile syncs
     try {
-      await apiFetch("/user/profile/goal", {
+      await apiFetch("/users/profile/goal", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ goal: selectedGoal }),
+      });
+      await apiFetch("/users/profile/complete-onboarding", {
+        method: "PUT",
       });
     } catch {}
 
