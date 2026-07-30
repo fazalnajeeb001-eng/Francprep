@@ -11,7 +11,8 @@ import {
   Zap,
   Key,
   ShieldCheck,
-  Globe
+  Globe,
+  Users
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 
@@ -22,6 +23,9 @@ export function AdminSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState("");
+
+  const [isSocialHubEnabled, setIsSocialHubEnabled] = useState(false);
+  const [togglingSocial, setTogglingSocial] = useState(false);
 
   const [form, setForm] = useState({
     stripeSecretKey: "",
@@ -42,6 +46,15 @@ export function AdminSettingsPage() {
   const txtSec = dark ? "text-gray-400" : "text-slate-600";
 
   useEffect(() => {
+    apiFetch("/subscriptions/plans")
+      .then((r) => r.json())
+      .then((j) => {
+        if (j.data?.isSocialHubEnabled === true) {
+          setIsSocialHubEnabled(true);
+        }
+      })
+      .catch(() => {});
+
     apiFetch("/settings")
       .then((r) => r.json())
       .then((j) => {
@@ -63,6 +76,23 @@ export function AdminSettingsPage() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  const handleToggleSocialHub = async () => {
+    setTogglingSocial(true);
+    try {
+      const nextState = !isSocialHubEnabled;
+      const res = await apiFetch("/admin/subscriptions/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isSocialHubEnabled: nextState }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setIsSocialHubEnabled(nextState);
+      }
+    } catch {}
+    setTogglingSocial(false);
+  };
 
   const handleSaveAPI = async () => {
     setSaving(true);
@@ -225,6 +255,44 @@ export function AdminSettingsPage() {
           </div>
 
           {saveMsg && <p className="text-xs text-emerald-400 font-bold text-right pt-2">{saveMsg}</p>}
+        </motion.div>
+
+        {/* ─── CANDIDATE FORUM & STEALTH TOGGLE CARD ─── */}
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className={`p-6 rounded-2xl border ${card} space-y-4`}>
+          <div className="flex items-center gap-3 border-b border-gray-200 dark:border-white/10 pb-3">
+            <Users className="w-5 h-5 text-purple-400" />
+            <div>
+              <h3 className="text-base font-extrabold">Candidate Forum Visibility & Release Switch</h3>
+              <p className={`text-xs ${txtSec} mt-0.5`}>Control platform-wide visibility of the Candidate Forum for enrolled students.</p>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-xl border border-purple-500/30 bg-purple-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-extrabold text-purple-300">👥 Candidate Forum Access</span>
+                <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  {isSocialHubEnabled ? "LIVE FOR ALL STUDENTS" : "STEALTH MODE (ADMIN ONLY)"}
+                </span>
+              </div>
+              <p className="text-xs text-gray-300">
+                When toggled <strong>OFF</strong>, the Candidate Forum is hidden from regular students so you can test threads privately as Admin!
+              </p>
+            </div>
+
+            <button
+              type="button"
+              disabled={togglingSocial}
+              onClick={handleToggleSocialHub}
+              className={`px-5 py-2.5 rounded-xl text-xs font-black transition-all shrink-0 flex items-center gap-2 shadow-lg cursor-pointer ${
+                isSocialHubEnabled
+                  ? "bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+                  : "bg-amber-500 text-slate-950 hover:bg-amber-400"
+              }`}
+            >
+              {isSocialHubEnabled ? "🟢 FORUM PUBLIC (STUDENTS CAN ACCESS)" : "🔒 STEALTH MODE (HIDDEN FROM STUDENTS)"}
+            </button>
+          </div>
         </motion.div>
 
       </div>
