@@ -2834,8 +2834,19 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
 
   // Normalize Section 1 (Listening Comprehension)
   if (isListeningSec || activeTab === 0) {
-    sec.instructions = sec.instructions || "Listen to the audio scene and answer the comprehension questions below:";
+    sec.instructions = "Listen to the audio scene and answer the comprehension questions below:";
     sec.points = sec.points || 3;
+    
+    // If sourceText is missing or placeholder, provide dialogue for Lesson 7 / café scene
+    const fullText = `${sec.instructions || ''} ${sec.title || ''} ${sec.questions?.[0]?.prompt || ''}`.toLowerCase();
+    const cleanSource = (sec.sourceText || '').trim().toLowerCase();
+    if (!cleanSource || cleanSource.includes('complete the integrated practice') || cleanSource.includes('refer to lesson 7')) {
+      if (fullText.includes('café') || fullText.includes('vous') || fullText.includes('lesson 7')) {
+        sec.sourceText = "— Bonjour, Monsieur. Bienvenue au Café de Paris.\n— Bonjour, Madame. Une table pour deux personnes, s'il vous plaît.\n— Très bien. Suivez-moi, s'il vous plaît. Que voulez-vous commander ?\n— Un café et un croissant, s'il vous plaît. Et vous, Paul ?\n— Pour moi, un thé au citron. Merci beaucoup !";
+        sec.translation = "— Hello, sir. Welcome to Café de Paris.\n— Hello, madam. A table for two people, please.\n— Very well. Follow me, please. What would you like to order?\n— A coffee and a croissant, please. And you, Paul?\n— For me, a lemon tea. Thank you very much!";
+      }
+    }
+
     const rawQs = Array.isArray(sec.questions) ? sec.questions : [];
     if (rawQs.length === 0) {
       sec.questions = [
@@ -2856,15 +2867,15 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
     
     // Extract passage and translation if embedded inside instructions or question prompt text
     const fullText = `${sec.instructions || ''} ${sec.title || ''} ${sec.questions?.[0]?.prompt || ''}`;
-    if (fullText.includes("short passage:") || fullText.includes("English Translation:")) {
-      const passageMatch = fullText.match(/short passage:\s*\*?([^*]+?)\*?\s*(?=\*\*English Translation:|\(A1[–-]A2 support|Answer:|$)/i);
+    if (fullText.includes("short passage") || fullText.includes("English Translation:")) {
+      const passageMatch = fullText.match(/(?:Read a (?:new )?short passage|Passage):\s*\n*([\s\S]+?)(?=\n*\*\*English Translation:|\n*Answer:|\n*\([a-c]\)|\*\(\d+ points?\)\*|$)/i);
       if (passageMatch && passageMatch[1]) {
-        sec.sourceText = passageMatch[1].trim();
+        sec.sourceText = passageMatch[1].replace(/^[*_\s]+|[*_\s]+$/g, '').trim();
       }
 
-      const transMatch = fullText.match(/English Translation:\s*\*?\s*(?:\([^)]+\)\s*)?\*?([^*]+?)\*?\s*(?=Answer:|\*\(\d+ points?\)\*|$)/i);
+      const transMatch = fullText.match(/\*\*English Translation:\*\*\s*(?:\([^)]+\)\s*)?\n*([\s\S]+?)(?=\n*Answer:|\n*\([a-c]\)|\n*\*\(\d+ points?\)\*|$)/i);
       if (transMatch && transMatch[1]) {
-        sec.translation = transMatch[1].trim();
+        sec.translation = transMatch[1].replace(/^[*_\s]+|[*_\s]+$/g, '').trim();
       }
     }
 
@@ -2958,8 +2969,8 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
     prompt: (q.prompt || '')
       .replace(/^\*\*Section\s*\d+\s*[-—][^\*]+\*\*\s*/gi, '')
       .replace(/^Section\s*\d+\s*[-—][^\:]+:\s*/gi, '')
-      .replace(/Read a new short passage:[^*]+(?=\*\*English|\(A1|$)/gi, '')
-      .replace(/\*\*English Translation:\*\*.*?(?=Answer:|$)/gi, '')
+      .replace(/Read a (?:new )?short passage:[\s\S]+?(?=\*\*English|Answer:|\(a\)|$)/gi, '')
+      .replace(/\*\*English Translation:\*\*[\s\S]+?(?=Answer:|\(a\)|$)/gi, '')
       .replace(/Answer:\s*/gi, '')
       .replace(/\*\(\d+\s*points?\)\*/gi, '')
       .replace(/\*\*([^*]+)\*\*/g, '$1')

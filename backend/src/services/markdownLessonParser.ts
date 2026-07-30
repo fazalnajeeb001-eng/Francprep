@@ -1062,13 +1062,36 @@ function fillPlaceholders(lesson: ParsedLesson): void {
     if (delfQs.length > 0) {
       lesson.assessment = {
         examStyle: `DELF ${lesson.level}`,
-        sections: delfQs.map((q, i) => ({
-          title: `Section ${i + 1}`,
-          skill: (q as any).skill || 'reading',
-          points: 10,
-          instructions: q.prompt,
-          questions: [q],
-        })),
+        sections: delfQs.map((q, i) => {
+          const text = (q.prompt || '').toLowerCase();
+          let skill = (q as any).skill || (i === 0 ? 'listening' : i === 1 ? 'reading' : i === 2 ? 'writing' : 'speaking');
+          if (text.includes('listening')) skill = 'listening';
+          else if (text.includes('reading')) skill = 'reading';
+          else if (text.includes('written') || text.includes('writing')) skill = 'writing';
+          else if (text.includes('oral') || text.includes('speaking')) skill = 'speaking';
+
+          let sourceText = '';
+          let translation = '';
+          const pMatch = q.prompt.match(/(?:Read a (?:new )?short passage|Passage):\s*\n*([\s\S]+?)(?=\n*\*\*English Translation:|\n*Answer:|\n*\([a-c]\)|\*\(\d+ points?\)\*|$)/i);
+          if (pMatch && pMatch[1]) {
+            sourceText = pMatch[1].replace(/^[*_\s]+|[*_\s]+$/g, '').trim();
+          }
+
+          const tMatch = q.prompt.match(/\*\*English Translation:\*\*\s*(?:\([^)]+\)\s*)?\n*([\s\S]+?)(?=\n*Answer:|\n*\([a-c]\)|\n*\*\(\d+ points?\)\*|$)/i);
+          if (tMatch && tMatch[1]) {
+            translation = tMatch[1].replace(/^[*_\s]+|[*_\s]+$/g, '').trim();
+          }
+
+          return {
+            title: `Section ${i + 1}`,
+            skill,
+            points: 10,
+            instructions: q.prompt,
+            sourceText,
+            translation,
+            questions: [q],
+          };
+        }),
       };
     } else {
       // Structure standard 4-section DELF Diagnostic Mini-Assessment
