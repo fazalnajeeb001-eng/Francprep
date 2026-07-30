@@ -13,6 +13,8 @@ import {
   Plus,
   ThumbsUp,
   MessageCircle,
+  Volume2,
+  Mic,
   Trophy,
   Award,
   BookOpen,
@@ -436,10 +438,24 @@ function CommunityExamHubPage() {
                     {post.content}
                   </p>
 
-                  {/* Optional French Snippet Box */}
+                  {/* Optional French Snippet Box with Audio TTS */}
                   {post.frenchSnippet && (
-                    <div className={`p-3 rounded-xl border text-xs font-mono italic ${dark ? "bg-purple-950/30 border-purple-500/20 text-purple-300" : "bg-purple-50 border-purple-200 text-purple-900"}`}>
-                      🇫🇷 "{post.frenchSnippet}"
+                    <div className={`p-3 rounded-xl border text-xs font-mono italic flex items-center justify-between gap-3 ${dark ? "bg-purple-950/30 border-purple-500/20 text-purple-300" : "bg-purple-50 border-purple-200 text-purple-900"}`}>
+                      <span>🇫🇷 "{post.frenchSnippet}"</span>
+                      <button
+                        onClick={() => {
+                          if (!window.speechSynthesis) return;
+                          window.speechSynthesis.cancel();
+                          const u = new SpeechSynthesisUtterance(post.frenchSnippet!);
+                          u.lang = "fr-FR";
+                          u.rate = 0.9;
+                          window.speechSynthesis.speak(u);
+                        }}
+                        className="p-1.5 rounded-lg bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 transition-colors shrink-0 not-italic font-sans text-[11px] flex items-center gap-1 cursor-pointer"
+                        title="Listen Pronunciation"
+                      >
+                        <Volume2 className="w-3.5 h-3.5" /> Listen
+                      </button>
                     </div>
                   )}
                 </div>
@@ -467,6 +483,20 @@ function CommunityExamHubPage() {
                     >
                       <MessageCircle className="w-4 h-4" />
                       <span>{post.commentsCount} Candidate Replies</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        if (!window.speechSynthesis) return;
+                        window.speechSynthesis.cancel();
+                        const u = new SpeechSynthesisUtterance(post.title + ". " + post.content);
+                        u.lang = "fr-FR";
+                        u.rate = 0.9;
+                        window.speechSynthesis.speak(u);
+                      }}
+                      className={`flex items-center gap-1 text-[11px] font-bold transition-all ${dark ? "text-purple-400 hover:text-purple-300" : "text-purple-700 hover:text-purple-900"}`}
+                    >
+                      <Volume2 className="w-3.5 h-3.5" /> Listen Thread Audio
                     </button>
                   </div>
                 </div>
