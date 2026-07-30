@@ -56,7 +56,7 @@ interface Post {
   timestamp: string;
   isUpvoted?: boolean;
   isBookmarked?: boolean;
-  comments?: { author: string; text: string; time: string }[];
+  comments?: { id: string; author: string; authorId?: string; text: string; time: string }[];
 }
 
 export interface BuddyCircleRequest {
@@ -333,13 +333,38 @@ function CommunityExamHubPage() {
           return {
             ...p,
             commentsCount: p.commentsCount + 1,
-            comments: [...updatedComments, { author: authorName, text: commentInput.trim(), time: "Just now" }],
+            comments: [
+              ...updatedComments,
+              {
+                id: `c-${Date.now()}`,
+                author: authorName,
+                authorId: user?.id,
+                text: commentInput.trim(),
+                time: "Just now",
+              },
+            ],
           };
         }
         return p;
       })
     );
     setCommentInput("");
+  };
+
+  const handleDeleteComment = (postId: string, commentId: string) => {
+    setPosts((prev) =>
+      prev.map((p) => {
+        if (p.id === postId) {
+          const filtered = (p.comments || []).filter((c) => c.id !== commentId);
+          return {
+            ...p,
+            commentsCount: Math.max(0, p.commentsCount - 1),
+            comments: filtered,
+          };
+        }
+        return p;
+      })
+    );
   };
 
   const handleToggleBookmark = (postId: string) => {
@@ -764,15 +789,29 @@ function CommunityExamHubPage() {
                 {expandedPostId === post.id && (
                   <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-4 pt-3 border-t dark:border-white/10 border-gray-100 space-y-3">
                     <div className="space-y-2">
-                      {(post.comments || []).map((c, idx) => (
-                        <div key={idx} className={`p-2.5 rounded-xl text-xs space-y-1 ${dark ? "bg-black/40 border border-white/5 text-gray-300" : "bg-gray-50 border border-gray-200 text-gray-800"}`}>
-                          <div className="flex items-center justify-between text-[10px] text-purple-400 font-bold">
-                            <span>{c.author}</span>
-                            <span className="text-gray-500">{c.time}</span>
+                      {(post.comments || []).map((c, idx) => {
+                        const canDelete = user?.role === "admin" || (c.authorId && c.authorId === user?.id) || c.author.includes(user?.firstName || "____");
+                        return (
+                          <div key={c.id || idx} className={`p-2.5 rounded-xl text-xs space-y-1 ${dark ? "bg-black/40 border border-white/5 text-gray-300" : "bg-gray-50 border border-gray-200 text-gray-800"}`}>
+                            <div className="flex items-center justify-between text-[10px] text-purple-400 font-bold">
+                              <span>{c.author}</span>
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-500">{c.time}</span>
+                                {canDelete && (
+                                  <button
+                                    onClick={() => handleDeleteComment(post.id, c.id || `c-${idx}`)}
+                                    className="p-0.5 rounded hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-colors"
+                                    title="Delete Reply"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                            <p>{c.text}</p>
                           </div>
-                          <p>{c.text}</p>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
 
                     <div className="flex items-center gap-2">
