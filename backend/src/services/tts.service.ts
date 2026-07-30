@@ -27,7 +27,12 @@ export async function generateNeuralAudio(
     console.warn('[TTSCache] Error reading cache:', err);
   }
 
-  const settings = await Settings.findOne();
+  let settings: any = null;
+  try {
+    settings = await Settings.findOne().maxTimeMS(2000);
+  } catch (err) {
+    // Safe fallback to process.env
+  }
 
   // 2. ElevenLabs Studio-Grade Human Voice API (Top priority for 100% human quality)
   const elevenLabsKey = process.env.ELEVENLABS_API_KEY || settings?.elevenLabsApiKey;
