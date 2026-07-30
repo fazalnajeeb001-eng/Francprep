@@ -37,6 +37,8 @@ settingsSchema.set('toJSON', {
     if (ret.stripeSecretKey) ret.stripeSecretKey = ret.stripeSecretKey.slice(0, 8) + "..." + ret.stripeSecretKey.slice(-4);
     if (ret.anthropicApiKey) ret.anthropicApiKey = ret.anthropicApiKey.slice(0, 8) + "..." + ret.anthropicApiKey.slice(-4);
     if (ret.openRouterApiKey) ret.openRouterApiKey = ret.openRouterApiKey.slice(0, 8) + "..." + ret.openRouterApiKey.slice(-4);
+    if (ret.openaiApiKey) ret.openaiApiKey = ret.openaiApiKey.slice(0, 8) + "..." + ret.openaiApiKey.slice(-4);
+    if (ret.elevenLabsApiKey) ret.elevenLabsApiKey = ret.elevenLabsApiKey.slice(0, 8) + "..." + ret.elevenLabsApiKey.slice(-4);
     if (ret.stripeWebhookSecret) ret.stripeWebhookSecret = ret.stripeWebhookSecret.slice(0, 8) + "..." + ret.stripeWebhookSecret.slice(-4);
     return ret;
   },

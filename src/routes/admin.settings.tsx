@@ -31,6 +31,8 @@ export function AdminSettingsPage() {
     stripeWebhookSecret: "",
     anthropicApiKey: "",
     openRouterApiKey: "",
+    openaiApiKey: "",
+    elevenLabsApiKey: "",
     frontendUrl: "",
   });
 
@@ -52,6 +54,8 @@ export function AdminSettingsPage() {
             stripeWebhookSecret: j.data.stripeWebhookSecret || "",
             anthropicApiKey: j.data.anthropicApiKey || "",
             openRouterApiKey: j.data.openRouterApiKey || "",
+            openaiApiKey: j.data.openaiApiKey || "",
+            elevenLabsApiKey: j.data.elevenLabsApiKey || "",
             frontendUrl: j.data.frontendUrl || "",
           });
         }
@@ -193,6 +197,30 @@ export function AdminSettingsPage() {
                 className={inp}
               />
               <p className={`text-[10px] ${txtSec} mt-1`}>Used for multi-LLM lesson validation and automated quality checks.</p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold mb-1 text-pink-400">ElevenLabs API Key (100% Studio Real Human Voice Engine)</label>
+              <input
+                type="password"
+                value={form.elevenLabsApiKey}
+                onChange={(e) => setForm({ ...form, elevenLabsApiKey: e.target.value })}
+                placeholder="xi-api-key-..."
+                className={inp}
+              />
+              <p className={`text-[10px] ${txtSec} mt-1`}>Generates 48kHz native French human voices (Rachel & Antoni) with 0 robotic sound. Free tier available at elevenlabs.io!</p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold mb-1 text-emerald-400">OpenAI API Key (Neural Audio tts-1-hd & GPT-4o Evaluator)</label>
+              <input
+                type="password"
+                value={form.openaiApiKey}
+                onChange={(e) => setForm({ ...form, openaiApiKey: e.target.value })}
+                placeholder="sk-..."
+                className={inp}
+              />
+              <p className={`text-[10px] ${txtSec} mt-1`}>Powers OpenAI tts-1-hd studio voices (nova & onyx) and TCF/TEF rubric scoring.</p>
             </div>
           </div>
 
