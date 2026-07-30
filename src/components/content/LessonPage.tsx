@@ -2884,14 +2884,14 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
     sec.translation = sec.translation || lesson?.reading?.translation || lesson?.scene?.translation || '';
 
     let questionsList: any[] = Array.isArray(sec.questions) ? [...sec.questions] : [];
-    if (questionsList.length === 1 && typeof questionsList[0]?.prompt === 'string' && questionsList[0].prompt.includes('(a)')) {
+    if (questionsList.length === 1 && typeof questionsList[0]?.prompt === 'string' && (questionsList[0].prompt.includes('(a)') || questionsList[0].prompt.includes('(1)'))) {
       const p = questionsList[0].prompt;
-      const subQs = [...p.matchAll(/\(([a-c])\)\s*([^()]+?)(?=\s*\([a-c]\)|$)/gi)];
+      const subQs = [...p.matchAll(/\(([a-z1-9])\)\s*([\s\S]+?)(?=\s*\([a-z1-9]\)|\s*\*\(\d+\s*points?\)\*|$)/gi)];
       if (subQs.length >= 2) {
         questionsList = subQs.map((m, idx) => ({
           id: `${lesson?.lessonId || 'l8'}-sec2-q${idx + 1}`,
           type: 'short_answer' as const,
-          prompt: `(${m[1]}) ${m[2].trim()}`,
+          prompt: `(${m[1]}) ${m[2].replace(/\*\(\d+\s*points?\)\*/gi, '').trim()}`,
           correctAnswer: 'Short answer response',
           explanation: 'Refer to the reading passage above.',
         }));
