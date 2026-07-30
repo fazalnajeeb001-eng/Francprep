@@ -11,6 +11,7 @@ export interface IUserDocument extends Document {
   isActive: boolean;
   lastLoginAt?: Date;
   lastActiveAt?: Date;
+  isExplicitOffline?: boolean;
   currentPage?: string;
   streak: number;
   xp: number;
@@ -42,6 +43,7 @@ const userSchema = new Schema<IUserDocument>(
     isActive: { type: Boolean, default: true },
     lastLoginAt: { type: Date },
     lastActiveAt: { type: Date },
+    isExplicitOffline: { type: Boolean, default: false },
     currentPage: { type: String, default: '' },
     streak: { type: Number, default: 0 },
     xp: { type: Number, default: 0 },

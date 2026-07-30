@@ -895,7 +895,7 @@ router.get('/analytics/saas-overview', async (_req: AuthRequest, res: Response, 
   try {
     const [allUsers, progressAgg] = await Promise.all([
       User.find({ role: { $ne: 'admin' } })
-        .select('firstName lastName email subscriptionTier isVipFreeAccess customPriceOverride lastActiveAt currentPage updatedAt xp streak learningGoal targetExam createdAt')
+        .select('firstName lastName email subscriptionTier isVipFreeAccess customPriceOverride lastActiveAt isExplicitOffline currentPage updatedAt xp streak learningGoal targetExam createdAt')
         .lean(),
       StudentProgress.aggregate([
         { $match: { status: 'completed' } },
@@ -910,10 +910,11 @@ router.get('/analytics/saas-overview', async (_req: AuthRequest, res: Response, 
       progressMap[String(p._id)] = { completedCount: p.completedCount, totalTimeSpentSec: p.totalTimeSpentSec || 0 };
     });
 
-    const threeMinsAgo = new Date(Date.now() - 3 * 60 * 1000);
+    const fortyFiveSecsAgo = new Date(Date.now() - 45 * 1000);
     const isUserOnline = (u: any) => {
+      if (u.isExplicitOffline) return false;
       const activeTime = u.lastActiveAt ? new Date(u.lastActiveAt).getTime() : (u.updatedAt ? new Date(u.updatedAt).getTime() : 0);
-      return activeTime >= threeMinsAgo.getTime();
+      return activeTime >= fortyFiveSecsAgo.getTime();
     };
 
     const onlineUsers = allUsers.filter(isUserOnline);
