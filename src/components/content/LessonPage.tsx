@@ -3431,7 +3431,6 @@ function LessonCheatSheetModal({ lesson, dark, onClose, speak }: { lesson: any; 
 
   const sceneText = lesson?.scene?.text || lesson?.reading?.text || lesson?.listening?.transcript || '';
 
-  return (
   const [searchTerm, setSearchTerm] = useState('');
   const [copiedVocab, setCopiedVocab] = useState(false);
 
