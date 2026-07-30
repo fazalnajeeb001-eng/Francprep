@@ -1,7 +1,7 @@
 import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Volume2, ArrowLeft, Shuffle, ChevronLeft, ChevronRight, BookOpen, RotateCcw, Brain, Star, Lock, Sparkles, Trophy, CheckCircle2, Zap } from "lucide-react";
+import { Volume2, ArrowLeft, Shuffle, ChevronLeft, ChevronRight, RotateCcw, Lock, Sparkles, CheckCircle2 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
 import { useAuth } from "~/lib/AuthContext";
@@ -542,8 +542,8 @@ function FlashcardsPage() {
                     <span className="text-[10px] font-extrabold uppercase tracking-widest text-purple-400 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20">
                       🇫🇷 FRENCH EXPRESSION
                     </span>
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-300 px-2 py-1 rounded bg-purple-900/30 border border-purple-500/20">
-                      {currentCard.categoryIcon} {currentCard.category}
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-300 px-2.5 py-1 rounded bg-purple-900/30 border border-purple-500/20">
+                      Level {currentCard.level}
                     </span>
                     <span className="text-[10px] font-extrabold uppercase tracking-wider text-gray-400 px-2 py-1 rounded bg-black/20">
                       Chapter {currentCard.chapter}
