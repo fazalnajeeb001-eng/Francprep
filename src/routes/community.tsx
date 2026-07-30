@@ -57,8 +57,25 @@ interface Post {
   comments?: { author: string; text: string; time: string }[];
 }
 
+export interface BuddyCircleRequest {
+  id: string;
+  authorName: string;
+  authorExam: string;
+  targetLevel: string;
+  type: "1on1" | "group";
+  capacity: number;
+  acceptedCount: number;
+  title: string;
+  description: string;
+  frenchAudioIntro?: string;
+  createdAt: number;
+  isFulfilled: boolean;
+  acceptedUsers: string[];
+}
+
 const CATEGORIES = [
   { id: "all", label: "🔥 All Candidate Threads" },
+  { id: "buddy_circle", label: "🤝 Buddy Circles & 1-on-1 Requests" },
   { id: "saved", label: "🔖 Saved Threads" },
   { id: "exam_debrief", label: "🎯 Official Exam Debriefs (TCF / TEF / DELF)" },
   { id: "study_routine", label: "🎒 Study Routines & Roadmaps" },
@@ -135,16 +152,64 @@ const INITIAL_POSTS: Post[] = [
   },
 ];
 
+const INITIAL_BUDDY_REQUESTS: BuddyCircleRequest[] = [
+  {
+    id: "buddy-1",
+    authorName: "Elena R.",
+    authorExam: "DELF B1 Candidate",
+    targetLevel: "B1 Intermediate",
+    type: "1on1",
+    capacity: 1,
+    acceptedCount: 0,
+    title: "Looking for 1 Partner for 20-Min Daily DELF B1 Monologue Drills",
+    description: "Targeting DELF B1 next month. Looking for a partner to practice Task 3 speaking monologues 3x a week.",
+    frenchAudioIntro: "Bonjour ! Je cherche un partenaire pour pratiquer mon exposé oral.",
+    createdAt: Date.now() - 3600000 * 5, // 5 hours ago
+    isFulfilled: false,
+    acceptedUsers: [],
+  },
+  {
+    id: "buddy-2",
+    authorName: "Kevin T.",
+    authorExam: "TCF Canada CLB 7",
+    targetLevel: "NCLC 7 Target",
+    type: "group",
+    capacity: 4,
+    acceptedCount: 2,
+    title: "TCF Canada Evening Oral Practice Group Pod (4 Members Max)",
+    description: "Forming a 4-person study pod for TCF Canada Speaking Section 2 roleplays. 2 slots filled, 2 open!",
+    frenchAudioIntro: "Salut tout le monde ! Rejoignez notre groupe d'entraînement oral.",
+    createdAt: Date.now() - 3600000 * 12, // 12 hours ago
+    isFulfilled: false,
+    acceptedUsers: ["Sarah M.", "Jean-Luc P."],
+  },
+];
+
 function CommunityExamHubPage() {
   const { user } = useAuth();
   const { dark } = useTheme();
   const navigate = useNavigate();
 
   const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
+  const [buddyRequests, setBuddyRequests] = useState<BuddyCircleRequest[]>(INITIAL_BUDDY_REQUESTS);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isSocialEnabled, setIsSocialEnabled] = useState<boolean | null>(null);
   const [loadingConfig, setLoadingConfig] = useState(true);
+
+  // Buddy Connect Modal State
+  const [connectModalRequest, setConnectModalRequest] = useState<BuddyCircleRequest | null>(null);
+  const [connectIntroText, setConnectIntroText] = useState("");
+  const [connectSuccessMsg, setConnectSuccessMsg] = useState("");
+
+  // Create Buddy Request Modal
+  const [showBuddyModal, setShowBuddyModal] = useState(false);
+  const [buddyTitle, setBuddyTitle] = useState("");
+  const [buddyDesc, setBuddyDesc] = useState("");
+  const [buddyType, setBuddyType] = useState<"1on1" | "group">("1on1");
+  const [buddyCapacity, setBuddyCapacity] = useState<number>(1);
+  const [buddyTargetLevel, setBuddyTargetLevel] = useState("TCF / TEF CLB 7");
+  const [buddyAudioIntro, setBuddyAudioIntro] = useState("");
 
   // New Post Modal State
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -330,12 +395,20 @@ function CommunityExamHubPage() {
             </div>
           </div>
 
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="px-5 py-2.5 bg-gradient-to-r from-purple-500 via-indigo-600 to-purple-600 hover:from-purple-400 hover:to-indigo-500 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-purple-500/20 flex items-center gap-2 transition-all self-start sm:self-auto cursor-pointer"
-          >
-            <Plus className="w-4 h-4" /> Share Exam Strategy / Debrief
-          </button>
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <button
+              onClick={() => setShowBuddyModal(true)}
+              className="px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-extrabold text-xs rounded-xl shadow-lg flex items-center gap-1.5 transition-all cursor-pointer"
+            >
+              <Users className="w-4 h-4" /> ⚡ Create Buddy / Pod Request
+            </button>
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="px-4 py-2.5 bg-gradient-to-r from-purple-500 via-indigo-600 to-purple-600 hover:from-purple-400 hover:to-indigo-500 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-purple-500/20 flex items-center gap-1.5 transition-all cursor-pointer"
+            >
+              <Plus className="w-4 h-4" /> Share Exam Strategy
+            </button>
+          </div>
         </div>
 
         {/* Academic Benefit Highlights Banner */}
@@ -404,6 +477,87 @@ function CommunityExamHubPage() {
             />
           </div>
         </div>
+
+        {/* ─── BUDDY CIRCLES & 1-ON-1 REQUESTS STREAM ─── */}
+        {(selectedCategory === "all" || selectedCategory === "buddy_circle") && (
+          <div className="space-y-4 pt-2">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-extrabold flex items-center gap-2 text-emerald-400">
+                <Users className="w-4 h-4 text-emerald-400" /> Active Buddy Circles & Ephemeral 1-on-1 Requests
+              </h2>
+              <span className={`text-[10px] ${textMuted}`}>Auto-deletes when matched or after 48h ⏳</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {buddyRequests
+                .filter((r) => {
+                  const hoursElapsed = (Date.now() - r.createdAt) / 3600000;
+                  return !r.isFulfilled && hoursElapsed < 48; // Expire automatically after 48h
+                })
+                .map((req) => {
+                  const hoursRemaining = Math.max(0, Math.floor(48 - (Date.now() - req.createdAt) / 3600000));
+                  return (
+                    <motion.div
+                      key={req.id}
+                      initial={{ opacity: 0, scale: 0.98 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className={`p-4 rounded-2xl border flex flex-col justify-between space-y-3 ${
+                        dark ? "bg-gradient-to-br from-[#101828] to-[#0d1322] border-emerald-500/30" : "bg-white border-emerald-200 shadow-md"
+                      }`}
+                    >
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                            {req.type === "1on1" ? "🤝 1-on-1 Buddy Request" : `👥 Study Pod (${req.acceptedCount}/${req.capacity} Joined)`}
+                          </span>
+                          <span className="text-[10px] font-mono text-amber-400 flex items-center gap-1">
+                            ⏳ Expires in {hoursRemaining}h
+                          </span>
+                        </div>
+
+                        <h3 className="text-sm font-extrabold text-white leading-snug">{req.title}</h3>
+                        <p className={`text-xs ${dark ? "text-gray-300" : "text-gray-700"} line-clamp-2`}>{req.description}</p>
+
+                        {/* Optional Audio Intro */}
+                        {req.frenchAudioIntro && (
+                          <div className={`p-2 rounded-xl border text-[11px] font-mono flex items-center justify-between ${dark ? "bg-black/40 border-emerald-500/20 text-emerald-300" : "bg-emerald-50 border-emerald-200 text-emerald-900"}`}>
+                            <span className="truncate italic">🇫🇷 "{req.frenchAudioIntro}"</span>
+                            <button
+                              onClick={() => {
+                                if (!window.speechSynthesis) return;
+                                window.speechSynthesis.cancel();
+                                const u = new SpeechSynthesisUtterance(req.frenchAudioIntro!);
+                                u.lang = "fr-FR";
+                                u.rate = 0.9;
+                                window.speechSynthesis.speak(u);
+                              }}
+                              className="px-2 py-0.5 rounded bg-emerald-500/30 text-emerald-200 hover:bg-emerald-500/50 text-[10px] font-extrabold shrink-0"
+                            >
+                              🔊 Play
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex items-center justify-between pt-2 border-t dark:border-white/10 border-gray-100 text-xs">
+                        <span className={`text-[11px] ${textMuted} font-bold`}>Posted by {req.authorName} ({req.targetLevel})</span>
+                        <button
+                          onClick={() => {
+                            setConnectModalRequest(req);
+                            setConnectIntroText("");
+                            setConnectSuccessMsg("");
+                          }}
+                          className="px-3.5 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-xs rounded-xl shadow cursor-pointer flex items-center gap-1"
+                        >
+                          ⚡ Connect & Match
+                        </button>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+            </div>
+          </div>
+        )}
 
         {/* Posts Stream */}
         <div className="space-y-4">
@@ -689,6 +843,248 @@ function CommunityExamHubPage() {
                     className="px-5 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white text-xs font-extrabold rounded-xl shadow-md"
                   >
                     Publish Thread
+                  </button>
+                </div>
+        {/* ─── CONNECT REQUEST MODAL ─── */}
+        <AnimatePresence>
+          {connectModalRequest && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+              <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }}
+                className={`w-full max-w-md p-6 rounded-2xl border shadow-2xl space-y-4 ${cardBg}`}>
+                <h3 className="text-lg font-extrabold flex items-center gap-2 text-emerald-400">
+                  <Users className="w-5 h-5 text-emerald-400" /> Send Ephemeral Connect Request
+                </h3>
+
+                <p className="text-xs text-gray-300">
+                  Send a private intro message to <strong>{connectModalRequest.authorName}</strong> ({connectModalRequest.targetLevel}). This request auto-expires in <strong>48 hours</strong>!
+                </p>
+
+                {connectSuccessMsg ? (
+                  <div className="p-4 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold text-center space-y-2">
+                    <p>{connectSuccessMsg}</p>
+                    <button
+                      onClick={() => setConnectModalRequest(null)}
+                      className="px-4 py-1.5 bg-emerald-500 text-slate-950 font-black rounded-lg text-xs"
+                    >
+                      Done
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-3 text-xs">
+                    <div>
+                      <label className="block font-bold mb-1">Your Intro Message / French Practice Intro:</label>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+                            if (!SpeechRecognition) return;
+                            try {
+                              const rec = new SpeechRecognition();
+                              rec.lang = "fr-FR";
+                              rec.onresult = (e: any) => {
+                                const txt = e.results[0][0].transcript;
+                                if (txt) setConnectIntroText(prev => prev ? `${prev} ${txt}` : txt);
+                              };
+                              rec.start();
+                            } catch {}
+                          }}
+                          className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20"
+                          title="Dictate French Voice Intro"
+                        >
+                          <Mic className="w-4 h-4" />
+                        </button>
+                        <textarea
+                          rows={3}
+                          value={connectIntroText}
+                          onChange={(e) => setConnectIntroText(e.target.value)}
+                          placeholder="e.g. Bonjour Elena ! I am also aiming for DELF B1. Available at 6 PM EST for oral drills..."
+                          className={`flex-1 p-2.5 rounded-xl border outline-none ${
+                            dark ? "bg-[#070B17] border-emerald-500/30 text-white" : "bg-white border-emerald-200 text-slate-900"
+                          }`}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end gap-2 pt-2">
+                      <button
+                        onClick={() => setConnectModalRequest(null)}
+                        className="px-4 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          // Simulate matching acceptance
+                          setBuddyRequests((prev) =>
+                            prev.map((r) => {
+                              if (r.id === connectModalRequest.id) {
+                                const newCount = r.acceptedCount + 1;
+                                const isFulfilled = newCount >= r.capacity;
+                                return {
+                                  ...r,
+                                  acceptedCount: newCount,
+                                  isFulfilled: isFulfilled,
+                                  acceptedUsers: [...r.acceptedUsers, user?.firstName || "Candidate"],
+                                };
+                              }
+                              return r;
+                            })
+                          );
+                          setConnectSuccessMsg(
+                            connectModalRequest.type === "1on1"
+                              ? "⚡ Connect Request Sent! Post automatically FULFILLED and auto-removed from feed!"
+                              : `⚡ Joined Study Pod! (${connectModalRequest.acceptedCount + 1}/${connectModalRequest.capacity} slots filled)`
+                          );
+                        }}
+                        className="px-5 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 text-xs font-black rounded-xl shadow-md"
+                      >
+                        Send Request
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ─── CREATE BUDDY REQUEST MODAL ─── */}
+        <AnimatePresence>
+          {showBuddyModal && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+              <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }}
+                className={`w-full max-w-lg p-6 rounded-2xl border shadow-2xl space-y-4 ${cardBg}`}>
+                <h3 className="text-lg font-extrabold flex items-center gap-2 text-emerald-400">
+                  <Users className="w-5 h-5 text-emerald-400" /> Create Buddy / Study Pod Request
+                </h3>
+
+                <div className="space-y-3 text-xs">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold mb-1">Request Type:</label>
+                      <select
+                        value={buddyType}
+                        onChange={(e) => {
+                          const t = e.target.value as any;
+                          setBuddyType(t);
+                          if (t === "1on1") setBuddyCapacity(1);
+                          else setBuddyCapacity(4);
+                        }}
+                        className={`w-full p-2.5 rounded-xl border outline-none font-bold ${
+                          dark ? "bg-[#070B17] border-emerald-500/30 text-white" : "bg-white border-emerald-200 text-slate-900"
+                        }`}
+                      >
+                        <option value="1on1">🤝 1-on-1 Speaking Partner</option>
+                        <option value="group">👥 Small Group Study Pod</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block font-bold mb-1">Member Capacity:</label>
+                      <input
+                        type="number"
+                        min={1}
+                        max={6}
+                        value={buddyCapacity}
+                        onChange={(e) => setBuddyCapacity(parseInt(e.target.value) || 1)}
+                        disabled={buddyType === "1on1"}
+                        className={`w-full p-2.5 rounded-xl border outline-none font-bold ${
+                          dark ? "bg-[#070B17] border-emerald-500/30 text-white" : "bg-white border-emerald-200 text-slate-900"
+                        }`}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold mb-1">Target Exam & Level:</label>
+                    <input
+                      type="text"
+                      value={buddyTargetLevel}
+                      onChange={(e) => setBuddyTargetLevel(e.target.value)}
+                      placeholder="e.g. DELF B1 or TCF Canada CLB 7"
+                      className={`w-full p-2.5 rounded-xl border outline-none ${
+                        dark ? "bg-[#070B17] border-emerald-500/30 text-white" : "bg-white border-emerald-200 text-slate-900"
+                      }`}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold mb-1">Request Title:</label>
+                    <input
+                      type="text"
+                      value={buddyTitle}
+                      onChange={(e) => setBuddyTitle(e.target.value)}
+                      placeholder="e.g. Looking for 1 partner for 20-min daily monologue practice..."
+                      className={`w-full p-2.5 rounded-xl border outline-none ${
+                        dark ? "bg-[#070B17] border-emerald-500/30 text-white" : "bg-white border-emerald-200 text-slate-900"
+                      }`}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold mb-1">Details & Schedule Availability:</label>
+                    <textarea
+                      rows={3}
+                      value={buddyDesc}
+                      onChange={(e) => setBuddyDesc(e.target.value)}
+                      placeholder="e.g. Available weekdays 6-7 PM EST. Focusing on speaking roleplays..."
+                      className={`w-full p-2.5 rounded-xl border outline-none ${
+                        dark ? "bg-[#070B17] border-purple-500/30 text-white" : "bg-white border-purple-200 text-slate-900"
+                      }`}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold mb-1">Optional French Audio Intro Sentence:</label>
+                    <input
+                      type="text"
+                      value={buddyAudioIntro}
+                      onChange={(e) => setBuddyAudioIntro(e.target.value)}
+                      placeholder="e.g. Salut ! Je cherche un partenaire pour pratiquer mon oral !"
+                      className={`w-full p-2.5 rounded-xl border outline-none font-mono ${
+                        dark ? "bg-[#070B17] border-purple-500/30 text-white" : "bg-white border-purple-200 text-slate-900"
+                      }`}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2">
+                  <button
+                    onClick={() => setShowBuddyModal(false)}
+                    className="px-4 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (!buddyTitle.trim() || !buddyDesc.trim()) return;
+                      const newReq: BuddyCircleRequest = {
+                        id: `buddy-${Date.now()}`,
+                        authorName: `${user?.firstName || "Candidate"}`,
+                        authorExam: user?.learningGoal !== "none" ? `${user?.learningGoal}` : "A1-B2 Candidate",
+                        targetLevel: buddyTargetLevel || "CEFR Candidate",
+                        type: buddyType,
+                        capacity: buddyCapacity,
+                        acceptedCount: 0,
+                        title: buddyTitle.trim(),
+                        description: buddyDesc.trim(),
+                        frenchAudioIntro: buddyAudioIntro.trim() || undefined,
+                        createdAt: Date.now(),
+                        isFulfilled: false,
+                        acceptedUsers: [],
+                      };
+                      setBuddyRequests([newReq, ...buddyRequests]);
+                      setShowBuddyModal(false);
+                      setBuddyTitle("");
+                      setBuddyDesc("");
+                      setBuddyAudioIntro("");
+                    }}
+                    className="px-5 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 text-xs font-black rounded-xl shadow-md"
+                  >
+                    Publish Buddy Request
                   </button>
                 </div>
               </motion.div>
