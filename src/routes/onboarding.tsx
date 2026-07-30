@@ -18,6 +18,7 @@ import {
   GraduationCap
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
+import { speak } from "~/lib/speech";
 import { apiFetch } from "~/lib/apiFetch";
 import { GOAL_OPTIONS, setGoal as saveGoalToStorage, setDailyStudyGoal, type LearningGoal } from "~/components/dashboard/utils/userPrefs";
 
@@ -267,15 +268,9 @@ export function OnboardingPage() {
   };
 
   const handlePlayQuestionAudio = (text: string) => {
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = "fr-FR";
-    u.rate = 0.85;
-    u.onstart = () => setIsPlayingAudio(true);
-    u.onend = () => setIsPlayingAudio(false);
-    u.onerror = () => setIsPlayingAudio(false);
-    window.speechSynthesis.speak(u);
+    setIsPlayingAudio(true);
+    speak(text, "fr-FR", 0.85, "female");
+    setTimeout(() => setIsPlayingAudio(false), 3500);
   };
 
   const handleNextQuestion = () => {
@@ -328,10 +323,13 @@ export function OnboardingPage() {
 
     // 2. Persist to backend database so profile syncs
     try {
-      await apiFetch("/user/profile/goal", {
+      await apiFetch("/users/profile/goal", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ goal: selectedGoal }),
+      });
+      await apiFetch("/users/profile/complete-onboarding", {
+        method: "PUT",
       });
     } catch {}
 

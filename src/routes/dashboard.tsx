@@ -134,13 +134,15 @@ function DashboardPage() {
                   <Timer className="w-3.5 h-3.5 text-purple-400" />
                   <span className="text-purple-400 font-bold text-sm">{Math.floor(data.stats.totalStudyTime / 60)}h</span>
                 </div>
-                <Link
-                  to="/onboarding"
-                  className={`flex items-center gap-1.5 ${dark ? "bg-indigo-500/10 border-indigo-500/30 hover:bg-indigo-500/20 text-indigo-300" : "bg-indigo-50 border-indigo-200 hover:bg-indigo-100 text-indigo-700"} border px-3.5 py-1.5 rounded-full transition-all text-xs font-bold shadow-sm`}
-                >
-                  <Compass className="w-3.5 h-3.5 text-indigo-400" />
-                  <span>Placement Test</span>
-                </Link>
+                {!data.user.onboardingComplete && (
+                  <Link
+                    to="/onboarding"
+                    className={`flex items-center gap-1.5 ${dark ? "bg-indigo-500/10 border-indigo-500/30 hover:bg-indigo-500/20 text-indigo-300" : "bg-indigo-50 border-indigo-200 hover:bg-indigo-100 text-indigo-700"} border px-3.5 py-1.5 rounded-full transition-all text-xs font-bold shadow-sm`}
+                  >
+                    <Compass className="w-3.5 h-3.5 text-indigo-400" />
+                    <span>Placement Test</span>
+                  </Link>
+                )}
               </div>
             </div>
           </header>

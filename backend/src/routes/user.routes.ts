@@ -10,13 +10,22 @@ router.post('/heartbeat', authenticate, async (req: AuthRequest, res: Response, 
   try {
     if (req.user?.userId) {
       const { currentPage } = req.body || {};
-      const update: any = { lastActiveAt: new Date() };
+      const update: any = { lastActiveAt: new Date(), isExplicitOffline: false };
       if (typeof currentPage === 'string' && currentPage.trim()) {
         update.currentPage = currentPage.trim();
       }
       await User.updateOne({ _id: req.user.userId }, { $set: update });
     }
     res.status(200).json({ success: true, timestamp: new Date() });
+  } catch (error) { next(error); }
+});
+
+router.post('/presence-off', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    if (req.user?.userId) {
+      await User.updateOne({ _id: req.user.userId }, { $set: { isExplicitOffline: true, lastActiveAt: new Date(0) } });
+    }
+    res.status(200).json({ success: true });
   } catch (error) { next(error); }
 });
 

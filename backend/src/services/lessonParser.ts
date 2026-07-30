@@ -301,16 +301,16 @@ function parseGrammarDrills(text: string, lessonId: string): Question[] {
 }
 
 function parseReading(text: string, lessonId: string): ReadingSection {
-  const tm = text.match(/\*\*(.*?)\*\*/);
+  const tm = text.match(/(?:\*\*|#+\s*)?(.*?)(?:\*\*|)?/);
   const title = tm ? stripMd(tm[1]) : 'Reading';
 
-  const parts = text.split(/\*\*English Translation:\*\*/i);
+  const parts = text.split(/(?:\*\*|#+\s*)?English Translation:?(?:\*\*|)?/i);
   const passagePart = parts[0] || '';
   const afterTrans = parts[1] || '';
 
   const passageLines = passagePart.split('\n').filter(l => {
     const t = l.trim();
-    return t && !t.startsWith('**Comprehension Questions') && !t.startsWith('**Answer Key') && !t.match(/^\d+\./);
+    return t && !t.match(/^(?:\*\*|#+\s*)?Comprehension Questions/i) && !t.match(/^(?:\*\*|#+\s*)?Answer Key/i) && !t.match(/^\d+\./);
   });
   const passage = passageLines.map(l => l.replace(/^\*+/, '').replace(/\*+$/, '').trim()).filter(l => l && l !== title).join('\n');
 
@@ -318,27 +318,36 @@ function parseReading(text: string, lessonId: string): ReadingSection {
   const questions: Question[] = [];
 
   if (afterTrans) {
-    const tp = afterTrans.split(/\*\*Comprehension Questions/i);
-    translation = (tp[0] || '').split('\n').filter(l => l.trim()).map(l => l.replace(/^\*+/, '').replace(/\*+$/, '').replace(/\(.*?A1.*?support.*?\)/i, '').trim()).filter(l => l && !l.startsWith('(')).join('\n').trim() || undefined;
+    const tp = afterTrans.split(/(?:\*\*|#+\s*)?Comprehension Questions:?/i);
+    translation = (tp[0] || '')
+      .split('\n')
+      .filter(l => l.trim())
+      .map(l => l.replace(/\([^\)]*(?:support|toggle|hide|A1[–-]A2)[^\)]*\)/gi, '').trim())
+      .filter(l => l && !l.startsWith('(') && !l.toLowerCase().startsWith('english translation'))
+      .join('\n')
+      .trim() || undefined;
 
     const qp = tp[1] || '';
-    const ap = qp.split(/\*\*Answer Key/i);
+    const ap = qp.split(/(?:\*\*|#+\s*)?Answer Key:?/i);
     const aLines = (ap[1] || '').split('\n');
     const answers: string[] = [];
     for (const l of aLines) {
-      const m = l.trim().match(/^\d+\.\s*(.+)/);
-      if (m) answers.push(stripMd(m[1]));
+      const clean = l.trim().replace(/^\d+[\.\)]\s*/, '').replace(/^[-•*]\s*/, '');
+      if (clean && clean !== '---' && clean !== '--' && !clean.toLowerCase().startsWith('answer key')) {
+        answers.push(stripMd(clean));
+      }
     }
 
     let n = 0;
-    for (const l of (ap[0] || '').split('\n')) {
-      const m = l.trim().match(/^\d+\.\s*(.+)/);
-      if (m) {
+    const rawQLines = (ap[0] || '').split('\n').map(l => l.trim()).filter(l => l && l !== '---' && l !== '--' && !l.toLowerCase().startsWith('comprehension questions'));
+    for (const l of rawQLines) {
+      const cleanPrompt = stripMd(l.replace(/^\d+[\.\)]\s*/, '').replace(/^[-•*]\s*/, ''));
+      if (cleanPrompt) {
         n++;
         questions.push({
           id: `${lessonId}-r-${n}`,
           type: 'short_answer' as const,
-          prompt: stripMd(m[1]),
+          prompt: cleanPrompt,
           correctAnswer: answers[n - 1] || '',
           explanation: answers[n - 1] ? `The answer is: ${answers[n - 1]}` : 'Refer to the reading passage.',
         });

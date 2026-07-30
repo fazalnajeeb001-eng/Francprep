@@ -12,16 +12,15 @@ export const authenticate = (
 ): void => {
   try {
     const authHeader = req.headers.authorization;
+    let token = '';
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      res.status(401).json({
-        success: false,
-        error: 'Access denied. No token provided.',
-      });
-      return;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.split(' ')[1];
+    } else if (req.query && typeof req.query.token === 'string') {
+      token = req.query.token;
+    } else if (req.body && typeof req.body.token === 'string') {
+      token = req.body.token;
     }
-
-    const token = authHeader.split(' ')[1];
 
     if (!token) {
       res.status(401).json({

@@ -3,7 +3,7 @@ import { Mic, Send, Volume2, RotateCcw, Bot, User, Sparkles } from "lucide-react
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
-import { getBestVoice } from "~/lib/speech";
+import { getBestVoice, speak } from "~/lib/speech";
 
 import { SmartAvatar } from "~/components/dashboard/widgets/SmartAvatar";
 
@@ -153,32 +153,8 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
       const enRate = baseRate < 0.8 ? Math.max(0.65, baseRate * 0.95) : 0.95;
 
       setIsSpeaking(true);
-
-      const playChunk = (index: number) => {
-        if (index >= chunks.length) {
-          setIsSpeaking(false);
-          return;
-        }
-
-        const c = chunks[index];
-        const u = new SpeechSynthesisUtterance(c.text);
-        if (c.lang === "fr") {
-          u.lang = "fr-FR";
-          u.rate = baseRate;
-          if (frenchVoice) u.voice = frenchVoice;
-        } else {
-          u.lang = "en-US";
-          u.rate = enRate;
-          if (englishVoice) u.voice = englishVoice;
-        }
-
-        u.onend = () => playChunk(index + 1);
-        u.onerror = () => playChunk(index + 1);
-
-        window.speechSynthesis.speak(u);
-      };
-
-      playChunk(0);
+      speak(text, "fr-FR", baseRate, avatarGender);
+      setTimeout(() => setIsSpeaking(false), Math.min(8000, Math.max(2000, text.length * 80)));
     } catch {
       setIsSpeaking(false);
     }

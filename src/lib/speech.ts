@@ -70,11 +70,58 @@ export function getBestVoice(langPrefix: "fr" | "en", gender: "female" | "male" 
   return candidates[0];
 }
 
+import { apiFetch } from "~/lib/apiFetch";
+
+let currentAudioPlayer: HTMLAudioElement | null = null;
+
 /**
- * Text-to-speech helper. Prefers HD Neural voices and matches character gender.
+ * Text-to-speech helper. Uses Neural AI Voices via /api/tts/speak and falls back to HD browser voice.
  */
 export function speak(text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female"): boolean {
-  if (typeof window === "undefined" || !window.speechSynthesis) return false;
+  if (typeof window === "undefined") return false;
+  const cleanText = text.trim();
+  if (!cleanText) return false;
+
+  if (currentAudioPlayer) {
+    currentAudioPlayer.pause();
+    currentAudioPlayer = null;
+  }
+  if (window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+  }
+
+  const langCode = lang.toLowerCase().startsWith("en") ? "en" : "fr";
+
+  // Call neural TTS service
+  apiFetch("/tts/speak", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text: cleanText, gender, lang: langCode }),
+  })
+    .then(async (res) => {
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data?.audioUrl) {
+          const audio = new Audio(json.data.audioUrl);
+          currentAudioPlayer = audio;
+          audio.playbackRate = rate;
+          audio.play().catch(() => {
+            fallbackSpeech(cleanText, lang, rate, gender);
+          });
+          return;
+        }
+      }
+      fallbackSpeech(cleanText, lang, rate, gender);
+    })
+    .catch(() => {
+      fallbackSpeech(cleanText, lang, rate, gender);
+    });
+
+  return true;
+}
+
+function fallbackSpeech(text: string, lang: string, rate: number, gender: "female" | "male") {
+  if (typeof window === "undefined" || !window.speechSynthesis) return;
   try {
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
@@ -86,10 +133,7 @@ export function speak(text: string, lang = "fr-FR", rate = 0.85, gender: "female
     if (bestVoice) u.voice = bestVoice;
 
     window.speechSynthesis.speak(u);
-    return true;
-  } catch {
-    return false;
-  }
+  } catch {}
 }
 
 /**

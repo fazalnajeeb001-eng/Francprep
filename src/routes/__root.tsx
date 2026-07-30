@@ -2,6 +2,7 @@ import { HeadContent, Outlet, Scripts, Link, createRootRoute, useNavigate } from
 import type { ReactNode, ErrorInfo } from "react";
 import { useState, useEffect, Component } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { apiFetch } from "~/lib/apiFetch";
 import appCss from "~/styles/app.css?url";
 import { AuthProvider, useAuth } from "~/lib/AuthContext";
 import { ThemeProvider } from "~/lib/ThemeContext";
@@ -116,6 +117,55 @@ function NavBarInner() {
     window.addEventListener("avatar-changed", onAvatarChange);
     return () => window.removeEventListener("avatar-changed", onAvatarChange);
   }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const sendHeartbeat = () => {
+      if (document.visibilityState === 'visible') {
+        const currentPage = window.location.pathname;
+        apiFetch("/users/heartbeat", {
+          method: "POST",
+          body: JSON.stringify({ currentPage }),
+        }).catch(() => {});
+      }
+    };
+
+    const sendOfflineBeacon = () => {
+      try {
+        const token = localStorage.getItem('fp_access_token') || '';
+        const blob = new Blob([JSON.stringify({ token })], { type: 'application/json' });
+        const url = `/api/users/presence-off?token=${encodeURIComponent(token)}`;
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon(url, blob);
+        } else {
+          apiFetch(url, { method: "POST" }).catch(() => {});
+        }
+      } catch (e) {}
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        sendOfflineBeacon();
+      } else {
+        sendHeartbeat();
+      }
+    };
+
+    sendHeartbeat();
+    const interval = setInterval(sendHeartbeat, 15000);
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pagehide", sendOfflineBeacon);
+    window.addEventListener("beforeunload", sendOfflineBeacon);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pagehide", sendOfflineBeacon);
+      window.removeEventListener("beforeunload", sendOfflineBeacon);
+    };
+  }, [isAuthenticated]);
 
   return (
     <>

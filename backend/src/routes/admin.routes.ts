@@ -682,9 +682,9 @@ router.get('/curriculum/audit', async (req: AuthRequest, res: Response, next: Ne
       const errors: string[] = [];
       const warnings: string[] = [];
       
-      const canonical = (lesson as any).canonical;
-      if (!canonical) {
-        errors.push('Missing canonical JSON document');
+      const canonical = (lesson as any).canonical || lesson.toObject();
+      if (!canonical || (!canonical.title && !canonical.lessonId)) {
+        errors.push('Missing lesson document');
         auditResults.push({ lessonId: lesson.lessonId as string, title: lesson.title, level: lesson.level, errors, warnings });
         continue;
       }
@@ -895,25 +895,34 @@ router.get('/analytics/saas-overview', async (_req: AuthRequest, res: Response, 
   try {
     const [allUsers, progressAgg] = await Promise.all([
       User.find({ role: { $ne: 'admin' } })
-        .select('firstName lastName email subscriptionTier isVipFreeAccess customPriceOverride lastActiveAt currentPage updatedAt xp streak learningGoal targetExam createdAt')
+        .select('firstName lastName email subscriptionTier isVipFreeAccess customPriceOverride lastActiveAt isExplicitOffline currentPage updatedAt xp streak learningGoal targetExam createdAt')
         .lean(),
       StudentProgress.aggregate([
-        { $match: { status: 'completed' } },
-        { $group: { _id: '$userId', completedCount: { $sum: 1 }, totalTimeSpentSec: { $sum: '$timeSpent' } } }
+        {
+          $group: {
+            _id: '$userId',
+            completedCount: { $sum: { $cond: [{ $eq: ['$status', 'completed'] }, 1, 0] } },
+            totalTimeSpentMinutes: { $sum: '$timeSpent' }
+          }
+        }
       ])
     ]);
 
     const totalStudents = allUsers.length;
 
-    const progressMap: Record<string, { completedCount: number; totalTimeSpentSec: number }> = {};
+    const progressMap: Record<string, { completedCount: number; totalTimeSpentMinutes: number }> = {};
     progressAgg.forEach(p => {
-      progressMap[String(p._id)] = { completedCount: p.completedCount, totalTimeSpentSec: p.totalTimeSpentSec || 0 };
+      progressMap[String(p._id)] = {
+        completedCount: p.completedCount || 0,
+        totalTimeSpentMinutes: p.totalTimeSpentMinutes || 0,
+      };
     });
 
-    const threeMinsAgo = new Date(Date.now() - 3 * 60 * 1000);
+    const fortyFiveSecsAgo = new Date(Date.now() - 45 * 1000);
     const isUserOnline = (u: any) => {
+      if (u.isExplicitOffline) return false;
       const activeTime = u.lastActiveAt ? new Date(u.lastActiveAt).getTime() : (u.updatedAt ? new Date(u.updatedAt).getTime() : 0);
-      return activeTime >= threeMinsAgo.getTime();
+      return activeTime >= fortyFiveSecsAgo.getTime();
     };
 
     const onlineUsers = allUsers.filter(isUserOnline);
@@ -957,14 +966,19 @@ router.get('/analytics/saas-overview', async (_req: AuthRequest, res: Response, 
     });
     const topExamPercentage = totalStudents > 0 ? Math.round((topExamCount / totalStudents) * 100) : 0;
 
+    // Calculate total study time across all students
+    const totalMinutesFromProgress = progressAgg.reduce((sum, p) => sum + (p.totalTimeSpentMinutes || 0), 0);
     const totalXP = allUsers.reduce((sum, u) => sum + (u.xp || 0), 0);
-    const totalStudyHours = Math.round((totalXP / 60) * 10) / 10;
-    const avgSessionMinutes = totalStudents > 0 ? Math.round(totalXP / totalStudents) : 0;
+    const minutesFromXP = totalXP;
+    const effectiveTotalMinutes = Math.max(totalMinutesFromProgress, minutesFromXP);
+
+    const totalStudyHours = Math.round((effectiveTotalMinutes / 60) * 10) / 10;
+    const avgSessionMinutes = totalStudents > 0 ? Math.round(effectiveTotalMinutes / totalStudents) : 0;
 
     const studentRoster = allUsers.map(u => {
-      const prog = progressMap[String(u._id)] || { completedCount: 0, totalTimeSpentSec: 0 };
+      const prog = progressMap[String(u._id)] || { completedCount: 0, totalTimeSpentMinutes: 0 };
       const hoursFromXP = (u.xp || 0) / 60;
-      const hoursFromProgress = prog.totalTimeSpentSec / 3600;
+      const hoursFromProgress = (prog.totalTimeSpentMinutes || 0) / 60;
       const computedStudyHours = Math.round(Math.max(hoursFromXP, hoursFromProgress) * 10) / 10;
 
       return {

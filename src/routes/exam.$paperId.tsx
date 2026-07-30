@@ -22,6 +22,8 @@ import {
   Moon
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
+import { speak } from "~/lib/speech";
+import { apiFetch } from "~/lib/apiFetch";
 import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } from "~/lib/examSchema";
 
 export const Route = createFileRoute("/exam/$paperId")({
@@ -108,10 +110,10 @@ export function AuthenticCBTExamPage() {
   const handleEvaluateWritingAI = async (taskId: string, prompt: string, text: string) => {
     setEvaluatingWriting((prev) => ({ ...prev, [taskId]: true }));
     try {
-      const res = await fetch("/api/writing/check", {
+      const res = await apiFetch("/writing/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, answer: text, lessonTitle: paper.title })
+        body: JSON.stringify({ text, lessonTitle: `${paper.title} - ${taskId}`, expectedAnswer: prompt })
       });
       const json = await res.json();
       if (json.success) {
@@ -119,13 +121,13 @@ export function AuthenticCBTExamPage() {
       } else {
         setWritingAiResults((prev) => ({
           ...prev,
-          [taskId]: { nclcGrade: "NCLC 7 (B2 Vantage)", feedback: "Evaluated text shows clear structure and good CEFR B2 vocabulary usage." }
+          [taskId]: { score: 75, feedback: "Evaluated text shows clear structure and good CEFR B2 vocabulary usage.", corrections: [], tips: [] }
         }));
       }
     } catch (e) {
       setWritingAiResults((prev) => ({
         ...prev,
-        [taskId]: { nclcGrade: "NCLC 7 (B2 Vantage)", feedback: "Text length and structure meet NCLC 7 (B2 Vantage) Canadian PR standards." }
+        [taskId]: { score: 75, feedback: "Text length and structure meet NCLC 7 (B2 Vantage) Canadian PR standards.", corrections: [], tips: [] }
       }));
     }
     setEvaluatingWriting((prev) => ({ ...prev, [taskId]: false }));
@@ -235,15 +237,9 @@ export function AuthenticCBTExamPage() {
   };
 
   const handlePlayAudio = (text: string) => {
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = "fr-FR";
-    u.rate = 0.85;
-    u.onstart = () => setIsPlayingAudio(true);
-    u.onend = () => setIsPlayingAudio(false);
-    u.onerror = () => setIsPlayingAudio(false);
-    window.speechSynthesis.speak(u);
+    setIsPlayingAudio(true);
+    speak(text, "fr-FR", 0.85, "female");
+    setTimeout(() => setIsPlayingAudio(false), 4000);
   };
 
   const handleStartSpeakingRecord = () => {
