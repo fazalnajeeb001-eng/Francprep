@@ -2,6 +2,7 @@ import { HeadContent, Outlet, Scripts, Link, createRootRoute, useNavigate } from
 import type { ReactNode, ErrorInfo } from "react";
 import { useState, useEffect, Component } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { apiFetch } from "~/lib/apiFetch";
 import appCss from "~/styles/app.css?url";
 import { AuthProvider, useAuth } from "~/lib/AuthContext";
 import { ThemeProvider } from "~/lib/ThemeContext";
@@ -116,6 +117,20 @@ function NavBarInner() {
     window.addEventListener("avatar-changed", onAvatarChange);
     return () => window.removeEventListener("avatar-changed", onAvatarChange);
   }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const sendHeartbeat = () => {
+      const currentPage = window.location.pathname;
+      apiFetch("/users/heartbeat", {
+        method: "POST",
+        body: JSON.stringify({ currentPage }),
+      }).catch(() => {});
+    };
+    sendHeartbeat();
+    const interval = setInterval(sendHeartbeat, 30000);
+    return () => clearInterval(interval);
+  }, [isAuthenticated]);
 
   return (
     <>
