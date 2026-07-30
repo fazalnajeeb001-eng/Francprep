@@ -144,10 +144,34 @@ function CommunityPage() {
 
   const [inputText, setInputText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const [botScenario, setBotScenario] = useState("free");
   const [isSocialEnabled, setIsSocialEnabled] = useState<boolean | null>(null);
   const [loadingConfig, setLoadingConfig] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const startVoiceInput = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Speech recognition is not supported in this browser. You can type your message in French!");
+      return;
+    }
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = "fr-FR";
+      recognition.interimResults = false;
+      recognition.onstart = () => setIsListening(true);
+      recognition.onend = () => setIsListening(false);
+      recognition.onerror = () => setIsListening(false);
+      recognition.onresult = (e: any) => {
+        const transcript = e.results[0][0].transcript;
+        if (transcript) setInputText(transcript);
+      };
+      recognition.start();
+    } catch (e) {
+      setIsListening(false);
+    }
+  };
 
   // Theme styling
   const pageBg = dark ? "bg-[#070B17] text-white" : "bg-[#F8FAFC] text-slate-900";
@@ -462,12 +486,26 @@ function CommunityPage() {
 
             {/* Input Bar */}
             <div className={`p-3 border-t flex items-center gap-2 ${dark ? "bg-[#101828] border-[#1e2a4a]" : "bg-gray-50 border-slate-200"}`}>
+              <button
+                type="button"
+                onClick={startVoiceInput}
+                className={`p-3 rounded-xl border transition-all ${
+                  isListening
+                    ? "bg-red-500 text-white animate-pulse border-red-400"
+                    : dark
+                    ? "bg-purple-500/10 border-purple-500/30 text-purple-300 hover:bg-purple-500/20"
+                    : "bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100"
+                }`}
+                title="Speak French into Microphone"
+              >
+                <Mic className="w-4 h-4" />
+              </button>
               <input
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-                placeholder={`Type a message in ${activeChannel.name}...`}
+                placeholder={isListening ? "Listening... Speak in French!" : `Type or speak a message in ${activeChannel.name}...`}
                 className={`flex-1 p-3 rounded-xl text-xs border transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
                   dark ? "bg-black/50 border-purple-500/30 text-white placeholder-gray-500" : "bg-white border-purple-200 text-gray-900 placeholder-gray-400"
                 }`}
