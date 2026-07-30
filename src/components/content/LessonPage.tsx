@@ -957,7 +957,27 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
     return true;
   });
 
-  const lesson7 = lesson7Direct || lesson7FromList;
+  const realLesson7Id = lesson7FromList?._id || lesson7FromList?.lessonId || lesson7Id;
+
+  const { data: fullLesson7 } = useQuery({
+    queryKey: draftId ? ["draft-full7", realLesson7Id] : ["lesson-full7", realLesson7Id],
+    queryFn: async () => {
+      if (!realLesson7Id) return null;
+      try {
+        const url = draftId ? `/admin/content-pipeline/drafts/${realLesson7Id}` : `/lessons/${realLesson7Id}`;
+        const res = await apiFetch(url);
+        if (!res.ok) return null;
+        const json = await res.json();
+        const data = json?.data || json;
+        return (data?.parsedData || data) as LessonData;
+      } catch {
+        return null;
+      }
+    },
+    enabled: isLesson8 && !!realLesson7Id
+  });
+
+  const lesson7 = fullLesson7 || lesson7Direct || lesson7FromList;
 
   useEffect(() => {
     if (lessonId && !progress) {
@@ -1532,8 +1552,36 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
           }
         }
 
-        const lesson7Transcript = lesson7?.scene?.text || lesson7?.reading?.text || lesson7?.listening?.transcript || lesson?.scene?.text || lesson?.reading?.text || lesson?.listening?.transcript || '';
-        const lesson7Translation = lesson7?.scene?.translation || lesson7?.reading?.translation || lesson7?.listening?.translation || lesson?.scene?.translation || '';
+        const extractTextFromObj = (lObj: any) => {
+          if (!lObj) return '';
+          if (lObj.scene?.text) return lObj.scene.text;
+          if (lObj.reading?.text) return lObj.reading.text;
+          if (lObj.listening?.transcript) return lObj.listening.transcript;
+          if (Array.isArray(lObj.sections)) {
+            const found = lObj.sections.find((s: any) => s.type === 'reading' || s.type === 'listening' || s.type === 'integrated' || s.type === 'scene' || s.type === 'warmup');
+            if (found?.body) return found.body.replace(/^#+\s*.*?\n/, '').trim();
+          }
+          return '';
+        };
+
+        const extractTransFromObj = (lObj: any) => {
+          if (!lObj) return '';
+          if (lObj.scene?.translation) return lObj.scene.translation;
+          if (lObj.reading?.translation) return lObj.reading.translation;
+          if (lObj.listening?.translation) return lObj.listening.translation;
+          if (Array.isArray(lObj.sections)) {
+            const found = lObj.sections.find((s: any) => s.translation || (s.body && s.body.toLowerCase().includes('english translation')));
+            if (found?.translation) return found.translation;
+            if (found?.body && found.body.toLowerCase().includes('english translation')) {
+              const parts = found.body.split(/english translation:?/i);
+              if (parts[1]) return parts[1].trim();
+            }
+          }
+          return '';
+        };
+
+        const lesson7Transcript = extractTextFromObj(lesson7) || extractTextFromObj(lesson) || '';
+        const lesson7Translation = extractTransFromObj(lesson7) || extractTransFromObj(lesson) || '';
 
         return (
           <DELFAssessmentTabbedView
