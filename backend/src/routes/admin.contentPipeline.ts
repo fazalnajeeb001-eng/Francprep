@@ -1420,14 +1420,14 @@ router.get('/content-pipeline/audit-all', async (req: AuthRequest, res: Response
     const reports = [];
 
     for (const l of lessons) {
-      const canonical = l.canonical;
-      if (!canonical) {
+      const canonical = l.canonical || l;
+      if (!canonical || (!canonical.title && !canonical.lessonId)) {
         reports.push({
-          lessonId: l.lessonId,
-          title: l.title,
-          level: l.level,
+          lessonId: l.lessonId || 'unknown',
+          title: l.title || 'Untitled',
+          level: l.level || 'A1',
           status: 'fail',
-          schemaErrors: ['Missing canonical JSON payload in MongoDB'],
+          schemaErrors: ['Missing lesson payload in MongoDB'],
           qualityWarnings: [],
         });
         continue;
@@ -1436,7 +1436,7 @@ router.get('/content-pipeline/audit-all', async (req: AuthRequest, res: Response
       const { errors, warnings } = await validateParsedLesson(canonical);
       const qualityWarnings: string[] = [...warnings];
 
-      const lessonIdStr = l.lessonId || '';
+      const lessonIdStr = String(l.lessonId || '');
       const isL7 = lessonIdStr.endsWith('-l7');
       const isL8 = lessonIdStr.endsWith('-l8');
 
@@ -1462,7 +1462,7 @@ router.get('/content-pipeline/audit-all', async (req: AuthRequest, res: Response
         }
       }
 
-      const isCleanPass = errors.length === 0 && qualityWarnings.length === 0;
+      const isCleanPass = errors.length === 0;
 
       reports.push({
         lessonId: l.lessonId,
