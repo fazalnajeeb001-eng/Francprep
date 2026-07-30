@@ -1,8 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
-import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
-import { apiFetch } from "../lib/api";
+import { useAuth } from "~/lib/AuthContext";
+import { useTheme } from "~/lib/ThemeContext";
+import { apiFetch } from "~/lib/apiFetch";
 import {
   MessageSquare,
   Bot,
