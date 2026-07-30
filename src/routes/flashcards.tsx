@@ -119,7 +119,15 @@ function FlashcardsPage() {
           if (!chNum) chNum = 1;
 
           // Resolve lesson order (1-8) within chapter
-          const lessonOrder = Number(lesson.order || lesson.lessonNumber || lesson.lessonId?.match(/l(\d+)/i)?.[1] || 1);
+          let lessonOrder = 1;
+          if (typeof lesson.order === 'number' && lesson.order > 0) {
+            lessonOrder = lesson.order;
+          } else if (typeof lesson.lessonNumber === 'number' && lesson.lessonNumber > 0) {
+            lessonOrder = lesson.lessonNumber;
+          } else if (typeof lesson.lessonId === 'string') {
+            const lMatch = lesson.lessonId.match(/l(\d+)/i);
+            if (lMatch) lessonOrder = Number(lMatch[1]);
+          }
           const isChUnlocked = user?.role === 'admin' || completedChapters.has(chNum) || chNum === 1;
 
           let vocabList = Array.isArray(lesson.vocabItems) && lesson.vocabItems.length > 0 ? lesson.vocabItems
