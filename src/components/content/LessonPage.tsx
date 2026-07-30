@@ -3036,10 +3036,15 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
             {(() => {
               const cleanTxt = (txt: any) => {
                 if (!txt || typeof txt !== 'string') return '';
-                const trimmed = txt.trim();
+                let trimmed = txt.trim();
                 if (trimmed.toLowerCase().includes('complete the integrated practice') || trimmed.toLowerCase().includes('complete the practice exercises')) {
                   return '';
                 }
+                trimmed = trimmed
+                  .replace(/\*?\s*\(\s*A1[–-]A2\s+support[^\)]*\)\*?/gi, '')
+                  .replace(/\*?\s*\(\s*hide behind a toggle[^\)]*\)\*?/gi, '')
+                  .replace(/^\s*\*+|\*+\s*$/g, '')
+                  .trim();
                 return trimmed;
               };
 
@@ -3115,10 +3120,15 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
             {(() => {
               const cleanTxt = (txt: any) => {
                 if (!txt || typeof txt !== 'string') return '';
-                const trimmed = txt.trim();
+                let trimmed = txt.trim();
                 if (trimmed.toLowerCase().includes('complete the integrated practice') || trimmed.toLowerCase().includes('complete the practice exercises')) {
                   return '';
                 }
+                trimmed = trimmed
+                  .replace(/\*?\s*\(\s*A1[–-]A2\s+support[^\)]*\)\*?/gi, '')
+                  .replace(/\*?\s*\(\s*hide behind a toggle[^\)]*\)\*?/gi, '')
+                  .replace(/^\s*\*+|\*+\s*$/g, '')
+                  .trim();
                 return trimmed;
               };
 
