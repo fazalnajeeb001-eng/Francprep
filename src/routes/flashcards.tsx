@@ -96,20 +96,26 @@ function FlashcardsPage() {
 
         for (const lesson of lessons) {
           // Resolve chapter number using ObjectId map or string regex
-          let chNum = 1;
+          let chNum = 0;
           if (lesson.chapterId && chMap[lesson.chapterId.toString()]) {
             chNum = chMap[lesson.chapterId.toString()];
           } else if (typeof lesson.chapter === 'number' && lesson.chapter > 0) {
             chNum = lesson.chapter;
           } else if (typeof lesson.chapterId === 'number' && lesson.chapterId > 0) {
             chNum = lesson.chapterId;
-          } else if (typeof lesson.chapterId === 'string') {
-            const match = lesson.chapterId.match(/ch(\d+)/i) || lesson.chapterId.match(/chapter[-_\s]*(\d+)/i);
-            if (match) chNum = Number(match[1]);
-          } else if (typeof lesson.lessonId === 'string') {
-            const match = lesson.lessonId.match(/c(\d+)/i) || lesson.lessonId.match(/ch(\d+)/i);
+          }
+
+          if (!chNum && typeof lesson.lessonId === 'string') {
+            const match = lesson.lessonId.match(/ch(\d+)/i) || lesson.lessonId.match(/c(\d+)-l/i) || lesson.lessonId.match(/chapter[-_\s]*(\d+)/i);
             if (match) chNum = Number(match[1]);
           }
+
+          if (!chNum && typeof lesson.chapterId === 'string') {
+            const match = lesson.chapterId.match(/ch(\d+)/i) || lesson.chapterId.match(/chapter[-_\s]*(\d+)/i);
+            if (match) chNum = Number(match[1]);
+          }
+
+          if (!chNum) chNum = 1;
 
           // Resolve lesson order (1-8) within chapter
           const lessonOrder = Number(lesson.order || lesson.lessonNumber || lesson.lessonId?.match(/l(\d+)/i)?.[1] || 1);
