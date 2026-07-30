@@ -30,6 +30,8 @@ import {
   GraduationCap,
   Target,
   Bookmark,
+  Trash2,
+  MoreVertical,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -201,6 +203,12 @@ function CommunityExamHubPage() {
   const [connectModalRequest, setConnectModalRequest] = useState<BuddyCircleRequest | null>(null);
   const [connectIntroText, setConnectIntroText] = useState("");
   const [connectSuccessMsg, setConnectSuccessMsg] = useState("");
+
+  // Admin Delete Confirmation State
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  const [deleteTargetType, setDeleteTargetType] = useState<"post" | "buddy">("post");
+  const [deleteInputText, setDeleteInputText] = useState("");
+  const [deleteErrorMsg, setDeleteErrorMsg] = useState("");
 
   // Create Buddy Request Modal
   const [showBuddyModal, setShowBuddyModal] = useState(false);
@@ -510,9 +518,25 @@ function CommunityExamHubPage() {
                           <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                             {req.type === "1on1" ? "🤝 1-on-1 Buddy Request" : `👥 Study Pod (${req.acceptedCount}/${req.capacity} Joined)`}
                           </span>
-                          <span className="text-[10px] font-mono text-amber-400 flex items-center gap-1">
-                            ⏳ Expires in {hoursRemaining}h
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-mono text-amber-400 flex items-center gap-1">
+                              ⏳ Expires in {hoursRemaining}h
+                            </span>
+                            {user?.role === "admin" && (
+                              <button
+                                onClick={() => {
+                                  setDeleteTargetId(req.id);
+                                  setDeleteTargetType("buddy");
+                                  setDeleteInputText("");
+                                  setDeleteErrorMsg("");
+                                }}
+                                className="p-1 rounded hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-colors cursor-pointer"
+                                title="Admin Delete Buddy Request"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
                         </div>
 
                         <h3 className="text-sm font-extrabold text-white leading-snug">{req.title}</h3>
@@ -596,9 +620,27 @@ function CommunityExamHubPage() {
                     </div>
                   </div>
 
-                  <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-lg border ${post.categoryColor}`}>
-                    {post.categoryLabel}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-lg border ${post.categoryColor}`}>
+                      {post.categoryLabel}
+                    </span>
+
+                    {/* Admin 3-Dot Options Button */}
+                    {user?.role === "admin" && (
+                      <button
+                        onClick={() => {
+                          setDeleteTargetId(post.id);
+                          setDeleteTargetType("post");
+                          setDeleteInputText("");
+                          setDeleteErrorMsg("");
+                        }}
+                        className="p-1.5 rounded-lg hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-colors cursor-pointer"
+                        title="Admin Delete Thread"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 {/* Post Body */}
@@ -1085,6 +1127,76 @@ function CommunityExamHubPage() {
                     className="px-5 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 text-xs font-black rounded-xl shadow-md"
                   >
                     Publish Buddy Request
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ─── ADMIN DELETE CONFIRMATION MODAL ─── */}
+        <AnimatePresence>
+          {deleteTargetId && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+              <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }}
+                className={`w-full max-w-md p-6 rounded-2xl border shadow-2xl space-y-4 ${cardBg}`}>
+                <div className="flex items-center gap-2 text-red-400">
+                  <Trash2 className="w-5 h-5 text-red-400" />
+                  <h3 className="text-lg font-extrabold text-red-400">Confirm Admin Deletion</h3>
+                </div>
+
+                <p className="text-xs text-gray-300">
+                  Are you sure you want to permanently delete this {deleteTargetType === "post" ? "thread" : "buddy request"}? To confirm, type <strong className="text-red-400 font-mono font-bold">delete</strong> below:
+                </p>
+
+                <div className="space-y-2">
+                  <input
+                    type="text"
+                    value={deleteInputText}
+                    onChange={(e) => {
+                      setDeleteInputText(e.target.value);
+                      setDeleteErrorMsg("");
+                    }}
+                    placeholder="Type 'delete' to confirm..."
+                    className={`w-full p-2.5 rounded-xl border outline-none font-mono text-xs ${
+                      dark ? "bg-[#070B17] border-red-500/40 text-white placeholder-gray-500" : "bg-white border-red-300 text-slate-900"
+                    }`}
+                  />
+                  {deleteErrorMsg && <p className="text-[11px] text-red-400 font-bold">{deleteErrorMsg}</p>}
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2">
+                  <button
+                    onClick={() => {
+                      setDeleteTargetId(null);
+                      setDeleteInputText("");
+                      setDeleteErrorMsg("");
+                    }}
+                    className="px-4 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (deleteInputText.trim().toLowerCase() !== "delete") {
+                        setDeleteErrorMsg("You must type 'delete' exactly to confirm deletion.");
+                        return;
+                      }
+
+                      if (deleteTargetType === "post") {
+                        setPosts((prev) => prev.filter((p) => p.id !== deleteTargetId));
+                      } else {
+                        setBuddyRequests((prev) => prev.filter((b) => b.id !== deleteTargetId));
+                      }
+
+                      setDeleteTargetId(null);
+                      setDeleteInputText("");
+                      setDeleteErrorMsg("");
+                    }}
+                    className="px-5 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-black rounded-xl shadow-md cursor-pointer"
+                  >
+                    Confirm Permanent Delete
                   </button>
                 </div>
               </motion.div>
