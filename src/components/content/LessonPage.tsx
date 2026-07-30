@@ -3166,39 +3166,48 @@ function LessonCheatSheetModal({ lesson, dark, onClose, speak }: { lesson: any; 
   useEffect(() => {
     let isMounted = true;
     async function loadChapterData() {
-      let chNum = 1;
+      let chNum = 0;
       if (typeof lesson?.chapter === 'number' && lesson.chapter > 0) {
         chNum = lesson.chapter;
       } else if (typeof lesson?.chapterId === 'number' && lesson.chapterId > 0) {
         chNum = lesson.chapterId;
-      } else if (typeof lesson?.chapterId === 'string') {
-        const match = lesson.chapterId.match(/ch(\d+)/i) || lesson.chapterId.match(/chapter[-_\s]*(\d+)/i);
-        if (match) chNum = Number(match[1]);
-      } else if (typeof lesson?.lessonId === 'string') {
-        const match = lesson.lessonId.match(/c(\d+)/i) || lesson.lessonId.match(/ch(\d+)/i);
+      }
+
+      if (!chNum && typeof lesson?.lessonId === 'string') {
+        const match = lesson.lessonId.match(/ch(\d+)/i) || lesson.lessonId.match(/c(\d+)-l/i) || lesson.lessonId.match(/chapter[-_\s]*(\d+)/i);
         if (match) chNum = Number(match[1]);
       }
+
+      if (!chNum && typeof lesson?.chapterId === 'string') {
+        const match = lesson.chapterId.match(/ch(\d+)/i) || lesson.chapterId.match(/chapter[-_\s]*(\d+)/i);
+        if (match) chNum = Number(match[1]);
+      }
+
+      if (!chNum) chNum = 1;
 
       try {
         const res = await apiFetch("/lessons?limit=200");
         const json = await res.json();
         const allLessons = json.data || json.lessons || (Array.isArray(json) ? json : []);
         const chLessons = allLessons.filter((l: any) => {
-          let lCh = 1;
+          let lCh = 0;
           if (typeof l.chapter === 'number' && l.chapter > 0) {
             lCh = l.chapter;
           } else if (typeof l.chapterId === 'number' && l.chapterId > 0) {
             lCh = l.chapterId;
-          } else if (typeof l.chapterId === 'string') {
-            const match = l.chapterId.match(/ch(\d+)/i) || l.chapterId.match(/chapter[-_\s]*(\d+)/i);
-            if (match) lCh = Number(match[1]);
-          } else if (typeof l.lessonId === 'string') {
-            const match = l.lessonId.match(/c(\d+)/i) || l.lessonId.match(/ch(\d+)/i);
-            if (match) lCh = Number(match[1]);
-          } else if (typeof l.title === 'string') {
-            const match = l.title.match(/chapter\s*(\d+)/i);
+          }
+
+          if (!lCh && typeof l.lessonId === 'string') {
+            const match = l.lessonId.match(/ch(\d+)/i) || l.lessonId.match(/c(\d+)-l/i) || l.lessonId.match(/chapter[-_\s]*(\d+)/i);
             if (match) lCh = Number(match[1]);
           }
+
+          if (!lCh && typeof l.chapterId === 'string') {
+            const match = l.chapterId.match(/ch(\d+)/i) || l.chapterId.match(/chapter[-_\s]*(\d+)/i);
+            if (match) lCh = Number(match[1]);
+          }
+
+          if (!lCh) lCh = 1;
           return lCh === chNum;
         });
 
@@ -3211,18 +3220,18 @@ function LessonCheatSheetModal({ lesson, dark, onClose, speak }: { lesson: any; 
           vList.push(...v);
 
           if (Array.isArray(l.grammar?.rules)) {
-            const validRules = l.grammar.rules.filter((r: any) => Boolean(r.rule || r.title || r.explanation || r.formula || (Array.isArray(r.examples) && r.examples.length > 0) || (typeof r.examples === 'string' && r.examples.trim())));
+            const validRules = l.grammar.rules.filter((r: any) => Boolean((r.rule && r.rule !== 'Rule' && !r.rule.startsWith('Rule ')) || r.title || r.formula || (r.explanation && r.explanation.length > 5)));
             gList.push(...validRules);
           } else if (l.grammar && typeof l.grammar === 'object') {
             const g = l.grammar;
-            if (g.rule || g.title || g.explanation || g.formula || (Array.isArray(g.examples) && g.examples.length > 0) || (typeof g.examples === 'string' && g.examples.trim())) {
+            if (g.rule || g.title || g.formula || (g.explanation && g.explanation.length > 5)) {
               gList.push(g);
             }
           }
         }
 
         if (isMounted) {
-          const cleanGrammar = gList.filter((r: any) => Boolean(r.rule || r.title || r.explanation || r.formula || (Array.isArray(r.examples) && r.examples.length > 0) || (typeof r.examples === 'string' && r.examples.trim())));
+          const cleanGrammar = gList.filter((r: any) => Boolean((r.rule && r.rule !== 'Rule' && !r.rule.startsWith('Rule ')) || r.title || r.formula || (r.explanation && r.explanation.length > 5)));
           setChapterVocab(vList.length > 0 ? vList : (lesson?.vocabItems || lesson?.vocabulary || []));
           setChapterGrammar(cleanGrammar);
         }
