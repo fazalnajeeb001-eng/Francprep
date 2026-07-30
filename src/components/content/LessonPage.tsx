@@ -1630,10 +1630,21 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
           ];
         }
 
-        let canDoItems = (lesson?.canDoReview && lesson.canDoReview.length > 0) ? lesson.canDoReview
-          : (lesson?.miniReview?.content) ? [lesson.miniReview.content]
-          : (lesson?.objectives && lesson.objectives.length > 0) ? lesson.objectives
-          : parsedSkillCards.map(s => s.statement);
+        let canDoItems: any[] = [];
+        if (Array.isArray(lesson?.canDoReview) && lesson.canDoReview.length > 0) {
+          canDoItems = lesson.canDoReview;
+        } else if (Array.isArray(lesson?.objectives) && lesson.objectives.length > 0) {
+          canDoItems = lesson.objectives;
+        } else if (lesson?.miniReview?.content) {
+          const rawContent = lesson.miniReview.content.trim();
+          const splitList = rawContent
+            .split(/(?:\n+|•|\b\d+[\.\)]\s*|(?<=\.)\s+)/)
+            .map(s => s.trim())
+            .filter(s => s.length >= 5);
+          canDoItems = splitList.length > 0 ? splitList : [rawContent];
+        } else if (parsedSkillCards.length > 0) {
+          canDoItems = parsedSkillCards.map(s => s.statement);
+        }
 
         return (
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="space-y-6 max-w-4xl mx-auto">
