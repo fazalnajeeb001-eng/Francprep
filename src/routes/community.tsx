@@ -53,11 +53,13 @@ interface Post {
   commentsCount: number;
   timestamp: string;
   isUpvoted?: boolean;
+  isBookmarked?: boolean;
   comments?: { author: string; text: string; time: string }[];
 }
 
 const CATEGORIES = [
   { id: "all", label: "🔥 All Candidate Threads" },
+  { id: "saved", label: "🔖 Saved Threads" },
   { id: "exam_debrief", label: "🎯 Official Exam Debriefs (TCF / TEF / DELF)" },
   { id: "study_routine", label: "🎒 Study Routines & Roadmaps" },
   { id: "essay_review", label: "✍️ Essay & Speaking Review Workshop" },
@@ -259,8 +261,24 @@ function CommunityExamHubPage() {
     setCommentInput("");
   };
 
+  const handleToggleBookmark = (postId: string) => {
+    setPosts((prev) =>
+      prev.map((p) => {
+        if (p.id === postId) {
+          return { ...p, isBookmarked: !p.isBookmarked };
+        }
+        return p;
+      })
+    );
+  };
+
   const filteredPosts = posts.filter((p) => {
-    const matchesCat = selectedCategory === "all" || p.category === selectedCategory;
+    const matchesCat =
+      selectedCategory === "all"
+        ? true
+        : selectedCategory === "saved"
+        ? p.isBookmarked === true
+        : p.category === selectedCategory;
     const matchesSearch =
       p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -494,9 +512,25 @@ function CommunityExamHubPage() {
                         u.rate = 0.9;
                         window.speechSynthesis.speak(u);
                       }}
-                      className={`flex items-center gap-1 text-[11px] font-bold transition-all ${dark ? "text-purple-400 hover:text-purple-300" : "text-purple-700 hover:text-purple-900"}`}
+                      className={`hidden sm:flex items-center gap-1 text-[11px] font-bold transition-all ${dark ? "text-purple-400 hover:text-purple-300" : "text-purple-700 hover:text-purple-900"}`}
                     >
-                      <Volume2 className="w-3.5 h-3.5" /> Listen Thread Audio
+                      <Volume2 className="w-3.5 h-3.5" /> Listen Audio
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleToggleBookmark(post.id)}
+                      className={`p-2 rounded-xl border transition-all ${
+                        post.isBookmarked
+                          ? "bg-amber-500/20 border-amber-500/40 text-amber-300"
+                          : dark
+                          ? "bg-white/5 border-white/10 text-gray-400 hover:text-white"
+                          : "bg-gray-100 border-gray-200 text-gray-600 hover:text-gray-900"
+                      }`}
+                      title={post.isBookmarked ? "Remove Bookmark" : "Save Thread to Bookmarks"}
+                    >
+                      <Bookmark className={`w-3.5 h-3.5 ${post.isBookmarked ? "fill-amber-400" : ""}`} />
                     </button>
                   </div>
                 </div>
