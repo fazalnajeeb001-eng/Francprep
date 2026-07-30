@@ -47,6 +47,7 @@ export interface ParsedLesson {
       points: number;
       instructions: string;
       sourceText?: string;
+      translation?: string;
       questions?: ILessonQuestion[];
       answerKeyNotes?: string;
     }[];
@@ -1079,6 +1080,8 @@ function fillPlaceholders(lesson: ParsedLesson): void {
             skill: 'listening',
             points: 4,
             instructions: 'Listen to (read) the apartment-hunting scene from Lesson 7 again and answer: What features does the listing have, and what does the group plan to check during the visit?',
+            sourceText: 'Le Dialogue / Scène de la leçon 7:\n- Bonjour, nous cherchons un appartement lumineux avec deux chambres près du centre-ville.\n- Parfait! J\'ai une offre idéale: un trois-pièces refait à neuf avec un grand balcon et une cuisine équipée.\n- Magnifique, nous souhaitons planifier une visite dès demain!',
+            translation: 'The Dialogue / Scene from Lesson 7:\n- Hello, we are looking for a bright apartment with two bedrooms near the city center.\n- Perfect! I have an ideal offer: a newly renovated three-room apartment with a large balcony and an equipped kitchen.\n- Wonderful, we want to schedule a visit starting tomorrow!',
             questions: [{
               id: `${lessonId}-delf-sec1`,
               type: 'short_answer' as const,
@@ -1542,6 +1545,21 @@ export function parseLessonFromMarkdown(
     populateLessonSections(lesson, sections, lessonId);
     fillPlaceholders(lesson);
     lessons.push(lesson);
+  }
+
+  // ── Post-process Lesson 8 DELF Listening passage inheritance from Lesson 7 ──
+  const l7 = lessons.find(l => l.anchorSkill === 'integrated' || l.lessonId.endsWith('-l7'));
+  const l8 = lessons.find(l => l.anchorSkill === 'review' || l.lessonId.endsWith('-l8'));
+  if (l8 && l8.assessment && l8.assessment.sections) {
+    const listeningSec = l8.assessment.sections.find(s => s.skill === 'listening' || s.title.toLowerCase().includes('section 1') || s.title.toLowerCase().includes('listening'));
+    if (listeningSec) {
+      if (l7) {
+        const passage = l7.scene?.text || l7.reading?.text || l7.listening?.transcript;
+        const trans = l7.scene?.translation || l7.reading?.translation || l7.listening?.translation;
+        if (passage && passage.trim()) listeningSec.sourceText = passage.trim();
+        if (trans && trans.trim()) listeningSec.translation = trans.trim();
+      }
+    }
   }
 
   return lessons;
