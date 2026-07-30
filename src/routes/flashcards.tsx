@@ -369,14 +369,14 @@ function FlashcardsPage() {
           <span className={`text-xs font-bold uppercase tracking-wider block ${dark ? "text-purple-400" : "text-purple-700"}`}>
             Select Module Level:
           </span>
-          <div className="grid grid-cols-6 gap-2">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none touch-pan-x">
             {uniqueLevels.map((lvl) => {
               const count = allCards.filter(c => c.level === lvl).length;
               return (
                 <button
                   key={lvl}
                   onClick={() => handleSelectLevel(lvl)}
-                  className={`py-2.5 px-2 rounded-xl text-xs font-extrabold border text-center transition-all ${
+                  className={`flex-1 min-w-[70px] py-2.5 px-2 rounded-xl text-xs font-extrabold border text-center transition-all shrink-0 ${
                     selectedLevel === lvl
                       ? "bg-gradient-to-r from-purple-500 to-indigo-600 text-white border-purple-500 shadow-lg shadow-purple-500/25 scale-[1.02]"
                       : dark ? "bg-[#101828] border-purple-500/20 text-gray-300 hover:bg-purple-500/10" : "bg-white border-purple-200 text-purple-900 hover:bg-purple-50"
