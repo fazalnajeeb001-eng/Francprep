@@ -36,6 +36,7 @@ router.get('/subscriptions/plans', async (_req, res) => {
         plans: activePlans,
         freePreviewScope: settings.freePreviewScope || 'first_chapter_a1',
         paywallEnforced: settings.paywallEnforced !== false,
+        isSocialHubEnabled: settings.isSocialHubEnabled === true,
       },
     });
   } catch (error) {

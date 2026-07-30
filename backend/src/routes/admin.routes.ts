@@ -830,7 +830,7 @@ router.get('/subscriptions/settings', async (_req: AuthRequest, res: Response, n
 // PUT /api/admin/subscriptions/settings
 router.put('/subscriptions/settings', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { monthlyPrice, annualPrice, lifetimePrice, freePreviewScope, customFreeChapterIds, customPricingPlans, paywallEnforced } = req.body;
+    const { monthlyPrice, annualPrice, lifetimePrice, freePreviewScope, customFreeChapterIds, customPricingPlans, paywallEnforced, isSocialHubEnabled } = req.body;
     let settings = await SystemSettings.findOne();
     if (!settings) {
       settings = new SystemSettings();
@@ -842,6 +842,7 @@ router.put('/subscriptions/settings', async (req: AuthRequest, res: Response, ne
     if (customFreeChapterIds !== undefined) settings.customFreeChapterIds = customFreeChapterIds;
     if (customPricingPlans !== undefined) settings.customPricingPlans = customPricingPlans;
     if (paywallEnforced !== undefined) settings.paywallEnforced = paywallEnforced;
+    if (isSocialHubEnabled !== undefined) settings.isSocialHubEnabled = isSocialHubEnabled;
     await settings.save();
     res.json({ success: true, message: 'Subscription & Paywall settings updated', data: settings });
   } catch (error) {

@@ -27,6 +27,7 @@ export interface ISystemSettings extends Document {
   customFreeChapterIds: string[];
   customPricingPlans: IPricingPlan[];
   paywallEnforced: boolean;
+  isSocialHubEnabled: boolean;
   updatedAt: Date;
 }
 
@@ -137,6 +138,10 @@ const SystemSettingsSchema: Schema = new Schema(
     paywallEnforced: {
       type: Boolean,
       default: true,
+    },
+    isSocialHubEnabled: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

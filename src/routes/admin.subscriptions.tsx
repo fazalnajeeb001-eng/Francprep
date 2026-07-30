@@ -76,6 +76,7 @@ export function SubscriptionsPage() {
     customFreeChapterIds: [] as string[],
     customPricingPlans: [] as PricingPlan[],
     paywallEnforced: true,
+    isSocialHubEnabled: false,
   });
 
   // Dynamic Plan Modal State
@@ -400,9 +401,40 @@ export function SubscriptionsPage() {
                   pricingSettings.paywallEnforced ? "bg-emerald-500 text-black" : "bg-gray-600 text-white"
                 }`}
               >
-                {pricingSettings.paywallEnforced ? "🔒 Paywall Active" : "🔓 Free Mode"}
+                {pricingSettings.paywallEnforced ? "PAYWALL ACTIVE" : "PAYWALL INACTIVE"}
               </button>
             </div>
+          </div>
+
+          {/* Master Social Hub Stealth Switch */}
+          <div className="p-4 rounded-2xl border border-purple-500/30 bg-purple-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-extrabold text-purple-300">💬 Community Social Hub & Le Bot FrancPrep (Stealth Toggle)</span>
+                <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  {pricingSettings.isSocialHubEnabled ? "LIVE FOR ALL STUDENTS" : "STEALTH MODE (ADMIN ONLY)"}
+                </span>
+              </div>
+              <p className="text-xs text-gray-300">
+                When toggled <strong>OFF</strong>, the Community Lounge, Le Bot FrancPrep, and WhatsApp/Discord Study Circles are hidden from regular students while you test and refine them!
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                const updated = { ...pricingSettings, isSocialHubEnabled: !pricingSettings.isSocialHubEnabled };
+                setPricingSettings(updated);
+                handleSavePricingSettings(updated);
+              }}
+              className={`px-5 py-2.5 rounded-xl text-xs font-black transition-all shrink-0 flex items-center gap-2 shadow-lg ${
+                pricingSettings.isSocialHubEnabled
+                  ? "bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+                  : "bg-amber-500 text-slate-950 hover:bg-amber-400"
+              }`}
+            >
+              {pricingSettings.isSocialHubEnabled ? "🟢 SOCIAL HUB ENABLED (PUBLIC)" : "🔒 STEALTH MODE (OFF FOR STUDENTS)"}
+            </button>
           </div>
 
           {/* CUSTOM FREE CHAPTER PICKER */}
