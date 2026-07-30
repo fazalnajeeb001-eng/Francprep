@@ -42,9 +42,8 @@ interface Post {
   authorName: string;
   authorRole: string;
   authorExam: string;
-  contactHandle?: string;
   avatarBg: string;
-  category: "exam_debrief" | "study_routine" | "essay_review" | "partner_request";
+  category: "exam_debrief" | "study_routine" | "essay_review";
   categoryLabel: string;
   categoryColor: string;
   title: string;
@@ -64,7 +63,6 @@ const CATEGORIES = [
   { id: "exam_debrief", label: "🎯 Official Exam Debriefs (TCF / TEF / DELF)" },
   { id: "study_routine", label: "🎒 Study Routines & Roadmaps" },
   { id: "essay_review", label: "✍️ Essay & Speaking Review Workshop" },
-  { id: "partner_request", label: "🤝 Study Partner Matching" },
 ];
 
 const INITIAL_POSTS: Post[] = [
@@ -121,19 +119,18 @@ const INITIAL_POSTS: Post[] = [
   },
   {
     id: "post-4",
-    authorName: "Elena R.",
+    authorName: "Marc D.",
     authorRole: "Candidate",
-    authorExam: "DELF A2 Candidate",
-    contactHandle: "Email / Telegram: @elena_delf_prep",
+    authorExam: "DELF B2 Candidate",
     avatarBg: "from-cyan-500 to-blue-600",
-    category: "partner_request",
-    categoryLabel: "🤝 Partner Match",
-    categoryColor: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    title: "Looking for a DELF A2 Speaking Practice Partner (EST Timezone)",
-    content: "Hi everyone! I am preparing for DELF A2 oral exam. Looking for a partner to practice 20-minute mock interviews 2x a week.",
-    frenchSnippet: "Je cherche un partenaire pour pratiquer la production orale A2.",
-    upvotes: 16,
-    commentsCount: 6,
+    category: "essay_review",
+    categoryLabel: "✍️ Speaking Workshop",
+    categoryColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+    title: "DELF B2 Oral Monologue Strategy: Structuring Your 10-Minute Argument",
+    content: "For the speaking monologue, structure your introduction into 3 clear parts: Problematic, Plan, and Thesis statement. This structure alone secures 4/5 points in speech organization!",
+    frenchSnippet: "En premier lieu, il convient de souligner l'importance de ce débat.",
+    upvotes: 42,
+    commentsCount: 9,
     timestamp: "2 days ago",
   },
 ];
@@ -208,14 +205,12 @@ function CommunityExamHubPage() {
       exam_debrief: "🎯 Exam Debrief",
       study_routine: "🎒 Candidate Roadmap",
       essay_review: "✍️ Workshop",
-      partner_request: "🤝 Partner Match",
     };
 
     const catColorMap: Record<string, string> = {
       exam_debrief: "bg-purple-500/10 text-purple-400 border-purple-500/20",
       study_routine: "bg-amber-500/10 text-amber-400 border-amber-500/20",
       essay_review: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-      partner_request: "bg-blue-500/10 text-blue-400 border-blue-500/20",
     };
 
     const newPost: Post = {
@@ -367,11 +362,11 @@ function CommunityExamHubPage() {
 
           <div className={`p-4 rounded-2xl border flex items-center gap-3.5 ${dark ? "bg-[#101828]/60 border-amber-500/20" : "bg-amber-50/50 border-amber-200"}`}>
             <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-400 shrink-0">
-              <Users className="w-5 h-5" />
+              <Volume2 className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-xs font-extrabold text-amber-300">Targeted Peer Match</h4>
-              <p className={`text-[11px] ${textMuted} mt-0.5`}>Pair up with candidates targeting the exact same CEFR level.</p>
+              <h4 className="text-xs font-extrabold text-amber-300">French Speech & Audio Practice</h4>
+              <p className={`text-[11px] ${textMuted} mt-0.5`}>1-tap text-to-speech & voice dictation for active listening practice.</p>
             </div>
           </div>
         </div>
@@ -638,8 +633,7 @@ function CommunityExamHubPage() {
                     >
                       <option value="exam_debrief">🎯 Official Exam Debrief (TCF / TEF / DELF)</option>
                       <option value="study_routine">🎒 Candidate Study Roadmap & Schedule</option>
-                      <option value="essay_review">✍️ Writing & Speaking Feedback</option>
-                      <option value="partner_request">🤝 Partner Match Request</option>
+                      <option value="essay_review">✍️ Writing & Speaking Strategy / Feedback</option>
                     </select>
                   </div>
 
@@ -680,20 +674,6 @@ function CommunityExamHubPage() {
                         dark ? "bg-[#070B17] border-purple-500/30 text-white" : "bg-white border-purple-200 text-slate-900"
                       }`}
                     />
-                  </div>
-
-                  <div>
-                    <label className="block font-bold mb-1">Optional Direct Contact Handle (Email / Telegram):</label>
-                    <input
-                      type="text"
-                      value={newContactHandle}
-                      onChange={(e) => setNewContactHandle(e.target.value)}
-                      placeholder="e.g. @candidate_tg or email@domain.com"
-                      className={`w-full p-2.5 rounded-xl border outline-none font-mono ${
-                        dark ? "bg-[#070B17] border-purple-500/30 text-white" : "bg-white border-purple-200 text-slate-900"
-                      }`}
-                    />
-                    <p className={`text-[10px] ${textMuted} mt-1`}>Add this if you are requesting a 1-on-1 study partner so other candidates can reach you directly!</p>
                   </div>
                 </div>
 
