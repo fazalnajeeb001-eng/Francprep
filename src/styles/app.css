@@ -21,32 +21,37 @@
 }
 
 @media print {
-  /* Hide every element on the site */
-  body > * {
+  /* Hide non-print background UI elements */
+  body > div:not(#root),
+  #root > div > *:not(.fixed) {
     display: none !important;
   }
-  
-  /* Show only the cheat sheet container */
-  body > div:has(.print-cheat-sheet-modal),
+
   .print-cheat-sheet-modal {
-    display: block !important;
-    position: absolute !important;
+    position: relative !important;
     top: 0 !important;
     left: 0 !important;
     width: 100% !important;
+    max-width: 100% !important;
     height: auto !important;
     overflow: visible !important;
-    background: white !important;
-    color: black !important;
+    background: #ffffff !important;
+    color: #000000 !important;
     margin: 0 !important;
-    padding: 16px !important;
+    padding: 24px !important;
     box-shadow: none !important;
     border: none !important;
+    page-break-inside: auto !important;
   }
 
   .print-cheat-sheet-modal * {
-    color: black !important;
+    color: #000000 !important;
     background: transparent !important;
-    border-color: #e2e8f0 !important;
+    border-color: #cbd5e1 !important;
+  }
+
+  .print-cheat-sheet-modal button,
+  .print-cheat-sheet-modal .print\:hidden {
+    display: none !important;
   }
 }
