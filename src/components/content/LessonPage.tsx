@@ -1637,24 +1637,48 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
           if (parsedSkillCards.length > 0) {
             canDoItems = parsedSkillCards.map(s => s.lessonRef ? `${s.statement} → ${s.lessonRef}` : s.statement);
           } else if (Array.isArray(lesson?.objectives) && lesson.objectives.length > 0) {
-            canDoItems = lesson.objectives;
+            canDoItems = formatObjectivesList(lesson.objectives);
           } else if (lesson?.miniReview?.content) {
             const rawContent = lesson.miniReview.content.trim();
             const splitList = rawContent.split(/(?:\n+|•|\b\d+[\.\)]\s*|(?<=\.)\s+)/).map(s => s.trim()).filter(s => s.length >= 5);
             canDoItems = splitList.length > 0 ? splitList : [rawContent];
           }
-        } else if (Array.isArray(lesson?.objectives) && lesson.objectives.length > 0) {
-          canDoItems = lesson.objectives;
-        } else if (parsedSkillCards.length > 0) {
-          canDoItems = parsedSkillCards.map(s => s.lessonRef ? `${s.statement} → ${s.lessonRef}` : s.statement);
-        } else if (lesson?.miniReview?.content) {
-          const rawContent = lesson.miniReview.content.trim();
-          const splitList = rawContent.split(/(?:\n+|•|\b\d+[\.\)]\s*|(?<=\.)\s+)/).map(s => s.trim()).filter(s => s.length >= 5);
-          canDoItems = splitList.length > 0 ? splitList : [rawContent];
+        } else {
+          // Standard Practice Lessons 1-7: extract all formatted objectives first
+          const formattedObjs = formatObjectivesList(lesson?.objectives);
+          const selfAss = Array.isArray(lesson?.selfAssessment) ? lesson.selfAssessment.map(s => String(s).trim()).filter(s => s.length >= 5) : [];
+          if (formattedObjs.length > 0) {
+            canDoItems = formattedObjs;
+          } else if (selfAss.length > 0) {
+            canDoItems = selfAss;
+          } else if (parsedSkillCards.length > 0) {
+            canDoItems = parsedSkillCards.map(s => s.lessonRef ? `${s.statement} → ${s.lessonRef}` : s.statement);
+          } else if (lesson?.miniReview?.content) {
+            const rawContent = lesson.miniReview.content.trim();
+            const splitList = rawContent.split(/(?:\n+|•|\b\d+[\.\)]\s*|(?<=\.)\s+)/).map(s => s.trim()).filter(s => s.length >= 5);
+            canDoItems = splitList.length > 0 ? splitList : [rawContent];
+          }
         }
 
         return (
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="space-y-6 max-w-4xl mx-auto">
+            {/* Lesson Takeaway Card */}
+            {lesson?.miniReview?.content && (
+              <div className="p-5 rounded-2xl bg-gradient-to-r from-purple-500/10 via-amber-500/10 to-indigo-500/10 border border-purple-500/20 shadow-md flex items-start gap-4">
+                <div className="p-2.5 rounded-xl bg-purple-500/20 text-purple-300 shrink-0 mt-0.5">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className={`text-xs font-extrabold uppercase tracking-wider ${dark ? "text-purple-300" : "text-purple-800"}`}>
+                    Lesson Takeaway & Key Consolidation
+                  </h4>
+                  <p className={`text-sm font-medium leading-relaxed mt-1 ${dark ? "text-gray-200" : "text-gray-800"}`}>
+                    {lesson.miniReview.content}
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Interactive Can-Do Statement Mapping Checklist */}
             <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5 border shadow-lg space-y-4`}>
               <div className="flex items-center gap-3 border-b dark:border-[#1e2a4a] border-gray-200 pb-3">
