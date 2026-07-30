@@ -2984,8 +2984,8 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
                 return trimmed;
               };
 
-              const activeTranscript = cleanTxt(sec.sourceText) || cleanTxt(sec.transcript) || cleanTxt(lesson7Transcript) || cleanTxt(lesson?.listening?.transcript) || cleanTxt(lesson?.scene?.text) || '';
-              const activeTranslation = cleanTxt(sec.translation) || cleanTxt(lesson7Translation) || cleanTxt(lesson?.listening?.translation) || cleanTxt(lesson?.scene?.translation) || '';
+              const activeTranscript = cleanTxt(sec.sourceText) || cleanTxt(sec.transcript) || cleanTxt(sec.text) || cleanTxt(lesson7Transcript) || cleanTxt(lesson?.listening?.transcript) || cleanTxt(lesson?.reading?.text) || cleanTxt(lesson?.scene?.text) || '';
+              const activeTranslation = cleanTxt(sec.translation) || cleanTxt(lesson7Translation) || cleanTxt(lesson?.listening?.translation) || cleanTxt(lesson?.reading?.translation) || cleanTxt(lesson?.scene?.translation) || '';
 
               return (
                 <>
