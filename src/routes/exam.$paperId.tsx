@@ -22,6 +22,7 @@ import {
   Moon
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
+import { speak } from "~/lib/speech";
 import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } from "~/lib/examSchema";
 
 export const Route = createFileRoute("/exam/$paperId")({
@@ -235,15 +236,9 @@ export function AuthenticCBTExamPage() {
   };
 
   const handlePlayAudio = (text: string) => {
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = "fr-FR";
-    u.rate = 0.85;
-    u.onstart = () => setIsPlayingAudio(true);
-    u.onend = () => setIsPlayingAudio(false);
-    u.onerror = () => setIsPlayingAudio(false);
-    window.speechSynthesis.speak(u);
+    setIsPlayingAudio(true);
+    speak(text, "fr-FR", 0.85, "female");
+    setTimeout(() => setIsPlayingAudio(false), 4000);
   };
 
   const handleStartSpeakingRecord = () => {

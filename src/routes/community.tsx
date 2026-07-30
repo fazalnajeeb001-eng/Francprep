@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "~/lib/AuthContext";
 import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
+import { speak } from "~/lib/speech";
 import {
   MessageSquare,
   Bot,
@@ -225,13 +226,8 @@ function CommunityPage() {
   const activeChannel = OFFICIAL_CHANNELS.find((c) => c.id === activeChannelId) || OFFICIAL_CHANNELS[0];
   const channelMessages = messages[activeChannelId] || [];
 
-  const speak = (txt: string) => {
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(txt);
-    u.lang = "fr-FR";
-    u.rate = 0.9;
-    window.speechSynthesis.speak(u);
+  const handlePlayCommunityAudio = (txt: string) => {
+    speak(txt, "fr-FR", 0.9, "female");
   };
 
   const handleSendMessage = () => {

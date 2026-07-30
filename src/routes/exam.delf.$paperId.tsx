@@ -18,6 +18,7 @@ import {
   Loader2
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
+import { speak } from "~/lib/speech";
 import { OFFICIAL_DELF_DALF_PAPERS, type DELFExamPaper } from "~/lib/delfExamSchema";
 import { apiFetch } from "~/lib/apiFetch";
 
@@ -53,11 +54,8 @@ export function DELFExamCanvasPage() {
   const activeSection = paper.sections[activeSectionIdx] || paper.sections[0];
 
   const handleAudioPlay = (text?: string) => {
-    if (!text || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'fr-FR';
-    window.speechSynthesis.speak(utterance);
+    if (!text) return;
+    speak(text, 'fr-FR', 0.85, 'female');
   };
 
   const handleToggleRecording = () => {

@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Volume2, BookOpen, PenTool, Headphones, Mic, Sparkles, UserCheck, Bot, CheckCircle2, RotateCcw } from "lucide-react";
 import { SmartAvatar } from "../dashboard/widgets/SmartAvatar";
+import { speak } from "~/lib/speech";
 
 export function AvatarCoachesSection() {
   const [selectedAvatar, setSelectedAvatar] = useState<"male" | "female">("male");
@@ -31,19 +32,10 @@ export function AvatarCoachesSection() {
   };
 
   const handleSpeakDemo = () => {
-    if (!window.speechSynthesis) return;
-
-    window.speechSynthesis.cancel();
     const currentConfig = levelSpeeches[selectedLevel];
-    const utterance = new SpeechSynthesisUtterance(currentConfig.text);
-    utterance.lang = "fr-FR";
-    utterance.rate = currentConfig.rate;
-
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-
-    window.speechSynthesis.speak(utterance);
+    setIsSpeaking(true);
+    speak(currentConfig.text, "fr-FR", currentConfig.rate, selectedAvatar);
+    setTimeout(() => setIsSpeaking(false), Math.min(8000, currentConfig.text.length * 80));
   };
 
   const startMicRecording = () => {
@@ -85,12 +77,7 @@ export function AvatarCoachesSection() {
             score: 95,
           });
           // Avatar speaks AI feedback back to user in French
-          const respUtterance = new SpeechSynthesisUtterance("Très bien ! Félicitations pour votre excellente prononciation.");
-          respUtterance.lang = "fr-FR";
-          respUtterance.rate = levelSpeeches[selectedLevel].rate;
-          respUtterance.onstart = () => setIsSpeaking(true);
-          respUtterance.onend = () => setIsSpeaking(false);
-          window.speechSynthesis.speak(respUtterance);
+          speak("Très bien ! Félicitations pour votre excellente prononciation.", "fr-FR", levelSpeeches[selectedLevel].rate, selectedAvatar);
         }, 400);
       };
 
