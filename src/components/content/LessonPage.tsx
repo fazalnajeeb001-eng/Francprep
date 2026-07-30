@@ -1483,7 +1483,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
           : (lesson?.miniReview?.content) ? [lesson.miniReview.content]
           : [];
 
-        const isRevLessonCase = isLesson8 || lesson?.lessonNumber === 8 || skillStr === 'review' || skillStr === 'rev';
+        const isRevLessonCase = isLesson8 || lesson?.lessonNumber === 8 || (typeof lesson?.skill === 'string' && (lesson.skill.toLowerCase() === 'review' || lesson.skill.toLowerCase() === 'rev'));
 
         return (
           <div className="space-y-6 max-w-4xl mx-auto">
@@ -1672,7 +1672,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         let canDoItems: any[] = [];
         if (Array.isArray(lesson?.canDoReview) && lesson.canDoReview.length > 0) {
           canDoItems = lesson.canDoReview;
-        } else if (isLesson8 || lesson?.lessonNumber === 8 || skillStr === 'review' || skillStr === 'rev') {
+        } else if (isLesson8 || lesson?.lessonNumber === 8 || (typeof lesson?.skill === 'string' && (lesson.skill.toLowerCase() === 'review' || lesson.skill.toLowerCase() === 'rev'))) {
           if (parsedSkillCards.length > 0) {
             canDoItems = parsedSkillCards.map(s => s.lessonRef ? `${s.statement} → ${s.lessonRef}` : s.statement);
           } else if (Array.isArray(lesson?.objectives) && lesson.objectives.length > 0) {
