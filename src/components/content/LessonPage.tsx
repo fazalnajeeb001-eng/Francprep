@@ -1657,80 +1657,16 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         );
 
       case 'selfReflection':
-        const rawSelfRef = lesson?.selfReflection || lesson?.reflection;
-        const reflectionPrompts: string[] = Array.isArray(rawSelfRef?.prompts) && rawSelfRef.prompts.length > 0
-          ? rawSelfRef.prompts
-          : Array.isArray(rawSelfRef?.questions) && rawSelfRef.questions.length > 0
-          ? rawSelfRef.questions
-          : [
-              "Which part of this chapter felt easiest to you, and why?",
-              "Which part — greetings, vocabulary, grammar rules, or formal vs. informal (tu / vous) — do you want to review again before moving to the next chapter?",
-              "Can you think of a real situation coming up in your own life where you could actually use what you learned in this chapter?"
-            ];
-
-        const refIntroText = rawSelfRef?.instructions || rawSelfRef?.content || "Take a moment to consider, in your own words:";
-
         return (
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-            <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-6 border space-y-5 shadow-xl`}>
-              <div className="flex items-center gap-3 border-b dark:border-[#1e2a4a] border-gray-200 pb-4">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white shadow-lg shadow-amber-500/25">
-                  <Star className="w-5 h-5 fill-white" />
-                </div>
-                <div>
-                  <h3 className={`text-base font-extrabold ${dark ? "text-white" : "text-gray-900"}`}>
-                    Self-Reflection
-                  </h3>
-                  <p className={`text-xs ${textSec} mt-0.5`}>
-                    {refIntroText}
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                {reflectionPrompts.map((promptText: string, idx: number) => {
-                  const savedAnswerKey = `ref_q_${idx}`;
-                  const currentAnswer = (savedAnswers['selfReflection']?.[savedAnswerKey] as string) || '';
-
-                  return (
-                    <div key={idx} className={`p-4 rounded-xl border space-y-2 transition-all ${dark ? "bg-[#0c1224] border-purple-500/20" : "bg-purple-50/50 border-purple-100"}`}>
-                      <p className={`text-xs font-bold flex items-start gap-2 ${dark ? "text-purple-300" : "text-purple-900"}`}>
-                        <span className="w-5 h-5 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-[11px] shrink-0 font-extrabold mt-0.5">
-                          {idx + 1}
-                        </span>
-                        <span>{promptText}</span>
-                      </p>
-
-                      <textarea
-                        rows={3}
-                        value={currentAnswer}
-                        onChange={(e) => handleUpdateAnswers('selfReflection', { [savedAnswerKey]: e.target.value })}
-                        placeholder="Write your reflections here in your own words..."
-                        className={`w-full p-3 rounded-xl text-xs border transition-all resize-none focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
-                          dark
-                            ? "bg-black/40 border-purple-500/30 text-white placeholder-gray-500"
-                            : "bg-white border-purple-200 text-gray-900 placeholder-gray-400"
-                        }`}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="flex items-center justify-between pt-2">
-                <p className={`text-[11px] ${textMuted} italic`}>
-                  ✨ Reflections are saved to your personal study dashboard.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => handleBlockComplete('selfReflection', 1, 1)}
-                  className="px-5 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-purple-500/25 transition-all flex items-center gap-1.5"
-                >
-                  <CheckCircle2 className="w-4 h-4 text-emerald-300" /> Save Reflection Notes
-                </button>
-              </div>
-            </div>
-          </motion.div>
+          <SelfReflectionCard
+            lesson={lesson}
+            lessonId={lessonId}
+            dark={dark}
+            cardBg={cardBg}
+            textSec={textSec}
+            textMuted={textMuted}
+            handleBlockComplete={handleBlockComplete}
+          />
         );
 
       case 'completion':
@@ -2731,6 +2667,164 @@ function parseCanDoItems(input: any): { statement: string; lessonRef?: string }[
   }
 
   return results;
+}
+
+function SelfReflectionCard({ lesson, lessonId, dark, cardBg, textSec, textMuted, handleBlockComplete }: any) {
+  const rawSelfRef = lesson?.selfReflection || lesson?.reflection;
+  const reflectionPrompts: string[] = Array.isArray(rawSelfRef?.prompts) && rawSelfRef.prompts.length > 0
+    ? rawSelfRef.prompts
+    : Array.isArray(rawSelfRef?.questions) && rawSelfRef.questions.length > 0
+    ? rawSelfRef.questions
+    : [
+        "Which part of this chapter felt easiest to you, and why?",
+        "Which part — greetings, vocabulary, grammar rules, or formal vs. informal (tu / vous) — do you want to review again before moving to the next chapter?",
+        "Can you think of a real situation coming up in your own life where you could actually use what you learned in this chapter?"
+      ];
+
+  const refIntroText = rawSelfRef?.instructions || rawSelfRef?.content || "Take a moment to consider, in your own words:";
+  const storageKey = `francprep_reflection_${lessonId || lesson?.lessonId || 'l8'}`;
+
+  const [savedAnswers, setSavedAnswers] = useState<Record<string, string>>({});
+  const [draftAnswers, setDraftAnswers] = useState<Record<string, string>>({});
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+
+  // Load saved notes on mount or when storageKey changes
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed && typeof parsed === 'object') {
+          setSavedAnswers(parsed);
+          setDraftAnswers(parsed);
+          return;
+        }
+      }
+    } catch {}
+    setSavedAnswers({});
+    setDraftAnswers({});
+  }, [storageKey]);
+
+  const hasUnsavedChanges = useMemo(() => {
+    return JSON.stringify(draftAnswers) !== JSON.stringify(savedAnswers);
+  }, [draftAnswers, savedAnswers]);
+
+  const handleSave = async () => {
+    setSaveStatus('saving');
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(draftAnswers));
+      setSavedAnswers(draftAnswers);
+
+      const targetId = lessonId || lesson?.lessonId;
+      if (targetId) {
+        apiFetch(`/progress/${targetId}/update`, {
+          method: 'POST',
+          body: JSON.stringify({ reflectionAnswers: draftAnswers }),
+        }).catch(() => {});
+      }
+
+      if (typeof handleBlockComplete === 'function') {
+        handleBlockComplete('selfReflection', 1, 1);
+      }
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    } catch {
+      setSaveStatus('idle');
+    }
+  };
+
+  const handleDiscard = () => {
+    setDraftAnswers(savedAnswers);
+  };
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+      <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-6 border space-y-5 shadow-xl`}>
+        <div className="flex items-center justify-between border-b dark:border-[#1e2a4a] border-gray-200 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white shadow-lg shadow-amber-500/25">
+              <Star className="w-5 h-5 fill-white" />
+            </div>
+            <div>
+              <h3 className={`text-base font-extrabold ${dark ? "text-white" : "text-gray-900"}`}>
+                Self-Reflection & Personal Notes
+              </h3>
+              <p className={`text-xs ${textSec} mt-0.5`}>
+                {refIntroText}
+              </p>
+            </div>
+          </div>
+
+          {saveStatus === 'saved' && (
+            <span className="text-xs font-extrabold text-emerald-400 px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center gap-1.5 shadow-sm">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Reflection Notes Saved!
+            </span>
+          )}
+          {hasUnsavedChanges && saveStatus !== 'saved' && (
+            <span className="text-xs font-extrabold text-amber-400 px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center gap-1.5 shadow-sm">
+              ● Unsaved Modifications
+            </span>
+          )}
+        </div>
+
+        <div className="space-y-4">
+          {reflectionPrompts.map((promptText: string, idx: number) => {
+            const answerKey = `ref_q_${idx}`;
+            const currentValue = draftAnswers[answerKey] || '';
+
+            return (
+              <div key={idx} className={`p-4 rounded-xl border space-y-2 transition-all ${dark ? "bg-[#0c1224] border-purple-500/20" : "bg-purple-50/50 border-purple-100"}`}>
+                <p className={`text-xs font-bold flex items-start gap-2 ${dark ? "text-purple-300" : "text-purple-900"}`}>
+                  <span className="w-5 h-5 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-[11px] shrink-0 font-extrabold mt-0.5">
+                    {idx + 1}
+                  </span>
+                  <span>{promptText}</span>
+                </p>
+
+                <textarea
+                  rows={3}
+                  value={currentValue}
+                  onChange={(e) => setDraftAnswers(prev => ({ ...prev, [answerKey]: e.target.value }))}
+                  placeholder="Write your reflections here in your own words..."
+                  className={`w-full p-3 rounded-xl text-xs border transition-all resize-y focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
+                    dark
+                      ? "bg-black/40 border-purple-500/30 text-white placeholder-gray-500"
+                      : "bg-white border-purple-200 text-gray-900 placeholder-gray-400"
+                  }`}
+                />
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="flex items-center justify-between pt-2">
+          <p className={`text-[11px] ${textMuted} italic`}>
+            {Object.keys(savedAnswers).length > 0 ? "✨ Your last saved reflection notes will be preserved whenever you return to this lesson." : "✨ Write your notes and click Save Reflection Notes to persist them permanently."}
+          </p>
+          <div className="flex items-center gap-3">
+            {hasUnsavedChanges && (
+              <button
+                type="button"
+                onClick={handleDiscard}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-gray-200 transition-all"
+              >
+                Discard Unsaved Edits
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={saveStatus === 'saving'}
+              className="px-5 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-purple-500/25 transition-all flex items-center gap-1.5 disabled:opacity-50"
+            >
+              <CheckCircle2 className="w-4 h-4 text-emerald-300" />
+              {saveStatus === 'saving' ? "Saving Notes..." : saveStatus === 'saved' ? "Saved ✓" : "Save Reflection Notes"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
 }
 
 function SelfAssessmentSection({ items, dark, title }: { items: any[]; dark: boolean; title: string }) {
