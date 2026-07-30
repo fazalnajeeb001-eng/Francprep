@@ -1783,13 +1783,15 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
         if (rawComp) {
           let cleanComp = rawComp
-            .replace(/Chapter\s*6\s*Mastered/gi, `Chapter ${currentChNum} Mastered`)
-            .replace(/Chapter\s*22/gi, `Chapter ${nextChNumVal}`)
-            .replace(/Chapter\s*7\s*sa/gi, `Chapter ${nextChNumVal}`);
+            .replace(/Chapter\s*\d+\s*Mastered!?/gi, `Chapter ${currentChNum} Mastered!`)
+            .replace(/Chapter\s*\d+\s*sa/gi, `Chapter ${nextChNumVal}`);
 
           const nextMatchComp = cleanComp.match(/(?:Next Milestone:?|Coming Next:?|Chapter\s*\d+\s*[—\-]\s*[^\.]+(?:builds[^\.]*)?[\s\S]*)/i);
           if (nextMatchComp) {
-            let extractedNext = nextMatchComp[0].replace(/^(?:Next Milestone:?|Coming Next:?)\s*/i, '').trim();
+            let extractedNext = nextMatchComp[0]
+              .replace(/^(?:Next Milestone:?|Coming Next:?)\s*/i, '')
+              .replace(/Chapter\s*\d+/gi, `Chapter ${nextChNumVal}`)
+              .trim();
             if (extractedNext.length > 5) {
               dynamicNextChapter = extractedNext;
             }
