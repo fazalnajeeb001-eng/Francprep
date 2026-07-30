@@ -42,6 +42,7 @@ interface Post {
   authorName: string;
   authorRole: string;
   authorExam: string;
+  contactHandle?: string;
   avatarBg: string;
   category: "exam_debrief" | "study_routine" | "essay_review" | "partner_request";
   categoryLabel: string;
@@ -123,6 +124,7 @@ const INITIAL_POSTS: Post[] = [
     authorName: "Elena R.",
     authorRole: "Candidate",
     authorExam: "DELF A2 Candidate",
+    contactHandle: "Email / Telegram: @elena_delf_prep",
     avatarBg: "from-cyan-500 to-blue-600",
     category: "partner_request",
     categoryLabel: "🤝 Partner Match",
@@ -152,6 +154,7 @@ function CommunityExamHubPage() {
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
   const [newFrenchSnippet, setNewFrenchSnippet] = useState("");
+  const [newContactHandle, setNewContactHandle] = useState("");
   const [newCategory, setNewCategory] = useState<Post["category"]>("exam_debrief");
 
   // Active Comment Expanded Post ID
@@ -220,6 +223,7 @@ function CommunityExamHubPage() {
       authorName: `${user?.firstName || "Candidate"} ${user?.lastName ? user.lastName[0] + "." : ""}`,
       authorRole: user?.role === "admin" ? "Academic Lead" : "Candidate",
       authorExam: user?.learningGoal !== "none" ? `${user?.learningGoal} Candidate` : "A1-B2 Candidate",
+      contactHandle: newContactHandle.trim() || undefined,
       avatarBg: user?.role === "admin" ? "from-emerald-500 to-teal-600" : "from-purple-500 to-indigo-600",
       category: newCategory,
       categoryLabel: catLabelMap[newCategory] || "🎯 Post",
@@ -238,6 +242,7 @@ function CommunityExamHubPage() {
     setNewTitle("");
     setNewContent("");
     setNewFrenchSnippet("");
+    setNewContactHandle("");
     setShowCreateModal(false);
   };
 
@@ -456,6 +461,16 @@ function CommunityExamHubPage() {
                     {post.content}
                   </p>
 
+                  {/* Partner Contact Handle Badge */}
+                  {post.contactHandle && (
+                    <div className={`p-3 rounded-xl border text-xs font-bold flex items-center justify-between gap-3 ${dark ? "bg-amber-500/10 border-amber-500/30 text-amber-300" : "bg-amber-50 border-amber-200 text-amber-900"}`}>
+                      <span className="flex items-center gap-1.5">
+                        <span>🤝 Direct Contact / Preferred Handle:</span>
+                        <code className="px-2 py-0.5 rounded bg-black/30 text-amber-300 font-mono text-[11px]">{post.contactHandle}</code>
+                      </span>
+                    </div>
+                  )}
+
                   {/* Optional French Snippet Box with Audio TTS */}
                   {post.frenchSnippet && (
                     <div className={`p-3 rounded-xl border text-xs font-mono italic flex items-center justify-between gap-3 ${dark ? "bg-purple-950/30 border-purple-500/20 text-purple-300" : "bg-purple-50 border-purple-200 text-purple-900"}`}>
@@ -665,6 +680,20 @@ function CommunityExamHubPage() {
                         dark ? "bg-[#070B17] border-purple-500/30 text-white" : "bg-white border-purple-200 text-slate-900"
                       }`}
                     />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold mb-1">Optional Direct Contact Handle (Email / Telegram):</label>
+                    <input
+                      type="text"
+                      value={newContactHandle}
+                      onChange={(e) => setNewContactHandle(e.target.value)}
+                      placeholder="e.g. @candidate_tg or email@domain.com"
+                      className={`w-full p-2.5 rounded-xl border outline-none font-mono ${
+                        dark ? "bg-[#070B17] border-purple-500/30 text-white" : "bg-white border-purple-200 text-slate-900"
+                      }`}
+                    />
+                    <p className={`text-[10px] ${textMuted} mt-1`}>Add this if you are requesting a 1-on-1 study partner so other candidates can reach you directly!</p>
                   </div>
                 </div>
 
