@@ -1,24 +1,43 @@
 import { Link } from "@tanstack/react-router";
 import { BookOpen, Calendar, LayoutDashboard, Settings, Zap, Users } from "lucide-react";
-
-const navGroups = [
-  { section: "School", items: [
-    { label: "Lessons", icon: BookOpen, href: "/learn" },
-    { label: "Flashcards Vault", icon: Zap, href: "/flashcards" },
-    { label: "Candidate Hub", icon: Users, href: "/community" },
-  ]},
-  { section: "Exam Simulator", items: [
-    { label: "TCF / TEF", icon: LayoutDashboard, href: "/exam" },
-  ]},
-  { section: "Plan", items: [
-    { label: "Calendar", icon: Calendar, href: "/dashboard/calendar" },
-  ]},
-  { section: "Account", items: [
-    { label: "Settings", icon: Settings, href: "/dashboard/settings" },
-  ]},
-];
+import { useEffect, useState } from "react";
+import { useAuth } from "~/lib/AuthContext";
+import { apiFetch } from "~/lib/apiFetch";
 
 export function Sidebar({ open, onClose, dark }: { open: boolean; onClose: () => void; dark: boolean }) {
+  const { user } = useAuth();
+  const [isSocialHubEnabled, setIsSocialHubEnabled] = useState(false);
+
+  useEffect(() => {
+    apiFetch("/subscriptions/plans")
+      .then((r) => r.json())
+      .then((j) => {
+        if (j.data?.isSocialHubEnabled === true) {
+          setIsSocialHubEnabled(true);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const showCandidateForum = user?.role === "admin" || isSocialHubEnabled;
+
+  const navGroups = [
+    { section: "School", items: [
+      { label: "Lessons", icon: BookOpen, href: "/learn" },
+      { label: "Flashcards Vault", icon: Zap, href: "/flashcards" },
+      ...(showCandidateForum ? [{ label: "Candidate Forum", icon: Users, href: "/community" }] : []),
+    ]},
+    { section: "Exam Simulator", items: [
+      { label: "TCF / TEF", icon: LayoutDashboard, href: "/exam" },
+    ]},
+    { section: "Plan", items: [
+      { label: "Calendar", icon: Calendar, href: "/dashboard/calendar" },
+    ]},
+    { section: "Account", items: [
+      { label: "Settings", icon: Settings, href: "/dashboard/settings" },
+    ]},
+  ];
+
   const bg = dark ? "bg-[#070B17]/95" : "bg-[#F8FAFC]/95";
   const border = dark ? "border-[#1e2a4a]" : "border-slate-200";
   return (
