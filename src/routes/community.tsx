@@ -599,15 +599,18 @@ function CommunityExamHubPage() {
                       <div className="flex items-center justify-between pt-2 border-t dark:border-white/10 border-gray-100 text-xs">
                         <span className={`text-[11px] ${textMuted} font-bold`}>Posted by {req.authorName} ({req.targetLevel})</span>
                         <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => {
-                              setActivePodWorkspace(req);
-                            }}
-                            className="px-2.5 py-1.5 bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30 font-bold text-xs rounded-xl transition-all"
-                            title="Open Private Pod Practice Workspace"
-                          >
-                            💬 Workspace
-                          </button>
+                          {/* Show Workspace Button once connected or when at least 2 members have joined */}
+                          {(req.acceptedCount >= 1 || req.acceptedUsers.length > 0 || user?.role === "admin") && (
+                            <button
+                              onClick={() => {
+                                setActivePodWorkspace(req);
+                              }}
+                              className="px-2.5 py-1.5 bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30 font-bold text-xs rounded-xl transition-all flex items-center gap-1"
+                              title="Open Private Pod Practice Workspace"
+                            >
+                              💬 Pod Workspace ({req.acceptedCount + 1} Connected)
+                            </button>
+                          )}
                           <button
                             onClick={() => {
                               setConnectModalRequest(req);
@@ -1165,7 +1168,10 @@ function CommunityExamHubPage() {
                   </button>
                   <button
                     onClick={() => {
-                      if (!buddyTitle.trim() || !buddyDesc.trim()) return;
+                      if (!buddyTitle.trim() || !buddyDesc.trim()) {
+                        alert("Please provide both a Title and Details for your Buddy Request!");
+                        return;
+                      }
                       const newReq: BuddyCircleRequest = {
                         id: `buddy-${Date.now()}`,
                         authorName: `${user?.firstName || "Candidate"}`,
@@ -1181,13 +1187,14 @@ function CommunityExamHubPage() {
                         isFulfilled: false,
                         acceptedUsers: [],
                       };
-                      setBuddyRequests([newReq, ...buddyRequests]);
+                      setBuddyRequests((prev) => [newReq, ...prev]);
+                      setSelectedCategory("buddy_circle"); // Auto-switch view to show newly posted pod
                       setShowBuddyModal(false);
                       setBuddyTitle("");
                       setBuddyDesc("");
                       setBuddyAudioIntro("");
                     }}
-                    className="px-5 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 text-xs font-black rounded-xl shadow-md"
+                    className="px-5 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 text-xs font-black rounded-xl shadow-md cursor-pointer"
                   >
                     Publish Buddy Request
                   </button>
