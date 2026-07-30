@@ -3183,15 +3183,20 @@ function LessonCheatSheetModal({ lesson, dark, onClose, speak }: { lesson: any; 
           vList.push(...v);
 
           if (Array.isArray(l.grammar?.rules)) {
-            gList.push(...l.grammar.rules);
+            const validRules = l.grammar.rules.filter((r: any) => Boolean(r.rule || r.title || r.explanation || r.formula || (Array.isArray(r.examples) && r.examples.length > 0) || (typeof r.examples === 'string' && r.examples.trim())));
+            gList.push(...validRules);
           } else if (l.grammar && typeof l.grammar === 'object') {
-            gList.push(l.grammar);
+            const g = l.grammar;
+            if (g.rule || g.title || g.explanation || g.formula || (Array.isArray(g.examples) && g.examples.length > 0) || (typeof g.examples === 'string' && g.examples.trim())) {
+              gList.push(g);
+            }
           }
         }
 
         if (isMounted) {
+          const cleanGrammar = gList.filter((r: any) => Boolean(r.rule || r.title || r.explanation || r.formula || (Array.isArray(r.examples) && r.examples.length > 0) || (typeof r.examples === 'string' && r.examples.trim())));
           setChapterVocab(vList.length > 0 ? vList : (lesson?.vocabItems || lesson?.vocabulary || []));
-          setChapterGrammar(gList.length > 0 ? gList : (lesson?.grammar?.rules || []));
+          setChapterGrammar(cleanGrammar);
         }
       } catch (err) {
         if (isMounted) {
