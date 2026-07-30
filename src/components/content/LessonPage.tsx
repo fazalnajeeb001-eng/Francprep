@@ -2810,9 +2810,9 @@ function SelfAssessmentSection({ items, dark, title }: { items: any[]; dark: boo
 
 function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7Transcript, lesson7Translation, dark, cardBg, textBody, textSec, handleBlockComplete, handleSubmitBlock, speak, lesson }: any) {
   const [activeTab, setActiveTab] = useState(0);
-  const [showTranscript, setShowTranscript] = useState(true);
-  const [showTranslation, setShowTranslation] = useState(true);
-  const [showReadingTranslation, setShowReadingTranslation] = useState(true);
+  const [showTranscript, setShowTranscript] = useState(false);
+  const [showTranslation, setShowTranslation] = useState(false);
+  const [showReadingTranslation, setShowReadingTranslation] = useState(false);
 
   const getSectionSkill = (secItem: any, idx: number) => {
     const text = `${secItem?.title || ''} ${secItem?.instructions || ''} ${secItem?.skill || ''} ${secItem?.questions?.[0]?.prompt || ''}`.toLowerCase();
