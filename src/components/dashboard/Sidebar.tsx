@@ -1,11 +1,11 @@
 import { Link } from "@tanstack/react-router";
-import { BookOpen, Calendar, LayoutDashboard, Settings, Zap, MessageSquare } from "lucide-react";
+import { BookOpen, Calendar, LayoutDashboard, Settings, Zap, Users } from "lucide-react";
 
 const navGroups = [
   { section: "School", items: [
     { label: "Lessons", icon: BookOpen, href: "/learn" },
     { label: "Flashcards Vault", icon: Zap, href: "/flashcards" },
-    { label: "Community & Le Bot", icon: MessageSquare, href: "/community" },
+    { label: "Candidate Hub", icon: Users, href: "/community" },
   ]},
   { section: "Exam Simulator", items: [
     { label: "TCF / TEF", icon: LayoutDashboard, href: "/exam" },
