@@ -2070,9 +2070,33 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
       case 'reading':
         const rText = lesson?.reading?.text || lesson?.scene?.text || getDialogueText(lesson);
-        const rQuestions = (lesson?.reading?.questions && lesson.reading.questions.length > 0)
+        let rQuestions = (lesson?.reading?.questions && lesson.reading.questions.length > 0)
           ? lesson.reading.questions
           : (lesson?.comprehensionQuestions || []);
+
+        if (
+          (rQuestions.length <= 1 && (rQuestions[0]?.prompt?.toLowerCase().includes('complete the reading') || rQuestions[0]?.id?.includes('dummy') || !rQuestions.length)) &&
+          lesson?.content
+        ) {
+          const cqMatch = lesson.content.match(/Comprehension Questions:?([\s\S]*?)(?=Answer Key:|##|$)/i);
+          if (cqMatch && cqMatch[1]) {
+            const rawQLines = cqMatch[1]
+              .split('\n')
+              .map(l => l.replace(/^\d+[\.\)]\s*/, '').replace(/^[-•*]\s*/, '').trim())
+              .filter(l => l && !l.toLowerCase().startsWith('comprehension questions') && !l.toLowerCase().startsWith('answer key'));
+            if (rawQLines.length > 0) {
+              const akMatch = lesson.content.match(/Answer Key:?([\s\S]*?)(?=##|$)/i);
+              const answers = akMatch ? akMatch[1].split('\n').map(l => l.replace(/^\d+[\.\)]\s*/, '').trim()).filter(Boolean) : [];
+              rQuestions = rawQLines.map((q, idx) => ({
+                id: `rq-${idx + 1}`,
+                type: 'short_answer',
+                prompt: q,
+                correctAnswer: answers[idx] || 'Refer to reading passage.',
+                explanation: `Expected Answer: ${answers[idx] || 'Refer to reading passage.'}`
+              }));
+            }
+          }
+        }
 
         if (!rText && !rQuestions.length) return emptyState('Reading');
         return (
