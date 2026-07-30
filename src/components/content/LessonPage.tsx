@@ -1633,17 +1633,24 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
         let canDoItems: any[] = [];
         if (Array.isArray(lesson?.canDoReview) && lesson.canDoReview.length > 0) {
           canDoItems = lesson.canDoReview;
+        } else if (isLesson8 || lesson?.lessonNumber === 8 || skillStr === 'review' || skillStr === 'rev') {
+          if (parsedSkillCards.length > 0) {
+            canDoItems = parsedSkillCards.map(s => s.lessonRef ? `${s.statement} → ${s.lessonRef}` : s.statement);
+          } else if (Array.isArray(lesson?.objectives) && lesson.objectives.length > 0) {
+            canDoItems = lesson.objectives;
+          } else if (lesson?.miniReview?.content) {
+            const rawContent = lesson.miniReview.content.trim();
+            const splitList = rawContent.split(/(?:\n+|•|\b\d+[\.\)]\s*|(?<=\.)\s+)/).map(s => s.trim()).filter(s => s.length >= 5);
+            canDoItems = splitList.length > 0 ? splitList : [rawContent];
+          }
         } else if (Array.isArray(lesson?.objectives) && lesson.objectives.length > 0) {
           canDoItems = lesson.objectives;
+        } else if (parsedSkillCards.length > 0) {
+          canDoItems = parsedSkillCards.map(s => s.lessonRef ? `${s.statement} → ${s.lessonRef}` : s.statement);
         } else if (lesson?.miniReview?.content) {
           const rawContent = lesson.miniReview.content.trim();
-          const splitList = rawContent
-            .split(/(?:\n+|•|\b\d+[\.\)]\s*|(?<=\.)\s+)/)
-            .map(s => s.trim())
-            .filter(s => s.length >= 5);
+          const splitList = rawContent.split(/(?:\n+|•|\b\d+[\.\)]\s*|(?<=\.)\s+)/).map(s => s.trim()).filter(s => s.length >= 5);
           canDoItems = splitList.length > 0 ? splitList : [rawContent];
-        } else if (parsedSkillCards.length > 0) {
-          canDoItems = parsedSkillCards.map(s => s.statement);
         }
 
         return (
