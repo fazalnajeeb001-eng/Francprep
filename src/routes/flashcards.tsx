@@ -122,9 +122,45 @@ function FlashcardsPage() {
           const lessonOrder = Number(lesson.order || lesson.lessonNumber || lesson.lessonId?.match(/l(\d+)/i)?.[1] || 1);
           const isChUnlocked = user?.role === 'admin' || completedChapters.has(chNum) || chNum === 1;
 
-          const vocabList = Array.isArray(lesson.vocabItems) && lesson.vocabItems.length > 0 ? lesson.vocabItems
+          let vocabList = Array.isArray(lesson.vocabItems) && lesson.vocabItems.length > 0 ? lesson.vocabItems
             : Array.isArray(lesson.vocabulary) && lesson.vocabulary.length > 0 ? lesson.vocabulary
             : [];
+
+          // For practice & dialogue lessons (Lessons 4-7) where standalone vocabulary tables aren't present,
+          // extract key expressions from conversation scenes & grammar examples!
+          if (vocabList.length === 0) {
+            const extraTerms: any[] = [];
+            
+            // Extract from Scene / Dialogue text
+            const sceneTxt = lesson.scene?.text || lesson.reading?.text || lesson.listening?.transcript || '';
+            if (sceneTxt) {
+              const lines = sceneTxt.split('\n');
+              for (const line of lines) {
+                if (line.includes('—') || line.includes(':')) {
+                  const parts = line.split(/—|:/);
+                  const fr = parts[1]?.trim() || parts[0]?.trim();
+                  if (fr && fr.length > 3 && fr.length < 60) {
+                    extraTerms.push({ french: fr, english: 'Key Dialogue Line' });
+                  }
+                }
+              }
+            }
+
+            // Extract from Grammar examples
+            const rules = lesson.grammar?.rules || (Array.isArray(lesson.grammar) ? lesson.grammar : []);
+            for (const r of rules) {
+              const exs = Array.isArray(r.examples) ? r.examples : typeof r.examples === 'string' ? [r.examples] : [];
+              for (const exStr of exs) {
+                if (typeof exStr === 'string' && exStr.trim()) {
+                  extraTerms.push({ french: exStr.trim(), english: r.rule || 'Grammar Example' });
+                }
+              }
+            }
+
+            if (extraTerms.length > 0) {
+              vocabList = extraTerms;
+            }
+          }
 
           for (const v of vocabList) {
             cardCounter++;
