@@ -88,6 +88,13 @@ const OFFICIAL_CHANNELS: Channel[] = [
     description: "FrancPrep Candidate Study Circles",
     topic: "Connect with dedicated study circles for peer exam preparation.",
   },
+  {
+    id: "private-partner",
+    name: "💬 1-on-1 Private Peer Chat",
+    icon: "🔒",
+    description: "Private 1-on-1 Practice with a Study Partner",
+    topic: "Direct private messaging channel with your assigned study partner.",
+  },
 ];
 
 const BOT_SCENARIOS = [
@@ -138,6 +145,16 @@ function CommunityPage() {
         senderName: "Inès (DELF A2 Candidate)",
         text: "Conseil du jour : pensez à réviser les connecteurs logiques (d'abord, puis, enfin) pour la production écrite !",
         timestamp: "12:00 PM",
+      },
+    ],
+    "private-partner": [
+      {
+        id: "msg-priv-1",
+        sender: "peer",
+        senderName: "Lucas (Study Partner 🇫🇷)",
+        text: "Salut ! On révise l’oral ensemble aujourd’hui ? Tu peux m’envoyer un message vocal ou texte !",
+        translation: "Hi! Shall we review oral exam together today? You can send me a voice or text message!",
+        timestamp: "12:30 PM",
       },
     ],
   });
