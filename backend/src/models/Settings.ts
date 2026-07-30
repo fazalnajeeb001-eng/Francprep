@@ -8,6 +8,8 @@ export interface ISettingsDocument extends Document {
   stripeWebhookSecret: string;
   anthropicApiKey: string;
   openRouterApiKey: string;
+  openaiApiKey: string;
+  elevenLabsApiKey: string;
   frontendUrl: string;
   updatedAt: Date;
 }
@@ -21,6 +23,8 @@ const settingsSchema = new Schema<ISettingsDocument>(
     stripeWebhookSecret: { type: String, default: "" },
     anthropicApiKey: { type: String, default: "" },
     openRouterApiKey: { type: String, default: "" },
+    openaiApiKey: { type: String, default: "" },
+    elevenLabsApiKey: { type: String, default: "" },
     frontendUrl: { type: String, default: "" },
   },
   { timestamps: true }

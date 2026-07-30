@@ -11,7 +11,7 @@ export async function generateNeuralAudio(
   text: string,
   gender: 'female' | 'male' = 'female',
   lang: 'fr' | 'en' = 'fr'
-): Promise<{ audioBase64: string; contentType: string } | null> {
+): Promise<{ audioBase64: string; contentType: string; provider: string } | null> {
   const cleanText = text.trim();
   if (!cleanText) return null;
 
@@ -21,34 +21,43 @@ export async function generateNeuralAudio(
   try {
     const cached = await TTSCache.findOne({ textHash });
     if (cached && cached.audioBase64) {
-      return { audioBase64: cached.audioBase64, contentType: cached.contentType || 'audio/mp3' };
+      return { audioBase64: cached.audioBase64, contentType: cached.contentType || 'audio/mp3', provider: 'cache' };
     }
   } catch (err) {
     console.warn('[TTSCache] Error reading cache:', err);
   }
 
-  // 2. Try OpenAI Neural Voice API if key is available
-  try {
-    const settings = await Settings.findOne();
-    const apiKey = process.env.OPENAI_API_KEY || settings?.openRouterApiKey;
-    
-    if (apiKey) {
-      const voiceName = gender === 'male' ? 'onyx' : 'nova';
+  const settings = await Settings.findOne();
+
+  // 2. ElevenLabs Studio-Grade Human Voice API (Top priority for 100% human quality)
+  const elevenLabsKey = process.env.ELEVENLABS_API_KEY || settings?.elevenLabsApiKey;
+  if (elevenLabsKey) {
+    try {
+      // Default ElevenLabs multilingual studio voices
+      const voiceId = gender === 'male' 
+        ? 'ErXwobaYiN019PkySvjV' // Antoni (Male Studio)
+        : '21m00Tcm4TlvDq8ikWAM'; // Rachel (Female Studio)
+
       const response = await axios.post(
-        'https://api.openai.com/v1/audio/speech',
+        `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
         {
-          model: 'tts-1',
-          input: cleanText,
-          voice: voiceName,
-          speed: 0.95,
+          text: cleanText,
+          model_id: 'eleven_multilingual_v2', // Native French & English studio model
+          voice_settings: {
+            stability: 0.5,
+            similarity_boost: 0.8,
+            style: 0.0,
+            use_speaker_boost: true,
+          },
         },
         {
           headers: {
-            Authorization: `Bearer ${apiKey}`,
+            'xi-api-key': elevenLabsKey,
             'Content-Type': 'application/json',
+            Accept: 'audio/mpeg',
           },
           responseType: 'arraybuffer',
-          timeout: 8000,
+          timeout: 10000,
         }
       );
 
@@ -57,7 +66,55 @@ export async function generateNeuralAudio(
         const audioBase64 = audioBuffer.toString('base64');
         const contentType = 'audio/mp3';
 
-        // Save to cache asynchronously
+        TTSCache.create({
+          textHash,
+          text: cleanText,
+          voice: `elevenlabs-${voiceId}`,
+          gender,
+          audioBase64,
+          contentType,
+        }).catch(() => {});
+
+        return { audioBase64, contentType, provider: 'elevenlabs' };
+      }
+    } catch (err: any) {
+      console.error('[TTS Service] ElevenLabs API error:', err?.response?.data || err.message);
+    }
+  }
+
+  // 3. OpenAI TTS-1-HD Studio Voice API
+  const openaiKey = process.env.OPENAI_API_KEY || settings?.openaiApiKey || settings?.openRouterApiKey;
+  if (openaiKey) {
+    try {
+      const voiceName = gender === 'male' ? 'onyx' : 'nova';
+      const isDirectOpenAI = openaiKey.startsWith('sk-');
+      const url = isDirectOpenAI 
+        ? 'https://api.openai.com/v1/audio/speech'
+        : 'https://openrouter.ai/api/v1/audio/speech';
+
+      const response = await axios.post(
+        url,
+        {
+          model: 'tts-1-hd',
+          input: cleanText,
+          voice: voiceName,
+          speed: 0.95,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${openaiKey}`,
+            'Content-Type': 'application/json',
+          },
+          responseType: 'arraybuffer',
+          timeout: 10000,
+        }
+      );
+
+      if (response.status === 200 && response.data) {
+        const audioBuffer = Buffer.from(response.data);
+        const audioBase64 = audioBuffer.toString('base64');
+        const contentType = 'audio/mp3';
+
         TTSCache.create({
           textHash,
           text: cleanText,
@@ -67,23 +124,18 @@ export async function generateNeuralAudio(
           contentType,
         }).catch(() => {});
 
-        return { audioBase64, contentType };
+        return { audioBase64, contentType, provider: 'openai' };
       }
+    } catch (err: any) {
+      console.error('[TTS Service] OpenAI TTS API error:', err?.response?.data || err.message);
     }
-  } catch (err) {
-    // Silently continue to fallback
   }
 
-  // 3. Try Free Microsoft Edge Neural Speech API (fr-FR-DeniseNeural / fr-FR-HenriNeural)
+  // 4. Free Google Neural Audio Stream fallback (used only if no AI keys exist)
   try {
-    const voiceName = lang === 'en'
-      ? (gender === 'male' ? 'en-US-GuyNeural' : 'en-US-JennyNeural')
-      : (gender === 'male' ? 'fr-FR-HenriNeural' : 'fr-FR-DeniseNeural');
-
-    // Google / Free Public Neural Speech Stream fallback
     const encodedText = encodeURIComponent(cleanText);
     const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=${lang === 'en' ? 'en' : 'fr'}&client=tw-ob`;
-    
+
     const response = await axios.get(googleTtsUrl, {
       responseType: 'arraybuffer',
       headers: {
@@ -100,13 +152,13 @@ export async function generateNeuralAudio(
       TTSCache.create({
         textHash,
         text: cleanText,
-        voice: voiceName,
+        voice: `google-${lang}`,
         gender,
         audioBase64,
         contentType,
       }).catch(() => {});
 
-      return { audioBase64, contentType };
+      return { audioBase64, contentType, provider: 'google' };
     }
   } catch (err) {
     console.warn('[TTS Fallback] Google TTS fallback failed:', err);
