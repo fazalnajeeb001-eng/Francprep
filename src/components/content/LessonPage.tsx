@@ -1687,20 +1687,27 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
       case 'completion':
         const chNumberStr = getCleanChapterNumber(lesson);
-        const nextChNumVal = Number(chNumberStr) + 1;
+        const currentChNum = Number(chNumberStr) || 1;
+        const nextChNumVal = currentChNum + 1;
         const rawComp = lesson?.completionSummary?.content || '';
 
-        let dynamicNextChapter = `Chapter ${nextChNumVal} — Neighborhood & Local Services — builds on this foundation, introducing the pronoun y.`;
+        let dynamicNextChapter = `Chapter ${nextChNumVal} — Next Curriculum Unit — builds on this foundation to expand your skills.`;
         let rawSummaryText = rawComp ? rawComp.replace(/\*\*/g, '').trim() : "You have successfully consolidated all learning objectives, completed the DELF diagnostic assessment, and recorded your reflections.";
 
         if (rawComp) {
-          const nextMatchComp = rawComp.match(/(?:Next Milestone:?|Coming Next:?|Chapter\s*\d+\s*[—\-]\s*[^\.]+(?:builds[^\.]*)?[\s\S]*)/i);
+          let cleanComp = rawComp
+            .replace(/Chapter\s*6\s*Mastered/gi, `Chapter ${currentChNum} Mastered`)
+            .replace(/Chapter\s*22/gi, `Chapter ${nextChNumVal}`)
+            .replace(/Chapter\s*7\s*sa/gi, `Chapter ${nextChNumVal}`);
+
+          const nextMatchComp = cleanComp.match(/(?:Next Milestone:?|Coming Next:?|Chapter\s*\d+\s*[—\-]\s*[^\.]+(?:builds[^\.]*)?[\s\S]*)/i);
           if (nextMatchComp) {
             let extractedNext = nextMatchComp[0].replace(/^(?:Next Milestone:?|Coming Next:?)\s*/i, '').trim();
             if (extractedNext.length > 5) {
               dynamicNextChapter = extractedNext;
             }
           }
+          rawSummaryText = cleanComp;
         }
 
         // Parse bullet items if rawSummaryText contains bullet points or dash items
