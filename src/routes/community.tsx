@@ -517,19 +517,44 @@ function CommunityExamHubPage() {
                     </div>
 
                     <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+                          if (!SpeechRecognition) {
+                            alert("Speech recognition is not supported in this browser. You can type your reply!");
+                            return;
+                          }
+                          try {
+                            const rec = new SpeechRecognition();
+                            rec.lang = "fr-FR";
+                            rec.onresult = (e: any) => {
+                              const txt = e.results[0][0].transcript;
+                              if (txt) setCommentInput(prev => prev ? `${prev} ${txt}` : txt);
+                            };
+                            rec.start();
+                          } catch {}
+                        }}
+                        className={`p-2 rounded-xl border transition-all ${
+                          dark ? "bg-purple-500/10 border-purple-500/30 text-purple-300 hover:bg-purple-500/20" : "bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100"
+                        }`}
+                        title="Dictate French Voice Reply"
+                      >
+                        <Mic className="w-4 h-4" />
+                      </button>
                       <input
                         type="text"
                         value={commentInput}
                         onChange={(e) => setCommentInput(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && handleAddComment(post.id)}
-                        placeholder="Reply to candidate thread..."
+                        placeholder="Reply in French or English... (Or click Mic to dictate)"
                         className={`flex-1 p-2 rounded-xl text-xs border outline-none ${
                           dark ? "bg-black/50 border-purple-500/30 text-white placeholder-gray-500" : "bg-white border-purple-200 text-gray-900 placeholder-gray-400"
                         }`}
                       />
                       <button
                         onClick={() => handleAddComment(post.id)}
-                        className="px-3 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl shadow"
+                        className="px-3.5 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl shadow"
                       >
                         Reply
                       </button>
