@@ -24,12 +24,21 @@ export async function generateNeuralAudio(
   const preferredEngine = settings?.preferredVoiceEngine || 'auto';
   const textHash = getHash(cleanText, gender, lang, preferredEngine);
 
+  const elevenLabsKey = process.env.ELEVENLABS_API_KEY || settings?.elevenLabsApiKey;
+  const huggingFaceToken = process.env.HUGGINGFACE_TOKEN || settings?.huggingFaceToken;
+  const openaiKey = process.env.OPENAI_API_KEY || settings?.openaiApiKey || settings?.openRouterApiKey;
+  const hasRealKeys = !!(elevenLabsKey || huggingFaceToken || openaiKey);
+
   // 1. Check MongoDB Cache first
   try {
     const cached = await TTSCache.findOne({ textHash }).maxTimeMS(1500);
     if (cached && cached.audioBase64) {
-      if (preferredEngine === 'auto' || cached.voice.toLowerCase().includes(preferredEngine)) {
-        return { audioBase64: cached.audioBase64, contentType: cached.contentType || 'audio/mp3', provider: cached.voice };
+      const isGoogleFallback = cached.voice.startsWith('google-');
+      // If cached entry is old robot fallback and user has real keys, bypass cache to generate studio audio
+      if (!isGoogleFallback || !hasRealKeys) {
+        if (preferredEngine === 'auto' || cached.voice.toLowerCase().includes(preferredEngine)) {
+          return { audioBase64: cached.audioBase64, contentType: cached.contentType || 'audio/mp3', provider: cached.voice };
+        }
       }
     }
   } catch (err) {
@@ -37,7 +46,6 @@ export async function generateNeuralAudio(
   }
 
   // 2. ElevenLabs Studio-Grade Engine (If preferred or auto)
-  const elevenLabsKey = process.env.ELEVENLABS_API_KEY || settings?.elevenLabsApiKey;
   if ((preferredEngine === 'auto' || preferredEngine === 'elevenlabs') && elevenLabsKey) {
     try {
       const voiceId = gender === 'male' ? 'ErXwobaYiN019PkySvjV' : '21m00Tcm4TlvDq8ikWAM';
@@ -69,7 +77,6 @@ export async function generateNeuralAudio(
   }
 
   // 3. OpenAI TTS-1-HD Studio Voice API
-  const openaiKey = process.env.OPENAI_API_KEY || settings?.openaiApiKey || settings?.openRouterApiKey;
   if ((preferredEngine === 'auto' || preferredEngine === 'openai') && openaiKey) {
     try {
       const voiceName = gender === 'male' ? 'onyx' : 'nova';
