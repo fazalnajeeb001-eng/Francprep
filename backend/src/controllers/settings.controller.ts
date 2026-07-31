@@ -21,7 +21,14 @@ export async function updateSettings(req: Request, res: Response) {
     const allowed = ['stripeSecretKey', 'stripePublishableKey', 'stripePremiumPriceId', 'stripeExamPrepPriceId', 'stripeWebhookSecret', 'anthropicApiKey', 'openRouterApiKey', 'openaiApiKey', 'elevenLabsApiKey', 'huggingFaceToken', 'preferredVoiceEngine', 'frontendUrl'];
     const updates: any = {};
     for (const key of allowed) {
-      if (req.body[key] !== undefined) updates[key] = req.body[key];
+      if (req.body[key] !== undefined) {
+        const val = String(req.body[key]).trim();
+        // Ignore masked preview strings (containing '...') so existing full DB keys are never destroyed
+        if (val.includes('...')) {
+          continue;
+        }
+        updates[key] = val;
+      }
     }
 
     const settings = await Settings.findOneAndUpdate({}, { $set: updates }, { new: true, upsert: true });
