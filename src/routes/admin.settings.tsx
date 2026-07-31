@@ -72,7 +72,13 @@ export function AdminSettingsPage() {
             openaiApiKey: j.data.openaiApiKey || "",
             elevenLabsApiKey: j.data.elevenLabsApiKey || "",
             huggingFaceApiKey: j.data.huggingFaceApiKey || "",
-            activeTTSProvider: j.data.activeTTSProvider || "auto",
+            activeTTSProvider: j.data.activeTTSProvider || "elevenlabs",
+            selectedElevenLabsFemaleVoice: j.data.selectedElevenLabsFemaleVoice || "21m00Tcm4TlvDq8ikWAM",
+            selectedElevenLabsMaleVoice: j.data.selectedElevenLabsMaleVoice || "ErXwobaYiN019PkySvjV",
+            selectedOpenAIFemaleVoice: j.data.selectedOpenAIFemaleVoice || "nova",
+            selectedOpenAIMaleVoice: j.data.selectedOpenAIMaleVoice || "onyx",
+            selectedKokoroFemaleVoice: j.data.selectedKokoroFemaleVoice || "ff_siwis",
+            selectedKokoroMaleVoice: j.data.selectedKokoroMaleVoice || "bm_george",
             frontendUrl: j.data.frontendUrl || "",
           });
         }
@@ -286,26 +292,106 @@ export function AdminSettingsPage() {
               <p className={`text-[10px] ${txtSec} mt-1`}>Powers OpenAI tts-1-hd studio voices (nova & onyx) and TCF/TEF rubric scoring.</p>
             </div>
 
-            <div className="pt-3 border-t border-gray-200 dark:border-white/10 space-y-3">
+            <div className="pt-3 border-t border-gray-200 dark:border-white/10 space-y-4">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <label className="block text-xs font-extrabold text-purple-300">Active Audio Engine Provider</label>
-                  <p className={`text-[10px] ${txtSec}`}>Switch between AI voice providers. Platform auto-shifts instantly.</p>
+                  <label className="block text-xs font-extrabold text-purple-300">Default Active Audio Engine Provider</label>
+                  <p className={`text-[10px] ${txtSec}`}>Platform auto-shifts to this provider. 1-click default reset.</p>
                 </div>
                 <select
                   value={form.activeTTSProvider}
                   onChange={(e) => setForm({ ...form, activeTTSProvider: e.target.value })}
                   className={`px-3 py-2 rounded-xl text-xs font-bold border outline-none ${dark ? "bg-[#070B17] border-purple-500/40 text-purple-300" : "bg-white border-purple-300 text-purple-900"}`}
                 >
-                  <option value="auto">✨ Auto Cascade (ElevenLabs ➔ OpenAI ➔ Kokoro ➔ Google)</option>
-                  <option value="elevenlabs">🎙️ ElevenLabs Multilingual v2 (Studio Ultra-Human)</option>
-                  <option value="openai">🤖 OpenAI tts-1-hd (Nova & Onyx Neural)</option>
+                  <option value="elevenlabs">🎙️ ElevenLabs Multilingual v2 (Studio Ultra-Human - Recommended)</option>
+                  <option value="openai">🤖 OpenAI tts-1-hd (Nova & Onyx Neural HD)</option>
                   <option value="huggingface">🤗 HuggingFace Kokoro-82M</option>
                   <option value="google">🌐 Google HD Speech Fallback</option>
+                  <option value="auto">✨ Auto Cascade (ElevenLabs ➔ OpenAI ➔ Kokoro ➔ Google)</option>
                 </select>
               </div>
 
-              <div className="flex justify-end pt-2">
+              {/* ─── ELEVENLABS CUSTOM VOICE PICKER ─── */}
+              <div className="p-3.5 rounded-xl border border-pink-500/30 bg-pink-500/10 space-y-3">
+                <p className="text-xs font-extrabold text-pink-300">🎙️ ElevenLabs Voices (Choose Female & Male Defaults):</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <label className="block font-bold mb-1 text-gray-300">Default Female Voice (Coach Chloé / Platform):</label>
+                    <select
+                      value={form.selectedElevenLabsFemaleVoice}
+                      onChange={(e) => setForm({ ...form, selectedElevenLabsFemaleVoice: e.target.value })}
+                      className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-pink-500/30" : "bg-white text-slate-900"}`}
+                    >
+                      <option value="21m00Tcm4TlvDq8ikWAM">Rachel (Calm & Clear Parisian French)</option>
+                      <option value="EXAVITQu4vr4xnSDxMaL">Bella (Expressive & Energetic)</option>
+                      <option value="AZnzlk1XvdvUeBnXmlld">Domi (Warm Academic Reader)</option>
+                      <option value="MF3mGyEYCl7XYWbV9V6O">Elli (Gentle Conversationalist)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block font-bold mb-1 text-gray-300">Default Male Voice (Coach Léo):</label>
+                    <select
+                      value={form.selectedElevenLabsMaleVoice}
+                      onChange={(e) => setForm({ ...form, selectedElevenLabsMaleVoice: e.target.value })}
+                      className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-pink-500/30" : "bg-white text-slate-900"}`}
+                    >
+                      <option value="ErXwobaYiN019PkySvjV">Antoni (Deep & Articulate Native Male)</option>
+                      <option value="VR6AewLTigWG4xSOukaG">Arnold (Formal Narrator)</option>
+                      <option value="pNInz6obpgDQGcFmaJgB">Adam (Clear Professional Voice)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* ─── OPENAI HD VOICE PICKER ─── */}
+              <div className="p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 space-y-3">
+                <p className="text-xs font-extrabold text-emerald-300">🤖 OpenAI tts-1-hd Voices:</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <label className="block font-bold mb-1 text-gray-300">Female Voice:</label>
+                    <select
+                      value={form.selectedOpenAIFemaleVoice}
+                      onChange={(e) => setForm({ ...form, selectedOpenAIFemaleVoice: e.target.value })}
+                      className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-emerald-500/30" : "bg-white text-slate-900"}`}
+                    >
+                      <option value="nova">Nova (Bright & Conversational Female)</option>
+                      <option value="alloy">Alloy (Balanced Neutral)</option>
+                      <option value="shimmer">Shimmer (Clear Academic Female)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block font-bold mb-1 text-gray-300">Male Voice:</label>
+                    <select
+                      value={form.selectedOpenAIMaleVoice}
+                      onChange={(e) => setForm({ ...form, selectedOpenAIMaleVoice: e.target.value })}
+                      className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-emerald-500/30" : "bg-white text-slate-900"}`}
+                    >
+                      <option value="onyx">Onyx (Deep Professional Male)</option>
+                      <option value="echo">Echo (Warm Conversational Male)</option>
+                      <option value="fable">Fable (Expressive Storyteller Male)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setForm((prev) => ({
+                      ...prev,
+                      activeTTSProvider: "elevenlabs",
+                      selectedElevenLabsFemaleVoice: "21m00Tcm4TlvDq8ikWAM",
+                      selectedElevenLabsMaleVoice: "ErXwobaYiN019PkySvjV",
+                      selectedOpenAIFemaleVoice: "nova",
+                      selectedOpenAIMaleVoice: "onyx",
+                    }));
+                  }}
+                  className="px-3 py-1.5 bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30 text-xs font-bold rounded-xl transition-all cursor-pointer"
+                >
+                  🔄 Reset Defaults (Rachel & Antoni Studio)
+                </button>
+
                 <button
                   type="button"
                   onClick={async () => {

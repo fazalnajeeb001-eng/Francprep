@@ -13,8 +13,14 @@ let inMemorySettings: any = {
   elevenLabsApiKey: "",
   huggingFaceToken: "",
   huggingFaceApiKey: "",
-  preferredVoiceEngine: "auto",
-  activeTTSProvider: "auto",
+  preferredVoiceEngine: "elevenlabs",
+  activeTTSProvider: "elevenlabs",
+  selectedElevenLabsFemaleVoice: "21m00Tcm4TlvDq8ikWAM",
+  selectedElevenLabsMaleVoice: "ErXwobaYiN019PkySvjV",
+  selectedOpenAIFemaleVoice: "nova",
+  selectedOpenAIMaleVoice: "onyx",
+  selectedKokoroFemaleVoice: "ff_siwis",
+  selectedKokoroMaleVoice: "bm_george",
   frontendUrl: "",
 };
 
@@ -46,7 +52,12 @@ export async function getSettings(_req: Request, res: Response) {
 
 export async function updateSettings(req: Request, res: Response) {
   try {
-    const allowed = ['stripeSecretKey', 'stripePublishableKey', 'stripePremiumPriceId', 'stripeExamPrepPriceId', 'stripeWebhookSecret', 'anthropicApiKey', 'openRouterApiKey', 'openaiApiKey', 'elevenLabsApiKey', 'huggingFaceToken', 'huggingFaceApiKey', 'preferredVoiceEngine', 'activeTTSProvider', 'frontendUrl'];
+    const allowed = [
+      'stripeSecretKey', 'stripePublishableKey', 'stripePremiumPriceId', 'stripeExamPrepPriceId', 'stripeWebhookSecret',
+      'anthropicApiKey', 'openRouterApiKey', 'openaiApiKey', 'elevenLabsApiKey', 'huggingFaceToken', 'huggingFaceApiKey',
+      'preferredVoiceEngine', 'activeTTSProvider', 'selectedElevenLabsFemaleVoice', 'selectedElevenLabsMaleVoice',
+      'selectedOpenAIFemaleVoice', 'selectedOpenAIMaleVoice', 'selectedKokoroFemaleVoice', 'selectedKokoroMaleVoice', 'frontendUrl'
+    ];
     const updates: any = {};
 
     for (const key of allowed) {

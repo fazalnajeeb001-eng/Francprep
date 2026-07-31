@@ -41,7 +41,12 @@ export async function generateNeuralAudio(
     const elevenLabsKey = process.env.ELEVENLABS_API_KEY || settings?.elevenLabsApiKey;
     if (!elevenLabsKey) return null;
 
-    const voices = gender === 'male' ? ['ErXwobaYiN019PkySvjV', 'VR6AewLTigWG4xSOukaG'] : ['21m00Tcm4TlvDq8ikWAM', 'EXAVITQu4vr4xnSDxMaL'];
+    const defaultFemale = settings?.selectedElevenLabsFemaleVoice || '21m00Tcm4TlvDq8ikWAM';
+    const defaultMale = settings?.selectedElevenLabsMaleVoice || 'ErXwobaYiN019PkySvjV';
+    const primaryVoiceId = gender === 'male' ? defaultMale : defaultFemale;
+    const fallbackVoiceId = gender === 'male' ? 'ErXwobaYiN019PkySvjV' : '21m00Tcm4TlvDq8ikWAM';
+    const voices = Array.from(new Set([primaryVoiceId, fallbackVoiceId]));
+
     for (const voiceId of voices) {
       try {
         const response = await axios.post(
@@ -77,9 +82,13 @@ export async function generateNeuralAudio(
   const tryHuggingFaceKokoro = async () => {
     const hfToken = process.env.HUGGINGFACE_TOKEN || process.env.HUGGINGFACE_API_KEY || settings?.huggingFaceToken || settings?.huggingFaceApiKey;
     try {
-      const kokoroRes = await generateKokoroAudio(cleanText, gender, hfToken);
+      const selectedVoice = gender === 'male'
+        ? (settings?.selectedKokoroMaleVoice || 'bm_george')
+        : (settings?.selectedKokoroFemaleVoice || 'ff_siwis');
+
+      const kokoroRes = await generateKokoroAudio(cleanText, gender, hfToken, selectedVoice);
       if (kokoroRes) {
-        TTSCache.create({ textHash, text: cleanText, voice: 'kokoro-82m', gender, audioBase64: kokoroRes.audioBase64, contentType: kokoroRes.contentType }).catch(() => {});
+        TTSCache.create({ textHash, text: cleanText, voice: `kokoro-${selectedVoice}`, gender, audioBase64: kokoroRes.audioBase64, contentType: kokoroRes.contentType }).catch(() => {});
         return { audioBase64: kokoroRes.audioBase64, contentType: kokoroRes.contentType, provider: 'huggingface-kokoro' };
       }
     } catch (err: any) {
@@ -94,7 +103,10 @@ export async function generateNeuralAudio(
     if (!openaiKey) return null;
 
     try {
-      const voiceName = gender === 'male' ? 'onyx' : 'nova';
+      const voiceName = gender === 'male'
+        ? (settings?.selectedOpenAIMaleVoice || 'onyx')
+        : (settings?.selectedOpenAIFemaleVoice || 'nova');
+
       const response = await axios.post(
         'https://api.openai.com/v1/audio/speech',
         { model: 'tts-1-hd', input: cleanText, voice: voiceName, speed: 0.95 },

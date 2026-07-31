@@ -12,6 +12,12 @@ export interface ISettingsDocument extends Document {
   elevenLabsApiKey: string;
   huggingFaceApiKey: string;
   activeTTSProvider: 'auto' | 'elevenlabs' | 'openai' | 'huggingface' | 'google';
+  selectedElevenLabsFemaleVoice: string;
+  selectedElevenLabsMaleVoice: string;
+  selectedOpenAIFemaleVoice: string;
+  selectedOpenAIMaleVoice: string;
+  selectedKokoroFemaleVoice: string;
+  selectedKokoroMaleVoice: string;
   frontendUrl: string;
   updatedAt: Date;
 }
@@ -28,7 +34,13 @@ const settingsSchema = new Schema<ISettingsDocument>(
     openaiApiKey: { type: String, default: "" },
     elevenLabsApiKey: { type: String, default: "" },
     huggingFaceApiKey: { type: String, default: "" },
-    activeTTSProvider: { type: String, enum: ['auto', 'elevenlabs', 'openai', 'huggingface', 'google'], default: 'auto' },
+    activeTTSProvider: { type: String, enum: ['auto', 'elevenlabs', 'openai', 'huggingface', 'google'], default: 'elevenlabs' },
+    selectedElevenLabsFemaleVoice: { type: String, default: "21m00Tcm4TlvDq8ikWAM" }, // Rachel (Studio French Female)
+    selectedElevenLabsMaleVoice: { type: String, default: "ErXwobaYiN019PkySvjV" },   // Antoni (Studio French Male)
+    selectedOpenAIFemaleVoice: { type: String, default: "nova" },                      // Nova HD
+    selectedOpenAIMaleVoice: { type: String, default: "onyx" },                         // Onyx HD
+    selectedKokoroFemaleVoice: { type: String, default: "ff_siwis" },                  // Siwis French Female
+    selectedKokoroMaleVoice: { type: String, default: "bm_george" },                   // George French Male
     frontendUrl: { type: String, default: "" },
   },
   { timestamps: true }

@@ -15,14 +15,15 @@ export async function generateKokoroAudio(
   text: string,
   gender: 'female' | 'male' = 'female',
   lang: 'fr' | 'en' = 'fr',
-  hfToken?: string
+  hfToken?: string,
+  customVoice?: string
 ): Promise<KokoroAudioResult | null> {
   const cleanText = text.trim();
   if (!cleanText) return null;
 
-  const voice = lang === 'en'
+  const voice = customVoice || (lang === 'en'
     ? (gender === 'male' ? 'am_adam' : 'af_bella')
-    : (gender === 'male' ? 'bm_george' : 'ff_siwis');
+    : (gender === 'male' ? 'bm_george' : 'ff_siwis'));
 
   const token = hfToken || process.env.HUGGINGFACE_TOKEN || process.env.HF_TOKEN || '';
 
