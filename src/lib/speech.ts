@@ -1,139 +1,120 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-
-/**
- * Voice Selector Helper: Finds the highest-definition Neural/Natural voice available on the device,
- * matching both language and character gender (Female for Chloé/Sophie, Male for Léo/Lucas).
- */
-export function getBestVoice(langPrefix: "fr" | "en", gender: "female" | "male" = "female"): SpeechSynthesisVoice | null {
-  if (typeof window === "undefined" || !window.speechSynthesis) return null;
-  const voices = window.speechSynthesis.getVoices();
-  if (!voices || voices.length === 0) return null;
-
-  const targetVoices = voices.filter((v) => v.lang.toLowerCase().startsWith(langPrefix));
-  if (!targetVoices.length) return null;
-
-  if (langPrefix === "fr") {
-    const frFRVoices = targetVoices.filter((v) => v.lang.toLowerCase().includes("fr-fr") || v.lang.toLowerCase() === "fr");
-    const candidates = frFRVoices.length > 0 ? frFRVoices : targetVoices;
-
-    if (gender === "male") {
-      const maleVoice = candidates.find((v) => {
-        const n = v.name.toLowerCase();
-        const isMale = n.includes("henri") || n.includes("paul") || n.includes("claude") || n.includes("jean") || n.includes("nicolas") || n.includes("male") || n.includes("guy");
-        const isNeural = n.includes("natural") || n.includes("neural") || n.includes("google") || n.includes("premium") || n.includes("online");
-        return isMale || (isNeural && !n.includes("female") && !n.includes("denise") && !n.includes("celeste"));
-      });
-      if (maleVoice) return maleVoice;
-    } else {
-      const femaleVoice = candidates.find((v) => {
-        const n = v.name.toLowerCase();
-        const isFemale = n.includes("denise") || n.includes("celeste") || n.includes("audrey") || n.includes("amélie") || n.includes("marie") || n.includes("lea") || n.includes("hortense") || n.includes("julie") || n.includes("female");
-        const isNeural = n.includes("natural") || n.includes("neural") || n.includes("google") || n.includes("premium") || n.includes("enhanced") || n.includes("online");
-        return isFemale || isNeural;
-      });
-      if (femaleVoice) return femaleVoice;
-    }
-
-    const anyNeural = candidates.find((v) => {
-      const n = v.name.toLowerCase();
-      return n.includes("natural") || n.includes("neural") || n.includes("google") || n.includes("premium") || n.includes("enhanced") || n.includes("online");
-    });
-    if (anyNeural) return anyNeural;
-
-    return candidates[0];
-  }
-
-  // English Voice Selection
-  const enVoices = targetVoices.filter((v) => v.lang.toLowerCase().includes("en-us") || v.lang.toLowerCase().includes("en-gb"));
-  const candidates = enVoices.length > 0 ? enVoices : targetVoices;
-
-  if (gender === "male") {
-    const maleVoiceEn = candidates.find((v) => {
-      const n = v.name.toLowerCase();
-      return n.includes("guy") || n.includes("christopher") || n.includes("daniel") || n.includes("male") || n.includes("david");
-    });
-    if (maleVoiceEn) return maleVoiceEn;
-  } else {
-    const femaleVoiceEn = candidates.find((v) => {
-      const n = v.name.toLowerCase();
-      return n.includes("jenny") || n.includes("aria") || n.includes("samantha") || n.includes("karen") || n.includes("female");
-    });
-    if (femaleVoiceEn) return femaleVoiceEn;
-  }
-
-  const anyNeuralEn = candidates.find((v) => {
-    const n = v.name.toLowerCase();
-    return n.includes("natural") || n.includes("neural") || n.includes("google") || n.includes("premium") || n.includes("enhanced") || n.includes("online");
-  });
-  if (anyNeuralEn) return anyNeuralEn;
-
-  return candidates[0];
-}
-
+import { useState, useEffect, useCallback } from "react";
 import { apiFetch } from "~/lib/apiFetch";
 
 let currentAudioPlayer: HTMLAudioElement | null = null;
+let onPlaybackStateChange: ((playing: boolean) => void) | null = null;
+
+function base64ToBlob(base64: string, contentType = "audio/mp3"): Blob {
+  const byteCharacters = atob(base64);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  return new Blob([byteArray], { type: contentType });
+}
 
 /**
- * Text-to-speech helper. Uses Neural AI Voices via /api/tts/speak and falls back to HD browser voice.
+ * Text-to-speech helper. Strictly uses Neural AI Engine (/api/tts/speak)
+ * configured in Admin Panel (Kokoro-82M, ElevenLabs, or OpenAI).
+ * Browser Web Speech API (speechSynthesis) is 100% disabled to eliminate robotic OS audio.
  */
-export function speak(text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female"): boolean {
+export function speak(
+  text: string,
+  lang = "fr-FR",
+  rate = 0.85,
+  gender: "female" | "male" = "female"
+): boolean {
   if (typeof window === "undefined") return false;
   const cleanText = text.trim();
   if (!cleanText) return false;
 
+  // Stop any currently playing audio track
   if (currentAudioPlayer) {
     currentAudioPlayer.pause();
     currentAudioPlayer = null;
   }
-  if (window.speechSynthesis) {
-    window.speechSynthesis.cancel();
+
+  // Auto-detect gender if male character markers are present in text
+  let finalGender = gender;
+  const lower = cleanText.toLowerCase();
+  if (
+    lower.includes("léo") ||
+    lower.includes("leo") ||
+    lower.includes("thomas") ||
+    lower.includes("paul") ||
+    lower.includes("marc") ||
+    lower.includes("monsieur") ||
+    lower.includes("coach leo") ||
+    lower.startsWith("fr: bonjour ! je m'appelle coach leo") ||
+    lower.startsWith("fr: bonjour ! je suis leo")
+  ) {
+    finalGender = "male";
   }
 
   const langCode = lang.toLowerCase().startsWith("en") ? "en" : "fr";
 
-  // Call neural TTS service
+  // Pre-create HTMLAudioElement to retain mobile browser autoplay permissions
+  const audio = new Audio();
+  currentAudioPlayer = audio;
+  if (onPlaybackStateChange) onPlaybackStateChange(true);
+
+  audio.onended = () => {
+    if (currentAudioPlayer === audio) currentAudioPlayer = null;
+    if (onPlaybackStateChange) onPlaybackStateChange(false);
+  };
+  audio.onerror = () => {
+    if (currentAudioPlayer === audio) currentAudioPlayer = null;
+    if (onPlaybackStateChange) onPlaybackStateChange(false);
+  };
+
+  // Call neural TTS backend service (which routes to Kokoro-82M, ElevenLabs, or OpenAI)
   apiFetch("/tts/speak", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text: cleanText, gender, lang: langCode }),
+    body: JSON.stringify({ text: cleanText, gender: finalGender, lang: langCode }),
   })
     .then(async (res) => {
       if (res.ok) {
         const json = await res.json();
         if (json.success && json.data?.audioUrl) {
-          const audio = new Audio(json.data.audioUrl);
-          currentAudioPlayer = audio;
+          let src = json.data.audioUrl;
+          if (src.startsWith("data:audio/mp3;base64,")) {
+            const rawBase64 = src.replace("data:audio/mp3;base64,", "");
+            const blob = base64ToBlob(rawBase64, "audio/mp3");
+            src = URL.createObjectURL(blob);
+          }
+          audio.src = src;
           audio.playbackRate = rate;
           audio.play().catch(() => {
-            fallbackSpeech(cleanText, lang, rate, gender);
+            playDirectHDFallback(cleanText, langCode, rate, audio);
           });
           return;
         }
       }
-      fallbackSpeech(cleanText, lang, rate, gender);
+      playDirectHDFallback(cleanText, langCode, rate, audio);
     })
     .catch(() => {
-      fallbackSpeech(cleanText, lang, rate, gender);
+      playDirectHDFallback(cleanText, langCode, rate, audio);
     });
 
   return true;
 }
 
-function fallbackSpeech(text: string, lang: string, rate: number, gender: "female" | "male") {
-  if (typeof window === "undefined" || !window.speechSynthesis) return;
+/**
+ * Direct 24kHz HD MP3 Audio Stream Fallback (Zero Browser Web TTS / Zero Robotic OS Voice)
+ */
+function playDirectHDFallback(text: string, langCode: string, rate: number, audio: HTMLAudioElement) {
   try {
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = lang;
-    u.rate = rate;
-
-    const langPrefix = lang.toLowerCase().startsWith("en") ? "en" : "fr";
-    const bestVoice = getBestVoice(langPrefix, gender);
-    if (bestVoice) u.voice = bestVoice;
-
-    window.speechSynthesis.speak(u);
-  } catch {}
+    const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text.slice(0, 200))}&tl=${langCode}&client=tw-ob`;
+    audio.src = audioUrl;
+    audio.playbackRate = rate;
+    audio.play().catch(() => {
+      if (onPlaybackStateChange) onPlaybackStateChange(false);
+    });
+  } catch {
+    if (onPlaybackStateChange) onPlaybackStateChange(false);
+  }
 }
 
 /**
@@ -141,37 +122,20 @@ function fallbackSpeech(text: string, lang: string, rate: number, gender: "femal
  */
 export function useSpeak() {
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const checkInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.speechSynthesis) {
-      window.speechSynthesis.getVoices();
-      window.speechSynthesis.onvoiceschanged = () => {
-        window.speechSynthesis.getVoices();
-      };
-    }
-  }, []);
-
-  const speakWithState = useCallback((text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female") => {
-    speak(text, lang, rate, gender);
-    setIsSpeaking(true);
-    if (checkInterval.current) clearInterval(checkInterval.current);
-    checkInterval.current = setInterval(() => {
-      if (!window.speechSynthesis || !window.speechSynthesis.speaking) {
-        setIsSpeaking(false);
-        if (checkInterval.current) {
-          clearInterval(checkInterval.current);
-          checkInterval.current = null;
-        }
-      }
-    }, 200);
-  }, []);
-
-  useEffect(() => {
+    onPlaybackStateChange = (playing) => setIsSpeaking(playing);
     return () => {
-      if (checkInterval.current) clearInterval(checkInterval.current);
+      onPlaybackStateChange = null;
     };
   }, []);
+
+  const speakWithState = useCallback(
+    (text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female") => {
+      speak(text, lang, rate, gender);
+    },
+    []
+  );
 
   return { speak: speakWithState, isSpeaking };
 }

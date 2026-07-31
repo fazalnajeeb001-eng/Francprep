@@ -1,7 +1,8 @@
 import crypto from 'crypto';
 import axios from 'axios';
 import TTSCache from '../models/TTSCache';
-import Settings from '../models/Settings';
+import { getOrCreate } from '../controllers/settings.controller';
+import { generateKokoroAudio } from './kokoro.service';
 
 function getHash(text: string, gender: string, lang: string, provider: string): string {
   return crypto.createHash('md5').update(`${text.trim().toLowerCase()}_${gender}_${lang}_${provider}`).digest('hex');
@@ -26,7 +27,21 @@ export async function generateNeuralAudio(
 
   // 1. Check MongoDB Cache first
   try {
-    const cached = await TTSCache.findOne({ textHash }).maxTimeMS(1500);
+    const settingsDoc = await getOrCreate();
+    settings = settingsDoc && (settingsDoc as any).toJSON ? (settingsDoc as any).toJSON() : settingsDoc;
+  } catch (err) {}
+
+  const preferredEngine = settings?.preferredVoiceEngine || 'auto';
+  const textHash = getHash(cleanText, gender, lang, preferredEngine);
+
+  const elevenLabsKey = process.env.ELEVENLABS_API_KEY || settings?.elevenLabsApiKey;
+  const huggingFaceToken = process.env.HUGGINGFACE_TOKEN || settings?.huggingFaceToken;
+  // Note: Only direct OpenAI keys (sk-...) support OpenAI TTS-1-HD. OpenRouter keys (sk-or-v1-...) do not support binary speech API.
+  const openaiKey = process.env.OPENAI_API_KEY || settings?.openaiApiKey;
+
+  // 1. Check MongoDB Cache first — ignore legacy robotic google- entries!
+  try {
+    const cached = await TTSCache.findOne({ textHash, voice: { $not: /^google-/ } }).maxTimeMS(1500);
     if (cached && cached.audioBase64) {
       return { audioBase64: cached.audioBase64, contentType: cached.contentType || 'audio/mp3', provider: `cache-${cached.voice}` };
     }
@@ -54,15 +69,8 @@ export async function generateNeuralAudio(
           responseType: 'arraybuffer',
           timeout: 12000,
         }
-      );
-
-      if (response.status === 200 && response.data) {
-        const audioBuffer = Buffer.from(response.data);
-        const audioBase64 = audioBuffer.toString('base64');
-        const contentType = 'audio/mp3';
-
-        TTSCache.create({ textHash, text: cleanText, voice: `elevenlabs-${voiceId}`, gender, audioBase64, contentType }).catch(() => {});
-        return { audioBase64, contentType, provider: 'elevenlabs' };
+      } catch (err: any) {
+        console.warn(`[ElevenLabs] Voice ${voiceId} synthesis error:`, err?.message);
       }
     } catch (err: any) {
       console.error('[TTS Service] ElevenLabs error:', err?.response?.data ? String(err.response.data) : err?.message);
@@ -105,11 +113,8 @@ export async function generateNeuralAudio(
 
     try {
       const voiceName = gender === 'male' ? 'onyx' : 'nova';
-      const isDirectOpenAI = openaiKey.startsWith('sk-');
-      const url = isDirectOpenAI ? 'https://api.openai.com/v1/audio/speech' : 'https://openrouter.ai/api/v1/audio/speech';
-
       const response = await axios.post(
-        url,
+        'https://api.openai.com/v1/audio/speech',
         { model: 'tts-1-hd', input: cleanText, voice: voiceName, speed: 0.95 },
         { headers: { Authorization: `Bearer ${openaiKey}`, 'Content-Type': 'application/json' }, responseType: 'arraybuffer', timeout: 12000 }
       );

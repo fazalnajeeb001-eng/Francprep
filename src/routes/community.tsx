@@ -34,6 +34,7 @@ import {
   MoreVertical,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { speak } from "~/lib/speech";
 
 export const Route = createFileRoute("/community")({
   component: CommunityExamHubPage,

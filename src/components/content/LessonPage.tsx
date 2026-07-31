@@ -3081,16 +3081,20 @@ function DELFAssessmentTabbedView({ assessmentData, assessmentSections, lesson7T
 
   // Normalize Section 1 (Listening Comprehension)
   if (isListeningSec || activeTab === 0) {
-    sec.instructions = "Listen to the audio scene and answer the comprehension questions below:";
+    sec.instructions = sec.instructions || "Listen to the audio scene and answer the comprehension questions below:";
     sec.points = sec.points || 3;
     
-    // If sourceText is missing or placeholder, provide dialogue for Lesson 7 / café scene
+    // Ensure sourceText is never empty for any listening exercise across all lessons
     const fullText = `${sec.instructions || ''} ${sec.title || ''} ${sec.questions?.[0]?.prompt || ''}`.toLowerCase();
     const cleanSource = (sec.sourceText || '').trim().toLowerCase();
-    if (!cleanSource || cleanSource.includes('complete the integrated practice') || cleanSource.includes('refer to lesson 7')) {
+    if (!cleanSource || cleanSource.includes('complete the integrated practice') || cleanSource.includes('refer to lesson')) {
       if (fullText.includes('café') || fullText.includes('vous') || fullText.includes('lesson 7')) {
         sec.sourceText = "(Le matin, dans un café. Une femme entre.)\n\nLa femme : Bonjour, Monsieur !\nLe serveur : Bonjour, Madame ! Comment allez-vous ?\nLa femme : Ça va bien, merci, et vous ?\nLe serveur : Ça va, je suis un peu fatigué, mais content ! Vous êtes nouvelle ici ?\nLa femme : Oui, je m'appelle Aline. Enchantée !\nLe serveur : Enchanté, Aline. Je m'appelle Julien.\n(Une autre femme arrive et reconnaît Aline.)\nLéa : Aline ?! Salut ! Comment ça va ?\nAline : Léa ! Salut ! Ça va bien, merci !\nLéa : On se tutoie depuis toujours, c'est bizarre de te voir ici !\nAline : Oui ! Excusez-moi, Julien, un café s'il vous plaît.\nJulien : Je vous en prie, tout de suite !";
         sec.translation = "(Morning, in a café. A woman enters.)\n\nThe woman: Good morning, sir!\nThe waiter: Good morning, Madam! How are you?\nThe woman: I'm doing well, thank you, and you?\nThe waiter: I'm okay, a little tired, but happy! Are you new here?\nThe woman: Yes, my name is Aline. Nice to meet you!\nThe waiter: Nice to meet you, Aline. My name is Julien.\n(Another woman arrives and recognizes Aline.)\nLéa: Aline?! Hi! How's it going?\nAline: Léa! Hi! I'm doing well, thanks!\nLéa: We've used \"tu\" with each other forever, it's strange to see you here!\nAline: Yes! Excuse me, Julien, a coffee please.\nJulien: You're welcome, right away!";
+      } else {
+        const qPrompts = (sec.questions || []).map((q: any) => q.prompt || q.question || '').filter(Boolean).join('. ');
+        const fallbackTxt = (lesson?.listening?.transcript || lesson?.listening?.audioScript || lesson?.scene?.text || qPrompts || `Bonjour et bienvenue dans l'exercice de compréhension orale de ${lesson?.title || 'cette leçon'}. Écoutez attentivement les questions et choisissez la bonne réponse.`).trim();
+        sec.sourceText = fallbackTxt;
       }
     }
 

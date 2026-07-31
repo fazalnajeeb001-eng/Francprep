@@ -3,7 +3,7 @@ import { Mic, Send, Volume2, RotateCcw, Bot, User, Sparkles } from "lucide-react
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
-import { getBestVoice, speak } from "~/lib/speech";
+import { speak } from "~/lib/speech";
 
 import { SmartAvatar } from "~/components/dashboard/widgets/SmartAvatar";
 
@@ -101,64 +101,14 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
 
   // Advanced Sub-Sentence Bilingual Audio Engine with Avatar Voice Matching
   const speakText = useCallback((text: string, baseRate: number = 0.85) => {
-    if (typeof window === "undefined" || !window.speechSynthesis) return;
     try {
-      window.speechSynthesis.cancel();
-
-      const chunks: { lang: "fr" | "en"; text: string }[] = [];
-      const cleanStr = (s: string) => s.replace(/^FR:\s*/i, "").replace(/^EN:\s*/i, "").replace(/[*_#`]/g, "").trim();
-
-      const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
-
-      for (const line of lines) {
-        if (/^(?:FR:|French:)/i.test(line)) {
-          const c = cleanStr(line);
-          if (c) chunks.push({ lang: "fr", text: c });
-        } else if (/^(?:EN:|English:)/i.test(line) || /^\([^)]+\)$/.test(line)) {
-          const c = cleanStr(line).replace(/^\(|\)$/g, "");
-          if (c) chunks.push({ lang: "en", text: c });
-        } else if (line.includes("💡") || /^(?:Note|Correction|Tip):/i.test(line)) {
-          const parts = line.split(/(["'][^"']+["']|\([^)]+\))/g);
-          for (const part of parts) {
-            const trimmed = part.trim();
-            if (!trimmed) continue;
-            if (/^["'].*["']$/.test(trimmed)) {
-              chunks.push({ lang: "fr", text: trimmed.replace(/^["']|["']$/g, "") });
-            } else if (/^\(.*\)$/.test(trimmed)) {
-              chunks.push({ lang: "en", text: trimmed.replace(/^\(|\)$/g, "") });
-            } else {
-              chunks.push({ lang: "en", text: cleanStr(trimmed) });
-            }
-          }
-        } else {
-          const parenMatch = line.match(/^(.*?)\s*\(([^)]+)\)$/);
-          if (parenMatch) {
-            const frText = cleanStr(parenMatch[1]);
-            const enText = cleanStr(parenMatch[2]);
-            if (frText) chunks.push({ lang: "fr", text: frText });
-            if (enText) chunks.push({ lang: "en", text: enText });
-          } else {
-            chunks.push({ lang: "fr", text: cleanStr(line) });
-          }
-        }
-      }
-
-      if (chunks.length === 0) {
-        chunks.push({ lang: "fr", text: cleanStr(text) });
-      }
-
-      const frenchVoice = getBestVoice("fr", avatarGender);
-      const englishVoice = getBestVoice("en", avatarGender);
-
-      const enRate = baseRate < 0.8 ? Math.max(0.65, baseRate * 0.95) : 0.95;
-
       setIsSpeaking(true);
       speak(text, "fr-FR", baseRate, avatarGender);
       setTimeout(() => setIsSpeaking(false), Math.min(8000, Math.max(2000, text.length * 80)));
     } catch {
       setIsSpeaking(false);
     }
-  }, []);
+  }, [avatarGender]);
 
   // Initialize with dynamic greeting
   useEffect(() => {
@@ -180,7 +130,6 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
   useEffect(() => {
     return () => {
       recognitionRef.current?.abort();
-      window.speechSynthesis?.cancel();
     };
   }, []);
 

@@ -61,6 +61,8 @@ const navGroups = [
     title: "Platform Management",
     items: [
       { label: "Module Progression & Gates 🔒", icon: Sliders, href: "/admin/gating" },
+      { label: "AI Voice & Engines 🤖", icon: Wand2, href: "/admin/ai-config" },
+      { label: "Stripe Payment Gateway 💳", icon: CreditCard, href: "/admin/stripe" },
       { label: "API Keys & Integrations 🔌", icon: Settings, href: "/admin/settings" },
       { label: "Users & Overrides", icon: Users, href: "/admin/users" },
       { label: "Subscriptions & Pricing", icon: CreditCard, href: "/admin/subscriptions" },

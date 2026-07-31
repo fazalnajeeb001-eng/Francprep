@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { StudyPod } from '../models/StudyPod';
-import { authenticateToken } from '../middleware/auth.middleware';
+import { authenticate } from '../middleware/auth';
 
 const router = Router();
 
 // GET active pods for current user
-router.get('/', authenticateToken, async (req: any, res: any) => {
+router.get('/', authenticate, async (req: any, res: any) => {
   try {
     const userId = req.user.id;
     const pods = await StudyPod.find({ 'members.userId': userId }).sort({ updatedAt: -1 });
@@ -16,7 +16,7 @@ router.get('/', authenticateToken, async (req: any, res: any) => {
 });
 
 // POST message or audio voice note to a Pod
-router.post('/:id/messages', authenticateToken, async (req: any, res: any) => {
+router.post('/:id/messages', authenticate, async (req: any, res: any) => {
   try {
     const { id } = req.params;
     const { text, audioSnippet } = req.body;
@@ -26,7 +26,7 @@ router.post('/:id/messages', authenticateToken, async (req: any, res: any) => {
     const pod = await StudyPod.findById(id);
     if (!pod) return res.status(404).json({ success: false, error: 'Pod not found' });
 
-    const isMember = pod.members.some((m) => m.userId === userId);
+    const isMember = pod.members.some((m: any) => m.userId === userId);
     if (!isMember) return res.status(403).json({ success: false, error: 'Not a member of this Pod' });
 
     const newMessage = {

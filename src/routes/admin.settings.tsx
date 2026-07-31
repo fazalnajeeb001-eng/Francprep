@@ -202,13 +202,30 @@ export function AdminSettingsPage() {
 
         {/* ─── AI LLM EVALUATOR KEYS CARD ─── */}
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className={`p-6 rounded-2xl border ${card} space-y-4`}>
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-200 dark:border-white/10 pb-3 gap-2">
             <h3 className="text-base font-extrabold flex items-center gap-2">
-              <Brain className="w-5 h-5 text-purple-400" /> Anthropic Claude & OpenRouter AI API Keys
+              <Brain className="w-5 h-5 text-purple-400" /> Voice Engines & AI API Keys
             </h3>
+            <Link to="/admin/ai-config" className="text-xs font-bold text-purple-400 hover:underline flex items-center gap-1">
+              🤖 Open Dedicated AI Voice Dashboard →
+            </Link>
           </div>
 
           <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold mb-1 text-emerald-400">HuggingFace Token (Powers Free Kokoro-82M Neural Speech Engine)</label>
+              <input
+                type="password"
+                value={form.huggingFaceToken}
+                onChange={(e) => setForm({ ...form, huggingFaceToken: e.target.value })}
+                placeholder="hf_..."
+                className={inp}
+              />
+              <p className={`text-[10px] ${txtSec} mt-1`}>
+                100% Free User Token available at <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noreferrer" className="text-emerald-400 underline">huggingface.co/settings/tokens</a> to power Kokoro-82M neural voices!
+              </p>
+            </div>
+
             <div>
               <label className="block text-xs font-bold mb-1">Anthropic API Key (Claude 3.5 Sonnet Content & Evaluation Engine)</label>
               <input
