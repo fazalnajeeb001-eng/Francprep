@@ -31,6 +31,7 @@ export function AdminAIConfigPage() {
     openRouterApiKey: "",
     openaiApiKey: "",
     elevenLabsApiKey: "",
+    huggingFaceToken: "",
     preferredVoiceEngine: "auto",
   });
 
@@ -49,6 +50,7 @@ export function AdminAIConfigPage() {
             openRouterApiKey: j.data.openRouterApiKey || "",
             openaiApiKey: j.data.openaiApiKey || "",
             elevenLabsApiKey: j.data.elevenLabsApiKey || "",
+            huggingFaceToken: j.data.huggingFaceToken || "",
             preferredVoiceEngine: j.data.preferredVoiceEngine || "auto",
           });
         }
@@ -75,12 +77,17 @@ export function AdminAIConfigPage() {
     setSaving(false);
   };
 
-  const handleClearCache = async () => {
-    if (!confirm("Are you sure you want to clear all cached audio entries from MongoDB? Future audio requests will be generated fresh.")) return;
+  const handleClearCache = async (engine: string = "all") => {
+    const label = engine === "all" ? "ALL cached audio entries" : `cached ${engine.toUpperCase()} audio entries`;
+    if (!confirm(`Are you sure you want to clear ${label} from MongoDB? Future requests will be generated fresh.`)) return;
     setClearing(true);
     setClearMsg("");
     try {
-      const res = await apiFetch("/settings/clear-audio-cache", { method: "POST" });
+      const res = await apiFetch("/settings/clear-audio-cache", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ engine })
+      });
       const json = await res.json();
       if (json.success) setClearMsg(json.message || "Audio cache cleared!");
       else setClearMsg(json.error || "Failed to clear cache");
@@ -187,6 +194,20 @@ export function AdminAIConfigPage() {
 
           <div className="space-y-4">
             <div>
+              <label className="block text-xs font-bold mb-1 text-emerald-400">HuggingFace Token (Powers Free Kokoro-82M Neural Speech Engine)</label>
+              <input
+                type="password"
+                value={form.huggingFaceToken}
+                onChange={(e) => setForm({ ...form, huggingFaceToken: e.target.value })}
+                placeholder="hf_..."
+                className={inp}
+              />
+              <p className={`text-[10px] ${txtSec} mt-1`}>
+                100% Free User Token available at <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noreferrer" className="text-emerald-400 underline">huggingface.co/settings/tokens</a> to power Kokoro-82M neural voices!
+              </p>
+            </div>
+
+            <div>
               <label className="block text-xs font-bold mb-1 text-pink-400">ElevenLabs API Key (100% Studio Real Human Voice Engine)</label>
               <input
                 type="password"
@@ -240,24 +261,53 @@ export function AdminAIConfigPage() {
 
         {/* ─── CACHE MANAGEMENT CARD ─── */}
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className={`p-6 rounded-2xl border ${card} space-y-4`}>
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-200 dark:border-white/10 pb-3 gap-3">
             <h3 className="text-base font-extrabold flex items-center gap-2 text-amber-400">
               <Trash2 className="w-5 h-5" /> MongoDB Audio Cache Management
             </h3>
 
-            <button
-              type="button"
-              onClick={handleClearCache}
-              disabled={clearing}
-              className="px-4 py-2 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 text-xs font-extrabold flex items-center gap-1.5 transition-all"
-            >
-              {clearing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
-              Clear Audio Cache
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => handleClearCache("kokoro")}
+                disabled={clearing}
+                className="px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold transition-all"
+              >
+                Clear Kokoro Cache
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleClearCache("elevenlabs")}
+                disabled={clearing}
+                className="px-3 py-1.5 rounded-lg bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 border border-pink-500/30 text-xs font-bold transition-all"
+              >
+                Clear ElevenLabs Cache
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleClearCache("openai")}
+                disabled={clearing}
+                className="px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs font-bold transition-all"
+              >
+                Clear OpenAI Cache
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleClearCache("all")}
+                disabled={clearing}
+                className="px-3.5 py-1.5 rounded-lg bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 text-xs font-extrabold flex items-center gap-1 transition-all"
+              >
+                {clearing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                Clear All Cache
+              </button>
+            </div>
           </div>
 
           <p className={`text-xs ${txtSec}`}>
-            Audio files generated by Kokoro-82M, ElevenLabs, or OpenAI are cached in MongoDB (`TTSCache`) for instant (under 50ms) playback for future students. Use <strong>Clear Audio Cache</strong> if you want to wipe cached audio and re-generate fresh audio using a newly selected engine.
+            Audio generated by each voice engine is stored separately in your MongoDB database (`TTSCache`). You can delete <strong>only Kokoro audio</strong>, <strong>only ElevenLabs audio</strong>, or <strong>all audio</strong> with 1 click without affecting the other engine caches!
           </p>
 
           {clearMsg && <p className="text-xs text-amber-400 font-bold pt-1">{clearMsg}</p>}

@@ -10,6 +10,7 @@ export interface ISettingsDocument extends Document {
   openRouterApiKey: string;
   openaiApiKey: string;
   elevenLabsApiKey: string;
+  huggingFaceToken: string;
   preferredVoiceEngine: 'auto' | 'elevenlabs' | 'openai' | 'kokoro';
   frontendUrl: string;
   updatedAt: Date;
@@ -26,6 +27,7 @@ const settingsSchema = new Schema<ISettingsDocument>(
     openRouterApiKey: { type: String, default: "" },
     openaiApiKey: { type: String, default: "" },
     elevenLabsApiKey: { type: String, default: "" },
+    huggingFaceToken: { type: String, default: "" },
     preferredVoiceEngine: { type: String, enum: ['auto', 'elevenlabs', 'openai', 'kokoro'], default: 'auto' },
     frontendUrl: { type: String, default: "" },
   },

@@ -96,7 +96,7 @@ export async function generateNeuralAudio(
   // 4. Kokoro-82M Open-Source Neural Voice Engine (100% Free)
   if (preferredEngine === 'auto' || preferredEngine === 'kokoro') {
     try {
-      const kokoroRes = await generateKokoroAudio(cleanText, gender, lang);
+      const kokoroRes = await generateKokoroAudio(cleanText, gender, lang, settings?.huggingFaceToken);
       if (kokoroRes) {
         TTSCache.create({
           textHash,
