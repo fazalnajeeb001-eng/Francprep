@@ -102,18 +102,22 @@ export function speak(text: string, lang = "fr-FR", rate = 0.85, gender: "female
       if (res.ok) {
         const json = await res.json();
         if (json.success && json.data?.audioUrl) {
+          console.log(`[FrancPrep Voice Engine] ✅ Playing AI Neural Audio! Provider: ${json.data.provider}`);
           const audio = new Audio(json.data.audioUrl);
           currentAudioPlayer = audio;
           audio.playbackRate = rate;
-          audio.play().catch(() => {
+          audio.play().catch((err) => {
+            console.warn("[FrancPrep Voice Engine] Audio element playback blocked by browser auto-play policy:", err);
             fallbackSpeech(cleanText, lang, rate, gender);
           });
           return;
         }
       }
+      console.warn("[FrancPrep Voice Engine] Backend TTS returned non-success response, using device fallback.");
       fallbackSpeech(cleanText, lang, rate, gender);
     })
-    .catch(() => {
+    .catch((err) => {
+      console.warn("[FrancPrep Voice Engine] Backend TTS network error:", err?.message || err, "using device fallback.");
       fallbackSpeech(cleanText, lang, rate, gender);
     });
 
