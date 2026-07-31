@@ -18,7 +18,7 @@ export async function getSettings(_req: Request, res: Response) {
 
 export async function updateSettings(req: Request, res: Response) {
   try {
-    const allowed = ['stripeSecretKey', 'stripePublishableKey', 'stripePremiumPriceId', 'stripeExamPrepPriceId', 'stripeWebhookSecret', 'anthropicApiKey', 'openRouterApiKey', 'openaiApiKey', 'elevenLabsApiKey', 'frontendUrl'];
+    const allowed = ['stripeSecretKey', 'stripePublishableKey', 'stripePremiumPriceId', 'stripeExamPrepPriceId', 'stripeWebhookSecret', 'anthropicApiKey', 'openRouterApiKey', 'openaiApiKey', 'elevenLabsApiKey', 'preferredVoiceEngine', 'frontendUrl'];
     const updates: any = {};
     for (const key of allowed) {
       if (req.body[key] !== undefined) updates[key] = req.body[key];
@@ -118,6 +118,16 @@ export async function getStripeKeys(_req: Request, res: Response) {
         hasWebhookSecret: !!settings.stripeWebhookSecret,
       },
     });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+}
+
+export async function clearAudioCache(_req: Request, res: Response) {
+  try {
+    const TTSCache = require('../models/TTSCache').default;
+    const result = await TTSCache.deleteMany({});
+    res.json({ success: true, message: `Successfully deleted ${result.deletedCount || 0} cached audio entries.` });
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });
   }

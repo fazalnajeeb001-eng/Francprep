@@ -10,5 +10,6 @@ router.post('/test-stripe', authenticate, authorize('admin'), settingsController
 router.post('/test-anthropic', authenticate, authorize('admin'), settingsController.testAnthropic);
 router.post('/test-openrouter', authenticate, authorize('admin'), settingsController.testOpenRouter);
 router.get('/stripe-keys', authenticate, authorize('admin'), settingsController.getStripeKeys);
+router.post('/clear-audio-cache', authenticate, authorize('admin'), settingsController.clearAudioCache);
 
 export default router;

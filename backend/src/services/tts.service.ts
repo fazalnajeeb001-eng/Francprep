@@ -2,9 +2,10 @@ import crypto from 'crypto';
 import axios from 'axios';
 import TTSCache from '../models/TTSCache';
 import Settings from '../models/Settings';
+import { generateKokoroAudio } from './kokoro.service';
 
-function getHash(text: string, gender: string, lang: string): string {
-  return crypto.createHash('md5').update(`${text.trim().toLowerCase()}_${gender}_${lang}`).digest('hex');
+function getHash(text: string, gender: string, lang: string, engine = 'auto'): string {
+  return crypto.createHash('md5').update(`${text.trim().toLowerCase()}_${gender}_${lang}_${engine}`).digest('hex');
 }
 
 export async function generateNeuralAudio(
@@ -15,7 +16,13 @@ export async function generateNeuralAudio(
   const cleanText = text.trim();
   if (!cleanText) return null;
 
-  const textHash = getHash(cleanText, gender, lang);
+  let settings: any = null;
+  try {
+    settings = await Settings.findOne().maxTimeMS(1500);
+  } catch (err) {}
+
+  const preferredEngine = settings?.preferredVoiceEngine || 'auto';
+  const textHash = getHash(cleanText, gender, lang, preferredEngine);
 
   // 1. Check MongoDB Cache first
   try {
@@ -27,16 +34,9 @@ export async function generateNeuralAudio(
     console.warn('[TTSCache] Error reading cache:', err);
   }
 
-  let settings: any = null;
-  try {
-    settings = await Settings.findOne().maxTimeMS(1500);
-  } catch (err) {
-    // Safe fallback
-  }
-
-  // 2. ElevenLabs Studio-Grade Human Voice API (If key configured)
+  // 2. ElevenLabs Studio-Grade Engine (If preferred or auto)
   const elevenLabsKey = process.env.ELEVENLABS_API_KEY || settings?.elevenLabsApiKey;
-  if (elevenLabsKey) {
+  if ((preferredEngine === 'auto' || preferredEngine === 'elevenlabs') && elevenLabsKey) {
     try {
       const voiceId = gender === 'male' ? 'ErXwobaYiN019PkySvjV' : '21m00Tcm4TlvDq8ikWAM';
       const response = await axios.post(
@@ -66,9 +66,9 @@ export async function generateNeuralAudio(
     }
   }
 
-  // 3. OpenAI TTS-1-HD Studio Voice API (If key configured)
+  // 3. OpenAI TTS-1-HD Studio Voice API
   const openaiKey = process.env.OPENAI_API_KEY || settings?.openaiApiKey || settings?.openRouterApiKey;
-  if (openaiKey) {
+  if ((preferredEngine === 'auto' || preferredEngine === 'openai') && openaiKey) {
     try {
       const voiceName = gender === 'male' ? 'onyx' : 'nova';
       const isDirectOpenAI = openaiKey.startsWith('sk-');
@@ -93,7 +93,27 @@ export async function generateNeuralAudio(
     }
   }
 
-  // 4. Emergency Google Audio fallback (used if no AI key configured)
+  // 4. Kokoro-82M Open-Source Neural Voice Engine (100% Free)
+  if (preferredEngine === 'auto' || preferredEngine === 'kokoro') {
+    try {
+      const kokoroRes = await generateKokoroAudio(cleanText, gender, lang);
+      if (kokoroRes) {
+        TTSCache.create({
+          textHash,
+          text: cleanText,
+          voice: kokoroRes.provider,
+          gender,
+          audioBase64: kokoroRes.audioBase64,
+          contentType: kokoroRes.contentType,
+        }).catch(() => {});
+        return kokoroRes;
+      }
+    } catch (err: any) {
+      console.warn('[TTS Service] Kokoro error:', err?.message);
+    }
+  }
+
+  // 5. Emergency Google Audio fallback
   try {
     const encodedText = encodeURIComponent(cleanText);
     const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=${lang === 'en' ? 'en' : 'fr'}&client=tw-ob`;
