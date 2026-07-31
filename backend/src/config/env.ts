@@ -2,7 +2,9 @@ import dotenv from 'dotenv';
 import path from 'path';
 import crypto from 'crypto';
 
-dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: true });
+dotenv.config({ path: path.resolve(process.cwd(), '.env'), override: true });
+dotenv.config({ path: path.resolve(process.cwd(), 'backend/.env'), override: true });
+dotenv.config();
 
 // Generate a random secret at startup if not provided — ensures the server
 // always starts, even if env vars are missing. Set JWT_ACCESS_SECRET and
