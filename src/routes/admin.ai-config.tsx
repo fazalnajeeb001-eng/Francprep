@@ -126,6 +126,63 @@ export function AdminAIConfigPage() {
           </button>
         </div>
 
+        {/* ─── LIVE ACTIVE ENGINE STATUS BANNER ─── */}
+        {(() => {
+          let activeEngine = "google";
+          let activeTitle = "⚠️ Emergency Google Audio Fallback Active";
+          let activeDesc = "No active key/token found. Enter a HuggingFace Token, ElevenLabs Key, or OpenAI Key below to activate Neural Voice!";
+          let badgeColor = "bg-amber-500/10 border-amber-500/30 text-amber-300";
+
+          if (form.preferredVoiceEngine === "elevenlabs" && form.elevenLabsApiKey) {
+            activeEngine = "elevenlabs";
+            activeTitle = "🌸 ELEVENLABS STUDIO ACTIVE";
+            activeDesc = "100% Studio Real Human Voices (Rachel female / Antoni male) are actively serving speech.";
+            badgeColor = "bg-pink-500/10 border-pink-500/30 text-pink-400";
+          } else if (form.preferredVoiceEngine === "openai" && form.openaiApiKey) {
+            activeEngine = "openai";
+            activeTitle = "⚡ OPENAI HD ACTIVE";
+            activeDesc = "OpenAI tts-1-hd Voices (Nova female / Onyx male) are actively serving speech.";
+            badgeColor = "bg-cyan-500/10 border-cyan-500/30 text-cyan-400";
+          } else if (form.preferredVoiceEngine === "kokoro" && form.huggingFaceToken) {
+            activeEngine = "kokoro";
+            activeTitle = "🌿 KOKORO-82M FREE NEURAL ENGINE ACTIVE";
+            activeDesc = "100% Free Open-Source Neural Speech (ff_siwis female / bm_george male) is actively serving speech.";
+            badgeColor = "bg-emerald-500/10 border-emerald-500/30 text-emerald-400";
+          } else if (form.preferredVoiceEngine === "auto") {
+            if (form.elevenLabsApiKey) {
+              activeEngine = "elevenlabs";
+              activeTitle = "🌸 AUTO CHOSE: ELEVENLABS STUDIO (TOP PRIORITY)";
+              activeDesc = "ElevenLabs studio voices are active as top priority engine.";
+              badgeColor = "bg-pink-500/10 border-pink-500/30 text-pink-400";
+            } else if (form.openaiApiKey) {
+              activeEngine = "openai";
+              activeTitle = "⚡ AUTO CHOSE: OPENAI HD (2ND PRIORITY)";
+              activeDesc = "OpenAI tts-1-hd voices are active as secondary priority engine.";
+              badgeColor = "bg-cyan-500/10 border-cyan-500/30 text-cyan-400";
+            } else if (form.huggingFaceToken) {
+              activeEngine = "kokoro";
+              activeTitle = "🌿 AUTO CHOSE: KOKORO-82M FREE NEURAL ENGINE";
+              activeDesc = "Kokoro-82M serverless inference is active as free neural speech engine.";
+              badgeColor = "bg-emerald-500/10 border-emerald-500/30 text-emerald-400";
+            }
+          }
+
+          return (
+            <div className={`p-4 rounded-2xl border ${badgeColor} flex items-center justify-between gap-4 font-mono shadow-sm`}>
+              <div className="space-y-0.5">
+                <div className="text-xs font-black tracking-wide flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-current animate-pulse" />
+                  {activeTitle}
+                </div>
+                <p className="text-[11px] opacity-80">{activeDesc}</p>
+              </div>
+              <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded bg-black/20 border border-current">
+                {activeEngine.toUpperCase()}
+              </span>
+            </div>
+          );
+        })()}
+
         {/* ─── PREFERRED VOICE ENGINE SELECTOR CARD ─── */}
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className={`p-6 rounded-2xl border ${card} space-y-4`}>
           <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-3">
