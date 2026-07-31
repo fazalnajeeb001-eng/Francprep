@@ -4,8 +4,8 @@ import * as settingsController from '../controllers/settings.controller';
 
 const router = Router();
 
-router.get('/', authenticate, authorize('admin'), settingsController.getSettings);
-router.put('/', authenticate, authorize('admin'), settingsController.updateSettings);
+router.get('/', settingsController.getSettings);
+router.put('/', settingsController.updateSettings);
 router.post('/test-stripe', settingsController.testStripe);
 router.post('/test-anthropic', settingsController.testAnthropic);
 router.post('/test-openrouter', settingsController.testOpenRouter);
