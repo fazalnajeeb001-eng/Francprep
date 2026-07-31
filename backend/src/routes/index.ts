@@ -22,7 +22,7 @@ import { SystemSettings } from '../models/SystemSettings';
 
 const router = Router();
 router.get('/health', (_req, res) => {
-  res.status(200).json({ success: true, message: 'FrancPrep API is running', timestamp: new Date().toISOString() });
+  res.status(200).json({ success: true, version: '1.0.v99', message: 'FrancPrep API is running', timestamp: new Date().toISOString() });
 });
 
 router.get('/subscriptions/plans', async (_req, res) => {
