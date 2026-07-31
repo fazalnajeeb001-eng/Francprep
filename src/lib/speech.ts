@@ -1,4 +1,12 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+// Pre-warm browser voices on load
+if (typeof window !== "undefined" && window.speechSynthesis) {
+  window.speechSynthesis.getVoices();
+  if (window.speechSynthesis.onvoiceschanged !== undefined) {
+    window.speechSynthesis.onvoiceschanged = () => {
+      try { window.speechSynthesis.getVoices(); } catch {}
+    };
+  }
+}
 
 /**
  * Voice Selector Helper: Finds the highest-definition Neural/Natural voice available on the device,
@@ -6,7 +14,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
  */
 export function getBestVoice(langPrefix: "fr" | "en", gender: "female" | "male" = "female"): SpeechSynthesisVoice | null {
   if (typeof window === "undefined" || !window.speechSynthesis) return null;
-  const voices = window.speechSynthesis.getVoices();
+  let voices = window.speechSynthesis.getVoices();
   if (!voices || voices.length === 0) return null;
 
   const targetVoices = voices.filter((v) => v.lang.toLowerCase().startsWith(langPrefix));

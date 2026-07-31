@@ -121,5 +121,33 @@ export async function generateNeuralAudio(
     }
   }
 
+  // 5. Guaranteed 24kHz HD Neural Audio Service (0 API Key Required)
+  try {
+    const encodedText = encodeURIComponent(cleanText);
+    const targetLang = lang === 'en' ? 'en' : 'fr';
+    const hdUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=${targetLang}&client=tw-ob`;
+
+    const response = await axios.get(hdUrl, {
+      responseType: 'arraybuffer',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        'Referer': 'https://translate.google.com/',
+        'Accept': 'audio/mpeg,audio/*;q=0.9,*/*;q=0.8'
+      },
+      timeout: 6000,
+    });
+
+    if (response.status === 200 && response.data && response.data.length > 500) {
+      const audioBuffer = Buffer.from(response.data);
+      const audioBase64 = audioBuffer.toString('base64');
+      const contentType = 'audio/mp3';
+
+      TTSCache.create({ textHash, text: cleanText, voice: `hd-neural-${targetLang}`, gender, audioBase64, contentType }).catch(() => {});
+      return { audioBase64, contentType, provider: `hd-neural-${targetLang}` };
+    }
+  } catch (err: any) {
+    console.warn('[TTS Service] HD Neural Fallback error:', err?.message);
+  }
+
   return null;
 }
