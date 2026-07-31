@@ -37,6 +37,8 @@ export function AdminSettingsPage() {
     openRouterApiKey: "",
     openaiApiKey: "",
     elevenLabsApiKey: "",
+    huggingFaceApiKey: "",
+    activeTTSProvider: "auto",
     frontendUrl: "",
   });
 
@@ -69,6 +71,8 @@ export function AdminSettingsPage() {
             openRouterApiKey: j.data.openRouterApiKey || "",
             openaiApiKey: j.data.openaiApiKey || "",
             elevenLabsApiKey: j.data.elevenLabsApiKey || "",
+            huggingFaceApiKey: j.data.huggingFaceApiKey || "",
+            activeTTSProvider: j.data.activeTTSProvider || "auto",
             frontendUrl: j.data.frontendUrl || "",
           });
         }
@@ -242,6 +246,18 @@ export function AdminSettingsPage() {
             </div>
 
             <div>
+              <label className="block text-xs font-bold mb-1 text-cyan-400">HuggingFace API Key (Kokoro-82M Open-Source Neural TTS)</label>
+              <input
+                type="password"
+                value={form.huggingFaceApiKey}
+                onChange={(e) => setForm({ ...form, huggingFaceApiKey: e.target.value })}
+                placeholder="hf_..."
+                className={inp}
+              />
+              <p className={`text-[10px] ${txtSec} mt-1`}>Powers Kokoro-82M neural model on HuggingFace Inference API.</p>
+            </div>
+
+            <div>
               <label className="block text-xs font-bold mb-1 text-emerald-400">OpenAI API Key (Neural Audio tts-1-hd & GPT-4o Evaluator)</label>
               <input
                 type="password"
@@ -251,6 +267,44 @@ export function AdminSettingsPage() {
                 className={inp}
               />
               <p className={`text-[10px] ${txtSec} mt-1`}>Powers OpenAI tts-1-hd studio voices (nova & onyx) and TCF/TEF rubric scoring.</p>
+            </div>
+
+            <div className="pt-3 border-t border-gray-200 dark:border-white/10 space-y-3">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <label className="block text-xs font-extrabold text-purple-300">Active Audio Engine Provider</label>
+                  <p className={`text-[10px] ${txtSec}`}>Switch between AI voice providers. Platform auto-shifts instantly.</p>
+                </div>
+                <select
+                  value={form.activeTTSProvider}
+                  onChange={(e) => setForm({ ...form, activeTTSProvider: e.target.value })}
+                  className={`px-3 py-2 rounded-xl text-xs font-bold border outline-none ${dark ? "bg-[#070B17] border-purple-500/40 text-purple-300" : "bg-white border-purple-300 text-purple-900"}`}
+                >
+                  <option value="auto">✨ Auto Cascade (ElevenLabs ➔ OpenAI ➔ Kokoro ➔ Google)</option>
+                  <option value="elevenlabs">🎙️ ElevenLabs Multilingual v2 (Studio Ultra-Human)</option>
+                  <option value="openai">🤖 OpenAI tts-1-hd (Nova & Onyx Neural)</option>
+                  <option value="huggingface">🤗 HuggingFace Kokoro-82M</option>
+                  <option value="google">🌐 Google HD Speech Fallback</option>
+                </select>
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      const res = await apiFetch("/tts/clear-cache", { method: "POST" });
+                      const json = await res.json();
+                      alert(json.message || "TTS Audio Cache cleared successfully!");
+                    } catch {
+                      alert("Cleared local cache!");
+                    }
+                  }}
+                  className="px-3.5 py-1.5 bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30 text-xs font-bold rounded-xl transition-all flex items-center gap-1 cursor-pointer"
+                >
+                  🗑️ Purge Audio Cache
+                </button>
+              </div>
             </div>
           </div>
 

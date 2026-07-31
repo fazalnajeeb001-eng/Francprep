@@ -10,6 +10,8 @@ export interface ISettingsDocument extends Document {
   openRouterApiKey: string;
   openaiApiKey: string;
   elevenLabsApiKey: string;
+  huggingFaceApiKey: string;
+  activeTTSProvider: 'auto' | 'elevenlabs' | 'openai' | 'huggingface' | 'google';
   frontendUrl: string;
   updatedAt: Date;
 }
@@ -25,6 +27,8 @@ const settingsSchema = new Schema<ISettingsDocument>(
     openRouterApiKey: { type: String, default: "" },
     openaiApiKey: { type: String, default: "" },
     elevenLabsApiKey: { type: String, default: "" },
+    huggingFaceApiKey: { type: String, default: "" },
+    activeTTSProvider: { type: String, enum: ['auto', 'elevenlabs', 'openai', 'huggingface', 'google'], default: 'auto' },
     frontendUrl: { type: String, default: "" },
   },
   { timestamps: true }
@@ -39,6 +43,7 @@ settingsSchema.set('toJSON', {
     if (ret.openRouterApiKey) ret.openRouterApiKey = ret.openRouterApiKey.slice(0, 8) + "..." + ret.openRouterApiKey.slice(-4);
     if (ret.openaiApiKey) ret.openaiApiKey = ret.openaiApiKey.slice(0, 8) + "..." + ret.openaiApiKey.slice(-4);
     if (ret.elevenLabsApiKey) ret.elevenLabsApiKey = ret.elevenLabsApiKey.slice(0, 8) + "..." + ret.elevenLabsApiKey.slice(-4);
+    if (ret.huggingFaceApiKey) ret.huggingFaceApiKey = ret.huggingFaceApiKey.slice(0, 8) + "..." + ret.huggingFaceApiKey.slice(-4);
     if (ret.stripeWebhookSecret) ret.stripeWebhookSecret = ret.stripeWebhookSecret.slice(0, 8) + "..." + ret.stripeWebhookSecret.slice(-4);
     return ret;
   },

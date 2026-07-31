@@ -581,14 +581,9 @@ function CommunityExamHubPage() {
                             <span className="truncate italic">🇫🇷 "{req.frenchAudioIntro}"</span>
                             <button
                               onClick={() => {
-                                if (!window.speechSynthesis) return;
-                                window.speechSynthesis.cancel();
-                                const u = new SpeechSynthesisUtterance(req.frenchAudioIntro!);
-                                u.lang = "fr-FR";
-                                u.rate = 0.9;
-                                window.speechSynthesis.speak(u);
+                                speak(req.frenchAudioIntro!, "fr-FR", 0.9, "female");
                               }}
-                              className="px-2 py-0.5 rounded bg-emerald-500/30 text-emerald-200 hover:bg-emerald-500/50 text-[10px] font-extrabold shrink-0"
+                              className="px-2 py-0.5 rounded bg-emerald-500/30 text-emerald-200 hover:bg-emerald-500/50 text-[10px] font-extrabold shrink-0 flex items-center gap-1 cursor-pointer"
                             >
                               🔊 Play
                             </button>
@@ -715,12 +710,7 @@ function CommunityExamHubPage() {
                       <span>🇫🇷 "{post.frenchSnippet}"</span>
                       <button
                         onClick={() => {
-                          if (!window.speechSynthesis) return;
-                          window.speechSynthesis.cancel();
-                          const u = new SpeechSynthesisUtterance(post.frenchSnippet!);
-                          u.lang = "fr-FR";
-                          u.rate = 0.9;
-                          window.speechSynthesis.speak(u);
+                          speak(post.frenchSnippet!, "fr-FR", 0.9, "female");
                         }}
                         className="p-1.5 rounded-lg bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 transition-colors shrink-0 not-italic font-sans text-[11px] flex items-center gap-1 cursor-pointer"
                         title="Listen Pronunciation"
@@ -758,14 +748,9 @@ function CommunityExamHubPage() {
 
                     <button
                       onClick={() => {
-                        if (!window.speechSynthesis) return;
-                        window.speechSynthesis.cancel();
-                        const u = new SpeechSynthesisUtterance(post.title + ". " + post.content);
-                        u.lang = "fr-FR";
-                        u.rate = 0.9;
-                        window.speechSynthesis.speak(u);
+                        speak(post.title + ". " + post.content, "fr-FR", 0.9, "female");
                       }}
-                      className={`hidden sm:flex items-center gap-1 text-[11px] font-bold transition-all ${dark ? "text-purple-400 hover:text-purple-300" : "text-purple-700 hover:text-purple-900"}`}
+                      className={`hidden sm:flex items-center gap-1 text-[11px] font-bold transition-all cursor-pointer ${dark ? "text-purple-400 hover:text-purple-300" : "text-purple-700 hover:text-purple-900"}`}
                     >
                       <Volume2 className="w-3.5 h-3.5" /> Listen Audio
                     </button>
