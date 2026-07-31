@@ -73,9 +73,20 @@ export function getBestVoice(langPrefix: "fr" | "en", gender: "female" | "male" 
 import { apiFetch } from "~/lib/apiFetch";
 
 let currentAudioPlayer: HTMLAudioElement | null = null;
+let onPlaybackStateChange: ((playing: boolean) => void) | null = null;
+
+function base64ToBlob(base64: string, contentType = "audio/mp3"): Blob {
+  const byteCharacters = atob(base64);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  return new Blob([byteArray], { type: contentType });
+}
 
 /**
- * Text-to-speech helper. Uses Neural AI Voices via /api/tts/speak and falls back to HD browser voice.
+ * Text-to-speech helper. Uses Neural AI Voices via /api/tts/speak.
  */
 export function speak(text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female"): boolean {
   if (typeof window === "undefined") return false;
@@ -92,6 +103,20 @@ export function speak(text: string, lang = "fr-FR", rate = 0.85, gender: "female
 
   const langCode = lang.toLowerCase().startsWith("en") ? "en" : "fr";
 
+  // Pre-create audio element to retain browser autoplay permissions
+  const audio = new Audio();
+  currentAudioPlayer = audio;
+  if (onPlaybackStateChange) onPlaybackStateChange(true);
+
+  audio.onended = () => {
+    if (currentAudioPlayer === audio) currentAudioPlayer = null;
+    if (onPlaybackStateChange) onPlaybackStateChange(false);
+  };
+  audio.onerror = () => {
+    if (currentAudioPlayer === audio) currentAudioPlayer = null;
+    if (onPlaybackStateChange) onPlaybackStateChange(false);
+  };
+
   // Call neural TTS service
   apiFetch("/tts/speak", {
     method: "POST",
@@ -102,8 +127,13 @@ export function speak(text: string, lang = "fr-FR", rate = 0.85, gender: "female
       if (res.ok) {
         const json = await res.json();
         if (json.success && json.data?.audioUrl) {
-          const audio = new Audio(json.data.audioUrl);
-          currentAudioPlayer = audio;
+          let src = json.data.audioUrl;
+          if (src.startsWith("data:audio/mp3;base64,")) {
+            const rawBase64 = src.replace("data:audio/mp3;base64,", "");
+            const blob = base64ToBlob(rawBase64, "audio/mp3");
+            src = URL.createObjectURL(blob);
+          }
+          audio.src = src;
           audio.playbackRate = rate;
           audio.play().catch(() => {
             fallbackSpeech(cleanText, lang, rate, gender);
@@ -132,6 +162,13 @@ function fallbackSpeech(text: string, lang: string, rate: number, gender: "femal
     const bestVoice = getBestVoice(langPrefix, gender);
     if (bestVoice) u.voice = bestVoice;
 
+    u.onend = () => {
+      if (onPlaybackStateChange) onPlaybackStateChange(false);
+    };
+    u.onerror = () => {
+      if (onPlaybackStateChange) onPlaybackStateChange(false);
+    };
+
     window.speechSynthesis.speak(u);
   } catch {}
 }
@@ -141,36 +178,16 @@ function fallbackSpeech(text: string, lang: string, rate: number, gender: "femal
  */
 export function useSpeak() {
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const checkInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.speechSynthesis) {
-      window.speechSynthesis.getVoices();
-      window.speechSynthesis.onvoiceschanged = () => {
-        window.speechSynthesis.getVoices();
-      };
-    }
+    onPlaybackStateChange = (playing) => setIsSpeaking(playing);
+    return () => {
+      onPlaybackStateChange = null;
+    };
   }, []);
 
   const speakWithState = useCallback((text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female") => {
     speak(text, lang, rate, gender);
-    setIsSpeaking(true);
-    if (checkInterval.current) clearInterval(checkInterval.current);
-    checkInterval.current = setInterval(() => {
-      if (!window.speechSynthesis || !window.speechSynthesis.speaking) {
-        setIsSpeaking(false);
-        if (checkInterval.current) {
-          clearInterval(checkInterval.current);
-          checkInterval.current = null;
-        }
-      }
-    }, 200);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (checkInterval.current) clearInterval(checkInterval.current);
-    };
   }, []);
 
   return { speak: speakWithState, isSpeaking };
