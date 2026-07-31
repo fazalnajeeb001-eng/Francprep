@@ -12,7 +12,9 @@ import {
   Trash2,
   Sparkles,
   ShieldCheck,
-  CheckCircle2
+  CheckCircle2,
+  Eye,
+  EyeOff
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 
@@ -25,6 +27,7 @@ export function AdminAIConfigPage() {
   const [clearing, setClearing] = useState(false);
   const [saveMsg, setSaveMsg] = useState("");
   const [clearMsg, setClearMsg] = useState("");
+  const [showKeys, setShowKeys] = useState<{ [key: string]: boolean }>({});
 
   const [form, setForm] = useState({
     anthropicApiKey: "",
@@ -293,13 +296,22 @@ export function AdminAIConfigPage() {
                   <span>{testingKey === "kokoro" ? "Testing..." : "Test Connection"}</span>
                 </button>
               </div>
-              <input
-                type="password"
-                value={form.huggingFaceToken}
-                onChange={(e) => setForm({ ...form, huggingFaceToken: e.target.value })}
-                placeholder="hf_..."
-                className={inp}
-              />
+              <div className="relative flex items-center">
+                <input
+                  type={showKeys.huggingFaceToken ? "text" : "password"}
+                  value={form.huggingFaceToken}
+                  onChange={(e) => setForm({ ...form, huggingFaceToken: e.target.value })}
+                  placeholder="hf_..."
+                  className={`${inp} pr-10`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowKeys((prev) => ({ ...prev, huggingFaceToken: !prev.huggingFaceToken }))}
+                  className="absolute right-3 text-gray-400 hover:text-white transition-colors"
+                >
+                  {showKeys.huggingFaceToken ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
               {testResult.kokoro && (
                 <p className={`text-[10px] font-bold mt-1 ${testResult.kokoro.success ? "text-emerald-400" : "text-red-400"}`}>
                   {testResult.kokoro.success ? "🟢 " : "🔴 "}{testResult.kokoro.msg}
@@ -323,13 +335,22 @@ export function AdminAIConfigPage() {
                   <span>{testingKey === "elevenlabs" ? "Testing..." : "Test Connection"}</span>
                 </button>
               </div>
-              <input
-                type="password"
-                value={form.elevenLabsApiKey}
-                onChange={(e) => setForm({ ...form, elevenLabsApiKey: e.target.value })}
-                placeholder="xi-api-key-..."
-                className={inp}
-              />
+              <div className="relative flex items-center">
+                <input
+                  type={showKeys.elevenLabsApiKey ? "text" : "password"}
+                  value={form.elevenLabsApiKey}
+                  onChange={(e) => setForm({ ...form, elevenLabsApiKey: e.target.value })}
+                  placeholder="xi-api-key-..."
+                  className={`${inp} pr-10`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowKeys((prev) => ({ ...prev, elevenLabsApiKey: !prev.elevenLabsApiKey }))}
+                  className="absolute right-3 text-gray-400 hover:text-white transition-colors"
+                >
+                  {showKeys.elevenLabsApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
               {testResult.elevenlabs && (
                 <p className={`text-[10px] font-bold mt-1 ${testResult.elevenlabs.success ? "text-emerald-400" : "text-red-400"}`}>
                   {testResult.elevenlabs.success ? "🟢 " : "🔴 "}{testResult.elevenlabs.msg}
@@ -340,13 +361,22 @@ export function AdminAIConfigPage() {
 
             <div>
               <label className="block text-xs font-bold mb-1 text-cyan-400">OpenAI API Key (Neural Audio tts-1-hd & GPT-4o Evaluator)</label>
-              <input
-                type="password"
-                value={form.openaiApiKey}
-                onChange={(e) => setForm({ ...form, openaiApiKey: e.target.value })}
-                placeholder="sk-..."
-                className={inp}
-              />
+              <div className="relative flex items-center">
+                <input
+                  type={showKeys.openaiApiKey ? "text" : "password"}
+                  value={form.openaiApiKey}
+                  onChange={(e) => setForm({ ...form, openaiApiKey: e.target.value })}
+                  placeholder="sk-..."
+                  className={`${inp} pr-10`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowKeys((prev) => ({ ...prev, openaiApiKey: !prev.openaiApiKey }))}
+                  className="absolute right-3 text-gray-400 hover:text-white transition-colors"
+                >
+                  {showKeys.openaiApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
               <p className={`text-[10px] ${txtSec} mt-1`}>Powers OpenAI tts-1-hd studio voices (nova & onyx) and TCF/TEF rubric scoring.</p>
             </div>
 
@@ -363,13 +393,22 @@ export function AdminAIConfigPage() {
                   <span>{testingKey === "anthropic" ? "Testing..." : "Test Connection"}</span>
                 </button>
               </div>
-              <input
-                type="password"
-                value={form.anthropicApiKey}
-                onChange={(e) => setForm({ ...form, anthropicApiKey: e.target.value })}
-                placeholder="sk-ant-api03-..."
-                className={inp}
-              />
+              <div className="relative flex items-center">
+                <input
+                  type={showKeys.anthropicApiKey ? "text" : "password"}
+                  value={form.anthropicApiKey}
+                  onChange={(e) => setForm({ ...form, anthropicApiKey: e.target.value })}
+                  placeholder="sk-ant-api03-..."
+                  className={`${inp} pr-10`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowKeys((prev) => ({ ...prev, anthropicApiKey: !prev.anthropicApiKey }))}
+                  className="absolute right-3 text-gray-400 hover:text-white transition-colors"
+                >
+                  {showKeys.anthropicApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
               {testResult.anthropic && (
                 <p className={`text-[10px] font-bold mt-1 ${testResult.anthropic.success ? "text-emerald-400" : "text-red-400"}`}>
                   {testResult.anthropic.success ? "🟢 " : "🔴 "}{testResult.anthropic.msg}
