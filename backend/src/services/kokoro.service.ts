@@ -26,31 +26,38 @@ export async function generateKokoroAudio(
 
   const token = hfToken || process.env.HUGGINGFACE_TOKEN || process.env.HF_TOKEN || '';
 
-  // 1. Official HuggingFace Inference API Endpoint
-  try {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
+  // 1. Official HuggingFace Router Endpoint
+  const endpoints = [
+    'https://router.huggingface.co/hf-inference/models/hexgrad/Kokoro-82M',
+    'https://api-inference.huggingface.co/models/hexgrad/Kokoro-82M'
+  ];
 
-    const response = await axios.post(
-      'https://router.huggingface.co/hf-inference/models/hexgrad/Kokoro-82M',
-      { inputs: cleanText, parameters: { voice } },
-      { headers, responseType: 'arraybuffer', timeout: 10000 }
-    );
-
-    if (response.status === 200 && response.data) {
-      const audioBuffer = Buffer.from(response.data);
-      if (audioBuffer.length > 500) {
-        return {
-          audioBase64: audioBuffer.toString('base64'),
-          contentType: 'audio/mp3',
-          provider: `kokoro-${voice}`,
-        };
+  for (const ep of endpoints) {
+    try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
       }
+
+      const response = await axios.post(
+        ep,
+        { inputs: cleanText, parameters: { voice } },
+        { headers, responseType: 'arraybuffer', timeout: 8000 }
+      );
+
+      if (response.status === 200 && response.data) {
+        const audioBuffer = Buffer.from(response.data);
+        if (audioBuffer.length > 500) {
+          return {
+            audioBase64: audioBuffer.toString('base64'),
+            contentType: 'audio/mp3',
+            provider: `kokoro-${voice}`,
+          };
+        }
+      }
+    } catch (err: any) {
+      console.warn(`[Kokoro Service] ${ep} error:`, err?.message || err);
     }
-  } catch (err: any) {
-    console.warn('[Kokoro Service] HF Inference error:', err?.message || err);
   }
 
   return null;

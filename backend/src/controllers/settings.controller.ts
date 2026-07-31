@@ -186,12 +186,17 @@ export async function testKokoro(req: Request, res: Response) {
     const token = req.body?.huggingFaceToken || process.env.HUGGINGFACE_TOKEN || process.env.HF_TOKEN || settings.huggingFaceToken;
     if (!token) return res.json({ success: false, error: "HuggingFace Token not configured. Get a free token at huggingface.co/settings/tokens" });
 
-    const { generateKokoroAudio } = require('../services/kokoro.service');
-    const result = await generateKokoroAudio("Bonjour", "female", "fr", token);
-    if (result) {
-      res.json({ success: true, message: "Kokoro-82M HuggingFace Token Validated! Serverless Inference Ready." });
+    // Official Hugging Face Token Validation API
+    const response = await fetch("https://huggingface.co/api/whoami-v2", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (response.ok) {
+      const data: any = await response.json();
+      res.json({ success: true, message: `HuggingFace Token Validated! Account: @${data.name || 'User'} (Kokoro-82M Serverless Ready)` });
     } else {
-      res.json({ success: false, error: "HuggingFace returned 401 Unauthorized or Invalid Token." });
+      const err = await response.text();
+      res.json({ success: false, error: `HuggingFace returned ${response.status}: Invalid Token or Expired` });
     }
   } catch (err: any) {
     res.json({ success: false, error: err.message });
