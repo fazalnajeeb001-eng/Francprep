@@ -1,3 +1,5 @@
+import { useState, useEffect, useRef, useCallback } from "react";
+
 // Pre-warm browser voices on load
 if (typeof window !== "undefined" && window.speechSynthesis) {
   window.speechSynthesis.getVoices();
