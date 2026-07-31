@@ -52,7 +52,14 @@ export function speak(
     finalGender = "male";
   }
 
-  const langCode = lang.toLowerCase().startsWith("en") ? "en" : "fr";
+  // Auto-detect language if text is predominantly English vs French
+  let langCode = lang.toLowerCase().startsWith("en") ? "en" : "fr";
+  const englishWords = ["welcome", "hello", "lesson", "question", "chapter", "exercise", "practice", "select", "choose", "the", "this", "that"];
+  const containsEnglish = englishWords.some((w) => lower.includes(` ${w} `) || lower.startsWith(`${w} `));
+  const containsFrench = lower.includes("bonjour") || lower.includes("c'est") || lower.includes("est-ce") || lower.includes("vous") || lower.includes("nous");
+  if (containsEnglish && !containsFrench) {
+    langCode = "en";
+  }
 
   // Pre-create HTMLAudioElement to retain mobile browser autoplay permissions
   const audio = new Audio();
@@ -79,10 +86,13 @@ export function speak(
         const json = await res.json();
         if (json.success && json.data?.audioUrl) {
           let src = json.data.audioUrl;
-          if (src.startsWith("data:audio/mp3;base64,")) {
-            const rawBase64 = src.replace("data:audio/mp3;base64,", "");
-            const blob = base64ToBlob(rawBase64, "audio/mp3");
-            src = URL.createObjectURL(blob);
+          if (src.startsWith("data:audio/")) {
+            const parts = src.split(";base64,");
+            if (parts.length === 2) {
+              const mimeType = parts[0].replace("data:", "");
+              const blob = base64ToBlob(parts[1], mimeType);
+              src = URL.createObjectURL(blob);
+            }
           }
           audio.src = src;
           audio.playbackRate = rate;
