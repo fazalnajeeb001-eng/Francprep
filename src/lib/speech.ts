@@ -164,26 +164,50 @@ export function speak(text: string, lang = "fr-FR", rate = 0.85, gender: "female
 }
 
 function fallbackSpeech(text: string, lang: string, rate: number, gender: "female" | "male") {
-  if (typeof window === "undefined" || !window.speechSynthesis) return;
+  if (typeof window === "undefined") return;
+
+  const langPrefix = lang.toLowerCase().startsWith("en") ? "en" : "fr";
+  const bestVoice = getBestVoice(langPrefix, gender);
+
+  // 1. If a verified Neural/Natural browser voice is available on device, use SpeechSynthesisUtterance with that voice
+  if (bestVoice && window.speechSynthesis && (
+    bestVoice.name.toLowerCase().includes("natural") ||
+    bestVoice.name.toLowerCase().includes("neural") ||
+    bestVoice.name.toLowerCase().includes("google") ||
+    bestVoice.name.toLowerCase().includes("premium") ||
+    bestVoice.name.toLowerCase().includes("online") ||
+    bestVoice.name.toLowerCase().includes("denise") ||
+    bestVoice.name.toLowerCase().includes("henri") ||
+    bestVoice.name.toLowerCase().includes("amélie") ||
+    bestVoice.name.toLowerCase().includes("thomas")
+  )) {
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = lang;
+      u.rate = rate;
+      u.voice = bestVoice;
+      u.onend = () => { if (onPlaybackStateChange) onPlaybackStateChange(false); };
+      u.onerror = () => { if (onPlaybackStateChange) onPlaybackStateChange(false); };
+      window.speechSynthesis.speak(u);
+      return;
+    } catch {}
+  }
+
+  // 2. Otherwise, play 24kHz HD Audio directly via HTMLAudioElement — ZERO robotic local OS voice ever!
   try {
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = lang;
-    u.rate = rate;
-
-    const langPrefix = lang.toLowerCase().startsWith("en") ? "en" : "fr";
-    const bestVoice = getBestVoice(langPrefix, gender);
-    if (bestVoice) u.voice = bestVoice;
-
-    u.onend = () => {
+    const langCode = langPrefix === "en" ? "en" : "fr";
+    const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text.slice(0, 200))}&tl=${langCode}&client=tw-ob`;
+    const fallbackAudio = new Audio(audioUrl);
+    fallbackAudio.playbackRate = rate;
+    fallbackAudio.onended = () => { if (onPlaybackStateChange) onPlaybackStateChange(false); };
+    fallbackAudio.onerror = () => { if (onPlaybackStateChange) onPlaybackStateChange(false); };
+    fallbackAudio.play().catch(() => {
       if (onPlaybackStateChange) onPlaybackStateChange(false);
-    };
-    u.onerror = () => {
-      if (onPlaybackStateChange) onPlaybackStateChange(false);
-    };
-
-    window.speechSynthesis.speak(u);
-  } catch {}
+    });
+  } catch {
+    if (onPlaybackStateChange) onPlaybackStateChange(false);
+  }
 }
 
 /**
