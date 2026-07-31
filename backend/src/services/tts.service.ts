@@ -154,7 +154,7 @@ export async function generateNeuralAudio(
     if (res) return res;
   }
 
-  // AUTO FALLBACK CASCADE (ElevenLabs -> OpenAI -> HuggingFace Kokoro -> Google)
+  // AUTO FALLBACK CASCADE (ElevenLabs ➔ OpenAI HD ➔ HuggingFace Kokoro ➔ Google)
   const eleven = await tryElevenLabs();
   if (eleven) return eleven;
 
