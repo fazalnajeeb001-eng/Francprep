@@ -27,9 +27,10 @@ export async function generateNeuralAudio(
 
   const elevenLabsKey = process.env.ELEVENLABS_API_KEY || settings?.elevenLabsApiKey;
   const huggingFaceToken = process.env.HUGGINGFACE_TOKEN || settings?.huggingFaceToken;
-  const openaiKey = process.env.OPENAI_API_KEY || settings?.openaiApiKey || settings?.openRouterApiKey;
+  // Note: Only direct OpenAI keys (sk-...) support OpenAI TTS-1-HD. OpenRouter keys (sk-or-v1-...) do not support binary speech API.
+  const openaiKey = process.env.OPENAI_API_KEY || settings?.openaiApiKey;
 
-  // 1. Check MongoDB Cache first — NEVER return google- robot fallback entries from cache!
+  // 1. Check MongoDB Cache first — ignore legacy robotic google- entries!
   try {
     const cached = await TTSCache.findOne({ textHash, voice: { $not: /^google-/ } }).maxTimeMS(1500);
     if (cached && cached.audioBase64) {
@@ -77,15 +78,12 @@ export async function generateNeuralAudio(
     }
   }
 
-  // 3. OpenAI TTS-1-HD Studio Voice API
-  if ((preferredEngine === 'auto' || preferredEngine === 'openai') && openaiKey) {
+  // 3. OpenAI TTS-1-HD Studio Voice API (Only if direct OpenAI sk- key is configured)
+  if ((preferredEngine === 'auto' || preferredEngine === 'openai') && openaiKey && (openaiKey.startsWith('sk-') && !openaiKey.startsWith('sk-or-v1-'))) {
     try {
       const voiceName = gender === 'male' ? 'onyx' : 'nova';
-      const isDirectOpenAI = openaiKey.startsWith('sk-');
-      const url = isDirectOpenAI ? 'https://api.openai.com/v1/audio/speech' : 'https://openrouter.ai/api/v1/audio/speech';
-
       const response = await axios.post(
-        url,
+        'https://api.openai.com/v1/audio/speech',
         { model: 'tts-1-hd', input: cleanText, voice: voiceName, speed: 0.95 },
         { headers: { Authorization: `Bearer ${openaiKey}`, 'Content-Type': 'application/json' }, responseType: 'arraybuffer', timeout: 10000 }
       );
@@ -106,7 +104,7 @@ export async function generateNeuralAudio(
   // 4. Kokoro-82M Open-Source Neural Voice Engine (100% Free)
   if (preferredEngine === 'auto' || preferredEngine === 'kokoro') {
     try {
-      const kokoroRes = await generateKokoroAudio(cleanText, gender, lang, settings?.huggingFaceToken);
+      const kokoroRes = await generateKokoroAudio(cleanText, gender, lang, huggingFaceToken);
       if (kokoroRes) {
         TTSCache.create({
           textHash,
@@ -122,27 +120,6 @@ export async function generateNeuralAudio(
       console.warn('[TTS Service] Kokoro error:', err?.message);
     }
   }
-
-  // 5. Emergency Google Audio fallback
-  try {
-    const encodedText = encodeURIComponent(cleanText);
-    const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=${lang === 'en' ? 'en' : 'fr'}&client=tw-ob`;
-
-    const response = await axios.get(googleTtsUrl, {
-      responseType: 'arraybuffer',
-      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
-      timeout: 5000,
-    });
-
-    if (response.status === 200 && response.data) {
-      const audioBuffer = Buffer.from(response.data);
-      const audioBase64 = audioBuffer.toString('base64');
-      const contentType = 'audio/mp3';
-
-      TTSCache.create({ textHash, text: cleanText, voice: `google-${lang}`, gender, audioBase64, contentType }).catch(() => {});
-      return { audioBase64, contentType, provider: 'google' };
-    }
-  } catch (err) {}
 
   return null;
 }

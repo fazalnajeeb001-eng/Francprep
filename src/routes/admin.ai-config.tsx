@@ -80,7 +80,7 @@ export function AdminAIConfigPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleTestKey = async (type: "elevenlabs" | "kokoro" | "anthropic" | "openrouter") => {
+  const handleTestKey = async (type: "elevenlabs" | "kokoro" | "openai" | "anthropic" | "openrouter") => {
     setTestingKey(type);
     setTestResult((prev) => ({ ...prev, [type]: { success: false, msg: "Testing live connection..." } }));
 
@@ -92,6 +92,9 @@ export function AdminAIConfigPage() {
     } else if (type === "kokoro") {
       endpoint = "/settings/test-kokoro";
       body = { huggingFaceToken: form.huggingFaceToken };
+    } else if (type === "openai") {
+      endpoint = "/settings/test-openai";
+      body = { openaiApiKey: form.openaiApiKey };
     } else if (type === "anthropic") {
       endpoint = "/settings/test-anthropic";
       body = { anthropicApiKey: form.anthropicApiKey };
@@ -378,7 +381,18 @@ export function AdminAIConfigPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold mb-1 text-cyan-400">OpenAI API Key (Neural Audio tts-1-hd & GPT-4o Evaluator)</label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold text-cyan-400">OpenAI API Key (Neural Audio tts-1-hd & GPT-4o Evaluator)</label>
+                <button
+                  type="button"
+                  onClick={() => handleTestKey("openai")}
+                  disabled={testingKey === "openai"}
+                  className="text-[10px] text-cyan-400 hover:underline flex items-center gap-1 font-bold disabled:opacity-50"
+                >
+                  {testingKey === "openai" ? <Loader2 className="w-3 h-3 animate-spin" /> : <Zap className="w-3 h-3" />}
+                  <span>{testingKey === "openai" ? "Testing..." : "Test Connection"}</span>
+                </button>
+              </div>
               <div className="relative flex items-center">
                 <input
                   type={showKeys.openaiApiKey ? "text" : "password"}
@@ -395,6 +409,11 @@ export function AdminAIConfigPage() {
                   {showKeys.openaiApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+              {testResult.openai && (
+                <p className={`text-[10px] font-bold mt-1 ${testResult.openai.success ? "text-emerald-400" : "text-red-400"}`}>
+                  {testResult.openai.success ? "🟢 " : "🔴 "}{testResult.openai.msg}
+                </p>
+              )}
               <p className={`text-[10px] ${txtSec} mt-1`}>Powers OpenAI tts-1-hd studio voices (nova & onyx) and TCF/TEF rubric scoring.</p>
             </div>
 

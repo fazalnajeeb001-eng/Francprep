@@ -11,6 +11,7 @@ router.post('/test-anthropic', settingsController.testAnthropic);
 router.post('/test-openrouter', settingsController.testOpenRouter);
 router.post('/test-elevenlabs', settingsController.testElevenLabs);
 router.post('/test-kokoro', settingsController.testKokoro);
+router.post('/test-openai', settingsController.testOpenAI);
 router.get('/stripe-keys', settingsController.getStripeKeys);
 router.post('/clear-audio-cache', settingsController.clearAudioCache);
 

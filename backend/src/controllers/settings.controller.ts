@@ -203,6 +203,29 @@ export async function testKokoro(req: Request, res: Response) {
   }
 }
 
+export async function testOpenAI(req: Request, res: Response) {
+  try {
+    const settings = await getOrCreate();
+    const key = req.body?.openaiApiKey || process.env.OPENAI_API_KEY || settings.openaiApiKey;
+    if (!key) return res.json({ success: false, error: "OpenAI API Key not configured" });
+    if (!key.startsWith('sk-') || key.startsWith('sk-or-v1-')) {
+      return res.json({ success: false, error: "OpenAI TTS requires a direct OpenAI API key starting with 'sk-' (OpenRouter keys are not supported for audio speech)." });
+    }
+
+    const response = await fetch("https://api.openai.com/v1/models", {
+      headers: { Authorization: `Bearer ${key}` },
+    });
+    if (response.ok) {
+      res.json({ success: true, message: "OpenAI API Key Validated! (tts-1-hd Nova & Onyx voices ready)" });
+    } else {
+      const err = await response.text();
+      res.json({ success: false, error: `OpenAI returned ${response.status}: ${err.slice(0, 150)}` });
+    }
+  } catch (err: any) {
+    res.json({ success: false, error: err.message });
+  }
+}
+
 export async function clearAudioCache(req: Request, res: Response) {
   try {
     const TTSCache = require('../models/TTSCache').default;

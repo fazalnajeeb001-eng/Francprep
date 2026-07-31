@@ -26,28 +26,29 @@ export async function generateKokoroAudio(
 
   const token = hfToken || process.env.HUGGINGFACE_TOKEN || process.env.HF_TOKEN || '';
 
-  // 1. Official HuggingFace Router Endpoint
+  // 1. Official HuggingFace Router Endpoints
   const endpoints = [
     'https://router.huggingface.co/hf-inference/models/hexgrad/Kokoro-82M',
-    'https://api-inference.huggingface.co/models/hexgrad/Kokoro-82M'
+    'https://api-inference.huggingface.co/models/hexgrad/Kokoro-82M',
+    'https://router.huggingface.co/models/hexgrad/Kokoro-82M'
   ];
 
   for (const ep of endpoints) {
     try {
       const headers: Record<string, string> = { 'Content-Type': 'application/json' };
       if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
+        headers['Authorization'] = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
       }
 
       const response = await axios.post(
         ep,
         { inputs: cleanText, parameters: { voice } },
-        { headers, responseType: 'arraybuffer', timeout: 8000 }
+        { headers, responseType: 'arraybuffer', timeout: 12000 }
       );
 
       if (response.status === 200 && response.data) {
         const audioBuffer = Buffer.from(response.data);
-        if (audioBuffer.length > 500) {
+        if (audioBuffer.length > 300) {
           return {
             audioBase64: audioBuffer.toString('base64'),
             contentType: 'audio/mp3',
@@ -56,7 +57,7 @@ export async function generateKokoroAudio(
         }
       }
     } catch (err: any) {
-      console.warn(`[Kokoro Service] ${ep} error:`, err?.message || err);
+      console.warn(`[Kokoro Service] ${ep} error:`, err?.response?.data ? String(err.response.data).slice(0, 100) : err?.message || err);
     }
   }
 
