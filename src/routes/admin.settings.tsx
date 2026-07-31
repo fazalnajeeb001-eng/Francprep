@@ -313,7 +313,7 @@ export function AdminSettingsPage() {
 
               {/* ─── ELEVENLABS CUSTOM VOICE PICKER ─── */}
               <div className="p-3.5 rounded-xl border border-pink-500/30 bg-pink-500/10 space-y-3">
-                <p className="text-xs font-extrabold text-pink-300">🎙️ ElevenLabs Voices (Choose Female & Male Defaults):</p>
+                <p className="text-xs font-extrabold text-pink-300">🎙️ ElevenLabs Voices (Choose Defaults or Paste Any Voice ID):</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                   <div>
                     <label className="block font-bold mb-1 text-gray-300">Default Female Voice (Coach Chloé / Platform):</label>
@@ -322,11 +322,22 @@ export function AdminSettingsPage() {
                       onChange={(e) => setForm({ ...form, selectedElevenLabsFemaleVoice: e.target.value })}
                       className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-pink-500/30" : "bg-white text-slate-900"}`}
                     >
-                      <option value="21m00Tcm4TlvDq8ikWAM">Rachel (Calm & Clear Parisian French)</option>
-                      <option value="EXAVITQu4vr4xnSDxMaL">Bella (Expressive & Energetic)</option>
-                      <option value="AZnzlk1XvdvUeBnXmlld">Domi (Warm Academic Reader)</option>
-                      <option value="MF3mGyEYCl7XYWbV9V6O">Elli (Gentle Conversationalist)</option>
+                      <option value="21m00Tcm4TlvDq8ikWAM">🌸 Rachel (Calm & Clear Parisian French — Recommended)</option>
+                      <option value="XB0fDUnXU5powFXDhCwa">🇫🇷 Charlotte (Native Parisian French Female)</option>
+                      <option value="EXAVITQu4vr4xnSDxMaL">⚡ Bella (Expressive & Energetic)</option>
+                      <option value="AZnzlk1XvdvUeBnXmlld">📖 Domi (Warm Academic Reader)</option>
+                      <option value="MF3mGyEYCl7XYWbV9V6O">💬 Elli (Gentle Conversationalist)</option>
+                      <option value="Xb7hH8MSwom74TLWDRmy">👑 Alice (Sophisticated French)</option>
+                      <option value="custom">✏️ Custom Voice ID (Paste Below)</option>
                     </select>
+                    {form.selectedElevenLabsFemaleVoice === "custom" && (
+                      <input
+                        type="text"
+                        placeholder="Paste ElevenLabs Female Voice ID..."
+                        onChange={(e) => setForm({ ...form, selectedElevenLabsFemaleVoice: e.target.value })}
+                        className="w-full mt-2 p-2 rounded-xl border border-pink-500/40 bg-black/40 text-xs font-mono text-pink-300"
+                      />
+                    )}
                   </div>
                   <div>
                     <label className="block font-bold mb-1 text-gray-300">Default Male Voice (Coach Léo):</label>
@@ -335,10 +346,20 @@ export function AdminSettingsPage() {
                       onChange={(e) => setForm({ ...form, selectedElevenLabsMaleVoice: e.target.value })}
                       className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-pink-500/30" : "bg-white text-slate-900"}`}
                     >
-                      <option value="ErXwobaYiN019PkySvjV">Antoni (Deep & Articulate Native Male)</option>
-                      <option value="VR6AewLTigWG4xSOukaG">Arnold (Formal Narrator)</option>
-                      <option value="pNInz6obpgDQGcFmaJgB">Adam (Clear Professional Voice)</option>
+                      <option value="ErXwobaYiN019PkySvjV">🎙️ Antoni (Deep & Articulate Native Male — Recommended)</option>
+                      <option value="GBv7mTt0atIp3Br8iCJU">🇫🇷 Thomas (Native French Male)</option>
+                      <option value="VR6AewLTigWG4xSOukaG">📻 Arnold (Formal Narrator)</option>
+                      <option value="pNInz6obpgDQGcFmaJgB">👔 Adam (Clear Professional Voice)</option>
+                      <option value="custom">✏️ Custom Voice ID (Paste Below)</option>
                     </select>
+                    {form.selectedElevenLabsMaleVoice === "custom" && (
+                      <input
+                        type="text"
+                        placeholder="Paste ElevenLabs Male Voice ID..."
+                        onChange={(e) => setForm({ ...form, selectedElevenLabsMaleVoice: e.target.value })}
+                        className="w-full mt-2 p-2 rounded-xl border border-pink-500/40 bg-black/40 text-xs font-mono text-pink-300"
+                      />
+                    )}
                   </div>
                 </div>
               </div>
