@@ -28,7 +28,9 @@ export async function generateNeuralAudio(
   try {
     const cached = await TTSCache.findOne({ textHash }).maxTimeMS(1500);
     if (cached && cached.audioBase64) {
-      return { audioBase64: cached.audioBase64, contentType: cached.contentType || 'audio/mp3', provider: 'cache' };
+      if (preferredEngine === 'auto' || cached.voice.toLowerCase().includes(preferredEngine)) {
+        return { audioBase64: cached.audioBase64, contentType: cached.contentType || 'audio/mp3', provider: cached.voice };
+      }
     }
   } catch (err) {
     console.warn('[TTSCache] Error reading cache:', err);
