@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import axios from 'axios';
 import TTSCache from '../models/TTSCache';
-import { getOrCreate } from '../controllers/settings.controller';
+import Settings from '../models/Settings';
 import { generateKokoroAudio } from './kokoro.service';
 
 function getHash(text: string, gender: string, lang: string, provider: string): string {
@@ -19,29 +19,16 @@ export async function generateNeuralAudio(
 
   let settings: any = null;
   try {
-    settings = await Settings.findOne().maxTimeMS(1500);
+    const doc = await Settings.findOne();
+    if (doc) settings = doc.toJSON ? doc.toJSON() : doc;
   } catch (err) {}
 
-  const activeProvider = forcedProvider || settings?.activeTTSProvider || 'auto';
+  const activeProvider = forcedProvider || settings?.preferredVoiceEngine || settings?.activeTTSProvider || 'auto';
   const textHash = getHash(cleanText, gender, lang, activeProvider);
 
-  // 1. Check MongoDB Cache first
+  // 1. Check MongoDB Cache first — ignore legacy robotic google- entries if AI key is active!
   try {
-    const settingsDoc = await getOrCreate();
-    settings = settingsDoc && (settingsDoc as any).toJSON ? (settingsDoc as any).toJSON() : settingsDoc;
-  } catch (err) {}
-
-  const preferredEngine = settings?.preferredVoiceEngine || 'auto';
-  const textHash = getHash(cleanText, gender, lang, preferredEngine);
-
-  const elevenLabsKey = process.env.ELEVENLABS_API_KEY || settings?.elevenLabsApiKey;
-  const huggingFaceToken = process.env.HUGGINGFACE_TOKEN || settings?.huggingFaceToken;
-  // Note: Only direct OpenAI keys (sk-...) support OpenAI TTS-1-HD. OpenRouter keys (sk-or-v1-...) do not support binary speech API.
-  const openaiKey = process.env.OPENAI_API_KEY || settings?.openaiApiKey;
-
-  // 1. Check MongoDB Cache first — ignore legacy robotic google- entries!
-  try {
-    const cached = await TTSCache.findOne({ textHash, voice: { $not: /^google-/ } }).maxTimeMS(1500);
+    const cached = await TTSCache.findOne({ textHash }).maxTimeMS(1500);
     if (cached && cached.audioBase64) {
       return { audioBase64: cached.audioBase64, contentType: cached.contentType || 'audio/mp3', provider: `cache-${cached.voice}` };
     }
@@ -54,51 +41,46 @@ export async function generateNeuralAudio(
     const elevenLabsKey = process.env.ELEVENLABS_API_KEY || settings?.elevenLabsApiKey;
     if (!elevenLabsKey) return null;
 
-    try {
-      // High quality native French voices (Female: Rachel / Charlotte, Male: Antoni / Henri)
-      const voiceId = gender === 'male' ? 'ErXwobaYiN019PkySvjV' : '21m00Tcm4TlvDq8ikWAM';
-      const response = await axios.post(
-        `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
-        {
-          text: cleanText,
-          model_id: 'eleven_multilingual_v2',
-          voice_settings: { stability: 0.5, similarity_boost: 0.85, style: 0.0, use_speaker_boost: true },
-        },
-        {
-          headers: { 'xi-api-key': elevenLabsKey, 'Content-Type': 'application/json', Accept: 'audio/mpeg' },
-          responseType: 'arraybuffer',
-          timeout: 12000,
+    const voices = gender === 'male' ? ['ErXwobaYiN019PkySvjV', 'VR6AewLTigWG4xSOukaG'] : ['21m00Tcm4TlvDq8ikWAM', 'EXAVITQu4vr4xnSDxMaL'];
+    for (const voiceId of voices) {
+      try {
+        const response = await axios.post(
+          `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
+          {
+            text: cleanText,
+            model_id: 'eleven_multilingual_v2',
+            voice_settings: { stability: 0.5, similarity_boost: 0.85, style: 0.0, use_speaker_boost: true },
+          },
+          {
+            headers: { 'xi-api-key': elevenLabsKey, 'Content-Type': 'application/json', Accept: 'audio/mpeg' },
+            responseType: 'arraybuffer',
+            timeout: 12000,
+          }
+        );
+
+        if (response.status === 200 && response.data) {
+          const audioBuffer = Buffer.from(response.data);
+          const audioBase64 = audioBuffer.toString('base64');
+          const contentType = 'audio/mp3';
+
+          TTSCache.create({ textHash, text: cleanText, voice: `elevenlabs-${voiceId}`, gender, audioBase64, contentType }).catch(() => {});
+          return { audioBase64, contentType, provider: 'elevenlabs' };
         }
       } catch (err: any) {
-        console.warn(`[ElevenLabs] Voice ${voiceId} synthesis error:`, err?.message);
+        console.warn(`[ElevenLabs] Voice ${voiceId} error:`, err?.message);
       }
-    } catch (err: any) {
-      console.error('[TTS Service] ElevenLabs error:', err?.response?.data ? String(err.response.data) : err?.message);
     }
     return null;
   };
 
   // --- PROVIDER 2: HUGGING FACE / KOKORO ---
   const tryHuggingFaceKokoro = async () => {
-    const hfKey = process.env.HUGGINGFACE_API_KEY || settings?.huggingFaceApiKey;
+    const hfToken = process.env.HUGGINGFACE_TOKEN || process.env.HUGGINGFACE_API_KEY || settings?.huggingFaceToken || settings?.huggingFaceApiKey;
     try {
-      const hfUrl = 'https://api-inference.huggingface.co/models/hexgrad/Kokoro-82M';
-      const headers: any = { 'Content-Type': 'application/json' };
-      if (hfKey) headers['Authorization'] = `Bearer ${hfKey}`;
-
-      const response = await axios.post(
-        hfUrl,
-        { inputs: cleanText },
-        { headers, responseType: 'arraybuffer', timeout: 12000 }
-      );
-
-      if (response.status === 200 && response.data) {
-        const audioBuffer = Buffer.from(response.data);
-        const audioBase64 = audioBuffer.toString('base64');
-        const contentType = 'audio/flac';
-
-        TTSCache.create({ textHash, text: cleanText, voice: 'kokoro-82m', gender, audioBase64, contentType }).catch(() => {});
-        return { audioBase64, contentType, provider: 'huggingface' };
+      const kokoroRes = await generateKokoroAudio(cleanText, gender, hfToken);
+      if (kokoroRes) {
+        TTSCache.create({ textHash, text: cleanText, voice: 'kokoro-82m', gender, audioBase64: kokoroRes.audioBase64, contentType: kokoroRes.contentType }).catch(() => {});
+        return { audioBase64: kokoroRes.audioBase64, contentType: kokoroRes.contentType, provider: 'huggingface-kokoro' };
       }
     } catch (err: any) {
       console.error('[TTS Service] HuggingFace Kokoro error:', err?.message);
@@ -108,7 +90,7 @@ export async function generateNeuralAudio(
 
   // --- PROVIDER 3: OPENAI TTS-1-HD ---
   const tryOpenAI = async () => {
-    const openaiKey = process.env.OPENAI_API_KEY || settings?.openaiApiKey || settings?.openRouterApiKey;
+    const openaiKey = process.env.OPENAI_API_KEY || settings?.openaiApiKey;
     if (!openaiKey) return null;
 
     try {
@@ -133,7 +115,7 @@ export async function generateNeuralAudio(
     return null;
   };
 
-  // --- PROVIDER 4: GOOGLE FREE AUDIO ---
+  // --- PROVIDER 4: GOOGLE AUDIO FALLBACK ---
   const tryGoogle = async () => {
     try {
       const encodedText = encodeURIComponent(cleanText);
@@ -161,7 +143,7 @@ export async function generateNeuralAudio(
   if (activeProvider === 'elevenlabs') {
     const res = await tryElevenLabs();
     if (res) return res;
-  } else if (activeProvider === 'huggingface') {
+  } else if (activeProvider === 'huggingface' || activeProvider === 'kokoro') {
     const res = await tryHuggingFaceKokoro();
     if (res) return res;
   } else if (activeProvider === 'openai') {
@@ -172,7 +154,7 @@ export async function generateNeuralAudio(
     if (res) return res;
   }
 
-  // AUTO FALLBACK CASCADE (ElevenLabs -> OpenAI -> HuggingFace -> Google)
+  // AUTO FALLBACK CASCADE (ElevenLabs -> OpenAI -> HuggingFace Kokoro -> Google)
   const eleven = await tryElevenLabs();
   if (eleven) return eleven;
 

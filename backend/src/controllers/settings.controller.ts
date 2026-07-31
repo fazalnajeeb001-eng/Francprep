@@ -12,7 +12,9 @@ let inMemorySettings: any = {
   openaiApiKey: "",
   elevenLabsApiKey: "",
   huggingFaceToken: "",
+  huggingFaceApiKey: "",
   preferredVoiceEngine: "auto",
+  activeTTSProvider: "auto",
   frontendUrl: "",
 };
 
@@ -44,7 +46,7 @@ export async function getSettings(_req: Request, res: Response) {
 
 export async function updateSettings(req: Request, res: Response) {
   try {
-    const allowed = ['stripeSecretKey', 'stripePublishableKey', 'stripePremiumPriceId', 'stripeExamPrepPriceId', 'stripeWebhookSecret', 'anthropicApiKey', 'openRouterApiKey', 'openaiApiKey', 'elevenLabsApiKey', 'huggingFaceApiKey', 'activeTTSProvider', 'frontendUrl'];
+    const allowed = ['stripeSecretKey', 'stripePublishableKey', 'stripePremiumPriceId', 'stripeExamPrepPriceId', 'stripeWebhookSecret', 'anthropicApiKey', 'openRouterApiKey', 'openaiApiKey', 'elevenLabsApiKey', 'huggingFaceToken', 'huggingFaceApiKey', 'preferredVoiceEngine', 'activeTTSProvider', 'frontendUrl'];
     const updates: any = {};
 
     for (const key of allowed) {
