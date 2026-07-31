@@ -43,32 +43,37 @@ export async function generateNeuralAudio(
 
   // 2. ElevenLabs Studio-Grade Engine (If preferred or auto)
   if ((preferredEngine === 'auto' || preferredEngine === 'elevenlabs') && elevenLabsKey) {
-    try {
-      const voiceId = gender === 'male' ? 'ErXwobaYiN019PkySvjV' : '21m00Tcm4TlvDq8ikWAM';
-      const response = await axios.post(
-        `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
-        {
-          text: cleanText,
-          model_id: 'eleven_multilingual_v2',
-          voice_settings: { stability: 0.5, similarity_boost: 0.8, style: 0.0, use_speaker_boost: true },
-        },
-        {
-          headers: { 'xi-api-key': elevenLabsKey, 'Content-Type': 'application/json', Accept: 'audio/mpeg' },
-          responseType: 'arraybuffer',
-          timeout: 10000,
+    const primaryVoiceId = gender === 'male' ? 'JBFqnCBsd6RMkjVDRZzb' : 'Xb7hH8MSUJpSbSDYk0k2';
+    const fallbackVoiceId = gender === 'male' ? 'ErXwobaYiN019PkySvjV' : '21m00Tcm4TlvDq8ikWAM';
+    const targetVoiceIds = [primaryVoiceId, fallbackVoiceId];
+
+    for (const voiceId of targetVoiceIds) {
+      try {
+        const response = await axios.post(
+          `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
+          {
+            text: cleanText,
+            model_id: 'eleven_multilingual_v2',
+            voice_settings: { stability: 0.5, similarity_boost: 0.8, style: 0.0, use_speaker_boost: true },
+          },
+          {
+            headers: { 'xi-api-key': elevenLabsKey, 'Content-Type': 'application/json', Accept: 'audio/mpeg' },
+            responseType: 'arraybuffer',
+            timeout: 10000,
+          }
+        );
+
+        if (response.status === 200 && response.data) {
+          const audioBuffer = Buffer.from(response.data);
+          const audioBase64 = audioBuffer.toString('base64');
+          const contentType = 'audio/mp3';
+
+          TTSCache.create({ textHash, text: cleanText, voice: `elevenlabs-${voiceId}`, gender, audioBase64, contentType }).catch(() => {});
+          return { audioBase64, contentType, provider: 'elevenlabs' };
         }
-      );
-
-      if (response.status === 200 && response.data) {
-        const audioBuffer = Buffer.from(response.data);
-        const audioBase64 = audioBuffer.toString('base64');
-        const contentType = 'audio/mp3';
-
-        TTSCache.create({ textHash, text: cleanText, voice: `elevenlabs-${voiceId}`, gender, audioBase64, contentType }).catch(() => {});
-        return { audioBase64, contentType, provider: 'elevenlabs' };
+      } catch (err: any) {
+        console.warn(`[ElevenLabs] Voice ${voiceId} synthesis error:`, err?.message);
       }
-    } catch (err: any) {
-      console.error('[TTS Service] ElevenLabs error:', err?.message);
     }
   }
 
