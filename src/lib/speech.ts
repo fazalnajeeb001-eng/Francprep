@@ -135,16 +135,18 @@ export function speak(text: string, lang = "fr-FR", rate = 0.85, gender: "female
           }
           audio.src = src;
           audio.playbackRate = rate;
-          audio.play().catch(() => {
-            fallbackSpeech(cleanText, lang, rate, gender);
+          audio.play().catch((err) => {
+            console.warn("[Neural Audio Play Exception]", err);
+            if (onPlaybackStateChange) onPlaybackStateChange(false);
           });
           return;
         }
       }
-      fallbackSpeech(cleanText, lang, rate, gender);
+      if (onPlaybackStateChange) onPlaybackStateChange(false);
     })
-    .catch(() => {
-      fallbackSpeech(cleanText, lang, rate, gender);
+    .catch((err) => {
+      console.warn("[Neural Audio Fetch Exception]", err);
+      if (onPlaybackStateChange) onPlaybackStateChange(false);
     });
 
   return true;
