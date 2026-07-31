@@ -130,6 +130,46 @@ export async function getStripeKeys(_req: Request, res: Response) {
   }
 }
 
+export async function testElevenLabs(req: Request, res: Response) {
+  try {
+    const settings = await getOrCreate();
+    const key = req.body?.elevenLabsApiKey || process.env.ELEVENLABS_API_KEY || settings.elevenLabsApiKey;
+    if (!key) return res.json({ success: false, error: "ElevenLabs API Key not configured" });
+
+    const response = await fetch("https://api.elevenlabs.io/v1/user", {
+      headers: { "xi-api-key": key },
+    });
+    if (response.ok) {
+      const data: any = await response.json();
+      const remaining = (data.subscription?.character_limit || 0) - (data.subscription?.character_count || 0);
+      res.json({ success: true, message: `ElevenLabs Key Validated! Status: Active (${remaining} characters remaining)` });
+    } else {
+      const err = await response.text();
+      res.json({ success: false, error: `ElevenLabs returned ${response.status}: ${err.slice(0, 150)}` });
+    }
+  } catch (err: any) {
+    res.json({ success: false, error: err.message });
+  }
+}
+
+export async function testKokoro(req: Request, res: Response) {
+  try {
+    const settings = await getOrCreate();
+    const token = req.body?.huggingFaceToken || process.env.HUGGINGFACE_TOKEN || process.env.HF_TOKEN || settings.huggingFaceToken;
+    if (!token) return res.json({ success: false, error: "HuggingFace Token not configured. Get a free token at huggingface.co/settings/tokens" });
+
+    const { generateKokoroAudio } = require('../services/kokoro.service');
+    const result = await generateKokoroAudio("Bonjour", "female", "fr", token);
+    if (result) {
+      res.json({ success: true, message: "Kokoro-82M HuggingFace Token Validated! Serverless Inference Ready." });
+    } else {
+      res.json({ success: false, error: "HuggingFace returned 401 Unauthorized or Invalid Token." });
+    }
+  } catch (err: any) {
+    res.json({ success: false, error: err.message });
+  }
+}
+
 export async function clearAudioCache(req: Request, res: Response) {
   try {
     const TTSCache = require('../models/TTSCache').default;

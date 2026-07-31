@@ -40,6 +40,9 @@ export function AdminAIConfigPage() {
   const inp = `w-full rounded-xl ${dark ? "bg-[#070B17] border-white/10 text-white" : "bg-white border-slate-300 text-slate-900"} border px-4 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-mono`;
   const txtSec = dark ? "text-gray-400" : "text-slate-600";
 
+  const [testingKey, setTestingKey] = useState<string | null>(null);
+  const [testResult, setTestResult] = useState<{ [key: string]: { success: boolean; msg: string } }>({});
+
   useEffect(() => {
     apiFetch("/settings")
       .then((r) => r.json())
@@ -58,6 +61,53 @@ export function AdminAIConfigPage() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  const handleTestKey = async (type: "elevenlabs" | "kokoro" | "anthropic" | "openrouter") => {
+    setTestingKey(type);
+    setTestResult((prev) => ({ ...prev, [type]: { success: false, msg: "Testing live connection..." } }));
+
+    let endpoint = "/settings/test-elevenlabs";
+    let body: any = {};
+    if (type === "elevenlabs") {
+      endpoint = "/settings/test-elevenlabs";
+      body = { elevenLabsApiKey: form.elevenLabsApiKey };
+    } else if (type === "kokoro") {
+      endpoint = "/settings/test-kokoro";
+      body = { huggingFaceToken: form.huggingFaceToken };
+    } else if (type === "anthropic") {
+      endpoint = "/settings/test-anthropic";
+      body = { anthropicApiKey: form.anthropicApiKey };
+    } else if (type === "openrouter") {
+      endpoint = "/settings/test-openrouter";
+      body = { openRouterApiKey: form.openRouterApiKey };
+    }
+
+    try {
+      const res = await apiFetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setTestResult((prev) => ({
+          ...prev,
+          [type]: { success: true, msg: json.message || "Connection Successful & Validated!" },
+        }));
+      } else {
+        setTestResult((prev) => ({
+          ...prev,
+          [type]: { success: false, msg: json.error || "Connection Failed" },
+        }));
+      }
+    } catch {
+      setTestResult((prev) => ({
+        ...prev,
+        [type]: { success: false, msg: "Network error testing connection" },
+      }));
+    }
+    setTestingKey(null);
+  };
 
   const handleSaveAPI = async () => {
     setSaving(true);
@@ -231,7 +281,18 @@ export function AdminAIConfigPage() {
 
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-bold mb-1 text-emerald-400">HuggingFace Token (Powers Free Kokoro-82M Neural Speech Engine)</label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold text-emerald-400">HuggingFace Token (Powers Free Kokoro-82M Neural Speech Engine)</label>
+                <button
+                  type="button"
+                  onClick={() => handleTestKey("kokoro")}
+                  disabled={testingKey === "kokoro"}
+                  className="text-[10px] text-emerald-400 hover:underline flex items-center gap-1 font-bold disabled:opacity-50"
+                >
+                  {testingKey === "kokoro" ? <Loader2 className="w-3 h-3 animate-spin" /> : <Zap className="w-3 h-3" />}
+                  <span>{testingKey === "kokoro" ? "Testing..." : "Test Connection"}</span>
+                </button>
+              </div>
               <input
                 type="password"
                 value={form.huggingFaceToken}
@@ -239,13 +300,29 @@ export function AdminAIConfigPage() {
                 placeholder="hf_..."
                 className={inp}
               />
+              {testResult.kokoro && (
+                <p className={`text-[10px] font-bold mt-1 ${testResult.kokoro.success ? "text-emerald-400" : "text-red-400"}`}>
+                  {testResult.kokoro.success ? "🟢 " : "🔴 "}{testResult.kokoro.msg}
+                </p>
+              )}
               <p className={`text-[10px] ${txtSec} mt-1`}>
                 100% Free User Token available at <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noreferrer" className="text-emerald-400 underline">huggingface.co/settings/tokens</a> to power Kokoro-82M neural voices!
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-bold mb-1 text-pink-400">ElevenLabs API Key (100% Studio Real Human Voice Engine)</label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold text-pink-400">ElevenLabs API Key (100% Studio Real Human Voice Engine)</label>
+                <button
+                  type="button"
+                  onClick={() => handleTestKey("elevenlabs")}
+                  disabled={testingKey === "elevenlabs"}
+                  className="text-[10px] text-pink-400 hover:underline flex items-center gap-1 font-bold disabled:opacity-50"
+                >
+                  {testingKey === "elevenlabs" ? <Loader2 className="w-3 h-3 animate-spin" /> : <Zap className="w-3 h-3" />}
+                  <span>{testingKey === "elevenlabs" ? "Testing..." : "Test Connection"}</span>
+                </button>
+              </div>
               <input
                 type="password"
                 value={form.elevenLabsApiKey}
@@ -253,6 +330,11 @@ export function AdminAIConfigPage() {
                 placeholder="xi-api-key-..."
                 className={inp}
               />
+              {testResult.elevenlabs && (
+                <p className={`text-[10px] font-bold mt-1 ${testResult.elevenlabs.success ? "text-emerald-400" : "text-red-400"}`}>
+                  {testResult.elevenlabs.success ? "🟢 " : "🔴 "}{testResult.elevenlabs.msg}
+                </p>
+              )}
               <p className={`text-[10px] ${txtSec} mt-1`}>Generates 48kHz native French human voices (Rachel & Antoni) with 0 robotic sound.</p>
             </div>
 
@@ -269,7 +351,18 @@ export function AdminAIConfigPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold mb-1">Anthropic API Key (Claude 3.5 Sonnet Content & Evaluation Engine)</label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold">Anthropic API Key (Claude 3.5 Sonnet Content & Evaluation Engine)</label>
+                <button
+                  type="button"
+                  onClick={() => handleTestKey("anthropic")}
+                  disabled={testingKey === "anthropic"}
+                  className="text-[10px] text-purple-400 hover:underline flex items-center gap-1 font-bold disabled:opacity-50"
+                >
+                  {testingKey === "anthropic" ? <Loader2 className="w-3 h-3 animate-spin" /> : <Zap className="w-3 h-3" />}
+                  <span>{testingKey === "anthropic" ? "Testing..." : "Test Connection"}</span>
+                </button>
+              </div>
               <input
                 type="password"
                 value={form.anthropicApiKey}
@@ -277,6 +370,11 @@ export function AdminAIConfigPage() {
                 placeholder="sk-ant-api03-..."
                 className={inp}
               />
+              {testResult.anthropic && (
+                <p className={`text-[10px] font-bold mt-1 ${testResult.anthropic.success ? "text-emerald-400" : "text-red-400"}`}>
+                  {testResult.anthropic.success ? "🟢 " : "🔴 "}{testResult.anthropic.msg}
+                </p>
+              )}
               <p className={`text-[10px] ${txtSec} mt-1`}>Used by Content Generator and Speaking/Writing Rubric Grading System.</p>
             </div>
 
