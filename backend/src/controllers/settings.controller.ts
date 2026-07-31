@@ -164,13 +164,13 @@ export async function testElevenLabs(req: Request, res: Response) {
     const key = req.body?.elevenLabsApiKey || process.env.ELEVENLABS_API_KEY || settings.elevenLabsApiKey;
     if (!key) return res.json({ success: false, error: "ElevenLabs API Key not configured" });
 
-    const response = await fetch("https://api.elevenlabs.io/v1/user", {
+    const response = await fetch("https://api.elevenlabs.io/v1/voices", {
       headers: { "xi-api-key": key },
     });
     if (response.ok) {
       const data: any = await response.json();
-      const remaining = (data.subscription?.character_limit || 0) - (data.subscription?.character_count || 0);
-      res.json({ success: true, message: `ElevenLabs Key Validated! Status: Active (${remaining} characters remaining)` });
+      const count = data.voices?.length || 0;
+      res.json({ success: true, message: `ElevenLabs Key Validated & Active! (${count} Studio Voices Ready)` });
     } else {
       const err = await response.text();
       res.json({ success: false, error: `ElevenLabs returned ${response.status}: ${err.slice(0, 150)}` });
