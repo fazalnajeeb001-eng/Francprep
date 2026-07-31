@@ -59,6 +59,9 @@ function ContentGeneratorPage() {
   const [stripeForm, setStripeForm] = useState<any>({});
   const [anthropicKey, setAnthropicKey] = useState("");
   const [openRouterKey, setOpenRouterKey] = useState("");
+  const [huggingFaceKey, setHuggingFaceKey] = useState("");
+  const [elevenLabsKey, setElevenLabsKey] = useState("");
+  const [openAIKey, setOpenAIKey] = useState("");
   const [saveSettingsSuccess, setSaveSettingsSuccess] = useState("");
   const [testClaudeLoading, setTestClaudeLoading] = useState(false);
   const [testClaudeResult, setTestClaudeResult] = useState("");
@@ -79,6 +82,9 @@ function ContentGeneratorPage() {
         setStripeForm(j.data);
         setAnthropicKey(j.data.anthropicApiKey || "");
         setOpenRouterKey(j.data.openRouterApiKey || "");
+        setHuggingFaceKey(j.data.huggingFaceToken || "");
+        setElevenLabsKey(j.data.elevenLabsApiKey || "");
+        setOpenAIKey(j.data.openaiApiKey || "");
       }
     }).catch(() => {});
   }, []);
@@ -170,6 +176,9 @@ function ContentGeneratorPage() {
           ...stripeForm,
           anthropicApiKey: anthropicKey,
           openRouterApiKey: openRouterKey,
+          huggingFaceToken: huggingFaceKey,
+          elevenLabsApiKey: elevenLabsKey,
+          openaiApiKey: openAIKey,
         }),
       });
       const json = await res.json();
@@ -478,6 +487,25 @@ function ContentGeneratorPage() {
                           {testORResult}
                         </p>
                       )}
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-emerald-400 mb-1">HuggingFace Token (Powers Free Kokoro-82M Neural Speech Engine)</label>
+                      <input type="password" value={huggingFaceKey} onChange={(e) => setHuggingFaceKey(e.target.value)}
+                        className={inp} placeholder="hf_..." />
+                      <p className="text-[10px] text-gray-400 mt-0.5">100% Free Token from huggingface.co/settings/tokens</p>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-pink-400 mb-1">ElevenLabs API Key (100% Studio Real Human Voice Engine)</label>
+                      <input type="password" value={elevenLabsKey} onChange={(e) => setElevenLabsKey(e.target.value)}
+                        className={inp} placeholder="xi-api-key-..." />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-cyan-400 mb-1">OpenAI API Key (Neural Audio tts-1-hd & GPT-4o Evaluator)</label>
+                      <input type="password" value={openAIKey} onChange={(e) => setOpenAIKey(e.target.value)}
+                        className={inp} placeholder="sk-..." />
                     </div>
                   </div>
 
