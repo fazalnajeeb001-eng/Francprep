@@ -16,7 +16,7 @@ let inMemorySettings: any = {
   frontendUrl: "",
 };
 
-async function getOrCreate() {
+export async function getOrCreate() {
   try {
     let settings = await Settings.findOne().maxTimeMS(2000);
     if (!settings) {

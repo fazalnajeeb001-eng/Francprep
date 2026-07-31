@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import axios from 'axios';
 import TTSCache from '../models/TTSCache';
-import Settings from '../models/Settings';
+import { getOrCreate } from '../controllers/settings.controller';
 import { generateKokoroAudio } from './kokoro.service';
 
 function getHash(text: string, gender: string, lang: string, engine = 'auto'): string {
@@ -18,7 +18,8 @@ export async function generateNeuralAudio(
 
   let settings: any = null;
   try {
-    settings = await Settings.findOne().maxTimeMS(1500);
+    const settingsDoc = await getOrCreate();
+    settings = settingsDoc && (settingsDoc as any).toJSON ? (settingsDoc as any).toJSON() : settingsDoc;
   } catch (err) {}
 
   const preferredEngine = settings?.preferredVoiceEngine || 'auto';
@@ -27,18 +28,13 @@ export async function generateNeuralAudio(
   const elevenLabsKey = process.env.ELEVENLABS_API_KEY || settings?.elevenLabsApiKey;
   const huggingFaceToken = process.env.HUGGINGFACE_TOKEN || settings?.huggingFaceToken;
   const openaiKey = process.env.OPENAI_API_KEY || settings?.openaiApiKey || settings?.openRouterApiKey;
-  const hasRealKeys = !!(elevenLabsKey || huggingFaceToken || openaiKey);
 
-  // 1. Check MongoDB Cache first
+  // 1. Check MongoDB Cache first — NEVER return google- robot fallback entries from cache!
   try {
-    const cached = await TTSCache.findOne({ textHash }).maxTimeMS(1500);
+    const cached = await TTSCache.findOne({ textHash, voice: { $not: /^google-/ } }).maxTimeMS(1500);
     if (cached && cached.audioBase64) {
-      const isGoogleFallback = cached.voice.startsWith('google-');
-      // If cached entry is old robot fallback and user has real keys, bypass cache to generate studio audio
-      if (!isGoogleFallback || !hasRealKeys) {
-        if (preferredEngine === 'auto' || cached.voice.toLowerCase().includes(preferredEngine)) {
-          return { audioBase64: cached.audioBase64, contentType: cached.contentType || 'audio/mp3', provider: cached.voice };
-        }
+      if (preferredEngine === 'auto' || cached.voice.toLowerCase().includes(preferredEngine)) {
+        return { audioBase64: cached.audioBase64, contentType: cached.contentType || 'audio/mp3', provider: cached.voice };
       }
     }
   } catch (err) {
