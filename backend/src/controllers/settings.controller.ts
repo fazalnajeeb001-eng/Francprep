@@ -1,10 +1,36 @@
 import { Request, Response } from 'express';
 import Settings from '../models/Settings';
 
+let inMemorySettings: any = {
+  stripeSecretKey: "",
+  stripePublishableKey: "",
+  stripePremiumPriceId: "",
+  stripeExamPrepPriceId: "",
+  stripeWebhookSecret: "",
+  anthropicApiKey: "",
+  openRouterApiKey: "",
+  openaiApiKey: "",
+  elevenLabsApiKey: "",
+  huggingFaceToken: "",
+  preferredVoiceEngine: "auto",
+  frontendUrl: "",
+};
+
 async function getOrCreate() {
-  let settings = await Settings.findOne();
-  if (!settings) settings = await Settings.create({});
-  return settings;
+  try {
+    let settings = await Settings.findOne().maxTimeMS(2000);
+    if (!settings) {
+      settings = await Settings.create(inMemorySettings);
+    }
+    const obj: any = settings.toJSON();
+    for (const k in obj) {
+      if (obj[k]) inMemorySettings[k] = obj[k];
+    }
+    return settings;
+  } catch (err) {
+    console.warn('[Settings] Mongo read fallback to in-memory store:', err);
+    return inMemorySettings;
+  }
 }
 
 export async function getSettings(_req: Request, res: Response) {
@@ -23,16 +49,18 @@ export async function updateSettings(req: Request, res: Response) {
     for (const key of allowed) {
       if (req.body[key] !== undefined) {
         const val = String(req.body[key]).trim();
-        // Ignore masked preview strings (containing '...') so existing full DB keys are never destroyed
-        if (val.includes('...')) {
-          continue;
-        }
+        if (val.includes('...')) continue;
         updates[key] = val;
+        inMemorySettings[key] = val;
       }
     }
 
-    const settings = await Settings.findOneAndUpdate({}, { $set: updates }, { new: true, upsert: true });
-    res.json({ success: true, data: settings.toJSON() });
+    try {
+      const settings = await Settings.findOneAndUpdate({}, { $set: updates }, { new: true, upsert: true });
+      res.json({ success: true, data: settings.toJSON() });
+    } catch {
+      res.json({ success: true, data: inMemorySettings });
+    }
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });
   }

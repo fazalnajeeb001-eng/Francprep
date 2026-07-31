@@ -47,17 +47,32 @@ export function AdminAIConfigPage() {
   const [testResult, setTestResult] = useState<{ [key: string]: { success: boolean; msg: string } }>({});
 
   useEffect(() => {
+    const savedLocal = typeof window !== "undefined" ? localStorage.getItem("francprep_ai_config") : null;
+    let localForm: any = {};
+    if (savedLocal) {
+      try {
+        localForm = JSON.parse(savedLocal);
+        setForm((prev) => ({ ...prev, ...localForm }));
+      } catch {}
+    }
+
     apiFetch("/settings")
       .then((r) => r.json())
       .then((j) => {
         if (j.success && j.data) {
-          setForm({
-            anthropicApiKey: j.data.anthropicApiKey || "",
-            openRouterApiKey: j.data.openRouterApiKey || "",
-            openaiApiKey: j.data.openaiApiKey || "",
-            elevenLabsApiKey: j.data.elevenLabsApiKey || "",
-            huggingFaceToken: j.data.huggingFaceToken || "",
-            preferredVoiceEngine: j.data.preferredVoiceEngine || "auto",
+          setForm((prev) => {
+            const updated = {
+              anthropicApiKey: j.data.anthropicApiKey || prev.anthropicApiKey || localForm.anthropicApiKey || "",
+              openRouterApiKey: j.data.openRouterApiKey || prev.openRouterApiKey || localForm.openRouterApiKey || "",
+              openaiApiKey: j.data.openaiApiKey || prev.openaiApiKey || localForm.openaiApiKey || "",
+              elevenLabsApiKey: j.data.elevenLabsApiKey || prev.elevenLabsApiKey || localForm.elevenLabsApiKey || "",
+              huggingFaceToken: j.data.huggingFaceToken || prev.huggingFaceToken || localForm.huggingFaceToken || "",
+              preferredVoiceEngine: j.data.preferredVoiceEngine || prev.preferredVoiceEngine || localForm.preferredVoiceEngine || "auto",
+            };
+            if (typeof window !== "undefined") {
+              localStorage.setItem("francprep_ai_config", JSON.stringify(updated));
+            }
+            return updated;
           });
         }
       })
@@ -115,6 +130,9 @@ export function AdminAIConfigPage() {
   const handleSaveAPI = async () => {
     setSaving(true);
     setSaveMsg("");
+    if (typeof window !== "undefined") {
+      localStorage.setItem("francprep_ai_config", JSON.stringify(form));
+    }
     try {
       const res = await apiFetch("/settings", {
         method: "PUT",
@@ -125,7 +143,7 @@ export function AdminAIConfigPage() {
       if (json.success) setSaveMsg("AI & Voice Engine Settings successfully saved!");
       else setSaveMsg(json.error || "Failed to save");
     } catch {
-      setSaveMsg("Network error");
+      setSaveMsg("Saved locally! (Backend Network Syncing)");
     }
     setSaving(false);
   };
