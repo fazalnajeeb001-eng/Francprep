@@ -45,11 +45,13 @@ export async function getSettings(_req: Request, res: Response) {
 export async function updateSettings(req: Request, res: Response) {
   try {
     const allowed = ['stripeSecretKey', 'stripePublishableKey', 'stripePremiumPriceId', 'stripeExamPrepPriceId', 'stripeWebhookSecret', 'anthropicApiKey', 'openRouterApiKey', 'openaiApiKey', 'elevenLabsApiKey', 'huggingFaceToken', 'preferredVoiceEngine', 'frontendUrl'];
+    const placeholders = ['sk-...', 'xi-api-key-...', 'hf_...', 'sk-ant-api03-...', 'sk-or-v1-...', 'sk_live_...', 'pk_live_...'];
     const updates: any = {};
+
     for (const key of allowed) {
       if (req.body[key] !== undefined) {
         const val = String(req.body[key]).trim();
-        if (val.includes('...')) continue;
+        if (placeholders.includes(val)) continue;
         updates[key] = val;
         inMemorySettings[key] = val;
       }
@@ -57,7 +59,13 @@ export async function updateSettings(req: Request, res: Response) {
 
     try {
       const settings = await Settings.findOneAndUpdate({}, { $set: updates }, { new: true, upsert: true });
-      res.json({ success: true, data: settings.toJSON() });
+      if (settings) {
+        const obj: any = settings.toJSON();
+        for (const k in obj) {
+          if (obj[k]) inMemorySettings[k] = obj[k];
+        }
+      }
+      res.json({ success: true, data: inMemorySettings });
     } catch {
       res.json({ success: true, data: inMemorySettings });
     }
