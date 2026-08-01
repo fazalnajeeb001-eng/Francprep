@@ -1468,14 +1468,19 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
             </div>
             {sceneText && (
               <>
-                <div className="flex gap-3 mb-4">
-                  <button onClick={() => speak(sceneText)}
-                    className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
-                    <Volume2 className="w-4 h-4" /> Listen to Scene
+                <div className="flex flex-wrap items-center gap-3 mb-4 p-3 rounded-2xl bg-purple-500/10 border border-purple-500/20">
+                  <button onClick={() => toggleAudio(sceneText)}
+                    className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-extrabold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-md cursor-pointer">
+                    <Volume2 className="w-4 h-4" /> ⏯️ Play / Pause / Resume
+                  </button>
+                  <button onClick={() => stopAudio()}
+                    className="flex items-center gap-1.5 bg-red-500/20 text-red-300 border border-red-500/40 hover:bg-red-500/30 text-xs font-bold px-4 py-2.5 rounded-xl transition-all cursor-pointer"
+                    title="Stop Audio Playback">
+                    <Square className="w-3.5 h-3.5 fill-current text-red-400" /> ⏹️ Stop Audio
                   </button>
                   {sceneTrans && (
                     <button onClick={() => setShowTranslation(!showTranslation)}
-                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
                       {showTranslation ? "Hide" : "Show"} English Translation
                     </button>
                   )}
