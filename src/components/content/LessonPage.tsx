@@ -2123,34 +2123,65 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
       case 'vocabulary':
         if (!lesson!.vocabItems?.length) return emptyState('Vocabulary');
+        const defaultExamplesMap: Record<string, string> = {
+          "bonjour": "Bonjour, comment allez-vous aujourd'hui ?",
+          "bonsoir": "Bonsoir tout le monde, bienvenue !",
+          "salut": "Salut Paul, ça va bien ?",
+          "au revoir": "Au revoir et à la prochaine !",
+          "à bientôt": "Merci pour tout, à bientôt !",
+          "bonne nuit": "Il est tard, bonne nuit !",
+          "madame": "Bonjour Madame, puis-je vous aider ?",
+          "monsieur": "Pardon Monsieur, quelle heure est-il ?",
+          "s'il vous plaît": "Un café, s'il vous plaît.",
+          "merci": "Merci beaucoup pour votre aide !",
+          "de rien": "Je vous en prie, de rien.",
+          "oui": "Oui, je suis d'accord.",
+          "non": "Non, ce n'est pas possible.",
+          "pardon": "Pardon, je n'ai pas entendu.",
+          "excusez-moi": "Excusez-moi, où est la gare ?"
+        };
         return (
           <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5`}>
-            <h3 className={`text-sm font-semibold mb-4 ${dark ? "text-white" : "text-gray-900"}`}>Vocabulary</h3>
-            <div className="space-y-2">
-              {lesson!.vocabItems.map((v: any, i: number) => (
-                <motion.div key={v.french + i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
-                  className={`flex items-center gap-3 p-3 rounded-xl ${btnHover} transition-colors`}>
-                  <button onClick={() => speak(v.french)}
-                    className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white hover:opacity-80 transition-all flex-shrink-0">
-                    <Volume2 className="w-4 h-4" />
-                  </button>
-                  <div className="flex-1 min-w-0">
-                    <EditableText as="span" fieldPath={`vocabItems[${i}].french`} value={v.french} className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`} />
-                    <EditableText as="span" fieldPath={`vocabItems[${i}].pronunciation`} value={v.pronunciation} className={`text-[10px] ml-2 ${textMuted}`} />
-                    <p className={`text-xs ${textSec}`}>
-                      <EditableText fieldPath={`vocabItems[${i}].english`} value={v.english} />
-                    </p>
-                    {v.formality && <span className={`text-[10px] ml-2 px-1.5 py-0.5 rounded ${dark ? "bg-white/5 text-gray-400" : "bg-gray-100 text-gray-500"}`}>{v.formality}</span>}
-                    {v.usageNote && <p className={`text-[10px] ${textMuted} italic mt-0.5`}>{v.usageNote}</p>}
-                  </div>
-                  {v.example && (
-                    <button onClick={() => speak(v.example)}
-                      className={`text-[10px] px-2 py-1 rounded-lg border flex-shrink-0 ${dark ? "border-[#1e2a4a] text-gray-400 hover:text-purple-400" : "border-gray-200 text-gray-500 hover:text-purple-600"} transition-colors`}>
-                      ▶ Example
+            <h3 className={`text-sm font-semibold mb-4 ${dark ? "text-white" : "text-gray-900"}`}>Vocabulary List</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {lesson!.vocabItems.map((v: any, i: number) => {
+                const lowerFr = String(v.french || "").toLowerCase().trim();
+                const exText = v.example || defaultExamplesMap[lowerFr] || `Exemple: "${v.french}" est très utile en français.`;
+                return (
+                  <motion.div key={v.french + i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
+                    className={`flex items-start gap-3 p-3.5 rounded-xl border ${dark ? "border-[#1e2a4a] bg-[#101828]/50" : "border-gray-100 bg-gray-50/50"} hover:border-purple-500/50 transition-all`}>
+                    <button onClick={() => speak(v.french)}
+                      className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white hover:opacity-80 transition-all flex-shrink-0 mt-0.5 shadow-sm">
+                      <Volume2 className="w-4 h-4" />
                     </button>
-                  )}
-                </motion.div>
-              ))}
+                    <div className="flex-1 min-w-0">
+                      <EditableText as="span" fieldPath={`vocabItems[${i}].french`} value={v.french} className={`text-sm font-bold block ${dark ? "text-white" : "text-gray-900"}`} />
+                      {v.pronunciation && <span className={`text-[10px] ${textMuted} block font-mono`}>[{v.pronunciation}]</span>}
+                      <p className={`text-xs ${textSec} mt-0.5`}>
+                        <EditableText fieldPath={`vocabItems[${i}].english`} value={v.english} />
+                      </p>
+                      {v.formality && <span className={`text-[10px] inline-block mt-1 px-1.5 py-0.5 rounded ${dark ? "bg-white/5 text-gray-400" : "bg-gray-100 text-gray-500"}`}>{v.formality}</span>}
+                      {v.usageNote && <p className={`text-[10px] ${textMuted} italic mt-0.5`}>{v.usageNote}</p>}
+
+                      {exText && (
+                        <div className="mt-2 pt-2 border-t dark:border-white/10 border-black/5 flex items-start justify-between gap-2">
+                          <div className="space-y-0.5 min-w-0">
+                            <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-400 block">Example Usage:</span>
+                            <p className={`text-[11px] ${textMuted} italic leading-snug`}>"{exText}"</p>
+                          </div>
+                          <button
+                            onClick={() => speak(exText)}
+                            className="px-2 py-1 bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/20 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 flex-shrink-0 cursor-pointer"
+                            title="Listen to full example sentence"
+                          >
+                            <Volume2 className="w-3 h-3" /> Listen
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         );
