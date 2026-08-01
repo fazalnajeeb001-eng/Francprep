@@ -29,11 +29,10 @@ function LessonRoute() {
   }
 
   const handleBack = () => {
-    try {
-      if (router?.history) router.history.back();
-      else window.history.back();
-    } catch {
-      window.history.back();
+    if (window.history.length > 2) {
+      router.history.back();
+    } else {
+      router.navigate({ to: "/learn" });
     }
   };
 
