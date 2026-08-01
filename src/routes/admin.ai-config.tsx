@@ -302,58 +302,135 @@ export function AdminAIConfigPage() {
             </button>
           </div>
 
-          {/* ─── ELEVENLABS CUSTOM VOICE PICKER ─── */}
-          <div className="p-4 rounded-xl border border-pink-500/30 bg-pink-500/10 space-y-3">
-            <p className="text-xs font-extrabold text-pink-300">🎙️ ElevenLabs Voices (Choose Defaults or Paste Any Voice ID):</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-              <div>
-                <label className="block font-bold mb-1 text-gray-300">Default Female Voice (Coach Chloé / Platform):</label>
-                <select
-                  value={form.selectedElevenLabsFemaleVoice}
-                  onChange={(e) => setForm({ ...form, selectedElevenLabsFemaleVoice: e.target.value })}
-                  className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-pink-500/30" : "bg-white text-slate-900"}`}
+          {/* ─── PROVIDER-SPECIFIC VOICE PICKER ─── */}
+          {form.preferredVoiceEngine === "elevenlabs" && (
+            <div className="p-4 rounded-xl border border-pink-500/30 bg-pink-500/10 space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-extrabold text-pink-300">🎙️ ElevenLabs Voices (Choose Defaults or Paste Voice ID):</p>
+                <button
+                  type="button"
+                  onClick={() => speak("Bonjour ! Ceci est un test de la voix de studio ElevenLabs.", "fr-FR", 0.85, "female")}
+                  className="px-2.5 py-1 bg-pink-500/20 text-pink-300 border border-pink-500/30 rounded-lg text-[10px] font-bold hover:bg-pink-500/30 flex items-center gap-1 cursor-pointer"
                 >
-                  <option value="21m00Tcm4TlvDq8ikWAM">🌸 Rachel (Calm & Clear Parisian French — Recommended)</option>
-                  <option value="XB0fDUnXU5powFXDhCwa">🇫🇷 Charlotte (Native Parisian French Female)</option>
-                  <option value="EXAVITQu4vr4xnSDxMaL">⚡ Bella (Expressive & Energetic)</option>
-                  <option value="AZnzlk1XvdvUeBnXmlld">📖 Domi (Warm Academic Reader)</option>
-                  <option value="MF3mGyEYCl7XYWbV9V6O">💬 Elli (Gentle Conversationalist)</option>
-                  <option value="Xb7hH8MSwom74TLWDRmy">👑 Alice (Sophisticated French)</option>
-                  <option value="custom">✏️ Custom Voice ID (Paste Below)</option>
-                </select>
-                {form.selectedElevenLabsFemaleVoice === "custom" && (
-                  <input
-                    type="text"
-                    placeholder="Paste ElevenLabs Female Voice ID..."
-                    onChange={(e) => setForm({ ...form, selectedElevenLabsFemaleVoice: e.target.value })}
-                    className="w-full mt-2 p-2 rounded-xl border border-pink-500/40 bg-black/40 text-xs font-mono text-pink-300"
-                  />
-                )}
+                  <Volume2 className="w-3 h-3" /> Test Female Voice
+                </button>
               </div>
-              <div>
-                <label className="block font-bold mb-1 text-gray-300">Default Male Voice (Coach Léo):</label>
-                <select
-                  value={form.selectedElevenLabsMaleVoice}
-                  onChange={(e) => setForm({ ...form, selectedElevenLabsMaleVoice: e.target.value })}
-                  className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-pink-500/30" : "bg-white text-slate-900"}`}
-                >
-                  <option value="ErXwobaYiN019PkySvjV">🎙️ Antoni (Deep & Articulate Native Male — Recommended)</option>
-                  <option value="GBv7mTt0atIp3Br8iCJU">🇫🇷 Thomas (Native French Male)</option>
-                  <option value="VR6AewLTigWG4xSOukaG">📻 Arnold (Formal Narrator)</option>
-                  <option value="pNInz6obpgDQGcFmaJgB">👔 Adam (Clear Professional Voice)</option>
-                  <option value="custom">✏️ Custom Voice ID (Paste Below)</option>
-                </select>
-                {form.selectedElevenLabsMaleVoice === "custom" && (
-                  <input
-                    type="text"
-                    placeholder="Paste ElevenLabs Male Voice ID..."
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                <div>
+                  <label className="block font-bold mb-1 text-gray-300">Default Female Voice (Coach Chloé / Platform):</label>
+                  <select
+                    value={form.selectedElevenLabsFemaleVoice}
+                    onChange={(e) => setForm({ ...form, selectedElevenLabsFemaleVoice: e.target.value })}
+                    className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-pink-500/30" : "bg-white text-slate-900"}`}
+                  >
+                    <option value="21m00Tcm4TlvDq8ikWAM">🌸 Rachel (Calm & Clear Parisian French — Recommended)</option>
+                    <option value="XB0fDUnXU5powFXDhCwa">🇫🇷 Charlotte (Native Parisian French Female)</option>
+                    <option value="EXAVITQu4vr4xnSDxMaL">⚡ Bella (Expressive & Energetic)</option>
+                    <option value="AZnzlk1XvdvUeBnXmlld">📖 Domi (Warm Academic Reader)</option>
+                    <option value="MF3mGyEYCl7XYWbV9V6O">💬 Elli (Gentle Conversationalist)</option>
+                    <option value="Xb7hH8MSwom74TLWDRmy">👑 Alice (Sophisticated French)</option>
+                    <option value="custom">✏️ Custom Voice ID (Paste Below)</option>
+                  </select>
+                  {form.selectedElevenLabsFemaleVoice === "custom" && (
+                    <input
+                      type="text"
+                      placeholder="Paste ElevenLabs Female Voice ID..."
+                      onChange={(e) => setForm({ ...form, selectedElevenLabsFemaleVoice: e.target.value })}
+                      className="w-full mt-2 p-2 rounded-xl border border-pink-500/40 bg-black/40 text-xs font-mono text-pink-300"
+                    />
+                  )}
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block font-bold text-gray-300">Default Male Voice (Coach Léo):</label>
+                    <button
+                      type="button"
+                      onClick={() => speak("Bonjour ! Je suis Coach Léo, ravi de travailler avec vous.", "fr-FR", 0.85, "male")}
+                      className="text-[10px] text-pink-300 hover:underline flex items-center gap-1 font-bold cursor-pointer"
+                    >
+                      <Volume2 className="w-3 h-3" /> Test Male
+                    </button>
+                  </div>
+                  <select
+                    value={form.selectedElevenLabsMaleVoice}
                     onChange={(e) => setForm({ ...form, selectedElevenLabsMaleVoice: e.target.value })}
-                    className="w-full mt-2 p-2 rounded-xl border border-pink-500/40 bg-black/40 text-xs font-mono text-pink-300"
-                  />
-                )}
+                    className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-pink-500/30" : "bg-white text-slate-900"}`}
+                  >
+                    <option value="ErXwobaYiN019PkySvjV">🎙️ Antoni (Deep & Articulate Native Male — Recommended)</option>
+                    <option value="GBv7mTt0atIp3Br8iCJU">🇫🇷 Thomas (Native French Male)</option>
+                    <option value="VR6AewLTigWG4xSOukaG">📻 Arnold (Formal Narrator)</option>
+                    <option value="pNInz6obpgDQGcFmaJgB">👔 Adam (Clear Professional Voice)</option>
+                    <option value="custom">✏️ Custom Voice ID (Paste Below)</option>
+                  </select>
+                  {form.selectedElevenLabsMaleVoice === "custom" && (
+                    <input
+                      type="text"
+                      placeholder="Paste ElevenLabs Male Voice ID..."
+                      onChange={(e) => setForm({ ...form, selectedElevenLabsMaleVoice: e.target.value })}
+                      className="w-full mt-2 p-2 rounded-xl border border-pink-500/40 bg-black/40 text-xs font-mono text-pink-300"
+                    />
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          )}
+
+          {form.preferredVoiceEngine === "openai" && (
+            <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-extrabold text-emerald-300">🤖 OpenAI tts-1-hd Voices:</p>
+                <button
+                  type="button"
+                  onClick={() => speak("Bonjour ! Ceci est un test de la voix OpenAI tts-1-hd.", "fr-FR", 0.85, "female")}
+                  className="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-lg text-[10px] font-bold hover:bg-emerald-500/30 flex items-center gap-1 cursor-pointer"
+                >
+                  <Volume2 className="w-3 h-3" /> Test OpenAI Voice
+                </button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                <div>
+                  <label className="block font-bold mb-1 text-gray-300">Female Voice:</label>
+                  <select
+                    value={form.selectedOpenAIFemaleVoice}
+                    onChange={(e) => setForm({ ...form, selectedOpenAIFemaleVoice: e.target.value })}
+                    className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-emerald-500/30" : "bg-white text-slate-900"}`}
+                  >
+                    <option value="nova">Nova (Bright & Conversational Female)</option>
+                    <option value="alloy">Alloy (Balanced Neutral)</option>
+                    <option value="shimmer">Shimmer (Clear Academic Female)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-bold mb-1 text-gray-300">Male Voice:</label>
+                  <select
+                    value={form.selectedOpenAIMaleVoice}
+                    onChange={(e) => setForm({ ...form, selectedOpenAIMaleVoice: e.target.value })}
+                    className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-emerald-500/30" : "bg-white text-slate-900"}`}
+                  >
+                    <option value="onyx">Onyx (Deep Professional Male)</option>
+                    <option value="echo">Echo (Warm Conversational Male)</option>
+                    <option value="fable">Fable (Expressive Storyteller Male)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {form.preferredVoiceEngine === "kokoro" && (
+            <div className="p-4 rounded-xl border border-cyan-500/30 bg-cyan-500/10 space-y-3 text-xs">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-extrabold text-cyan-300">🤗 HuggingFace Kokoro-82M Voices:</p>
+                <button
+                  type="button"
+                  onClick={() => speak("Bonjour ! Ceci est un test du modèle Kokoro 82M.", "fr-FR", 0.85, "female")}
+                  className="px-2.5 py-1 bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 rounded-lg text-[10px] font-bold hover:bg-cyan-500/30 flex items-center gap-1 cursor-pointer"
+                >
+                  <Volume2 className="w-3 h-3" /> Test Kokoro Voice
+                </button>
+              </div>
+              <p className="text-gray-300">Kokoro uses model defaults: <strong>ff_siwis</strong> for female and <strong>bm_george</strong> for male.</p>
+            </div>
+          )}
         </motion.div>
 
         {/* ─── API KEYS CARD ─── */}
