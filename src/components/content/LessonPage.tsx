@@ -1394,6 +1394,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
           </div>
         );
 
+      case 'listening':
       case 'dialogue':
         const dialogueQuestions = [...(lesson!.reading?.questions || []), ...(lesson!.listening?.questions || [])].filter((q: any) => Boolean(q?.id && typeof q.id === 'string' && !q.id.includes('dummy')));
         const dialText = getDialogueText(lesson!);
