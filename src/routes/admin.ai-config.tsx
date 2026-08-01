@@ -35,7 +35,11 @@ export function AdminAIConfigPage() {
     openaiApiKey: "",
     elevenLabsApiKey: "",
     huggingFaceToken: "",
-    preferredVoiceEngine: "auto",
+    preferredVoiceEngine: "elevenlabs",
+    selectedElevenLabsFemaleVoice: "21m00Tcm4TlvDq8ikWAM",
+    selectedElevenLabsMaleVoice: "ErXwobaYiN019PkySvjV",
+    selectedOpenAIFemaleVoice: "nova",
+    selectedOpenAIMaleVoice: "onyx",
   });
 
   const bg = dark ? "bg-[#070B17] text-white" : "bg-[#F8FAFC] text-slate-900";
@@ -67,7 +71,11 @@ export function AdminAIConfigPage() {
               openaiApiKey: j.data.openaiApiKey || prev.openaiApiKey || localForm.openaiApiKey || "",
               elevenLabsApiKey: j.data.elevenLabsApiKey || prev.elevenLabsApiKey || localForm.elevenLabsApiKey || "",
               huggingFaceToken: j.data.huggingFaceToken || prev.huggingFaceToken || localForm.huggingFaceToken || "",
-              preferredVoiceEngine: j.data.preferredVoiceEngine || prev.preferredVoiceEngine || localForm.preferredVoiceEngine || "auto",
+              preferredVoiceEngine: j.data.preferredVoiceEngine || j.data.activeTTSProvider || prev.preferredVoiceEngine || "elevenlabs",
+              selectedElevenLabsFemaleVoice: j.data.selectedElevenLabsFemaleVoice || prev.selectedElevenLabsFemaleVoice || "21m00Tcm4TlvDq8ikWAM",
+              selectedElevenLabsMaleVoice: j.data.selectedElevenLabsMaleVoice || prev.selectedElevenLabsMaleVoice || "ErXwobaYiN019PkySvjV",
+              selectedOpenAIFemaleVoice: j.data.selectedOpenAIFemaleVoice || prev.selectedOpenAIFemaleVoice || "nova",
+              selectedOpenAIMaleVoice: j.data.selectedOpenAIMaleVoice || prev.selectedOpenAIMaleVoice || "onyx",
             };
             if (typeof window !== "undefined") {
               localStorage.setItem("francprep_ai_config", JSON.stringify(updated));
@@ -292,6 +300,59 @@ export function AdminAIConfigPage() {
               </div>
               <p className="text-[11px] text-gray-400 mt-1">OpenAI tts-1-hd Voices (Nova & Onyx)</p>
             </button>
+          </div>
+
+          {/* ─── ELEVENLABS CUSTOM VOICE PICKER ─── */}
+          <div className="p-4 rounded-xl border border-pink-500/30 bg-pink-500/10 space-y-3">
+            <p className="text-xs font-extrabold text-pink-300">🎙️ ElevenLabs Voices (Choose Defaults or Paste Any Voice ID):</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+              <div>
+                <label className="block font-bold mb-1 text-gray-300">Default Female Voice (Coach Chloé / Platform):</label>
+                <select
+                  value={form.selectedElevenLabsFemaleVoice}
+                  onChange={(e) => setForm({ ...form, selectedElevenLabsFemaleVoice: e.target.value })}
+                  className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-pink-500/30" : "bg-white text-slate-900"}`}
+                >
+                  <option value="21m00Tcm4TlvDq8ikWAM">🌸 Rachel (Calm & Clear Parisian French — Recommended)</option>
+                  <option value="XB0fDUnXU5powFXDhCwa">🇫🇷 Charlotte (Native Parisian French Female)</option>
+                  <option value="EXAVITQu4vr4xnSDxMaL">⚡ Bella (Expressive & Energetic)</option>
+                  <option value="AZnzlk1XvdvUeBnXmlld">📖 Domi (Warm Academic Reader)</option>
+                  <option value="MF3mGyEYCl7XYWbV9V6O">💬 Elli (Gentle Conversationalist)</option>
+                  <option value="Xb7hH8MSwom74TLWDRmy">👑 Alice (Sophisticated French)</option>
+                  <option value="custom">✏️ Custom Voice ID (Paste Below)</option>
+                </select>
+                {form.selectedElevenLabsFemaleVoice === "custom" && (
+                  <input
+                    type="text"
+                    placeholder="Paste ElevenLabs Female Voice ID..."
+                    onChange={(e) => setForm({ ...form, selectedElevenLabsFemaleVoice: e.target.value })}
+                    className="w-full mt-2 p-2 rounded-xl border border-pink-500/40 bg-black/40 text-xs font-mono text-pink-300"
+                  />
+                )}
+              </div>
+              <div>
+                <label className="block font-bold mb-1 text-gray-300">Default Male Voice (Coach Léo):</label>
+                <select
+                  value={form.selectedElevenLabsMaleVoice}
+                  onChange={(e) => setForm({ ...form, selectedElevenLabsMaleVoice: e.target.value })}
+                  className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-pink-500/30" : "bg-white text-slate-900"}`}
+                >
+                  <option value="ErXwobaYiN019PkySvjV">🎙️ Antoni (Deep & Articulate Native Male — Recommended)</option>
+                  <option value="GBv7mTt0atIp3Br8iCJU">🇫🇷 Thomas (Native French Male)</option>
+                  <option value="VR6AewLTigWG4xSOukaG">📻 Arnold (Formal Narrator)</option>
+                  <option value="pNInz6obpgDQGcFmaJgB">👔 Adam (Clear Professional Voice)</option>
+                  <option value="custom">✏️ Custom Voice ID (Paste Below)</option>
+                </select>
+                {form.selectedElevenLabsMaleVoice === "custom" && (
+                  <input
+                    type="text"
+                    placeholder="Paste ElevenLabs Male Voice ID..."
+                    onChange={(e) => setForm({ ...form, selectedElevenLabsMaleVoice: e.target.value })}
+                    className="w-full mt-2 p-2 rounded-xl border border-pink-500/40 bg-black/40 text-xs font-mono text-pink-300"
+                  />
+                )}
+              </div>
+            </div>
           </div>
         </motion.div>
 
