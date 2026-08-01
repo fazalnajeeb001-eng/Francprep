@@ -1430,20 +1430,40 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
                     <Square className="w-3.5 h-3.5 fill-current text-red-400" /> ⏹️ Stop Audio
                   </button>
 
+                  <button
+                    onClick={() => setShowTranscript(!showTranscript)}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                      showTranscript
+                        ? "bg-purple-500/20 border-purple-500/40 text-purple-300"
+                        : dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    {showTranscript ? "🙈 Hide" : "📄 Show"} French Transcript
+                  </button>
+
                   {dialTrans && (
                     <button onClick={() => setShowTranslation(!showTranslation)}
-                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                        showTranslation
+                          ? "bg-purple-500/20 border-purple-500/40 text-purple-300"
+                          : dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"
+                      }`}>
                       {showTranslation ? "Hide" : "Show"} English Translation
                     </button>
                   )}
                 </div>
-                <div className={`${innerBg} rounded-xl p-4 border text-sm leading-relaxed ${textBody} font-medium`}>
-                  {lesson!.reading?.text ? (
-                    <EditableText as="div" fieldPath="reading.text" value={lesson!.reading.text} className="w-full whitespace-pre-line" />
-                  ) : (
-                    <EditableText as="div" fieldPath="listening.transcript" value={lesson!.listening?.transcript || ""} className="w-full whitespace-pre-line" />
-                  )}
-                </div>
+
+                {showTranscript && (
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
+                    <div className={`${innerBg} rounded-xl p-4 border text-sm leading-relaxed ${textBody} font-medium`}>
+                      {lesson!.reading?.text ? (
+                        <EditableText as="div" fieldPath="reading.text" value={lesson!.reading.text} className="w-full whitespace-pre-line" />
+                      ) : (
+                        <EditableText as="div" fieldPath="listening.transcript" value={lesson!.listening?.transcript || ""} className="w-full whitespace-pre-line" />
+                      )}
+                    </div>
+                  </motion.div>
+                )}
                 {showTranslation && dialTrans && (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4">
                     <p className={`text-xs ${textMuted} italic p-4 rounded-xl border ${innerBg}`}>
@@ -1489,21 +1509,43 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
                     className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-extrabold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-md cursor-pointer">
                     <Volume2 className="w-4 h-4" /> ⏯️ Play / Pause / Resume
                   </button>
+
                   <button onClick={() => stopAudio()}
                     className="flex items-center gap-1.5 bg-red-500/20 text-red-300 border border-red-500/40 hover:bg-red-500/30 text-xs font-bold px-4 py-2.5 rounded-xl transition-all cursor-pointer"
                     title="Stop Audio Playback">
                     <Square className="w-3.5 h-3.5 fill-current text-red-400" /> ⏹️ Stop Audio
                   </button>
+
+                  <button
+                    onClick={() => setShowTranscript(!showTranscript)}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                      showTranscript
+                        ? "bg-purple-500/20 border-purple-500/40 text-purple-300"
+                        : dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    {showTranscript ? "🙈 Hide" : "📄 Show"} French Transcript
+                  </button>
+
                   {sceneTrans && (
                     <button onClick={() => setShowTranslation(!showTranslation)}
-                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                        showTranslation
+                          ? "bg-purple-500/20 border-purple-500/40 text-purple-300"
+                          : dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"
+                      }`}>
                       {showTranslation ? "Hide" : "Show"} English Translation
                     </button>
                   )}
                 </div>
-                <div className={`${innerBg} rounded-xl p-4 border text-sm leading-relaxed ${textBody} font-medium whitespace-pre-line`}>
-                  {sceneText}
-                </div>
+
+                {showTranscript && (
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
+                    <div className={`${innerBg} rounded-xl p-4 border text-sm leading-relaxed ${textBody} font-medium whitespace-pre-line`}>
+                      {sceneText}
+                    </div>
+                  </motion.div>
+                )}
                 {showTranslation && sceneTrans && (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4">
                     <p className={`text-xs ${textMuted} italic p-4 rounded-xl border ${innerBg}`}>{sceneTrans}</p>
