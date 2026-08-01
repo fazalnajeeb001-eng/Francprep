@@ -1216,6 +1216,24 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
           );
         };
 
+        const defaultExamples: Record<string, string> = {
+          "bonjour": "Bonjour, comment allez-vous aujourd'hui ?",
+          "bonsoir": "Bonsoir tout le monde, bienvenue !",
+          "salut": "Salut Paul, ça va bien ?",
+          "au revoir": "Au revoir et à la prochaine !",
+          "à bientôt": "Merci pour tout, à bientôt !",
+          "bonne nuit": "Il est tard, bonne nuit !",
+          "madame": "Bonjour Madame, puis-je vous aider ?",
+          "monsieur": "Pardon Monsieur, quelle heure est-il ?",
+          "s'il vous plaît": "Un café, s'il vous plaît.",
+          "merci": "Merci beaucoup pour votre aide !",
+          "de rien": "Je vous en prie, de rien.",
+          "oui": "Oui, je suis d'accord.",
+          "non": "Non, ce n'est pas possible.",
+          "pardon": "Pardon, je n'ai pas entendu.",
+          "excusez-moi": "Excusez-moi, où est la gare ?"
+        };
+
         const addVocab = (fr: string, en: string, pr?: string, ex?: string) => {
           if (isProseOrNote(fr) || isProseOrNote(en) || isProseOrNote(ex || '')) return;
 
@@ -1224,12 +1242,16 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
           if (!cleanFr || cleanFr.toLowerCase() === 'french' || cleanFr.match(/^[-:]+$/) || seenFrench.has(cleanFr.toLowerCase()) || isProseOrNote(cleanFr) || isProseOrNote(cleanEn)) {
             return;
           }
-          seenFrench.add(cleanFr.toLowerCase());
+
+          const lowerFr = cleanFr.toLowerCase();
+          const finalExample = ex?.trim() || defaultExamples[lowerFr] || `Exemple: "${cleanFr}" est très utile en français.`;
+
+          seenFrench.add(lowerFr);
           cleanedVocab.push({
             french: cleanFr,
             english: cleanEn,
             pronunciation: pr?.trim(),
-            example: ex?.trim(),
+            example: finalExample,
           });
         };
 
@@ -1312,9 +1334,18 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
                     {v.pronunciation && <span className={`text-[10px] ${textMuted} block font-mono`}>[{v.pronunciation}]</span>}
                     <span className={`text-xs ${textSec} block mt-0.5`}>{v.english}</span>
                     {v.example && (
-                      <div className="mt-1.5 pt-1.5 border-t dark:border-[#1e2a4a] border-gray-200/60 flex items-center justify-between">
-                        <span className={`text-[11px] ${textMuted} italic`}>"{v.example}"</span>
-                        <button onClick={() => speak(v.example!)} className="text-[10px] text-purple-400 hover:underline flex-shrink-0 ml-2">▶ Listen</button>
+                      <div className="mt-2 pt-2 border-t dark:border-white/10 border-black/5 flex items-start justify-between gap-2">
+                        <div className="space-y-0.5 min-w-0">
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-400 block">Example Usage:</span>
+                          <p className={`text-[11px] ${textMuted} italic leading-snug`}>"{v.example}"</p>
+                        </div>
+                        <button
+                          onClick={() => speak(v.example!)}
+                          className="px-2 py-1 bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/20 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 flex-shrink-0 cursor-pointer"
+                          title="Listen to full example sentence"
+                        >
+                          <Volume2 className="w-3 h-3" /> Listen
+                        </button>
                       </div>
                     )}
                   </div>
