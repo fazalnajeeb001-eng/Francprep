@@ -13,29 +13,22 @@ export function AvatarCoachesSection() {
   const [aiFeedback, setAiFeedback] = useState<{ text: string; score: number } | null>(null);
   const recognitionRef = useRef<any>(null);
 
-  const levelSpeeches = {
-    A1: {
-      text: "Bonjour ! Je m'appelle Coach Leo. Bienvenue au niveau débutant A1. Comment allez-vous ?",
-      rate: 0.75,
-      label: "A1 Beginner Pace (Clear & Deliberate)",
-    },
-    B2: {
-      text: "Bonjour ! En niveau B2, nous nous préparons intensément aux épreuves d'expression et de compréhension du TCF et TEF Canada.",
-      rate: 0.9,
-      label: "B2 Exam Pace (TCF/TEF Standard)",
-    },
-    C2: {
-      text: "En niveau C2, nous analysons les nuances de la langue française, la rhétorique et les débats philosophiques avec une fluidité totale.",
-      rate: 1.0,
-      label: "C2 Native Pace (Full Fluency)",
-    },
-  };
+  const handleSpeakDemo = (avatar = selectedAvatar, level = selectedLevel) => {
+    stopAudio(); // Stop any currently playing audio track instantly
+    const coachName = avatar === "male" ? "Coach Léo" : "Coach Chloé";
+    let speechText = "";
 
-  const handleSpeakDemo = () => {
-    const currentConfig = levelSpeeches[selectedLevel];
+    if (level === "A1") {
+      speechText = `Bonjour ! Je suis ${coachName}. Bienvenue au niveau débutant A1. Comment allez-vous aujourd'hui ?`;
+    } else if (level === "B2") {
+      speechText = `Bonjour ! Je suis ${coachName}. En niveau B2, nous nous préparons aux épreuves du TCF et TEF Canada.`;
+    } else {
+      speechText = `Bonjour ! Je suis ${coachName}. En niveau C2, nous analysons les nuances de la langue française avec une fluidité totale.`;
+    }
+
+    const rates = { A1: 0.75, B2: 0.9, C2: 1.0 };
     setIsSpeaking(true);
-    speak(currentConfig.text, "fr-FR", currentConfig.rate, selectedAvatar);
-    setTimeout(() => setIsSpeaking(false), Math.min(8000, currentConfig.text.length * 80));
+    speak(speechText, "fr-FR", rates[level], avatar);
   };
 
   const startMicRecording = () => {
@@ -182,24 +175,32 @@ export function AvatarCoachesSection() {
               <div className="flex flex-wrap items-center gap-3">
                 <span className="text-xs font-bold text-gray-700 dark:text-slate-300">Choose Coach:</span>
                 <button
-                  onClick={() => setSelectedAvatar("male")}
-                  className={`px-4 py-2.5 text-xs font-bold rounded-xl border transition-all active:scale-95 touch-manipulation ${
+                  onClick={() => {
+                    setSelectedAvatar("male");
+                    stopAudio();
+                    handleSpeakDemo("male", selectedLevel);
+                  }}
+                  className={`px-4 py-2.5 text-xs font-bold rounded-xl border transition-all active:scale-95 touch-manipulation cursor-pointer ${
                     selectedAvatar === "male"
                       ? "border-purple-500 bg-purple-600 text-white shadow-md shadow-purple-500/30"
                       : "border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-white/10"
                   }`}
                 >
-                  Coach Leo (Male 3D)
+                  🎙️ Coach Léo (Male Voice)
                 </button>
                 <button
-                  onClick={() => setSelectedAvatar("female")}
-                  className={`px-4 py-2.5 text-xs font-bold rounded-xl border transition-all active:scale-95 touch-manipulation ${
+                  onClick={() => {
+                    setSelectedAvatar("female");
+                    stopAudio();
+                    handleSpeakDemo("female", selectedLevel);
+                  }}
+                  className={`px-4 py-2.5 text-xs font-bold rounded-xl border transition-all active:scale-95 touch-manipulation cursor-pointer ${
                     selectedAvatar === "female"
-                      ? "border-purple-500 bg-purple-600 text-white shadow-md shadow-purple-500/30"
+                      ? "border-pink-500 bg-pink-600 text-white shadow-md shadow-pink-500/30"
                       : "border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-white/10"
                   }`}
                 >
-                  Coach Camille / Chloe (Female 3D)
+                  🌸 Coach Chloé (Female Voice)
                 </button>
               </div>
 
@@ -209,8 +210,12 @@ export function AvatarCoachesSection() {
                 {(["A1", "B2", "C2"] as const).map((lvl) => (
                   <button
                     key={lvl}
-                    onClick={() => setSelectedLevel(lvl)}
-                    className={`px-3 py-1.5 text-xs font-bold rounded-lg border transition-all ${
+                    onClick={() => {
+                      setSelectedLevel(lvl);
+                      stopAudio();
+                      handleSpeakDemo(selectedAvatar, lvl);
+                    }}
+                    className={`px-3 py-1.5 text-xs font-bold rounded-lg border transition-all cursor-pointer ${
                       selectedLevel === lvl
                         ? "border-emerald-500 bg-emerald-500/20 text-emerald-700 dark:text-emerald-300"
                         : "border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-white/10"
