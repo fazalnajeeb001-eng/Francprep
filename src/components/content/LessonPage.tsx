@@ -765,7 +765,10 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
     };
     checkPreview();
     window.addEventListener("admin-preview-changed", checkPreview);
-    return () => window.removeEventListener("admin-preview-changed", checkPreview);
+    return () => {
+      stopAudio(); // Stop audio playback when navigating away from lesson
+      window.removeEventListener("admin-preview-changed", checkPreview);
+    };
   }, []);
 
   const handleInlineSave = async (fieldPath: string, value: any) => {

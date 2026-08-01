@@ -4,6 +4,16 @@ import { apiFetch } from "~/lib/apiFetch";
 let currentAudioPlayer: HTMLAudioElement | null = null;
 let onPlaybackStateChange: ((playing: boolean) => void) | null = null;
 
+// Stop audio automatically when user navigates away, closes tab, or switches pages!
+if (typeof window !== "undefined") {
+  window.addEventListener("pagehide", () => stopAudio());
+  window.addEventListener("beforeunload", () => stopAudio());
+  window.addEventListener("popstate", () => stopAudio());
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stopAudio();
+  });
+}
+
 function base64ToBlob(base64: string, contentType = "audio/mp3"): Blob {
   const byteCharacters = atob(base64);
   const byteNumbers = new Array(byteCharacters.length);
