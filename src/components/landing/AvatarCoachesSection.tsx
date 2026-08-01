@@ -267,7 +267,7 @@ export function AvatarCoachesSection() {
               </div>
 
               <p className="text-[11px] text-purple-700 dark:text-purple-300 font-mono">
-                {levelSpeeches[selectedLevel].label}
+                {selectedLevel === "A1" ? "A1 Beginner Pace (Clear & Deliberate)" : selectedLevel === "B2" ? "B2 Exam Pace (TCF/TEF Standard)" : "C2 Native Pace (Full Fluency)"}
               </p>
 
               {/* Live Mic Transcript & AI Response Display */}
