@@ -6,12 +6,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   CheckCircle2, ArrowLeft, BookOpen, Volume2, Trophy, Award,
   ChevronLeft, ChevronRight, HelpCircle, Star, Headphones, PenTool, Mic,
-  Repeat, Globe, FileText, Languages, Zap, Sparkles, Printer, X, RotateCcw
+  Repeat, Globe, FileText, Languages, Zap, Sparkles, Printer, X, RotateCcw,
+  Pause, Play, Square
 } from "lucide-react";
 import { WritingSubmission } from "./LearningComponents";
 import { SpeakingDrill } from "./SpeakingDrill";
 import { QuizComponent } from "./QuizComponent";
-import { speak, useSpeak } from "~/lib/speech";
+import { speak, useSpeak, stopAudio, pauseAudio, toggleAudio } from "~/lib/speech";
 
 // ─── Canonical Interfaces (matches lesson.schema.json) ─────────────────────
 
@@ -1363,10 +1364,15 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
             </div>
             {dialText && (
               <>
-                <div className="flex gap-3 mb-4">
-                  <button onClick={() => speak(dialText)}
-                    className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
-                    <Volume2 className="w-4 h-4" /> Listen to Dialogue
+                <div className="flex flex-wrap items-center gap-3 mb-4">
+                  <button onClick={() => toggleAudio(dialText)}
+                    className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 cursor-pointer">
+                    <Volume2 className="w-4 h-4" /> Listen / Pause Dialogue
+                  </button>
+                  <button onClick={() => stopAudio()}
+                    className="flex items-center gap-1.5 bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30 text-sm font-semibold px-4 py-2.5 rounded-xl transition-all cursor-pointer"
+                    title="Stop Audio Playback">
+                    <Square className="w-4 h-4 fill-current" /> Stop
                   </button>
                   {dialTrans && (
                     <button onClick={() => setShowTranslation(!showTranslation)}

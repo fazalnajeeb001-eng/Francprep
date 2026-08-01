@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import { Mic, Send, Volume2, RotateCcw, Bot, User, Sparkles } from "lucide-react";
+import { Mic, Send, Volume2, RotateCcw, Bot, User, Sparkles, Square } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
-import { speak } from "~/lib/speech";
+import { speak, stopAudio, toggleAudio } from "~/lib/speech";
 
 import { SmartAvatar } from "~/components/dashboard/widgets/SmartAvatar";
 
@@ -360,16 +360,21 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
                   {msg.role === "assistant" && (
                     <div className="mt-2 pt-1 border-t dark:border-white/10 border-black/5 flex items-center gap-3 text-[11px]">
                       <button
-                        onClick={() => speakText(msg.content, selectedSpeed)}
-                        className="inline-flex items-center gap-1 font-bold text-purple-600 dark:text-purple-400 hover:underline"
-                        disabled={isSpeaking}
+                        onClick={() => toggleAudio(msg.content, "fr-FR", selectedSpeed, avatarGender)}
+                        className="inline-flex items-center gap-1 font-bold text-purple-600 dark:text-purple-400 hover:underline cursor-pointer"
                       >
-                        <Volume2 className="w-3.5 h-3.5" /> Play ({selectedSpeed}x)
+                        <Volume2 className="w-3.5 h-3.5" /> Play / Pause ({selectedSpeed}x)
                       </button>
                       <button
-                        onClick={() => speakText(msg.content, 0.60)}
-                        className="inline-flex items-center gap-1 font-semibold text-pink-600 dark:text-pink-400 hover:underline"
-                        disabled={isSpeaking}
+                        onClick={() => stopAudio()}
+                        className="inline-flex items-center gap-1 font-semibold text-red-500 hover:underline cursor-pointer"
+                        title="Stop Audio Playback"
+                      >
+                        <Square className="w-3 h-3 fill-current" /> Stop
+                      </button>
+                      <button
+                        onClick={() => speak(msg.content, "fr-FR", 0.60, avatarGender)}
+                        className="inline-flex items-center gap-1 font-semibold text-pink-600 dark:text-pink-400 hover:underline cursor-pointer"
                       >
                         <span>🐢</span> Practice Slow (0.6x)
                       </button>

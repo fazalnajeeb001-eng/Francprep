@@ -127,8 +127,44 @@ function playDirectHDFallback(text: string, langCode: string, rate: number, audi
   }
 }
 
+export function stopAudio(): void {
+  if (currentAudioPlayer) {
+    currentAudioPlayer.pause();
+    currentAudioPlayer.currentTime = 0;
+    currentAudioPlayer = null;
+  }
+  if (onPlaybackStateChange) onPlaybackStateChange(false);
+}
+
+export function pauseAudio(): void {
+  if (currentAudioPlayer && !currentAudioPlayer.paused) {
+    currentAudioPlayer.pause();
+    if (onPlaybackStateChange) onPlaybackStateChange(false);
+  }
+}
+
+export function resumeAudio(): void {
+  if (currentAudioPlayer && currentAudioPlayer.paused) {
+    currentAudioPlayer.play().catch(() => {});
+    if (onPlaybackStateChange) onPlaybackStateChange(true);
+  }
+}
+
+export function toggleAudio(text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female"): boolean {
+  if (currentAudioPlayer) {
+    if (!currentAudioPlayer.paused) {
+      pauseAudio();
+      return false;
+    } else if (currentAudioPlayer.src) {
+      resumeAudio();
+      return true;
+    }
+  }
+  return speak(text, lang, rate, gender);
+}
+
 /**
- * React hook that wraps `speak()` and exposes an `isSpeaking` state.
+ * React hook that wraps `speak()` and exposes `isSpeaking`, `stop`, `pause`, and `toggle`.
  */
 export function useSpeak() {
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -147,5 +183,13 @@ export function useSpeak() {
     []
   );
 
-  return { speak: speakWithState, isSpeaking };
+  return {
+    speak: speakWithState,
+    isSpeaking,
+    stop: stopAudio,
+    pause: pauseAudio,
+    resume: resumeAudio,
+    toggle: (text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female") =>
+      toggleAudio(text, lang, rate, gender),
+  };
 }
