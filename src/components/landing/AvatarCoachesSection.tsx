@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Volume2, BookOpen, PenTool, Headphones, Mic, Sparkles, UserCheck, Bot, CheckCircle2, RotateCcw } from "lucide-react";
 import { SmartAvatar } from "../dashboard/widgets/SmartAvatar";
-import { speak } from "~/lib/speech";
+import { speak, stopAudio } from "~/lib/speech";
 
 export function AvatarCoachesSection() {
   const [selectedAvatar, setSelectedAvatar] = useState<"male" | "female">("male");
@@ -226,11 +226,25 @@ export function AvatarCoachesSection() {
             <div className="pt-2 space-y-3">
               <div className="flex flex-wrap items-center gap-3">
                 <button
-                  onClick={handleSpeakDemo}
-                  className="px-5 py-3 text-xs font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 rounded-xl transition-all shadow-lg shadow-purple-600/30 flex items-center gap-2"
+                  onClick={() => {
+                    setIsSpeaking(true);
+                    handleSpeakDemo();
+                  }}
+                  className="px-5 py-3 text-xs font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 rounded-xl transition-all shadow-lg shadow-purple-600/30 flex items-center gap-2 cursor-pointer"
                 >
                   <Volume2 className={`w-4 h-4 ${isSpeaking ? "animate-bounce" : ""}`} />
                   <span>{isSpeaking ? "Coach Speaking..." : `🔊 Listen to ${selectedLevel} Speech`}</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setIsSpeaking(false);
+                    stopAudio();
+                  }}
+                  className="px-4 py-3 text-xs font-bold text-red-300 bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
+                  title="Stop Audio Playback"
+                >
+                  <span>⏹️ Stop</span>
                 </button>
 
                 <button
