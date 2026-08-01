@@ -1263,8 +1263,19 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
             if (typeof item === 'string') {
               if (item.includes('|')) {
                 const cells = item.split('|').map(c => c.trim()).filter(Boolean);
-                if (cells.length >= 2) {
-                  addVocab(cells[0], cells[1], cells[2], cells[3]);
+                if (cells.length >= 4) {
+                  // Format: French | Pronunciation | English | Example
+                  addVocab(cells[0], cells[2], cells[1], cells[3]);
+                } else if (cells.length === 3) {
+                  // Format: French | Pronunciation | English OR French | English | Example
+                  const looksLikePhonetic = cells[1].includes('-') || cells[1] === cells[1].toLowerCase();
+                  if (looksLikePhonetic) {
+                    addVocab(cells[0], cells[2], cells[1]);
+                  } else {
+                    addVocab(cells[0], cells[1], undefined, cells[2]);
+                  }
+                } else if (cells.length === 2) {
+                  addVocab(cells[0], cells[1]);
                 }
               } else if (item.includes(' — ')) {
                 const parts = item.split(' — ');
@@ -1277,8 +1288,12 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
               const ex = item.example || '';
               if (fr.includes('|')) {
                 const cells = fr.split('|').map(c => c.trim()).filter(Boolean);
-                if (cells.length >= 2) {
-                  addVocab(cells[0], cells[1], cells[2], cells[3]);
+                if (cells.length >= 4) {
+                  addVocab(cells[0], cells[2], cells[1], cells[3]);
+                } else if (cells.length === 3) {
+                  addVocab(cells[0], cells[2], cells[1]);
+                } else if (cells.length === 2) {
+                  addVocab(cells[0], cells[1]);
                 }
               } else {
                 addVocab(fr, en, pr, ex);
