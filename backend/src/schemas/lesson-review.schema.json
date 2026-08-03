@@ -70,6 +70,15 @@
       }
     },
 
+    "arcRecap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["content"],
+      "properties": {
+        "content": { "type": "string", "minLength": 1, "description": "Level-spanning Grammar and Vocabulary Arc Recap for Level Capstone Chapters." }
+      }
+    },
+
     "assessment": {
       "type": "object",
       "additionalProperties": false,
@@ -90,6 +99,7 @@
               "points": { "type": "integer", "minimum": 1 },
               "instructions": { "type": "string", "minLength": 1 },
               "sourceText": { "type": "string", "description": "Passage or transcript this section is based on, if applicable." },
+              "translation": { "type": "string", "description": "English translation of passage or transcript, if applicable." },
               "questions": {
                 "type": "array",
                 "items": { "$ref": "#/definitions/question" },
