@@ -102,7 +102,7 @@ export async function generateNeuralAudio(
           {
             headers: { 'xi-api-key': elevenLabsKey, 'Content-Type': 'application/json', Accept: 'audio/mpeg' },
             responseType: 'arraybuffer',
-            timeout: 12000,
+            timeout: 30000,
           }
         );
 
@@ -173,7 +173,7 @@ export async function generateNeuralAudio(
       const response = await axios.post(
         'https://api.openai.com/v1/audio/speech',
         { model: 'tts-1-hd', input: cleanText, voice: voiceName, speed: 0.95 },
-        { headers: { Authorization: `Bearer ${openaiKey}`, 'Content-Type': 'application/json' }, responseType: 'arraybuffer', timeout: 12000 }
+        { headers: { Authorization: `Bearer ${openaiKey}`, 'Content-Type': 'application/json' }, responseType: 'arraybuffer', timeout: 30000 }
       );
 
       if (response.status === 200 && response.data) {
