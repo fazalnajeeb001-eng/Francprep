@@ -37,6 +37,7 @@ export interface ParsedLesson {
   // L8 Review fields
   vocabularyBank?: { items: string[]; cumulativeNote: string };
   grammarSummary?: { content: string };
+  arcRecap?: { content: string };
   canDoReview?: { statement: string; lessonRef: string }[];
   mixedPracticeExercises?: { questions: ILessonQuestion[] };
   assessment?: {
@@ -114,6 +115,9 @@ function splitSections(body: string): { header: string; body: string }[] {
     'mixed practice exercises',
     'chapter vocabulary bank',
     'grammar summary',
+    'grammar/vocabulary arc recap',
+    'arc recap',
+    'grammar and vocabulary arc recap',
     'mini review',
     'chapter review',
     'mini review by can-do',
@@ -1451,6 +1455,9 @@ function populateLessonSections(lesson: ParsedLesson, sections: any[], lessonId:
       lesson.vocabulary = parseVocabList(s.body);
     } else if (h.startsWith('grammar summary')) {
       lesson.grammar = parseGrammarSummary(s.body);
+      if (!lesson.grammarSummary) lesson.grammarSummary = { content: clean(s.body) };
+    } else if (h.includes('arc recap') || h.includes('arc-recap')) {
+      lesson.arcRecap = { content: clean(s.body) };
     } else if (h === 'mini review' || h.startsWith('chapter review') || h.includes('mini review by can-do')) {
       if (!lesson.miniReview) lesson.miniReview = { content: '' };
       lesson.miniReview.content = clean(s.body.split('\n').filter((l: string) => l.trim()).map((l: string) => l.trim()).join(' '));
@@ -1583,9 +1590,14 @@ export function parseLessonFromMarkdown(
     };
     let anchorSkill = skillMap[rawSkill] || rawSkill;
     if (!anchorSkill || !['reading', 'writing', 'listening', 'speaking', 'integrated', 'review'].includes(anchorSkill)) {
-      if (lessonNum === 7) anchorSkill = 'integrated';
-      else if (lessonNum === 8) anchorSkill = 'review';
-      else anchorSkill = 'reading';
+      const titleLower = (extractField(block, 'Lesson Title') || block.slice(0, 100)).toLowerCase();
+      if (titleLower.includes('integrated') || titleLower.includes('scene')) {
+        anchorSkill = 'integrated';
+      } else if (titleLower.includes('review') || titleLower.includes('assessment') || titleLower.includes('capstone')) {
+        anchorSkill = 'review';
+      } else {
+        anchorSkill = 'reading';
+      }
     }
 
     const lesson: ParsedLesson = {
@@ -1618,18 +1630,16 @@ export function parseLessonFromMarkdown(
     lessons.push(lesson);
   }
 
-  // ── Post-process Lesson 8 DELF Listening passage inheritance from Lesson 7 ──
-  const l7 = lessons.find(l => l.anchorSkill === 'integrated' || l.lessonId.endsWith('-l7'));
-  const l8 = lessons.find(l => l.anchorSkill === 'review' || l.lessonId.endsWith('-l8'));
-  if (l8 && l8.assessment && l8.assessment.sections) {
-    const listeningSec = l8.assessment.sections.find(s => s.skill === 'listening' || s.title.toLowerCase().includes('section 1') || s.title.toLowerCase().includes('listening'));
-    if (listeningSec) {
-      if (l7) {
-        const passage = l7.scene?.text || l7.reading?.text || l7.listening?.transcript;
-        const trans = l7.scene?.translation || l7.reading?.translation || l7.listening?.translation;
-        if (passage && passage.trim()) listeningSec.sourceText = passage.trim();
-        if (trans && trans.trim()) listeningSec.translation = trans.trim();
-      }
+  // ── Post-process Review DELF Listening passage inheritance from Integrated lesson ──
+  const integratedLesson = lessons.find(l => l.anchorSkill === 'integrated');
+  const reviewLesson = lessons.find(l => l.anchorSkill === 'review');
+  if (reviewLesson && reviewLesson.assessment && reviewLesson.assessment.sections) {
+    const listeningSec = reviewLesson.assessment.sections.find(s => s.skill === 'listening' || s.title.toLowerCase().includes('section 1') || s.title.toLowerCase().includes('listening'));
+    if (listeningSec && integratedLesson) {
+      const passage = integratedLesson.scene?.text || integratedLesson.reading?.text || integratedLesson.listening?.transcript;
+      const trans = integratedLesson.scene?.translation || integratedLesson.reading?.translation || integratedLesson.listening?.translation;
+      if (passage && passage.trim()) listeningSec.sourceText = passage.trim();
+      if (trans && trans.trim()) listeningSec.translation = trans.trim();
     }
   }
 

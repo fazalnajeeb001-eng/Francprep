@@ -51,6 +51,27 @@ export function parsedLessonToDocument(lesson: ParsedLesson): Record<string, any
   };
 }
 
+export const EXPECTED_LESSON_COUNT: Record<string, number> = {
+  A1: 8,
+  A2: 8,
+  B1: 7,
+  B2: 7,
+  C1: 7,
+  C2: 6,
+};
+
+export function validateChapterLessonsCount(level: string, count: number): { valid: boolean; warning?: string } {
+  const normLevel = (level || '').toUpperCase().trim();
+  const expected = EXPECTED_LESSON_COUNT[normLevel];
+  if (expected && count !== expected) {
+    return {
+      valid: false,
+      warning: `Chapter import count mismatch for ${normLevel}: expected ${expected} lessons, parsed ${count} lessons.`,
+    };
+  }
+  return { valid: true };
+}
+
 /**
  * Import a single chapter markdown file into the database.
  * Uses upsert (update if lessonId exists, insert if not).
@@ -65,9 +86,11 @@ export async function importChapterMarkdown(
   created: number;
   updated: number;
   skipped: number;
+  validationWarning?: string;
   errors: { lessonId: string; error: string }[];
 }> {
   const lessons = parseChapterFile(filePath, level, chapterNum);
+  const valResult = validateChapterLessonsCount(level, lessons.length);
   let created = 0, updated = 0, skipped = 0;
   const errors: { lessonId: string; error: string }[] = [];
 
@@ -94,7 +117,7 @@ export async function importChapterMarkdown(
     }
   }
 
-  return { total: lessons.length, created, updated, skipped, errors };
+  return { total: lessons.length, created, updated, skipped, validationWarning: valResult.warning, errors };
 }
 
 /**

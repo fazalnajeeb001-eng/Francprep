@@ -515,9 +515,6 @@ function buildSections(lesson: LessonData): SectionDef[] {
   const skillStr = typeof lesson?.skill === 'string' ? lesson.skill.toLowerCase() : '';
 
   const isLesson7 = Boolean(
-    lessonIdStr.endsWith('-l7') ||
-    lessonIdStr.includes('l7') ||
-    lesson?.lessonNumber === 7 ||
     skillStr === 'integrated' ||
     skillStr === 'int' ||
     titleStr.includes('integrated practice') ||
@@ -525,12 +522,10 @@ function buildSections(lesson: LessonData): SectionDef[] {
   );
 
   const isLesson8 = Boolean(
-    lessonIdStr.endsWith('-l8') ||
-    lessonIdStr.includes('l8') ||
-    lesson?.lessonNumber === 8 ||
     skillStr === 'review' ||
     skillStr === 'rev' ||
-    titleStr.includes('review')
+    titleStr.includes('review') ||
+    titleStr.includes('capstone')
   );
 
   if (isLesson8) {
@@ -538,6 +533,10 @@ function buildSections(lesson: LessonData): SectionDef[] {
       { key: 'vocabBank', label: 'Vocab Bank', icon: <Languages className="w-3.5 h-3.5" />, hasContent: true },
       { key: 'grammarSummary', label: 'Grammar Summary', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: true },
     ];
+
+    if (lesson.arcRecap?.content) {
+      list.push({ key: 'arcRecap', label: 'Arc Recap', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: true });
+    }
 
     if (lesson.reading?.text || (lesson.reading?.questions && lesson.reading.questions.length > 0)) {
       list.push({ key: 'reading', label: 'Reading', icon: <BookOpen className="w-3.5 h-3.5" />, hasContent: true });
@@ -915,20 +914,13 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
   const sections = lesson ? buildSections(lesson) : [];
 
-  const isLesson8 = lesson?.lessonNumber === 8 || lesson?.order === 8 || (typeof lesson?.title === 'string' && lesson.title.toLowerCase().includes('review')) || lesson?.skill === 'REV' || lesson?.skill === 'review';
+  const isLesson8 = lesson?.skill === 'REV' || lesson?.skill === 'review' || lesson?.anchorSkill === 'review' || (typeof lesson?.title === 'string' && (lesson.title.toLowerCase().includes('review') || lesson.title.toLowerCase().includes('capstone')));
 
   const computeLesson7Id = (l: any, currentDraftId?: string) => {
-    if (currentDraftId) {
-      if (currentDraftId.includes('l8')) return currentDraftId.replace('l8', 'l7');
-      if (currentDraftId.includes('lesson-8')) return currentDraftId.replace('lesson-8', 'lesson-7');
-    }
     if (!l) return '';
     const id = String(l.lessonId || l._id || '').toLowerCase();
-    if (id.includes('l8')) return id.replace('l8', 'l7');
-    if (id.includes('lesson-8')) return id.replace('lesson-8', 'lesson-7');
-    if (id.includes('_8')) return id.replace('_8', '_7');
     if (l.chapterId) return `${String(l.chapterId).toLowerCase()}-l7`;
-    return '';
+    return id;
   };
 
   const lesson7Id = computeLesson7Id(lesson, draftId);
@@ -967,11 +959,10 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
   const lesson7FromList = levelLessons?.find((l: any) => {
     if (!l) return false;
-    const isIntegrated = (l.order && l.order % 8 === 7) || (l.lessonNumber && l.lessonNumber % 8 === 7) || l.skill === 'integrated' || l.anchorSkill === 'integrated' || (typeof l.lessonId === 'string' && l.lessonId.endsWith('l7'));
+    const isIntegrated = l.skill === 'INT' || l.skill === 'integrated' || l.anchorSkill === 'integrated' || (typeof l.title === 'string' && l.title.toLowerCase().includes('integrated'));
     if (!isIntegrated) return false;
     if (lesson?.chapterId && l.chapterId === lesson.chapterId) return true;
-    if (typeof lesson?.lessonId === 'string' && typeof l.lessonId === 'string' && l.lessonId.split('-')[0] === lesson.lessonId.split('-')[0]) return true;
-    return true;
+    return false;
   });
 
   const realLesson7Id = lesson7FromList?._id || lesson7FromList?.lessonId || lesson7Id;
@@ -1394,7 +1385,22 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
           </div>
         );
 
-      case 'listening':
+      case 'arcRecap':
+        const arcText = lesson!.arcRecap?.content || '';
+        return (
+          <div className={`${cardBg} backdrop-blur-lg rounded-2xl p-5 space-y-4 border border-purple-500/30`}>
+            <div className="flex items-center gap-3 border-b dark:border-[#1e2a4a] border-gray-200 pb-3">
+              <Sparkles className="w-5 h-5 text-purple-400" />
+              <h3 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>Grammar & Vocabulary Arc Recap (Level Capstone)</h3>
+            </div>
+            {arcText ? (
+              <div>{parseGrammarMarkdown(arcText)}</div>
+            ) : (
+              emptyState('Grammar & Vocabulary Arc Recap')
+            )}
+          </div>
+        );
+
       case 'dialogue':
         const rawDialQuestions = lesson!.listening?.questions?.length
           ? lesson!.listening.questions

@@ -9,6 +9,7 @@ export interface IChapterDocument extends Document {
   order: number;
   lessons: mongoose.Types.ObjectId[];
   isPublished: boolean;
+  isLevelCapstone?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -49,6 +50,10 @@ const chapterSchema = new Schema<IChapterDocument>(
       },
     ],
     isPublished: {
+      type: Boolean,
+      default: false,
+    },
+    isLevelCapstone: {
       type: Boolean,
       default: false,
     },
