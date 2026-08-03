@@ -21,7 +21,7 @@ export async function generateNeuralAudio(
   let settings: any = null;
   try {
     const doc = await Settings.findOne();
-    if (doc) settings = doc.toJSON ? doc.toJSON() : doc;
+    if (doc) settings = doc.toObject ? doc.toObject({ transform: false }) : doc;
   } catch (err) {}
 
   const activeProvider = forcedProvider || settings?.preferredVoiceEngine || settings?.activeTTSProvider || 'auto';
@@ -62,8 +62,8 @@ export async function generateNeuralAudio(
   // --- PROVIDER 1: ELEVENLABS ---
   const tryElevenLabs = async () => {
     const elevenLabsKey = process.env.ELEVENLABS_API_KEY || settings?.elevenLabsApiKey;
-    if (!elevenLabsKey) {
-      console.warn('[ElevenLabs] No API key configured');
+    if (!elevenLabsKey || elevenLabsKey.includes('...')) {
+      console.warn('[ElevenLabs] No unmasked API key configured');
       return null;
     }
 
@@ -139,7 +139,7 @@ export async function generateNeuralAudio(
   // --- PROVIDER 3: OPENAI TTS-1-HD ---
   const tryOpenAI = async () => {
     const openaiKey = process.env.OPENAI_API_KEY || settings?.openaiApiKey;
-    if (!openaiKey) return null;
+    if (!openaiKey || openaiKey.includes('...')) return null;
 
     try {
       const voiceName = (activeProvider === 'openai' && forcedVoiceId)

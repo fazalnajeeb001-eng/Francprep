@@ -30,9 +30,11 @@ export async function getOrCreate() {
     if (!settings) {
       settings = await Settings.create(inMemorySettings);
     }
-    const obj: any = settings.toJSON();
-    for (const k in obj) {
-      if (obj[k]) inMemorySettings[k] = obj[k];
+    const raw: any = settings.toObject ? settings.toObject({ transform: false }) : settings;
+    for (const k in raw) {
+      if (raw[k] && typeof raw[k] === 'string' && !raw[k].includes('...')) {
+        inMemorySettings[k] = raw[k];
+      }
     }
     return settings;
   } catch (err) {
@@ -74,7 +76,7 @@ export async function updateSettings(req: Request, res: Response) {
     for (const key of allowed) {
       if (req.body[key] !== undefined) {
         const val = String(req.body[key]).trim();
-        if (placeholders.includes(val)) continue;
+        if (val.includes('...') || placeholders.includes(val)) continue;
         updates[key] = val;
         inMemorySettings[key] = val;
       }
@@ -192,8 +194,9 @@ export async function getStripeKeys(_req: Request, res: Response) {
 export async function testElevenLabs(req: Request, res: Response) {
   try {
     const settings = await getOrCreate();
-    const key = req.body?.elevenLabsApiKey || process.env.ELEVENLABS_API_KEY || settings.elevenLabsApiKey;
-    if (!key) return res.json({ success: false, error: "ElevenLabs API Key not configured" });
+    const raw: any = settings.toObject ? settings.toObject({ transform: false }) : settings;
+    const key = req.body?.elevenLabsApiKey || process.env.ELEVENLABS_API_KEY || raw.elevenLabsApiKey || inMemorySettings.elevenLabsApiKey;
+    if (!key || key.includes('...')) return res.json({ success: false, error: "ElevenLabs API Key not configured" });
 
     const response = await fetch("https://api.elevenlabs.io/v1/voices", {
       headers: { "xi-api-key": key },
@@ -214,8 +217,9 @@ export async function testElevenLabs(req: Request, res: Response) {
 export async function getElevenLabsVoices(req: Request, res: Response) {
   try {
     const settings = await getOrCreate();
-    const key = (req.query?.key as string) || req.body?.elevenLabsApiKey || process.env.ELEVENLABS_API_KEY || settings.elevenLabsApiKey;
-    if (!key) return res.json({ success: false, error: "ElevenLabs API Key not configured" });
+    const raw: any = settings.toObject ? settings.toObject({ transform: false }) : settings;
+    const key = (req.query?.key as string) || req.body?.elevenLabsApiKey || process.env.ELEVENLABS_API_KEY || raw.elevenLabsApiKey || inMemorySettings.elevenLabsApiKey;
+    if (!key || key.includes('...')) return res.json({ success: false, error: "ElevenLabs API Key not configured" });
 
     const response = await fetch("https://api.elevenlabs.io/v1/voices", {
       headers: { "xi-api-key": key },
