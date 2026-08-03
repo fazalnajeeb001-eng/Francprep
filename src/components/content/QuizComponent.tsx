@@ -54,6 +54,18 @@ interface QuizProps {
   } | null>;
 }
 
+export function normalizeString(str: string): string {
+  if (!str) return '';
+  return str
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/ß/g, "ss")
+    .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()"'¿?¡!]/g, "")
+    .replace(/\s+/g, " ");
+}
+
 // ─── MATCHING QUESTION COMPONENT (HTML5 Drag & Drop + Click to Pair) ───
 function MatchingQuestion({ q, qId, dark, submitted, setAnswer }: {
   q: Question;
