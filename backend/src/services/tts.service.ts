@@ -80,12 +80,24 @@ export async function generateNeuralAudio(
     for (const voiceId of voices) {
       try {
         console.log(`[ElevenLabs] Requesting synthesis for voiceId "${voiceId}" (gender=${gender}, text="${cleanText.slice(0, 30)}...")`);
+        const voiceSettings = (function(id: string) {
+          switch (id) {
+            case 'EXAVITQu4vr4xnSDxMaL': return { stability: 0.35, similarity_boost: 0.85, style: 0.45, use_speaker_boost: true };
+            case 'AZnzlk1XvdvUeBnXmlld': return { stability: 0.65, similarity_boost: 0.70, style: 0.10, use_speaker_boost: true };
+            case 'MF3mGyEYCl7XYWbV9V6O': return { stability: 0.40, similarity_boost: 0.80, style: 0.25, use_speaker_boost: true };
+            case 'piTKgubMksTfvD1fz0GJ': return { stability: 0.75, similarity_boost: 0.65, style: 0.05, use_speaker_boost: true };
+            case 'ErXwobaYiN019PkySvjV': return { stability: 0.55, similarity_boost: 0.80, style: 0.20, use_speaker_boost: true };
+            case 'VR6AewLTigWG4xSOukaG': return { stability: 0.70, similarity_boost: 0.75, style: 0.15, use_speaker_boost: true };
+            default: return { stability: 0.50, similarity_boost: 0.75, style: 0.00, use_speaker_boost: true };
+          }
+        })(voiceId);
+
         const response = await axios.post(
           `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
           {
             text: cleanText,
             model_id: 'eleven_multilingual_v2',
-            voice_settings: { stability: 0.50, similarity_boost: 0.75, style: 0.00, use_speaker_boost: true },
+            voice_settings: voiceSettings,
           },
           {
             headers: { 'xi-api-key': elevenLabsKey, 'Content-Type': 'application/json', Accept: 'audio/mpeg' },
