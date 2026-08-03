@@ -124,18 +124,10 @@ export function speak(
           return;
         }
       }
-      if (!provider) {
-        playDirectHDFallback(cleanText, langCode, rate, audio);
-      } else {
-        if (onPlaybackStateChange) onPlaybackStateChange(false);
-      }
+      playDirectHDFallback(cleanText, langCode, rate, audio);
     })
     .catch(() => {
-      if (!provider) {
-        playDirectHDFallback(cleanText, langCode, rate, audio);
-      } else {
-        if (onPlaybackStateChange) onPlaybackStateChange(false);
-      }
+      playDirectHDFallback(cleanText, langCode, rate, audio);
     });
 
   return true;
