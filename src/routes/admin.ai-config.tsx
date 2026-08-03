@@ -468,7 +468,7 @@ export function AdminAIConfigPage() {
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className={`p-6 rounded-2xl border ${card} space-y-4`}>
           <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-3">
             <h3 className="text-base font-extrabold flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-purple-400" /> Voice & Evaluation API Keys
+              <ShieldCheck className="w-5 h-5 text-purple-400" /> Neural Audio Engine API Keys
             </h3>
           </div>
 
@@ -584,55 +584,6 @@ export function AdminAIConfigPage() {
                 </p>
               )}
               <p className={`text-[10px] ${txtSec} mt-1`}>Powers OpenAI tts-1-hd studio voices (nova & onyx) and TCF/TEF rubric scoring.</p>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-bold">Anthropic API Key (Claude 3.5 Sonnet Content & Evaluation Engine)</label>
-                <button
-                  type="button"
-                  onClick={() => handleTestKey("anthropic")}
-                  disabled={testingKey === "anthropic"}
-                  className="text-[10px] text-purple-400 hover:underline flex items-center gap-1 font-bold disabled:opacity-50"
-                >
-                  {testingKey === "anthropic" ? <Loader2 className="w-3 h-3 animate-spin" /> : <Zap className="w-3 h-3" />}
-                  <span>{testingKey === "anthropic" ? "Testing..." : "Test Connection"}</span>
-                </button>
-              </div>
-              <div className="relative flex items-center">
-                <input
-                  type={showKeys.anthropicApiKey ? "text" : "password"}
-                  value={form.anthropicApiKey}
-                  onChange={(e) => setForm({ ...form, anthropicApiKey: e.target.value })}
-                  placeholder="sk-ant-api03-..."
-                  className={`${inp} pr-10`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowKeys((prev) => ({ ...prev, anthropicApiKey: !prev.anthropicApiKey }))}
-                  className="absolute right-3 text-gray-400 hover:text-white transition-colors"
-                >
-                  {showKeys.anthropicApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-              {testResult.anthropic && (
-                <p className={`text-[10px] font-bold mt-1 ${testResult.anthropic.success ? "text-emerald-400" : "text-red-400"}`}>
-                  {testResult.anthropic.success ? "🟢 " : "🔴 "}{testResult.anthropic.msg}
-                </p>
-              )}
-              <p className={`text-[10px] ${txtSec} mt-1`}>Used by Content Generator and Speaking/Writing Rubric Grading System.</p>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold mb-1">OpenRouter API Key (Multi-LLM Evaluator & Reviewer)</label>
-              <input
-                type="password"
-                value={form.openRouterApiKey}
-                onChange={(e) => setForm({ ...form, openRouterApiKey: e.target.value })}
-                placeholder="sk-or-v1-..."
-                className={inp}
-              />
-              <p className={`text-[10px] ${txtSec} mt-1`}>Used for multi-LLM lesson validation and automated quality checks.</p>
             </div>
           </div>
 
