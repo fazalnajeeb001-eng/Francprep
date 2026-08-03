@@ -211,6 +211,34 @@ export async function testElevenLabs(req: Request, res: Response) {
   }
 }
 
+export async function getElevenLabsVoices(req: Request, res: Response) {
+  try {
+    const settings = await getOrCreate();
+    const key = (req.query?.key as string) || req.body?.elevenLabsApiKey || process.env.ELEVENLABS_API_KEY || settings.elevenLabsApiKey;
+    if (!key) return res.json({ success: false, error: "ElevenLabs API Key not configured" });
+
+    const response = await fetch("https://api.elevenlabs.io/v1/voices", {
+      headers: { "xi-api-key": key },
+    });
+    if (response.ok) {
+      const data: any = await response.json();
+      const voices = (data.voices || []).map((v: any) => ({
+        voice_id: v.voice_id,
+        name: v.name,
+        category: v.category,
+        gender: v.labels?.gender || (v.name.toLowerCase().includes("male") ? "male" : "female"),
+        accent: v.labels?.accent || "",
+      }));
+      res.json({ success: true, voices });
+    } else {
+      const err = await response.text();
+      res.json({ success: false, error: `ElevenLabs returned ${response.status}: ${err.slice(0, 150)}` });
+    }
+  } catch (err: any) {
+    res.json({ success: false, error: err.message });
+  }
+}
+
 export async function testKokoro(req: Request, res: Response) {
   try {
     const settings = await getOrCreate();

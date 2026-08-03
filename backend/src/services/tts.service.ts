@@ -62,7 +62,10 @@ export async function generateNeuralAudio(
   // --- PROVIDER 1: ELEVENLABS ---
   const tryElevenLabs = async () => {
     const elevenLabsKey = process.env.ELEVENLABS_API_KEY || settings?.elevenLabsApiKey;
-    if (!elevenLabsKey) return null;
+    if (!elevenLabsKey) {
+      console.warn('[ElevenLabs] No API key configured');
+      return null;
+    }
 
     const defaultFemale = settings?.selectedElevenLabsFemaleVoice || '21m00Tcm4TlvDq8ikWAM';
     const defaultMale = settings?.selectedElevenLabsMaleVoice || 'ErXwobaYiN019PkySvjV';
@@ -72,6 +75,7 @@ export async function generateNeuralAudio(
 
     for (const voiceId of voices) {
       try {
+        console.log(`[ElevenLabs] Requesting synthesis for voiceId "${voiceId}" (gender=${gender}, text="${cleanText.slice(0, 30)}...")`);
         const response = await axios.post(
           `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
           {
@@ -94,10 +98,16 @@ export async function generateNeuralAudio(
           if (!forcedVoiceId) {
             TTSCache.create({ textHash, text: cleanText, voice: `elevenlabs-${voiceId}`, gender, audioBase64, contentType }).catch(() => {});
           }
-          return { audioBase64, contentType, provider: 'elevenlabs' };
+          return { audioBase64, contentType, provider: `elevenlabs-${voiceId}` };
         }
       } catch (err: any) {
-        console.warn(`[ElevenLabs] Voice ${voiceId} error:`, err?.message);
+        let errMsg = err?.message;
+        if (err?.response?.data) {
+          try {
+            errMsg = Buffer.from(err.response.data).toString('utf-8');
+          } catch {}
+        }
+        console.warn(`[ElevenLabs Error] Voice ${voiceId} failed: ${errMsg}`);
       }
     }
     return null;
@@ -107,9 +117,11 @@ export async function generateNeuralAudio(
   const tryHuggingFaceKokoro = async () => {
     const hfToken = process.env.HUGGINGFACE_TOKEN || process.env.HUGGINGFACE_API_KEY || settings?.huggingFaceToken || settings?.huggingFaceApiKey;
     try {
-      const selectedVoice = forcedVoiceId || (gender === 'male'
-        ? (settings?.selectedKokoroMaleVoice || 'bm_george')
-        : (settings?.selectedKokoroFemaleVoice || 'ff_siwis'));
+      const selectedVoice = (activeProvider === 'kokoro' || activeProvider === 'huggingface') && forcedVoiceId
+        ? forcedVoiceId
+        : (gender === 'male'
+          ? (settings?.selectedKokoroMaleVoice || 'bm_george')
+          : (settings?.selectedKokoroFemaleVoice || 'ff_siwis'));
 
       const kokoroRes = await generateKokoroAudio(cleanText, gender, hfToken, selectedVoice);
       if (kokoroRes) {
@@ -130,9 +142,11 @@ export async function generateNeuralAudio(
     if (!openaiKey) return null;
 
     try {
-      const voiceName = forcedVoiceId || (gender === 'male'
-        ? (settings?.selectedOpenAIMaleVoice || 'onyx')
-        : (settings?.selectedOpenAIFemaleVoice || 'nova'));
+      const voiceName = (activeProvider === 'openai' && forcedVoiceId)
+        ? forcedVoiceId
+        : (gender === 'male'
+          ? (settings?.selectedOpenAIMaleVoice || 'onyx')
+          : (settings?.selectedOpenAIFemaleVoice || 'nova'));
 
       const response = await axios.post(
         'https://api.openai.com/v1/audio/speech',

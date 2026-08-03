@@ -13,6 +13,7 @@ router.post('/test-elevenlabs', settingsController.testElevenLabs);
 router.post('/test-kokoro', settingsController.testKokoro);
 router.post('/test-openai', settingsController.testOpenAI);
 router.get('/stripe-keys', settingsController.getStripeKeys);
+router.get('/elevenlabs-voices', settingsController.getElevenLabsVoices);
 router.post('/clear-audio-cache', settingsController.clearAudioCache);
 
 export default router;

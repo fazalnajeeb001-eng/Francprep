@@ -335,11 +335,11 @@ export function AdminAIConfigPage() {
                     className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-pink-500/30" : "bg-white text-slate-900"}`}
                   >
                     <option value="21m00Tcm4TlvDq8ikWAM">🌸 Rachel (Calm & Clear Parisian French — Recommended)</option>
-                    <option value="XB0fDUnXU5powFXDhCwa">🇫🇷 Charlotte (Native Parisian French Female)</option>
-                    <option value="EXAVITQu4vr4xnSDxMaL">⚡ Bella (Expressive & Energetic)</option>
                     <option value="AZnzlk1XvdvUeBnXmlld">📖 Domi (Warm Academic Reader)</option>
+                    <option value="EXAVITQu4vr4xnSDxMaL">⚡ Bella (Expressive & Energetic)</option>
                     <option value="MF3mGyEYCl7XYWbV9V6O">💬 Elli (Gentle Conversationalist)</option>
-                    <option value="Xb7hH8MSwom74TLWDRmy">👑 Alice (Sophisticated French)</option>
+                    <option value="piTKgubMksTfvD1fz0GJ">🌿 Nicole (Calm Conversationalist)</option>
+                    <option value="jsCqWAovK2LkecYy16Fc">🇫🇷 Freya (Clear Fluent Female)</option>
                     <option value="custom">✏️ Custom Voice ID (Paste Below)</option>
                   </select>
                   {form.selectedElevenLabsFemaleVoice === "custom" && (
@@ -368,9 +368,11 @@ export function AdminAIConfigPage() {
                     className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-pink-500/30" : "bg-white text-slate-900"}`}
                   >
                     <option value="ErXwobaYiN019PkySvjV">🎙️ Antoni (Deep & Articulate Native Male — Recommended)</option>
-                    <option value="GBv7mTt0atIp3Br8iCJU">🇫🇷 Thomas (Native French Male)</option>
                     <option value="VR6AewLTigWG4xSOukaG">📻 Arnold (Formal Narrator)</option>
                     <option value="pNInz6obpgDQGcFmaJgB">👔 Adam (Clear Professional Voice)</option>
+                    <option value="JBFqnCBsd6RMkjVDRZzb">🇬🇧 George (Warm Conversational Male)</option>
+                    <option value="IKne3meq5aSn9XLyUdCD">💬 Charlie (Casual Conversational Male)</option>
+                    <option value="N2lrfuzCsp85FBDqEwyy">⚡ Callum (Deep Intense Male)</option>
                     <option value="custom">✏️ Custom Voice ID (Paste Below)</option>
                   </select>
                   {form.selectedElevenLabsMaleVoice === "custom" && (
