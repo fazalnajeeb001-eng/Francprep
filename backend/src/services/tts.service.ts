@@ -13,7 +13,8 @@ export async function generateNeuralAudio(
   gender: 'female' | 'male' = 'female',
   lang: 'fr' | 'en' = 'fr',
   forcedProvider?: string,
-  forcedVoiceId?: string
+  forcedVoiceId?: string,
+  tempKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string }
 ): Promise<{ audioBase64: string; contentType: string; provider: string } | null> {
   const cleanText = text.trim();
   if (!cleanText) return null;
@@ -61,7 +62,10 @@ export async function generateNeuralAudio(
 
   // --- PROVIDER 1: ELEVENLABS ---
   const tryElevenLabs = async () => {
-    const elevenLabsKey = process.env.ELEVENLABS_API_KEY || settings?.elevenLabsApiKey;
+    const elevenLabsKey = (tempKeys?.elevenLabsApiKey && !tempKeys.elevenLabsApiKey.includes('...'))
+      ? tempKeys.elevenLabsApiKey
+      : (process.env.ELEVENLABS_API_KEY || settings?.elevenLabsApiKey);
+
     if (!elevenLabsKey || elevenLabsKey.includes('...')) {
       console.warn('[ElevenLabs] No unmasked API key configured');
       return null;
@@ -115,7 +119,10 @@ export async function generateNeuralAudio(
 
   // --- PROVIDER 2: HUGGING FACE / KOKORO ---
   const tryHuggingFaceKokoro = async () => {
-    const hfToken = process.env.HUGGINGFACE_TOKEN || process.env.HUGGINGFACE_API_KEY || settings?.huggingFaceToken || settings?.huggingFaceApiKey;
+    const hfToken = (tempKeys?.huggingFaceToken && !tempKeys.huggingFaceToken.includes('...'))
+      ? tempKeys.huggingFaceToken
+      : (process.env.HUGGINGFACE_TOKEN || process.env.HUGGINGFACE_API_KEY || settings?.huggingFaceToken || settings?.huggingFaceApiKey);
+
     try {
       const selectedVoice = (activeProvider === 'kokoro' || activeProvider === 'huggingface') && forcedVoiceId
         ? forcedVoiceId
@@ -138,7 +145,10 @@ export async function generateNeuralAudio(
 
   // --- PROVIDER 3: OPENAI TTS-1-HD ---
   const tryOpenAI = async () => {
-    const openaiKey = process.env.OPENAI_API_KEY || settings?.openaiApiKey;
+    const openaiKey = (tempKeys?.openaiApiKey && !tempKeys.openaiApiKey.includes('...'))
+      ? tempKeys.openaiApiKey
+      : (process.env.OPENAI_API_KEY || settings?.openaiApiKey);
+
     if (!openaiKey || openaiKey.includes('...')) return null;
 
     try {
@@ -236,6 +246,13 @@ export async function generateNeuralAudio(
 
   const kokoro = await tryHuggingFaceKokoro();
   if (kokoro) return kokoro;
+
+  if (gender === 'male') {
+    const maleKokoro = await generateKokoroAudio(cleanText, 'male', lang, '', 'bm_george');
+    if (maleKokoro) {
+      return { audioBase64: maleKokoro.audioBase64, contentType: maleKokoro.contentType, provider: 'kokoro-bm_george' };
+    }
+  }
 
   const google = await tryGoogle();
   if (google) return google;

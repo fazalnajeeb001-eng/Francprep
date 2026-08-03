@@ -35,7 +35,8 @@ export function speak(
   rate = 0.85,
   gender: "female" | "male" = "female",
   voiceId?: string,
-  provider?: string
+  provider?: string,
+  extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string }
 ): boolean {
   if (typeof window === "undefined") return false;
   const cleanText = text.trim();
@@ -91,7 +92,16 @@ export function speak(
   apiFetch("/tts/speak", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text: cleanText, gender: finalGender, lang: langCode, voiceId, provider }),
+    body: JSON.stringify({
+      text: cleanText,
+      gender: finalGender,
+      lang: langCode,
+      voiceId,
+      provider,
+      elevenLabsApiKey: extraKeys?.elevenLabsApiKey,
+      openaiApiKey: extraKeys?.openaiApiKey,
+      huggingFaceToken: extraKeys?.huggingFaceToken,
+    }),
   })
     .then(async (res) => {
       if (res.ok) {
@@ -162,7 +172,15 @@ export function resumeAudio(): void {
   }
 }
 
-export function toggleAudio(text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female", voiceId?: string, provider?: string): boolean {
+export function toggleAudio(
+  text: string,
+  lang = "fr-FR",
+  rate = 0.85,
+  gender: "female" | "male" = "female",
+  voiceId?: string,
+  provider?: string,
+  extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string }
+): boolean {
   if (currentAudioPlayer) {
     if (!currentAudioPlayer.paused) {
       pauseAudio();
@@ -172,7 +190,7 @@ export function toggleAudio(text: string, lang = "fr-FR", rate = 0.85, gender: "
       return true;
     }
   }
-  return speak(text, lang, rate, gender, voiceId, provider);
+  return speak(text, lang, rate, gender, voiceId, provider, extraKeys);
 }
 
 /**
@@ -189,8 +207,8 @@ export function useSpeak() {
   }, []);
 
   const speakWithState = useCallback(
-    (text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female", voiceId?: string, provider?: string) => {
-      speak(text, lang, rate, gender, voiceId, provider);
+    (text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female", voiceId?: string, provider?: string, extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string }) => {
+      speak(text, lang, rate, gender, voiceId, provider, extraKeys);
     },
     []
   );
@@ -201,7 +219,7 @@ export function useSpeak() {
     stop: stopAudio,
     pause: pauseAudio,
     resume: resumeAudio,
-    toggle: (text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female", voiceId?: string, provider?: string) =>
-      toggleAudio(text, lang, rate, gender, voiceId, provider),
+    toggle: (text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female", voiceId?: string, provider?: string, extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string }) =>
+      toggleAudio(text, lang, rate, gender, voiceId, provider, extraKeys),
   };
 }

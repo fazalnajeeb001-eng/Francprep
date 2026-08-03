@@ -320,7 +320,7 @@ export function AdminSettingsPage() {
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={() => toggleAudio("Bonjour ! Ceci est un test de la voix de studio ElevenLabs.", "fr-FR", 0.85, "female", form.selectedElevenLabsFemaleVoice, "elevenlabs")}
+                        onClick={() => toggleAudio("Bonjour ! Ceci est un test de la voix de studio ElevenLabs.", "fr-FR", 0.85, "female", form.selectedElevenLabsFemaleVoice, "elevenlabs", { elevenLabsApiKey: form.elevenLabsApiKey })}
                         className="px-2.5 py-1 bg-pink-500/20 text-pink-300 border border-pink-500/30 rounded-lg text-[10px] font-bold hover:bg-pink-500/30 flex items-center gap-1 cursor-pointer"
                       >
                         <Volume2 className="w-3 h-3" /> ⏯️ Test Female
@@ -365,7 +365,7 @@ export function AdminSettingsPage() {
                         <label className="block font-bold text-gray-300">Default Male Voice (Coach Léo):</label>
                         <button
                           type="button"
-                          onClick={() => speak("Bonjour ! Je suis Coach Léo, ravi de travailler avec vous.", "fr-FR", 0.85, "male", form.selectedElevenLabsMaleVoice, "elevenlabs")}
+                          onClick={() => speak("Bonjour ! Je suis Coach Léo, ravi de travailler avec vous.", "fr-FR", 0.85, "male", form.selectedElevenLabsMaleVoice, "elevenlabs", { elevenLabsApiKey: form.elevenLabsApiKey })}
                           className="text-[10px] text-pink-300 hover:underline flex items-center gap-1 font-bold cursor-pointer"
                         >
                           <Volume2 className="w-3 h-3" /> Test Male
@@ -404,14 +404,14 @@ export function AdminSettingsPage() {
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={() => speak("Bonjour ! Ceci est un test de la voix OpenAI tts-1-hd.", "fr-FR", 0.85, "female", form.selectedOpenAIFemaleVoice, "openai")}
+                        onClick={() => speak("Bonjour ! Ceci est un test de la voix OpenAI tts-1-hd.", "fr-FR", 0.85, "female", form.selectedOpenAIFemaleVoice, "openai", { openaiApiKey: form.openaiApiKey })}
                         className="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-lg text-[10px] font-bold hover:bg-emerald-500/30 flex items-center gap-1 cursor-pointer"
                       >
                         <Volume2 className="w-3 h-3" /> Test Female Voice
                       </button>
                       <button
                         type="button"
-                        onClick={() => speak("Bonjour ! Je suis la voix masculine OpenAI tts-1-hd.", "fr-FR", 0.85, "male", form.selectedOpenAIMaleVoice, "openai")}
+                        onClick={() => speak("Bonjour ! Je suis la voix masculine OpenAI tts-1-hd.", "fr-FR", 0.85, "male", form.selectedOpenAIMaleVoice, "openai", { openaiApiKey: form.openaiApiKey })}
                         className="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-lg text-[10px] font-bold hover:bg-emerald-500/30 flex items-center gap-1 cursor-pointer"
                       >
                         <Volume2 className="w-3 h-3" /> Test Male Voice

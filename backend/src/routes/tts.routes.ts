@@ -6,13 +6,13 @@ const router = Router();
 
 router.post('/speak', async (req: Request, res: Response) => {
   try {
-    const { text, gender = 'female', lang = 'fr', provider, voiceId } = req.body || {};
+    const { text, gender = 'female', lang = 'fr', provider, voiceId, elevenLabsApiKey, openaiApiKey, huggingFaceToken } = req.body || {};
     if (!text || typeof text !== 'string') {
       res.status(400).json({ success: false, message: 'Text payload is required' });
       return;
     }
 
-    const audioData = await generateNeuralAudio(text, gender, lang, provider, voiceId);
+    const audioData = await generateNeuralAudio(text, gender, lang, provider, voiceId, { elevenLabsApiKey, openaiApiKey, huggingFaceToken });
 
     if (audioData) {
       res.status(200).json({
