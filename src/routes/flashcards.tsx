@@ -44,7 +44,7 @@ function FlashcardsPage() {
   }
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" search={{ redirect: "/flashcards" }} replace />;
   }
 
   const [allCards, setAllCards] = useState<VocabCard[]>([]);

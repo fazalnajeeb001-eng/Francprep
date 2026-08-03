@@ -53,7 +53,7 @@ function LearnPage() {
   }
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" search={{ redirect: "/learn" }} replace />;
   }
   const passedMilestones = (user as any)?.passedMilestones || [];
 

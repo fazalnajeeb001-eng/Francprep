@@ -83,7 +83,7 @@ function DashboardPage() {
   }, [user, authLoading]);
 
   if (authLoading) return <LoadingSkeleton dark={dark} />;
-  if (!isAuthenticated || !user) return <Navigate to="/login" replace />;
+  if (!isAuthenticated || !user) return <Navigate to="/login" search={{ redirect: router.location.pathname }} replace />;
 
   if (!isIndex) {
     return (

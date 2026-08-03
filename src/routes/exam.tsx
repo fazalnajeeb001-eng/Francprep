@@ -41,7 +41,7 @@ function ExamRouteLayout() {
   }
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" search={{ redirect: pathname || "/exam" }} replace />;
   }
 
   if (matchDelfIndex || matchDelfPaper || matchPaperId || pathname.includes('/exam/delf')) {

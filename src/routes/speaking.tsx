@@ -58,7 +58,7 @@ function SpeakingPage() {
   }
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" search={{ redirect: "/speaking" }} replace />;
   }
 
   const [cardPhrases, setCardPhrases] = useState<{ french: string; english: string; lesson: number }[]>([]);

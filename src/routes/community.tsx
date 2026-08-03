@@ -189,9 +189,14 @@ const INITIAL_BUDDY_REQUESTS: BuddyCircleRequest[] = [
 ];
 
 function CommunityExamHubPage() {
-  const { user } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const { dark } = useTheme();
   const navigate = useNavigate();
+
+  if (authLoading) return null;
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/login" search={{ redirect: "/community" }} replace />;
+  }
 
   const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
   const [buddyRequests, setBuddyRequests] = useState<BuddyCircleRequest[]>(INITIAL_BUDDY_REQUESTS);

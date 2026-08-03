@@ -18,7 +18,13 @@ function LoginPage() {
     e.preventDefault(); setError(""); setLoading(true);
     try {
       const user = await login({ email, password });
-      navigate({ to: user.role === "admin" ? "/admin" : "/dashboard" });
+      const searchParams = new URLSearchParams(window.location.search);
+      const redirectTarget = searchParams.get("redirect");
+      if (redirectTarget && redirectTarget.startsWith("/")) {
+        navigate({ to: redirectTarget as any });
+      } else {
+        navigate({ to: user.role === "admin" ? "/admin" : "/dashboard" });
+      }
     } catch (err: any) { setError(err?.response?.data?.error || err?.message || "Login failed"); }
     finally { setLoading(false); }
   };

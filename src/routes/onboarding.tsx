@@ -241,6 +241,12 @@ const PLACEMENT_QUESTIONS: Question[] = [
 export function OnboardingPage() {
   const navigate = useNavigate();
   const { dark } = useTheme();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+
+  if (authLoading) return null;
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/login" search={{ redirect: "/onboarding" }} replace />;
+  }
   const [step, setStep] = useState<"goal" | "pace" | "choice" | "test" | "result">("goal");
 
   // Step 1: Goal wired directly to userPrefs

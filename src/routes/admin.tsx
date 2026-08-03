@@ -101,16 +101,7 @@ function AdminLayout() {
   }
 
   if (!isAuthenticated || !user) {
-    return (
-      <div className="min-h-screen dark:bg-[#070B17] bg-gray-50 flex items-center justify-center p-4">
-        <div className="text-center">
-          <Shield className="w-16 h-16 mx-auto text-red-400 mb-4" />
-          <h1 className="text-xl font-bold dark:text-white text-gray-900 mb-2">Access Denied</h1>
-          <p className="text-sm dark:text-gray-400 text-gray-600 mb-4">Please sign in to access the admin panel.</p>
-          <Link to="/login" className="inline-block px-5 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl text-sm font-semibold hover:opacity-90 transition-all">Sign In</Link>
-        </div>
-      </div>
-    );
+    return <Navigate to="/login" search={{ redirect: router.location.pathname }} replace />;
   }
 
   if (user.role !== "admin") {
