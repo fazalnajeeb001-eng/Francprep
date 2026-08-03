@@ -17,6 +17,7 @@ import settingsRoutes from './settings.routes';
 import speakingRoutes from './speaking.routes';
 import ttsRoutes from './tts.routes';
 import podsRoutes from './pods.routes';
+import languageRoutes from './language.routes';
 
 import { SystemSettings } from '../models/SystemSettings';
 
@@ -64,4 +65,5 @@ router.use('/settings', settingsRoutes);
 router.use('/speaking', speakingRoutes);
 router.use('/tts', ttsRoutes);
 router.use('/pods', podsRoutes);
+router.use('/languages', languageRoutes);
 export default router;

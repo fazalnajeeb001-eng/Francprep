@@ -66,6 +66,33 @@ export function normalizeString(str: string): string {
     .replace(/\s+/g, " ");
 }
 
+export function checkAnswerSymmetric(
+  userInput: string,
+  correctAnswer: string,
+  strictAccents = false
+): { isCorrect: boolean; accentWarning?: boolean } {
+  if (!userInput || !correctAnswer) return { isCorrect: false };
+
+  const normInput = normalizeString(userInput);
+  const normTarget = normalizeString(correctAnswer);
+
+  const isLenientCorrect = normInput === normTarget;
+  if (!isLenientCorrect) return { isCorrect: false };
+
+  const exactInput = userInput.trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()"'¿?¡!]/g, "").replace(/\s+/g, " ");
+  const exactTarget = correctAnswer.trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()"'¿?¡!]/g, "").replace(/\s+/g, " ");
+  const isExactMatch = exactInput === exactTarget;
+
+  if (strictAccents) {
+    return { isCorrect: isExactMatch };
+  }
+
+  return {
+    isCorrect: true,
+    accentWarning: !isExactMatch,
+  };
+}
+
 // ─── MATCHING QUESTION COMPONENT (HTML5 Drag & Drop + Click to Pair) ───
 function MatchingQuestion({ q, qId, dark, submitted, setAnswer }: {
   q: Question;
