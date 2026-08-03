@@ -34,7 +34,8 @@ export function speak(
   lang = "fr-FR",
   rate = 0.85,
   gender: "female" | "male" = "female",
-  voiceId?: string
+  voiceId?: string,
+  provider?: string
 ): boolean {
   if (typeof window === "undefined") return false;
   const cleanText = text.trim();
@@ -90,7 +91,7 @@ export function speak(
   apiFetch("/tts/speak", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text: cleanText, gender: finalGender, lang: langCode, voiceId }),
+    body: JSON.stringify({ text: cleanText, gender: finalGender, lang: langCode, voiceId, provider }),
   })
     .then(async (res) => {
       if (res.ok) {
@@ -108,15 +109,25 @@ export function speak(
           audio.src = src;
           audio.playbackRate = rate;
           audio.play().catch(() => {
-            playDirectHDFallback(cleanText, langCode, rate, audio);
+            if (!provider) playDirectHDFallback(cleanText, langCode, rate, audio);
+            else if (onPlaybackStateChange) onPlaybackStateChange(false);
           });
           return;
         }
       }
-      playDirectHDFallback(cleanText, langCode, rate, audio);
+      if (!provider) {
+        playDirectHDFallback(cleanText, langCode, rate, audio);
+      } else {
+        console.warn(`[TTS Speak] Provider ${provider} synthesis returned error status`);
+        if (onPlaybackStateChange) onPlaybackStateChange(false);
+      }
     })
     .catch(() => {
-      playDirectHDFallback(cleanText, langCode, rate, audio);
+      if (!provider) {
+        playDirectHDFallback(cleanText, langCode, rate, audio);
+      } else {
+        if (onPlaybackStateChange) onPlaybackStateChange(false);
+      }
     });
 
   return true;
@@ -161,7 +172,7 @@ export function resumeAudio(): void {
   }
 }
 
-export function toggleAudio(text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female", voiceId?: string): boolean {
+export function toggleAudio(text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female", voiceId?: string, provider?: string): boolean {
   if (currentAudioPlayer) {
     if (!currentAudioPlayer.paused) {
       pauseAudio();
@@ -171,7 +182,7 @@ export function toggleAudio(text: string, lang = "fr-FR", rate = 0.85, gender: "
       return true;
     }
   }
-  return speak(text, lang, rate, gender, voiceId);
+  return speak(text, lang, rate, gender, voiceId, provider);
 }
 
 /**
@@ -188,8 +199,8 @@ export function useSpeak() {
   }, []);
 
   const speakWithState = useCallback(
-    (text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female", voiceId?: string) => {
-      speak(text, lang, rate, gender, voiceId);
+    (text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female", voiceId?: string, provider?: string) => {
+      speak(text, lang, rate, gender, voiceId, provider);
     },
     []
   );
@@ -200,7 +211,7 @@ export function useSpeak() {
     stop: stopAudio,
     pause: pauseAudio,
     resume: resumeAudio,
-    toggle: (text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female", voiceId?: string) =>
-      toggleAudio(text, lang, rate, gender, voiceId),
+    toggle: (text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female", voiceId?: string, provider?: string) =>
+      toggleAudio(text, lang, rate, gender, voiceId, provider),
   };
 }

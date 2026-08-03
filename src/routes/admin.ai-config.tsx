@@ -311,7 +311,7 @@ export function AdminAIConfigPage() {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => speak("Bonjour ! Ceci est un test de la voix de studio ElevenLabs.", "fr-FR", 0.85, "female", form.selectedElevenLabsFemaleVoice)}
+                    onClick={() => speak("Bonjour ! Ceci est un test de la voix de studio ElevenLabs.", "fr-FR", 0.85, "female", form.selectedElevenLabsFemaleVoice, "elevenlabs")}
                     className="px-2.5 py-1 bg-pink-500/20 text-pink-300 border border-pink-500/30 rounded-lg text-[10px] font-bold hover:bg-pink-500/30 flex items-center gap-1 cursor-pointer"
                   >
                     <Volume2 className="w-3 h-3" /> Test Female Voice
@@ -356,7 +356,7 @@ export function AdminAIConfigPage() {
                     <label className="block font-bold text-gray-300">Default Male Voice (Coach Léo):</label>
                     <button
                       type="button"
-                      onClick={() => speak("Bonjour ! Je suis Coach Léo, ravi de travailler avec vous.", "fr-FR", 0.85, "male", form.selectedElevenLabsMaleVoice)}
+                      onClick={() => speak("Bonjour ! Je suis Coach Léo, ravi de travailler avec vous.", "fr-FR", 0.85, "male", form.selectedElevenLabsMaleVoice, "elevenlabs")}
                       className="text-[10px] text-pink-300 hover:underline flex items-center gap-1 font-bold cursor-pointer"
                     >
                       <Volume2 className="w-3 h-3" /> Test Male
@@ -392,13 +392,22 @@ export function AdminAIConfigPage() {
             <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 space-y-3">
               <div className="flex items-center justify-between">
                 <p className="text-xs font-extrabold text-emerald-300">🤖 OpenAI tts-1-hd Voices:</p>
-                <button
-                  type="button"
-                  onClick={() => speak("Bonjour ! Ceci est un test de la voix OpenAI tts-1-hd.", "fr-FR", 0.85, "female", form.selectedOpenAIFemaleVoice)}
-                  className="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-lg text-[10px] font-bold hover:bg-emerald-500/30 flex items-center gap-1 cursor-pointer"
-                >
-                  <Volume2 className="w-3 h-3" /> Test OpenAI Voice
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => speak("Bonjour ! Ceci est un test de la voix OpenAI tts-1-hd.", "fr-FR", 0.85, "female", form.selectedOpenAIFemaleVoice, "openai")}
+                    className="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-lg text-[10px] font-bold hover:bg-emerald-500/30 flex items-center gap-1 cursor-pointer"
+                  >
+                    <Volume2 className="w-3 h-3" /> Test Female Voice
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => speak("Bonjour ! Je suis la voix masculine OpenAI tts-1-hd.", "fr-FR", 0.85, "male", form.selectedOpenAIMaleVoice, "openai")}
+                    className="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-lg text-[10px] font-bold hover:bg-emerald-500/30 flex items-center gap-1 cursor-pointer"
+                  >
+                    <Volume2 className="w-3 h-3" /> Test Male Voice
+                  </button>
+                </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                 <div>
@@ -432,16 +441,25 @@ export function AdminAIConfigPage() {
           {form.preferredVoiceEngine === "kokoro" && (
             <div className="p-4 rounded-xl border border-cyan-500/30 bg-cyan-500/10 space-y-3 text-xs">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-extrabold text-cyan-300">🤗 HuggingFace Kokoro-82M Voices:</p>
-                <button
-                  type="button"
-                  onClick={() => speak("Bonjour ! Ceci est un test du modèle Kokoro 82M.", "fr-FR", 0.85, "female")}
-                  className="px-2.5 py-1 bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 rounded-lg text-[10px] font-bold hover:bg-cyan-500/30 flex items-center gap-1 cursor-pointer"
-                >
-                  <Volume2 className="w-3 h-3" /> Test Kokoro Voice
-                </button>
+                <p className="text-xs font-extrabold text-cyan-300">🤗 HuggingFace Kokoro-82M Voices (100% Free Open-Source):</p>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => speak("Bonjour ! Ceci est un test de la voix féminine Kokoro-82M.", "fr-FR", 0.85, "female", "ff_siwis", "kokoro")}
+                    className="px-2.5 py-1 bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 rounded-lg text-[10px] font-bold hover:bg-cyan-500/30 flex items-center gap-1 cursor-pointer"
+                  >
+                    <Volume2 className="w-3 h-3" /> Test Female (ff_siwis)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => speak("Bonjour ! Je suis Coach Léo avec la voix masculine Kokoro-82M.", "fr-FR", 0.85, "male", "bm_george", "kokoro")}
+                    className="px-2.5 py-1 bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 rounded-lg text-[10px] font-bold hover:bg-cyan-500/30 flex items-center gap-1 cursor-pointer"
+                  >
+                    <Volume2 className="w-3 h-3" /> Test Male (bm_george)
+                  </button>
+                </div>
               </div>
-              <p className="text-gray-300">Kokoro uses model defaults: <strong>ff_siwis</strong> for female and <strong>bm_george</strong> for male.</p>
+              <p className="text-gray-300">Kokoro-82M model voices: <strong>ff_siwis</strong> (Parisian Female) for Chloé and <strong>bm_george</strong> (Articulate Male) for Léo.</p>
             </div>
           )}
         </motion.div>

@@ -123,7 +123,7 @@ export async function generateNeuralAudio(
           ? (settings?.selectedKokoroMaleVoice || 'bm_george')
           : (settings?.selectedKokoroFemaleVoice || 'ff_siwis'));
 
-      const kokoroRes = await generateKokoroAudio(cleanText, gender, hfToken, selectedVoice);
+      const kokoroRes = await generateKokoroAudio(cleanText, gender, lang, hfToken, selectedVoice);
       if (kokoroRes) {
         if (!forcedVoiceId) {
           TTSCache.create({ textHash, text: cleanText, voice: `kokoro-${selectedVoice}`, gender, audioBase64: kokoroRes.audioBase64, contentType: kokoroRes.contentType }).catch(() => {});
@@ -196,7 +196,14 @@ export async function generateNeuralAudio(
     return null;
   };
 
-  // EXECUTION ROUTING
+  // EXECUTION ROUTING FOR TEST PREVIEW & ACTIVE PROVIDERS
+  if (forcedProvider) {
+    if (forcedProvider === 'elevenlabs') return await tryElevenLabs();
+    if (forcedProvider === 'huggingface' || forcedProvider === 'kokoro') return await tryHuggingFaceKokoro();
+    if (forcedProvider === 'openai') return await tryOpenAI();
+    if (forcedProvider === 'google') return await tryGoogle();
+  }
+
   if (activeProvider === 'elevenlabs') {
     const res = await tryElevenLabs();
     if (res) return res;
