@@ -54,6 +54,14 @@ function PipelineDashboardPage() {
   // Import Parser States
   const [importFormat, setImportFormat] = useState<"markdown" | "json">("markdown");
   const [importMarkdown, setImportMarkdown] = useState("");
+  const [importOverrides, setImportOverrides] = useState({
+    level: "A1",
+    chapterId: "",
+    lessonId: "",
+    anchorSkill: ""
+  });
+  const [importingMarkdown, setImportingMarkdown] = useState(false);
+
   // Multi-Language Management States
   const [availableLanguages, setAvailableLanguages] = useState<any[]>([
     { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', examName: 'DELF / TCF' }
