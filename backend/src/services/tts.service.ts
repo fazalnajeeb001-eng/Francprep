@@ -206,21 +206,18 @@ export async function generateNeuralAudio(
     return null;
   };
 
-  // EXECUTION ROUTING FOR TEST PREVIEW & ACTIVE PROVIDERS
+  // EXECUTION ROUTING FOR TEST PREVIEW (Strict isolation — testing an engine tests ONLY that engine)
   if (forcedProvider) {
     if (forcedProvider === 'elevenlabs') {
-      const res = await tryElevenLabs();
-      if (res) return res;
+      return await tryElevenLabs();
     } else if (forcedProvider === 'huggingface' || forcedProvider === 'kokoro') {
-      const res = await tryHuggingFaceKokoro();
-      if (res) return res;
+      return await tryHuggingFaceKokoro();
     } else if (forcedProvider === 'openai') {
-      const res = await tryOpenAI();
-      if (res) return res;
+      return await tryOpenAI();
     } else if (forcedProvider === 'google') {
-      const res = await tryGoogle();
-      if (res) return res;
+      return await tryGoogle();
     }
+    return null;
   }
 
   if (activeProvider === 'elevenlabs') {
