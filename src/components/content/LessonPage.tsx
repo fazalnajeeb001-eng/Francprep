@@ -1447,7 +1447,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
                         : dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"
                     }`}
                   >
-                    {showTranscript ? "🙈 Hide" : "📄 Show"} French Transcript
+                    {showTranscript ? "🙈 Hide" : "📄 Show"} {((lesson as any)?.language || 'French')} Transcript
                   </button>
 
                   {dialTrans && (
@@ -1457,7 +1457,7 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
                           ? "bg-purple-500/20 border-purple-500/40 text-purple-300"
                           : dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"
                       }`}>
-                      {showTranslation ? "Hide" : "Show"} English Translation
+                      {showTranslation ? "Hide" : "Show"} {((lesson as any)?.nativeLanguage || 'English')} Translation
                     </button>
                   )}
                 </div>
@@ -2813,7 +2813,7 @@ function ListeningSection({ lesson, dark, cardBg, innerBg, textSec, textMuted, s
           </button>
           <button onClick={() => setShowTranscript(!showTranscript)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
-            {showTranscript ? "Hide French Transcript" : "Show French Transcript"}
+            {showTranscript ? `Hide ${((lesson as any)?.language || 'French')} Transcript` : `Show ${((lesson as any)?.language || 'French')} Transcript`}
           </button>
         </div>
       )}
@@ -2830,7 +2830,7 @@ function ListeningSection({ lesson, dark, cardBg, innerBg, textSec, textMuted, s
           <button onClick={() => setShowTranslation(!showTranslation)}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border transition-all ${dark ? "border-purple-500/30 text-purple-300 hover:bg-purple-500/10" : "border-purple-200 text-purple-700 hover:bg-purple-50"}`}>
             <Globe className="w-3.5 h-3.5" />
-            {showTranslation ? "Hide English Translation" : "Show English Translation"}
+            {showTranslation ? `Hide ${((lesson as any)?.nativeLanguage || 'English')} Translation` : `Show ${((lesson as any)?.nativeLanguage || 'English')} Translation`}
           </button>
           {showTranslation && (
             <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="mt-3">

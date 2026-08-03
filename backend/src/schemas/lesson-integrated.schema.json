@@ -15,6 +15,7 @@
     "lessonId": { "type": "string" },
     "chapterId": { "type": "string" },
     "level": { "type": "string", "enum": ["A0", "A1", "A2", "B1", "B2", "C1", "C2"] },
+    "isLevelCapstone": { "type": "boolean" },
     "title": { "type": "string" },
     "anchorSkill": { "type": "string", "const": "integrated" },
     "durationMinutes": { "type": "integer", "minimum": 5, "maximum": 90 },

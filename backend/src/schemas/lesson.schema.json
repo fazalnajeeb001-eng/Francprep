@@ -18,6 +18,7 @@
     "level": { "type": "string", "enum": ["A0", "A1", "A2", "B1", "B2", "C1", "C2"] },
     "title": { "type": "string" },
     "anchorSkill": { "type": "string", "enum": ["reading", "writing", "listening", "speaking", "integrated", "review"] },
+    "isLevelCapstone": { "type": "boolean" },
     "durationMinutes": { "type": "integer", "minimum": 5, "maximum": 90 },
     "objectives": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
     "grammarFocus": { "type": "string" },
