@@ -49,7 +49,7 @@ export class WritingService {
     return env.openRouterKey || process.env.OPENROUTER_API_KEY || '';
   }
 
-  async getFeedback(text: string, lessonTitle?: string, expectedAnswer?: string, checklist?: string[]): Promise<ComprehensiveWritingFeedback> {
+  async getFeedback(text: string, lessonTitle?: string, expectedAnswer?: string, checklist?: string[], targetLanguage = 'French', examName = 'DELF / TCF'): Promise<ComprehensiveWritingFeedback> {
     const apiKey = await this.getOpenRouterKey();
     if (!apiKey) {
       return {
@@ -66,13 +66,13 @@ export class WritingService {
       };
     }
 
-    const prompt = `You are a certified senior official examiner for TCF Canada, TEF Canada, and DELF/DALF exams.
-You are conducting a strict, diagnostic evaluation of a student's French writing response.
+    const prompt = `You are a certified senior official examiner for ${examName} exams evaluating ${targetLanguage} writing proficiency.
+You are conducting a strict, diagnostic evaluation of a student's ${targetLanguage} writing response.
 
 CRITICAL EVALUATION RULE 1 - PROMPT ADHERENCE & TASK COMPLETION (50% WEIGHT):
 - Verify if the student directly, accurately, and fully answered ALL specific questions and requirements in the prompt / checklist.
 - IF THE RESPONSE IS OFF-TOPIC, IRRELEVANT, OR FAILS TO ANSWER THE PROMPT QUESTIONS, HEAVILY PENALIZE THE TASK COMPLETION SCORE (0-35 OUT OF 100).
-- Official TCF/TEF/DELF exams award 0 points for Task Completion if the candidate strays off-topic.
+- Official ${examName} exams award 0 points for Task Completion if the candidate strays off-topic.
 
 CRITICAL EVALUATION RULE 2 - CANADIAN NCLC & CEFR LEVEL MAPPING:
 - Map score to Canadian NCLC (NCLC 4 to NCLC 10+) and CEFR (A1, A2, B1, B2, C1, C2).

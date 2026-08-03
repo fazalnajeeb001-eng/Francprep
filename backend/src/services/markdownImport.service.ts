@@ -1,5 +1,21 @@
 import Lesson from '../models/Lesson';
+import Language from '../models/Language';
 import { parseChapterFile, ParsedLesson } from './markdownLessonParser';
+
+export async function validateLanguageCode(languageCode: string): Promise<{ valid: boolean; langDoc?: any; error?: string }> {
+  if (!languageCode) {
+    return { valid: true, langDoc: { code: 'fr', name: 'French', examName: 'DELF / TCF' } };
+  }
+  const norm = languageCode.trim().toLowerCase();
+  const langDoc = await Language.findOne({ code: norm });
+  if (!langDoc) {
+    return {
+      valid: false,
+      error: `Invalid language code '${languageCode}'. Must be a registered Language in MongoDB (e.g. 'fr', 'es', 'de'). Use Admin Language Manager to register new languages.`,
+    };
+  }
+  return { valid: true, langDoc };
+}
 
 /**
  * Convert a ParsedLesson (from markdown parser) to a Lesson model document shape.
