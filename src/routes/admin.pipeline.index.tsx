@@ -54,13 +54,53 @@ function PipelineDashboardPage() {
   // Import Parser States
   const [importFormat, setImportFormat] = useState<"markdown" | "json">("markdown");
   const [importMarkdown, setImportMarkdown] = useState("");
-  const [importOverrides, setImportOverrides] = useState({
-    level: "A1",
-    chapterId: "",
-    lessonId: "",
-    anchorSkill: ""
+  // Multi-Language Management States
+  const [availableLanguages, setAvailableLanguages] = useState<any[]>([
+    { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', examName: 'DELF / TCF' }
+  ]);
+  const [selectedLangCode, setSelectedLangCode] = useState("fr");
+  const [showAddLangModal, setShowAddLangModal] = useState(false);
+  const [newLangForm, setNewLangForm] = useState({
+    code: "",
+    name: "",
+    nativeName: "",
+    flag: "🌐",
+    examName: "CEFR Assessment"
   });
-  const [importingMarkdown, setImportingMarkdown] = useState(false);
+  const [addingLang, setAddingLang] = useState(false);
+
+  useEffect(() => {
+    apiFetch("/languages")
+      .then((res) => {
+        if (res.data && Array.isArray(res.data)) {
+          setAvailableLanguages(res.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleCreateLanguage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newLangForm.code || !newLangForm.name || !newLangForm.nativeName) return;
+    setAddingLang(true);
+    try {
+      const res = await apiFetch("/languages", {
+        method: "POST",
+        body: JSON.stringify(newLangForm)
+      });
+      if (res.success && res.data) {
+        setAvailableLanguages((prev) => [...prev, res.data]);
+        setSelectedLangCode(res.data.code);
+        setShowAddLangModal(false);
+        setNewLangForm({ code: "", name: "", nativeName: "", flag: "🌐", examName: "CEFR Assessment" });
+        setActionStatus({ loading: false, error: "", success: `Language ${res.data.name} (${res.data.flag}) registered successfully!` });
+      }
+    } catch (err: any) {
+      setActionStatus({ loading: false, error: err.message || "Failed to create language", success: "" });
+    } finally {
+      setAddingLang(false);
+    }
+  };
 
   // AI Verification states
   const [verifyingAI, setVerifyingAI] = useState(false);
@@ -608,11 +648,30 @@ function PipelineDashboardPage() {
                 </div>
 
                 <div className="border-t border-[#1e2a4a] pt-4 space-y-4">
-                  <div className="flex items-center gap-1 text-xs font-bold text-purple-400">
-                    <Sparkles className="w-4 h-4" />
-                    <span>Optional Metadata Overrides</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1 text-xs font-bold text-purple-400">
+                      <Sparkles className="w-4 h-4" />
+                      <span>Target Language & Metadata Overrides</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowAddLangModal(true)}
+                      className="px-2.5 py-1 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 text-[10px] font-bold rounded-lg transition-all flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>➕ Register New Language</span>
+                    </button>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                    <div>
+                      <label className="block text-[10px] text-gray-400 mb-1">Target Language</label>
+                      <select value={selectedLangCode} onChange={(e) => setSelectedLangCode(e.target.value)} className={inp}>
+                        {availableLanguages.map((l) => (
+                          <option key={l.code} value={l.code}>
+                            {l.flag} {l.name} ({l.code.toUpperCase()})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                     <div>
                       <label className="block text-[10px] text-gray-400 mb-1">CEFR Level</label>
                       <select value={importOverrides.level} onChange={(e) => setImportOverrides({ ...importOverrides, level: e.target.value })} className={inp}>
@@ -1178,6 +1237,96 @@ function PipelineDashboardPage() {
                     Done
                   </button>
                 </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
+        {/* ─── REGISTER NEW LANGUAGE MODAL ─── */}
+        <AnimatePresence>
+          {showAddLangModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+                className={`${card} border border-purple-500/40 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl text-left`}>
+                <div className="flex items-center justify-between border-b border-[#1e2a4a] pb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-300 text-lg font-bold">🌐</div>
+                    <div>
+                      <h3 className="text-sm font-bold text-white">Register New Target Language</h3>
+                      <p className="text-[10px] text-gray-400">Add secondary CEFR language platform (Zero code changes)</p>
+                    </div>
+                  </div>
+                  <button onClick={() => setShowAddLangModal(false)} className="text-gray-400 hover:text-white text-xs">✕</button>
+                </div>
+
+                <form onSubmit={handleCreateLanguage} className="space-y-3 text-xs">
+                  <div>
+                    <label className="block text-[10px] text-gray-400 mb-1">Language Code (e.g. es, de, it, zh)</label>
+                    <input
+                      type="text"
+                      required
+                      value={newLangForm.code}
+                      onChange={(e) => setNewLangForm({ ...newLangForm, code: e.target.value })}
+                      placeholder="es"
+                      className={inp}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] text-gray-400 mb-1">Language Name in English (e.g. Spanish)</label>
+                    <input
+                      type="text"
+                      required
+                      value={newLangForm.name}
+                      onChange={(e) => setNewLangForm({ ...newLangForm, name: e.target.value })}
+                      placeholder="Spanish"
+                      className={inp}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] text-gray-400 mb-1">Native Name (e.g. Español)</label>
+                    <input
+                      type="text"
+                      required
+                      value={newLangForm.nativeName}
+                      onChange={(e) => setNewLangForm({ ...newLangForm, nativeName: e.target.value })}
+                      placeholder="Español"
+                      className={inp}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-[10px] text-gray-400 mb-1">Flag Emoji</label>
+                      <input
+                        type="text"
+                        required
+                        value={newLangForm.flag}
+                        onChange={(e) => setNewLangForm({ ...newLangForm, flag: e.target.value })}
+                        placeholder="🇪🇸"
+                        className={inp}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-gray-400 mb-1">Exam Standard</label>
+                      <input
+                        type="text"
+                        value={newLangForm.examName}
+                        onChange={(e) => setNewLangForm({ ...newLangForm, examName: e.target.value })}
+                        placeholder="DELE / SIELE"
+                        className={inp}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2 pt-3">
+                    <button type="button" onClick={() => setShowAddLangModal(false)} className="flex-1 py-2 bg-[#1e2a4a] text-gray-300 font-bold rounded-xl hover:bg-[#283863] transition-all">Cancel</button>
+                    <button type="submit" disabled={addingLang} className="flex-1 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 shadow-md transition-all flex items-center justify-center gap-1.5">
+                      {addingLang ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <span>Register Language</span>}
+                    </button>
+                  </div>
+                </form>
               </motion.div>
             </div>
           )}
