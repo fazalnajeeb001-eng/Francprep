@@ -320,7 +320,10 @@ export function AdminSettingsPage() {
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={() => toggleAudio("Bonjour ! Ceci est un test de la voix de studio ElevenLabs.", "fr-FR", 0.85, "female", form.selectedElevenLabsFemaleVoice, "elevenlabs", { elevenLabsApiKey: form.elevenLabsApiKey })}
+                        onClick={() => {
+                          const cleanKey = form.elevenLabsApiKey?.includes("...") ? undefined : form.elevenLabsApiKey;
+                          toggleAudio("Bonjour ! Ceci est un test de la voix de studio ElevenLabs.", "fr-FR", 0.85, "female", form.selectedElevenLabsFemaleVoice, "elevenlabs", { elevenLabsApiKey: cleanKey });
+                        }}
                         className="px-2.5 py-1 bg-pink-500/20 text-pink-300 border border-pink-500/30 rounded-lg text-[10px] font-bold hover:bg-pink-500/30 flex items-center gap-1 cursor-pointer"
                       >
                         <Volume2 className="w-3 h-3" /> ⏯️ Test Female
@@ -343,15 +346,11 @@ export function AdminSettingsPage() {
                         onChange={(e) => setForm({ ...form, selectedElevenLabsFemaleVoice: e.target.value })}
                         className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-pink-500/30" : "bg-white text-slate-900"}`}
                       >
-                        <option value="21m00Tcm4TlvDq8ikWAM">🌸 Rachel (Calm & Clear Parisian French — Recommended)</option>
-                        <option value="XB0fDUnXU5powFXDhCwa">🇫🇷 Charlotte (Native Studio French Female)</option>
-                        <option value="Xb7hH8MSwvm95LGChMgv">🎙️ Alice (Clear Parisian Female)</option>
-                        <option value="AZnzlk1XvdvUeBnXmlld">📖 Domi (Warm Academic Reader)</option>
-                        <option value="EXAVITQu4vr4xnSDxMaL">⚡ Bella (Expressive & Energetic)</option>
-                        <option value="MF3mGyEYCl7XYWbV9V6O">💬 Elli (Gentle Conversationalist)</option>
-                        <option value="piTKgubMksTfvD1fz0GJ">🌿 Nicole (Calm Conversationalist)</option>
-                        <option value="jsCqWAovK2LkecYy16Fc">🇫🇷 Freya (Clear Fluent Female)</option>
-                        <option value="FGY2WhA2Pvy725Oc1A2S">🌿 Laura (Fluent French Reader)</option>
+                        <option value="21m00Tcm4TlvDq8ikWAM">🌸 Rachel (Parisian French — Smooth & Calm)</option>
+                        <option value="EXAVITQu4vr4xnSDxMaL">⚡ Bella (Expressive & Vibrant High Pitch)</option>
+                        <option value="pFZP5JQG7iQjIQuC4Bku">🌺 Lily (Warm Melodic French Reader)</option>
+                        <option value="XrExE9yYZ1WjnnNfvB7n">📚 Matilda (Academic Professional Female)</option>
+                        <option value="cgSgspJ2msm6clMCkdW9">🎙️ Jessica (Playful & Bright Young Female)</option>
                         <option value="custom">✏️ Custom Voice ID (Paste Below)</option>
                       </select>
                       {form.selectedElevenLabsFemaleVoice === "custom" && (
@@ -368,7 +367,10 @@ export function AdminSettingsPage() {
                         <label className="block font-bold text-gray-300">Default Male Voice (Coach Léo):</label>
                         <button
                           type="button"
-                          onClick={() => speak("Bonjour ! Je suis Coach Léo, ravi de travailler avec vous.", "fr-FR", 0.85, "male", form.selectedElevenLabsMaleVoice, "elevenlabs", { elevenLabsApiKey: form.elevenLabsApiKey })}
+                          onClick={() => {
+                            const cleanKey = form.elevenLabsApiKey?.includes("...") ? undefined : form.elevenLabsApiKey;
+                            toggleAudio("Bonjour ! Je suis Coach Léo, ravi de travailler avec vous.", "fr-FR", 0.85, "male", form.selectedElevenLabsMaleVoice, "elevenlabs", { elevenLabsApiKey: cleanKey });
+                          }}
                           className="text-[10px] text-pink-300 hover:underline flex items-center gap-1 font-bold cursor-pointer"
                         >
                           <Volume2 className="w-3 h-3" /> Test Male
@@ -379,16 +381,11 @@ export function AdminSettingsPage() {
                         onChange={(e) => setForm({ ...form, selectedElevenLabsMaleVoice: e.target.value })}
                         className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-pink-500/30" : "bg-white text-slate-900"}`}
                       >
-                        <option value="ErXwobaYiN019PkySvjV">🎙️ Antoni (Deep & Articulate Native Male — Recommended)</option>
-                        <option value="VR6AewLTigWG4xSOukaG">📻 Arnold (Formal Narrator)</option>
+                        <option value="ErXwobaYiN019PkySvjV">🎙️ Antoni (Deep & Articulate Native Male — Coach Léo)</option>
+                        <option value="VR6AewLTigWG4xSOukaG">📻 Arnold (Formal Deep Narrator)</option>
                         <option value="pNInz6obpgDQGcFmaJgB">👔 Adam (Clear Professional Voice)</option>
                         <option value="JBFqnCBsd6RMkjVDRZzb">🇬🇧 George (Warm Conversational Male)</option>
                         <option value="IKne3meq5aSn9XLyUdCD">💬 Charlie (Casual Conversational Male)</option>
-                        <option value="N2lrfuzCsp85FBDqEwyy">⚡ Callum (Deep Intense Male)</option>
-                        <option value="nPczCjzI2devNBz1zQrb">🎙️ Brian (Deep Studio Male Reader)</option>
-                        <option value="TX3LPaxmHKxFdv7VOQHJ">⚡ Liam (Fluent Studio Male)</option>
-                        <option value="TxGEqnHWrfWFTfGW9XjX">🗣️ Josh (Clear Deep Studio Male)</option>
-                        <option value="yoZ06aMxZJJ28mfd3POQ">📻 Sam (Warm Studio Male Reader)</option>
                         <option value="custom">✏️ Custom Voice ID (Paste Below)</option>
                       </select>
                       {form.selectedElevenLabsMaleVoice === "custom" && (
