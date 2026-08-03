@@ -56,6 +56,21 @@ export interface ParsedLesson {
   selfReflection?: string[];
   completionSummary?: { content: string };
   needsManualConfirmation?: boolean;
+  isLevelCapstone?: boolean;
+}
+
+export const CAPSTONE_CHAPTERS: Record<string, number> = {
+  A1: 10,
+  A2: 12,
+  B1: 12,
+  B2: 12,
+  C1: 8,
+  C2: 6,
+};
+
+export function isLevelCapstoneChapter(level: string, chapterNum: number): boolean {
+  const normLevel = (level || '').toUpperCase().trim();
+  return CAPSTONE_CHAPTERS[normLevel] === chapterNum;
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -118,6 +133,7 @@ function splitSections(body: string): { header: string; body: string }[] {
     'grammar/vocabulary arc recap',
     'arc recap',
     'grammar and vocabulary arc recap',
+    'scene',
     'mini review',
     'chapter review',
     'mini review by can-do',
@@ -992,8 +1008,8 @@ function buildPracticeQuestion(n: number, type: string, promptText: string): ILe
 
 function fillPlaceholders(lesson: ParsedLesson): void {
   const lessonId = lesson.lessonId;
-  const isL7 = lessonId.endsWith('-l7');
-  const isL8 = lessonId.endsWith('-l8');
+  const isL7 = lesson.anchorSkill === 'integrated';
+  const isL8 = lesson.anchorSkill === 'review';
 
   if (isL7) {
     // ── L7 Integrated Practice: transform standard fields → L7 schema ──
@@ -1080,8 +1096,12 @@ function fillPlaceholders(lesson: ParsedLesson): void {
       const parts = [g.explanation, g.formation, g.usage].filter(Boolean);
       if (g.examples?.length) parts.push('Examples: ' + g.examples.join('; '));
       lesson.grammarSummary = { content: parts.join('\n\n') || 'Consolidated grammar reference from this chapter.' };
-    } else {
+    } else if (!lesson.grammarSummary) {
       lesson.grammarSummary = { content: 'Consolidated grammar reference from this chapter.' };
+    }
+
+    if (lesson.isLevelCapstone && !lesson.arcRecap) {
+      lesson.arcRecap = { content: 'Level-spanning Grammar and Vocabulary Arc Recap for this Level Capstone.' };
     }
 
     // 3. canDoReview from raw text or objectives
@@ -1610,6 +1630,7 @@ export function parseLessonFromMarkdown(
       objectives: extractObjectives(block),
       grammarFocus: extractField(block, 'Grammar Focus') || '',
       vocabularyFocus: extractField(block, 'Vocabulary Focus') || '',
+      isLevelCapstone: isLevelCapstoneChapter(finalLevel, finalChapterNum),
       warmUp: { content: '' },
       explanation: { content: '' },
       vocabulary: [],
