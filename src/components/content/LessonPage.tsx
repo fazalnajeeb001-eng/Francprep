@@ -1396,7 +1396,10 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
       case 'listening':
       case 'dialogue':
-        const dialogueQuestions = [...(lesson!.reading?.questions || []), ...(lesson!.listening?.questions || [])].filter((q: any) => Boolean(q?.id && typeof q.id === 'string' && !q.id.includes('dummy')));
+        const rawDialQuestions = lesson!.listening?.questions?.length
+          ? lesson!.listening.questions
+          : (lesson!.reading?.questions || []);
+        const dialogueQuestions = rawDialQuestions.filter((q: any) => Boolean(q?.id && typeof q.id === 'string' && !q.id.includes('dummy')));
         const dialText = getDialogueText(lesson!);
         const dialTrans = getDialogueTranslation(lesson!);
         return (
