@@ -4,15 +4,16 @@ import TTSCache from '../models/TTSCache';
 import Settings from '../models/Settings';
 import { generateKokoroAudio } from './kokoro.service';
 
-function getHash(text: string, gender: string, lang: string, provider: string): string {
-  return crypto.createHash('md5').update(`${text.trim().toLowerCase()}_${gender}_${lang}_${provider}`).digest('hex');
+function getHash(text: string, gender: string, lang: string, provider: string, voiceId: string = ''): string {
+  return crypto.createHash('md5').update(`${text.trim().toLowerCase()}_${gender}_${lang}_${provider}_${voiceId}`).digest('hex');
 }
 
 export async function generateNeuralAudio(
   text: string,
   gender: 'female' | 'male' = 'female',
   lang: 'fr' | 'en' = 'fr',
-  forcedProvider?: string
+  forcedProvider?: string,
+  forcedVoiceId?: string
 ): Promise<{ audioBase64: string; contentType: string; provider: string } | null> {
   const cleanText = text.trim();
   if (!cleanText) return null;
@@ -24,16 +25,38 @@ export async function generateNeuralAudio(
   } catch (err) {}
 
   const activeProvider = forcedProvider || settings?.preferredVoiceEngine || settings?.activeTTSProvider || 'auto';
-  const textHash = getHash(cleanText, gender, lang, activeProvider);
 
-  // 1. Check MongoDB Cache first — ignore legacy robotic google- entries if AI key is active!
-  try {
-    const cached = await TTSCache.findOne({ textHash }).maxTimeMS(1500);
-    if (cached && cached.audioBase64) {
-      return { audioBase64: cached.audioBase64, contentType: cached.contentType || 'audio/mp3', provider: `cache-${cached.voice}` };
+  // Determine active voice ID based on provider & gender
+  let targetVoiceId = forcedVoiceId || '';
+  if (!targetVoiceId) {
+    if (activeProvider === 'elevenlabs') {
+      targetVoiceId = gender === 'male'
+        ? (settings?.selectedElevenLabsMaleVoice || 'ErXwobaYiN019PkySvjV')
+        : (settings?.selectedElevenLabsFemaleVoice || '21m00Tcm4TlvDq8ikWAM');
+    } else if (activeProvider === 'openai') {
+      targetVoiceId = gender === 'male'
+        ? (settings?.selectedOpenAIMaleVoice || 'onyx')
+        : (settings?.selectedOpenAIFemaleVoice || 'nova');
+    } else if (activeProvider === 'huggingface' || activeProvider === 'kokoro') {
+      targetVoiceId = gender === 'male'
+        ? (settings?.selectedKokoroMaleVoice || 'bm_george')
+        : (settings?.selectedKokoroFemaleVoice || 'ff_siwis');
     }
-  } catch (err) {
-    console.warn('[TTSCache] Error reading cache:', err);
+  }
+
+  const textHash = getHash(cleanText, gender, lang, activeProvider, targetVoiceId);
+
+  // 1. Check MongoDB Cache first — ignore legacy robotic entries if valid AI key is active!
+  // If forcedVoiceId is provided (e.g. Admin voice preview test), bypass cache to guarantee fresh test playback
+  if (!forcedVoiceId) {
+    try {
+      const cached = await TTSCache.findOne({ textHash }).maxTimeMS(1500);
+      if (cached && cached.audioBase64) {
+        return { audioBase64: cached.audioBase64, contentType: cached.contentType || 'audio/mp3', provider: `cache-${cached.voice}` };
+      }
+    } catch (err) {
+      console.warn('[TTSCache] Error reading cache:', err);
+    }
   }
 
   // --- PROVIDER 1: ELEVENLABS ---
@@ -43,7 +66,7 @@ export async function generateNeuralAudio(
 
     const defaultFemale = settings?.selectedElevenLabsFemaleVoice || '21m00Tcm4TlvDq8ikWAM';
     const defaultMale = settings?.selectedElevenLabsMaleVoice || 'ErXwobaYiN019PkySvjV';
-    const primaryVoiceId = gender === 'male' ? defaultMale : defaultFemale;
+    const primaryVoiceId = forcedVoiceId || (gender === 'male' ? defaultMale : defaultFemale);
     const fallbackVoiceId = gender === 'male' ? 'ErXwobaYiN019PkySvjV' : '21m00Tcm4TlvDq8ikWAM';
     const voices = Array.from(new Set([primaryVoiceId, fallbackVoiceId]));
 
@@ -54,7 +77,7 @@ export async function generateNeuralAudio(
           {
             text: cleanText,
             model_id: 'eleven_multilingual_v2',
-            voice_settings: { stability: 0.70, similarity_boost: 0.85, style: 0.15, use_speaker_boost: true },
+            voice_settings: { stability: 0.50, similarity_boost: 0.75, style: 0.00, use_speaker_boost: true },
           },
           {
             headers: { 'xi-api-key': elevenLabsKey, 'Content-Type': 'application/json', Accept: 'audio/mpeg' },
@@ -68,7 +91,9 @@ export async function generateNeuralAudio(
           const audioBase64 = audioBuffer.toString('base64');
           const contentType = 'audio/mp3';
 
-          TTSCache.create({ textHash, text: cleanText, voice: `elevenlabs-${voiceId}`, gender, audioBase64, contentType }).catch(() => {});
+          if (!forcedVoiceId) {
+            TTSCache.create({ textHash, text: cleanText, voice: `elevenlabs-${voiceId}`, gender, audioBase64, contentType }).catch(() => {});
+          }
           return { audioBase64, contentType, provider: 'elevenlabs' };
         }
       } catch (err: any) {
@@ -82,13 +107,15 @@ export async function generateNeuralAudio(
   const tryHuggingFaceKokoro = async () => {
     const hfToken = process.env.HUGGINGFACE_TOKEN || process.env.HUGGINGFACE_API_KEY || settings?.huggingFaceToken || settings?.huggingFaceApiKey;
     try {
-      const selectedVoice = gender === 'male'
+      const selectedVoice = forcedVoiceId || (gender === 'male'
         ? (settings?.selectedKokoroMaleVoice || 'bm_george')
-        : (settings?.selectedKokoroFemaleVoice || 'ff_siwis');
+        : (settings?.selectedKokoroFemaleVoice || 'ff_siwis'));
 
       const kokoroRes = await generateKokoroAudio(cleanText, gender, hfToken, selectedVoice);
       if (kokoroRes) {
-        TTSCache.create({ textHash, text: cleanText, voice: `kokoro-${selectedVoice}`, gender, audioBase64: kokoroRes.audioBase64, contentType: kokoroRes.contentType }).catch(() => {});
+        if (!forcedVoiceId) {
+          TTSCache.create({ textHash, text: cleanText, voice: `kokoro-${selectedVoice}`, gender, audioBase64: kokoroRes.audioBase64, contentType: kokoroRes.contentType }).catch(() => {});
+        }
         return { audioBase64: kokoroRes.audioBase64, contentType: kokoroRes.contentType, provider: 'huggingface-kokoro' };
       }
     } catch (err: any) {
@@ -103,9 +130,9 @@ export async function generateNeuralAudio(
     if (!openaiKey) return null;
 
     try {
-      const voiceName = gender === 'male'
+      const voiceName = forcedVoiceId || (gender === 'male'
         ? (settings?.selectedOpenAIMaleVoice || 'onyx')
-        : (settings?.selectedOpenAIFemaleVoice || 'nova');
+        : (settings?.selectedOpenAIFemaleVoice || 'nova'));
 
       const response = await axios.post(
         'https://api.openai.com/v1/audio/speech',
@@ -118,7 +145,9 @@ export async function generateNeuralAudio(
         const audioBase64 = audioBuffer.toString('base64');
         const contentType = 'audio/mp3';
 
-        TTSCache.create({ textHash, text: cleanText, voice: `openai-${voiceName}`, gender, audioBase64, contentType }).catch(() => {});
+        if (!forcedVoiceId) {
+          TTSCache.create({ textHash, text: cleanText, voice: `openai-${voiceName}`, gender, audioBase64, contentType }).catch(() => {});
+        }
         return { audioBase64, contentType, provider: 'openai' };
       }
     } catch (err: any) {
@@ -144,7 +173,9 @@ export async function generateNeuralAudio(
         const audioBase64 = audioBuffer.toString('base64');
         const contentType = 'audio/mp3';
 
-        TTSCache.create({ textHash, text: cleanText, voice: `google-${lang}`, gender, audioBase64, contentType }).catch(() => {});
+        if (!forcedVoiceId) {
+          TTSCache.create({ textHash, text: cleanText, voice: `google-${lang}`, gender, audioBase64, contentType }).catch(() => {});
+        }
         return { audioBase64, contentType, provider: 'google' };
       }
     } catch (err) {}

@@ -50,6 +50,17 @@ export async function getSettings(_req: Request, res: Response) {
   }
 }
 
+const placeholders = [
+  'sk-...',
+  'xi-api-key-...',
+  'hf_...',
+  'sk-ant-api03-...',
+  'sk-or-v1-...',
+  'pk_live_...',
+  'price_...',
+  'whsec_...',
+];
+
 export async function updateSettings(req: Request, res: Response) {
   try {
     const allowed = [

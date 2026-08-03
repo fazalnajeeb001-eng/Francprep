@@ -33,7 +33,8 @@ export function speak(
   text: string,
   lang = "fr-FR",
   rate = 0.85,
-  gender: "female" | "male" = "female"
+  gender: "female" | "male" = "female",
+  voiceId?: string
 ): boolean {
   if (typeof window === "undefined") return false;
   const cleanText = text.trim();
@@ -89,7 +90,7 @@ export function speak(
   apiFetch("/tts/speak", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text: cleanText, gender: finalGender, lang: langCode }),
+    body: JSON.stringify({ text: cleanText, gender: finalGender, lang: langCode, voiceId }),
   })
     .then(async (res) => {
       if (res.ok) {
@@ -160,7 +161,7 @@ export function resumeAudio(): void {
   }
 }
 
-export function toggleAudio(text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female"): boolean {
+export function toggleAudio(text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female", voiceId?: string): boolean {
   if (currentAudioPlayer) {
     if (!currentAudioPlayer.paused) {
       pauseAudio();
@@ -170,7 +171,7 @@ export function toggleAudio(text: string, lang = "fr-FR", rate = 0.85, gender: "
       return true;
     }
   }
-  return speak(text, lang, rate, gender);
+  return speak(text, lang, rate, gender, voiceId);
 }
 
 /**
@@ -187,8 +188,8 @@ export function useSpeak() {
   }, []);
 
   const speakWithState = useCallback(
-    (text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female") => {
-      speak(text, lang, rate, gender);
+    (text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female", voiceId?: string) => {
+      speak(text, lang, rate, gender, voiceId);
     },
     []
   );
@@ -199,7 +200,7 @@ export function useSpeak() {
     stop: stopAudio,
     pause: pauseAudio,
     resume: resumeAudio,
-    toggle: (text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female") =>
-      toggleAudio(text, lang, rate, gender),
+    toggle: (text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female", voiceId?: string) =>
+      toggleAudio(text, lang, rate, gender, voiceId),
   };
 }
