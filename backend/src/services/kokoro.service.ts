@@ -25,25 +25,26 @@ export async function generateKokoroAudio(
     ? (gender === 'male' ? 'am_adam' : 'af_bella')
     : (gender === 'male' ? 'bm_george' : 'ff_siwis'));
 
-  const token = hfToken || process.env.HUGGINGFACE_TOKEN || process.env.HF_TOKEN || '';
+  const token = hfToken || process.env.HUGGINGFACE_TOKEN || process.env.HUGGINGFACE_API_KEY || process.env.HF_TOKEN || '';
 
-  // 1. Official HuggingFace Router Endpoints
-  const endpoints = [
-    'https://router.huggingface.co/hf-inference/models/hexgrad/Kokoro-82M',
-    'https://api-inference.huggingface.co/models/hexgrad/Kokoro-82M',
-    'https://router.huggingface.co/models/hexgrad/Kokoro-82M'
+  // 1. Official HuggingFace Router Endpoints (Kokoro-82M & MMS French Neural)
+  const attempts = [
+    { url: 'https://router.huggingface.co/hf-inference/models/hexgrad/Kokoro-82M', body: { inputs: cleanText, parameters: { voice } } },
+    { url: 'https://api-inference.huggingface.co/models/hexgrad/Kokoro-82M', body: { inputs: cleanText, parameters: { voice } } },
+    { url: 'https://router.huggingface.co/hf-inference/models/facebook/mms-tts-fra', body: { inputs: cleanText } },
+    { url: 'https://api-inference.huggingface.co/models/facebook/mms-tts-fra', body: { inputs: cleanText } },
   ];
 
-  for (const ep of endpoints) {
+  for (const item of attempts) {
     try {
       const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-      if (token) {
+      if (token && !token.includes('...')) {
         headers['Authorization'] = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
       }
 
       const response = await axios.post(
-        ep,
-        { inputs: cleanText, parameters: { voice } },
+        item.url,
+        item.body,
         { headers, responseType: 'arraybuffer', timeout: 12000 }
       );
 
@@ -52,13 +53,17 @@ export async function generateKokoroAudio(
         if (audioBuffer.length > 300) {
           return {
             audioBase64: audioBuffer.toString('base64'),
-            contentType: 'audio/mp3',
-            provider: `kokoro-${voice}`,
+            contentType: 'audio/flac',
+            provider: item.url.includes('Kokoro') ? `kokoro-${voice}` : 'huggingface-mms-fra',
           };
         }
       }
     } catch (err: any) {
-      console.warn(`[Kokoro Service] ${ep} error:`, err?.response?.data ? String(err.response.data).slice(0, 100) : err?.message || err);
+      let msg = err?.message;
+      if (err?.response?.data) {
+        try { msg = Buffer.from(err.response.data).toString('utf-8'); } catch {}
+      }
+      console.warn(`[Kokoro Service] ${item.url} error: ${msg?.slice(0, 120)}`);
     }
   }
 

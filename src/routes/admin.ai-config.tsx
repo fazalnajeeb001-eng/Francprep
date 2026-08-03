@@ -29,6 +29,18 @@ export function AdminAIConfigPage() {
   const [saveMsg, setSaveMsg] = useState("");
   const [clearMsg, setClearMsg] = useState("");
   const [showKeys, setShowKeys] = useState<{ [key: string]: boolean }>({});
+  const [fallbackNotice, setFallbackNotice] = useState<{ requested: string; active: string } | null>(null);
+
+  useEffect(() => {
+    const handleFallback = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail) {
+        setFallbackNotice({ requested: detail.requestedProvider || "primary", active: detail.activeProvider || "fallback" });
+      }
+    };
+    window.addEventListener("tts-fallback-alert", handleFallback);
+    return () => window.removeEventListener("tts-fallback-alert", handleFallback);
+  }, []);
 
   const [form, setForm] = useState({
     anthropicApiKey: "",
@@ -245,6 +257,16 @@ export function AdminAIConfigPage() {
             </div>
           );
         })()}
+
+        {fallbackNotice && (
+          <div className="p-4 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-200 text-xs flex items-center justify-between font-bold shadow-lg animate-pulse">
+            <div className="flex items-center gap-2">
+              <Zap className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>⚠️ Fallback Active: Engine request for &quot;{fallbackNotice.requested}&quot; is unconfigured or returned an error. System seamlessly activated &quot;{fallbackNotice.active}&quot; fallback so audio never fails for students.</span>
+            </div>
+            <button onClick={() => setFallbackNotice(null)} className="text-amber-300 hover:text-white text-xs px-2.5 py-1 border border-amber-400/30 rounded-md shrink-0">Dismiss</button>
+          </div>
+        )}
 
         {/* ─── PREFERRED VOICE ENGINE SELECTOR CARD ─── */}
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className={`p-6 rounded-2xl border ${card} space-y-4`}>

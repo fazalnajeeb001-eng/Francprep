@@ -107,6 +107,16 @@ export function speak(
       if (res.ok) {
         const json = await res.json();
         if (json.success && json.data?.audioUrl) {
+          if (json.data.fallbackActive && typeof window !== "undefined") {
+            window.dispatchEvent(
+              new CustomEvent("tts-fallback-alert", {
+                detail: {
+                  requestedProvider: json.data.requestedProvider,
+                  activeProvider: json.data.provider,
+                },
+              })
+            );
+          }
           let src = json.data.audioUrl;
           if (src.startsWith("data:audio/")) {
             const parts = src.split(";base64,");

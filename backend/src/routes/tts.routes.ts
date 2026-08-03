@@ -15,12 +15,15 @@ router.post('/speak', async (req: Request, res: Response) => {
     const audioData = await generateNeuralAudio(text, gender, lang, provider, voiceId, { elevenLabsApiKey, openaiApiKey, huggingFaceToken });
 
     if (audioData) {
+      const isFallback = Boolean(provider && !audioData.provider.includes(provider.toLowerCase()));
       res.status(200).json({
         success: true,
         data: {
           audioUrl: `data:${audioData.contentType};base64,${audioData.audioBase64}`,
           contentType: audioData.contentType,
           provider: audioData.provider,
+          requestedProvider: provider,
+          fallbackActive: isFallback,
         },
       });
       return;
