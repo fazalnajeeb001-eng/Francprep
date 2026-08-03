@@ -198,10 +198,19 @@ export async function generateNeuralAudio(
 
   // EXECUTION ROUTING FOR TEST PREVIEW & ACTIVE PROVIDERS
   if (forcedProvider) {
-    if (forcedProvider === 'elevenlabs') return await tryElevenLabs();
-    if (forcedProvider === 'huggingface' || forcedProvider === 'kokoro') return await tryHuggingFaceKokoro();
-    if (forcedProvider === 'openai') return await tryOpenAI();
-    if (forcedProvider === 'google') return await tryGoogle();
+    if (forcedProvider === 'elevenlabs') {
+      const res = await tryElevenLabs();
+      if (res) return res;
+    } else if (forcedProvider === 'huggingface' || forcedProvider === 'kokoro') {
+      const res = await tryHuggingFaceKokoro();
+      if (res) return res;
+    } else if (forcedProvider === 'openai') {
+      const res = await tryOpenAI();
+      if (res) return res;
+    } else if (forcedProvider === 'google') {
+      const res = await tryGoogle();
+      if (res) return res;
+    }
   }
 
   if (activeProvider === 'elevenlabs') {

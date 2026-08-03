@@ -109,25 +109,15 @@ export function speak(
           audio.src = src;
           audio.playbackRate = rate;
           audio.play().catch(() => {
-            if (!provider) playDirectHDFallback(cleanText, langCode, rate, audio);
-            else if (onPlaybackStateChange) onPlaybackStateChange(false);
+            playDirectHDFallback(cleanText, langCode, rate, audio);
           });
           return;
         }
       }
-      if (!provider) {
-        playDirectHDFallback(cleanText, langCode, rate, audio);
-      } else {
-        console.warn(`[TTS Speak] Provider ${provider} synthesis returned error status`);
-        if (onPlaybackStateChange) onPlaybackStateChange(false);
-      }
+      playDirectHDFallback(cleanText, langCode, rate, audio);
     })
     .catch(() => {
-      if (!provider) {
-        playDirectHDFallback(cleanText, langCode, rate, audio);
-      } else {
-        if (onPlaybackStateChange) onPlaybackStateChange(false);
-      }
+      playDirectHDFallback(cleanText, langCode, rate, audio);
     });
 
   return true;
