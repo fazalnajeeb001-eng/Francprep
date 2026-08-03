@@ -382,7 +382,8 @@ export function AdminSettingsPage() {
                         <option value="pNInz6obpgDQGcFmaJgB">👔 Adam (Clear Professional Voice)</option>
                         <option value="JBFqnCBsd6RMkjVDRZzb">🇬🇧 George (Warm Conversational Male)</option>
                         <option value="IKne3meq5aSn9XLyUdCD">💬 Charlie (Casual Conversational Male)</option>
-                        <option value="N2lrfuzCsp85FBDqEwyy">⚡ Callum (Deep Intense Male)</option>
+                        <option value="nPczCjzI2devNBz1zQrb">🎙️ Brian (Deep Studio Male Reader)</option>
+                        <option value="TX3LPaxmHKxFdv7VOQHJ">⚡ Liam (Fluent Studio Male)</option>
                         <option value="custom">✏️ Custom Voice ID (Paste Below)</option>
                       </select>
                       {form.selectedElevenLabsMaleVoice === "custom" && (

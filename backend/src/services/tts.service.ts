@@ -75,7 +75,7 @@ export async function generateNeuralAudio(
     const defaultMale = settings?.selectedElevenLabsMaleVoice || 'ErXwobaYiN019PkySvjV';
     const primaryVoiceId = forcedVoiceId || (gender === 'male' ? defaultMale : defaultFemale);
     const fallbackVoiceId = gender === 'male' ? 'ErXwobaYiN019PkySvjV' : '21m00Tcm4TlvDq8ikWAM';
-    const voices = forcedVoiceId ? [primaryVoiceId] : Array.from(new Set([primaryVoiceId, fallbackVoiceId]));
+    const voices = Array.from(new Set([primaryVoiceId, fallbackVoiceId]));
 
     for (const voiceId of voices) {
       try {
