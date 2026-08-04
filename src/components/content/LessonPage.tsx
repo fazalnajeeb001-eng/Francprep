@@ -770,6 +770,11 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
     };
   }, []);
 
+  // Stop audio playback immediately whenever student moves to a new page or changes sections
+  useEffect(() => {
+    stopAudio();
+  }, [currentSectionIdx]);
+
   const handleInlineSave = async (fieldPath: string, value: any) => {
     if (!lesson) return;
     try {
