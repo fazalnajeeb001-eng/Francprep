@@ -14,8 +14,11 @@ router.post('/grammar-check', authenticate, (req, res, next) =>
   writingController.grammarCheck(req, res, next)
 );
 
-// POST /api/writing/speaking-analysis - Analyze speaking transcription
+// POST /api/writing/speaking-analysis & /api/writing/analyze-speaking
 router.post('/speaking-analysis', authenticate, (req, res, next) =>
+  writingController.analyzeSpeaking(req, res, next)
+);
+router.post('/analyze-speaking', authenticate, (req, res, next) =>
   writingController.analyzeSpeaking(req, res, next)
 );
 
