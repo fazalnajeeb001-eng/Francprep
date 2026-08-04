@@ -58,14 +58,15 @@ export async function generateNeuralAudio(
     }
   }
 
-  // --- PROVIDER 1: ELEVENLABS ---
   const tryElevenLabs = async () => {
     const elevenLabsKey = (tempKeys?.elevenLabsApiKey && !tempKeys.elevenLabsApiKey.includes('...'))
       ? tempKeys.elevenLabsApiKey
-      : (process.env.ELEVENLABS_API_KEY || settings?.elevenLabsApiKey);
+      : (settings?.elevenLabsApiKey && !settings.elevenLabsApiKey.includes('...'))
+      ? settings.elevenLabsApiKey
+      : process.env.ELEVENLABS_API_KEY;
 
     if (!elevenLabsKey || elevenLabsKey.includes('...')) {
-      console.warn('[ElevenLabs] No unmasked API key configured');
+      console.warn('[ElevenLabs] No valid API key configured');
       return null;
     }
 
@@ -131,7 +132,11 @@ export async function generateNeuralAudio(
   const tryHuggingFaceKokoro = async () => {
     const hfToken = (tempKeys?.huggingFaceToken && !tempKeys.huggingFaceToken.includes('...'))
       ? tempKeys.huggingFaceToken
-      : (process.env.HUGGINGFACE_TOKEN || process.env.HUGGINGFACE_API_KEY || settings?.huggingFaceToken || settings?.huggingFaceApiKey);
+      : (settings?.huggingFaceToken && !settings.huggingFaceToken.includes('...'))
+      ? settings.huggingFaceToken
+      : (settings?.huggingFaceApiKey && !settings.huggingFaceApiKey.includes('...'))
+      ? settings.huggingFaceApiKey
+      : (process.env.HUGGINGFACE_TOKEN || process.env.HUGGINGFACE_API_KEY);
 
     try {
       const selectedVoice = (activeProvider === 'kokoro' || activeProvider === 'huggingface') && forcedVoiceId
@@ -157,7 +162,9 @@ export async function generateNeuralAudio(
   const tryOpenAI = async () => {
     const openaiKey = (tempKeys?.openaiApiKey && !tempKeys.openaiApiKey.includes('...'))
       ? tempKeys.openaiApiKey
-      : (process.env.OPENAI_API_KEY || settings?.openaiApiKey);
+      : (settings?.openaiApiKey && !settings.openaiApiKey.includes('...'))
+      ? settings.openaiApiKey
+      : process.env.OPENAI_API_KEY;
 
     if (!openaiKey || openaiKey.includes('...')) return null;
 

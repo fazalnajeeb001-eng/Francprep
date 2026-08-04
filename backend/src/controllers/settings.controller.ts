@@ -201,7 +201,13 @@ export async function testElevenLabs(req: Request, res: Response) {
   try {
     const settings = await getOrCreate();
     const raw: any = settings.toObject ? settings.toObject({ transform: false }) : settings;
-    const key = req.body?.elevenLabsApiKey || process.env.ELEVENLABS_API_KEY || raw.elevenLabsApiKey || inMemorySettings.elevenLabsApiKey;
+    const key = (req.body?.elevenLabsApiKey && !req.body.elevenLabsApiKey.includes('...'))
+      ? req.body.elevenLabsApiKey
+      : (raw.elevenLabsApiKey && !raw.elevenLabsApiKey.includes('...'))
+      ? raw.elevenLabsApiKey
+      : (inMemorySettings.elevenLabsApiKey && !inMemorySettings.elevenLabsApiKey.includes('...'))
+      ? inMemorySettings.elevenLabsApiKey
+      : process.env.ELEVENLABS_API_KEY;
     if (!key || key.includes('...')) return res.json({ success: false, error: "ElevenLabs API Key not configured" });
 
     const response = await fetch("https://api.elevenlabs.io/v1/voices", {
@@ -224,7 +230,14 @@ export async function getElevenLabsVoices(req: Request, res: Response) {
   try {
     const settings = await getOrCreate();
     const raw: any = settings.toObject ? settings.toObject({ transform: false }) : settings;
-    const key = (req.query?.key as string) || req.body?.elevenLabsApiKey || process.env.ELEVENLABS_API_KEY || raw.elevenLabsApiKey || inMemorySettings.elevenLabsApiKey;
+    const reqKey = (req.query?.key as string) || req.body?.elevenLabsApiKey;
+    const key = (reqKey && !reqKey.includes('...'))
+      ? reqKey
+      : (raw.elevenLabsApiKey && !raw.elevenLabsApiKey.includes('...'))
+      ? raw.elevenLabsApiKey
+      : (inMemorySettings.elevenLabsApiKey && !inMemorySettings.elevenLabsApiKey.includes('...'))
+      ? inMemorySettings.elevenLabsApiKey
+      : process.env.ELEVENLABS_API_KEY;
     if (!key || key.includes('...')) return res.json({ success: false, error: "ElevenLabs API Key not configured" });
 
     const response = await fetch("https://api.elevenlabs.io/v1/voices", {
