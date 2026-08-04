@@ -9,6 +9,9 @@ export interface IStudentProgressDocument extends Document {
   exercisesCompleted: number;
   totalExercises: number;
   timeSpent: number;
+  draftAnswers?: Record<string, any>;
+  completedSections?: number[];
+  currentSectionIdx?: number;
   startedAt?: Date;
   completedAt?: Date;
   lastAccessedAt: Date;
@@ -55,6 +58,18 @@ const studentProgressSchema = new Schema<IStudentProgressDocument>(
       type: Number,
       default: 0,
       min: [0, 'Time spent cannot be negative'],
+    },
+    draftAnswers: {
+      type: Schema.Types.Mixed,
+      default: {},
+    },
+    completedSections: {
+      type: [Number],
+      default: [],
+    },
+    currentSectionIdx: {
+      type: Number,
+      default: 0,
     },
     startedAt: {
       type: Date,

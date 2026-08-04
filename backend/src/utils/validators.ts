@@ -194,6 +194,9 @@ export const updateProgressSchema = z.object({
   exercisesCompleted: z.number().int().min(0).optional(),
   totalExercises: z.number().int().min(0).optional(),
   timeSpent: z.number().int().min(0).optional(),
+  draftAnswers: z.record(z.any()).optional(),
+  completedSections: z.array(z.number()).optional(),
+  currentSectionIdx: z.number().optional(),
 });
 
 // Syllabus validators

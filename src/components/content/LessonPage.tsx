@@ -987,27 +987,84 @@ function LessonPageInner({ lessonId, draftId, onBack }: { lessonId?: string; dra
 
   const lesson7 = fullLesson7 || lesson7Direct || lesson7FromList;
 
-  useEffect(() => {
-    if (lessonId && !progress) {
-      apiFetch(`/progress/${lessonId}/update`, {
-        method: 'POST',
-        body: JSON.stringify({ status: 'in_progress', timeSpent: 0 }),
-      }).catch(() => {});
-    }
-  }, [lessonId]);
+  const isHydrated = useRef(false);
 
   useEffect(() => {
-    if (!lessonId || lessonCompleted) return;
-    const interval = setInterval(() => {
-      const timeSpent = Math.round((Date.now() - startTime) / 60000);
-      const completedBlocks = ['grammarDrill', 'reading', 'listening', 'practice'].filter(k => blockResults[k]?.completed).length;
-      apiFetch(`/progress/${lessonId}/update`, {
-        method: 'POST',
-        body: JSON.stringify({ status: 'in_progress', timeSpent, exercisesCompleted: completedBlocks }),
-      }).catch(() => {});
-    }, 30000);
-    return () => clearInterval(interval);
-  }, [lessonId, blockResults, lessonCompleted, startTime]);
+    const activeKey = lessonId || draftId;
+    if (!activeKey) return;
+
+    const localKey = `fp_lesson_draft_${activeKey}`;
+    let localData: any = null;
+    if (typeof window !== "undefined") {
+      const raw = localStorage.getItem(localKey);
+      if (raw) {
+        try { localData = JSON.parse(raw); } catch {}
+      }
+    }
+
+    const remoteAnswers = (progressData as any)?.draftAnswers;
+    const remoteSections = (progressData as any)?.completedSections;
+    const remoteSectionIdx = (progressData as any)?.currentSectionIdx;
+
+    const mergedAnswers = {
+      ...(localData?.savedAnswers || {}),
+      ...(remoteAnswers || {})
+    };
+
+    if (Object.keys(mergedAnswers).length > 0) {
+      setSavedAnswers(mergedAnswers);
+    }
+
+    const mergedCompleted = new Set<number>([
+      ...(localData?.completedSections || []),
+      ...(remoteSections || [])
+    ]);
+    if (mergedCompleted.size > 0) {
+      setCompletedSections(mergedCompleted);
+    }
+
+    const targetIdx = remoteSectionIdx !== undefined ? remoteSectionIdx : localData?.currentSectionIdx;
+    if (typeof targetIdx === "number" && targetIdx >= 0) {
+      setCurrentSectionIdx(targetIdx);
+    }
+
+    isHydrated.current = true;
+  }, [lessonId, draftId, progressData]);
+
+  useEffect(() => {
+    if (!isHydrated.current) return;
+    const activeKey = lessonId || draftId;
+    if (!activeKey) return;
+
+    const localKey = `fp_lesson_draft_${activeKey}`;
+    const payload = {
+      savedAnswers,
+      completedSections: Array.from(completedSections),
+      currentSectionIdx
+    };
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem(localKey, JSON.stringify(payload));
+    }
+
+    if (lessonId) {
+      const timer = setTimeout(() => {
+        const timeSpent = Math.round((Date.now() - startTime) / 60000);
+        apiFetch(`/progress/${lessonId}/update`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            draftAnswers: savedAnswers,
+            completedSections: Array.from(completedSections),
+            currentSectionIdx,
+            timeSpent,
+            status: lessonCompleted ? "completed" : "in_progress"
+          }),
+        }).catch(() => {});
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [savedAnswers, completedSections, currentSectionIdx, lessonId, draftId, lessonCompleted, startTime]);
 
   const markSectionComplete = useCallback((idx: number) => {
     setCompletedSections(prev => new Set(prev).add(idx));
