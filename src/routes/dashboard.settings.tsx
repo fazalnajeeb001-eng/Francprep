@@ -303,7 +303,7 @@ function SettingsPage() {
               <div className="flex items-center gap-3 mb-4"><Target className="w-5 h-5 text-purple-400" /><h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-slate-900"}`}>Learning Goal & Exam Target</h2></div>
               <p className={`text-xs mb-4 ${txtSec}`}>Set your target exam or CEFR level. You can change this anytime.</p>
               <div className="grid grid-cols-2 gap-2">
-                {GOAL_OPTIONS.map((opt) => (
+                {getGoalOptionsForLanguage(activeLang).map((opt) => (
                   <button key={opt.value} onClick={() => saveGoal(opt.value)} disabled={goalSaving}
                     className={`flex items-center gap-2 p-3 rounded-xl text-left transition-all cursor-pointer ${
                       currentGoal === opt.value

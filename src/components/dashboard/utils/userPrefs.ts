@@ -9,31 +9,59 @@ export interface GoalData {
   setAt: number;
 }
 
-const GOAL_LABELS: Record<LearningGoal, string> = {
-  TCF_B2: "Pass TCF Canada (B2)",
-  TEF_B2: "Pass TEF Canada (B2)",
-  A1: "DELF A1 (Discovery)",
-  A2: "DELF A2 (Breakthrough)",
-  B1: "DELF B1 (Threshold)",
-  B2: "DELF B2 (Vantage)",
-  C1: "DALF C1 (Autonomous)",
-  C2: "DALF C2 (Mastery)",
-  none: "No goal set",
-};
-
-export function getGoal(): GoalData | null {
-  try {
-    const stored = localStorage.getItem(GOAL_KEY);
-    if (!stored) return null;
-    return JSON.parse(stored);
-  } catch { return null; }
+export function getGoalOptionsForLanguage(langCode: string = "fr") {
+  const code = langCode.toLowerCase().trim();
+  if (code === "de" || code === "ger" || code === "german") {
+    return [
+      { value: "GOETHE_B2" as LearningGoal, label: "Pass Goethe-Zertifikat B2", emoji: "🇩🇪" },
+      { value: "TESTDAF_B2" as LearningGoal, label: "Pass TestDaF Exam (TDN 4)", emoji: "🎯" },
+      { value: "A1" as LearningGoal, label: "Goethe A1 (Start Deutsch 1)", emoji: "🌱" },
+      { value: "A2" as LearningGoal, label: "Goethe A2 (Start Deutsch 2)", emoji: "🌿" },
+      { value: "B1" as LearningGoal, label: "Goethe B1 (Zertifikat B1)", emoji: "🚀" },
+      { value: "B2" as LearningGoal, label: "Goethe B2 (Zertifikat B2)", emoji: "🎓" },
+      { value: "C1" as LearningGoal, label: "Goethe C1 (Zertifikat C1)", emoji: "🏆" },
+    ];
+  }
+  if (code === "es" || code === "spa" || code === "spanish") {
+    return [
+      { value: "DELE_B2" as LearningGoal, label: "Pass DELE B2 Certification", emoji: "🇪🇸" },
+      { value: "SIELE_B2" as LearningGoal, label: "Pass SIELE Global Exam", emoji: "🎯" },
+      { value: "A1" as LearningGoal, label: "DELE A1 (Acceso)", emoji: "🌱" },
+      { value: "A2" as LearningGoal, label: "DELE A2 (Plataforma)", emoji: "🌿" },
+      { value: "B1" as LearningGoal, label: "DELE B1 (Umbral)", emoji: "🚀" },
+      { value: "B2" as LearningGoal, label: "DELE B2 (Avanzado)", emoji: "🎓" },
+      { value: "C1" as LearningGoal, label: "DELE C1 (Dominio)", emoji: "🏆" },
+    ];
+  }
+  if (code === "it" || code === "ita" || code === "italian") {
+    return [
+      { value: "CILS_B2" as LearningGoal, label: "Pass CILS B2 Certification", emoji: "🇮🇹" },
+      { value: "CELI_B2" as LearningGoal, label: "Pass CELI 3 B2 Exam", emoji: "🎯" },
+      { value: "A1" as LearningGoal, label: "CILS A1 (Contatto)", emoji: "🌱" },
+      { value: "A2" as LearningGoal, label: "CILS A2 (Sviluppo)", emoji: "🌿" },
+      { value: "B1" as LearningGoal, label: "CILS B1 (Autonomia)", emoji: "🚀" },
+      { value: "B2" as LearningGoal, label: "CILS B2 (Padronanza)", emoji: "🎓" },
+    ];
+  }
+  // Default French Track
+  return [
+    { value: "TCF_B2" as LearningGoal, label: "Pass TCF Canada (B2)", emoji: "🇨🇦" },
+    { value: "TEF_B2" as LearningGoal, label: "Pass TEF Canada (B2)", emoji: "🍁" },
+    { value: "A1" as LearningGoal, label: "DELF A1 (Discovery)", emoji: "🌱" },
+    { value: "A2" as LearningGoal, label: "DELF A2 (Breakthrough)", emoji: "🌿" },
+    { value: "B1" as LearningGoal, label: "DELF B1 (Threshold)", emoji: "🚀" },
+    { value: "B2" as LearningGoal, label: "DELF B2 (Vantage)", emoji: "🎓" },
+    { value: "C1" as LearningGoal, label: "DALF C1 (Autonomous)", emoji: "🏆" },
+  ];
 }
 
-export function setGoal(goal: LearningGoal): GoalData {
-  const data: GoalData = { goal, label: GOAL_LABELS[goal] || goal, setAt: Date.now() };
-  localStorage.setItem(GOAL_KEY, JSON.stringify(data));
-  window.dispatchEvent(new Event("goal-changed"));
-  return data;
+export const GOAL_OPTIONS = getGoalOptionsForLanguage("fr");
+
+export function getGoalLabelsForLanguage(langCode: string = "fr"): Record<string, string> {
+  const opts = getGoalOptionsForLanguage(langCode);
+  const map: Record<string, string> = { none: "No goal set" };
+  opts.forEach(o => { map[o.value] = o.label; });
+  return map;
 }
 
 const DAILY_GOAL_KEY = "fp_daily_study_goal_mins";
@@ -65,17 +93,7 @@ export function clearAvatar() {
   localStorage.removeItem(AVATAR_KEY);
 }
 
-export const GOAL_OPTIONS: Array<{ value: LearningGoal; label: string; emoji: string }> = [
-  { value: "TCF_B2", label: "Pass TCF Canada (B2)", emoji: "📋" },
-  { value: "TEF_B2", label: "Pass TEF Canada (B2)", emoji: "📝" },
-  { value: "A1", label: "DELF A1 (Discovery)", emoji: "🌱" },
-  { value: "A2", label: "DELF A2 (Breakthrough)", emoji: "🌿" },
-  { value: "B1", label: "DELF B1 (Threshold)", emoji: "☕" },
-  { value: "B2", label: "DELF B2 (Vantage)", emoji: "🗼" },
-  { value: "C1", label: "DALF C1 (Autonomous)", emoji: "🌅" },
-  { value: "C2", label: "DALF C2 (Mastery)", emoji: "🎆" },
-  { value: "none", label: "No goal set", emoji: "✨" },
-];
+
 
 export const CEFR_ORDER = ["A1", "A2", "B1", "B2", "C1", "C2"] as const;
 

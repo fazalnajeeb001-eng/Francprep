@@ -238,6 +238,35 @@ const PLACEMENT_QUESTIONS: Question[] = [
   }
 ];
 
+const GERMAN_PLACEMENT_QUESTIONS: Question[] = [
+  { id: 1, level: "A1", question: "Choose the correct greeting for: 'Hello, how are you?'", options: ["Guten Tag, wie geht es Ihnen?", "Auf Wiedersehen!", "Bitte sehr.", "Gute Nacht."], correct: 0, explanation: "'Guten Tag, wie geht es Ihnen?' is the polite formal German greeting." },
+  { id: 2, level: "A1", question: "Select the correct form of 'sein': 'Ich ____ 25 Jahre alt.'", options: ["bin", "habe", "wohne", "ist"], correct: 0, explanation: "In German age uses 'sein': 'Ich bin 25 Jahre alt'." },
+  { id: 3, level: "A1", question: "Complete with the correct dative article: 'Ich fahre mit ____ Bus.'", options: ["dem", "der", "das", "die"], correct: 0, explanation: "The preposition 'mit' requires the dative case: 'mit dem Bus'." },
+  { id: 4, level: "A2", question: "Which sentence correctly uses Perfekt with 'sein'?", options: ["Er ist nach Berlin gefahren.", "Er hat nach Berlin gefahren.", "Er war nach Berlin fahren.", "Er fährt nach Berlin."], correct: 0, explanation: "Verbs of motion take 'sein' in Perfekt: 'ist gefahren'." },
+  { id: 5, level: "A2", question: "Fill in: 'Wenn das Wetter schön ist, ____ wir im Park.'", options: ["spazieren", "spazierte", "gegangen", "spaziert"], correct: 0, explanation: "In a main clause following a subordinate clause, the verb comes immediately in position 1." },
+  { id: 6, level: "B1", question: "Select the correct Subjunctive II form: 'Wenn ich Zeit hätte, ____ ich kommen.'", options: ["würde", "werde", "wollte", "hatte"], correct: 0, explanation: "'würde + infinitive' forms Konjunktiv II for hypotheses." },
+  { id: 7, level: "B1", question: "Choose the causal connector: 'Er bleibt zu Hause, ____ er krank ist.'", options: ["weil", "dass", "ob", "obwohl"], correct: 0, explanation: "'weil' introduces a causal clause and sends the verb to the end." },
+  { id: 8, level: "B2", question: "Select the formal Goethe essay connector: '____ der Maßnahme sind viele Ergebnisse erzielt worden.'", options: ["Infolge", "Damit", "Obwohl", "Wenigstens"], correct: 0, explanation: "'Infolge' (as a result of) is a B2 genitive connector for academic writing." }
+];
+
+const SPANISH_PLACEMENT_QUESTIONS: Question[] = [
+  { id: 1, level: "A1", question: "Choose the correct phrase for: 'Hello, how are you?'", options: ["¡Hola! ¿Cómo estás?", "¡Hasta luego!", "Por favor.", "Buenas noches."], correct: 0, explanation: "'¡Hola! ¿Cómo estás?' is the standard Spanish greeting." },
+  { id: 2, level: "A1", question: "Select the correct verb form: 'Yo ____ 25 años.'", options: ["tengo", "soy", "estoy", "hago"], correct: 0, explanation: "Age in Spanish uses 'tener': 'Tengo 25 años'." },
+  { id: 3, level: "A1", question: "Fill in the blank: 'María ____ en Madrid.'", options: ["vive", "vivir", "vives", "viven"], correct: 0, explanation: "Third-person singular ending for -ir verbs is '-e': 'vive'." },
+  { id: 4, level: "A2", question: "Choose between Ser and Estar: 'Juan ____ muy cansado hoy.'", options: ["está", "es", "fue", "sea"], correct: 0, explanation: "Temporary states like feeling tired use 'estar': 'está cansado'." },
+  { id: 5, level: "A2", question: "Which sentence is in the Preterite tense (completed action)?", options: ["Ayer comí paella.", "Siempre comía paella.", "Voy a comer paella.", "Comeré paella."], correct: 0, explanation: "'Comí' is Pretérito Indefinido for completed past events." },
+  { id: 6, level: "B1", question: "Select the Subjunctive mood form: 'Espero que tú ____ pronto.'", options: ["vengas", "vienes", "viniste", "vendrás"], correct: 0, explanation: "Wishes and hopes ('Espero que') require the Present Subjunctive ('vengas')." },
+  { id: 7, level: "B1", question: "Choose the relative pronoun: 'El libro ____ compré es interesante.'", options: ["que", "donde", "quien", "cuyo"], correct: 0, explanation: "'Que' is the standard direct object relative pronoun." },
+  { id: 8, level: "B2", question: "Select the correct conditional hypothesis: 'Si tuviera dinero, ____ un coche.'", options: ["compraría", "compro", "compraré", "comprara"], correct: 0, explanation: "In imperfect subjunctive hypotheses ('Si tuviera'), the result clause takes Conditional ('compraría')." }
+];
+
+export function getPlacementQuestions(langCode: string = "fr"): Question[] {
+  const code = langCode.toLowerCase().trim();
+  if (code === "de" || code === "ger" || code === "german") return GERMAN_PLACEMENT_QUESTIONS;
+  if (code === "es" || code === "spa" || code === "spanish") return SPANISH_PLACEMENT_QUESTIONS;
+  return PLACEMENT_QUESTIONS;
+}
+
 export function OnboardingPage() {
   const navigate = useNavigate();
   const { dark } = useTheme();
@@ -296,14 +325,15 @@ export function OnboardingPage() {
   };
 
   const handleNextQuestion = () => {
-    if (currentQIndex < PLACEMENT_QUESTIONS.length - 1) {
+    const questions = getPlacementQuestions(selectedLang);
+    if (currentQIndex < questions.length - 1) {
       setCurrentQIndex((prev) => prev + 1);
     } else {
       // Level-gated scoring evaluation for 100% accuracy
       let a1Count = 0, a2Count = 0, b1Count = 0, b2Count = 0;
       let totalCorrect = 0;
 
-      PLACEMENT_QUESTIONS.forEach((q) => {
+      questions.forEach((q) => {
         if (selectedAnswers[q.id] === q.correct) {
           totalCorrect++;
           if (q.level === "A1") a1Count++;
@@ -473,7 +503,7 @@ export function OnboardingPage() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 text-left max-w-3xl mx-auto">
-                {GOAL_OPTIONS.map((g) => {
+                {getGoalOptionsForLanguage(selectedLang).map((g) => {
                   const isSelected = selectedGoal === g.value;
                   return (
                     <div
@@ -688,61 +718,64 @@ export function OnboardingPage() {
           )}
 
           {/* STEP 4: PLACEMENT TEST IN PROGRESS */}
-          {step === "test" && (
-            <motion.div
-              key="step-test"
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              className="space-y-6 max-w-2xl mx-auto text-left p-6 md:p-8 rounded-3xl border border-gray-200 dark:border-white/10 bg-white/90 dark:bg-[#101828]/90 backdrop-blur-xl shadow-2xl"
-            >
-              {/* Progress Bar */}
-              <div className="space-y-2">
-                <div className="flex justify-between items-center text-xs font-bold text-gray-600 dark:text-gray-400">
-                  <span className="flex items-center gap-2">
-                    <span className="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-600 dark:text-purple-300 font-mono text-[10px]">
-                      {PLACEMENT_QUESTIONS[currentQIndex].level} Stage
+          {step === "test" && (() => {
+            const activeQuestions = getPlacementQuestions(selectedLang);
+            const currentQ = activeQuestions[currentQIndex] || activeQuestions[0];
+            return (
+              <motion.div
+                key="step-test"
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                className="space-y-6 max-w-2xl mx-auto text-left p-6 md:p-8 rounded-3xl border border-gray-200 dark:border-white/10 bg-white/90 dark:bg-[#101828]/90 backdrop-blur-xl shadow-2xl"
+              >
+                {/* Progress Bar */}
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center text-xs font-bold text-gray-600 dark:text-gray-400">
+                    <span className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-600 dark:text-purple-300 font-mono text-[10px]">
+                        {currentQ.level} Stage
+                      </span>
+                      <span>Question {currentQIndex + 1} of {activeQuestions.length}</span>
                     </span>
-                    <span>Question {currentQIndex + 1} of {PLACEMENT_QUESTIONS.length}</span>
-                  </span>
-                  <span>{Math.round(((currentQIndex + 1) / PLACEMENT_QUESTIONS.length) * 100)}%</span>
-                </div>
-                <div className="w-full h-2 rounded-full bg-gray-200 dark:bg-white/10 overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-purple-500 to-indigo-600 transition-all duration-300"
-                    style={{ width: `${((currentQIndex + 1) / PLACEMENT_QUESTIONS.length) * 100}%` }}
-                  />
-                </div>
-              </div>
-
-              {/* Question Text */}
-              <div className="space-y-4 pt-2">
-                <div className="flex items-start justify-between gap-4">
-                  <h2 className="text-xl md:text-2xl font-bold leading-snug">
-                    {PLACEMENT_QUESTIONS[currentQIndex].question}
-                  </h2>
-                  <button
-                    onClick={() => handlePlayQuestionAudio(PLACEMENT_QUESTIONS[currentQIndex].question)}
-                    className="p-2.5 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 hover:bg-purple-500/20 shrink-0"
-                  >
-                    <Volume2 className={`w-5 h-5 ${isPlayingAudio ? "animate-bounce" : ""}`} />
-                  </button>
+                    <span>{Math.round(((currentQIndex + 1) / activeQuestions.length) * 100)}%</span>
+                  </div>
+                  <div className="w-full h-2 rounded-full bg-gray-200 dark:bg-white/10 overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-purple-500 to-indigo-600 transition-all duration-300"
+                      style={{ width: `${((currentQIndex + 1) / activeQuestions.length) * 100}%` }}
+                    />
+                  </div>
                 </div>
 
-                {/* Options */}
-                <div className="space-y-3 pt-2">
-                  {PLACEMENT_QUESTIONS[currentQIndex].options.map((opt, idx) => {
-                    const isSelected = selectedAnswers[PLACEMENT_QUESTIONS[currentQIndex].id] === idx;
-                    return (
-                      <div
-                        key={idx}
-                        onClick={() => handleSelectAnswer(PLACEMENT_QUESTIONS[currentQIndex].id, idx)}
-                        className={`p-4 rounded-2xl border text-sm font-bold transition-all cursor-pointer flex items-center justify-between ${
-                          isSelected
-                            ? "border-purple-600 bg-purple-50 text-purple-950 ring-2 ring-purple-500/40 dark:bg-purple-500/20 dark:text-purple-300 shadow-sm"
-                            : "border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-slate-100 hover:border-purple-500 hover:bg-purple-50/40 shadow-sm"
-                        }`}
-                      >
+                {/* Question Text */}
+                <div className="space-y-4 pt-2">
+                  <div className="flex items-start justify-between gap-4">
+                    <h2 className="text-xl md:text-2xl font-bold leading-snug">
+                      {currentQ.question}
+                    </h2>
+                    <button
+                      onClick={() => handlePlayQuestionAudio(currentQ.question)}
+                      className="p-2.5 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 hover:bg-purple-500/20 shrink-0 cursor-pointer"
+                    >
+                      <Volume2 className={`w-5 h-5 ${isPlayingAudio ? "animate-bounce" : ""}`} />
+                    </button>
+                  </div>
+
+                  {/* Options */}
+                  <div className="space-y-3 pt-2">
+                    {currentQ.options.map((opt, idx) => {
+                      const isSelected = selectedAnswers[currentQ.id] === idx;
+                      return (
+                        <div
+                          key={idx}
+                          onClick={() => handleSelectAnswer(currentQ.id, idx)}
+                          className={`p-4 rounded-2xl border text-sm font-bold transition-all cursor-pointer flex items-center justify-between ${
+                            isSelected
+                              ? "border-purple-600 bg-purple-50 text-purple-950 ring-2 ring-purple-500/40 dark:bg-purple-500/20 dark:text-purple-300 shadow-sm"
+                              : "border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-slate-100 hover:border-purple-500 hover:bg-purple-50/40 shadow-sm"
+                          }`}
+                        >
                         <span>{opt}</span>
                         <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${isSelected ? "border-purple-500 bg-purple-500 text-white" : "border-slate-400"}`}>
                           {isSelected && <CheckCircle2 className="w-3.5 h-3.5" />}
@@ -763,16 +796,17 @@ export function OnboardingPage() {
                 </button>
 
                 <button
-                  disabled={selectedAnswers[PLACEMENT_QUESTIONS[currentQIndex].id] === undefined}
+                  disabled={selectedAnswers[currentQ.id] === undefined}
                   onClick={handleNextQuestion}
-                  className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs disabled:opacity-40 transition-all flex items-center gap-2 shadow-lg shadow-purple-600/25"
+                  className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs disabled:opacity-40 transition-all flex items-center gap-2 shadow-lg shadow-purple-600/25 cursor-pointer"
                 >
-                  <span>{currentQIndex === PLACEMENT_QUESTIONS.length - 1 ? "Submit & View Diagnostic" : "Next Question"}</span>
+                  <span>{currentQIndex === activeQuestions.length - 1 ? "Submit & View Diagnostic" : "Next Question"}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </motion.div>
-          )}
+          );
+        })()}
 
           {/* STEP 5: TEST RESULT BENCHMARK */}
           {step === "result" && (
