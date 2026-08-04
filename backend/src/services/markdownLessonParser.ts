@@ -207,7 +207,17 @@ function parseVocabTable(text: string): ILessonVocabularyItem[] {
     if (cells.length < 2) continue;
     const fr = cells[0].replace(/[\(（].*?see chapter vocabulary.*$/i, '').trim();
     const en = cells[1].replace(/[\(（].*?see chapter vocabulary.*$/i, '').trim();
-    if (!fr || fr.toLowerCase() === 'french' || fr.match(/^[-:]+$/) || seen.has(fr.toLowerCase()) || isProseOrNote(fr) || isProseOrNote(en)) continue;
+    const isHeaderWord = (str: string) => {
+      const l = str.toLowerCase().trim();
+      return (
+        ['french', 'german', 'spanish', 'italian', 'portuguese', 'english', 'dutch', 'russian', 'chinese', 'japanese', 'korean', 'arabic', 'polish', 'swedish', 'turkish', 'greek', 'term', 'word', 'vocabulary', 'expression', 'phrase', 'target', 'headword'].includes(l) ||
+        l.includes('pronunciation') ||
+        l.includes('translation') ||
+        l.includes('guidance')
+      );
+    };
+
+    if (!fr || isHeaderWord(fr) || isHeaderWord(en) || fr.match(/^[-:]+$/) || seen.has(fr.toLowerCase()) || isProseOrNote(fr) || isProseOrNote(en)) continue;
     seen.add(fr.toLowerCase());
     out.push({
       french: fr,

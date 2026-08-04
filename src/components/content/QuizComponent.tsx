@@ -705,70 +705,41 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
   const handleSubmitAll = useCallback(async () => {
     setSubmitting(true);
     try {
-      // Separate matching (local validation) from other types (backend validation)
-      const matchingAnswers: Record<string, string> = {};
-      const backendAnswers: Record<string, string | string[]> = {};
-
-      for (const [qId, answer] of Object.entries(answers)) {
-        const question = questions.find(q => (q.id || (q as any)._id) === qId);
-        if (question?.type === 'matching') {
-          matchingAnswers[qId] = answer as string;
-        } else {
-          backendAnswers[qId] = answer;
+      const allResults: ResultItem[] = questions.map((q, idx) => {
+        const qId = q.id || (q as any)._id || String(idx);
+        const userAns = answers[qId] !== undefined ? answers[qId] : answers[String(idx)];
+        
+        let isCorrect = false;
+        const correct = q.correctAnswer;
+        if (q.type === 'matching') {
+          const pairs = q.pairs || {};
+          try {
+            const userMatches = typeof userAns === 'string' ? JSON.parse(userAns) : (userAns || {});
+            isCorrect = Object.keys(pairs).length > 0 && Object.entries(pairs).every(([left, correctRight]) => userMatches[left] === correctRight);
+          } catch {
+            isCorrect = false;
+          }
+        } else if (correct !== undefined && userAns !== undefined && userAns !== null) {
+          const normalize = (s: string) => String(s).trim().toLowerCase();
+          if (Array.isArray(correct)) {
+            isCorrect = correct.some(c => normalize(c as string) === normalize(userAns as string));
+          } else {
+            isCorrect = normalize(correct as string) === normalize(userAns as string);
+          }
+        } else if (q.type === 'speaking' || q.type === 'speaking_prompt' || q.type === 'short_answer') {
+          isCorrect = typeof userAns === 'string' && userAns.trim().length > 3;
         }
-      }
 
-      // Compute local matching results
-      const matchingResults: ResultItem[] = Object.entries(matchingAnswers).map(([qId, answerStr]) => {
-        const question = questions.find(q => (q.id || (q as any)._id) === qId);
-        const pairs = question?.pairs || {};
-        try {
-          const userMatches = JSON.parse(answerStr);
-          const allCorrect = Object.entries(pairs).every(([left, correctRight]) => userMatches[left] === correctRight);
-          return {
-            questionId: qId,
-            correct: allCorrect,
-            points: allCorrect ? (question?.points || 1) : 0,
-            maxPoints: question?.points || 1,
-            explanation: allCorrect ? "All pairs matched correctly!" : `Correct pairs: ${Object.entries(pairs).map(([k, v]) => `${k} ↔ ${v}`).join(', ')}`,
-          };
-        } catch {
-          return { questionId: qId, correct: false, points: 0, maxPoints: question?.points || 1, explanation: "Invalid matching answer" };
-        }
+        return {
+          questionId: qId,
+          correct: isCorrect,
+          points: isCorrect ? (q.points || 1) : 0,
+          maxPoints: q.points || 1,
+          explanation: isCorrect ? "Correct!" : (q.explanation || `Expected: ${correct || 'Valid response'}`),
+          text: q.text || q.question,
+        };
       });
 
-      // Submit non-matching answers to backend
-      let backendResults: ResultItem[] = [];
-      if (onSubmit && Object.keys(backendAnswers).length > 0) {
-        const result = await onSubmit(backendAnswers);
-        if (result) backendResults = result.results;
-      } else if (Object.keys(backendAnswers).length > 0) {
-        // Local grading fallback when no backend submit
-        backendResults = Object.entries(backendAnswers).map(([qId, userAns]) => {
-          const question = questions.find(q => (q.id || (q as any)._id) === qId);
-          const correct = question?.correctAnswer;
-          let isCorrect = false;
-          if (correct !== undefined && userAns !== undefined) {
-            const normalize = (s: string) => String(s).trim().toLowerCase();
-            if (Array.isArray(correct)) {
-              isCorrect = correct.some(c => normalize(c as string) === normalize(userAns as string));
-            } else {
-              isCorrect = normalize(correct as string) === normalize(userAns as string);
-            }
-          }
-          return {
-            questionId: qId,
-            correct: isCorrect,
-            points: isCorrect ? (question?.points || 1) : 0,
-            maxPoints: question?.points || 1,
-            explanation: isCorrect ? "Correct!" : (question?.explanation || `Expected: ${correct}`),
-            text: question?.text || question?.question,
-          };
-        });
-      }
-
-      // Merge results
-      const allResults = [...backendResults, ...matchingResults];
       setResults(allResults);
       setSubmitted(true);
 
@@ -783,7 +754,7 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
     } finally {
       setSubmitting(false);
     }
-  }, [answers, questions, onSubmit, onAnswer, onComplete]);
+  }, [answers, questions, onAnswer, onComplete]);
 
   // ─── RENDER: MULTIPLE CHOICE ───
   const renderMultipleChoice = (q: Question, qId: string) => {

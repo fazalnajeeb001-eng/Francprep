@@ -227,7 +227,7 @@ Respond STRICTLY with a raw JSON object:
     }
   }
 
-  async analyzeSpeaking(transcription: string, expectedText: string, lessonTitle?: string): Promise<SpeakingResult> {
+  async analyzeSpeaking(transcription: string, expectedText: string, lessonTitle?: string, targetLanguage = 'French'): Promise<SpeakingResult> {
     const apiKey = await this.getOpenRouterKey();
     if (!apiKey) {
       return {
@@ -241,27 +241,27 @@ Respond STRICTLY with a raw JSON object:
       };
     }
 
-    const prompt = `You are a French pronunciation and oral production evaluator. Evaluate the student's transcribed spoken audio against target expectations.
+    const prompt = `You are a native ${targetLanguage} pronunciation and oral production evaluator. Evaluate the student's transcribed spoken audio against target expectations in ${targetLanguage}.
 
-Topic / Activity: "${lessonTitle || 'French Oral Production'}"
+Topic / Activity: "${lessonTitle || `${targetLanguage} Oral Production`}"
 Expected Target Text: "${expectedText}"
 Transcribed Student Speech: "${transcription}"
 
-Evaluate oral fluency, pronunciation accuracy, and grammatical correctness. Respond with JSON:
+Evaluate oral fluency, pronunciation accuracy, and grammatical correctness in ${targetLanguage}. Respond with JSON:
 {
   "score": 85,
   "accuracy": 88,
   "fluency": 82,
-  "feedback": "Clear pronunciation with minor hesitation on nasal vowels.",
+  "feedback": "Clear pronunciation and natural cadence.",
   "corrections": ["Target phrase correction"],
-  "tips": ["Practice liaison in 'un_appartement'."]
+  "tips": ["Practice stress and intonation."]
 }`;
 
     try {
       const content = await generateAICompletion({
         model: 'gpt-4o-mini',
         prompt,
-        systemPrompt: 'You are a French speech evaluation expert.',
+        systemPrompt: `You are a certified ${targetLanguage} speech evaluation expert.`,
         temperature: 0.2,
         maxTokens: 400,
       });
@@ -292,12 +292,12 @@ Evaluate oral fluency, pronunciation accuracy, and grammatical correctness. Resp
     };
   }
 
-  async chatWithTutor(messages: any[], lessonLevel = 'A1', lessonTopic = 'French Conversation'): Promise<SpeakingChatResult> {
+  async chatWithTutor(messages: any[], lessonLevel = 'A1', lessonTopic = 'Conversation', targetLanguage = 'French'): Promise<SpeakingChatResult> {
     const apiKey = await this.getOpenRouterKey();
     const systemMessage = {
       role: 'system',
-      content: `You are Coach Léo / Chloé, FrancPrep's friendly, supportive native French AI Tutor conducting an interactive oral practice drill for a ${lessonLevel} student on the topic "${lessonTopic}".
-Keep your French responses natural, conversational, level-appropriate for ${lessonLevel}, and concise (1-3 sentences max). Include a brief English translation in parentheses if helpful. Encourage the student to respond in French.`,
+      content: `You are an encouraging, supportive native ${targetLanguage} AI Tutor conducting an interactive oral practice drill for a ${lessonLevel} student on the topic "${lessonTopic}".
+Keep your ${targetLanguage} responses natural, conversational, level-appropriate for ${lessonLevel}, and concise (1-3 sentences max). Include a brief English translation in parentheses if helpful. Encourage the student to respond in ${targetLanguage}.`,
     };
 
     const conversationPrompt = messages.map((m: any) => `${m.role === 'user' ? 'Student' : 'Tutor'}: ${m.content}`).join('\n');

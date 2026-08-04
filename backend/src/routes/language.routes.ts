@@ -23,7 +23,20 @@ router.get('/', async (_req: Request, res: Response) => {
       languages = [defaultFr];
     }
 
-    res.json({ success: true, data: languages });
+    // Deduplicate languages by normalized code (e.g. ger → de, fre → fr)
+    const uniqueMap = new Map<string, any>();
+    for (const lang of languages) {
+      let normCode = (lang.code || '').toLowerCase().trim();
+      if (normCode === 'ger') normCode = 'de';
+      if (normCode === 'fre') normCode = 'fr';
+      if (normCode === 'spa') normCode = 'es';
+      if (!uniqueMap.has(normCode)) {
+        uniqueMap.set(normCode, lang);
+      }
+    }
+    const cleanLanguages = Array.from(uniqueMap.values());
+
+    res.json({ success: true, data: cleanLanguages });
   } catch (err: any) {
     res.status(500).json({ success: false, error: 'Failed to fetch languages', message: err.message });
   }

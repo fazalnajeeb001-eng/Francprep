@@ -64,10 +64,33 @@ function DraftsSubSectionPage() {
   const [actionStatus, setActionStatus] = useState({ loading: false, error: "", success: "" });
   const [isSelectMode, setIsSelectMode] = useState(false);
 
+  const [selectedLang, setSelectedLang] = useState(() => {
+    return typeof window !== "undefined" ? localStorage.getItem("fp_admin_lang") || "fr" : "fr";
+  });
+  const [availableLanguages, setAvailableLanguages] = useState<any[]>([
+    { code: 'fr', name: 'French', flag: '🇫🇷' },
+    { code: 'es', name: 'Spanish', flag: '🇪🇸' },
+    { code: 'de', name: 'German', flag: '🇩🇪' }
+  ]);
+
+  useEffect(() => {
+    apiFetch("/languages")
+      .then(r => r.json())
+      .then(res => {
+        if (res.data && Array.isArray(res.data)) setAvailableLanguages(res.data);
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleLangChange = (code: string) => {
+    setSelectedLang(code);
+    if (typeof window !== "undefined") localStorage.setItem("fp_admin_lang", code);
+  };
+
   const fetchDrafts = async () => {
     setLoading(true);
     try {
-      const res = await apiFetch("/admin/content-pipeline/drafts?limit=1000");
+      const res = await apiFetch(`/admin/content-pipeline/drafts?language=${selectedLang}&limit=1000`);
       const json = await res.json();
       if (json.success) {
         setDrafts(json.data || []);
@@ -80,7 +103,7 @@ function DraftsSubSectionPage() {
 
   useEffect(() => {
     fetchDrafts();
-  }, []);
+  }, [selectedLang]);
 
   // Group active staged drafts by lessonId
   const stagedDrafts = useMemo(() => {
@@ -414,8 +437,9 @@ function DraftsSubSectionPage() {
           </div>
         </motion.div>
 
-        {/* ─── MODULE LEVEL FILTER TABS ─── */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        {/* ─── MODULE LEVEL & TARGET LANGUAGE FILTER TABS ─── */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-1">
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
           {MODULE_LEVELS.map((lvl) => {
             const count = levelCounts[lvl] || 0;
             const isSelected = selectedModule === lvl;
@@ -441,6 +465,22 @@ function DraftsSubSectionPage() {
               </button>
             );
           })}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-purple-400">Target Language:</span>
+            <select
+              value={selectedLang}
+              onChange={(e) => handleLangChange(e.target.value)}
+              className="px-3 py-1.5 rounded-xl border border-purple-500/40 bg-[#101828] text-purple-300 text-xs font-bold outline-none cursor-pointer hover:border-purple-400"
+            >
+              {availableLanguages.map((l) => (
+                <option key={l.code} value={l.code} className="bg-[#101828] text-white">
+                  {l.flag || '🌐'} {l.name} ({l.code.toUpperCase()})
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {actionStatus.success && (
