@@ -18,7 +18,7 @@ import {
   Loader2
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
-import { speak } from "~/lib/speech";
+import { speak, speakDialogue } from "~/lib/speech";
 import { OFFICIAL_DELF_DALF_PAPERS, type DELFExamPaper } from "~/lib/delfExamSchema";
 import { apiFetch } from "~/lib/apiFetch";
 
@@ -55,7 +55,11 @@ export function DELFExamCanvasPage() {
 
   const handleAudioPlay = (text?: string) => {
     if (!text) return;
-    speak(text, 'fr-FR', 0.85, 'female');
+    if (text.includes(':') || text.includes('—')) {
+      speakDialogue(text, 'fr-FR', 0.85);
+    } else {
+      speak(text, 'fr-FR', 0.85, 'female');
+    }
   };
 
   const handleToggleRecording = () => {

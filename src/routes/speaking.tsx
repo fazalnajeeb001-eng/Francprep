@@ -47,6 +47,13 @@ declare global {
 function SpeakingPage() {
   const { dark } = useTheme();
   const { user, isAuthenticated, isLoading } = useAuth();
+  
+  const [cardPhrases, setCardPhrases] = useState<{ french: string; english: string; lesson: number }[]>([]);
+  const [current, setCurrent] = useState(0);
+  const [isListening, setIsListening] = useState(false);
+  const [transcript, setTranscript] = useState("");
+  const [result, setResult] = useState<"correct" | "incorrect" | null>(null);
+  const [recognition, setRecognition] = useState<any>(null);
 
   if (isLoading) {
     return (
@@ -60,13 +67,6 @@ function SpeakingPage() {
   if (!isAuthenticated || !user) {
     return <Navigate to="/login" search={{ redirect: "/speaking" }} replace />;
   }
-
-  const [cardPhrases, setCardPhrases] = useState<{ french: string; english: string; lesson: number }[]>([]);
-  const [current, setCurrent] = useState(0);
-  const [isListening, setIsListening] = useState(false);
-  const [transcript, setTranscript] = useState("");
-  const [result, setResult] = useState<"correct" | "incorrect" | null>(null);
-  const [recognition, setRecognition] = useState<any>(null);
 
   useEffect(() => {
     collectPhrases().then(setCardPhrases);
