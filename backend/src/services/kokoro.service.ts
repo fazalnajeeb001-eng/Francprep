@@ -14,7 +14,7 @@ export interface KokoroAudioResult {
 export async function generateKokoroAudio(
   text: string,
   gender: 'female' | 'male' = 'female',
-  lang: 'fr' | 'en' = 'fr',
+  lang: string = 'fr',
   hfToken?: string,
   customVoice?: string
 ): Promise<KokoroAudioResult | null> {

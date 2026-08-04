@@ -21,8 +21,7 @@ export async function generateNeuralAudio(
 
   let settings: any = null;
   try {
-    const doc = await Settings.findOne();
-    if (doc) settings = doc.toObject ? doc.toObject({ transform: false }) : doc;
+    settings = await Settings.findOne().lean();
   } catch (err) {}
 
   const activeProvider = forcedProvider || settings?.preferredVoiceEngine || settings?.activeTTSProvider || 'auto';

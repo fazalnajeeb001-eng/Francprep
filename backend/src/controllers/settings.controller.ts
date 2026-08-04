@@ -85,12 +85,14 @@ export async function updateSettings(req: Request, res: Response) {
     try {
       const settings = await Settings.findOneAndUpdate({}, { $set: updates }, { new: true, upsert: true });
       if (settings) {
-        const obj: any = settings.toJSON();
+        const obj: any = settings.toObject ? settings.toObject({ transform: false }) : settings;
         for (const k in obj) {
-          if (obj[k]) inMemorySettings[k] = obj[k];
+          if (obj[k] && typeof obj[k] === 'string' && !obj[k].includes('...')) {
+            inMemorySettings[k] = obj[k];
+          }
         }
       }
-      res.json({ success: true, data: inMemorySettings });
+      res.json({ success: true, data: settings.toJSON() });
     } catch {
       res.json({ success: true, data: inMemorySettings });
     }
