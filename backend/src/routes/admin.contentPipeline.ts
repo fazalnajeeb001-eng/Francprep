@@ -536,15 +536,16 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
   }
 });
 
-// Helper function to derive a unique grouping key per lesson
+// Helper function to derive a unique grouping key per lesson and language
 function getDraftGroupKey(d: any): string {
+  const lang = String(d.language || 'fr').toLowerCase().trim();
   const id = d.lessonId || d.parsedData?.lessonId;
-  if (id && String(id).trim()) return String(id).trim().toLowerCase();
+  if (id && String(id).trim()) return `${lang}-${String(id).trim().toLowerCase()}`;
   
   const title = d.title || d.parsedData?.title;
-  if (title && String(title).trim()) return `${d.level || 'A1'}-${String(title).trim()}`.toLowerCase();
+  if (title && String(title).trim()) return `${lang}-${d.level || 'A1'}-${String(title).trim()}`.toLowerCase();
   
-  return String(d._id).toLowerCase();
+  return `${lang}-${String(d._id).toLowerCase()}`;
 }
 
 import { buildLanguageFilter } from '../utils/languageFilter';

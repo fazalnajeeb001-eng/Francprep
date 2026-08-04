@@ -105,16 +105,17 @@ function DraftsSubSectionPage() {
     fetchDrafts();
   }, [selectedLang]);
 
-  // Group active staged drafts by lessonId
+  // Group active staged drafts by lessonId & language
   const stagedDrafts = useMemo(() => {
     return Object.values(
       drafts
         .filter((d) => d.status !== "superseded" && d.status !== "published")
         .reduce((acc, current) => {
+          const lang = (current.language || 'fr').toLowerCase();
           const lessonId = current.lessonId || current.parsedData?.lessonId;
           const key = lessonId && String(lessonId).trim()
-            ? String(lessonId).trim().toLowerCase()
-            : (current.title ? `${current.level || 'A1'}-${current.title}` : current._id).toString().toLowerCase();
+            ? `${lang}-${String(lessonId).trim().toLowerCase()}`
+            : (current.title ? `${lang}-${current.level || 'A1'}-${current.title}` : current._id).toString().toLowerCase();
           const existing = acc[key];
           if (!existing || new Date(current.updatedAt).getTime() > new Date(existing.updatedAt).getTime()) {
             acc[key] = current;
@@ -615,6 +616,9 @@ function DraftsSubSectionPage() {
                         <div className="flex-grow flex justify-between items-start">
                           <div>
                             <div className="flex items-center gap-2">
+                              <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 uppercase">
+                                {(availableLanguages.find(l => l.code === (d.language || 'fr'))?.flag) || '🌐'} {(d.language || 'fr').toUpperCase()}
+                              </span>
                               <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 border border-purple-500/30">
                                 {d.level}
                               </span>

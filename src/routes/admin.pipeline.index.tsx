@@ -4,7 +4,7 @@ import { apiFetch } from "~/lib/apiFetch";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "~/lib/ThemeContext";
 import {
-  ArrowLeft, Layers, CheckCircle2, Trash2,
+  ArrowLeft, Layers, CheckCircle2, Trash2, Globe,
   RefreshCw, Eye, AlertTriangle, CheckCircle, Upload, Sparkles
 } from "lucide-react";
 import { LessonPage } from "~/components/content/LessonPage";
@@ -83,9 +83,14 @@ function PipelineDashboardPage() {
 
   // Multi-Language Management States
   const [availableLanguages, setAvailableLanguages] = useState<any[]>([
-    { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', examName: 'DELF / TCF' }
+    { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', examName: 'DELF / TCF' },
+    { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪', examName: 'Goethe-Zertifikat / TestDaF' },
+    { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸', examName: 'DELE / SIELE' },
+    { code: 'it', name: 'Italian', nativeName: 'Italiano', flag: '🇮🇹', examName: 'CILS / CELI' }
   ]);
-  const [selectedLangCode, setSelectedLangCode] = useState("fr");
+  const [selectedLangCode, setSelectedLangCode] = useState(() => {
+    return typeof window !== "undefined" ? localStorage.getItem("fp_admin_lang") || "fr" : "fr";
+  });
   const [showAddLangModal, setShowAddLangModal] = useState(false);
   const [newLangForm, setNewLangForm] = useState({
     code: "",
@@ -443,10 +448,11 @@ function PipelineDashboardPage() {
     drafts
       .filter(d => (d.status === 'draft' || d.status === 'validated' || d.status === 'review') && d.origin !== 'ai_generator')
       .reduce((acc, current) => {
+        const lang = (current.language || 'fr').toLowerCase();
         const lessonId = current.lessonId || current.parsedData?.lessonId;
         const key = lessonId && String(lessonId).trim()
-          ? String(lessonId).trim().toLowerCase()
-          : (current.title ? `${current.level || 'A1'}-${current.title}` : current._id).toString().toLowerCase();
+          ? `${lang}-${String(lessonId).trim().toLowerCase()}`
+          : (current.title ? `${lang}-${current.level || 'A1'}-${current.title}` : current._id).toString().toLowerCase();
         const existing = acc[key];
         if (!existing || new Date(current.updatedAt).getTime() > new Date(existing.updatedAt).getTime()) {
           acc[key] = current;
@@ -595,6 +601,49 @@ function PipelineDashboardPage() {
             <AlertTriangle className="w-4 h-4" /> {actionStatus.error}
           </div>
         )}
+
+        {/* Global Track Language Selector Ribbon */}
+        <div className={`p-3.5 rounded-2xl border flex flex-wrap items-center justify-between gap-3 ${dark ? "bg-[#101828]/90 border-[#1e2a4a]" : "bg-white border-slate-200 shadow-sm"}`}>
+          <div className="flex items-center gap-2">
+            <Globe className="w-4 h-4 text-purple-400" />
+            <span className="text-xs font-bold text-white dark:text-white text-slate-800">Active Curriculum Track:</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {availableLanguages.map((l) => {
+              const isSelected = selectedLangCode === l.code;
+              return (
+                <button
+                  key={l.code}
+                  type="button"
+                  onClick={() => {
+                    setSelectedLangCode(l.code);
+                    if (typeof window !== "undefined") {
+                      localStorage.setItem("fp_admin_lang", l.code);
+                    }
+                  }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 cursor-pointer ${
+                    isSelected
+                      ? "bg-purple-600 text-white border-purple-500 shadow-md shadow-purple-500/25 ring-2 ring-purple-500/40"
+                      : dark
+                      ? "bg-[#070B17] text-gray-300 border-[#1e2a4a] hover:border-purple-500/40 hover:bg-white/5"
+                      : "bg-slate-100 text-slate-700 border-slate-200 hover:border-purple-400 hover:bg-slate-200"
+                  }`}
+                >
+                  <span>{l.flag || '🌐'}</span>
+                  <span>{l.name}</span>
+                  <span className="text-[10px] opacity-75 font-mono">({l.code.toUpperCase()})</span>
+                </button>
+              );
+            })}
+            <button
+              type="button"
+              onClick={() => setShowAddLangModal(true)}
+              className="px-2.5 py-1.5 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+            >
+              <span>➕ Register Language</span>
+            </button>
+          </div>
+        </div>
 
         {/* Tabs Bar */}
         <div className="flex border-b border-[#1e2a4a] gap-4 sm:gap-6 text-xs sm:text-sm overflow-x-auto scrollbar-hide flex-nowrap whitespace-nowrap pb-1">
@@ -873,9 +922,13 @@ function PipelineDashboardPage() {
                                 )}
                                 <div>
                                   <div className="flex items-center gap-2">
+                                    <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 uppercase">
+                                      {(availableLanguages.find(l => l.code === (d.language || 'fr'))?.flag) || '🌐'} {(d.language || 'fr').toUpperCase()}
+                                    </span>
                                     <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400">{d.level}</span>
                                     <span className="text-[10px] font-mono text-gray-400">{d.lessonId}</span>
                                     {lessonNum && <span className="text-[10px] font-bold text-gray-500">L{lessonNum}</span>}
+                                    {d.version > 1 && <span className="text-[9px] font-bold px-1 py-0.2 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">v{d.version}</span>}
                                   </div>
                                   <h4 className="text-xs font-bold text-white mt-1.5">{d.title}</h4>
                                 </div>
