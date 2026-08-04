@@ -1558,15 +1558,16 @@ Proofread and repair the following lesson JSON:
 2. Vocabulary Table: ${needsVocabFix ? `Generate 4 to 6 authentic CEFR ${lessonDoc.level} ${langName} vocabulary items. Format: [{"french": "...", "english": "...", "pronunciation": "...", "example": "..."}]` : 'Keep existing vocabulary table intact.'}
 3. Exercise Integrity: ${needsOptionsFix ? 'Ensure all multiple-choice questions have 4 plausible selectable options.' : 'Keep existing exercises intact.'}
 
-Lesson Title: "${canonical.title}"
-Objectives: "${(canonical.objectives || []).join(', ')}"
-Grammar Focus: "${canonical.grammarFocus || ''}"
-Vocabulary Focus: "${canonical.vocabularyFocus || ''}"
+Lesson Payload Snippet:
+${JSON.stringify({
+  title: canonical.title,
+  objectives: canonical.objectives,
+  grammarFocus: canonical.grammarFocus,
+  vocabularyFocus: canonical.vocabularyFocus,
+  vocabItems: canonical.vocabItems || canonical.vocabulary,
+}, null, 2)}
 
-Respond ONLY with valid JSON of the fixed/repaired lesson properties to merge:
-{
-  ${needsVocabFix ? '"vocabulary": [{"french": "...", "english": "...", "pronunciation": "...", "example": "..."}]' : ''}
-}
+Respond ONLY with valid JSON containing the repaired/fixed lesson properties to merge.
 `;
 
           const aiReply = await generateAICompletion({
@@ -1579,8 +1580,14 @@ Respond ONLY with valid JSON of the fixed/repaired lesson properties to merge:
           const cleanJson = aiReply.replace(/```json/g, '').replace(/```/g, '').trim();
           const parsedFix = JSON.parse(cleanJson);
 
-          if (needsVocabFix && parsedFix.vocabulary?.length) {
+          if (parsedFix.vocabulary && Array.isArray(parsedFix.vocabulary) && parsedFix.vocabulary.length > 0) {
             canonical.vocabulary = parsedFix.vocabulary;
+            canonical.vocabItems = parsedFix.vocabulary;
+            modified = true;
+          }
+          if (parsedFix.vocabItems && Array.isArray(parsedFix.vocabItems) && parsedFix.vocabItems.length > 0) {
+            canonical.vocabItems = parsedFix.vocabItems;
+            canonical.vocabulary = parsedFix.vocabItems;
             modified = true;
           }
         } catch (aiErr) {
