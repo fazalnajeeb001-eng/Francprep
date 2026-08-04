@@ -16,7 +16,7 @@ import { ExamCard } from "~/components/dashboard/widgets/ExamCard";
 import { WeakAreas } from "~/components/dashboard/widgets/WeakAreas";
 import { WeeklyGoal } from "~/components/dashboard/widgets/WeeklyGoal";
 import { fireConfetti } from "~/components/dashboard/utils/confetti";
-import { getGreeting, getGoal, GOAL_OPTIONS, setGoal as saveGoalToStorage, type LearningGoal } from "~/components/dashboard/utils/userPrefs";
+import { getGreeting, getGoal, getGoalOptionsForLanguage, setGoal as saveGoalToStorage, type LearningGoal } from "~/components/dashboard/utils/userPrefs";
 import { Flame, Diamond, Timer, Compass } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { DashboardData } from "~/components/dashboard/types";
@@ -24,6 +24,8 @@ import type { DashboardData } from "~/components/dashboard/types";
 export const Route = createFileRoute("/dashboard")({ component: DashboardPage });
 
 function GoalModal({ dark, onClose }: { dark: boolean; onClose: (goal: LearningGoal) => void }) {
+  const activeLang = (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : "fr") || "fr";
+  const goalOptions = getGoalOptionsForLanguage(activeLang);
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
@@ -32,10 +34,10 @@ function GoalModal({ dark, onClose }: { dark: boolean; onClose: (goal: LearningG
         <h2 className={`text-lg font-bold mb-1 ${dark ? "text-white" : "text-gray-900"}`}>Set Your Learning Goal</h2>
         <p className={`text-xs mb-5 ${dark ? "text-gray-400" : "text-gray-500"}`}>Optional — you can change this later in Settings.</p>
         <div className="grid grid-cols-2 gap-2">
-          {GOAL_OPTIONS.map((opt) => (
+          {goalOptions.map((opt) => (
             <button key={opt.value} onClick={() => onClose(opt.value)}
-              className={`flex items-center gap-2 p-3 rounded-xl text-left transition-all ${dark ? "bg-[#070B17] border border-[#1e2a4a] hover:border-purple-500/50 text-gray-300" : "bg-gray-50 border border-gray-200 hover:border-purple-300 text-gray-700"}`}>
-              <span className="text-lg">{opt.emoji}</span>
+              className={`flex items-center gap-2 p-3 rounded-xl text-left transition-all cursor-pointer ${dark ? "bg-[#070B17] border border-[#1e2a4a] hover:border-purple-500/50 text-gray-300" : "bg-gray-50 border border-gray-200 hover:border-purple-300 text-gray-700"}`}>
+              <span className="text-lg">{opt.emoji || "🎯"}</span>
               <span className="text-xs font-semibold">{opt.label}</span>
             </button>
           ))}
@@ -72,7 +74,10 @@ function DashboardPage() {
                 saveGoalToStorage(json.data.user.learningGoal as LearningGoal);
               }
             }
-            if (!json.data.user.onboardingComplete) setShowGoalModal(true);
+            if (!json.data.user.onboardingComplete) {
+              window.location.href = "/onboarding";
+              return;
+            }
             if (json.data.overallProgress >= 100 || (json.data.lessonsCompleted.completed >= json.data.lessonsCompleted.total && json.data.lessonsCompleted.total > 0)) {
             setTimeout(() => fireConfetti(), 600);
           }

@@ -279,7 +279,10 @@ export function OnboardingPage() {
   }
   const [step, setStep] = useState<"language" | "goal" | "pace" | "choice" | "test" | "result">("language");
   const [availableLanguages, setAvailableLanguages] = useState<any[]>([
-    { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', examName: 'DELF / TCF' }
+    { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', examName: 'DELF / TCF' },
+    { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪', examName: 'Goethe / TestDaF' },
+    { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸', examName: 'DELE / SIELE' },
+    { code: 'it', name: 'Italian', nativeName: 'Italiano', flag: '🇮🇹', examName: 'CILS / CELI' }
   ]);
   const [selectedLang, setSelectedLang] = useState<string>("fr");
 
@@ -289,7 +292,6 @@ export function OnboardingPage() {
       .then((res) => {
         if (res.data && Array.isArray(res.data) && res.data.length > 0) {
           setAvailableLanguages(res.data);
-          setSelectedLang(res.data[0].code);
         }
       })
       .catch(() => {});
