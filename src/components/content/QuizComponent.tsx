@@ -94,12 +94,13 @@ export function checkAnswerSymmetric(
 }
 
 // ─── MATCHING QUESTION COMPONENT (HTML5 Drag & Drop + Click to Pair) ───
-function MatchingQuestion({ q, qId, dark, submitted, setAnswer }: {
+function MatchingQuestion({ q, qId, dark, submitted, setAnswer, userAnswer }: {
   q: Question;
   qId: string;
   dark: boolean;
   submitted: boolean;
   setAnswer: (id: string, answer: string | string[]) => void;
+  userAnswer?: string | string[];
 }) {
   const pairs: Record<string, string> = useMemo(() => {
     if (!q.pairs) return {};
@@ -145,6 +146,13 @@ function MatchingQuestion({ q, qId, dark, submitted, setAnswer }: {
   const [draggedRightIdx, setDraggedRightIdx] = useState<number | null>(null);
   const [dragOverLeftIdx, setDragOverLeftIdx] = useState<number | null>(null);
   const [showKey, setShowKey] = useState(false);
+
+  useEffect(() => {
+    if (!userAnswer || userAnswer === '' || userAnswer === '{}') {
+      setMatches({});
+      setSelectedLeft(null);
+    }
+  }, [userAnswer]);
 
   const matchedLeftIndices = new Set(Object.keys(matches).map(Number));
   const matchedRightIndices = new Set(Object.values(matches));
@@ -588,6 +596,7 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
             const promptText = targetQ.prompt || targetQ.question || (targetQ as any).text || qText || '';
             const expectedStr = expectedAnswerRaw ? (Array.isArray(expectedAnswerRaw) ? expectedAnswerRaw.join(' / ') : String(expectedAnswerRaw)) : '';
 
+            const activeLang = typeof localStorage !== 'undefined' ? localStorage.getItem("fp_active_language") || 'fr' : 'fr';
             const apiRes = await apiFetch('/writing/grammar-check', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -595,7 +604,8 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
                 prompt: promptText,
                 answer: val,
                 expectedAnswer: expectedStr,
-                lessonTitle: targetQ.category || _type || 'French Lesson Drill',
+                lessonTitle: targetQ.category || _type || 'Lesson Drill',
+                targetLanguage: activeLang,
               }),
             });
             const json = await apiRes.json();
@@ -865,7 +875,7 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
 
   // ─── RENDER: MATCHING (click-to-match from LessonPlayer) ───
   const renderMatching = (q: Question, qId: string) => (
-    <MatchingQuestion q={q} qId={qId} dark={dark} submitted={submitted} setAnswer={setAnswer} />
+    <MatchingQuestion q={q} qId={qId} dark={dark} submitted={submitted} setAnswer={setAnswer} userAnswer={userAnswer} />
   );
 
   // ─── RENDER: ORDERING ───
@@ -1308,6 +1318,7 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
                   setQuestionResults({});
                   setRevealedAnswers({});
                   setCheckingQuestion({});
+                  onAnswersChange?.({});
                 }}
                 className={`px-5 py-2.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer shadow-md ${
                   dark ? "border-[#1e2a4a] text-gray-200 hover:bg-white/10" : "border-slate-300 text-slate-700 hover:bg-slate-100"

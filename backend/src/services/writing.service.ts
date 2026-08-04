@@ -66,44 +66,45 @@ export class WritingService {
       };
     }
 
-    const prompt = `You are a certified senior official examiner for ${examName} exams evaluating ${targetLanguage} writing proficiency.
+    const prompt = `You are a certified senior official examiner for ${examName} evaluating ${targetLanguage} writing proficiency.
 You are conducting a strict, diagnostic evaluation of a student's ${targetLanguage} writing response.
 
-CRITICAL EVALUATION RULE 1 - PROMPT ADHERENCE & TASK COMPLETION (50% WEIGHT):
-- Verify if the student directly, accurately, and fully answered ALL specific questions and requirements in the prompt / checklist.
-- IF THE RESPONSE IS OFF-TOPIC, IRRELEVANT, OR FAILS TO ANSWER THE PROMPT QUESTIONS, HEAVILY PENALIZE THE TASK COMPLETION SCORE (0-35 OUT OF 100).
-- Official ${examName} exams award 0 points for Task Completion if the candidate strays off-topic.
+CRITICAL EVALUATION RULE 1 - PROMPT ADHERENCE & RELEVANCE (50% WEIGHT):
+- Verify whether the student directly, accurately, and fully answers the specific topic, questions, and requirements in the prompt / checklist.
+- IF THE RESPONSE IS OFF-TOPIC, RANDOM TEXT (e.g. "asdf", "hello"), OR FAILS TO ANSWER THE PROMPT QUESTIONS, HEAVILY PENALIZE THE TASK COMPLETION SCORE (0-20 OUT OF 100).
+- Official ${examName} exams award 0 points for Task Completion if the candidate strays off-topic or submits irrelevant text.
 
-CRITICAL EVALUATION RULE 2 - CANADIAN NCLC & CEFR LEVEL MAPPING:
-- Map score to Canadian NCLC (NCLC 4 to NCLC 10+) and CEFR (A1, A2, B1, B2, C1, C2).
-- Example: 85-100% -> NCLC 8-9 (B2/C1), 70-84% -> NCLC 7 (B2), 55-69% -> NCLC 5-6 (B1), <55% -> NCLC 4 (A2).
+CRITICAL EVALUATION RULE 2 - CEFR LEVEL ACCURACY (50% WEIGHT):
+- Evaluate the language grammar, vocabulary depth, sentence complexity, and register against CEFR standards (A1, A2, B1, B2, C1, C2) for ${targetLanguage}.
+- Map score to CEFR level (A1, A2, B1, B2, C1, C2) and NCLC (NCLC 4 to NCLC 10+ for French/Canada, or equivalent CEFR band).
+- Example: 85-100% -> B2/C1 (NCLC 8-9), 70-84% -> B2 (NCLC 7), 55-69% -> B1 (NCLC 5-6), <55% -> A1/A2.
 
 Context / Task Prompt:
-Task / Topic: "${lessonTitle || 'French Writing Examination'}"
+Task / Topic: "${lessonTitle || `${targetLanguage} Writing Examination`}"
 ${expectedAnswer ? `Task Prompt & Model Expectations:\n"""\n${expectedAnswer}\n"""` : ''}
 ${checklist && checklist.length > 0 ? `Required Checklist Elements:\n${checklist.map((item, i) => `${i + 1}. ${item}`).join('\n')}` : ''}
 
-Student's Typed Writing Submission:
+Student's Typed Writing Submission (${targetLanguage}):
 """
 ${text}
 """
 
-Evaluate strictly according to official TCF/TEF/DELF examiner criteria. Respond ONLY with a valid JSON object:
+Evaluate strictly according to official ${examName} examiner criteria for ${targetLanguage}. Respond ONLY with a valid JSON object:
 {
   "score": 82,
-  "nclcGrade": "NCLC 7 (B2 Vantage)",
+  "nclcGrade": "CEFR B2 / NCLC 7",
   "cefrLevel": "B2",
   "taskCompletionScore": 85,
   "grammarScore": 80,
   "vocabularyScore": 82,
   "cohesionScore": 80,
-  "feedback": "2-3 sentence precise examiner diagnostic summary highlighting strengths and primary area for gain.",
+  "feedback": "2-3 sentence precise examiner diagnostic summary highlighting strengths and primary area for improvement.",
   "corrections": [
-    { "original": "je suis habiter", "corrected": "j'habite", "explanation": "Use present tense 'j'habite' instead of auxiliary verb combination." }
+    { "original": "student error text", "corrected": "corrected text", "explanation": "Grammatical or lexical explanation in English." }
   ],
   "tips": [
-    "Use logical connectors like 'en effet' and 'par conséquent' to boost cohesion scores.",
-    "Ensure all bullet points from the prompt are answered directly in the first paragraph."
+    "Actionable tip 1 to raise CEFR score.",
+    "Actionable tip 2 for task adherence."
   ]
 }`;
 
@@ -111,7 +112,7 @@ Evaluate strictly according to official TCF/TEF/DELF examiner criteria. Respond 
       const content = await generateAICompletion({
         model: 'gpt-4o-mini',
         prompt,
-        systemPrompt: "You are an official TCF/TEF/DELF examiner providing strict, diagnostic feedback.",
+        systemPrompt: `You are an official ${examName} examiner for ${targetLanguage} providing strict, diagnostic CEFR feedback.`,
         temperature: 0.2,
         maxTokens: 1000,
       });
@@ -121,12 +122,12 @@ Evaluate strictly according to official TCF/TEF/DELF examiner criteria. Respond 
         const parsed = JSON.parse(jsonMatch[0]);
         return {
           score: typeof parsed.score === 'number' ? parsed.score : 75,
-          nclcGrade: parsed.nclcGrade || 'NCLC 7 (B2 Vantage)',
+          nclcGrade: parsed.nclcGrade || `CEFR ${parsed.cefrLevel || 'B2'}`,
           cefrLevel: parsed.cefrLevel || 'B2',
-          taskCompletionScore: parsed.taskCompletionScore || parsed.score || 75,
-          grammarScore: parsed.grammarScore || 75,
-          vocabularyScore: parsed.vocabularyScore || 75,
-          cohesionScore: parsed.cohesionScore || 75,
+          taskCompletionScore: typeof parsed.taskCompletionScore === 'number' ? parsed.taskCompletionScore : (parsed.score || 75),
+          grammarScore: typeof parsed.grammarScore === 'number' ? parsed.grammarScore : 75,
+          vocabularyScore: typeof parsed.vocabularyScore === 'number' ? parsed.vocabularyScore : 75,
+          cohesionScore: typeof parsed.cohesionScore === 'number' ? parsed.cohesionScore : 75,
           feedback: parsed.feedback || 'Good effort on this writing task.',
           corrections: Array.isArray(parsed.corrections) ? parsed.corrections : [],
           tips: Array.isArray(parsed.tips) ? parsed.tips : [],
@@ -135,7 +136,7 @@ Evaluate strictly according to official TCF/TEF/DELF examiner criteria. Respond 
 
       return {
         score: 70,
-        nclcGrade: 'NCLC 6 (B1 Threshold)',
+        nclcGrade: 'CEFR B1 / NCLC 6',
         cefrLevel: 'B1',
         taskCompletionScore: 70,
         grammarScore: 70,
@@ -162,7 +163,7 @@ Evaluate strictly according to official TCF/TEF/DELF examiner criteria. Respond 
     }
   }
 
-  async checkGrammar(prompt: string, answer: string, expectedAnswer?: string, lessonTitle?: string): Promise<GrammarCheckResult> {
+  async checkGrammar(prompt: string, answer: string, expectedAnswer?: string, lessonTitle?: string, targetLanguage = 'French'): Promise<GrammarCheckResult> {
     const apiKey = await this.getOpenRouterKey();
     const normalize = (s: string) => String(s).trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").replace(/\s+/g, " ");
     const userStr = normalize(answer);
@@ -186,22 +187,24 @@ Evaluate strictly according to official TCF/TEF/DELF examiner criteria. Respond 
       };
     }
 
-    const llmPrompt = `You are FrancPrep's expert AI French Tutor, evaluating a student's typed answer to a practice drill.
+    const llmPrompt = `You are FrancPrep's expert AI ${targetLanguage} Tutor, evaluating a student's typed answer to a practice drill.
 
 Exercise Context:
-- Lesson Level & Topic: "${lessonTitle || 'French Grammar & Vocabulary Drill'}"
+- Target Language: ${targetLanguage}
+- Lesson Level & Topic: "${lessonTitle || `${targetLanguage} Drill`}"
 - Exercise Prompt: "${prompt}"
-- Target Model Answer: "${expectedAnswer && expectedAnswer !== 'N/A' && !expectedAnswer.toLowerCase().includes('open-ended') ? expectedAnswer : 'Evaluate for grammatical accuracy'}"
+- Target Model Answer: "${expectedAnswer && expectedAnswer !== 'N/A' && !expectedAnswer.toLowerCase().includes('open-ended') ? expectedAnswer : 'Evaluate for accuracy and prompt fit'}"
 - Student's Typed Response: "${answer}"
 
 Pedagogical Evaluation Rules:
-1. ACCURACY & SYNONYMS: Mark "correct": true if the response is accurate or represents a valid, grammatically correct alternative/synonym for this level.
-2. BILINGUAL FLEXIBILITY FOR COMPREHENSION (A1/A2): For reading/listening comprehension questions, accept valid answers in either English or French.
-3. ERROR DIAGNOSIS (TYPOS & SPELLING): If the student's response contains a typo or grammatical error (e.g. typing "qui'l" instead of "qu'il", or wrong article/verb form):
+1. ACCURACY & SYNONYMS: Mark "correct": true if the response is accurate or represents a valid, grammatically correct alternative/synonym in ${targetLanguage} for this level.
+2. PROMPT RELEVANCE & FIT: Check if the answer actually fits the question asked. If the student typed an off-topic sentence, gibberish (e.g. "asdf"), or random words that do not answer the prompt, mark "correct": false and explain that the response does not address the prompt.
+3. BILINGUAL FLEXIBILITY FOR COMPREHENSION: For reading/listening comprehension questions, accept valid answers in either English or ${targetLanguage}.
+4. ERROR DIAGNOSIS: If the student's response contains a typo or grammatical error:
    - Mark "correct": false.
    - Explain the specific error in 1-2 clear, encouraging sentences in English.
-   - Explicitly state the exact correct French model answer.
-4. LEVEL-APPROPRIATE FEEDBACK: Keep your explanation simple, friendly, and tailored to the student's CEFR level.
+   - Explicitly state the exact correct ${targetLanguage} model answer.
+5. LEVEL-APPROPRIATE FEEDBACK: Keep your explanation simple, friendly, and tailored to the student's CEFR level.
 
 Respond STRICTLY with a raw JSON object:
 {"correct": true or false, "feedback": "1-2 sentence clear explanation pointing out any specific error or confirming correctness."}`;
@@ -210,7 +213,7 @@ Respond STRICTLY with a raw JSON object:
       const content = await generateAICompletion({
         model: 'gpt-4o-mini',
         prompt: llmPrompt,
-        systemPrompt: 'You are a warm, encouraging French language tutor evaluating student drill responses.',
+        systemPrompt: `You are a warm, encouraging ${targetLanguage} language tutor evaluating student drill responses.`,
         temperature: 0.1,
         maxTokens: 250,
       });

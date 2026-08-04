@@ -252,6 +252,7 @@ export function WritingSubmission({ onSubmit, lessonTitle, expectedAnswer, check
     setError("");
     setFeedback(null);
     try {
+      const activeLang = typeof localStorage !== 'undefined' ? localStorage.getItem("fp_active_language") || 'fr' : 'fr';
       const res = await apiFetch("/writing/feedback", {
         method: "POST",
         body: JSON.stringify({
@@ -259,6 +260,7 @@ export function WritingSubmission({ onSubmit, lessonTitle, expectedAnswer, check
           lessonTitle,
           expectedAnswer,
           checklist,
+          targetLanguage: activeLang,
         }),
       });
       const json = await res.json();
