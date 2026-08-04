@@ -16,6 +16,7 @@ export interface IDraftDocument extends Document {
   createdBy: string;
   publishedAt?: Date;
   publishedBy?: string;
+  language?: string;
   notes?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -27,6 +28,7 @@ const draftSchema = new Schema<IDraftDocument>(
     chapterId: { type: String },
     level: { type: String },
     title: { type: String },
+    language: { type: String, default: 'fr', index: true },
     content: { type: String, required: true },
     parsedData: { type: Schema.Types.Mixed },
     validationErrors: { type: [String], default: [] },

@@ -500,6 +500,7 @@ router.post('/content-pipeline/import', async (req: AuthRequest, res: Response) 
         chapterId: parsedLesson.chapterId,
         level: parsedLesson.level,
         title: parsedLesson.title,
+        language: manualOverrides?.language || 'fr',
         content: markdown,
         parsedData: parsedLesson,
         validationErrors: errors,
@@ -554,7 +555,15 @@ router.get('/content-pipeline/drafts', async (req: AuthRequest, res: Response) =
     const filter: any = {};
     if (level) filter.level = level;
     if (lessonId) filter.lessonId = lessonId;
-    if (language) filter.language = language;
+    if (language) {
+      const normLang = String(language).toLowerCase().trim();
+      filter.$or = [
+        { language: normLang },
+        { language: { $exists: false } },
+        { language: null },
+        { language: '' }
+      ];
+    }
     if (includeSuperseded !== 'true') {
       filter.status = { $ne: 'superseded' };
     }
