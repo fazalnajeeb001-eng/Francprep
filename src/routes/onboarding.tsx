@@ -251,21 +251,22 @@ const GERMAN_PLACEMENT_QUESTIONS: Question[] = [
   { id: 8, level: "B2", question: "Select the formal Goethe essay connector: '____ der Maßnahme sind viele Ergebnisse erzielt worden.'", options: ["Infolge", "Damit", "Obwohl", "Wenigstens"], correct: 0, explanation: "'Infolge' (as a result of) is a B2 genitive connector for academic writing." }
 ];
 
-const SPANISH_PLACEMENT_QUESTIONS: Question[] = [
-  { id: 1, level: "A1", question: "Choose the correct phrase for: 'Hello, how are you?'", options: ["¡Hola! ¿Cómo estás?", "¡Hasta luego!", "Por favor.", "Buenas noches."], correct: 0, explanation: "'¡Hola! ¿Cómo estás?' is the standard Spanish greeting." },
-  { id: 2, level: "A1", question: "Select the correct verb form: 'Yo ____ 25 años.'", options: ["tengo", "soy", "estoy", "hago"], correct: 0, explanation: "Age in Spanish uses 'tener': 'Tengo 25 años'." },
-  { id: 3, level: "A1", question: "Fill in the blank: 'María ____ en Madrid.'", options: ["vive", "vivir", "vives", "viven"], correct: 0, explanation: "Third-person singular ending for -ir verbs is '-e': 'vive'." },
-  { id: 4, level: "A2", question: "Choose between Ser and Estar: 'Juan ____ muy cansado hoy.'", options: ["está", "es", "fue", "sea"], correct: 0, explanation: "Temporary states like feeling tired use 'estar': 'está cansado'." },
-  { id: 5, level: "A2", question: "Which sentence is in the Preterite tense (completed action)?", options: ["Ayer comí paella.", "Siempre comía paella.", "Voy a comer paella.", "Comeré paella."], correct: 0, explanation: "'Comí' is Pretérito Indefinido for completed past events." },
-  { id: 6, level: "B1", question: "Select the Subjunctive mood form: 'Espero que tú ____ pronto.'", options: ["vengas", "vienes", "viniste", "vendrás"], correct: 0, explanation: "Wishes and hopes ('Espero que') require the Present Subjunctive ('vengas')." },
-  { id: 7, level: "B1", question: "Choose the relative pronoun: 'El libro ____ compré es interesante.'", options: ["que", "donde", "quien", "cuyo"], correct: 0, explanation: "'Que' is the standard direct object relative pronoun." },
-  { id: 8, level: "B2", question: "Select the correct conditional hypothesis: 'Si tuviera dinero, ____ un coche.'", options: ["compraría", "compro", "compraré", "comprara"], correct: 0, explanation: "In imperfect subjunctive hypotheses ('Si tuviera'), the result clause takes Conditional ('compraría')." }
+const ITALIAN_PLACEMENT_QUESTIONS: Question[] = [
+  { id: 1, level: "A1", question: "Choose the correct phrase for: 'Hello, how are you?'", options: ["Buongiorno, come sta?", "Arrivederci!", "Per favore.", "Buonanotte."], correct: 0, explanation: "'Buongiorno, come sta?' is the formal polite Italian greeting." },
+  { id: 2, level: "A1", question: "Select the correct form of 'avere': 'Io ____ 25 anni.'", options: ["ho", "sono", "abito", "faccio"], correct: 0, explanation: "In Italian age is expressed with 'avere': 'Io ho 25 anni'." },
+  { id: 3, level: "A1", question: "Complete with the correct article: '____ studente impara l'italiano.'", options: ["Lo", "Il", "La", "Un'"], correct: 0, explanation: "Masculine nouns starting with 'st' take the article 'Lo'." },
+  { id: 4, level: "A2", question: "Which sentence correctly uses Passato Prossimo with 'essere'?", options: ["È andata a Roma ieri.", "Ha andata a Roma ieri.", "È andato a Roma ieri (per Maria).", "Ha andare a Roma."], correct: 0, explanation: "Verbs of movement like 'andare' take 'essere' and agree in gender: 'È andata'." },
+  { id: 5, level: "A2", question: "Fill in: 'Mentre io ____, il telefono ha squillato.'", options: ["dormivo", "ho dormito", "dormirò", "dormo"], correct: 0, explanation: "Background ongoing action uses Imperfetto ('dormivo') when interrupted." },
+  { id: 6, level: "B1", question: "Select the correct Present Subjunctive (Congiuntivo): 'Spero che tu ____ felice.'", options: ["sia", "sei", "eri", "sarai"], correct: 0, explanation: "Hopes and wishes ('Spero che') require Congiuntivo presente ('sia')." },
+  { id: 7, level: "B1", question: "Choose the relative pronoun: 'La città ____ sono nato è bellissima.'", options: ["in cui", "che", "chi", "cui"], correct: 0, explanation: "'In cui' or 'dove' is used for location ('in which I was born')." },
+  { id: 8, level: "B2", question: "Select the formal CILS essay connector: '____ della situazione, occorre agire tempestivamente.'", options: ["In vista", "Malgrado", "Perché", "Comunque"], correct: 0, explanation: "'In vista di' (in view of) is a B2 formal transition for argumentation." }
 ];
 
 export function getPlacementQuestions(langCode: string = "fr"): Question[] {
-  const code = langCode.toLowerCase().trim();
+  const code = (langCode || "fr").toLowerCase().trim();
   if (code === "de" || code === "ger" || code === "german") return GERMAN_PLACEMENT_QUESTIONS;
   if (code === "es" || code === "spa" || code === "spanish") return SPANISH_PLACEMENT_QUESTIONS;
+  if (code === "it" || code === "ita" || code === "italian") return ITALIAN_PLACEMENT_QUESTIONS;
   return PLACEMENT_QUESTIONS;
 }
 
