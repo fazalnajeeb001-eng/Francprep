@@ -14,32 +14,26 @@ router.get('/', async (req: Request, res: Response) => {
 
     let languages = await Language.find(filter).sort({ order: 1 });
     
-    // Seed default French language if collection has no published language
-    if (languages.length === 0 && !includeUnpublished) {
-      const existingFr = await Language.findOne({ code: 'fr' });
-      if (existingFr) {
-        existingFr.isPublished = true;
-        existingFr.brandName = 'FrancPrep';
-        existingFr.journeyTitle = 'French Journey';
-        await existingFr.save();
-        languages = [existingFr];
-      } else {
-        const defaultFr = await Language.create({
-          code: 'fr',
-          name: 'French',
-          nativeName: 'Français',
-          flag: '🇫🇷',
-          examName: 'DELF / TCF',
-          brandName: 'FrancPrep',
-          journeyTitle: 'French Journey',
-          direction: 'ltr',
-          isActive: true,
-          isPublished: true,
-          order: 1,
-        });
-        languages = [defaultFr];
+    // Seed default published language tracks (French, German, Spanish, Italian) if not present
+    const defaultTracks = [
+      { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', examName: 'DELF / TCF Canada', brandName: 'FrancPrep', journeyTitle: 'French Journey', order: 1 },
+      { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪', examName: 'Goethe / TestDaF', brandName: 'GermanPrep', journeyTitle: 'German Journey', order: 2 },
+      { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸', examName: 'DELE / SIELE', brandName: 'SpanPrep', journeyTitle: 'Spanish Journey', order: 3 },
+      { code: 'it', name: 'Italian', nativeName: 'Italiano', flag: '🇮🇹', examName: 'CILS / CELI', brandName: 'ItalPrep', journeyTitle: 'Italian Journey', order: 4 },
+    ];
+
+    for (const track of defaultTracks) {
+      const existing = await Language.findOne({ code: track.code });
+      if (!existing) {
+        await Language.create({ ...track, direction: 'ltr', isActive: true, isPublished: true });
+      } else if (!existing.isPublished && track.code === 'de') {
+        // Ensure German is published for testing
+        existing.isPublished = true;
+        await existing.save();
       }
     }
+
+    languages = await Language.find(filter).sort({ order: 1 });
 
     // Deduplicate languages by normalized code (e.g. ger → de, fre → fr)
     const uniqueMap = new Map<string, any>();
