@@ -39,10 +39,33 @@ function IntegratedDraftsSubSectionPage() {
   const [mergeLoading, setMergeLoading] = useState(false);
   const [actionStatus, setActionStatus] = useState({ loading: false, error: "", success: "" });
 
+  const [selectedLang, setSelectedLang] = useState(() => {
+    return typeof window !== "undefined" ? localStorage.getItem("fp_admin_lang") || "fr" : "fr";
+  });
+  const [availableLanguages, setAvailableLanguages] = useState<any[]>([
+    { code: 'fr', name: 'French', flag: '🇫🇷' },
+    { code: 'es', name: 'Spanish', flag: '🇪🇸' },
+    { code: 'de', name: 'German', flag: '🇩🇪' }
+  ]);
+
+  useEffect(() => {
+    apiFetch("/languages")
+      .then(r => r.json())
+      .then(res => {
+        if (res.data && Array.isArray(res.data)) setAvailableLanguages(res.data);
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleLangChange = (code: string) => {
+    setSelectedLang(code);
+    if (typeof window !== "undefined") localStorage.setItem("fp_admin_lang", code);
+  };
+
   const fetchDrafts = async () => {
     setLoading(true);
     try {
-      const res = await apiFetch("/admin/content-pipeline/drafts?limit=500");
+      const res = await apiFetch(`/admin/content-pipeline/drafts?language=${selectedLang}&limit=500`);
       const json = await res.json();
       if (json.success) {
         setDrafts(json.data || []);
@@ -55,7 +78,7 @@ function IntegratedDraftsSubSectionPage() {
 
   useEffect(() => {
     fetchDrafts();
-  }, []);
+  }, [selectedLang]);
 
   const integratedDrafts = drafts.filter(
     (d) => d.status !== "superseded" && d.status !== "published" && d.origin === "ai_generator"

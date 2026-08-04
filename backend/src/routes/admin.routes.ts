@@ -246,11 +246,21 @@ router.get('/lessons', async (req: AuthRequest, res: Response, next: NextFunctio
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 20;
     const level = req.query.level as string;
+    const language = req.query.language as string;
     const isPublished = req.query.isPublished as string;
 
     const filter: any = {};
     if (level) filter.level = level;
     if (isPublished !== undefined) filter.isPublished = isPublished === 'true';
+    if (language) {
+      const normLang = String(language).toLowerCase().trim();
+      filter.$or = [
+        { language: normLang },
+        { language: { $exists: false } },
+        { language: null },
+        { language: '' }
+      ];
+    }
 
     const skip = (page - 1) * limit;
 

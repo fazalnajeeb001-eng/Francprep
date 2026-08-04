@@ -44,10 +44,33 @@ function PublishedContentSubSectionPage() {
 
   const [actionStatus, setActionStatus] = useState({ loading: false, error: "", success: "" });
 
+  const [selectedLang, setSelectedLang] = useState(() => {
+    return typeof window !== "undefined" ? localStorage.getItem("fp_admin_lang") || "fr" : "fr";
+  });
+  const [availableLanguages, setAvailableLanguages] = useState<any[]>([
+    { code: 'fr', name: 'French', flag: '🇫🇷' },
+    { code: 'es', name: 'Spanish', flag: '🇪🇸' },
+    { code: 'de', name: 'German', flag: '🇩🇪' }
+  ]);
+
+  useEffect(() => {
+    apiFetch("/languages")
+      .then(r => r.json())
+      .then(res => {
+        if (res.data && Array.isArray(res.data)) setAvailableLanguages(res.data);
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleLangChange = (code: string) => {
+    setSelectedLang(code);
+    if (typeof window !== "undefined") localStorage.setItem("fp_admin_lang", code);
+  };
+
   const fetchPublishedLessons = async () => {
     setLoading(true);
     try {
-      const res = await apiFetch("/lessons?limit=1000");
+      const res = await apiFetch(`/lessons?language=${selectedLang}&limit=1000`);
       const json = await res.json();
       if (json.success) {
         setPublishedLessons(json.data || []);
@@ -60,7 +83,7 @@ function PublishedContentSubSectionPage() {
 
   useEffect(() => {
     fetchPublishedLessons();
-  }, []);
+  }, [selectedLang]);
 
   // Filter lessons by search query AND active module level
   const filteredLessons = useMemo(() => {
