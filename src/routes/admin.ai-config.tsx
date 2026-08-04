@@ -328,8 +328,11 @@ export function AdminAIConfigPage() {
           {/* ─── PROVIDER-SPECIFIC VOICE PICKER ─── */}
           {form.preferredVoiceEngine === "elevenlabs" && (
             <div className="p-4 rounded-xl border border-pink-500/30 bg-pink-500/10 space-y-3">
-              <div className="flex items-center justify-between">
-                <p className="text-xs font-extrabold text-pink-300">🎙️ ElevenLabs Voices (Choose Defaults or Paste Voice ID):</p>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <p className="text-xs font-extrabold text-pink-300">🎙️ ElevenLabs Multilingual v2 Studio Voices (21 High Quality Options):</p>
+                  <p className="text-[10px] text-pink-200/80">Every voice below speaks French, German, Spanish, Italian & English fluently. The backend automatically selects native accent profiles per track!</p>
+                </div>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
@@ -352,22 +355,22 @@ export function AdminAIConfigPage() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                 <div>
-                  <label className="block font-bold mb-1 text-gray-300">Default Female Voice (Coach Chloé / Platform):</label>
+                  <label className="block font-bold mb-1 text-gray-300">Default Female Voice (Coach Chloé / Universal):</label>
                   <select
                     value={form.selectedElevenLabsFemaleVoice}
                     onChange={(e) => setForm({ ...form, selectedElevenLabsFemaleVoice: e.target.value })}
                     className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-pink-500/30" : "bg-white text-slate-900"}`}
                   >
-                    <option value="21m00Tcm4TlvDq8ikWAM">🌸 Rachel (Multilingual Female — Smooth & Calm)</option>
-                    <option value="EXAVITQu4vr4xnSDxMaL">⚡ Bella (Expressive & Vibrant High Pitch)</option>
-                    <option value="pFZP5JQG7iQjIQuC4Bku">🌺 Lily (Warm Melodic Multilingual Reader)</option>
-                    <option value="XrExE9yYZ1WjnnNfvB7n">📚 Matilda (Academic Professional Female)</option>
-                    <option value="cgSgspJ2msm6clMCkdW9">🎙️ Jessica (Playful & Bright Young Female)</option>
-                    <option value="XB0fDUnXU5powctDhC70">🇫🇷 Charlotte (Native Parisian Female)</option>
-                    <option value="FGY2WhA2Pvf7r5V5EKC4">🇪🇸 Laura (Native Spanish Female)</option>
-                    <option value="ThT5KcBeYPX3keUQqHPh">🇩🇪 Sarah (Native German Female)</option>
-                    <option value="LcfcDJNUP1GQjkzn1xUU">🇬🇧 Emily (Native British Female)</option>
-                    <option value="Xb7hH8MSwGQjB69G47wE">🇮🇹 Alice (Native Italian Female)</option>
+                    <option value="XB0fDUnXU5powctDhC70">🇫🇷 Charlotte (Native Parisian — Elegant & Crystal Clear)</option>
+                    <option value="21m00Tcm4TlvDq8ikWAM">🌸 Rachel (Multilingual Premium — Warm & Professional)</option>
+                    <option value="FGY2WhA2Pvf7r5V5EKC4">🇪🇸 Laura (Expressive & Melodic Multilingual)</option>
+                    <option value="ThT5KcBeYPX3keUQqHPh">🇩🇪 Sarah (Articulate & Engaging Multilingual)</option>
+                    <option value="Xb7hH8MSwGQjB69G47wE">🇮🇹 Alice (Smooth & Natural Multilingual)</option>
+                    <option value="EXAVITQu4vr4xnSDxMaL">⚡ Bella (Vibrant & High Energy)</option>
+                    <option value="pFZP5JQG7iQjIQuC4Bku">🌺 Lily (Warm & Soothing Storyteller)</option>
+                    <option value="XrExE9yYZ1WjnnNfvB7n">📚 Matilda (Academic & Educational)</option>
+                    <option value="cgSgspJ2msm6clMCkdW9">🎙️ Jessica (Bright & Youthful)</option>
+                    <option value="LcfcDJNUP1GQjkzn1xUU">🇬🇧 Emily (Polished & Refined British)</option>
                     <option value="custom">✏️ Custom Voice ID (Paste Below)</option>
                   </select>
                   {form.selectedElevenLabsFemaleVoice === "custom" && (
@@ -381,7 +384,7 @@ export function AdminAIConfigPage() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="block font-bold text-gray-300">Default Male Voice (Coach Léo):</label>
+                    <label className="block font-bold text-gray-300">Default Male Voice (Coach Léo / Universal):</label>
                     <button
                       type="button"
                       onClick={() => {
@@ -397,14 +400,17 @@ export function AdminAIConfigPage() {
                     onChange={(e) => setForm({ ...form, selectedElevenLabsMaleVoice: e.target.value })}
                     className={`w-full p-2 rounded-xl border outline-none ${dark ? "bg-[#070B17] text-white border-pink-500/30" : "bg-white text-slate-900"}`}
                   >
-                    <option value="ErXwobaYiN019PkySvjV">🎙️ Antoni (Deep & Articulate Multilingual Male)</option>
-                    <option value="VR6AewLTigWG4xSOukaG">📻 Arnold (Formal Deep Narrator)</option>
-                    <option value="pNInz6obpgDQGcFmaJgB">👔 Adam (Clear Professional Voice)</option>
-                    <option value="JBFqnCBsd6RMkjVDRZzb">🇬🇧 George (Warm Conversational Male)</option>
-                    <option value="IKne3meq5aSn9XLyUdCD">💬 Charlie (Casual Conversational Male)</option>
-                    <option value="txWG4y3H7G4B8P2f6a9R">🇩🇪 Daniel (Native German Male)</option>
-                    <option value="N2lLkkCofhh8hG1yGkC3">🇪🇸 Brian (Native Spanish Male)</option>
-                    <option value="ONwBz21w4p8b7X1s5kL0">🇫🇷 Henri (Native French Male)</option>
+                    <option value="ONwBz21w4p8b7X1s5kL0">🇫🇷 Henri (Native Parisian — Confident & Warm)</option>
+                    <option value="ErXwobaYiN019PkySvjV">🎙️ Antoni (Deep & Resonance Multilingual)</option>
+                    <option value="N2lLkkCofhh8hG1yGkC3">🇪🇸 Brian (Clear & Engaging Multilingual)</option>
+                    <option value="txWG4y3H7G4B8P2f6a9R">🇩🇪 Daniel (Steady & Authoritative Multilingual)</option>
+                    <option value="pNInz6obpgDQGcFmaJgB">👔 Adam (Deep & Professional Coach)</option>
+                    <option value="VR6AewLTigWG4xSOukaG">📻 Arnold (Formal & Academic Narrator)</option>
+                    <option value="JBFqnCBsd6RMkjVDRZzb">🇬🇧 George (Warm & Conversational)</option>
+                    <option value="IKne3meq5aSn9XLyUdCD">💬 Charlie (Casual & Friendly Tutor)</option>
+                    <option value="MF3mGyEYCl7XYWbV9V6O">🎙️ Marcus (Rich Resonant Multilingual)</option>
+                    <option value="piTKgubMksTfvD1fz0GJ">⚡ Liam (Modern Dynamic Voice)</option>
+                    <option value="AZnzlk1XvdvUeBnXmlld">🎓 Michael (Authoritative Exam Proctor)</option>
                     <option value="custom">✏️ Custom Voice ID (Paste Below)</option>
                   </select>
                   {form.selectedElevenLabsMaleVoice === "custom" && (

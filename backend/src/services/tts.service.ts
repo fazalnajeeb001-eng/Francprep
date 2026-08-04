@@ -81,6 +81,7 @@ export async function generateNeuralAudio(
       de: { female: 'ThT5KcBeYPX3keUQqHPh', male: 'txWG4y3H7G4B8P2f6a9R' }, // Sarah & Daniel (Native German)
       es: { female: 'FGY2WhA2Pvf7r5V5EKC4', male: 'N2lLkkCofhh8hG1yGkC3' }, // Laura & Brian (Native Spanish)
       it: { female: 'Xb7hH8MSwGQjB69G47wE', male: 'ErXwobaYiN019PkySvjV' }, // Alice & Antoni (Native Italian)
+      en: { female: '21m00Tcm4TlvDq8ikWAM', male: 'pNInz6obpgDQGcFmaJgB' }, // Rachel & Adam (Native English)
     };
 
     const langCode = lang ? lang.toLowerCase().slice(0, 2) : 'fr';
