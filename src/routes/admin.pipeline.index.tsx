@@ -249,8 +249,8 @@ function PipelineDashboardPage() {
         });
         setImportMarkdown("");
         
-        // Fetch latest drafts and select the newly staged draft
-        const freshRes = await apiFetch("/admin/content-pipeline/drafts");
+        // Fetch latest drafts for selected language and select the newly staged draft
+        const freshRes = await apiFetch(`/admin/content-pipeline/drafts?language=${selectedLangCode}`);
         const freshJson = await freshRes.json();
         if (freshJson.success && freshJson.data) {
           setDrafts(freshJson.data);

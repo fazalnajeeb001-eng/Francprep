@@ -4,7 +4,7 @@ import { apiFetch } from "~/lib/apiFetch";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "~/lib/ThemeContext";
 import {
-  ArrowLeft, Wand2, CheckCircle2, AlertCircle, Trash2,
+  ArrowLeft, Wand2, CheckCircle2, AlertCircle, Trash2, Globe,
   RefreshCw, Eye, AlertTriangle, Database, Search, Sparkles
 } from "lucide-react";
 import { LessonPage } from "~/components/content/LessonPage";
@@ -163,15 +163,35 @@ function IntegratedDraftsSubSectionPage() {
           <Link to="/admin/pipeline" className={`inline-flex items-center gap-1 text-xs ${txtSec} hover:text-purple-400 transition-colors mb-2`}>
             <ArrowLeft className="w-3 h-3" /> Back to Main Pipeline Workspace
           </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
-              <Wand2 className="w-5 h-5" />
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                <Wand2 className="w-5 h-5" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  Integrated Drafts Sub-Section
+                </h1>
+                <p className={`text-sm ${txtSec} mt-0.5`}>AI-generated additions and exercise expansion drafts</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Integrated Drafts Sub-Section
-              </h1>
-              <p className={`text-sm ${txtSec} mt-0.5`}>AI-generated additions and exercise expansion drafts</p>
+
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-purple-500/30 bg-purple-500/10">
+              <Globe className="w-4 h-4 text-purple-400" />
+              <span className="text-xs font-extrabold text-purple-300">Target Track:</span>
+              <select
+                value={selectedLang}
+                onChange={(e) => handleLangChange(e.target.value)}
+                className={`px-2.5 py-1 rounded-lg border text-xs font-bold transition-all outline-none cursor-pointer ${
+                  dark ? "bg-[#101828] border-purple-500/40 text-white" : "bg-white border-purple-300 text-gray-900"
+                }`}
+              >
+                {availableLanguages.map((l) => (
+                  <option key={l.code} value={l.code}>
+                    {l.flag || '🌐'} {l.name || l.code.toUpperCase()} ({l.code.toUpperCase()})
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </motion.div>

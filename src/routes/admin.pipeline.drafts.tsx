@@ -4,7 +4,7 @@ import { apiFetch } from "~/lib/apiFetch";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "~/lib/ThemeContext";
 import {
-  ArrowLeft, FileText, CheckCircle2, AlertCircle, Trash2,
+  ArrowLeft, FileText, CheckCircle2, AlertCircle, Trash2, Globe,
   RefreshCw, Eye, AlertTriangle, CheckCircle, Database, Search, Edit3, CheckSquare, Square, Save, X
 } from "lucide-react";
 import { LessonPage } from "~/components/content/LessonPage";
@@ -109,7 +109,7 @@ function DraftsSubSectionPage() {
   const stagedDrafts = useMemo(() => {
     return Object.values(
       drafts
-        .filter((d) => d.status !== "superseded" && d.status !== "published" && d.origin !== "ai_generator")
+        .filter((d) => d.status !== "superseded" && d.status !== "published")
         .reduce((acc, current) => {
           const lessonId = current.lessonId || current.parsedData?.lessonId;
           const key = lessonId && String(lessonId).trim()
@@ -425,15 +425,35 @@ function DraftsSubSectionPage() {
               </div>
             </div>
 
-            {selectedIds.length > 0 && (
-              <button
-                onClick={handlePromptDeleteSelected}
-                className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-red-600/20 flex items-center gap-2"
-              >
-                <Trash2 className="w-4 h-4" />
-                <span>Delete Selected ({selectedIds.length})</span>
-              </button>
-            )}
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-purple-500/30 bg-purple-500/10">
+                <Globe className="w-4 h-4 text-purple-400" />
+                <span className="text-xs font-extrabold text-purple-300">Target Track:</span>
+                <select
+                  value={selectedLang}
+                  onChange={(e) => handleLangChange(e.target.value)}
+                  className={`px-2.5 py-1 rounded-lg border text-xs font-bold transition-all outline-none cursor-pointer ${
+                    dark ? "bg-[#101828] border-purple-500/40 text-white" : "bg-white border-purple-300 text-gray-900"
+                  }`}
+                >
+                  {availableLanguages.map((l) => (
+                    <option key={l.code} value={l.code}>
+                      {l.flag || '🌐'} {l.name || l.code.toUpperCase()} ({l.code.toUpperCase()})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {selectedIds.length > 0 && (
+                <button
+                  onClick={handlePromptDeleteSelected}
+                  className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-red-600/20 flex items-center gap-2"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>Delete Selected ({selectedIds.length})</span>
+                </button>
+              )}
+            </div>
           </div>
         </motion.div>
 
