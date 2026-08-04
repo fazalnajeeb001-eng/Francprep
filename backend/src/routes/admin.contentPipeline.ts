@@ -806,12 +806,14 @@ router.post('/content-pipeline/drafts/:id/publish', async (req: AuthRequest, res
     }
 
     const orderNum = parseInt((canonical.lessonId.match(/l(\d+)/i) || [])[1], 10) || 1;
+    const targetLanguage = draft.language || canonical.language || (canonical.lessonId?.toLowerCase().startsWith('de') ? 'de' : canonical.lessonId?.toLowerCase().startsWith('es') ? 'es' : canonical.lessonId?.toLowerCase().startsWith('it') ? 'it' : 'fr');
 
     const lessonPayload = {
       lessonId: canonical.lessonId,
       chapterId: resolvedChapterId,
       title: canonical.title,
       level: canonical.level,
+      language: targetLanguage,
       order: orderNum,
       anchorSkill: canonical.anchorSkill || 'grammar',
       durationMinutes: canonical.durationMinutes || 30,
@@ -946,12 +948,14 @@ router.post('/content-pipeline/drafts/publish-bulk', async (req: AuthRequest, re
         }
 
         const orderNum = parseInt((canonical.lessonId.match(/l(\d+)/i) || [])[1], 10) || 1;
+        const targetLanguage = draft.language || canonical.language || (canonical.lessonId?.toLowerCase().startsWith('de') ? 'de' : canonical.lessonId?.toLowerCase().startsWith('es') ? 'es' : canonical.lessonId?.toLowerCase().startsWith('it') ? 'it' : 'fr');
 
         const lessonPayload = {
           lessonId: canonical.lessonId,
           chapterId: resolvedChapterId,
           title: canonical.title,
           level: canonical.level || draft.level || 'A1',
+          language: targetLanguage,
           order: orderNum,
           anchorSkill: canonical.anchorSkill || draft.origin || 'grammar',
           durationMinutes: canonical.durationMinutes || 30,
