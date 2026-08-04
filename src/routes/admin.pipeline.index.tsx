@@ -98,6 +98,7 @@ function PipelineDashboardPage() {
 
   useEffect(() => {
     apiFetch("/languages")
+      .then((r) => r.json())
       .then((res) => {
         if (res.data && Array.isArray(res.data)) {
           setAvailableLanguages(res.data);
@@ -111,16 +112,23 @@ function PipelineDashboardPage() {
     if (!newLangForm.code || !newLangForm.name || !newLangForm.nativeName) return;
     setAddingLang(true);
     try {
-      const res = await apiFetch("/languages", {
+      const response = await apiFetch("/languages", {
         method: "POST",
         body: JSON.stringify(newLangForm)
       });
+      const res = await response.json();
       if (res.success && res.data) {
-        setAvailableLanguages((prev) => [...prev, res.data]);
+        setAvailableLanguages((prev) => {
+          const exists = prev.some(l => l.code === res.data.code);
+          if (exists) return prev.map(l => l.code === res.data.code ? res.data : l);
+          return [...prev, res.data];
+        });
         setSelectedLangCode(res.data.code);
         setShowAddLangModal(false);
         setNewLangForm({ code: "", name: "", nativeName: "", flag: "🌐", examName: "CEFR Assessment" });
         setActionStatus({ loading: false, error: "", success: `Language ${res.data.name} (${res.data.flag}) registered successfully!` });
+      } else {
+        setActionStatus({ loading: false, error: res.error || "Failed to create language", success: "" });
       }
     } catch (err: any) {
       setActionStatus({ loading: false, error: err.message || "Failed to create language", success: "" });
@@ -227,7 +235,7 @@ function PipelineDashboardPage() {
         body: JSON.stringify({
           markdown: importMarkdown,
           format: importFormat,
-          manualOverrides: importOverrides
+          manualOverrides: { ...importOverrides, language: selectedLangCode }
         })
       });
       const json = await res.json();
