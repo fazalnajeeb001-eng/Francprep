@@ -241,25 +241,93 @@ const PLACEMENT_QUESTIONS: Question[] = [
 ];
 
 const GERMAN_PLACEMENT_QUESTIONS: Question[] = [
+  // A1 (1-5)
   { id: 1, level: "A1", question: "Choose the correct greeting for: 'Hello, how are you?'", options: ["Guten Tag, wie geht es Ihnen?", "Auf Wiedersehen!", "Bitte sehr.", "Gute Nacht."], correct: 0, explanation: "'Guten Tag, wie geht es Ihnen?' is the polite formal German greeting." },
   { id: 2, level: "A1", question: "Select the correct form of 'sein': 'Ich ____ 25 Jahre alt.'", options: ["bin", "habe", "wohne", "ist"], correct: 0, explanation: "In German age uses 'sein': 'Ich bin 25 Jahre alt'." },
   { id: 3, level: "A1", question: "Complete with the correct dative article: 'Ich fahre mit ____ Bus.'", options: ["dem", "der", "das", "die"], correct: 0, explanation: "The preposition 'mit' requires the dative case: 'mit dem Bus'." },
-  { id: 4, level: "A2", question: "Which sentence correctly uses Perfekt with 'sein'?", options: ["Er ist nach Berlin gefahren.", "Er hat nach Berlin gefahren.", "Er war nach Berlin fahren.", "Er fährt nach Berlin."], correct: 0, explanation: "Verbs of motion take 'sein' in Perfekt: 'ist gefahren'." },
-  { id: 5, level: "A2", question: "Fill in: 'Wenn das Wetter schön ist, ____ wir im Park.'", options: ["spazieren", "spazierte", "gegangen", "spaziert"], correct: 0, explanation: "In a main clause following a subordinate clause, the verb comes immediately in position 1." },
-  { id: 6, level: "B1", question: "Select the correct Subjunctive II form: 'Wenn ich Zeit hätte, ____ ich kommen.'", options: ["würde", "werde", "wollte", "hatte"], correct: 0, explanation: "'würde + infinitive' forms Konjunktiv II for hypotheses." },
-  { id: 7, level: "B1", question: "Choose the causal connector: 'Er bleibt zu Hause, ____ er krank ist.'", options: ["weil", "dass", "ob", "obwohl"], correct: 0, explanation: "'weil' introduces a causal clause and sends the verb to the end." },
-  { id: 8, level: "B2", question: "Select the formal Goethe essay connector: '____ der Maßnahme sind viele Ergebnisse erzielt worden.'", options: ["Infolge", "Damit", "Obwohl", "Wenigstens"], correct: 0, explanation: "'Infolge' (as a result of) is a B2 genitive connector for academic writing." }
+  { id: 4, level: "A1", question: "Select the accusative masculine article: 'Ich sehe ____ Hund.'", options: ["den", "der", "dem", "des"], correct: 0, explanation: "Direct masculine object in Accusative takes 'den'." },
+  { id: 5, level: "A1", question: "Choose the correct present tense verb form: 'Wir ____ in Berlin.'", options: ["wohnen", "wohnt", "wohne", "wohnst"], correct: 0, explanation: "First-person plural 'Wir' ending is '-en': 'wohnen'." },
+
+  // A2 (6-10)
+  { id: 6, level: "A2", question: "Which sentence correctly uses Perfekt with 'sein'?", options: ["Er ist nach Berlin gefahren.", "Er hat nach Berlin gefahren.", "Er war nach Berlin fahren.", "Er fährt nach Berlin."], correct: 0, explanation: "Verbs of motion take 'sein' in Perfekt: 'ist gefahren'." },
+  { id: 7, level: "A2", question: "Fill in: 'Wenn das Wetter schön ist, ____ wir im Park.'", options: ["spazieren", "spazierte", "gegangen", "spaziert"], correct: 0, explanation: "In a main clause following a subordinate clause, the verb comes immediately in position 1." },
+  { id: 8, level: "A2", question: "Select the correct modal verb: 'Hier ____ man nicht rauchen.'", options: ["darf", "will", "sollte", "möchte"], correct: 0, explanation: "Prohibition uses 'dürfen': 'darf nicht rauchen'." },
+  { id: 9, level: "A2", question: "Choose the correct reflexive pronoun: 'Ich wasche ____ die Hände.'", options: ["mir", "mich", "sich", "dir"], correct: 0, explanation: "When a direct object ('die Hände') is present, the reflexive pronoun is Dative ('mir')." },
+  { id: 10, level: "A2", question: "Which sentence uses the correct two-way preposition?", options: ["Er stellt das Buch auf den Tisch.", "Er stellt das Buch auf dem Tisch.", "Er stellt das Buch an den Tisch.", "Er stellt das Buch in dem Tisch."], correct: 0, explanation: "Action showing movement towards a target takes Accusative ('auf den Tisch')." },
+
+  // B1 (11-15)
+  { id: 11, level: "B1", question: "Select the correct Subjunctive II form: 'Wenn ich Zeit hätte, ____ ich kommen.'", options: ["würde", "werde", "wollte", "hatte"], correct: 0, explanation: "'würde + infinitive' forms Konjunktiv II for hypotheses." },
+  { id: 12, level: "B1", question: "Choose the causal connector: 'Er bleibt zu Hause, ____ er krank ist.'", options: ["weil", "dass", "ob", "obwohl"], correct: 0, explanation: "'weil' introduces a causal clause and sends the verb to the end." },
+  { id: 13, level: "B1", question: "Select the passive voice form: 'Das Haus ____ im Jahre 1990 gebaut.'", options: ["wurde", "wird", "worden", "hat"], correct: 0, explanation: "Präteritum passive uses 'wurde + Partizip II'." },
+  { id: 14, level: "B1", question: "Choose the correct relative pronoun: 'Das ist der Mann, ____ ich geholfen habe.'", options: ["dem", "den", "der", "dessen"], correct: 0, explanation: "The verb 'helfen' governs the Dative case ('dem Mann')." },
+  { id: 15, level: "B1", question: "Select the correct indirect speech form: 'Er sagte, er ____ keine Zeit.'", options: ["habe", "hat", "hätte", "gehabt"], correct: 0, explanation: "Formal reported speech uses Konjunktiv I ('habe')." },
+
+  // B2 (16-20)
+  { id: 16, level: "B2", question: "Select the formal Goethe essay connector: '____ der Maßnahme sind viele Ergebnisse erzielt worden.'", options: ["Infolge", "Damit", "Obwohl", "Wenigstens"], correct: 0, explanation: "'Infolge' (as a result of) is a B2 genitive connector for academic writing." },
+  { id: 17, level: "B2", question: "Choose the two-part connector: 'Er spricht ____ Deutsch, ____ auch Französisch.'", options: ["nicht nur ... sondern", "weder ... noch", "zwar ... aber", "sowohl ... als"], correct: 0, explanation: "'nicht nur ... sondern auch' means 'not only ... but also'." },
+  { id: 18, level: "B2", question: "Identify the correct participle attribute: 'Die ____ Ergebnisse überraschten alle.'", options: ["veröffentlichten", "veröffentlichen", "veröffentlichte", "veröffentlichende"], correct: 0, explanation: "Past participle used as an adjective agreeing in plural declension." },
+  { id: 19, level: "B2", question: "Select the formal TestDaF transition: 'Demgegenüber lässt sich ____, dass die Kosten steigen.'", options: ["argumentieren", "sagen", "reden", "meinen"], correct: 0, explanation: "'Demgegenüber lässt sich argumentieren' is a formal B2 argumentative formula." },
+  { id: 20, level: "B2", question: "Which connector requires a double infinitive at the end?", options: ["..., weil er das Buch hat lesen müssen.", "..., weil er das Buch lesen müssen hat.", "..., weil er hat das Buch lesen müssen.", "..., weil er lesen hat müssen das Buch."], correct: 0, explanation: "In subordinate clauses with modal verbs in Perfekt, 'hat' precedes the double infinitive." }
+];
+
+const SPANISH_PLACEMENT_QUESTIONS: Question[] = [
+  // A1 (1-5)
+  { id: 1, level: "A1", question: "Choose the correct phrase for: 'Hello, how are you?'", options: ["¡Hola! ¿Cómo estás?", "¡Hasta luego!", "Por favor.", "Buenas noches."], correct: 0, explanation: "'¡Hola! ¿Cómo estás?' is the standard Spanish greeting." },
+  { id: 2, level: "A1", question: "Select the correct verb form: 'Yo ____ 25 años.'", options: ["tengo", "soy", "estoy", "hago"], correct: 0, explanation: "Age in Spanish uses 'tener': 'Tengo 25 años'." },
+  { id: 3, level: "A1", question: "Fill in the blank: 'María ____ en Madrid.'", options: ["vive", "vivir", "vives", "viven"], correct: 0, explanation: "Third-person singular ending for -ir verbs is '-e': 'vive'." },
+  { id: 4, level: "A1", question: "Choose the correct article for a masculine noun: '____ libro est á en la mesa.'", options: ["El", "La", "Un'"], correct: 0, explanation: "Masculine singular definite article is 'El'." },
+  { id: 5, level: "A1", question: "Select the present tense form of querer: 'Nosotros ____ aprender español.'", options: ["queremos", "quieren", "quiero", "queréis"], correct: 0, explanation: "First-person plural of querer is 'queremos'." },
+
+  // A2 (6-10)
+  { id: 6, level: "A2", question: "Choose between Ser and Estar: 'Juan ____ muy cansado hoy.'", options: ["está", "es", "fue", "sea"], correct: 0, explanation: "Temporary states like feeling tired use 'estar': 'está cansado'." },
+  { id: 7, level: "A2", question: "Which sentence is in the Preterite tense (completed action)?", options: ["Ayer comí paella.", "Siempre comía paella.", "Voy a comer paella.", "Comeré paella."], correct: 0, explanation: "'Comí' is Pretérito Indefinido for completed past events." },
+  { id: 8, level: "A2", question: "Choose the correct direct object pronoun: '¿El libro? Yo ____ compré ayer.'", options: ["lo", "la", "le", "los"], correct: 0, explanation: "Direct masculine singular object pronoun is 'lo'." },
+  { id: 9, level: "A2", question: "Select the correct form of Gustar: 'A mí me ____ las manzanas.'", options: ["gustan", "gusta", "gusto", "gustamos"], correct: 0, explanation: "Plural subject ('las manzanas') requires plural verb form 'gustan'." },
+  { id: 10, level: "A2", question: "Which sentence expresses an ongoing action right now?", options: ["Estoy estudiando español.", "Estudio español.", "Estudié español.", "Estudiaré español."], correct: 0, explanation: "Estar + Gerundio ('Estoy estudiando') expresses present progressive." },
+
+  // B1 (11-15)
+  { id: 11, level: "B1", question: "Select the Subjunctive mood form: 'Espero que tú ____ pronto.'", options: ["vengas", "vienes", "viniste", "vendrás"], correct: 0, explanation: "Wishes and hopes ('Espero que') require the Present Subjunctive ('vengas')." },
+  { id: 12, level: "B1", question: "Choose the relative pronoun: 'El libro ____ compré es interesante.'", options: ["que", "donde", "quien", "cuyo"], correct: 0, explanation: "'Que' is the standard direct object relative pronoun." },
+  { id: 13, level: "B1", question: "Select the correct conditional hypothesis: 'Si tuviera dinero, ____ un coche.'", options: ["compraría", "compro", "compraré", "comprara"], correct: 0, explanation: "In imperfect subjunctive hypotheses ('Si tuviera'), the result clause takes Conditional ('compraría')." },
+  { id: 14, level: "B1", question: "Identify the impersonal 'se' passive construction:", options: ["Se venden casas aquí.", "Se vende casas aquí.", "Ellos venden casas aquí.", "Casas son vendidas aquí."], correct: 0, explanation: "Pasiva refleja ('Se + verb in 3rd person plural + plural noun') is standard." },
+  { id: 15, level: "B1", question: "Convert to Indirect Speech: 'Ella me dijo: \"Llegaré a las ocho.\"'", options: ["Ella me dijo que llegaría a las ocho.", "Ella me dijo que llegará a las ocho.", "Ella me dijo que llega a las ocho.", "Ella me dijo que ha llegado a las ocho."], correct: 0, explanation: "When introductory verb is past, Future ('llegaré') shifts to Conditional ('llegaría')." },
+
+  // B2 (16-20)
+  { id: 16, level: "B2", question: "Select the Past Subjunctive form: 'Si yo ____ sabido la verdad, habría actuado diferente.'", options: ["hubiera", "haya", "había", "habré"], correct: 0, explanation: "Pluperfect Subjunctive ('hubiera + participle') forms counterfactual past hypotheses." },
+  { id: 17, level: "B2", question: "Choose the formal DELE connector: '____ a los obstáculos, el proyecto fue un éxito.'", options: ["Pese", "Aunque", "Porque", "Sin embargo"], correct: 0, explanation: "'Pese a' (despite) followed by a noun is a formal B2 concessive preposition." },
+  { id: 18, level: "B2", question: "Identify the correct relative adjective: 'La escritora ____ obra fue premiada asistió al evento.'", options: ["cuya", "que", "quien", "donde"], correct: 0, explanation: "'Cuya' expresses possession agreeing in gender and number with 'obra'." },
+  { id: 19, level: "B2", question: "Select the formal transition for a SIELE essay: 'Por lo tanto, conviene ____ este análisis.'", options: ["profundizar", "mirar", "hacer", "decir"], correct: 0, explanation: "'Profundizar' (to deepen) is formal academic vocabulary for B2 essays." },
+  { id: 20, level: "B2", question: "Which sentence uses the Subjunctive in a concessive clause correctly?", options: ["Aunque llueva mañana, iremos al campo.", "Aunque lloverá mañana, iremos al campo.", "Aunque ha llovido mañana, iremos al campo.", "Aunque llovió mañana, iremos al campo."], correct: 0, explanation: "'Aunque + Subjunctive' ('llueva') indicates a hypothetical condition in the future." }
 ];
 
 const ITALIAN_PLACEMENT_QUESTIONS: Question[] = [
+  // A1 (1-5)
   { id: 1, level: "A1", question: "Choose the correct phrase for: 'Hello, how are you?'", options: ["Buongiorno, come sta?", "Arrivederci!", "Per favore.", "Buonanotte."], correct: 0, explanation: "'Buongiorno, come sta?' is the formal polite Italian greeting." },
   { id: 2, level: "A1", question: "Select the correct form of 'avere': 'Io ____ 25 anni.'", options: ["ho", "sono", "abito", "faccio"], correct: 0, explanation: "In Italian age is expressed with 'avere': 'Io ho 25 anni'." },
   { id: 3, level: "A1", question: "Complete with the correct article: '____ studente impara l'italiano.'", options: ["Lo", "Il", "La", "Un'"], correct: 0, explanation: "Masculine nouns starting with 'st' take the article 'Lo'." },
-  { id: 4, level: "A2", question: "Which sentence correctly uses Passato Prossimo with 'essere'?", options: ["È andata a Roma ieri.", "Ha andata a Roma ieri.", "È andato a Roma ieri (per Maria).", "Ha andare a Roma."], correct: 0, explanation: "Verbs of movement like 'andare' take 'essere' and agree in gender: 'È andata'." },
-  { id: 5, level: "A2", question: "Fill in: 'Mentre io ____, il telefono ha squillato.'", options: ["dormivo", "ho dormito", "dormirò", "dormo"], correct: 0, explanation: "Background ongoing action uses Imperfetto ('dormivo') when interrupted." },
-  { id: 6, level: "B1", question: "Select the correct Present Subjunctive (Congiuntivo): 'Spero che tu ____ felice.'", options: ["sia", "sei", "eri", "sarai"], correct: 0, explanation: "Hopes and wishes ('Spero che') require Congiuntivo presente ('sia')." },
-  { id: 7, level: "B1", question: "Choose the relative pronoun: 'La città ____ sono nato è bellissima.'", options: ["in cui", "che", "chi", "cui"], correct: 0, explanation: "'In cui' or 'dove' is used for location ('in which I was born')." },
-  { id: 8, level: "B2", question: "Select the formal CILS essay connector: '____ della situazione, occorre agire tempestivamente.'", options: ["In vista", "Malgrado", "Perché", "Comunque"], correct: 0, explanation: "'In vista di' (in view of) is a B2 formal transition for argumentation." }
+  { id: 4, level: "A1", question: "Choose the correct present tense form: 'Noi ____ a Roma.'", options: ["abitiamo", "abito", "abitano", "abitate"], correct: 0, explanation: "First-person plural 'Noi' ending is '-iamo': 'abitiamo'." },
+  { id: 5, level: "A1", question: "Select the correct form of Piacere: 'A me ____ la pizza.'", options: ["piace", "piacciono", "piaccio", "piaciamo"], correct: 0, explanation: "Singular subject ('la pizza') requires 'piace'." },
+
+  // A2 (6-10)
+  { id: 6, level: "A2", question: "Which sentence correctly uses Passato Prossimo with 'essere'?", options: ["È andata a Roma ieri.", "Ha andata a Roma ieri.", "È andato a Roma ieri (per Maria).", "Ha andare a Roma."], correct: 0, explanation: "Verbs of movement like 'andare' take 'essere' and agree in gender: 'È andata'." },
+  { id: 7, level: "A2", question: "Fill in: 'Mentre io ____, il telefono ha squillato.'", options: ["dormivo", "ho dormito", "dormirò", "dormo"], correct: 0, explanation: "Background ongoing action uses Imperfetto ('dormivo') when interrupted." },
+  { id: 8, level: "A2", question: "Choose the correct combined preposition: 'Vado ____ medico.'", options: ["dal", "nel", "sul", "col"], correct: 0, explanation: "Going to a person's office/home uses 'da + il' = 'dal'." },
+  { id: 9, level: "A2", question: "Select the correct direct pronoun: 'La pasta? ____ mangio subito.'", options: ["La", "Lo", "Li", "Le"], correct: 0, explanation: "Feminine singular direct object pronoun is 'La'." },
+  { id: 10, level: "A2", question: "Which sentence expresses progressive present?", options: ["Sto studiando l'italiano.", "Studio l'italiano.", "Ho studiato l'italiano.", "Studierò l'italiano."], correct: 0, explanation: "Stare + Gerundio ('Sto studiando') expresses present progressive." },
+
+  // B1 (11-15)
+  { id: 11, level: "B1", question: "Select the correct Present Subjunctive (Congiuntivo): 'Spero che tu ____ felice.'", options: ["sia", "sei", "eri", "sarai"], correct: 0, explanation: "Hopes and wishes ('Spero che') require Congiuntivo presente ('sia')." },
+  { id: 12, level: "B1", question: "Choose the relative pronoun: 'La città ____ sono nato è bellissima.'", options: ["in cui", "che", "chi", "cui"], correct: 0, explanation: "'In cui' or 'dove' is used for location ('in which I was born')." },
+  { id: 13, level: "B1", question: "Select the correct conditional hypothesis: 'Se avessi tempo, ____ a trovarvi.'", options: ["verrei", "vengo", "verrò", "venissi"], correct: 0, explanation: "Hypothesis: Se + Congiuntivo imperfetto ('avessi') -> Condizionale presente ('verrei')." },
+  { id: 14, level: "B1", question: "Identify the passive voice with Venire: 'Il libro ____ letto da tutti.'", options: ["viene", "ha", "era", "sta"], correct: 0, explanation: "Venire is frequently used as a passive auxiliary in place of essere ('viene letto')." },
+  { id: 15, level: "B1", question: "Convert to Indirect Speech: 'Marco ha detto: \"Arriverò domani.\"'", options: ["Marco ha detto che sarebbe arrivato il giorno dopo.", "Marco ha detto che arriverà domani.", "Marco ha detto che è arrivato domani.", "Marco ha detto che arriva domani."], correct: 0, explanation: "Past introductory verb causes Future ('arriverò') to shift to Past Conditional ('sarebbe arrivato')." },
+
+  // B2 (16-20)
+  { id: 16, level: "B2", question: "Select the formal CILS essay connector: '____ della situazione, occorre agire tempestivamente.'", options: ["In vista", "Malgrado", "Perché", "Comunque"], correct: 0, explanation: "'In vista di' (in view of) is a B2 formal transition for argumentation." },
+  { id: 17, level: "B2", question: "Choose the correct Past Subjunctive: 'Sebbene egli ____ sodo, non superò l'esame.'", options: ["avesse studiato", "ha studiato", "studiò", "avrebbe studiato"], correct: 0, explanation: "'Sebbene' requires Congiuntivo trapassato ('avesse studiato') for completed past concession." },
+  { id: 18, level: "B2", question: "Identify the implicit gerundial clause showing cause: '____ la lezione, gli studenti uscirono.'", options: ["Essendo finita", "Finendo", "Finita", "Per finire"], correct: 0, explanation: "Compound past gerund ('Essendo finita') expresses prior cause." },
+  { id: 19, level: "B2", question: "Select the formal transition for a PLIDA essay: 'È fondamentale ____ l'impatto di questa decisione.'", options: ["valutare", "vedere", "dire", "fare"], correct: 0, explanation: "'Valutare' (to evaluate) is formal academic vocabulary for B2 essays." },
+  { id: 20, level: "B2", question: "Which sentence uses the formal relative pronoun 'il quale' correctly?", options: ["Il professore, il quale ha scritto il libro, terrà una conferenza.", "Il professore, il quale che ha scritto il libro, terrà una conferenza.", "Il professore, la quale ha scritto il libro, terrà una conferenza.", "Il professore, i quali hanno scritto il libro, terrà una conferenza."], correct: 0, explanation: "'Il quale' agrees in gender and number with the masculine singular antecedent ('il professore')." }
 ];
 
 export function getPlacementQuestions(langCode: string = "fr"): Question[] {
