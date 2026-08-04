@@ -88,7 +88,8 @@ function FlashcardsPage() {
           });
         } catch {}
 
-        const res = await apiFetch("/lessons?limit=200");
+        const activeLang = (user?.activeLanguage || (typeof window !== 'undefined' ? localStorage.getItem("fp_active_language") : "fr") || "fr").toLowerCase().trim();
+        const res = await apiFetch(`/lessons?limit=200&language=${activeLang}`);
         const json = await res.json();
         const lessons = json.data || json.lessons || (Array.isArray(json) ? json : []);
         
@@ -540,7 +541,7 @@ function FlashcardsPage() {
                 >
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-[10px] font-extrabold uppercase tracking-widest text-purple-400 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20">
-                      🇫🇷 FRENCH EXPRESSION
+                      {activeLang === 'de' ? '🇩🇪 GERMAN EXPRESSION' : activeLang === 'es' ? '🇪🇸 SPANISH EXPRESSION' : activeLang === 'it' ? '🇮🇹 ITALIAN EXPRESSION' : '🇫🇷 FRENCH EXPRESSION'}
                     </span>
                     <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-300 px-2.5 py-1 rounded bg-purple-900/30 border border-purple-500/20">
                       Level {currentCard.level}
@@ -561,8 +562,12 @@ function FlashcardsPage() {
                   )}
 
                   <button
-                    onClick={(e) => { e.stopPropagation(); speak(currentCard.french); }}
-                    className="mt-3 p-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white shadow-lg shadow-purple-500/30 transition-all flex items-center gap-2 text-xs font-bold"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const voice = activeLang === 'de' ? 'de-DE' : activeLang === 'es' ? 'es-ES' : activeLang === 'it' ? 'it-IT' : 'fr-FR';
+                      speak(currentCard.french, voice);
+                    }}
+                    className="mt-3 p-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white shadow-lg shadow-purple-500/30 transition-all flex items-center gap-2 text-xs font-bold cursor-pointer"
                   >
                     <Volume2 className="w-4 h-4" /> Listen Audio
                   </button>
