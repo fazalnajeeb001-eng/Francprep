@@ -253,8 +253,9 @@ export function OnboardingPage() {
   ]);
   const [selectedLang, setSelectedLang] = useState<string>("fr");
 
-  useState(() => {
+  useEffect(() => {
     apiFetch("/languages")
+      .then((res) => res.json())
       .then((res) => {
         if (res.data && Array.isArray(res.data) && res.data.length > 0) {
           setAvailableLanguages(res.data);
@@ -262,7 +263,7 @@ export function OnboardingPage() {
         }
       })
       .catch(() => {});
-  });
+  }, []);
 
   // Step 1: Goal wired directly to userPrefs
   const [selectedGoal, setSelectedGoal] = useState<LearningGoal>("TCF_B2");

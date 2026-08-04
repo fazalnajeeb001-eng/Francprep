@@ -49,7 +49,52 @@ function SettingsPage() {
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [dynamicPlans, setDynamicPlans] = useState<DynamicPlan[]>([]);
 
-  useEffect(() => { setFirstName(user?.firstName || ""); setLastName(user?.lastName || ""); }, [user]);
+  const [settingsTab, setSettingsTab] = useState<"language" | "profile" | "billing" | "security">("language");
+  const [availableLanguages, setAvailableLanguages] = useState<any[]>([
+    { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', examName: 'DELF / TCF' },
+    { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪', examName: 'Goethe / TestDaF' },
+    { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸', examName: 'DELE / SIELE' }
+  ]);
+  const [activeLang, setActiveLang] = useState<string>(user?.activeLanguage || "fr");
+  const [langSaving, setLangSaving] = useState(false);
+  const [langMsg, setLangMsg] = useState("");
+
+  useEffect(() => { setFirstName(user?.firstName || ""); setLastName(user?.lastName || ""); setActiveLang(user?.activeLanguage || "fr"); }, [user]);
+
+  useEffect(() => {
+    apiFetch("/languages")
+      .then(r => r.json())
+      .then(res => {
+        if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+          setAvailableLanguages(res.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleSwitchLanguage = async (code: string) => {
+    setLangSaving(true);
+    setLangMsg("");
+    try {
+      const res = await apiFetch("/auth/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ activeLanguage: code }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setActiveLang(code);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("fp_active_language", code);
+          window.dispatchEvent(new Event("active-language-changed"));
+        }
+        if (json.data) updateUser(json.data);
+        setLangMsg("Target language updated!");
+        setTimeout(() => setLangMsg(""), 2500);
+      }
+    } catch (err) {}
+    setLangSaving(false);
+  };
 
   useEffect(() => {
     getSubscription().then(setSubscription).catch(() => {});
@@ -173,290 +218,353 @@ function SettingsPage() {
   return (
     <div className={`min-h-screen ${b} transition-colors duration-300`}>
       <div className="max-w-2xl mx-auto p-6 space-y-6 pb-20">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-4 mb-6">
-          <Link to="/dashboard" className={`${txtSec} hover:text-purple-600 text-sm font-semibold transition-colors`}>← Dashboard</Link>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Settings</h1>
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between gap-4 mb-4">
+          <div className="flex items-center gap-3">
+            <Link to="/dashboard" className={`${txtSec} hover:text-purple-600 text-sm font-semibold transition-colors`}>← Dashboard</Link>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Student Settings</h1>
+          </div>
         </motion.div>
 
-        {/* Learning Goal */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>
-          <div className="flex items-center gap-3 mb-4"><Target className="w-5 h-5 text-purple-400" /><h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-slate-900"}`}>Learning Goal & Exam Target</h2></div>
-          <p className={`text-xs mb-4 ${txtSec}`}>Set your target exam or CEFR level. You can change this anytime.</p>
-          <div className="grid grid-cols-2 gap-2">
-            {GOAL_OPTIONS.map((opt) => (
-              <button key={opt.value} onClick={() => saveGoal(opt.value)} disabled={goalSaving}
-                className={`flex items-center gap-2 p-3 rounded-xl text-left transition-all ${
-                  currentGoal === opt.value
-                    ? "bg-purple-500/20 border-2 border-purple-500 text-purple-900 dark:text-white font-bold shadow-md"
-                    : `${inputBg} border hover:border-purple-500/50 ${dark ? "text-gray-300" : "text-slate-800"}`
-                }`}>
-                <span className="text-lg">{opt.emoji}</span>
-                <span className="text-xs font-semibold">{opt.label}</span>
-                {currentGoal === opt.value && <Check className="w-3.5 h-3.5 text-purple-500 ml-auto" />}
+        {/* ─── SEGMENTED NAVIGATION TABS ─── */}
+        <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-white/5 border border-white/10 overflow-x-auto scrollbar-none mb-6">
+          {[
+            { id: "language", label: "Target & Goals", icon: Target },
+            { id: "profile", label: "Profile & Coach", icon: User },
+            { id: "billing", label: "Plans & Billing", icon: CreditCard },
+            { id: "security", label: "Security & Theme", icon: Shield },
+          ].map((tab) => {
+            const Icon = tab.icon;
+            const isSelected = settingsTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setSettingsTab(tab.id as any)}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                  isSelected
+                    ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
+                    : dark ? "text-gray-400 hover:text-white hover:bg-white/5" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                <span>{tab.label}</span>
               </button>
-            ))}
-          </div>
-          {goalMsg && <p className="text-xs text-emerald-400 flex items-center gap-1 mt-3"><Check className="w-3 h-3" /> {goalMsg}</p>}
+            );
+          })}
+        </div>
 
-          <div className="mt-6 pt-5 border-t border-gray-200 dark:border-white/10">
-            <h3 className={`text-sm font-semibold mb-1 ${dark ? "text-white" : "text-gray-900"}`}>Daily Study Pace Goal</h3>
-            <p className={`text-xs mb-3 ${txtSec}`}>Select how many minutes per day you commit to studying.</p>
-            <div className="grid grid-cols-4 gap-2">
-              {[15, 30, 45, 60].map((mins) => (
-                <button
-                  key={mins}
-                  onClick={() => {
-                    setDailyStudyGoal(mins);
-                    setGoalMsg(`Daily goal set to ${mins} mins/day!`);
-                    setTimeout(() => setGoalMsg(""), 2000);
-                  }}
-                  className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
-                    getDailyStudyGoal() === mins
-                      ? "bg-purple-500/20 border-purple-500 text-purple-400"
-                      : `${inputBg} hover:border-purple-500/40 ${dark ? "text-gray-300" : "text-gray-700"}`
-                  }`}
-                >
-                  {mins} mins
+        {/* ─── TAB 1: TARGET LANGUAGE & GOALS ─── */}
+        {settingsTab === "language" && (
+          <div className="space-y-6">
+            {/* Active Target Language Selector */}
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-xl">🌐</span>
+                  <div>
+                    <h2 className={`text-base font-bold ${dark ? "text-white" : "text-slate-900"}`}>Active Target Language</h2>
+                    <p className={`text-xs ${txtSec}`}>Switching updates your dashboard, curriculum, placement drills, and AI coach instantly.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                {availableLanguages.map((lang) => {
+                  const isSelected = activeLang.toLowerCase() === lang.code.toLowerCase();
+                  return (
+                    <button
+                      key={lang.code}
+                      type="button"
+                      onClick={() => handleSwitchLanguage(lang.code)}
+                      disabled={langSaving}
+                      className={`p-4 rounded-2xl border text-left transition-all relative flex items-center justify-between cursor-pointer ${
+                        isSelected
+                          ? "bg-purple-500/20 border-purple-500 shadow-md shadow-purple-500/20 text-white font-bold"
+                          : `${inputBg} hover:border-purple-500/40`
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">{lang.flag || '🌐'}</span>
+                        <div>
+                          <p className={`text-xs font-bold ${dark ? "text-white" : "text-slate-900"}`}>{lang.name} ({lang.nativeName || lang.name})</p>
+                          <p className="text-[10px] text-purple-400 font-medium">{lang.examName || 'CEFR Track'}</p>
+                        </div>
+                      </div>
+                      {isSelected && <Check className="w-4 h-4 text-purple-400 font-bold" />}
+                    </button>
+                  );
+                })}
+              </div>
+              {langMsg && <p className="text-xs text-emerald-400 flex items-center gap-1 mt-3 font-bold"><Check className="w-3.5 h-3.5" /> {langMsg}</p>}
+            </motion.div>
+
+            {/* Learning Goal */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>
+              <div className="flex items-center gap-3 mb-4"><Target className="w-5 h-5 text-purple-400" /><h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-slate-900"}`}>Learning Goal & Exam Target</h2></div>
+              <p className={`text-xs mb-4 ${txtSec}`}>Set your target exam or CEFR level. You can change this anytime.</p>
+              <div className="grid grid-cols-2 gap-2">
+                {GOAL_OPTIONS.map((opt) => (
+                  <button key={opt.value} onClick={() => saveGoal(opt.value)} disabled={goalSaving}
+                    className={`flex items-center gap-2 p-3 rounded-xl text-left transition-all cursor-pointer ${
+                      currentGoal === opt.value
+                        ? "bg-purple-500/20 border-2 border-purple-500 text-purple-900 dark:text-white font-bold shadow-md"
+                        : `${inputBg} border hover:border-purple-500/50 ${dark ? "text-gray-300" : "text-slate-800"}`
+                    }`}>
+                    <span className="text-lg">{opt.emoji}</span>
+                    <span className="text-xs font-semibold">{opt.label}</span>
+                    {currentGoal === opt.value && <Check className="w-3.5 h-3.5 text-purple-500 ml-auto" />}
+                  </button>
+                ))}
+              </div>
+              {goalMsg && <p className="text-xs text-emerald-400 flex items-center gap-1 mt-3"><Check className="w-3 h-3" /> {goalMsg}</p>}
+
+              <div className="mt-6 pt-5 border-t border-gray-200 dark:border-white/10">
+                <h3 className={`text-sm font-semibold mb-1 ${dark ? "text-white" : "text-gray-900"}`}>Daily Study Pace Goal</h3>
+                <p className={`text-xs mb-3 ${txtSec}`}>Select how many minutes per day you commit to studying.</p>
+                <div className="grid grid-cols-4 gap-2">
+                  {[15, 30, 45, 60].map((mins) => (
+                    <button
+                      key={mins}
+                      onClick={() => {
+                        setDailyStudyGoal(mins);
+                        setGoalMsg(`Daily goal set to ${mins} mins/day!`);
+                        setTimeout(() => setGoalMsg(""), 2000);
+                      }}
+                      className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                        getDailyStudyGoal() === mins
+                          ? "bg-purple-500/20 border-purple-500 text-purple-400"
+                          : `${inputBg} hover:border-purple-500/40 ${dark ? "text-gray-300" : "text-gray-700"}`
+                      }`}
+                    >
+                      {mins} mins
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* ─── TAB 2: PROFILE & AI COACH ─── */}
+        {settingsTab === "profile" && (
+          <div className="space-y-6">
+            {/* Avatar */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>
+              <div className="flex items-center gap-3 mb-4"><User className="w-5 h-5 text-purple-400" /><h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Choose Your AI Companion Coach</h2></div>
+              <p className={`text-xs mb-5 ${txtSec}`}>Pick your companion character for the learning journey.</p>
+
+              <div className="grid grid-cols-2 gap-4">
+                {/* Leo */}
+                <button onClick={() => selectAvatar("male")} disabled={avatarSaving}
+                  className={`relative rounded-2xl border-2 p-4 transition-all flex flex-col items-center gap-3 cursor-pointer ${
+                    avatarFeatures?.gender === "male"
+                      ? "border-purple-500 bg-purple-500/10 shadow-lg shadow-purple-500/20"
+                      : `${inputBg} border-transparent hover:border-purple-500/40`
+                  }`}>
+                  <div className={`w-full aspect-square rounded-xl overflow-hidden flex items-end justify-center ${dark ? "bg-[#070B17]" : "bg-gray-100"}`}>
+                    <img src="/models/leo-avatar.png" alt="Leo" className="w-full h-full object-contain" />
+                  </div>
+                  <div className="text-center">
+                    <p className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>Coach Leo</p>
+                    <p className={`text-[10px] ${txtSec}`}>Male AI Companion</p>
+                  </div>
+                  {avatarFeatures?.gender === "male" && (
+                    <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center">
+                      <Check className="w-3.5 h-3.5 text-white" />
+                    </div>
+                  )}
                 </button>
-              ))}
-            </div>
-          </div>
-        </motion.div>
 
-        {/* Avatar */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>
-          <div className="flex items-center gap-3 mb-4"><User className="w-5 h-5 text-purple-400" /><h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Choose Your Avatar</h2></div>
-          <p className={`text-xs mb-5 ${txtSec}`}>Pick your character for the learning journey. You can change this anytime.</p>
-
-          <div className="grid grid-cols-2 gap-4">
-            {/* Leo */}
-            <button onClick={() => selectAvatar("male")} disabled={avatarSaving}
-              className={`relative rounded-2xl border-2 p-4 transition-all flex flex-col items-center gap-3 ${
-                avatarFeatures?.gender === "male"
-                  ? "border-purple-500 bg-purple-500/10 shadow-lg shadow-purple-500/20"
-                  : `${inputBg} border-transparent hover:border-purple-500/40`
-              }`}>
-              <div className={`w-full aspect-square rounded-xl overflow-hidden flex items-end justify-center ${dark ? "bg-[#070B17]" : "bg-gray-100"}`}>
-                <img src="/models/leo-avatar.png" alt="Leo" className="w-full h-full object-contain" />
+                {/* Chloe */}
+                <button onClick={() => selectAvatar("female")} disabled={avatarSaving}
+                  className={`relative rounded-2xl border-2 p-4 transition-all flex flex-col items-center gap-3 cursor-pointer ${
+                    avatarFeatures?.gender === "female"
+                      ? "border-purple-500 bg-purple-500/10 shadow-lg shadow-purple-500/20"
+                      : `${inputBg} border-transparent hover:border-purple-500/40`
+                  }`}>
+                  <div className={`w-full aspect-square rounded-xl overflow-hidden flex items-end justify-center ${dark ? "bg-[#070B17]" : "bg-gray-100"}`}>
+                    <img src="/models/chloe-avatar.png" alt="Chloe" className="w-full h-full object-contain" />
+                  </div>
+                  <div className="text-center">
+                    <p className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>Coach Chloe</p>
+                    <p className={`text-[10px] ${txtSec}`}>Female AI Companion</p>
+                  </div>
+                  {avatarFeatures?.gender === "female" && (
+                    <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center">
+                      <Check className="w-3.5 h-3.5 text-white" />
+                    </div>
+                  )}
+                </button>
               </div>
-              <div className="text-center">
-                <p className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>Leo</p>
-                <p className={`text-[10px] ${txtSec}`}>Explorer</p>
+
+              {avatarSaving && <p className="text-xs text-purple-400 text-center mt-3">Saving...</p>}
+            </motion.div>
+
+            {/* Profile Details */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>
+              <div className="flex items-center gap-3 mb-4"><Shield className="w-5 h-5 text-purple-400" /><h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Student Profile Information</h2></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div><label className={`text-xs ${txtSec} block mb-1`} htmlFor="fn">First Name</label><input id="fn" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm ${dark ? "text-white" : "text-gray-900"} focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors`} /></div>
+                <div><label className={`text-xs ${txtSec} block mb-1`} htmlFor="ln">Last Name</label><input id="ln" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm ${dark ? "text-white" : "text-gray-900"} focus:outline-none focus:ring-2 focus:ring-purple-500`} /></div>
+                <div className="md:col-span-2"><label className={`text-xs ${txtSec} block mb-1`} htmlFor="em">Email Address</label><input id="em" type="email" defaultValue={user?.email} readOnly className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm text-gray-400 cursor-not-allowed`} /><p className={`text-[10px] ${txtSec} mt-1`}>Registered account email</p></div>
               </div>
-              {avatarFeatures?.gender === "male" && (
-                <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center">
-                  <Check className="w-3.5 h-3.5 text-white" />
-                </div>
-              )}
-            </button>
-
-            {/* Chloe */}
-            <button onClick={() => selectAvatar("female")} disabled={avatarSaving}
-              className={`relative rounded-2xl border-2 p-4 transition-all flex flex-col items-center gap-3 ${
-                avatarFeatures?.gender === "female"
-                  ? "border-purple-500 bg-purple-500/10 shadow-lg shadow-purple-500/20"
-                  : `${inputBg} border-transparent hover:border-purple-500/40`
-              }`}>
-              <div className={`w-full aspect-square rounded-xl overflow-hidden flex items-end justify-center ${dark ? "bg-[#070B17]" : "bg-gray-100"}`}>
-                <img src="/models/chloe-avatar.png" alt="Chloe" className="w-full h-full object-contain" />
-              </div>
-              <div className="text-center">
-                <p className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>Chloe</p>
-                <p className={`text-[10px] ${txtSec}`}>Adventurer</p>
-              </div>
-              {avatarFeatures?.gender === "female" && (
-                <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center">
-                  <Check className="w-3.5 h-3.5 text-white" />
-                </div>
-              )}
-            </button>
-          </div>
-
-          {avatarSaving && <p className="text-xs text-purple-400 text-center mt-3">Saving...</p>}
-        </motion.div>
-
-        {/* Profile */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>
-          <div className="flex items-center gap-3 mb-4"><Shield className="w-5 h-5 text-purple-400" /><h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Profile</h2></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div><label className={`text-xs ${txtSec} block mb-1`} htmlFor="fn">First Name</label><input id="fn" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm ${dark ? "text-white" : "text-gray-900"} focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors`} /></div>
-            <div><label className={`text-xs ${txtSec} block mb-1`} htmlFor="ln">Last Name</label><input id="ln" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm ${dark ? "text-white" : "text-gray-900"} focus:outline-none focus:ring-2 focus:ring-purple-500`} /></div>
-            <div className="md:col-span-2"><label className={`text-xs ${txtSec} block mb-1`} htmlFor="em">Email</label><input id="em" type="email" defaultValue={user?.email} readOnly className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm text-gray-400 cursor-not-allowed`} /><p className={`text-[10px] ${txtSec} mt-1`}>Email cannot be changed</p></div>
-          </div>
-          {profileMsg && <p className="text-xs text-emerald-400 flex items-center gap-1 mt-2"><Check className="w-3 h-3" /> {profileMsg}</p>}
-          {profileError && <p className="text-xs text-red-400 flex items-center gap-1 mt-2"><AlertTriangle className="w-3 h-3" /> {profileError}</p>}
-          <button onClick={saveProfile} disabled={profileSaving}
-            className="mt-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-6 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 disabled:opacity-50 flex items-center gap-2">
-            {profileSaving ? <RefreshCw className="w-4 h-4 animate-spin" /> : null}
-            {profileSaving ? "Saving..." : "Save Changes"}
-          </button>
-        </motion.div>
-
-        {/* Password (collapsible) */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>
-          <button onClick={() => setPasswordOpen(!passwordOpen)} className="w-full flex items-center justify-between">
-            <div className="flex items-center gap-3"><Key className="w-5 h-5 text-purple-400" /><h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Password</h2></div>
-            {passwordOpen ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
-          </button>
-          {passwordOpen && (
-            <div className="mt-4 space-y-3">
-              <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Current Password" aria-label="Current Password" className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${dark ? "text-white" : "text-gray-900"}`} />
-              <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="New Password (min 8 chars)" aria-label="New Password" className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${dark ? "text-white" : "text-gray-900"}`} />
-              <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm New Password" aria-label="Confirm New Password" className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${dark ? "text-white" : "text-gray-900"}`} />
-              {passwordMsg && <p className="text-xs text-emerald-400 flex items-center gap-1"><Check className="w-3 h-3" /> {passwordMsg}</p>}
-              {passwordError && <p className="text-xs text-red-400 flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> {passwordError}</p>}
-              <button onClick={changePassword} disabled={passwordSaving}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-6 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 disabled:opacity-50 flex items-center gap-2">
-                {passwordSaving ? <RefreshCw className="w-4 h-4 animate-spin" /> : null}
-                {passwordSaving ? "Updating..." : "Update Password"}
+              {profileMsg && <p className="text-xs text-emerald-400 flex items-center gap-1 mt-2"><Check className="w-3 h-3" /> {profileMsg}</p>}
+              {profileError && <p className="text-xs text-red-400 flex items-center gap-1 mt-2"><AlertTriangle className="w-3 h-3" /> {profileError}</p>}
+              <button onClick={saveProfile} disabled={profileSaving}
+                className="mt-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-6 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 disabled:opacity-50 flex items-center gap-2 cursor-pointer">
+                {profileSaving ? <RefreshCw className="w-4 h-4 animate-spin" /> : null}
+                {profileSaving ? "Saving..." : "Save Profile Details"}
               </button>
-            </div>
-          )}
-        </motion.div>
-
-        {/* Theme */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>
-          <div className="flex items-center gap-3 mb-4">{dark ? <Moon className="w-5 h-5 text-purple-400" /> : <Sun className="w-5 h-5 text-amber-400" />}<h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Theme</h2></div>
-          <div className="flex gap-4">
-            <button onClick={toggleTheme} className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all ${dark ? "bg-purple-500 text-white shadow-lg shadow-purple-500/25" : `${inputBg} ${dark ? "text-white" : "text-gray-900"}`}`} aria-label="Dark mode"><Moon className="w-4 h-4" /> Dark</button>
-            <button onClick={toggleTheme} className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all ${!dark ? "bg-purple-500 text-white shadow-lg shadow-purple-500/25" : `${inputBg} ${dark ? "text-white" : "text-gray-900"}`}`} aria-label="Light mode"><Sun className="w-4 h-4" /> Light</button>
+            </motion.div>
           </div>
-        </motion.div>
+        )}
 
-        {/* Subscription */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>
-          <div className="flex items-center gap-3 mb-4"><CreditCard className="w-5 h-5 text-purple-400" /><h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Subscription</h2></div>
+        {/* ─── TAB 3: PLANS & BILLING ─── */}
+        {settingsTab === "billing" && (
+          <div className="space-y-6">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>
+              <div className="flex items-center gap-3 mb-4"><CreditCard className="w-5 h-5 text-purple-400" /><h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Subscription & Billing</h2></div>
 
-          {/* Current plan badge */}
-          <div className="mb-4 p-3 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className={`text-xs ${txtSec}`}>Current Plan</p>
-                <p className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent capitalize">{subscription?.tier || "Free"}</p>
+              {/* Current plan badge */}
+              <div className="mb-4 p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className={`text-xs ${txtSec}`}>Current Active Plan</p>
+                    <p className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent capitalize">{subscription?.tier || "Free"}</p>
+                  </div>
+                  {subscription?.tier !== "free" && (
+                    <button onClick={handleManageSubscription}
+                      className="text-xs text-purple-400 hover:text-purple-300 font-semibold flex items-center gap-1 cursor-pointer">
+                      <RefreshCw className="w-3.5 h-3.5" /> Manage Portal
+                    </button>
+                  )}
+                </div>
               </div>
-              {subscription?.tier !== "free" && (
-                <button onClick={handleManageSubscription}
-                  className="text-xs text-purple-400 hover:text-purple-300 font-semibold flex items-center gap-1">
-                  <RefreshCw className="w-3 h-3" /> Manage
+
+              {/* Pricing cards */}
+              <div className="space-y-3">
+                {dynamicPlans.length > 0 ? (
+                  dynamicPlans.map((plan) => (
+                    <div key={plan.id} className={`p-4 rounded-xl border transition-all ${
+                      subscription?.tier === plan.id ? "border-purple-500/50 bg-purple-500/5" : `${inputBg}`
+                    }`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <Zap className="w-4 h-4 text-purple-400" />
+                          <span className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{plan.title}</span>
+                          {plan.badge && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30">{plan.badge}</span>}
+                        </div>
+                        <span className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>${plan.price}<span className="text-[10px] font-normal text-gray-500">/{plan.interval === 'monthly' ? 'mo' : plan.interval === 'annual' ? 'yr' : 'one-time'}</span></span>
+                      </div>
+                      <p className="text-xs text-gray-400 mb-2">{plan.description}</p>
+                      <ul className="space-y-1 mb-3">
+                        {plan.features.map((f, i) => (
+                          <li key={i} className="flex items-center gap-1.5 text-[10px] text-gray-400"><Check className="w-3 h-3 text-purple-400" /> {f}</li>
+                        ))}
+                      </ul>
+                      {subscription?.tier === plan.id ? (
+                        <p className="text-[10px] text-purple-400 font-semibold">Current plan</p>
+                      ) : (
+                        <button onClick={() => handleUpgrade(plan.id as any)} disabled={checkoutLoading}
+                          className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 disabled:opacity-50 cursor-pointer">
+                          {checkoutLoading ? "Loading..." : `Subscribe to ${plan.title}`}
+                        </button>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    {/* Free */}
+                    <div className={`p-4 rounded-xl border transition-all ${
+                      subscription?.tier === "free" ? "border-purple-500/50 bg-purple-500/5" : `${inputBg}`
+                    }`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <Sparkles className="w-4 h-4 text-gray-400" />
+                          <span className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Free</span>
+                        </div>
+                        <span className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>$0</span>
+                      </div>
+                      <ul className="space-y-1">
+                        {["4 lessons", "Basic flashcards", "Daily challenge"].map((f) => (
+                          <li key={f} className="flex items-center gap-1.5 text-[10px] text-gray-400"><Check className="w-3 h-3 text-gray-500" /> {f}</li>
+                        ))}
+                      </ul>
+                      {subscription?.tier === "free" && <p className="text-[10px] text-purple-400 mt-2 font-semibold">Current plan</p>}
+                    </div>
+
+                    {/* Premium */}
+                    <div className={`p-4 rounded-xl border transition-all ${
+                      subscription?.tier === "premium" ? "border-purple-500/50 bg-purple-500/5" : `${inputBg}`
+                    }`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <Zap className="w-4 h-4 text-purple-400" />
+                          <span className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Premium</span>
+                        </div>
+                        <span className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>$14.99<span className="text-[10px] font-normal text-gray-500">/mo</span></span>
+                      </div>
+                      <ul className="space-y-1 mb-3">
+                        {["All lessons", "Spaced repetition", "Speaking practice", "Writing feedback", "No ads"].map((f) => (
+                          <li key={f} className="flex items-center gap-1.5 text-[10px] text-gray-400"><Check className="w-3 h-3 text-purple-400" /> {f}</li>
+                        ))}
+                      </ul>
+                      {subscription?.tier === "premium" ? (
+                        <p className="text-[10px] text-purple-400 font-semibold">Current plan</p>
+                      ) : (
+                        <button onClick={() => handleUpgrade("premium")} disabled={checkoutLoading}
+                          className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 disabled:opacity-50 cursor-pointer">
+                          {checkoutLoading ? "Loading..." : "Upgrade to Premium"}
+                        </button>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* ─── TAB 4: SECURITY & THEME ─── */}
+        {settingsTab === "security" && (
+          <div className="space-y-6">
+            {/* Password */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3"><Key className="w-5 h-5 text-purple-400" /><h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Change Password</h2></div>
+              </div>
+              <div className="space-y-3">
+                <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Current Password" aria-label="Current Password" className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${dark ? "text-white" : "text-gray-900"}`} />
+                <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="New Password (min 8 chars)" aria-label="New Password" className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${dark ? "text-white" : "text-gray-900"}`} />
+                <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm New Password" aria-label="Confirm New Password" className={`w-full ${inputBg} rounded-xl px-3 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${dark ? "text-white" : "text-gray-900"}`} />
+                {passwordMsg && <p className="text-xs text-emerald-400 flex items-center gap-1"><Check className="w-3 h-3" /> {passwordMsg}</p>}
+                {passwordError && <p className="text-xs text-red-400 flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> {passwordError}</p>}
+                <button onClick={changePassword} disabled={passwordSaving}
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold px-6 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 disabled:opacity-50 flex items-center gap-2 cursor-pointer">
+                  {passwordSaving ? <RefreshCw className="w-4 h-4 animate-spin" /> : null}
+                  {passwordSaving ? "Updating..." : "Update Password"}
                 </button>
-              )}
-            </div>
+              </div>
+            </motion.div>
+
+            {/* Theme */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>
+              <div className="flex items-center gap-3 mb-4">{dark ? <Moon className="w-5 h-5 text-purple-400" /> : <Sun className="w-5 h-5 text-amber-400" />}<h2 className={`text-lg font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Appearance Theme</h2></div>
+              <div className="flex gap-4">
+                <button onClick={toggleTheme} className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer ${dark ? "bg-purple-500 text-white shadow-lg shadow-purple-500/25" : `${inputBg} ${dark ? "text-white" : "text-gray-900"}`}`} aria-label="Dark mode"><Moon className="w-4 h-4" /> Dark Mode</button>
+                <button onClick={toggleTheme} className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer ${!dark ? "bg-purple-500 text-white shadow-lg shadow-purple-500/25" : `${inputBg} ${dark ? "text-white" : "text-gray-900"}`}`} aria-label="Light mode"><Sun className="w-4 h-4" /> Light Mode</button>
+              </div>
+            </motion.div>
+
+            {/* Logout */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>
+              <button onClick={logout} className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${dark ? "bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20" : "bg-red-50 border border-red-200 text-red-600 hover:bg-red-100"}`}>
+                <LogOut className="w-4 h-4" />
+                Log Out
+              </button>
+            </motion.div>
           </div>
-          {/* Pricing cards */}
-          <div className="space-y-3">
-            {dynamicPlans.length > 0 ? (
-              dynamicPlans.map((plan) => (
-                <div key={plan.id} className={`p-4 rounded-xl border transition-all ${
-                  subscription?.tier === plan.id ? "border-purple-500/50 bg-purple-500/5" : `${inputBg}`
-                }`}>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <Zap className="w-4 h-4 text-purple-400" />
-                      <span className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>{plan.title}</span>
-                      {plan.badge && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30">{plan.badge}</span>}
-                    </div>
-                    <span className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>${plan.price}<span className="text-[10px] font-normal text-gray-500">/{plan.interval === 'monthly' ? 'mo' : plan.interval === 'annual' ? 'yr' : 'one-time'}</span></span>
-                  </div>
-                  <p className="text-xs text-gray-400 mb-2">{plan.description}</p>
-                  <ul className="space-y-1 mb-3">
-                    {plan.features.map((f, i) => (
-                      <li key={i} className="flex items-center gap-1.5 text-[10px] text-gray-400"><Check className="w-3 h-3 text-purple-400" /> {f}</li>
-                    ))}
-                  </ul>
-                  {subscription?.tier === plan.id ? (
-                    <p className="text-[10px] text-purple-400 font-semibold">Current plan</p>
-                  ) : (
-                    <button onClick={() => handleUpgrade(plan.id)} disabled={checkoutLoading}
-                      className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 disabled:opacity-50">
-                      {checkoutLoading ? "Loading..." : `Subscribe to ${plan.title}`}
-                    </button>
-                  )}
-                </div>
-              ))
-            ) : (
-              <>
-                {/* Free */}
-                <div className={`p-4 rounded-xl border transition-all ${
-                  subscription?.tier === "free" ? "border-purple-500/50 bg-purple-500/5" : `${inputBg}`
-                }`}>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-gray-400" />
-                      <span className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Free</span>
-                    </div>
-                    <span className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>$0</span>
-                  </div>
-                  <ul className="space-y-1">
-                    {["4 lessons", "Basic flashcards", "Daily challenge"].map((f) => (
-                      <li key={f} className="flex items-center gap-1.5 text-[10px] text-gray-400"><Check className="w-3 h-3 text-gray-500" /> {f}</li>
-                    ))}
-                  </ul>
-                  {subscription?.tier === "free" && <p className="text-[10px] text-purple-400 mt-2 font-semibold">Current plan</p>}
-                </div>
-
-                {/* Premium */}
-                <div className={`p-4 rounded-xl border transition-all ${
-                  subscription?.tier === "premium" ? "border-purple-500/50 bg-purple-500/5" : `${inputBg}`
-                }`}>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <Zap className="w-4 h-4 text-purple-400" />
-                      <span className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Premium</span>
-                    </div>
-                    <span className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>$14.99<span className="text-[10px] font-normal text-gray-500">/mo</span></span>
-                  </div>
-                  <ul className="space-y-1 mb-3">
-                    {["All lessons", "Spaced repetition", "Speaking practice", "Writing feedback", "No ads"].map((f) => (
-                      <li key={f} className="flex items-center gap-1.5 text-[10px] text-gray-400"><Check className="w-3 h-3 text-purple-400" /> {f}</li>
-                    ))}
-                  </ul>
-                  {subscription?.tier === "premium" ? (
-                    <p className="text-[10px] text-purple-400 font-semibold">Current plan</p>
-                  ) : (
-                    <button onClick={() => handleUpgrade("premium")} disabled={checkoutLoading}
-                      className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 disabled:opacity-50">
-                      {checkoutLoading ? "Loading..." : "Upgrade to Premium"}
-                    </button>
-                  )}
-                </div>
-
-                {/* Exam Prep */}
-                <div className={`p-4 rounded-xl border transition-all ${
-                  subscription?.tier === "exam_prep" ? "border-purple-500/50 bg-purple-500/5" : `${inputBg}`
-                }`}>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <Crown className="w-4 h-4 text-amber-400" />
-                      <span className={`text-sm font-semibold ${dark ? "text-white" : "text-gray-900"}`}>Exam Prep</span>
-                    </div>
-                    <span className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>$24.99<span className="text-[10px] font-normal text-gray-500">/mo</span></span>
-                  </div>
-                  <ul className="space-y-1 mb-3">
-                    {["Everything in Premium", "Mock exams", "TCF/TEF practice", "Priority support", "Study plan"].map((f) => (
-                      <li key={f} className="flex items-center gap-1.5 text-[10px] text-gray-400"><Check className="w-3 h-3 text-amber-400" /> {f}</li>
-                    ))}
-                  </ul>
-                  {subscription?.tier === "exam_prep" ? (
-                    <p className="text-[10px] text-purple-400 font-semibold">Current plan</p>
-                  ) : (
-                    <button onClick={() => handleUpgrade("exam_prep")} disabled={checkoutLoading}
-                      className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-amber-500/25 disabled:opacity-50">
-                      {checkoutLoading ? "Loading..." : "Upgrade to Exam Prep"}
-                    </button>
-                  )}
-                </div>
-              </>
-            )}
-          </div>
-        </motion.div>
-
-        {/* Logout */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className={`${card} backdrop-blur-lg border rounded-2xl p-6 transition-colors`}>
-          <button onClick={logout} className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold transition-all ${dark ? "bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20" : "bg-red-50 border border-red-200 text-red-600 hover:bg-red-100"}`}>
-            <LogOut className="w-4 h-4" />
-            Log Out
-          </button>
-        </motion.div>
+        )}
       </div>
     </div>
   );
