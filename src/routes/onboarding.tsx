@@ -441,17 +441,28 @@ export function OnboardingPage() {
     }
   };
 
-  const handleFinishOnboarding = async (levelOverride?: string) => {
+  const handleFinishOnboarding = (levelOverride?: string) => {
     const finalLevel = levelOverride || (step === "result" ? evaluatedLevel : "A1");
 
-    // 1. Write to localStorage
+    // 1. Update francprep_user JSON in LocalStorage
+    try {
+      const rawUser = localStorage.getItem("francprep_user");
+      if (rawUser) {
+        const parsedUser = JSON.parse(rawUser);
+        parsedUser.onboardingComplete = true;
+        parsedUser.activeLanguage = selectedLang;
+        localStorage.setItem("francprep_user", JSON.stringify(parsedUser));
+      }
+    } catch (e) {}
+
+    // 2. Write individual LocalStorage flags
     saveGoalToStorage(selectedGoal, selectedLang);
     setDailyStudyGoal(selectedPace);
     localStorage.setItem("fp_active_language", selectedLang);
     localStorage.setItem("francprep_onboarding_completed", "true");
     localStorage.setItem("francprep_user_level", finalLevel);
 
-    // 2. Update AuthContext React state
+    // 3. Update AuthContext React state
     if (user && updateUser) {
       updateUser({
         ...user,
@@ -460,25 +471,20 @@ export function OnboardingPage() {
       } as any);
     }
 
-    // 3. Await backend MongoDB profile sync
-    try {
-      await Promise.all([
-        apiFetch("/users/profile/goal", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ goal: selectedGoal, activeLanguage: selectedLang }),
-        }),
-        apiFetch("/users/profile/complete-onboarding", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ activeLanguage: selectedLang, learningGoal: selectedGoal }),
-        })
-      ]);
-    } catch (e) {
-      console.error(e);
-    }
+    // 4. Non-blocking background API sync to MongoDB
+    apiFetch("/users/profile/goal", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ goal: selectedGoal, activeLanguage: selectedLang }),
+    }).catch(() => {});
 
-    // 4. Guaranteed navigation to /dashboard
+    apiFetch("/users/profile/complete-onboarding", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ activeLanguage: selectedLang, learningGoal: selectedGoal }),
+    }).catch(() => {});
+
+    // 5. Guaranteed instant browser redirect to /dashboard
     if (typeof window !== "undefined") {
       window.location.href = "/dashboard";
     } else {
