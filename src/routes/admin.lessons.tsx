@@ -75,11 +75,34 @@ function AdminLessonsPage() {
   const [auditData, setAuditData] = useState<any>(null);
   const [auditing, setAuditing] = useState(false);
 
+  const [selectedLang, setSelectedLang] = useState(() => {
+    return typeof window !== "undefined" ? localStorage.getItem("fp_admin_lang") || "fr" : "fr";
+  });
+  const [availableLanguages, setAvailableLanguages] = useState<any[]>([
+    { code: 'fr', name: 'French', flag: '🇫🇷' },
+    { code: 'es', name: 'Spanish', flag: '🇪🇸' },
+    { code: 'de', name: 'German', flag: '🇩🇪' }
+  ]);
+
+  useEffect(() => {
+    apiFetch("/languages")
+      .then(r => r.json())
+      .then(res => {
+        if (res.data && Array.isArray(res.data)) setAvailableLanguages(res.data);
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleLangChange = (code: string) => {
+    setSelectedLang(code);
+    if (typeof window !== "undefined") localStorage.setItem("fp_admin_lang", code);
+  };
+
   const fetchLessons = async (p: number, q?: string) => {
     setLoading(true);
     setError("");
     try {
-      const params = new URLSearchParams({ page: String(p), limit: "20" });
+      const params = new URLSearchParams({ page: String(p), limit: "20", language: selectedLang });
       if (levelFilter) params.set("level", levelFilter);
       if (q) params.set("search", q);
       const res = await apiFetch(`/admin/lessons?${params}`);
@@ -158,7 +181,7 @@ function AdminLessonsPage() {
     } else if (activeTab === "access") {
       fetchOverrides();
     }
-  }, [page, levelFilter, activeTab]);
+  }, [page, levelFilter, activeTab, selectedLang]);
 
   const handleSearch = (val: string) => {
     setSearch(val);
@@ -180,11 +203,27 @@ function AdminLessonsPage() {
           <h1 className="text-2xl font-bold dark:text-white text-gray-900">In-House Content & Access</h1>
           <p className="text-sm dark:text-gray-400 text-gray-500 mt-1">Manage platform syllabus, locking overrides, and catalog health.</p>
         </div>
-        {activeTab === "list" && (
-          <Link to="/admin/lessons/new" className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
-            <Plus className="w-4 h-4" /> New Lesson
-          </Link>
-        )}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-purple-500/30 bg-purple-500/10">
+            <span className="text-xs font-bold text-purple-400">Target Language:</span>
+            <select
+              value={selectedLang}
+              onChange={(e) => handleLangChange(e.target.value)}
+              className="bg-transparent text-xs font-bold text-purple-300 focus:outline-none cursor-pointer"
+            >
+              {availableLanguages.map((l) => (
+                <option key={l.code} value={l.code} className="bg-[#101828] text-white">
+                  {l.flag || '🌐'} {l.name || l.code.toUpperCase()}
+                </option>
+              ))}
+            </select>
+          </div>
+          {activeTab === "list" && (
+            <Link to="/admin/lessons/new" className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
+              <Plus className="w-4 h-4" /> New Lesson
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Tabs */}
