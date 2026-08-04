@@ -273,10 +273,6 @@ export function OnboardingPage() {
   const { dark } = useTheme();
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
 
-  if (authLoading) return null;
-  if (!isAuthenticated || !user) {
-    return <Navigate to="/login" search={{ redirect: "/onboarding" }} replace />;
-  }
   const [step, setStep] = useState<"language" | "goal" | "pace" | "choice" | "test" | "result">("language");
   const [availableLanguages, setAvailableLanguages] = useState<any[]>([
     { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', examName: 'DELF / TCF' },
@@ -309,6 +305,11 @@ export function OnboardingPage() {
   const [testScore, setTestScore] = useState<number>(0);
   const [evaluatedLevel, setEvaluatedLevel] = useState<"A1" | "A2" | "B1" | "B2">("A1");
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+
+  if (authLoading) return null;
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/login" search={{ redirect: "/onboarding" }} replace />;
+  }
 
   const paces = [
     { mins: 15, label: "Regular Study", desc: "15 mins/day • ~1 lesson/day", icon: Clock },
