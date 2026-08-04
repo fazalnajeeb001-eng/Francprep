@@ -210,16 +210,45 @@ export async function testElevenLabs(req: Request, res: Response) {
     if (!key || key.includes('...')) return res.json({ success: false, error: "ElevenLabs API Key not configured" });
     const cleanKey = key.trim().replace(/^["']|["']$/g, '');
 
+    // Step 1: Check GET /v1/voices for key validity
     const response = await fetch("https://api.elevenlabs.io/v1/voices", {
       headers: { "xi-api-key": cleanKey },
     });
-    if (response.ok) {
-      const data: any = await response.json();
-      const count = data.voices?.length || 0;
-      res.json({ success: true, message: `ElevenLabs Key Validated & Active! (${count} Studio Voices Ready)` });
-    } else {
+
+    if (!response.ok) {
       const err = await response.text();
-      res.json({ success: false, error: `ElevenLabs returned ${response.status}: ${err.slice(0, 150)}` });
+      return res.json({ success: false, error: `ElevenLabs authentication error (${response.status}): ${err.slice(0, 150)}` });
+    }
+
+    const data: any = await response.json();
+    const count = data.voices?.length || 0;
+    const voiceId = raw.selectedElevenLabsFemaleVoice || "21m00Tcm4TlvDq8ikWAM";
+
+    // Step 2: Perform a 1-word live text-to-speech test to verify character quota & synthesis capability
+    const ttsResponse = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+      method: "POST",
+      headers: {
+        "xi-api-key": cleanKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        text: "Bonjour",
+        model_id: "eleven_multilingual_v2",
+      }),
+    });
+
+    if (ttsResponse.ok) {
+      res.json({ success: true, message: `ElevenLabs Key & Studio Voice Synthesis Active! (${count} Voices Ready)` });
+    } else {
+      const errText = await ttsResponse.text();
+      let detailMsg = "";
+      try {
+        const parsed = JSON.parse(errText);
+        detailMsg = parsed.detail?.message || parsed.detail?.code || errText;
+      } catch {
+        detailMsg = errText.slice(0, 150);
+      }
+      res.json({ success: false, error: `ElevenLabs TTS Synthesis Error (${ttsResponse.status}): ${detailMsg}` });
     }
   } catch (err: any) {
     res.json({ success: false, error: err.message });

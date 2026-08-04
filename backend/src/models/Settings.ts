@@ -11,6 +11,8 @@ export interface ISettingsDocument extends Document {
   openaiApiKey: string;
   elevenLabsApiKey: string;
   huggingFaceApiKey: string;
+  huggingFaceToken: string;
+  preferredVoiceEngine: string;
   activeTTSProvider: 'auto' | 'elevenlabs' | 'openai' | 'huggingface' | 'google';
   selectedElevenLabsFemaleVoice: string;
   selectedElevenLabsMaleVoice: string;
@@ -34,6 +36,8 @@ const settingsSchema = new Schema<ISettingsDocument>(
     openaiApiKey: { type: String, default: "" },
     elevenLabsApiKey: { type: String, default: "" },
     huggingFaceApiKey: { type: String, default: "" },
+    huggingFaceToken: { type: String, default: "" },
+    preferredVoiceEngine: { type: String, default: "elevenlabs" },
     activeTTSProvider: { type: String, enum: ['auto', 'elevenlabs', 'openai', 'huggingface', 'google'], default: 'elevenlabs' },
     selectedElevenLabsFemaleVoice: { type: String, default: "21m00Tcm4TlvDq8ikWAM" }, // Rachel (Studio French Female)
     selectedElevenLabsMaleVoice: { type: String, default: "ErXwobaYiN019PkySvjV" },   // Antoni (Studio French Male)
