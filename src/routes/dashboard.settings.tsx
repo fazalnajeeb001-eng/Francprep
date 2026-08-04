@@ -217,39 +217,39 @@ function SettingsPage() {
   const inputBg = dark ? "bg-[#101828] border-[#1e2a4a]" : "bg-slate-50 border-slate-300 text-slate-900";
   return (
     <div className={`min-h-screen ${b} transition-colors duration-300`}>
-      <div className="max-w-2xl mx-auto p-6 space-y-6 pb-20">
+      <div className="max-w-2xl mx-auto p-4 sm:p-6 space-y-6 pb-20">
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between gap-4 mb-2">
           <div className="flex items-center gap-3">
-            <Link to="/dashboard" className={`${txtSec} hover:text-purple-600 text-sm font-semibold transition-colors`}>← Dashboard</Link>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Student Settings</h1>
+            <Link to="/dashboard" className={`${txtSec} hover:text-purple-600 text-xs sm:text-sm font-semibold transition-colors`}>← Dashboard</Link>
+            <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Student Settings</h1>
           </div>
         </motion.div>
 
         {user?.role === "admin" && (
           <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }}
-            className="p-5 rounded-2xl bg-gradient-to-r from-purple-900/40 via-indigo-900/40 to-pink-900/40 border border-purple-500/30 shadow-xl space-y-3 mb-6">
-            <div className="flex items-center justify-between">
+            className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-purple-900/40 via-indigo-900/40 to-pink-900/40 border border-purple-500/30 shadow-xl space-y-3 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <Crown className="w-5 h-5 text-amber-400" />
-                <h3 className="text-sm font-bold text-white">Administrator Access Detected</h3>
+                <Crown className="w-5 h-5 text-amber-400 shrink-0" />
+                <h3 className="text-xs sm:text-sm font-bold text-white">Administrator Access Detected</h3>
               </div>
-              <span className="text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">Admin Role</span>
+              <span className="text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 w-fit">Admin Role</span>
             </div>
             <p className="text-xs text-gray-300">
               You are viewing Student Preferences. As an Administrator, system configurations, API keys, AI voices, and content pipelines are managed in the Admin Studio.
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
-              <Link to="/admin/ai-config" className="flex items-center gap-1.5 p-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-semibold text-purple-200 transition-all">
-                <Zap className="w-3.5 h-3.5 text-pink-400" /> AI Voices & Keys
+              <Link to="/admin/ai-config" className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-[11px] sm:text-xs font-semibold text-purple-200 transition-all text-center">
+                <Zap className="w-3.5 h-3.5 text-pink-400 shrink-0" /> AI Voices & Keys
               </Link>
-              <Link to="/admin/lessons" className="flex items-center gap-1.5 p-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-semibold text-purple-200 transition-all">
-                <Target className="w-3.5 h-3.5 text-purple-400" /> Syllabus Content
+              <Link to="/admin/lessons" className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-[11px] sm:text-xs font-semibold text-purple-200 transition-all text-center">
+                <Target className="w-3.5 h-3.5 text-purple-400 shrink-0" /> Syllabus Content
               </Link>
-              <Link to="/admin/users" className="flex items-center gap-1.5 p-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-semibold text-purple-200 transition-all">
-                <User className="w-3.5 h-3.5 text-blue-400" /> User Roster
+              <Link to="/admin/users" className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-[11px] sm:text-xs font-semibold text-purple-200 transition-all text-center">
+                <User className="w-3.5 h-3.5 text-blue-400 shrink-0" /> User Roster
               </Link>
-              <Link to="/admin/pipeline/drafts" className="flex items-center gap-1.5 p-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-xs font-semibold text-purple-200 transition-all">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Content Studio
+              <Link to="/admin/pipeline/drafts" className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-[11px] sm:text-xs font-semibold text-purple-200 transition-all text-center">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" /> Content Studio
               </Link>
             </div>
           </motion.div>
@@ -270,13 +270,13 @@ function SettingsPage() {
                 key={tab.id}
                 type="button"
                 onClick={() => setSettingsTab(tab.id as any)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold transition-all shrink-0 cursor-pointer ${
                   isSelected
                     ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
                     : dark ? "text-gray-400 hover:text-white hover:bg-white/5" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                 }`}
               >
-                <Icon className="w-4 h-4" />
+                <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 <span>{tab.label}</span>
               </button>
             );

@@ -193,7 +193,7 @@ export function AdminAIConfigPage() {
   };
 
   return (
-    <div className={`min-h-screen ${bg} p-4 md:p-8 transition-colors duration-300`}>
+    <div className={`min-h-screen ${bg} p-3 sm:p-6 md:p-8 transition-colors duration-300`}>
       <div className="max-w-5xl mx-auto space-y-6">
 
         {/* ─── HEADER ─── */}
@@ -202,8 +202,8 @@ export function AdminAIConfigPage() {
             <Link to="/admin" className="text-xs text-purple-400 hover:underline flex items-center gap-1">
               <ArrowLeft className="w-3.5 h-3.5" /> Back to Admin Dashboard
             </Link>
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight mt-1 flex items-center gap-3">
-              <Brain className="w-8 h-8 text-purple-400" />
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight mt-1 flex items-center gap-3">
+              <Brain className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400 shrink-0" />
               AI Voice & Neural Engine Configuration
             </h1>
             <p className={`text-xs ${txtSec} mt-1`}>
@@ -214,7 +214,7 @@ export function AdminAIConfigPage() {
           <button
             onClick={handleSaveAPI}
             disabled={saving}
-            className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-xs shadow-lg shadow-purple-600/30 flex items-center gap-2"
+            className="w-full sm:w-auto justify-center px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-xs shadow-lg shadow-purple-600/30 flex items-center gap-2 cursor-pointer"
           >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             Save Voice & AI Settings

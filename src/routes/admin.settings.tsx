@@ -124,7 +124,7 @@ export function AdminSettingsPage() {
   };
 
   return (
-    <div className={`min-h-screen ${bg} p-4 md:p-8 transition-colors duration-300`}>
+    <div className={`min-h-screen ${bg} p-3 sm:p-6 md:p-8 transition-colors duration-300`}>
       <div className="max-w-5xl mx-auto space-y-6">
 
         {/* ─── HEADER ─── */}
@@ -133,8 +133,8 @@ export function AdminSettingsPage() {
             <Link to="/admin" className="text-xs text-purple-400 hover:underline flex items-center gap-1">
               <ArrowLeft className="w-3.5 h-3.5" /> Back to Admin Dashboard
             </Link>
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight mt-1 flex items-center gap-3">
-              <Key className="w-8 h-8 text-purple-400" />
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight mt-1 flex items-center gap-3">
+              <Key className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400 shrink-0" />
               API Keys & Integration Settings
             </h1>
             <p className={`text-xs ${txtSec} mt-1`}>
@@ -145,7 +145,7 @@ export function AdminSettingsPage() {
           <button
             onClick={handleSaveAPI}
             disabled={saving}
-            className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-xs shadow-lg shadow-purple-600/30 flex items-center gap-2"
+            className="w-full sm:w-auto justify-center px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-xs shadow-lg shadow-purple-600/30 flex items-center gap-2 cursor-pointer"
           >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             Save API Settings
@@ -153,7 +153,7 @@ export function AdminSettingsPage() {
         </div>
 
         {/* ─── STRIPE PAYMENT GATEWAY CARD ─── */}
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className={`p-6 rounded-2xl border ${card} space-y-4`}>
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className={`p-4 sm:p-6 rounded-2xl border ${card} space-y-4`}>
           <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-3">
             <h3 className="text-base font-extrabold flex items-center gap-2">
               <CreditCard className="w-5 h-5 text-purple-400" /> Stripe Payment Gateway Credentials
