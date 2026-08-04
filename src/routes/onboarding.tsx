@@ -247,7 +247,22 @@ export function OnboardingPage() {
   if (!isAuthenticated || !user) {
     return <Navigate to="/login" search={{ redirect: "/onboarding" }} replace />;
   }
-  const [step, setStep] = useState<"goal" | "pace" | "choice" | "test" | "result">("goal");
+  const [step, setStep] = useState<"language" | "goal" | "pace" | "choice" | "test" | "result">("language");
+  const [availableLanguages, setAvailableLanguages] = useState<any[]>([
+    { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', examName: 'DELF / TCF' }
+  ]);
+  const [selectedLang, setSelectedLang] = useState<string>("fr");
+
+  useState(() => {
+    apiFetch("/languages")
+      .then((res) => {
+        if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+          setAvailableLanguages(res.data);
+          setSelectedLang(res.data[0].code);
+        }
+      })
+      .catch(() => {});
+  });
 
   // Step 1: Goal wired directly to userPrefs
   const [selectedGoal, setSelectedGoal] = useState<LearningGoal>("TCF_B2");
@@ -362,15 +377,78 @@ export function OnboardingPage() {
 
         {/* Step Indicator */}
         <div className="flex items-center gap-2 text-xs font-semibold text-gray-500 dark:text-gray-400">
-          <span className={step === "goal" ? "text-purple-600 dark:text-purple-400 font-bold" : ""}>1. Target Goal</span> ➔
-          <span className={step === "pace" ? "text-purple-600 dark:text-purple-400 font-bold" : ""}>2. Daily Pace</span> ➔
-          <span className={step === "choice" || step === "test" || step === "result" ? "text-purple-600 dark:text-purple-400 font-bold" : ""}>3. Placement</span>
+          <span className={step === "language" ? "text-purple-600 dark:text-purple-400 font-bold" : ""}>1. Target Language</span> ➔
+          <span className={step === "goal" ? "text-purple-600 dark:text-purple-400 font-bold" : ""}>2. Target Goal</span> ➔
+          <span className={step === "pace" ? "text-purple-600 dark:text-purple-400 font-bold" : ""}>3. Daily Pace</span> ➔
+          <span className={step === "choice" || step === "test" || step === "result" ? "text-purple-600 dark:text-purple-400 font-bold" : ""}>4. Placement</span>
         </div>
       </div>
 
       {/* Main Content Area */}
       <div className="w-full max-w-4xl mx-auto my-auto py-8">
         <AnimatePresence mode="wait">
+          {/* STEP 0: TARGET LANGUAGE SELECTION */}
+          {step === "language" && (
+            <motion.div
+              key="step-language"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              className="space-y-8 text-center"
+            >
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-300 text-xs font-bold">
+                  <Compass className="w-3.5 h-3.5" />
+                  <span>Multi-Language Learning Platform</span>
+                </div>
+                <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight">
+                  Choose Your Target Language
+                </h1>
+                <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
+                  Select the language course you want to master. All CEFR levels, audio dialogues, and exam prep will adapt to your chosen language.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-left max-w-2xl mx-auto">
+                {availableLanguages.map((l) => {
+                  const isSelected = selectedLang === l.code;
+                  return (
+                    <div
+                      key={l.code}
+                      onClick={() => setSelectedLang(l.code)}
+                      className={`p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
+                        isSelected
+                          ? "border-purple-500 bg-purple-500/15 ring-2 ring-purple-500/30 text-purple-900 dark:text-purple-100 shadow-lg"
+                          : "border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#101828]/80 hover:border-purple-300"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-4xl">{l.flag || '🌐'}</span>
+                        <div className={`w-6 h-6 rounded-full border flex items-center justify-center shrink-0 ${isSelected ? "border-purple-500 bg-purple-500 text-white" : "border-gray-400"}`}>
+                          {isSelected && <CheckCircle2 className="w-4 h-4" />}
+                        </div>
+                      </div>
+                      <div>
+                        <span className="text-base font-extrabold block">{l.name} ({l.nativeName})</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400 block mt-0.5">{l.examName || 'CEFR Standard'}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="pt-4 flex justify-end max-w-2xl mx-auto">
+                <button
+                  onClick={() => setStep("goal")}
+                  className="px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm shadow-xl shadow-purple-600/25 flex items-center gap-2"
+                >
+                  <span>Continue to Target Goal</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          )}
+
           {/* STEP 1: TARGET GOAL SELECTION */}
           {step === "goal" && (
             <motion.div
