@@ -57,11 +57,20 @@ export function getGoalOptionsForLanguage(langCode: string = "fr") {
 
 export const GOAL_OPTIONS = getGoalOptionsForLanguage("fr");
 
-export function getGoalLabelsForLanguage(langCode: string = "fr"): Record<string, string> {
-  const opts = getGoalOptionsForLanguage(langCode);
-  const map: Record<string, string> = { none: "No goal set" };
-  opts.forEach(o => { map[o.value] = o.label; });
-  return map;
+export function getGoal(): GoalData | null {
+  try {
+    const stored = localStorage.getItem(GOAL_KEY);
+    if (!stored) return null;
+    return JSON.parse(stored);
+  } catch { return null; }
+}
+
+export function setGoal(goal: LearningGoal, langCode: string = "fr"): GoalData {
+  const labels = getGoalLabelsForLanguage(langCode);
+  const data: GoalData = { goal, label: labels[goal] || goal, setAt: Date.now() };
+  localStorage.setItem(GOAL_KEY, JSON.stringify(data));
+  window.dispatchEvent(new Event("goal-changed"));
+  return data;
 }
 
 const DAILY_GOAL_KEY = "fp_daily_study_goal_mins";
