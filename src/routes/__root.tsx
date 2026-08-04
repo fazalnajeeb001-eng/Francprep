@@ -8,6 +8,7 @@ import { AuthProvider, useAuth } from "~/lib/AuthContext";
 import { ThemeProvider } from "~/lib/ThemeContext";
 import { WidgetsProvider } from "~/lib/WidgetsContext";
 import { Shield } from "lucide-react";
+import { getTrackBranding } from "~/lib/trackBranding";
 
 const queryClient = new QueryClient();
 
@@ -190,10 +191,20 @@ function NavBarInner() {
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}>
       <div className="mx-auto flex h-14 min-h-[44px] max-w-7xl items-center justify-between px-4">
         <div className="flex items-center gap-4 sm:gap-6">
-          <Link to={isAuthenticated ? "/dashboard" : "/"} className="flex items-center gap-2 text-lg font-bold min-h-[44px]">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">F</div>
-            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent hidden sm:inline">FrancPrep</span>
-          </Link>
+          {(() => {
+            const activeLang = typeof window !== "undefined" ? localStorage.getItem("fp_active_language") || "fr" : "fr";
+            const branding = getTrackBranding(activeLang);
+            return (
+              <Link to={isAuthenticated ? "/dashboard" : "/"} className="flex items-center gap-2 text-lg font-bold min-h-[44px]">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
+                  {isAuthenticated ? branding.flag : "L"}
+                </div>
+                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent hidden sm:inline">
+                  {isAuthenticated ? branding.shortBrand : "LingoPrep"}
+                </span>
+              </Link>
+            );
+          })()}
           {isAuthenticated && user?.role === "admin" && (
             <div className="flex items-center gap-1 text-sm">
               <Link to="/admin" className="px-3 py-1.5 sm:py-2 min-h-[44px] sm:min-h-0 flex items-center gap-1.5 text-purple-400 hover:text-purple-300 bg-purple-500/10 border border-purple-500/30 rounded-xl transition-all text-xs sm:text-sm">

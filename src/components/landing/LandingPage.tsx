@@ -28,9 +28,10 @@ import { useTheme } from "~/lib/ThemeContext";
 
 // Central Brand Configuration - Change here anytime!
 export const BRAND_CONFIG = {
-  name: "FrancPrep",
-  tagline: "The Academic CEFR French Fluency System",
-  targetExams: "DELF / DALF & TCF / TEF Canada",
+  name: "LingoPrep",
+  subBrand: "FrancPrep • GermanPrep • SpanPrep • ItalPrep",
+  tagline: "Enterprise AI Multi-Language CEFR Certification Suite",
+  targetExams: "DELF / DALF, Goethe, DELE & CILS Certifications",
 };
 
 export function LandingPage() {
@@ -45,20 +46,20 @@ export function LandingPage() {
 
   const faqs = [
     {
-      q: "What makes FrancPrep different from apps like Duolingo or Babbel?",
-      a: "Commercial language apps focus on casual vocabulary games without structured academic depth. FrancPrep is a comprehensive 436-lesson CEFR fluency curriculum (A1 through C2) with gated DELF/DALF & TCF/TEF milestone exams to ensure genuine fluency."
+      q: "What makes LingoPrep different from apps like Duolingo or Babbel?",
+      a: "Commercial language apps focus on casual vocabulary games without structured academic depth. LingoPrep is an enterprise multi-language CEFR fluency curriculum (A1 through C2) with gated official certification milestone exams to ensure genuine fluency."
     },
     {
       q: "How does the Skippable Placement Test work?",
-      a: "New students can take an optional 5-minute placement assessment to benchmark their skills. By default, students start at A1 Discovery to build an unbreakable foundation, but experienced learners can request level bypass."
+      a: "New students can take an optional placement assessment tailored to their target language (French, German, Spanish, Italian). By default, students start at A1 Discovery to build an unbreakable foundation, but experienced learners can benchmark their level."
     },
     {
       q: "How does the Pedagogical AI Tutor work?",
-      a: "Our AI Engine evaluates your typed French responses in real time. It provides 1-2 sentence corrections in clear English, scoped strictly to what you have learned up to your current CEFR level, with bilingual flexibility for A1 and A2 learners."
+      a: "Our AI Engine evaluates your typed language responses in real time. It provides corrections in clear English, scoped strictly to what you have learned up to your current CEFR level, with bilingual flexibility for A1 and A2 learners."
     },
     {
-      q: "Can I use FrancPrep for TCF or TEF Canada PR Points?",
-      a: "Yes! Reaching NCLC 7+ (B2 Level) in FrancPrep fulfills IRCC requirements for Canada Express Entry, yielding up to +50 bonus CRS points."
+      q: "Can I use LingoPrep for official language certification exams?",
+      a: "Yes! Reaching B2/C1 Level in LingoPrep prepares you directly for official exams: DELF/DALF & TCF/TEF (French), Goethe-Zertifikat & TestDaF (German), DELE/SIELE (Spanish), and CILS/CELI (Italian)."
     }
   ];
 
@@ -77,14 +78,17 @@ export function LandingPage() {
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
-              <span className="font-extrabold text-xl text-white">F</span>
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 via-indigo-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
+              <span className="font-extrabold text-xl text-white">L</span>
             </div>
-            <span className={`font-extrabold text-xl sm:text-2xl tracking-tight ${
-              isDarkMode ? "bg-gradient-to-r from-white via-slate-200 to-purple-300 bg-clip-text text-transparent" : "text-slate-900"
-            }`}>
-              {BRAND_CONFIG.name}
-            </span>
+            <div>
+              <span className={`font-extrabold text-xl sm:text-2xl tracking-tight block ${
+                isDarkMode ? "bg-gradient-to-r from-white via-slate-200 to-purple-300 bg-clip-text text-transparent" : "text-slate-900"
+              }`}>
+                {BRAND_CONFIG.name}
+              </span>
+              <span className="text-[10px] text-purple-400 font-mono hidden sm:block -mt-1">{BRAND_CONFIG.subBrand}</span>
+            </div>
           </div>
 
           <nav className={`hidden md:flex items-center gap-8 text-sm font-semibold ${
