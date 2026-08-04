@@ -334,8 +334,7 @@ export function AdminAIConfigPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      const cleanKey = form.elevenLabsApiKey?.includes("...") ? undefined : form.elevenLabsApiKey;
-                      speak("Bonjour ! Ceci est un test de la voix de studio ElevenLabs.", "fr-FR", 0.85, "female", form.selectedElevenLabsFemaleVoice, "elevenlabs", { elevenLabsApiKey: cleanKey });
+                      speak("Bonjour ! Ceci est un test de la voix de studio ElevenLabs.", "fr-FR", 0.85, "female", form.selectedElevenLabsFemaleVoice, "elevenlabs", { elevenLabsApiKey: form.elevenLabsApiKey });
                     }}
                     className="px-2.5 py-1 bg-pink-500/20 text-pink-300 border border-pink-500/30 rounded-lg text-[10px] font-bold hover:bg-pink-500/30 flex items-center gap-1 cursor-pointer"
                   >
@@ -386,8 +385,7 @@ export function AdminAIConfigPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        const cleanKey = form.elevenLabsApiKey?.includes("...") ? undefined : form.elevenLabsApiKey;
-                        speak("Bonjour ! Je suis Coach Léo, ravi de travailler avec vous.", "fr-FR", 0.85, "male", form.selectedElevenLabsMaleVoice, "elevenlabs", { elevenLabsApiKey: cleanKey });
+                        speak("Bonjour ! Je suis Coach Léo, ravi de travailler avec vous.", "fr-FR", 0.85, "male", form.selectedElevenLabsMaleVoice, "elevenlabs", { elevenLabsApiKey: form.elevenLabsApiKey });
                       }}
                       className="text-[10px] text-pink-300 hover:underline flex items-center gap-1 font-bold cursor-pointer"
                     >
