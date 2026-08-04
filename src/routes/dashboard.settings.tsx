@@ -6,7 +6,7 @@ import { apiFetch } from "~/lib/apiFetch";
 import { createCheckout, createPortal, getSubscription, type Subscription } from "~/lib/paymentsApi";
 import { Moon, Sun, Shield, Key, CreditCard, Check, AlertTriangle, RefreshCw, ChevronDown, ChevronUp, Target, User, LogOut, Zap, Crown, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-import { GOAL_OPTIONS, type LearningGoal, setGoal as saveGoalToStorage, getGoal, getDailyStudyGoal, setDailyStudyGoal } from "~/components/dashboard/utils/userPrefs";
+import { GOAL_OPTIONS, getGoalOptionsForLanguage, type LearningGoal, setGoal as saveGoalToStorage, getGoal, getDailyStudyGoal, setDailyStudyGoal } from "~/components/dashboard/utils/userPrefs";
 
 export const Route = createFileRoute("/dashboard/settings")({ component: SettingsPage });
 
