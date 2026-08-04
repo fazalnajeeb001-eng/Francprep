@@ -193,11 +193,6 @@ function CommunityExamHubPage() {
   const { dark } = useTheme();
   const navigate = useNavigate();
 
-  if (authLoading) return null;
-  if (!isAuthenticated || !user) {
-    return <Navigate to="/login" search={{ redirect: "/community" }} replace />;
-  }
-
   const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
   const [buddyRequests, setBuddyRequests] = useState<BuddyCircleRequest[]>(INITIAL_BUDDY_REQUESTS);
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -268,6 +263,11 @@ function CommunityExamHubPage() {
     }
     checkToggle();
   }, [user]);
+
+  if (authLoading) return null;
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/login" search={{ redirect: "/community" }} replace />;
+  }
 
   const handleUpvote = (postId: string) => {
     setPosts((prev) =>
