@@ -1,15 +1,5 @@
-import { useRef, useState, useEffect, Suspense, lazy, Component, type ReactNode } from "react";
+import { motion } from "framer-motion";
 import { getSkinById } from "./avatarSkins";
-
-const VRMAvatar = lazy(() =>
-  import("./VRMAvatar").then((m) => ({ default: m.VRMAvatar }))
-);
-
-class AvatarErrorBoundary extends Component<{ children: ReactNode; fallback: ReactNode }, { hasError: boolean }> {
-  state = { hasError: false };
-  static getDerivedStateFromError() { return { hasError: true }; }
-  render() { return this.state.hasError ? this.props.fallback : this.props.children; }
-}
 
 export function AvatarIcon({ features, size = 36 }: { features?: { gender?: string; skinTone?: string; hairColor?: string; outfitColor?: string } | null; size?: number }) {
   const gender = features?.gender || "female";
@@ -54,13 +44,13 @@ export function AvatarFallback({ size, gender }: { size: number; gender: string 
   const bg = gender === "male"
     ? "bg-gradient-to-br from-purple-600 to-indigo-700"
     : "bg-gradient-to-br from-pink-500 to-rose-600";
-  const letter = gender === "male" ? "L" : "C";
+  const avatarImg = gender === "male" ? "/models/leo-avatar.png" : "/models/chloe-avatar.png";
   return (
     <div
       style={{ width: size, height: size }}
-      className={`${bg} rounded-full flex items-center justify-center shadow-lg`}
+      className={`${bg} rounded-full overflow-hidden shadow-lg border-2 border-white/20 relative flex items-center justify-center`}
     >
-      <span className="text-white font-bold" style={{ fontSize: size * 0.4 }}>{letter}</span>
+      <img src={avatarImg} alt="Avatar" className="w-full h-full object-cover object-top" style={{ objectPosition: "50% 15%" }} />
     </div>
   );
 }
@@ -81,45 +71,40 @@ interface SmartAvatarProps {
 
 export function SmartAvatar({ gender: propGender, features, size = 80, animate = "idle" }: SmartAvatarProps) {
   const gender = propGender || features?.gender || "female";
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const isMale = gender === "male";
+  const avatarImg = isMale ? "/models/leo-avatar.png" : "/models/chloe-avatar.png";
 
-  useEffect(() => {
-    if (size < 60) return;
-    const el = containerRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setIsVisible(true); observer.disconnect(); } },
-      { rootMargin: "200px" }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [size]);
-
-  if (size < 60) {
-    return <AvatarFallback size={size} gender={gender} />;
-  }
+  const getAnimationVariants = () => {
+    if (animate === "walk") {
+      return { y: [0, -6, 0], transition: { repeat: Infinity, duration: 0.6 } };
+    }
+    if (animate === "celebrate") {
+      return { y: [0, -12, 0], scale: [1, 1.08, 1], transition: { repeat: Infinity, duration: 0.8 } };
+    }
+    if (animate === "wave") {
+      return { rotate: [0, 8, -8, 0], transition: { repeat: Infinity, duration: 1 } };
+    }
+    // Idle breathing
+    return { y: [0, -3, 0], transition: { repeat: Infinity, duration: 2.5, ease: "easeInOut" } };
+  };
 
   return (
-    <div ref={containerRef}>
-      <AvatarErrorBoundary fallback={<AvatarFallback size={size} gender={gender} />}>
-        <Suspense fallback={<AvatarFallback size={size} gender={gender} />}>
-          {isVisible ? (
-            <VRMAvatar
-              modelUrl={gender === "male" ? "/models/leo-avatar.glb" : "/models/female-avatar.glb"}
-              size={size}
-              animate={animate}
-              tint={{
-                skinColor: features?.skinTone ? getSkinById(features.skinTone).color : undefined,
-                hairColor: features?.hairColor,
-                outfitColor: features?.outfitColor,
-              }}
-            />
-          ) : (
-            <AvatarFallback size={size} gender={gender} />
-          )}
-        </Suspense>
-      </AvatarErrorBoundary>
-    </div>
+    <motion.div
+      animate={getAnimationVariants()}
+      style={{ width: size, height: size }}
+      className="relative shrink-0 flex items-center justify-center"
+    >
+      <div className={`w-full h-full rounded-full overflow-hidden border-2 shadow-xl ${
+        isMale ? "border-purple-500/40 bg-gradient-to-br from-purple-900/40 to-indigo-900/40" : "border-pink-500/40 bg-gradient-to-br from-pink-900/40 to-purple-900/40"
+      }`}>
+        <img
+          src={avatarImg}
+          alt="Avatar"
+          loading="eager"
+          className="w-full h-full object-cover object-top"
+          style={{ objectPosition: "50% 15%" }}
+        />
+      </div>
+    </motion.div>
   );
 }
