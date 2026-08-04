@@ -155,13 +155,7 @@ export function AdminAIConfigPage() {
     setSaving(true);
     setSaveMsg("");
     if (typeof window !== "undefined") {
-      const cleanForm = { ...form };
-      if (cleanForm.elevenLabsApiKey?.includes('...')) cleanForm.elevenLabsApiKey = '';
-      if (cleanForm.openaiApiKey?.includes('...')) cleanForm.openaiApiKey = '';
-      if (cleanForm.openRouterApiKey?.includes('...')) cleanForm.openRouterApiKey = '';
-      if (cleanForm.anthropicApiKey?.includes('...')) cleanForm.anthropicApiKey = '';
-      if (cleanForm.huggingFaceToken?.includes('...')) cleanForm.huggingFaceToken = '';
-      localStorage.setItem("francprep_ai_config", JSON.stringify(cleanForm));
+      localStorage.setItem("francprep_ai_config", JSON.stringify(form));
     }
     try {
       const res = await apiFetch("/settings", {

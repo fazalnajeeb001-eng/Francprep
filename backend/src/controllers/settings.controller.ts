@@ -77,7 +77,6 @@ export async function updateSettings(req: Request, res: Response) {
     for (const key of allowed) {
       if (req.body[key] !== undefined) {
         const val = String(req.body[key]).trim();
-        if (val.includes('...') || placeholders.includes(val)) continue;
         updates[key] = val;
         inMemorySettings[key] = val;
       }
