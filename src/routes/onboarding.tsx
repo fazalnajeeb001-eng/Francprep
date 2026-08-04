@@ -449,7 +449,16 @@ export function OnboardingPage() {
     setDailyStudyGoal(selectedPace);
     localStorage.setItem("fp_active_language", selectedLang);
 
-    // 2. Persist to backend database so user profile syncs
+    // 2. Update AuthContext state so UI immediately recognizes onboarding as complete
+    if (user && updateUser) {
+      updateUser({
+        ...user,
+        onboardingComplete: true,
+        activeLanguage: selectedLang,
+      } as any);
+    }
+
+    // 3. Persist to backend database so user profile syncs
     try {
       await apiFetch("/users/profile/goal", {
         method: "PUT",
@@ -463,7 +472,7 @@ export function OnboardingPage() {
       });
     } catch {}
 
-    // 3. Save onboarding level
+    // 4. Save onboarding level
     localStorage.setItem("francprep_onboarding_completed", "true");
     localStorage.setItem("francprep_user_level", finalLevel);
 
