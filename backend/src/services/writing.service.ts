@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { env } from '../config/env';
 import Settings from '../models/Settings';
 import { generateAICompletion } from './aiProvider';
@@ -39,9 +40,11 @@ export interface SpeakingChatResult {
 export class WritingService {
   private async getOpenRouterKey(): Promise<string> {
     try {
-      const settings = await Settings.findOne();
-      if (settings?.openRouterApiKey) {
-        return settings.openRouterApiKey;
+      if (mongoose.connection.readyState === 1) {
+        const settings = await Settings.findOne();
+        if (settings?.openRouterApiKey) {
+          return settings.openRouterApiKey;
+        }
       }
     } catch (e) {
       console.warn('Could not read Settings model for OpenRouter key:', e);

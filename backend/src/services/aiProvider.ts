@@ -1,4 +1,5 @@
 import axios from 'axios';
+import mongoose from 'mongoose';
 import Settings from '../models/Settings';
 
 export interface AICompletionOptions {
@@ -16,7 +17,14 @@ export async function generateAICompletion({
   temperature = 0.2,
   maxTokens = 4000,
 }: AICompletionOptions): Promise<string> {
-  const settings = await Settings.findOne();
+  let settings: any = null;
+  if (mongoose.connection.readyState === 1) {
+    try {
+      settings = await Settings.findOne();
+    } catch (e) {
+      console.warn('Could not read Settings in generateAICompletion:', e);
+    }
+  }
   
   // Model resolution mapping
   let apiProvider = 'openrouter';
