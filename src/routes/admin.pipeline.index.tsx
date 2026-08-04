@@ -28,6 +28,25 @@ interface DraftItem {
   updatedAt: string;
 }
 
+export const CEFR_PRESET_LANGUAGES = [
+  { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸', examName: 'DELE / SIELE', direction: 'ltr' },
+  { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪', examName: 'Goethe-Zertifikat / TestDaF', direction: 'ltr' },
+  { code: 'it', name: 'Italian', nativeName: 'Italiano', flag: '🇮🇹', examName: 'CILS / CELI / PLIDA', direction: 'ltr' },
+  { code: 'pt', name: 'Portuguese', nativeName: 'Português', flag: '🇵🇹', examName: 'CAPLE / CELPE-Bras', direction: 'ltr' },
+  { code: 'en', name: 'English', nativeName: 'English', flag: '🇬🇧', examName: 'IELTS / TOEFL / Cambridge', direction: 'ltr' },
+  { code: 'nl', name: 'Dutch', nativeName: 'Nederlands', flag: '🇳🇱', examName: 'CNaVT / NT2', direction: 'ltr' },
+  { code: 'ru', name: 'Russian', nativeName: 'Русский', flag: '🇷🇺', examName: 'TORFL / TRKI', direction: 'ltr' },
+  { code: 'zh', name: 'Mandarin Chinese', nativeName: '中文', flag: '🇨🇳', examName: 'HSK 1-6 (CEFR Mapped)', direction: 'ltr' },
+  { code: 'ja', name: 'Japanese', nativeName: '日本語', flag: '🇯🇵', examName: 'JLPT N5-N1 (CEFR Mapped)', direction: 'ltr' },
+  { code: 'ko', name: 'Korean', nativeName: '한국어', flag: '🇰🇷', examName: 'TOPIK I-II (CEFR Mapped)', direction: 'ltr' },
+  { code: 'ar', name: 'Arabic', nativeName: 'العربية', flag: '🇸🇦', examName: 'ALPT (CEFR Aligned)', direction: 'rtl' },
+  { code: 'pl', name: 'Polish', nativeName: 'Polski', flag: '🇵🇱', examName: 'Egzamin Certyfikatowy', direction: 'ltr' },
+  { code: 'sv', name: 'Swedish', nativeName: 'Svenska', flag: '🇸🇪', examName: 'Tisus / Swedex', direction: 'ltr' },
+  { code: 'tr', name: 'Turkish', nativeName: 'Türkçe', flag: '🇹🇷', examName: 'TÖMER / TYS', direction: 'ltr' },
+  { code: 'el', name: 'Greek', nativeName: 'Ελληνικά', flag: '🇬🇷', examName: 'Certificate of Attainment in Greek', direction: 'ltr' },
+  { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', examName: 'DELF / DALF / TCF / TEF', direction: 'ltr' }
+];
+
 function PipelineDashboardPage() {
   const { dark } = useTheme();
   const [pipelineTab, setPipelineTab] = useState<"import" | "drafts" | "integrated" | "published">("import");
@@ -1268,6 +1287,32 @@ function PipelineDashboardPage() {
                 </div>
 
                 <form onSubmit={handleCreateLanguage} className="space-y-3 text-xs">
+                  <div>
+                    <label className="block text-[10px] text-purple-400 font-bold mb-1">⚡ Quick Select CEFR Language Preset</label>
+                    <select
+                      onChange={(e) => {
+                        const selected = CEFR_PRESET_LANGUAGES.find(l => l.code === e.target.value);
+                        if (selected) {
+                          setNewLangForm({
+                            code: selected.code,
+                            name: selected.name,
+                            nativeName: selected.nativeName,
+                            flag: selected.flag,
+                            examName: selected.examName
+                          });
+                        }
+                      }}
+                      className={`${inp} bg-purple-500/10 border-purple-500/30 text-purple-300 font-semibold`}
+                    >
+                      <option value="">Choose from global CEFR languages...</option>
+                      {CEFR_PRESET_LANGUAGES.map((l) => (
+                        <option key={l.code} value={l.code} className="bg-[#101828] text-white">
+                          {l.flag} {l.name} ({l.nativeName}) — {l.examName}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
                   <div>
                     <label className="block text-[10px] text-gray-400 mb-1">Language Code (e.g. es, de, it, zh)</label>
                     <input

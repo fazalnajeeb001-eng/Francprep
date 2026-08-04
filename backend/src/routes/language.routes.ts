@@ -29,33 +29,33 @@ router.get('/', async (_req: Request, res: Response) => {
   }
 });
 
-// POST /api/languages — Admin route to register a new language
+// POST /api/languages — Admin route to register or update a target language
 router.post('/', async (req: Request, res: Response) => {
   try {
     const { code, name, nativeName, flag, examName, direction, order } = req.body;
-    if (!code || !name || !nativeName || !flag) {
-      return res.status(400).json({ success: false, error: 'code, name, nativeName, and flag are required' });
+    if (!code || !name || !nativeName) {
+      return res.status(400).json({ success: false, error: 'code, name, and nativeName are required' });
     }
 
-    const existing = await Language.findOne({ code: code.toLowerCase() });
-    if (existing) {
-      return res.status(409).json({ success: false, error: `Language with code '${code}' already exists` });
-    }
+    const normCode = code.toLowerCase().trim();
+    const updatedLang = await Language.findOneAndUpdate(
+      { code: normCode },
+      {
+        code: normCode,
+        name: name.trim(),
+        nativeName: nativeName.trim(),
+        flag: flag || '🌐',
+        examName: examName || 'CEFR Assessment',
+        direction: direction || 'ltr',
+        order: order || 1,
+        isActive: true,
+      },
+      { upsert: true, new: true, runValidators: true }
+    );
 
-    const newLang = await Language.create({
-      code: code.toLowerCase(),
-      name,
-      nativeName,
-      flag,
-      examName: examName || 'CEFR Assessment',
-      direction: direction || 'ltr',
-      order: order || 1,
-      isActive: true,
-    });
-
-    res.status(201).json({ success: true, data: newLang });
+    res.status(200).json({ success: true, data: updatedLang });
   } catch (err: any) {
-    res.status(500).json({ success: false, error: 'Failed to create language', message: err.message });
+    res.status(500).json({ success: false, error: 'Failed to save language', message: err.message });
   }
 });
 
