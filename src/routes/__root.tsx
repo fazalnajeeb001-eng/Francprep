@@ -59,9 +59,26 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover" },
-      { title: "FrancPrep - TCF/TEF Exam Prep & French Coaching" }
+      { title: "FrancPrep — #1 TCF Canada & TEF Canada Exam Simulator & NCLC 7 French Platform" },
+      { name: "description", content: "Master TCF Canada & TEF Canada for Canadian Express Entry PR points. Authentic CBT exam simulators, AI interactive speaking examiner, CEFR A1-C2 curriculum, and instant NCLC 7 score prediction." },
+      { name: "keywords", content: "TCF Canada exam simulator, TEF Canada prep, NCLC 7 French, Express Entry French points, DELF B2 prep, Learn French online, TCF speaking practice, TEF writing practice" },
+      { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
+      { name: "author", content: "FrancPrep Team" },
+      // OpenGraph Meta
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://francprep.com" },
+      { property: "og:title", content: "FrancPrep — TCF & TEF Canada Exam Simulator & NCLC 7 Platform" },
+      { property: "og:description", content: "Prepare for TCF & TEF Canada with authentic CBT exam simulators and two-way AI speaking examiner. Gain up to 62 Canadian PR Express Entry points!" },
+      { property: "og:site_name", content: "FrancPrep" },
+      // Twitter Card Meta
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "FrancPrep — #1 TCF/TEF Canada Exam Prep" },
+      { name: "twitter:description", content: "Authentic CBT Exam Simulators & AI Examiner Roleplay for Canadian Immigration NCLC 7 PR." }
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "canonical", href: "https://francprep.com" }
+    ],
   }),
   notFoundComponent: () => (
     <div className="min-h-screen dark:bg-[#070B17] bg-gray-50 flex items-center justify-center p-4">

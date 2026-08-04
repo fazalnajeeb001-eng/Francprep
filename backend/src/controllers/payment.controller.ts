@@ -52,7 +52,8 @@ export async function webhook(req: Request, res: Response) {
     const sig = req.headers['stripe-signature'] as string;
     const settings = await Settings.findOne();
     const webhookSecret = settings?.stripeWebhookSecret || process.env.STRIPE_WEBHOOK_SECRET || '';
-    const event = (Stripe as any).Webhooks.constructEvent(req.body, sig, webhookSecret);
+    const stripe = await stripeService.getStripe();
+    const event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
     await stripeService.handleWebhook(event);
     res.json({ received: true });
   } catch (err: any) {

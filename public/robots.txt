@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Allow: /exam
+Allow: /learn
+Allow: /login
+Allow: /signup
+
+Disallow: /admin/
+Disallow: /dashboard/settings
+
+Sitemap: https://francprep.com/sitemap.xml

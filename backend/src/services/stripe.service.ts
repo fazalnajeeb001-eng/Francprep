@@ -5,7 +5,7 @@ import Settings from '../models/Settings';
 
 let _stripe: Stripe | null = null;
 
-async function getStripe(): Promise<Stripe> {
+export async function getStripe(): Promise<Stripe> {
   if (_stripe) return _stripe;
   const settings = await Settings.findOne();
   const key = settings?.stripeSecretKey || process.env.STRIPE_SECRET_KEY || '';
