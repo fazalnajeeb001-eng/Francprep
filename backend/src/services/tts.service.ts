@@ -59,16 +59,18 @@ export async function generateNeuralAudio(
   }
 
   const tryElevenLabs = async () => {
-    const elevenLabsKey = (tempKeys?.elevenLabsApiKey && !tempKeys.elevenLabsApiKey.includes('...'))
+    const rawKey = (tempKeys?.elevenLabsApiKey && !tempKeys.elevenLabsApiKey.includes('...'))
       ? tempKeys.elevenLabsApiKey
       : (settings?.elevenLabsApiKey && !settings.elevenLabsApiKey.includes('...'))
       ? settings.elevenLabsApiKey
       : process.env.ELEVENLABS_API_KEY;
 
-    if (!elevenLabsKey || elevenLabsKey.includes('...')) {
+    if (!rawKey || rawKey.includes('...')) {
       console.warn('[ElevenLabs] No valid API key configured');
       return null;
     }
+
+    const elevenLabsKey = rawKey.trim().replace(/^["']|["']$/g, '');
 
     const defaultFemale = settings?.selectedElevenLabsFemaleVoice || '21m00Tcm4TlvDq8ikWAM';
     const defaultMale = settings?.selectedElevenLabsMaleVoice || 'ErXwobaYiN019PkySvjV';
