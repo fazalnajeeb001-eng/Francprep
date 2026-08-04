@@ -550,10 +550,11 @@ function getDraftGroupKey(d: any): string {
 // List drafts (returns latest active draft per lessonId by default)
 router.get('/content-pipeline/drafts', async (req: AuthRequest, res: Response) => {
   try {
-    const { level, lessonId, limit = '500', includeSuperseded } = req.query as any;
+    const { level, lessonId, language, limit = '500', includeSuperseded } = req.query as any;
     const filter: any = {};
     if (level) filter.level = level;
     if (lessonId) filter.lessonId = lessonId;
+    if (language) filter.language = language;
     if (includeSuperseded !== 'true') {
       filter.status = { $ne: 'superseded' };
     }

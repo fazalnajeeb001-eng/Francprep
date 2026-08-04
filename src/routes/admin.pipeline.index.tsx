@@ -203,12 +203,12 @@ function PipelineDashboardPage() {
 
   const fetchDrafts = async () => {
     try {
-      const res = await apiFetch("/admin/content-pipeline/drafts");
+      const res = await apiFetch(`/admin/content-pipeline/drafts?language=${selectedLangCode}`);
       const json = await res.json();
       if (json.success) {
         setDrafts(json.data || []);
       }
-      const pubRes = await apiFetch("/lessons?limit=10");
+      const pubRes = await apiFetch(`/lessons?language=${selectedLangCode}&limit=50`);
       const pubJson = await pubRes.json();
       if (pubJson.success) {
         setPublishedLessons(pubJson.data || []);
@@ -220,7 +220,7 @@ function PipelineDashboardPage() {
 
   useEffect(() => {
     fetchDrafts();
-  }, []);
+  }, [selectedLangCode]);
 
   const handleImportMarkdown = async (e: React.FormEvent) => {
     e.preventDefault();
