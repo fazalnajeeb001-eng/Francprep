@@ -444,14 +444,14 @@ export function OnboardingPage() {
   const handleFinishOnboarding = async (levelOverride?: string) => {
     const finalLevel = levelOverride || (step === "result" ? evaluatedLevel : "A1");
 
-    // 1. Instantly write to localStorage so UI & guards immediately see completion
+    // 1. Write to localStorage
     saveGoalToStorage(selectedGoal, selectedLang);
     setDailyStudyGoal(selectedPace);
     localStorage.setItem("fp_active_language", selectedLang);
     localStorage.setItem("francprep_onboarding_completed", "true");
     localStorage.setItem("francprep_user_level", finalLevel);
 
-    // 2. Instantly update AuthContext React state
+    // 2. Update AuthContext React state
     if (user && updateUser) {
       updateUser({
         ...user,
@@ -460,18 +460,23 @@ export function OnboardingPage() {
       } as any);
     }
 
-    // 3. Fire-and-forget backend sync in background (doesn't block navigation)
-    apiFetch("/users/profile/goal", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ goal: selectedGoal, activeLanguage: selectedLang }),
-    }).catch(() => {});
-
-    apiFetch("/users/profile/complete-onboarding", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ activeLanguage: selectedLang, learningGoal: selectedGoal }),
-    }).catch(() => {});
+    // 3. Await backend MongoDB profile sync
+    try {
+      await Promise.all([
+        apiFetch("/users/profile/goal", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ goal: selectedGoal, activeLanguage: selectedLang }),
+        }),
+        apiFetch("/users/profile/complete-onboarding", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ activeLanguage: selectedLang, learningGoal: selectedGoal }),
+        })
+      ]);
+    } catch (e) {
+      console.error(e);
+    }
 
     // 4. Guaranteed navigation to /dashboard
     if (typeof window !== "undefined") {

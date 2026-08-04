@@ -74,7 +74,8 @@ function DashboardPage() {
                 saveGoalToStorage(json.data.user.learningGoal as LearningGoal);
               }
             }
-            if (!json.data.user.onboardingComplete) {
+            const isCompletedLocal = typeof window !== "undefined" && localStorage.getItem("francprep_onboarding_completed") === "true";
+            if (!json.data.user.onboardingComplete && !isCompletedLocal) {
               window.location.href = "/onboarding";
               return;
             }
