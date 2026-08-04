@@ -65,14 +65,9 @@ export function speak(
     finalGender = "male";
   }
 
-  // Auto-detect language if text is predominantly English vs French
-  let langCode = lang.toLowerCase().startsWith("en") ? "en" : "fr";
-  const englishWords = ["welcome", "hello", "lesson", "question", "chapter", "exercise", "practice", "select", "choose", "the", "this", "that"];
-  const containsEnglish = englishWords.some((w) => lower.includes(` ${w} `) || lower.startsWith(`${w} `));
-  const containsFrench = lower.includes("bonjour") || lower.includes("c'est") || lower.includes("est-ce") || lower.includes("vous") || lower.includes("nous");
-  if (containsEnglish && !containsFrench) {
-    langCode = "en";
-  }
+  // Extract ISO 2-letter language code (e.g. de, es, it, pt, fr, en, ru, zh, ja, ko, ar)
+  let langCode = lang ? lang.split('-')[0].toLowerCase() : 'fr';
+  if (langCode === 'en-us' || langCode === 'en-gb') langCode = 'en';
 
   // Pre-create HTMLAudioElement to retain mobile browser autoplay permissions
   const audio = new Audio();
