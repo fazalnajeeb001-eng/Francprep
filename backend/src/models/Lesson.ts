@@ -84,6 +84,7 @@ export interface ILessonDocument extends Document {
 
   // Raw canonical blob (migration/pipeline writes this; service reads it)
   canonical?: any;
+  language?: string;
 
   createdAt: Date;
   updatedAt: Date;
@@ -223,11 +224,28 @@ const lessonSchema = new Schema<ILessonDocument>(
     },
     selfAssessment: { type: [String], default: undefined },
 
+    language: { type: String, default: 'French', index: true },
     // Raw canonical blob stored by migration scripts / admin pipeline
     canonical: { type: Schema.Types.Mixed, default: undefined },
   },
   { timestamps: true }
 );
+
+lessonSchema.pre('save', async function (next) {
+  try {
+    const langCode = (this as any).language || 'French';
+    const norm = langCode.trim().toLowerCase();
+    const langDoc = await mongoose.model('Language').findOne({
+      $or: [{ code: norm }, { name: new RegExp(`^${norm}$`, 'i') }]
+    });
+    if (!langDoc) {
+      return next(new Error(`[Mongoose Pre-Save Validation Error]: Invalid language '${langCode}'. Must be a registered Language in MongoDB.`));
+    }
+    next();
+  } catch (err: any) {
+    next(err);
+  }
+});
 
 lessonSchema.index({ lessonId: 1 }, { sparse: true });
 lessonSchema.index({ level: 1, order: 1 });

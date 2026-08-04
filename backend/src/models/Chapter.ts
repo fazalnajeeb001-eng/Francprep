@@ -10,6 +10,7 @@ export interface IChapterDocument extends Document {
   lessons: mongoose.Types.ObjectId[];
   isPublished: boolean;
   isLevelCapstone?: boolean;
+  language?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -57,11 +58,32 @@ const chapterSchema = new Schema<IChapterDocument>(
       type: Boolean,
       default: false,
     },
+    language: {
+      type: String,
+      default: 'French',
+      index: true,
+    },
   },
   {
     timestamps: true,
   }
 );
+
+chapterSchema.pre('save', async function (next) {
+  try {
+    const langCode = (this as any).language || 'French';
+    const norm = langCode.trim().toLowerCase();
+    const langDoc = await mongoose.model('Language').findOne({
+      $or: [{ code: norm }, { name: new RegExp(`^${norm}$`, 'i') }]
+    });
+    if (!langDoc) {
+      return next(new Error(`[Mongoose Pre-Save Validation Error]: Invalid language '${langCode}'. Must be a registered Language in MongoDB.`));
+    }
+    next();
+  } catch (err: any) {
+    next(err);
+  }
+});
 
 chapterSchema.index({ moduleId: 1, order: 1 });
 
