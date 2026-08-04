@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, XCircle, ChevronRight, ChevronLeft, GripVertical, Mic } from "lucide-react";
+import { CheckCircle2, XCircle, ChevronRight, ChevronLeft, GripVertical, Mic, RotateCcw } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
 
@@ -710,24 +710,38 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
         const userAns = answers[qId] !== undefined ? answers[qId] : answers[String(idx)];
         
         let isCorrect = false;
-        const correct = q.correctAnswer;
+        const correct = q.correctAnswer !== undefined ? q.correctAnswer : (q as any).answer;
+        const userStr = typeof userAns === 'string' ? userAns.trim() : (userAns !== undefined && userAns !== null ? String(userAns).trim() : '');
+
         if (q.type === 'matching') {
-          const pairs = q.pairs || {};
+          const pairs = q.pairs || (q as any).matchingPairs || {};
           try {
             const userMatches = typeof userAns === 'string' ? JSON.parse(userAns) : (userAns || {});
-            isCorrect = Object.keys(pairs).length > 0 && Object.entries(pairs).every(([left, correctRight]) => userMatches[left] === correctRight);
+            const entries = Object.entries(pairs);
+            isCorrect = entries.length > 0 && entries.every(([left, correctRight]) => 
+              String(userMatches[left]).trim().toLowerCase() === String(correctRight).trim().toLowerCase()
+            );
           } catch {
             isCorrect = false;
           }
-        } else if (correct !== undefined && userAns !== undefined && userAns !== null) {
-          const normalize = (s: string) => String(s).trim().toLowerCase();
+        } else if (q.type === 'ordering') {
+          const expectedOrder = Array.isArray(correct) ? correct : (q as any).items || [];
+          try {
+            const userOrder = Array.isArray(userAns) ? userAns : JSON.parse(userStr);
+            isCorrect = Array.isArray(userOrder) && userOrder.length === expectedOrder.length && 
+              userOrder.every((item: any, i: number) => String(item).trim().toLowerCase() === String(expectedOrder[i]).trim().toLowerCase());
+          } catch {
+            isCorrect = false;
+          }
+        } else if (correct !== undefined && correct !== null && userStr !== '') {
+          const normalize = (s: string) => String(s).trim().toLowerCase().replace(/[.,!?;:'"']/g, '');
           if (Array.isArray(correct)) {
-            isCorrect = correct.some(c => normalize(c as string) === normalize(userAns as string));
+            isCorrect = correct.some(c => normalize(String(c)) === normalize(userStr));
           } else {
-            isCorrect = normalize(correct as string) === normalize(userAns as string);
+            isCorrect = normalize(String(correct)) === normalize(userStr);
           }
         } else if (q.type === 'speaking' || q.type === 'speaking_prompt' || q.type === 'short_answer') {
-          isCorrect = typeof userAns === 'string' && userAns.trim().length > 3;
+          isCorrect = userStr.length >= 2;
         }
 
         return {
@@ -735,8 +749,8 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
           correct: isCorrect,
           points: isCorrect ? (q.points || 1) : 0,
           maxPoints: q.points || 1,
-          explanation: isCorrect ? "Correct!" : (q.explanation || `Expected: ${correct || 'Valid response'}`),
-          text: q.text || q.question,
+          explanation: isCorrect ? "Correct!" : (q.explanation || (correct ? `Expected: ${Array.isArray(correct) ? correct.join(' / ') : correct}` : 'Valid response provided.')),
+          text: q.text || q.question || q.prompt,
         };
       });
 
@@ -1282,16 +1296,38 @@ export function QuizComponent({ questions, type: _type, initialAnswers, onAnswer
               )}
             </>
           ) : (
-            <div className="flex gap-2">
-              <button onClick={() => { setAnswers({}); setSubmitted(false); setResults(null); setCurrent(0); setQuestionAttempts({}); setQuestionResults({}); setRevealedAnswers({}); }}
-                className={`px-4 py-2 text-sm border rounded-lg transition-all ${
-                  dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-50"
-                }`}>
-                Try Again
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setAnswers({});
+                  setSubmitted(false);
+                  setResults(null);
+                  setCurrent(0);
+                  setQuestionAttempts({});
+                  setQuestionResults({});
+                  setRevealedAnswers({});
+                  setCheckingQuestion({});
+                }}
+                className={`px-5 py-2.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer shadow-md ${
+                  dark ? "border-[#1e2a4a] text-gray-200 hover:bg-white/10" : "border-slate-300 text-slate-700 hover:bg-slate-100"
+                }`}
+              >
+                <RotateCcw className="w-4 h-4" /> Try Again
               </button>
-              <button onClick={() => onComplete?.(results?.filter(r => r.correct).length || 0, results?.length || 0)}
-                className="px-4 py-2 bg-purple-500 text-white text-sm rounded-lg hover:bg-purple-600 transition-all">
-                Continue
+              <button
+                type="button"
+                onClick={() => {
+                  const correctCount = results?.filter(r => r.correct).length || 0;
+                  const totalCount = results?.length || questions.length || 0;
+                  onComplete?.(correctCount, totalCount);
+                  setSubmitted(false);
+                  setResults(null);
+                  setCurrent(0);
+                }}
+                className="px-6 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-purple-500/25 flex items-center gap-1.5 cursor-pointer"
+              >
+                Continue <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           )}
