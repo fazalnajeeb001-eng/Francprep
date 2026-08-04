@@ -10,13 +10,14 @@ export class LessonController {
    */
   async getAll(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { level, category, page, limit, sort } = req.query as any;
+      const { level, category, page, limit, sort, language } = req.query as any;
       const result = await lessonService.getAllLessons({
         level,
         category,
         page: page ? parseInt(page) : 1,
         limit: limit ? parseInt(limit) : 20,
         sort,
+        language,
       });
       if (req.user && req.user.role !== 'admin' && result.data) {
         const filtered: any[] = [];

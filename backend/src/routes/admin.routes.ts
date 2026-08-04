@@ -238,6 +238,8 @@ router.delete('/users/:id', async (req: AuthRequest, res: Response, next: NextFu
 
 // ============ Lesson Management ============
 
+import { buildLanguageFilter } from '../utils/languageFilter';
+
 /**
  * GET /api/admin/lessons
  */
@@ -253,13 +255,7 @@ router.get('/lessons', async (req: AuthRequest, res: Response, next: NextFunctio
     if (level) filter.level = level;
     if (isPublished !== undefined) filter.isPublished = isPublished === 'true';
     if (language) {
-      const normLang = String(language).toLowerCase().trim();
-      filter.$or = [
-        { language: normLang },
-        { language: { $exists: false } },
-        { language: null },
-        { language: '' }
-      ];
+      Object.assign(filter, buildLanguageFilter(language));
     }
 
     const skip = (page - 1) * limit;

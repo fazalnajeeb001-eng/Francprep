@@ -40,6 +40,8 @@ function stripAnswers(obj: any): void {
   }
 }
 
+import { buildLanguageFilter } from '../utils/languageFilter';
+
 export class LessonService {
   /**
    * Get all published lessons with optional filtering
@@ -50,10 +52,11 @@ export class LessonService {
     page?: number;
     limit?: number;
     sort?: string;
+    language?: string;
   }) {
-    const { level, category, page = 1, limit = 20, sort = 'order' } = query;
+    const { level, category, page = 1, limit = 20, sort = 'order', language } = query;
 
-    const filter: any = { isPublished: true };
+    const filter: any = { isPublished: true, ...buildLanguageFilter(language) };
     if (level) filter.level = level;
     if (category) filter.category = category;
 

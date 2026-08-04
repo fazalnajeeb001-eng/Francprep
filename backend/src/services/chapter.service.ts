@@ -3,6 +3,7 @@ import Lesson from '../models/Lesson';
 import Vocabulary from '../models/Vocabulary';
 import Exercise from '../models/Exercise';
 import mongoose from 'mongoose';
+import { buildLanguageFilter } from '../utils/languageFilter';
 
 const CEFR_LEVELS = [
   { level: 'A1', title: 'French A1 — Beginner', description: 'Can understand and use familiar everyday expressions and very basic phrases. Can introduce themselves and others, and can ask and answer simple questions about personal details.' },
@@ -179,17 +180,22 @@ export class ChapterService {
       const db = mongoose.connection.db;
       if (!db) throw new Error('No database connection');
 
+      const langFilter = buildLanguageFilter(filters?.language);
+      const chFilter = { isPublished: true, ...langFilter };
+
       // Get all published chapters
-      const chapters = await Chapter.find({ isPublished: true })
+      const chapters = await Chapter.find(chFilter)
         .sort({ order: 1 })
         .lean();
 
       // Query published lessons for ALL chapters in one go (avoids N+1 queries)
       const chapterIds = chapters.map((ch: any) => ch._id);
-      const publishedLessons = await Lesson.find({
+      const lessonFilter = {
         chapterId: { $in: chapterIds },
         isPublished: true,
-      })
+        ...langFilter,
+      };
+      const publishedLessons = await Lesson.find(lessonFilter)
         .select('title order level category skill estimatedDuration chapterId lessonId')
         .sort({ order: 1 })
         .lean();

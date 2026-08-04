@@ -547,6 +547,8 @@ function getDraftGroupKey(d: any): string {
   return String(d._id).toLowerCase();
 }
 
+import { buildLanguageFilter } from '../utils/languageFilter';
+
 // ─── GET /content-pipeline/drafts ──────────────────────────────────────────
 // List drafts (returns latest active draft per lessonId by default)
 router.get('/content-pipeline/drafts', async (req: AuthRequest, res: Response) => {
@@ -556,13 +558,7 @@ router.get('/content-pipeline/drafts', async (req: AuthRequest, res: Response) =
     if (level) filter.level = level;
     if (lessonId) filter.lessonId = lessonId;
     if (language) {
-      const normLang = String(language).toLowerCase().trim();
-      filter.$or = [
-        { language: normLang },
-        { language: { $exists: false } },
-        { language: null },
-        { language: '' }
-      ];
+      Object.assign(filter, buildLanguageFilter(language));
     }
     if (includeSuperseded !== 'true') {
       filter.status = { $ne: 'superseded' };
