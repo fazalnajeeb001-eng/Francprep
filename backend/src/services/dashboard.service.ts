@@ -54,8 +54,9 @@ export class DashboardService {
   async getDashboard(userId: string): Promise<DashboardData> {
     const user = await User.findById(userId);
     if (!user) throw { statusCode: 404, message: 'User not found' };
+    const userLang = (user as any).activeLanguage || 'French';
     const progressRecords = await StudentProgress.find({ userId }).populate('lessonId', 'title level category order').sort('-lastAccessedAt');
-    const totalLessons = await Lesson.countDocuments({ isPublished: true });
+    const totalLessons = await Lesson.countDocuments({ isPublished: true, $or: [{ language: userLang }, { language: { $exists: false } }] });
     const completedLessons = progressRecords.filter((p) => p.status === 'completed').length;
     const overallProgress = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
     const completedWithScore = progressRecords.filter((p) => p.status === 'completed' && p.score !== undefined);
