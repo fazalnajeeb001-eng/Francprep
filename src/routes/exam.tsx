@@ -54,11 +54,56 @@ function ExamRouteLayout() {
 export function ExamHubPage() {
   const navigate = useNavigate();
   const { dark } = useTheme();
+  const { user } = useAuth();
 
   // Wizard Step State: 1 = Exam Type, 2 = Mode, 3 = Select Paper
   const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1);
   const [selectedType, setSelectedType] = useState<ExamType>("TCF_CANADA");
   const [selectedMode, setSelectedMode] = useState<ExamMode>("PRACTICE");
+
+  const activeLang = (user?.activeLanguage || (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : "fr") || "fr").toLowerCase().trim();
+
+  const examConfig = (function() {
+    if (activeLang === 'de' || activeLang === 'ger' || activeLang === 'german') {
+      return {
+        brand: 'GermanPrep',
+        title: 'Goethe-Zertifikat & TestDaF Simulators 🇩🇪',
+        subtitle: 'Practice under authentic Goethe-Zertifikat B1/B2 & TestDaF exam conditions to achieve your target German B2/C1 score.',
+        predictor: 'Goethe B2 / TestDaF Predictor',
+        card1: { type: 'TCF_CANADA' as ExamType, badge: 'Goethe-Institut e.V.', title: 'Goethe-Zertifikat B2 Simulator', desc: 'Official German language diploma for university admission & work visa. Evaluates 4 skills: Lesen (65m), Hören (40m), Schreiben (75m), and Sprechen (15m).' },
+        card2: { type: 'TEF_CANADA' as ExamType, badge: 'TestDaF-Institut', title: 'TestDaF (TDN 4) Exam Suite', desc: 'Standardized academic German language test for foreign applicants to German universities. Evaluates reading comprehension, listening, writing, and speaking.' }
+      };
+    }
+    if (activeLang === 'es' || activeLang === 'spa' || activeLang === 'spanish') {
+      return {
+        brand: 'SpanPrep',
+        title: 'DELE & SIELE Exam Simulators 🇪🇸',
+        subtitle: 'Practice under authentic DELE B1/B2 & SIELE Global exam conditions to achieve your target Spanish B2 score.',
+        predictor: 'DELE B2 / SIELE Predictor',
+        card1: { type: 'TCF_CANADA' as ExamType, badge: 'Instituto Cervantes', title: 'DELE B2 Simulator', desc: 'Official diploma certifying Spanish competence granted by Instituto Cervantes. 4 Tests: Lectura (70m), Auditiva (40m), Escritura (80m), and Oral (20m).' },
+        card2: { type: 'TEF_CANADA' as ExamType, badge: 'SIELE Global', title: 'SIELE Global Exam Suite', desc: 'International Spanish Language Evaluation Service certifying Spanish proficiency electronically on a scale of 0 to 1000.' }
+      };
+    }
+    if (activeLang === 'it' || activeLang === 'ita' || activeLang === 'italian') {
+      return {
+        brand: 'ItalPrep',
+        title: 'CILS & CELI Exam Simulators 🇮🇹',
+        subtitle: 'Practice under authentic CILS B1/B2 & CELI 3 exam conditions to achieve your target Italian B2 score.',
+        predictor: 'CILS B2 / CELI Predictor',
+        card1: { type: 'TCF_CANADA' as ExamType, badge: 'Università per Stranieri di Siena', title: 'CILS B2 Simulator', desc: 'Official Italian certification recognized by Italian ministries & universities. 5 Sections: Ascolto, Lettura, Strutture, Produzione Scritta e Orale.' },
+        card2: { type: 'TEF_CANADA' as ExamType, badge: 'Università per Stranieri di Perugia', title: 'CELI 3 Exam Suite', desc: 'Certificato di Conoscenza della Lingua Italiana certifying upper-intermediate B2 Italian competence.' }
+      };
+    }
+    // Default French Track
+    return {
+      brand: 'FrancPrep',
+      title: 'TCF & TEF Canada Exam Simulators 🇨🇦',
+      subtitle: 'Practice under authentic exam conditions or guided practice mode to achieve your target NCLC 7+ B2 score.',
+      predictor: 'NCLC 7+ Practice Predictor',
+      card1: { type: 'TCF_CANADA' as ExamType, badge: 'FEI / France Éducation International', title: 'TCF Canada Simulator', desc: 'Test de connaissance du français pour le Canada. Evaluates 4 skills: Listening (39q • 35m), Reading (39q • 60m), Writing (3 tasks • 60m), and Speaking (3 tasks • 12m).' },
+      card2: { type: 'TEF_CANADA' as ExamType, badge: 'CCI Paris Île-de-France', title: 'TEF Canada & DELF B2 Suite', desc: 'Test d\'évaluation de français. Evaluates Listening (60q • 40m), Reading (50q • 60m), Writing (2 tasks • 60m), and Speaking (2 tasks • 15m).' }
+    };
+  })();
 
   const registry = getExamRegistry();
   const filteredPapers = registry.filter((p) => p.type === selectedType && p.published && (p.recommendedMode === selectedMode || !p.recommendedMode));
@@ -84,20 +129,20 @@ export function ExamHubPage() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 text-xs font-bold mb-2">
               <Trophy className="w-3.5 h-3.5" />
-              <span>Authentic CBT Exam Practice Standard</span>
+              <span>{examConfig.brand} Authentic CBT Exam Practice Standard</span>
             </div>
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
-              TCF & TEF Canada Exam Simulators
+              {examConfig.title}
             </h1>
             <p className={`text-sm ${txtSec} mt-1`}>
-              Practice under authentic exam conditions or guided practice mode to achieve your target NCLC 7+ B2 score.
+              {examConfig.subtitle}
             </p>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
             <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-500" />
-              <span>NCLC 7+ Practice Predictor</span>
+              <span>{examConfig.predictor}</span>
             </span>
           </div>
         </div>
@@ -108,7 +153,7 @@ export function ExamHubPage() {
             <span>🛑</span> Independent Diagnostic Practice Disclaimer:
           </p>
           <p className="opacity-90">
-            FrancPrep is an independent learning platform and is not affiliated with, endorsed by, or accredited by France Éducation International (FEI), CCI Paris Île-de-France, IRCC, or any official testing organization. This CBT simulator provides diagnostic practice for study and self-assessment purposes only and does not issue official language certificates.
+            {examConfig.brand} is an independent learning platform powered by the FrancPrep engine and is not affiliated with, endorsed by, or accredited by Goethe-Institut, TestDaF-Institut, Instituto Cervantes, FEI, CCI, or official testing organizations. This CBT simulator provides diagnostic practice for self-assessment purposes only.
           </p>
         </div>
 
@@ -209,44 +254,44 @@ export function ExamHubPage() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="px-3 py-1 rounded-full bg-purple-600 text-white text-[10px] font-extrabold tracking-wider uppercase">
-                        FEI / France Éducation International
+                        {examConfig.card1.badge}
                       </span>
                       {selectedType === "TCF_CANADA" && <CheckCircle2 className="w-6 h-6 text-purple-500" />}
                     </div>
                     <h3 className="text-2xl font-extrabold group-hover:text-purple-400 transition-colors">
-                      TCF Canada Simulator
+                      {examConfig.card1.title}
                     </h3>
                     <p className={`text-xs md:text-sm ${txtSec} leading-relaxed`}>
-                      Test de connaissance du français pour le Canada. Evaluates 4 skills: Listening (39q • 35m), Reading (39q • 60m), Writing (3 tasks • 60m), and Speaking (3 tasks • 12m).
+                      {examConfig.card1.desc}
                     </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 text-xs font-semibold pt-2">
                     <div className="p-2.5 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-300 flex items-center gap-2">
                       <Volume2 className="w-4 h-4" />
-                      <span>39 Listening Qs</span>
+                      <span>Hören / Listening</span>
                     </div>
                     <div className="p-2.5 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-300 flex items-center gap-2">
                       <BookOpen className="w-4 h-4" />
-                      <span>39 Reading Qs</span>
+                      <span>Lesen / Reading</span>
                     </div>
                     <div className="p-2.5 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-300 flex items-center gap-2">
                       <PenTool className="w-4 h-4" />
-                      <span>3 Writing Tasks</span>
+                      <span>Schreiben / Writing</span>
                     </div>
                     <div className="p-2.5 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-300 flex items-center gap-2">
                       <Mic className="w-4 h-4" />
-                      <span>3 Speaking Tasks</span>
+                      <span>Sprechen / Speaking</span>
                     </div>
                   </div>
 
                   <button className="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-lg flex items-center justify-center gap-2 transition-all">
-                    <span>Select TCF Canada</span>
+                    <span>Select {examConfig.card1.title}</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
 
-                {/* TEF Canada Card */}
+                {/* Card 2 */}
                 <div
                   onClick={() => {
                     setSelectedType("TEF_CANADA");
@@ -261,17 +306,18 @@ export function ExamHubPage() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="px-3 py-1 rounded-full bg-indigo-600 text-white text-[10px] font-extrabold tracking-wider uppercase">
-                        CCI Paris Île-de-France
+                        {examConfig.card2.badge}
                       </span>
                       {selectedType === "TEF_CANADA" && <CheckCircle2 className="w-6 h-6 text-indigo-500" />}
                     </div>
                     <h3 className="text-2xl font-extrabold group-hover:text-indigo-400 transition-colors">
-                      TEF Canada Simulator
+                      {examConfig.card2.title}
                     </h3>
                     <p className={`text-xs md:text-sm ${txtSec} leading-relaxed`}>
-                      Test d'évaluation de français pour le Canada. Evaluates 4 skills: Listening (40q • 40m), Reading (40q • 60m), Writing (2 tasks • 60m), and Speaking (2 tasks • 15m).
+                      {examConfig.card2.desc}
                     </p>
                   </div>
+
 
                   <div className="grid grid-cols-2 gap-2 text-xs font-semibold pt-2">
                     <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 flex items-center gap-2">
@@ -293,7 +339,7 @@ export function ExamHubPage() {
                   </div>
 
                   <button className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg flex items-center justify-center gap-2 transition-all">
-                    <span>Select TEF Canada</span>
+                    <span>Select {examConfig.card2.title}</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
