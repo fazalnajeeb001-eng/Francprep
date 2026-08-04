@@ -18,6 +18,7 @@ import {
   GraduationCap
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
+import { useAuth } from "~/lib/AuthContext";
 import { speak } from "~/lib/speech";
 import { apiFetch } from "~/lib/apiFetch";
 import { GOAL_OPTIONS, setGoal as saveGoalToStorage, setDailyStudyGoal, type LearningGoal } from "~/components/dashboard/utils/userPrefs";
