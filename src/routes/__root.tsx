@@ -1,4 +1,4 @@
-import { HeadContent, Outlet, Scripts, Link, createRootRoute, useNavigate } from "@tanstack/react-router";
+import { HeadContent, Outlet, Scripts, Link, createRootRoute, useNavigate, useRouterState } from "@tanstack/react-router";
 import type { ReactNode, ErrorInfo } from "react";
 import { useState, useEffect, Component } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -74,6 +74,8 @@ export const Route = createRootRoute({
 function NavBarInner() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
+  const routerState = useRouterState();
+  const isOnboarding = routerState.location.pathname === "/onboarding";
   const [avatarGender, setAvatarGender] = useState<string | null>(null);
   const [isAdminPreview, setIsAdminPreview] = useState(false);
 
@@ -216,12 +218,16 @@ function NavBarInner() {
         <div className="flex items-center gap-2 sm:gap-3 text-sm">
           {isLoading ? null : isAuthenticated && user ? (
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-extrabold shadow-sm" title="Daily Streak">
-                <span className="text-sm animate-pulse">🔥</span> 5 Days
-              </div>
-              <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-extrabold shadow-sm hidden sm:flex" title="Total XP">
-                <span className="text-xs">⚡</span> 120 XP
-              </div>
+              {!isOnboarding && (
+                <>
+                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-extrabold shadow-sm" title="Daily Streak">
+                    <span className="text-sm animate-pulse">🔥</span> {(user as any).stats?.streak ?? (user as any).streak ?? 0} Days
+                  </div>
+                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-extrabold shadow-sm hidden sm:flex" title="Total XP">
+                    <span className="text-xs">⚡</span> {(user as any).stats?.xp ?? (user as any).xp ?? 0} XP
+                  </div>
+                </>
+              )}
               <button
                 onClick={() => navigate({ to: "/dashboard/settings" })}
                 className="w-9 h-9 rounded-full overflow-hidden shadow-lg hover:opacity-90 hover:scale-110 transition-all border border-purple-500/30"
