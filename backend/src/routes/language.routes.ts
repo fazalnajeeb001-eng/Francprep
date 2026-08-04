@@ -4,23 +4,41 @@ import Language from '../models/Language';
 const router = Router();
 
 // GET /api/languages — Public route for retrieving active published languages
-router.get('/', async (_req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
-    let languages = await Language.find({ isActive: true }).sort({ order: 1 });
+    const includeUnpublished = req.query.includeUnpublished === 'true';
+    const filter: any = { isActive: true };
+    if (!includeUnpublished) {
+      filter.isPublished = true;
+    }
+
+    let languages = await Language.find(filter).sort({ order: 1 });
     
-    // Seed default French language if collection is empty
-    if (languages.length === 0) {
-      const defaultFr = await Language.create({
-        code: 'fr',
-        name: 'French',
-        nativeName: 'Français',
-        flag: '🇫🇷',
-        examName: 'DELF / TCF',
-        direction: 'ltr',
-        isActive: true,
-        order: 1,
-      });
-      languages = [defaultFr];
+    // Seed default French language if collection has no published language
+    if (languages.length === 0 && !includeUnpublished) {
+      const existingFr = await Language.findOne({ code: 'fr' });
+      if (existingFr) {
+        existingFr.isPublished = true;
+        existingFr.brandName = 'FrancPrep';
+        existingFr.journeyTitle = 'French Journey';
+        await existingFr.save();
+        languages = [existingFr];
+      } else {
+        const defaultFr = await Language.create({
+          code: 'fr',
+          name: 'French',
+          nativeName: 'Français',
+          flag: '🇫🇷',
+          examName: 'DELF / TCF',
+          brandName: 'FrancPrep',
+          journeyTitle: 'French Journey',
+          direction: 'ltr',
+          isActive: true,
+          isPublished: true,
+          order: 1,
+        });
+        languages = [defaultFr];
+      }
     }
 
     // Deduplicate languages by normalized code (e.g. ger → de, fre → fr)
@@ -45,7 +63,7 @@ router.get('/', async (_req: Request, res: Response) => {
 // POST /api/languages — Admin route to register or update a target language
 router.post('/', async (req: Request, res: Response) => {
   try {
-    const { code, name, nativeName, flag, examName, direction, order } = req.body;
+    const { code, name, nativeName, flag, examName, brandName, journeyTitle, direction, order, isPublished } = req.body;
     if (!code || !name || !nativeName) {
       return res.status(400).json({ success: false, error: 'code, name, and nativeName are required' });
     }
@@ -59,9 +77,12 @@ router.post('/', async (req: Request, res: Response) => {
         nativeName: nativeName.trim(),
         flag: flag || '🌐',
         examName: examName || 'CEFR Assessment',
+        brandName: brandName || undefined,
+        journeyTitle: journeyTitle || undefined,
         direction: direction || 'ltr',
         order: order || 1,
         isActive: true,
+        ...(typeof isPublished === 'boolean' ? { isPublished } : {}),
       },
       { upsert: true, new: true, runValidators: true }
     );
@@ -69,6 +90,27 @@ router.post('/', async (req: Request, res: Response) => {
     res.status(200).json({ success: true, data: updatedLang });
   } catch (err: any) {
     res.status(500).json({ success: false, error: 'Failed to save language', message: err.message });
+  }
+});
+
+// PATCH /api/languages/:code/publish — Admin route to toggle published state of a language track
+router.patch('/:code/publish', async (req: Request, res: Response) => {
+  try {
+    const { code } = req.params;
+    const { isPublished } = req.body;
+    const normCode = code.toLowerCase().trim();
+
+    const lang = await Language.findOne({ code: normCode });
+    if (!lang) {
+      return res.status(404).json({ success: false, error: `Language '${normCode}' not found` });
+    }
+
+    lang.isPublished = typeof isPublished === 'boolean' ? isPublished : !lang.isPublished;
+    await lang.save();
+
+    res.json({ success: true, data: lang, message: `Language ${lang.name} published state set to ${lang.isPublished}` });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: 'Failed to update language publish state', message: err.message });
   }
 });
 

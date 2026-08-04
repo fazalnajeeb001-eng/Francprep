@@ -22,6 +22,7 @@ import { useAuth } from "~/lib/AuthContext";
 import { speak } from "~/lib/speech";
 import { apiFetch } from "~/lib/apiFetch";
 import { GOAL_OPTIONS, setGoal as saveGoalToStorage, setDailyStudyGoal, type LearningGoal } from "~/components/dashboard/utils/userPrefs";
+import { getTrackBranding } from "~/lib/trackBranding";
 
 export const Route = createFileRoute("/onboarding")({ component: OnboardingPage });
 
@@ -324,7 +325,8 @@ export function OnboardingPage() {
 
   const handlePlayQuestionAudio = (text: string) => {
     setIsPlayingAudio(true);
-    speak(text, "fr-FR", 0.85, "female");
+    const branding = getTrackBranding(selectedLang);
+    speak(text, branding.speechLocale, 0.85, "female");
     setTimeout(() => setIsPlayingAudio(false), 3500);
   };
 
@@ -399,17 +401,19 @@ export function OnboardingPage() {
     navigate({ to: "/dashboard" });
   };
 
+  const activeBranding = getTrackBranding(selectedLang);
+
   return (
     <div className={`min-h-screen ${dark ? "bg-[#070B17] text-white" : "bg-gray-50 text-gray-900"} flex flex-col justify-between p-4 md:p-8 transition-colors duration-300 overflow-x-hidden`}>
       {/* Top Header */}
       <div className="w-full max-w-4xl mx-auto flex items-center justify-between py-4 border-b border-gray-200 dark:border-white/10">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-purple-500/20">
-            F
+            {activeBranding.flag}
           </div>
           <div>
-            <span className="font-extrabold text-base tracking-tight">FrancPrep</span>
-            <span className="text-[10px] text-purple-600 dark:text-purple-400 uppercase font-mono block">Exam Preparation System</span>
+            <span className="font-extrabold text-base tracking-tight">{activeBranding.shortBrand}</span>
+            <span className="text-[10px] text-purple-600 dark:text-purple-400 uppercase font-mono block">{activeBranding.examName}</span>
           </div>
         </div>
 

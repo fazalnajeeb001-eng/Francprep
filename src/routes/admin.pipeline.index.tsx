@@ -102,7 +102,7 @@ function PipelineDashboardPage() {
   const [addingLang, setAddingLang] = useState(false);
 
   useEffect(() => {
-    apiFetch("/languages")
+    apiFetch("/languages?includeUnpublished=true")
       .then((r) => r.json())
       .then((res) => {
         if (res.data && Array.isArray(res.data)) {
@@ -139,6 +139,30 @@ function PipelineDashboardPage() {
       setActionStatus({ loading: false, error: err.message || "Failed to create language", success: "" });
     } finally {
       setAddingLang(false);
+    }
+  };
+
+  const handleTogglePublishLanguage = async (code: string, currentPublished: boolean, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    try {
+      const res = await apiFetch(`/languages/${code}/publish`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isPublished: !currentPublished }),
+      });
+      const json = await res.json();
+      if (json.success && json.data) {
+        setAvailableLanguages((prev) =>
+          prev.map((l) => (l.code === code ? { ...l, isPublished: json.data.isPublished } : l))
+        );
+        setActionStatus({
+          loading: false,
+          error: "",
+          success: `Track ${json.data.name} is now ${json.data.isPublished ? "PUBLISHED to Student Onboarding 🟢" : "HIDDEN from Student Onboarding ⚪"}!`,
+        });
+      }
+    } catch (err: any) {
+      setActionStatus({ loading: false, error: err.message || "Failed to update language publish state", success: "" });
     }
   };
 
@@ -611,28 +635,43 @@ function PipelineDashboardPage() {
           <div className="flex flex-wrap items-center gap-2">
             {availableLanguages.map((l) => {
               const isSelected = selectedLangCode === l.code;
+              const isPublished = l.isPublished === true;
               return (
-                <button
-                  key={l.code}
-                  type="button"
-                  onClick={() => {
-                    setSelectedLangCode(l.code);
-                    if (typeof window !== "undefined") {
-                      localStorage.setItem("fp_admin_lang", l.code);
-                    }
-                  }}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 cursor-pointer ${
-                    isSelected
-                      ? "bg-purple-600 text-white border-purple-500 shadow-md shadow-purple-500/25 ring-2 ring-purple-500/40"
-                      : dark
-                      ? "bg-[#070B17] text-gray-300 border-[#1e2a4a] hover:border-purple-500/40 hover:bg-white/5"
-                      : "bg-slate-100 text-slate-700 border-slate-200 hover:border-purple-400 hover:bg-slate-200"
-                  }`}
-                >
-                  <span>{l.flag || '🌐'}</span>
-                  <span>{l.name}</span>
-                  <span className="text-[10px] opacity-75 font-mono">({l.code.toUpperCase()})</span>
-                </button>
+                <div key={l.code} className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedLangCode(l.code);
+                      if (typeof window !== "undefined") {
+                        localStorage.setItem("fp_admin_lang", l.code);
+                      }
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 cursor-pointer ${
+                      isSelected
+                        ? "bg-purple-600 text-white border-purple-500 shadow-md shadow-purple-500/25 ring-2 ring-purple-500/40"
+                        : dark
+                        ? "bg-[#070B17] text-gray-300 border-[#1e2a4a] hover:border-purple-500/40 hover:bg-white/5"
+                        : "bg-slate-100 text-slate-700 border-slate-200 hover:border-purple-400 hover:bg-slate-200"
+                    }`}
+                  >
+                    <span>{l.flag || '🌐'}</span>
+                    <span>{l.name}</span>
+                    <span className="text-[10px] opacity-75 font-mono">({l.code.toUpperCase()})</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={(e) => handleTogglePublishLanguage(l.code, isPublished, e)}
+                    title={isPublished ? "Click to UNPUBLISH track from Student Onboarding" : "Click to PUBLISH track to Student Onboarding"}
+                    className={`px-2 py-1 rounded-lg text-[10px] font-extrabold transition-all border flex items-center gap-1 cursor-pointer ${
+                      isPublished
+                        ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 hover:bg-emerald-500/30"
+                        : "bg-amber-500/10 text-amber-400 border-amber-500/30 hover:bg-amber-500/20 opacity-70"
+                    }`}
+                  >
+                    <span>{isPublished ? "🟢 Published" : "⚪ Draft Track"}</span>
+                  </button>
+                </div>
               );
             })}
             <button

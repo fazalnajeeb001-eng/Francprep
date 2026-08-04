@@ -4,6 +4,7 @@ import { Crown, BookOpen, BookText, Languages, Trophy, Target, Zap, Clock, Star 
 import { Link } from "@tanstack/react-router";
 import type { DashboardData } from "../types";
 import { getGoal, CEFR_ORDER } from "../utils/userPrefs";
+import { getTrackBranding } from "~/lib/trackBranding";
 
 const CEFR_NAMES: Record<string, string> = { A1: "Découverte", A2: "Progrès", B1: "Indépendance", B2: "Autonomie", C1: "Maîtrise", C2: "Perfectionnement" };
 const CEFR_DESC: Record<string, string> = { A1: "Beginner", A2: "Elementary", B1: "Intermediate", B2: "Upper Intermediate", C1: "Advanced", C2: "Mastery" };
@@ -122,18 +123,12 @@ export function JourneyBanner({ dark, firstName, streak, overallProgress, levels
           <div>
             {(() => {
               const activeLang = typeof window !== "undefined" ? localStorage.getItem("fp_active_language") || "fr" : "fr";
-              const langNames: Record<string, { title: string; desc: string }> = {
-                fr: { title: "Your French Journey", desc: `${firstName}'s adventure through France` },
-                de: { title: "Your German Journey", desc: `${firstName}'s adventure through Germany` },
-                es: { title: "Your Spanish Journey", desc: `${firstName}'s adventure through Spain` },
-                it: { title: "Your Italian Journey", desc: `${firstName}'s adventure through Italy` },
-              };
-              const meta = langNames[activeLang] || langNames.fr;
+              const branding = getTrackBranding(activeLang);
               return (
                 <>
-                  <h3 className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"} drop-shadow-lg`}>{meta.title}</h3>
+                  <h3 className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"} drop-shadow-lg`}>Your {branding.journeyTitle}</h3>
                   <p className={`text-[10px] ${dark ? "text-gray-300" : "text-gray-600"} drop-shadow`}>
-                    {meta.desc}
+                    {firstName}'s language learning journey ({branding.flag})
                   </p>
                 </>
               );
