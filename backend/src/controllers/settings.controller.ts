@@ -208,9 +208,10 @@ export async function testElevenLabs(req: Request, res: Response) {
       ? inMemorySettings.elevenLabsApiKey
       : process.env.ELEVENLABS_API_KEY;
     if (!key || key.includes('...')) return res.json({ success: false, error: "ElevenLabs API Key not configured" });
+    const cleanKey = key.trim().replace(/^["']|["']$/g, '');
 
     const response = await fetch("https://api.elevenlabs.io/v1/voices", {
-      headers: { "xi-api-key": key },
+      headers: { "xi-api-key": cleanKey },
     });
     if (response.ok) {
       const data: any = await response.json();
@@ -238,9 +239,10 @@ export async function getElevenLabsVoices(req: Request, res: Response) {
       ? inMemorySettings.elevenLabsApiKey
       : process.env.ELEVENLABS_API_KEY;
     if (!key || key.includes('...')) return res.json({ success: false, error: "ElevenLabs API Key not configured" });
+    const cleanVoicesKey = key.trim().replace(/^["']|["']$/g, '');
 
     const response = await fetch("https://api.elevenlabs.io/v1/voices", {
-      headers: { "xi-api-key": key },
+      headers: { "xi-api-key": cleanVoicesKey },
     });
     if (response.ok) {
       const data: any = await response.json();
