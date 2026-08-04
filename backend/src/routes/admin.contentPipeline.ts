@@ -1547,20 +1547,23 @@ router.post('/content-pipeline/auto-fix', async (req: AuthRequest, res: Response
         }
       }
 
-      if (mode === 'ai' && (needsVocabFix || needsOptionsFix)) {
+      if (mode === 'ai') {
         try {
-          const prompt = `You are a French CEFR level ${lessonDoc.level} curriculum coordinator.
-Fix the missing content fields in this lesson JSON.
+          const targetLang = lessonDoc.language || canonical.language || 'fr';
+          const langName = targetLang === 'de' ? 'German' : targetLang === 'es' ? 'Spanish' : targetLang === 'it' ? 'Italian' : 'French';
+
+          const prompt = `You are a master ${langName} CEFR Level ${lessonDoc.level} curriculum proofreader and editor.
+Proofread and repair the following lesson JSON:
+1. Grammar & Spelling Check: Fix any spelling typos, missing accent marks, conjugation errors, or agreement mistakes in ${langName} texts and English translations.
+2. Vocabulary Table: ${needsVocabFix ? `Generate 4 to 6 authentic CEFR ${lessonDoc.level} ${langName} vocabulary items. Format: [{"french": "...", "english": "...", "pronunciation": "...", "example": "..."}]` : 'Keep existing vocabulary table intact.'}
+3. Exercise Integrity: ${needsOptionsFix ? 'Ensure all multiple-choice questions have 4 plausible selectable options.' : 'Keep existing exercises intact.'}
+
 Lesson Title: "${canonical.title}"
-Lesson Objectives: "${(canonical.objectives || []).join(', ')}"
+Objectives: "${(canonical.objectives || []).join(', ')}"
 Grammar Focus: "${canonical.grammarFocus || ''}"
 Vocabulary Focus: "${canonical.vocabularyFocus || ''}"
 
-Issues to fix:
-${needsVocabFix ? '- Generate 4 to 6 authentic CEFR A1 French vocabulary items matching the title/focus. Format: [{"french": "...", "english": "...", "pronunciation": "...", "example": "..."}]' : ''}
-${needsOptionsFix ? '- For any multiple_choice question with empty options, populate 4 plausible options array including the correctAnswer.' : ''}
-
-Respond ONLY with valid JSON of the fixed fields to merge:
+Respond ONLY with valid JSON of the fixed/repaired lesson properties to merge:
 {
   ${needsVocabFix ? '"vocabulary": [{"french": "...", "english": "...", "pronunciation": "...", "example": "..."}]' : ''}
 }
@@ -1569,7 +1572,7 @@ Respond ONLY with valid JSON of the fixed fields to merge:
           const aiReply = await generateAICompletion({
             model,
             prompt,
-            systemPrompt: 'You are a precise CEFR curriculum repair assistant. Respond strictly with valid JSON.',
+            systemPrompt: `You are an elite ${langName} CEFR proofreader. Respond strictly with valid JSON.`,
             temperature: 0.2,
           });
 
