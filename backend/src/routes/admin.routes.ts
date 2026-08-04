@@ -924,11 +924,11 @@ router.get('/analytics/saas-overview', async (_req: AuthRequest, res: Response, 
       };
     });
 
-    const fortyFiveSecsAgo = new Date(Date.now() - 45 * 1000);
+    const twentySecsAgo = new Date(Date.now() - 20 * 1000);
     const isUserOnline = (u: any) => {
       if (u.isExplicitOffline) return false;
       const activeTime = u.lastActiveAt ? new Date(u.lastActiveAt).getTime() : (u.updatedAt ? new Date(u.updatedAt).getTime() : 0);
-      return activeTime >= fortyFiveSecsAgo.getTime();
+      return activeTime >= twentySecsAgo.getTime();
     };
 
     const onlineUsers = allUsers.filter(isUserOnline);

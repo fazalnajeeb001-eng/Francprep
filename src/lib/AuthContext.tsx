@@ -73,19 +73,67 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     init();
   }, []);
 
-  // Periodic presence heartbeat every 40s while user is logged in
+  // Instant & High-Frequency presence tracking (heartbeat every 15s + instant visibilitychange/pagehide/blur presence-off)
   useEffect(() => {
     if (!user) return;
+
     const sendHeartbeat = () => {
+      if (document.visibilityState === "hidden") return;
       const currentPath = typeof window !== "undefined" ? window.location.pathname : "";
       apiFetch("/users/heartbeat", {
         method: "POST",
         body: JSON.stringify({ currentPage: currentPath }),
       }).catch(() => {});
     };
+
+    const sendOfflineSignal = () => {
+      try {
+        const token = getStoredAccessToken();
+        if (token && typeof navigator !== "undefined" && navigator.sendBeacon) {
+          const blob = new Blob([JSON.stringify({ token })], { type: "application/json" });
+          navigator.sendBeacon("/api/users/presence-off", blob);
+        } else {
+          apiFetch("/users/presence-off", { method: "POST" }).catch(() => {});
+        }
+      } catch {}
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        sendOfflineSignal();
+      } else {
+        sendHeartbeat();
+      }
+    };
+
+    const handleWindowBlur = () => {
+      sendOfflineSignal();
+    };
+
+    const handleWindowFocus = () => {
+      sendHeartbeat();
+    };
+
+    // Initial heartbeat on mount
     sendHeartbeat();
-    const interval = setInterval(sendHeartbeat, 40000);
-    return () => clearInterval(interval);
+
+    // High frequency interval (15s) while active
+    const interval = setInterval(sendHeartbeat, 15000);
+
+    window.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pagehide", sendOfflineSignal);
+    window.addEventListener("beforeunload", sendOfflineSignal);
+    window.addEventListener("blur", handleWindowBlur);
+    window.addEventListener("focus", handleWindowFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pagehide", sendOfflineSignal);
+      window.removeEventListener("beforeunload", sendOfflineSignal);
+      window.removeEventListener("blur", handleWindowBlur);
+      window.removeEventListener("focus", handleWindowFocus);
+    };
   }, [user]);
 
   const login = useCallback(async (payload: LoginPayload): Promise<User> => {
