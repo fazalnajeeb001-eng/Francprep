@@ -48,22 +48,8 @@ export function speak(
     currentAudioPlayer = null;
   }
 
-  // Auto-detect gender if male character markers are present in text
+  // Respect explicit gender parameter (female / male)
   let finalGender = gender;
-  const lower = cleanText.toLowerCase();
-  if (
-    lower.includes("léo") ||
-    lower.includes("leo") ||
-    lower.includes("thomas") ||
-    lower.includes("paul") ||
-    lower.includes("marc") ||
-    lower.includes("monsieur") ||
-    lower.includes("coach leo") ||
-    lower.startsWith("fr: bonjour ! je m'appelle coach leo") ||
-    lower.startsWith("fr: bonjour ! je suis leo")
-  ) {
-    finalGender = "male";
-  }
 
   // Extract ISO 2-letter language code (e.g. de, es, it, pt, fr, en, ru, zh, ja, ko, ar)
   let langCode = lang ? lang.split('-')[0].toLowerCase() : 'fr';

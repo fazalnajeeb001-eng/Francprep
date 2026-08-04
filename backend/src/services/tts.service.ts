@@ -11,7 +11,7 @@ function getHash(text: string, gender: string, lang: string, provider: string, v
 export async function generateNeuralAudio(
   text: string,
   gender: 'female' | 'male' = 'female',
-  lang: 'fr' | 'en' = 'fr',
+  lang: string = 'fr',
   forcedProvider?: string,
   forcedVoiceId?: string,
   tempKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string }
@@ -47,9 +47,8 @@ export async function generateNeuralAudio(
 
   const textHash = getHash(cleanText, gender, lang, activeProvider, targetVoiceId);
 
-  // 1. Check MongoDB Cache first — ignore legacy robotic entries if valid AI key is active!
-  // If forcedVoiceId is provided (e.g. Admin voice preview test), bypass cache to guarantee fresh test playback
-  if (!forcedVoiceId) {
+  // 1. Check MongoDB Cache first — bypass if testing forced voice/provider to guarantee distinct live voice test playback
+  if (!forcedVoiceId && !forcedProvider) {
     try {
       const cached = await TTSCache.findOne({ textHash }).maxTimeMS(1500);
       if (cached && cached.audioBase64) {
