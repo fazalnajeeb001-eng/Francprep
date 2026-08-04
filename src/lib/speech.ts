@@ -185,6 +185,132 @@ export function toggleAudio(
 }
 
 /**
+ * Multi-Speaker Dialogue Player. Parses lines for speaker names (e.g. Paul: / Marie: or Speaker A / Speaker B)
+ * and alternates seamlessly between Male and Female studio neural voices!
+ */
+export function speakDialogue(
+  dialogueText: string,
+  lang = "fr-FR",
+  rate = 0.85,
+  extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string }
+): void {
+  if (typeof window === "undefined") return;
+  const clean = dialogueText.trim();
+  if (!clean) return;
+
+  stopAudio();
+
+  const lines = clean
+    .split("\n")
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0);
+
+  const parsedDialogue: { speaker: string; text: string; gender: "male" | "female" }[] = [];
+
+  let isMaleNext = true;
+  const knownFemaleNames = ["marie", "chloé", "chloe", "sophie", "laura", "alice", "sarah", "femme", "female", "madame", "speaker b", "speaker 2", "julie", "camille", "clara", "emma"];
+  const knownMaleNames = ["paul", "léo", "leo", "henri", "marc", "antoine", "pierre", "thomas", "homme", "male", "monsieur", "speaker a", "speaker 1", "lucas", "hugo", "louis"];
+
+  for (const line of lines) {
+    let speakerName = "";
+    let speechText = line;
+
+    if (line.includes(":")) {
+      const parts = line.split(":");
+      speakerName = parts[0].trim();
+      speechText = parts.slice(1).join(":").trim();
+    } else if (line.includes("—")) {
+      const parts = line.split("—");
+      speakerName = parts[0].trim();
+      speechText = parts.slice(1).join("—").trim();
+    }
+
+    if (!speechText) continue;
+
+    const lowerSpeaker = speakerName.toLowerCase();
+    let gender: "male" | "female" = "female";
+
+    if (knownFemaleNames.some((f) => lowerSpeaker.includes(f))) {
+      gender = "female";
+    } else if (knownMaleNames.some((m) => lowerSpeaker.includes(m))) {
+      gender = "male";
+    } else {
+      gender = isMaleNext ? "male" : "female";
+      isMaleNext = !isMaleNext;
+    }
+
+    parsedDialogue.push({ speaker: speakerName, text: speechText, gender });
+  }
+
+  if (parsedDialogue.length === 0) {
+    speak(clean, lang, rate, "female", undefined, undefined, extraKeys);
+    return;
+  }
+
+  let currentIndex = 0;
+
+  function playNextLine() {
+    if (currentIndex >= parsedDialogue.length) {
+      if (onPlaybackStateChange) onPlaybackStateChange(false);
+      return;
+    }
+
+    const current = parsedDialogue[currentIndex];
+    currentIndex++;
+
+    const audio = new Audio();
+    currentAudioPlayer = audio;
+    if (onPlaybackStateChange) onPlaybackStateChange(true);
+
+    audio.onended = () => {
+      setTimeout(playNextLine, 300);
+    };
+    audio.onerror = () => {
+      setTimeout(playNextLine, 300);
+    };
+
+    let langCode = lang ? lang.split("-")[0].toLowerCase() : "fr";
+
+    apiFetch("/tts/speak", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text: current.text,
+        gender: current.gender,
+        lang: langCode,
+        elevenLabsApiKey: extraKeys?.elevenLabsApiKey,
+        openaiApiKey: extraKeys?.openaiApiKey,
+        huggingFaceToken: extraKeys?.huggingFaceToken,
+      }),
+    })
+      .then(async (res) => {
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data?.audioUrl) {
+            let src = json.data.audioUrl;
+            if (src.startsWith("data:audio/")) {
+              const parts = src.split(";base64,");
+              if (parts.length === 2) {
+                const mimeType = parts[0].replace("data:", "");
+                const blob = base64ToBlob(parts[1], mimeType);
+                src = URL.createObjectURL(blob);
+              }
+            }
+            audio.src = src;
+            audio.playbackRate = rate;
+            audio.play().catch(() => playNextLine());
+            return;
+          }
+        }
+        playNextLine();
+      })
+      .catch(() => playNextLine());
+  }
+
+  playNextLine();
+}
+
+/**
  * React hook that wraps `speak()` and exposes `isSpeaking`, `stop`, `pause`, and `toggle`.
  */
 export function useSpeak() {
@@ -204,8 +330,16 @@ export function useSpeak() {
     []
   );
 
+  const speakDialogueWithState = useCallback(
+    (text: string, lang = "fr-FR", rate = 0.85, extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string }) => {
+      speakDialogue(text, lang, rate, extraKeys);
+    },
+    []
+  );
+
   return {
     speak: speakWithState,
+    speakDialogue: speakDialogueWithState,
     isSpeaking,
     stop: stopAudio,
     pause: pauseAudio,

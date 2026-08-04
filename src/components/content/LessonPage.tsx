@@ -2851,7 +2851,7 @@ function ListeningSection({ lesson, dark, cardBg, innerBg, textSec, textMuted, s
   const lTitle = rawLTitle.replace(/^Scene:\s*/i, 'Listening: ').replace(/^Scene$/i, 'Listening Activity');
   const lTranscript = lesson.listening?.transcript || lesson.scene?.text || getDialogueText(lesson);
   const lTranslation = sanitizeTranslation(lesson.listening?.translation || lesson.scene?.translation || getDialogueTranslation(lesson));
-  const { speak: speakWithState, isSpeaking } = useSpeak();
+  const { speak: speakWithState, speakDialogue, isSpeaking } = useSpeak();
 
   const cleanedTranscript = (lTranscript || "").replace(/\*\*/g, "").trim();
 
@@ -2864,9 +2864,9 @@ function ListeningSection({ lesson, dark, cardBg, innerBg, textSec, textMuted, s
 
       {cleanedTranscript && (
         <div className="flex gap-3 mb-4 flex-wrap">
-          <button onClick={() => speakWithState(cleanedTranscript)}
-            className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25">
-            <Volume2 className="w-4 h-4" /> {isSpeaking ? "Playing..." : "Play Audio Dialogue"}
+          <button onClick={() => speakDialogue(cleanedTranscript)}
+            className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 cursor-pointer">
+            <Volume2 className="w-4 h-4" /> {isSpeaking ? "Playing Multi-Voice Dialogue..." : "Play Multi-Voice Audio Dialogue 🎙️"}
           </button>
           <button onClick={() => setShowTranscript(!showTranscript)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold border transition-all ${dark ? "border-[#1e2a4a] text-gray-300 hover:bg-white/5" : "border-gray-200 text-gray-700 hover:bg-gray-100"}`}>
