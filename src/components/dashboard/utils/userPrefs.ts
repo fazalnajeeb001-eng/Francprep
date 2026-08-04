@@ -115,11 +115,24 @@ export const LEVEL_BACKGROUNDS: Record<string, { gradient: string; scene: string
   C2: { gradient: "from-yellow-900/30 via-amber-800/20 to-purple-900/40", scene: "🎆", label: "Grand Celebration" },
 };
 
-export function getGreeting(): { greeting: string; emoji: string; motivational: string } {
+export function getGreeting(langCode: string = "fr"): { greeting: string; emoji: string; motivational: string } {
   const hour = new Date().getHours();
+  const code = (langCode || "fr").toLowerCase().trim();
   const isEvening = hour >= 18 || hour < 6;
+  const isMorning = hour >= 6 && hour < 12;
   const emoji = isEvening ? "🌙" : "☀️";
-  const word = isEvening ? "Bonsoir" : "Bonjour";
+
+  let word = "Bonjour";
+  if (code === "de" || code === "ger" || code === "german") {
+    word = isMorning ? "Guten Morgen" : isEvening ? "Guten Abend" : "Guten Tag";
+  } else if (code === "es" || code === "spa" || code === "spanish") {
+    word = isMorning ? "¡Buenos días!" : isEvening ? "¡Buenas noches!" : "¡Buenas tardes!";
+  } else if (code === "it" || code === "ita" || code === "italian") {
+    word = isMorning ? "Buongiorno" : isEvening ? "Buonasera" : "Buongiorno";
+  } else {
+    word = isEvening ? "Bonsoir" : "Bonjour";
+  }
+
   const motivations = [
     "Every lesson brings you closer to fluency.",
     "Consistency is the key to mastery.",

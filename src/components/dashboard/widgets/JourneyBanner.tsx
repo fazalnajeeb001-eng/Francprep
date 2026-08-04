@@ -120,10 +120,24 @@ export function JourneyBanner({ dark, firstName, streak, overallProgress, levels
             />
           </div>
           <div>
-            <h3 className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"} drop-shadow-lg`}>Your French Journey</h3>
-            <p className={`text-[10px] ${dark ? "text-gray-300" : "text-gray-600"} drop-shadow`}>
-              {firstName}'s adventure through France
-            </p>
+            {(() => {
+              const activeLang = typeof window !== "undefined" ? localStorage.getItem("fp_active_language") || "fr" : "fr";
+              const langNames: Record<string, { title: string; desc: string }> = {
+                fr: { title: "Your French Journey", desc: `${firstName}'s adventure through France` },
+                de: { title: "Your German Journey", desc: `${firstName}'s adventure through Germany` },
+                es: { title: "Your Spanish Journey", desc: `${firstName}'s adventure through Spain` },
+                it: { title: "Your Italian Journey", desc: `${firstName}'s adventure through Italy` },
+              };
+              const meta = langNames[activeLang] || langNames.fr;
+              return (
+                <>
+                  <h3 className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"} drop-shadow-lg`}>{meta.title}</h3>
+                  <p className={`text-[10px] ${dark ? "text-gray-300" : "text-gray-600"} drop-shadow`}>
+                    {meta.desc}
+                  </p>
+                </>
+              );
+            })()}
           </div>
         </div>
 

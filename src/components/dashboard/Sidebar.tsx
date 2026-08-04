@@ -7,6 +7,15 @@ import { apiFetch } from "~/lib/apiFetch";
 export function Sidebar({ open, onClose, dark }: { open: boolean; onClose: () => void; dark: boolean }) {
   const { user } = useAuth();
   const [isSocialHubEnabled, setIsSocialHubEnabled] = useState(false);
+  const activeLang = typeof window !== "undefined" ? localStorage.getItem("fp_active_language") || "fr" : "fr";
+
+  const langConfig: Record<string, { brand: string; letter: string; flag: string; examLabel: string }> = {
+    fr: { brand: "FrancPrep", letter: "F", flag: "🇫🇷", examLabel: "TCF / TEF Canada" },
+    de: { brand: "GermanPrep", letter: "G", flag: "🇩🇪", examLabel: "Goethe / TestDaF" },
+    es: { brand: "SpanPrep", letter: "S", flag: "🇪🇸", examLabel: "DELE / SIELE" },
+    it: { brand: "ItalPrep", letter: "I", flag: "🇮🇹", examLabel: "CILS / CELI 3" },
+  };
+  const activeBrand = langConfig[activeLang] || langConfig.fr;
 
   useEffect(() => {
     apiFetch("/subscriptions/plans")
@@ -28,7 +37,7 @@ export function Sidebar({ open, onClose, dark }: { open: boolean; onClose: () =>
       ...(showCandidateForum ? [{ label: "Candidate Forum", icon: Users, href: "/community" }] : []),
     ]},
     { section: "Exam Simulator", items: [
-      { label: "TCF / TEF", icon: LayoutDashboard, href: "/exam" },
+      { label: activeBrand.examLabel, icon: LayoutDashboard, href: "/exam" },
     ]},
     { section: "Plan", items: [
       { label: "Calendar", icon: Calendar, href: "/dashboard/calendar" },
@@ -46,8 +55,8 @@ export function Sidebar({ open, onClose, dark }: { open: boolean; onClose: () =>
       <aside className={`fixed lg:sticky top-0 z-50 lg:z-0 h-screen w-64 ${bg} backdrop-blur-xl border-r ${border} flex flex-col transition-all duration-300 ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
         <div className={`p-5 border-b ${border}`}>
           <Link to="/dashboard" className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold shadow-md shadow-purple-500/20">F</div>
-            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent text-lg font-extrabold">FrancPrep</span>
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-sm font-bold shadow-md shadow-purple-500/20">{activeBrand.flag}</div>
+            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent text-lg font-extrabold">{activeBrand.brand}</span>
           </Link>
         </div>
         <div className="flex-1 overflow-y-auto p-3 space-y-5">
