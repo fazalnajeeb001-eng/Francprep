@@ -75,12 +75,24 @@ export async function generateNeuralAudio(
     const defaultFemale = settings?.selectedElevenLabsFemaleVoice || '21m00Tcm4TlvDq8ikWAM';
     const defaultMale = settings?.selectedElevenLabsMaleVoice || 'ErXwobaYiN019PkySvjV';
     const primaryVoiceId = forcedVoiceId || (gender === 'male' ? defaultMale : defaultFemale);
-    const fallbackVoiceId = gender === 'male' ? 'ErXwobaYiN019PkySvjV' : '21m00Tcm4TlvDq8ikWAM';
-    const voices = Array.from(new Set([primaryVoiceId, fallbackVoiceId]));
+
+    const langNativeVoiceMap: Record<string, { female: string; male: string }> = {
+      fr: { female: 'XB0fDUnXU5powctDhC70', male: 'ONwBz21w4p8b7X1s5kL0' }, // Charlotte & Henri (Native French)
+      de: { female: 'ThT5KcBeYPX3keUQqHPh', male: 'txWG4y3H7G4B8P2f6a9R' }, // Sarah & Daniel (Native German)
+      es: { female: 'FGY2WhA2Pvf7r5V5EKC4', male: 'N2lLkkCofhh8hG1yGkC3' }, // Laura & Brian (Native Spanish)
+      it: { female: 'Xb7hH8MSwGQjB69G47wE', male: 'ErXwobaYiN019PkySvjV' }, // Alice & Antoni (Native Italian)
+    };
+
+    const langCode = lang ? lang.toLowerCase().slice(0, 2) : 'fr';
+    const langNative = langNativeVoiceMap[langCode];
+    const langFallback = langNative ? (gender === 'male' ? langNative.male : langNative.female) : null;
+    const universalFallback = gender === 'male' ? 'ErXwobaYiN019PkySvjV' : '21m00Tcm4TlvDq8ikWAM';
+
+    const voices = Array.from(new Set([primaryVoiceId, langFallback, universalFallback].filter(Boolean) as string[]));
 
     for (const voiceId of voices) {
       try {
-        console.log(`[ElevenLabs] Requesting synthesis for voiceId "${voiceId}" (gender=${gender}, text="${cleanText.slice(0, 30)}...")`);
+        console.log(`[ElevenLabs] Requesting synthesis for voiceId "${voiceId}" (lang=${langCode}, gender=${gender}, text="${cleanText.slice(0, 30)}...")`);
         const voiceSettings = (function(id: string) {
           switch (id) {
             case 'EXAVITQu4vr4xnSDxMaL': return { stability: 0.35, similarity_boost: 0.85, style: 0.45, use_speaker_boost: true };
@@ -203,7 +215,8 @@ export async function generateNeuralAudio(
   const tryGoogle = async () => {
     try {
       const encodedText = encodeURIComponent(cleanText);
-      const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=${lang === 'en' ? 'en' : 'fr'}&client=tw-ob`;
+      const targetLang = lang ? lang.toLowerCase().slice(0, 2) : 'fr';
+      const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=${targetLang}&client=tw-ob`;
 
       const response = await axios.get(googleTtsUrl, {
         responseType: 'arraybuffer',
