@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Settings from '../models/Settings';
+import TTSCache from '../models/TTSCache';
 
 let inMemorySettings: any = {
   stripeSecretKey: "",
@@ -66,7 +67,7 @@ const placeholders = [
 export async function updateSettings(req: Request, res: Response) {
   try {
     const allowed = [
-      'stripeSecretKey', 'stripePublishableKey', 'stripePremiumPriceId', 'stripeExamPrepPriceId', 'stripeWebhookSecret',
+      'stripePublishableKey', 'stripeSecretKey', 'stripeWebhookSecret', 'openAiApiKey',
       'anthropicApiKey', 'openRouterApiKey', 'openaiApiKey', 'elevenLabsApiKey', 'huggingFaceToken', 'huggingFaceApiKey',
       'preferredVoiceEngine', 'activeTTSProvider', 'selectedElevenLabsFemaleVoice', 'selectedElevenLabsMaleVoice',
       'selectedOpenAIFemaleVoice', 'selectedOpenAIMaleVoice', 'selectedKokoroFemaleVoice', 'selectedKokoroMaleVoice', 'frontendUrl'
@@ -92,6 +93,9 @@ export async function updateSettings(req: Request, res: Response) {
           }
         }
       }
+      // Purge cached fallback audio so all devices immediately use fresh API keys & voices
+      await TTSCache.deleteMany({}).catch(() => {});
+
       res.json({ success: true, data: settings.toJSON() });
     } catch {
       res.json({ success: true, data: inMemorySettings });

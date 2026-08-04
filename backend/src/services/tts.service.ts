@@ -207,9 +207,6 @@ export async function generateNeuralAudio(
         const audioBase64 = audioBuffer.toString('base64');
         const contentType = 'audio/mp3';
 
-        if (!forcedVoiceId) {
-          TTSCache.create({ textHash, text: cleanText, voice: `google-${lang}`, gender, audioBase64, contentType }).catch(() => {});
-        }
         return { audioBase64, contentType, provider: 'google' };
       }
     } catch (err) {}
