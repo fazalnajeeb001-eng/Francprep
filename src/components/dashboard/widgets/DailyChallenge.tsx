@@ -6,16 +6,45 @@ import { useWidgets } from "~/lib/WidgetsContext";
 
 const TIMER_SECONDS = 60;
 
-const challenges = [
-  { q: "Translate: 'I would like a coffee'", a: "Je voudrais un café", hint: "Use 'voudrais' (conditional of vouloir)" },
-  { q: "What's the French word for 'library'?", a: "La bibliothèque", hint: "Think of 'biblio' for books" },
-  { q: "Conjugate 'aller' in present tense: je ___", a: "Je vais", hint: "Irregular! vais, vas, va, allons, allez, vont" },
-  { q: "What's 'goodbye' in French?", a: "Au revoir", hint: "Literally 'until seeing again'" },
-  { q: "Fill in: Je ___ (to be) étudiant", a: "Je suis", hint: "Être conjugation: suis, es, est, sommes, êtes, sont" },
-  { q: "Translate: 'Thank you very much'", a: "Merci beaucoup", hint: "'Merci' + 'beaucoup' = a lot of thanks" },
-  { q: "What's the feminine form of 'content' (happy)?", a: "Contente", hint: "Add -e for feminine" },
-  { q: "How do you say 'excuse me' in French?", a: "Excusez-moi", hint: "Formal way, using 'vous'" },
-];
+const MULTI_LANG_CHALLENGES: Record<string, { q: string; a: string; hint: string }[]> = {
+  fr: [
+    { q: "Translate: 'I would like a coffee'", a: "Je voudrais un café", hint: "Use 'voudrais' (conditional of vouloir)" },
+    { q: "What's the French word for 'library'?", a: "La bibliothèque", hint: "Think of 'biblio' for books" },
+    { q: "Conjugate 'aller' in present tense: je ___", a: "Je vais", hint: "Irregular! vais, vas, va, allons, allez, vont" },
+    { q: "What's 'goodbye' in French?", a: "Au revoir", hint: "Literally 'until seeing again'" },
+    { q: "Fill in: Je ___ (to be) étudiant", a: "Je suis", hint: "Être conjugation: suis, es, est, sommes, êtes, sont" },
+    { q: "Translate: 'Thank you very much'", a: "Merci beaucoup", hint: "'Merci' + 'beaucoup' = a lot of thanks" },
+    { q: "What's the feminine form of 'content' (happy)?", a: "Contente", hint: "Add -e for feminine" },
+    { q: "How do you say 'excuse me' in French?", a: "Excusez-moi", hint: "Formal way, using 'vous'" },
+  ],
+  de: [
+    { q: "Translate: 'Hello, how are you?'", a: "Guten Tag, wie geht es Ihnen", hint: "Polite formal German greeting" },
+    { q: "What's the German word for 'library'?", a: "Die Bibliothek", hint: "Feminine noun with 'Die'" },
+    { q: "Conjugate 'sein' for 'Ich': Ich ___", a: "Ich bin", hint: "Present tense of sein for Ich" },
+    { q: "What's 'goodbye' in German?", a: "Auf Wiedersehen", hint: "Literally 'until seeing again'" },
+    { q: "Complete with dative preposition: mit ___ Bus", a: "mit dem Bus", hint: "Dative masculine article" },
+    { q: "Translate: 'Thank you very much'", a: "Vielen Dank", hint: "Literal: many thanks" },
+    { q: "How do you say 'excuse me' in German?", a: "Entschuldigung", hint: "Standard polite apology" },
+  ],
+  es: [
+    { q: "Translate: 'I would like a coffee'", a: "Me gustaría un café", hint: "Conditional of gustar" },
+    { q: "What's the Spanish word for 'library'?", a: "La biblioteca", hint: "Feminine noun with 'La'" },
+    { q: "Conjugate 'tener' for 'Yo': Yo ___", a: "Yo tengo", hint: "First-person present of tener" },
+    { q: "What's 'goodbye' in Spanish?", a: "Hasta luego", hint: "Literally 'until later'" },
+    { q: "Choose Ser vs Estar: Juan ___ cansado", a: "está", hint: "Temporary state uses Estar" },
+    { q: "Translate: 'Thank you very much'", a: "Muchas gracias", hint: "'Muchas' + 'gracias'" },
+    { q: "How do you say 'excuse me' in Spanish?", a: "Perdón", hint: "Standard polite excuse" },
+  ],
+  it: [
+    { q: "Translate: 'Hello, how are you?'", a: "Buongiorno, come sta", hint: "Formal polite Italian greeting" },
+    { q: "What's the Italian word for 'library'?", a: "La biblioteca", hint: "Feminine noun with 'La'" },
+    { q: "Conjugate 'avere' for 'Io': Io ___", a: "Io ho", hint: "First-person present of avere" },
+    { q: "What's 'goodbye' in Italian?", a: "Arrivederci", hint: "Standard formal farewell" },
+    { q: "Complete with article: ___ studente", a: "Lo studente", hint: "Nouns starting with st take 'Lo'" },
+    { q: "Translate: 'Thank you very much'", a: "Grazie mille", hint: "Literal: a thousand thanks" },
+    { q: "How do you say 'excuse me' in Italian?", a: "Scusi", hint: "Formal polite request" },
+  ],
+};
 
 function normalize(s: string) {
   return s.toLowerCase().replace(/[^\w\s]/g, "").replace(/\s+/g, " ").trim();
@@ -26,9 +55,12 @@ export function DailyChallenge({ dark }: { dark: boolean }) {
   const challengeDate = widgets?.dailyChallengeDate || "";
   const challengeIndex = widgets?.dailyChallengeIndex || 0;
 
+  const activeLang = typeof window !== "undefined" ? localStorage.getItem("fp_active_language") || "fr" : "fr";
+  const challenges = MULTI_LANG_CHALLENGES[activeLang] || MULTI_LANG_CHALLENGES.fr;
+
   const today = new Date().toDateString();
   const challenge = challengeDate === today
-    ? challenges[challengeIndex]
+    ? (challenges[challengeIndex] || challenges[0])
     : challenges[Math.floor(Math.random() * challenges.length)];
 
   const [userAnswer, setUserAnswer] = useState("");
