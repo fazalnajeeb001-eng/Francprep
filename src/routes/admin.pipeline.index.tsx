@@ -626,58 +626,64 @@ function PipelineDashboardPage() {
           </div>
         )}
 
-        {/* Global Track Language Selector Ribbon */}
+        {/* Global Track Language Selector Ribbon with Dropdown */}
         <div className={`p-3.5 rounded-2xl border flex flex-wrap items-center justify-between gap-3 ${dark ? "bg-[#101828]/90 border-[#1e2a4a]" : "bg-white border-slate-200 shadow-sm"}`}>
-          <div className="flex items-center gap-2">
-            <Globe className="w-4 h-4 text-purple-400" />
-            <span className="text-xs font-bold text-white dark:text-white text-slate-800">Active Curriculum Track:</span>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            {availableLanguages.map((l) => {
-              const isSelected = selectedLangCode === l.code;
-              const isPublished = l.isPublished === true;
-              return (
-                <div key={l.code} className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedLangCode(l.code);
-                      if (typeof window !== "undefined") {
-                        localStorage.setItem("fp_admin_lang", l.code);
-                      }
-                    }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 cursor-pointer ${
-                      isSelected
-                        ? "bg-purple-600 text-white border-purple-500 shadow-md shadow-purple-500/25 ring-2 ring-purple-500/40"
-                        : dark
-                        ? "bg-[#070B17] text-gray-300 border-[#1e2a4a] hover:border-purple-500/40 hover:bg-white/5"
-                        : "bg-slate-100 text-slate-700 border-slate-200 hover:border-purple-400 hover:bg-slate-200"
-                    }`}
-                  >
-                    <span>{l.flag || '🌐'}</span>
-                    <span>{l.name}</span>
-                    <span className="text-[10px] opacity-75 font-mono">({l.code.toUpperCase()})</span>
-                  </button>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Globe className="w-4 h-4 text-purple-400" />
+              <span className="text-xs font-bold text-white dark:text-white text-slate-800">Active Curriculum Track:</span>
+            </div>
 
-                  <button
-                    type="button"
-                    onClick={(e) => handleTogglePublishLanguage(l.code, isPublished, e)}
-                    title={isPublished ? "Click to UNPUBLISH track from Student Onboarding" : "Click to PUBLISH track to Student Onboarding"}
-                    className={`px-2 py-1 rounded-lg text-[10px] font-extrabold transition-all border flex items-center gap-1 cursor-pointer ${
-                      isPublished
-                        ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 hover:bg-emerald-500/30"
-                        : "bg-amber-500/10 text-amber-400 border-amber-500/30 hover:bg-amber-500/20 opacity-70"
-                    }`}
-                  >
-                    <span>{isPublished ? "🟢 Published" : "⚪ Draft Track"}</span>
-                  </button>
-                </div>
+            {/* Sleek Language Dropdown Select */}
+            <div className="relative">
+              <select
+                value={selectedLangCode}
+                onChange={(e) => {
+                  const code = e.target.value;
+                  setSelectedLangCode(code);
+                  if (typeof window !== "undefined") {
+                    localStorage.setItem("fp_admin_lang", code);
+                  }
+                }}
+                className={`px-3.5 py-1.5 rounded-xl border text-xs font-extrabold transition-all outline-none cursor-pointer ${
+                  dark
+                    ? "bg-[#070B17] border-purple-500/50 text-purple-300 hover:border-purple-400 focus:ring-2 focus:ring-purple-500/30"
+                    : "bg-white border-purple-300 text-purple-900 hover:border-purple-500 shadow-sm"
+                }`}
+              >
+                {availableLanguages.map((l) => (
+                  <option key={l.code} value={l.code} className={dark ? "bg-[#101828] text-white" : "bg-white text-slate-900"}>
+                    {l.flag || '🌐'} {l.name} ({l.code.toUpperCase()}) {l.isPublished ? '🟢 [Published]' : '⚪ [Draft]'}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {(() => {
+              const activeObj = availableLanguages.find(l => l.code === selectedLangCode);
+              const isPub = activeObj?.isPublished === true;
+              return (
+                <button
+                  type="button"
+                  onClick={(e) => handleTogglePublishLanguage(selectedLangCode, isPub, e)}
+                  title={isPub ? "Click to UNPUBLISH track from Student Onboarding" : "Click to PUBLISH track to Student Onboarding"}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 cursor-pointer shadow-sm ${
+                    isPub
+                      ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 hover:bg-emerald-500/30"
+                      : "bg-amber-500/15 text-amber-300 border-amber-500/40 hover:bg-amber-500/25"
+                  }`}
+                >
+                  <span>{isPub ? "🟢 Published to Students" : "⚪ Draft Track (Click to Publish)"}</span>
+                </button>
               );
-            })}
+            })()}
+
             <button
               type="button"
               onClick={() => setShowAddLangModal(true)}
-              className="px-2.5 py-1.5 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+              className="px-3 py-1.5 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
             >
               <span>➕ Register Language</span>
             </button>
@@ -842,9 +848,23 @@ function PipelineDashboardPage() {
             {pipelineTab !== "import" && (
               <div className={`${card} border rounded-2xl p-5 space-y-4`}>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1e2a4a] pb-3">
-                  <h3 className="text-sm font-bold text-white capitalize">
-                    Latest {pipelineTab} Push
-                  </h3>
+                  <div>
+                    <h3 className="text-sm font-bold text-white capitalize flex items-center gap-2">
+                      <span>Latest {pipelineTab} Push</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 uppercase font-mono">
+                        {(availableLanguages.find(l => l.code === selectedLangCode)?.flag) || '🌐'} {selectedLangCode}
+                      </span>
+                    </h3>
+                    {pipelineTab === "drafts" && (
+                      <p className="text-[11px] text-gray-400 mt-0.5">
+                        Showing latest staged push for active track. All previous drafts remain stored in your{" "}
+                        <Link to="/admin/pipeline/drafts" className="text-purple-400 underline hover:text-purple-300 font-semibold">
+                          Drafts Archive
+                        </Link>{" "}
+                        by Language & Level.
+                      </p>
+                    )}
+                  </div>
 
                   {pipelineTab === "drafts" && (
                     <div className="flex flex-wrap items-center gap-2">
