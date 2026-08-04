@@ -444,12 +444,14 @@ export function OnboardingPage() {
   const handleFinishOnboarding = async (levelOverride?: string) => {
     const finalLevel = levelOverride || (step === "result" ? evaluatedLevel : "A1");
 
-    // 1. Save goal and active target language directly via userPrefs
+    // 1. Instantly write to localStorage so UI & guards immediately see completion
     saveGoalToStorage(selectedGoal, selectedLang);
     setDailyStudyGoal(selectedPace);
     localStorage.setItem("fp_active_language", selectedLang);
+    localStorage.setItem("francprep_onboarding_completed", "true");
+    localStorage.setItem("francprep_user_level", finalLevel);
 
-    // 2. Update AuthContext state so UI immediately recognizes onboarding as complete
+    // 2. Instantly update AuthContext React state
     if (user && updateUser) {
       updateUser({
         ...user,
@@ -458,25 +460,25 @@ export function OnboardingPage() {
       } as any);
     }
 
-    // 3. Persist to backend database so user profile syncs
-    try {
-      await apiFetch("/users/profile/goal", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ goal: selectedGoal, activeLanguage: selectedLang }),
-      });
-      await apiFetch("/users/profile/complete-onboarding", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ activeLanguage: selectedLang, learningGoal: selectedGoal }),
-      });
-    } catch {}
+    // 3. Fire-and-forget backend sync in background (doesn't block navigation)
+    apiFetch("/users/profile/goal", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ goal: selectedGoal, activeLanguage: selectedLang }),
+    }).catch(() => {});
 
-    // 4. Save onboarding level
-    localStorage.setItem("francprep_onboarding_completed", "true");
-    localStorage.setItem("francprep_user_level", finalLevel);
+    apiFetch("/users/profile/complete-onboarding", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ activeLanguage: selectedLang, learningGoal: selectedGoal }),
+    }).catch(() => {});
 
-    navigate({ to: "/dashboard" });
+    // 4. Guaranteed navigation to /dashboard
+    if (typeof window !== "undefined") {
+      window.location.href = "/dashboard";
+    } else {
+      navigate({ to: "/dashboard" });
+    }
   };
 
   const activeBranding = getTrackBranding(selectedLang);
