@@ -101,7 +101,7 @@ export function ExamHubPage() {
       subtitle: 'Practice under authentic exam conditions or guided practice mode to achieve your target NCLC 7+ B2 score.',
       predictor: 'NCLC 7+ Practice Predictor',
       card1: { type: 'TCF_CANADA' as ExamType, badge: 'FEI / France Éducation International', title: 'TCF Canada Simulator', desc: 'Test de connaissance du français pour le Canada. Evaluates 4 skills: Listening (39q • 35m), Reading (39q • 60m), Writing (3 tasks • 60m), and Speaking (3 tasks • 12m).' },
-      card2: { type: 'TEF_CANADA' as ExamType, badge: 'CCI Paris Île-de-France', title: 'TEF Canada & DELF B2 Suite', desc: 'Test d\'évaluation de français. Evaluates Listening (60q • 40m), Reading (50q • 60m), Writing (2 tasks • 60m), and Speaking (2 tasks • 15m).' }
+      card2: { type: 'TEF_CANADA' as ExamType, badge: 'CCI Paris Île-de-France', title: 'TEF Canada Simulator', desc: 'Test d\'évaluation de français pour le Canada. Evaluates 4 skills: Listening (60q • 40m), Reading (50q • 60m), Writing (2 tasks • 60m), and Speaking (2 tasks • 15m).' }
     };
   })();
 
