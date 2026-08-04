@@ -372,19 +372,22 @@ export function OnboardingPage() {
   const handleFinishOnboarding = async (levelOverride?: string) => {
     const finalLevel = levelOverride || (step === "result" ? evaluatedLevel : "A1");
 
-    // 1. Save goal directly via userPrefs (triggers 'goal-changed' event for Dashboard!)
-    saveGoalToStorage(selectedGoal);
+    // 1. Save goal and active target language directly via userPrefs
+    saveGoalToStorage(selectedGoal, selectedLang);
     setDailyStudyGoal(selectedPace);
+    localStorage.setItem("fp_active_language", selectedLang);
 
-    // 2. Persist to backend database so profile syncs
+    // 2. Persist to backend database so user profile syncs
     try {
       await apiFetch("/users/profile/goal", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ goal: selectedGoal }),
+        body: JSON.stringify({ goal: selectedGoal, activeLanguage: selectedLang }),
       });
       await apiFetch("/users/profile/complete-onboarding", {
         method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ activeLanguage: selectedLang, learningGoal: selectedGoal }),
       });
     } catch {}
 

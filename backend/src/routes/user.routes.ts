@@ -73,11 +73,12 @@ router.get('/profile', authenticate, async (req: AuthRequest, res: Response, nex
 
 router.put('/profile/goal', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { goal } = req.body;
-    const validGoals = ['A2', 'B1', 'B2', 'C1', 'C2', 'TCF_B2', 'TEF_B2', 'none'];
-    if (!validGoals.includes(goal)) { res.status(400).json({ success: false, message: 'Invalid goal' }); return; }
-    const user = await User.findByIdAndUpdate(req.user!.userId, { learningGoal: goal }, { new: true }).select('learningGoal');
-    res.status(200).json({ success: true, data: { learningGoal: user!.learningGoal } });
+    const { goal, activeLanguage } = req.body;
+    const updates: any = {};
+    if (goal) updates.learningGoal = goal;
+    if (activeLanguage) updates.activeLanguage = activeLanguage;
+    const user = await User.findByIdAndUpdate(req.user!.userId, updates, { new: true });
+    res.status(200).json({ success: true, data: { learningGoal: user?.learningGoal, activeLanguage: (user as any)?.activeLanguage } });
   } catch (error) { next(error); }
 });
 
@@ -228,7 +229,11 @@ router.post('/profile/avatar/generate', authenticate, async (req: AuthRequest, r
 
 router.put('/profile/complete-onboarding', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    await User.findByIdAndUpdate(req.user!.userId, { onboardingComplete: true });
+    const { activeLanguage, learningGoal } = req.body || {};
+    const updates: any = { onboardingComplete: true };
+    if (activeLanguage) updates.activeLanguage = activeLanguage;
+    if (learningGoal) updates.learningGoal = learningGoal;
+    await User.findByIdAndUpdate(req.user!.userId, updates);
     res.status(200).json({ success: true });
   } catch (error) { next(error); }
 });
