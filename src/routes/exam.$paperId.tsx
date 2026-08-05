@@ -138,6 +138,7 @@ export function AuthenticCBTExamPage() {
   // Submission & Results & Strategy Modals State
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [isAudioPaused, setIsAudioPaused] = useState(false);
   const [showStrategyModal, setShowStrategyModal] = useState(false);
   const [openModelAnswerTaskId, setOpenModelAnswerTaskId] = useState<string | null>(null);
 
