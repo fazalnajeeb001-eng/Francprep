@@ -6,7 +6,23 @@ import type { DashboardData } from "../types";
 import { getGoal, CEFR_ORDER } from "../utils/userPrefs";
 import { getTrackBranding } from "~/lib/trackBranding";
 
-const CEFR_NAMES: Record<string, string> = { A1: "Découverte", A2: "Progrès", B1: "Indépendance", B2: "Autonomie", C1: "Maîtrise", C2: "Perfectionnement" };
+function getCefrNamesForLanguage(langCode: string = "fr"): Record<string, string> {
+  const code = (langCode || "fr").toLowerCase().trim();
+  if (code === "es" || code === "spa" || code === "spanish") {
+    return { A1: "Acceso", A2: "Plataforma", B1: "Umbral", B2: "Avanzado", C1: "Dominio", C2: "Maestría" };
+  }
+  if (code === "de" || code === "ger" || code === "german") {
+    return { A1: "Start Deutsch 1", A2: "Start Deutsch 2", B1: "Zertifikat B1", B2: "Zertifikat B2", C1: "Zertifikat C1", C2: "Großes Sprachdiplom" };
+  }
+  if (code === "it" || code === "ita" || code === "italian") {
+    return { A1: "Contatto", A2: "Sviluppo", B1: "Autonomia", B2: "Padronanza", C1: "Efficacia", C2: "Maestria" };
+  }
+  if (code === "fr" || code === "fre" || code === "french") {
+    return { A1: "Découverte", A2: "Intermédiaire", B1: "Indépendance", B2: "Autonomie", C1: "Maîtrise", C2: "Perfectionnement" };
+  }
+  return { A1: "Discovery", A2: "Elementary", B1: "Intermediate", B2: "Vantage", C1: "Advanced", C2: "Mastery" };
+}
+
 const CEFR_DESC: Record<string, string> = { A1: "Beginner", A2: "Elementary", B1: "Intermediate", B2: "Upper Intermediate", C1: "Advanced", C2: "Mastery" };
 
 function getActiveLevel(levels: DashboardData["levelProgress"]): string {
@@ -30,6 +46,10 @@ export function JourneyBanner({ dark, firstName, streak, overallProgress, levels
   const activeData = levels.find((l) => l.level === activeLevel);
   const goalData = getGoal();
 
+  const activeLang = typeof window !== "undefined" ? localStorage.getItem("fp_active_language") || "fr" : "fr";
+  const branding = getTrackBranding(activeLang);
+  const cefrNames = getCefrNamesForLanguage(activeLang);
+
   // Re-read goal on mount + custom event from Settings/GoalModal
   useEffect(() => {
     const onGoalChange = () => setTick((t) => t + 1);
@@ -38,7 +58,7 @@ export function JourneyBanner({ dark, firstName, streak, overallProgress, levels
   }, []);
 
   const statsList = [
-    { icon: <Target className="w-3 h-3" />, label: "Level", value: `${activeLevel} — ${CEFR_NAMES[activeLevel]}`, color: "text-purple-400" },
+    { icon: <Target className="w-3 h-3" />, label: "Level", value: `${activeLevel} — ${cefrNames[activeLevel]}`, color: "text-purple-400" },
     { icon: <BookOpen className="w-3 h-3" />, label: "Lessons", value: `${lessonsCompleted.completed}/${lessonsCompleted.total}`, color: "text-emerald-400" },
     { icon: <BookText className="w-3 h-3" />, label: "Vocabulary", value: `${vocabularyLearned} words`, color: "text-blue-400" },
     { icon: <Languages className="w-3 h-3" />, label: "Grammar", value: `${grammarMastered} topics`, color: "text-pink-400" },
@@ -223,7 +243,7 @@ export function JourneyBanner({ dark, firstName, streak, overallProgress, levels
                 <Crown className="w-3.5 h-3.5 text-amber-400/50" />
                 <span className={`text-[11px] font-semibold ${dark ? "text-gray-400" : "text-gray-500"}`}>Set your learning goal</span>
               </div>
-              <span className={`text-[10px] ${dark ? "text-gray-600" : "text-gray-400"}`}>TCF, TEF & more</span>
+              <span className={`text-[10px] ${dark ? "text-gray-600" : "text-gray-400"}`}>{branding.examName}</span>
             </div>
           )}
         </div>

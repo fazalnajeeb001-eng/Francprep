@@ -2,8 +2,12 @@ import { motion } from "framer-motion";
 import { Target, Trophy, TrendingUp } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useCountUp } from "../hooks/useCountUp";
+import { getTrackBranding } from "~/lib/trackBranding";
 
 export function ExamCard({ averageScore, dark }: { averageScore: number; dark: boolean }) {
+  const activeLang = typeof window !== "undefined" ? localStorage.getItem("fp_active_language") || "fr" : "fr";
+  const branding = getTrackBranding(activeLang);
+
   const hasData = averageScore > 0;
   const predicted = hasData ? Math.min(100, Math.round(averageScore * 1.05)) : 0;
   const animatedScore = useCountUp(predicted, 1200, 200);
@@ -40,7 +44,7 @@ export function ExamCard({ averageScore, dark }: { averageScore: number; dark: b
           </div>
           <div className="flex items-center justify-center gap-1.5 mb-3">
             <TrendingUp className="w-3.5 h-3.5 text-purple-400" />
-            <span className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"}`}>Estimated TCF/TEF: <span className="font-bold text-purple-400">{animatedScore}/100</span></span>
+            <span className={`text-xs ${dark ? "text-gray-400" : "text-gray-500"}`}>Estimated {branding.examName}: <span className="font-bold text-purple-400">{animatedScore}/100</span></span>
           </div>
           <Link to="/exam"
             className="w-full block bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 text-center">
@@ -52,7 +56,7 @@ export function ExamCard({ averageScore, dark }: { averageScore: number; dark: b
           <Target className="w-10 h-10 mx-auto dark:text-gray-600 text-gray-400 mb-3" />
           <p className={`text-sm font-semibold ${dark ? "text-gray-300" : "text-gray-700"}`}>No exams taken yet</p>
           <p className={`text-xs ${dark ? "text-gray-500" : "text-gray-400"} mt-1 mb-4`}>
-            Practice with TCF or TEF full-length mock exams
+            Practice with {branding.examName} full-length mock exams
           </p>
           <Link to="/exam"
             className="w-full block bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 text-center">

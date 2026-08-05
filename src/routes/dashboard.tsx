@@ -116,7 +116,8 @@ function DashboardPage() {
 
   const b = dark ? "bg-[#070B17] text-white" : "bg-[#F8FAFC] text-slate-900";
   const txtSec = dark ? "text-gray-400" : "text-slate-600";
-  const { emoji, greeting, motivational } = getGreeting();
+  const activeLang = (user?.activeLanguage || (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : "fr") || "fr").toLowerCase().trim();
+  const { emoji, greeting, motivational } = getGreeting(activeLang);
 
   return (
     <div className={`min-h-screen ${b} transition-colors duration-300`}>
