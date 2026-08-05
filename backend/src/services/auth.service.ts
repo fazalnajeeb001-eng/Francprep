@@ -39,16 +39,16 @@ export class AuthService {
     });
 
     // Send verification email
-    const hasEmailKey = Boolean(process.env.RESEND_API_KEY);
-    const sent = await emailService.sendVerificationEmail(user.email, user.firstName, otpCode, user.activeLanguage);
+    const hasEmailKey = Boolean(process.env.RESEND_API_KEY || process.env.VITE_RESEND_API_KEY);
+    const sendRes = await emailService.sendVerificationEmail(user.email, user.firstName, otpCode, user.activeLanguage);
 
     return {
-      message: sent && hasEmailKey
+      message: sendRes.success && hasEmailKey
         ? 'Account created! A 6-digit verification code has been sent to your inbox.'
         : 'Account created! Please enter your 6-digit verification code below.',
       email: user.email,
       requiresVerification: true,
-      devOtpCode: !hasEmailKey ? otpCode : undefined,
+      devOtpCode: (!sendRes.success || !hasEmailKey) ? otpCode : undefined,
     };
   }
 

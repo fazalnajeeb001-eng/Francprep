@@ -15,42 +15,47 @@ export class EmailService {
   /**
    * Generic sender with Resend or Console Fallback
    */
-  async sendEmail({ to, subject, html, text }: EmailOptions): Promise<boolean> {
+  async sendEmail({ to, subject, html, text }: EmailOptions): Promise<{ success: boolean; error?: any }> {
     try {
-      if (resend) {
-        const { data, error } = await resend.emails.send({
-          from: fromEmail,
+      const apiKey = process.env.RESEND_API_KEY || process.env.VITE_RESEND_API_KEY || '';
+      const sender = process.env.EMAIL_FROM || 'onboarding@resend.dev';
+
+      if (apiKey) {
+        const resendClient = new Resend(apiKey);
+        const { data, error } = await resendClient.emails.send({
+          from: sender,
           to,
           subject,
           html,
           text: text || 'Please view this email in an HTML-compatible client.',
         });
+
         if (error) {
-          console.error('[EmailService] Resend API Error:', error);
-          return false;
+          console.error('[EmailService] Resend API Error Details:', JSON.stringify(error));
+          return { success: false, error };
         }
-        console.log('[EmailService] Email sent successfully via Resend:', data?.id);
-        return true;
+        console.log('[EmailService] Email sent successfully via Resend ID:', data?.id);
+        return { success: true };
       } else {
         console.log('\n==================================================');
         console.log('📧 [DEV EMAIL PREVIEW]');
         console.log(`TO: ${to}`);
         console.log(`SUBJECT: ${subject}`);
         console.log('--------------------------------------------------');
-        console.log(text || 'HTML Content generated (set RESEND_API_KEY in .env for live delivery)');
+        console.log(text || 'HTML Content generated');
         console.log('==================================================\n');
-        return true;
+        return { success: true };
       }
     } catch (err) {
-      console.error('[EmailService] Delivery failed:', err);
-      return false;
+      console.error('[EmailService] Delivery exception:', err);
+      return { success: false, error: err };
     }
   }
 
   /**
    * 🔐 Send 6-Digit Email Verification OTP Code
    */
-  async sendVerificationEmail(to: string, firstName: string, code: string, langCode = 'fr'): Promise<boolean> {
+  async sendVerificationEmail(to: string, firstName: string, code: string, langCode = 'fr'): Promise<{ success: boolean; error?: any }> {
     const brandName = langCode === 'de' ? 'GermanPrep' : langCode === 'es' ? 'SpanPrep' : langCode === 'it' ? 'ItalPrep' : 'FrancPrep';
     const flag = langCode === 'de' ? '🇩🇪' : langCode === 'es' ? '🇪🇸' : langCode === 'it' ? '🇮🇹' : '🇫🇷';
     
@@ -121,7 +126,7 @@ export class EmailService {
   /**
    * 🔑 Send Password Reset Token Email
    */
-  async sendPasswordResetEmail(to: string, firstName: string, resetToken: string, langCode = 'fr'): Promise<boolean> {
+  async sendPasswordResetEmail(to: string, firstName: string, resetToken: string, langCode = 'fr'): Promise<{ success: boolean; error?: any }> {
     const brandName = langCode === 'de' ? 'GermanPrep' : langCode === 'es' ? 'SpanPrep' : langCode === 'it' ? 'ItalPrep' : 'FrancPrep';
     const baseUrl = process.env.FRONTEND_URL || 'https://francprep.vercel.app';
     const resetUrl = `${baseUrl}/login?resetToken=${resetToken}&email=${encodeURIComponent(to)}`;
