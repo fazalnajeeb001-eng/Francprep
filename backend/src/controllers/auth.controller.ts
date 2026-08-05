@@ -9,23 +9,13 @@ export class AuthController {
   async signup(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const result = await authService.signup(req.body);
-
-      // Set refresh token as httpOnly cookie
-      res.cookie('refreshToken', result.refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      });
-
       res.status(201).json({
         success: true,
         data: {
-          user: result.user,
-          accessToken: result.accessToken,
-          refreshToken: result.refreshToken,
+          email: result.email,
+          requiresVerification: true,
         },
-        message: 'Account created successfully',
+        message: result.message,
       });
     } catch (error) {
       next(error);
@@ -190,8 +180,26 @@ export class AuthController {
         res.status(400).json({ success: false, error: 'Email and 6-digit verification code are required.' });
         return;
       }
-      const result = await authService.verifyEmail(email, code);
-      res.status(200).json({ success: true, message: result.message });
+      const result: any = await authService.verifyEmail(email, code);
+
+      if (result.refreshToken) {
+        res.cookie('refreshToken', result.refreshToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: result.message,
+        data: {
+          user: result.user,
+          accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
+        },
+      });
     } catch (error) {
       next(error);
     }

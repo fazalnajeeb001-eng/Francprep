@@ -70,8 +70,17 @@ function SignupPage() {
     setLoading(true);
 
     try {
-      await signup({ firstName, lastName, email, password, marketingOptIn, activeLanguage: activeBranding.code } as any);
-      setShowOtpModal(true);
+      const res = await apiFetch("/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstName, lastName, email, password, marketingOptIn, activeLanguage: activeBranding.code }),
+      });
+      const json = await res.json();
+      if (res.ok && json.success) {
+        setShowOtpModal(true);
+      } else {
+        setError(json.error || json.message || "Signup failed. Please try again.");
+      }
     } catch (err: any) {
       const d = err?.response?.data;
       setError(d?.details ? d.details.map((x: any) => x.message).join(". ") : d?.error || err?.message || "Signup failed");
@@ -93,15 +102,17 @@ function SignupPage() {
       });
       const json = await res.json();
       if (res.ok && json.success) {
+        if (json.data?.accessToken) {
+          localStorage.setItem("francprep_access_token", json.data.accessToken);
+          localStorage.setItem("francprep_user", JSON.stringify(json.data.user));
+        }
         setShowOtpModal(false);
         navigate({ to: "/onboarding" });
       } else {
-        setOtpError(json.error || json.message || "Invalid verification code. Please check your email.");
+        setOtpError(json.error || json.message || "Invalid 6-digit verification code. Please check your email.");
       }
     } catch (err: any) {
-      // In dev fallback or on success, proceed cleanly
-      setShowOtpModal(false);
-      navigate({ to: "/onboarding" });
+      setOtpError("Invalid 6-digit verification code. Please check your email.");
     } finally {
       setOtpLoading(false);
     }

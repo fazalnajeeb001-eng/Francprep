@@ -33,17 +33,9 @@ export class AuthService {
     // Send verification email
     await emailService.sendVerificationEmail(user.email, user.firstName, otpCode, user.activeLanguage);
 
-    const payload: IJwtPayload = {
-      userId: user._id.toString(),
-      email: user.email,
-      role: user.role,
-    };
-
-    const tokens = generateTokenPair(payload);
-
     return {
-      user: user.toJSON(),
-      ...tokens,
+      message: 'Account created! Please enter the 6-digit verification code sent to your email.',
+      email: user.email,
       requiresVerification: true,
     };
   }
@@ -183,7 +175,19 @@ export class AuthService {
     user.emailVerificationExpires = undefined;
     await user.save();
 
-    return { message: 'Email verified successfully!' };
+    const payload: IJwtPayload = {
+      userId: user._id.toString(),
+      email: user.email,
+      role: user.role,
+    };
+
+    const tokens = generateTokenPair(payload);
+
+    return {
+      message: 'Email verified successfully!',
+      user: user.toJSON(),
+      ...tokens,
+    };
   }
 
   /**
