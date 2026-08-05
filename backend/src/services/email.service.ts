@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 
 const resendApiKey = process.env.RESEND_API_KEY || '';
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
-const fromEmail = process.env.EMAIL_FROM || 'FrancPrep Academy <noreply@francprep.com>';
+const fromEmail = process.env.EMAIL_FROM || 'FrancPrep Academy <onboarding@resend.dev>';
 
 export interface EmailOptions {
   to: string;
