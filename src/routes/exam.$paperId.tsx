@@ -751,6 +751,8 @@ export function AuthenticCBTExamPage() {
             <span>
               {currentSection.type === "COMPREHENSION_ORALE"
                 ? showHints ? "Hide Audio Coach 🎧" : "🎧 Audio Coach & Trap Alert"
+                : currentSection.type === "EXPRESSION_ECRITE"
+                ? showHints ? "Hide Writing Coach ✍️" : "✍️ Writing Strategy & Scoring Traps"
                 : showHints ? "Hide Reading Coach 📖" : "📖 Reading Strategy & Trap Alert"}
             </span>
           </button>
@@ -1231,6 +1233,49 @@ export function AuthenticCBTExamPage() {
         {/* WRITING SECTION WORKSPACE WITH CBT TASK TABS */}
         {currentSection.writingTasks && currentSection.writingTasks.length > 0 && (
           <div className="space-y-4">
+
+            {/* WRITING EXAM STRATEGY & EXAMINER SCORING TRAPS BANNER */}
+            {(mode === "PRACTICE" || showHints) && (
+              <div className="p-5 rounded-xl border border-pink-300 dark:border-pink-800 bg-pink-50/90 dark:bg-pink-950/40 space-y-3 text-xs text-slate-900 dark:text-slate-100 shadow-sm">
+                <div className="flex items-center justify-between border-b border-pink-200 dark:border-pink-800 pb-2">
+                  <span className="font-extrabold text-sm text-pink-700 dark:text-pink-400 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-pink-600" />
+                    <span>Official Examiner Strategy & Scoring Traps: Expression Écrite</span>
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded bg-pink-600 text-white font-mono font-bold text-[10px]">
+                    NCLC 7–9 (B2/C1 TARGET GUIDE)
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-sans">
+                  <div className="space-y-1 p-2.5 rounded bg-white/70 dark:bg-slate-900/70 border border-pink-200 dark:border-pink-900">
+                    <p className="font-bold text-pink-900 dark:text-pink-300 uppercase text-[10px]">1. Word Count Discipline</p>
+                    <p className="leading-relaxed text-[11px] text-slate-700 dark:text-slate-300">
+                      Staying below minimum word counts incurs automatic percentage score deductions. Stay strictly within target bounds.
+                    </p>
+                  </div>
+
+                  <div className="space-y-1 p-2.5 rounded bg-white/70 dark:bg-slate-900/70 border border-pink-200 dark:border-pink-900">
+                    <p className="font-bold text-pink-900 dark:text-pink-300 uppercase text-[10px]">2. Essential Logical Connectors</p>
+                    <div className="flex flex-wrap gap-1 pt-0.5">
+                      {["D'abord", "En effet", "Cependant", "Néanmoins", "Par conséquent", "En somme"].map((c, i) => (
+                        <span key={i} className="px-1.5 py-0.5 rounded bg-pink-100 dark:bg-pink-950 text-[10px] font-mono font-bold text-pink-900 dark:text-pink-300">
+                          {c}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1 p-2.5 rounded bg-white/70 dark:bg-slate-900/70 border border-pink-200 dark:border-pink-900">
+                    <p className="font-bold text-pink-900 dark:text-pink-300 uppercase text-[10px]">3. Hors-Sujet & Plagiarism Traps</p>
+                    <p className="leading-relaxed text-[11px] text-slate-700 dark:text-slate-300">
+                      Off-topic essays or copying model answers (&gt;35% similarity) automatically receive an examiner <strong>Score of 0/20 (NCLC 0)</strong>.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* CBT Task Tab Switcher */}
             <div className="flex items-center gap-2 border-b border-slate-300 dark:border-slate-800 pb-2 overflow-x-auto">
               <span className="text-xs font-bold text-slate-500 uppercase shrink-0 mr-1">Épreuve Écrite (Task Switcher):</span>
@@ -1305,10 +1350,10 @@ export function AuthenticCBTExamPage() {
                       {task.sampleResponse && mode === "PRACTICE" && (
                         <button
                           onClick={() => setOpenModelAnswerTaskId(openModelAnswerTaskId === task.id ? null : task.id)}
-                          className="px-3 py-1.5 rounded bg-blue-50 border border-blue-200 dark:bg-blue-950/40 dark:border-blue-800 text-blue-700 dark:text-blue-300 font-bold hover:bg-blue-100 transition-all shrink-0 flex items-center gap-1.5"
+                          className="px-3 py-1.5 rounded bg-pink-100 border border-pink-300 dark:bg-pink-950/40 dark:border-pink-800 text-pink-900 dark:text-pink-200 font-bold hover:bg-pink-200 transition-all shrink-0 flex items-center gap-1.5 shadow-sm"
                         >
-                          <BookOpen className="w-3.5 h-3.5" />
-                          <span>{openModelAnswerTaskId === task.id ? "Hide Model Response 🙈" : "📝 View Official NCLC 7+ Model Answer"}</span>
+                          <BookOpen className="w-3.5 h-3.5 text-pink-600 dark:text-pink-400" />
+                          <span>{openModelAnswerTaskId === task.id ? "Hide Model Response 🙈" : "👁️ Reveal Official C1/C2 Benchmark Response"}</span>
                         </button>
                       )}
 
@@ -1323,23 +1368,25 @@ export function AuthenticCBTExamPage() {
                     </div>
                   </div>
 
-                  {/* Model Answer Card */}
+                  {/* C1/C2 Exemplar Model Answer Card */}
                   {openModelAnswerTaskId === task.id && task.sampleResponse && (
-                    <div className="p-4 rounded-xl border border-blue-300 dark:border-blue-800 bg-blue-50/90 dark:bg-blue-950/50 space-y-3 text-xs font-sans">
-                      <div className="flex items-center justify-between border-b border-blue-200 dark:border-blue-800 pb-2">
-                        <span className="font-extrabold text-xs text-blue-900 dark:text-blue-300 flex items-center gap-1.5 uppercase tracking-wide">
-                          <Trophy className="w-4 h-4 text-blue-600" />
-                          <span>Exemplar NCLC 7+ (B2 Vantage) Sample Response</span>
+                    <div className="p-5 rounded-xl border border-pink-300 dark:border-pink-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 space-y-3 shadow-md text-xs font-sans">
+                      <div className="flex items-center justify-between border-b border-pink-200 dark:border-pink-800 pb-2">
+                        <span className="font-extrabold text-xs text-pink-700 dark:text-pink-400 flex items-center gap-1.5 uppercase tracking-wide">
+                          <Trophy className="w-4 h-4 text-pink-600" />
+                          <span>Official Exemplar C1/C2 Model Response (NCLC 9+ Benchmark)</span>
                         </span>
-                        <span className="px-2 py-0.5 rounded bg-blue-600 text-white font-mono font-bold text-[10px]">
-                          OFFICIAL FEI BENCHMARK
+                        <span className="px-2.5 py-0.5 rounded bg-emerald-600 text-white font-mono font-bold text-[10px]">
+                          100% SCORE BENCHMARK
                         </span>
                       </div>
-                      <p className="whitespace-pre-line font-serif italic text-slate-900 dark:text-slate-100 leading-relaxed p-3 rounded bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-900">
+
+                      <p className="whitespace-pre-line font-sans leading-relaxed text-slate-900 dark:text-slate-100 p-4 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-medium">
                         {task.sampleResponse}
                       </p>
-                      <div className="text-[11px] text-blue-800 dark:text-blue-300 font-medium">
-                        💡 <strong>Key NCLC 7 Features used in this sample:</strong> Proper paragraphing, varied linking words (<em>en outre, cependant, par conséquent</em>), strict word count compliance, and natural subjunctive mood expressions.
+
+                      <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-[11px] text-amber-900 dark:text-amber-300 font-medium flex items-center gap-2">
+                        <span>⚠️ <strong>Plagiarism Warning:</strong> Do not copy or rephrase this model response directly. Submissions sharing &gt;35% similarity receive an automatic score of 0/20 on official TCF/TEF exams.</span>
                       </div>
                     </div>
                   )}

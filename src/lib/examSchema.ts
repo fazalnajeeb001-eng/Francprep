@@ -421,13 +421,13 @@ export const SAMPLE_TCF_PAPER_1: ExamPaper = {
         {
           id: "tcf1-w1",
           taskNumber: 1,
-          title: "Tâche 1 : Message court (Message to a Landlord)",
-          prompt: "Vous avez loué un appartement pour vos vacances mais le chauffage ne fonctionne pas. Écrivez un message au propriétaire (60 à 120 mots) pour expliquer la situation et demander une solution rapide.",
+          title: "Tâche 1 : Message de demande d'informations",
+          prompt: "Vous souhaitez obtenir des informations concernant la location d'un appartement au Québec. Rédigez un courriel au propriétaire (60 à 120 mots) pour demander les détails sur le loyer, les charges et la date de disponibilité.",
           wordCountMin: 60,
           wordCountMax: 120,
           timeLimitMins: 15,
-          guidedTips: ["Salutation formelle (Bonjour Monsieur/Madame)", "Expliquer l'absence de chauffage", "Demander une réparation urgente", "Formule de politesse finale"],
-          sampleResponse: "Bonjour Monsieur Dupont,\n\nJe vous écris car le chauffage de l'appartement ne fonctionne pas depuis ce matin. La température est très basse.\n\nPourriez-vous faire venir un réparateur au plus vite ?\n\nMerci d'avance.\n\nCordialement,\nJean Martin"
+          guidedTips: ["Salutation formelle (Monsieur/Madame)", "Formuler 3 questions précises sur le logement", "Formule de politesse formelle de fin"],
+          sampleResponse: "Monsieur le Propriétaire,\n\nJe vous écris afin d'obtenir des renseignements complémentaires concernant l'appartement de trois pièces actuellement proposé à la location. Intéressé par votre annonce, je souhaiterais obtenir des précisions avant d'envisager une visite.\n\nPourriez-vous m'indiquer le montant exact du loyer mensuel ainsi que la nature des charges incluses (chauffage, électricité, eau) ? De plus, j'aimerais connaître la date exacte à partir de laquelle le logement sera disponible.\n\nEn vous remerciant par avance pour votre attention et dans l'attente de votre réponse, je vous prie d'agréer mes salutations distinguées."
         },
         {
           id: "tcf1-w2",
@@ -534,7 +534,8 @@ export const SAMPLE_TCF_PAPER_2: ExamPaper = {
           wordCountMin: 60,
           wordCountMax: 120,
           timeLimitMins: 15,
-          guidedTips: ["Salutation courtoise", "Formuler 3 questions claires", "Remercier à la fin"]
+          guidedTips: ["Salutation courtoise", "Formuler 3 questions claires", "Remercier à la fin"],
+          sampleResponse: "Monsieur le Directeur,\n\nJe vous écris afin d'obtenir des renseignements complémentaires concernant l'atelier de cuisine québécoise prévu le mois prochain. Passionné par la gastronomie régionale, je souhaiterais m'y inscrire avec enthousiasme.\n\nPourriez-vous m'indiquer la grille tarifaire ainsi que les éventuels prérequis techniques ? De plus, j'aimerais savoir si le matériel culinaire est fourni sur place ou s'il convient d'apporter notre propre équipement.\n\nEn vous remerciant par avance pour votre attention et dans l'attente de votre réponse, je vous prie d'agréer mes salutations distinguées."
         },
         {
           id: "tcf2-w2",
@@ -636,7 +637,8 @@ export const SAMPLE_TEF_PAPER_1: ExamPaper = {
           wordCountMin: 80,
           wordCountMax: 120,
           timeLimitMins: 25,
-          guidedTips: ["Employer le passé composé et l'imparfait", "Décrire l'intervention des pompiers", "Conclure par la réouverture de la circulation"]
+          guidedTips: ["Employer le passé composé et l'imparfait", "Décrire l'intervention des pompiers", "Conclure par la réouverture de la circulation"],
+          sampleResponse: "Hier après-midi, un chat a bloqué la circulation du pont Jacques-Cartier pendant deux heures. L'animal effrayé s'était réfugié au sommet d'une structure métallique, refusant de descendre malgré les appels des automobilistes immobilisés.\n\nAvertis rapidement, les pompiers de Montréal et la patrouille policière sont arrivés sur les lieux afin d'établir un périmètre de sécurité. Un secouriste expérimenté a dû escalader la structure équipé d'une nacelle spéciale pour récupérer le félin sain et sauf.\n\nAprès cette opération spectaculaire saluée par les applaudissements des riverains, la circulation a pu reprendre progressivement en fin d'après-midi."
         },
         {
           id: "tef1-w2",
@@ -646,7 +648,8 @@ export const SAMPLE_TEF_PAPER_1: ExamPaper = {
           wordCountMin: 200,
           wordCountMax: 250,
           timeLimitMins: 35,
-          guidedTips: ["Salutation formelle (Monsieur le Maire)", "Exprimer l'inquiétude des habitants", "Présenter 2 arguments patrimoniaux et écologiques", "Formule de politesse formelle"]
+          guidedTips: ["Salutation formelle (Monsieur le Maire)", "Exprimer l'inquiétude des habitants", "Présenter 2 arguments patrimoniaux et écologiques", "Formule de politesse formelle"],
+          sampleResponse: "Monsieur le Maire,\n\nJe vous adresse cette lettre en tant que citoyen soucieux de l'avenir de notre ville afin de vous faire part de ma profonde inquiétude concernant le projet de démolition de la place Saint-Jean au profit d'un complexe commercial.\n\nD'une part, cette place constitue un fleuron incontestable de notre patrimoine architectural et historique. Elle représente un lieu de mémoire collective où les générations se croisent et tissent des liens sociaux essentiels à la vitalité de notre communauté.\n\nD'autre part, la destruction de cet espace vert au cœur du centre-ville accentuera les îlots de chaleur urbains et aggravera l'empreinte carbone municipale. À l'heure où la transition écologique exige la sauvegarde de la biodiversité urbaine, remplacer un havre de paix végétalisé par des structures bétonnées m'apparaît comme un choix à contre-courant des impératifs environnementaux actuels.\n\nEn somme, je vous prie de bien vouloir reconsidérer cette décision et d'envisager la réhabilitation de la place dans le respect de son identité d'origine.\n\nDans l'attente de votre prise en considération, je vous prie d'agréer, Monsieur le Maire, l'expression de ma haute considération."
         }
       ]
     },
@@ -721,7 +724,8 @@ export const SAMPLE_TEF_PAPER_2: ExamPaper = {
           prompt: "Rédigez la suite d'un fait divers à partir du début suivant (80 mots minimum) : 'Ce matin, l'ouverture d'un nouveau parc d'attractions a provoqué un embouteillage monstre sur l'autoroute 15...'",
           wordCountMin: 80,
           wordCountMax: 120,
-          timeLimitMins: 25
+          timeLimitMins: 25,
+          sampleResponse: "Ce matin, l'ouverture d'un nouveau parc d'attractions a provoqué un embouteillage monstre sur l'autoroute 15. Des milliers de familles impatientes ont afflué dès l'aube, saturant complètement les voies d'accès principales.\n\nFace à cette paralysie du réseau routier, la sûreté du Québec a dû déployer en urgence plusieurs unités de motards pour rediriger les usagers vers des itinéraires secondaires. Malgré la frustration initiale des conducteurs, aucun incident majeur n'a été déploré.\n\nLa direction du parc a rapidement présenté ses excuses et s'est engagée à renforcer l'organisation des parkings pour les jours à venir."
         },
         {
           id: "tef2-w2",
@@ -731,7 +735,8 @@ export const SAMPLE_TEF_PAPER_2: ExamPaper = {
           wordCountMin: 200,
           wordCountMax: 250,
           timeLimitMins: 35,
-          guidedTips: ["Salutation amicale", "Exprimer sa surprise tout en restant bienveillant", "Présenter 2 arguments environnementaux concrets", "Proposer des gestes simples pour commencer dès aujourd'hui"]
+          guidedTips: ["Salutation amicale", "Exprimer sa surprise tout en restant bienveillant", "Présenter 2 arguments environnementaux concrets", "Proposer des gestes simples pour commencer dès aujourd'hui"],
+          sampleResponse: "Cher Alexandre,\n\nJe me permets de t'écrire après notre discussion de la semaine dernière, car ton scepticisme concernant le tri sélectif m'a beaucoup fait réfléchir.\n\nEn premier lieu, saches que le recyclage des déchets n'est pas une simple contrainte administrative, mais un acte citoyen essentiel pour limiter le gaspillage des ressources naturelles. Lorsque nous jetons du plastique ou du papier dans les ordures ménagères, ces matériaux finissent enfouis ou incinérés, générant des gaz à effet de serre néfastes pour notre atmosphère.\n\nEn second lieu, adopter le tri au quotidien est aujourd'hui d'une simplicité enfantine. Il suffit d'installer deux bacs distincts dans sa cuisine. Par ce geste minime qui ne prend que quelques secondes par jour, tu participes activement à la réutilisation des matières premières et à la protection des écosystèmes.\n\nJe sais que tu es une personne responsable et attentive à ton environnement. Pourquoi ne pas essayer ensemble dès ce week-end ? Je serais ravi de t'aider à mettre en place ce système chez toi.\n\nAmicalement,\nThomas"
         }
       ]
     },
