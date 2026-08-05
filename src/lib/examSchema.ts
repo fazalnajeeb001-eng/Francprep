@@ -169,29 +169,117 @@ const LISTENING_TOPICS = [
 ];
 
 const READING_TOPICS = [
-  // A1 DISCOVERY (1-10)
-  { level: "A1", text: "Horaires de la boulangerie 'La Parisis' : Ouvert du mardi au dimanche de 7h00 à 19h00 sans interruption. Fermeture hebdomadaire le lundi.", q: "Quand la boulangerie est-elle fermée ?", opt: ["Le lundi", "Le dimanche", "Le mardi", "Tous les après-midis"], ans: 0, passEn: "Bakery hours 'La Parisis': Open Tuesday to Sunday from 7:00am to 7:00pm non-stop. Closed weekly on Monday.", hint: "⚠️ Trap Alert: Do not confuse daily operating hours with the weekly closure day.\n🔄 Paraphrase Key: 'Fermeture hebdomadaire le lundi' directly specifies the closed day.\n📖 Structural Cue: Look for exact day names following 'Fermeture'." },
-  { level: "A1", text: "Avis de passage de la Poste canadienne : Votre colis recommandé est disponible au bureau central à partir de demain 14h. Veuillez vous munir d'une pièce d'identité.", q: "Où et quand récupérer votre colis ?", opt: ["Au bureau central dès demain 14h", "À la maison aujourd'hui", "À la mairie la semaine prochaine", "Chez le voisin ce soir"], ans: 0, passEn: "Canada Post delivery notice: Your registered package is available at the central branch starting tomorrow at 2pm. Bring ID.", hint: "⚠️ Trap Alert: Distinguish the pick-up location (bureau central) from home delivery.\n🔄 Paraphrase Key: 'disponible à partir de demain 14h' defines the precise availability time.\n📖 Structural Cue: Focus on location prepositions after 'au'." },
-  { level: "A1", text: "Annonce de la bibliothèque municipale : Les ateliers de lecture pour enfants ont lieu chaque samedi matin de 10h00 à 11h30. Entrée libre et gratuite.", q: "À quel moment ont lieu les ateliers de lecture ?", opt: ["Le samedi matin de 10h00 à 11h30", "Le vendredi soir", "Le dimanche après-midi", "Tous les jours à midi"], ans: 0, passEn: "Library notice: Children's reading workshops every Saturday from 10:00 to 11:30am. Free admission.", hint: "⚠️ Trap Alert: Watch for specific day/time combinations.\n🔄 Paraphrase Key: 'chaque samedi matin de 10h00 à 11h30' answers the workshop time.\n📖 Structural Cue: Identify day markers after 'ont lieu'." },
-  { level: "A1", text: "Message de la clinique médicale : Le cabinet du docteur Roy sera exceptionnellement fermé du 15 au 20 août pour congés annuels.", q: "Pourquoi le cabinet médical est-il fermé ?", opt: ["Pour congés annuels du docteur", "Pour rénovation complète", "En raison d'un problème technique", "Pour déménagement"], ans: 0, passEn: "Medical clinic notice: Dr. Roy's office will be closed August 15-20 for annual leave.", hint: "⚠️ Trap Alert: Pay attention to the reason given after 'pour'.\n🔄 Paraphrase Key: 'congés annuels' means annual vacation leave.\n📖 Structural Cue: Look for cause prepositions like 'pour'." },
-  { level: "A1", text: "Pharmacie du Centre — Service de garde : En dehors des heures d'ouverture normales, adressez-vous à la pharmacie Saint-Jean située au 12 rue de la Paix.", q: "Où se rendre en dehors des heures d'ouverture ?", opt: ["À la pharmacie Saint-Jean rue de la Paix", "À l'hôpital général de nuit", "Chez le médecin de famille", "À la mairie du quartier"], ans: 0, passEn: "Center Pharmacy after-hours: Outside normal hours, go to Saint-Jean Pharmacy at 12 rue de la Paix.", hint: "⚠️ Trap Alert: Distinguish the primary pharmacy from the after-hours referral pharmacy.\n🔄 Paraphrase Key: 'adressez-vous à...' points to the emergency destination.\n📖 Structural Cue: Note address details following location directives." },
-  { level: "A1", text: "Musée des Beaux-Arts de Montréal : Tarif réduit pour tous les étudiants et les jeunes de moins de 25 ans sur présentation de leur carte.", q: "Qui peut obtenir un tarif réduit au musée ?", opt: ["Les étudiants et jeunes de moins de 25 ans", "Seulement les enfants de moins de 5 ans", "Uniquement les professeurs d'université", "Tous les groupes de touristes"], ans: 0, passEn: "Montreal Museum of Fine Arts: Discounted rate for students and youth under 25 with student ID.", hint: "⚠️ Trap Alert: Identify the eligible age/status criteria mentioned in the notice.\n🔄 Paraphrase Key: 'étudiants et jeunes de moins de 25 ans' specifies the discount group.\n📖 Structural Cue: Look for qualification criteria after 'pour'." },
+  // A1 DISCOVERY (1-6)
+  {
+    level: "A1",
+    text: "Horaires de la boulangerie 'La Parisis' : Ouvert du mardi au dimanche de 7h00 à 19h00 sans interruption. Fermeture hebdomadaire le lundi.",
+    q: "Quand la boulangerie est-elle fermée ?",
+    opt: ["Le lundi", "Le dimanche", "Le mardi", "Tous les après-midis"],
+    ans: 0,
+    passEn: "Opening hours for 'La Parisis' Bakery: Open Tuesday to Sunday from 7:00 AM to 7:00 PM non-stop. Weekly closure on Mondays.",
+    hint: "⚠️ Trap Alert: Do not confuse daily operating hours (Tuesday-Sunday) with the weekly closure day.\n🔄 Paraphrase Key: 'Fermeture hebdomadaire le lundi' directly specifies the closed day.\n📖 Structural Cue: Look for exact day names following 'Fermeture'."
+  },
+  {
+    level: "A1",
+    text: "Avis de passage de la Poste canadienne : Votre colis recommandé est disponible au bureau central à partir de demain 14h. Veuillez vous munir d'une pièce d'identité.",
+    q: "Où et quand récupérer votre colis ?",
+    opt: ["Au bureau central dès demain 14h", "À la maison aujourd'hui", "À la mairie la semaine prochaine", "Chez le voisin ce soir"],
+    ans: 0,
+    passEn: "Canada Post Delivery Notice: Your registered package is available at the central office starting tomorrow at 2:00 PM. Please bring a valid photo ID.",
+    hint: "⚠️ Trap Alert: Distinguish the pick-up location (bureau central) from home delivery.\n🔄 Paraphrase Key: 'disponible à partir de demain 14h' defines the precise availability time.\n📖 Structural Cue: Focus on location prepositions after 'au'."
+  },
+  {
+    level: "A1",
+    text: "Annonce de la bibliothèque municipale : Les ateliers de lecture pour enfants ont lieu chaque samedi matin de 10h00 à 11h30. Entrée libre et gratuite.",
+    q: "À quel moment ont lieu les ateliers de lecture ?",
+    opt: ["Le samedi matin de 10h00 à 11h30", "Le vendredi soir", "Le dimanche après-midi", "Tous les jours à midi"],
+    ans: 0,
+    passEn: "Municipal Library Announcement: Children's reading workshops take place every Saturday morning from 10:00 AM to 11:30 AM. Free admission for all.",
+    hint: "⚠️ Trap Alert: Watch for specific day/time combinations.\n🔄 Paraphrase Key: 'chaque samedi matin de 10h00 à 11h30' answers the workshop time.\n📖 Structural Cue: Identify day markers after 'ont lieu'."
+  },
+  {
+    level: "A1",
+    text: "Message de la clinique médicale : Le cabinet du docteur Roy sera exceptionnellement fermé du 15 au 20 août pour congés annuels.",
+    q: "Pourquoi le cabinet médical est-il fermé ?",
+    opt: ["Pour congés annuels du docteur", "Pour rénovation complète", "En raison d'un problème technique", "Pour déménagement"],
+    ans: 0,
+    passEn: "Medical Clinic Message: Dr. Roy's office will be exceptionally closed from August 15th to August 20th for annual vacation.",
+    hint: "⚠️ Trap Alert: Pay attention to the reason given after 'pour'.\n🔄 Paraphrase Key: 'congés annuels' means annual vacation leave.\n📖 Structural Cue: Look for cause prepositions like 'pour'."
+  },
+  {
+    level: "A1",
+    text: "Pharmacie du Centre — Service de garde : En dehors des heures d'ouverture normales, adressez-vous à la pharmacie Saint-Jean située au 12 rue de la Paix.",
+    q: "Où se rendre en dehors des heures d'ouverture ?",
+    opt: ["À la pharmacie Saint-Jean rue de la Paix", "À l'hôpital général de nuit", "Chez le médecin de famille", "À la mairie du quartier"],
+    ans: 0,
+    passEn: "Center Pharmacy — Emergency On-Call Service: Outside of normal operating hours, please visit Saint-Jean Pharmacy located at 12 rue de la Paix.",
+    hint: "⚠️ Trap Alert: Distinguish the primary pharmacy from the after-hours referral pharmacy.\n🔄 Paraphrase Key: 'adressez-vous à...' points to the emergency destination.\n📖 Structural Cue: Note address details following location directives."
+  },
+  {
+    level: "A1",
+    text: "Musée des Beaux-Arts de Montréal : Tarif réduit pour tous les étudiants et les jeunes de moins de 25 ans sur présentation de leur carte.",
+    q: "Qui peut obtenir un tarif réduit au musée ?",
+    opt: ["Les étudiants et jeunes de moins de 25 ans", "Seulement les enfants de moins de 5 ans", "Uniquement les professeurs d'université", "Tous les groupes de touristes"],
+    ans: 0,
+    passEn: "Montreal Museum of Fine Arts: Reduced rate for all students and young people under 25 upon presentation of their card.",
+    hint: "⚠️ Trap Alert: Identify the eligible age/status criteria mentioned in the notice.\n🔄 Paraphrase Key: 'étudiants et jeunes de moins de 25 ans' specifies the discount group.\n📖 Structural Cue: Look for qualification criteria after 'pour'."
+  },
 
-  // A2 BREAKTHROUGH (11-18)
-  { level: "A2", text: "Règlement municipal de la piscine municipale : Les enfants âgés de moins de 12 ans doivent obligatoirement être accompagnés d'un adulte majeur dans l'enceinte des bassins.", q: "Quelle condition est exigée pour les enfants de moins de 12 ans ?", opt: ["Être accompagné par un adulte majeur", "Avoir un certificat médical", "Venir uniquement le matin", "Payer un tarif spécial"], ans: 0, passEn: "Municipal pool rule: Children under 12 must be accompanied by an adult inside the pool area.", hint: "⚠️ Trap Alert: Listen for mandatory requirements ('doivent obligatoirement').\n🔄 Paraphrase Key: 'accompagnés d'un adulte majeur' matches the required condition.\n📖 Structural Cue: Focus on obligation modal verbs like 'doivent'." },
-  { level: "A2", text: "Offre d'emploi spécialisée : Restaurant gastronomique du Vieux-Montréal recherche un serveur bilingue français-anglais avec 2 ans d'expérience au service en salle.", q: "Quel profil correspond exactement à cette offre ?", opt: ["Un serveur bilingue expérimenté", "Un cuisinier italien débutant", "Un comptable à mi-temps", "Un gérant de magasin"], ans: 0, passEn: "Job posting: Upscale restaurant in Old Montreal seeks bilingual French-English server with 2 years table service experience.", hint: "⚠️ Trap Alert: Match both language fluency (bilingue) and experience requirements.\n🔄 Paraphrase Key: '2 ans d'expérience' translates to an experienced server.\n📖 Structural Cue: Identify job title keywords preceding experience requirements." },
-  { level: "A2", text: "Note d'information aux résidents : Des travaux de réfection de la chaussée auront lieu dans la rue Sherbrooke le mercredi 12 octobre. Le stationnement sera interdit de 7h à 18h.", q: "Quelle interdiction concerne les résidents le mercredi 12 octobre ?", opt: ["L'interdiction de stationner dans la rue de 7h à 18h", "L'interdiction de sortir de chez soi", "L'interdiction de prendre le bus", "L'interdiction d'utiliser l'eau courante"], ans: 0, passEn: "Notice to residents: Street resurfacing on Sherbrooke St on Wednesday Oct 12. Parking prohibited 7am-6pm.", hint: "⚠️ Trap Alert: Note the prohibited action ('stationnement interdit') vs general street access.\n🔄 Paraphrase Key: 'stationnement interdit' directly means parking prohibition.\n📖 Structural Cue: Pay attention to specific time restrictions given." },
-  { level: "A2", text: "Annonce du centre communautaire : Inscriptions aux cours de langue italienne et espagnole ouvertes pour la session d'automne. Tarif réduit pour les étudiants et retraités.", q: "Qui peut bénéficier d'un tarif réduit ?", opt: ["Les étudiants et les retraités", "Seulement les enfants de moins de 5 ans", "Uniquement les professeurs", "Tous les touristes de passage"], ans: 0, passEn: "Community center notice: Italian and Spanish fall course enrollment open. Discounted rate for students and seniors.", hint: "⚠️ Trap Alert: Distinguish eligible discount groups from general public.\n🔄 Paraphrase Key: 'étudiants et retraités' defines the beneficiaries.\n📖 Structural Cue: Look for recipient nouns following 'pour'." },
-  { level: "A2", text: "Avis de coupure d'eau potable : En raison de travaux de maintenance sur le réseau aqueduc, l'alimentation en eau sera interrompue ce jeudi de 22h00 à 05h00 du matin.", q: "À quel moment l'eau sera-t-elle coupée ?", opt: ["Ce jeudi durant la nuit de 22h à 05h", "Vendredi toute la journée", "Samedi après-midi", "Lundi matin à partir de 8h"], ans: 0, passEn: "Water supply interruption notice: Maintenance work will cause a water shut-off this Thursday from 10pm to 5am.", hint: "⚠️ Trap Alert: Notice the overnight time window (22h00 à 05h00).\n🔄 Paraphrase Key: 'interrompue ce jeudi de 22h00 à 05h00' defines the exact shut-off period.\n📖 Structural Cue: Track time range prepositions 'de... à'." },
+  // A2 BREAKTHROUGH (7-11)
+  {
+    level: "A2",
+    text: "Règlement municipal de la piscine municipale : Les enfants âgés de moins de 12 ans doivent obligatoirement être accompagnés d'un adulte majeur dans l'enceinte des bassins.",
+    q: "Quelle condition est exigée pour les enfants de moins de 12 ans ?",
+    opt: ["Être accompagné par un adulte majeur", "Avoir un certificat médical", "Venir uniquement le matin", "Payer un tarif spécial"],
+    ans: 0,
+    passEn: "Municipal Swimming Pool Regulations: Children under 12 years of age must strictly be accompanied by an adult inside the pool enclosure.",
+    hint: "⚠️ Trap Alert: Listen for mandatory requirements ('doivent obligatoirement').\n🔄 Paraphrase Key: 'accompagnés d'un adulte majeur' matches the required condition.\n📖 Structural Cue: Focus on obligation modal verbs like 'doivent'."
+  },
+  {
+    level: "A2",
+    text: "Offre d'emploi spécialisée : Restaurant gastronomique du Vieux-Montréal recherche un serveur bilingue français-anglais avec 2 ans d'expérience au service en salle.",
+    q: "Quel profil correspond exactement à cette offre ?",
+    opt: ["Un serveur bilingue expérimenté", "Un cuisinier italien débutant", "Un comptable à mi-temps", "Un gérant de magasin"],
+    ans: 0,
+    passEn: "Specialized Job Offer: Fine dining restaurant in Old Montreal is seeking a bilingual French-English server with 2 years of table service experience.",
+    hint: "⚠️ Trap Alert: Match both language fluency (bilingue) and experience requirements.\n🔄 Paraphrase Key: '2 ans d'expérience' translates to an experienced server.\n📖 Structural Cue: Identify job title keywords preceding experience requirements."
+  },
+  {
+    level: "A2",
+    text: "Note d'information aux résidents : Des travaux de réfection de la chaussée auront lieu dans la rue Sherbrooke le mercredi 12 octobre. Le stationnement sera interdit de 7h à 18h.",
+    q: "Quelle interdiction concerne les résidents le mercredi 12 octobre ?",
+    opt: ["L'interdiction de stationner dans la rue de 7h à 18h", "L'interdiction de sortir de chez soi", "L'interdiction de prendre le bus", "L'interdiction d'utiliser l'eau courante"],
+    ans: 0,
+    passEn: "Information Notice to Residents: Road resurfacing work will take place on Sherbrooke Street on Wednesday, October 12. Parking will be prohibited from 7:00 AM to 6:00 PM.",
+    hint: "⚠️ Trap Alert: Note the prohibited action ('stationnement interdit') vs general street access.\n🔄 Paraphrase Key: 'stationnement interdit' directly means parking prohibition.\n📖 Structural Cue: Pay attention to specific time restrictions given."
+  },
+  {
+    level: "A2",
+    text: "Annonce du centre communautaire : Inscriptions aux cours de langue italienne et espagnole ouvertes pour la session d'automne. Tarif réduit pour les étudiants et retraités.",
+    q: "Qui peut bénéficier d'un tarif réduit ?",
+    opt: ["Les étudiants et les retraités", "Seulement les enfants de moins de 5 ans", "Uniquement les professeurs", "Tous les touristes de passage"],
+    ans: 0,
+    passEn: "Community Center Announcement: Registration for Italian and Spanish language classes is now open for the fall session. Reduced rate for students and retirees.",
+    hint: "⚠️ Trap Alert: Distinguish eligible discount groups from general public.\n🔄 Paraphrase Key: 'étudiants et retraités' defines the beneficiaries.\n📖 Structural Cue: Look for recipient nouns following 'pour'."
+  },
+  {
+    level: "A2",
+    text: "Avis de coupure d'eau potable : En raison de travaux de maintenance sur le réseau aqueduc, l'alimentation en eau sera interrompue ce jeudi de 22h00 à 05h00 du matin.",
+    q: "À quel moment l'eau sera-t-elle coupée ?",
+    opt: ["Ce jeudi durant la nuit de 22h à 05h", "Vendredi toute la journée", "Samedi après-midi", "Lundi matin à partir de 8h"],
+    ans: 0,
+    passEn: "Drinking Water Interruption Notice: Due to maintenance work on the aqueduct network, the water supply will be cut off this Thursday from 10:00 PM to 5:00 AM.",
+    hint: "⚠️ Trap Alert: Notice the overnight time window (22h00 à 05h00).\n🔄 Paraphrase Key: 'interrompue ce jeudi de 22h00 à 05h00' defines the exact shut-off period.\n📖 Structural Cue: Track time range prepositions 'de... à'."
+  },
 
-  // B1 THRESHOLD (19-26)
+  // B1 THRESHOLD (12-15)
   {
     level: "B1",
     text: `ÉCONOMIE ET NUTRITION — LE POUVOIR D'ACHAT ET LA SANTÉ AU QUÉBEC\n\nUn rapport récent de l'Institut National de Santé Publique du Québec souligne l'importance des choix alimentaires quotidiens sur la santé cardiaque. Selon les chercheurs, réduire sa consommation de sel de seulement 3 grammes par jour diminuerait de 15 % les risques d'hypertension artérielle à l'échelle nationale.\n\nCette recommandation s'inscrit dans une campagne globale d'éducation à la nutrition. Les professionnels du secteur médical encouragent les consommateurs à privilégier les aliments frais préparés à la maison plutôt que les plats industriels transformés, souvent riches en sodium et en conservateurs artificiels.\n\nEn outre, les autorités canadiennes envisagent d'imposer un étiquetage nutritionnel plus clair sur la face avant des emballages afin d'aider les familles à identifier rapidement les produits à forte teneur en sel et en sucres ajoutés.`,
     q: "Selon l'étude, quel est l'impact direct d'une diminution quotidienne de 3 grammes de sel ?",
     opt: ["Une baisse de 15% des risques d'hypertension artérielle", "Une hausse de 20% du pouvoir d'achat des ménages", "La fermeture immédiate des usines agroalimentaires", "Une réduction automatique de la consommation de sucre"],
     ans: 0,
-    passEn: "HEALTH AND NUTRITION — PURCHASING POWER AND HEALTH IN QUEBEC\n\nA recent report highlights that reducing daily salt intake by 3g cuts hypertension risk by 15% nationwide.",
+    passEn: `ECONOMY AND NUTRITION — PURCHASING POWER AND HEALTH IN QUEBEC\n\nA recent report from the National Institute of Public Health of Quebec emphasizes the importance of daily food choices on heart health. According to researchers, reducing daily salt intake by just 3 grams per day would lower the risk of high blood pressure by 15% nationwide.\n\nThis recommendation is part of a comprehensive nutrition education campaign. Medical professionals encourage consumers to favor fresh home-cooked meals over processed industrial foods, which are often high in sodium and artificial preservatives.\n\nFurthermore, Canadian authorities are considering mandating clearer front-of-package nutritional labeling to help families quickly identify products with high salt and added sugar content.`,
     hint: "⚠️ Trap Alert: Link the 3g salt reduction directly to hypertension risk statistics, not sugar or purchasing power.\n🔄 Paraphrase Key: 'diminuerait de 15% les risques' matches 'Une baisse de 15% des risques'.\n📖 Structural Cue: Locate the causal percentage figure in paragraph 1."
   },
   {
@@ -200,7 +288,7 @@ const READING_TOPICS = [
     q: "Quelle mesure la Société de Transport prend-elle les soirs de semaine dès 22h00 ?",
     opt: ["Le remplacement des lignes ferroviaires par des bus électriques", "La gratuité totale de l'ensemble du réseau de métro", "L'arrêt complet de tous les transports collectifs", "L'interdiction de circuler pour les piétons"],
     ans: 0,
-    passEn: "URBAN TRANSIT & SUSTAINABLE MOBILITY\n\nTram lines will be replaced by electric buses starting at 10:00pm on weeknights for infrastructure upgrades.",
+    passEn: `URBAN TRANSIT AND SUSTAINABLE MOBILITY — RIDE GREEN IN MONTREAL\n\nThe Montreal Transit Corporation (STM) has announced a major restructuring of its night road network. In order to continue infrastructure electrification work, tramway and light rail lines will be replaced by articulated electric buses starting at 10:00 PM on weeknights.\n\nThis transition will not only accelerate railway track renovation, but will also guarantee reduced noise levels for central neighborhood residents. Riders are invited to check the new mobile application to track bus locations in real time.\n\nDespite some initial hesitation regarding minor transfer delays, the majority of travelers welcome this modern initiative, which aligns fully with the metropolis's climate plan.`,
     hint: "⚠️ Trap Alert: Note the shift to electric buses at 22h00, not a total shutdown or free fares.\n🔄 Paraphrase Key: 'remplacées par des bus électriques' matches the correct replacement action.\n📖 Structural Cue: Focus on action verbs following 'dès 22h00'."
   },
   {
@@ -209,7 +297,7 @@ const READING_TOPICS = [
     q: "Que constate la majorité des enseignants enquêtés concernant les tablettes ?",
     opt: ["Une hausse de l'engagement des élèves dans la recherche documentaire", "Une baisse drastique des résultats scolaires généraux", "L'abandon complet de tous les cours de lecture", "Le refus des parents d'acheter des fournitures"],
     ans: 0,
-    passEn: "EDUCATION & TECH — DIGITAL TEXTBOOKS IN SCHOOLS\n\n68% of surveyed educators note increased student engagement in documentary research using digital tablets.",
+    passEn: `EDUCATION AND TECHNOLOGY — DIGITAL TEXTBOOKS IN SCHOOLS\n\nThe widespread introduction of digital tablets in New Brunswick secondary schools is sparking passionate debates among teachers and parents. According to a survey of 500 educators, 68% report a significant increase in student engagement during documentary research activities.\n\nHowever, several pediatric specialists warn against increased daily screen time and emphasize the importance of maintaining a balance with traditional paper-based learning. Schools are therefore implementing responsible use charters to regulate classroom tablet usage.`,
     hint: "⚠️ Trap Alert: Focus on the positive survey statistic (68%) before the pediatrician warning contrast ('Cependant').\n🔄 Paraphrase Key: 'augmentation significative de l'engagement' equates to 'hausse de l'engagement'.\n📖 Structural Cue: Locate the statistic '68%' in paragraph 1."
   },
   {
@@ -218,18 +306,18 @@ const READING_TOPICS = [
     q: "Quel est l'objectif principal de la collecte obligatoire du bac brun ?",
     opt: ["Détourner la matière organique des sites d'enfouissement", "Vendre le compost aux entreprises étrangères", "Interdire les jardins communautaires urbains", "Augmenter la taxe de collecte des ordures"],
     ans: 0,
-    passEn: "ENVIRONMENT & WASTE MANAGEMENT — MANDATORY COMPOSTING\n\nQuebec City makes brown bins mandatory to divert 40,000 tons of organic waste from landfills.",
+    passEn: `ENVIRONMENT AND WASTE MANAGEMENT — MANDATORY COMPOSTING\n\nAs part of its carbon footprint reduction plan, the City of Quebec has mandated the brown bin for household food waste collection. This measure aims to divert 40,000 tons of organic material from landfills every year.\n\nThe resulting compost will be distributed free of charge to regional farmers and urban community gardens. This eco-friendly approach helps enrich the soil without relying on industrial chemical fertilizers.`,
     hint: "⚠️ Trap Alert: Identify the environmental goal (diverting organic waste) vs tax or commercial options.\n🔄 Paraphrase Key: 'détourner 40 000 tonnes de matière organique' answers the primary objective.\n📖 Structural Cue: Look for purpose expressions following 'vise à'."
   },
 
-  // B2 VANTAGE TARGET (27-34) — 8 UNIQUE B2 TEXTS FOR NCLC 7 TARGET
+  // B2 VANTAGE TARGET (16-20)
   {
     level: "B2",
     text: `URBANISME ÉCOLOGIQUE ET ÎLOTS DE CHALEUR MÉTROPOLITAINS\n\nDans la plupart des grandes agglomérations nord-américaines, la multiplication des îlots de chaleur constitue désormais un enjeu sanitaire et environnemental préoccupant. L'accumulation d'asphalte et de béton accentue l'absorption thermique, entraînant des températures estivales étouffantes au cœur des cités.\n\nPour contrer ce phénomène, les urbanistes préconisent la mise en place de péages urbains incitatifs couplée à un vaste programme de végétalisation des toitures d'immeubles. Les premiers résultats observés dans les quartiers pilotes démontrent une réduction de 20 % de la circulation automobile, corrélée à une baisse mesurable de la pollution atmosphérique.\n\nCependant, les commerçants du centre-ville expriment des inquiétudes quant à la baisse potentielle du chalandage. Les municipalités s'engagent donc à compenser ces effets en renforçant la fréquence des transports en commun.`,
     q: "Selon l'article, quel est l'effet combiné de la végétalisation et des péages incitatifs ?",
     opt: ["Une baisse de 20% du trafic automobile et une réduction de la pollution", "La disparition complète des commerces de proximité", "Une hausse de la température estivale au centre-ville", "L'obligation d'utiliser uniquement des véhicules électriques"],
     ans: 0,
-    passEn: "ECOLOGICAL URBANISM & METROPOLITAN HEAT ISLANDS\n\nPilot programs combining green rooftops and incentive urban tolls reduced car traffic by 20% and lowered air pollution.",
+    passEn: `ECOLOGICAL URBANISM AND METROPOLITAN HEAT ISLANDS\n\nIn most major North American urban areas, the proliferation of heat islands has become a pressing health and environmental concern. The accumulation of asphalt and concrete increases heat absorption, leading to stifling summer temperatures in city centers.\n\nTo combat this phenomenon, urban planners recommend implementing incentive urban tolls combined with a vast rooftop greening program for buildings. Initial results observed in pilot neighborhoods show a 20% reduction in automobile traffic, correlated with a measurable drop in air pollution.\n\nHowever, downtown merchants express concern regarding a potential drop in foot traffic. Municipalities are therefore committing to offsetting these effects by boosting public transit frequency.`,
     hint: "⚠️ Trap Alert: Watch for the 20% reduction figure linked to car traffic, not business closures.\n🔄 Paraphrase Key: 'réduction de 20% de la circulation' equates to 'baisse de 20% du trafic'.\n📖 Structural Cue: Locate the pilot result data in paragraph 2."
   },
   {
@@ -238,7 +326,7 @@ const READING_TOPICS = [
     q: "Quelle est la recommandation majeure des comités de bioéthique concernant l'IA médicale ?",
     opt: ["La décision thérapeutique finale doit rester sous responsabilité humaine", "L'IA doit remplacer définitivement les radiologues", "Les données des patients peuvent être publiées librement", "Les examens d'imagerie doivent être supprimés"],
     ans: 0,
-    passEn: "AI AND MEDICAL DIAGNOSTICS IN CANADA\n\nBioethics committees emphasize that final treatment decisions must remain under human medical responsibility.",
+    passEn: `ARTIFICIAL INTELLIGENCE AND MEDICAL DIAGNOSTICS IN CANADA\n\nThe integration of deep learning algorithms into the Canadian hospital network is revolutionizing early radiological screening. By analyzing thousands of medical images in seconds, these AI tools effectively assist physicians in detecting microscopic anomalies.\n\nNevertheless, bioethics committees emphasize that the final treatment decision must strictly remain the sole responsibility of the human practitioner. Technology is designed as a powerful decision-support tool, not as a replacement for clinical expertise.\n\nFurthermore, protecting patient medical data confidentiality requires deploying high-security encryption protocols before any inter-hospital data sharing.`,
     hint: "⚠️ Trap Alert: Note the bioethics contrast marker 'Néanmoins' preserving human clinical authority.\n🔄 Paraphrase Key: 'demeurer sous la responsabilité exclusive du praticien humain' defines human control.\n📖 Structural Cue: Pay close attention to paragraph 2 bioethical guidelines."
   },
   {
@@ -247,7 +335,7 @@ const READING_TOPICS = [
     q: "Que stipule la réglementation sur la Responsabilité Élargie des Producteurs (REP) ?",
     opt: ["Les fabricants doivent financer la collecte et le recyclage de leurs produits", "Les consommateurs doivent payer une amende pour chaque téléphone jeté", "L'importation de matériel électronique est désormais interdite", "Toutes les batteries usagées doivent être incinérées sans tri"],
     ans: 0,
-    passEn: "CIRCULAR ECONOMY & ELECTRONIC WASTE RECYCLING\n\nEPR legislation requires electronics manufacturers to fund and organize end-of-life recycling for their devices.",
+    passEn: `CIRCULAR ECONOMY AND ELECTRONIC WASTE RECYCLING\n\nElectronic waste management represents a major environmental challenge in the digital age. Every year, millions of tons of used computers, phones, and batteries are discarded without proper treatment, causing the waste of precious metals like cobalt, lithium, and gold.\n\nFacing this reality, several Canadian provinces are adopting Extended Producer Responsibility (EPR) legislation. This regulation now requires electronics manufacturers to fund and organize the collection and safe recycling of their end-of-life products.\n\nThis approach fosters the rise of a true circular economy, creating local jobs specialized in the decontamination and reuse of electronic components.`,
     hint: "⚠️ Trap Alert: Note that EPR obligates manufacturers to fund recycling, not individual consumer fines.\n🔄 Paraphrase Key: 'oblige les fabricants... à financer la collecte' answers the REP requirement.\n📖 Structural Cue: Read the legislative mandate in paragraph 2."
   },
   {
@@ -256,7 +344,7 @@ const READING_TOPICS = [
     q: "Quel est l'impact recherché de l'immigration francophone hors Québec ?",
     opt: ["Renforcer le dynamisme économique et la vitalité culturelle des collectivités", "Obliger toutes les provinces à devenir exclusivement unilingues françaises", "Fermer les centres d'accueil communautaires régionaux", "Limiter l'accès aux écoles publiques d'expression française"],
     ans: 0,
-    passEn: "FRANCOPHONE IMMIGRATION OUTSIDE QUEBEC\n\nTargeted immigration enhances regional economic dynamism, school sustainability, and community vitality.",
+    passEn: `FRANCOPHONE IMMIGRATION OUTSIDE QUEBEC AND COMMUNITY VITALITY\n\nThe Canadian federal government is stepping up its efforts to meet recruitment targets for French-speaking immigrants settling in official language minority communities outside Quebec, particularly in Ontario, New Brunswick, and Manitoba.\n\nThe settlement of French-speaking newcomers contributes to regional economic dynamism, the sustainability of French-language schools, and the cultural enrichment of local communities. Personalized welcoming services facilitate their professional integration upon arrival.\n\nCommunity mentorship programs also enable immigrant families to rapidly build lasting social connections and secure suitable housing.`,
     hint: "⚠️ Trap Alert: Focus on positive community vitality and school sustainability goals.\n🔄 Paraphrase Key: 'contribue au dynamisme économique... et à l'enrichissement culturel' answers the core goal.\n📖 Structural Cue: Identify positive impact nouns in paragraph 2."
   },
   {
@@ -265,18 +353,18 @@ const READING_TOPICS = [
     q: "Quel principe fondamental caractérise la conception bioclimatique ?",
     opt: ["Exploiter l'orientation du soleil pour optimiser la chaleur passive", "Utiliser exclusivement de la climatisation électrique en continu", "Supprimer toutes les fenêtres des façades exposées au nord", "Consommer plus de mazout durant les périodes de grand froid"],
     ans: 0,
-    passEn: "ENERGY TRANSITION & BIOCLIMATIC ARCHITECTURE\n\nBioclimatic design optimizes building orientation to capture passive solar heat and reduce energy consumption.",
+    passEn: `ENERGY TRANSITION AND BIOCLIMATIC ARCHITECTURE\n\nThe construction of high-performance energy-efficient buildings is gradually becoming the architectural standard in urban renovation projects. Incorporating bio-sourced insulation materials, such as wood fiber or hemp, significantly reduces winter heating consumption.\n\nAdditionally, bioclimatic design harnesses the natural orientation of the sun to optimize natural lighting and passive solar heat. Dual-flow ventilation systems with heat recovery ensure continuous indoor air turnover without thermal loss.\n\nHomeowners benefit from incentive government financial grants to offset the initial upfront cost of green renovation work.`,
     hint: "⚠️ Trap Alert: Identify natural passive solar design vs heavy electric HVAC usage.\n🔄 Paraphrase Key: 'exploite l'orientation naturelle du soleil' matches solar heat optimization.\n📖 Structural Cue: Focus on technical definitions in paragraph 2."
   },
 
-  // C1 AUTONOMOUS (35-37)
+  // C1 AUTONOMOUS (21-22)
   {
     level: "C1",
-    text: `SOCIOLOGIE DU TRAVAIL — LA MUTATION DES MODÈLES ORGANISATIONNELS\n\nL'expérimentation à grande échelle de la semaine de travail de quatre jours dans le secteur tertiaire suscite un intérêt croissant auprès des chercheurs en gestion et des décideurs économiques. Loin de nuire au rendement des entreprises, ce modèle fondé sur la réduction du temps de travail sans baisse de salaire démontre une préservation, voire une amélioration de la productivité globale.\n\nSur le plan de la santé mentale des salariés, les données recueillies indiquent une diminution remarquable de 35 % des épisodes de surmenage professionnel et de syndrome d'épuisement (burnout). Les employés bénéficiant d'un équilibre renforcé entre vie privée et engagement professionnel affichent une fidélité accrue envers leur organisation.\n\nNéanmoins, la transposabilité de cette organisation aux secteurs industriels à feu continu ou aux services d'urgence médicale soulève des défis logistiques majeurs.`,
+    text: `SOCIOLOGIE DU TRAVAIL — LA MUTATION DES MODÈLES ORGANISATIONNELS\n\nL'expérimentation à grande échelle de la semaine de travail de quatre jours dans le secteur tertiaire suscite un intérêt croissant auprès des chercheurs en gestion et des décideurs économiques. Loin de nuire au rendement des entreprises, ce modèle fondé sur la réduction du temps de travail sans baisse de salaire démontre une préservation, voire une amélioration de la productivité globale.\n\nSur le plan de la santé mentale des salariés, les données recueillies indiquent une diminution remarquable de 35 % des épisodes de surmenage professionnel et de syndrome d'épuisement (burnout). Les employés bénéficiant d'un équilibre renforcé entre vie privée et engagement professionnel affichent une fidélité accrued envers leur organisation.\n\nNéanmoins, la transposabilité de cette organisation aux secteurs industriels à feu continu ou aux services d'urgence médicale soulève des défis logistiques majeurs.`,
     q: "Quel résultat marquant ressort de l'analyse sociologique de la semaine de 4 jours ?",
     opt: ["Une diminution de 35% du surmenage professionnel chez les salariés", "Une baisse inévitable de la productivité globale de l'entreprise", "Une augmentation généralisée du taux d'absentéisme", "L'obligation de baisser les salaires des employés"],
     ans: 0,
-    passEn: "WORKPLACE SOCIOLOGY — ORGANIZATIONAL MODEL MUTATION\n\n4-day workweek trials show sustained productivity alongside a 35% reduction in professional burnout.",
+    passEn: `WORKPLACE SOCIOLOGY — THE MUTATION OF ORGANIZATIONAL MODELS\n\nLarge-scale trials of the four-day workweek in the service sector are attracting growing interest from management researchers and economic decision-makers. Far from harming business performance, this model based on reducing working hours without salary cuts demonstrates a preservation, or even an improvement, of overall productivity.\n\nRegarding employee mental health, collected data indicates a remarkable 35% decrease in workplace overwork episodes and professional burnout syndrome. Employees benefiting from an enhanced work-life balance display increased loyalty toward their organization.\n\nNevertheless, applying this organizational model to continuous industrial sectors or emergency medical services presents major logistical challenges.`,
     hint: "⚠️ Trap Alert: Note the 35% burnout reduction figure, contrasting with false productivity loss claims.\n🔄 Paraphrase Key: 'diminution remarquable de 35% des épisodes de surmenage' matches 'diminution de 35% du surmenage'.\n📖 Structural Cue: Locate mental health survey results in paragraph 2."
   },
   {
@@ -285,18 +373,18 @@ const READING_TOPICS = [
     q: "Quel rôle écologique majeur remplissent les zones humides naturelles ?",
     opt: ["Réguler le cycle de l'eau en absorbant les crues et restituant l'humidité", "Accélérer l'assèchement définitif des terres agricoles", "Favoriser le ruissellement torrentiel vers les zones urbaines", "Remplacer l'eau douce par des réservoirs d'eau de mer"],
     ans: 0,
-    passEn: "TERRITORIAL PLANNING & WATER MANAGEMENT\n\nRestoring natural wetlands acts as ecological sponges, absorbing floodwaters and releasing moisture during droughts.",
+    passEn: `TERRITORIAL PLANNING AND WATER RESOURCE MANAGEMENT\n\nConcerted watershed management in the face of extreme rainfall hazards demands transcending traditional administrative boundaries in favor of integrated environmental governance. The intensifying summer drought episodes coupled with torrential runoff risks mandate a fundamental re-evaluation of urban and agricultural development plans.\n\nHydrology specialists advocate for the priority restoration of natural wetlands, which serve as regulating ecological sponges. These ecosystems absorb excess water during spring floods and gradually release moisture during low-flow periods.\n\nThis nature-based approach proves to be economically more sustainable than the perpetual construction of heavy civil engineering structures.`,
     hint: "⚠️ Trap Alert: Pay attention to the natural sponge concept (absorbing floods, releasing moisture).\n🔄 Paraphrase Key: 'éponges écologiques régulatrices... absorbent les surplus... restituent l'humidité' defines water regulation.\n📖 Structural Cue: Focus on hydrological function definitions in paragraph 2."
   },
 
-  // C2 MASTERY (38-39)
+  // C2 MASTERY (23)
   {
     level: "C2",
     text: `ÉPISTÉMOLOGIE ET NARRATIFS DE LA TRANSITION ÉCOLOGIQUE\n\nLa déconstruction des paradigmes extractivistes contemporains requiert un réexamen épistémologique profond de notre rapport à la matérialité du monde et aux communs terrestres. L'obsolescence théorique des modèles de croissance linéaire illimitée impose l'élaboration de nouvelles métriques de prospérité intégrant les limites planétaires infranchissables.\n\nDans cette perspective, la pensée complexe rejette les solutions technocratiques réductrices qui prétendent résoudre la crise systémique par un simple ajustement marginal des mécanismes de marché. Il s'agit d'opérer une mutation culturelle refondant les représentations collectives de l'abondance et du progrès.\n\nCette réorientation philosophique implique une redéfinition globale des responsabilités éthiques envers les générations futures et le vivant non humain.`,
     q: "Que préconise l'analyse épistémologique face à la crise systémique ?",
     opt: ["Une mutation culturelle refondant les représentations collectives du progrès", "La poursuite indéfinie des modèles de croissance linéaire illimitée", "L'abandon de toute réflexion éthique envers les générations futures", "Le recours exclusif à des ajustements marchands marginaux"],
     ans: 0,
-    passEn: "EPISTEMOLOGY & ECOLOGICAL TRANSITION NARRATIVES\n\nSystemic ecological crises demand a deep cultural shift reframing collective concepts of progress and planetary limits.",
+    passEn: `EPISTEMOLOGY AND ECOLOGICAL TRANSITION NARRATIVES\n\nThe deconstruction of contemporary extractivist paradigms requires a profound epistemological re-examination of our relationship to the materiality of the world and planetary commons. The theoretical obsolescence of unlimited linear growth models mandates developing new metrics of prosperity that incorporate insurmountable planetary boundaries.\n\nIn this perspective, complex thinking rejects simplistic technocratic solutions that claim to resolve the systemic crisis through minor market adjustments. The goal is to execute a cultural mutation reframing collective representations of abundance and progress.\n\nThis philosophical reorientation implies a global redefinition of ethical responsibilities toward future generations and non-human living beings.`,
     hint: "⚠️ Trap Alert: Reject technocratic market-only fixes in favor of deep epistemological cultural shift.\n🔄 Paraphrase Key: 'opérer une mutation culturelle refondant les représentations' answers the core recommendation.\n📖 Structural Cue: Analyze complex philosophical stance in paragraph 2."
   }
 ];
@@ -368,6 +456,8 @@ function generateReadingQuestions(count: number, prefix: string, seedOffset: num
     const t = pool[(i - 1 + seedOffset) % pool.length];
 
     const { options, correctIndex, correctText } = shuffleOptions(t.opt, t.ans);
+
+    const specificHint = (t as any).hint || `Level ${t.level} Reading Guidance: Scan paragraph 1 and 2 for synonyms and key thematic terms. Eliminate distractor options containing extreme words like "toujours" or "jamais" unless explicitly in the passage.`;
 
     qList.push({
       id: `${prefix}-read-${i}`,
