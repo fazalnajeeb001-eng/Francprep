@@ -1,4 +1,28 @@
 import { z } from 'zod';
+import dns from 'dns';
+import { promisify } from 'util';
+
+const resolveMxAsync = promisify(dns.resolveMx);
+
+export async function verifyEmailDomainMx(email: string): Promise<boolean> {
+  const domain = email.split('@')[1]?.toLowerCase().trim();
+  if (!domain) return false;
+
+  // Known trusted providers skip DNS lookup for sub-millisecond instant speed
+  const trustedDomains = [
+    'gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'yahoo.ca',
+    'shaw.ca', 'telus.net', 'rogers.com', 'bell.net', 'icloud.com', 'me.com',
+    'live.com', 'msn.com', 'aol.com', 'protonmail.com', 'proton.me', 'zoho.com'
+  ];
+  if (trustedDomains.includes(domain)) return true;
+
+  try {
+    const addresses = await resolveMxAsync(domain);
+    return Array.isArray(addresses) && addresses.length > 0;
+  } catch (err) {
+    return false;
+  }
+}
 
 const DISPOSABLE_DOMAINS = [
   'mailinator.com', 'tempmail.com', '10minutemail.com', 'guerrillamail.com', 

@@ -4,13 +4,21 @@ import { generateTokenPair, verifyRefreshToken } from '../utils/jwt';
 import { comparePassword } from '../utils/password';
 import { SignupDto, LoginDto, IJwtPayload } from '../types';
 import { emailService } from './email.service';
+import { verifyEmailDomainMx } from '../utils/validators';
 
 export class AuthService {
   /**
    * Register a new user and generate 6-digit email OTP
    */
   async signup(data: SignupDto & { marketingOptIn?: boolean; activeLanguage?: string }) {
-    const existingUser = await User.findOne({ email: data.email.toLowerCase().trim() });
+    const normEmail = data.email.toLowerCase().trim();
+
+    const isDomainValid = await verifyEmailDomainMx(normEmail);
+    if (!isDomainValid) {
+      throw { statusCode: 400, message: 'This email domain does not appear to exist or accept emails. Please check for typos or use a valid email address.' };
+    }
+
+    const existingUser = await User.findOne({ email: normEmail });
     if (existingUser) {
       throw { statusCode: 409, message: 'Email already registered' };
     }

@@ -233,17 +233,21 @@ function SignupPage() {
               <input type="password" required value={confirm} onChange={(e) => setConfirm(e.target.value)} className={inp} placeholder="Repeat password" />
             </div>
 
-            {/* GDPR Marketing Opt-In Checkbox */}
-            <div className="pt-1">
-              <label className="flex items-start gap-2.5 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  checked={marketingOptIn}
-                  onChange={(e) => setMarketingOptIn(e.target.checked)}
-                  className="mt-0.5 w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-                />
-                <span className={`text-xs ${dark ? "text-gray-400" : "text-slate-600"} leading-snug`}>
-                  I agree to receive weekly progress digests, study tips, and exclusive course offers.
+            {/* GDPR & CAN-SPAM Compliant Marketing & Weekly Progress Opt-In Box */}
+            <div className={`p-4 rounded-2xl ${dark ? "bg-purple-500/10 border-purple-500/25" : "bg-purple-50/80 border-purple-200"} border flex items-start gap-3 transition-all mt-3`}>
+              <input
+                type="checkbox"
+                id="marketingOptIn"
+                checked={marketingOptIn}
+                onChange={(e) => setMarketingOptIn(e.target.checked)}
+                className="mt-1 w-4 h-4 rounded border-purple-400 text-purple-600 focus:ring-purple-500 cursor-pointer shrink-0"
+              />
+              <label htmlFor="marketingOptIn" className="cursor-pointer text-xs leading-relaxed select-none">
+                <span className="font-extrabold text-purple-400 block mb-0.5">
+                  📩 Weekly Progress Digest & Study Tips (Opt-In)
+                </span>
+                <span className={dark ? "text-gray-300" : "text-slate-600"}>
+                  Send me weekly progress reports, study streak reminders, and exclusive exam prep offers. You can opt out anytime in 1 click.
                 </span>
               </label>
             </div>
