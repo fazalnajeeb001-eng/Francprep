@@ -99,19 +99,19 @@ function LoginPage() {
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center justify-center gap-2 mb-4 group">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 via-indigo-500 to-pink-500 flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-purple-500/25 group-hover:scale-105 transition-all">
-              {activeBranding.flag}
+              <GraduationCap className="w-7 h-7 text-white" />
             </div>
           </Link>
           <div className="flex items-center justify-center gap-1.5 mb-1">
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-500/10 text-purple-400 border border-purple-500/20">
-              {activeBranding.shortBrand} Portal
+              FrancPrep Academy Portal
             </span>
           </div>
           <h1 className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${dark ? "text-white" : "text-gray-900"}`}>
             Welcome Back
           </h1>
           <p className={`text-sm ${dark ? "text-gray-400" : "text-slate-600"} mt-1.5 max-w-xs mx-auto`}>
-            Sign in to continue your {activeBranding.languageName} learning path
+            Sign in to continue your language learning path
           </p>
         </div>
 

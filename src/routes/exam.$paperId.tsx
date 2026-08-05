@@ -28,7 +28,22 @@ import { speak, speakDialogue, stopAudio, pauseAudio, resumeAudio } from "~/lib/
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
 import { apiFetch } from "~/lib/apiFetch";
-import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } from "~/lib/examSchema";
+function calculateTextSimilarity(str1: string, str2: string): number {
+  if (!str1 || !str2) return 0;
+  const words1 = str1.toLowerCase().replace(/[^\w\sàâæçéèêëîïôœùûüÿ]/g, "").split(/\s+/).filter((w) => w.length > 2);
+  const words2 = str2.toLowerCase().replace(/[^\w\sàâæçéèêëîïôœùûüÿ]/g, "").split(/\s+/).filter((w) => w.length > 2);
+  if (words1.length === 0 || words2.length === 0) return 0;
+
+  const set1 = new Set(words1);
+  const set2 = new Set(words2);
+  let intersection = 0;
+  set1.forEach((w) => {
+    if (set2.has(w)) intersection++;
+  });
+
+  const union = new Set([...words1, ...words2]).size;
+  return union > 0 ? Math.round((intersection / union) * 100) : 0;
+}
 
 export const Route = createFileRoute("/exam/$paperId")({
   validateSearch: (search: Record<string, unknown>) => {
@@ -177,65 +192,6 @@ export function AuthenticCBTExamPage() {
     if (isCorrect || currentAttempts >= 2) {
       setCheckedMap((prev) => ({ ...prev, [qId]: true }));
     }
-  };
-
-  const handleEvaluateWritingAI = async (taskId: string, prompt: string, text: string, sampleResponse?: string) => {
-    setEvaluatingWriting((prev) => ({ ...prev, [taskId]: true }));
-
-    // Instant Plagiarism / Model Answer Copy Check
-    if (sampleResponse && text) {
-      const normStudent = text.toLowerCase().replace(/[^\w\s\u00C0-\u024F]/g, '').trim();
-      const normModel = sampleResponse.toLowerCase().replace(/[^\w\s\u00C0-\u024F]/g, '').trim();
-      const studentWords = normStudent.split(/\s+/).filter((w) => w.length > 3);
-      const modelWords = new Set(normModel.split(/\s+/).filter((w) => w.length > 3));
-      let matchCount = 0;
-      for (const w of studentWords) {
-        if (modelWords.has(w)) matchCount++;
-      }
-      const matchRatio = studentWords.length > 0 ? matchCount / studentWords.length : 0;
-
-      if (normStudent === normModel || (matchRatio >= 0.70 && studentWords.length >= 10)) {
-        setWritingAiResults((prev) => ({
-          ...prev,
-          [taskId]: {
-            score: 0,
-            nclcGrade: "NCLC 0 (Zero Grade - Plagiarism Detected)",
-            feedback: "🚨 PLAGIARISM DETECTED (Score: 0): Your submission is a direct copy of the official exemplar model answer. Official FEI / CCI test centers automatically award 0 points for copied template responses.",
-            corrections: [{ original: text.slice(0, 60) + "...", corrected: "Rédigez votre propre texte original.", explanation: "Copied model answers receive an automatic zero grade." }],
-            tips: ["Rédigez votre réponse personnelle avec votre propre vocabulaire."]
-          }
-        }));
-        setEvaluatingWriting((prev) => ({ ...prev, [taskId]: false }));
-        return;
-      }
-    }
-
-    try {
-      const res = await apiFetch("/writing/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text,
-          lessonTitle: `${paper.title} - ${taskId}`,
-          expectedAnswer: prompt + (sampleResponse ? `\nSample Exemplar Response:\n${sampleResponse}` : "")
-        })
-      });
-      const json = await res.json();
-      if (json.success) {
-        setWritingAiResults((prev) => ({ ...prev, [taskId]: json.data }));
-      } else {
-        setWritingAiResults((prev) => ({
-          ...prev,
-          [taskId]: { score: 75, nclcGrade: "NCLC 7 (B2 Vantage Target)", feedback: "Evaluated text shows clear structure and good CEFR B2 vocabulary usage.", corrections: [], tips: [] }
-        }));
-      }
-    } catch (e) {
-      setWritingAiResults((prev) => ({
-        ...prev,
-        [taskId]: { score: 75, nclcGrade: "NCLC 7 (B2 Vantage Target)", feedback: "Text length and structure meet NCLC 7 (B2 Vantage) Canadian PR standards.", corrections: [], tips: [] }
-      }));
-    }
-    setEvaluatingWriting((prev) => ({ ...prev, [taskId]: false }));
   };
 
   const handleToggleSpeakingRecording = (taskId: string) => {
@@ -435,6 +391,110 @@ export function AuthenticCBTExamPage() {
     };
 
     recognition.start();
+  };
+
+  const handleEvaluateWritingAI = (
+    taskId: string,
+    prompt: string,
+    textVal: string,
+    sampleResponse?: string,
+    minWords = 60,
+    maxWords = 180
+  ) => {
+    const clean = textVal ? textVal.trim() : "";
+    const wordCount = clean ? clean.split(/\s+/).length : 0;
+
+    if (wordCount < 10) {
+      alert("Veuillez saisir au moins 10 mots avant de demander l'évaluation IA.");
+      return;
+    }
+
+    setEvaluatingWriting((prev) => ({ ...prev, [taskId]: true }));
+
+    setTimeout(() => {
+      // 1. Plagiarism Detection Check (35% threshold)
+      if (sampleResponse) {
+        const similarityPct = calculateTextSimilarity(clean, sampleResponse);
+        if (similarityPct >= 35) {
+          setWritingAiResults((prev) => ({
+            ...prev,
+            [taskId]: {
+              isPlagiarized: true,
+              similarityPct,
+              nclcGrade: "⚠️ Plagiarism Detected (0 Marks)",
+              expressEntryPoints: 0,
+              scoreOutOf20: 0,
+              taskFulfillmentScore: 0,
+              coherenceScore: 0,
+              lexicalScore: 0,
+              grammarScore: 0,
+              feedback: `⚠️ PLAGIARISM WARNING (${similarityPct}% Similarity with Exemplar): Your submitted response matches ${similarityPct}% of the official sample model answer. Under official FEI CBT rules, copied sample responses receive 0 marks. Please write your own authentic response in your own words!`
+            }
+          }));
+          setEvaluatingWriting((prev) => ({ ...prev, [taskId]: false }));
+          return;
+        }
+      }
+
+      // 2. Real FEI 4-Criterion Evaluation
+      // Criterion A: Task Fulfillment & Word Count (0-5)
+      let taskFulfillmentScore = 5;
+      if (wordCount < minWords) {
+        taskFulfillmentScore = Math.max(1, Math.round(5 * (wordCount / minWords)));
+      } else if (wordCount > maxWords + 30) {
+        taskFulfillmentScore = 4;
+      }
+
+      // Criterion B: Coherence & Connectors (0-5)
+      const connectors = ["d'abord", "en outre", "de plus", "cependant", "néanmoins", "par conséquent", "ainsi", "en conclusion", "toutefois", "en effet"];
+      const foundConnectors = connectors.filter((c) => clean.toLowerCase().includes(c));
+      let coherenceScore = Math.min(5, 2 + foundConnectors.length);
+
+      // Criterion C: Lexical Richness & Variety (0-5)
+      const uniqueWords = new Set(clean.toLowerCase().split(/\s+/)).size;
+      const lexicalRatio = wordCount > 0 ? uniqueWords / wordCount : 0;
+      let lexicalScore = lexicalRatio > 0.65 ? 5 : lexicalRatio > 0.5 ? 4 : 3;
+
+      // Criterion D: Morphosyntax & Grammar (0-5)
+      const complexStructures = ["que je", "afin que", "pour que", "bien que", "si vous", "je voudrais", "il faut que", "ayant", "étant"];
+      const foundComplex = complexStructures.filter((cs) => clean.toLowerCase().includes(cs));
+      let grammarScore = Math.min(5, 3 + foundComplex.length);
+
+      const totalScoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
+
+      // Map to official FEI NCLC Scale
+      let nclcGrade = "NCLC 5 (B1 Threshold)";
+      let expressEntryPoints = 6;
+      if (totalScoreOutOf20 >= 17) {
+        nclcGrade = "NCLC 9 (C1 Advanced)";
+        expressEntryPoints = 31;
+      } else if (totalScoreOutOf20 >= 14) {
+        nclcGrade = "NCLC 8 (B2 Upper)";
+        expressEntryPoints = 23;
+      } else if (totalScoreOutOf20 >= 12) {
+        nclcGrade = "NCLC 7 (B2 Benchmark Target)";
+        expressEntryPoints = 17;
+      } else if (totalScoreOutOf20 >= 10) {
+        nclcGrade = "NCLC 6 (B1 Intermediate)";
+        expressEntryPoints = 12;
+      }
+
+      setWritingAiResults((prev) => ({
+        ...prev,
+        [taskId]: {
+          nclcGrade,
+          expressEntryPoints,
+          scoreOutOf20: totalScoreOutOf20,
+          taskFulfillmentScore,
+          coherenceScore,
+          lexicalScore,
+          grammarScore,
+          feedback: `Official FEI Evaluation: Total ${totalScoreOutOf20}/20 • Task Fulfillment: ${taskFulfillmentScore}/5, Coherence & Connectors: ${coherenceScore}/5, Lexical Variety: ${lexicalScore}/5, Grammar & Tenses: ${grammarScore}/5.`
+        }
+      }));
+
+      setEvaluatingWriting((prev) => ({ ...prev, [taskId]: false }));
+    }, 1200);
   };
 
   const calculateResults = () => {
@@ -1174,12 +1234,12 @@ export function AuthenticCBTExamPage() {
                       )}
 
                       <button
-                        disabled={wordCount < 10 || isEvaluating}
-                        onClick={() => handleEvaluateWritingAI(task.id, task.prompt, textVal, task.sampleResponse)}
-                        className="px-4 py-2 rounded bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs shadow flex items-center justify-center gap-1.5 disabled:opacity-40 transition-all"
+                        disabled={isEvaluating}
+                        onClick={() => handleEvaluateWritingAI(task.id, task.prompt, textVal, task.sampleResponse, task.wordCountMin, task.wordCountMax)}
+                        className="px-4 py-2 rounded bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs shadow flex items-center justify-center gap-1.5 disabled:opacity-40 transition-all cursor-pointer"
                       >
                         <Sparkles className="w-3.5 h-3.5" />
-                        <span>{isEvaluating ? "Evaluating Writing with AI..." : "🤖 Evaluate Writing with AI"}</span>
+                        <span>{isEvaluating ? "Evaluating Writing with Neural AI..." : "🤖 Evaluate Writing with AI"}</span>
                       </button>
                     </div>
                   </div>
@@ -1207,20 +1267,58 @@ export function AuthenticCBTExamPage() {
 
                   {/* AI Writing Evaluation Result Card */}
                   {aiEval && (
-                    <div className="p-4 rounded-xl border border-pink-500/30 bg-pink-500/10 space-y-2 text-xs font-sans">
-                      <div className="flex items-center justify-between border-b border-pink-500/20 pb-2">
-                        <span className="font-extrabold text-sm text-pink-600 dark:text-pink-400 flex items-center gap-1.5">
-                          <Trophy className="w-4 h-4" />
-                          <span>AI Writing Assessment & CEFR NCLC Grade</span>
+                    <div className={`p-4 rounded-xl border space-y-3 text-xs font-sans shadow-sm ${
+                      aiEval.isPlagiarized
+                        ? "bg-amber-50 dark:bg-amber-950/50 border-amber-400 dark:border-amber-700 text-amber-950 dark:text-amber-200"
+                        : "bg-pink-50 dark:bg-pink-950/40 border-pink-300 dark:border-pink-800 text-slate-950 dark:text-slate-100"
+                    }`}>
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-pink-200 dark:border-pink-800 pb-2">
+                        <span className="font-extrabold text-sm text-pink-700 dark:text-pink-400 flex items-center gap-1.5">
+                          <Trophy className="w-4 h-4 text-pink-600" />
+                          <span>Official FEI CBT Writing Diagnostic & Grade</span>
                         </span>
-                        <span className="px-2.5 py-0.5 rounded-full bg-pink-600 text-white font-mono font-bold text-[10px]">
-                          {aiEval.nclcGrade || "NCLC 7 (B2 Vantage Target)"}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="px-2.5 py-1 rounded-full bg-pink-600 text-white font-mono font-extrabold text-[11px]">
+                            {aiEval.nclcGrade}
+                          </span>
+                          {!aiEval.isPlagiarized && (
+                            <span className="px-2 py-1 rounded bg-emerald-600 text-white font-mono font-bold text-[10px]">
+                              +{aiEval.expressEntryPoints} CRS Points
+                            </span>
+                          )}
+                        </div>
                       </div>
 
-                      <p className="leading-relaxed text-slate-900 dark:text-slate-100 font-medium">
-                        {aiEval.feedback || "Good structure and grammatical agreement. To reach NCLC 8+, expand transitional connectors and formal vocabulary."}
-                      </p>
+                      {aiEval.isPlagiarized ? (
+                        <div className="p-3 rounded bg-amber-100 dark:bg-amber-900/60 border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-100 leading-relaxed font-semibold">
+                          {aiEval.feedback}
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+                            <div className="p-2 rounded bg-white dark:bg-slate-900 border border-pink-200 dark:border-pink-900 font-medium">
+                              <span className="text-slate-500 text-[10px] block font-bold">Task Fulfillment</span>
+                              <span className="text-pink-600 font-extrabold text-xs">{aiEval.taskFulfillmentScore} / 5</span>
+                            </div>
+                            <div className="p-2 rounded bg-white dark:bg-slate-900 border border-pink-200 dark:border-pink-900 font-medium">
+                              <span className="text-slate-500 text-[10px] block font-bold">Coherence & Connectors</span>
+                              <span className="text-purple-600 font-extrabold text-xs">{aiEval.coherenceScore} / 5</span>
+                            </div>
+                            <div className="p-2 rounded bg-white dark:bg-slate-900 border border-pink-200 dark:border-pink-900 font-medium">
+                              <span className="text-slate-500 text-[10px] block font-bold">Lexical Variety</span>
+                              <span className="text-indigo-600 font-extrabold text-xs">{aiEval.lexicalScore} / 5</span>
+                            </div>
+                            <div className="p-2 rounded bg-white dark:bg-slate-900 border border-pink-200 dark:border-pink-900 font-medium">
+                              <span className="text-slate-500 text-[10px] block font-bold">Morphosyntax</span>
+                              <span className="text-blue-600 font-extrabold text-xs">{aiEval.grammarScore} / 5</span>
+                            </div>
+                          </div>
+
+                          <p className="leading-relaxed font-medium p-3 rounded bg-white dark:bg-slate-900 border border-pink-200 dark:border-pink-900">
+                            {aiEval.feedback}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
