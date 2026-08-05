@@ -28,6 +28,8 @@ import { speak, speakDialogue, stopAudio, pauseAudio, resumeAudio } from "~/lib/
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
 import { apiFetch } from "~/lib/apiFetch";
+import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } from "~/lib/examSchema";
+
 function calculateTextSimilarity(str1: string, str2: string): number {
   if (!str1 || !str2) return 0;
   const words1 = str1.toLowerCase().replace(/[^\w\sàâæçéèêëîïôœùûüÿ]/g, "").split(/\s+/).filter((w) => w.length > 2);
