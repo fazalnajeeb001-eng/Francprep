@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Navigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -341,7 +341,7 @@ export function getPlacementQuestions(langCode: string = "fr"): Question[] {
 export function OnboardingPage() {
   const navigate = useNavigate();
   const { dark } = useTheme();
-  const { user, isAuthenticated, isLoading: authLoading, updateUser } = useAuth();
+  const { user, updateUser, isAuthenticated, isLoading: authLoading } = useAuth();
 
   const [step, setStep] = useState<"language" | "goal" | "pace" | "choice" | "test" | "result">("language");
   const [submitting, setSubmitting] = useState(false);
@@ -352,6 +352,14 @@ export function OnboardingPage() {
     { code: 'it', name: 'Italian', nativeName: 'Italiano', flag: '🇮🇹', examName: 'CILS / CELI' }
   ]);
   const [selectedLang, setSelectedLang] = useState<string>("fr");
+
+  const handleSelectLanguage = (langCode: string) => {
+    setSelectedLang(langCode);
+    const options = getGoalOptionsForLanguage(langCode);
+    if (options && options.length > 0) {
+      setSelectedGoal(options[0].value);
+    }
+  };
 
   useEffect(() => {
     apiFetch("/languages")
@@ -461,21 +469,34 @@ export function OnboardingPage() {
         const parsedUser = JSON.parse(rawUser);
         parsedUser.onboardingComplete = true;
         parsedUser.activeLanguage = selectedLang;
+        parsedUser.learningGoal = selectedGoal;
+        parsedUser.targetLevel = finalLevel;
         localStorage.setItem("francprep_user", JSON.stringify(parsedUser));
       }
     } catch (e) {}
 
-    // 2. Update AuthContext React state synchronously
+    // 2. Write individual LocalStorage flags
+    try {
+      saveGoalToStorage(selectedGoal, selectedLang);
+      setDailyStudyGoal(selectedPace);
+      localStorage.setItem("fp_active_language", selectedLang);
+      localStorage.setItem("francprep_onboarding_completed", "true");
+      localStorage.setItem("francprep_user_level", finalLevel);
+    } catch (e) {}
+
+    // 3. Update AuthContext React state
     if (user && updateUser) {
-      updateUser({
-        ...user,
-        onboardingComplete: true,
-        activeLanguage: selectedLang,
-        learningGoal: selectedGoal,
-      } as any);
+      try {
+        updateUser({
+          ...user,
+          onboardingComplete: true,
+          activeLanguage: selectedLang,
+          learningGoal: selectedGoal,
+        } as any);
+      } catch (e) {}
     }
 
-    // 3. API sync to MongoDB with a non-blocking max 800ms race timeout
+    // 4. API sync to MongoDB with a non-blocking max 800ms race timeout
     const apiSync = Promise.all([
       apiFetch("/users/profile/goal", {
         method: "PUT",
@@ -485,7 +506,7 @@ export function OnboardingPage() {
       apiFetch("/users/profile/complete-onboarding", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ activeLanguage: selectedLang, learningGoal: selectedGoal }),
+        body: JSON.stringify({ activeLanguage: selectedLang, learningGoal: selectedGoal, level: finalLevel }),
       }).catch(() => {}),
     ]);
 
@@ -560,7 +581,7 @@ export function OnboardingPage() {
                   return (
                     <div
                       key={l.code}
-                      onClick={() => setSelectedLang(l.code)}
+                      onClick={() => handleSelectLanguage(l.code)}
                       className={`p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
                         isSelected
                           ? "border-purple-500 bg-purple-500/15 ring-2 ring-purple-500/30 text-purple-900 dark:text-purple-100 shadow-lg"
@@ -743,7 +764,7 @@ export function OnboardingPage() {
                   <span>CEFR Diagnostic Benchmark</span>
                 </div>
                 <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight">
-                  Where should we start your French syllabus?
+                  Where should we start your {activeBranding.languageName} syllabus?
                 </h1>
                 <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
                   Beginners can start immediately at A1 Discovery. Learners with prior experience can take our 20-question comprehensive diagnostic.
@@ -945,7 +966,7 @@ export function OnboardingPage() {
                   Evaluated Benchmark: {evaluatedLevel}
                 </h1>
                 <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
-                  You scored <strong className="text-purple-600 dark:text-purple-400">{testScore} / {PLACEMENT_QUESTIONS.length}</strong> on the 20-question diagnostic.
+                  You scored <strong className="text-purple-600 dark:text-purple-400">{testScore} / {getPlacementQuestions(selectedLang).length}</strong> on the 20-question diagnostic.
                 </p>
               </div>
 

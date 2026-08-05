@@ -214,10 +214,10 @@ function DashboardPage() {
       <AnimatePresence>
         {showGoalModal && (
           <GoalModal dark={dark} onClose={async (goal) => {
-            try { await apiFetch("/user/profile/goal", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ goal }) }); } catch {}
+            try { await apiFetch("/users/profile/goal", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ goal }) }); } catch {}
             saveGoalToStorage(goal);
             setShowGoalModal(false);
-            try { await apiFetch("/user/profile/complete-onboarding", { method: "PUT" }); } catch {}
+            try { await apiFetch("/users/profile/complete-onboarding", { method: "PUT" }); } catch {}
             setData(prev => prev ? { ...prev, user: { ...prev.user, learningGoal: goal, onboardingComplete: true } } : prev);
           }} />
         )}

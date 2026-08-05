@@ -57,6 +57,15 @@ export function getGoalOptionsForLanguage(langCode: string = "fr") {
 
 export const GOAL_OPTIONS = getGoalOptionsForLanguage("fr");
 
+export function getGoalLabelsForLanguage(langCode: string = "fr"): Record<string, string> {
+  const options = getGoalOptionsForLanguage(langCode);
+  const labels: Record<string, string> = {};
+  options.forEach((opt) => {
+    labels[opt.value] = opt.label;
+  });
+  return labels;
+}
+
 export function getGoal(): GoalData | null {
   try {
     const stored = localStorage.getItem(GOAL_KEY);
