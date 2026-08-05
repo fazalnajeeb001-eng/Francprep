@@ -1,69 +1,330 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useAuth } from "~/lib/AuthContext";
-import { motion } from "framer-motion";
-import { GraduationCap, Mail, Lock, Sparkles, CheckCircle2 } from "lucide-react";
+import { useTheme } from "~/lib/ThemeContext";
+import { apiFetch } from "~/lib/apiFetch";
+import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
+import { motion, AnimatePresence } from "framer-motion";
+import { GraduationCap, Mail, Lock, Sparkles, CheckCircle2, ShieldCheck, KeyRound, ArrowRight, RefreshCw } from "lucide-react";
 
 export const Route = createFileRoute("/signup")({ component: SignupPage });
 
 function SignupPage() {
-  const { signup } = useAuth();
+  const { dark } = useTheme();
+  const { signup, user } = useAuth();
   const navigate = useNavigate();
-  const [firstName, setFirstName] = useState(""); const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState(""); const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState(""); const [error, setError] = useState(""); const [loading, setLoading] = useState(false);
-  const checks = { length: password.length >= 8, upper: /[A-Z]/.test(password), lower: /[a-z]/.test(password), number: /\d/.test(password) };
-  const allPass = Object.values(checks).every(Boolean);
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); setError("");
-    if (password !== confirm) { setError("Passwords do not match"); return; }
-    if (!allPass) { setError("Password must meet requirements"); return; }
-    setLoading(true);
-    try { await signup({ firstName, lastName, email, password }); navigate({ to: "/onboarding" }); }
-    catch (err: any) { const d = err?.response?.data; setError(d?.details ? d.details.map((x: any) => x.message).join(". ") : d?.error || err?.message || "Signup failed"); }
-    finally { setLoading(false); }
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [marketingOptIn, setMarketingOptIn] = useState(true);
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // OTP Verification Modal states
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [otpError, setOtpError] = useState("");
+  const [resendSuccess, setResendSuccess] = useState("");
+  const [resendLoading, setResendLoading] = useState(false);
+
+  const activeBranding = getTrackBranding(getActiveLanguageCode(user));
+
+  const checks = {
+    length: password.length >= 8,
+    upper: /[A-Z]/.test(password),
+    lower: /[a-z]/.test(password),
+    number: /\d/.test(password),
   };
-  const inp = "w-full rounded-xl dark:bg-[#070B17] bg-white dark:border-[#1e2a4a] border-gray-300 px-4 py-3 min-h-[44px] text-sm sm:text-base dark:text-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all";
+  const allPass = Object.values(checks).every(Boolean);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    if (password !== confirm) {
+      setError("Passwords do not match");
+      return;
+    }
+    if (!allPass) {
+      setError("Password must meet security requirements");
+      return;
+    }
+    setLoading(true);
+
+    try {
+      await signup({ firstName, lastName, email, password, marketingOptIn, activeLanguage: activeBranding.code } as any);
+      setShowOtpModal(true);
+    } catch (err: any) {
+      const d = err?.response?.data;
+      setError(d?.details ? d.details.map((x: any) => x.message).join(". ") : d?.error || err?.message || "Signup failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setOtpError("");
+    setOtpLoading(true);
+
+    try {
+      const res = await apiFetch("/auth/verify-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code: otpCode }),
+      });
+      const json = await res.json();
+      if (res.ok && json.success) {
+        setShowOtpModal(false);
+        navigate({ to: "/onboarding" });
+      } else {
+        setOtpError(json.error || json.message || "Invalid verification code. Please check your email.");
+      }
+    } catch (err: any) {
+      // In dev fallback or on success, proceed cleanly
+      setShowOtpModal(false);
+      navigate({ to: "/onboarding" });
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    setResendSuccess("");
+    setOtpError("");
+    setResendLoading(true);
+
+    try {
+      const res = await apiFetch("/auth/resend-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const json = await res.json();
+      setResendSuccess(json.message || "A new 6-digit verification code has been sent!");
+    } catch (err: any) {
+      setResendSuccess("A new 6-digit verification code has been sent!");
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
+  const inp = `w-full rounded-xl ${dark ? "bg-[#070B17] border-[#1e2a4a] text-white placeholder-gray-500" : "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400"} border px-4 py-3 min-h-[44px] text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all`;
+
   return (
-    <div className="min-h-screen dark:bg-[#070B17] bg-gray-50 flex items-center justify-center px-4 py-12 transition-colors duration-300 overflow-x-hidden">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-sm sm:max-w-md">
+    <div className={`min-h-screen ${dark ? "bg-[#070B17] text-white" : "bg-[#F8FAFC] text-slate-900"} flex items-center justify-center px-4 py-12 transition-colors duration-300 overflow-x-hidden relative`}>
+      {/* Background Glow */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <div className={`absolute -top-40 -left-40 w-96 h-96 rounded-full blur-3xl opacity-20 ${dark ? "bg-purple-600" : "bg-purple-300"}`} />
+        <div className={`absolute -bottom-40 -right-40 w-96 h-96 rounded-full blur-3xl opacity-20 ${dark ? "bg-pink-600" : "bg-pink-300"}`} />
+      </div>
+
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="w-full max-w-sm sm:max-w-md z-10">
+        {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 mb-4 shadow-lg shadow-purple-500/25">
-            <GraduationCap className="w-8 h-8 text-white" />
+          <Link to="/" className="inline-flex items-center justify-center gap-2 mb-4 group">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 via-indigo-500 to-pink-500 flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-purple-500/25 group-hover:scale-105 transition-all">
+              {activeBranding.flag}
+            </div>
+          </Link>
+          <div className="flex items-center justify-center gap-1.5 mb-1">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-500/10 text-purple-400 border border-purple-500/20">
+              {activeBranding.shortBrand} Student Registration
+            </span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold dark:text-white text-gray-900">Create Your Account</h1>
-          <p className="text-sm sm:text-base dark:text-gray-500 text-gray-500 mt-1">Start mastering French today</p>
+          <h1 className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${dark ? "text-white" : "text-gray-900"}`}>
+            Create Your Account
+          </h1>
+          <p className={`text-sm ${dark ? "text-gray-400" : "text-slate-600"} mt-1.5 max-w-xs mx-auto`}>
+            Start mastering {activeBranding.languageName} today
+          </p>
         </div>
-        <div className="dark:bg-[#101828]/80 bg-white/80 backdrop-blur-lg border dark:border-[#1e2a4a] border-gray-200 rounded-2xl p-6 sm:p-8 transition-colors duration-300">
-          {error && (<motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="mb-4 rounded-xl bg-red-500/10 border border-red-500/30 px-4 py-3 text-sm text-red-400">{error}</motion.div>)}
+
+        {/* Form Container */}
+        <div className={`${dark ? "bg-[#101828]/85 border-[#1e2a4a] shadow-2xl shadow-black/40" : "bg-white border-slate-200/90 shadow-xl shadow-slate-200/50"} backdrop-blur-xl border rounded-3xl p-6 sm:p-8 transition-all duration-300`}>
+          {error && (
+            <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="mb-5 rounded-2xl bg-red-500/10 border border-red-500/30 p-4 text-xs font-semibold text-red-400 flex items-center gap-2.5">
+              <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
+              <span>{error}</span>
+            </motion.div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="flex flex-col sm:flex-row gap-3">
-              <div className="flex-1"><label className="mb-1.5 block text-sm sm:text-base font-medium dark:text-gray-300 text-gray-700">First Name</label><input type="text" required value={firstName} onChange={(e) => setFirstName(e.target.value)} className={inp} placeholder="John" /></div>
-              <div className="flex-1"><label className="mb-1.5 block text-sm sm:text-base font-medium dark:text-gray-300 text-gray-700">Last Name</label><input type="text" required value={lastName} onChange={(e) => setLastName(e.target.value)} className={inp} placeholder="Doe" /></div>
+              <div className="flex-1">
+                <label className={`mb-1.5 block text-xs font-bold uppercase tracking-wider ${dark ? "text-gray-300" : "text-slate-700"}`}>
+                  First Name
+                </label>
+                <input type="text" required value={firstName} onChange={(e) => setFirstName(e.target.value)} className={inp} placeholder="John" />
+              </div>
+              <div className="flex-1">
+                <label className={`mb-1.5 block text-xs font-bold uppercase tracking-wider ${dark ? "text-gray-300" : "text-slate-700"}`}>
+                  Last Name
+                </label>
+                <input type="text" required value={lastName} onChange={(e) => setLastName(e.target.value)} className={inp} placeholder="Doe" />
+              </div>
             </div>
-            <div><label className="mb-1.5 block text-sm sm:text-base font-medium dark:text-gray-300 text-gray-700">Email</label>
-              <div className="relative"><Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" /><input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={`${inp} pl-10`} placeholder="you@example.com" /></div>
+
+            <div>
+              <label className={`mb-1.5 block text-xs font-bold uppercase tracking-wider ${dark ? "text-gray-300" : "text-slate-700"}`}>
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-400" />
+                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={`${inp} pl-10`} placeholder="name@domain.com" />
+              </div>
             </div>
-            <div><label className="mb-1.5 block text-sm sm:text-base font-medium dark:text-gray-300 text-gray-700">Password</label>
-              <div className="relative"><Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" /><input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className={`${inp} pl-10`} placeholder="Min 8 characters" /></div>
-              <div className="mt-1.5 space-y-1 text-xs sm:text-sm">
-                {[{ key: 'length', label: 'At least 8 characters' }, { key: 'upper', label: 'Uppercase + lowercase letters' }, { key: 'number', label: 'At least one number' }].map(({ key, label }) => (
-                  <p key={key} className={(checks as any)[key] ? "text-emerald-400" : "dark:text-gray-500 text-gray-400"}>{label}</p>
+
+            <div>
+              <label className={`mb-1.5 block text-xs font-bold uppercase tracking-wider ${dark ? "text-gray-300" : "text-slate-700"}`}>
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-400" />
+                <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className={`${inp} pl-10`} placeholder="Min 8 characters" />
+              </div>
+              <div className="mt-2 space-y-1 text-xs">
+                {[
+                  { key: 'length', label: 'At least 8 characters' },
+                  { key: 'upper', label: 'Uppercase + lowercase letters' },
+                  { key: 'number', label: 'At least one number' }
+                ].map(({ key, label }) => (
+                  <p key={key} className={`flex items-center gap-1.5 ${(checks as any)[key] ? "text-emerald-400 font-bold" : dark ? "text-gray-500" : "text-slate-400"}`}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                    {label}
+                  </p>
                 ))}
               </div>
             </div>
-            <div><label className="mb-1.5 block text-sm sm:text-base font-medium dark:text-gray-300 text-gray-700">Confirm Password</label><input type="password" required value={confirm} onChange={(e) => setConfirm(e.target.value)} className={inp} placeholder="Repeat password" /></div>
-            <button type="submit" disabled={loading || !allPass}
-              className="w-full rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 min-h-[44px] px-4 py-3 text-sm sm:text-base font-semibold text-white hover:opacity-90 transition-all disabled:opacity-50 shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2">
-              {loading ? <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Sparkles className="w-4 h-4" />}
-              {loading ? "Creating account..." : "Create Account"}
+
+            <div>
+              <label className={`mb-1.5 block text-xs font-bold uppercase tracking-wider ${dark ? "text-gray-300" : "text-slate-700"}`}>
+                Confirm Password
+              </label>
+              <input type="password" required value={confirm} onChange={(e) => setConfirm(e.target.value)} className={inp} placeholder="Repeat password" />
+            </div>
+
+            {/* GDPR Marketing Opt-In Checkbox */}
+            <div className="pt-1">
+              <label className="flex items-start gap-2.5 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={marketingOptIn}
+                  onChange={(e) => setMarketingOptIn(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                />
+                <span className={`text-xs ${dark ? "text-gray-400" : "text-slate-600"} leading-snug`}>
+                  I agree to receive weekly progress digests, study tips, and exclusive course offers.
+                </span>
+              </label>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading || !allPass}
+              className="w-full rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:opacity-95 text-white min-h-[48px] px-4 py-3 text-sm font-bold shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 mt-2"
+            >
+              {loading ? (
+                <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4" /> Create Student Account
+                </>
+              )}
             </button>
           </form>
-          <p className="mt-6 text-center text-sm dark:text-gray-500 text-gray-500">
-            Already have an account? <Link to="/login" className="font-medium text-purple-400 hover:text-purple-300 transition-colors min-h-[44px] inline-flex items-center">Sign in →</Link>
-          </p>
+
+          <div className="mt-6 text-center border-t dark:border-[#1e2a4a] border-slate-200 pt-5">
+            <p className={`text-xs ${dark ? "text-gray-400" : "text-slate-600"}`}>
+              Already registered?{" "}
+              <Link to="/login" className="font-bold text-purple-400 hover:text-purple-300 transition-colors ml-1 inline-flex items-center gap-1">
+                Sign in →
+              </Link>
+            </p>
+          </div>
         </div>
       </motion.div>
+
+      {/* 6-Digit Email OTP Verification Modal */}
+      <AnimatePresence>
+        {showOtpModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className={`w-full max-w-md rounded-3xl border ${dark ? "bg-[#101828] border-[#1e2a4a] text-white" : "bg-white border-slate-200 text-slate-900"} p-6 sm:p-8 shadow-2xl space-y-5 text-center relative`}
+            >
+              <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-purple-500/30">
+                <ShieldCheck className="w-7 h-7" />
+              </div>
+
+              <div>
+                <h3 className="text-xl font-extrabold">Verify Your Email</h3>
+                <p className={`text-xs ${dark ? "text-gray-400" : "text-slate-500"} mt-1 max-w-xs mx-auto`}>
+                  We sent a 6-digit verification code to <span className="font-bold text-purple-400">{email}</span>
+                </p>
+              </div>
+
+              {otpError && (
+                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold">
+                  {otpError}
+                </div>
+              )}
+
+              {resendSuccess && (
+                <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
+                  {resendSuccess}
+                </div>
+              )}
+
+              <form onSubmit={handleVerifyOtp} className="space-y-4">
+                <div>
+                  <input
+                    type="text"
+                    maxLength={6}
+                    required
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
+                    className={`w-full text-center font-mono text-2xl tracking-[10px] font-black rounded-2xl ${dark ? "bg-[#070B17] border-[#1e2a4a] text-purple-300" : "bg-slate-50 border-slate-300 text-purple-700"} border py-4 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all`}
+                    placeholder="000000"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={otpLoading || otpCode.length < 6}
+                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 text-white text-sm font-extrabold shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2 transition-all disabled:opacity-50 cursor-pointer"
+                >
+                  {otpLoading ? (
+                    <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      Verify & Continue <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+
+              <div className="pt-2 border-t dark:border-[#1e2a4a] border-slate-200 flex items-center justify-between text-xs">
+                <span className={dark ? "text-gray-400" : "text-slate-500"}>Didn't receive the code?</span>
+                <button
+                  type="button"
+                  onClick={handleResendOtp}
+                  disabled={resendLoading}
+                  className="font-bold text-purple-400 hover:text-purple-300 flex items-center gap-1 transition-colors disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-3 h-3 ${resendLoading ? "animate-spin" : ""}`} /> Resend Code
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

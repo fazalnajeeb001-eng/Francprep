@@ -59,4 +59,19 @@ router.post('/forgot-password', authLimiter, (req, res, next) =>
   authController.requestPasswordReset(req, res, next)
 );
 
+// POST /api/auth/verify-email
+router.post('/verify-email', (req, res, next) =>
+  authController.verifyEmail(req, res, next)
+);
+
+// POST /api/auth/resend-verification
+router.post('/resend-verification', authLimiter, (req, res, next) =>
+  authController.resendVerificationCode(req, res, next)
+);
+
+// POST /api/auth/reset-password
+router.post('/reset-password', authLimiter, (req, res, next) =>
+  authController.resetPassword(req, res, next)
+);
+
 export default router;

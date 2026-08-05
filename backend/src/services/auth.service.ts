@@ -1,24 +1,37 @@
+import crypto from 'crypto';
 import User from '../models/User';
 import { generateTokenPair, verifyRefreshToken } from '../utils/jwt';
 import { comparePassword } from '../utils/password';
 import { SignupDto, LoginDto, IJwtPayload } from '../types';
+import { emailService } from './email.service';
 
 export class AuthService {
   /**
-   * Register a new user
+   * Register a new user and generate 6-digit email OTP
    */
-  async signup(data: SignupDto) {
-    const existingUser = await User.findOne({ email: data.email });
+  async signup(data: SignupDto & { marketingOptIn?: boolean; activeLanguage?: string }) {
+    const existingUser = await User.findOne({ email: data.email.toLowerCase().trim() });
     if (existingUser) {
       throw { statusCode: 409, message: 'Email already registered' };
     }
 
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+
     const user = await User.create({
-      email: data.email,
+      email: data.email.toLowerCase().trim(),
       password: data.password,
       firstName: data.firstName,
       lastName: data.lastName,
+      activeLanguage: data.activeLanguage || 'fr',
+      marketingOptIn: data.marketingOptIn ?? true,
+      emailVerificationCode: otpCode,
+      emailVerificationExpires: otpExpires,
+      isEmailVerified: false,
     });
+
+    // Send verification email
+    await emailService.sendVerificationEmail(user.email, user.firstName, otpCode, user.activeLanguage);
 
     const payload: IJwtPayload = {
       userId: user._id.toString(),
@@ -31,6 +44,7 @@ export class AuthService {
     return {
       user: user.toJSON(),
       ...tokens,
+      requiresVerification: true,
     };
   }
 
@@ -143,12 +157,93 @@ export class AuthService {
   }
 
   /**
-   * Request password reset
+   * Verify 6-digit email OTP code
+   */
+  async verifyEmail(email: string, code: string) {
+    const normEmail = email.toLowerCase().trim();
+    const user = await User.findOne({ email: normEmail });
+    if (!user) {
+      throw { statusCode: 404, message: 'User not found' };
+    }
+
+    if (user.isEmailVerified) {
+      return { message: 'Email already verified' };
+    }
+
+    if (!user.emailVerificationCode || user.emailVerificationCode !== code.trim()) {
+      throw { statusCode: 400, message: 'Invalid 6-digit verification code' };
+    }
+
+    if (user.emailVerificationExpires && user.emailVerificationExpires < new Date()) {
+      throw { statusCode: 400, message: 'Verification code has expired. Please request a new code.' };
+    }
+
+    user.isEmailVerified = true;
+    user.emailVerificationCode = undefined;
+    user.emailVerificationExpires = undefined;
+    await user.save();
+
+    return { message: 'Email verified successfully!' };
+  }
+
+  /**
+   * Resend 6-digit verification code
+   */
+  async resendVerificationCode(email: string) {
+    const normEmail = email.toLowerCase().trim();
+    const user = await User.findOne({ email: normEmail });
+    if (!user) {
+      throw { statusCode: 404, message: 'User not found' };
+    }
+
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    user.emailVerificationCode = otpCode;
+    user.emailVerificationExpires = new Date(Date.now() + 15 * 60 * 1000);
+    await user.save();
+
+    await emailService.sendVerificationEmail(user.email, user.firstName, otpCode, user.activeLanguage);
+    return { message: 'A new 6-digit verification code has been sent to your email.' };
+  }
+
+  /**
+   * Request password reset token & send security email
    */
   async requestPasswordReset(email: string) {
     const normEmail = email.toLowerCase().trim();
     const user = await User.findOne({ email: normEmail });
+    if (!user) {
+      return { message: 'If an account exists with that email, password reset instructions have been sent.' };
+    }
+
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    user.passwordResetToken = resetToken;
+    user.passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000); // 60 minutes
+    await user.save();
+
+    await emailService.sendPasswordResetEmail(user.email, user.firstName, resetToken, user.activeLanguage);
+
     return { message: 'If an account exists with that email, password reset instructions have been sent.' };
+  }
+
+  /**
+   * Reset password with token
+   */
+  async resetPassword(token: string, newPassword: string) {
+    const user = await User.findOne({
+      passwordResetToken: token,
+      passwordResetExpires: { $gt: new Date() },
+    });
+
+    if (!user) {
+      throw { statusCode: 400, message: 'Invalid or expired password reset token.' };
+    }
+
+    user.password = newPassword;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+
+    return { message: 'Password has been reset successfully. You can now sign in with your new password.' };
   }
 }
 

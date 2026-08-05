@@ -179,6 +179,57 @@ export class AuthController {
       next(error);
     }
   }
+
+  /**
+   * POST /api/auth/verify-email
+   */
+  async verifyEmail(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const { email, code } = req.body;
+      if (!email || !code) {
+        res.status(400).json({ success: false, error: 'Email and 6-digit verification code are required.' });
+        return;
+      }
+      const result = await authService.verifyEmail(email, code);
+      res.status(200).json({ success: true, message: result.message });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /api/auth/resend-verification
+   */
+  async resendVerificationCode(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        res.status(400).json({ success: false, error: 'Email is required.' });
+        return;
+      }
+      const result = await authService.resendVerificationCode(email);
+      res.status(200).json({ success: true, message: result.message });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /api/auth/reset-password
+   */
+  async resetPassword(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const { token, newPassword } = req.body;
+      if (!token || !newPassword) {
+        res.status(400).json({ success: false, error: 'Reset token and new password are required.' });
+        return;
+      }
+      const result = await authService.resetPassword(token, newPassword);
+      res.status(200).json({ success: true, message: result.message });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const authController = new AuthController();
