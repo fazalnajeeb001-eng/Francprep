@@ -19,10 +19,12 @@ import {
   Flag,
   Globe,
   Sun,
-  Moon
+  Moon,
+  Square,
+  RotateCcw
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
-import { speak, speakDialogue } from "~/lib/speech";
+import { speak, speakDialogue, stopAudio, pauseAudio, resumeAudio } from "~/lib/speech";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
 import { apiFetch } from "~/lib/apiFetch";
@@ -373,6 +375,7 @@ export function AuthenticCBTExamPage() {
 
   const handlePlayAudio = (text: string) => {
     setIsPlayingAudio(true);
+    setIsAudioPaused(false);
     if (text.includes(":") || text.includes("\n") || text.includes("—")) {
       speakDialogue(text, "fr-FR", 0.85);
     } else {
@@ -380,6 +383,24 @@ export function AuthenticCBTExamPage() {
       speak(text, "fr-FR", 0.85, isMale ? "male" : "female");
     }
     setTimeout(() => setIsPlayingAudio(false), 5000);
+  };
+
+  const handlePauseResumeAudio = () => {
+    if (isAudioPaused) {
+      resumeAudio();
+      setIsAudioPaused(false);
+      setIsPlayingAudio(true);
+    } else {
+      pauseAudio();
+      setIsAudioPaused(true);
+      setIsPlayingAudio(false);
+    }
+  };
+
+  const handleStopAudio = () => {
+    stopAudio();
+    setIsPlayingAudio(false);
+    setIsAudioPaused(false);
   };
 
   const handleStartSpeakingRecord = () => {
@@ -762,19 +783,60 @@ export function AuthenticCBTExamPage() {
                           </div>
                         )}
 
-                        <button
-                          onClick={() => handlePlayAudio(currentQ.transcript || currentQ.text)}
-                          className="px-4 py-2 rounded bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold flex items-center gap-1.5 shadow"
-                        >
-                          <Volume2 className={`w-4 h-4 ${isPlayingAudio ? "animate-bounce" : ""}`} />
-                          <span>
-                            {isPlayingAudio
-                              ? "Playing Audio Document..."
-                              : mode === "PRACTICE"
-                              ? "🔊 Play Audio Document (Unlimited Replays in Practice)"
-                              : "🔊 Play Audio Recording (Official 1-Play Limit)"}
-                          </span>
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => {
+                              if (isPlayingAudio || isAudioPaused) {
+                                handlePauseResumeAudio();
+                              } else {
+                                handlePlayAudio(currentQ.transcript || currentQ.text);
+                              }
+                            }}
+                            className="px-4 py-2 rounded bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold flex items-center gap-1.5 shadow"
+                          >
+                            {isPlayingAudio ? (
+                              <>
+                                <Pause className="w-4 h-4" />
+                                <span>Pause Audio ⏸️</span>
+                              </>
+                            ) : isAudioPaused ? (
+                              <>
+                                <Play className="w-4 h-4" />
+                                <span>Resume Audio ▶️</span>
+                              </>
+                            ) : (
+                              <>
+                                <Volume2 className="w-4 h-4" />
+                                <span>🔊 Play Audio Document</span>
+                              </>
+                            )}
+                          </button>
+
+                          {mode === "PRACTICE" && (isPlayingAudio || isAudioPaused) && (
+                            <>
+                              <button
+                                onClick={handleStopAudio}
+                                className="p-2 rounded bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold flex items-center gap-1 shadow"
+                                title="Stop Audio"
+                              >
+                                <Square className="w-3.5 h-3.5 fill-current" />
+                                <span>Stop</span>
+                              </button>
+
+                              <button
+                                onClick={() => {
+                                  handleStopAudio();
+                                  setTimeout(() => handlePlayAudio(currentQ.transcript || currentQ.text), 100);
+                                }}
+                                className="p-2 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1 shadow"
+                                title="Replay Audio From Start"
+                              >
+                                <RotateCcw className="w-3.5 h-3.5" />
+                                <span>Replay</span>
+                              </button>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
 
