@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "~/lib/AuthContext";
 import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
+import { getTrackBranding } from "~/lib/trackBranding";
 import {
   MessageSquare,
   Sparkles,
@@ -192,6 +193,7 @@ function CommunityExamHubPage() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const { dark } = useTheme();
   const navigate = useNavigate();
+  const activeBranding = getTrackBranding(user?.activeLanguage || (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : null) || "fr");
 
   const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
   const [buddyRequests, setBuddyRequests] = useState<BuddyCircleRequest[]>(INITIAL_BUDDY_REQUESTS);
@@ -485,7 +487,7 @@ function CommunityExamHubPage() {
               <Volume2 className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-xs font-extrabold text-amber-300">French Speech & Audio Practice</h4>
+              <h4 className="text-xs font-extrabold text-amber-300">{activeBranding.communityPracticeTitle}</h4>
               <p className={`text-[11px] ${textMuted} mt-0.5`}>1-tap text-to-speech & voice dictation for active listening practice.</p>
             </div>
           </div>
@@ -584,10 +586,10 @@ function CommunityExamHubPage() {
                         {/* Optional Audio Intro */}
                         {req.frenchAudioIntro && (
                           <div className={`p-2 rounded-xl border text-[11px] font-mono flex items-center justify-between ${dark ? "bg-black/40 border-emerald-500/20 text-emerald-300" : "bg-emerald-50 border-emerald-200 text-emerald-900"}`}>
-                            <span className="truncate italic">🇫🇷 "{req.frenchAudioIntro}"</span>
+                            <span className="truncate italic">{activeBranding.flag} "{req.frenchAudioIntro}"</span>
                             <button
                               onClick={() => {
-                                speak(req.frenchAudioIntro!, "fr-FR", 0.9, "female");
+                                speak(req.frenchAudioIntro!, activeBranding.speechLocale, 0.9, "female");
                               }}
                               className="px-2 py-0.5 rounded bg-emerald-500/30 text-emerald-200 hover:bg-emerald-500/50 text-[10px] font-extrabold shrink-0 flex items-center gap-1 cursor-pointer"
                             >
@@ -713,10 +715,10 @@ function CommunityExamHubPage() {
                   {/* Optional French Snippet Box with Audio TTS */}
                   {post.frenchSnippet && (
                     <div className={`p-3 rounded-xl border text-xs font-mono italic flex items-center justify-between gap-3 ${dark ? "bg-purple-950/30 border-purple-500/20 text-purple-300" : "bg-purple-50 border-purple-200 text-purple-900"}`}>
-                      <span>🇫🇷 "{post.frenchSnippet}"</span>
+                      <span>{activeBranding.flag} "{post.frenchSnippet}"</span>
                       <button
                         onClick={() => {
-                          speak(post.frenchSnippet!, "fr-FR", 0.9, "female");
+                          speak(post.frenchSnippet!, activeBranding.speechLocale, 0.9, "female");
                         }}
                         className="p-1.5 rounded-lg bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 transition-colors shrink-0 not-italic font-sans text-[11px] flex items-center gap-1 cursor-pointer"
                         title="Listen Pronunciation"

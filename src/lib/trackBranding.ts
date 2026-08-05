@@ -6,7 +6,13 @@ export interface TrackBranding {
   flag: string;
   examName: string;
   nativeName: string;
+  languageName: string;
   speechLocale: string;
+  proficiencyPathTitle: string;
+  speakingPrompt: string;
+  transcriptLabel: string;
+  communityPracticeTitle: string;
+  cardExpressionLabel: string;
 }
 
 export const PRESET_TRACKS: Record<string, TrackBranding> = {
@@ -18,7 +24,13 @@ export const PRESET_TRACKS: Record<string, TrackBranding> = {
     flag: '🇫🇷',
     examName: 'DELF / DALF / TCF / TEF',
     nativeName: 'Français',
+    languageName: 'French',
     speechLocale: 'fr-FR',
+    proficiencyPathTitle: 'French Proficiency Path',
+    speakingPrompt: 'Say this in French:',
+    transcriptLabel: 'French Audio Transcript:',
+    communityPracticeTitle: 'French Speech & Audio Practice',
+    cardExpressionLabel: '🇫🇷 FRENCH EXPRESSION',
   },
   de: {
     code: 'de',
@@ -28,7 +40,13 @@ export const PRESET_TRACKS: Record<string, TrackBranding> = {
     flag: '🇩🇪',
     examName: 'Goethe / TestDaF / telc',
     nativeName: 'Deutsch',
+    languageName: 'German',
     speechLocale: 'de-DE',
+    proficiencyPathTitle: 'German Proficiency Path',
+    speakingPrompt: 'Say this in German:',
+    transcriptLabel: 'German Audio Transcript:',
+    communityPracticeTitle: 'German Speech & Audio Practice',
+    cardExpressionLabel: '🇩🇪 GERMAN EXPRESSION',
   },
   es: {
     code: 'es',
@@ -38,7 +56,13 @@ export const PRESET_TRACKS: Record<string, TrackBranding> = {
     flag: '🇪🇸',
     examName: 'DELE / SIELE',
     nativeName: 'Español',
+    languageName: 'Spanish',
     speechLocale: 'es-ES',
+    proficiencyPathTitle: 'Spanish Proficiency Path',
+    speakingPrompt: 'Say this in Spanish:',
+    transcriptLabel: 'Spanish Audio Transcript:',
+    communityPracticeTitle: 'Spanish Speech & Audio Practice',
+    cardExpressionLabel: '🇪🇸 SPANISH EXPRESSION',
   },
   it: {
     code: 'it',
@@ -48,7 +72,13 @@ export const PRESET_TRACKS: Record<string, TrackBranding> = {
     flag: '🇮🇹',
     examName: 'CILS / CELI / PLIDA',
     nativeName: 'Italiano',
+    languageName: 'Italian',
     speechLocale: 'it-IT',
+    proficiencyPathTitle: 'Italian Proficiency Path',
+    speakingPrompt: 'Say this in Italian:',
+    transcriptLabel: 'Italian Audio Transcript:',
+    communityPracticeTitle: 'Italian Speech & Audio Practice',
+    cardExpressionLabel: '🇮🇹 ITALIAN EXPRESSION',
   },
 };
 
@@ -83,6 +113,12 @@ export function getTrackBranding(langCode?: string, customMeta?: Partial<TrackBr
     flag: flag,
     examName: customMeta?.examName || 'CEFR Certification',
     nativeName: name,
+    languageName: capitalized,
     speechLocale: customMeta?.speechLocale || 'en-US',
+    proficiencyPathTitle: `${capitalized} Proficiency Path`,
+    speakingPrompt: `Say this in ${capitalized}:`,
+    transcriptLabel: `${capitalized} Audio Transcript:`,
+    communityPracticeTitle: `${capitalized} Speech & Audio Practice`,
+    cardExpressionLabel: `${flag} ${capitalized.toUpperCase()} EXPRESSION`,
   };
 }

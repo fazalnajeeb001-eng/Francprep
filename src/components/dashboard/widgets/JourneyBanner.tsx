@@ -126,9 +126,9 @@ export function JourneyBanner({ dark, firstName, streak, overallProgress, levels
               const branding = getTrackBranding(activeLang);
               return (
                 <>
-                  <h3 className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"} drop-shadow-lg`}>Your {branding.journeyTitle}</h3>
+                  <h3 className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"} drop-shadow-lg`}>{branding.journeyTitle} {branding.flag}</h3>
                   <p className={`text-[10px] ${dark ? "text-gray-300" : "text-gray-600"} drop-shadow`}>
-                    {firstName}'s language learning journey ({branding.flag})
+                    {firstName}'s personalized language learning path
                   </p>
                 </>
               );

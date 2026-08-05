@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { SmartAvatar } from "./SmartAvatar";
 import type { DashboardData } from "../types";
-import { CEFR_ORDER } from "../utils/userPrefs";
+import { CEFR_ORDER, getLevelBackgrounds } from "../utils/userPrefs";
 
 function getTimeOfDay(): "morning" | "afternoon" | "evening" | "night" {
   const hour = new Date().getHours();
@@ -52,6 +52,8 @@ export function LevelProgress({ levels, dark, overall, avatarUrl, avatarFeatures
   const [avatarSize, setAvatarSize] = useState(160);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const activeLang = typeof window !== "undefined" ? localStorage.getItem("fp_active_language") || "fr" : "fr";
+  const levelBackgrounds = getLevelBackgrounds(activeLang);
   const activeLevel = getActiveLevel(levels);
   const activeData = getActiveData(levels, activeLevel);
   const levelStatuses = useMemo(() => getLevelStatus(levels), [levels]);
@@ -416,7 +418,7 @@ export function LevelProgress({ levels, dark, overall, avatarUrl, avatarFeatures
           animate={{ y: [0, -3, 0] }}
           transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
         >
-          Current Level
+          {levelBackgrounds[activeLevel]?.scene || "📍"} {levelBackgrounds[activeLevel]?.label || "Current Level"}
           <div
             className="absolute left-1/2 -translate-x-1/2 -bottom-1.5"
             style={{

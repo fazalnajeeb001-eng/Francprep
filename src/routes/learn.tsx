@@ -6,6 +6,8 @@ import { useAuth } from "~/lib/AuthContext";
 import { motion } from "framer-motion";
 import { ArrowLeft, BookOpen, ChevronRight, Sparkles, Clock, Layers, GraduationCap, Target, BookText, Pen, Headphones, MessageSquare, User, Lock } from "lucide-react";
 
+import { getTrackBranding } from "~/lib/trackBranding";
+
 export const Route = createFileRoute("/learn")({ component: LearnPage });
 
 const CEFR_STYLES: Record<string, { gradient: string; bg: string; border: string; text: string }> = {
@@ -55,6 +57,7 @@ function LearnPage() {
   if (!isAuthenticated || !user) {
     return <Navigate to="/login" search={{ redirect: "/learn" }} replace />;
   }
+  const activeBranding = getTrackBranding(user?.activeLanguage || (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : null) || "fr");
   const passedMilestones = (user as any)?.passedMilestones || [];
 
   const [view, setView] = useState<"levels" | string>("levels");
@@ -265,7 +268,7 @@ function LearnPage() {
     const lightStyle = CEFR_LIGHT_STYLES[view] || CEFR_LIGHT_STYLES.A1;
     const icon = LEVEL_ICONS[view] || "📖";
     const levelData = levels.find((l: any) => l.level === view);
-    const levelTitle = levelData?.title || `French ${view}`;
+    const levelTitle = levelData?.title || `${activeBranding.languageName} ${view}`;
     const levelDesc = levelData?.description || "";
 
     return (
@@ -384,8 +387,8 @@ function LearnPage() {
             <ArrowLeft className={`w-5 h-5 ${textSec}`} />
           </Link>
           <div>
-            <h1 className={`text-2xl font-bold ${dark ? "text-white" : "text-gray-900"}`}>French Proficiency Path</h1>
-            <p className={`text-sm ${textMuted} mt-0.5`}>Select your level to begin mastering French</p>
+            <h1 className={`text-2xl font-bold ${dark ? "text-white" : "text-gray-900"}`}>{activeBranding.proficiencyPathTitle}</h1>
+            <p className={`text-sm ${textMuted} mt-0.5`}>Select your level to begin mastering {activeBranding.languageName}</p>
           </div>
         </div>
 

@@ -6,6 +6,7 @@ import { useTheme } from "~/lib/ThemeContext";
 import { useAuth } from "~/lib/AuthContext";
 import { apiFetch } from "~/lib/apiFetch";
 import { speak as speakText } from "~/lib/speech";
+import { getTrackBranding } from "~/lib/trackBranding";
 
 export const Route = createFileRoute("/speaking")({ component: SpeakingPage });
 
@@ -68,6 +69,8 @@ function SpeakingPage() {
     return <Navigate to="/login" search={{ redirect: "/speaking" }} replace />;
   }
 
+  const activeBranding = getTrackBranding(user?.activeLanguage || (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : null) || "fr");
+
   useEffect(() => {
     collectPhrases().then(setCardPhrases);
   }, []);
@@ -82,14 +85,14 @@ function SpeakingPage() {
   const hasRecognition = typeof window !== "undefined" && (window.SpeechRecognition || window.webkitSpeechRecognition);
 
   const handleSpeak = (text: string) => {
-    speakText(text);
+    speakText(text, activeBranding.speechLocale);
   };
 
   const startListening = useCallback(() => {
     if (!hasRecognition) return;
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recog = new SpeechRecognition();
-    recog.lang = "fr-FR";
+    recog.lang = activeBranding.speechLocale;
     recog.continuous = false;
     recog.interimResults = true;
     recog.maxAlternatives = 1;
@@ -202,7 +205,7 @@ function SpeakingPage() {
           animate={{ opacity: 1, y: 0 }}
           className={`rounded-2xl ${cardBg} backdrop-blur-lg border shadow-lg p-8 text-center`}
         >
-          <p className={`text-xs font-semibold mb-4 ${textMuted}`}>Say this in French:</p>
+          <p className={`text-xs font-semibold mb-4 ${textMuted}`}>{activeBranding.speakingPrompt}</p>
           <h2 className={`text-2xl font-bold mb-3 ${dark ? "text-white" : "text-gray-900"}`}>
             {currentPhrase.french}
           </h2>

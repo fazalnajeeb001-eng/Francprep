@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 import { speak } from "~/lib/speech";
+import { getTrackBranding } from "~/lib/trackBranding";
 import { apiFetch } from "~/lib/apiFetch";
 import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } from "~/lib/examSchema";
 
@@ -37,6 +38,7 @@ export const Route = createFileRoute("/exam/$paperId")({
 
 export function AuthenticCBTExamPage() {
   const navigate = useNavigate();
+  const activeBranding = getTrackBranding(typeof window !== "undefined" ? localStorage.getItem("fp_active_language") || "fr" : "fr");
   const { paperId } = Route.useParams();
   const search = Route.useSearch();
   const mode: ExamMode = search.mode || "PRACTICE";
@@ -525,7 +527,7 @@ export function AuthenticCBTExamPage() {
 
                     {showTranscripts && currentQ.transcript && (
                       <div className="pt-3 border-t border-purple-300 text-xs space-y-1.5">
-                        <p className="font-bold text-purple-900 uppercase text-[10px]">French Audio Transcript:</p>
+                        <p className="font-bold text-purple-900 uppercase text-[10px]">{activeBranding.transcriptLabel}</p>
                         <p className="font-serif italic font-semibold text-slate-950">"{currentQ.transcript}"</p>
                         {currentQ.transcriptEnglish && (
                           <>

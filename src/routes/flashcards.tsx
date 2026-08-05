@@ -7,6 +7,7 @@ import { apiFetch } from "~/lib/apiFetch";
 import { useAuth } from "~/lib/AuthContext";
 import { reviewFlashcards, getDueCards, getFlashcardStats, type FlashcardProgress } from "~/lib/flashcardsApi";
 import { speak } from "~/lib/speech";
+import { getTrackBranding } from "~/lib/trackBranding";
 
 export const Route = createFileRoute("/flashcards")({ component: FlashcardsPage });
 
@@ -46,6 +47,8 @@ function FlashcardsPage() {
   if (!isAuthenticated || !user) {
     return <Navigate to="/login" search={{ redirect: "/flashcards" }} replace />;
   }
+
+  const activeBranding = getTrackBranding(user?.activeLanguage || (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : null) || "fr");
 
   const [allCards, setAllCards] = useState<VocabCard[]>([]);
   const [activeCards, setActiveCards] = useState<VocabCard[]>([]);
@@ -338,7 +341,7 @@ function FlashcardsPage() {
                 </span>
               </div>
               <h1 className={`text-2xl font-extrabold ${dark ? "text-white" : "text-gray-900"} mt-0.5`}>
-                ⚡ Flashcards Study Vault
+                ⚡ {activeBranding.languageName} Flashcards Vault
               </h1>
             </div>
           </div>
@@ -541,7 +544,7 @@ function FlashcardsPage() {
                 >
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-[10px] font-extrabold uppercase tracking-widest text-purple-400 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20">
-                      {activeLang === 'de' ? '🇩🇪 GERMAN EXPRESSION' : activeLang === 'es' ? '🇪🇸 SPANISH EXPRESSION' : activeLang === 'it' ? '🇮🇹 ITALIAN EXPRESSION' : '🇫🇷 FRENCH EXPRESSION'}
+                      {activeBranding.cardExpressionLabel}
                     </span>
                     <span className="text-[10px] font-extrabold uppercase tracking-wider text-purple-300 px-2.5 py-1 rounded bg-purple-900/30 border border-purple-500/20">
                       Level {currentCard.level}

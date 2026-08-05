@@ -43,15 +43,28 @@ export function getGoalOptionsForLanguage(langCode: string = "fr") {
       { value: "B2" as LearningGoal, label: "CILS B2 (Padronanza)", emoji: "🎓" },
     ];
   }
-  // Default French Track
+  if (code === "fr" || code === "fre" || code === "french") {
+    return [
+      { value: "TCF_B2" as LearningGoal, label: "Pass TCF Canada (B2)", emoji: "🇨🇦" },
+      { value: "TEF_B2" as LearningGoal, label: "Pass TEF Canada (B2)", emoji: "🍁" },
+      { value: "A1" as LearningGoal, label: "DELF A1 (Discovery)", emoji: "🌱" },
+      { value: "A2" as LearningGoal, label: "DELF A2 (Breakthrough)", emoji: "🌿" },
+      { value: "B1" as LearningGoal, label: "DELF B1 (Threshold)", emoji: "🚀" },
+      { value: "B2" as LearningGoal, label: "DELF B2 (Vantage)", emoji: "🎓" },
+      { value: "C1" as LearningGoal, label: "DALF C1 (Autonomous)", emoji: "🏆" },
+    ];
+  }
+
+  // Dynamic framework fallback for any newly registered language!
+  const branding = getTrackBranding(code);
+  const langName = branding.languageName;
   return [
-    { value: "TCF_B2" as LearningGoal, label: "Pass TCF Canada (B2)", emoji: "🇨🇦" },
-    { value: "TEF_B2" as LearningGoal, label: "Pass TEF Canada (B2)", emoji: "🍁" },
-    { value: "A1" as LearningGoal, label: "DELF A1 (Discovery)", emoji: "🌱" },
-    { value: "A2" as LearningGoal, label: "DELF A2 (Breakthrough)", emoji: "🌿" },
-    { value: "B1" as LearningGoal, label: "DELF B1 (Threshold)", emoji: "🚀" },
-    { value: "B2" as LearningGoal, label: "DELF B2 (Vantage)", emoji: "🎓" },
-    { value: "C1" as LearningGoal, label: "DALF C1 (Autonomous)", emoji: "🏆" },
+    { value: "B2" as LearningGoal, label: `Pass ${langName} B2 Certification`, emoji: branding.flag },
+    { value: "A1" as LearningGoal, label: `${langName} A1 (Discovery)`, emoji: "🌱" },
+    { value: "A2" as LearningGoal, label: `${langName} A2 (Breakthrough)`, emoji: "🌿" },
+    { value: "B1" as LearningGoal, label: `${langName} B1 (Threshold)`, emoji: "🚀" },
+    { value: "B2" as LearningGoal, label: `${langName} B2 (Vantage)`, emoji: "🎓" },
+    { value: "C1" as LearningGoal, label: `${langName} C1 (Autonomous)`, emoji: "🏆" },
   ];
 }
 
@@ -124,6 +137,55 @@ export const LEVEL_BACKGROUNDS: Record<string, { gradient: string; scene: string
   C2: { gradient: "from-yellow-900/30 via-amber-800/20 to-purple-900/40", scene: "🎆", label: "Grand Celebration" },
 };
 
+export function getLevelBackgrounds(langCode: string = "fr"): Record<string, { gradient: string; scene: string; label: string }> {
+  const code = (langCode || "fr").toLowerCase().trim();
+  if (code === "de" || code === "ger" || code === "german") {
+    return {
+      A1: { gradient: "from-amber-900/40 via-amber-800/20 to-green-900/30", scene: "🏡", label: "Bavarian Alpine Village" },
+      A2: { gradient: "from-orange-900/40 via-amber-800/20 to-yellow-900/30", scene: "🏪", label: "Munich Viktualienmarkt" },
+      B1: { gradient: "from-blue-900/40 via-indigo-800/20 to-purple-900/30", scene: "☕", label: "Berlin Boulevard Cafés" },
+      B2: { gradient: "from-purple-900/40 via-pink-800/20 to-rose-900/30", scene: "🏛️", label: "Brandenburg Gate Landmark" },
+      C1: { gradient: "from-orange-900/30 via-rose-800/20 to-purple-900/40", scene: "🏔️", label: "Bavarian Alps at Sunset" },
+      C2: { gradient: "from-yellow-900/30 via-amber-800/20 to-purple-900/40", scene: "🍻", label: "Oktoberfest Grand Celebration" },
+    };
+  }
+  if (code === "es" || code === "spa" || code === "spanish") {
+    return {
+      A1: { gradient: "from-amber-900/40 via-amber-800/20 to-green-900/30", scene: "🏡", label: "Andalusian White Village" },
+      A2: { gradient: "from-orange-900/40 via-amber-800/20 to-yellow-900/30", scene: "🏪", label: "Madrid Plaza Mayor" },
+      B1: { gradient: "from-blue-900/40 via-indigo-800/20 to-purple-900/30", scene: "☕", label: "Barcelona Rambla Cafés" },
+      B2: { gradient: "from-purple-900/40 via-pink-800/20 to-rose-900/30", scene: "⛪", label: "Sagrada Família Landmark" },
+      C1: { gradient: "from-orange-900/30 via-rose-800/20 to-purple-900/40", scene: "🌅", label: "Seville Sunset over Guadalquivir" },
+      C2: { gradient: "from-yellow-900/30 via-amber-800/20 to-purple-900/40", scene: "💃", label: "Gran Fiesta Celebration" },
+    };
+  }
+  if (code === "it" || code === "ita" || code === "italian") {
+    return {
+      A1: { gradient: "from-amber-900/40 via-amber-800/20 to-green-900/30", scene: "🏡", label: "Tuscan Country Hillside" },
+      A2: { gradient: "from-orange-900/40 via-amber-800/20 to-yellow-900/30", scene: "🏪", label: "Piazza Navona Market" },
+      B1: { gradient: "from-blue-900/40 via-indigo-800/20 to-purple-900/30", scene: "☕", label: "Florentine Piazza Cafés" },
+      B2: { gradient: "from-purple-900/40 via-pink-800/20 to-rose-900/30", scene: "🏛️", label: "Roman Colosseum Landmark" },
+      C1: { gradient: "from-orange-900/30 via-rose-800/20 to-purple-900/40", scene: "🚣", label: "Venetian Lagoon Sunset" },
+      C2: { gradient: "from-yellow-900/30 via-amber-800/20 to-purple-900/40", scene: "🎭", label: "Carnevale Grand Celebration" },
+    };
+  }
+  if (code === "fr" || code === "fre" || code === "french") {
+    return LEVEL_BACKGROUNDS;
+  }
+
+  // Dynamic framework fallback for any newly registered language!
+  const branding = getTrackBranding(code);
+  const langName = branding.languageName;
+  return {
+    A1: { gradient: "from-amber-900/40 via-amber-800/20 to-green-900/30", scene: "🏡", label: `${langName} Historic Village` },
+    A2: { gradient: "from-orange-900/40 via-amber-800/20 to-yellow-900/30", scene: "🏪", label: `${langName} Central Square` },
+    B1: { gradient: "from-blue-900/40 via-indigo-800/20 to-purple-900/30", scene: "☕", label: `${langName} City Cafés` },
+    B2: { gradient: "from-purple-900/40 via-pink-800/20 to-rose-900/30", scene: "🏛️", label: `${langName} Iconic Landmark` },
+    C1: { gradient: "from-orange-900/30 via-rose-800/20 to-purple-900/40", scene: "🌅", label: `${langName} Sunset Skyline` },
+    C2: { gradient: "from-yellow-900/30 via-amber-800/20 to-purple-900/40", scene: "🎆", label: `${langName} Grand Celebration` },
+  };
+}
+
 export function getGreeting(langCode: string = "fr"): { greeting: string; emoji: string; motivational: string } {
   const hour = new Date().getHours();
   const code = (langCode || "fr").toLowerCase().trim();
@@ -138,8 +200,11 @@ export function getGreeting(langCode: string = "fr"): { greeting: string; emoji:
     word = isMorning ? "¡Buenos días!" : isEvening ? "¡Buenas noches!" : "¡Buenas tardes!";
   } else if (code === "it" || code === "ita" || code === "italian") {
     word = isMorning ? "Buongiorno" : isEvening ? "Buonasera" : "Buongiorno";
-  } else {
+  } else if (code === "fr" || code === "fre" || code === "french") {
     word = isEvening ? "Bonsoir" : "Bonjour";
+  } else {
+    const branding = getTrackBranding(code);
+    word = `Welcome (${branding.nativeName})`;
   }
 
   const motivations = [
