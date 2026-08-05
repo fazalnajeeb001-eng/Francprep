@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Crown, BookOpen, BookText, Languages, Trophy, Target, Zap, Clock, Star } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import type { DashboardData } from "../types";
-import { getGoal, CEFR_ORDER } from "../utils/userPrefs";
+import { getGoal, getGoalLabelsForLanguage, CEFR_ORDER } from "../utils/userPrefs";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 
 function getCefrNamesForLanguage(langCode: string = "fr"): Record<string, string> {
@@ -231,7 +231,9 @@ export function JourneyBanner({ dark, firstName, streak, overallProgress, levels
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Crown className="w-3.5 h-3.5 text-amber-400" />
-                <span className={`text-[11px] font-semibold ${dark ? "text-gray-300" : "text-gray-700"}`}>{goalData.label}</span>
+                <span className={`text-[11px] font-semibold ${dark ? "text-gray-300" : "text-gray-700"}`}>
+                  {getGoalLabelsForLanguage(activeLang)[goalData.goal] || goalData.label}
+                </span>
               </div>
               <span className={`text-[10px] ${dark ? "text-gray-500" : "text-gray-400"}`}>
                 {overallProgress < 100 ? `${overallProgress}%` : "Achieved!"}
