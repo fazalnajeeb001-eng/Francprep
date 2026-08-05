@@ -263,10 +263,18 @@ export function AuthenticCBTExamPage() {
     setEvaluatingSpeaking((prev) => ({ ...prev, [taskId]: false }));
   };
 
+  const [seenStrategySections, setSeenStrategySections] = useState<Record<string, boolean>>({});
+
   useEffect(() => {
     setTimeLeft(currentSection.durationMins * 60);
     setCurrentQuestionIdx(0);
-  }, [activeSectionIdx, currentSection.durationMins]);
+
+    // Auto-popup strategy modal first time candidate enters section in Practice Mode
+    if (mode === "PRACTICE" && !seenStrategySections[currentSection.type]) {
+      setShowStrategyModal(true);
+      setSeenStrategySections((prev) => ({ ...prev, [currentSection.type]: true }));
+    }
+  }, [activeSectionIdx, currentSection.durationMins, mode, currentSection.type]);
 
   // Timer Countdown
   useEffect(() => {
