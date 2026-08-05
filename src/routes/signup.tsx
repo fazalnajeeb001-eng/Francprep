@@ -153,8 +153,8 @@ function SignupPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center justify-center gap-2 mb-3.5 group">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 via-indigo-500 to-pink-500 border border-purple-500/30 p-2 flex items-center justify-center shadow-xl shadow-purple-500/25 group-hover:scale-105 transition-all duration-300">
-              <FlagIcon code={activeBranding.code} className="w-12 h-8 rounded-lg shadow" />
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 via-indigo-500 to-pink-500 border border-purple-500/30 flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-purple-500/25 group-hover:scale-105 transition-all duration-300">
+              <Sparkles className="w-8 h-8 text-white" />
             </div>
           </Link>
 
@@ -165,7 +165,7 @@ function SignupPage() {
           </div>
           <h1 className={`text-3xl sm:text-4xl font-black tracking-tight ${dark ? "text-white" : "text-gray-900"} flex items-center justify-center gap-2.5`}>
             <span>Create Your Account</span>
-            <FlagIcon code={activeBranding.code} className="w-9 h-6 rounded-md shadow-sm" />
+            <span>{activeBranding.flag}</span>
           </h1>
           <p className={`text-sm ${dark ? "text-gray-400" : "text-slate-600"} mt-2 max-w-xs mx-auto font-medium`}>
             Start mastering {activeBranding.languageName} today
