@@ -393,7 +393,7 @@ export function AuthenticCBTExamPage() {
     recognition.start();
   };
 
-  const handleEvaluateWritingAI = (
+  const handleEvaluateWritingAI = async (
     taskId: string,
     prompt: string,
     textVal: string,
@@ -411,90 +411,135 @@ export function AuthenticCBTExamPage() {
 
     setEvaluatingWriting((prev) => ({ ...prev, [taskId]: true }));
 
-    setTimeout(() => {
-      // 1. Plagiarism Detection Check (35% threshold)
-      if (sampleResponse) {
-        const similarityPct = calculateTextSimilarity(clean, sampleResponse);
-        if (similarityPct >= 35) {
-          setWritingAiResults((prev) => ({
-            ...prev,
-            [taskId]: {
-              isPlagiarized: true,
-              similarityPct,
-              nclcGrade: "⚠️ Plagiarism Detected (0 Marks)",
-              expressEntryPoints: 0,
-              scoreOutOf20: 0,
-              taskFulfillmentScore: 0,
-              coherenceScore: 0,
-              lexicalScore: 0,
-              grammarScore: 0,
-              feedback: `⚠️ PLAGIARISM WARNING (${similarityPct}% Similarity with Exemplar): Your submitted response matches ${similarityPct}% of the official sample model answer. Under official FEI CBT rules, copied sample responses receive 0 marks. Please write your own authentic response in your own words!`
-            }
-          }));
-          setEvaluatingWriting((prev) => ({ ...prev, [taskId]: false }));
-          return;
+    // 1. Instant Plagiarism Detection Check (35% threshold)
+    if (sampleResponse) {
+      const similarityPct = calculateTextSimilarity(clean, sampleResponse);
+      if (similarityPct >= 35) {
+        setWritingAiResults((prev) => ({
+          ...prev,
+          [taskId]: {
+            isPlagiarized: true,
+            similarityPct,
+            nclcGrade: "⚠️ Plagiarism Detected (0 Marks)",
+            expressEntryPoints: 0,
+            scoreOutOf20: 0,
+            taskFulfillmentScore: 0,
+            coherenceScore: 0,
+            lexicalScore: 0,
+            grammarScore: 0,
+            feedback: `⚠️ PLAGIARISM WARNING (${similarityPct}% Similarity with Exemplar): Your submitted response matches ${similarityPct}% of the official sample model answer. Under official FEI CBT rules, copied sample responses receive 0 marks. Please write your own authentic response in your own words!`
+          }
+        }));
+        setEvaluatingWriting((prev) => ({ ...prev, [taskId]: false }));
+        return;
+      }
+    }
+
+    try {
+      // Call backend AI writing evaluation API endpoint
+      const res = await apiFetch("/writing/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: clean,
+          lessonTitle: `${paper.title} - ${taskId}`,
+          expectedAnswer: prompt + (sampleResponse ? `\nSample Exemplar Response:\n${sampleResponse}` : ""),
+          targetLanguage: "French"
+        })
+      });
+
+      const json = await res.json();
+      if (json.success && json.data) {
+        const data = json.data;
+        const totalScoreOutOf20 = data.scoreOutOf20 || Math.round(((data.score || 75) / 100) * 20);
+
+        let nclcGrade = data.nclcGrade || "NCLC 7 (B2 Benchmark Target)";
+        let expressEntryPoints = 17;
+        if (totalScoreOutOf20 >= 17 || data.score >= 85) {
+          nclcGrade = "NCLC 9 (C1 Advanced)";
+          expressEntryPoints = 31;
+        } else if (totalScoreOutOf20 >= 14 || data.score >= 75) {
+          nclcGrade = "NCLC 8 (B2 Upper)";
+          expressEntryPoints = 23;
+        } else if (totalScoreOutOf20 >= 12 || data.score >= 60) {
+          nclcGrade = "NCLC 7 (B2 Benchmark Target)";
+          expressEntryPoints = 17;
+        } else if (totalScoreOutOf20 >= 10 || data.score >= 50) {
+          nclcGrade = "NCLC 6 (B1 Intermediate)";
+          expressEntryPoints = 12;
         }
+
+        setWritingAiResults((prev) => ({
+          ...prev,
+          [taskId]: {
+            nclcGrade,
+            expressEntryPoints,
+            scoreOutOf20: totalScoreOutOf20,
+            taskFulfillmentScore: data.taskCompletionScore || data.taskFulfillmentScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+            coherenceScore: data.cohesionScore || data.coherenceScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+            lexicalScore: data.vocabularyScore || data.lexicalScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+            grammarScore: data.grammarScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+            feedback: data.feedback || `Official FEI Evaluation: Total ${totalScoreOutOf20}/20.`
+          }
+        }));
+        setEvaluatingWriting((prev) => ({ ...prev, [taskId]: false }));
+        return;
       }
+    } catch {}
 
-      // 2. Real FEI 4-Criterion Evaluation
-      // Criterion A: Task Fulfillment & Word Count (0-5)
-      let taskFulfillmentScore = 5;
-      if (wordCount < minWords) {
-        taskFulfillmentScore = Math.max(1, Math.round(5 * (wordCount / minWords)));
-      } else if (wordCount > maxWords + 30) {
-        taskFulfillmentScore = 4;
+    // 2. Calibrated Local Rule Engine Fallback
+    let taskFulfillmentScore = 5;
+    if (wordCount < minWords) {
+      taskFulfillmentScore = Math.max(1, Math.round(5 * (wordCount / minWords)));
+    } else if (wordCount > maxWords + 30) {
+      taskFulfillmentScore = 4;
+    }
+
+    const connectors = ["d'abord", "en outre", "de plus", "cependant", "néanmoins", "par conséquent", "ainsi", "en conclusion", "toutefois", "en effet"];
+    const foundConnectors = connectors.filter((c) => clean.toLowerCase().includes(c));
+    let coherenceScore = Math.min(5, 2 + foundConnectors.length);
+
+    const uniqueWords = new Set(clean.toLowerCase().split(/\s+/)).size;
+    const lexicalRatio = wordCount > 0 ? uniqueWords / wordCount : 0;
+    let lexicalScore = lexicalRatio > 0.65 ? 5 : lexicalRatio > 0.5 ? 4 : 3;
+
+    const complexStructures = ["que je", "afin que", "pour que", "bien que", "si vous", "je voudrais", "il faut que", "ayant", "étant"];
+    const foundComplex = complexStructures.filter((cs) => clean.toLowerCase().includes(cs));
+    let grammarScore = Math.min(5, 3 + foundComplex.length);
+
+    const totalScoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
+
+    let nclcGrade = "NCLC 5 (B1 Threshold)";
+    let expressEntryPoints = 6;
+    if (totalScoreOutOf20 >= 17) {
+      nclcGrade = "NCLC 9 (C1 Advanced)";
+      expressEntryPoints = 31;
+    } else if (totalScoreOutOf20 >= 14) {
+      nclcGrade = "NCLC 8 (B2 Upper)";
+      expressEntryPoints = 23;
+    } else if (totalScoreOutOf20 >= 12) {
+      nclcGrade = "NCLC 7 (B2 Benchmark Target)";
+      expressEntryPoints = 17;
+    } else if (totalScoreOutOf20 >= 10) {
+      nclcGrade = "NCLC 6 (B1 Intermediate)";
+      expressEntryPoints = 12;
+    }
+
+    setWritingAiResults((prev) => ({
+      ...prev,
+      [taskId]: {
+        nclcGrade,
+        expressEntryPoints,
+        scoreOutOf20: totalScoreOutOf20,
+        taskFulfillmentScore,
+        coherenceScore,
+        lexicalScore,
+        grammarScore,
+        feedback: `Official FEI Evaluation: Total ${totalScoreOutOf20}/20 • Task Fulfillment: ${taskFulfillmentScore}/5, Coherence & Connectors: ${coherenceScore}/5, Lexical Variety: ${lexicalScore}/5, Grammar & Tenses: ${grammarScore}/5.`
       }
+    }));
 
-      // Criterion B: Coherence & Connectors (0-5)
-      const connectors = ["d'abord", "en outre", "de plus", "cependant", "néanmoins", "par conséquent", "ainsi", "en conclusion", "toutefois", "en effet"];
-      const foundConnectors = connectors.filter((c) => clean.toLowerCase().includes(c));
-      let coherenceScore = Math.min(5, 2 + foundConnectors.length);
-
-      // Criterion C: Lexical Richness & Variety (0-5)
-      const uniqueWords = new Set(clean.toLowerCase().split(/\s+/)).size;
-      const lexicalRatio = wordCount > 0 ? uniqueWords / wordCount : 0;
-      let lexicalScore = lexicalRatio > 0.65 ? 5 : lexicalRatio > 0.5 ? 4 : 3;
-
-      // Criterion D: Morphosyntax & Grammar (0-5)
-      const complexStructures = ["que je", "afin que", "pour que", "bien que", "si vous", "je voudrais", "il faut que", "ayant", "étant"];
-      const foundComplex = complexStructures.filter((cs) => clean.toLowerCase().includes(cs));
-      let grammarScore = Math.min(5, 3 + foundComplex.length);
-
-      const totalScoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
-
-      // Map to official FEI NCLC Scale
-      let nclcGrade = "NCLC 5 (B1 Threshold)";
-      let expressEntryPoints = 6;
-      if (totalScoreOutOf20 >= 17) {
-        nclcGrade = "NCLC 9 (C1 Advanced)";
-        expressEntryPoints = 31;
-      } else if (totalScoreOutOf20 >= 14) {
-        nclcGrade = "NCLC 8 (B2 Upper)";
-        expressEntryPoints = 23;
-      } else if (totalScoreOutOf20 >= 12) {
-        nclcGrade = "NCLC 7 (B2 Benchmark Target)";
-        expressEntryPoints = 17;
-      } else if (totalScoreOutOf20 >= 10) {
-        nclcGrade = "NCLC 6 (B1 Intermediate)";
-        expressEntryPoints = 12;
-      }
-
-      setWritingAiResults((prev) => ({
-        ...prev,
-        [taskId]: {
-          nclcGrade,
-          expressEntryPoints,
-          scoreOutOf20: totalScoreOutOf20,
-          taskFulfillmentScore,
-          coherenceScore,
-          lexicalScore,
-          grammarScore,
-          feedback: `Official FEI Evaluation: Total ${totalScoreOutOf20}/20 • Task Fulfillment: ${taskFulfillmentScore}/5, Coherence & Connectors: ${coherenceScore}/5, Lexical Variety: ${lexicalScore}/5, Grammar & Tenses: ${grammarScore}/5.`
-        }
-      }));
-
-      setEvaluatingWriting((prev) => ({ ...prev, [taskId]: false }));
-    }, 1200);
+    setEvaluatingWriting((prev) => ({ ...prev, [taskId]: false }));
   };
 
   const calculateResults = () => {
