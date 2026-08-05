@@ -1,12 +1,17 @@
 import Ajv from 'ajv';
-// @ts-ignore
-import addFormats from 'ajv-formats';
 import standardSchema from '../schemas/lesson.schema.json';
 import integratedSchema from '../schemas/lesson-integrated.schema.json';
 import reviewSchema from '../schemas/lesson-review.schema.json';
 
 const ajv = new Ajv({ allErrors: true, strict: false });
-addFormats(ajv);
+try {
+  const addFormats = require('ajv-formats');
+  if (typeof addFormats === 'function') {
+    addFormats(ajv);
+  } else if (addFormats && typeof addFormats.default === 'function') {
+    addFormats.default(ajv);
+  }
+} catch (e) {}
 
 const validateStandard = ajv.compile(standardSchema);
 const validateIntegrated = ajv.compile(integratedSchema);
