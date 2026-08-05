@@ -1,7 +1,7 @@
 import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Volume2, ArrowLeft, Shuffle, ChevronLeft, ChevronRight, RotateCcw, Lock, Sparkles, CheckCircle2 } from "lucide-react";
+import { Volume2, ArrowLeft, Shuffle, ChevronLeft, ChevronRight, RotateCcw, Lock, Sparkles, CheckCircle2, BookOpen } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
 import { useAuth } from "~/lib/AuthContext";
