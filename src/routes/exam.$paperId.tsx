@@ -601,14 +601,14 @@ export function AuthenticCBTExamPage() {
             onClick={() => setShowHints(!showHints)}
             className={`px-2.5 py-1 rounded border text-[11px] font-semibold transition-all shrink-0 flex items-center gap-1 ${
               showHints
-                ? "bg-emerald-600 text-white border-emerald-600"
+                ? "bg-amber-600 text-white border-amber-600"
                 : cbtDark
                 ? "bg-[#1E293B] text-slate-200 border-slate-700"
                 : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
             }`}
           >
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>{showHints ? "Hide Hints" : "Show Hints"}</span>
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>{showHints ? "Hide Audio Coach 🎧" : "🎧 Audio Coach & Trap Alert"}</span>
           </button>
 
           {currentSection.type === "COMPREHENSION_ORALE" && (
@@ -932,11 +932,16 @@ export function AuthenticCBTExamPage() {
                 )}
               </div>
 
-              {/* Hints Display */}
+              {/* Audio Coach & Trap Alert Display (Option A - Hidden by Default) */}
               {showHints && currentQ.hint && (
-                <div className="p-3 rounded bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-xs text-amber-950 dark:text-amber-300 flex items-center gap-2 font-medium">
-                  <HelpCircle className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-500" />
-                  <span><strong>Hint:</strong> {currentQ.hint}</span>
+                <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800 text-xs text-amber-950 dark:text-amber-200 space-y-1 shadow-sm font-sans">
+                  <div className="flex items-center gap-1.5 font-extrabold text-amber-900 dark:text-amber-300 text-[11px] uppercase tracking-wide">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                    <span>🎧 Audio Coach & Trap Alert (English)</span>
+                  </div>
+                  <p className="leading-relaxed font-medium">
+                    {currentQ.hint}
+                  </p>
                 </div>
               )}
             </div>
