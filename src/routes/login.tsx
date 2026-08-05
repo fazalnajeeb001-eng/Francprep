@@ -128,13 +128,13 @@ function LoginPage() {
           </Link>
           <div className="flex items-center justify-center gap-1.5 mb-2">
             <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border shadow-sm ${activeStyle.badge}`}>
-              {activeBranding.brandName} Portal
+              Student Sign In
             </span>
           </div>
-          <h1 className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${dark ? "text-white" : "text-gray-900"}`}>
-            Welcome Back
+          <h1 className={`text-3xl sm:text-4xl font-black tracking-tight ${dark ? "text-white" : "text-gray-900"}`}>
+            {activeBranding.brandName}
           </h1>
-          <p className={`text-sm ${dark ? "text-gray-400" : "text-slate-600"} mt-1.5 max-w-xs mx-auto`}>
+          <p className={`text-sm ${dark ? "text-gray-400" : "text-slate-600"} mt-2 max-w-xs mx-auto font-medium`}>
             Sign in to continue your {activeBranding.languageName} learning path
           </p>
         </div>
