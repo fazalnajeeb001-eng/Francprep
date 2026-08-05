@@ -33,6 +33,52 @@ function getCefrLevelsForLanguage(langCode?: string) {
   ];
 }
 
+function generateFrameworkChapters(level: string, langCode?: string) {
+  const norm = (langCode || 'fr').toLowerCase().trim();
+  const chapterCounts: Record<string, number> = {
+    A1: 10,
+    A2: 12,
+    B1: 12,
+    B2: 12,
+    C1: 8,
+    C2: 6,
+  };
+  const count = chapterCounts[level] || 10;
+
+  let langPrefix = 'fr';
+  if (norm === 'de' || norm === 'german') langPrefix = 'de';
+  else if (norm === 'es' || norm === 'spanish') langPrefix = 'es';
+  else if (norm === 'it' || norm === 'italian') langPrefix = 'it';
+  else if (norm !== 'fr' && norm !== 'french') langPrefix = norm;
+
+  const chapters: any[] = [];
+  for (let ch = 1; ch <= count; ch++) {
+    const chId = `${langPrefix}-${level.toLowerCase()}-ch${ch}`;
+    const lessons: any[] = [];
+    for (let l = 1; l <= 8; l++) {
+      lessons.push({
+        _id: `${chId}-l${l}`,
+        lessonId: `${chId}-l${l}`,
+        title: `Lesson ${l}: Essential ${level} Communication Unit ${l}`,
+        order: l,
+        estimatedDuration: 20,
+        skill: l % 2 === 1 ? 'R' : 'S',
+      });
+    }
+
+    chapters.push({
+      _id: chId,
+      title: `Chapter ${ch}: ${level} Foundation Unit ${ch}`,
+      order: ch,
+      estimatedTime: '2h 40m',
+      objectives: ['Master key vocabulary & expressions', 'Build real-world speaking & listening skills', 'Pass chapter capstone assessment'],
+      lessons,
+      lessonCount: lessons.length,
+    });
+  }
+  return chapters;
+}
+
 export class ChapterService {
   async getChapterById(chapterId: string) {
     let chapter: any = null;
@@ -60,6 +106,36 @@ export class ChapterService {
     }
 
     if (!chapter) {
+      const match = chapterId.match(/^(de|es|it|fr|ger|spa|ita)?-?([a-c][1-2])-ch(\d+)/i);
+      if (match) {
+        const level = match[2].toUpperCase();
+        const order = parseInt(match[3], 10);
+
+        const lessons: any[] = [];
+        for (let l = 1; l <= 8; l++) {
+          lessons.push({
+            _id: `${chapterId}-l${l}`,
+            lessonId: `${chapterId}-l${l}`,
+            title: `Lesson ${l}: Essential ${level} Communication Unit ${l}`,
+            order: l,
+            estimatedDuration: 20,
+            skill: l % 2 === 1 ? 'R' : 'S',
+            level,
+            isPublished: true,
+          });
+        }
+
+        return {
+          _id: chapterId,
+          title: `Chapter ${order}: ${level} Foundation Unit ${order}`,
+          order,
+          estimatedTime: '2h 40m',
+          objectives: ['Master key vocabulary & expressions', 'Build real-world speaking & listening skills', 'Pass chapter capstone assessment'],
+          lessons,
+          lessonCount: lessons.length,
+        };
+      }
+
       throw { status: 404, message: 'Chapter not found' };
     }
 
@@ -277,18 +353,30 @@ export class ChapterService {
 
       // Build response with all 6 levels
       const cefrLevels = getCefrLevelsForLanguage(filters?.language);
-      const data = cefrLevels.map((info) => ({
-        level: info.level,
-        title: info.title,
-        description: info.description,
-        chapters: grouped[info.level] || [],
-      }));
+      const data = cefrLevels.map((info) => {
+        const customChs = grouped[info.level] || [];
+        const finalChapters = customChs.length > 0 ? customChs : generateFrameworkChapters(info.level, filters?.language);
+        return {
+          level: info.level,
+          title: info.title,
+          description: info.description,
+          chapters: finalChapters,
+        };
+      });
 
       return { success: true, data };
     } catch (err) {
       console.error('getPublishedChapters error:', err);
       const cefrLevels = getCefrLevelsForLanguage(filters?.language);
-      return { success: true, data: cefrLevels.map((info) => ({ level: info.level, title: info.title, description: info.description, chapters: [] })) };
+      return {
+        success: true,
+        data: cefrLevels.map((info) => ({
+          level: info.level,
+          title: info.title,
+          description: info.description,
+          chapters: generateFrameworkChapters(info.level, filters?.language),
+        })),
+      };
     }
   }
 }
