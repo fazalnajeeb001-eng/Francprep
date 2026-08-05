@@ -52,7 +52,7 @@ export const authenticate = async (
 
     // Verify user exists in DB and is active (not deleted or banned)
     const targetUserId = decoded.userId || (decoded as any).id;
-    const dbUser = await User.findById(targetUserId).select('isActive role').lean();
+    const dbUser = await User.findById(targetUserId).select('isActive isEmailVerified role').lean();
     if (!dbUser) {
       res.status(401).json({
         success: false,
@@ -67,6 +67,15 @@ export const authenticate = async (
         success: false,
         error: 'Your account has been suspended or deactivated.',
         code: 'USER_BANNED',
+      });
+      return;
+    }
+
+    if (dbUser.isEmailVerified === false) {
+      res.status(403).json({
+        success: false,
+        error: 'Please verify your email address before accessing the platform.',
+        code: 'UNVERIFIED_EMAIL',
       });
       return;
     }
