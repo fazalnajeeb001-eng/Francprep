@@ -609,7 +609,11 @@ export function AuthenticCBTExamPage() {
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>{showHints ? "Hide Audio Coach 🎧" : "🎧 Audio Coach & Trap Alert"}</span>
+            <span>
+              {currentSection.type === "COMPREHENSION_ORALE"
+                ? showHints ? "Hide Audio Coach 🎧" : "🎧 Audio Coach & Trap Alert"
+                : showHints ? "Hide Reading Coach 📖" : "📖 Reading Strategy & Trap Alert"}
+            </span>
           </button>
 
           {currentSection.type === "COMPREHENSION_ORALE" && (
@@ -933,14 +937,18 @@ export function AuthenticCBTExamPage() {
                 )}
               </div>
 
-              {/* Audio Coach & Trap Alert Display (Option A - Hidden by Default) */}
+              {/* Audio & Reading Coach Display (Option A - Hidden by Default) */}
               {showHints && currentQ.hint && (
                 <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800 text-xs text-amber-950 dark:text-amber-200 space-y-1 shadow-sm font-sans">
                   <div className="flex items-center gap-1.5 font-extrabold text-amber-900 dark:text-amber-300 text-[11px] uppercase tracking-wide">
                     <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                    <span>🎧 Audio Coach & Trap Alert (English)</span>
+                    <span>
+                      {currentSection.type === "COMPREHENSION_ORALE"
+                        ? "🎧 Audio Coach & Trap Alert (English)"
+                        : "📖 Reading Strategy & Trap Alert (English)"}
+                    </span>
                   </div>
-                  <p className="leading-relaxed font-medium">
+                  <p className="leading-relaxed font-medium whitespace-pre-line">
                     {currentQ.hint}
                   </p>
                 </div>
