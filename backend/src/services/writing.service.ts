@@ -99,8 +99,69 @@ export class WritingService {
     return Math.max(jaccard, triRatio);
   }
 
+  private isFrenchText(text: string): boolean {
+    if (!text || text.trim().length < 10) return false;
+    const words = text
+      .toLowerCase()
+      .replace(/[^\w\sàâäéèêëîïôöùûüç]/g, '')
+      .trim()
+      .split(/\s+/);
+
+    if (words.length < 5) return false;
+
+    const frenchCommonWords = new Set([
+      'le', 'la', 'les', 'de', 'du', 'des', 'un', 'une', 'et', 'est', 'en', 'dans',
+      'que', 'qui', 'pour', 'pas', 'sur', 'avec', 'ce', 'nous', 'vous', 'je', 'il', 'elle',
+      'ont', 'sont', 'par', 'plus', 'ne', 'ou', 'mais', 'donc', 'car', 'ni', 'si', 'tout',
+      'faire', 'me', 'te', 'se', 'mon', 'ma', 'mes', 'ton', 'ta', 'tes', 'son', 'sa', 'ses',
+      'notre', 'votre', 'leur', 'monsieur', 'madame', 'bonjour', 'salut', 'merci', 'appartement',
+      'logement', 'loyer', 'chauffage', 'cours', 'travail', 'ville', 'transport', 'ecrit',
+      'reponse', 'sujet', 'avis', 'accord', 'mots', 'apres', 'avant', 'cette', 'cet', 'très',
+      'bien', 'beaucoup', 'aussi', 'comme', 'plusieurs', 'tous', 'toujours', 'jamais'
+    ]);
+
+    let matchedCount = 0;
+    for (const w of words) {
+      if (frenchCommonWords.has(w)) {
+        matchedCount += 1;
+      } else {
+        const hasVowels = /[aeiouyàâäéèêëîïôöùûü]/i.test(w);
+        const isMashing = /^[bcdfghjklmnpqrstvwxz]{4,}$/i.test(w) || /^[aeiouy]{4,}$/i.test(w);
+        if (hasVowels && !isMashing && w.length >= 3) {
+          matchedCount += 0.5;
+        }
+      }
+    }
+
+    const ratio = matchedCount / words.length;
+    return ratio >= 0.25;
+  }
+
   async getFeedback(text: string, lessonTitle?: string, expectedAnswer?: string, checklist?: string[], targetLanguage = 'French', examName = 'DELF / TCF'): Promise<ComprehensiveWritingFeedback> {
     const apiKey = await this.getOpenRouterKey();
+
+    // CRITICAL GIBBERISH & NON-FRENCH PRE-SCREENING (Zero Grade Enforcement)
+    if (!this.isFrenchText(text)) {
+      return {
+        score: 0,
+        scoreOutOf20: 0,
+        nclcGrade: 'NCLC 0 (Zero Grade — Gibberish / Non-French Submission)',
+        cefrLevel: 'N/A',
+        expressEntryPoints: 0,
+        taskFulfillmentScore: 0,
+        coherenceScore: 0,
+        lexicalScore: 0,
+        grammarScore: 0,
+        feedback: '🚨 ZERO GRADE (0/20 Marks): The submitted text contains non-French gibberish, keyboard mashing, or uninterpretable character sequences. Official TCF Canada examiners award 0 marks for non-French submissions.',
+        corrections: [
+          { original: text.slice(0, 80) + '...', corrected: 'Rédigez votre propre texte en français.', explanation: 'Non-French gibberish or random character sequences receive an automatic 0 grade in official TCF/TEF exams.' }
+        ],
+        tips: [
+          'Rédigez des phrases complètes en français avec du vocabulaire approprié au sujet.',
+          'Assurez-vous de répondre directement aux questions de la consigne.'
+        ]
+      };
+    }
 
     // CRITICAL PLAGIARISM CHECK: If student submits the exact model answer / sample response or >35% copy
     if (expectedAnswer && text && expectedAnswer.trim().length > 30) {

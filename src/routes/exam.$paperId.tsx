@@ -413,6 +413,55 @@ export function AuthenticCBTExamPage() {
 
     setEvaluatingWriting((prev) => ({ ...prev, [taskId]: true }));
 
+    // Helper: Detect French Language & Gibberish Keyboard Mashing
+    const isFrenchText = (txt: string): boolean => {
+      const words = txt.toLowerCase().replace(/[^\w\sàâäéèêëîïôöùûüç]/g, '').trim().split(/\s+/);
+      if (words.length < 5) return false;
+      const frenchCommon = new Set([
+        'le', 'la', 'les', 'de', 'du', 'des', 'un', 'une', 'et', 'est', 'en', 'dans',
+        'que', 'qui', 'pour', 'pas', 'sur', 'avec', 'ce', 'nous', 'vous', 'je', 'il', 'elle',
+        'ont', 'sont', 'par', 'plus', 'ne', 'ou', 'mais', 'donc', 'car', 'ni', 'si', 'tout',
+        'faire', 'me', 'te', 'se', 'mon', 'ma', 'mes', 'ton', 'ta', 'tes', 'son', 'sa', 'ses',
+        'notre', 'votre', 'leur', 'monsieur', 'madame', 'bonjour', 'salut', 'merci', 'appartement',
+        'logement', 'loyer', 'chauffage', 'cours', 'travail', 'ville', 'transport', 'ecrit',
+        'reponse', 'sujet', 'avis', 'accord', 'mots', 'apres', 'avant', 'cette', 'cet', 'très',
+        'bien', 'beaucoup', 'aussi', 'comme', 'plusieurs', 'tous', 'toujours', 'jamais'
+      ]);
+      let matchCount = 0;
+      for (const w of words) {
+        if (frenchCommon.has(w)) {
+          matchCount += 1;
+        } else {
+          const hasVowels = /[aeiouyàâäéèêëîïôöùûü]/i.test(w);
+          const isMashing = /^[bcdfghjklmnpqrstvwxz]{4,}$/i.test(w) || /^[aeiouy]{4,}$/i.test(w);
+          if (hasVowels && !isMashing && w.length >= 3) {
+            matchCount += 0.5;
+          }
+        }
+      }
+      return (matchCount / words.length) >= 0.25;
+    };
+
+    // 0. CRITICAL GIBBERISH PRE-SCREENING (Zero Grade Enforcement)
+    if (!isFrenchText(clean)) {
+      setWritingAiResults((prev) => ({
+        ...prev,
+        [taskId]: {
+          isPlagiarized: false,
+          nclcGrade: "NCLC 0 (Zero Grade — Gibberish / Non-French Submission)",
+          expressEntryPoints: 0,
+          scoreOutOf20: 0,
+          taskFulfillmentScore: 0,
+          coherenceScore: 0,
+          lexicalScore: 0,
+          grammarScore: 0,
+          feedback: "🚨 ZERO GRADE (0/20 Marks): Your submitted text contains non-French gibberish, keyboard mashing, or uninterpretable character sequences. Under official France Éducation International (FEI) rules, non-French submissions receive 0 marks."
+        }
+      }));
+      setEvaluatingWriting((prev) => ({ ...prev, [taskId]: false }));
+      return;
+    }
+
     // 1. Instant Plagiarism Detection Check (35% threshold)
     if (sampleResponse) {
       const similarityPct = calculateTextSimilarity(clean, sampleResponse);
@@ -453,11 +502,14 @@ export function AuthenticCBTExamPage() {
       const json = await res.json();
       if (json.success && json.data) {
         const data = json.data;
-        const totalScoreOutOf20 = data.scoreOutOf20 || Math.round(((data.score || 75) / 100) * 20);
+        const totalScoreOutOf20 = typeof data.scoreOutOf20 === 'number' ? data.scoreOutOf20 : Math.round(((data.score || 75) / 100) * 20);
 
         let nclcGrade = data.nclcGrade || "NCLC 7 (B2 Benchmark Target)";
         let expressEntryPoints = 17;
-        if (totalScoreOutOf20 >= 17 || data.score >= 85) {
+        if (totalScoreOutOf20 === 0 || data.taskFulfillmentScore === 0) {
+          nclcGrade = "NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet)";
+          expressEntryPoints = 0;
+        } else if (totalScoreOutOf20 >= 17 || data.score >= 85) {
           nclcGrade = "NCLC 9 (C1 Advanced)";
           expressEntryPoints = 31;
         } else if (totalScoreOutOf20 >= 14 || data.score >= 75) {
@@ -477,10 +529,10 @@ export function AuthenticCBTExamPage() {
             nclcGrade,
             expressEntryPoints,
             scoreOutOf20: totalScoreOutOf20,
-            taskFulfillmentScore: data.taskCompletionScore || data.taskFulfillmentScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
-            coherenceScore: data.cohesionScore || data.coherenceScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
-            lexicalScore: data.vocabularyScore || data.lexicalScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
-            grammarScore: data.grammarScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+            taskFulfillmentScore: typeof data.taskFulfillmentScore === 'number' ? data.taskFulfillmentScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+            coherenceScore: typeof data.coherenceScore === 'number' ? data.coherenceScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+            lexicalScore: typeof data.lexicalScore === 'number' ? data.lexicalScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+            grammarScore: typeof data.grammarScore === 'number' ? data.grammarScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
             feedback: data.feedback || `Official FEI Evaluation: Total ${totalScoreOutOf20}/20.`
           }
         }));
@@ -489,7 +541,7 @@ export function AuthenticCBTExamPage() {
       }
     } catch {}
 
-    // 2. Calibrated Local Rule Engine Fallback
+    // 2. Calibrated Local Rule Engine Fallback (Strict Scoring Calibration)
     let taskFulfillmentScore = 5;
     if (wordCount < minWords) {
       taskFulfillmentScore = Math.max(1, Math.round(5 * (wordCount / minWords)));
@@ -503,11 +555,11 @@ export function AuthenticCBTExamPage() {
 
     const uniqueWords = new Set(clean.toLowerCase().split(/\s+/)).size;
     const lexicalRatio = wordCount > 0 ? uniqueWords / wordCount : 0;
-    let lexicalScore = lexicalRatio > 0.65 ? 5 : lexicalRatio > 0.5 ? 4 : 3;
+    let lexicalScore = lexicalRatio > 0.65 ? 4 : lexicalRatio > 0.5 ? 3 : 2;
 
     const complexStructures = ["que je", "afin que", "pour que", "bien que", "si vous", "je voudrais", "il faut que", "ayant", "étant"];
     const foundComplex = complexStructures.filter((cs) => clean.toLowerCase().includes(cs));
-    let grammarScore = Math.min(5, 3 + foundComplex.length);
+    let grammarScore = Math.min(5, 2 + foundComplex.length);
 
     const totalScoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
 
@@ -563,7 +615,7 @@ export function AuthenticCBTExamPage() {
       const textVal = writingResponses[task.id];
       if (textVal && textVal.trim().length >= 10 && !writingAiResults[task.id]) {
         try {
-          await handleEvaluateWritingAI(task.id, task.prompt, textVal, task.sampleResponse);
+          await handleEvaluateWritingAI(task.id, task.prompt, textVal, task.sampleResponse, task.minWords, task.maxWords);
         } catch (e) {
           console.warn("Auto-evaluating writing task on finish test failed:", e);
         }
@@ -614,7 +666,13 @@ export function AuthenticCBTExamPage() {
     const listeningNCLC = calculateNCLCScore(listeningPct, paper.type, "COMPREHENSION_ORALE");
     const readingNCLC = calculateNCLCScore(readingPct, paper.type, "COMPREHENSION_ECRITE");
 
-    const writingScores = Object.values(writingAiResults).map((r: any) => r.score || 0);
+    const writingScores = Object.values(writingAiResults).map((r: any) =>
+      typeof r.scoreOutOf20 === "number"
+        ? Math.round((r.scoreOutOf20 / 20) * 100)
+        : typeof r.score === "number"
+        ? r.score
+        : 0
+    );
     const writingAvg = writingScores.length > 0 ? Math.round(writingScores.reduce((a, b) => a + b, 0) / writingScores.length) : 0;
     const writingNCLC = calculateNCLCScore(writingAvg, paper.type, "EXPRESSION_ECRITE");
 
