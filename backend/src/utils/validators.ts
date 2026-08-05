@@ -1,8 +1,20 @@
 import { z } from 'zod';
 
+const DISPOSABLE_DOMAINS = [
+  'mailinator.com', 'tempmail.com', '10minutemail.com', 'guerrillamail.com', 
+  'trashmail.com', 'dispostable.com', 'yopmail.com', 'getairmail.com', 
+  'throwawaymail.com', 'sharklasers.com', 'maildrop.cc'
+];
+
 // Auth validators
 export const signupSchema = z.object({
-  email: z.string().email('Invalid email format'),
+  email: z
+    .string()
+    .email('Please enter a valid email address (e.g. name@gmail.com)')
+    .refine((val) => {
+      const domain = val.split('@')[1]?.toLowerCase();
+      return domain && !DISPOSABLE_DOMAINS.includes(domain);
+    }, { message: 'Please use a valid personal or work email address (disposable/temporary emails are not allowed).' }),
   password: z
     .string()
     .min(8, 'Password must be at least 8 characters')

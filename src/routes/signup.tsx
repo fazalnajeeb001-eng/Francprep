@@ -53,6 +53,20 @@ function SignupPage() {
       setError("Password must meet security requirements");
       return;
     }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address (e.g. name@gmail.com)");
+      return;
+    }
+
+    const domain = email.split('@')[1]?.toLowerCase();
+    const disposableDomains = ['mailinator.com', 'tempmail.com', '10minutemail.com', 'guerrillamail.com', 'trashmail.com', 'dispostable.com', 'yopmail.com', 'getairmail.com', 'throwawaymail.com', 'sharklasers.com', 'maildrop.cc'];
+    if (domain && disposableDomains.includes(domain)) {
+      setError("Please use a valid personal or work email address (disposable/temporary emails are not allowed).");
+      return;
+    }
+
     setLoading(true);
 
     try {
