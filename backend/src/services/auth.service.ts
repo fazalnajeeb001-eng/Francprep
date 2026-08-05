@@ -61,6 +61,23 @@ export class AuthService {
       throw { statusCode: 403, message: 'Account is deactivated. Contact support.' };
     }
 
+    if (user.isEmailVerified === false) {
+      // Resend a fresh OTP code for convenience
+      const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+      user.emailVerificationCode = otpCode;
+      user.emailVerificationExpires = new Date(Date.now() + 15 * 60 * 1000);
+      await user.save();
+
+      await emailService.sendVerificationEmail(user.email, user.firstName, otpCode, user.activeLanguage);
+
+      throw {
+        statusCode: 403,
+        message: 'Your email address is not verified yet. A fresh 6-digit code has been sent to your inbox.',
+        requiresVerification: true,
+        email: user.email,
+      };
+    }
+
     const isPasswordValid = await comparePassword(data.password, user.password);
     if (!isPasswordValid) {
       throw { statusCode: 401, message: 'Invalid email or password' };

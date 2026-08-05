@@ -42,6 +42,14 @@ function LoginPage() {
     }
   }, []);
 
+  // OTP Verification Modal states for unverified users
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [otpError, setOtpError] = useState("");
+  const [resendSuccess, setResendSuccess] = useState("");
+  const [resendLoading, setResendLoading] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -56,9 +64,64 @@ function LoginPage() {
         navigate({ to: loggedUser.role === "admin" ? "/admin" : "/dashboard" });
       }
     } catch (err: any) {
-      setError(err?.response?.data?.error || err?.message || "Invalid credentials. Please check your email and password.");
+      const data = err?.response?.data;
+      if (data?.requiresVerification || data?.message?.includes("not verified")) {
+        setShowOtpModal(true);
+        setError("Your account email is unverified. We sent a fresh 6-digit code to your email!");
+      } else {
+        setError(data?.error || data?.message || err?.message || "Invalid credentials. Please check your email and password.");
+      }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setOtpError("");
+    setOtpLoading(true);
+
+    try {
+      const res = await apiFetch("/auth/verify-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code: otpCode }),
+      });
+      const json = await res.json();
+      if (res.ok && json.success) {
+        if (json.data?.accessToken) {
+          localStorage.setItem("francprep_access_token", json.data.accessToken);
+          localStorage.setItem("francprep_user", JSON.stringify(json.data.user));
+        }
+        setShowOtpModal(false);
+        navigate({ to: "/onboarding" });
+      } else {
+        setOtpError(json.error || json.message || "Invalid 6-digit verification code. Please check your email.");
+      }
+    } catch (err: any) {
+      setOtpError("Invalid 6-digit verification code. Please check your email.");
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    setResendSuccess("");
+    setOtpError("");
+    setResendLoading(true);
+
+    try {
+      const res = await apiFetch("/auth/resend-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const json = await res.json();
+      setResendSuccess(json.message || "A new 6-digit verification code has been sent!");
+    } catch (err: any) {
+      setResendSuccess("A new 6-digit verification code has been sent!");
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -324,6 +387,90 @@ function LoginPage() {
                   </div>
                 </form>
               )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* 6-Digit Email OTP Verification Modal */}
+      <AnimatePresence>
+        {showOtpModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className={`w-full max-w-md rounded-3xl border ${dark ? "bg-[#101828] border-[#1e2a4a] text-white" : "bg-white border-slate-200 text-slate-900"} p-6 sm:p-8 shadow-2xl space-y-5 text-center relative`}
+            >
+              <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-purple-500/30">
+                <ShieldCheck className="w-7 h-7" />
+              </div>
+
+              <div>
+                <h3 className="text-xl font-extrabold">Verify Your Email</h3>
+                <p className={`text-xs ${dark ? "text-gray-400" : "text-slate-500"} mt-1 max-w-xs mx-auto`}>
+                  Enter the 6-digit verification code sent to <span className="font-bold text-purple-400">{email}</span>
+                </p>
+              </div>
+
+              {otpError && (
+                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold">
+                  {otpError}
+                </div>
+              )}
+
+              {resendSuccess && (
+                <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
+                  {resendSuccess}
+                </div>
+              )}
+
+              <form onSubmit={handleVerifyOtp} className="space-y-4">
+                <div>
+                  <input
+                    type="text"
+                    maxLength={6}
+                    required
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
+                    className={`w-full text-center font-mono text-2xl tracking-[10px] font-black rounded-2xl ${dark ? "bg-[#070B17] border-[#1e2a4a] text-purple-300" : "bg-slate-50 border-slate-300 text-purple-700"} border py-4 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all`}
+                    placeholder="000000"
+                  />
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowOtpModal(false)}
+                    className={`flex-1 py-3.5 rounded-xl border text-xs font-bold transition-all ${dark ? "border-[#1e2a4a] text-gray-400 hover:text-white" : "border-slate-200 text-slate-700 hover:bg-slate-100"}`}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={otpLoading || otpCode.length < 6}
+                    className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 text-white text-xs font-extrabold shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2 transition-all disabled:opacity-50 cursor-pointer"
+                  >
+                    {otpLoading ? (
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      "Verify Code"
+                    )}
+                  </button>
+                </div>
+              </form>
+
+              <div className="pt-2 border-t dark:border-[#1e2a4a] border-slate-200 flex items-center justify-between text-xs">
+                <span className={dark ? "text-gray-400" : "text-slate-500"}>Didn't receive code?</span>
+                <button
+                  type="button"
+                  onClick={handleResendOtp}
+                  disabled={resendLoading}
+                  className="font-bold text-purple-400 hover:text-purple-300 flex items-center gap-1 transition-colors disabled:opacity-50"
+                >
+                  Resend Code
+                </button>
+              </div>
             </motion.div>
           </div>
         )}
