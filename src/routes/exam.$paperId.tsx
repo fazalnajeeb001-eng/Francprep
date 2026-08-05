@@ -341,21 +341,69 @@ export function AuthenticCBTExamPage() {
     let totalCorrect = 0;
     let totalQs = 0;
 
+    let listeningCorrect = 0;
+    let listeningTotal = 0;
+
+    let readingCorrect = 0;
+    let readingTotal = 0;
+
     paper.sections.forEach((sec) => {
-      if (sec.questions) {
+      if (sec.type === "COMPREHENSION_ORALE" && sec.questions) {
         sec.questions.forEach((q) => {
+          listeningTotal += 1;
           totalQs += 1;
           if (selectedAnswers[q.id] === q.correctIndex) {
+            listeningCorrect += 1;
+            totalCorrect += 1;
+          }
+        });
+      } else if (sec.type === "COMPREHENSION_ECRITE" && sec.questions) {
+        sec.questions.forEach((q) => {
+          readingTotal += 1;
+          totalQs += 1;
+          if (selectedAnswers[q.id] === q.correctIndex) {
+            readingCorrect += 1;
             totalCorrect += 1;
           }
         });
       }
     });
 
-    const percentage = totalQs > 0 ? Math.round((totalCorrect / totalQs) * 100) : 100;
-    const nclcResult = calculateNCLCScore(percentage, paper.type, currentSection.type);
+    const overallPct = totalQs > 0 && totalCorrect > 0 ? Math.round((totalCorrect / totalQs) * 100) : 0;
+    const listeningPct = listeningTotal > 0 && listeningCorrect > 0 ? Math.round((listeningCorrect / listeningTotal) * 100) : 0;
+    const readingPct = readingTotal > 0 && readingCorrect > 0 ? Math.round((readingCorrect / readingTotal) * 100) : 0;
 
-    return { totalCorrect, totalQs, percentage, ...nclcResult };
+    const listeningNCLC = calculateNCLCScore(listeningPct, paper.type, "COMPREHENSION_ORALE");
+    const readingNCLC = calculateNCLCScore(readingPct, paper.type, "COMPREHENSION_ECRITE");
+
+    const writingScores = Object.values(writingAiResults).map((r: any) => r.score || 0);
+    const writingAvg = writingScores.length > 0 ? Math.round(writingScores.reduce((a, b) => a + b, 0) / writingScores.length) : 0;
+    const writingNCLC = calculateNCLCScore(writingAvg, paper.type, "EXPRESSION_ECRITE");
+
+    const speakingScores = Object.values(speakingAiResults).map((r: any) => r.score || 0);
+    const speakingAvg = speakingScores.length > 0 ? Math.round(speakingScores.reduce((a, b) => a + b, 0) / speakingScores.length) : 0;
+    const speakingNCLC = calculateNCLCScore(speakingAvg, paper.type, "EXPRESSION_ORALE");
+
+    const overallResult = calculateNCLCScore(overallPct, paper.type, currentSection.type);
+
+    return {
+      totalCorrect,
+      totalQs,
+      percentage: overallPct,
+      listeningCorrect,
+      listeningTotal,
+      listeningPct,
+      listeningNCLC,
+      readingCorrect,
+      readingTotal,
+      readingPct,
+      readingNCLC,
+      writingAvg,
+      writingNCLC,
+      speakingAvg,
+      speakingNCLC,
+      ...overallResult
+    };
   };
 
   const currentQuestions = currentSection.questions || [];
@@ -542,6 +590,33 @@ export function AuthenticCBTExamPage() {
 
       {/* ─── MAIN CBT SPLIT-SCREEN CONTENT WORKSPACE ─── */}
       <main className="flex-1 p-4 md:p-6 max-w-7xl w-full mx-auto overflow-y-auto">
+        {/* PROMINENT UN-MISSABLE PRACTICE STRATEGY BANNER */}
+        {mode === "PRACTICE" && (
+          <div className="mb-4 p-4 rounded-xl border border-purple-300 dark:border-purple-800 bg-gradient-to-r from-purple-900/90 via-indigo-900/90 to-purple-950 text-white shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center font-bold shrink-0">
+                <BookOpen className="w-5 h-5 text-purple-300" />
+              </div>
+              <div>
+                <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
+                  <span>📖 {currentSection.title} Official Strategy & Prep Guide</span>
+                  <span className="px-2 py-0.5 rounded bg-purple-500/40 text-purple-200 text-[10px] font-mono uppercase">FEI / CCI Standards</span>
+                </h4>
+                <p className="text-xs text-purple-200 leading-snug">
+                  Review time management, distractor avoidance, and official examiner scoring criteria before answering.
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowStrategyModal(true)}
+              className="px-4 py-2 rounded-lg bg-white text-purple-950 font-bold text-xs hover:bg-purple-100 transition-all shrink-0 shadow flex items-center justify-center gap-1.5"
+            >
+              <Sparkles className="w-4 h-4 text-purple-600" />
+              <span>Open Official Strategy Guide →</span>
+            </button>
+          </div>
+        )}
 
         {/* LISTENING & READING SPLIT SCREEN */}
         {currentQuestions.length > 0 && currentQ && (
@@ -578,14 +653,35 @@ export function AuthenticCBTExamPage() {
 
                       <div className="flex items-center gap-2">
                         {mode === "PRACTICE" && (
-                          <button
-                            type="button"
-                            onClick={() => setShowTranscripts(!showTranscripts)}
-                            className="px-3 py-1.5 rounded bg-purple-100 border border-purple-300 text-purple-950 font-bold text-xs hover:bg-purple-200 transition-all flex items-center gap-1.5 shadow-sm"
-                          >
-                            <FileText className="w-3.5 h-3.5 text-purple-700" />
-                            <span>{showTranscripts ? "Hide Transcript 🙈" : "Reveal Transcript & EN Translation 👁️"}</span>
-                          </button>
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => setShowTranscript(!showTranscript)}
+                              className={`px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border ${
+                                showTranscript
+                                  ? "bg-purple-700 text-white border-purple-800"
+                                  : "bg-purple-100 text-purple-950 border-purple-300 hover:bg-purple-200"
+                              }`}
+                            >
+                              <FileText className="w-3.5 h-3.5" />
+                              <span>{showTranscript ? "Hide Transcript 📄" : "📄 French Transcript"}</span>
+                            </button>
+
+                            {currentQ.transcriptEnglish && (
+                              <button
+                                type="button"
+                                onClick={() => setShowTranslation(!showTranslation)}
+                                className={`px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border ${
+                                  showTranslation
+                                    ? "bg-indigo-700 text-white border-indigo-800"
+                                    : "bg-indigo-100 text-indigo-950 border-indigo-300 hover:bg-indigo-200"
+                                }`}
+                              >
+                                <Globe className="w-3.5 h-3.5" />
+                                <span>{showTranslation ? "Hide Translation 🌐" : "🌐 English Translation"}</span>
+                              </button>
+                            )}
+                          </div>
                         )}
 
                         <button
@@ -823,14 +919,14 @@ export function AuthenticCBTExamPage() {
               {/* Prev / Next Bottom Navigator */}
               <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-700">
                 <button
-                  disabled={currentQuestionIdx === 0 || currentSection.type === "COMPREHENSION_ORALE"}
+                  disabled={currentQuestionIdx === 0 || (mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE")}
                   onClick={() => setCurrentQuestionIdx((prev) => Math.max(0, prev - 1))}
                   className={`px-4 py-2 rounded text-xs font-bold transition-all ${
-                    currentQuestionIdx === 0 || currentSection.type === "COMPREHENSION_ORALE"
+                    currentQuestionIdx === 0 || (mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE")
                       ? "opacity-40 cursor-not-allowed bg-slate-200 text-slate-500 border-slate-300"
                       : "bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-300"
                   }`}
-                  title={currentSection.type === "COMPREHENSION_ORALE" ? "Navigation arrière désactivée pour la compréhension orale (FEI CBT Rules)" : ""}
+                  title={mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE" ? "Navigation arrière désactivée en mode examen officiel (FEI CBT Rules)" : ""}
                 >
                   ← Previous Question
                 </button>
@@ -1179,71 +1275,134 @@ export function AuthenticCBTExamPage() {
                 </p>
               </div>
 
-              <div className={`p-4 rounded-xl text-xs text-left space-y-2 border ${
-                calculateResults().isNCLC7TargetReached
-                  ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300"
-                  : "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-300"
-              }`}>
-                <p className="font-bold">
-                  🍁 Estimated Express Entry CRS Point Contribution:
-                </p>
-                <p className="leading-relaxed font-medium">
-                  {calculateResults().statusMessage}
-                </p>
-                <p className="pt-1 text-[11px] opacity-80 border-t border-slate-300 dark:border-slate-700">
-                  Calculated Express Entry CLB Point Contribution: <strong>+{calculateResults().expressEntryPoints} Points</strong>
-                </p>
-              </div>
+              {/* 4-SKILL MODULE NCLC SCORECARD GRID */}
+              {(() => {
+                const res = calculateResults();
+                return (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-3 text-left">
+                      {/* Listening Scorecard */}
+                      <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 space-y-1">
+                        <div className="flex items-center justify-between text-[11px] font-bold text-purple-900 dark:text-purple-300">
+                          <span className="flex items-center gap-1">🎧 Listening (CO)</span>
+                          <span className="px-2 py-0.5 rounded bg-purple-600 text-white font-mono text-[10px]">
+                            {res.listeningNCLC.nclcLevel === 0 ? "Unrated" : `NCLC ${res.listeningNCLC.nclcLevel}`}
+                          </span>
+                        </div>
+                        <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
+                          {res.listeningPct}% Correct ({res.listeningCorrect}/{res.listeningTotal})
+                        </p>
+                      </div>
 
-              {/* 🎯 POST-EXAM DIAGNOSTIC WEAKNESS & GUIDANCE BREAKDOWN CARD */}
-              <div className="p-4 rounded-xl border border-purple-300 dark:border-purple-800 bg-purple-50/70 dark:bg-purple-950/40 text-xs text-left space-y-3 font-sans">
-                <div className="flex items-center justify-between border-b border-purple-200 dark:border-purple-800 pb-2">
-                  <span className="font-bold text-purple-900 dark:text-purple-300 flex items-center gap-1.5 uppercase text-[11px]">
-                    <Sparkles className="w-4 h-4 text-purple-600" />
-                    <span>Post-Exam Root Cause & Weakness Analysis</span>
-                  </span>
-                  <span className="px-2 py-0.5 rounded bg-purple-600 text-white font-mono font-bold text-[10px]">
-                    FRANCPREP DIAGNOSTIC AI
-                  </span>
-                </div>
+                      {/* Reading Scorecard */}
+                      <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 space-y-1">
+                        <div className="flex items-center justify-between text-[11px] font-bold text-blue-900 dark:text-blue-300">
+                          <span className="flex items-center gap-1">📖 Reading (CE)</span>
+                          <span className="px-2 py-0.5 rounded bg-blue-600 text-white font-mono text-[10px]">
+                            {res.readingNCLC.nclcLevel === 0 ? "Unrated" : `NCLC ${res.readingNCLC.nclcLevel}`}
+                          </span>
+                        </div>
+                        <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
+                          {res.readingPct}% Correct ({res.readingCorrect}/{res.readingTotal})
+                        </p>
+                      </div>
 
-                <div className="space-y-2 text-slate-800 dark:text-slate-200">
-                  <div className="p-2.5 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 space-y-1">
-                    <p className="font-bold text-purple-900 dark:text-purple-300 text-[11px]">🎧 Compréhension Orale (Listening Focus):</p>
-                    <p className="text-[11px] leading-relaxed">
-                      {calculateResults().percentage >= 70
-                        ? "✓ High retention on single-play audio. Continue practicing B2/C1 fast-paced radio chronicle items."
-                        : "⚠️ Practice audio-only questions (Q1–29). Focus on identifying key acoustic markers and speaker intent before reading distractors."}
-                    </p>
+                      {/* Writing Scorecard */}
+                      <div className="p-3 rounded-xl bg-pink-50 dark:bg-pink-950/40 border border-pink-200 dark:border-pink-800 space-y-1">
+                        <div className="flex items-center justify-between text-[11px] font-bold text-pink-900 dark:text-pink-300">
+                          <span className="flex items-center gap-1">✍️ Writing (EE)</span>
+                          <span className="px-2 py-0.5 rounded bg-pink-600 text-white font-mono text-[10px]">
+                            {res.writingAvg === 0 ? "Unrated" : `NCLC ${res.writingNCLC.nclcLevel}`}
+                          </span>
+                        </div>
+                        <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
+                          {res.writingAvg === 0 ? "No submission" : `${res.writingAvg}% AI Grade`}
+                        </p>
+                      </div>
+
+                      {/* Speaking Scorecard */}
+                      <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 space-y-1">
+                        <div className="flex items-center justify-between text-[11px] font-bold text-indigo-900 dark:text-indigo-300">
+                          <span className="flex items-center gap-1">🎙️ Speaking (EO)</span>
+                          <span className="px-2 py-0.5 rounded bg-indigo-600 text-white font-mono text-[10px]">
+                            {res.speakingAvg === 0 ? "Unrated" : `NCLC ${res.speakingNCLC.nclcLevel}`}
+                          </span>
+                        </div>
+                        <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
+                          {res.speakingAvg === 0 ? "No submission" : `${res.speakingAvg}% AI Grade`}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className={`p-4 rounded-xl text-xs text-left space-y-2 border ${
+                      res.isNCLC7TargetReached
+                        ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300"
+                        : "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-300"
+                    }`}>
+                      <p className="font-bold">
+                        🍁 Estimated Express Entry CRS Point Contribution:
+                      </p>
+                      <p className="leading-relaxed font-medium">
+                        {res.statusMessage}
+                      </p>
+                      <p className="pt-1 text-[11px] opacity-80 border-t border-slate-300 dark:border-slate-700">
+                        Calculated Express Entry CLB Point Contribution: <strong>+{res.expressEntryPoints} Points</strong>
+                      </p>
+                    </div>
+
+                    {/* 🎯 POST-EXAM DIAGNOSTIC WEAKNESS & GUIDANCE BREAKDOWN CARD */}
+                    <div className="p-4 rounded-xl border border-purple-300 dark:border-purple-800 bg-purple-50/70 dark:bg-purple-950/40 text-xs text-left space-y-3 font-sans">
+                      <div className="flex items-center justify-between border-b border-purple-200 dark:border-purple-800 pb-2">
+                        <span className="font-bold text-purple-900 dark:text-purple-300 flex items-center gap-1.5 uppercase text-[11px]">
+                          <Sparkles className="w-4 h-4 text-purple-600" />
+                          <span>Post-Exam Root Cause & Weakness Analysis</span>
+                        </span>
+                        <span className="px-2 py-0.5 rounded bg-purple-600 text-white font-mono font-bold text-[10px]">
+                          FRANCPREP DIAGNOSTIC AI
+                        </span>
+                      </div>
+
+                      <div className="space-y-2 text-slate-800 dark:text-slate-200">
+                        {res.totalCorrect === 0 ? (
+                          <div className="p-3 rounded bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-300 text-xs font-semibold">
+                            ⚠️ <strong>Zero Questions Attempted:</strong> No test questions were answered in this session. To receive a personalized weakness breakdown, complete the items in each section before submitting.
+                          </div>
+                        ) : (
+                          <>
+                            <div className="p-2.5 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 space-y-1">
+                              <p className="font-bold text-purple-900 dark:text-purple-300 text-[11px]">🎧 Listening (CO Focus):</p>
+                              <p className="text-[11px] leading-relaxed">
+                                {res.listeningPct >= 65
+                                  ? `✓ Strong retention (${res.listeningPct}%). High accuracy on single-play audio items.`
+                                  : `⚠️ Practice audio-only items (Q1–29). Focus on identifying key acoustic markers before reading distractors.`}
+                              </p>
+                            </div>
+
+                            <div className="p-2.5 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 space-y-1">
+                              <p className="font-bold text-purple-900 dark:text-purple-300 text-[11px]">📖 Reading (CE Focus):</p>
+                              <p className="text-[11px] leading-relaxed">
+                                {res.readingPct >= 65
+                                  ? `✓ Strong scanning speed (${res.readingPct}%). Excellent grasp of academic B2/C1 connectors.`
+                                  : `⚠️ Work on paragraph structure scanning in B2/C1 texts. Use keyword matching between questions and passage.`}
+                              </p>
+                            </div>
+                          </>
+                        )}
+                      </div>
+
+                      <div className="pt-2 border-t border-purple-200 dark:border-purple-800 flex items-center justify-between">
+                        <span className="text-[10px] text-purple-800 dark:text-purple-300 font-bold">Targeted Syllabus Recommendation:</span>
+                        <button
+                          onClick={() => navigate({ to: "/learn" })}
+                          className="text-purple-700 dark:text-purple-300 hover:underline font-bold text-xs flex items-center gap-1"
+                        >
+                          Go to FrancPrep B2 Lessons →
+                        </button>
+                      </div>
+                    </div>
                   </div>
-
-                  <div className="p-2.5 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 space-y-1">
-                    <p className="font-bold text-purple-900 dark:text-purple-300 text-[11px]">📖 Compréhension Écrite (Reading Focus):</p>
-                    <p className="text-[11px] leading-relaxed">
-                      {calculateResults().percentage >= 70
-                        ? "✓ Strong scanning speed. Continue reviewing formal academic connectors and editorial vocabulary."
-                        : "⚠️ Work on paragraph structure scanning in B2/C1 texts. Use keyword matching between questions and passage."}
-                    </p>
-                  </div>
-
-                  <div className="p-2.5 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 space-y-1">
-                    <p className="font-bold text-purple-900 dark:text-purple-300 text-[11px]">✍️ Expression Écrite & Orale (Productive Skills):</p>
-                    <p className="text-[11px] leading-relaxed">
-                      Ensure Task 3 essays include 4 distinct paragraphs (Intro, Pour, Contre, Conclusion) with connectors like <em>"bien que"</em> and <em>"en revanche"</em> to guarantee NCLC 7+.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="pt-2 border-t border-purple-200 dark:border-purple-800 flex items-center justify-between">
-                  <span className="text-[10px] text-purple-800 dark:text-purple-300 font-bold">Targeted Syllabus Recommendation:</span>
-                  <button
-                    onClick={() => navigate({ to: "/learn" })}
-                    className="text-purple-700 dark:text-purple-300 hover:underline font-bold text-xs flex items-center gap-1"
-                  >
-                    Go to FrancPrep B2 Lessons →
-                  </button>
-                </div>
-              </div>
+                );
+              })()}
 
               <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-[11px] text-slate-600 dark:text-slate-400 text-left leading-relaxed">
                 🛑 <strong>Independent Practice Disclaimer:</strong> This score is a diagnostic estimation for exam preparation purposes only. FrancPrep is an independent platform and does not provide official language certification.

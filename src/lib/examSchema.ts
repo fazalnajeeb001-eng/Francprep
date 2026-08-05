@@ -296,8 +296,8 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
         : `[Question ${i} - Niveau ${t.level}] ${t.text} Quel est l'élément principal à retenir ?`,
       options: t.opt,
       correctIndex: t.ans,
-      explanation: `Explication pédagogique [Niveau ${t.level}] : La bonne réponse est l'option 1 ("${t.opt[t.ans]}").`,
-      hint: `Indice de niveau ${t.level} : Écoutez attentivement les mots-clés de l'enregistrement.`,
+      explanation: `Pedagogical Explanation [Level ${t.level}]: The correct answer is Option A ("${t.opt[t.ans]}").`,
+      hint: `Level ${t.level} Listening Hint: Listen carefully for key acoustic markers related to "${t.opt[t.ans].slice(0, 30)}" and identify the main speaker's purpose.`,
       transcript: t.tr,
       transcriptEnglish: t.en,
       questionInAudio: isQuestionInAudio,
@@ -323,8 +323,8 @@ function generateReadingQuestions(count: number, prefix: string, seedOffset: num
       text: `Question ${i} : ${t.q}`,
       options: t.opt,
       correctIndex: t.ans,
-      explanation: `Explication pédagogique [Niveau ${t.level}] : Le texte indique clairement "${t.opt[t.ans]}".`,
-      hint: `Indice de lecture [Niveau ${t.level}] : Repérez les termes clés dans le document.`
+      explanation: `Pedagogical Explanation [Level ${t.level}]: The text states "${t.opt[t.ans]}".`,
+      hint: `Level ${t.level} Reading Hint: Scan the text for key terms matching "${t.opt[t.ans].slice(0, 30)}" to verify the correct statement.`
     });
   }
   return qList;
@@ -979,12 +979,17 @@ export interface NCLCScoreResult {
 
 export function calculateNCLCScore(pctScore: number, _examType: ExamType, _sectionType: SectionType): NCLCScoreResult {
   const pct = Math.max(0, Math.min(100, pctScore));
-  let nclcLevel = 4;
-  let cefrEquivalent = "B1";
-  let expressEntryPoints = 16;
+  let nclcLevel = 0;
+  let cefrEquivalent = "Unrated";
+  let expressEntryPoints = 0;
   let isNCLC7TargetReached = false;
 
-  if (pct >= 90) {
+  if (pct === 0) {
+    nclcLevel = 0;
+    cefrEquivalent = "Unrated";
+    expressEntryPoints = 0;
+    isNCLC7TargetReached = false;
+  } else if (pct >= 90) {
     nclcLevel = 10;
     cefrEquivalent = "C2";
     expressEntryPoints = 34;
@@ -1014,16 +1019,23 @@ export function calculateNCLCScore(pctScore: number, _examType: ExamType, _secti
     cefrEquivalent = "B1";
     expressEntryPoints = 6;
     isNCLC7TargetReached = false;
-  } else {
+  } else if (pct >= 25) {
     nclcLevel = 4;
-    cefrEquivalent = "A2/B1";
+    cefrEquivalent = "A2";
+    expressEntryPoints = 0;
+    isNCLC7TargetReached = false;
+  } else {
+    nclcLevel = 3;
+    cefrEquivalent = "A1";
     expressEntryPoints = 0;
     isNCLC7TargetReached = false;
   }
 
-  const statusMessage = isNCLC7TargetReached
+  const statusMessage = pct === 0
+    ? `⚠️ No questions attempted or 0% score recorded. Please complete the test questions in each section to receive a diagnostic NCLC rating.`
+    : isNCLC7TargetReached
     ? `🎉 Excellent! Score achieves NCLC ${nclcLevel} (${cefrEquivalent}) — Meets Canadian Express Entry PR Benchmark!`
-    : `💪 Good effort! NCLC ${nclcLevel} (${cefrEquivalent}). Aim for 65%+ to hit the official NCLC 7 (B2) immigration benchmark.`;
+    : `💪 NCLC ${nclcLevel} (${cefrEquivalent}) recorded. Aim for 65%+ to hit the official NCLC 7 (B2) immigration benchmark.`;
 
   return {
     nclcLevel,
