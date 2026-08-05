@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { SmartAvatar } from "./SmartAvatar";
 import type { DashboardData } from "../types";
 import { CEFR_ORDER, getLevelBackgrounds } from "../utils/userPrefs";
-import { getActiveLanguageCode } from "~/lib/trackBranding";
+import { getActiveLanguageCode, getTrackBranding } from "~/lib/trackBranding";
 
 function getTimeOfDay(): "morning" | "afternoon" | "evening" | "night" {
   const hour = new Date().getHours();
@@ -54,6 +54,7 @@ export function LevelProgress({ levels, dark, overall, avatarUrl, avatarFeatures
   const containerRef = useRef<HTMLDivElement>(null);
 
   const activeLang = getActiveLanguageCode();
+  const activeBranding = getTrackBranding(activeLang);
   const levelBackgrounds = getLevelBackgrounds(activeLang);
   const activeLevel = getActiveLevel(levels);
   const activeData = getActiveData(levels, activeLevel);
@@ -188,7 +189,7 @@ export function LevelProgress({ levels, dark, overall, avatarUrl, avatarFeatures
             className="text-base md:text-lg font-bold tracking-wide drop-shadow-lg"
             style={{ color: "white", textShadow: "0 2px 12px rgba(0,0,0,0.5)" }}
           >
-            Your French Level Progress
+            Your {activeBranding.languageName} Level Progress
           </h2>
         </div>
       </div>

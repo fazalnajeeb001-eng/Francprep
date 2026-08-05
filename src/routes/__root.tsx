@@ -8,7 +8,7 @@ import { AuthProvider, useAuth } from "~/lib/AuthContext";
 import { ThemeProvider } from "~/lib/ThemeContext";
 import { WidgetsProvider } from "~/lib/WidgetsContext";
 import { Shield } from "lucide-react";
-import { getTrackBranding } from "~/lib/trackBranding";
+import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 
 const queryClient = new QueryClient();
 
@@ -211,7 +211,7 @@ function NavBarInner() {
       <div className="mx-auto flex h-14 min-h-[44px] max-w-7xl items-center justify-between px-4">
         <div className="flex items-center gap-4 sm:gap-6">
           {(() => {
-            const activeLang = typeof window !== "undefined" ? localStorage.getItem("fp_active_language") || "fr" : "fr";
+            const activeLang = getActiveLanguageCode(user);
             const branding = getTrackBranding(activeLang);
             return (
               <Link to={isAuthenticated ? "/dashboard" : "/"} className="flex items-center gap-2 text-lg font-bold min-h-[44px]">
