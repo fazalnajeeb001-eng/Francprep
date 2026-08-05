@@ -14,6 +14,8 @@ export interface ExamQuestion {
   transcriptEnglish?: string;
   passage?: string;
   passageEnglish?: string;
+  questionInAudio?: boolean;
+  perQuestionTimerSeconds?: number;
 }
 
 export interface WritingTask {
@@ -257,16 +259,22 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
     const pool = matchingTopics.length > 0 ? matchingTopics : LISTENING_TOPICS;
     const t = pool[(i - 1 + seedOffset) % pool.length];
 
+    const isQuestionInAudio = i <= 29;
+
     qList.push({
       id: `${prefix}-lis-${i}`,
       questionNumber: i,
-      text: `[Question ${i} - Niveau ${t.level}] ${t.text} Quel est l'élément principal à retenir ?`,
+      text: isQuestionInAudio
+        ? `Écoutez le document sonore et la question audio N°${i} [Niveau ${t.level}]. Choisissez la bonne option.`
+        : `[Question ${i} - Niveau ${t.level}] ${t.text} Quel est l'élément principal à retenir ?`,
       options: t.opt,
       correctIndex: t.ans,
       explanation: `Explication pédagogique [Niveau ${t.level}] : La bonne réponse est l'option 1 ("${t.opt[t.ans]}").`,
       hint: `Indice de niveau ${t.level} : Écoutez attentivement les mots-clés de l'enregistrement.`,
       transcript: t.tr,
-      transcriptEnglish: t.en
+      transcriptEnglish: t.en,
+      questionInAudio: isQuestionInAudio,
+      perQuestionTimerSeconds: 15
     });
   }
   return qList;

@@ -523,14 +523,20 @@ export function AuthenticCBTExamPage() {
                         )}
 
                         <button
-                          onClick={() => handlePlayAudio(currentQ.text)}
+                          onClick={() => handlePlayAudio(currentQ.transcript || currentQ.text)}
                           className="px-4 py-2 rounded bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold flex items-center gap-1.5 shadow"
                         >
                           <Volume2 className={`w-4 h-4 ${isPlayingAudio ? "animate-bounce" : ""}`} />
-                          <span>{isPlayingAudio ? "Playing Audio Document..." : "Play Audio Recording"}</span>
+                          <span>{isPlayingAudio ? "Playing Audio Document..." : "Play Audio Recording (1-Play Limit)"}</span>
                         </button>
                       </div>
                     </div>
+
+                    {currentQ.questionInAudio && (
+                      <div className="p-2.5 rounded bg-purple-100 border border-purple-300 text-purple-950 text-xs font-semibold flex items-center gap-2">
+                        <span>🎧 <strong>Notice Épreuve CBT :</strong> La question n'est pas écrite à l'écran. Écoutez attentivement l'audio où le document et la question sont énoncés, puis choisissez l'option (A, B, C, D) ci-contre.</span>
+                      </div>
+                    )}
 
                     {showTranscripts && currentQ.transcript && (
                       <div className="pt-3 border-t border-purple-300 text-xs space-y-1.5">
@@ -582,9 +588,16 @@ export function AuthenticCBTExamPage() {
             {/* RIGHT PANEL: QUESTION & OPTIONS SELECTOR (5 COLS) */}
             <div className={`lg:col-span-5 p-5 rounded-lg border ${cbtCard} shadow-sm space-y-5 flex flex-col justify-between`}>
               <div className="space-y-4">
-                <h3 className="text-base font-bold leading-snug text-slate-950 dark:text-slate-100">
-                  {currentQ.text}
-                </h3>
+                <div className="space-y-1">
+                  <h3 className="text-base font-bold leading-snug text-slate-950 dark:text-slate-100">
+                    {currentQ.questionInAudio ? `Question Audio N°${currentQ.questionNumber}` : currentQ.text}
+                  </h3>
+                  {currentQ.questionInAudio && (
+                    <p className="text-xs text-purple-700 font-medium italic">
+                      Écoutez la question dans l'enregistrement audio et choisissez la bonne option ci-dessous.
+                    </p>
+                  )}
+                </div>
 
                 {/* Multiple Choice Options */}
                 <div className="space-y-2.5">
@@ -696,9 +709,14 @@ export function AuthenticCBTExamPage() {
               {/* Prev / Next Bottom Navigator */}
               <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-700">
                 <button
-                  disabled={currentQuestionIdx === 0}
+                  disabled={currentQuestionIdx === 0 || currentSection.type === "COMPREHENSION_ORALE"}
                   onClick={() => setCurrentQuestionIdx((prev) => Math.max(0, prev - 1))}
-                  className="px-4 py-2 rounded bg-slate-200 dark:bg-slate-800 text-xs font-bold disabled:opacity-40 text-slate-900 dark:text-slate-100"
+                  className={`px-4 py-2 rounded text-xs font-bold transition-all ${
+                    currentQuestionIdx === 0 || currentSection.type === "COMPREHENSION_ORALE"
+                      ? "opacity-40 cursor-not-allowed bg-slate-200 text-slate-500 border-slate-300"
+                      : "bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-300"
+                  }`}
+                  title={currentSection.type === "COMPREHENSION_ORALE" ? "Navigation arrière désactivée pour la compréhension orale (FEI CBT Rules)" : ""}
                 >
                   ← Previous Question
                 </button>
