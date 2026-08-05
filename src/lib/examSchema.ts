@@ -160,85 +160,112 @@ const LISTENING_TOPICS = [
 ];
 
 const READING_TOPICS = [
+  // A1 DISCOVERY (1-10)
   { level: "A1", text: "Horaires de la boulangerie 'La Parisis' : Ouvert du mardi au dimanche de 7h00 à 19h00 sans interruption. Fermeture hebdomadaire le lundi.", q: "Quand la boulangerie est-elle fermée ?", opt: ["Le lundi", "Le dimanche", "Le mardi", "Tous les après-midis"], ans: 0, passEn: "Bakery hours 'La Parisis': Open Tuesday to Sunday from 7:00am to 7:00pm non-stop. Closed weekly on Monday." },
   { level: "A1", text: "Avis de passage de la Poste canadienne : Votre colis recommandé est disponible au bureau central à partir de demain 14h. Veuillez vous munir d'une pièce d'identité.", q: "Où et quand récupérer votre colis ?", opt: ["Au bureau central dès demain 14h", "À la maison aujourd'hui", "À la mairie la semaine prochaine", "Chez le voisin ce soir"], ans: 0, passEn: "Canada Post delivery notice: Your registered package is available at the central branch starting tomorrow at 2pm. Bring ID." },
+  { level: "A1", text: "Annonce de la bibliothèque municipale : Les ateliers de lecture pour enfants ont lieu chaque samedi matin de 10h00 à 11h30. Entrée libre et gratuite.", q: "À quel moment ont lieu les ateliers de lecture ?", opt: ["Le samedi matin de 10h00 à 11h30", "Le vendredi soir", "Le dimanche après-midi", "Tous les jours à midi"], ans: 0, passEn: "Library notice: Children's reading workshops every Saturday from 10:00 to 11:30am. Free admission." },
+  { level: "A1", text: "Message de la clinique médicale : Le cabinet du docteur Roy sera exceptionnellement fermé du 15 au 20 août pour congés annuels.", q: "Pourquoi le cabinet médical est-il fermé ?", opt: ["Pour congés annuels du docteur", "Pour rénovation complète", "En raison d'un problème technique", "Pour déménagement"], ans: 0, passEn: "Medical clinic notice: Dr. Roy's office will be closed August 15-20 for annual leave." },
+
+  // A2 BREAKTHROUGH (11-18)
   { level: "A2", text: "Règlement municipal de la piscine municipale : Les enfants âgés de moins de 12 ans doivent obligatoirement être accompagnés d'un adulte majeur dans l'enceinte des bassins.", q: "Quelle condition est exigée pour les enfants de moins de 12 ans ?", opt: ["Être accompagné par un adulte majeur", "Avoir un certificat médical", "Venir uniquement le matin", "Payer un tarif spécial"], ans: 0, passEn: "Municipal pool rule: Children under 12 must be accompanied by an adult inside the pool area." },
   { level: "A2", text: "Offre d'emploi spécialisée : Restaurant gastronomique du Vieux-Montréal recherche un serveur bilingue français-anglais avec 2 ans d'expérience au service en salle.", q: "Quel profil correspond exactement à cette offre ?", opt: ["Un serveur bilingue expérimenté", "Un cuisinier italien débutant", "Un comptable à mi-temps", "Un gérant de magasin"], ans: 0, passEn: "Job posting: Upscale restaurant in Old Montreal seeks bilingual French-English server with 2 years table service experience." },
+  { level: "A2", text: "Note d'information aux résidents : Des travaux de réfection de la chaussée auront lieu dans la rue Sherbrooke le mercredi 12 octobre. Le stationnement sera interdit de 7h à 18h.", q: "Quelle interdiction concerne les résidents le mercredi 12 octobre ?", opt: ["L'interdiction de stationner dans la rue de 7h à 18h", "L'interdiction de sortir de chez soi", "L'interdiction de prendre le bus", "L'interdiction d'utiliser l'eau courante"], ans: 0, passEn: "Notice to residents: Street resurfacing on Sherbrooke St on Wednesday Oct 12. Parking prohibited 7am-6pm." },
+  { level: "A2", text: "Annonce du centre communautaire : Inscriptions aux cours de langue italienne et espagnole ouvertes pour la session d'automne. Tarif réduit pour les étudiants et retraités.", q: "Qui peut bénéficier d'un tarif réduit ?", opt: ["Les étudiants et les retraités", "Seulement les enfants de moins de 5 ans", "Uniquement les professeurs", "Tous les touristes de passage"], ans: 0, passEn: "Community center notice: Italian and Spanish fall course enrollment open. Discounted rate for students and seniors." },
+
+  // B1 THRESHOLD (19-26)
   {
     level: "B1",
-    text: `ÉCONOMIE ET NUTRITION — LE POUVOIR D'ACHAT ET LA SANTÉ AU QUÉBEC
-
-Un rapport récent de l'Institut National de Santé Publique du Québec souligne l'importance des choix alimentaires quotidiens sur la santé cardiaque. Selon les chercheurs, réduire sa consommation de sel de seulement 3 grammes par jour diminuerait de 15 % les risques d'hypertension artérielle à l'échelle nationale.
-
-Cette recommandation s'inscrit dans une campagne globale d'éducation à la nutrition. Les professionnels du secteur médical encouragent les consommateurs à privilégier les aliments frais préparés à la maison plutôt que les plats industriels transformés, souvent riches en sodium et en conservateurs artificiels.
-
-En outre, les autorités canadiennes envisagent d'imposer un étiquetage nutritionnel plus clair sur la face avant des emballages afin d'aider les familles à identifier rapidement les produits à forte teneur en sel et en sucres ajoutés.`,
+    text: `ÉCONOMIE ET NUTRITION — LE POUVOIR D'ACHAT ET LA SANTÉ AU QUÉBEC\n\nUn rapport récent de l'Institut National de Santé Publique du Québec souligne l'importance des choix alimentaires quotidiens sur la santé cardiaque. Selon les chercheurs, réduire sa consommation de sel de seulement 3 grammes par jour diminuerait de 15 % les risques d'hypertension artérielle à l'échelle nationale.\n\nCette recommandation s'inscrit dans une campagne globale d'éducation à la nutrition. Les professionnels du secteur médical encouragent les consommateurs à privilégier les aliments frais préparés à la maison plutôt que les plats industriels transformés, souvent riches en sodium et en conservateurs artificiels.\n\nEn outre, les autorités canadiennes envisagent d'imposer un étiquetage nutritionnel plus clair sur la face avant des emballages afin d'aider les familles à identifier rapidement les produits à forte teneur en sel et en sucres ajoutés.`,
     q: "Selon l'étude, quel est l'impact direct d'une diminution quotidienne de 3 grammes de sel ?",
-    opt: [
-      "Une baisse de 15% des risques d'hypertension artérielle",
-      "Une hausse de 20% du pouvoir d'achat des ménages",
-      "La fermeture immédiate des usines agroalimentaires",
-      "Une réduction automatique de la consommation de sucre"
-    ],
+    opt: ["Une baisse de 15% des risques d'hypertension artérielle", "Une hausse de 20% du pouvoir d'achat des ménages", "La fermeture immédiate des usines agroalimentaires", "Une réduction automatique de la consommation de sucre"],
     ans: 0,
-    passEn: "HEALTH AND NUTRITION — PURCHASING POWER AND HEALTH IN QUEBEC\n\nA recent report highlights the importance of daily food choices on heart health. Reducing daily salt intake by 3 grams cuts hypertension risk by 15% nationwide.\n\nMedical professionals urge consumers to choose fresh home-cooked meals over processed industrial foods.\n\nCanadian authorities plan to mandate clearer front-of-package nutritional labeling."
+    passEn: "HEALTH AND NUTRITION — PURCHASING POWER AND HEALTH IN QUEBEC\n\nA recent report highlights that reducing daily salt intake by 3g cuts hypertension risk by 15% nationwide."
   },
   {
     level: "B1",
-    text: `TRANSPORT URBAIN ET MOBILITÉ DURABLE — ROULEZ VERT À MONTRÉAL
-
-La Société de Transport de Montréal (STM) a annoncé une restructuration majeure de son réseau routier nocturne. Afin de poursuivre les travaux d'électrification des infrastructures, les lignes de tramway et de métro léger seront remplacées par des bus électriques articulés dès 22h00 les soirs de semaine.
-
-Cette transition permettra non seulement d'accélérer la rénovation des voies ferroviaires, mais garantira également un niveau de bruit réduit pour les résidents des quartiers centraux. Les usagers sont invités à consulter la nouvelle application mobile pour suivre la position des bus en temps réel.
-
-Malgré quelques réticences initiales liées aux légers retards de correspondance, la majorité des voyageurs salue cette initiative moderne qui s'inscrit pleinement dans le plan climat de la métropole.`,
+    text: `TRANSPORT URBAIN ET MOBILITÉ DURABLE — ROULEZ VERT À MONTRÉAL\n\nLa Société de Transport de Montréal (STM) a annoncé une restructuration majeure de son réseau routier nocturne. Afin de poursuivre les travaux d'électrification des infrastructures, les lignes de tramway et de métro léger seront remplacées par des bus électriques articulés dès 22h00 les soirs de semaine.\n\nCette transition permettra non seulement d'accélérer la rénovation des voies ferroviaires, mais garantira également un niveau de bruit réduit pour les résidents des quartiers centraux. Les usagers sont invités à consulter la nouvelle application mobile pour suivre la position des bus en temps réel.\n\nMalgré quelques réticences initiales liées aux légers retards de correspondance, la majorité des voyageurs salue cette initiative moderne qui s'inscrit pleinement dans le plan climat de la métropole.`,
     q: "Quelle mesure la Société de Transport prend-elle les soirs de semaine dès 22h00 ?",
-    opt: [
-      "Le remplacement des lignes ferroviaires par des bus électriques",
-      "La gratuité totale de l'ensemble du réseau de métro",
-      "L'arrêt complet de tous les transports collectifs",
-      "L'interdiction de circuler pour les piétons"
-    ],
+    opt: ["Le remplacement des lignes ferroviaires par des bus électriques", "La gratuité totale de l'ensemble du réseau de métro", "L'arrêt complet de tous les transports collectifs", "L'interdiction de circuler pour les piétons"],
     ans: 0,
-    passEn: "URBAN TRANSIT & SUSTAINABLE MOBILITY\n\nThe STM announced major restructuring of its night network. Tram lines will be replaced by electric buses starting at 10:00pm on weeknights for infrastructure upgrades."
+    passEn: "URBAN TRANSIT & SUSTAINABLE MOBILITY\n\nTram lines will be replaced by electric buses starting at 10:00pm on weeknights for infrastructure upgrades."
+  },
+  {
+    level: "B1",
+    text: `ÉDUCATION ET TECHNOLOGIE — LES MANUELS NUMÉRIQUES DANS LES ÉCOLES\n\nL'introduction généralisée des tablettes numériques dans les établissements secondaires du Nouveau-Brunswick suscite des débats passionnés parmi les enseignants et les parents d'élèves. Selon une enquête menée auprès de 500 éducateurs, 68 % constatent une augmentation significative de l'engagement des étudiants lors des activités de recherche documentaire.\n\nCependant, plusieurs spécialistes en pédiatrie mettent en garde contre l'augmentation du temps d'écran quotidien et soulignent l'importance de maintenir un équilibre avec l'apprentissage sur support papier traditionnel. Les écoles mettent donc en place des chartes d'utilisation responsable pour encadrer cet usage en classe.`,
+    q: "Que constate la majorité des enseignants enquêtés concernant les tablettes ?",
+    opt: ["Une hausse de l'engagement des élèves dans la recherche documentaire", "Une baisse drastique des résultats scolaires généraux", "L'abandon complet de tous les cours de lecture", "Le refus des parents d'acheter des fournitures"],
+    ans: 0,
+    passEn: "EDUCATION & TECH — DIGITAL TEXTBOOKS IN SCHOOLS\n\n68% of surveyed educators note increased student engagement in documentary research using digital tablets."
+  },
+
+  // B2 VANTAGE TARGET (27-34) — 8 UNIQUE B2 TEXTS FOR NCLC 7 TARGET
+  {
+    level: "B2",
+    text: `URBANISME ÉCOLOGIQUE ET ÎLOTS DE CHALEUR MÉTROPOLITAINS\n\nDans la plupart des grandes agglomérations nord-américaines, la multiplication des îlots de chaleur constitue désormais un enjeu sanitaire et environnemental préoccupant. L'accumulation d'asphalte et de béton accentue l'absorption thermique, entraînant des températures estivales étouffantes au cœur des cités.\n\nPour contrer ce phénomène, les urbanistes préconisent la mise en place de péages urbains incitatifs couplée à un vaste programme de végétalisation des toitures d'immeubles. Les premiers résultats observés dans les quartiers pilotes démontrent une réduction de 20 % de la circulation automobile, corrélée à une baisse mesurable de la pollution atmosphérique.\n\nCependant, les commerçants du centre-ville expriment des inquiétudes quant à la baisse potentielle du chalandage. Les municipalités s'engagent donc à compenser ces effets en renforçant la fréquence des transports en commun.`,
+    q: "Selon l'article, quel est l'effet combiné de la végétalisation et des péages incitatifs ?",
+    opt: ["Une baisse de 20% du trafic automobile et une réduction de la pollution", "La disparition complète des commerces de proximité", "Une hausse de la température estivale au centre-ville", "L'obligation d'utiliser uniquement des véhicules électriques"],
+    ans: 0,
+    passEn: "ECOLOGICAL URBANISM & METROPOLITAN HEAT ISLANDS\n\nPilot programs combining green rooftops and incentive urban tolls reduced car traffic by 20% and lowered air pollution."
   },
   {
     level: "B2",
-    text: `URBANISME ÉCOLOGIQUE ET CHANGER LE VISAGE DES MÉTROPOLES
-
-Dans la plupart des grandes agglomérations nord-américaines, la multiplication des îlots de chaleur constitue désormais un enjeu sanitaire et environnemental préoccupant. L'accumulation d'asphalte et de béton accentue l'absorption thermique, entraînant des températures estivales étouffantes au cœur des cités.
-
-Pour contrer ce phénomène, les urbanistes préconisent la mise en place de péages urbains incitatifs couplée à un vaste programme de végétalisation des toitures d'immeubles. Les premiers résultats observés dans les quartiers pilotes démontrent une réduction de 20 % de la circulation automobile, corrélée à une baisse mesurable de la pollution atmosphérique.
-
-Cependant, les commerçants du centre-ville expriment des inquiétudes quant à la baisse potentielle du chalandage. Les municipalités s'engagent donc à compenser ces effets en renforçant la fréquence des transports en commun et en aménageant des zones piétonnes attractives.`,
-    q: "Selon l'article, quel est l'effet combiné de la végétalisation et des péages incitatifs ?",
-    opt: [
-      "Une baisse de 20% du trafic automobile et une réduction de la pollution",
-      "La disparition complète des commerces de proximité",
-      "Une hausse de la température estivale au centre-ville",
-      "L'obligation d'utiliser uniquement des véhicules électriques"
-    ],
+    text: `INTELLIGENCE ARTIFICIELLE ET DIAGNOSTIC MÉDICAL AU CANADA\n\nL'intégration d'algorithmes d'apprentissage profond dans le réseau hospitalier canadien révolutionne le dépistage précoce des pathologies radiologiques. En analysant des milliers d'imageries médicales en quelques secondes, ces outils d'intelligence artificielle assistent efficacement les médecins dans la détection d'anomalies microscopiques.\n\nNéanmoins, les comités de bioéthique rappellent que la décision thérapeutique finale doit impérativement demeurer sous la responsabilité exclusive du praticien humain. La technologie est conçue comme un puissant levier d'aide à la décision et non comme un substitut à l'expertise clinique.\n\nDe plus, la protection de la confidentialité des données médicales des patients exige le déploiement de protocoles de cryptage de haute sécurité avant tout partage interhospitalier.`,
+    q: "Quelle est la recommandation majeure des comités de bioéthique concernant l'IA médicale ?",
+    opt: ["La décision thérapeutique finale doit rester sous responsabilité humaine", "L'IA doit remplacer définitivement les radiologues", "Les données des patients peuvent être publiées librement", "Les examens d'imagerie doivent être supprimés"],
     ans: 0,
-    passEn: "ECOLOGICAL URBANISM — TRANSFORMING METROPOLITAN CENTERS\n\nHeat islands pose major environmental challenges. Pilot programs combining green rooftops and incentive urban tolls reduced car traffic by 20% and measurably lowered air pollution."
+    passEn: "AI AND MEDICAL DIAGNOSTICS IN CANADA\n\nBioethics committees emphasize that final treatment decisions must remain under human medical responsibility."
+  },
+  {
+    level: "B2",
+    text: `ÉCONOMIE CIRCULAIRE ET RECYCLAGE DES ÉQUIPEMENTS ÉLECTRONIQUES\n\nLa gestion des déchets électroniques représente un défi environnemental majeur à l'ère du numérique. Chaque année, des millions de tonnes d'ordinateurs, téléphones et batteries usagées sont jetées sans subir de traitement approprié, provoquant le gaspillage de métaux précieux comme le cobalt, le lithium et l'or.\n\nFace à ce constat, plusieurs provinces canadiennes adoptent une législation sur la Responsabilité Élargie des Producteurs (REP). Cette réglementation oblige désormais les fabricants de matériel informatique à financer et organiser la collecte ainsi que le recyclage sécurisé de leurs produits en fin de vie.\n\nCette démarche favorise l'émergence d'une véritable économie circulaire, créatrice d'emplois locaux spécialisés dans la décontamination et le réemploi des composants électroniques.`,
+    q: "Que stipule la réglementation sur la Responsabilité Élargie des Producteurs (REP) ?",
+    opt: ["Les fabricants doivent financer la collecte et le recyclage de leurs produits", "Les consommateurs doivent payer une amende pour chaque téléphone jeté", "L'importation de matériel électronique est désormais interdite", "Toutes les batteries usagées doivent être incinérées sans tri"],
+    ans: 0,
+    passEn: "CIRCULAR ECONOMY & ELECTRONIC WASTE RECYCLING\n\nEPR legislation requires electronics manufacturers to fund and organize end-of-life recycling for their devices."
+  },
+  {
+    level: "B2",
+    text: `IMMIGRATION FRANCOPHONE HORS QUÉBEC ET DYNAMISME COMMUNAUTAIRE\n\nLe gouvernement fédéral canadien intensifie ses efforts pour atteindre les objectifs de recrutement d'immigrants francophones s'établissant dans les communautés en minorité linguistique hors du Québec, notamment en Ontario, au Nouveau-Brunswick et au Manitoba.\n\nL'installation de nouveaux arrivants d'expression française contribue au dynamisme économique régional, à la pérennité des écoles de langue française et à l'enrichissement culturel des collectivités locales. Des services d'accueil personnalisés facilitent leur intégration professionnelle dès leur arrivée.\n\nDes programmes de parrainage communautaire permettent également aux familles immigrantes de tisser rapidement des liens sociaux durables et de trouver un logement adapté.`,
+    q: "Quel est l'impact recherché de l'immigration francophone hors Québec ?",
+    opt: ["Renforcer le dynamisme économique et la vitalité culturelle des collectivités", "Obliger toutes les provinces à devenir exclusivement unilingues françaises", "Fermer les centres d'accueil communautaires régionaux", "Limiter l'accès aux écoles publiques d'expression française"],
+    ans: 0,
+    passEn: "FRANCOPHONE IMMIGRATION OUTSIDE QUEBEC\n\nTargeted immigration enhances regional economic dynamism, school sustainability, and community vitality."
+  },
+  {
+    level: "B2",
+    text: `TRANSITION ÉNERGÉTIQUE ET ARCHITECTURE BIOCLIMATIQUE\n\nLa construction de bâtiments à haute performance énergétique s'impose progressivement comme la norme architecturale dans les projets de rénovation urbaine. L'intégration de matériaux isolants biosourcés, comme la fibre de bois ou le chanvre, permet de réduire considérablement la consommation de chauffage en hiver.\n\nDe plus, la conception bioclimatique exploite l'orientation naturelle du soleil pour optimiser la luminosité et la chaleur passive. Des systèmes de ventilation à double flux avec récupération d'énergie assurent un renouvellement continu de l'air intérieur sans déperdition thermique.\n\nLes propriétaires bénéficient d'aides financières gouvernementales incitatives pour compenser le surcoût initial des travaux de rénovation verte.`,
+    q: "Quel principe fondamental caractérise la conception bioclimatique ?",
+    opt: ["Exploiter l'orientation du soleil pour optimiser la chaleur passive", "Utiliser exclusivement de la climatisation électrique en continu", "Supprimer toutes les fenêtres des façades exposées au nord", "Consommer plus de mazout durant les périodes de grand froid"],
+    ans: 0,
+    passEn: "ENERGY TRANSITION & BIOCLIMATIC ARCHITECTURE\n\nBioclimatic design optimizes building orientation to capture passive solar heat and reduce energy consumption."
+  },
+
+  // C1 AUTONOMOUS (35-37)
+  {
+    level: "C1",
+    text: `SOCIOLOGIE DU TRAVAIL — LA MUTATION DES MODÈLES ORGANISATIONNELS\n\nL'expérimentation à grande échelle de la semaine de travail de quatre jours dans le secteur tertiaire suscite un intérêt croissant auprès des chercheurs en gestion et des décideurs économiques. Loin de nuire au rendement des entreprises, ce modèle fondé sur la réduction du temps de travail sans baisse de salaire démontre une préservation, voire une amélioration de la productivité globale.\n\nSur le plan de la santé mentale des salariés, les données recueillies indiquent une diminution remarquable de 35 % des épisodes de surmenage professionnel et de syndrome d'épuisement (burnout). Les employés bénéficiant d'un équilibre renforcé entre vie privée et engagement professionnel affichent une fidélité accrue envers leur organisation.\n\nNéanmoins, la transposabilité de cette organisation aux secteurs industriels à feu continu ou aux services d'urgence médicale soulève des défis logistiques majeurs.`,
+    q: "Quel résultat marquant ressort de l'analyse sociologique de la semaine de 4 jours ?",
+    opt: ["Une diminution de 35% du surmenage professionnel chez les salariés", "Une baisse inévitable de la productivité globale de l'entreprise", "Une augmentation généralisée du taux d'absentéisme", "L'obligation de baisser les salaires des employés"],
+    ans: 0,
+    passEn: "WORKPLACE SOCIOLOGY — ORGANIZATIONAL MODEL MUTATION\n\n4-day workweek trials show sustained productivity alongside a 35% reduction in professional burnout."
   },
   {
     level: "C1",
-    text: `SOCIOLOGIE DU TRAVAIL — LA MUTATION DES MODÈLES ORGANISATIONNELS
-
-L'expérimentation à grande échelle de la semaine de travail de quatre jours dans le secteur tertiaire suscite un intérêt croissant auprès des chercheurs en gestion et des décideurs économiques. Loin de nuire au rendement des entreprises, ce modèle fondé sur la réduction du temps de travail sans baisse de salaire démontre une préservation, voire une amélioration de la productivité globale.
-
-Sur le plan de la santé mentale des salariés, les données recueillies indiquent une diminution remarquable de 35 % des épisodes de surmenage professionnel et de syndrome d'épuisement (burnout). Les employés bénéficiant d'un équilibre renforcé entre vie privée et engagement professionnel affichent une fidélité accrue envers leur organisation.
-
-Néanmoins, la transposabilité de cette organisation aux secteurs industriels à feu continu ou aux services d'urgence médicale soulève des défis logistiques majeurs, nécessitant une réorganisation en profondeur du recrutement et des grilles d'horaires.`,
-    q: "Quel résultat marquant ressort de l'analyse sociologique de la semaine de 4 jours ?",
-    opt: [
-      "Une diminution de 35% du surmenage professionnel chez les salariés",
-      "Une baisse inévitable de la productivité globale de l'entreprise",
-      "Une augmentation généralisée du taux d'absentéisme",
-      "L'obligation de baisser les salaires des employés"
-    ],
+    text: `AMÉNAGEMENT DU TERRITOIRE ET GESTION DES RESSOURCES EN EAU\n\nLa gestion concertée des bassins versants face aux aléas pluviométriques extrêmes exige le dépassement des découpages administratifs traditionnels au profit de gouvernances environnementales intégrées. L'accentuation des épisodes de sécheresse estivale couplée aux risques de ruissellement torrentiel impose une réévaluation fondamentale des schémas d'aménagement urbain et agricole.\n\nLes spécialistes de l'hydrologie préconisent la restauration prioritaire des zones humides naturelles qui jouent le rôle d'éponges écologiques régulatrices. Ces écosystèmes absorbent les surplus d'eau lors des crue printanières et restituent progressivement l'humidité durant les périodes d'étiage.\n\nCette approche fondée sur la nature s'avère économiquement plus pérenne que le dimensionnement perpétuel d'ouvrages de génie civil lourds.`,
+    q: "Quel rôle écologique majeur remplissent les zones humides naturelles ?",
+    opt: ["Réguler le cycle de l'eau en absorbant les crues et restituant l'humidité", "Accélérer l'assèchement définitif des terres agricoles", "Favoriser le ruissellement torrentiel vers les zones urbaines", "Remplacer l'eau douce par des réservoirs d'eau de mer"],
     ans: 0,
-    passEn: "WORKPLACE SOCIOLOGY — ORGANIZATIONAL MODEL MUTATION\n\nLarge-scale 4-day workweek trials show sustained productivity alongside a remarkable 35% reduction in professional burnout and stress."
+    passEn: "TERRITORIAL PLANNING & WATER MANAGEMENT\n\nRestoring natural wetlands acts as ecological sponges, absorbing floodwaters and releasing moisture during droughts."
+  },
+
+  // C2 MASTERY (38-39)
+  {
+    level: "C2",
+    text: `ÉPISTÉMOLOGIE ET NARRATIFS DE LA TRANSITION ÉCOLOGIQUE\n\nLa déconstruction des paradigmes extractivistes contemporains requiert un réexamen épistémologique profond de notre rapport à la matérialité du monde et aux communs terrestres. L'obsolescence théorique des modèles de croissance linéaire illimitée impose l'élaboration de nouvelles métriques de prospérité intégrant les limites planétaires infranchissables.\n\nDans cette perspective, la pensée complexe rejette les solutions technocratiques réductrices qui prétendent résoudre la crise systémique par un simple ajustement marginal des mécanismes de marché. Il s'agit d'opérer une mutation culturelle refondant les représentations collectives de l'abondance et du progrès.\n\nCette réorientation philosophique implique une redéfinition globale des responsabilités éthiques envers les générations futures et le vivant non humain.`,
+    q: "Que préconise l'analyse épistémologique face à la crise systémique ?",
+    opt: ["Une mutation culturelle refondant les représentations collectives du progrès", "La poursuite indéfinie des modèles de croissance linéaire illimitée", "L'abandon de toute réflexion éthique envers les générations futures", "Le recours exclusif à des ajustements marchands marginaux"],
+    ans: 0,
+    passEn: "EPISTEMOLOGY & ECOLOGICAL TRANSITION NARRATIVES\n\nSystemic ecological crises demand a deep cultural shift reframing collective concepts of progress and planetary limits."
   }
 ];
 

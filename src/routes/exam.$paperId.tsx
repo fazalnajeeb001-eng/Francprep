@@ -92,6 +92,13 @@ export function AuthenticCBTExamPage() {
   const [speakingAiResults, setSpeakingAiResults] = useState<Record<string, any>>({});
   const [evaluatingSpeaking, setEvaluatingSpeaking] = useState<Record<string, boolean>>({});
 
+  // Practice Helper & Task Tab States
+  const [showTranscript, setShowTranscript] = useState(false);
+  const [showTranslation, setShowTranslation] = useState(false);
+  const [showReadingHint, setShowReadingHint] = useState(false);
+  const [activeWritingTaskIdx, setActiveWritingTaskIdx] = useState(0);
+  const [activeSpeakingTaskIdx, setActiveSpeakingTaskIdx] = useState(0);
+
   // Submission & Results & Strategy Modals State
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
@@ -458,19 +465,35 @@ export function AuthenticCBTExamPage() {
           </button>
 
           {currentSection.type === "COMPREHENSION_ORALE" && (
-            <button
-              onClick={() => setShowTranscripts(!showTranscripts)}
-              className={`px-2.5 py-1 rounded border text-[11px] font-semibold transition-all shrink-0 flex items-center gap-1 ${
-                showTranscripts
-                  ? "bg-purple-600 text-white border-purple-600"
-                  : cbtDark
-                  ? "bg-[#1E293B] text-slate-200 border-slate-700"
-                  : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
-              }`}
-            >
-              <FileText className="w-3.5 h-3.5" />
-              <span>{showTranscripts ? "Hide Transcript & Translation" : "Audio Transcript & EN Translation"}</span>
-            </button>
+            <>
+              <button
+                onClick={() => setShowTranscript(!showTranscript)}
+                className={`px-2.5 py-1 rounded border text-[11px] font-semibold transition-all shrink-0 flex items-center gap-1 ${
+                  showTranscript
+                    ? "bg-purple-600 text-white border-purple-600"
+                    : cbtDark
+                    ? "bg-[#1E293B] text-slate-200 border-slate-700"
+                    : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
+                }`}
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span>{showTranscript ? "Hide French Transcript 📄" : "📄 Show French Audio Transcript"}</span>
+              </button>
+
+              <button
+                onClick={() => setShowTranslation(!showTranslation)}
+                className={`px-2.5 py-1 rounded border text-[11px] font-semibold transition-all shrink-0 flex items-center gap-1 ${
+                  showTranslation
+                    ? "bg-indigo-600 text-white border-indigo-600"
+                    : cbtDark
+                    ? "bg-[#1E293B] text-slate-200 border-slate-700"
+                    : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
+                }`}
+              >
+                <Globe className="w-3.5 h-3.5" />
+                <span>{showTranslation ? "Hide English Translation 🌐" : "🌐 Show English Translation"}</span>
+              </button>
+            </>
           )}
 
           {currentSection.type === "COMPREHENSION_ECRITE" && (
@@ -581,16 +604,27 @@ export function AuthenticCBTExamPage() {
                       </div>
                     )}
 
-                    {showTranscripts && currentQ.transcript && (
-                      <div className="pt-3 border-t border-purple-300 text-xs space-y-1.5">
-                        <p className="font-bold text-purple-900 uppercase text-[10px]">{activeBranding.transcriptLabel}</p>
-                        <p className="font-serif italic font-semibold text-slate-950">"{currentQ.transcript}"</p>
-                        {currentQ.transcriptEnglish && (
-                          <>
-                            <p className="font-bold text-blue-900 uppercase text-[10px] pt-1">English Translation:</p>
-                            <p className="italic font-semibold text-slate-950">"{currentQ.transcriptEnglish}"</p>
-                          </>
-                        )}
+                    {(showTranscript || showTranscripts) && currentQ.transcript && (
+                      <div className="pt-3 border-t border-purple-300 dark:border-purple-800 text-xs space-y-1.5">
+                        <p className="font-bold text-purple-900 dark:text-purple-300 uppercase text-[10px] flex items-center gap-1">
+                          <FileText className="w-3.5 h-3.5" />
+                          <span>{activeBranding.transcriptLabel}</span>
+                        </p>
+                        <p className="font-serif italic font-semibold text-slate-950 dark:text-slate-100 p-2.5 rounded bg-white dark:bg-slate-950 border border-purple-200 dark:border-purple-900">
+                          "{currentQ.transcript}"
+                        </p>
+                      </div>
+                    )}
+
+                    {(showTranslation || showTranscripts) && currentQ.transcriptEnglish && (
+                      <div className="pt-3 border-t border-indigo-300 dark:border-indigo-800 text-xs space-y-1.5">
+                        <p className="font-bold text-indigo-900 dark:text-indigo-300 uppercase text-[10px] flex items-center gap-1">
+                          <Globe className="w-3.5 h-3.5" />
+                          <span>English Audio Translation</span>
+                        </p>
+                        <p className="italic font-semibold text-slate-950 dark:text-slate-100 p-2.5 rounded bg-white dark:bg-slate-950 border border-indigo-200 dark:border-indigo-900">
+                          "{currentQ.transcriptEnglish}"
+                        </p>
                       </div>
                     )}
                   </div>
@@ -601,18 +635,55 @@ export function AuthenticCBTExamPage() {
                   <div className={`p-4 rounded-lg border space-y-3 ${
                     cbtDark ? "bg-blue-950/40 border-blue-800/60 text-slate-100" : "bg-blue-50 border-blue-300 text-slate-950"
                   }`}>
-                    <span className="text-xs font-bold text-blue-800 dark:text-blue-300 flex items-center gap-1.5">
-                      <BookOpen className="w-4 h-4" />
-                      <span>Document d'épreuve :</span>
-                    </span>
-                    <p className="font-serif text-sm leading-relaxed font-medium text-slate-950 dark:text-slate-100">
+                    <div className="flex items-center justify-between border-b border-blue-200 dark:border-blue-800 pb-2">
+                      <span className="text-xs font-bold text-blue-900 dark:text-blue-300 flex items-center gap-1.5">
+                        <BookOpen className="w-4 h-4 text-blue-600" />
+                        <span>Document d'épreuve (Reading Passage):</span>
+                      </span>
+
+                      {mode === "PRACTICE" && (
+                        <div className="flex items-center gap-1.5">
+                          {currentQ.passageEnglish && (
+                            <button
+                              onClick={() => setShowPassageTranslation(!showPassageTranslation)}
+                              className="px-2 py-1 rounded bg-blue-600 text-white font-bold text-[10px] hover:bg-blue-500 transition-all flex items-center gap-1"
+                            >
+                              <Globe className="w-3 h-3" />
+                              <span>{showPassageTranslation ? "Hide EN" : "🌐 Show EN Translation"}</span>
+                            </button>
+                          )}
+                          {currentQ.hint && (
+                            <button
+                              onClick={() => setShowReadingHint(!showReadingHint)}
+                              className="px-2 py-1 rounded bg-amber-500 text-white font-bold text-[10px] hover:bg-amber-400 transition-all flex items-center gap-1"
+                            >
+                              <HelpCircle className="w-3 h-3" />
+                              <span>{showReadingHint ? "Hide Hint" : "💡 Show Hint"}</span>
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    <p className="font-serif text-sm leading-relaxed font-medium text-slate-950 dark:text-slate-100 whitespace-pre-line p-3 rounded bg-white dark:bg-slate-950 border border-blue-200 dark:border-blue-900">
                       "{currentQ.passage}"
                     </p>
 
                     {showPassageTranslation && currentQ.passageEnglish && (
-                      <div className="pt-3 border-t border-blue-300 dark:border-blue-800 text-xs text-blue-900 dark:text-blue-300">
-                        <p className="font-bold uppercase text-[10px]">English Translation:</p>
-                        <p className="italic font-medium">"{currentQ.passageEnglish}"</p>
+                      <div className="pt-2 border-t border-blue-300 dark:border-blue-800 text-xs text-blue-900 dark:text-blue-300">
+                        <p className="font-bold uppercase text-[10px] flex items-center gap-1">
+                          <Globe className="w-3 h-3" />
+                          <span>English Passage Translation:</span>
+                        </p>
+                        <p className="italic font-medium p-2.5 rounded bg-white dark:bg-slate-950 border border-blue-200 dark:border-blue-900">
+                          "{currentQ.passageEnglish}"
+                        </p>
+                      </div>
+                    )}
+
+                    {showReadingHint && currentQ.hint && (
+                      <div className="pt-2 border-t border-amber-300 dark:border-amber-800 text-xs text-amber-900 dark:text-amber-300 font-medium p-2.5 rounded bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-900">
+                        💡 <strong>Reading Hint:</strong> {currentQ.hint}
                       </div>
                     )}
                   </div>
@@ -777,10 +848,33 @@ export function AuthenticCBTExamPage() {
           </div>
         )}
 
-        {/* WRITING SECTION WORKSPACE */}
+        {/* WRITING SECTION WORKSPACE WITH CBT TASK TABS */}
         {currentSection.writingTasks && currentSection.writingTasks.length > 0 && (
-          <div className="space-y-6">
-            {currentSection.writingTasks.map((task) => {
+          <div className="space-y-4">
+            {/* CBT Task Tab Switcher */}
+            <div className="flex items-center gap-2 border-b border-slate-300 dark:border-slate-800 pb-2 overflow-x-auto">
+              <span className="text-xs font-bold text-slate-500 uppercase shrink-0 mr-1">Épreuve Écrite (Task Switcher):</span>
+              {currentSection.writingTasks.map((t, idx) => (
+                <button
+                  key={t.id}
+                  onClick={() => setActiveWritingTaskIdx(idx)}
+                  className={`px-4 py-2 rounded-t-lg text-xs font-bold transition-all flex items-center gap-2 shrink-0 border-b-2 ${
+                    activeWritingTaskIdx === idx
+                      ? "bg-pink-600 text-white border-pink-600 shadow"
+                      : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-transparent hover:bg-slate-200"
+                  }`}
+                >
+                  <PenTool className="w-3.5 h-3.5" />
+                  <span>{t.title}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Active Writing Task Display */}
+            {(() => {
+              const task = currentSection.writingTasks[Math.min(activeWritingTaskIdx, currentSection.writingTasks.length - 1)];
+              if (!task) return null;
+
               const textVal = writingResponses[task.id] || "";
               const wordCount = textVal.trim() ? textVal.trim().split(/\s+/).length : 0;
               const isValid = wordCount >= task.wordCountMin && wordCount <= task.wordCountMax;
@@ -790,16 +884,20 @@ export function AuthenticCBTExamPage() {
               return (
                 <div key={task.id} className={`p-6 rounded-lg border ${cbtCard} shadow-sm space-y-4`}>
                   <div className="space-y-1">
-                    <span className="text-xs font-mono font-bold text-pink-600 dark:text-pink-400 uppercase">
-                      {task.title}
-                    </span>
-                    <h3 className="text-lg font-bold text-slate-950 dark:text-slate-100">{task.prompt}</h3>
-                    <p className="text-xs text-slate-500">Target Range: {task.wordCountMin} to {task.wordCountMax} words</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-mono font-bold text-pink-600 dark:text-pink-400 uppercase">
+                        {task.title}
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded bg-pink-100 dark:bg-pink-950 text-pink-700 dark:text-pink-300 font-mono font-bold text-[10px]">
+                        Target: {task.wordCountMin} – {task.wordCountMax} words
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-950 dark:text-slate-100 leading-snug">{task.prompt}</h3>
                   </div>
 
                   {mode === "PRACTICE" && task.guidedTips && (
                     <div className="p-3.5 rounded bg-pink-50 dark:bg-pink-950/30 border border-pink-200 dark:border-pink-800 text-xs space-y-1">
-                      <p className="font-bold text-pink-700 uppercase text-[10px]">Guided Structure Tips:</p>
+                      <p className="font-bold text-pink-700 dark:text-pink-300 uppercase text-[10px]">Guided Structure Tips:</p>
                       <ul className="list-disc list-inside space-y-0.5 text-slate-800 dark:text-slate-200">
                         {task.guidedTips.map((tip, idx) => (
                           <li key={idx}>{tip}</li>
@@ -809,7 +907,7 @@ export function AuthenticCBTExamPage() {
                   )}
 
                   <textarea
-                    rows={8}
+                    rows={9}
                     value={textVal}
                     onChange={(e) => setWritingResponses((prev) => ({ ...prev, [task.id]: e.target.value }))}
                     placeholder="Saisissez votre texte officiel ici..."
@@ -823,15 +921,48 @@ export function AuthenticCBTExamPage() {
                       Word Count: {wordCount} / {task.wordCountMin} min ({isValid ? "✓ Target Met" : "Requires minimum length"})
                     </span>
 
-                    <button
-                      disabled={wordCount < 10 || isEvaluating}
-                      onClick={() => handleEvaluateWritingAI(task.id, task.prompt, textVal, task.sampleResponse)}
-                      className="px-4 py-2 rounded bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs shadow flex items-center justify-center gap-1.5 disabled:opacity-40 transition-all"
-                    >
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>{isEvaluating ? "Evaluating Writing with AI..." : "🤖 Evaluate Writing with AI"}</span>
-                    </button>
+                    <div className="flex items-center gap-2">
+                      {task.sampleResponse && mode === "PRACTICE" && (
+                        <button
+                          onClick={() => setOpenModelAnswerTaskId(openModelAnswerTaskId === task.id ? null : task.id)}
+                          className="px-3 py-1.5 rounded bg-blue-50 border border-blue-200 dark:bg-blue-950/40 dark:border-blue-800 text-blue-700 dark:text-blue-300 font-bold hover:bg-blue-100 transition-all shrink-0 flex items-center gap-1.5"
+                        >
+                          <BookOpen className="w-3.5 h-3.5" />
+                          <span>{openModelAnswerTaskId === task.id ? "Hide Model Response 🙈" : "📝 View Official NCLC 7+ Model Answer"}</span>
+                        </button>
+                      )}
+
+                      <button
+                        disabled={wordCount < 10 || isEvaluating}
+                        onClick={() => handleEvaluateWritingAI(task.id, task.prompt, textVal, task.sampleResponse)}
+                        className="px-4 py-2 rounded bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs shadow flex items-center justify-center gap-1.5 disabled:opacity-40 transition-all"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>{isEvaluating ? "Evaluating Writing with AI..." : "🤖 Evaluate Writing with AI"}</span>
+                      </button>
+                    </div>
                   </div>
+
+                  {/* Model Answer Card */}
+                  {openModelAnswerTaskId === task.id && task.sampleResponse && (
+                    <div className="p-4 rounded-xl border border-blue-300 dark:border-blue-800 bg-blue-50/90 dark:bg-blue-950/50 space-y-3 text-xs font-sans">
+                      <div className="flex items-center justify-between border-b border-blue-200 dark:border-blue-800 pb-2">
+                        <span className="font-extrabold text-xs text-blue-900 dark:text-blue-300 flex items-center gap-1.5 uppercase tracking-wide">
+                          <Trophy className="w-4 h-4 text-blue-600" />
+                          <span>Exemplar NCLC 7+ (B2 Vantage) Sample Response</span>
+                        </span>
+                        <span className="px-2 py-0.5 rounded bg-blue-600 text-white font-mono font-bold text-[10px]">
+                          OFFICIAL FEI BENCHMARK
+                        </span>
+                      </div>
+                      <p className="whitespace-pre-line font-serif italic text-slate-900 dark:text-slate-100 leading-relaxed p-3 rounded bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-900">
+                        {task.sampleResponse}
+                      </p>
+                      <div className="text-[11px] text-blue-800 dark:text-blue-300 font-medium">
+                        💡 <strong>Key NCLC 7 Features used in this sample:</strong> Proper paragraphing, varied linking words (<em>en outre, cependant, par conséquent</em>), strict word count compliance, and natural subjunctive mood expressions.
+                      </div>
+                    </div>
+                  )}
 
                   {/* AI Writing Evaluation Result Card */}
                   {aiEval && (
@@ -853,14 +984,37 @@ export function AuthenticCBTExamPage() {
                   )}
                 </div>
               );
-            })}
+            })()}
           </div>
         )}
 
-        {/* SPEAKING SECTION WORKSPACE */}
+        {/* SPEAKING SECTION WORKSPACE WITH CBT TASK TABS */}
         {currentSection.speakingTasks && currentSection.speakingTasks.length > 0 && (
-          <div className="space-y-6">
-            {currentSection.speakingTasks.map((task) => {
+          <div className="space-y-4">
+            {/* CBT Speaking Task Tab Switcher */}
+            <div className="flex items-center gap-2 border-b border-slate-300 dark:border-slate-800 pb-2 overflow-x-auto">
+              <span className="text-xs font-bold text-slate-500 uppercase shrink-0 mr-1">Épreuve Orale (Task Switcher):</span>
+              {currentSection.speakingTasks.map((t, idx) => (
+                <button
+                  key={t.id}
+                  onClick={() => setActiveSpeakingTaskIdx(idx)}
+                  className={`px-4 py-2 rounded-t-lg text-xs font-bold transition-all flex items-center gap-2 shrink-0 border-b-2 ${
+                    activeSpeakingTaskIdx === idx
+                      ? "bg-purple-600 text-white border-purple-600 shadow"
+                      : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-transparent hover:bg-slate-200"
+                  }`}
+                >
+                  <Mic className="w-3.5 h-3.5" />
+                  <span>{t.title}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Active Speaking Task Display */}
+            {(() => {
+              const task = currentSection.speakingTasks[Math.min(activeSpeakingTaskIdx, currentSection.speakingTasks.length - 1)];
+              if (!task) return null;
+
               const transcript = speakingTranscripts[task.id] || "";
               const isRecording = recordingSpeaking[task.id];
               const isEvaluating = evaluatingSpeaking[task.id];
@@ -872,7 +1026,7 @@ export function AuthenticCBTExamPage() {
                     <span className="text-xs font-mono font-bold text-purple-600 dark:text-purple-400 uppercase">
                       {task.title}
                     </span>
-                    <h3 className="text-lg font-bold text-slate-950 dark:text-slate-100">{task.scenario}</h3>
+                    <h3 className="text-lg font-bold text-slate-950 dark:text-slate-100 leading-snug">{task.scenario}</h3>
                     <div className="flex items-center gap-4 text-xs text-slate-500 font-semibold pt-1">
                       <span>Prep Time: {task.prepTimeMins} min</span>
                       <span>Speaking Time: {task.speakingTimeMins} min</span>
@@ -948,86 +1102,7 @@ export function AuthenticCBTExamPage() {
                   )}
                 </div>
               );
-            })}
-          </div>
-        )}
-
-        {/* WRITING SECTION WORKSPACE */}
-        {currentSection.writingTasks && currentSection.writingTasks.length > 0 && (
-          <div className="space-y-6">
-            {currentSection.writingTasks.map((task) => {
-              const textVal = writingResponses[task.id] || "";
-              const wordCount = textVal.trim() ? textVal.trim().split(/\s+/).length : 0;
-              const isValid = wordCount >= task.wordCountMin && wordCount <= task.wordCountMax;
-
-              return (
-                <div key={task.id} className={`p-6 rounded-lg border ${cbtCard} shadow-sm space-y-4`}>
-                  <div className="space-y-1">
-                    <span className="text-xs font-mono font-bold text-pink-600 dark:text-pink-400 uppercase">
-                      {task.title}
-                    </span>
-                    <h3 className="text-lg font-bold">{task.prompt}</h3>
-                    <p className="text-xs text-slate-500">Target Range: {task.wordCountMin} to {task.wordCountMax} words</p>
-                  </div>
-
-                  {mode === "PRACTICE" && task.guidedTips && (
-                    <div className="p-3.5 rounded bg-pink-50 dark:bg-pink-950/30 border border-pink-200 dark:border-pink-800 text-xs space-y-1">
-                      <p className="font-bold text-pink-700 uppercase text-[10px]">Guided Structure Tips:</p>
-                      <ul className="list-disc list-inside space-y-0.5 text-slate-700 dark:text-slate-300">
-                        {task.guidedTips.map((tip, idx) => (
-                          <li key={idx}>{tip}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  <textarea
-                    rows={8}
-                    value={textVal}
-                    onChange={(e) => setWritingResponses((prev) => ({ ...prev, [task.id]: e.target.value }))}
-                    placeholder="Saisissez votre texte officiel ici..."
-                    className={`w-full p-4 rounded border text-sm font-sans leading-relaxed ${
-                      cbtDark ? "bg-[#090D16] border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-900"
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                  />
-
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-semibold">
-                    <span className={isValid ? "text-emerald-600 font-bold" : "text-amber-600"}>
-                      Word Count: {wordCount} / {task.wordCountMin} min ({isValid ? "✓ Target Met" : "Requires minimum length"})
-                    </span>
-                    {task.sampleResponse && mode === "PRACTICE" && (
-                      <button
-                        onClick={() => setOpenModelAnswerTaskId(openModelAnswerTaskId === task.id ? null : task.id)}
-                        className="px-3 py-1.5 rounded bg-blue-50 border border-blue-200 dark:bg-blue-950/40 dark:border-blue-800 text-blue-700 dark:text-blue-300 font-bold hover:bg-blue-100 transition-all shrink-0 flex items-center gap-1.5"
-                      >
-                        <BookOpen className="w-3.5 h-3.5" />
-                        <span>{openModelAnswerTaskId === task.id ? "Hide Model Response 🙈" : "📝 View Official NCLC 7+ Model Answer"}</span>
-                      </button>
-                    )}
-                  </div>
-
-                  {openModelAnswerTaskId === task.id && task.sampleResponse && (
-                    <div className="p-4 rounded-xl border border-blue-300 dark:border-blue-800 bg-blue-50/90 dark:bg-blue-950/50 space-y-3 text-xs font-sans">
-                      <div className="flex items-center justify-between border-b border-blue-200 dark:border-blue-800 pb-2">
-                        <span className="font-extrabold text-xs text-blue-900 dark:text-blue-300 flex items-center gap-1.5 uppercase tracking-wide">
-                          <Trophy className="w-4 h-4 text-blue-600" />
-                          <span>Exemplar NCLC 7+ (B2 Vantage) Sample Response</span>
-                        </span>
-                        <span className="px-2 py-0.5 rounded bg-blue-600 text-white font-mono font-bold text-[10px]">
-                          OFFICIAL FEI BENCHMARK
-                        </span>
-                      </div>
-                      <p className="whitespace-pre-line font-serif italic text-slate-900 dark:text-slate-100 leading-relaxed p-3 rounded bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-900">
-                        {task.sampleResponse}
-                      </p>
-                      <div className="text-[11px] text-blue-800 dark:text-blue-300 font-medium">
-                        💡 <strong>Key NCLC 7 Features used in this sample:</strong> Proper paragraphing, varied linking words (<em>en outre, cependant, par conséquent</em>), strict word count compliance, and natural subjunctive mood expressions.
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            })()}
           </div>
         )}
 
