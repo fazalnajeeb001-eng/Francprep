@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Sparkles, ChevronRight, Clock, Check, RotateCcw } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { getActiveLanguageCode } from "~/lib/trackBranding";
 import { useWidgets } from "~/lib/WidgetsContext";
 
