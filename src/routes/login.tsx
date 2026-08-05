@@ -185,31 +185,21 @@ function LoginPage() {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="w-full max-w-sm sm:max-w-md z-10">
         {/* Header Branding */}
         <div className="text-center mb-8">
-          <motion.div
-            key={activeBranding.code}
-            initial={{ scale: 0.8, opacity: 0, rotateY: -90 }}
-            animate={{ scale: 1, opacity: 1, rotateY: 0 }}
-            whileHover={{ scale: 1.1, rotateY: 15, rotateX: -5 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 350, damping: 20 }}
-            className="inline-block cursor-pointer mb-3"
-          >
-            <Link to="/" className="inline-flex items-center justify-center gap-2 group">
-              <div className={`w-20 h-20 rounded-3xl bg-gradient-to-br ${activeStyle.gradient} border-2 flex items-center justify-center p-3 shadow-2xl ${activeStyle.glow} group-hover:shadow-purple-500/50 transition-all duration-300`}>
-                <FlagIcon code={activeBranding.code} className="w-14 h-10 rounded-xl shadow-xl" />
-              </div>
-            </Link>
-          </motion.div>
+          <Link to="/" className="inline-flex items-center justify-center gap-2 mb-3.5 group">
+            <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${activeStyle.gradient} border p-2 flex items-center justify-center shadow-xl ${activeStyle.glow} group-hover:scale-105 transition-all duration-300`}>
+              <FlagIcon code={activeBranding.code} className="w-12 h-8 rounded-lg shadow" />
+            </div>
+          </Link>
 
           <div className="flex items-center justify-center gap-1.5 mb-2">
-            <span className={`px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider border shadow-sm ${activeStyle.badge}`}>
+            <span className={`px-3.5 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider border shadow-sm ${activeStyle.badge}`}>
               {activeBranding.examName} Target
             </span>
           </div>
 
           <h1 className={`text-3xl sm:text-4xl font-black tracking-tight ${dark ? "text-white" : "text-gray-900"} flex items-center justify-center gap-2.5`}>
             <span>{activeBranding.shortBrand}</span>
-            <FlagIcon code={activeBranding.code} className="w-9 h-6 rounded-md shadow-md" />
+            <FlagIcon code={activeBranding.code} className="w-9 h-6 rounded-md shadow-sm" />
           </h1>
           <p className={`text-sm ${dark ? "text-gray-400" : "text-slate-600"} mt-2 max-w-xs mx-auto font-medium`}>
             Sign in to continue your {activeBranding.languageName} learning path
