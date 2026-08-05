@@ -502,17 +502,21 @@ export function AuthenticCBTExamPage() {
       const json = await res.json();
       if (json.success && json.data) {
         const data = json.data;
-        const totalScoreOutOf20 = typeof data.scoreOutOf20 === 'number' ? data.scoreOutOf20 : Math.round(((data.score || 75) / 100) * 20);
+        const totalScoreOutOf20 = typeof data.scoreOutOf20 === 'number' ? data.scoreOutOf20 : Math.round(((data.score || 50) / 100) * 20);
 
         let nclcGrade = data.nclcGrade || "NCLC 7 (B2 Benchmark Target)";
         let expressEntryPoints = 17;
+
         if (totalScoreOutOf20 === 0 || data.taskFulfillmentScore === 0) {
           nclcGrade = "NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet)";
           expressEntryPoints = 0;
-        } else if (totalScoreOutOf20 >= 17 || data.score >= 85) {
+        } else if (totalScoreOutOf20 >= 18 || data.score >= 90) {
+          nclcGrade = "NCLC 10+ (C2 Mastery)";
+          expressEntryPoints = 34;
+        } else if (totalScoreOutOf20 >= 16 || data.score >= 80) {
           nclcGrade = "NCLC 9 (C1 Advanced)";
           expressEntryPoints = 31;
-        } else if (totalScoreOutOf20 >= 14 || data.score >= 75) {
+        } else if (totalScoreOutOf20 >= 14 || data.score >= 70) {
           nclcGrade = "NCLC 8 (B2 Upper)";
           expressEntryPoints = 23;
         } else if (totalScoreOutOf20 >= 12 || data.score >= 60) {
@@ -521,6 +525,18 @@ export function AuthenticCBTExamPage() {
         } else if (totalScoreOutOf20 >= 10 || data.score >= 50) {
           nclcGrade = "NCLC 6 (B1 Intermediate)";
           expressEntryPoints = 12;
+        } else if (totalScoreOutOf20 >= 8 || data.score >= 40) {
+          nclcGrade = "NCLC 5 (B1 Threshold)";
+          expressEntryPoints = 6;
+        } else if (totalScoreOutOf20 >= 5 || data.score >= 25) {
+          nclcGrade = "NCLC 4 (A2 Elementary)";
+          expressEntryPoints = 0;
+        } else if (totalScoreOutOf20 >= 3 || data.score >= 15) {
+          nclcGrade = "NCLC 3 (A1 Break-Through)";
+          expressEntryPoints = 0;
+        } else {
+          nclcGrade = "NCLC 1-2 (Below A1 / Beginner)";
+          expressEntryPoints = 0;
         }
 
         setWritingAiResults((prev) => ({
@@ -568,7 +584,10 @@ export function AuthenticCBTExamPage() {
     if (taskFulfillmentScore === 0 || totalScoreOutOf20 === 0) {
       nclcGrade = "NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet)";
       expressEntryPoints = 0;
-    } else if (totalScoreOutOf20 >= 17) {
+    } else if (totalScoreOutOf20 >= 18) {
+      nclcGrade = "NCLC 10+ (C2 Mastery)";
+      expressEntryPoints = 34;
+    } else if (totalScoreOutOf20 >= 16) {
       nclcGrade = "NCLC 9 (C1 Advanced)";
       expressEntryPoints = 31;
     } else if (totalScoreOutOf20 >= 14) {
@@ -583,8 +602,14 @@ export function AuthenticCBTExamPage() {
     } else if (totalScoreOutOf20 >= 8) {
       nclcGrade = "NCLC 5 (B1 Threshold)";
       expressEntryPoints = 6;
-    } else {
+    } else if (totalScoreOutOf20 >= 5) {
       nclcGrade = "NCLC 4 (A2 Elementary)";
+      expressEntryPoints = 0;
+    } else if (totalScoreOutOf20 >= 3) {
+      nclcGrade = "NCLC 3 (A1 Break-Through)";
+      expressEntryPoints = 0;
+    } else {
+      nclcGrade = "NCLC 1-2 (Below A1 / Beginner)";
       expressEntryPoints = 0;
     }
 

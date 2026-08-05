@@ -298,26 +298,45 @@ Evaluate strictly according to official FEI TCF Canada examiner criteria. Respon
         }
 
         const scorePct = Math.round((scoreOutOf20 / 20) * 100);
-        let nclcGrade = parsed.nclcGrade || "NCLC 7 (B2 Benchmark Target)";
-        let expressEntryPoints = parsed.expressEntryPoints || 17;
+        let nclcGrade = "NCLC 7 (B2 Benchmark Target)";
+        let cefrLevel = parsed.cefrLevel || "B2";
+        let expressEntryPoints = 17;
 
-        if (scoreOutOf20 >= 17) {
+        if (scoreOutOf20 >= 18) {
+          nclcGrade = "NCLC 10+ (C2 Mastery)";
+          cefrLevel = "C2";
+          expressEntryPoints = 34;
+        } else if (scoreOutOf20 >= 16) {
           nclcGrade = "NCLC 9 (C1 Advanced)";
+          cefrLevel = "C1";
           expressEntryPoints = 31;
         } else if (scoreOutOf20 >= 14) {
           nclcGrade = "NCLC 8 (B2 Upper)";
+          cefrLevel = "B2";
           expressEntryPoints = 23;
         } else if (scoreOutOf20 >= 12) {
           nclcGrade = "NCLC 7 (B2 Benchmark Target)";
+          cefrLevel = "B2";
           expressEntryPoints = 17;
         } else if (scoreOutOf20 >= 10) {
           nclcGrade = "NCLC 6 (B1 Intermediate)";
+          cefrLevel = "B1";
           expressEntryPoints = 12;
         } else if (scoreOutOf20 >= 8) {
           nclcGrade = "NCLC 5 (B1 Threshold)";
+          cefrLevel = "B1";
           expressEntryPoints = 6;
-        } else {
+        } else if (scoreOutOf20 >= 5) {
           nclcGrade = "NCLC 4 (A2 Elementary)";
+          cefrLevel = "A2";
+          expressEntryPoints = 0;
+        } else if (scoreOutOf20 >= 3) {
+          nclcGrade = "NCLC 3 (A1 Break-Through)";
+          cefrLevel = "A1";
+          expressEntryPoints = 0;
+        } else {
+          nclcGrade = "NCLC 1-2 (Below A1 / Beginner)";
+          cefrLevel = "Below A1";
           expressEntryPoints = 0;
         }
 
@@ -325,12 +344,12 @@ Evaluate strictly according to official FEI TCF Canada examiner criteria. Respon
           score: scorePct,
           scoreOutOf20,
           nclcGrade,
-          cefrLevel: parsed.cefrLevel || 'B2',
+          cefrLevel,
           expressEntryPoints,
-          taskFulfillmentScore: typeof parsed.taskFulfillmentScore === 'number' ? parsed.taskFulfillmentScore : 4,
-          coherenceScore: typeof parsed.coherenceScore === 'number' ? parsed.coherenceScore : 4,
-          lexicalScore: typeof parsed.lexicalScore === 'number' ? parsed.lexicalScore : 4,
-          grammarScore: typeof parsed.grammarScore === 'number' ? parsed.grammarScore : 3,
+          taskFulfillmentScore: typeof parsed.taskFulfillmentScore === 'number' ? parsed.taskFulfillmentScore : Math.min(5, Math.ceil(scoreOutOf20 / 4)),
+          coherenceScore: typeof parsed.coherenceScore === 'number' ? parsed.coherenceScore : Math.min(5, Math.ceil(scoreOutOf20 / 4)),
+          lexicalScore: typeof parsed.lexicalScore === 'number' ? parsed.lexicalScore : Math.min(5, Math.ceil(scoreOutOf20 / 4)),
+          grammarScore: typeof parsed.grammarScore === 'number' ? parsed.grammarScore : Math.min(5, Math.ceil(scoreOutOf20 / 4)),
           feedback: parsed.feedback || 'Good effort on this writing task.',
           corrections: Array.isArray(parsed.corrections) ? parsed.corrections : [],
           tips: Array.isArray(parsed.tips) ? parsed.tips : [],
