@@ -26,7 +26,9 @@ export async function apiFetch(
 
   const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
 
-  if ((res.status === 401 || res.status === 403) && typeof window !== "undefined") {
+  const isBackgroundPath = path.includes("/heartbeat") || path.includes("/presence") || path.includes("/analytics") || path.includes("/speaking");
+
+  if ((res.status === 401 || res.status === 403) && typeof window !== "undefined" && !isBackgroundPath) {
     const clone = res.clone();
     try {
       const data = await clone.json();
@@ -37,10 +39,12 @@ export async function apiFetch(
           window.location.href = `/login?error=${data.code}`;
         }
       } else if (res.status === 401) {
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem("francprep_user");
-        if (!window.location.pathname.startsWith("/login") && !window.location.pathname.startsWith("/signup")) {
-          window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+        if (path.includes("/auth/me") || path.includes("/admin/")) {
+          localStorage.removeItem(STORAGE_KEY);
+          localStorage.removeItem("francprep_user");
+          if (!window.location.pathname.startsWith("/login") && !window.location.pathname.startsWith("/signup")) {
+            window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+          }
         }
       }
     } catch {}
