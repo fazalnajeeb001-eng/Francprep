@@ -5,14 +5,33 @@ import Exercise from '../models/Exercise';
 import mongoose from 'mongoose';
 import { buildLanguageFilter } from '../utils/languageFilter';
 
-const CEFR_LEVELS = [
-  { level: 'A1', title: 'French A1 — Beginner', description: 'Can understand and use familiar everyday expressions and very basic phrases. Can introduce themselves and others, and can ask and answer simple questions about personal details.' },
-  { level: 'A2', title: 'French A2 — Elementary', description: 'Can understand sentences and frequently used expressions related to areas of immediate relevance. Can communicate in simple and routine tasks requiring a direct exchange of information.' },
-  { level: 'B1', title: 'French B1 — Intermediate', description: 'Can understand the main points of clear standard input on familiar matters. Can deal with most situations likely to arise while travelling in a French-speaking area.' },
-  { level: 'B2', title: 'French B2 — Upper Intermediate', description: 'Can understand the main ideas of complex text on both concrete and abstract topics. Can interact with a degree of fluency and spontaneity that makes regular interaction possible.' },
-  { level: 'C1', title: 'French C1 — Advanced', description: 'Can understand a wide range of demanding, longer texts and recognise implicit meaning. Can express ideas fluently and spontaneously without much obvious searching for expressions.' },
-  { level: 'C2', title: 'French C2 — Mastery', description: 'Can understand with ease virtually everything heard or read. Can summarise information from different spoken and written sources, reconstructing arguments in a coherent presentation.' },
-];
+function getCefrLevelsForLanguage(langCode?: string) {
+  const norm = (langCode || 'fr').toLowerCase().trim();
+  let langName = 'French';
+  let areaName = 'French-speaking area';
+  if (norm === 'de' || norm === 'german') {
+    langName = 'German';
+    areaName = 'German-speaking area';
+  } else if (norm === 'es' || norm === 'spanish') {
+    langName = 'Spanish';
+    areaName = 'Spanish-speaking area';
+  } else if (norm === 'it' || norm === 'italian') {
+    langName = 'Italian';
+    areaName = 'Italian-speaking area';
+  } else if (norm !== 'fr' && norm !== 'french') {
+    langName = norm.charAt(0).toUpperCase() + norm.slice(1);
+    areaName = `${langName}-speaking area`;
+  }
+
+  return [
+    { level: 'A1', title: `${langName} A1 — Beginner`, description: 'Can understand and use familiar everyday expressions and very basic phrases. Can introduce themselves and others, and can ask and answer simple questions about personal details.' },
+    { level: 'A2', title: `${langName} A2 — Elementary`, description: 'Can understand sentences and frequently used expressions related to areas of immediate relevance. Can communicate in simple and routine tasks requiring a direct exchange of information.' },
+    { level: 'B1', title: `${langName} B1 — Intermediate`, description: `Can understand the main points of clear standard input on familiar matters. Can deal with most situations likely to arise while travelling in a ${areaName}.` },
+    { level: 'B2', title: `${langName} B2 — Upper Intermediate`, description: 'Can understand the main ideas of complex text on both concrete and abstract topics. Can interact with a degree of fluency and spontaneity that makes regular interaction possible.' },
+    { level: 'C1', title: `${langName} C1 — Advanced`, description: 'Can understand a wide range of demanding, longer texts and recognise implicit meaning. Can express ideas fluently and spontaneously without much obvious searching for expressions.' },
+    { level: 'C2', title: `${langName} C2 — Mastery`, description: 'Can understand with ease virtually everything heard or read. Can summarise information from different spoken and written sources, reconstructing arguments in a coherent presentation.' },
+  ];
+}
 
 export class ChapterService {
   async getChapterById(chapterId: string) {
@@ -257,7 +276,8 @@ export class ChapterService {
       }
 
       // Build response with all 6 levels
-      const data = CEFR_LEVELS.map((info) => ({
+      const cefrLevels = getCefrLevelsForLanguage(filters?.language);
+      const data = cefrLevels.map((info) => ({
         level: info.level,
         title: info.title,
         description: info.description,
@@ -267,7 +287,8 @@ export class ChapterService {
       return { success: true, data };
     } catch (err) {
       console.error('getPublishedChapters error:', err);
-      return { success: true, data: CEFR_LEVELS.map((info) => ({ level: info.level, title: info.title, description: info.description, chapters: [] })) };
+      const cefrLevels = getCefrLevelsForLanguage(filters?.language);
+      return { success: true, data: cefrLevels.map((info) => ({ level: info.level, title: info.title, description: info.description, chapters: [] })) };
     }
   }
 }

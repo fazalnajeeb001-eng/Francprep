@@ -113,13 +113,14 @@ function LearnPage() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await apiFetch("/chapters");
+        const langCode = activeBranding.code || 'fr';
+        const res = await apiFetch(`/chapters?language=${langCode}`);
         const json = await res.json();
         if (json.success) setLevels(json.data);
       } catch (e) { console.error(e); }
       finally { setLoading(false); }
     })();
-  }, []);
+  }, [activeBranding.code]);
 
   const selectLevel = (level: string) => {
     const data = levels.find((l: any) => l.level === level);
@@ -348,26 +349,26 @@ function LearnPage() {
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className={`text-base font-extrabold ${dark ? "text-white" : "text-gray-900"}`}>
-                      DELF {view} Milestone Diagnostic Exam
+                      {(activeBranding.primaryExamName || activeBranding.languageName)} {view} Milestone Diagnostic Exam
                     </h3>
                     <span className="px-2 py-0.5 rounded text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/30">
                       Module Gate
                     </span>
                   </div>
                   <p className={`text-xs ${textMuted} mt-0.5`}>
-                    Complete your chapter studies, then take the DELF {view} Diagnostic Exam to unlock Module {view === 'A1' ? 'A2' : view === 'A2' ? 'B1' : view === 'B1' ? 'B2' : 'C1'}.
+                    Complete your chapter studies, then take the {(activeBranding.primaryExamName || activeBranding.languageName)} {view} Diagnostic Exam to unlock Module {view === 'A1' ? 'A2' : view === 'A2' ? 'B1' : view === 'B1' ? 'B2' : 'C1'}.
                   </p>
                   <p className="text-[10px] text-gray-400 mt-1 italic">
-                    (Diagnostic evaluation exam formatted to mirror official France Éducation International (FEI) DELF standards).
+                    (Diagnostic evaluation exam formatted to mirror official {activeBranding.languageName} CEFR certification standards).
                   </p>
                 </div>
               </div>
 
               <Link
-                to="/exam/delf"
+                to={activeBranding.code === 'fr' ? "/exam/delf" : "/exam"}
                 className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs rounded-xl shadow-lg flex items-center gap-2 transition-all shrink-0 hover:scale-[1.02]"
               >
-                <span>📜 Take DELF {view} Exam</span>
+                <span>📜 Take {(activeBranding.primaryExamName || activeBranding.languageName)} {view} Exam</span>
                 <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
@@ -426,16 +427,16 @@ function LearnPage() {
                               <span className="text-lg">{icon}</span>
                               <h2 className={`text-base font-bold ${dark ? "text-white" : "text-gray-900"}`}>{data.title}</h2>
                               <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                                🔒 DELF Gate Locked
+                                🔒 {(activeBranding.primaryExamName || activeBranding.languageName)} Gate Locked
                               </span>
                             </div>
                             <p className="text-xs text-amber-400/90 mt-1">
-                              Pass the DELF Milestone Exam ({gatingSettings.passingScorePercentage}%+) to unlock Module {data.level}.
+                              Pass the {(activeBranding.primaryExamName || activeBranding.languageName)} Milestone Exam ({gatingSettings.passingScorePercentage}%+) to unlock Module {data.level}.
                             </p>
                           </div>
                         </div>
-                        <Link to="/exam/delf" className="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-black text-xs font-black rounded-xl shadow flex items-center gap-1 hover:brightness-110 transition-all shrink-0">
-                          📜 Take DELF Exam
+                        <Link to={activeBranding.code === 'fr' ? "/exam/delf" : "/exam"} className="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-black text-xs font-black rounded-xl shadow flex items-center gap-1 hover:brightness-110 transition-all shrink-0">
+                          📜 Take {(activeBranding.primaryExamName || activeBranding.languageName)} Exam
                         </Link>
                       </div>
                     </div>
