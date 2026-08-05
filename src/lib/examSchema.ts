@@ -65,7 +65,6 @@ export interface ExamPaper {
 }
 
 // ─── HELPER TO GENERATE AUTHENTIC FULL-LENGTH QUESTION ARRAYS (39/40 ITEMS) ───
-// ─── HELPER TO GENERATE AUTHENTIC FULL-LENGTH QUESTION ARRAYS (39/40 ITEMS) ───
 const LISTENING_TOPICS = [
   {
     level: "A1",
@@ -75,7 +74,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "Chers voyageurs, votre attention s'il vous plaît. Le TGV numéro 7842 à destination de Paris-Gare de Lyon, départ initialement prévu à 14h15, partira exceptionnellement de la voie 4. Veuillez assurer l'embarquement immédiat.",
     en: "Dear passengers, attention please. TGV train 7842 to Paris-Gare de Lyon, originally scheduled for 2:15pm, will exceptionally depart from platform 4. Please proceed to immediate boarding.",
-    hint: "Station Announcement Strategy: Listen for platform change keywords like 'exceptionnellement' or 'voie/quai'. Pay attention to where the train will depart, rather than the original schedule."
+    hint: "⚠️ Trap Alert: Notice how the speaker mentions initial departure time (14h15) first, but pay attention to the shift marker 'exceptionnellement'.\n🔄 Paraphrase Key: The phrase 'partira de la voie 4' defines the exact platform location.\n🎧 Acoustic Cues: Listen for 'voie' or 'quai' to catch platform departure announcements."
   },
   {
     level: "A1",
@@ -85,7 +84,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "Salut Thomas ! C'est Marc. Je suis actuellement au supermarché du centre-ville pour faire les courses de la semaine. Dis-moi, est-ce que tu as besoin que je prenne du pain frais ou du fromage pour le dîner ce soir ?",
     en: "Hi Thomas! It's Marc. I'm currently at the downtown supermarket doing weekly grocery shopping. Tell me, do you need me to pick up fresh bread or cheese for dinner tonight?",
-    hint: "Voicemail Strategy: Focus on the opening sentence where the speaker states their current location ('je suis actuellement au...'). Distinguish where they are from items mentioned."
+    hint: "⚠️ Trap Alert: Do not confuse items the speaker offers to buy (bread/cheese) with where the speaker currently is.\n🔄 Paraphrase Key: The phrase 'je suis actuellement au...' establishes the speaker's real-time physical location.\n🎧 Acoustic Cues: Listen for location prepositions like 'au', 'à la', or 'dans'."
   },
   {
     level: "A2",
@@ -95,7 +94,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "Bonjour à tous, voici vos prévisions météorologiques pour la journée de mardi. Pensez à vous équiper d'un parapluie robuste dès ce matin, car de fortes averses orageuses sont attendues sur l'ensemble de la région au cours de l'après-midi.",
     en: "Hello everyone, here is your weather forecast for Tuesday. Be sure to bring a sturdy umbrella this morning, as heavy thunderstorm showers are expected across the region in the afternoon.",
-    hint: "Weather Forecast Strategy: Listen for specific weather gear recommendations linked to expected weather conditions in the afternoon."
+    hint: "⚠️ Trap Alert: Distinguish morning weather conditions from afternoon weather changes.\n🔄 Paraphrase Key: The term 'parapluie' (umbrella) directly relates to 'averses' (rain showers).\n🎧 Acoustic Cues: Listen for weather gear recommendations given after 'pensez à vous équiper de...'."
   },
   {
     level: "A2",
@@ -105,7 +104,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "Bonjour, nous vous rappelons que votre rendez-vous de contrôle annuel avec le docteur Mercier est confirmé pour ce mardi à 10h00 précises.",
     en: "Hello, we are reminding you that your annual dental check-up with Dr. Mercier is confirmed for this Tuesday at exactly 10:00am.",
-    hint: "Appointment Reminder Strategy: Listen carefully for the confirmed day of the week and exact time of the appointment."
+    hint: "⚠️ Trap Alert: Distinguish between the dentist office name and the confirmed appointment day/time.\n🔄 Paraphrase Key: 'confirmé pour ce mardi à 10h00' confirms the official schedule.\n🎧 Acoustic Cues: Pay close attention to numbers and days of the week stated after 'rendez-vous'."
   },
   {
     level: "B1",
@@ -115,7 +114,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "Bonjour à l'équipe projet. Veuillez noter que la réunion stratégique est reportée à vendredi 15h00 dans la grande salle de conférence B au deuxième étage.",
     en: "Hello project team. Please note that the strategic meeting is postponed to Friday at 3:00pm in large conference room B on the second floor.",
-    hint: "Workplace Notice Strategy: Watch for schedule change markers like 'reporté à' (postponed to). The updated schedule overrides the initial time."
+    hint: "⚠️ Trap Alert: The initial schedule (Thursday morning) is overridden by the shift marker 'reportée à'.\n🔄 Paraphrase Key: 'reportée à vendredi 15h00' establishes the actual rescheduled meeting.\n🎧 Acoustic Cues: Watch for workplace change verbs like 'reporté', 'déplacé', or 'annulé'."
   },
   {
     level: "B1",
@@ -125,7 +124,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "Attention, exercice de sécurité incendie. En cas d'alarme, veuillez évacuer calmement en empruntant exclusivement les escaliers de secours et ne pas utiliser les ascenseurs.",
     en: "Attention, fire safety drill. In case of alarm, please evacuate calmly using exclusively the emergency stairs and do not use elevators.",
-    hint: "Safety Instruction Strategy: Listen for contrastive instructions (what is required vs what is explicitly prohibited)."
+    hint: "⚠️ Trap Alert: Listen for mandatory safety actions vs explicitly forbidden actions (like elevators).\n🔄 Paraphrase Key: 'empruntant exclusivement' means using only the specified exit path.\n🎧 Acoustic Cues: Focus on imperative safety commands following 'en cas d'alarme'."
   },
   {
     level: "B2",
@@ -135,7 +134,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "La collecte sélective et le compostage obligatoire permettent d'abaisser le volume global des ordures ménagères de 30 % dans les arrondissements pilotes.",
     en: "Selective collection and mandatory composting reduce household waste volume by 30% in pilot boroughs.",
-    hint: "Environmental Report Strategy (NCLC 7 Target): Listen for French synonyms expressing reduction or decrease linked to percentage statistics."
+    hint: "⚠️ Trap Alert: Watch for percentage figures (30%) associated with waste reduction vs fee increases.\n🔄 Paraphrase Key: The verb 'abaisser le volume' in the speech is synonymous with 'réduire le volume'.\n🎧 Acoustic Cues: Listen for environmental statistics and municipal policy terms."
   },
   {
     level: "B2",
@@ -145,7 +144,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "L'accélération du travail hybride a stimulé les ventes d'équipements, enregistrant une hausse nette de 25 % du chiffre d'affaires.",
     en: "The acceleration of hybrid work boosted equipment sales, recording a net 25% increase in revenue.",
-    hint: "Economic News Strategy (NCLC 7 Target): Focus on key trend vocabulary ('hausse' vs 'baisse') and the exact figures associated with sales revenue."
+    hint: "⚠️ Trap Alert: Connect financial trends ('hausse' vs 'baisse') with the correct percentage (25%).\n🔄 Paraphrase Key: 'stimulé les ventes... hausse nette' translates to an increase in equipment sales.\n🎧 Acoustic Cues: Focus on economic trajectory words following 'chiffre d'affaires'."
   },
   {
     level: "C1",
@@ -155,7 +154,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "La végétalisation systématique des toitures contribue de manière décisive à l'atténuation des îlots de chaleur au cœur des grandes métropoles.",
     en: "Systematic rooftop greening contributes decisively to mitigating urban heat islands in major metropolitan centers.",
-    hint: "Urban Planning Strategy (C1 Level): Identify high-level terms expressing mitigation or action against urban climate challenges."
+    hint: "⚠️ Trap Alert: Distinguish climate adaptation goals from negative urban development distractor options.\n🔄 Paraphrase Key: 'atténuation des îlots de chaleur' matches the concept of fighting urban heat islands.\n🎧 Acoustic Cues: Listen for ecological urban planning terms like 'végétalisation' and 'micro-forêts'."
   },
   {
     level: "C2",
@@ -165,7 +164,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "L'avènement de la cryptographie quantique permet d'envisager une étanchéité théoriquement absolue des flux de données.",
     en: "The advent of quantum cryptography allows for theoretically absolute data flow security against cyber intrusions.",
-    hint: "Scientific Lecture Strategy (C2 Level): Focus on academic concepts expressing security or data protection guarantees in technological protocols."
+    hint: "⚠️ Trap Alert: Avoid mistaking technical cryptography hardware for server or investment options.\n🔄 Paraphrase Key: 'étanchéité théoriquement absolue' paraphrases total data security guarantees.\n🎧 Acoustic Cues: Focus on academic scientific definitions in high-level lecture discourse."
   }
 ];
 
