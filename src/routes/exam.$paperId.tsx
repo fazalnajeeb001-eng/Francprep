@@ -899,15 +899,6 @@ export function AuthenticCBTExamPage() {
                               <span>{showPassageTranslation ? "Hide EN" : "🌐 Show EN Translation"}</span>
                             </button>
                           )}
-                          {currentQ.hint && (
-                            <button
-                              onClick={() => setShowReadingHint(!showReadingHint)}
-                              className="px-2 py-1 rounded bg-amber-500 text-white font-bold text-[10px] hover:bg-amber-400 transition-all flex items-center gap-1"
-                            >
-                              <HelpCircle className="w-3 h-3" />
-                              <span>{showReadingHint ? "Hide Hint" : "💡 Show Hint"}</span>
-                            </button>
-                          )}
                         </div>
                       )}
                     </div>
@@ -925,12 +916,6 @@ export function AuthenticCBTExamPage() {
                         <p className="italic font-medium p-2.5 rounded bg-white dark:bg-slate-950 border border-blue-200 dark:border-blue-900">
                           "{currentQ.passageEnglish}"
                         </p>
-                      </div>
-                    )}
-
-                    {showReadingHint && currentQ.hint && (
-                      <div className="pt-2 border-t border-amber-300 dark:border-amber-800 text-xs text-amber-900 dark:text-amber-300 font-medium p-2.5 rounded bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-900">
-                        💡 <strong>Reading Hint:</strong> {currentQ.hint}
                       </div>
                     )}
                   </div>
