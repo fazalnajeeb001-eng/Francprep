@@ -714,48 +714,48 @@ export function AuthenticCBTExamPage() {
     <div className={`min-h-screen ${cbtBg} flex flex-col justify-between font-sans transition-colors duration-200 select-none`}>
 
       {/* ─── OFFICIAL CBT TEST CENTER TOP HEADER BAR ─── */}
-      <header className={`${cbtHeader} px-4 py-3 shadow-md border-b flex flex-col md:flex-row md:items-center justify-between gap-3 shrink-0`}>
-        <div className="flex items-center gap-3">
+      <header className={`${cbtHeader} px-3 sm:px-4 py-2.5 sm:py-3 shadow-md border-b flex flex-col md:flex-row md:items-center justify-between gap-2.5 sm:gap-3 shrink-0`}>
+        <div className="flex items-center justify-between sm:justify-start gap-2.5 w-full md:w-auto">
           <button
             onClick={() => navigate({ to: "/exam" })}
-            className="p-1.5 rounded bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold flex items-center gap-1"
+            className="p-1.5 px-2.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold flex items-center gap-1.5 shrink-0 transition-all active:scale-95 shadow-sm"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Exit Exam</span>
           </button>
 
-          <div className="h-6 w-px bg-slate-600 hidden md:block" />
+          <div className="h-5 w-px bg-slate-600 hidden sm:block" />
 
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-sm tracking-wide text-white uppercase">{paper.title}</span>
-              <span className="px-2 py-0.5 rounded bg-blue-600 text-white text-[10px] font-mono font-bold">
+          <div className="min-w-0 flex-1 sm:flex-none">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="font-extrabold text-xs sm:text-sm tracking-wide text-white uppercase truncate">{paper.title}</span>
+              <span className="px-2 py-0.5 rounded bg-blue-600 text-white text-[10px] font-mono font-bold shrink-0">
                 {paper.code}
               </span>
             </div>
-            <p className="text-[11px] text-slate-300">
+            <p className="text-[10px] sm:text-[11px] text-slate-300 truncate">
               Candidate: <strong>CANDIDATE-OFFICIAL-2026</strong> • Test Center ID: <strong>CA-MTL-042</strong>
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between sm:justify-end gap-2 w-full md:w-auto flex-wrap sm:flex-nowrap">
           {/* Mode Badge */}
           {mode === "PRACTICE" ? (
-            <span className="px-3 py-1 rounded bg-emerald-600 text-white text-xs font-bold flex items-center gap-1.5">
+            <span className="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[11px] sm:text-xs font-bold flex items-center gap-1.5 shrink-0 shadow-sm">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>GUIDED PRACTICE MODE</span>
+              <span>PRACTICE MODE</span>
             </span>
           ) : (
-            <span className="px-3 py-1 rounded bg-red-600 text-white text-xs font-bold flex items-center gap-1.5 animate-pulse">
+            <span className="px-2.5 py-1 rounded-lg bg-red-600 text-white text-[11px] sm:text-xs font-bold flex items-center gap-1.5 shrink-0 animate-pulse shadow-sm">
               <Clock className="w-3.5 h-3.5" />
-              <span>OFFICIAL REAL EXAM MODE (UNPAUSABLE)</span>
+              <span>OFFICIAL EXAM MODE</span>
             </span>
           )}
 
           {/* Official Countdown Timer */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded bg-slate-900 border border-slate-700 font-mono font-bold text-sm text-emerald-400">
-            <Clock className="w-4 h-4 text-slate-400" />
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 font-mono font-bold text-xs sm:text-sm text-emerald-400 shrink-0 shadow-inner">
+            <Clock className="w-3.5 h-3.5 text-slate-400" />
             <span>{formatTime(timeLeft)}</span>
             {mode === "PRACTICE" && (
               <button
@@ -771,10 +771,10 @@ export function AuthenticCBTExamPage() {
           <button
             disabled={isSubmittingFinal}
             onClick={handleFinishTest}
-            className="px-4 py-1.5 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow disabled:opacity-50 transition-all"
+            className="px-3 sm:px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow disabled:opacity-50 transition-all active:scale-95 shrink-0"
           >
             <Send className={`w-3.5 h-3.5 ${isSubmittingFinal ? "animate-spin" : ""}`} />
-            <span>{isSubmittingFinal ? "Evaluating Responses with AI..." : "Finish Test"}</span>
+            <span>{isSubmittingFinal ? "Evaluating..." : "Finish Test"}</span>
           </button>
         </div>
       </header>
@@ -866,33 +866,33 @@ export function AuthenticCBTExamPage() {
       )}
 
       {/* ─── SECTION NAVIGATION TABS ─── */}
-      <div className={`${cbtDark ? "bg-slate-900 border-slate-800" : "bg-slate-200 border-slate-300"} border-b px-4 py-1.5 flex items-center gap-2 overflow-x-auto shrink-0 text-xs font-bold`}>
+      <div className={`${cbtDark ? "bg-slate-900 border-slate-800" : "bg-slate-200 border-slate-300"} border-b px-2 sm:px-4 py-1.5 flex items-center gap-1.5 sm:gap-2 overflow-x-auto shrink-0 text-xs font-bold touch-pan-x`}>
         {paper.sections.map((sec, idx) => {
           const isSelected = activeSectionIdx === idx;
           return (
             <button
               key={sec.type}
               onClick={() => setActiveSectionIdx(idx)}
-              className={`px-3.5 py-1.5 rounded transition-all shrink-0 flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-lg transition-all shrink-0 flex items-center gap-1.5 text-[11px] sm:text-xs font-bold active:scale-95 ${
                 isSelected
-                  ? "bg-blue-600 text-white shadow"
+                  ? "bg-blue-600 text-white shadow-sm"
                   : cbtDark
                   ? "bg-slate-800 text-slate-300 hover:bg-slate-700"
-                  : "bg-slate-100 text-slate-900 hover:bg-slate-300 font-bold border border-slate-300"
+                  : "bg-slate-100 text-slate-900 hover:bg-slate-300 border border-slate-300"
               }`}
             >
-              {sec.type === "COMPREHENSION_ORALE" && <Volume2 className="w-3.5 h-3.5" />}
-              {sec.type === "COMPREHENSION_ECRITE" && <BookOpen className="w-3.5 h-3.5" />}
-              {sec.type === "EXPRESSION_ECRITE" && <PenTool className="w-3.5 h-3.5" />}
-              {sec.type === "EXPRESSION_ORALE" && <Mic className="w-3.5 h-3.5" />}
-              <span>{sec.title}</span>
+              {sec.type === "COMPREHENSION_ORALE" && <Volume2 className="w-3.5 h-3.5 shrink-0" />}
+              {sec.type === "COMPREHENSION_ECRITE" && <BookOpen className="w-3.5 h-3.5 shrink-0" />}
+              {sec.type === "EXPRESSION_ECRITE" && <PenTool className="w-3.5 h-3.5 shrink-0" />}
+              {sec.type === "EXPRESSION_ORALE" && <Mic className="w-3.5 h-3.5 shrink-0" />}
+              <span className="whitespace-nowrap">{sec.title}</span>
             </button>
           );
         })}
       </div>
 
       {/* ─── MAIN CBT SPLIT-SCREEN CONTENT WORKSPACE ─── */}
-      <main className="flex-1 p-4 md:p-6 max-w-7xl w-full mx-auto overflow-y-auto">
+      <main className="flex-1 p-3 sm:p-4 md:p-6 max-w-7xl w-full mx-auto overflow-y-auto space-y-4">
         {/* PROMINENT UN-MISSABLE PRACTICE STRATEGY BANNER */}
         {mode === "PRACTICE" && (
           <div className="mb-4 p-4 rounded-xl border border-purple-300 dark:border-purple-800 bg-gradient-to-r from-purple-900/90 via-indigo-900/90 to-purple-950 text-white shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-3">
@@ -1166,7 +1166,7 @@ export function AuthenticCBTExamPage() {
                         onClick={() => {
                           if (!isLocked) handleSelectOption(currentQ.id, idx);
                         }}
-                        className={`p-3.5 rounded border text-xs font-semibold cursor-pointer transition-all flex items-center justify-between ${
+                        className={`p-3.5 sm:p-4 rounded-xl border text-xs sm:text-sm font-semibold cursor-pointer transition-all flex items-center justify-between min-h-[48px] active:scale-[0.99] ${
                           isChosen
                             ? "bg-blue-600 text-white border-blue-600 shadow-md font-bold"
                             : cbtDark
@@ -1174,8 +1174,8 @@ export function AuthenticCBTExamPage() {
                             : "bg-slate-50 text-slate-950 border-slate-300 hover:border-blue-500 hover:bg-blue-50/50"
                         } ${isLocked ? "cursor-not-allowed opacity-90" : ""}`}
                       >
-                        <div className="flex items-center gap-3">
-                          <span className={`w-6 h-6 rounded flex items-center justify-center font-bold text-xs ${
+                        <div className="flex items-center gap-3 pr-2">
+                          <span className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ${
                             isChosen
                               ? "bg-white text-blue-600"
                               : cbtDark
@@ -1184,7 +1184,7 @@ export function AuthenticCBTExamPage() {
                           }`}>
                             {letter}
                           </span>
-                          <span className={isChosen ? "text-white" : "text-slate-950 dark:text-slate-200"}>{opt}</span>
+                          <span className={`leading-snug ${isChosen ? "text-white" : "text-slate-950 dark:text-slate-200"}`}>{opt}</span>
                         </div>
                         {isChosen && <CheckCircle2 className="w-4 h-4 text-white shrink-0" />}
                       </div>
@@ -1198,7 +1198,7 @@ export function AuthenticCBTExamPage() {
                     {!checkedMap[currentQ.id] && (
                       <button
                         onClick={() => handleCheckAnswer(currentQ.id, currentQ.correctIndex)}
-                        className="w-full py-2.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2 transition-all"
+                        className="w-full py-2.5 sm:py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow flex items-center justify-center gap-2 transition-all active:scale-95"
                       >
                         <Sparkles className="w-4 h-4" />
                         <span>Check Answer (Attempt {(attemptsMap[currentQ.id] || 0) + 1} of 2)</span>
@@ -1206,7 +1206,7 @@ export function AuthenticCBTExamPage() {
                     )}
 
                     {attemptsMap[currentQ.id] === 1 && !checkedMap[currentQ.id] && (
-                      <div className="p-3 rounded bg-amber-500/10 border border-amber-500/30 text-amber-950 dark:text-amber-300 text-xs font-semibold flex items-center gap-2">
+                      <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-950 dark:text-amber-300 text-xs font-semibold flex items-center gap-2">
                         <span>⚠️ Incorrect. You have 1 attempt remaining. Try again!</span>
                       </div>
                     )}
@@ -1261,26 +1261,30 @@ export function AuthenticCBTExamPage() {
               </div>
 
               {/* Prev / Next Bottom Navigator */}
-              <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-700">
+              <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-700 gap-2">
                 <button
                   disabled={currentQuestionIdx === 0 || (mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE")}
                   onClick={() => setCurrentQuestionIdx((prev) => Math.max(0, prev - 1))}
-                  className={`px-4 py-2 rounded text-xs font-bold transition-all ${
+                  className={`px-3.5 sm:px-4 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 active:scale-95 ${
                     currentQuestionIdx === 0 || (mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE")
                       ? "opacity-40 cursor-not-allowed bg-slate-200 text-slate-500 border-slate-300"
                       : "bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-300"
                   }`}
                   title={mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE" ? "Navigation arrière désactivée en mode examen officiel (FEI CBT Rules)" : ""}
                 >
-                  ← Previous Question
+                  ← <span className="hidden xs:inline">Previous</span>
                 </button>
+
+                <span className="text-[11px] font-mono font-bold text-slate-500">
+                  {currentQuestionIdx + 1} / {currentQuestions.length}
+                </span>
 
                 <button
                   disabled={currentQuestionIdx === currentQuestions.length - 1}
                   onClick={() => setCurrentQuestionIdx((prev) => Math.min(currentQuestions.length - 1, prev + 1))}
-                  className="px-4 py-2 rounded bg-blue-600 text-white text-xs font-bold disabled:opacity-40"
+                  className="px-3.5 sm:px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold disabled:opacity-40 shadow active:scale-95 flex items-center gap-1"
                 >
-                  Next Question →
+                  <span className="hidden xs:inline">Next</span> →
                 </button>
               </div>
             </div>
@@ -1634,10 +1638,10 @@ export function AuthenticCBTExamPage() {
 
       {/* ─── OFFICIAL CBT BOTTOM CANDIDATE QUESTION GRID NAVIGATOR ─── */}
       {currentQuestions.length > 0 && (
-        <footer className="bg-slate-200 dark:bg-slate-800 border-t border-slate-300 dark:border-slate-700 px-4 py-2 flex items-center justify-between gap-4 overflow-x-auto shrink-0">
-          <div className="flex items-center gap-1.5 overflow-x-auto">
-            <span className="text-xs font-bold text-slate-600 dark:text-slate-400 mr-2 shrink-0">
-              Question Grid Index:
+        <footer className="bg-slate-200 dark:bg-slate-800 border-t border-slate-300 dark:border-slate-700 px-3 sm:px-4 py-2 flex items-center justify-between gap-3 overflow-x-auto shrink-0 touch-pan-x">
+          <div className="flex items-center gap-1.5 overflow-x-auto py-1 touch-pan-x min-w-0">
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-400 mr-1.5 shrink-0 hidden sm:inline">
+              Question Index:
             </span>
             {currentQuestions.map((q, idx) => {
               const isAnswered = selectedAnswers[q.id] !== undefined;
@@ -1648,9 +1652,9 @@ export function AuthenticCBTExamPage() {
                 <button
                   key={q.id}
                   onClick={() => setCurrentQuestionIdx(idx)}
-                  className={`w-8 h-8 rounded text-xs font-bold transition-all relative shrink-0 ${
+                  className={`w-7 sm:w-8 h-7 sm:h-8 rounded-lg text-[11px] sm:text-xs font-bold transition-all relative shrink-0 active:scale-95 flex items-center justify-center ${
                     isCurrent
-                      ? "ring-2 ring-blue-600 bg-blue-600 text-white"
+                      ? "ring-2 ring-blue-600 bg-blue-600 text-white shadow-sm"
                       : isAnswered
                       ? "bg-blue-800 text-white"
                       : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300"
@@ -1658,17 +1662,17 @@ export function AuthenticCBTExamPage() {
                 >
                   {q.questionNumber}
                   {isFlagged && (
-                    <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-amber-400" />
+                    <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-amber-500 ring-2 ring-white dark:ring-slate-800" />
                   )}
                 </button>
               );
             })}
           </div>
 
-          <div className="flex items-center gap-3 shrink-0 text-xs font-semibold text-slate-600 dark:text-slate-400">
+          <div className="hidden md:flex items-center gap-3 shrink-0 text-xs font-semibold text-slate-600 dark:text-slate-400">
             <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-blue-800" /> Answered</span>
-            <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-amber-400" /> Flagged</span>
-            <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-slate-300" /> Unanswered</span>
+            <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-amber-500" /> Flagged</span>
+            <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-slate-300 dark:bg-slate-700" /> Unanswered</span>
           </div>
         </footer>
       )}
