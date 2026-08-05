@@ -278,6 +278,23 @@ function getTargetLevel(questionNum: number): string {
   return "C2";
 }
 
+function shuffleOptions(rawOpt: string[], origCorrectIdx: number) {
+  const correctText = rawOpt[origCorrectIdx];
+  const indexed = rawOpt.map((optText, i) => ({ optText, isCorrect: i === origCorrectIdx }));
+
+  // Deterministic shuffle using option text lengths to vary option order
+  for (let i = indexed.length - 1; i > 0; i--) {
+    const j = (indexed[i].optText.length + i) % (i + 1);
+    const temp = indexed[i];
+    indexed[i] = indexed[j];
+    indexed[j] = temp;
+  }
+
+  const options = indexed.map((item) => item.optText);
+  const correctIndex = indexed.findIndex((item) => item.isCorrect);
+  return { options, correctIndex, correctText };
+}
+
 function generateListeningQuestions(count: number, prefix: string, seedOffset: number = 0): ExamQuestion[] {
   const qList: ExamQuestion[] = [];
   for (let i = 1; i <= count; i++) {
@@ -287,6 +304,7 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
     const t = pool[(i - 1 + seedOffset) % pool.length];
 
     const isQuestionInAudio = i <= 29;
+    const { options, correctIndex, correctText } = shuffleOptions(t.opt, t.ans);
 
     qList.push({
       id: `${prefix}-lis-${i}`,
@@ -294,10 +312,10 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       text: isQuestionInAudio
         ? `Écoutez le document sonore et la question audio N°${i} [Niveau ${t.level}]. Choisissez la bonne option.`
         : `[Question ${i} - Niveau ${t.level}] ${t.text} Quel est l'élément principal à retenir ?`,
-      options: t.opt,
-      correctIndex: t.ans,
-      explanation: `Pedagogical Explanation [Level ${t.level}]: The correct answer is Option A ("${t.opt[t.ans]}").`,
-      hint: `Level ${t.level} Listening Hint: Listen carefully for key acoustic markers related to "${t.opt[t.ans].slice(0, 30)}" and identify the main speaker's purpose.`,
+      options,
+      correctIndex,
+      explanation: `Pedagogical Explanation [Level ${t.level}]: The spoken document confirms "${correctText}".`,
+      hint: `Level ${t.level} Listening Guidance: Focus on the speaker's main intent and tone. Pay attention to key transition words (e.g. "cependant", "en revanche") to identify the correct message without guessing.`,
       transcript: t.tr,
       transcriptEnglish: t.en,
       questionInAudio: isQuestionInAudio,
@@ -315,16 +333,18 @@ function generateReadingQuestions(count: number, prefix: string, seedOffset: num
     const pool = matchingTopics.length > 0 ? matchingTopics : READING_TOPICS;
     const t = pool[(i - 1 + seedOffset) % pool.length];
 
+    const { options, correctIndex, correctText } = shuffleOptions(t.opt, t.ans);
+
     qList.push({
       id: `${prefix}-read-${i}`,
       questionNumber: i,
       passage: `[Document ${i} - Niveau ${t.level}] ${t.text}`,
       passageEnglish: t.passEn,
       text: `Question ${i} : ${t.q}`,
-      options: t.opt,
-      correctIndex: t.ans,
-      explanation: `Pedagogical Explanation [Level ${t.level}]: The text states "${t.opt[t.ans]}".`,
-      hint: `Level ${t.level} Reading Hint: Scan the text for key terms matching "${t.opt[t.ans].slice(0, 30)}" to verify the correct statement.`
+      options,
+      correctIndex,
+      explanation: `Pedagogical Explanation [Level ${t.level}]: The text states "${correctText}".`,
+      hint: `Level ${t.level} Reading Guidance: Scan paragraph 1 and 2 for synonyms and key thematic terms. Eliminate distractor options containing extreme words like "toujours" or "jamais" unless explicitly in the passage.`
     });
   }
   return qList;

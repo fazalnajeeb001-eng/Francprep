@@ -22,7 +22,7 @@ import {
   Moon
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
-import { speak } from "~/lib/speech";
+import { speak, speakDialogue } from "~/lib/speech";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
 import { apiFetch } from "~/lib/apiFetch";
@@ -73,10 +73,45 @@ export function AuthenticCBTExamPage() {
   const [showTranscripts, setShowTranscripts] = useState(false);
   const [showPassageTranslation, setShowPassageTranslation] = useState(false);
 
-  // User Responses State
-  const [selectedAnswers, setSelectedAnswers] = useState<{ [qId: string]: number }>({});
-  const [flaggedQuestions, setFlaggedQuestions] = useState<{ [qId: string]: boolean }>({});
-  const [writingResponses, setWritingResponses] = useState<{ [taskId: string]: string }>({});
+  // Session Key
+  const sessionKey = `fp_exam_session_${paper.id}_${mode}`;
+
+  // User Responses State (with localStorage Session Restoration)
+  const [selectedAnswers, setSelectedAnswers] = useState<{ [qId: string]: number }>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) return JSON.parse(saved).selectedAnswers || {};
+    } catch {}
+    return {};
+  });
+
+  const [flaggedQuestions, setFlaggedQuestions] = useState<{ [qId: string]: boolean }>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) return JSON.parse(saved).flaggedQuestions || {};
+    } catch {}
+    return {};
+  });
+
+  const [writingResponses, setWritingResponses] = useState<{ [taskId: string]: string }>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) return JSON.parse(saved).writingResponses || {};
+    } catch {}
+    return {};
+  });
+
+  const [speakingTranscripts, setSpeakingTranscripts] = useState<Record<string, string>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) return JSON.parse(saved).speakingTranscripts || {};
+    } catch {}
+    return {};
+  });
 
   // Practice Mode Attempt & Check Answer Logic
   const [attemptsMap, setAttemptsMap] = useState<{ [qId: string]: number }>({});
@@ -87,7 +122,6 @@ export function AuthenticCBTExamPage() {
   const [evaluatingWriting, setEvaluatingWriting] = useState<Record<string, boolean>>({});
 
   // AI Speaking Evaluation States
-  const [speakingTranscripts, setSpeakingTranscripts] = useState<Record<string, string>>({});
   const [recordingSpeaking, setRecordingSpeaking] = useState<Record<string, boolean>>({});
   const [speakingAiResults, setSpeakingAiResults] = useState<Record<string, any>>({});
   const [evaluatingSpeaking, setEvaluatingSpeaking] = useState<Record<string, boolean>>({});
@@ -104,6 +138,23 @@ export function AuthenticCBTExamPage() {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [showStrategyModal, setShowStrategyModal] = useState(false);
   const [openModelAnswerTaskId, setOpenModelAnswerTaskId] = useState<string | null>(null);
+
+  // Auto-save candidate progress continuously to localStorage
+  useEffect(() => {
+    if (typeof window === "undefined" || isSubmitted) return;
+    try {
+      const payload = {
+        selectedAnswers,
+        flaggedQuestions,
+        writingResponses,
+        speakingTranscripts,
+        activeSectionIdx,
+        currentQuestionIdx,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(sessionKey, JSON.stringify(payload));
+    } catch {}
+  }, [selectedAnswers, flaggedQuestions, writingResponses, speakingTranscripts, activeSectionIdx, currentQuestionIdx, isSubmitted, sessionKey]);
 
   useEffect(() => {
     document.documentElement.classList.remove("dark");
@@ -322,8 +373,13 @@ export function AuthenticCBTExamPage() {
 
   const handlePlayAudio = (text: string) => {
     setIsPlayingAudio(true);
-    speak(text, "fr-FR", 0.85, "female");
-    setTimeout(() => setIsPlayingAudio(false), 4000);
+    if (text.includes(":") || text.includes("\n") || text.includes("—")) {
+      speakDialogue(text, "fr-FR", 0.85);
+    } else {
+      const isMale = /\b(monsieur|m\.|homme|paul|léo|marc|antoine|pierre|thomas|hugo|louis)\b/i.test(text);
+      speak(text, "fr-FR", 0.85, isMale ? "male" : "female");
+    }
+    setTimeout(() => setIsPlayingAudio(false), 5000);
   };
 
   const handleStartSpeakingRecord = () => {
@@ -711,7 +767,13 @@ export function AuthenticCBTExamPage() {
                           className="px-4 py-2 rounded bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold flex items-center gap-1.5 shadow"
                         >
                           <Volume2 className={`w-4 h-4 ${isPlayingAudio ? "animate-bounce" : ""}`} />
-                          <span>{isPlayingAudio ? "Playing Audio Document..." : "Play Audio Recording (1-Play Limit)"}</span>
+                          <span>
+                            {isPlayingAudio
+                              ? "Playing Audio Document..."
+                              : mode === "PRACTICE"
+                              ? "🔊 Play Audio Document (Unlimited Replays in Practice)"
+                              : "🔊 Play Audio Recording (Official 1-Play Limit)"}
+                          </span>
                         </button>
                       </div>
                     </div>
