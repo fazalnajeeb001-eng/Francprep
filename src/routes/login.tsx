@@ -28,16 +28,7 @@ function LoginPage() {
   const [resetSuccess, setResetSuccess] = useState("");
   const [resetError, setResetError] = useState("");
 
-  const [selectedLang, setSelectedLang] = useState(() => getActiveLanguageCode(user));
-
-  const handleSelectTrack = (code: string) => {
-    setSelectedLang(code);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("fp_active_language", code);
-    }
-  };
-
-  const activeBranding = getTrackBranding(selectedLang);
+  const activeBranding = getTrackBranding(getActiveLanguageCode(user));
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -192,33 +183,6 @@ function LoginPage() {
       </div>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="w-full max-w-sm sm:max-w-md z-10">
-        {/* Interactive Track Switcher Bar */}
-        <div className="flex items-center justify-center gap-1.5 mb-6 p-1.5 rounded-2xl dark:bg-[#101828]/80 bg-white/80 backdrop-blur-xl border dark:border-[#1e2a4a] border-slate-200 shadow-lg w-fit mx-auto">
-          {[
-            { code: 'fr', name: 'French' },
-            { code: 'de', name: 'German' },
-            { code: 'es', name: 'Spanish' },
-            { code: 'it', name: 'Italian' },
-          ].map((t) => {
-            const isSelected = selectedLang === t.code;
-            return (
-              <button
-                key={t.code}
-                type="button"
-                onClick={() => handleSelectTrack(t.code)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all duration-300 cursor-pointer ${
-                  isSelected
-                    ? `bg-gradient-to-r ${activeStyle.gradient} text-white shadow-md scale-105`
-                    : "dark:text-gray-400 text-slate-600 hover:text-purple-400 dark:hover:bg-purple-500/10 hover:bg-slate-100"
-                }`}
-              >
-                <FlagIcon code={t.code} className="w-5 h-3.5 rounded-sm shadow-sm" />
-                <span>{t.name}</span>
-              </button>
-            );
-          })}
-        </div>
-
         {/* Header Branding */}
         <div className="text-center mb-8">
           <motion.div
