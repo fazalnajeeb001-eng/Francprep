@@ -666,14 +666,27 @@ export function AuthenticCBTExamPage() {
     const listeningNCLC = calculateNCLCScore(listeningPct, paper.type, "COMPREHENSION_ORALE");
     const readingNCLC = calculateNCLCScore(readingPct, paper.type, "COMPREHENSION_ECRITE");
 
-    const writingScores = Object.values(writingAiResults).map((r: any) =>
-      typeof r.scoreOutOf20 === "number"
-        ? Math.round((r.scoreOutOf20 / 20) * 100)
-        : typeof r.score === "number"
-        ? r.score
-        : 0
-    );
-    const writingAvg = writingScores.length > 0 ? Math.round(writingScores.reduce((a, b) => a + b, 0) / writingScores.length) : 0;
+    const writingSection = paper.sections.find((s) => s.type === "EXPRESSION_ECRITE");
+    const writingTasksList = writingSection?.writingTasks || [];
+    let weightedScoreSum = 0;
+    let totalWeight = 0;
+    const taskWeights = [0.20, 0.30, 0.50];
+
+    writingTasksList.forEach((t, idx) => {
+      const r = writingAiResults[t.id];
+      if (r) {
+        const taskPct = typeof r.scoreOutOf20 === "number"
+          ? Math.round((r.scoreOutOf20 / 20) * 100)
+          : typeof r.score === "number"
+          ? r.score
+          : 0;
+        const w = taskWeights[idx] || 0.33;
+        weightedScoreSum += taskPct * w;
+        totalWeight += w;
+      }
+    });
+
+    const writingAvg = totalWeight > 0 ? Math.round(weightedScoreSum / totalWeight) : 0;
     const writingNCLC = calculateNCLCScore(writingAvg, paper.type, "EXPRESSION_ECRITE");
 
     const speakingScores = Object.values(speakingAiResults).map((r: any) => r.score || 0);

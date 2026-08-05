@@ -163,27 +163,27 @@ export class WritingService {
       };
     }
 
-    // CRITICAL PLAGIARISM CHECK: If student submits the exact model answer / sample response or >35% copy
-    if (expectedAnswer && text && expectedAnswer.trim().length > 30) {
-      const similarity = this.computeSimilarity(text, expectedAnswer);
-      if (similarity > 0.35) {
+    // CRITICAL PROMPT TEXT COPYING CHECK: If student copies >45% of the prompt text
+    if (expectedAnswer && text && text.trim().length > 30) {
+      const promptSimilarity = this.computeSimilarity(text, expectedAnswer);
+      if (promptSimilarity > 0.45) {
         return {
           score: 0,
           scoreOutOf20: 0,
-          nclcGrade: 'NCLC 0 (Zero Grade - Plagiarism Detected)',
+          nclcGrade: 'NCLC 0 (Zero Grade — Prompt Text Copying Detected)',
           cefrLevel: 'N/A',
           expressEntryPoints: 0,
           taskFulfillmentScore: 0,
           coherenceScore: 0,
           lexicalScore: 0,
           grammarScore: 0,
-          feedback: `🚨 PLAGIARISM DETECTED (Score: 0/20): Your submission shares ${(similarity * 100).toFixed(0)}% similarity with the official model answer (threshold is 35%). Official FEI / CCI test centers automatically award 0 points for copied template responses.`,
+          feedback: `🚨 PROMPT COPYING DETECTED (Score: 0/20): Your submission shares ${(promptSimilarity * 100).toFixed(0)}% similarity with the prompt instructions or model answer. Official TCF Canada examiners award 0 points for copied text.`,
           corrections: [
-            { original: text.slice(0, 80) + '...', corrected: 'Rédigez votre propre texte original.', explanation: 'Copied model answers receive an automatic zero grade in official exams.' }
+            { original: text.slice(0, 80) + '...', corrected: 'Rédigez votre propre argumentation originale.', explanation: 'Copying prompt instructions or model text receives an automatic zero grade.' }
           ],
           tips: [
-            'N\'utilisez pas le modèle de réponse comme votre propre texte.',
-            'Rédigez votre réponse personnelle avec votre propre vocabulaire pour être évalué.'
+            'Rédigez votre propre texte sans recopier la consigne.',
+            'Exprimez vos idées personnelles en français.'
           ]
         };
       }
@@ -270,16 +270,38 @@ Evaluate strictly according to official FEI TCF Canada examiner criteria. Respon
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
-        const scoreOutOf20 = typeof parsed.scoreOutOf20 === 'number' ? parsed.scoreOutOf20 : 12;
-        const scorePct = Math.round((scoreOutOf20 / 20) * 100);
+        let scoreOutOf20 = typeof parsed.scoreOutOf20 === 'number' ? parsed.scoreOutOf20 : 12;
 
+        const feedbackLower = (parsed.feedback || '').toLowerCase();
+        const isOffTopicFeedback = feedbackLower.includes('off-topic') ||
+                                   feedbackLower.includes('off topic') ||
+                                   feedbackLower.includes('hors-sujet') ||
+                                   feedbackLower.includes('hors sujet') ||
+                                   feedbackLower.includes('does not address the prompt') ||
+                                   feedbackLower.includes('unrelated to the prompt');
+
+        if (scoreOutOf20 === 0 || parsed.taskFulfillmentScore === 0 || isOffTopicFeedback) {
+          return {
+            score: 0,
+            scoreOutOf20: 0,
+            nclcGrade: "NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet)",
+            cefrLevel: "N/A",
+            expressEntryPoints: 0,
+            taskFulfillmentScore: 0,
+            coherenceScore: typeof parsed.coherenceScore === 'number' ? Math.min(2, parsed.coherenceScore) : 1,
+            lexicalScore: typeof parsed.lexicalScore === 'number' ? Math.min(2, parsed.lexicalScore) : 1,
+            grammarScore: typeof parsed.grammarScore === 'number' ? Math.min(2, parsed.grammarScore) : 1,
+            feedback: parsed.feedback || "🚨 ZERO GRADE (0/20 Marks): Official FEI rules mandate an automatic zero score for off-topic (hors-sujet) submissions that do not answer the specific prompt scenario.",
+            corrections: Array.isArray(parsed.corrections) ? parsed.corrections : [],
+            tips: Array.isArray(parsed.tips) ? parsed.tips : ["Lisez attentivement la consigne et répondez directement au sujet proposé."]
+          };
+        }
+
+        const scorePct = Math.round((scoreOutOf20 / 20) * 100);
         let nclcGrade = parsed.nclcGrade || "NCLC 7 (B2 Benchmark Target)";
         let expressEntryPoints = parsed.expressEntryPoints || 17;
 
-        if (scoreOutOf20 === 0 || parsed.taskFulfillmentScore === 0) {
-          nclcGrade = "NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet)";
-          expressEntryPoints = 0;
-        } else if (scoreOutOf20 >= 17) {
+        if (scoreOutOf20 >= 17) {
           nclcGrade = "NCLC 9 (C1 Advanced)";
           expressEntryPoints = 31;
         } else if (scoreOutOf20 >= 14) {
