@@ -33,7 +33,16 @@ function SignupPage() {
   const [resendSuccess, setResendSuccess] = useState("");
   const [resendLoading, setResendLoading] = useState(false);
 
-  const activeBranding = getTrackBranding(getActiveLanguageCode(user));
+  const [selectedLang, setSelectedLang] = useState(() => getActiveLanguageCode(user));
+
+  const handleSelectTrack = (code: string) => {
+    setSelectedLang(code);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("fp_active_language", code);
+    }
+  };
+
+  const activeBranding = getTrackBranding(selectedLang);
 
   const checks = {
     length: password.length >= 8,
@@ -150,21 +159,59 @@ function SignupPage() {
       </div>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="w-full max-w-sm sm:max-w-md z-10">
+        {/* Interactive Track Switcher Bar */}
+        <div className="flex items-center justify-center gap-1.5 mb-6 p-1.5 rounded-2xl dark:bg-[#101828]/80 bg-white/80 backdrop-blur-xl border dark:border-[#1e2a4a] border-slate-200 shadow-lg w-fit mx-auto">
+          {[
+            { code: 'fr', name: 'French' },
+            { code: 'de', name: 'German' },
+            { code: 'es', name: 'Spanish' },
+            { code: 'it', name: 'Italian' },
+          ].map((t) => {
+            const isSelected = selectedLang === t.code;
+            return (
+              <button
+                key={t.code}
+                type="button"
+                onClick={() => handleSelectTrack(t.code)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all duration-300 cursor-pointer ${
+                  isSelected
+                    ? "bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 text-white shadow-md scale-105"
+                    : "dark:text-gray-400 text-slate-600 hover:text-purple-400 dark:hover:bg-purple-500/10 hover:bg-slate-100"
+                }`}
+              >
+                <FlagIcon code={t.code} className="w-5 h-3.5 rounded-sm shadow-sm" />
+                <span>{t.name}</span>
+              </button>
+            );
+          })}
+        </div>
+
         {/* Header */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center justify-center gap-2 mb-3 group">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 via-indigo-500 to-pink-500 border border-purple-500/30 flex items-center justify-center p-2 text-white text-2xl font-bold shadow-xl shadow-purple-500/25 group-hover:scale-105 transition-all">
-              <FlagIcon code={activeBranding.code} className="w-11 h-8 rounded-lg shadow-lg" />
-            </div>
-          </Link>
+          <motion.div
+            key={activeBranding.code}
+            initial={{ scale: 0.8, opacity: 0, rotateY: -90 }}
+            animate={{ scale: 1, opacity: 1, rotateY: 0 }}
+            whileHover={{ scale: 1.1, rotateY: 15, rotateX: -5 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 350, damping: 20 }}
+            className="inline-block cursor-pointer mb-3"
+          >
+            <Link to="/" className="inline-flex items-center justify-center gap-2 group">
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-500 via-indigo-500 to-pink-500 border-2 border-purple-500/40 flex items-center justify-center p-3 text-white text-2xl font-bold shadow-2xl shadow-purple-500/30 group-hover:shadow-purple-500/60 transition-all duration-300">
+                <FlagIcon code={activeBranding.code} className="w-14 h-10 rounded-xl shadow-xl" />
+              </div>
+            </Link>
+          </motion.div>
+
           <div className="flex items-center justify-center gap-1.5 mb-2">
-            <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-purple-500/10 text-purple-400 border border-purple-500/20">
+            <span className="px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-purple-500/15 text-purple-400 border border-purple-500/30 shadow-sm">
               {activeBranding.shortBrand} Student Registration
             </span>
           </div>
           <h1 className={`text-3xl sm:text-4xl font-black tracking-tight ${dark ? "text-white" : "text-gray-900"} flex items-center justify-center gap-2.5`}>
             <span>Create Your Account</span>
-            <FlagIcon code={activeBranding.code} className="w-8 h-5 rounded shadow-sm" />
+            <FlagIcon code={activeBranding.code} className="w-9 h-6 rounded-md shadow-md" />
           </h1>
           <p className={`text-sm ${dark ? "text-gray-400" : "text-slate-600"} mt-2 max-w-xs mx-auto font-medium`}>
             Start mastering {activeBranding.languageName} today
