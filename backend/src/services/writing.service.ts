@@ -113,8 +113,13 @@ export class WritingService {
 
     const prompt = `You are an official Senior Certified Examiner for France Éducation International (FEI) evaluating ${targetLanguage} writing for official TCF Canada Express Entry.
 
+CRITICAL FEI HORS-SUJET (OFF-TOPIC) RULE:
+- Check if the student's submission directly answers the specific topic, scenario, and questions in the prompt.
+- IF THE SUBMISSION IS COMPLETELY OFF-TOPIC (HORS-SUJET) — e.g. discussing a cooking workshop when asked about a car ban or apartment heating issue — YOU MUST AWARD 0 MARKS FOR TASK FULFILLMENT (0/5) AND 0 MARKS TOTAL (0/20, NCLC 0).
+- Official FEI rules mandate an automatic 0 grade (Hors-sujet Total = 0 Marks) for off-topic submissions regardless of grammar.
+
 OFFICIAL FEI TCF EVALUATION GRID (4 CRITERIA - TOTAL 20 MARKS):
-1. Task Fulfillment & Word Count (0-5 pts): Respecting prompt instructions and word count range.
+1. Task Fulfillment & Word Count (0-5 pts): Respecting prompt instructions and word count range. (0/5 if Off-Topic!)
 2. Coherence & Connectors (0-5 pts): Paragraph structure and transition markers (e.g. en outre, cependant, par conséquent).
 3. Lexical Variety & Richness (0-5 pts): Precise topic vocabulary range without repetition.
 4. Morphosyntax & Grammar (0-5 pts): Tense agreement, adjective agreement, complex structures (subjunctive, conditional).
@@ -126,6 +131,7 @@ OFFICIAL NCLC SCALING (Based on Total Marks out of 20):
 - 10-11 / 20 = NCLC 6 (B1 Intermediate) (+12 CRS Points)
 - 8-9 / 20 = NCLC 5 (B1 Threshold) (+6 CRS Points)
 - < 8 / 20 = NCLC 1-4 (A1-A2) (0 CRS Points)
+- 0 / 20 = NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet) (0 CRS Points)
 
 Context / Task Prompt:
 Task / Topic: "${lessonTitle || `${targetLanguage} Writing Examination`}"
@@ -174,7 +180,11 @@ Evaluate strictly according to official FEI TCF Canada examiner criteria. Respon
 
         let nclcGrade = parsed.nclcGrade || "NCLC 7 (B2 Benchmark Target)";
         let expressEntryPoints = parsed.expressEntryPoints || 17;
-        if (scoreOutOf20 >= 17) {
+
+        if (scoreOutOf20 === 0 || parsed.taskFulfillmentScore === 0) {
+          nclcGrade = "NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet)";
+          expressEntryPoints = 0;
+        } else if (scoreOutOf20 >= 17) {
           nclcGrade = "NCLC 9 (C1 Advanced)";
           expressEntryPoints = 31;
         } else if (scoreOutOf20 >= 14) {
@@ -189,6 +199,9 @@ Evaluate strictly according to official FEI TCF Canada examiner criteria. Respon
         } else if (scoreOutOf20 >= 8) {
           nclcGrade = "NCLC 5 (B1 Threshold)";
           expressEntryPoints = 6;
+        } else {
+          nclcGrade = "NCLC 4 (A2 Elementary)";
+          expressEntryPoints = 0;
         }
 
         return {

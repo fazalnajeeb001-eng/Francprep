@@ -513,7 +513,10 @@ export function AuthenticCBTExamPage() {
 
     let nclcGrade = "NCLC 5 (B1 Threshold)";
     let expressEntryPoints = 6;
-    if (totalScoreOutOf20 >= 17) {
+    if (taskFulfillmentScore === 0 || totalScoreOutOf20 === 0) {
+      nclcGrade = "NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet)";
+      expressEntryPoints = 0;
+    } else if (totalScoreOutOf20 >= 17) {
       nclcGrade = "NCLC 9 (C1 Advanced)";
       expressEntryPoints = 31;
     } else if (totalScoreOutOf20 >= 14) {
@@ -525,6 +528,12 @@ export function AuthenticCBTExamPage() {
     } else if (totalScoreOutOf20 >= 10) {
       nclcGrade = "NCLC 6 (B1 Intermediate)";
       expressEntryPoints = 12;
+    } else if (totalScoreOutOf20 >= 8) {
+      nclcGrade = "NCLC 5 (B1 Threshold)";
+      expressEntryPoints = 6;
+    } else {
+      nclcGrade = "NCLC 4 (A2 Elementary)";
+      expressEntryPoints = 0;
     }
 
     setWritingAiResults((prev) => ({
