@@ -263,18 +263,32 @@ export function AuthenticCBTExamPage() {
     setEvaluatingSpeaking((prev) => ({ ...prev, [taskId]: false }));
   };
 
-  const [seenStrategySections, setSeenStrategySections] = useState<Record<string, boolean>>({});
+  const [seenStrategySections, setSeenStrategySections] = useState<Record<string, boolean>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const stored = sessionStorage.getItem(`fp_seen_strategy_${paper.id}`);
+      return stored ? JSON.parse(stored) : {};
+    } catch {
+      return {};
+    }
+  });
 
   useEffect(() => {
     setTimeLeft(currentSection.durationMins * 60);
     setCurrentQuestionIdx(0);
 
-    // Auto-popup strategy modal first time candidate enters section in Practice Mode
+    // Auto-popup strategy modal strictly ONCE per section in Practice Mode
     if (mode === "PRACTICE" && !seenStrategySections[currentSection.type]) {
       setShowStrategyModal(true);
-      setSeenStrategySections((prev) => ({ ...prev, [currentSection.type]: true }));
+      setSeenStrategySections((prev) => {
+        const next = { ...prev, [currentSection.type]: true };
+        try {
+          sessionStorage.setItem(`fp_seen_strategy_${paper.id}`, JSON.stringify(next));
+        } catch {}
+        return next;
+      });
     }
-  }, [activeSectionIdx, currentSection.durationMins, mode, currentSection.type]);
+  }, [activeSectionIdx, currentSection.durationMins, mode, currentSection.type, paper.id]);
 
   // Timer Countdown
   useEffect(() => {
