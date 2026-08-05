@@ -4,6 +4,7 @@ import { useAuth } from "~/lib/AuthContext";
 import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
+import { FlagIcon } from "~/components/common/FlagIcon";
 import { motion, AnimatePresence } from "framer-motion";
 import { GraduationCap, Mail, Lock, LogIn, Eye, EyeOff, KeyRound, CheckCircle2, ArrowLeft, Sparkles, ShieldCheck } from "lucide-react";
 
@@ -122,8 +123,8 @@ function LoginPage() {
         {/* Header Branding */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center justify-center gap-2 mb-3 group">
-            <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${activeStyle.gradient} border flex items-center justify-center text-3xl shadow-2xl ${activeStyle.glow} group-hover:scale-105 transition-all duration-300`}>
-              <span className="drop-shadow-lg select-none">{activeBranding.flag}</span>
+            <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${activeStyle.gradient} border flex items-center justify-center p-2 shadow-2xl ${activeStyle.glow} group-hover:scale-105 transition-all duration-300`}>
+              <FlagIcon code={activeBranding.code} className="w-11 h-8 rounded-lg shadow-lg" />
             </div>
           </Link>
           <div className="flex items-center justify-center gap-1.5 mb-2">
@@ -131,8 +132,9 @@ function LoginPage() {
               Student Sign In
             </span>
           </div>
-          <h1 className={`text-3xl sm:text-4xl font-black tracking-tight ${dark ? "text-white" : "text-gray-900"}`}>
-            {activeBranding.brandName}
+          <h1 className={`text-3xl sm:text-4xl font-black tracking-tight ${dark ? "text-white" : "text-gray-900"} flex items-center justify-center gap-2.5`}>
+            <span>{activeBranding.shortBrand}</span>
+            <FlagIcon code={activeBranding.code} className="w-9 h-6 rounded-md shadow-md" />
           </h1>
           <p className={`text-sm ${dark ? "text-gray-400" : "text-slate-600"} mt-2 max-w-xs mx-auto font-medium`}>
             Sign in to continue your {activeBranding.languageName} learning path

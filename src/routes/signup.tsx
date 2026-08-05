@@ -4,6 +4,7 @@ import { useAuth } from "~/lib/AuthContext";
 import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
+import { FlagIcon } from "~/components/common/FlagIcon";
 import { motion, AnimatePresence } from "framer-motion";
 import { GraduationCap, Mail, Lock, Sparkles, CheckCircle2, ShieldCheck, KeyRound, ArrowRight, RefreshCw } from "lucide-react";
 
@@ -151,20 +152,21 @@ function SignupPage() {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="w-full max-w-sm sm:max-w-md z-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center justify-center gap-2 mb-4 group">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 via-indigo-500 to-pink-500 flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-purple-500/25 group-hover:scale-105 transition-all">
-              {activeBranding.flag}
+          <Link to="/" className="inline-flex items-center justify-center gap-2 mb-3 group">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 via-indigo-500 to-pink-500 border border-purple-500/30 flex items-center justify-center p-2 text-white text-2xl font-bold shadow-xl shadow-purple-500/25 group-hover:scale-105 transition-all">
+              <FlagIcon code={activeBranding.code} className="w-11 h-8 rounded-lg shadow-lg" />
             </div>
           </Link>
-          <div className="flex items-center justify-center gap-1.5 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-500/10 text-purple-400 border border-purple-500/20">
+          <div className="flex items-center justify-center gap-1.5 mb-2">
+            <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-purple-500/10 text-purple-400 border border-purple-500/20">
               {activeBranding.shortBrand} Student Registration
             </span>
           </div>
-          <h1 className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${dark ? "text-white" : "text-gray-900"}`}>
-            Create Your Account
+          <h1 className={`text-3xl sm:text-4xl font-black tracking-tight ${dark ? "text-white" : "text-gray-900"} flex items-center justify-center gap-2.5`}>
+            <span>Create Your Account</span>
+            <FlagIcon code={activeBranding.code} className="w-8 h-5 rounded shadow-sm" />
           </h1>
-          <p className={`text-sm ${dark ? "text-gray-400" : "text-slate-600"} mt-1.5 max-w-xs mx-auto`}>
+          <p className={`text-sm ${dark ? "text-gray-400" : "text-slate-600"} mt-2 max-w-xs mx-auto font-medium`}>
             Start mastering {activeBranding.languageName} today
           </p>
         </div>
