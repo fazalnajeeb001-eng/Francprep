@@ -456,14 +456,14 @@ export function OnboardingPage() {
 
     const finalLevel = levelOverride || (step === "result" ? evaluatedLevel : "A1");
 
-    // 1. Write individual LocalStorage flags immediately
-    saveGoalToStorage(selectedGoal, selectedLang);
-    setDailyStudyGoal(selectedPace);
-    localStorage.setItem("fp_active_language", selectedLang);
-    localStorage.setItem("francprep_onboarding_completed", "true");
-    localStorage.setItem("francprep_user_level", finalLevel);
-
+    // 1. Persist local storage state immediately
     try {
+      saveGoalToStorage(selectedGoal, selectedLang);
+      setDailyStudyGoal(selectedPace);
+      localStorage.setItem("fp_active_language", selectedLang);
+      localStorage.setItem("francprep_onboarding_completed", "true");
+      localStorage.setItem("francprep_user_level", finalLevel);
+
       const rawUser = localStorage.getItem("francprep_user");
       if (rawUser) {
         const parsedUser = JSON.parse(rawUser);
@@ -473,18 +473,11 @@ export function OnboardingPage() {
         parsedUser.targetLevel = finalLevel;
         localStorage.setItem("francprep_user", JSON.stringify(parsedUser));
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error("Local storage update error:", e);
+    }
 
-    // 2. Write individual LocalStorage flags
-    try {
-      saveGoalToStorage(selectedGoal, selectedLang);
-      setDailyStudyGoal(selectedPace);
-      localStorage.setItem("fp_active_language", selectedLang);
-      localStorage.setItem("francprep_onboarding_completed", "true");
-      localStorage.setItem("francprep_user_level", finalLevel);
-    } catch (e) {}
-
-    // 3. Update AuthContext React state
+    // 2. Update AuthContext React state
     if (user && updateUser) {
       try {
         updateUser({
@@ -493,34 +486,30 @@ export function OnboardingPage() {
           activeLanguage: selectedLang,
           learningGoal: selectedGoal,
         } as any);
-      } catch (e) {}
+      } catch (e) {
+        console.error("AuthContext update error:", e);
+      }
     }
 
-    // 4. API sync to MongoDB with a non-blocking max 800ms race timeout
-    const apiSync = Promise.all([
-      apiFetch("/users/profile/goal", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ goal: selectedGoal, activeLanguage: selectedLang }),
-      }).catch(() => {}),
-      apiFetch("/users/profile/complete-onboarding", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ activeLanguage: selectedLang, learningGoal: selectedGoal, level: finalLevel }),
-      }).catch(() => {}),
-    ]);
-
-    await Promise.race([
-      apiSync,
-      new Promise((resolve) => setTimeout(resolve, 800)),
-    ]);
-
-    setSubmitting(false);
-
-    // 4. Guaranteed instant browser redirect to /dashboard
-    if (typeof window !== "undefined") {
-      window.location.href = "/dashboard";
-    } else {
+    // 3. API sync to MongoDB with complete error handling
+    try {
+      await Promise.all([
+        apiFetch("/users/profile/goal", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ goal: selectedGoal, activeLanguage: selectedLang }),
+        }).catch((err) => console.error("Goal sync error:", err)),
+        apiFetch("/users/profile/complete-onboarding", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ activeLanguage: selectedLang, learningGoal: selectedGoal, level: finalLevel }),
+        }).catch((err) => console.error("Onboarding sync error:", err)),
+      ]);
+    } catch (e) {
+      console.error("API sync error:", e);
+    } finally {
+      setSubmitting(false);
+      // 4. Guaranteed SPA navigation to /dashboard
       navigate({ to: "/dashboard" });
     }
   };

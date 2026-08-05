@@ -28,6 +28,12 @@ export interface IUserDocument extends Document {
   isVipFreeAccess?: boolean;
   customPriceOverride?: number;
   specialDiscountRate?: string;
+  isEmailVerified: boolean;
+  emailVerificationCode?: string;
+  emailVerificationExpires?: Date;
+  passwordResetToken?: string;
+  passwordResetExpires?: Date;
+  marketingOptIn: boolean;
   comparePassword(candidatePassword: string): Promise<boolean>;
   createdAt: Date;
   updatedAt: Date;

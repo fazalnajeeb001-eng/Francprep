@@ -54,6 +54,42 @@ export class WritingService {
 
   async getFeedback(text: string, lessonTitle?: string, expectedAnswer?: string, checklist?: string[], targetLanguage = 'French', examName = 'DELF / TCF'): Promise<ComprehensiveWritingFeedback> {
     const apiKey = await this.getOpenRouterKey();
+
+    // CRITICAL PLAGIARISM CHECK: If student submits the exact model answer / sample response or >70% copy
+    if (expectedAnswer && text) {
+      const normStudent = text.toLowerCase().replace(/[^\w\s\u00C0-\u024F]/g, '').trim();
+      const normModel = expectedAnswer.toLowerCase().replace(/[^\w\s\u00C0-\u024F]/g, '').trim();
+      
+      const studentWords = normStudent.split(/\s+/).filter(w => w.length > 3);
+      const modelWords = new Set(normModel.split(/\s+/).filter(w => w.length > 3));
+      
+      let matchCount = 0;
+      for (const w of studentWords) {
+        if (modelWords.has(w)) matchCount++;
+      }
+      const matchRatio = studentWords.length > 0 ? matchCount / studentWords.length : 0;
+
+      if (normStudent === normModel || (matchRatio >= 0.70 && studentWords.length >= 10)) {
+        return {
+          score: 0,
+          nclcGrade: 'NCLC 0 (Zero Grade - Plagiarism Detected)',
+          cefrLevel: 'N/A',
+          taskCompletionScore: 0,
+          grammarScore: 0,
+          vocabularyScore: 0,
+          cohesionScore: 0,
+          feedback: '🚨 PLAGIARISM DETECTED (Score: 0): Your submission is a copy of the official exemplar model answer. Official FEI / CCI test centers automatically award 0 points for copied template responses.',
+          corrections: [
+            { original: text.slice(0, 80) + '...', corrected: 'Rédigez votre propre texte original.', explanation: 'Copied model answers receive an automatic zero grade in official exams.' }
+          ],
+          tips: [
+            'N\'utilisez pas le modèle de réponse comme votre propre texte.',
+            'Rédigez votre réponse personnelle avec votre propre vocabulaire pour être évalué.'
+          ]
+        };
+      }
+    }
+
     if (!apiKey) {
       return {
         score: 0,
