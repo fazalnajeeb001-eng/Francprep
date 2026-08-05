@@ -18,6 +18,7 @@ export interface IUserDocument extends Document {
   lastStudyDate?: Date;
   learningGoal: string;
   activeLanguage?: string;
+  targetLevel?: string;
   avatarUrl: string;
   avatarFeatures: { gender: string; skinTone: string; faceShape: string; hairStyle: string; hairColor: string; eyeColor: string; eyeSize: string; eyebrowStyle: string; noseSize: string; lipFullness: string; facialHair: string; outfitStyle: string; outfitColor: string; accessory: string; earring: string; necklace: string };
   onboardingComplete: boolean;
@@ -57,6 +58,7 @@ const userSchema = new Schema<IUserDocument>(
     lastStudyDate: { type: Date },
     learningGoal: { type: String, default: 'none' },
     activeLanguage: { type: String, default: 'fr' },
+    targetLevel: { type: String, default: 'A1' },
     avatarUrl: { type: String, default: '' },
     avatarFeatures: {
       gender: { type: String, enum: ['male', 'female'], default: 'female' },

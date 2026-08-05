@@ -74,7 +74,8 @@ const LISTENING_TOPICS = [
     opt: ["Au quai / voie 4", "À la gare du Nord", "En retard de 45 minutes", "Annulé sans correspondance"],
     ans: 0,
     tr: "Chers voyageurs, votre attention s'il vous plaît. Le TGV numéro 7842 à destination de Paris-Gare de Lyon, départ initialement prévu à 14h15, partira exceptionnellement de la voie 4. Veuillez assurer l'embarquement immédiat.",
-    en: "Dear passengers, attention please. TGV train 7842 to Paris-Gare de Lyon, originally scheduled for 2:15pm, will exceptionally depart from platform 4. Please proceed to immediate boarding."
+    en: "Dear passengers, attention please. TGV train 7842 to Paris-Gare de Lyon, originally scheduled for 2:15pm, will exceptionally depart from platform 4. Please proceed to immediate boarding.",
+    hint: "A1 Station Announcement Strategy: Listen for the platform word 'voie 4' (Track/Platform 4) which indicates the exact departure point."
   },
   {
     level: "A1",
@@ -83,7 +84,8 @@ const LISTENING_TOPICS = [
     opt: ["Au supermarché", "À la boulangerie du quartier", "À la maison", "Au cinéma municipal"],
     ans: 0,
     tr: "Salut Thomas ! C'est Marc. Je suis actuellement au supermarché du centre-ville pour faire les courses de la semaine. Dis-moi, est-ce que tu as besoin que je prenne du pain frais ou du fromage pour le dîner ce soir ?",
-    en: "Hi Thomas! It's Marc. I'm currently at the downtown supermarket doing weekly grocery shopping. Tell me, do you need me to pick up fresh bread or cheese for dinner tonight?"
+    en: "Hi Thomas! It's Marc. I'm currently at the downtown supermarket doing weekly grocery shopping. Tell me, do you need me to pick up fresh bread or cheese for dinner tonight?",
+    hint: "A1 Voicemail Strategy: Listen for 'actuellement au...' (currently at...) to immediately identify the speaker's location."
   },
   {
     level: "A2",
@@ -92,7 +94,8 @@ const LISTENING_TOPICS = [
     opt: ["Prendre un parapluie pour les averses", "Mettre des lunettes de soleil", "Rester à la maison toute la journée", "Prendre la voiture pour éviter la neige"],
     ans: 0,
     tr: "Bonjour à tous, voici vos prévisions météorologiques pour la journée de mardi. Pensez à vous équiper d'un parapluie robuste dès ce matin, car de fortes averses orageuses sont attendues sur l'ensemble de la région au cours de l'après-midi.",
-    en: "Hello everyone, here is your weather forecast for Tuesday. Be sure to bring a sturdy umbrella this morning, as heavy thunderstorm showers are expected across the region in the afternoon."
+    en: "Hello everyone, here is your weather forecast for Tuesday. Be sure to bring a sturdy umbrella this morning, as heavy thunderstorm showers are expected across the region in the afternoon.",
+    hint: "A2 Weather Broadcast Strategy: Identify the key weather advice 'parapluie' (umbrella) linked to 'averses' (rain showers)."
   },
   {
     level: "A2",
@@ -101,7 +104,8 @@ const LISTENING_TOPICS = [
     opt: ["Mardi à 10h00", "Mercredi à 14h00", "Lundi matin à 9h00", "Jeudi en fin d'après-midi"],
     ans: 0,
     tr: "Bonjour, nous vous rappelons que votre rendez-vous de contrôle annuel avec le docteur Mercier est confirmé pour ce mardi à 10h00 précises.",
-    en: "Hello, we are reminding you that your annual dental check-up with Dr. Mercier is confirmed for this Tuesday at exactly 10:00am."
+    en: "Hello, we are reminding you that your annual dental check-up with Dr. Mercier is confirmed for this Tuesday at exactly 10:00am.",
+    hint: "A2 Appointment Strategy: Note the specific day and hour mentioned: 'ce mardi à 10h00 précises'."
   },
   {
     level: "B1",
@@ -110,7 +114,8 @@ const LISTENING_TOPICS = [
     opt: ["Vendredi à 15h00 en salle B", "Jeudi matin en salle A", "Lundi matin au rez-de-chaussée", "Annulée définitivement"],
     ans: 0,
     tr: "Bonjour à l'équipe projet. Veuillez noter que la réunion stratégique est reportée à vendredi 15h00 dans la grande salle de conférence B au deuxième étage.",
-    en: "Hello project team. Please note that the strategic meeting is postponed to Friday at 3:00pm in large conference room B on the second floor."
+    en: "Hello project team. Please note that the strategic meeting is postponed to Friday at 3:00pm in large conference room B on the second floor.",
+    hint: "B1 Workplace Notice Strategy: Watch out for 'reportée à...' (postponed to...) which overrides the original time Thursday morning."
   },
   {
     level: "B1",
@@ -119,16 +124,18 @@ const LISTENING_TOPICS = [
     opt: ["Utiliser les escaliers de secours", "Prendre les ascenseurs principaux", "Rester enfermé dans son bureau", "Ouvrir toutes les fenêtres"],
     ans: 0,
     tr: "Attention, exercice de sécurité incendie. En cas d'alarme, veuillez évacuer calmement en empruntant exclusivement les escaliers de secours et ne pas utiliser les ascenseurs.",
-    en: "Attention, fire safety drill. In case of alarm, please evacuate calmly using exclusively the emergency stairs and do not use elevators."
+    en: "Attention, fire safety drill. In case of alarm, please evacuate calmly using exclusively the emergency stairs and do not use elevators.",
+    hint: "B1 Safety Instruction Strategy: Listen for 'empruntant exclusivement' (using exclusively) to catch the mandatory action."
   },
   {
     level: "B2",
     title: "Chronique environnementale radio",
-    text: "Selon la nouvelle réglementation municipale entrée en vigueur ce mois-ci, la collecte sélective et le compostage obligatoire des déchets organiques permettent d'abaissez le volume global des ordures ménagères de 30 % dans les arrondissements pilotes.",
+    text: "Selon la nouvelle réglementation municipale entrée en vigueur ce mois-ci, la collecte sélective et le compostage obligatoire des déchets organiques permettent d'abaisser le volume global des ordures ménagères de 30 % dans les arrondissements pilotes.",
     opt: ["Réduire le volume des poubelles de 30%", "Augmenter la taxe d'enlèvement d'ordures", "Interdire la vente d'emballages en plastique", "Construire de nouvelles usines d'incinération"],
     ans: 0,
     tr: "La collecte sélective et le compostage obligatoire permettent d'abaisser le volume global des ordures ménagères de 30 % dans les arrondissements pilotes.",
-    en: "Selective collection and mandatory composting reduce household waste volume by 30% in pilot boroughs."
+    en: "Selective collection and mandatory composting reduce household waste volume by 30% in pilot boroughs.",
+    hint: "B2 Environmental Report Strategy (NCLC 7 Target): Connect the synonym 'abaisser le volume' (lower volume) to 'Réduire le volume'."
   },
   {
     level: "B2",
@@ -137,7 +144,8 @@ const LISTENING_TOPICS = [
     opt: ["Une hausse de 25% des ventes d'équipements", "Une baisse drastique des salaires", "La fermeture massive des commerces physiques", "La fin du matériel informatique de bureau"],
     ans: 0,
     tr: "L'accélération du travail hybride a stimulé les ventes d'équipements, enregistrant une hausse nette de 25 % du chiffre d'affaires.",
-    en: "The acceleration of hybrid work boosted equipment sales, recording a net 25% increase in revenue."
+    en: "The acceleration of hybrid work boosted equipment sales, recording a net 25% increase in revenue.",
+    hint: "B2 Economic News Strategy (NCLC 7 Target): Pay attention to 'une hausse nette de 25%' (a net 25% increase in sales)."
   },
   {
     level: "C1",
@@ -146,7 +154,8 @@ const LISTENING_TOPICS = [
     opt: ["Combattre les îlots de chaleur urbains", "Accélérer la bétonisation des voies publiques", "Augmenter la vitesse de circulation automobile", "Remplacer les espaces vert par des parkings"],
     ans: 0,
     tr: "La végétalisation systématique des toitures contribue de manière décisive à l'atténuation des îlots de chaleur au cœur des grandes métropoles.",
-    en: "Systematic rooftop greening contributes decisively to mitigating urban heat islands in major metropolitan centers."
+    en: "Systematic rooftop greening contributes decisively to mitigating urban heat islands in major metropolitan centers.",
+    hint: "C1 Urban Debate Strategy: Match 'atténuation des îlots de chaleur' with 'Combattre les îlots de chaleur'."
   },
   {
     level: "C2",
@@ -155,7 +164,8 @@ const LISTENING_TOPICS = [
     opt: ["Garantir une étanchéité théoriquement absolue des données", "Accélérer les composants électroniques mobiles", "Diminuer les investissements dans la recherche", "Remplacer les serveurs informatiques distants"],
     ans: 0,
     tr: "L'avènement de la cryptographie quantique permet d'envisager une étanchéité théoriquement absolue des flux de données.",
-    en: "The advent of quantum cryptography allows for theoretically absolute data flow security against cyber intrusions."
+    en: "The advent of quantum cryptography allows for theoretically absolute data flow security against cyber intrusions.",
+    hint: "C2 Academic Lecture Strategy: Identify abstract terms like 'étanchéité théoriquement absolue' (theoretically absolute security/sealing)."
   }
 ];
 
@@ -306,6 +316,8 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
     const isQuestionInAudio = i <= 29;
     const { options, correctIndex, correctText } = shuffleOptions(t.opt, t.ans);
 
+    const specificHint = (t as any).hint || `Level ${t.level} Listening Guidance: Focus on the speaker's main intent and tone. Pay attention to key transition words (e.g. "cependant", "en revanche") to identify the correct message without guessing.`;
+
     qList.push({
       id: `${prefix}-lis-${i}`,
       questionNumber: i,
@@ -315,7 +327,7 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       options,
       correctIndex,
       explanation: `Pedagogical Explanation [Level ${t.level}]: The spoken document confirms "${correctText}".`,
-      hint: `Level ${t.level} Listening Guidance: Focus on the speaker's main intent and tone. Pay attention to key transition words (e.g. "cependant", "en revanche") to identify the correct message without guessing.`,
+      hint: specificHint,
       transcript: t.tr,
       transcriptEnglish: t.en,
       questionInAudio: isQuestionInAudio,

@@ -229,12 +229,14 @@ router.post('/profile/avatar/generate', authenticate, async (req: AuthRequest, r
 
 router.put('/profile/complete-onboarding', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { activeLanguage, learningGoal } = req.body || {};
+    const { activeLanguage, learningGoal, level, targetLevel } = req.body || {};
     const updates: any = { onboardingComplete: true };
     if (activeLanguage) updates.activeLanguage = activeLanguage;
     if (learningGoal) updates.learningGoal = learningGoal;
+    const finalLevel = targetLevel || level;
+    if (finalLevel) updates.targetLevel = finalLevel;
     await User.findByIdAndUpdate(req.user!.userId, updates);
-    res.status(200).json({ success: true });
+    res.status(200).json({ success: true, data: updates });
   } catch (error) { next(error); }
 });
 
