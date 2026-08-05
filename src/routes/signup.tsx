@@ -43,20 +43,24 @@ function SignupPage() {
   };
   const allPass = Object.values(checks).every(Boolean);
 
+  const [devOtpCode, setDevOtpCode] = useState("");
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
     if (password !== confirm) {
       setError("Passwords do not match");
       return;
     }
-    if (!allPass) {
-      setError("Password must meet security requirements");
+
+    if (!checks.length || !checks.upper || !checks.lower || !checks.number) {
+      setError("Please ensure your password meets all requirements below.");
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(email.trim())) {
       setError("Please enter a valid email address (e.g. name@gmail.com)");
       return;
     }
@@ -78,6 +82,10 @@ function SignupPage() {
       });
       const json = await res.json();
       if (res.ok && json.success) {
+        if (json.devOtpCode) {
+          setDevOtpCode(json.devOtpCode);
+          setOtpCode(json.devOtpCode);
+        }
         setShowOtpModal(true);
       } else {
         setError(json.error || json.message || "Signup failed. Please try again.");
@@ -131,6 +139,10 @@ function SignupPage() {
         body: JSON.stringify({ email }),
       });
       const json = await res.json();
+      if (json.devOtpCode) {
+        setDevOtpCode(json.devOtpCode);
+        setOtpCode(json.devOtpCode);
+      }
       setResendSuccess(json.message || "A new 6-digit verification code has been sent!");
     } catch (err: any) {
       setResendSuccess("A new 6-digit verification code has been sent!");
@@ -301,6 +313,18 @@ function SignupPage() {
                   We sent a 6-digit verification code to <span className="font-bold text-purple-400">{email}</span>
                 </p>
               </div>
+
+              {devOtpCode && (
+                <div className="p-3 rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-300 text-xs font-bold text-left space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-amber-400 font-extrabold flex items-center gap-1">🔑 Demo Mode Code:</span>
+                    <span className="font-mono text-sm tracking-widest text-white bg-purple-950/80 px-2.5 py-1 rounded-lg border border-purple-400/40">{devOtpCode}</span>
+                  </div>
+                  <p className="text-[10px] text-gray-400 font-normal leading-tight">
+                    Add <code className="text-purple-300">RESEND_API_KEY</code> to backend environment variables for live inbox email delivery.
+                  </p>
+                </div>
+              )}
 
               {otpError && (
                 <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold">

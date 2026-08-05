@@ -47,6 +47,7 @@ function LoginPage() {
   const [otpCode, setOtpCode] = useState("");
   const [otpLoading, setOtpLoading] = useState(false);
   const [otpError, setOtpError] = useState("");
+  const [devOtpCode, setDevOtpCode] = useState("");
   const [resendSuccess, setResendSuccess] = useState("");
   const [resendLoading, setResendLoading] = useState(false);
 
@@ -66,8 +67,12 @@ function LoginPage() {
     } catch (err: any) {
       const data = err?.response?.data;
       if (data?.requiresVerification || data?.message?.includes("not verified")) {
+        if (data.devOtpCode) {
+          setDevOtpCode(data.devOtpCode);
+          setOtpCode(data.devOtpCode);
+        }
         setShowOtpModal(true);
-        setError("Your account email is unverified. We sent a fresh 6-digit code to your email!");
+        setError("Your account email is unverified. Please enter your 6-digit verification code below.");
       } else {
         setError(data?.error || data?.message || err?.message || "Invalid credentials. Please check your email and password.");
       }
@@ -117,6 +122,10 @@ function LoginPage() {
         body: JSON.stringify({ email }),
       });
       const json = await res.json();
+      if (json.devOtpCode) {
+        setDevOtpCode(json.devOtpCode);
+        setOtpCode(json.devOtpCode);
+      }
       setResendSuccess(json.message || "A new 6-digit verification code has been sent!");
     } catch (err: any) {
       setResendSuccess("A new 6-digit verification code has been sent!");
@@ -413,6 +422,18 @@ function LoginPage() {
                   Enter the 6-digit verification code sent to <span className="font-bold text-purple-400">{email}</span>
                 </p>
               </div>
+
+              {devOtpCode && (
+                <div className="p-3 rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-300 text-xs font-bold text-left space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-amber-400 font-extrabold flex items-center gap-1">🔑 Demo Mode Code:</span>
+                    <span className="font-mono text-sm tracking-widest text-white bg-purple-950/80 px-2.5 py-1 rounded-lg border border-purple-400/40">{devOtpCode}</span>
+                  </div>
+                  <p className="text-[10px] text-gray-400 font-normal leading-tight">
+                    Add <code className="text-purple-300">RESEND_API_KEY</code> to backend environment variables for live inbox email delivery.
+                  </p>
+                </div>
+              )}
 
               {otpError && (
                 <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold">

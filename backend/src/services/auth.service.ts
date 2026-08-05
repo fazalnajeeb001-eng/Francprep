@@ -39,12 +39,16 @@ export class AuthService {
     });
 
     // Send verification email
-    await emailService.sendVerificationEmail(user.email, user.firstName, otpCode, user.activeLanguage);
+    const hasEmailKey = Boolean(process.env.RESEND_API_KEY);
+    const sent = await emailService.sendVerificationEmail(user.email, user.firstName, otpCode, user.activeLanguage);
 
     return {
-      message: 'Account created! Please enter the 6-digit verification code sent to your email.',
+      message: sent && hasEmailKey
+        ? 'Account created! A 6-digit verification code has been sent to your inbox.'
+        : 'Account created! Please enter your 6-digit verification code below.',
       email: user.email,
       requiresVerification: true,
+      devOtpCode: !hasEmailKey ? otpCode : undefined,
     };
   }
 
@@ -68,13 +72,15 @@ export class AuthService {
       user.emailVerificationExpires = new Date(Date.now() + 15 * 60 * 1000);
       await user.save();
 
+      const hasEmailKey = Boolean(process.env.RESEND_API_KEY);
       await emailService.sendVerificationEmail(user.email, user.firstName, otpCode, user.activeLanguage);
 
       throw {
         statusCode: 403,
-        message: 'Your email address is not verified yet. A fresh 6-digit code has been sent to your inbox.',
+        message: 'Your email address is not verified yet. A 6-digit verification code has been generated.',
         requiresVerification: true,
         email: user.email,
+        devOtpCode: !hasEmailKey ? otpCode : undefined,
       };
     }
 
@@ -230,8 +236,12 @@ export class AuthService {
     user.emailVerificationExpires = new Date(Date.now() + 15 * 60 * 1000);
     await user.save();
 
+    const hasEmailKey = Boolean(process.env.RESEND_API_KEY);
     await emailService.sendVerificationEmail(user.email, user.firstName, otpCode, user.activeLanguage);
-    return { message: 'A new 6-digit verification code has been sent to your email.' };
+    return {
+      message: 'A new 6-digit verification code has been generated.',
+      devOtpCode: !hasEmailKey ? otpCode : undefined,
+    };
   }
 
   /**

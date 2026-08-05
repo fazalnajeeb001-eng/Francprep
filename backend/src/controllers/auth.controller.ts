@@ -215,8 +215,8 @@ export class AuthController {
         res.status(400).json({ success: false, error: 'Email is required.' });
         return;
       }
-      const result = await authService.resendVerificationCode(email);
-      res.status(200).json({ success: true, message: result.message });
+      const result: any = await authService.resendVerificationCode(email);
+      res.status(200).json({ success: true, message: result.message, devOtpCode: result.devOtpCode });
     } catch (error) {
       next(error);
     }
