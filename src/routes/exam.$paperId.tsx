@@ -553,6 +553,28 @@ export function AuthenticCBTExamPage() {
     setEvaluatingWriting((prev) => ({ ...prev, [taskId]: false }));
   };
 
+  const [isSubmittingFinal, setIsSubmittingFinal] = useState(false);
+
+  const handleFinishTest = async () => {
+    setIsSubmittingFinal(true);
+
+    const writingTasks = paper.sections.find((s) => s.type === "EXPRESSION_ECRITE")?.writingTasks || [];
+    const evalPromises = writingTasks.map(async (task) => {
+      const textVal = writingResponses[task.id];
+      if (textVal && textVal.trim().length >= 10 && !writingAiResults[task.id]) {
+        try {
+          await handleEvaluateWritingAI(task.id, task.prompt, textVal, task.sampleResponse);
+        } catch (e) {
+          console.warn("Auto-evaluating writing task on finish test failed:", e);
+        }
+      }
+    });
+
+    await Promise.all(evalPromises);
+    setIsSubmittingFinal(false);
+    setIsSubmitted(true);
+  };
+
   const calculateResults = () => {
     let totalCorrect = 0;
     let totalQs = 0;
@@ -689,11 +711,12 @@ export function AuthenticCBTExamPage() {
 
           {/* Submit Button */}
           <button
-            onClick={() => setIsSubmitted(true)}
-            className="px-4 py-1.5 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow"
+            disabled={isSubmittingFinal}
+            onClick={handleFinishTest}
+            className="px-4 py-1.5 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow disabled:opacity-50 transition-all"
           >
-            <Send className="w-3.5 h-3.5" />
-            <span>Finish Test</span>
+            <Send className={`w-3.5 h-3.5 ${isSubmittingFinal ? "animate-spin" : ""}`} />
+            <span>{isSubmittingFinal ? "Evaluating Responses with AI..." : "Finish Test"}</span>
           </button>
         </div>
       </header>

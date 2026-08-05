@@ -54,24 +54,58 @@ export class WritingService {
     return env.openRouterKey || process.env.OPENROUTER_API_KEY || '';
   }
 
+  private computeSimilarity(studentText: string, modelText: string): number {
+    if (!studentText || !modelText) return 0;
+    const normalize = (str: string) =>
+      str
+        .toLowerCase()
+        .replace(/[^\w\sàâäéèêëîïôöùûüç]/g, '')
+        .trim()
+        .split(/\s+/)
+        .filter((w) => w.length > 2);
+
+    const words1 = normalize(studentText);
+    const words2 = normalize(modelText);
+
+    if (words1.length < 5 || words2.length < 5) return 0;
+
+    const set1 = new Set(words1);
+    const set2 = new Set(words2);
+    let intersection = 0;
+    set1.forEach((w) => {
+      if (set2.has(w)) intersection++;
+    });
+
+    const union = new Set([...words1, ...words2]).size;
+    const jaccard = union > 0 ? intersection / union : 0;
+
+    const getTrigrams = (words: string[]) => {
+      const trigrams = new Set<string>();
+      for (let i = 0; i <= words.length - 3; i++) {
+        trigrams.add(words.slice(i, i + 3).join(' '));
+      }
+      return trigrams;
+    };
+
+    const tri1 = getTrigrams(words1);
+    const tri2 = getTrigrams(words2);
+
+    let triMatch = 0;
+    tri1.forEach((t) => {
+      if (tri2.has(t)) triMatch++;
+    });
+    const triRatio = tri1.size > 0 ? triMatch / tri1.size : 0;
+
+    return Math.max(jaccard, triRatio);
+  }
+
   async getFeedback(text: string, lessonTitle?: string, expectedAnswer?: string, checklist?: string[], targetLanguage = 'French', examName = 'DELF / TCF'): Promise<ComprehensiveWritingFeedback> {
     const apiKey = await this.getOpenRouterKey();
 
-    // CRITICAL PLAGIARISM CHECK: If student submits the exact model answer / sample response or >70% copy
-    if (expectedAnswer && text) {
-      const normStudent = text.toLowerCase().replace(/[^\w\s\u00C0-\u024F]/g, '').trim();
-      const normModel = expectedAnswer.toLowerCase().replace(/[^\w\s\u00C0-\u024F]/g, '').trim();
-      
-      const studentWords = normStudent.split(/\s+/).filter(w => w.length > 3);
-      const modelWords = new Set(normModel.split(/\s+/).filter(w => w.length > 3));
-      
-      let matchCount = 0;
-      for (const w of studentWords) {
-        if (modelWords.has(w)) matchCount++;
-      }
-      const matchRatio = studentWords.length > 0 ? matchCount / studentWords.length : 0;
-
-      if (normStudent === normModel || (matchRatio >= 0.70 && studentWords.length >= 10)) {
+    // CRITICAL PLAGIARISM CHECK: If student submits the exact model answer / sample response or >35% copy
+    if (expectedAnswer && text && expectedAnswer.trim().length > 30) {
+      const similarity = this.computeSimilarity(text, expectedAnswer);
+      if (similarity > 0.35) {
         return {
           score: 0,
           scoreOutOf20: 0,
@@ -82,7 +116,7 @@ export class WritingService {
           coherenceScore: 0,
           lexicalScore: 0,
           grammarScore: 0,
-          feedback: '🚨 PLAGIARISM DETECTED (Score: 0): Your submission is a copy of the official exemplar model answer. Official FEI / CCI test centers automatically award 0 points for copied template responses.',
+          feedback: `🚨 PLAGIARISM DETECTED (Score: 0/20): Your submission shares ${(similarity * 100).toFixed(0)}% similarity with the official model answer (threshold is 35%). Official FEI / CCI test centers automatically award 0 points for copied template responses.`,
           corrections: [
             { original: text.slice(0, 80) + '...', corrected: 'Rédigez votre propre texte original.', explanation: 'Copied model answers receive an automatic zero grade in official exams.' }
           ],
