@@ -1234,40 +1234,40 @@ export function AuthenticCBTExamPage() {
         {currentSection.writingTasks && currentSection.writingTasks.length > 0 && (
           <div className="space-y-4">
 
-            {/* WRITING EXAM STRATEGY & EXAMINER SCORING TRAPS BANNER */}
-            {(mode === "PRACTICE" || showHints) && (
-              <div className="p-5 rounded-xl border border-pink-300 dark:border-pink-800 bg-pink-50/90 dark:bg-pink-950/40 space-y-3 text-xs text-slate-900 dark:text-slate-100 shadow-sm">
-                <div className="flex items-center justify-between border-b border-pink-200 dark:border-pink-800 pb-2">
-                  <span className="font-extrabold text-sm text-pink-700 dark:text-pink-400 flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-pink-600" />
-                    <span>Official Examiner Strategy & Scoring Traps: Expression Écrite</span>
+            {/* WRITING EXAM STRATEGY & EXAMINER SCORING TRAPS BANNER (TRIGGERED BY TOOLBAR BUTTON) */}
+            {showHints && (
+              <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800 text-xs text-amber-950 dark:text-amber-200 space-y-2.5 shadow-sm font-sans">
+                <div className="flex items-center justify-between border-b border-amber-200 dark:border-amber-800/60 pb-2">
+                  <span className="font-extrabold text-xs text-amber-900 dark:text-amber-300 flex items-center gap-1.5 uppercase tracking-wide">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                    <span>✍️ Writing Strategy & Scoring Traps Alert (Official Examiner Rules)</span>
                   </span>
-                  <span className="px-2.5 py-0.5 rounded bg-pink-600 text-white font-mono font-bold text-[10px]">
-                    NCLC 7–9 (B2/C1 TARGET GUIDE)
+                  <span className="px-2 py-0.5 rounded bg-amber-600 text-white font-mono font-bold text-[10px]">
+                    FEI / CCI STANDARDS
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-sans">
-                  <div className="space-y-1 p-2.5 rounded bg-white/70 dark:bg-slate-900/70 border border-pink-200 dark:border-pink-900">
-                    <p className="font-bold text-pink-900 dark:text-pink-300 uppercase text-[10px]">1. Word Count Discipline</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="space-y-1 p-2.5 rounded bg-white/80 dark:bg-slate-900/80 border border-amber-200 dark:border-amber-900">
+                    <p className="font-bold text-amber-900 dark:text-amber-300 uppercase text-[10px]">1. Word Count Discipline</p>
                     <p className="leading-relaxed text-[11px] text-slate-700 dark:text-slate-300">
                       Staying below minimum word counts incurs automatic percentage score deductions. Stay strictly within target bounds.
                     </p>
                   </div>
 
-                  <div className="space-y-1 p-2.5 rounded bg-white/70 dark:bg-slate-900/70 border border-pink-200 dark:border-pink-900">
-                    <p className="font-bold text-pink-900 dark:text-pink-300 uppercase text-[10px]">2. Essential Logical Connectors</p>
+                  <div className="space-y-1 p-2.5 rounded bg-white/80 dark:bg-slate-900/80 border border-amber-200 dark:border-amber-900">
+                    <p className="font-bold text-amber-900 dark:text-amber-300 uppercase text-[10px]">2. Essential Logical Connectors</p>
                     <div className="flex flex-wrap gap-1 pt-0.5">
                       {["D'abord", "En effet", "Cependant", "Néanmoins", "Par conséquent", "En somme"].map((c, i) => (
-                        <span key={i} className="px-1.5 py-0.5 rounded bg-pink-100 dark:bg-pink-950 text-[10px] font-mono font-bold text-pink-900 dark:text-pink-300">
+                        <span key={i} className="px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-[10px] font-mono font-bold text-amber-900 dark:text-amber-300">
                           {c}
                         </span>
                       ))}
                     </div>
                   </div>
 
-                  <div className="space-y-1 p-2.5 rounded bg-white/70 dark:bg-slate-900/70 border border-pink-200 dark:border-pink-900">
-                    <p className="font-bold text-pink-900 dark:text-pink-300 uppercase text-[10px]">3. Hors-Sujet & Plagiarism Traps</p>
+                  <div className="space-y-1 p-2.5 rounded bg-white/80 dark:bg-slate-900/80 border border-amber-200 dark:border-amber-900">
+                    <p className="font-bold text-amber-900 dark:text-amber-300 uppercase text-[10px]">3. Hors-Sujet & Plagiarism Traps</p>
                     <p className="leading-relaxed text-[11px] text-slate-700 dark:text-slate-300">
                       Off-topic essays or copying model answers (&gt;35% similarity) automatically receive an examiner <strong>Score of 0/20 (NCLC 0)</strong>.
                     </p>
