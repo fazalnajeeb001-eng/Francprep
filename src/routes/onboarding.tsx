@@ -448,7 +448,13 @@ export function OnboardingPage() {
 
     const finalLevel = levelOverride || (step === "result" ? evaluatedLevel : "A1");
 
-    // 1. Update francprep_user JSON in LocalStorage if present
+    // 1. Write individual LocalStorage flags immediately
+    saveGoalToStorage(selectedGoal, selectedLang);
+    setDailyStudyGoal(selectedPace);
+    localStorage.setItem("fp_active_language", selectedLang);
+    localStorage.setItem("francprep_onboarding_completed", "true");
+    localStorage.setItem("francprep_user_level", finalLevel);
+
     try {
       const rawUser = localStorage.getItem("francprep_user");
       if (rawUser) {
@@ -459,14 +465,7 @@ export function OnboardingPage() {
       }
     } catch (e) {}
 
-    // 2. Write individual LocalStorage flags
-    saveGoalToStorage(selectedGoal, selectedLang);
-    setDailyStudyGoal(selectedPace);
-    localStorage.setItem("fp_active_language", selectedLang);
-    localStorage.setItem("francprep_onboarding_completed", "true");
-    localStorage.setItem("francprep_user_level", finalLevel);
-
-    // 3. Update AuthContext React state
+    // 2. Update AuthContext React state synchronously
     if (user && updateUser) {
       updateUser({
         ...user,
@@ -476,25 +475,28 @@ export function OnboardingPage() {
       } as any);
     }
 
-    // 4. API sync to MongoDB
-    try {
-      await apiFetch("/users/profile/goal", {
+    // 3. API sync to MongoDB with a non-blocking max 800ms race timeout
+    const apiSync = Promise.all([
+      apiFetch("/users/profile/goal", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ goal: selectedGoal, activeLanguage: selectedLang }),
-      });
-      await apiFetch("/users/profile/complete-onboarding", {
+      }).catch(() => {}),
+      apiFetch("/users/profile/complete-onboarding", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ activeLanguage: selectedLang, learningGoal: selectedGoal }),
-      });
-    } catch (e) {
-      console.warn("[Onboarding] Sync warning:", e);
-    } finally {
-      setSubmitting(false);
-    }
+      }).catch(() => {}),
+    ]);
 
-    // 5. Guaranteed instant browser redirect to /dashboard
+    await Promise.race([
+      apiSync,
+      new Promise((resolve) => setTimeout(resolve, 800)),
+    ]);
+
+    setSubmitting(false);
+
+    // 4. Guaranteed instant browser redirect to /dashboard
     if (typeof window !== "undefined") {
       window.location.href = "/dashboard";
     } else {

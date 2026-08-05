@@ -2,8 +2,6 @@ import { Request, Response } from 'express';
 import Settings from '../models/Settings';
 import TTSCache from '../models/TTSCache';
 
-const placeholders = ['••••••••', '...', '***', '********'];
-
 let inMemorySettings: any = {
   stripeSecretKey: "",
   stripePublishableKey: "",
@@ -56,6 +54,10 @@ export async function getSettings(_req: Request, res: Response) {
 }
 
 const placeholders = [
+  '••••••••',
+  '...',
+  '***',
+  '********',
   'sk-...',
   'xi-api-key-...',
   'hf_...',

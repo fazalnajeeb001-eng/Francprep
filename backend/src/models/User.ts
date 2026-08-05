@@ -17,6 +17,7 @@ export interface IUserDocument extends Document {
   xp: number;
   lastStudyDate?: Date;
   learningGoal: string;
+  activeLanguage?: string;
   avatarUrl: string;
   avatarFeatures: { gender: string; skinTone: string; faceShape: string; hairStyle: string; hairColor: string; eyeColor: string; eyeSize: string; eyebrowStyle: string; noseSize: string; lipFullness: string; facialHair: string; outfitStyle: string; outfitColor: string; accessory: string; earring: string; necklace: string };
   onboardingComplete: boolean;
@@ -48,7 +49,8 @@ const userSchema = new Schema<IUserDocument>(
     streak: { type: Number, default: 0 },
     xp: { type: Number, default: 0 },
     lastStudyDate: { type: Date },
-    learningGoal: { type: String, enum: ['A2', 'B1', 'B2', 'C1', 'C2', 'TCF_B2', 'TEF_B2', 'none'], default: 'none' },
+    learningGoal: { type: String, default: 'none' },
+    activeLanguage: { type: String, default: 'fr' },
     avatarUrl: { type: String, default: '' },
     avatarFeatures: {
       gender: { type: String, enum: ['male', 'female'], default: 'female' },

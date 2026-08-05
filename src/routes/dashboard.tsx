@@ -74,10 +74,17 @@ function DashboardPage() {
                 saveGoalToStorage(json.data.user.learningGoal as LearningGoal);
               }
             }
-            const isCompletedLocal = typeof window !== "undefined" && localStorage.getItem("francprep_onboarding_completed") === "true";
+            const isCompletedLocal = typeof window !== "undefined" && (
+              localStorage.getItem("francprep_onboarding_completed") === "true" ||
+              localStorage.getItem("fp_active_language") !== null ||
+              localStorage.getItem("francprep_user_level") !== null
+            );
             if (!json.data.user.onboardingComplete && !isCompletedLocal) {
               window.location.href = "/onboarding";
               return;
+            }
+            if (isCompletedLocal && !json.data.user.onboardingComplete) {
+              json.data.user.onboardingComplete = true;
             }
             if (json.data.overallProgress >= 100 || (json.data.lessonsCompleted.completed >= json.data.lessonsCompleted.total && json.data.lessonsCompleted.total > 0)) {
             setTimeout(() => fireConfetti(), 600);
