@@ -64,30 +64,38 @@ function DashboardPage() {
       try {
         const res = await apiFetch("/dashboard");
         const json = await res.json();
-          if (json.success) {
-            setData(json.data);
+        if (json.success) {
+          setData(json.data);
+          if (json.data.user) {
+            const localLang = localStorage.getItem("fp_active_language");
+            if (localLang) {
+              json.data.user.activeLanguage = localLang;
+            } else if (json.data.user.activeLanguage) {
+              localStorage.setItem("fp_active_language", json.data.user.activeLanguage);
+            }
             if (json.data.user.avatarFeatures) {
               localStorage.setItem("fp_avatar_features", JSON.stringify(json.data.user.avatarFeatures));
             }
-            if (json.data.user.learningGoal && json.data.user.learningGoal !== "none") {
-              const existing = getGoal();
-              if (!existing || existing.goal !== json.data.user.learningGoal) {
-                saveGoalToStorage(json.data.user.learningGoal as LearningGoal);
-              }
+          }
+          if (json.data.user.learningGoal && json.data.user.learningGoal !== "none") {
+            const existing = getGoal();
+            if (!existing || existing.goal !== json.data.user.learningGoal) {
+              saveGoalToStorage(json.data.user.learningGoal as LearningGoal);
             }
-            const isCompletedLocal = typeof window !== "undefined" && (
-              localStorage.getItem("francprep_onboarding_completed") === "true" ||
-              localStorage.getItem("fp_active_language") !== null ||
-              localStorage.getItem("francprep_user_level") !== null
-            );
-            if (!json.data.user.onboardingComplete && !isCompletedLocal) {
-              window.location.href = "/onboarding";
-              return;
-            }
-            if (isCompletedLocal && !json.data.user.onboardingComplete) {
-              json.data.user.onboardingComplete = true;
-            }
-            if (json.data.overallProgress >= 100 || (json.data.lessonsCompleted.completed >= json.data.lessonsCompleted.total && json.data.lessonsCompleted.total > 0)) {
+          }
+          const isCompletedLocal = typeof window !== "undefined" && (
+            localStorage.getItem("francprep_onboarding_completed") === "true" ||
+            localStorage.getItem("fp_active_language") !== null ||
+            localStorage.getItem("francprep_user_level") !== null
+          );
+          if (!json.data.user.onboardingComplete && !isCompletedLocal) {
+            window.location.href = "/onboarding";
+            return;
+          }
+          if (isCompletedLocal && !json.data.user.onboardingComplete) {
+            json.data.user.onboardingComplete = true;
+          }
+          if (json.data.overallProgress >= 100 || (json.data.lessonsCompleted.completed >= json.data.lessonsCompleted.total && json.data.lessonsCompleted.total > 0)) {
             setTimeout(() => fireConfetti(), 600);
           }
         }

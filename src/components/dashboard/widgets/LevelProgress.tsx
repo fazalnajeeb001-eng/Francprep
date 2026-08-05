@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { SmartAvatar } from "./SmartAvatar";
 import type { DashboardData } from "../types";
 import { CEFR_ORDER, getLevelBackgrounds } from "../utils/userPrefs";
+import { getActiveLanguageCode } from "~/lib/trackBranding";
 
 function getTimeOfDay(): "morning" | "afternoon" | "evening" | "night" {
   const hour = new Date().getHours();
@@ -52,7 +53,7 @@ export function LevelProgress({ levels, dark, overall, avatarUrl, avatarFeatures
   const [avatarSize, setAvatarSize] = useState(160);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const activeLang = typeof window !== "undefined" ? localStorage.getItem("fp_active_language") || "fr" : "fr";
+  const activeLang = getActiveLanguageCode();
   const levelBackgrounds = getLevelBackgrounds(activeLang);
   const activeLevel = getActiveLevel(levels);
   const activeData = getActiveData(levels, activeLevel);

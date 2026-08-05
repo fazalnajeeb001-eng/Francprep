@@ -4,7 +4,7 @@ import { Crown, BookOpen, BookText, Languages, Trophy, Target, Zap, Clock, Star 
 import { Link } from "@tanstack/react-router";
 import type { DashboardData } from "../types";
 import { getGoal, CEFR_ORDER } from "../utils/userPrefs";
-import { getTrackBranding } from "~/lib/trackBranding";
+import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 
 function getCefrNamesForLanguage(langCode: string = "fr"): Record<string, string> {
   const code = (langCode || "fr").toLowerCase().trim();
@@ -46,7 +46,7 @@ export function JourneyBanner({ dark, firstName, streak, overallProgress, levels
   const activeData = levels.find((l) => l.level === activeLevel);
   const goalData = getGoal();
 
-  const activeLang = typeof window !== "undefined" ? localStorage.getItem("fp_active_language") || "fr" : "fr";
+  const activeLang = getActiveLanguageCode();
   const branding = getTrackBranding(activeLang);
   const cefrNames = getCefrNamesForLanguage(activeLang);
 
@@ -142,7 +142,7 @@ export function JourneyBanner({ dark, firstName, streak, overallProgress, levels
           </div>
           <div>
             {(() => {
-              const activeLang = typeof window !== "undefined" ? localStorage.getItem("fp_active_language") || "fr" : "fr";
+              const activeLang = getActiveLanguageCode();
               const branding = getTrackBranding(activeLang);
               return (
                 <>

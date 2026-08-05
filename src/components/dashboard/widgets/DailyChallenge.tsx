@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Sparkles, ChevronRight, Clock, Check, RotateCcw } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { getActiveLanguageCode } from "~/lib/trackBranding";
 import { useWidgets } from "~/lib/WidgetsContext";
 
 const TIMER_SECONDS = 60;
@@ -55,7 +55,7 @@ export function DailyChallenge({ dark }: { dark: boolean }) {
   const challengeDate = widgets?.dailyChallengeDate || "";
   const challengeIndex = widgets?.dailyChallengeIndex || 0;
 
-  const activeLang = typeof window !== "undefined" ? localStorage.getItem("fp_active_language") || "fr" : "fr";
+  const activeLang = getActiveLanguageCode();
   const challenges = MULTI_LANG_CHALLENGES[activeLang] || MULTI_LANG_CHALLENGES.fr;
 
   const today = new Date().toDateString();

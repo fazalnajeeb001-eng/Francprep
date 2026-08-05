@@ -2,10 +2,10 @@ import { motion } from "framer-motion";
 import { Target, Trophy, TrendingUp } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useCountUp } from "../hooks/useCountUp";
-import { getTrackBranding } from "~/lib/trackBranding";
+import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 
 export function ExamCard({ averageScore, dark }: { averageScore: number; dark: boolean }) {
-  const activeLang = typeof window !== "undefined" ? localStorage.getItem("fp_active_language") || "fr" : "fr";
+  const activeLang = getActiveLanguageCode();
   const branding = getTrackBranding(activeLang);
 
   const hasData = averageScore > 0;

@@ -23,6 +23,17 @@ export function getActiveLanguageCode(user?: { activeLanguage?: string } | null)
   if (user?.activeLanguage && user.activeLanguage.trim()) {
     return user.activeLanguage.toLowerCase().trim();
   }
+  if (typeof window !== "undefined") {
+    try {
+      const storedUser = localStorage.getItem("francprep_user");
+      if (storedUser) {
+        const parsed = JSON.parse(storedUser);
+        if (parsed?.activeLanguage && parsed.activeLanguage.trim()) {
+          return parsed.activeLanguage.toLowerCase().trim();
+        }
+      }
+    } catch {}
+  }
   return "fr";
 }
 
