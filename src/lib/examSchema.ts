@@ -75,7 +75,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "Chers voyageurs, votre attention s'il vous plaît. Le TGV numéro 7842 à destination de Paris-Gare de Lyon, départ initialement prévu à 14h15, partira exceptionnellement de la voie 4. Veuillez assurer l'embarquement immédiat.",
     en: "Dear passengers, attention please. TGV train 7842 to Paris-Gare de Lyon, originally scheduled for 2:15pm, will exceptionally depart from platform 4. Please proceed to immediate boarding.",
-    hint: "A1 Station Announcement Strategy: Listen for the platform word 'voie 4' (Track/Platform 4) which indicates the exact departure point."
+    hint: "Station Announcement Strategy: Listen for platform change keywords like 'exceptionnellement' or 'voie/quai'. Pay attention to where the train will depart, rather than the original schedule."
   },
   {
     level: "A1",
@@ -85,7 +85,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "Salut Thomas ! C'est Marc. Je suis actuellement au supermarché du centre-ville pour faire les courses de la semaine. Dis-moi, est-ce que tu as besoin que je prenne du pain frais ou du fromage pour le dîner ce soir ?",
     en: "Hi Thomas! It's Marc. I'm currently at the downtown supermarket doing weekly grocery shopping. Tell me, do you need me to pick up fresh bread or cheese for dinner tonight?",
-    hint: "A1 Voicemail Strategy: Listen for 'actuellement au...' (currently at...) to immediately identify the speaker's location."
+    hint: "Voicemail Strategy: Focus on the opening sentence where the speaker states their current location ('je suis actuellement au...'). Distinguish where they are from items mentioned."
   },
   {
     level: "A2",
@@ -95,7 +95,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "Bonjour à tous, voici vos prévisions météorologiques pour la journée de mardi. Pensez à vous équiper d'un parapluie robuste dès ce matin, car de fortes averses orageuses sont attendues sur l'ensemble de la région au cours de l'après-midi.",
     en: "Hello everyone, here is your weather forecast for Tuesday. Be sure to bring a sturdy umbrella this morning, as heavy thunderstorm showers are expected across the region in the afternoon.",
-    hint: "A2 Weather Broadcast Strategy: Identify the key weather advice 'parapluie' (umbrella) linked to 'averses' (rain showers)."
+    hint: "Weather Forecast Strategy: Listen for specific weather gear recommendations linked to expected weather conditions in the afternoon."
   },
   {
     level: "A2",
@@ -105,7 +105,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "Bonjour, nous vous rappelons que votre rendez-vous de contrôle annuel avec le docteur Mercier est confirmé pour ce mardi à 10h00 précises.",
     en: "Hello, we are reminding you that your annual dental check-up with Dr. Mercier is confirmed for this Tuesday at exactly 10:00am.",
-    hint: "A2 Appointment Strategy: Note the specific day and hour mentioned: 'ce mardi à 10h00 précises'."
+    hint: "Appointment Reminder Strategy: Listen carefully for the confirmed day of the week and exact time of the appointment."
   },
   {
     level: "B1",
@@ -115,7 +115,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "Bonjour à l'équipe projet. Veuillez noter que la réunion stratégique est reportée à vendredi 15h00 dans la grande salle de conférence B au deuxième étage.",
     en: "Hello project team. Please note that the strategic meeting is postponed to Friday at 3:00pm in large conference room B on the second floor.",
-    hint: "B1 Workplace Notice Strategy: Watch out for 'reportée à...' (postponed to...) which overrides the original time Thursday morning."
+    hint: "Workplace Notice Strategy: Watch for schedule change markers like 'reporté à' (postponed to). The updated schedule overrides the initial time."
   },
   {
     level: "B1",
@@ -125,7 +125,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "Attention, exercice de sécurité incendie. En cas d'alarme, veuillez évacuer calmement en empruntant exclusivement les escaliers de secours et ne pas utiliser les ascenseurs.",
     en: "Attention, fire safety drill. In case of alarm, please evacuate calmly using exclusively the emergency stairs and do not use elevators.",
-    hint: "B1 Safety Instruction Strategy: Listen for 'empruntant exclusivement' (using exclusively) to catch the mandatory action."
+    hint: "Safety Instruction Strategy: Listen for contrastive instructions (what is required vs what is explicitly prohibited)."
   },
   {
     level: "B2",
@@ -135,7 +135,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "La collecte sélective et le compostage obligatoire permettent d'abaisser le volume global des ordures ménagères de 30 % dans les arrondissements pilotes.",
     en: "Selective collection and mandatory composting reduce household waste volume by 30% in pilot boroughs.",
-    hint: "B2 Environmental Report Strategy (NCLC 7 Target): Connect the synonym 'abaisser le volume' (lower volume) to 'Réduire le volume'."
+    hint: "Environmental Report Strategy (NCLC 7 Target): Listen for French synonyms expressing reduction or decrease linked to percentage statistics."
   },
   {
     level: "B2",
@@ -145,7 +145,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "L'accélération du travail hybride a stimulé les ventes d'équipements, enregistrant une hausse nette de 25 % du chiffre d'affaires.",
     en: "The acceleration of hybrid work boosted equipment sales, recording a net 25% increase in revenue.",
-    hint: "B2 Economic News Strategy (NCLC 7 Target): Pay attention to 'une hausse nette de 25%' (a net 25% increase in sales)."
+    hint: "Economic News Strategy (NCLC 7 Target): Focus on key trend vocabulary ('hausse' vs 'baisse') and the exact figures associated with sales revenue."
   },
   {
     level: "C1",
@@ -155,7 +155,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "La végétalisation systématique des toitures contribue de manière décisive à l'atténuation des îlots de chaleur au cœur des grandes métropoles.",
     en: "Systematic rooftop greening contributes decisively to mitigating urban heat islands in major metropolitan centers.",
-    hint: "C1 Urban Debate Strategy: Match 'atténuation des îlots de chaleur' with 'Combattre les îlots de chaleur'."
+    hint: "Urban Planning Strategy (C1 Level): Identify high-level terms expressing mitigation or action against urban climate challenges."
   },
   {
     level: "C2",
@@ -165,7 +165,7 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "L'avènement de la cryptographie quantique permet d'envisager une étanchéité théoriquement absolue des flux de données.",
     en: "The advent of quantum cryptography allows for theoretically absolute data flow security against cyber intrusions.",
-    hint: "C2 Academic Lecture Strategy: Identify abstract terms like 'étanchéité théoriquement absolue' (theoretically absolute security/sealing)."
+    hint: "Scientific Lecture Strategy (C2 Level): Focus on academic concepts expressing security or data protection guarantees in technological protocols."
   }
 ];
 
