@@ -24,5 +24,23 @@ export async function apiFetch(
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  return fetch(`${API_BASE}${path}`, { ...options, headers });
+  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+
+  if ((res.status === 401 || res.status === 403) && typeof window !== "undefined") {
+    const clone = res.clone();
+    try {
+      const data = await clone.json();
+      if (data?.code === 'USER_DELETED' || data?.code === 'USER_BANNED' || res.status === 401) {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem("francprep_user");
+        localStorage.removeItem("fp_active_language");
+        if (!window.location.pathname.startsWith("/login") && !window.location.pathname.startsWith("/signup")) {
+          const reason = data?.code || (res.status === 403 ? 'USER_BANNED' : 'USER_DELETED');
+          window.location.href = `/login?error=${reason}`;
+        }
+      }
+    } catch {}
+  }
+
+  return res;
 }

@@ -14,6 +14,18 @@ function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const errParam = params.get("error");
+      if (errParam === "USER_DELETED") {
+        setError("This account has been deleted by an administrator.");
+      } else if (errParam === "USER_BANNED") {
+        setError("This account has been suspended or deactivated.");
+      }
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); setError(""); setLoading(true);
     try {

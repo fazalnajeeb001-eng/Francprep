@@ -1,15 +1,16 @@
 import { Response, NextFunction } from 'express';
 import { verifyAccessToken } from '../utils/jwt';
 import { AuthRequest, IJwtPayload } from '../types';
+import User from '../models/User';
 
 /**
- * Authenticate middleware - verifies JWT from Authorization header
+ * Authenticate middleware - verifies JWT from Authorization header and verifies user active status in MongoDB
  */
-export const authenticate = (
+export const authenticate = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction
-): void => {
+): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
     let token = '';
@@ -30,8 +31,30 @@ export const authenticate = (
       return;
     }
 
-    const decoded = verifyAccessToken(token);
-    req.user = decoded as IJwtPayload;
+    const decoded = verifyAccessToken(token) as IJwtPayload;
+    req.user = decoded;
+
+    // Verify user exists in DB and is active (not deleted or banned)
+    const targetUserId = decoded.userId || (decoded as any).id;
+    const dbUser = await User.findById(targetUserId).select('isActive role').lean();
+    if (!dbUser) {
+      res.status(401).json({
+        success: false,
+        error: 'Account has been deleted or does not exist.',
+        code: 'USER_DELETED',
+      });
+      return;
+    }
+
+    if (dbUser.isActive === false) {
+      res.status(403).json({
+        success: false,
+        error: 'Your account has been suspended or deactivated.',
+        code: 'USER_BANNED',
+      });
+      return;
+    }
+
     next();
   } catch (error: any) {
     if (error.name === 'TokenExpiredError') {
