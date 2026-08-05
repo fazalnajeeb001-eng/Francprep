@@ -48,23 +48,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(() => getStoredUser());
   const [isLoading, setIsLoading] = useState(true);
 
-  // On initial mount, try to restore the session from stored token
+  // On initial mount, restore session from localStorage immediately & revalidate in background
   useEffect(() => {
     const init = async () => {
+      const storedUser = getStoredUser();
       const token = getStoredAccessToken();
-      if (!token) {
+
+      if (!storedUser && !token) {
         setUser(null);
         setIsLoading(false);
         return;
       }
+
+      // Instant local session restoration — zero wait, zero flashing
+      if (storedUser) {
+        setUser(storedUser);
+      }
+
       try {
         const currentUser = await apiGetMe();
         setUser(currentUser);
+        localStorage.setItem("francprep_user", JSON.stringify(currentUser));
       } catch (err: any) {
-        // Only clear auth if server explicitly responds with 401 Unauthorized
-        if (err?.response?.status === 401) {
+        const code = err?.response?.data?.code || err?.code;
+        if (code === "USER_DELETED" || code === "USER_BANNED") {
           clearAuthStorage();
           setUser(null);
+        } else {
+          // Maintain active session using stored local user cache — NEVER force logout on 401 or network glitch
+          if (storedUser) {
+            setUser(storedUser);
+          }
         }
       } finally {
         setIsLoading(false);

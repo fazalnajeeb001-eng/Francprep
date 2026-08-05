@@ -142,7 +142,10 @@ api.interceptors.response.use(
       url.includes("/auth/login") ||
       url.includes("/auth/signup")
     ) {
-      clearAuthStorage();
+      const code = (error.response?.data as any)?.code;
+      if (code === 'USER_DELETED' || code === 'USER_BANNED') {
+        clearAuthStorage();
+      }
       return Promise.reject(error);
     }
 
@@ -181,9 +184,12 @@ api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
       }
       return api(originalRequest);
-    } catch (refreshError) {
+    } catch (refreshError: any) {
       processQueue(refreshError, null);
-      clearAuthStorage();
+      const code = (refreshError.response?.data as any)?.code;
+      if (code === 'USER_DELETED' || code === 'USER_BANNED') {
+        clearAuthStorage();
+      }
       return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;

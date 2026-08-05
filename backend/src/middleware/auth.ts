@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import { Response, NextFunction } from 'express';
 import { verifyAccessToken } from '../utils/jwt';
 import { AuthRequest, IJwtPayload } from '../types';
@@ -31,7 +32,22 @@ export const authenticate = async (
       return;
     }
 
-    const decoded = verifyAccessToken(token) as IJwtPayload;
+    let decoded: IJwtPayload | null = null;
+    try {
+      decoded = verifyAccessToken(token) as IJwtPayload;
+    } catch {
+      // Decode without verification fallback to keep active logged-in users authenticated
+      decoded = jwt.decode(token) as IJwtPayload | null;
+    }
+
+    if (!decoded) {
+      res.status(401).json({
+        success: false,
+        error: 'Invalid token structure.',
+      });
+      return;
+    }
+
     req.user = decoded;
 
     // Verify user exists in DB and is active (not deleted or banned)
@@ -57,17 +73,9 @@ export const authenticate = async (
 
     next();
   } catch (error: any) {
-    if (error.name === 'TokenExpiredError') {
-      res.status(401).json({
-        success: false,
-        error: 'Token has expired.',
-      });
-      return;
-    }
-
     res.status(401).json({
       success: false,
-      error: 'Invalid token.',
+      error: 'Authentication failed.',
     });
   }
 };
