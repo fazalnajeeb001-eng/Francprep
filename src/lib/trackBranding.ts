@@ -16,12 +16,12 @@ export interface TrackBranding {
 }
 
 export function getActiveLanguageCode(user?: { activeLanguage?: string } | null): string {
+  if (user?.activeLanguage && user.activeLanguage.trim()) {
+    return user.activeLanguage.toLowerCase().trim();
+  }
   if (typeof window !== "undefined") {
     const local = localStorage.getItem("fp_active_language");
     if (local && local.trim()) return local.toLowerCase().trim();
-  }
-  if (user?.activeLanguage && user.activeLanguage.trim()) {
-    return user.activeLanguage.toLowerCase().trim();
   }
   if (typeof window !== "undefined") {
     try {
