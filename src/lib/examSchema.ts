@@ -736,7 +736,10 @@ const TCF_WRITING_SUITE = [
   ]
 ];
 
+let _cachedRegistry: ExamPaper[] | null = null;
+
 export function getExamRegistry(): ExamPaper[] {
+  if (_cachedRegistry) return _cachedRegistry;
   const registry: ExamPaper[] = [];
 
   // Generate 10 TCF Canada Papers (5 Practice Mode Papers + 5 Real Exam Mode Papers)
@@ -933,6 +936,7 @@ export function getExamRegistry(): ExamPaper[] {
     });
   }
 
+  _cachedRegistry = registry;
   return registry;
 }
 

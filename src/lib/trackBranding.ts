@@ -44,7 +44,7 @@ export const PRESET_TRACKS: Record<string, TrackBranding> = {
     shortBrand: 'FrancPrep',
     journeyTitle: 'French Journey',
     flag: '🇫🇷',
-    examName: 'DELF / DALF / TCF / TEF',
+    examName: 'TCF Canada / TEF Canada',
     nativeName: 'Français',
     languageName: 'French',
     speechLocale: 'fr-FR',
