@@ -82,6 +82,9 @@ function storeAuthData(user: User, accessToken: string, refreshToken: string): v
   localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken);
   localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
   localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+  if (user && (user as any).activeLanguage) {
+    localStorage.setItem("fp_active_language", (user as any).activeLanguage);
+  }
 }
 
 // ─── Axios instance ───────────────────────────────────────────────────────

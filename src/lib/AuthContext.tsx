@@ -69,6 +69,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const currentUser = await apiGetMe();
         setUser(currentUser);
         localStorage.setItem("francprep_user", JSON.stringify(currentUser));
+        if ((currentUser as any).activeLanguage) {
+          localStorage.setItem("fp_active_language", (currentUser as any).activeLanguage);
+        }
       } catch (err: any) {
         const code = err?.response?.data?.code || err?.code;
         if (code === "USER_DELETED" || code === "USER_BANNED") {
@@ -153,6 +156,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(async (payload: LoginPayload): Promise<User> => {
     const result = await apiLogin(payload);
     setUser(result.user);
+    if (typeof window !== "undefined" && (result.user as any).activeLanguage) {
+      localStorage.setItem("fp_active_language", (result.user as any).activeLanguage);
+    }
     return result.user;
   }, []);
 
