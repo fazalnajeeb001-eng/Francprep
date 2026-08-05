@@ -6,7 +6,7 @@ import { useTheme } from "~/lib/ThemeContext";
 import { useAuth } from "~/lib/AuthContext";
 import { apiFetch } from "~/lib/apiFetch";
 import { speak as speakText } from "~/lib/speech";
-import { getTrackBranding } from "~/lib/trackBranding";
+import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 
 export const Route = createFileRoute("/speaking")({ component: SpeakingPage });
 
@@ -69,7 +69,7 @@ function SpeakingPage() {
     return <Navigate to="/login" search={{ redirect: "/speaking" }} replace />;
   }
 
-  const activeBranding = getTrackBranding(user?.activeLanguage || (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : null) || "fr");
+  const activeBranding = getTrackBranding(getActiveLanguageCode(user));
 
   useEffect(() => {
     collectPhrases().then(setCardPhrases);

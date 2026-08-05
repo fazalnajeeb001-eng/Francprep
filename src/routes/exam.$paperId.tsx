@@ -23,7 +23,8 @@ import {
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 import { speak } from "~/lib/speech";
-import { getTrackBranding } from "~/lib/trackBranding";
+import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
+import { useAuth } from "~/lib/AuthContext";
 import { apiFetch } from "~/lib/apiFetch";
 import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } from "~/lib/examSchema";
 
@@ -38,7 +39,13 @@ export const Route = createFileRoute("/exam/$paperId")({
 
 export function AuthenticCBTExamPage() {
   const navigate = useNavigate();
-  const activeBranding = getTrackBranding(typeof window !== "undefined" ? localStorage.getItem("fp_active_language") || "fr" : "fr");
+  const { user } = useAuth();
+  const activeLang = getActiveLanguageCode(user);
+  const activeBranding = getTrackBranding(activeLang);
+
+  if (activeLang !== "fr" && activeLang !== "fre" && activeLang !== "french") {
+    return <Navigate to="/exam" replace />;
+  }
   const { paperId } = Route.useParams();
   const search = Route.useSearch();
   const mode: ExamMode = search.mode || "PRACTICE";

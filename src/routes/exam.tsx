@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 import { useAuth } from "~/lib/AuthContext";
-import { getTrackBranding } from "~/lib/trackBranding";
+import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { getExamRegistry, type ExamMode, type ExamType } from "~/lib/examSchema";
 
 export const Route = createFileRoute("/exam")({ component: ExamRouteLayout });
@@ -62,7 +62,7 @@ export function ExamHubPage() {
   const [selectedType, setSelectedType] = useState<ExamType>("TCF_CANADA");
   const [selectedMode, setSelectedMode] = useState<ExamMode>("PRACTICE");
 
-  const activeLang = (user?.activeLanguage || (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : "fr") || "fr").toLowerCase().trim();
+  const activeLang = getActiveLanguageCode(user);
 
   const examConfig = (function() {
     if (activeLang === 'de' || activeLang === 'ger' || activeLang === 'german') {

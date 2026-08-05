@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, useRouterState, Link, Navigate } from "@tansta
 import { useEffect, useState } from "react";
 import { useAuth } from "~/lib/AuthContext";
 import { useTheme } from "~/lib/ThemeContext";
+import { getActiveLanguageCode } from "~/lib/trackBranding";
 import { apiFetch } from "~/lib/apiFetch";
 import { Sidebar } from "~/components/dashboard/Sidebar";
 import { LoadingSkeleton } from "~/components/dashboard/LoadingSkeleton";
@@ -116,7 +117,7 @@ function DashboardPage() {
 
   const b = dark ? "bg-[#070B17] text-white" : "bg-[#F8FAFC] text-slate-900";
   const txtSec = dark ? "text-gray-400" : "text-slate-600";
-  const activeLang = (user?.activeLanguage || (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : "fr") || "fr").toLowerCase().trim();
+  const activeLang = getActiveLanguageCode(user);
   const { emoji, greeting, motivational } = getGreeting(activeLang);
 
   return (

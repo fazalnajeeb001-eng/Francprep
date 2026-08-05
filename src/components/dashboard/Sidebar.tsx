@@ -3,12 +3,12 @@ import { BookOpen, Calendar, LayoutDashboard, Settings, Zap, Users } from "lucid
 import { useEffect, useState } from "react";
 import { useAuth } from "~/lib/AuthContext";
 import { apiFetch } from "~/lib/apiFetch";
-import { getTrackBranding } from "~/lib/trackBranding";
+import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 
 export function Sidebar({ open, onClose, dark }: { open: boolean; onClose: () => void; dark: boolean }) {
   const { user } = useAuth();
   const [isSocialHubEnabled, setIsSocialHubEnabled] = useState(false);
-  const activeLang = typeof window !== "undefined" ? localStorage.getItem("fp_active_language") || "fr" : "fr";
+  const activeLang = getActiveLanguageCode(user);
   const activeBrand = getTrackBranding(activeLang);
 
   useEffect(() => {

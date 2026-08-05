@@ -6,7 +6,7 @@ import { useAuth } from "~/lib/AuthContext";
 import { motion } from "framer-motion";
 import { ArrowLeft, BookOpen, ChevronRight, Sparkles, Clock, Layers, GraduationCap, Target, BookText, Pen, Headphones, MessageSquare, User, Lock } from "lucide-react";
 
-import { getTrackBranding } from "~/lib/trackBranding";
+import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 
 export const Route = createFileRoute("/learn")({ component: LearnPage });
 
@@ -57,7 +57,7 @@ function LearnPage() {
   if (!isAuthenticated || !user) {
     return <Navigate to="/login" search={{ redirect: "/learn" }} replace />;
   }
-  const activeBranding = getTrackBranding(user?.activeLanguage || (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : null) || "fr");
+  const activeBranding = getTrackBranding(getActiveLanguageCode(user));
   const passedMilestones = (user as any)?.passedMilestones || [];
 
   const [view, setView] = useState<"levels" | string>("levels");

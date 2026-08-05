@@ -7,7 +7,7 @@ import { apiFetch } from "~/lib/apiFetch";
 import { useAuth } from "~/lib/AuthContext";
 import { reviewFlashcards, getDueCards, getFlashcardStats, type FlashcardProgress } from "~/lib/flashcardsApi";
 import { speak } from "~/lib/speech";
-import { getTrackBranding } from "~/lib/trackBranding";
+import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 
 export const Route = createFileRoute("/flashcards")({ component: FlashcardsPage });
 
@@ -48,7 +48,7 @@ function FlashcardsPage() {
     return <Navigate to="/login" search={{ redirect: "/flashcards" }} replace />;
   }
 
-  const activeBranding = getTrackBranding(user?.activeLanguage || (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : null) || "fr");
+  const activeBranding = getTrackBranding(getActiveLanguageCode(user));
 
   const [allCards, setAllCards] = useState<VocabCard[]>([]);
   const [activeCards, setActiveCards] = useState<VocabCard[]>([]);
@@ -91,7 +91,7 @@ function FlashcardsPage() {
           });
         } catch {}
 
-        const activeLang = (user?.activeLanguage || (typeof window !== 'undefined' ? localStorage.getItem("fp_active_language") : "fr") || "fr").toLowerCase().trim();
+        const activeLang = getActiveLanguageCode(user);
         const res = await apiFetch(`/lessons?limit=200&language=${activeLang}`);
         const json = await res.json();
         const lessons = json.data || json.lessons || (Array.isArray(json) ? json : []);

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "~/lib/AuthContext";
 import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
-import { getTrackBranding } from "~/lib/trackBranding";
+import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import {
   MessageSquare,
   Sparkles,
@@ -193,7 +193,7 @@ function CommunityExamHubPage() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const { dark } = useTheme();
   const navigate = useNavigate();
-  const activeBranding = getTrackBranding(user?.activeLanguage || (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : null) || "fr");
+  const activeBranding = getTrackBranding(getActiveLanguageCode(user));
 
   const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
   const [buddyRequests, setBuddyRequests] = useState<BuddyCircleRequest[]>(INITIAL_BUDDY_REQUESTS);

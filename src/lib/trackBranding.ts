@@ -15,6 +15,17 @@ export interface TrackBranding {
   cardExpressionLabel: string;
 }
 
+export function getActiveLanguageCode(user?: { activeLanguage?: string } | null): string {
+  if (typeof window !== "undefined") {
+    const local = localStorage.getItem("fp_active_language");
+    if (local && local.trim()) return local.toLowerCase().trim();
+  }
+  if (user?.activeLanguage && user.activeLanguage.trim()) {
+    return user.activeLanguage.toLowerCase().trim();
+  }
+  return "fr";
+}
+
 export const PRESET_TRACKS: Record<string, TrackBranding> = {
   fr: {
     code: 'fr',
