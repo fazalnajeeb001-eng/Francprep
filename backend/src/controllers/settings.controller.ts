@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import Settings from '../models/Settings';
 import TTSCache from '../models/TTSCache';
 
+const placeholders = ['••••••••', '...', '***', '********'];
+
 let inMemorySettings: any = {
   stripeSecretKey: "",
   stripePublishableKey: "",

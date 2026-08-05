@@ -56,6 +56,7 @@ router.use('/admin', adminRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/writing', writingRoutes);
 router.use('/user', userRoutes);
+router.use('/users', userRoutes);
 router.use('/widgets', widgetsRoutes);
 router.use('/flashcards', flashcardRoutes);
 router.use('/payments', paymentRoutes);

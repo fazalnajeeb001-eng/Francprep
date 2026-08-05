@@ -341,9 +341,10 @@ export function getPlacementQuestions(langCode: string = "fr"): Question[] {
 export function OnboardingPage() {
   const navigate = useNavigate();
   const { dark } = useTheme();
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading, updateUser } = useAuth();
 
   const [step, setStep] = useState<"language" | "goal" | "pace" | "choice" | "test" | "result">("language");
+  const [submitting, setSubmitting] = useState(false);
   const [availableLanguages, setAvailableLanguages] = useState<any[]>([
     { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', examName: 'DELF / TCF' },
     { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪', examName: 'Goethe / TestDaF' },
@@ -441,10 +442,13 @@ export function OnboardingPage() {
     }
   };
 
-  const handleFinishOnboarding = (levelOverride?: string) => {
+  const handleFinishOnboarding = async (levelOverride?: string) => {
+    if (submitting) return;
+    setSubmitting(true);
+
     const finalLevel = levelOverride || (step === "result" ? evaluatedLevel : "A1");
 
-    // 1. Update francprep_user JSON in LocalStorage
+    // 1. Update francprep_user JSON in LocalStorage if present
     try {
       const rawUser = localStorage.getItem("francprep_user");
       if (rawUser) {
@@ -468,21 +472,27 @@ export function OnboardingPage() {
         ...user,
         onboardingComplete: true,
         activeLanguage: selectedLang,
+        learningGoal: selectedGoal,
       } as any);
     }
 
-    // 4. Non-blocking background API sync to MongoDB
-    apiFetch("/users/profile/goal", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ goal: selectedGoal, activeLanguage: selectedLang }),
-    }).catch(() => {});
-
-    apiFetch("/users/profile/complete-onboarding", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ activeLanguage: selectedLang, learningGoal: selectedGoal }),
-    }).catch(() => {});
+    // 4. API sync to MongoDB
+    try {
+      await apiFetch("/users/profile/goal", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ goal: selectedGoal, activeLanguage: selectedLang }),
+      });
+      await apiFetch("/users/profile/complete-onboarding", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ activeLanguage: selectedLang, learningGoal: selectedGoal }),
+      });
+    } catch (e) {
+      console.warn("[Onboarding] Sync warning:", e);
+    } finally {
+      setSubmitting(false);
+    }
 
     // 5. Guaranteed instant browser redirect to /dashboard
     if (typeof window !== "undefined") {
@@ -741,8 +751,8 @@ export function OnboardingPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left max-w-3xl mx-auto">
                 {/* Option A: Start A1 */}
                 <div
-                  onClick={() => handleFinishOnboarding("A1")}
-                  className="p-8 rounded-3xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#101828]/80 hover:border-purple-400 transition-all cursor-pointer shadow-xl flex flex-col justify-between space-y-6 group"
+                  onClick={() => !submitting && handleFinishOnboarding("A1")}
+                  className={`p-8 rounded-3xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#101828]/80 hover:border-purple-400 transition-all cursor-pointer shadow-xl flex flex-col justify-between space-y-6 group ${submitting ? "opacity-50 pointer-events-none" : ""}`}
                 >
                   <div className="space-y-4">
                     <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
@@ -762,7 +772,7 @@ export function OnboardingPage() {
                   </div>
 
                   <div className="pt-2 flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 group-hover:translate-x-1 transition-transform">
-                    <span>Start at A1 Level</span>
+                    <span>{submitting ? "Entering App..." : "Start at A1 Level"}</span>
                     <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>
@@ -770,11 +780,12 @@ export function OnboardingPage() {
                 {/* Option B: Take 20-Q Test */}
                 <div
                   onClick={() => {
+                    if (submitting) return;
                     setCurrentQIndex(0);
                     setSelectedAnswers({});
                     setStep("test");
                   }}
-                  className="p-8 rounded-3xl border border-purple-500/30 bg-purple-500/10 hover:border-purple-500 transition-all cursor-pointer shadow-xl flex flex-col justify-between space-y-6 group ring-1 ring-purple-500/20"
+                  className={`p-8 rounded-3xl border border-purple-500/30 bg-purple-500/10 hover:border-purple-500 transition-all cursor-pointer shadow-xl flex flex-col justify-between space-y-6 group ring-1 ring-purple-500/20 ${submitting ? "opacity-50 pointer-events-none" : ""}`}
                 >
                   <div className="space-y-4">
                     <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-purple-600/30">
@@ -802,17 +813,19 @@ export function OnboardingPage() {
 
               <div className="pt-4 flex justify-between items-center max-w-3xl mx-auto">
                 <button
+                  disabled={submitting}
                   onClick={() => setStep("pace")}
-                  className="px-6 py-3 rounded-xl border border-gray-300 dark:border-white/10 text-xs font-bold text-gray-600 dark:text-gray-300"
+                  className="px-6 py-3 rounded-xl border border-gray-300 dark:border-white/10 text-xs font-bold text-gray-600 dark:text-gray-300 disabled:opacity-50"
                 >
                   ← Back
                 </button>
 
                 <button
+                  disabled={submitting}
                   onClick={() => handleFinishOnboarding("A1")}
-                  className="text-xs text-gray-500 hover:text-gray-900 dark:hover:text-white flex items-center gap-1 font-semibold"
+                  className="text-xs text-gray-500 hover:text-gray-900 dark:hover:text-white flex items-center gap-1 font-semibold disabled:opacity-50"
                 >
-                  <span>Skip test & start on A1 directly</span>
+                  <span>{submitting ? "Entering App..." : "Skip test & start on A1 directly"}</span>
                   <SkipForward className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -948,16 +961,18 @@ export function OnboardingPage() {
 
               <div className="space-y-3 pt-2">
                 <button
+                  disabled={submitting}
                   onClick={() => handleFinishOnboarding(evaluatedLevel)}
-                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm shadow-xl shadow-purple-600/30 flex items-center justify-center gap-2"
+                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm shadow-xl shadow-purple-600/30 flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                  <span>Accept {evaluatedLevel} Benchmark & Enter App</span>
+                  <span>{submitting ? "Saving & Entering App..." : `Accept ${evaluatedLevel} Benchmark & Enter App`}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
 
                 <button
+                  disabled={submitting}
                   onClick={() => handleFinishOnboarding("A1")}
-                  className="w-full py-3 rounded-xl border border-gray-300 dark:border-white/10 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5"
+                  className="w-full py-3 rounded-xl border border-gray-300 dark:border-white/10 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 disabled:opacity-50"
                 >
                   Start at A1 Foundations Anyway
                 </button>

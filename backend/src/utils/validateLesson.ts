@@ -1,4 +1,5 @@
 import Ajv from 'ajv';
+// @ts-ignore
 import addFormats from 'ajv-formats';
 import standardSchema from '../schemas/lesson.schema.json';
 import integratedSchema from '../schemas/lesson-integrated.schema.json';
