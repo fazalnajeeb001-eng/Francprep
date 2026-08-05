@@ -5,14 +5,16 @@ import { generateAICompletion } from './aiProvider';
 
 export interface ComprehensiveWritingFeedback {
   score: number;
+  scoreOutOf20: number;
   nclcGrade: string;
   cefrLevel: string;
-  taskCompletionScore: number;
+  expressEntryPoints: number;
+  taskFulfillmentScore: number;
+  coherenceScore: number;
+  lexicalScore: number;
   grammarScore: number;
-  vocabularyScore: number;
-  cohesionScore: number;
   feedback: string;
-  corrections: Array<{ original: string; corrected: string; explanation: string } | string>;
+  corrections: Array<{ original: string; corrected: string; explanation: string }>;
   tips: string[];
 }
 
@@ -72,12 +74,14 @@ export class WritingService {
       if (normStudent === normModel || (matchRatio >= 0.70 && studentWords.length >= 10)) {
         return {
           score: 0,
+          scoreOutOf20: 0,
           nclcGrade: 'NCLC 0 (Zero Grade - Plagiarism Detected)',
           cefrLevel: 'N/A',
-          taskCompletionScore: 0,
+          expressEntryPoints: 0,
+          taskFulfillmentScore: 0,
+          coherenceScore: 0,
+          lexicalScore: 0,
           grammarScore: 0,
-          vocabularyScore: 0,
-          cohesionScore: 0,
           feedback: '🚨 PLAGIARISM DETECTED (Score: 0): Your submission is a copy of the official exemplar model answer. Official FEI / CCI test centers automatically award 0 points for copied template responses.',
           corrections: [
             { original: text.slice(0, 80) + '...', corrected: 'Rédigez votre propre texte original.', explanation: 'Copied model answers receive an automatic zero grade in official exams.' }
@@ -93,30 +97,35 @@ export class WritingService {
     if (!apiKey) {
       return {
         score: 0,
+        scoreOutOf20: 0,
         nclcGrade: 'N/A',
         cefrLevel: 'N/A',
-        taskCompletionScore: 0,
+        expressEntryPoints: 0,
+        taskFulfillmentScore: 0,
+        coherenceScore: 0,
+        lexicalScore: 0,
         grammarScore: 0,
-        vocabularyScore: 0,
-        cohesionScore: 0,
         feedback: 'AI feedback is not configured. Please set up OpenRouter API Key in Admin Settings or Environment variables.',
         corrections: [],
         tips: ['Set OPENROUTER_API_KEY in your environment or Admin Settings to enable AI feedback.'],
       };
     }
 
-    const prompt = `You are a certified senior official examiner for ${examName} evaluating ${targetLanguage} writing proficiency.
-You are conducting a strict, diagnostic evaluation of a student's ${targetLanguage} writing response.
+    const prompt = `You are an official Senior Certified Examiner for France Éducation International (FEI) evaluating ${targetLanguage} writing for official TCF Canada Express Entry.
 
-CRITICAL EVALUATION RULE 1 - PROMPT ADHERENCE & RELEVANCE (50% WEIGHT):
-- Verify whether the student directly, accurately, and fully answers the specific topic, questions, and requirements in the prompt / checklist.
-- IF THE RESPONSE IS OFF-TOPIC, RANDOM TEXT (e.g. "asdf", "hello"), OR FAILS TO ANSWER THE PROMPT QUESTIONS, HEAVILY PENALIZE THE TASK COMPLETION SCORE (0-20 OUT OF 100).
-- Official ${examName} exams award 0 points for Task Completion if the candidate strays off-topic or submits irrelevant text.
+OFFICIAL FEI TCF EVALUATION GRID (4 CRITERIA - TOTAL 20 MARKS):
+1. Task Fulfillment & Word Count (0-5 pts): Respecting prompt instructions and word count range.
+2. Coherence & Connectors (0-5 pts): Paragraph structure and transition markers (e.g. en outre, cependant, par conséquent).
+3. Lexical Variety & Richness (0-5 pts): Precise topic vocabulary range without repetition.
+4. Morphosyntax & Grammar (0-5 pts): Tense agreement, adjective agreement, complex structures (subjunctive, conditional).
 
-CRITICAL EVALUATION RULE 2 - CEFR LEVEL ACCURACY (50% WEIGHT):
-- Evaluate the language grammar, vocabulary depth, sentence complexity, and register against CEFR standards (A1, A2, B1, B2, C1, C2) for ${targetLanguage}.
-- Map score to CEFR level (A1, A2, B1, B2, C1, C2) and NCLC (NCLC 4 to NCLC 10+ for French/Canada, or equivalent CEFR band).
-- Example: 85-100% -> B2/C1 (NCLC 8-9), 70-84% -> B2 (NCLC 7), 55-69% -> B1 (NCLC 5-6), <55% -> A1/A2.
+OFFICIAL NCLC SCALING (Based on Total Marks out of 20):
+- 17-20 / 20 = NCLC 9 (C1 Advanced) (+31 CRS Points)
+- 14-16 / 20 = NCLC 8 (B2 Upper) (+23 CRS Points)
+- 12-13 / 20 = NCLC 7 (B2 Benchmark Target) (+17 CRS Points)
+- 10-11 / 20 = NCLC 6 (B1 Intermediate) (+12 CRS Points)
+- 8-9 / 20 = NCLC 5 (B1 Threshold) (+6 CRS Points)
+- < 8 / 20 = NCLC 1-4 (A1-A2) (0 CRS Points)
 
 Context / Task Prompt:
 Task / Topic: "${lessonTitle || `${targetLanguage} Writing Examination`}"
@@ -128,15 +137,16 @@ Student's Typed Writing Submission (${targetLanguage}):
 ${text}
 """
 
-Evaluate strictly according to official ${examName} examiner criteria for ${targetLanguage}. Respond ONLY with a valid JSON object:
+Evaluate strictly according to official FEI TCF Canada examiner criteria. Respond ONLY with a valid JSON object:
 {
-  "score": 82,
-  "nclcGrade": "CEFR B2 / NCLC 7",
+  "scoreOutOf20": 15,
+  "nclcGrade": "NCLC 8 (B2 Upper)",
   "cefrLevel": "B2",
-  "taskCompletionScore": 85,
-  "grammarScore": 80,
-  "vocabularyScore": 82,
-  "cohesionScore": 80,
+  "expressEntryPoints": 23,
+  "taskFulfillmentScore": 4,
+  "coherenceScore": 4,
+  "lexicalScore": 4,
+  "grammarScore": 3,
   "feedback": "2-3 sentence precise examiner diagnostic summary highlighting strengths and primary area for improvement.",
   "corrections": [
     { "original": "student error text", "corrected": "corrected text", "explanation": "Grammatical or lexical explanation in English." }
@@ -151,7 +161,7 @@ Evaluate strictly according to official ${examName} examiner criteria for ${targ
       const content = await generateAICompletion({
         model: 'gpt-4o-mini',
         prompt,
-        systemPrompt: `You are an official ${examName} examiner for ${targetLanguage} providing strict, diagnostic CEFR feedback.`,
+        systemPrompt: `You are an official France Éducation International (FEI) Senior Examiner evaluating TCF Canada writing.`,
         temperature: 0.2,
         maxTokens: 1000,
       });
@@ -159,14 +169,38 @@ Evaluate strictly according to official ${examName} examiner criteria for ${targ
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
+        const scoreOutOf20 = typeof parsed.scoreOutOf20 === 'number' ? parsed.scoreOutOf20 : 12;
+        const scorePct = Math.round((scoreOutOf20 / 20) * 100);
+
+        let nclcGrade = parsed.nclcGrade || "NCLC 7 (B2 Benchmark Target)";
+        let expressEntryPoints = parsed.expressEntryPoints || 17;
+        if (scoreOutOf20 >= 17) {
+          nclcGrade = "NCLC 9 (C1 Advanced)";
+          expressEntryPoints = 31;
+        } else if (scoreOutOf20 >= 14) {
+          nclcGrade = "NCLC 8 (B2 Upper)";
+          expressEntryPoints = 23;
+        } else if (scoreOutOf20 >= 12) {
+          nclcGrade = "NCLC 7 (B2 Benchmark Target)";
+          expressEntryPoints = 17;
+        } else if (scoreOutOf20 >= 10) {
+          nclcGrade = "NCLC 6 (B1 Intermediate)";
+          expressEntryPoints = 12;
+        } else if (scoreOutOf20 >= 8) {
+          nclcGrade = "NCLC 5 (B1 Threshold)";
+          expressEntryPoints = 6;
+        }
+
         return {
-          score: typeof parsed.score === 'number' ? parsed.score : 75,
-          nclcGrade: parsed.nclcGrade || `CEFR ${parsed.cefrLevel || 'B2'}`,
+          score: scorePct,
+          scoreOutOf20,
+          nclcGrade,
           cefrLevel: parsed.cefrLevel || 'B2',
-          taskCompletionScore: typeof parsed.taskCompletionScore === 'number' ? parsed.taskCompletionScore : (parsed.score || 75),
-          grammarScore: typeof parsed.grammarScore === 'number' ? parsed.grammarScore : 75,
-          vocabularyScore: typeof parsed.vocabularyScore === 'number' ? parsed.vocabularyScore : 75,
-          cohesionScore: typeof parsed.cohesionScore === 'number' ? parsed.cohesionScore : 75,
+          expressEntryPoints,
+          taskFulfillmentScore: typeof parsed.taskFulfillmentScore === 'number' ? parsed.taskFulfillmentScore : 4,
+          coherenceScore: typeof parsed.coherenceScore === 'number' ? parsed.coherenceScore : 4,
+          lexicalScore: typeof parsed.lexicalScore === 'number' ? parsed.lexicalScore : 4,
+          grammarScore: typeof parsed.grammarScore === 'number' ? parsed.grammarScore : 3,
           feedback: parsed.feedback || 'Good effort on this writing task.',
           corrections: Array.isArray(parsed.corrections) ? parsed.corrections : [],
           tips: Array.isArray(parsed.tips) ? parsed.tips : [],
@@ -174,13 +208,15 @@ Evaluate strictly according to official ${examName} examiner criteria for ${targ
       }
 
       return {
-        score: 70,
-        nclcGrade: 'CEFR B1 / NCLC 6',
-        cefrLevel: 'B1',
-        taskCompletionScore: 70,
-        grammarScore: 70,
-        vocabularyScore: 70,
-        cohesionScore: 70,
+        score: 60,
+        scoreOutOf20: 12,
+        nclcGrade: 'NCLC 7 (B2 Benchmark Target)',
+        cefrLevel: 'B2',
+        expressEntryPoints: 17,
+        taskFulfillmentScore: 3,
+        coherenceScore: 3,
+        lexicalScore: 3,
+        grammarScore: 3,
         feedback: content.slice(0, 250),
         corrections: [],
         tips: ['Ensure all parts of the prompt are answered directly.'],
@@ -189,12 +225,14 @@ Evaluate strictly according to official ${examName} examiner criteria for ${targ
       console.error('AI feedback request failed:', error);
       return {
         score: 0,
+        scoreOutOf20: 0,
         nclcGrade: 'N/A',
         cefrLevel: 'N/A',
-        taskCompletionScore: 0,
+        expressEntryPoints: 0,
+        taskFulfillmentScore: 0,
+        coherenceScore: 0,
+        lexicalScore: 0,
         grammarScore: 0,
-        vocabularyScore: 0,
-        cohesionScore: 0,
         feedback: 'Unable to connect to AI evaluation service. Please check API Key in Admin Settings.',
         corrections: [],
         tips: ['Ensure OPENROUTER_API_KEY is configured in Admin Settings.'],
