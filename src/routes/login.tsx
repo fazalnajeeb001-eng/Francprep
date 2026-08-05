@@ -86,9 +86,33 @@ function LoginPage() {
     }
   };
 
+  const trackStyles: Record<string, { gradient: string; glow: string; badge: string }> = {
+    fr: {
+      gradient: "from-blue-600 via-indigo-600 to-rose-600",
+      glow: "shadow-indigo-500/40 border-indigo-500/30",
+      badge: "bg-indigo-500/15 text-indigo-400 border-indigo-500/30",
+    },
+    de: {
+      gradient: "from-amber-500 via-red-600 to-yellow-500",
+      glow: "shadow-amber-500/40 border-amber-500/30",
+      badge: "bg-amber-500/15 text-amber-400 border-amber-500/30",
+    },
+    es: {
+      gradient: "from-red-600 via-amber-500 to-yellow-500",
+      glow: "shadow-red-500/40 border-red-500/30",
+      badge: "bg-red-500/15 text-red-400 border-red-500/30",
+    },
+    it: {
+      gradient: "from-emerald-600 via-teal-500 to-rose-600",
+      glow: "shadow-emerald-500/40 border-emerald-500/30",
+      badge: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+    },
+  };
+  const activeStyle = trackStyles[activeBranding.code] || trackStyles.fr;
+
   return (
     <div className={`min-h-screen ${dark ? "bg-[#070B17] text-white" : "bg-[#F8FAFC] text-slate-900"} flex items-center justify-center px-4 py-12 transition-colors duration-300 overflow-x-hidden relative`}>
-      {/* Dynamic Background Glow & Ambient Particles */}
+      {/* Background Glow */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
         <div className={`absolute -top-40 -left-40 w-96 h-96 rounded-full blur-3xl opacity-20 ${dark ? "bg-purple-600" : "bg-purple-300"}`} />
         <div className={`absolute -bottom-40 -right-40 w-96 h-96 rounded-full blur-3xl opacity-20 ${dark ? "bg-pink-600" : "bg-pink-300"}`} />
@@ -97,14 +121,14 @@ function LoginPage() {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="w-full max-w-sm sm:max-w-md z-10">
         {/* Header Branding */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center justify-center gap-2 mb-4 group">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 via-indigo-500 to-pink-500 flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-purple-500/25 group-hover:scale-105 transition-all">
-              {activeBranding.flag}
+          <Link to="/" className="inline-flex items-center justify-center gap-2 mb-3 group">
+            <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${activeStyle.gradient} border flex items-center justify-center text-3xl shadow-2xl ${activeStyle.glow} group-hover:scale-105 transition-all duration-300`}>
+              <span className="drop-shadow-lg select-none">{activeBranding.flag}</span>
             </div>
           </Link>
-          <div className="flex items-center justify-center gap-1.5 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-500/10 text-purple-400 border border-purple-500/20">
-              {activeBranding.shortBrand} Portal
+          <div className="flex items-center justify-center gap-1.5 mb-2">
+            <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border shadow-sm ${activeStyle.badge}`}>
+              {activeBranding.brandName} Portal
             </span>
           </div>
           <h1 className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${dark ? "text-white" : "text-gray-900"}`}>
