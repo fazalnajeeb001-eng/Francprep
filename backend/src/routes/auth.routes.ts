@@ -54,4 +54,9 @@ router.post('/refresh-token', validate(refreshTokenSchema), (req, res, next) =>
   authController.refreshToken(req, res, next)
 );
 
+// POST /api/auth/forgot-password
+router.post('/forgot-password', authLimiter, (req, res, next) =>
+  authController.requestPasswordReset(req, res, next)
+);
+
 export default router;

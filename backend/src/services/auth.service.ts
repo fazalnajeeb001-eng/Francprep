@@ -141,6 +141,15 @@ export class AuthService {
     user.password = newPassword;
     await user.save();
   }
+
+  /**
+   * Request password reset
+   */
+  async requestPasswordReset(email: string) {
+    const normEmail = email.toLowerCase().trim();
+    const user = await User.findOne({ email: normEmail });
+    return { message: 'If an account exists with that email, password reset instructions have been sent.' };
+  }
 }
 
 export const authService = new AuthService();

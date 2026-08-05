@@ -159,6 +159,26 @@ export class AuthController {
       next(error);
     }
   }
+
+  /**
+   * POST /api/auth/forgot-password
+   */
+  async requestPasswordReset(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        res.status(400).json({ success: false, error: 'Email is required' });
+        return;
+      }
+      const result = await authService.requestPasswordReset(email);
+      res.status(200).json({
+        success: true,
+        message: result.message,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const authController = new AuthController();
