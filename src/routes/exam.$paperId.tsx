@@ -664,14 +664,78 @@ export function AuthenticCBTExamPage() {
     const wTasks = writingSec?.writingTasks || [];
     let writingWeightedScore = 0;
 
+    const getTaskScore = (task: any, idx: number) => {
+      const key = task.id || `task_${idx}`;
+      if (writingAiResults[key]?.scoreOutOf20 !== undefined) {
+        return writingAiResults[key].scoreOutOf20;
+      }
+      const typedText = writingResponses[key] || writingResponses[idx] || writingResponses[task.title] || "";
+      if (typedText && typedText.trim().length > 0) {
+        const clean = typedText.trim();
+        const wordCount = clean.split(/\s+/).length;
+        const textLower = clean.toLowerCase();
+
+        let minWords = task.min || 60;
+        let maxWords = task.max || 120;
+
+        let taskFulfillmentScore = 1;
+        if (wordCount >= minWords && wordCount <= maxWords + 30) taskFulfillmentScore = 5;
+        else if (wordCount > maxWords + 30) taskFulfillmentScore = 4;
+        else if (wordCount >= Math.round(minWords * 0.75)) taskFulfillmentScore = 3;
+        else if (wordCount >= Math.round(minWords * 0.4)) taskFulfillmentScore = 2;
+        else taskFulfillmentScore = 1;
+
+        const c1c2Connectors = ["de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet", "néanmoins", "en somme", "en conclusion"];
+        const b2Connectors = ["en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin"];
+        const foundC1C2Conn = c1c2Connectors.filter((c) => textLower.includes(c));
+        const foundB2Conn = b2Connectors.filter((c) => textLower.includes(c));
+
+        let coherenceScore = 1;
+        if (foundC1C2Conn.length >= 2) coherenceScore = 5;
+        else if (foundC1C2Conn.length >= 1 || foundB2Conn.length >= 2) coherenceScore = 4;
+        else if (foundB2Conn.length >= 1 || textLower.includes("mais") || textLower.includes("donc") || textLower.includes("car")) coherenceScore = 3;
+        else if (textLower.includes("et") || textLower.includes("ou")) coherenceScore = 2;
+        else coherenceScore = 1;
+
+        const c1c2Lexical = ["opportunité", "perspective", "incontournable", "sensibilisation", "préconiser", "déception", "solliciter", "manifestation", "bienveillance", "réciproque", "controverse", "conciliation", "inéluctable", "plasticité", "épanouissement", "décarbonation", "assimilation", "détériorer", "attentivement"];
+        const b2Lexical = ["avantage", "inconvénient", "participation", "installation", "inscription", "abonnement", "formation", "réclamation", "matériel", "garantie", "projet", "expérience", "quartier", "collègue", "souhaiter", "demander", "préciser"];
+        const foundC1C2Lex = c1c2Lexical.filter((w) => textLower.includes(w));
+        const foundB2Lex = b2Lexical.filter((w) => textLower.includes(w));
+
+        let lexicalScore = 1;
+        if (foundC1C2Lex.length >= 2) lexicalScore = 5;
+        else if (foundC1C2Lex.length >= 1 || foundB2Lex.length >= 2) lexicalScore = 4;
+        else if (foundB2Lex.length >= 1) lexicalScore = 3;
+        else if (wordCount >= 30) lexicalScore = 2;
+        else lexicalScore = 1;
+
+        const c1c2Grammar = ["puisse", "soit", "fassions", "sachiez", "ayez", "fussent", "a été", "ont été", "fut", "dont", "auquel", "laquelle", "duquel", "lesquelles", "en observant", "en prenant", "tout en", "aurait été", "aurait dû", "eût", "demeure", "entraver"];
+        const b2Grammar = ["serait", "pourrait", "devrais", "j'aimerais", "il faut que", "pour que", "bien que", "afin de", "en vue de", "je vous prie", "veuillez", "pourriez-vous"];
+        const foundC1C2Gram = c1c2Grammar.filter((g) => textLower.includes(g));
+        const foundB2Gram = b2Grammar.filter((g) => textLower.includes(g));
+
+        let grammarScore = 1;
+        if (wordCount < 15) {
+          grammarScore = 1; lexicalScore = 1; coherenceScore = 1; taskFulfillmentScore = 1;
+        } else if (foundC1C2Gram.length >= 2) grammarScore = 5;
+        else if (foundC1C2Gram.length >= 1 || foundB2Gram.length >= 2) grammarScore = 4;
+        else if (foundB2Gram.length >= 1 || textLower.includes("parce que") || textLower.includes("j'ai")) grammarScore = 3;
+        else if (textLower.includes("je suis") || textLower.includes("c'est") || textLower.includes("il y a")) grammarScore = 2;
+        else grammarScore = 1;
+
+        return taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
+      }
+      return 0;
+    };
+
     if (wTasks.length >= 3) {
-      const t1Score = writingAiResults[wTasks[0].id]?.scoreOutOf20 || 0;
-      const t2Score = writingAiResults[wTasks[1].id]?.scoreOutOf20 || 0;
-      const t3Score = writingAiResults[wTasks[2].id]?.scoreOutOf20 || 0;
+      const t1Score = getTaskScore(wTasks[0], 0);
+      const t2Score = getTaskScore(wTasks[1], 1);
+      const t3Score = getTaskScore(wTasks[2], 2);
       writingWeightedScore = Math.round(0.3 * t1Score + 0.3 * t2Score + 0.4 * t3Score);
     } else {
-      const writingScores = Object.values(writingAiResults).map((r: any) => r.scoreOutOf20 || r.score || 0);
-      writingWeightedScore = writingScores.length > 0 ? Math.round(writingScores.reduce((a, b) => a + b, 0) / writingScores.length) : 0;
+      const scores = wTasks.map((t, idx) => getTaskScore(t, idx));
+      writingWeightedScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
     }
 
     const writingPct = Math.round((writingWeightedScore / 20) * 100);
