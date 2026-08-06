@@ -125,47 +125,49 @@ export function DELFExamCanvasPage() {
   const seconds = secondsRemaining % 60;
 
   return (
-    <div className={`min-h-screen ${dark ? "bg-[#070B17] text-white" : "bg-[#F8FAFC] text-slate-900"} p-4 md:p-8`}>
-      <div className="max-w-5xl mx-auto space-y-6">
+    <div className={`min-h-screen ${dark ? "bg-[#070B17] text-white" : "bg-[#F8FAFC] text-slate-900"} p-3 sm:p-6 md:p-8 overflow-x-hidden select-none`}>
+      <div className="max-w-5xl mx-auto space-y-4 sm:space-y-6">
 
         {/* ─── TOP BAR ─── */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl border dark:bg-[#101828] dark:border-white/10 bg-white border-slate-200 shadow-sm">
-          <div className="flex items-center gap-3">
-            <Link to="/exam/delf" className="p-2 rounded-xl border dark:border-white/10 hover:bg-white/5 text-gray-400">
+        <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border dark:bg-[#101828] dark:border-white/10 bg-white border-slate-200 shadow-sm">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <Link to="/exam/delf" className="p-2 rounded-xl border dark:border-white/10 hover:bg-white/5 text-gray-400 shrink-0">
               <ArrowLeft className="w-4 h-4" />
             </Link>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded text-[10px] font-black bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="px-2 py-0.5 rounded text-[10px] font-black bg-amber-500/10 text-amber-400 border border-amber-500/20 shrink-0">
                   {paper.diplomaType} {paper.level}
                 </span>
-                <span className="text-xs font-bold">{paper.title}</span>
+                <span className="text-xs font-bold truncate">{paper.title}</span>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono text-sm font-bold">
-              <Clock className="w-4 h-4" />
+          <div className="flex items-center gap-2.5 sm:gap-4 shrink-0 ml-auto sm:ml-0">
+            <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono text-xs sm:text-sm font-bold">
+              <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</span>
             </div>
             <button
               onClick={handleSubmitExam}
               disabled={isEvaluating}
-              className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-extrabold text-xs rounded-xl shadow flex items-center gap-1.5 hover:brightness-110 transition-all disabled:opacity-50"
+              className="px-3.5 sm:px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-extrabold text-xs rounded-xl shadow flex items-center gap-1.5 hover:brightness-110 transition-all disabled:opacity-50 cursor-pointer"
             >
-              {isEvaluating ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />} Submit DELF Exam
+              {isEvaluating ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+              <span className="hidden sm:inline">Submit DELF Exam</span>
+              <span className="sm:hidden">Submit</span>
             </button>
           </div>
         </div>
 
         {/* ─── SECTION TABS ─── */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-gray-200 dark:border-white/10">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-gray-200 dark:border-white/10 scrollbar-none whitespace-nowrap">
           {paper.sections.map((sec, idx) => (
             <button
               key={sec.id}
               onClick={() => setActiveSectionIdx(idx)}
-              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-2 shrink-0 ${
+              className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-2 shrink-0 cursor-pointer ${
                 activeSectionIdx === idx
                   ? "bg-purple-600 text-white border-purple-500 shadow-md"
                   : dark
@@ -183,47 +185,47 @@ export function DELFExamCanvasPage() {
         </div>
 
         {/* ─── ACTIVE SECTION CANVAS ─── */}
-        <div className={`p-6 rounded-2xl border ${dark ? "bg-[#101828] border-white/10" : "bg-white border-slate-200 shadow-sm"} space-y-6`}>
+        <div className={`p-4 sm:p-6 rounded-2xl border ${dark ? "bg-[#101828] border-white/10" : "bg-white border-slate-200 shadow-sm"} space-y-5 sm:space-y-6`}>
           <div>
-            <h2 className="text-lg font-extrabold">{activeSection.title}</h2>
-            <p className="text-xs text-gray-400 mt-1">{activeSection.instructions}</p>
+            <h2 className="text-base sm:text-lg font-extrabold">{activeSection.title}</h2>
+            <p className="text-xs text-gray-400 mt-1 leading-relaxed">{activeSection.instructions}</p>
           </div>
 
           {/* LISTENING SECTION */}
           {activeSection.type === 'listening' && (
-            <div className="space-y-6">
-              <div className="p-4 rounded-xl border bg-purple-500/10 border-purple-500/20 flex items-center justify-between gap-4">
+            <div className="space-y-5 sm:space-y-6">
+              <div className="p-3.5 sm:p-4 rounded-xl border bg-purple-500/10 border-purple-500/20 flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center">
-                    <Volume2 className="w-5 h-5" />
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center shrink-0">
+                    <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold">Official Listening Audio Transcript</p>
-                    <p className="text-[10px] text-gray-400">Click Play to listen to the AI Examiner audio prompt.</p>
+                    <p className="text-xs font-bold">Official Listening Audio Prompt</p>
+                    <p className="text-[10px] text-gray-400">Click Play to listen to the audio recording.</p>
                   </div>
                 </div>
                 <button
                   onClick={() => handleAudioPlay(activeSection.transcript)}
-                  className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl shadow flex items-center gap-1.5"
+                  className="px-3.5 sm:px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl shadow flex items-center gap-1.5 cursor-pointer w-full sm:w-auto justify-center"
                 >
                   <Volume2 className="w-4 h-4" /> ▶ Play Audio Prompt
                 </button>
               </div>
 
               {activeSection.questions?.map(q => (
-                <div key={q.id} className="p-4 rounded-xl border dark:border-white/10 border-slate-200 space-y-3">
-                  <p className="text-xs font-bold">{q.question}</p>
+                <div key={q.id} className="p-3.5 sm:p-4 rounded-xl border dark:border-white/10 border-slate-200 space-y-3">
+                  <p className="text-xs sm:text-sm font-bold leading-snug">{q.question}</p>
                   <div className="space-y-2">
                     {q.options?.map((opt, optIdx) => (
-                      <label key={optIdx} className="flex items-center gap-3 p-3 rounded-xl border dark:border-white/5 border-slate-100 hover:bg-white/5 cursor-pointer text-xs">
+                      <label key={optIdx} className="flex items-center gap-3 p-3 rounded-xl border dark:border-white/5 border-slate-100 hover:bg-white/5 cursor-pointer text-xs min-h-[44px] touch-manipulation">
                         <input
                           type="radio"
                           name={q.id}
                           checked={userAnswers[q.id] === optIdx}
                           onChange={() => setUserAnswers({ ...userAnswers, [q.id]: optIdx })}
-                          className="accent-purple-500"
+                          className="accent-purple-500 w-4 h-4"
                         />
-                        <span>{opt}</span>
+                        <span className="leading-snug">{opt}</span>
                       </label>
                     ))}
                   </div>
@@ -234,27 +236,27 @@ export function DELFExamCanvasPage() {
 
           {/* READING SECTION */}
           {activeSection.type === 'reading' && (
-            <div className="space-y-6">
+            <div className="space-y-5 sm:space-y-6">
               {activeSection.readingPassage && (
-                <div className="p-4 rounded-xl border dark:bg-[#0c1224] dark:border-white/10 bg-slate-50 border-slate-200 text-xs leading-relaxed font-serif">
+                <div className="p-3.5 sm:p-4 rounded-xl border dark:bg-[#0c1224] dark:border-white/10 bg-slate-50 border-slate-200 text-xs sm:text-sm leading-relaxed font-serif max-h-[300px] overflow-y-auto">
                   {activeSection.readingPassage}
                 </div>
               )}
 
               {activeSection.questions?.map(q => (
-                <div key={q.id} className="p-4 rounded-xl border dark:border-white/10 border-slate-200 space-y-3">
-                  <p className="text-xs font-bold">{q.question}</p>
+                <div key={q.id} className="p-3.5 sm:p-4 rounded-xl border dark:border-white/10 border-slate-200 space-y-3">
+                  <p className="text-xs sm:text-sm font-bold leading-snug">{q.question}</p>
                   <div className="space-y-2">
                     {q.options?.map((opt, optIdx) => (
-                      <label key={optIdx} className="flex items-center gap-3 p-3 rounded-xl border dark:border-white/5 border-slate-100 hover:bg-white/5 cursor-pointer text-xs">
+                      <label key={optIdx} className="flex items-center gap-3 p-3 rounded-xl border dark:border-white/5 border-slate-100 hover:bg-white/5 cursor-pointer text-xs min-h-[44px] touch-manipulation">
                         <input
                           type="radio"
                           name={q.id}
                           checked={userAnswers[q.id] === optIdx}
                           onChange={() => setUserAnswers({ ...userAnswers, [q.id]: optIdx })}
-                          className="accent-purple-500"
+                          className="accent-purple-500 w-4 h-4"
                         />
-                        <span>{opt}</span>
+                        <span className="leading-snug">{opt}</span>
                       </label>
                     ))}
                   </div>
@@ -266,17 +268,17 @@ export function DELFExamCanvasPage() {
           {/* WRITING SECTION */}
           {activeSection.type === 'writing' && (
             <div className="space-y-4">
-              <div className="p-4 rounded-xl border bg-amber-500/10 border-amber-500/20 text-xs space-y-1">
+              <div className="p-3.5 sm:p-4 rounded-xl border bg-amber-500/10 border-amber-500/20 text-xs space-y-1">
                 <span className="font-bold text-amber-400">Writing Prompt:</span>
-                <p>{activeSection.writingPrompt}</p>
+                <p className="leading-relaxed">{activeSection.writingPrompt}</p>
               </div>
 
               <textarea
-                rows={10}
+                rows={7}
                 value={writingResponse}
                 onChange={e => setWritingResponse(e.target.value)}
                 placeholder="Rédigez votre texte ici..."
-                className="w-full rounded-xl p-4 text-xs font-mono border dark:bg-[#0c1224] dark:border-white/10 text-white focus:ring-2 focus:ring-purple-500 outline-none"
+                className="w-full rounded-xl p-3.5 sm:p-4 text-xs font-mono border dark:bg-[#0c1224] dark:border-white/10 dark:text-white text-slate-900 border-slate-300 focus:ring-2 focus:ring-purple-500 outline-none"
               />
               <div className="flex justify-between text-[10px] text-gray-400">
                 <span>Evaluated by AI against official DELF rubric criteria.</span>

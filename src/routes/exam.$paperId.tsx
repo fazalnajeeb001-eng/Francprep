@@ -631,58 +631,59 @@ export function AuthenticCBTExamPage() {
   const cbtHeader = "bg-[#1E293B] border-b border-slate-700 text-white";
 
   return (
-    <div className={`min-h-screen ${cbtBg} flex flex-col justify-between font-sans transition-colors duration-200 select-none`}>
+    <div className={`min-h-screen ${cbtBg} flex flex-col justify-between font-sans transition-colors duration-200 select-none overflow-x-hidden`}>
 
       {/* ─── OFFICIAL CBT TEST CENTER TOP HEADER BAR ─── */}
-      <header className={`${cbtHeader} px-4 py-3 shadow-md border-b flex flex-col md:flex-row md:items-center justify-between gap-3 shrink-0`}>
-        <div className="flex items-center gap-3">
+      <header className={`${cbtHeader} px-3 sm:px-4 py-2.5 sm:py-3 shadow-md border-b flex flex-wrap md:flex-nowrap items-center justify-between gap-2.5 shrink-0`}>
+        <div className="flex items-center gap-2.5 min-w-0">
           <button
             onClick={() => navigate({ to: "/exam" })}
-            className="p-1.5 rounded bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold flex items-center gap-1"
+            className="p-1.5 rounded bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold flex items-center gap-1 shrink-0 cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Exit Exam</span>
+            <span className="hidden xs:inline">Exit</span>
           </button>
 
           <div className="h-6 w-px bg-slate-600 hidden md:block" />
 
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-sm tracking-wide text-white uppercase">{paper.title}</span>
-              <span className="px-2 py-0.5 rounded bg-blue-600 text-white text-[10px] font-mono font-bold">
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="font-extrabold text-xs sm:text-sm tracking-wide text-white uppercase truncate max-w-[160px] sm:max-w-none">{paper.title}</span>
+              <span className="px-1.5 py-0.5 rounded bg-blue-600 text-white text-[9px] sm:text-[10px] font-mono font-bold shrink-0">
                 {paper.code}
               </span>
             </div>
-            <p className="text-[11px] text-slate-300">
-              Candidate: <strong>CANDIDATE-OFFICIAL-2026</strong> • Test Center ID: <strong>CA-MTL-042</strong>
+            <p className="text-[10px] sm:text-[11px] text-slate-300 hidden sm:block truncate">
+              Candidate: <strong>CANDIDATE-OFFICIAL-2026</strong> • Test Center: <strong>CA-MTL-042</strong>
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto sm:ml-0">
           {/* Mode Badge */}
           {mode === "PRACTICE" ? (
-            <span className="px-3 py-1 rounded bg-emerald-600 text-white text-xs font-bold flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>GUIDED PRACTICE MODE</span>
+            <span className="px-2 sm:px-3 py-1 rounded bg-emerald-600 text-white text-[10px] sm:text-xs font-bold flex items-center gap-1 shrink-0">
+              <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              <span className="hidden xs:inline">GUIDED </span>PRACTICE
             </span>
           ) : (
-            <span className="px-3 py-1 rounded bg-red-600 text-white text-xs font-bold flex items-center gap-1.5 animate-pulse">
-              <Clock className="w-3.5 h-3.5" />
-              <span>OFFICIAL REAL EXAM MODE (UNPAUSABLE)</span>
+            <span className="px-2 sm:px-3 py-1 rounded bg-red-600 text-white text-[10px] sm:text-xs font-bold flex items-center gap-1 shrink-0 animate-pulse">
+              <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              <span>REAL EXAM</span>
             </span>
           )}
 
           {/* Official Countdown Timer */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded bg-slate-900 border border-slate-700 font-mono font-bold text-sm text-emerald-400">
-            <Clock className="w-4 h-4 text-slate-400" />
+          <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded bg-slate-900 border border-slate-700 font-mono font-bold text-xs sm:text-sm text-emerald-400 shrink-0">
+            <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400" />
             <span>{formatTime(timeLeft)}</span>
             {mode === "PRACTICE" && (
               <button
                 onClick={() => setIsTimerPaused(!isTimerPaused)}
-                className="ml-1 p-0.5 hover:text-white"
+                className="ml-0.5 p-0.5 hover:text-white cursor-pointer"
+                title={isTimerPaused ? "Resume Timer" : "Pause Timer"}
               >
-                {isTimerPaused ? <Play className="w-3.5 h-3.5 fill-emerald-400" /> : <Pause className="w-3.5 h-3.5" />}
+                {isTimerPaused ? <Play className="w-3 h-3 fill-emerald-400" /> : <Pause className="w-3 h-3" />}
               </button>
             )}
           </div>
@@ -690,10 +691,11 @@ export function AuthenticCBTExamPage() {
           {/* Submit Button */}
           <button
             onClick={() => setIsSubmitted(true)}
-            className="px-4 py-1.5 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow"
+            className="px-3 sm:px-4 py-1 sm:py-1.5 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow shrink-0 cursor-pointer"
           >
             <Send className="w-3.5 h-3.5" />
-            <span>Finish Test</span>
+            <span className="hidden sm:inline">Finish Test</span>
+            <span className="sm:hidden">Finish</span>
           </button>
         </div>
       </header>
@@ -840,44 +842,44 @@ export function AuthenticCBTExamPage() {
 
         {/* LISTENING & READING SPLIT SCREEN */}
         {currentQuestions.length > 0 && currentQ && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 h-full">
 
             {/* LEFT PANEL: PASSAGE / AUDIO STIMULUS (7 COLS) */}
-            <div className={`lg:col-span-7 p-5 rounded-lg border ${cbtCard} shadow-sm space-y-4 flex flex-col justify-between overflow-y-auto`}>
+            <div className={`lg:col-span-7 p-4 sm:p-5 rounded-xl border ${cbtCard} shadow-sm space-y-4 flex flex-col justify-between overflow-y-auto max-h-[48vh] lg:max-h-none`}>
               <div className="space-y-4">
                 <div className="flex items-center justify-between border-b pb-2 border-slate-200 dark:border-slate-700">
-                  <span className="text-xs font-mono font-bold text-blue-600 dark:text-blue-400 uppercase">
+                  <span className="text-xs font-mono font-bold text-blue-600 dark:text-blue-400 uppercase truncate max-w-[200px] sm:max-w-none">
                     {currentSection.title} — Item {currentQ.questionNumber} of {currentQuestions.length}
                   </span>
                   <button
                     onClick={() => toggleFlag(currentQ.id)}
-                    className={`px-2.5 py-1 rounded text-xs font-semibold border flex items-center gap-1 ${
+                    className={`px-2.5 py-1 rounded text-xs font-semibold border flex items-center gap-1 shrink-0 cursor-pointer ${
                       flaggedQuestions[currentQ.id]
                         ? "bg-amber-500 text-white border-amber-500"
-                        : "bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700"
+                        : "bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200"
                     }`}
                   >
                     <Flag className="w-3.5 h-3.5" />
-                    <span>{flaggedQuestions[currentQ.id] ? "Flagged for Review" : "Flag Question"}</span>
+                    <span className="hidden xs:inline">{flaggedQuestions[currentQ.id] ? "Flagged" : "Flag"}</span>
                   </button>
                 </div>
 
                 {/* Official Listening Audio Component */}
                 {currentSection.type === "COMPREHENSION_ORALE" && (
-                  <div className="p-4 rounded-lg border space-y-3 bg-purple-50 border-purple-300 text-slate-950">
+                  <div className="p-3.5 sm:p-4 rounded-xl border space-y-3 bg-purple-50 border-purple-300 text-slate-950">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <span className="text-xs font-bold text-purple-900 flex items-center gap-1.5">
                         <Volume2 className="w-4 h-4 text-purple-700" />
                         <span>Official Audio Document:</span>
                       </span>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                         {mode === "PRACTICE" && (
-                          <div className="flex items-center gap-1.5">
+                          <div className="flex flex-wrap items-center gap-1.5">
                             <button
                               type="button"
                               onClick={() => setShowTranscript(!showTranscript)}
-                              className={`px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border ${
+                              className={`px-2.5 sm:px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border cursor-pointer ${
                                 showTranscript
                                   ? "bg-purple-700 text-white border-purple-800"
                                   : "bg-purple-100 text-purple-950 border-purple-300 hover:bg-purple-200"
@@ -891,7 +893,7 @@ export function AuthenticCBTExamPage() {
                               <button
                                 type="button"
                                 onClick={() => setShowTranslation(!showTranslation)}
-                                className={`px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border ${
+                                className={`px-2.5 sm:px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border cursor-pointer ${
                                   showTranslation
                                     ? "bg-indigo-700 text-white border-indigo-800"
                                     : "bg-indigo-100 text-indigo-950 border-indigo-300 hover:bg-indigo-200"
@@ -913,7 +915,7 @@ export function AuthenticCBTExamPage() {
                                 handlePlayAudio(currentQ.transcript || currentQ.text);
                               }
                             }}
-                            className="px-4 py-2 rounded bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold flex items-center gap-1.5 shadow"
+                            className="px-3.5 sm:px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold flex items-center gap-1.5 shadow cursor-pointer active:scale-95 transition-all"
                           >
                             {isPlayingAudio ? (
                               <>
@@ -937,11 +939,11 @@ export function AuthenticCBTExamPage() {
                             <>
                               <button
                                 onClick={handleStopAudio}
-                                className="p-2 rounded bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold flex items-center gap-1 shadow"
+                                className="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold flex items-center gap-1 shadow cursor-pointer"
                                 title="Stop Audio"
                               >
                                 <Square className="w-3.5 h-3.5 fill-current" />
-                                <span>Stop</span>
+                                <span className="hidden sm:inline">Stop</span>
                               </button>
 
                               <button
@@ -949,11 +951,11 @@ export function AuthenticCBTExamPage() {
                                   handleStopAudio();
                                   setTimeout(() => handlePlayAudio(currentQ.transcript || currentQ.text), 100);
                                 }}
-                                className="p-2 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1 shadow"
+                                className="p-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1 shadow cursor-pointer"
                                 title="Replay Audio From Start"
                               >
                                 <RotateCcw className="w-3.5 h-3.5" />
-                                <span>Replay</span>
+                                <span className="hidden sm:inline">Replay</span>
                               </button>
                             </>
                           )}
@@ -962,7 +964,7 @@ export function AuthenticCBTExamPage() {
                     </div>
 
                     {currentQ.questionInAudio && (
-                      <div className="p-2.5 rounded bg-purple-100 border border-purple-300 text-purple-950 text-xs font-semibold flex items-center gap-2">
+                      <div className="p-2.5 rounded-lg bg-purple-100 border border-purple-300 text-purple-950 text-xs font-semibold flex items-center gap-2">
                         <span>🎧 <strong>Notice Épreuve CBT :</strong> La question n'est pas écrite à l'écran. Écoutez attentivement l'audio où le document et la question sont énoncés, puis choisissez l'option (A, B, C, D) ci-contre.</span>
                       </div>
                     )}
@@ -973,7 +975,7 @@ export function AuthenticCBTExamPage() {
                           <FileText className="w-3.5 h-3.5" />
                           <span>{activeBranding.transcriptLabel}</span>
                         </p>
-                        <p className="font-serif italic font-semibold text-slate-950 dark:text-slate-100 p-2.5 rounded bg-white dark:bg-slate-950 border border-purple-200 dark:border-purple-900">
+                        <p className="font-serif italic font-semibold text-slate-950 dark:text-slate-100 p-2.5 rounded-lg bg-white dark:bg-slate-950 border border-purple-200 dark:border-purple-900">
                           "{currentQ.transcript}"
                         </p>
                       </div>
@@ -985,7 +987,7 @@ export function AuthenticCBTExamPage() {
                           <Globe className="w-3.5 h-3.5" />
                           <span>English Audio Translation</span>
                         </p>
-                        <p className="italic font-semibold text-slate-950 dark:text-slate-100 p-2.5 rounded bg-white dark:bg-slate-950 border border-indigo-200 dark:border-indigo-900">
+                        <p className="italic font-semibold text-slate-950 dark:text-slate-100 p-2.5 rounded-lg bg-white dark:bg-slate-950 border border-indigo-200 dark:border-indigo-900">
                           "{currentQ.transcriptEnglish}"
                         </p>
                       </div>
@@ -995,7 +997,7 @@ export function AuthenticCBTExamPage() {
 
                 {/* Official Reading Passage Component */}
                 {currentSection.type === "COMPREHENSION_ECRITE" && currentQ.passage && (
-                  <div className={`p-4 rounded-lg border space-y-3 ${
+                  <div className={`p-3.5 sm:p-4 rounded-xl border space-y-3 ${
                     cbtDark ? "bg-blue-950/40 border-blue-800/60 text-slate-100" : "bg-blue-50 border-blue-300 text-slate-950"
                   }`}>
                     <div className="flex items-center justify-between border-b border-blue-200 dark:border-blue-800 pb-2">
@@ -1009,7 +1011,7 @@ export function AuthenticCBTExamPage() {
                           {currentQ.passageEnglish && (
                             <button
                               onClick={() => setShowPassageTranslation(!showPassageTranslation)}
-                              className="px-2 py-1 rounded bg-blue-600 text-white font-bold text-[10px] hover:bg-blue-500 transition-all flex items-center gap-1"
+                              className="px-2 py-1 rounded bg-blue-600 text-white font-bold text-[10px] hover:bg-blue-500 transition-all flex items-center gap-1 cursor-pointer"
                             >
                               <Globe className="w-3 h-3" />
                               <span>{showPassageTranslation ? "Hide EN" : "🌐 Show EN Translation"}</span>
@@ -1019,7 +1021,7 @@ export function AuthenticCBTExamPage() {
                       )}
                     </div>
 
-                    <p className="font-serif text-sm leading-relaxed font-medium text-slate-950 dark:text-slate-100 whitespace-pre-line p-3 rounded bg-white dark:bg-slate-950 border border-blue-200 dark:border-blue-900">
+                    <p className="font-serif text-xs sm:text-sm leading-relaxed font-medium text-slate-950 dark:text-slate-100 whitespace-pre-line p-3 rounded-lg bg-white dark:bg-slate-950 border border-blue-200 dark:border-blue-900 max-h-[300px] overflow-y-auto">
                       "{currentQ.passage}"
                     </p>
 
@@ -1029,7 +1031,7 @@ export function AuthenticCBTExamPage() {
                           <Globe className="w-3 h-3" />
                           <span>English Passage Translation:</span>
                         </p>
-                        <p className="italic font-medium p-2.5 rounded bg-white dark:bg-slate-950 border border-blue-200 dark:border-blue-900">
+                        <p className="italic font-medium p-2.5 rounded-lg bg-white dark:bg-slate-950 border border-blue-200 dark:border-blue-900 max-h-[200px] overflow-y-auto">
                           "{currentQ.passageEnglish}"
                         </p>
                       </div>
@@ -1038,7 +1040,7 @@ export function AuthenticCBTExamPage() {
                 )}
               </div>
 
-              {/* Audio & Reading Coach Display (Option A - Hidden by Default) */}
+              {/* Audio & Reading Coach Display */}
               {showHints && currentQ.hint && (
                 <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800 text-xs text-amber-950 dark:text-amber-200 space-y-1 shadow-sm font-sans">
                   <div className="flex items-center gap-1.5 font-extrabold text-amber-900 dark:text-amber-300 text-[11px] uppercase tracking-wide">
@@ -1049,7 +1051,7 @@ export function AuthenticCBTExamPage() {
                         : "📖 Reading Strategy & Trap Alert (English)"}
                     </span>
                   </div>
-                  <p className="leading-relaxed font-medium whitespace-pre-line">
+                  <p className="leading-relaxed font-medium whitespace-pre-line text-xs">
                     {currentQ.hint}
                   </p>
                 </div>
@@ -1057,10 +1059,10 @@ export function AuthenticCBTExamPage() {
             </div>
 
             {/* RIGHT PANEL: QUESTION & OPTIONS SELECTOR (5 COLS) */}
-            <div className={`lg:col-span-5 p-5 rounded-lg border ${cbtCard} shadow-sm space-y-5 flex flex-col justify-between`}>
+            <div className={`lg:col-span-5 p-4 sm:p-5 rounded-xl border ${cbtCard} shadow-sm space-y-5 flex flex-col justify-between`}>
               <div className="space-y-4">
                 <div className="space-y-1">
-                  <h3 className="text-base font-bold leading-snug text-slate-950 dark:text-slate-100">
+                  <h3 className="text-sm sm:text-base font-bold leading-snug text-slate-950 dark:text-slate-100">
                     {currentQ.questionInAudio ? `Question Audio N°${currentQ.questionNumber}` : currentQ.text}
                   </h3>
                   {currentQ.questionInAudio && (
@@ -1083,7 +1085,7 @@ export function AuthenticCBTExamPage() {
                         onClick={() => {
                           if (!isLocked) handleSelectOption(currentQ.id, idx);
                         }}
-                        className={`p-3.5 rounded border text-xs font-semibold cursor-pointer transition-all flex items-center justify-between ${
+                        className={`p-3.5 sm:p-4 rounded-xl border text-xs sm:text-sm font-semibold cursor-pointer transition-all flex items-center justify-between min-h-[48px] touch-manipulation active:scale-[0.99] ${
                           isChosen
                             ? "bg-blue-600 text-white border-blue-600 shadow-md font-bold"
                             : cbtDark
@@ -1091,8 +1093,8 @@ export function AuthenticCBTExamPage() {
                             : "bg-slate-50 text-slate-950 border-slate-300 hover:border-blue-500 hover:bg-blue-50/50"
                         } ${isLocked ? "cursor-not-allowed opacity-90" : ""}`}
                       >
-                        <div className="flex items-center gap-3">
-                          <span className={`w-6 h-6 rounded flex items-center justify-center font-bold text-xs ${
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ${
                             isChosen
                               ? "bg-white text-blue-600"
                               : cbtDark
@@ -1101,9 +1103,8 @@ export function AuthenticCBTExamPage() {
                           }`}>
                             {letter}
                           </span>
-                          <span className={isChosen ? "text-white" : "text-slate-950 dark:text-slate-200"}>{opt}</span>
+                          <span className="leading-snug break-words">{opt}</span>
                         </div>
-                        {isChosen && <CheckCircle2 className="w-4 h-4 text-white shrink-0" />}
                       </div>
                     );
                   })}
@@ -1506,10 +1507,10 @@ export function AuthenticCBTExamPage() {
 
       {/* ─── OFFICIAL CBT BOTTOM CANDIDATE QUESTION GRID NAVIGATOR ─── */}
       {currentQuestions.length > 0 && (
-        <footer className="bg-slate-200 dark:bg-slate-800 border-t border-slate-300 dark:border-slate-700 px-4 py-2 flex items-center justify-between gap-4 overflow-x-auto shrink-0">
-          <div className="flex items-center gap-1.5 overflow-x-auto">
-            <span className="text-xs font-bold text-slate-600 dark:text-slate-400 mr-2 shrink-0">
-              Question Grid Index:
+        <footer className="bg-slate-200 dark:bg-slate-800 border-t border-slate-300 dark:border-slate-700 px-3 sm:px-4 py-2 flex flex-col sm:flex-row items-center justify-between gap-2 overflow-x-auto shrink-0">
+          <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto scrollbar-none py-0.5">
+            <span className="text-[11px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 mr-1 sm:mr-2 shrink-0">
+              Grid Index:
             </span>
             {currentQuestions.map((q, idx) => {
               const isAnswered = selectedAnswers[q.id] !== undefined;
@@ -1520,7 +1521,7 @@ export function AuthenticCBTExamPage() {
                 <button
                   key={q.id}
                   onClick={() => setCurrentQuestionIdx(idx)}
-                  className={`w-8 h-8 rounded text-xs font-bold transition-all relative shrink-0 ${
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded text-xs font-bold transition-all relative shrink-0 cursor-pointer ${
                     isCurrent
                       ? "ring-2 ring-blue-600 bg-blue-600 text-white"
                       : isAnswered
@@ -1537,10 +1538,10 @@ export function AuthenticCBTExamPage() {
             })}
           </div>
 
-          <div className="flex items-center gap-3 shrink-0 text-xs font-semibold text-slate-600 dark:text-slate-400">
-            <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-blue-800" /> Answered</span>
-            <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-amber-400" /> Flagged</span>
-            <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-slate-300" /> Unanswered</span>
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0 text-[10px] sm:text-xs font-semibold text-slate-600 dark:text-slate-400">
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-800" /> Answered</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-400" /> Flagged</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-600" /> Unanswered</span>
           </div>
         </footer>
       )}
@@ -1552,13 +1553,13 @@ export function AuthenticCBTExamPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md"
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md overflow-y-auto"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-xl p-8 rounded-2xl border bg-white dark:bg-[#101828] border-slate-300 dark:border-slate-800 shadow-2xl space-y-6 text-center"
+              className="w-full max-w-xl max-h-[90vh] overflow-y-auto p-5 sm:p-8 rounded-2xl border bg-white dark:bg-[#101828] border-slate-300 dark:border-slate-800 shadow-2xl space-y-5 sm:space-y-6 text-center my-auto"
             >
               <div className="w-16 h-16 rounded-2xl bg-blue-600 text-white flex items-center justify-center mx-auto shadow-xl">
                 <Trophy className="w-8 h-8" />
