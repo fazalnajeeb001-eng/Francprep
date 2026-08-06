@@ -3,6 +3,7 @@ import { apiFetch } from "~/lib/apiFetch";
 
 let currentAudioPlayer: HTMLAudioElement | null = null;
 let onPlaybackStateChange: ((playing: boolean) => void) | null = null;
+let currentDialogueId = 0;
 
 // Stop audio automatically when user navigates away, closes tab, or switches pages!
 if (typeof window !== "undefined") {
@@ -141,8 +142,10 @@ function playDirectHDFallback(text: string, langCode: string, rate: number, audi
 }
 
 export function stopAudio(): void {
+  currentDialogueId++;
   if (currentAudioPlayer) {
     currentAudioPlayer.pause();
+    currentAudioPlayer.src = "";
     currentAudioPlayer.currentTime = 0;
     currentAudioPlayer = null;
   }
@@ -199,6 +202,7 @@ export function speakDialogue(
   if (!clean) return;
 
   stopAudio();
+  const myDialogueId = ++currentDialogueId;
 
   const lines = clean
     .split("\n")
@@ -250,6 +254,7 @@ export function speakDialogue(
   let currentIndex = 0;
 
   function playNextLine() {
+    if (myDialogueId !== currentDialogueId) return; // Terminate if dialogue was stopped or replaced
     if (currentIndex >= parsedDialogue.length) {
       if (onPlaybackStateChange) onPlaybackStateChange(false);
       return;
@@ -263,10 +268,14 @@ export function speakDialogue(
     if (onPlaybackStateChange) onPlaybackStateChange(true);
 
     audio.onended = () => {
-      setTimeout(playNextLine, 300);
+      if (myDialogueId === currentDialogueId) {
+        setTimeout(playNextLine, 300);
+      }
     };
     audio.onerror = () => {
-      setTimeout(playNextLine, 300);
+      if (myDialogueId === currentDialogueId) {
+        setTimeout(playNextLine, 300);
+      }
     };
 
     let langCode = lang ? lang.split("-")[0].toLowerCase() : "fr";

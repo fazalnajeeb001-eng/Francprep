@@ -332,7 +332,19 @@ export function AuthenticCBTExamPage() {
     setFlaggedQuestions((prev) => ({ ...prev, [qId]: !prev[qId] }));
   };
 
+  const handleStopAudio = () => {
+    stopAudio();
+    setIsPlayingAudio(false);
+    setIsAudioPaused(false);
+  };
+
+  // Automatically kill and clean up any playing or paused audio when switching questions or sections!
+  useEffect(() => {
+    handleStopAudio();
+  }, [currentQuestionIdx, activeSectionIdx]);
+
   const handlePlayAudio = (text: string) => {
+    handleStopAudio();
     setIsPlayingAudio(true);
     setIsAudioPaused(false);
     if (text.includes(":") || text.includes("\n") || text.includes("—")) {
@@ -354,12 +366,6 @@ export function AuthenticCBTExamPage() {
       setIsAudioPaused(true);
       setIsPlayingAudio(false);
     }
-  };
-
-  const handleStopAudio = () => {
-    stopAudio();
-    setIsPlayingAudio(false);
-    setIsAudioPaused(false);
   };
 
   const handleStartSpeakingRecord = () => {
