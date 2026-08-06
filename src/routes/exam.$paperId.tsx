@@ -509,42 +509,59 @@ export function AuthenticCBTExamPage() {
       }
     } catch {}
 
-    // 2. Calibrated Local Rule Engine Fallback (Strict CEFR Calibration)
-    let taskFulfillmentScore = 5;
-    if (wordCount < minWords) {
-      taskFulfillmentScore = Math.max(1, Math.round(5 * (wordCount / minWords)));
+    // 2. Calibrated Local Rule Engine Fallback (Full-Spectrum CEFR Calibration)
+    let taskFulfillmentScore = 1;
+    if (wordCount >= minWords && wordCount <= maxWords + 30) {
+      taskFulfillmentScore = 5;
     } else if (wordCount > maxWords + 30) {
       taskFulfillmentScore = 4;
+    } else if (wordCount >= Math.round(minWords * 0.75)) {
+      taskFulfillmentScore = 3;
+    } else if (wordCount >= Math.round(minWords * 0.4)) {
+      taskFulfillmentScore = 2;
+    } else {
+      taskFulfillmentScore = 1;
     }
 
-    const connectors = ["d'abord", "en outre", "de plus", "cependant", "néanmoins", "par conséquent", "ainsi", "en conclusion", "toutefois", "en effet", "d'une part", "d'autre part", "de surcroît"];
-    const foundConnectors = connectors.filter((c) => clean.toLowerCase().includes(c));
-    let coherenceScore = Math.min(5, Math.max(1, 1 + foundConnectors.length));
+    const c1c2Connectors = ["de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet", "néanmoins", "en somme", "en conclusion"];
+    const b2Connectors = ["en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin"];
+    const textLower = clean.toLowerCase();
 
-    const words = clean.toLowerCase().split(/\s+/);
-    const uniqueWords = new Set(words).size;
-    const lexicalRatio = wordCount > 0 ? uniqueWords / wordCount : 0;
+    const foundC1C2Conn = c1c2Connectors.filter((c) => textLower.includes(c));
+    const foundB2Conn = b2Connectors.filter((c) => textLower.includes(c));
+
+    let coherenceScore = 1;
+    if (foundC1C2Conn.length >= 2) coherenceScore = 5;
+    else if (foundC1C2Conn.length >= 1 || foundB2Conn.length >= 2) coherenceScore = 4;
+    else if (foundB2Conn.length >= 1 || textLower.includes("mais") || textLower.includes("donc") || textLower.includes("car")) coherenceScore = 3;
+    else if (textLower.includes("et") || textLower.includes("ou")) coherenceScore = 2;
+    else coherenceScore = 1;
+
+    const c1c2Lexical = ["opportunité", "perspective", "incontournable", "sensibilisation", "préconiser", "déception", "solliciter", "manifestation", "bienveillance", "réciproque", "controverse", "conciliation", "préconiser", "inéluctable", "plasticité", "épanouissement", "décarbonation", "assimilation", "détériorer", "attentivement"];
+    const b2Lexical = ["avantage", "inconvénient", "participation", "installation", "inscription", "abonnement", "formation", "réclamation", "matériel", "garantie", "projet", "expérience", "quartier", "collègue", "souhaiter", "demander", "préciser"];
+    
+    const foundC1C2Lex = c1c2Lexical.filter((w) => textLower.includes(w));
+    const foundB2Lex = b2Lexical.filter((w) => textLower.includes(w));
+
     let lexicalScore = 1;
-    if (wordCount >= minWords) {
-      if (lexicalRatio >= 0.70 && wordCount >= 100) lexicalScore = 5;
-      else if (lexicalRatio >= 0.60) lexicalScore = 4;
-      else if (lexicalRatio >= 0.50) lexicalScore = 3;
-      else lexicalScore = 2;
-    } else if (wordCount >= Math.round(minWords / 2)) {
-      lexicalScore = 2;
-    }
+    if (foundC1C2Lex.length >= 2) lexicalScore = 5;
+    else if (foundC1C2Lex.length >= 1 || foundB2Lex.length >= 2) lexicalScore = 4;
+    else if (foundB2Lex.length >= 1) lexicalScore = 3;
+    else if (wordCount >= 30) lexicalScore = 2;
+    else lexicalScore = 1;
 
-    const complexStructures = ["que je", "afin que", "pour que", "bien que", "si vous", "je voudrais", "il faut que", "ayant", "étant", "serait", "aurait", "puisse", "soit"];
-    const foundComplex = complexStructures.filter((cs) => clean.toLowerCase().includes(cs));
+    const c1c2Grammar = ["puisse", "soit", "fassions", "sachiez", "ayez", "fussent", "a été", "ont été", "fut", "dont", "auquel", "laquelle", "duquel", "lesquelles", "en observant", "en prenant", "tout en", "aurait été", "aurait dû", "eût", "demeure", "entraver"];
+    const b2Grammar = ["serait", "pourrait", "devrais", "j'aimerais", "il faut que", "pour que", "bien que", "afin de", "en vue de", "je vous prie", "veuillez", "pourriez-vous"];
+    
+    const foundC1C2Gram = c1c2Grammar.filter((g) => textLower.includes(g));
+    const foundB2Gram = b2Grammar.filter((g) => textLower.includes(g));
+
     let grammarScore = 1;
-    if (wordCount >= minWords) {
-      if (foundComplex.length >= 3) grammarScore = 5;
-      else if (foundComplex.length >= 2) grammarScore = 4;
-      else if (foundComplex.length >= 1) grammarScore = 3;
-      else grammarScore = 2;
-    } else if (wordCount >= Math.round(minWords / 2)) {
-      grammarScore = 2;
-    }
+    if (foundC1C2Gram.length >= 2) grammarScore = 5;
+    else if (foundC1C2Gram.length >= 1 || foundB2Gram.length >= 2) grammarScore = 4;
+    else if (foundB2Gram.length >= 1 || textLower.includes("parce que") || textLower.includes("j'ai")) grammarScore = 3;
+    else if (textLower.includes("je suis") || textLower.includes("c'est") || textLower.includes("il y a")) grammarScore = 2;
+    else grammarScore = 1;
 
     const totalScoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
 
