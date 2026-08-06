@@ -593,9 +593,22 @@ export function AuthenticCBTExamPage() {
     const listeningNCLC = calculateNCLCScore(listeningPct, paper.type, "COMPREHENSION_ORALE");
     const readingNCLC = calculateNCLCScore(readingPct, paper.type, "COMPREHENSION_ECRITE");
 
-    const writingScores = Object.values(writingAiResults).map((r: any) => r.score || 0);
-    const writingAvg = writingScores.length > 0 ? Math.round(writingScores.reduce((a, b) => a + b, 0) / writingScores.length) : 0;
-    const writingNCLC = calculateNCLCScore(writingAvg, paper.type, "EXPRESSION_ECRITE");
+    const writingSec = paper.sections.find((s) => s.type === "EXPRESSION_ECRITE");
+    const wTasks = writingSec?.writingTasks || [];
+    let writingWeightedScore = 0;
+
+    if (wTasks.length >= 3) {
+      const t1Score = writingAiResults[wTasks[0].id]?.scoreOutOf20 || 0;
+      const t2Score = writingAiResults[wTasks[1].id]?.scoreOutOf20 || 0;
+      const t3Score = writingAiResults[wTasks[2].id]?.scoreOutOf20 || 0;
+      writingWeightedScore = Math.round(0.3 * t1Score + 0.3 * t2Score + 0.4 * t3Score);
+    } else {
+      const writingScores = Object.values(writingAiResults).map((r: any) => r.scoreOutOf20 || r.score || 0);
+      writingWeightedScore = writingScores.length > 0 ? Math.round(writingScores.reduce((a, b) => a + b, 0) / writingScores.length) : 0;
+    }
+
+    const writingPct = Math.round((writingWeightedScore / 20) * 100);
+    const writingNCLC = calculateNCLCScore(writingPct, paper.type, "EXPRESSION_ECRITE");
 
     const speakingScores = Object.values(speakingAiResults).map((r: any) => r.score || 0);
     const speakingAvg = speakingScores.length > 0 ? Math.round(speakingScores.reduce((a, b) => a + b, 0) / speakingScores.length) : 0;
@@ -615,7 +628,7 @@ export function AuthenticCBTExamPage() {
       readingTotal,
       readingPct,
       readingNCLC,
-      writingAvg,
+      writingAvg: writingWeightedScore,
       writingNCLC,
       speakingAvg,
       speakingNCLC,
@@ -1241,21 +1254,21 @@ export function AuthenticCBTExamPage() {
               const isEvaluating = evaluatingWriting[task.id];
 
               return (
-                <div key={task.id} className={`p-6 rounded-lg border ${cbtCard} shadow-sm space-y-4`}>
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between">
+                <div key={task.id} className={`p-4 sm:p-6 rounded-xl border ${cbtCard} shadow-sm space-y-4`}>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
                       <span className="text-xs font-mono font-bold text-pink-600 dark:text-pink-400 uppercase">
                         {task.title}
                       </span>
-                      <span className="px-2.5 py-0.5 rounded bg-pink-100 dark:bg-pink-950 text-pink-700 dark:text-pink-300 font-mono font-bold text-[10px]">
+                      <span className="px-2.5 py-0.5 rounded bg-pink-100 dark:bg-pink-950 text-pink-700 dark:text-pink-300 font-mono font-bold text-[10px] shrink-0">
                         Target: {task.wordCountMin} – {task.wordCountMax} words
                       </span>
                     </div>
-                    <h3 className="text-lg font-bold text-slate-950 dark:text-slate-100 leading-snug">{task.prompt}</h3>
+                    <h3 className="text-base sm:text-lg font-bold text-slate-950 dark:text-slate-100 leading-snug">{task.prompt}</h3>
                   </div>
 
                   {mode === "PRACTICE" && task.guidedTips && (
-                    <div className="p-3.5 rounded bg-pink-50 dark:bg-pink-950/30 border border-pink-200 dark:border-pink-800 text-xs space-y-1">
+                    <div className="p-3 sm:p-3.5 rounded-lg bg-pink-50 dark:bg-pink-950/30 border border-pink-200 dark:border-pink-800 text-xs space-y-1">
                       <p className="font-bold text-pink-700 dark:text-pink-300 uppercase text-[10px]">Guided Structure Tips:</p>
                       <ul className="list-disc list-inside space-y-0.5 text-slate-800 dark:text-slate-200">
                         {task.guidedTips.map((tip, idx) => (
@@ -1270,7 +1283,7 @@ export function AuthenticCBTExamPage() {
                     value={textVal}
                     onChange={(e) => setWritingResponses((prev) => ({ ...prev, [task.id]: e.target.value }))}
                     placeholder="Saisissez votre texte officiel ici..."
-                    className={`w-full p-4 rounded border text-sm font-sans leading-relaxed ${
+                    className={`w-full p-3.5 sm:p-4 rounded-xl border text-sm font-sans leading-relaxed ${
                       cbtDark ? "bg-[#090D16] border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-950"
                     } focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   />
@@ -1280,11 +1293,11 @@ export function AuthenticCBTExamPage() {
                       Word Count: {wordCount} / {task.wordCountMin} min ({isValid ? "✓ Target Met" : "Requires minimum length"})
                     </span>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
                       {task.sampleResponse && mode === "PRACTICE" && (
                         <button
                           onClick={() => setOpenModelAnswerTaskId(openModelAnswerTaskId === task.id ? null : task.id)}
-                          className="px-3 py-1.5 rounded bg-blue-50 border border-blue-200 dark:bg-blue-950/40 dark:border-blue-800 text-blue-700 dark:text-blue-300 font-bold hover:bg-blue-100 transition-all shrink-0 flex items-center gap-1.5"
+                          className="px-3.5 py-2 rounded-lg bg-blue-50 border border-blue-200 dark:bg-blue-950/40 dark:border-blue-800 text-blue-700 dark:text-blue-300 font-bold hover:bg-blue-100 transition-all shrink-0 flex items-center justify-center gap-1.5 cursor-pointer"
                         >
                           <BookOpen className="w-3.5 h-3.5" />
                           <span>{openModelAnswerTaskId === task.id ? "Hide Model Response 🙈" : "📝 View Official NCLC 7+ Model Answer"}</span>
@@ -1294,7 +1307,7 @@ export function AuthenticCBTExamPage() {
                       <button
                         disabled={isEvaluating}
                         onClick={() => handleEvaluateWritingAI(task.id, task.prompt, textVal, task.sampleResponse, task.wordCountMin, task.wordCountMax)}
-                        className="px-4 py-2 rounded bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs shadow flex items-center justify-center gap-1.5 disabled:opacity-40 transition-all cursor-pointer"
+                        className="px-4 py-2 rounded-lg bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs shadow flex items-center justify-center gap-1.5 disabled:opacity-40 transition-all cursor-pointer"
                       >
                         <Sparkles className="w-3.5 h-3.5" />
                         <span>{isEvaluating ? "Evaluating Writing with Neural AI..." : "🤖 Evaluate Writing with AI"}</span>
