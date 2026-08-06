@@ -1888,7 +1888,7 @@ export interface NCLCScoreResult {
   isNCLC7TargetReached: boolean;
 }
 
-export function calculateNCLCScore(pctScore: number, _examType: ExamType, _sectionType: SectionType): NCLCScoreResult {
+export function calculateNCLCScore(pctScore: number, _examType: ExamType, sectionType?: SectionType): NCLCScoreResult {
   const pct = Math.max(0, Math.min(100, pctScore));
   let nclcLevel = 0;
   let cefrEquivalent = "Unrated";
@@ -1900,46 +1900,92 @@ export function calculateNCLCScore(pctScore: number, _examType: ExamType, _secti
     cefrEquivalent = "Unrated";
     expressEntryPoints = 0;
     isNCLC7TargetReached = false;
-  } else if (pct >= 89.7) { // 35-39 / 39 (C2 Mastery)
-    nclcLevel = 10;
-    cefrEquivalent = "C2";
-    expressEntryPoints = 34;
-    isNCLC7TargetReached = true;
-  } else if (pct >= 82.0) { // 32-34 / 39 (NCLC 9 C1 Advanced - 31 CRS Points)
-    nclcLevel = 9;
-    cefrEquivalent = "C1";
-    expressEntryPoints = 31;
-    isNCLC7TargetReached = true;
-  } else if (pct >= 71.7) { // 28-31 / 39 (NCLC 8 B2 Upper - 23 CRS Points)
-    nclcLevel = 8;
-    cefrEquivalent = "B2";
-    expressEntryPoints = 23;
-    isNCLC7TargetReached = true;
-  } else if (pct >= 58.9) { // 23-27 / 39 (NCLC 7 B2 Target Benchmark for Express Entry - 17 CRS Points)
-    nclcLevel = 7;
-    cefrEquivalent = "B2";
-    expressEntryPoints = 17;
-    isNCLC7TargetReached = true;
-  } else if (pct >= 46.1) { // 18-22 / 39 (NCLC 6 B1 Intermediate - 12 CRS Points)
-    nclcLevel = 6;
-    cefrEquivalent = "B1";
-    expressEntryPoints = 12;
-    isNCLC7TargetReached = false;
-  } else if (pct >= 35.8) { // 14-17 / 39 (NCLC 5 B1 Threshold - 6 CRS Points)
-    nclcLevel = 5;
-    cefrEquivalent = "B1";
-    expressEntryPoints = 6;
-    isNCLC7TargetReached = false;
-  } else if (pct >= 25.6) { // 10-13 / 39 (NCLC 4 A2 Elementary - 0 CRS Points)
-    nclcLevel = 4;
-    cefrEquivalent = "A2";
-    expressEntryPoints = 0;
-    isNCLC7TargetReached = false;
-  } else { // < 10 / 39 (NCLC 3 A1 - 0 CRS Points)
-    nclcLevel = 3;
-    cefrEquivalent = "A1";
-    expressEntryPoints = 0;
-    isNCLC7TargetReached = false;
+  } else if (sectionType === "EXPRESSION_ECRITE" || sectionType === "EXPRESSION_ORALE") {
+    // Official 20-Point Scale Cutoffs for Writing & Speaking (FEI / Paris Standards)
+    if (pct >= 95.0) { // 19-20 / 20 (C2 Mastery)
+      nclcLevel = 10;
+      cefrEquivalent = "C2";
+      expressEntryPoints = 34;
+      isNCLC7TargetReached = true;
+    } else if (pct >= 85.0) { // 17-18 / 20 (C1 Advanced)
+      nclcLevel = 9;
+      cefrEquivalent = "C1";
+      expressEntryPoints = 31;
+      isNCLC7TargetReached = true;
+    } else if (pct >= 70.0) { // 14-16 / 20 (B2 Upper Vantage)
+      nclcLevel = 8;
+      cefrEquivalent = "B2";
+      expressEntryPoints = 23;
+      isNCLC7TargetReached = true;
+    } else if (pct >= 60.0) { // 12-13 / 20 (B2 Target Benchmark)
+      nclcLevel = 7;
+      cefrEquivalent = "B2";
+      expressEntryPoints = 17;
+      isNCLC7TargetReached = true;
+    } else if (pct >= 50.0) { // 10-11 / 20 (B1 Intermediate)
+      nclcLevel = 6;
+      cefrEquivalent = "B1";
+      expressEntryPoints = 12;
+      isNCLC7TargetReached = false;
+    } else if (pct >= 40.0) { // 8-9 / 20 (B1 Threshold)
+      nclcLevel = 5;
+      cefrEquivalent = "B1";
+      expressEntryPoints = 6;
+      isNCLC7TargetReached = false;
+    } else if (pct >= 25.0) { // 5-7 / 20 (A2 Elementary)
+      nclcLevel = 4;
+      cefrEquivalent = "A2";
+      expressEntryPoints = 0;
+      isNCLC7TargetReached = false;
+    } else { // 1-4 / 20 (A1 Beginner)
+      nclcLevel = 3;
+      cefrEquivalent = "A1";
+      expressEntryPoints = 0;
+      isNCLC7TargetReached = false;
+    }
+  } else {
+    // Official 39-Item Scale Cutoffs for Listening & Reading
+    if (pct >= 89.7) { // 35-39 / 39 (C2 Mastery)
+      nclcLevel = 10;
+      cefrEquivalent = "C2";
+      expressEntryPoints = 34;
+      isNCLC7TargetReached = true;
+    } else if (pct >= 82.0) { // 32-34 / 39 (NCLC 9 C1 Advanced - 31 CRS Points)
+      nclcLevel = 9;
+      cefrEquivalent = "C1";
+      expressEntryPoints = 31;
+      isNCLC7TargetReached = true;
+    } else if (pct >= 70.0) { // 27.3-31 / 39 (NCLC 8 B2 Upper - 23 CRS Points)
+      nclcLevel = 8;
+      cefrEquivalent = "B2";
+      expressEntryPoints = 23;
+      isNCLC7TargetReached = true;
+    } else if (pct >= 58.9) { // 23-27 / 39 (NCLC 7 B2 Target Benchmark for Express Entry - 17 CRS Points)
+      nclcLevel = 7;
+      cefrEquivalent = "B2";
+      expressEntryPoints = 17;
+      isNCLC7TargetReached = true;
+    } else if (pct >= 46.1) { // 18-22 / 39 (NCLC 6 B1 Intermediate - 12 CRS Points)
+      nclcLevel = 6;
+      cefrEquivalent = "B1";
+      expressEntryPoints = 12;
+      isNCLC7TargetReached = false;
+    } else if (pct >= 35.8) { // 14-17 / 39 (NCLC 5 B1 Threshold - 6 CRS Points)
+      nclcLevel = 5;
+      cefrEquivalent = "B1";
+      expressEntryPoints = 6;
+      isNCLC7TargetReached = false;
+    } else if (pct >= 25.6) { // 10-13 / 39 (NCLC 4 A2 Elementary - 0 CRS Points)
+      nclcLevel = 4;
+      cefrEquivalent = "A2";
+      expressEntryPoints = 0;
+      isNCLC7TargetReached = false;
+    } else { // < 10 / 39 (NCLC 3 A1 - 0 CRS Points)
+      nclcLevel = 3;
+      cefrEquivalent = "A1";
+      expressEntryPoints = 0;
+      isNCLC7TargetReached = false;
+    }
   }
 
   const statusMessage = pct === 0
