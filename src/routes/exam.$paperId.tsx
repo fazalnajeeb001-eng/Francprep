@@ -24,7 +24,7 @@ import {
   RotateCcw
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
-import { speak, speakDialogue, stopAudio, pauseAudio, resumeAudio } from "~/lib/speech";
+import { useSpeak } from "~/lib/speech";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
 import { apiFetch } from "~/lib/apiFetch";
@@ -328,13 +328,10 @@ export function AuthenticCBTExamPage() {
     setSelectedAnswers((prev) => ({ ...prev, [qId]: optionIdx }));
   };
 
-  const toggleFlag = (qId: string) => {
-    setFlaggedQuestions((prev) => ({ ...prev, [qId]: !prev[qId] }));
-  };
+  const { speak: ttsSpeak, speakDialogue: ttsSpeakDialogue, isSpeaking, stop: ttsStop, pause: ttsPause, resume: ttsResume } = useSpeak();
 
   const handleStopAudio = () => {
-    stopAudio();
-    setIsPlayingAudio(false);
+    ttsStop();
     setIsAudioPaused(false);
   };
 
@@ -345,26 +342,24 @@ export function AuthenticCBTExamPage() {
 
   const handlePlayAudio = (text: string) => {
     handleStopAudio();
-    setIsPlayingAudio(true);
     setIsAudioPaused(false);
     if (text.includes(":") || text.includes("\n") || text.includes("—")) {
-      speakDialogue(text, "fr-FR", 0.85);
+      ttsSpeakDialogue(text, "fr-FR", 0.85);
     } else {
       const isMale = /\b(monsieur|m\.|homme|paul|léo|marc|antoine|pierre|thomas|hugo|louis)\b/i.test(text);
-      speak(text, "fr-FR", 0.85, isMale ? "male" : "female");
+      ttsSpeak(text, "fr-FR", 0.85, isMale ? "male" : "female");
     }
-    setTimeout(() => setIsPlayingAudio(false), 5000);
   };
 
   const handlePauseResumeAudio = () => {
     if (isAudioPaused) {
-      resumeAudio();
+      ttsResume();
       setIsAudioPaused(false);
-      setIsPlayingAudio(true);
-    } else {
-      pauseAudio();
+    } else if (isSpeaking) {
+      ttsPause();
       setIsAudioPaused(true);
-      setIsPlayingAudio(false);
+    } else {
+      handlePlayAudio(currentQ.transcript || currentQ.text);
     }
   };
 
@@ -915,7 +910,7 @@ export function AuthenticCBTExamPage() {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => {
-                              if (isPlayingAudio || isAudioPaused) {
+                              if (isSpeaking || isAudioPaused) {
                                 handlePauseResumeAudio();
                               } else {
                                 handlePlayAudio(currentQ.transcript || currentQ.text);
@@ -923,7 +918,7 @@ export function AuthenticCBTExamPage() {
                             }}
                             className="px-3.5 sm:px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold flex items-center gap-1.5 shadow cursor-pointer active:scale-95 transition-all"
                           >
-                            {isPlayingAudio ? (
+                            {isSpeaking ? (
                               <>
                                 <Pause className="w-4 h-4" />
                                 <span>Pause Audio ⏸️</span>
@@ -941,29 +936,29 @@ export function AuthenticCBTExamPage() {
                             )}
                           </button>
 
-                          {mode === "PRACTICE" && (isPlayingAudio || isAudioPaused) && (
-                            <>
-                              <button
-                                onClick={handleStopAudio}
-                                className="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold flex items-center gap-1 shadow cursor-pointer"
-                                title="Stop Audio"
-                              >
-                                <Square className="w-3.5 h-3.5 fill-current" />
-                                <span className="hidden sm:inline">Stop</span>
-                              </button>
+                          {mode === "PRACTICE" && (isSpeaking || isAudioPaused) && (
+                            <button
+                              onClick={handleStopAudio}
+                              className="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold flex items-center gap-1 shadow cursor-pointer"
+                              title="Stop Audio"
+                            >
+                              <Square className="w-3.5 h-3.5 fill-current" />
+                              <span className="hidden sm:inline">Stop</span>
+                            </button>
+                          )}
 
-                              <button
-                                onClick={() => {
-                                  handleStopAudio();
-                                  setTimeout(() => handlePlayAudio(currentQ.transcript || currentQ.text), 100);
-                                }}
-                                className="p-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1 shadow cursor-pointer"
-                                title="Replay Audio From Start"
-                              >
-                                <RotateCcw className="w-3.5 h-3.5" />
-                                <span className="hidden sm:inline">Replay</span>
-                              </button>
-                            </>
+                          {mode === "PRACTICE" && (
+                            <button
+                              onClick={() => {
+                                handleStopAudio();
+                                setTimeout(() => handlePlayAudio(currentQ.transcript || currentQ.text), 50);
+                              }}
+                              className="p-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1 shadow cursor-pointer"
+                              title="Replay Audio From Start"
+                            >
+                              <RotateCcw className="w-3.5 h-3.5" />
+                              <span className="hidden sm:inline">Replay</span>
+                            </button>
                           )}
                         </div>
                       </div>
