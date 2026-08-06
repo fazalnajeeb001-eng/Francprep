@@ -66,6 +66,7 @@ export interface ExamPaper {
 
 // ─── HELPER TO GENERATE AUTHENTIC FULL-LENGTH QUESTION ARRAYS (39/40 ITEMS) ───
 const LISTENING_TOPICS = [
+  // A1 ELEMENTARY (Q1 - Q10)
   {
     level: "A1",
     title: "Annonce de gare SNCF / Via Rail",
@@ -74,27 +75,109 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "Chers voyageurs, votre attention s'il vous plaît. Le TGV numéro 7842 à destination de Paris-Gare de Lyon, départ initialement prévu à 14h15, partira exceptionnellement de la voie 4. Veuillez assurer l'embarquement immédiat.",
     en: "Dear passengers, attention please. TGV train 7842 to Paris-Gare de Lyon, originally scheduled for 2:15pm, will exceptionally depart from platform 4. Please proceed to immediate boarding.",
-    hint: "⚠️ Trap Alert: Notice how the speaker mentions initial departure time (14h15) first, but pay attention to the shift marker 'exceptionnellement'.\n🔄 Paraphrase Key: The phrase 'partira de la voie 4' defines the exact platform location.\n🎧 Acoustic Cues: Listen for 'voie' or 'quai' to catch platform departure announcements."
+    hint: "⚠️ Trap Alert: Notice the departure platform shift marker 'exceptionnellement'.\n🔄 Paraphrase Key: 'partira de la voie 4' defines the exact platform location.\n🎧 Acoustic Cues: Listen for 'voie' or 'quai'."
   },
   {
     level: "A1",
-    title: "Message vocal d'un ami",
+    title: "Message vocal d'un ami au supermarché",
     text: "Salut Thomas ! C'est Marc. Je suis actuellement au supermarché du centre-ville pour faire les courses de la semaine. Dis-moi, est-ce que tu as besoin que je prenne du pain frais ou du fromage pour le dîner ce soir ?",
     opt: ["Au supermarché", "À la boulangerie du quartier", "À la maison", "Au cinéma municipal"],
     ans: 0,
     tr: "Salut Thomas ! C'est Marc. Je suis actuellement au supermarché du centre-ville pour faire les courses de la semaine. Dis-moi, est-ce que tu as besoin que je prenne du pain frais ou du fromage pour le dîner ce soir ?",
     en: "Hi Thomas! It's Marc. I'm currently at the downtown supermarket doing weekly grocery shopping. Tell me, do you need me to pick up fresh bread or cheese for dinner tonight?",
-    hint: "⚠️ Trap Alert: Do not confuse items the speaker offers to buy (bread/cheese) with where the speaker currently is.\n🔄 Paraphrase Key: The phrase 'je suis actuellement au...' establishes the speaker's real-time physical location.\n🎧 Acoustic Cues: Listen for location prepositions like 'au', 'à la', or 'dans'."
+    hint: "⚠️ Trap Alert: Do not confuse items the speaker offers to buy with where the speaker currently is.\n🔄 Paraphrase Key: 'je suis actuellement au...' establishes the physical location.\n🎧 Acoustic Cues: Listen for location prepositions like 'au'."
   },
+  {
+    level: "A1",
+    title: "Annonce dans un magasin de vêtements",
+    text: "Chers clients, votre magasin informe que le rayon des vêtements d'hiver ferme dans 15 minutes. Profitez de nos promotions de 50 % sur toutes les vestes et manteaux à la caisse principale.",
+    opt: ["Fermeture du rayon dans 15 minutes", "Ouverture d'un nouveau magasin", "Perte d'un sac à main", "Distribution de cartes de fidélité gratuites"],
+    ans: 0,
+    tr: "Chers clients, votre magasin informe que le rayon des vêtements d'hiver ferme dans 15 minutes. Profitez de nos promotions de 50 % sur toutes les vestes et manteaux à la caisse principale.",
+    en: "Dear customers, your store informs you that the winter clothing department closes in 15 minutes. Take advantage of 50% discounts on all jackets and coats at the main checkout.",
+    hint: "⚠️ Trap Alert: Distinguish department closing time (15 mins) from discount percentage (50%).\n🔄 Paraphrase Key: 'ferme dans 15 minutes' states the closing delay.\n🎧 Acoustic Cues: Listen for time expressions after 'ferme dans'."
+  },
+  {
+    level: "A1",
+    title: "Message de confirmation de livraison",
+    text: "Bonjour Madame Martin, votre colis Amazon numéro 4590 sera livré à votre domicile ce mercredi entre 9h et 12h. En cas d'absence, il sera déposé chez votre voisin du rez-de-chaussée.",
+    opt: ["Mercredi matin entre 9h et 12h", "Jeudi après-midi à 16h", "Lundi soir à 20h", "Vendredi durant le week-end"],
+    ans: 0,
+    tr: "Bonjour Madame Martin, votre colis numéro 4590 sera livré à votre domicile ce mercredi entre 9h et 12h. En cas d'absence, il sera déposé chez votre voisin.",
+    en: "Hello Mrs. Martin, your package 4590 will be delivered to your home this Wednesday between 9am and 12pm. If absent, it will be left with your neighbor.",
+    hint: "⚠️ Trap Alert: Listen for the primary delivery window before the fallback option.\n🔄 Paraphrase Key: 'livré ce mercredi entre 9h et 12h'.\n🎧 Acoustic Cues: Pay attention to day names and hour numbers."
+  },
+  {
+    level: "A1",
+    title: "Annonce d'aéroport / Embarquement",
+    text: "Attention aux passagers du vol Air Canada AC870 à destination de Montréal. L'embarquement commence maintenant à la porte B12. Veuillez présenter votre carte d'embarquement et votre passeport.",
+    opt: ["À la porte B12", "À la porte A5", "Au comptoir des bagages", "Dans la salle d'attente principale"],
+    ans: 0,
+    tr: "Attention aux passagers du vol Air Canada AC870 à destination de Montréal. L'embarquement commence maintenant à la porte B12.",
+    en: "Attention passengers on Air Canada flight AC870 to Montreal. Boarding is now starting at gate B12.",
+    hint: "⚠️ Trap Alert: Do not confuse flight number (AC870) with gate number (B12).\n🔄 Paraphrase Key: 'à la porte B12' gives the gate location.\n🎧 Acoustic Cues: Gate numbers follow 'porte'."
+  },
+  {
+    level: "A1",
+    title: "Message sur répondeur d'un restaurant",
+    text: "Bonjour, vous êtes bien au restaurant Le Petit Bistro. Nous sommes ouverts du mardi au samedi pour le déjeuner et le dîner. Pour toute réservation, veuillez laisser un message après le signal sonore.",
+    opt: ["Du mardi au samedi", "Tous les jours 24h/24", "Uniquement le dimanche midi", "Le lundi soir seulement"],
+    ans: 0,
+    tr: "Bonjour, vous êtes au restaurant Le Petit Bistro. Nous sommes ouverts du mardi au samedi pour le déjeuner et le dîner.",
+    en: "Hello, you have reached Le Petit Bistro restaurant. We are open Tuesday to Saturday for lunch and dinner.",
+    hint: "⚠️ Trap Alert: Listen for exact open days vs closed days.\n🔄 Paraphrase Key: 'ouverts du mardi au samedi'.\n🎧 Acoustic Cues: Focus on day range after 'ouverts'."
+  },
+  {
+    level: "A1",
+    title: "Message d'une amie pour un café",
+    text: "Coucou Sarah ! C'est Julie. Es-tu libre cet après-midi pour prendre un café vers 15h30 sur la place de la Comédie ? Rappelle-moi dès que tu peux !",
+    opt: ["Prendre un café à 15h30", "Faire du sport au parc", "Aller au cinéma à 20h", "Visiter un musée"],
+    ans: 0,
+    tr: "Coucou Sarah ! C'est Julie. Es-tu libre cet après-midi pour prendre un café vers 15h30 sur la place de la Comédie ?",
+    en: "Hi Sarah! It's Julie. Are you free this afternoon to grab a coffee around 3:30pm at Place de la Comédie?",
+    hint: "⚠️ Trap Alert: Identify the activity (coffee) and proposed time (15h30).\n🔄 Paraphrase Key: 'prendre un café vers 15h30'.\n🎧 Acoustic Cues: Time indicators follow 'vers'."
+  },
+  {
+    level: "A1",
+    title: "Annonce dans un bus de ville",
+    text: "Prochain arrêt : Place de l'Hôtel de Ville. Correspondance avec la ligne de métro 1 et la ligne de bus 14. Terminus pour ce véhicule.",
+    opt: ["Place de l'Hôtel de Ville", "Gare Centrale", "Aéroport International", "Parc des Expositions"],
+    ans: 0,
+    tr: "Prochain arrêt : Place de l'Hôtel de Ville. Correspondance avec la ligne de métro 1 et la ligne de bus 14.",
+    en: "Next stop: City Hall Square. Transfer with metro line 1 and bus line 14.",
+    hint: "⚠️ Trap Alert: Distinguish stop name from connecting metro/bus line numbers.\n🔄 Paraphrase Key: 'Prochain arrêt : Place de l'Hôtel de Ville'.\n🎧 Acoustic Cues: Listen for words following 'prochain arrêt'."
+  },
+  {
+    level: "A1",
+    title: "Message vocal d'un collègue de travail",
+    text: "Bonjour Paul, c'est Antoine du bureau. J'ai laissé le dossier de présentation sur ton bureau à côté de ton ordinateur. N'oublie pas de le lire avant la réunion de 14h.",
+    opt: ["Sur le bureau d'ordinateur", "Dans le tiroir de l'accueil", "À la cafétéria", "Dans la voiture du directeur"],
+    ans: 0,
+    tr: "Bonjour Paul, c'est Antoine. J'ai laissé le dossier de présentation sur ton bureau à côté de ton ordinateur.",
+    en: "Hello Paul, it's Antoine from the office. I left the presentation file on your desk next to your computer.",
+    hint: "⚠️ Trap Alert: Note the exact location of the document.\n🔄 Paraphrase Key: 'sur ton bureau à côté de ton ordinateur'.\n🎧 Acoustic Cues: Prepositions of place 'sur' or 'à côté de'."
+  },
+  {
+    level: "A1",
+    title: "Annonce de pharmacie de garde",
+    text: "La pharmacie Saint-Jean vous informe que la garde de nuit ce dimanche est assurée par la pharmacie du Centre située 12 rue de la Paix.",
+    opt: ["La pharmacie du Centre", "La pharmacie de la Gare", "La clinique vétérinaire", "L'hôpital général"],
+    ans: 0,
+    tr: "La pharmacie Saint-Jean vous informe que la garde de nuit ce dimanche est assurée par la pharmacie du Centre.",
+    en: "Saint-Jean Pharmacy informs you that night duty this Sunday is provided by Centre Pharmacy located at 12 rue de la Paix.",
+    hint: "⚠️ Trap Alert: Saint-Jean Pharmacy is making the call, but Centre Pharmacy is providing night service.\n🔄 Paraphrase Key: 'assurée par la pharmacie du Centre'.\n🎧 Acoustic Cues: Listen for names following 'assurée par'."
+  },
+
+  // A2 BASIC (Q11 - Q18)
   {
     level: "A2",
     title: "Bulletin météo radio",
     text: "Bonjour à tous, voici vos prévisions météorologiques pour la journée de mardi. Pensez à vous équiper d'un parapluie robuste dès ce matin, car de fortes averses orageuses sont attendues sur l'ensemble de la région au cours de l'après-midi.",
     opt: ["Prendre un parapluie pour les averses", "Mettre des lunettes de soleil", "Rester à la maison toute la journée", "Prendre la voiture pour éviter la neige"],
     ans: 0,
-    tr: "Bonjour à tous, voici vos prévisions météorologiques pour la journée de mardi. Pensez à vous équiper d'un parapluie robuste dès ce matin, car de fortes averses orageuses sont attendues sur l'ensemble de la région au cours de l'après-midi.",
-    en: "Hello everyone, here is your weather forecast for Tuesday. Be sure to bring a sturdy umbrella this morning, as heavy thunderstorm showers are expected across the region in the afternoon.",
-    hint: "⚠️ Trap Alert: Distinguish morning weather conditions from afternoon weather changes.\n🔄 Paraphrase Key: The term 'parapluie' (umbrella) directly relates to 'averses' (rain showers).\n🎧 Acoustic Cues: Listen for weather gear recommendations given after 'pensez à vous équiper de...'."
+    tr: "Bonjour à tous, voici vos prévisions météorologiques pour la journée de mardi. Pensez à vous équiper d'un parapluie robuste dès ce matin, car de fortes averses orageuses sont attendues.",
+    en: "Hello everyone, here is your weather forecast for Tuesday. Be sure to bring a sturdy umbrella this morning, as heavy thunderstorm showers are expected in the afternoon.",
+    hint: "⚠️ Trap Alert: Distinguish morning weather conditions from afternoon weather changes.\n🔄 Paraphrase Key: 'parapluie' relates to 'averses'.\n🎧 Acoustic Cues: Recommendations given after 'pensez à vous équiper de...'."
   },
   {
     level: "A2",
@@ -103,18 +186,80 @@ const LISTENING_TOPICS = [
     opt: ["Mardi à 10h00", "Mercredi à 14h00", "Lundi matin à 9h00", "Jeudi en fin d'après-midi"],
     ans: 0,
     tr: "Bonjour, nous vous rappelons que votre rendez-vous de contrôle annuel avec le docteur Mercier est confirmé pour ce mardi à 10h00 précises.",
-    en: "Hello, we are reminding you that your annual dental check-up with Dr. Mercier is confirmed for this Tuesday at exactly 10:00am.",
-    hint: "⚠️ Trap Alert: Distinguish between the dentist office name and the confirmed appointment day/time.\n🔄 Paraphrase Key: 'confirmé pour ce mardi à 10h00' confirms the official schedule.\n🎧 Acoustic Cues: Pay close attention to numbers and days of the week stated after 'rendez-vous'."
+    en: "Hello, we are reminding you that your annual dental check-up with Dr. Mercier is confirmed for this Tuesday at 10:00am.",
+    hint: "⚠️ Trap Alert: Distinguish office name from appointment day/time.\n🔄 Paraphrase Key: 'confirmé pour ce mardi à 10h00'.\n🎧 Acoustic Cues: Pay attention to numbers and days of the week."
   },
+  {
+    level: "A2",
+    title: "Annonce d'incident de transport en commun",
+    text: "En raison d'une panne de signalisation entre les stations Berri-UQAM et Lionel-Groulx, le service de la ligne verte du métro est interrompu pour environ 30 minutes. Des bus navettes de remplacement sont déployés.",
+    opt: ["Service interrompu pour 30 minutes", "Grève générale des conducteurs", "Augmentation du prix du billet", "Fermeture définitive de la station"],
+    ans: 0,
+    tr: "En raison d'une panne de signalisation, le service de la ligne verte du métro est interrompu pour environ 30 minutes.",
+    en: "Due to a signaling breakdown, service on the green line is interrupted for approximately 30 minutes. Replacement shuttle buses are deployed.",
+    hint: "⚠️ Trap Alert: Note the reason (signal breakdown) and delay duration (30 mins).\n🔄 Paraphrase Key: 'interrompu pour environ 30 minutes'.\n🎧 Acoustic Cues: Time duration follows 'interrompu pour'."
+  },
+  {
+    level: "A2",
+    title: "Message d'hôtel / Réservation",
+    text: "Bonjour Monsieur Laval, nous vous confirmons votre réservation d'une chambre double pour trois nuits du 14 au 17 juillet. Le petit-déjeuner buffet est inclus de 7h à 10h au rez-de-chaussée.",
+    opt: ["Trois nuits avec petit-déjeuner inclus", "Deux nuits sans repas", "Une semaine complète en pension complète", "Une nuit en chambre simple"],
+    ans: 0,
+    tr: "Bonjour Monsieur Laval, nous vous confirmons votre réservation d'une chambre double pour trois nuits du 14 au 17 juillet. Le petit-déjeuner buffet est inclus.",
+    en: "Hello Mr. Laval, we confirm your reservation of a double room for three nights from July 14 to 17. Breakfast buffet is included.",
+    hint: "⚠️ Trap Alert: Calculate total nights (July 14-17 = 3 nights).\n🔄 Paraphrase Key: 'pour trois nuits... petit-déjeuner inclus'.\n🎧 Acoustic Cues: Listen for 'trois nuits' and 'inclus'."
+  },
+  {
+    level: "A2",
+    title: "Message de centre sportif municipal",
+    text: "Le centre aquatique municipal informe ses usagers que le grand bassin sera exceptionnellement fermé ce vendredi après-midi pour des travaux d'entretien sanitaire. Le petit bassin reste accessible aux familles.",
+    opt: ["Fermeture du grand bassin ce vendredi après-midi", "Fermeture totale de toute la piscine", "Ouverture d'un nouveau sauna", "Cours de natation gratuits le samedi"],
+    ans: 0,
+    tr: "Le centre aquatique informe que le grand bassin sera exceptionnellement fermé ce vendredi après-midi pour travaux.",
+    en: "The municipal aquatic center informs users that the main pool will be exceptionally closed this Friday afternoon for maintenance. The small pool remains open.",
+    hint: "⚠️ Trap Alert: Only the main pool (grand bassin) is closed, not the whole facility.\n🔄 Paraphrase Key: 'le grand bassin sera fermé'.\n🎧 Acoustic Cues: Facility parts after 'fermé'."
+  },
+  {
+    level: "A2",
+    title: "Message vocal d'un mécanicien",
+    text: "Bonjour Monsieur Roy, c'est le garage automobile. Votre voiture est prête. Les freins et la batterie ont été réparés. La facture totale s'élève à 240 dollars. Vous pouvez venir chercher votre véhicule avant 18h.",
+    opt: ["Voiture prête pour 240 dollars", "Réparation impossible", "Nécessité de changer le moteur", "Retard de livraison de trois jours"],
+    ans: 0,
+    tr: "Bonjour, c'est le garage. Votre voiture est prête. La facture totale s'élève à 240 dollars. Vous pouvez venir la chercher avant 18h.",
+    en: "Hello Mr. Roy, this is the auto garage. Your car is ready. Total bill is 240 dollars. You can pick it up before 6pm.",
+    hint: "⚠️ Trap Alert: Note the status (ready) and exact price (240$).\n🔄 Paraphrase Key: 'votre voiture est prête... s'élève à 240 dollars'.\n🎧 Acoustic Cues: Price numbers follow 's'élève à'."
+  },
+  {
+    level: "A2",
+    title: "Annonce d'exposition culturelle",
+    text: "Le musée des Beaux-Arts propose une visite guidée gratuite de l'exposition impressionniste ce samedi à 14h30. Les places étant limitées, veuillez réserver votre billet sur notre site internet.",
+    opt: ["Visite guidée gratuite ce samedi à 14h30", "Exposition fermée au public", "Entrée payante à 50 dollars", "Concert de musique classique le soir"],
+    ans: 0,
+    tr: "Le musée propose une visite guidée gratuite de l'exposition impressionniste ce samedi à 14h30.",
+    en: "The Museum of Fine Arts offers a free guided tour of the Impressionist exhibition this Saturday at 2:30pm. Reservation online required.",
+    hint: "⚠️ Trap Alert: Guided tour is free ('gratuite') but online reservation is mandatory.\n🔄 Paraphrase Key: 'visite guidée gratuite ce samedi'.\n🎧 Acoustic Cues: Listen for 'gratuite' and time."
+  },
+  {
+    level: "A2",
+    title: "Message de bibliothèque universitaire",
+    text: "Chers étudiants, nous vous rappelons que les livres empruntés le mois dernier doivent être retournés avant le 20 mai. Au-delà de cette date, des pénalités de retard seront appliquées.",
+    opt: ["Retourner les livres avant le 20 mai", "Acheter de nouveaux manuels", "Fermeture de la bibliothèque pour travaux", "Inscriptions gratuites pour l'été"],
+    ans: 0,
+    tr: "Chers étudiants, nous vous rappelons que les livres empruntés doivent être retournés avant le 20 mai.",
+    en: "Dear students, we remind you that books borrowed last month must be returned before May 20. Late penalties apply after.",
+    hint: "⚠️ Trap Alert: Pay attention to return deadline date (20 mai).\n🔄 Paraphrase Key: 'doivent être retournés avant le 20 mai'.\n🎧 Acoustic Cues: Deadline date follows 'avant le'."
+  },
+
+  // B1 INTERMEDIATE (Q19 - Q26)
   {
     level: "B1",
     title: "Annonce d'organisation d'entreprise",
     text: "Bonjour à l'équipe projet. Veuillez noter que la réunion stratégique initialement programmée ce jeudi matin est reportée à vendredi 15h00 dans la grande salle de conférence B au deuxième étage.",
     opt: ["Vendredi à 15h00 en salle B", "Jeudi matin en salle A", "Lundi matin au rez-de-chaussée", "Annulée définitivement"],
     ans: 0,
-    tr: "Bonjour à l'équipe projet. Veuillez noter que la réunion stratégique est reportée à vendredi 15h00 dans la grande salle de conférence B au deuxième étage.",
-    en: "Hello project team. Please note that the strategic meeting is postponed to Friday at 3:00pm in large conference room B on the second floor.",
-    hint: "⚠️ Trap Alert: The initial schedule (Thursday morning) is overridden by the shift marker 'reportée à'.\n🔄 Paraphrase Key: 'reportée à vendredi 15h00' establishes the actual rescheduled meeting.\n🎧 Acoustic Cues: Watch for workplace change verbs like 'reporté', 'déplacé', or 'annulé'."
+    tr: "Bonjour à l'équipe projet. Veuillez noter que la réunion stratégique est reportée à vendredi 15h00 dans la grande salle B.",
+    en: "Hello project team. Please note that the strategic meeting is postponed to Friday at 3:00pm in large conference room B.",
+    hint: "⚠️ Trap Alert: The initial schedule is overridden by 'reportée à'.\n🔄 Paraphrase Key: 'reportée à vendredi 15h00' establishes the new schedule.\n🎧 Acoustic Cues: Watch for workplace change verbs like 'reporté'."
   },
   {
     level: "B1",
@@ -122,19 +267,81 @@ const LISTENING_TOPICS = [
     text: "Attention, exercice de sécurité incendie dans le bâtiment. En cas d'alarme sonore, veuillez évacuer calmement les locaux en empruntant exclusivement les escaliers de secours et ne pas utiliser les ascenseurs.",
     opt: ["Utiliser les escaliers de secours", "Prendre les ascenseurs principaux", "Rester enfermé dans son bureau", "Ouvrir toutes les fenêtres"],
     ans: 0,
-    tr: "Attention, exercice de sécurité incendie. En cas d'alarme, veuillez évacuer calmement en empruntant exclusivement les escaliers de secours et ne pas utiliser les ascenseurs.",
-    en: "Attention, fire safety drill. In case of alarm, please evacuate calmly using exclusively the emergency stairs and do not use elevators.",
-    hint: "⚠️ Trap Alert: Listen for mandatory safety actions vs explicitly forbidden actions (like elevators).\n🔄 Paraphrase Key: 'empruntant exclusivement' means using only the specified exit path.\n🎧 Acoustic Cues: Focus on imperative safety commands following 'en cas d'alarme'."
+    tr: "Attention, exercice de sécurité incendie. En cas d'alarme, veuillez évacuer calmement en empruntant exclusivement les escaliers de secours.",
+    en: "Attention, fire safety drill. In case of alarm, please evacuate calmly using exclusively emergency stairs and do not use elevators.",
+    hint: "⚠️ Trap Alert: Listen for mandatory safety actions vs forbidden actions (elevators).\n🔄 Paraphrase Key: 'empruntant exclusivement' means using only that exit path.\n🎧 Acoustic Cues: Safety commands following 'en cas d'alarme'."
   },
+  {
+    level: "B1",
+    title: "Message de syndic de copropriété",
+    text: "Chers résidents, en raison de travaux de rénovation de la tuyauterie principale, l'eau chaude sanitaire sera coupée demain jeudi entre 8h00 et 16h00. Nous vous prions de nous excuser pour ce désagrément temporaire.",
+    opt: ["Coupure d'eau chaude demain de 8h à 16h", "Panne d'électricité dans tout l'immeuble", "Nettoyage des tapis du hall principal", "Interdiction de garer les voitures au parking"],
+    ans: 0,
+    tr: "Chers résidents, l'eau chaude sanitaire sera coupée demain jeudi entre 8h00 et 16h00 en raison de travaux.",
+    en: "Dear residents, due to pipe renovation work, hot water will be shut off tomorrow Thursday between 8:00am and 4:00pm.",
+    hint: "⚠️ Trap Alert: Note what is cut off (hot water) vs electricity/parking.\n🔄 Paraphrase Key: 'l'eau chaude sera coupée'.\n🎧 Acoustic Cues: Interruption details after 'sera coupée'."
+  },
+  {
+    level: "B1",
+    title: "Interview sur le bénévolat communautaire",
+    text: "Pour moi, donner deux heures par semaine à l'épicerie solidaire du quartier n'est pas seulement un acte généreux. Cela permet de briser l'isolement social des personnes âgées tout en luttant contre le gaspillage alimentaire.",
+    opt: ["Lutter contre l'isolement et le gaspillage", "Gagner un salaire complémentaire", "Obtenir des réductions sur les courses", "Voyager gratuitement à l'étranger"],
+    ans: 0,
+    tr: "Donner deux heures par semaine permet de briser l'isolement social des personnes âgées tout en luttant contre le gaspillage.",
+    en: "Volunteering two hours a week helps break social isolation for seniors while fighting food waste.",
+    hint: "⚠️ Trap Alert: The speaker emphasizes social impact over financial gain.\n🔄 Paraphrase Key: 'briser l'isolement... lutter contre le gaspillage'.\n🎧 Acoustic Cues: Listen for benefits after 'cela permet de'."
+  },
+  {
+    level: "B1",
+    title: "Annonce de formation continue",
+    text: "La chambre de commerce propose une formation de trois jours consacrée à la gestion des réseaux sociaux pour les petites entreprises. La session débutera le premier lundi du mois prochain. Tarif préférentiel pour les membres.",
+    opt: ["Formation de 3 jours sur les réseaux sociaux", "Stage de comptabilité d'un an", "Cours d'anglais des affaires le soir", "Séminaire de vente immobilière"],
+    ans: 0,
+    tr: "La chambre de commerce propose une formation de trois jours consacrée à la gestion des réseaux sociaux.",
+    en: "The chamber of commerce offers a 3-day training course on social media management for small businesses.",
+    hint: "⚠️ Trap Alert: Course duration (3 days) vs subject (social media).\n🔄 Paraphrase Key: 'consacrée à la gestion des réseaux sociaux'.\n🎧 Acoustic Cues: Topic keywords after 'consacrée à'."
+  },
+  {
+    level: "B1",
+    title: "Extrait de radio associative locale",
+    text: "Ce week-end, l'association 'Jardins Partagés' organise une grande bourse aux plantes et graines dans le parc municipal. L'objectif est d'encourager la biodiversité urbaine et d'échanger des conseils de jardinage écologique.",
+    opt: ["Partager plantes, graines et conseils écologiques", "Vendre des outils de jardinage industriels", "Construire des serres privées", "Organiser un concours de cuisine régionale"],
+    ans: 0,
+    tr: "L'association organise une bourse aux plantes et graines pour encourager la biodiversité urbaine et échanger des conseils.",
+    en: "The association is organizing a plant and seed swap to encourage urban biodiversity and share ecological gardening advice.",
+    hint: "⚠️ Trap Alert: Exchange of plants/seeds vs commercial sales.\n🔄 Paraphrase Key: 'bourse aux plantes... échanger des conseils'.\n🎧 Acoustic Cues: Action verbs after 'l'objectif est de'."
+  },
+  {
+    level: "B1",
+    title: "Message de service des ressources humaines",
+    text: "Chers collaborateurs, l'entreprise met en place un nouveau système de réservation de postes de travail en flex-office. Merci de valider vos présences hebdomadaires sur le logiciel interne avant chaque vendredi soir.",
+    opt: ["Réserver son poste de travail avant vendredi soir", "Changer de bureau définitivement", "Demander une augmentation de salaire", "Prendre un congé payé obligatoire"],
+    ans: 0,
+    tr: "Chers collaborateurs, merci de valider vos présences hebdomadaires sur le logiciel interne avant chaque vendredi soir.",
+    en: "Dear staff, please confirm your weekly presence on internal software before every Friday evening for flex-office booking.",
+    hint: "⚠️ Trap Alert: Action required (booking before Friday evening).\n🔄 Paraphrase Key: 'valider vos présences... avant vendredi'.\n🎧 Acoustic Cues: Deadline instructions after 'merci de'."
+  },
+  {
+    level: "B1",
+    title: "Compte-rendu de réunion de quartier",
+    text: "Lors de la réunion citoyenne d'hier, les résidents ont voté à la majorité en faveur de la création d'une piste cyclable sécurisée le long du boulevard principal pour encourager les déplacements à vélo.",
+    opt: ["Création d'une piste cyclable sécurisée", "Fermeture totale de l'avenue principale", "Augmentation du prix du stationnement", "Installation de nouveaux feux de circulation"],
+    ans: 0,
+    tr: "Les résidents ont voté à la majorité en faveur de la création d'une piste cyclable sécurisée le long du boulevard.",
+    en: "Residents voted by majority in favor of creating a protected bike lane along the main boulevard.",
+    hint: "⚠️ Trap Alert: Note the approved project (bike lane) vs traffic light or parking distractor options.\n🔄 Paraphrase Key: 'vote en faveur d'une piste cyclable'.\n🎧 Acoustic Cues: Approved decision follows 'en faveur de'."
+  },
+
+  // B2 UPPER INTERMEDIATE - NCLC 7 TARGET (Q27 - Q34)
   {
     level: "B2",
     title: "Chronique environnementale radio",
     text: "Selon la nouvelle réglementation municipale entrée en vigueur ce mois-ci, la collecte sélective et le compostage obligatoire des déchets organiques permettent d'abaisser le volume global des ordures ménagères de 30 % dans les arrondissements pilotes.",
     opt: ["Réduire le volume des poubelles de 30%", "Augmenter la taxe d'enlèvement d'ordures", "Interdire la vente d'emballages en plastique", "Construire de nouvelles usines d'incinération"],
     ans: 0,
-    tr: "La collecte sélective et le compostage obligatoire permettent d'abaisser le volume global des ordures ménagères de 30 % dans les arrondissements pilotes.",
+    tr: "La collecte sélective et le compostage obligatoire permettent d'abaisser le volume global des ordures de 30 %.",
     en: "Selective collection and mandatory composting reduce household waste volume by 30% in pilot boroughs.",
-    hint: "⚠️ Trap Alert: Watch for percentage figures (30%) associated with waste reduction vs fee increases.\n🔄 Paraphrase Key: The verb 'abaisser le volume' in the speech is synonymous with 'réduire le volume'.\n🎧 Acoustic Cues: Listen for environmental statistics and municipal policy terms."
+    hint: "⚠️ Trap Alert: Watch for percentage figures (30%) associated with waste reduction.\n🔄 Paraphrase Key: 'abaisser le volume' = 'réduire le volume'.\n🎧 Acoustic Cues: Policy statistics after 'permettent de'."
   },
   {
     level: "B2",
@@ -144,18 +351,102 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "L'accélération du travail hybride a stimulé les ventes d'équipements, enregistrant une hausse nette de 25 % du chiffre d'affaires.",
     en: "The acceleration of hybrid work boosted equipment sales, recording a net 25% increase in revenue.",
-    hint: "⚠️ Trap Alert: Connect financial trends ('hausse' vs 'baisse') with the correct percentage (25%).\n🔄 Paraphrase Key: 'stimulé les ventes... hausse nette' translates to an increase in equipment sales.\n🎧 Acoustic Cues: Focus on economic trajectory words following 'chiffre d'affaires'."
+    hint: "⚠️ Trap Alert: Connect financial trends ('hausse') with 25%.\n🔄 Paraphrase Key: 'stimulé les ventes... hausse nette'.\n🎧 Acoustic Cues: Economic terms following 'chiffre d'affaires'."
   },
+  {
+    level: "B2",
+    title: "Analyse sur la numérisation des services publics",
+    text: "Bien que la dématérialisation des démarches administratives simplifie la gestion pour la majorité des citoyens, plusieurs sociologues alertent sur le risque d'accentuer la fracture numérique auprès des populations vulnérables et des aînés.",
+    opt: ["Risque d'accentuer la fracture numérique", "Suppression totale des impôts régionaux", "Obligation de posséder deux ordinateurs", "Fermeture définitive des préfectures"],
+    ans: 0,
+    tr: "Bien que la dématérialisation simplifie la gestion, les sociologues alertent sur le risque d'accentuer la fracture numérique.",
+    en: "Although digitization simplifies management, sociologists warn of the risk of widening the digital divide for vulnerable groups.",
+    hint: "⚠️ Trap Alert: Contrast marker 'bien que' introduces the benefit, while main clause states the risk.\n🔄 Paraphrase Key: 'accentuer la fracture numérique'.\n🎧 Acoustic Cues: Main concern follows 'alertent sur'."
+  },
+  {
+    level: "B2",
+    title: "Reportage sur la rénovation énergétique",
+    text: "Les nouvelles subventions gouvernementales destinées à l'isolation thermique des bâtiments anciens visent à réduire de 40 % la consommation d'énergie d'ici 2030, tout en luttant contre la précarité énergétique hivernale.",
+    opt: ["Réduire la consommation d'énergie de 40%", "Doubler le prix du gaz naturel", "Interdire le chauffage électrique", "Démolir les bâtiments anciens de la métropole"],
+    ans: 0,
+    tr: "Les subventions pour l'isolation visent à réduire de 40 % la consommation d'énergie d'ici 2030.",
+    en: "New government subsidies for thermal insulation aim to cut energy consumption by 40% by 2030 while fighting winter fuel poverty.",
+    hint: "⚠️ Trap Alert: Link target figure (40%) to energy reduction goal.\n🔄 Paraphrase Key: 'réduire de 40 % la consommation'.\n🎧 Acoustic Cues: Objective stated after 'visent à'."
+  },
+  {
+    level: "B2",
+    title: "Chronique santé et alimentation durable",
+    text: "L'introduction de menus végétariens deux fois par semaine dans la restauration scolaire a permis de diminuer l'empreinte carbone des cantines de 18 %, tout en sensibilisant les enfants à la nutrition équilibrée et locale.",
+    opt: ["Diminuer l'empreinte carbone de 18%", "Multiplier par trois le coût des repas", "Supprimer totalement les viandes et poissons", "Interdire la vente de produits laitiers"],
+    ans: 0,
+    tr: "L'introduction de menus végétariens a permis de diminuer l'empreinte carbone des cantines de 18 %.",
+    en: "Introducing vegetarian menus twice a week in school canteens reduced their carbon footprint by 18% while promoting balanced nutrition.",
+    hint: "⚠️ Trap Alert: Note frequency (twice a week) vs environmental result (-18% carbon footprint).\n🔄 Paraphrase Key: 'diminuer l'empreinte carbone de 18 %'.\n🎧 Acoustic Cues: Results follow 'a permis de'."
+  },
+  {
+    level: "B2",
+    title: "Interview sur le développement des transports collectifs",
+    text: "L'extension du réseau de tramway en périphérie métropolitaine ne vise pas uniquement à désengorger le trafic automobile, mais répond également au besoin de désenclaver les quartiers résidentiels excentrés.",
+    opt: ["Désengorger le trafic et désenclaver les quartiers", "Augmenter la vitesse autorisée sur autoroute", "Remplacer les bus par des taxis électriques", "Construire un deuxième aéroport régional"],
+    ans: 0,
+    tr: "L'extension du tramway vise à désengorger le trafic automobile et désenclaver les quartiers excentrés.",
+    en: "Expanding the suburban tramway network aims not only to relieve traffic congestion but also to connect remote residential neighborhoods.",
+    hint: "⚠️ Trap Alert: 'ne vise pas uniquement X mais également Y' implies dual benefits.\n🔄 Paraphrase Key: 'désengorger le trafic... désenclaver'.\n🎧 Acoustic Cues: Connective 'mais répond également'."
+  },
+  {
+    level: "B2",
+    title: "Débat sur la semaine de travail de 4 jours",
+    text: "Les premières expérimentations de la semaine de quatre jours en entreprise révèlent une baisse du stress professionnel et un gain de productivité de 15 %, à condition d'optimiser l'organisation des réunions.",
+    opt: ["Baisse du stress et gain de productivité de 15%", "Réduction des salaires de 20%", "Augmentation du temps de trajet quotidien", "Obligation de travailler les week-ends"],
+    ans: 0,
+    tr: "La semaine de 4 jours révèle une baisse du stress et un gain de productivité de 15 %.",
+    en: "Initial 4-day workweek trials reveal reduced workplace stress and a 15% productivity gain, provided meetings are streamlined.",
+    hint: "⚠️ Trap Alert: Salary remains constant despite day reduction.\n🔄 Paraphrase Key: 'gain de productivité de 15 %'.\n🎧 Acoustic Cues: Results following 'révèlent'."
+  },
+  {
+    level: "B2",
+    title: "Reportage sur l'économie circulaire",
+    text: "La mise en place de filières locales de réemploi des matériaux de construction permet de détourner des décharges plus de 50 000 tonnes de débris chaque année, créant simultanément des emplois non délocalisables.",
+    opt: ["Détourner 50 000 tonnes de déchets et créer des emplois", "Exporter les débris vers l'étranger", "Augmenter le prix du ciment neuf", "Interdire la rénovation des bâtiments historiques"],
+    ans: 0,
+    tr: "Le réemploi des matériaux permet de détourner des décharges plus de 50 000 tonnes de débris et créer des emplois.",
+    en: "Establishing local construction material reuse networks diverts over 50,000 tons of debris from landfills yearly while creating local jobs.",
+    hint: "⚠️ Trap Alert: Link tonnage figure (50,000 tons) to landfill diversion.\n🔄 Paraphrase Key: 'détourner des décharges... créer des emplois'.\n🎧 Acoustic Cues: Key metrics after 'permet de'."
+  },
+
+  // C1 ADVANCED (Q35 - Q37)
   {
     level: "C1",
     title: "Interview radio d'urbanisme métropolitain",
     text: "Dans cette perspective d'adaptation climatique, l'aménagement de micro-forêts urbaines et la végétalisation systématique des toitures contribuent de manière décisive à l'atténuation des îlots de chaleur au cœur des grandes métropoles.",
-    opt: ["Combattre les îlots de chaleur urbains", "Accélérer la bétonisation des voies publiques", "Augmenter la vitesse de circulation automobile", "Remplacer les espaces vert par des parkings"],
+    opt: ["Combattre les îlots de chaleur urbains", "Accélérer la bétonisation des voies publiques", "Augmenter la vitesse de circulation automobile", "Remplacer les espaces verts par des parkings"],
     ans: 0,
-    tr: "La végétalisation systématique des toitures contribue de manière décisive à l'atténuation des îlots de chaleur au cœur des grandes métropoles.",
+    tr: "La végétalisation systématique des toitures contribue de manière décisive à l'atténuation des îlots de chaleur.",
     en: "Systematic rooftop greening contributes decisively to mitigating urban heat islands in major metropolitan centers.",
-    hint: "⚠️ Trap Alert: Distinguish climate adaptation goals from negative urban development distractor options.\n🔄 Paraphrase Key: 'atténuation des îlots de chaleur' matches the concept of fighting urban heat islands.\n🎧 Acoustic Cues: Listen for ecological urban planning terms like 'végétalisation' and 'micro-forêts'."
+    hint: "⚠️ Trap Alert: Distinguish climate adaptation goals from negative development distractors.\n🔄 Paraphrase Key: 'atténuation des îlots de chaleur'.\n🎧 Acoustic Cues: Urban planning terms like 'végétalisation'."
   },
+  {
+    level: "C1",
+    title: "Chronique scientifique sur l'intelligence artificielle",
+    text: "L'intégration d'algorithmes d'apprentissage profond dans le diagnostic imagerie médicale permet de détecter précocement des anomalies invisibles à l'œil humain, tout en exigeant une rigueur éthique stricte quant à la souveraineté des données patients.",
+    opt: ["Détecter précocement des anomalies avec rigueur éthique", "Remplacer intégralement les médecins spécialistes", "Rendre le diagnostic médical entièrement gratuit", "Interdire l'usage des ordinateurs en hôpital"],
+    ans: 0,
+    tr: "L'apprentissage profond en imagerie médicale permet de détecter précocement des anomalies tout en exigeant une rigueur éthique.",
+    en: "Integrating deep learning algorithms in medical imaging enables early anomaly detection while demanding strict data privacy ethics.",
+    hint: "⚠️ Trap Alert: AI assists early detection; it does NOT replace human doctors completely.\n🔄 Paraphrase Key: 'détecter précocement des anomalies... rigueur éthique'.\n🎧 Acoustic Cues: Scientific terms after 'permet de'."
+  },
+  {
+    level: "C1",
+    title: "Analyse sociologique de la mobilité durable",
+    text: "L'analyse rétrospective des politiques d'intermodalité montre que la seule création d'infrastructures ne suffit pas ; une transformation pérenne des comportements exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    opt: ["Combiner infrastructures, tarification et accompagnement", "Mier exclusivement sur la construction d'autoroutes", "Supprimer les transports en commun urbains", "Interdire la marche à pied en centre-ville"],
+    ans: 0,
+    tr: "La transformation pérenne exige une tarification incitative et un accompagnement pédagogique citoyen en plus des infrastructures.",
+    en: "Retrospective analysis shows infrastructure alone is insufficient; lasting behavioral change requires incentive pricing and citizen education.",
+    hint: "⚠️ Trap Alert: Note that infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: 'transformation exige tarification et accompagnement'.\n🎧 Acoustic Cues: Nuanced argumentation following 'exige'."
+  },
+
+  // C2 MASTERY (Q38 - Q39)
   {
     level: "C2",
     title: "Conférence de recherche scientifique",
@@ -164,7 +455,17 @@ const LISTENING_TOPICS = [
     ans: 0,
     tr: "L'avènement de la cryptographie quantique permet d'envisager une étanchéité théoriquement absolue des flux de données.",
     en: "The advent of quantum cryptography allows for theoretically absolute data flow security against cyber intrusions.",
-    hint: "⚠️ Trap Alert: Avoid mistaking technical cryptography hardware for server or investment options.\n🔄 Paraphrase Key: 'étanchéité théoriquement absolue' paraphrases total data security guarantees.\n🎧 Acoustic Cues: Focus on academic scientific definitions in high-level lecture discourse."
+    hint: "⚠️ Trap Alert: Avoid mistaking technical cryptography hardware for server options.\n🔄 Paraphrase Key: 'étanchéité théoriquement absolue'.\n🎧 Acoustic Cues: High-level academic discourse."
+  },
+  {
+    level: "C2",
+    title: "Essai philosophique sur la gouvernance algorithmique",
+    text: "La délégation croissante des décisions administratives à des systèmes décisionnels automatisés pose un défi ontologique à la démocratie, risquant de substituer l'arbitraire du code informatique à la délibération contradictoire des citoyens.",
+    opt: ["Risque de substituer le code informatique au débat citoyen", "Garantie d'une égalité parfaite sans contestation possible", "Fin définitive de la bureaucratie administrative", "Obligation pour chaque citoyen de programmer du code"],
+    ans: 0,
+    tr: "La délégation aux systèmes automatisés risque de substituer l'arbitraire du code à la délibération contradictoire des citoyens.",
+    en: "Delegating administrative decisions to automated systems poses an ontological challenge to democracy, risking replacing citizen debate with algorithmic code.",
+    hint: "⚠️ Trap Alert: Focus on the core risk identified by the philosopher ('substituer l'arbitraire du code au débat').\n🔄 Paraphrase Key: 'substituer le code à la délibération'.\n🎧 Acoustic Cues: High-register philosophical concepts."
   }
 ];
 
