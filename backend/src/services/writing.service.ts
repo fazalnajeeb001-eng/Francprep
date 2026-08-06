@@ -54,41 +54,136 @@ export class WritingService {
     return env.openRouterKey || process.env.OPENROUTER_API_KEY || '';
   }
 
+  private computeSimilarity(studentText: string, modelText: string): number {
+    if (!studentText || !modelText) return 0;
+    const normalize = (str: string) =>
+      str
+        .toLowerCase()
+        .replace(/[^\w\sàâäéèêëîïôöùûüç]/g, '')
+        .trim()
+        .split(/\s+/)
+        .filter((w) => w.length > 2);
+
+    const words1 = normalize(studentText);
+    const words2 = normalize(modelText);
+
+    if (words1.length < 5 || words2.length < 5) return 0;
+
+    const set1 = new Set(words1);
+    const set2 = new Set(words2);
+    let intersection = 0;
+    set1.forEach((w) => {
+      if (set2.has(w)) intersection++;
+    });
+
+    const union = new Set([...words1, ...words2]).size;
+    const jaccard = union > 0 ? intersection / union : 0;
+
+    const getTrigrams = (words: string[]) => {
+      const trigrams = new Set<string>();
+      for (let i = 0; i <= words.length - 3; i++) {
+        trigrams.add(words.slice(i, i + 3).join(' '));
+      }
+      return trigrams;
+    };
+
+    const tri1 = getTrigrams(words1);
+    const tri2 = getTrigrams(words2);
+
+    let triMatch = 0;
+    tri1.forEach((t) => {
+      if (tri2.has(t)) triMatch++;
+    });
+    const triRatio = tri1.size > 0 ? triMatch / tri1.size : 0;
+
+    return Math.max(jaccard, triRatio);
+  }
+
+  private isFrenchText(text: string): boolean {
+    if (!text || text.trim().length < 10) return false;
+    const words = text
+      .toLowerCase()
+      .replace(/[^\w\sàâäéèêëîïôöùûüç]/g, '')
+      .trim()
+      .split(/\s+/);
+
+    if (words.length < 5) return false;
+
+    const frenchCommonWords = new Set([
+      'le', 'la', 'les', 'de', 'du', 'des', 'un', 'une', 'et', 'est', 'en', 'dans',
+      'que', 'qui', 'pour', 'pas', 'sur', 'avec', 'ce', 'nous', 'vous', 'je', 'il', 'elle',
+      'ont', 'sont', 'par', 'plus', 'ne', 'ou', 'mais', 'donc', 'car', 'ni', 'si', 'tout',
+      'faire', 'me', 'te', 'se', 'mon', 'ma', 'mes', 'ton', 'ta', 'tes', 'son', 'sa', 'ses',
+      'notre', 'votre', 'leur', 'monsieur', 'madame', 'bonjour', 'salut', 'merci', 'appartement',
+      'logement', 'loyer', 'chauffage', 'cours', 'travail', 'ville', 'transport', 'ecrit',
+      'reponse', 'sujet', 'avis', 'accord', 'mots', 'apres', 'avant', 'cette', 'cet', 'très',
+      'bien', 'beaucoup', 'aussi', 'comme', 'plusieurs', 'tous', 'toujours', 'jamais'
+    ]);
+
+    let matchedCount = 0;
+    for (const w of words) {
+      if (frenchCommonWords.has(w)) {
+        matchedCount += 1;
+      } else {
+        const hasVowels = /[aeiouyàâäéèêëîïôöùûü]/i.test(w);
+        const isMashing = /^[bcdfghjklmnpqrstvwxz]{4,}$/i.test(w) || /^[aeiouy]{4,}$/i.test(w);
+        if (hasVowels && !isMashing && w.length >= 3) {
+          matchedCount += 0.5;
+        }
+      }
+    }
+
+    const ratio = matchedCount / words.length;
+    return ratio >= 0.25;
+  }
+
   async getFeedback(text: string, lessonTitle?: string, expectedAnswer?: string, checklist?: string[], targetLanguage = 'French', examName = 'DELF / TCF'): Promise<ComprehensiveWritingFeedback> {
     const apiKey = await this.getOpenRouterKey();
 
-    // CRITICAL PLAGIARISM CHECK: If student submits the exact model answer / sample response or >70% copy
-    if (expectedAnswer && text) {
-      const normStudent = text.toLowerCase().replace(/[^\w\s\u00C0-\u024F]/g, '').trim();
-      const normModel = expectedAnswer.toLowerCase().replace(/[^\w\s\u00C0-\u024F]/g, '').trim();
-      
-      const studentWords = normStudent.split(/\s+/).filter(w => w.length > 3);
-      const modelWords = new Set(normModel.split(/\s+/).filter(w => w.length > 3));
-      
-      let matchCount = 0;
-      for (const w of studentWords) {
-        if (modelWords.has(w)) matchCount++;
-      }
-      const matchRatio = studentWords.length > 0 ? matchCount / studentWords.length : 0;
+    // CRITICAL GIBBERISH & NON-FRENCH PRE-SCREENING (Zero Grade Enforcement)
+    if (!this.isFrenchText(text)) {
+      return {
+        score: 0,
+        scoreOutOf20: 0,
+        nclcGrade: 'NCLC 0 (Zero Grade — Gibberish / Non-French Submission)',
+        cefrLevel: 'N/A',
+        expressEntryPoints: 0,
+        taskFulfillmentScore: 0,
+        coherenceScore: 0,
+        lexicalScore: 0,
+        grammarScore: 0,
+        feedback: '🚨 ZERO GRADE (0/20 Marks): The submitted text contains non-French gibberish, keyboard mashing, or uninterpretable character sequences. Official TCF Canada examiners award 0 marks for non-French submissions.',
+        corrections: [
+          { original: text.slice(0, 80) + '...', corrected: 'Rédigez votre propre texte en français.', explanation: 'Non-French gibberish or random character sequences receive an automatic 0 grade in official TCF/TEF exams.' }
+        ],
+        tips: [
+          'Rédigez des phrases complètes en français avec du vocabulaire approprié au sujet.',
+          'Assurez-vous de répondre directement aux questions de la consigne.'
+        ]
+      };
+    }
 
-      if (normStudent === normModel || (matchRatio >= 0.70 && studentWords.length >= 10)) {
+    // CRITICAL PROMPT TEXT COPYING CHECK: If student copies >45% of the prompt text
+    if (expectedAnswer && text && text.trim().length > 30) {
+      const promptSimilarity = this.computeSimilarity(text, expectedAnswer);
+      if (promptSimilarity > 0.45) {
         return {
           score: 0,
           scoreOutOf20: 0,
-          nclcGrade: 'NCLC 0 (Zero Grade - Plagiarism Detected)',
+          nclcGrade: 'NCLC 0 (Zero Grade — Prompt Text Copying Detected)',
           cefrLevel: 'N/A',
           expressEntryPoints: 0,
           taskFulfillmentScore: 0,
           coherenceScore: 0,
           lexicalScore: 0,
           grammarScore: 0,
-          feedback: '🚨 PLAGIARISM DETECTED (Score: 0): Your submission is a copy of the official exemplar model answer. Official FEI / CCI test centers automatically award 0 points for copied template responses.',
+          feedback: `🚨 PROMPT COPYING DETECTED (Score: 0/20): Your submission shares ${(promptSimilarity * 100).toFixed(0)}% similarity with the prompt instructions or model answer. Official TCF Canada examiners award 0 points for copied text.`,
           corrections: [
-            { original: text.slice(0, 80) + '...', corrected: 'Rédigez votre propre texte original.', explanation: 'Copied model answers receive an automatic zero grade in official exams.' }
+            { original: text.slice(0, 80) + '...', corrected: 'Rédigez votre propre argumentation originale.', explanation: 'Copying prompt instructions or model text receives an automatic zero grade.' }
           ],
           tips: [
-            'N\'utilisez pas le modèle de réponse comme votre propre texte.',
-            'Rédigez votre réponse personnelle avec votre propre vocabulaire pour être évalué.'
+            'Rédigez votre propre texte sans recopier la consigne.',
+            'Exprimez vos idées personnelles en français.'
           ]
         };
       }
@@ -175,32 +270,73 @@ Evaluate strictly according to official FEI TCF Canada examiner criteria. Respon
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
-        const scoreOutOf20 = typeof parsed.scoreOutOf20 === 'number' ? parsed.scoreOutOf20 : 12;
+        let scoreOutOf20 = typeof parsed.scoreOutOf20 === 'number' ? parsed.scoreOutOf20 : 12;
+
+        const feedbackLower = (parsed.feedback || '').toLowerCase();
+        const isOffTopicFeedback = feedbackLower.includes('off-topic') ||
+                                   feedbackLower.includes('off topic') ||
+                                   feedbackLower.includes('hors-sujet') ||
+                                   feedbackLower.includes('hors sujet') ||
+                                   feedbackLower.includes('does not address the prompt') ||
+                                   feedbackLower.includes('unrelated to the prompt');
+
+        if (scoreOutOf20 === 0 || parsed.taskFulfillmentScore === 0 || isOffTopicFeedback) {
+          return {
+            score: 0,
+            scoreOutOf20: 0,
+            nclcGrade: "NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet)",
+            cefrLevel: "N/A",
+            expressEntryPoints: 0,
+            taskFulfillmentScore: 0,
+            coherenceScore: typeof parsed.coherenceScore === 'number' ? Math.min(2, parsed.coherenceScore) : 1,
+            lexicalScore: typeof parsed.lexicalScore === 'number' ? Math.min(2, parsed.lexicalScore) : 1,
+            grammarScore: typeof parsed.grammarScore === 'number' ? Math.min(2, parsed.grammarScore) : 1,
+            feedback: parsed.feedback || "🚨 ZERO GRADE (0/20 Marks): Official FEI rules mandate an automatic zero score for off-topic (hors-sujet) submissions that do not answer the specific prompt scenario.",
+            corrections: Array.isArray(parsed.corrections) ? parsed.corrections : [],
+            tips: Array.isArray(parsed.tips) ? parsed.tips : ["Lisez attentivement la consigne et répondez directement au sujet proposé."]
+          };
+        }
+
         const scorePct = Math.round((scoreOutOf20 / 20) * 100);
+        let nclcGrade = "NCLC 7 (B2 Benchmark Target)";
+        let cefrLevel = parsed.cefrLevel || "B2";
+        let expressEntryPoints = 17;
 
-        let nclcGrade = parsed.nclcGrade || "NCLC 7 (B2 Benchmark Target)";
-        let expressEntryPoints = parsed.expressEntryPoints || 17;
-
-        if (scoreOutOf20 === 0 || parsed.taskFulfillmentScore === 0) {
-          nclcGrade = "NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet)";
-          expressEntryPoints = 0;
-        } else if (scoreOutOf20 >= 17) {
+        if (scoreOutOf20 >= 18) {
+          nclcGrade = "NCLC 10+ (C2 Mastery)";
+          cefrLevel = "C2";
+          expressEntryPoints = 34;
+        } else if (scoreOutOf20 >= 16) {
           nclcGrade = "NCLC 9 (C1 Advanced)";
+          cefrLevel = "C1";
           expressEntryPoints = 31;
         } else if (scoreOutOf20 >= 14) {
           nclcGrade = "NCLC 8 (B2 Upper)";
+          cefrLevel = "B2";
           expressEntryPoints = 23;
         } else if (scoreOutOf20 >= 12) {
           nclcGrade = "NCLC 7 (B2 Benchmark Target)";
+          cefrLevel = "B2";
           expressEntryPoints = 17;
         } else if (scoreOutOf20 >= 10) {
           nclcGrade = "NCLC 6 (B1 Intermediate)";
+          cefrLevel = "B1";
           expressEntryPoints = 12;
         } else if (scoreOutOf20 >= 8) {
           nclcGrade = "NCLC 5 (B1 Threshold)";
+          cefrLevel = "B1";
           expressEntryPoints = 6;
-        } else {
+        } else if (scoreOutOf20 >= 5) {
           nclcGrade = "NCLC 4 (A2 Elementary)";
+          cefrLevel = "A2";
+          expressEntryPoints = 0;
+        } else if (scoreOutOf20 >= 3) {
+          nclcGrade = "NCLC 3 (A1 Break-Through)";
+          cefrLevel = "A1";
+          expressEntryPoints = 0;
+        } else {
+          nclcGrade = "NCLC 1-2 (Below A1 / Beginner)";
+          cefrLevel = "Below A1";
           expressEntryPoints = 0;
         }
 
@@ -208,12 +344,12 @@ Evaluate strictly according to official FEI TCF Canada examiner criteria. Respon
           score: scorePct,
           scoreOutOf20,
           nclcGrade,
-          cefrLevel: parsed.cefrLevel || 'B2',
+          cefrLevel,
           expressEntryPoints,
-          taskFulfillmentScore: typeof parsed.taskFulfillmentScore === 'number' ? parsed.taskFulfillmentScore : 4,
-          coherenceScore: typeof parsed.coherenceScore === 'number' ? parsed.coherenceScore : 4,
-          lexicalScore: typeof parsed.lexicalScore === 'number' ? parsed.lexicalScore : 4,
-          grammarScore: typeof parsed.grammarScore === 'number' ? parsed.grammarScore : 3,
+          taskFulfillmentScore: typeof parsed.taskFulfillmentScore === 'number' ? parsed.taskFulfillmentScore : Math.min(5, Math.ceil(scoreOutOf20 / 4)),
+          coherenceScore: typeof parsed.coherenceScore === 'number' ? parsed.coherenceScore : Math.min(5, Math.ceil(scoreOutOf20 / 4)),
+          lexicalScore: typeof parsed.lexicalScore === 'number' ? parsed.lexicalScore : Math.min(5, Math.ceil(scoreOutOf20 / 4)),
+          grammarScore: typeof parsed.grammarScore === 'number' ? parsed.grammarScore : Math.min(5, Math.ceil(scoreOutOf20 / 4)),
           feedback: parsed.feedback || 'Good effort on this writing task.',
           corrections: Array.isArray(parsed.corrections) ? parsed.corrections : [],
           tips: Array.isArray(parsed.tips) ? parsed.tips : [],

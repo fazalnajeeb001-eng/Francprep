@@ -169,29 +169,117 @@ const LISTENING_TOPICS = [
 ];
 
 const READING_TOPICS = [
-  // A1 DISCOVERY (1-10)
-  { level: "A1", text: "Horaires de la boulangerie 'La Parisis' : Ouvert du mardi au dimanche de 7h00 à 19h00 sans interruption. Fermeture hebdomadaire le lundi.", q: "Quand la boulangerie est-elle fermée ?", opt: ["Le lundi", "Le dimanche", "Le mardi", "Tous les après-midis"], ans: 0, passEn: "Bakery hours 'La Parisis': Open Tuesday to Sunday from 7:00am to 7:00pm non-stop. Closed weekly on Monday.", hint: "⚠️ Trap Alert: Do not confuse daily operating hours with the weekly closure day.\n🔄 Paraphrase Key: 'Fermeture hebdomadaire le lundi' directly specifies the closed day.\n📖 Structural Cue: Look for exact day names following 'Fermeture'." },
-  { level: "A1", text: "Avis de passage de la Poste canadienne : Votre colis recommandé est disponible au bureau central à partir de demain 14h. Veuillez vous munir d'une pièce d'identité.", q: "Où et quand récupérer votre colis ?", opt: ["Au bureau central dès demain 14h", "À la maison aujourd'hui", "À la mairie la semaine prochaine", "Chez le voisin ce soir"], ans: 0, passEn: "Canada Post delivery notice: Your registered package is available at the central branch starting tomorrow at 2pm. Bring ID.", hint: "⚠️ Trap Alert: Distinguish the pick-up location (bureau central) from home delivery.\n🔄 Paraphrase Key: 'disponible à partir de demain 14h' defines the precise availability time.\n📖 Structural Cue: Focus on location prepositions after 'au'." },
-  { level: "A1", text: "Annonce de la bibliothèque municipale : Les ateliers de lecture pour enfants ont lieu chaque samedi matin de 10h00 à 11h30. Entrée libre et gratuite.", q: "À quel moment ont lieu les ateliers de lecture ?", opt: ["Le samedi matin de 10h00 à 11h30", "Le vendredi soir", "Le dimanche après-midi", "Tous les jours à midi"], ans: 0, passEn: "Library notice: Children's reading workshops every Saturday from 10:00 to 11:30am. Free admission.", hint: "⚠️ Trap Alert: Watch for specific day/time combinations.\n🔄 Paraphrase Key: 'chaque samedi matin de 10h00 à 11h30' answers the workshop time.\n📖 Structural Cue: Identify day markers after 'ont lieu'." },
-  { level: "A1", text: "Message de la clinique médicale : Le cabinet du docteur Roy sera exceptionnellement fermé du 15 au 20 août pour congés annuels.", q: "Pourquoi le cabinet médical est-il fermé ?", opt: ["Pour congés annuels du docteur", "Pour rénovation complète", "En raison d'un problème technique", "Pour déménagement"], ans: 0, passEn: "Medical clinic notice: Dr. Roy's office will be closed August 15-20 for annual leave.", hint: "⚠️ Trap Alert: Pay attention to the reason given after 'pour'.\n🔄 Paraphrase Key: 'congés annuels' means annual vacation leave.\n📖 Structural Cue: Look for cause prepositions like 'pour'." },
-  { level: "A1", text: "Pharmacie du Centre — Service de garde : En dehors des heures d'ouverture normales, adressez-vous à la pharmacie Saint-Jean située au 12 rue de la Paix.", q: "Où se rendre en dehors des heures d'ouverture ?", opt: ["À la pharmacie Saint-Jean rue de la Paix", "À l'hôpital général de nuit", "Chez le médecin de famille", "À la mairie du quartier"], ans: 0, passEn: "Center Pharmacy after-hours: Outside normal hours, go to Saint-Jean Pharmacy at 12 rue de la Paix.", hint: "⚠️ Trap Alert: Distinguish the primary pharmacy from the after-hours referral pharmacy.\n🔄 Paraphrase Key: 'adressez-vous à...' points to the emergency destination.\n📖 Structural Cue: Note address details following location directives." },
-  { level: "A1", text: "Musée des Beaux-Arts de Montréal : Tarif réduit pour tous les étudiants et les jeunes de moins de 25 ans sur présentation de leur carte.", q: "Qui peut obtenir un tarif réduit au musée ?", opt: ["Les étudiants et jeunes de moins de 25 ans", "Seulement les enfants de moins de 5 ans", "Uniquement les professeurs d'université", "Tous les groupes de touristes"], ans: 0, passEn: "Montreal Museum of Fine Arts: Discounted rate for students and youth under 25 with student ID.", hint: "⚠️ Trap Alert: Identify the eligible age/status criteria mentioned in the notice.\n🔄 Paraphrase Key: 'étudiants et jeunes de moins de 25 ans' specifies the discount group.\n📖 Structural Cue: Look for qualification criteria after 'pour'." },
+  // A1 DISCOVERY (1-6)
+  {
+    level: "A1",
+    text: "Horaires de la boulangerie 'La Parisis' : Ouvert du mardi au dimanche de 7h00 à 19h00 sans interruption. Fermeture hebdomadaire le lundi.",
+    q: "Quand la boulangerie est-elle fermée ?",
+    opt: ["Le lundi", "Le dimanche", "Le mardi", "Tous les après-midis"],
+    ans: 0,
+    passEn: "Opening hours for 'La Parisis' Bakery: Open Tuesday to Sunday from 7:00 AM to 7:00 PM non-stop. Weekly closure on Mondays.",
+    hint: "⚠️ Trap Alert: Do not confuse daily operating hours (Tuesday-Sunday) with the weekly closure day.\n🔄 Paraphrase Key: 'Fermeture hebdomadaire le lundi' directly specifies the closed day.\n📖 Structural Cue: Look for exact day names following 'Fermeture'."
+  },
+  {
+    level: "A1",
+    text: "Avis de passage de la Poste canadienne : Votre colis recommandé est disponible au bureau central à partir de demain 14h. Veuillez vous munir d'une pièce d'identité.",
+    q: "Où et quand récupérer votre colis ?",
+    opt: ["Au bureau central dès demain 14h", "À la maison aujourd'hui", "À la mairie la semaine prochaine", "Chez le voisin ce soir"],
+    ans: 0,
+    passEn: "Canada Post Delivery Notice: Your registered package is available at the central office starting tomorrow at 2:00 PM. Please bring a valid photo ID.",
+    hint: "⚠️ Trap Alert: Distinguish the pick-up location (bureau central) from home delivery.\n🔄 Paraphrase Key: 'disponible à partir de demain 14h' defines the precise availability time.\n📖 Structural Cue: Focus on location prepositions after 'au'."
+  },
+  {
+    level: "A1",
+    text: "Annonce de la bibliothèque municipale : Les ateliers de lecture pour enfants ont lieu chaque samedi matin de 10h00 à 11h30. Entrée libre et gratuite.",
+    q: "À quel moment ont lieu les ateliers de lecture ?",
+    opt: ["Le samedi matin de 10h00 à 11h30", "Le vendredi soir", "Le dimanche après-midi", "Tous les jours à midi"],
+    ans: 0,
+    passEn: "Municipal Library Announcement: Children's reading workshops take place every Saturday morning from 10:00 AM to 11:30 AM. Free admission for all.",
+    hint: "⚠️ Trap Alert: Watch for specific day/time combinations.\n🔄 Paraphrase Key: 'chaque samedi matin de 10h00 à 11h30' answers the workshop time.\n📖 Structural Cue: Identify day markers after 'ont lieu'."
+  },
+  {
+    level: "A1",
+    text: "Message de la clinique médicale : Le cabinet du docteur Roy sera exceptionnellement fermé du 15 au 20 août pour congés annuels.",
+    q: "Pourquoi le cabinet médical est-il fermé ?",
+    opt: ["Pour congés annuels du docteur", "Pour rénovation complète", "En raison d'un problème technique", "Pour déménagement"],
+    ans: 0,
+    passEn: "Medical Clinic Message: Dr. Roy's office will be exceptionally closed from August 15th to August 20th for annual vacation.",
+    hint: "⚠️ Trap Alert: Pay attention to the reason given after 'pour'.\n🔄 Paraphrase Key: 'congés annuels' means annual vacation leave.\n📖 Structural Cue: Look for cause prepositions like 'pour'."
+  },
+  {
+    level: "A1",
+    text: "Pharmacie du Centre — Service de garde : En dehors des heures d'ouverture normales, adressez-vous à la pharmacie Saint-Jean située au 12 rue de la Paix.",
+    q: "Où se rendre en dehors des heures d'ouverture ?",
+    opt: ["À la pharmacie Saint-Jean rue de la Paix", "À l'hôpital général de nuit", "Chez le médecin de famille", "À la mairie du quartier"],
+    ans: 0,
+    passEn: "Center Pharmacy — Emergency On-Call Service: Outside of normal operating hours, please visit Saint-Jean Pharmacy located at 12 rue de la Paix.",
+    hint: "⚠️ Trap Alert: Distinguish the primary pharmacy from the after-hours referral pharmacy.\n🔄 Paraphrase Key: 'adressez-vous à...' points to the emergency destination.\n📖 Structural Cue: Note address details following location directives."
+  },
+  {
+    level: "A1",
+    text: "Musée des Beaux-Arts de Montréal : Tarif réduit pour tous les étudiants et les jeunes de moins de 25 ans sur présentation de leur carte.",
+    q: "Qui peut obtenir un tarif réduit au musée ?",
+    opt: ["Les étudiants et jeunes de moins de 25 ans", "Seulement les enfants de moins de 5 ans", "Uniquement les professeurs d'université", "Tous les groupes de touristes"],
+    ans: 0,
+    passEn: "Montreal Museum of Fine Arts: Reduced rate for all students and young people under 25 upon presentation of their card.",
+    hint: "⚠️ Trap Alert: Identify the eligible age/status criteria mentioned in the notice.\n🔄 Paraphrase Key: 'étudiants et jeunes de moins de 25 ans' specifies the discount group.\n📖 Structural Cue: Look for qualification criteria after 'pour'."
+  },
 
-  // A2 BREAKTHROUGH (11-18)
-  { level: "A2", text: "Règlement municipal de la piscine municipale : Les enfants âgés de moins de 12 ans doivent obligatoirement être accompagnés d'un adulte majeur dans l'enceinte des bassins.", q: "Quelle condition est exigée pour les enfants de moins de 12 ans ?", opt: ["Être accompagné par un adulte majeur", "Avoir un certificat médical", "Venir uniquement le matin", "Payer un tarif spécial"], ans: 0, passEn: "Municipal pool rule: Children under 12 must be accompanied by an adult inside the pool area.", hint: "⚠️ Trap Alert: Listen for mandatory requirements ('doivent obligatoirement').\n🔄 Paraphrase Key: 'accompagnés d'un adulte majeur' matches the required condition.\n📖 Structural Cue: Focus on obligation modal verbs like 'doivent'." },
-  { level: "A2", text: "Offre d'emploi spécialisée : Restaurant gastronomique du Vieux-Montréal recherche un serveur bilingue français-anglais avec 2 ans d'expérience au service en salle.", q: "Quel profil correspond exactement à cette offre ?", opt: ["Un serveur bilingue expérimenté", "Un cuisinier italien débutant", "Un comptable à mi-temps", "Un gérant de magasin"], ans: 0, passEn: "Job posting: Upscale restaurant in Old Montreal seeks bilingual French-English server with 2 years table service experience.", hint: "⚠️ Trap Alert: Match both language fluency (bilingue) and experience requirements.\n🔄 Paraphrase Key: '2 ans d'expérience' translates to an experienced server.\n📖 Structural Cue: Identify job title keywords preceding experience requirements." },
-  { level: "A2", text: "Note d'information aux résidents : Des travaux de réfection de la chaussée auront lieu dans la rue Sherbrooke le mercredi 12 octobre. Le stationnement sera interdit de 7h à 18h.", q: "Quelle interdiction concerne les résidents le mercredi 12 octobre ?", opt: ["L'interdiction de stationner dans la rue de 7h à 18h", "L'interdiction de sortir de chez soi", "L'interdiction de prendre le bus", "L'interdiction d'utiliser l'eau courante"], ans: 0, passEn: "Notice to residents: Street resurfacing on Sherbrooke St on Wednesday Oct 12. Parking prohibited 7am-6pm.", hint: "⚠️ Trap Alert: Note the prohibited action ('stationnement interdit') vs general street access.\n🔄 Paraphrase Key: 'stationnement interdit' directly means parking prohibition.\n📖 Structural Cue: Pay attention to specific time restrictions given." },
-  { level: "A2", text: "Annonce du centre communautaire : Inscriptions aux cours de langue italienne et espagnole ouvertes pour la session d'automne. Tarif réduit pour les étudiants et retraités.", q: "Qui peut bénéficier d'un tarif réduit ?", opt: ["Les étudiants et les retraités", "Seulement les enfants de moins de 5 ans", "Uniquement les professeurs", "Tous les touristes de passage"], ans: 0, passEn: "Community center notice: Italian and Spanish fall course enrollment open. Discounted rate for students and seniors.", hint: "⚠️ Trap Alert: Distinguish eligible discount groups from general public.\n🔄 Paraphrase Key: 'étudiants et retraités' defines the beneficiaries.\n📖 Structural Cue: Look for recipient nouns following 'pour'." },
-  { level: "A2", text: "Avis de coupure d'eau potable : En raison de travaux de maintenance sur le réseau aqueduc, l'alimentation en eau sera interrompue ce jeudi de 22h00 à 05h00 du matin.", q: "À quel moment l'eau sera-t-elle coupée ?", opt: ["Ce jeudi durant la nuit de 22h à 05h", "Vendredi toute la journée", "Samedi après-midi", "Lundi matin à partir de 8h"], ans: 0, passEn: "Water supply interruption notice: Maintenance work will cause a water shut-off this Thursday from 10pm to 5am.", hint: "⚠️ Trap Alert: Notice the overnight time window (22h00 à 05h00).\n🔄 Paraphrase Key: 'interrompue ce jeudi de 22h00 à 05h00' defines the exact shut-off period.\n📖 Structural Cue: Track time range prepositions 'de... à'." },
+  // A2 BREAKTHROUGH (7-11)
+  {
+    level: "A2",
+    text: "Règlement municipal de la piscine municipale : Les enfants âgés de moins de 12 ans doivent obligatoirement être accompagnés d'un adulte majeur dans l'enceinte des bassins.",
+    q: "Quelle condition est exigée pour les enfants de moins de 12 ans ?",
+    opt: ["Être accompagné par un adulte majeur", "Avoir un certificat médical", "Venir uniquement le matin", "Payer un tarif spécial"],
+    ans: 0,
+    passEn: "Municipal Swimming Pool Regulations: Children under 12 years of age must strictly be accompanied by an adult inside the pool enclosure.",
+    hint: "⚠️ Trap Alert: Listen for mandatory requirements ('doivent obligatoirement').\n🔄 Paraphrase Key: 'accompagnés d'un adulte majeur' matches the required condition.\n📖 Structural Cue: Focus on obligation modal verbs like 'doivent'."
+  },
+  {
+    level: "A2",
+    text: "Offre d'emploi spécialisée : Restaurant gastronomique du Vieux-Montréal recherche un serveur bilingue français-anglais avec 2 ans d'expérience au service en salle.",
+    q: "Quel profil correspond exactement à cette offre ?",
+    opt: ["Un serveur bilingue expérimenté", "Un cuisinier italien débutant", "Un comptable à mi-temps", "Un gérant de magasin"],
+    ans: 0,
+    passEn: "Specialized Job Offer: Fine dining restaurant in Old Montreal is seeking a bilingual French-English server with 2 years of table service experience.",
+    hint: "⚠️ Trap Alert: Match both language fluency (bilingue) and experience requirements.\n🔄 Paraphrase Key: '2 ans d'expérience' translates to an experienced server.\n📖 Structural Cue: Identify job title keywords preceding experience requirements."
+  },
+  {
+    level: "A2",
+    text: "Note d'information aux résidents : Des travaux de réfection de la chaussée auront lieu dans la rue Sherbrooke le mercredi 12 octobre. Le stationnement sera interdit de 7h à 18h.",
+    q: "Quelle interdiction concerne les résidents le mercredi 12 octobre ?",
+    opt: ["L'interdiction de stationner dans la rue de 7h à 18h", "L'interdiction de sortir de chez soi", "L'interdiction de prendre le bus", "L'interdiction d'utiliser l'eau courante"],
+    ans: 0,
+    passEn: "Information Notice to Residents: Road resurfacing work will take place on Sherbrooke Street on Wednesday, October 12. Parking will be prohibited from 7:00 AM to 6:00 PM.",
+    hint: "⚠️ Trap Alert: Note the prohibited action ('stationnement interdit') vs general street access.\n🔄 Paraphrase Key: 'stationnement interdit' directly means parking prohibition.\n📖 Structural Cue: Pay attention to specific time restrictions given."
+  },
+  {
+    level: "A2",
+    text: "Annonce du centre communautaire : Inscriptions aux cours de langue italienne et espagnole ouvertes pour la session d'automne. Tarif réduit pour les étudiants et retraités.",
+    q: "Qui peut bénéficier d'un tarif réduit ?",
+    opt: ["Les étudiants et les retraités", "Seulement les enfants de moins de 5 ans", "Uniquement les professeurs", "Tous les touristes de passage"],
+    ans: 0,
+    passEn: "Community Center Announcement: Registration for Italian and Spanish language classes is now open for the fall session. Reduced rate for students and retirees.",
+    hint: "⚠️ Trap Alert: Distinguish eligible discount groups from general public.\n🔄 Paraphrase Key: 'étudiants et retraités' defines the beneficiaries.\n📖 Structural Cue: Look for recipient nouns following 'pour'."
+  },
+  {
+    level: "A2",
+    text: "Avis de coupure d'eau potable : En raison de travaux de maintenance sur le réseau aqueduc, l'alimentation en eau sera interrompue ce jeudi de 22h00 à 05h00 du matin.",
+    q: "À quel moment l'eau sera-t-elle coupée ?",
+    opt: ["Ce jeudi durant la nuit de 22h à 05h", "Vendredi toute la journée", "Samedi après-midi", "Lundi matin à partir de 8h"],
+    ans: 0,
+    passEn: "Drinking Water Interruption Notice: Due to maintenance work on the aqueduct network, the water supply will be cut off this Thursday from 10:00 PM to 5:00 AM.",
+    hint: "⚠️ Trap Alert: Notice the overnight time window (22h00 à 05h00).\n🔄 Paraphrase Key: 'interrompue ce jeudi de 22h00 à 05h00' defines the exact shut-off period.\n📖 Structural Cue: Track time range prepositions 'de... à'."
+  },
 
-  // B1 THRESHOLD (19-26)
+  // B1 THRESHOLD (12-15)
   {
     level: "B1",
     text: `ÉCONOMIE ET NUTRITION — LE POUVOIR D'ACHAT ET LA SANTÉ AU QUÉBEC\n\nUn rapport récent de l'Institut National de Santé Publique du Québec souligne l'importance des choix alimentaires quotidiens sur la santé cardiaque. Selon les chercheurs, réduire sa consommation de sel de seulement 3 grammes par jour diminuerait de 15 % les risques d'hypertension artérielle à l'échelle nationale.\n\nCette recommandation s'inscrit dans une campagne globale d'éducation à la nutrition. Les professionnels du secteur médical encouragent les consommateurs à privilégier les aliments frais préparés à la maison plutôt que les plats industriels transformés, souvent riches en sodium et en conservateurs artificiels.\n\nEn outre, les autorités canadiennes envisagent d'imposer un étiquetage nutritionnel plus clair sur la face avant des emballages afin d'aider les familles à identifier rapidement les produits à forte teneur en sel et en sucres ajoutés.`,
     q: "Selon l'étude, quel est l'impact direct d'une diminution quotidienne de 3 grammes de sel ?",
     opt: ["Une baisse de 15% des risques d'hypertension artérielle", "Une hausse de 20% du pouvoir d'achat des ménages", "La fermeture immédiate des usines agroalimentaires", "Une réduction automatique de la consommation de sucre"],
     ans: 0,
-    passEn: "HEALTH AND NUTRITION — PURCHASING POWER AND HEALTH IN QUEBEC\n\nA recent report highlights that reducing daily salt intake by 3g cuts hypertension risk by 15% nationwide.",
+    passEn: `ECONOMY AND NUTRITION — PURCHASING POWER AND HEALTH IN QUEBEC\n\nA recent report from the National Institute of Public Health of Quebec emphasizes the importance of daily food choices on heart health. According to researchers, reducing daily salt intake by just 3 grams per day would lower the risk of high blood pressure by 15% nationwide.\n\nThis recommendation is part of a comprehensive nutrition education campaign. Medical professionals encourage consumers to favor fresh home-cooked meals over processed industrial foods, which are often high in sodium and artificial preservatives.\n\nFurthermore, Canadian authorities are considering mandating clearer front-of-package nutritional labeling to help families quickly identify products with high salt and added sugar content.`,
     hint: "⚠️ Trap Alert: Link the 3g salt reduction directly to hypertension risk statistics, not sugar or purchasing power.\n🔄 Paraphrase Key: 'diminuerait de 15% les risques' matches 'Une baisse de 15% des risques'.\n📖 Structural Cue: Locate the causal percentage figure in paragraph 1."
   },
   {
@@ -200,7 +288,7 @@ const READING_TOPICS = [
     q: "Quelle mesure la Société de Transport prend-elle les soirs de semaine dès 22h00 ?",
     opt: ["Le remplacement des lignes ferroviaires par des bus électriques", "La gratuité totale de l'ensemble du réseau de métro", "L'arrêt complet de tous les transports collectifs", "L'interdiction de circuler pour les piétons"],
     ans: 0,
-    passEn: "URBAN TRANSIT & SUSTAINABLE MOBILITY\n\nTram lines will be replaced by electric buses starting at 10:00pm on weeknights for infrastructure upgrades.",
+    passEn: `URBAN TRANSIT AND SUSTAINABLE MOBILITY — RIDE GREEN IN MONTREAL\n\nThe Montreal Transit Corporation (STM) has announced a major restructuring of its night road network. In order to continue infrastructure electrification work, tramway and light rail lines will be replaced by articulated electric buses starting at 10:00 PM on weeknights.\n\nThis transition will not only accelerate railway track renovation, but will also guarantee reduced noise levels for central neighborhood residents. Riders are invited to check the new mobile application to track bus locations in real time.\n\nDespite some initial hesitation regarding minor transfer delays, the majority of travelers welcome this modern initiative, which aligns fully with the metropolis's climate plan.`,
     hint: "⚠️ Trap Alert: Note the shift to electric buses at 22h00, not a total shutdown or free fares.\n🔄 Paraphrase Key: 'remplacées par des bus électriques' matches the correct replacement action.\n📖 Structural Cue: Focus on action verbs following 'dès 22h00'."
   },
   {
@@ -209,7 +297,7 @@ const READING_TOPICS = [
     q: "Que constate la majorité des enseignants enquêtés concernant les tablettes ?",
     opt: ["Une hausse de l'engagement des élèves dans la recherche documentaire", "Une baisse drastique des résultats scolaires généraux", "L'abandon complet de tous les cours de lecture", "Le refus des parents d'acheter des fournitures"],
     ans: 0,
-    passEn: "EDUCATION & TECH — DIGITAL TEXTBOOKS IN SCHOOLS\n\n68% of surveyed educators note increased student engagement in documentary research using digital tablets.",
+    passEn: `EDUCATION AND TECHNOLOGY — DIGITAL TEXTBOOKS IN SCHOOLS\n\nThe widespread introduction of digital tablets in New Brunswick secondary schools is sparking passionate debates among teachers and parents. According to a survey of 500 educators, 68% report a significant increase in student engagement during documentary research activities.\n\nHowever, several pediatric specialists warn against increased daily screen time and emphasize the importance of maintaining a balance with traditional paper-based learning. Schools are therefore implementing responsible use charters to regulate classroom tablet usage.`,
     hint: "⚠️ Trap Alert: Focus on the positive survey statistic (68%) before the pediatrician warning contrast ('Cependant').\n🔄 Paraphrase Key: 'augmentation significative de l'engagement' equates to 'hausse de l'engagement'.\n📖 Structural Cue: Locate the statistic '68%' in paragraph 1."
   },
   {
@@ -218,18 +306,18 @@ const READING_TOPICS = [
     q: "Quel est l'objectif principal de la collecte obligatoire du bac brun ?",
     opt: ["Détourner la matière organique des sites d'enfouissement", "Vendre le compost aux entreprises étrangères", "Interdire les jardins communautaires urbains", "Augmenter la taxe de collecte des ordures"],
     ans: 0,
-    passEn: "ENVIRONMENT & WASTE MANAGEMENT — MANDATORY COMPOSTING\n\nQuebec City makes brown bins mandatory to divert 40,000 tons of organic waste from landfills.",
+    passEn: `ENVIRONMENT AND WASTE MANAGEMENT — MANDATORY COMPOSTING\n\nAs part of its carbon footprint reduction plan, the City of Quebec has mandated the brown bin for household food waste collection. This measure aims to divert 40,000 tons of organic material from landfills every year.\n\nThe resulting compost will be distributed free of charge to regional farmers and urban community gardens. This eco-friendly approach helps enrich the soil without relying on industrial chemical fertilizers.`,
     hint: "⚠️ Trap Alert: Identify the environmental goal (diverting organic waste) vs tax or commercial options.\n🔄 Paraphrase Key: 'détourner 40 000 tonnes de matière organique' answers the primary objective.\n📖 Structural Cue: Look for purpose expressions following 'vise à'."
   },
 
-  // B2 VANTAGE TARGET (27-34) — 8 UNIQUE B2 TEXTS FOR NCLC 7 TARGET
+  // B2 VANTAGE TARGET (16-20)
   {
     level: "B2",
     text: `URBANISME ÉCOLOGIQUE ET ÎLOTS DE CHALEUR MÉTROPOLITAINS\n\nDans la plupart des grandes agglomérations nord-américaines, la multiplication des îlots de chaleur constitue désormais un enjeu sanitaire et environnemental préoccupant. L'accumulation d'asphalte et de béton accentue l'absorption thermique, entraînant des températures estivales étouffantes au cœur des cités.\n\nPour contrer ce phénomène, les urbanistes préconisent la mise en place de péages urbains incitatifs couplée à un vaste programme de végétalisation des toitures d'immeubles. Les premiers résultats observés dans les quartiers pilotes démontrent une réduction de 20 % de la circulation automobile, corrélée à une baisse mesurable de la pollution atmosphérique.\n\nCependant, les commerçants du centre-ville expriment des inquiétudes quant à la baisse potentielle du chalandage. Les municipalités s'engagent donc à compenser ces effets en renforçant la fréquence des transports en commun.`,
     q: "Selon l'article, quel est l'effet combiné de la végétalisation et des péages incitatifs ?",
     opt: ["Une baisse de 20% du trafic automobile et une réduction de la pollution", "La disparition complète des commerces de proximité", "Une hausse de la température estivale au centre-ville", "L'obligation d'utiliser uniquement des véhicules électriques"],
     ans: 0,
-    passEn: "ECOLOGICAL URBANISM & METROPOLITAN HEAT ISLANDS\n\nPilot programs combining green rooftops and incentive urban tolls reduced car traffic by 20% and lowered air pollution.",
+    passEn: `ECOLOGICAL URBANISM AND METROPOLITAN HEAT ISLANDS\n\nIn most major North American urban areas, the proliferation of heat islands has become a pressing health and environmental concern. The accumulation of asphalt and concrete increases heat absorption, leading to stifling summer temperatures in city centers.\n\nTo combat this phenomenon, urban planners recommend implementing incentive urban tolls combined with a vast rooftop greening program for buildings. Initial results observed in pilot neighborhoods show a 20% reduction in automobile traffic, correlated with a measurable drop in air pollution.\n\nHowever, downtown merchants express concern regarding a potential drop in foot traffic. Municipalities are therefore committing to offsetting these effects by boosting public transit frequency.`,
     hint: "⚠️ Trap Alert: Watch for the 20% reduction figure linked to car traffic, not business closures.\n🔄 Paraphrase Key: 'réduction de 20% de la circulation' equates to 'baisse de 20% du trafic'.\n📖 Structural Cue: Locate the pilot result data in paragraph 2."
   },
   {
@@ -238,7 +326,7 @@ const READING_TOPICS = [
     q: "Quelle est la recommandation majeure des comités de bioéthique concernant l'IA médicale ?",
     opt: ["La décision thérapeutique finale doit rester sous responsabilité humaine", "L'IA doit remplacer définitivement les radiologues", "Les données des patients peuvent être publiées librement", "Les examens d'imagerie doivent être supprimés"],
     ans: 0,
-    passEn: "AI AND MEDICAL DIAGNOSTICS IN CANADA\n\nBioethics committees emphasize that final treatment decisions must remain under human medical responsibility.",
+    passEn: `ARTIFICIAL INTELLIGENCE AND MEDICAL DIAGNOSTICS IN CANADA\n\nThe integration of deep learning algorithms into the Canadian hospital network is revolutionizing early radiological screening. By analyzing thousands of medical images in seconds, these AI tools effectively assist physicians in detecting microscopic anomalies.\n\nNevertheless, bioethics committees emphasize that the final treatment decision must strictly remain the sole responsibility of the human practitioner. Technology is designed as a powerful decision-support tool, not as a replacement for clinical expertise.\n\nFurthermore, protecting patient medical data confidentiality requires deploying high-security encryption protocols before any inter-hospital data sharing.`,
     hint: "⚠️ Trap Alert: Note the bioethics contrast marker 'Néanmoins' preserving human clinical authority.\n🔄 Paraphrase Key: 'demeurer sous la responsabilité exclusive du praticien humain' defines human control.\n📖 Structural Cue: Pay close attention to paragraph 2 bioethical guidelines."
   },
   {
@@ -247,7 +335,7 @@ const READING_TOPICS = [
     q: "Que stipule la réglementation sur la Responsabilité Élargie des Producteurs (REP) ?",
     opt: ["Les fabricants doivent financer la collecte et le recyclage de leurs produits", "Les consommateurs doivent payer une amende pour chaque téléphone jeté", "L'importation de matériel électronique est désormais interdite", "Toutes les batteries usagées doivent être incinérées sans tri"],
     ans: 0,
-    passEn: "CIRCULAR ECONOMY & ELECTRONIC WASTE RECYCLING\n\nEPR legislation requires electronics manufacturers to fund and organize end-of-life recycling for their devices.",
+    passEn: `CIRCULAR ECONOMY AND ELECTRONIC WASTE RECYCLING\n\nElectronic waste management represents a major environmental challenge in the digital age. Every year, millions of tons of used computers, phones, and batteries are discarded without proper treatment, causing the waste of precious metals like cobalt, lithium, and gold.\n\nFacing this reality, several Canadian provinces are adopting Extended Producer Responsibility (EPR) legislation. This regulation now requires electronics manufacturers to fund and organize the collection and safe recycling of their end-of-life products.\n\nThis approach fosters the rise of a true circular economy, creating local jobs specialized in the decontamination and reuse of electronic components.`,
     hint: "⚠️ Trap Alert: Note that EPR obligates manufacturers to fund recycling, not individual consumer fines.\n🔄 Paraphrase Key: 'oblige les fabricants... à financer la collecte' answers the REP requirement.\n📖 Structural Cue: Read the legislative mandate in paragraph 2."
   },
   {
@@ -256,7 +344,7 @@ const READING_TOPICS = [
     q: "Quel est l'impact recherché de l'immigration francophone hors Québec ?",
     opt: ["Renforcer le dynamisme économique et la vitalité culturelle des collectivités", "Obliger toutes les provinces à devenir exclusivement unilingues françaises", "Fermer les centres d'accueil communautaires régionaux", "Limiter l'accès aux écoles publiques d'expression française"],
     ans: 0,
-    passEn: "FRANCOPHONE IMMIGRATION OUTSIDE QUEBEC\n\nTargeted immigration enhances regional economic dynamism, school sustainability, and community vitality.",
+    passEn: `FRANCOPHONE IMMIGRATION OUTSIDE QUEBEC AND COMMUNITY VITALITY\n\nThe Canadian federal government is stepping up its efforts to meet recruitment targets for French-speaking immigrants settling in official language minority communities outside Quebec, particularly in Ontario, New Brunswick, and Manitoba.\n\nThe settlement of French-speaking newcomers contributes to regional economic dynamism, the sustainability of French-language schools, and the cultural enrichment of local communities. Personalized welcoming services facilitate their professional integration upon arrival.\n\nCommunity mentorship programs also enable immigrant families to rapidly build lasting social connections and secure suitable housing.`,
     hint: "⚠️ Trap Alert: Focus on positive community vitality and school sustainability goals.\n🔄 Paraphrase Key: 'contribue au dynamisme économique... et à l'enrichissement culturel' answers the core goal.\n📖 Structural Cue: Identify positive impact nouns in paragraph 2."
   },
   {
@@ -265,18 +353,18 @@ const READING_TOPICS = [
     q: "Quel principe fondamental caractérise la conception bioclimatique ?",
     opt: ["Exploiter l'orientation du soleil pour optimiser la chaleur passive", "Utiliser exclusivement de la climatisation électrique en continu", "Supprimer toutes les fenêtres des façades exposées au nord", "Consommer plus de mazout durant les périodes de grand froid"],
     ans: 0,
-    passEn: "ENERGY TRANSITION & BIOCLIMATIC ARCHITECTURE\n\nBioclimatic design optimizes building orientation to capture passive solar heat and reduce energy consumption.",
+    passEn: `ENERGY TRANSITION AND BIOCLIMATIC ARCHITECTURE\n\nThe construction of high-performance energy-efficient buildings is gradually becoming the architectural standard in urban renovation projects. Incorporating bio-sourced insulation materials, such as wood fiber or hemp, significantly reduces winter heating consumption.\n\nAdditionally, bioclimatic design harnesses the natural orientation of the sun to optimize natural lighting and passive solar heat. Dual-flow ventilation systems with heat recovery ensure continuous indoor air turnover without thermal loss.\n\nHomeowners benefit from incentive government financial grants to offset the initial upfront cost of green renovation work.`,
     hint: "⚠️ Trap Alert: Identify natural passive solar design vs heavy electric HVAC usage.\n🔄 Paraphrase Key: 'exploite l'orientation naturelle du soleil' matches solar heat optimization.\n📖 Structural Cue: Focus on technical definitions in paragraph 2."
   },
 
-  // C1 AUTONOMOUS (35-37)
+  // C1 AUTONOMOUS (21-22)
   {
     level: "C1",
-    text: `SOCIOLOGIE DU TRAVAIL — LA MUTATION DES MODÈLES ORGANISATIONNELS\n\nL'expérimentation à grande échelle de la semaine de travail de quatre jours dans le secteur tertiaire suscite un intérêt croissant auprès des chercheurs en gestion et des décideurs économiques. Loin de nuire au rendement des entreprises, ce modèle fondé sur la réduction du temps de travail sans baisse de salaire démontre une préservation, voire une amélioration de la productivité globale.\n\nSur le plan de la santé mentale des salariés, les données recueillies indiquent une diminution remarquable de 35 % des épisodes de surmenage professionnel et de syndrome d'épuisement (burnout). Les employés bénéficiant d'un équilibre renforcé entre vie privée et engagement professionnel affichent une fidélité accrue envers leur organisation.\n\nNéanmoins, la transposabilité de cette organisation aux secteurs industriels à feu continu ou aux services d'urgence médicale soulève des défis logistiques majeurs.`,
+    text: `SOCIOLOGIE DU TRAVAIL — LA MUTATION DES MODÈLES ORGANISATIONNELS\n\nL'expérimentation à grande échelle de la semaine de travail de quatre jours dans le secteur tertiaire suscite un intérêt croissant auprès des chercheurs en gestion et des décideurs économiques. Loin de nuire au rendement des entreprises, ce modèle fondé sur la réduction du temps de travail sans baisse de salaire démontre une préservation, voire une amélioration de la productivité globale.\n\nSur le plan de la santé mentale des salariés, les données recueillies indiquent une diminution remarquable de 35 % des épisodes de surmenage professionnel et de syndrome d'épuisement (burnout). Les employés bénéficiant d'un équilibre renforcé entre vie privée et engagement professionnel affichent une fidélité accrued envers leur organisation.\n\nNéanmoins, la transposabilité de cette organisation aux secteurs industriels à feu continu ou aux services d'urgence médicale soulève des défis logistiques majeurs.`,
     q: "Quel résultat marquant ressort de l'analyse sociologique de la semaine de 4 jours ?",
     opt: ["Une diminution de 35% du surmenage professionnel chez les salariés", "Une baisse inévitable de la productivité globale de l'entreprise", "Une augmentation généralisée du taux d'absentéisme", "L'obligation de baisser les salaires des employés"],
     ans: 0,
-    passEn: "WORKPLACE SOCIOLOGY — ORGANIZATIONAL MODEL MUTATION\n\n4-day workweek trials show sustained productivity alongside a 35% reduction in professional burnout.",
+    passEn: `WORKPLACE SOCIOLOGY — THE MUTATION OF ORGANIZATIONAL MODELS\n\nLarge-scale trials of the four-day workweek in the service sector are attracting growing interest from management researchers and economic decision-makers. Far from harming business performance, this model based on reducing working hours without salary cuts demonstrates a preservation, or even an improvement, of overall productivity.\n\nRegarding employee mental health, collected data indicates a remarkable 35% decrease in workplace overwork episodes and professional burnout syndrome. Employees benefiting from an enhanced work-life balance display increased loyalty toward their organization.\n\nNevertheless, applying this organizational model to continuous industrial sectors or emergency medical services presents major logistical challenges.`,
     hint: "⚠️ Trap Alert: Note the 35% burnout reduction figure, contrasting with false productivity loss claims.\n🔄 Paraphrase Key: 'diminution remarquable de 35% des épisodes de surmenage' matches 'diminution de 35% du surmenage'.\n📖 Structural Cue: Locate mental health survey results in paragraph 2."
   },
   {
@@ -285,18 +373,18 @@ const READING_TOPICS = [
     q: "Quel rôle écologique majeur remplissent les zones humides naturelles ?",
     opt: ["Réguler le cycle de l'eau en absorbant les crues et restituant l'humidité", "Accélérer l'assèchement définitif des terres agricoles", "Favoriser le ruissellement torrentiel vers les zones urbaines", "Remplacer l'eau douce par des réservoirs d'eau de mer"],
     ans: 0,
-    passEn: "TERRITORIAL PLANNING & WATER MANAGEMENT\n\nRestoring natural wetlands acts as ecological sponges, absorbing floodwaters and releasing moisture during droughts.",
+    passEn: `TERRITORIAL PLANNING AND WATER RESOURCE MANAGEMENT\n\nConcerted watershed management in the face of extreme rainfall hazards demands transcending traditional administrative boundaries in favor of integrated environmental governance. The intensifying summer drought episodes coupled with torrential runoff risks mandate a fundamental re-evaluation of urban and agricultural development plans.\n\nHydrology specialists advocate for the priority restoration of natural wetlands, which serve as regulating ecological sponges. These ecosystems absorb excess water during spring floods and gradually release moisture during low-flow periods.\n\nThis nature-based approach proves to be economically more sustainable than the perpetual construction of heavy civil engineering structures.`,
     hint: "⚠️ Trap Alert: Pay attention to the natural sponge concept (absorbing floods, releasing moisture).\n🔄 Paraphrase Key: 'éponges écologiques régulatrices... absorbent les surplus... restituent l'humidité' defines water regulation.\n📖 Structural Cue: Focus on hydrological function definitions in paragraph 2."
   },
 
-  // C2 MASTERY (38-39)
+  // C2 MASTERY (23)
   {
     level: "C2",
     text: `ÉPISTÉMOLOGIE ET NARRATIFS DE LA TRANSITION ÉCOLOGIQUE\n\nLa déconstruction des paradigmes extractivistes contemporains requiert un réexamen épistémologique profond de notre rapport à la matérialité du monde et aux communs terrestres. L'obsolescence théorique des modèles de croissance linéaire illimitée impose l'élaboration de nouvelles métriques de prospérité intégrant les limites planétaires infranchissables.\n\nDans cette perspective, la pensée complexe rejette les solutions technocratiques réductrices qui prétendent résoudre la crise systémique par un simple ajustement marginal des mécanismes de marché. Il s'agit d'opérer une mutation culturelle refondant les représentations collectives de l'abondance et du progrès.\n\nCette réorientation philosophique implique une redéfinition globale des responsabilités éthiques envers les générations futures et le vivant non humain.`,
     q: "Que préconise l'analyse épistémologique face à la crise systémique ?",
     opt: ["Une mutation culturelle refondant les représentations collectives du progrès", "La poursuite indéfinie des modèles de croissance linéaire illimitée", "L'abandon de toute réflexion éthique envers les générations futures", "Le recours exclusif à des ajustements marchands marginaux"],
     ans: 0,
-    passEn: "EPISTEMOLOGY & ECOLOGICAL TRANSITION NARRATIVES\n\nSystemic ecological crises demand a deep cultural shift reframing collective concepts of progress and planetary limits.",
+    passEn: `EPISTEMOLOGY AND ECOLOGICAL TRANSITION NARRATIVES\n\nThe deconstruction of contemporary extractivist paradigms requires a profound epistemological re-examination of our relationship to the materiality of the world and planetary commons. The theoretical obsolescence of unlimited linear growth models mandates developing new metrics of prosperity that incorporate insurmountable planetary boundaries.\n\nIn this perspective, complex thinking rejects simplistic technocratic solutions that claim to resolve the systemic crisis through minor market adjustments. The goal is to execute a cultural mutation reframing collective representations of abundance and progress.\n\nThis philosophical reorientation implies a global redefinition of ethical responsibilities toward future generations and non-human living beings.`,
     hint: "⚠️ Trap Alert: Reject technocratic market-only fixes in favor of deep epistemological cultural shift.\n🔄 Paraphrase Key: 'opérer une mutation culturelle refondant les représentations' answers the core recommendation.\n📖 Structural Cue: Analyze complex philosophical stance in paragraph 2."
   }
 ];
@@ -369,6 +457,8 @@ function generateReadingQuestions(count: number, prefix: string, seedOffset: num
 
     const { options, correctIndex, correctText } = shuffleOptions(t.opt, t.ans);
 
+    const specificHint = (t as any).hint || `Level ${t.level} Reading Guidance: Scan paragraph 1 and 2 for synonyms and key thematic terms. Eliminate distractor options containing extreme words like "toujours" or "jamais" unless explicitly in the passage.`;
+
     qList.push({
       id: `${prefix}-read-${i}`,
       questionNumber: i,
@@ -421,13 +511,13 @@ export const SAMPLE_TCF_PAPER_1: ExamPaper = {
         {
           id: "tcf1-w1",
           taskNumber: 1,
-          title: "Tâche 1 : Message court (Message to a Landlord)",
-          prompt: "Vous avez loué un appartement pour vos vacances mais le chauffage ne fonctionne pas. Écrivez un message au propriétaire (60 à 120 mots) pour expliquer la situation et demander une solution rapide.",
+          title: "Tâche 1 : Message de demande d'informations",
+          prompt: "Vous souhaitez obtenir des informations concernant la location d'un appartement au Québec. Rédigez un courriel au propriétaire (60 à 120 mots) pour demander les détails sur le loyer, les charges et la date de disponibilité.",
           wordCountMin: 60,
           wordCountMax: 120,
           timeLimitMins: 15,
-          guidedTips: ["Salutation formelle (Bonjour Monsieur/Madame)", "Expliquer l'absence de chauffage", "Demander une réparation urgente", "Formule de politesse finale"],
-          sampleResponse: "Bonjour Monsieur Dupont,\n\nJe vous écris car le chauffage de l'appartement ne fonctionne pas depuis ce matin. La température est très basse.\n\nPourriez-vous faire venir un réparateur au plus vite ?\n\nMerci d'avance.\n\nCordialement,\nJean Martin"
+          guidedTips: ["Salutation formelle (Monsieur/Madame)", "Formuler 3 questions précises sur le logement", "Formule de politesse formelle de fin"],
+          sampleResponse: "Monsieur le Propriétaire,\n\nJe vous écris afin d'obtenir des renseignements complémentaires concernant l'appartement de trois pièces actuellement proposé à la location. Intéressé par votre annonce, je souhaiterais obtenir des précisions avant d'envisager une visite.\n\nPourriez-vous m'indiquer le montant exact du loyer mensuel ainsi que la nature des charges incluses (chauffage, électricité, eau) ? De plus, j'aimerais connaître la date exacte à partir de laquelle le logement sera disponible.\n\nEn vous remerciant par avance pour votre attention et dans l'attente de votre réponse, je vous prie d'agréer mes salutations distinguées."
         },
         {
           id: "tcf1-w2",
@@ -534,7 +624,8 @@ export const SAMPLE_TCF_PAPER_2: ExamPaper = {
           wordCountMin: 60,
           wordCountMax: 120,
           timeLimitMins: 15,
-          guidedTips: ["Salutation courtoise", "Formuler 3 questions claires", "Remercier à la fin"]
+          guidedTips: ["Salutation courtoise", "Formuler 3 questions claires", "Remercier à la fin"],
+          sampleResponse: "Monsieur le Directeur,\n\nJe vous écris afin d'obtenir des renseignements complémentaires concernant l'atelier de cuisine québécoise prévu le mois prochain. Passionné par la gastronomie régionale, je souhaiterais m'y inscrire avec enthousiasme.\n\nPourriez-vous m'indiquer la grille tarifaire ainsi que les éventuels prérequis techniques ? De plus, j'aimerais savoir si le matériel culinaire est fourni sur place ou s'il convient d'apporter notre propre équipement.\n\nEn vous remerciant par avance pour votre attention et dans l'attente de votre réponse, je vous prie d'agréer mes salutations distinguées."
         },
         {
           id: "tcf2-w2",
@@ -544,7 +635,8 @@ export const SAMPLE_TCF_PAPER_2: ExamPaper = {
           wordCountMin: 120,
           wordCountMax: 150,
           timeLimitMins: 20,
-          guidedTips: ["Décrire l'ambiance", "Utiliser le passé composé", "Expliquer pourquoi vous recommandez cet événement"]
+          guidedTips: ["Décrire l'ambiance", "Utiliser le passé composé", "Expliquer pourquoi vous recommandez cet événement"],
+          sampleResponse: "Lors de mon dernier séjour au Québec, j'ai eu l'immense privilège de participer au Festival International de Jazz de Montréal. Dès mon arrivée sur la place des Festivals, j'ai été émerveillé par l'atmosphère festive et l'énergie vibrante des spectateurs réunis.\n\nPendant trois jours consécutifs, j'ai pu assister à des concerts en plein air mémorables et découvrir des artistes locaux pétris de talent. La diversité des styles musicaux et la convivialité des Québécois ont rendu cette expérience inoubliable.\n\nJe recommande vivement cet événement culturel à quiconque souhaite s'immerger dans l'âme musicale montréalaise. C'est une immersion festive sans égale que vous ne regretterez pas !"
         },
         {
           id: "tcf2-w3",
@@ -554,7 +646,8 @@ export const SAMPLE_TCF_PAPER_2: ExamPaper = {
           wordCountMin: 140,
           wordCountMax: 180,
           timeLimitMins: 25,
-          guidedTips: ["Présenter la problématique", "Développer 2 arguments solides", "Conclure avec une synthèse claire"]
+          guidedTips: ["Présenter la problématique", "Développer 2 arguments solides", "Conclure avec une synthèse claire"],
+          sampleResponse: "L'opportunité d'imposer l'apprentissage obligatoire des langues étrangères dès le niveau primaire suscite de vifs débats sociétaux.\n\nD'une part, les partisans soulignent à juste titre la plasticité cérébrale exceptionnelle des jeunes enfants, qui favorise une assimilation naturelle et intuitive des structures phonétiques. De surcroît, une maîtrise précoce constitue un atout indiscutable dans un monde professionnel globalisé.\n\nD'autre part, les détracteurs craignent qu'une surcharge cognitive n'entrave l'acquisition fondamentale de la langue maternelle et du calcul.\n\nEn somme, bien que ces réserves soient légitimes, je suis convaincu que l'apprentissage précoce des langues demeure un levier d'ouverture culturelle indispensable, à condition d'adapter la pédagogie au rythme de chaque élève."
         }
       ]
     },
@@ -636,7 +729,8 @@ export const SAMPLE_TEF_PAPER_1: ExamPaper = {
           wordCountMin: 80,
           wordCountMax: 120,
           timeLimitMins: 25,
-          guidedTips: ["Employer le passé composé et l'imparfait", "Décrire l'intervention des pompiers", "Conclure par la réouverture de la circulation"]
+          guidedTips: ["Employer le passé composé et l'imparfait", "Décrire l'intervention des pompiers", "Conclure par la réouverture de la circulation"],
+          sampleResponse: "Hier après-midi, un chat a bloqué la circulation du pont Jacques-Cartier pendant deux heures. L'animal effrayé s'était réfugié au sommet d'une structure métallique, refusant de descendre malgré les appels des automobilistes immobilisés.\n\nAvertis rapidement, les pompiers de Montréal et la patrouille policière sont arrivés sur les lieux afin d'établir un périmètre de sécurité. Un secouriste expérimenté a dû escalader la structure équipé d'une nacelle spéciale pour récupérer le félin sain et sauf.\n\nAprès cette opération spectaculaire saluée par les applaudissements des riverains, la circulation a pu reprendre progressivement en fin d'après-midi."
         },
         {
           id: "tef1-w2",
@@ -646,7 +740,8 @@ export const SAMPLE_TEF_PAPER_1: ExamPaper = {
           wordCountMin: 200,
           wordCountMax: 250,
           timeLimitMins: 35,
-          guidedTips: ["Salutation formelle (Monsieur le Maire)", "Exprimer l'inquiétude des habitants", "Présenter 2 arguments patrimoniaux et écologiques", "Formule de politesse formelle"]
+          guidedTips: ["Salutation formelle (Monsieur le Maire)", "Exprimer l'inquiétude des habitants", "Présenter 2 arguments patrimoniaux et écologiques", "Formule de politesse formelle"],
+          sampleResponse: "Monsieur le Maire,\n\nJe vous adresse cette lettre en tant que citoyen soucieux de l'avenir de notre ville afin de vous faire part de ma profonde inquiétude concernant le projet de démolition de la place Saint-Jean au profit d'un complexe commercial.\n\nD'une part, cette place constitue un fleuron incontestable de notre patrimoine architectural et historique. Elle représente un lieu de mémoire collective où les générations se croisent et tissent des liens sociaux essentiels à la vitalité de notre communauté.\n\nD'autre part, la destruction de cet espace vert au cœur du centre-ville accentuera les îlots de chaleur urbains et aggravera l'empreinte carbone municipale. À l'heure où la transition écologique exige la sauvegarde de la biodiversité urbaine, remplacer un havre de paix végétalisé par des structures bétonnées m'apparaît comme un choix à contre-courant des impératifs environnementaux actuels.\n\nEn somme, je vous prie de bien vouloir reconsidérer cette décision et d'envisager la réhabilitation de la place dans le respect de son identité d'origine.\n\nDans l'attente de votre prise en considération, je vous prie d'agréer, Monsieur le Maire, l'expression de ma haute considération."
         }
       ]
     },
@@ -721,7 +816,8 @@ export const SAMPLE_TEF_PAPER_2: ExamPaper = {
           prompt: "Rédigez la suite d'un fait divers à partir du début suivant (80 mots minimum) : 'Ce matin, l'ouverture d'un nouveau parc d'attractions a provoqué un embouteillage monstre sur l'autoroute 15...'",
           wordCountMin: 80,
           wordCountMax: 120,
-          timeLimitMins: 25
+          timeLimitMins: 25,
+          sampleResponse: "Ce matin, l'ouverture d'un nouveau parc d'attractions a provoqué un embouteillage monstre sur l'autoroute 15. Des milliers de familles impatientes ont afflué dès l'aube, saturant complètement les voies d'accès principales.\n\nFace à cette paralysie du réseau routier, la sûreté du Québec a dû déployer en urgence plusieurs unités de motards pour rediriger les usagers vers des itinéraires secondaires. Malgré la frustration initiale des conducteurs, aucun incident majeur n'a été déploré.\n\nLa direction du parc a rapidement présenté ses excuses et s'est engagée à renforcer l'organisation des parkings pour les jours à venir."
         },
         {
           id: "tef2-w2",
@@ -731,7 +827,8 @@ export const SAMPLE_TEF_PAPER_2: ExamPaper = {
           wordCountMin: 200,
           wordCountMax: 250,
           timeLimitMins: 35,
-          guidedTips: ["Salutation amicale", "Exprimer sa surprise tout en restant bienveillant", "Présenter 2 arguments environnementaux concrets", "Proposer des gestes simples pour commencer dès aujourd'hui"]
+          guidedTips: ["Salutation amicale", "Exprimer sa surprise tout en restant bienveillant", "Présenter 2 arguments environnementaux concrets", "Proposer des gestes simples pour commencer dès aujourd'hui"],
+          sampleResponse: "Cher Alexandre,\n\nJe me permets de t'écrire après notre discussion de la semaine dernière, car ton scepticisme concernant le tri sélectif m'a beaucoup fait réfléchir.\n\nEn premier lieu, saches que le recyclage des déchets n'est pas une simple contrainte administrative, mais un acte citoyen essentiel pour limiter le gaspillage des ressources naturelles. Lorsque nous jetons du plastique ou du papier dans les ordures ménagères, ces matériaux finissent enfouis ou incinérés, générant des gaz à effet de serre néfastes pour notre atmosphère.\n\nEn second lieu, adopter le tri au quotidien est aujourd'hui d'une simplicité enfantine. Il suffit d'installer deux bacs distincts dans sa cuisine. Par ce geste minime qui ne prend que quelques secondes par jour, tu participes activement à la réutilisation des matières premières et à la protection des écosystèmes.\n\nJe sais que tu es une personne responsable et attentive à ton environnement. Pourquoi ne pas essayer ensemble dès ce week-end ? Je serais ravi de t'aider à mettre en place ce système chez toi.\n\nAmicalement,\nThomas"
         }
       ]
     },
@@ -768,54 +865,264 @@ export const SAMPLE_TEF_PAPER_2: ExamPaper = {
 
 const TCF_WRITING_SUITE = [
   [
-    { title: "Tâche 1 : Message court (Problème de chauffage)", prompt: "Vous avez loué un appartement pour vos vacances mais le chauffage ne fonctionne pas. Écrivez un message au propriétaire (60 à 120 mots) pour expliquer la situation et demander une solution rapide.", min: 60, max: 120, time: 15 },
-    { title: "Tâche 2 : Compte-rendu (Récit de voyage au Canada)", prompt: "Racontez dans un journal de voyage une expérience marquante lors d'un séjour au Canada (120 à 150 mots). Décrivez le lieu, les activités faites et vos impressions.", min: 120, max: 150, time: 20 },
-    { title: "Tâche 3 : Essai argumentatif (Transports gratuits)", prompt: "Certaines villes envisagent de rendre les transports en commun entièrement gratuits. Êtes-vous pour ou contre cette mesure ? Exprimez votre point de vue dans un texte structuré (140 à 180 mots).", min: 140, max: 180, time: 25 }
+    {
+      title: "Tâche 1 : Message court (Problème de chauffage)",
+      prompt: "Vous avez loué un appartement pour vos vacances mais le chauffage ne fonctionne pas. Écrivez un message au propriétaire (60 à 120 mots) pour expliquer la situation et demander une solution rapide.",
+      min: 60,
+      max: 120,
+      time: 15,
+      sampleResponse: "Bonjour Monsieur le Propriétaire,\n\nJe vous écris afin de vous signaler un problème urgent concernant l'appartement loué pour cette semaine. Depuis ce matin, le système de chauffage est entièrement hors service et la température intérieure a chuté de façon préoccupante.\n\nPourriez-vous faire intervenir un technicien dans les plus brefs délais afin de rétablir le chauffage ? De plus, pourriez-vous m'indiquer si des appareils d'appoint sont disponibles en attendant la réparation ?\n\nDans l'attente de votre intervention rapide, je vous prie d'agréer, Monsieur, mes salutations distinguées."
+    },
+    {
+      title: "Tâche 2 : Compte-rendu (Récit de voyage au Canada)",
+      prompt: "Racontez dans un journal de voyage une expérience marquante lors d'un séjour au Canada (120 à 150 mots). Décrivez le lieu, les activités faites et vos impressions.",
+      min: 120,
+      max: 150,
+      time: 20,
+      sampleResponse: "Lors de mon récent séjour au Québec, j'ai vécu une expérience inoubliable en assistant au Carnaval d'hiver de Québec. Dès mon arrivée, la ville historique était magnifiquement recouverte d'un manteau de neige et illuminée de mille feux.\n\nJ'ai eu la chance d'admirer d'impressionnantes sculptures sur glace et d'assister à la traditionnelle course de canot sur le fleuve Saint-Laurent glacé. L'atmosphère était à la fois féerique et très chaleureuse, malgré des températures extrêmement froides.\n\nCette immersion culturelle exceptionnelle m'a permis d'enrichir mon vocabulaire français et d'échanger avec des habitants chaleureux. Je garde un souvenir impérissable de cette aventure nordique et je recommande vivement cette destination !"
+    },
+    {
+      title: "Tâche 3 : Essai argumentatif (Transports gratuits)",
+      prompt: "Certaines villes envisagent de rendre les transports en commun entièrement gratuits. Êtes-vous pour ou contre cette mesure ? Exprimez votre point de vue dans un texte structuré (140 à 180 mots).",
+      min: 140,
+      max: 180,
+      time: 25,
+      sampleResponse: "La gratuité totale des transports en commun fait aujourd'hui l'objet d'un vif débat au sein des municipalités modernes.\n\nD'un côté, les partisans de cette mesure soutiennent qu'elle favoriserait la transition écologique en incitant massivement les citoyens à délaisser leur véhicule individuel au profit du bus ou du métro, réduisant ainsi la pollution urbaine et l'empreinte carbone. De surcroît, elle constituerait une avancée sociale majeure pour les ménages à faibles revenus.\n\nD'un autre côté, certains économistes soulignent le coût financier considérable pour la collectivité. Sans recettes de billetterie, la rénovation et la modernisation des infrastructures risquerient d'être compromises.\n\nEn conclusion, bien que la gratuité soit séduisante sur le plan social, il me semble préférable de privilégier une tarification sociale adaptée aux revenus afin de garantir la pérennité du réseau."
+    }
   ],
   [
-    { title: "Tâche 1 : Demande d'informations (Atelier culinaire)", prompt: "Vous souhaitez vous inscrire à un atelier de cuisine régionale au Québec. Écrivez un courriel à l'organisateur (60 à 120 mots) pour demander les horaires, tarifs et prérequis.", min: 60, max: 120, time: 15 },
-    { title: "Tâche 2 : Article de témoignage (Festival culturel)", prompt: "Écrivez un article pour un blog de voyage (120 à 150 mots) racontant votre participation à un festival culturel local au Canada.", min: 120, max: 150, time: 20 },
-    { title: "Tâche 3 : Essai argumentatif (Langues à l'école)", prompt: "Pensez-vous que l'apprentissage des langues étrangères devrait être obligatoire dès l'école primaire ? Rédigez un texte argumenté (140 à 180 mots).", min: 140, max: 180, time: 25 }
+    {
+      title: "Tâche 1 : Demande d'informations (Atelier culinaire)",
+      prompt: "Vous souhaitez vous inscrire à un atelier de cuisine régionale au Québec. Écrivez un courriel à l'organisateur (60 à 120 mots) pour demander les horaires, tarifs et prérequis.",
+      min: 60,
+      max: 120,
+      time: 15,
+      sampleResponse: "Monsieur le Directeur,\n\nJe vous écris afin d'obtenir des renseignements complémentaires concernant l'atelier de cuisine québécoise prévu le mois prochain. Passionné par la gastronomie régionale, je souhaiterais m'y inscrire avec enthousiasme.\n\nPourriez-vous m'indiquer la grille tarifaire ainsi que les éventuels prérequis techniques ? De plus, j'aimerais savoir si le matériel culinaire est fourni sur place ou s'il convient d'apporter notre propre équipement.\n\nEn vous remerciant par avance pour votre attention et dans l'attente de votre réponse, je vous prie d'agréer mes salutations distinguées."
+    },
+    {
+      title: "Tâche 2 : Article de témoignage (Festival culturel)",
+      prompt: "Écrivez un article pour un blog de voyage (120 à 150 mots) racontant votre participation à un festival culturel local au Canada.",
+      min: 120,
+      max: 150,
+      time: 20,
+      sampleResponse: "Lors de mon dernier séjour au Québec, j'ai eu l'immense privilège de participer au Festival International de Jazz de Montréal. Dès mon arrivée sur la place des Festivals, j'ai été émerveillé par l'atmosphère festive et l'énergie vibrante des spectateurs réunis.\n\nPendant trois jours consécutifs, j'ai pu assister à des concerts en plein air mémorables et découvrir des artistes locaux pétris de talent. La diversité des styles musicaux et la convivialité des Québécois ont rendu cette expérience inoubliable.\n\nJe recommande vivement cet événement culturel à quiconque souhaite s'immerger dans l'âme musicale montréalaise. C'est une immersion festive sans égale que vous ne regretterez pas !"
+    },
+    {
+      title: "Tâche 3 : Essai argumentatif (Langues à l'école)",
+      prompt: "Pensez-vous que l'apprentissage des langues étrangères devrait être obligatoire dès l'école primaire ? Rédigez un texte argumenté (140 à 180 mots).",
+      min: 140,
+      max: 180,
+      time: 25,
+      sampleResponse: "L'opportunité d'imposer l'apprentissage obligatoire des langues étrangères dès le niveau primaire suscite de vifs débats sociétaux.\n\nD'une part, les partisans soulignent à juste titre la plasticité cérébrale exceptionnelle des jeunes enfants, qui favorise une assimilation naturelle et intuitive des structures phonétiques. De surcroît, une maîtrise précoce constitue un atout indiscutable dans un monde professionnel globalisé.\n\nD'autre part, les détracteurs craignent qu'une surcharge cognitive n'entrave l'acquisition fondamentale de la langue maternelle et du calcul.\n\nEn somme, bien que ces réserves soient légitimes, je suis convaincu que l'apprentissage précoce des langues demeure un levier d'ouverture culturelle indispensable, à condition d'adapter la pédagogie au rythme de chaque élève."
+    }
   ],
   [
-    { title: "Tâche 1 : Message formel (Inscription au club de sport)", prompt: "Vous désirez vous inscrire à un club de sport à Montréal. Écrivez un courriel à l'administration (60 à 120 mots) pour demander des précisions sur les abonnements.", min: 60, max: 120, time: 15 },
-    { title: "Tâche 2 : Compte-rendu (Action bénévole)", prompt: "Rédigez un court article pour le bulletin d'information de votre quartier (120 à 150 mots) résumant une journée d'action bénévole.", min: 120, max: 150, time: 20 },
-    { title: "Tâche 3 : Essai argumentatif (Télétravail à 100%)", prompt: "Le télétravail à 100% est-il bénéfique pour l'épanouissement des salariés et la cohésion d'équipe ? Donnez votre opinion (140 à 180 mots).", min: 140, max: 180, time: 25 }
+    {
+      title: "Tâche 1 : Message formel (Inscription au club de sport)",
+      prompt: "Vous désirez vous inscrire à un club de sport à Montréal. Écrivez un courriel à l'administration (60 à 120 mots) pour demander des précisions sur les abonnements.",
+      min: 60,
+      max: 120,
+      time: 15,
+      sampleResponse: "Madame, Monsieur,\n\nJe vous adresse ce courriel afin d'obtenir des informations précises concernant les modalités d'inscription à votre complexe sportif à Montréal pour la saison à venir.\n\nPourriez-vous m'indiquer la diversité des formules d'abonnement disponibles ainsi que les horaires d'ouverture des installations en semaine et le week-end ? Par ailleurs, j'aimerais savoir si une séance d'essai gratuite est envisageable avant tout engagement annuel.\n\nEn vous remerciant pour vos précisions, je vous prie de recevoir mes salutations respectueuses."
+    },
+    {
+      title: "Tâche 2 : Compte-rendu (Action bénévole)",
+      prompt: "Rédigez un court article pour le bulletin d'information de votre quartier (120 à 150 mots) résumant une journée d'action bénévole.",
+      min: 120,
+      max: 150,
+      time: 20,
+      sampleResponse: "Samedi dernier, notre quartier a été le théâtre d'une magnifique journée de solidarité consacrée au nettoyage des berges du parc local. Plus de cinquante citoyens de tous âges se sont rassemblés dès le matin munis de gants et de sacs écologiques.\n\nGrâce à l'effort collectif et à une organisation impeccable, nous avons réussi à collecter plus de deux cents kilos de déchets plastiques et recyclables. Cette journée s'est clôturée autour d'un repas partagé convivial plein d'échanges chaleureux.\n\nCette initiative inspirante prouve que l'engagement citoyen local peut transformer positivement notre environnement. Une expérience enrichissante à renouveler sans hésiter !"
+    },
+    {
+      title: "Tâche 3 : Essai argumentatif (Télétravail à 100%)",
+      prompt: "Le télétravail à 100% est-il bénéfique pour l'épanouissement des salariés et la cohésion d'équipe ? Donnez votre opinion (140 à 180 mots).",
+      min: 140,
+      max: 180,
+      time: 25,
+      sampleResponse: "La généralisation du télétravail à temps plein transforme en profondeur l'organisation contemporaine du monde du travail.\n\nD'un côté, les avantages pour les employés sont indéniables : élimination des temps de transport stressants, meilleure gestion de l'équilibre entre vie privée et professionnelle, et autonomie accrue dans l'exécution des tâches quotidiennes.\n\nCependant, un isolement professionnel prolongé risque d'altérer la cohésion d'équipe et d'affaiblir le sentiment d'appartenance à l'entreprise. En outre, la frontière entre sphère personnelle et obligations professionnelles devient parfois perméable.\n\nEn conclusion, bien que le travail à distance offre une flexibilité appréciable, le modèle hybride associant présentiel et distanciel me paraît être l'équation optimale pour préserver le bien-être individuel et la dynamique collective."
+    }
   ],
   [
-    { title: "Tâche 1 : Courriel de réclamation (Achat en ligne défectueux)", prompt: "Vous avez commandé du matériel informatique mais vous avez reçu un article défectueux. Écrivez au service client (60 à 120 mots) pour réclamer un échange.", min: 60, max: 120, time: 15 },
-    { title: "Tâche 2 : Récit personnel (Changement de carrière)", prompt: "Dans une lettre à un ami collègue (120 à 150 mots), expliquez les raisons qui vous ont poussé à changer de domaine professionnel.", min: 120, max: 150, time: 20 },
-    { title: "Tâche 3 : Essai argumentatif (Interdiction des véhicules à essence)", prompt: "Les gouvernements devraient-ils interdire la vente de véhicules thermiques neufs d'ici 2035 ? Présentez votre argumentation (140 à 180 mots).", min: 140, max: 180, time: 25 }
+    {
+      title: "Tâche 1 : Courriel de réclamation (Achat en ligne défectueux)",
+      prompt: "Vous avez commandé du matériel informatique mais vous avez reçu un article défectueux. Écrivez au service client (60 à 120 mots) pour réclamer un échange.",
+      min: 60,
+      max: 120,
+      time: 15,
+      sampleResponse: "Monsieur le Responsable du Service Client,\n\nJe vous écris suite à la réception de ma commande N°84920 contenant un ordinateur portable. À ma grande surprise, l'écran présente un défaut d'affichage majeur dès l'allumage.\n\nLe matériel étant sous garantie, je sollicite par la présente un échange standard ou le remboursement intégral de mon achat. Pourriez-vous me transmettre la procédure de retour ainsi que le bon d'expédition prépayé ?\n\nDans l'attente d'une prise en charge rapide de ma réclamation, veuillez agréer mes salutations distinguées."
+    },
+    {
+      title: "Tâche 2 : Récit personnel (Changement de carrière)",
+      prompt: "Dans une lettre à un ami collègue (120 à 150 mots), expliquez les raisons qui vous ont poussé à changer de domaine professionnel.",
+      min: 120,
+      max: 150,
+      time: 20,
+      sampleResponse: "Cher Julien,\n\nJe prends enfin le temps de t'écrire pour partager avec toi une grande nouvelle : j'ai officiellement décidé de réorienter ma carrière professionnelle vers les éco-technologies.\n\nAprès dix années stimulantes dans la finance, je ressentais le besoin fondamental de donner davantage de sens à mon quotidien et de contribuer activement à des projets durables. J'ai donc entrepris une formation intensive de six mois en gestion de projets environnementaux.\n\nBien que ce changement exige de sortir de ma zone de confort, je me sens immensément motivé par ce nouveau défi. J'espère que nous pourrons nous voir très vite pour en discuter autour d'un café !\n\nAmicalement,\nMarc"
+    },
+    {
+      title: "Tâche 3 : Essai argumentatif (Interdiction des véhicules à essence)",
+      prompt: "Les gouvernements devraient-ils interdire la vente de véhicules thermiques neufs d'ici 2035 ? Présentez votre argumentation (140 à 180 mots).",
+      min: 140,
+      max: 180,
+      time: 25,
+      sampleResponse: "L'interdiction projetée des véhicules thermiques neufs d'ici 2035 suscite d'intenses débats entre impératifs écologiques et réalités économiques.\n\nD'une part, les partisans de cette mesure rappellent que le secteur des transports est le principal émetteur de gaz à effet de serre. Interdire les moteurs à essence constitue donc une étape décisive pour lutter contre le réchauffement climatique et assainir la qualité de l'air urbain.\n\nD'autre part, les opposants mettent en avant les coûts élevés des véhicules électriques et l'insuffisance actuelle des infrastructures de recharge. De plus, les répercussions sociales sur l'industrie automobile et l'emploi sont préoccupantes.\n\nEn conclusion, il est incontestable que la décarbonation des transports est nécessaire, mais sa réussite dépendra d'un accompagnement financier équitable des citoyens et d'un investissement massif dans les réseaux de recharge."
+    }
   ],
   [
-    { title: "Tâche 1 : Demande de renseignements (Bibliothèque municipale)", prompt: "Écrivez à la bibliothèque municipale de votre ville (60 à 120 mots) pour vous renseigner sur les horaires et le prêt numérique.", min: 60, max: 120, time: 15 },
-    { title: "Tâche 2 : Témoignage (Intégration au Québec)", prompt: "Racontez vos premiers mois d'installation au Canada dans un billet de blog (120 à 150 mots) en donnant des conseils pratiques aux nouveaux arrivants.", min: 120, max: 150, time: 20 },
-    { title: "Tâche 3 : Essai argumentatif (Intelligence Artificielle et Emploi)", prompt: "L'intelligence artificielle représente-t-elle une menace ou une opportunité majeure pour le marché du travail de demain ? (140 à 180 mots).", min: 140, max: 180, time: 25 }
+    {
+      title: "Tâche 1 : Demande de renseignements (Bibliothèque municipale)",
+      prompt: "Écrivez à la bibliothèque municipale de votre ville (60 à 120 mots) pour vous renseigner sur les horaires et le prêt numérique.",
+      min: 60,
+      max: 120,
+      time: 15,
+      sampleResponse: "Madame la Bibliothécaire,\n\nJe vous adresse ce courriel afin de me renseigner sur les conditions d'adhésion et les services numériques offerts par la bibliothèque municipale.\n\nPourriez-vous me préciser les documents justificatifs requis pour l'établissement de la carte d'usager ainsi que le tarif annuel pour les résidents ? De plus, j'aimerais savoir si votre catalogue de livres numériques est accessible à distance depuis une tablette personnelle.\n\nEn vous remerciant pour vos informations, je vous prie d'agréer l'expression de mes salutations distinguées."
+    },
+    {
+      title: "Tâche 2 : Témoignage (Intégration au Québec)",
+      prompt: "Racontez vos premiers mois d'installation au Canada dans un billet de blog (120 à 150 mots) en donnant des conseils pratiques aux nouveaux arrivants.",
+      min: 120,
+      max: 150,
+      time: 20,
+      sampleResponse: "Installé à Montréal depuis maintenant six mois, je souhaite partager mon expérience d'intégration avec les futurs arrivants. Le choc culturel initial s'est rapidement dissipé grâce à l'accueil d'une bienveillance remarquable réservé par les Québécois.\n\nDès les premières semaines, je me suis inscrit à des ateliers de réseautage et j'ai exploré les différents quartiers de la ville. Bien que les procédures administratives exigent de la patience et de la rigueur, l'environnement social et professionnel canadien offre des perspectives d'épanouissement exceptionnelles.\n\nUn conseil essentiel : n'hésitez pas à aller au-devant des gens et à participer aux événements communautaires locaux. C'est la clé d'une intégration réussie et épanouissante !"
+    },
+    {
+      title: "Tâche 3 : Essai argumentatif (Intelligence Artificielle et Emploi)",
+      prompt: "L'intelligence artificielle représente-t-elle une menace ou une opportunité majeure pour le marché du travail de demain ? (140 à 180 mots).",
+      min: 140,
+      max: 180,
+      time: 25,
+      sampleResponse: "L'essor fulgurant de l'intelligence artificielle suscite de profondes inquiétudes quant à l'avenir du marché de l'emploi mondial.\n\nD'un côté, les détracteurs soulignent le risque d'automatisation massive qui pourrait détruire de nombreux emplois administratifs et techniques, créant une précarité accrue pour les travailleurs non qualifiés.\n\nD'un autre côté, les défenseurs de l'IA rappellent que chaque révolution technologique génère de nouveaux métiers et libère les humains des tâches répétitives au profit d'activités créatives et stratégiques. De surcroît, l'IA constitue un multiplicateur de productivité sans précédent.\n\nEn somme, l'intelligence artificielle ne doit pas être crainte mais encadrée par des politiques de formation continue ambitieuses pour accompagner la reconversion des professionnels."
+    }
   ],
   [
-    { title: "Tâche 1 : Message d'absence (Congé exceptionnel)", prompt: "Écrivez un message à votre responsable hiérarchique (60 à 120 mots) pour demander une autorisation d'absence exceptionnelle de 3 jours.", min: 60, max: 120, time: 15 },
-    { title: "Tâche 2 : Critique culturelle (Exposition d'art)", prompt: "Rédigez une critique d'une exposition culturelle ou d'un musée récent auquel vous avez assisté (120 à 150 mots).", min: 120, max: 150, time: 20 },
-    { title: "Tâche 3 : Essai argumentatif (Écrans et réseaux sociaux)", prompt: "Faut-il réglementer strictement l'utilisation des téléphones portables et des réseaux sociaux chez les jeunes adolescents ? (140 à 180 mots).", min: 140, max: 180, time: 25 }
+    {
+      title: "Tâche 1 : Message d'absence (Congé exceptionnel)",
+      prompt: "Écrivez un message à votre responsable hiérarchique (60 à 120 mots) pour demander une autorisation d'absence exceptionnelle de 3 jours.",
+      min: 60,
+      max: 120,
+      time: 15,
+      sampleResponse: "Bonjour Monsieur le Directeur,\n\nJe vous adresse ce courriel afin de solliciter une autorisation d'absence exceptionnelle de trois jours, du 12 au 14 du mois prochain, pour des raisons familiales impérieuses.\n\nJ'ai pris soin d'avancer mes dossiers en cours et de planifier l'intérim de mes projets avec mon collègue Thomas afin d'éviter tout retard de livraison. Je resterai joignable par courriel en cas d'urgence absolue.\n\nEn vous remerciant par avance pour votre compréhension, je vous prie d'agréer mes salutations respectueuses."
+    },
+    {
+      title: "Tâche 2 : Critique culturelle (Exposition d'art)",
+      prompt: "Rédigez une critique d'une exposition culturelle ou d'un musée récent auquel vous avez assisté (120 à 150 mots).",
+      min: 120,
+      max: 150,
+      time: 20,
+      sampleResponse: "Week-end dernier, j'ai visité la nouvelle exposition immersive consacrée à l'impressionnisme au Musée des Beaux-Arts. Dès l'entrée, les projections numériques géantes accompagnées d'une symphonie captivante transportent immédiatement le visiteur au cœur des chefs-d'œuvre.\n\nLa scénographie audacieuse et l'éclairage méticuleusement étudié mettent en valeur la texture et les nuances chromatiques de chaque toile. Ce parcours sensoriel original offre un regard totalement renouvelé sur des œuvres classiques.\n\nUne visite incontournable que je recommande chaleureusement à tous les passionnés d'art et d'histoire !"
+    },
+    {
+      title: "Tâche 3 : Essai argumentatif (Écrans et réseaux sociaux)",
+      prompt: "Faut-il réglementer strictement l'utilisation des téléphones portables et des réseaux sociaux chez les jeunes adolescents ? (140 à 180 mots).",
+      min: 140,
+      max: 180,
+      time: 25,
+      sampleResponse: "L'omniprésence des smartphones et des réseaux sociaux dans la vie des adolescents soulève des interrogations légitimes quant aux risques d'addiction.\n\nD'un côté, les partisans d'une réglementation stricte mettent en garde contre les ravages du cyberharcèlement, la détérioration du sommeil et la baisse de la concentration scolaire provoquée par la surconsommation d'écrans.\n\nD'un autre côté, interdire totalement ces technologies semble illusoire à l'ère numérique. Les réseaux sociaux constituent également des espaces d'expression créative et de socialisation précieuses pour la jeunesse.\n\nEn conclusion, plus qu'une interdiction autoritaire, il convient de privilégier une éducation aux médias numériques dès le collège pour responsabiliser les jeunes."
+    }
   ],
   [
-    { title: "Tâche 1 : Invitation (Fête des voisins)", prompt: "Invitez vos voisins de quartier (60 à 120 mots) à une fête communautaire que vous organisez le mois prochain.", min: 60, max: 120, time: 15 },
-    { title: "Tâche 2 : Récit d'initiative (Jardin collectif)", prompt: "Décrivez la création d'un jardin collectif dans votre quartier (120 à 150 mots) et son impact sur la vie de quartier.", min: 120, max: 150, time: 20 },
-    { title: "Tâche 3 : Essai argumentatif (Semaine de 4 jours)", prompt: "La semaine de travail de 4 jours devrait-elle être généralisée à l'ensemble des entreprises ? Argumentez votre position (140 à 180 mots).", min: 140, max: 180, time: 25 }
+    {
+      title: "Tâche 1 : Invitation (Fête des voisins)",
+      prompt: "Invitez vos voisins de quartier (60 à 120 mots) à une fête communautaire que vous organisez le mois prochain.",
+      min: 60,
+      max: 120,
+      time: 15,
+      sampleResponse: "Chers Voisins,\n\nAfin de renforcer les liens de convivialité au sein de notre résidence, j'ai le plaisir de vous inviter à notre traditionnelle fête des voisins qui se tiendra le samedi 15 du mois prochain à partir de 18 heures dans le jardin collectif.\n\nChacun est invité à apporter une spécialité culinaire ou une boisson à partager. Ce sera l'occasion idéale d'accueillir les nouveaux résidents et d'échanger un moment chaleureux.\n\nMerci de bien vouloir me confirmer votre présence avant le 10 afin d'organiser au mieux cet événement !"
+    },
+    {
+      title: "Tâche 2 : Récit d'initiative (Jardin collectif)",
+      prompt: "Décrivez la création d'un jardin collectif dans votre quartier (120 à 150 mots) et son impact sur la vie de quartier.",
+      min: 120,
+      max: 150,
+      time: 20,
+      sampleResponse: "Au printemps dernier, les résidents de notre quartier se sont mobilisés pour transformer une friche abandonnée en un jardin potager communautaire verdoyant. Grâce au soutien de la mairie et au travail enthousiaste de bénévole de tous âges, nous avons aménagé des bacs de culture écologiques.\n\nAujourd'hui, ce jardin est devenu un lieu de rencontre intergénérationnel dynamique où voisins échangent conseils de jardinage et légumes frais dans une ambiance conviviale.\n\nUne réussite collective remarquable qui a revitalisé notre quartier et renforcé le sentiment d'appartenance citoyenne !"
+    },
+    {
+      title: "Tâche 3 : Essai argumentatif (Semaine de 4 jours)",
+      prompt: "La semaine de travail de 4 jours devrait-elle être généralisée à l'ensemble des entreprises ? Argumentez votre position (140 à 180 mots).",
+      min: 140,
+      max: 180,
+      time: 25,
+      sampleResponse: "Le passage à la semaine de travail de quatre jours sans réduction de salaire s'impose comme une expérimentation sociale majeure.\n\nD'un côté, les entreprises ayant testé ce modèle observent une réduction spectaculaire du burn-out, une baisse de l'absentéisme et un regain de motivation des salariés, ce qui compense largement le jour chômé.\n\nCependant, certains secteurs d'activité comme la santé, les transports ou le commerce de détail peineraient à financer la réorganisation des plannings et les embauches compensatoires nécessaires.\n\nEn conclusion, bien que la semaine de quatre jours offre un équilibre de vie remarquable, sa mise en œuvre doit rester flexible et adaptée aux spécificités de chaque secteur d'activité."
+    }
   ],
   [
-    { title: "Tâche 1 : Demande de réservation (Chalet à la montagne)", prompt: "Écrivez un courriel à un propriétaire de chalet (60 à 120 mots) pour réserver un séjour en famille pendant les vacances d'hiver.", min: 60, max: 120, time: 15 },
-    { title: "Tâche 2 : Témoignage (Formation professionnelle)", prompt: "Racontez une formation continue récente que vous avez suivie (120 à 150 mots) et expliquez ses apports concrets.", min: 120, max: 150, time: 20 },
-    { title: "Tâche 3 : Essai argumentatif (Consommation de produits locaux)", prompt: "Acheter exclusivement des produits alimentaires locaux et de saison est-il un objectif réaliste pour tous les ménages ? (140 à 180 mots).", min: 140, max: 180, time: 25 }
+    {
+      title: "Tâche 1 : Demande de réservation (Chalet à la montagne)",
+      prompt: "Écrivez un courriel à un propriétaire de chalet (60 à 120 mots) pour réserver un séjour en famille pendant les vacances d'hiver.",
+      min: 60,
+      max: 120,
+      time: 15,
+      sampleResponse: "Bonjour Monsieur,\n\nJe vous adresse ce courriel afin de me renseigner sur la disponibilité de votre chalet à Mont-Tremblant pour la semaine du 10 au 17 février pour une famille de cinq personnes.\n\nPourriez-vous me confirmer le tarif total de la location ainsi que le montant du dépôt de garantie ? De plus, j'aimerais savoir si le chalet dispose d'un espace de rangement sécurisé pour les équipements de ski.\n\nDans l'attente de vos précisions, je vous prie d'agréer mes salutations distinguées."
+    },
+    {
+      title: "Tâche 2 : Témoignage (Formation professionnelle)",
+      prompt: "Racontez une formation continue récente que vous avez suivie (120 à 150 mots) et expliquez ses apports concrets.",
+      min: 120,
+      max: 150,
+      time: 20,
+      sampleResponse: "J'ai récemment suivi un stage de formation intensive consacrée au marketing numérique et aux stratégies de médias sociaux. Durant deux semaines stimulantes, des experts du secteur nous ont initiés aux derniers outils d'analyse de données et d'optimisation de campagnes.\n\nGrâce aux cas pratiques traités en équipe, j'ai pu acquérir des compétences directement applicables dans mes fonctions quotidiennes, ce qui m'a permis d'augmenter la visibilité en ligne de mon entreprise de 30%.\n\nUne expérience d'apprentissage extrêmement valorisante que je recommande à tout professionnel désireux de faire évoluer sa carrière !"
+    },
+    {
+      title: "Tâche 3 : Essai argumentatif (Consommation de produits locaux)",
+      prompt: "Acheter exclusivement des produits alimentaires locaux et de saison est-il un objectif réaliste pour tous les ménages ? (140 à 180 mots).",
+      min: 140,
+      max: 180,
+      time: 25,
+      sampleResponse: "La promotion du locavorisme, prônant la consommation exclusive d'aliments produits localement, gagne une grande popularité face aux défis écologiques actuels.\n\nD'une part, privilegier les circuits courts permet de soutenir l'économie rurale régionale et de réduire considérablement l'empreinte carbone liée au transport des marchandises.\n\nD'autre part, exigez le 100% local se heurte à des contraintes financières pour les ménages à budget modeste, car les produits d'agriculture locale sont souvent plus chers que les produits importés en masse. De plus, la diversité alimentaire hivernale reste limitée sous certains climats nordiques.\n\nEn somme, si la consommation locale est un idéal vertueux, elle doit s'inscrire dans une démarche progressive sans devenir une contrainte punitive pour les ménages."
+    }
   ],
   [
-    { title: "Tâche 1 : Remerciement formel (Fin de stage)", prompt: "Rédigez un courriel de remerciement à votre maître de stage (60 à 120 mots) à la fin de votre période en entreprise.", min: 60, max: 120, time: 15 },
-    { title: "Tâche 2 : Récit d'événement (Marathon de Montréal)", prompt: "Décrivez votre participation ou votre soutien lors d'un événement sportif populaire (120 à 150 mots).", min: 120, max: 150, time: 20 },
-    { title: "Tâche 3 : Essai argumentatif (Quotas touristiques)", prompt: "Faut-il imposer des quotas stricts d'accès à certains sites naturels et patrimoniaux pour protéger la planète ? (140 à 180 mots).", min: 140, max: 180, time: 25 }
+    {
+      title: "Tâche 1 : Remerciement formel (Fin de stage)",
+      prompt: "Rédigez un courriel de remerciement à votre maître de stage (60 à 120 mots) à la fin de votre période en entreprise.",
+      min: 60,
+      max: 120,
+      time: 15,
+      sampleResponse: "Monsieur le Directeur,\n\nAlors que mon stage au sein de votre entreprise touche à sa fin, je tiens à vous exprimer ma sincère gratitude pour l'accueil chaleureux et la confiance que vous m'avez accordés tout au long de ces trois mois.\n\nCette expérience professionnelle m'a permis d'approfondir mes connaissances pratiques et de développer des compétences solides en gestion de projets. Je remercie également toute l'équipe pour sa disponibilité et ses précieux conseils.\n\nEn vous souhaitant une excellente continuation, je vous prie d'agréer l'expression de mes salutations distinguées."
+    },
+    {
+      title: "Tâche 2 : Récit d'événement (Marathon de Montréal)",
+      prompt: "Décrivez votre participation ou votre soutien lors d'un événement sportif populaire (120 à 150 mots).",
+      min: 120,
+      max: 150,
+      time: 20,
+      sampleResponse: "Dimanche dernier, j'ai participé pour la première fois au Marathon de Montréal aux côtés de milliers de coureurs venus du monde entier. Le parcours sillonnait les plus beaux quartiers de la ville sous les encouragements enthousiastes d'une foule nombreuse.\n\nBien que la deuxième moitié de la course ait exigé un effort physique et mental intense, l'énergie collective et les orchestres disposés le long du trajet m'ont porté jusqu'à la ligne d'arrivée.\n\nFranchir la ligne d'arrivée après 42 kilomètres de course a été un moment d'intense fierté et une aventure humaine gravée à jamais dans ma mémoire !"
+    },
+    {
+      title: "Tâche 3 : Essai argumentatif (Quotas touristiques)",
+      prompt: "Faut-il imposer des quotas stricts d'accès à certains sites naturels et patrimoniaux pour protéger la planète ? (140 à 180 mots).",
+      min: 140,
+      max: 180,
+      time: 25,
+      sampleResponse: "Face aux ravages du surtourisme, l'instauration de quotas d'accès aux sites naturels et monuments historiques divise l'opinion publique.\n\nD'un côté, les défenseurs de l'environnement soulignent que la surfréquentation touristique dégrade irréversiblement les écosystèmes fragiles, érode le patrimoine et détruit la qualité de vie des habitants locaux. Restreindre le nombre de visiteurs est donc l'unique moyen d'assurer la préservation de ces trésors pour les générations futures.\n\nD'un autre côté, les acteurs du secteur économique craignent des pertes financières massives et dénoncent une mesure discriminatoire qui réserverait l'accès à la culture à une minorité privilégiée.\n\nEn conclusion, la régulation des flux touristiques est devenue inévitable, mais elle doit s'accompagner d'une sensibilisation au tourisme responsable."
+    }
   ],
   [
-    { title: "Tâche 1 : Proposition de partenariat (Association locale)", prompt: "Proposez un partenariat commercial à un commerce de quartier au nom de votre association étudiante (60 à 120 mots).", min: 60, max: 120, time: 15 },
-    { title: "Tâche 2 : Résumé de conférence (Développement durable)", prompt: "Rédigez le compte-rendu d'une conférence publique sur la transition écologique (120 à 150 mots).", min: 120, max: 150, time: 20 },
-    { title: "Tâche 3 : Essai argumentatif (Université gratuite)", prompt: "L'accès aux études supérieures devrait-il être entièrement gratuit et financé par l'État pour tous les étudiants ? (140 à 180 mots).", min: 140, max: 180, time: 25 }
+    {
+      title: "Tâche 1 : Proposition de partenariat (Association locale)",
+      prompt: "Proposez un partenariat commercial à un commerce de quartier au nom de votre association étudiante (60 à 120 mots).",
+      min: 60,
+      max: 120,
+      time: 15,
+      sampleResponse: "Monsieur le Gérant,\n\nAu nom de l'association étudiante de l'Université de Montréal, je vous écris afin de vous proposer un partenariat commercial à l'occasion de notre rentrée universitaire.\n\nNous souhaiterions offrir à nos 500 membres des réductions exclusives dans votre établissement en échange d'une visibilité prioritaire sur nos réseaux sociaux et nos supports de communication.\n\nSeriez-vous disponible la semaine prochaine pour une courte rencontre afin d'échanger sur cette opportunité mutually bénéfique ?\n\nDans l'attente de votre réponse, veuillez agréer mes salutations distinguées."
+    },
+    {
+      title: "Tâche 2 : Résumé de conférence (Développement durable)",
+      prompt: "Rédigez le compte-rendu d'une conférence publique sur la transition écologique (120 à 150 mots).",
+      min: 120,
+      max: 150,
+      time: 20,
+      sampleResponse: "Hier soir, l'Hôtel de Ville accueillait une conférence captivante consacrée aux stratégies de transition écologique dans les grandes métropoles. Trois experts renommés ont présenté des solutions innovantes axées sur la rénovation thermique des bâtiments et la mobilité douce.\n\nLes intervenants ont insisté sur l'urgence d'une action concertée entre citoyens, entreprises et collectivités territoriales pour atteindre la neutralité carbone d'ici 2050.\n\nCette présentation claire et inspirante s'est conclue par un débat passionnant avec le public, démontrant une prise de conscience collective prometteuse pour notre avenir urbain !"
+    },
+    {
+      title: "Tâche 3 : Essai argumentatif (Université gratuite)",
+      prompt: "L'accès aux études supérieures devrait-il être entièrement gratuit et financé par l'État pour tous les étudiants ? (140 à 180 mots).",
+      min: 140,
+      max: 180,
+      time: 25,
+      sampleResponse: "Le débat sur la gratuité totale de l'enseignement supérieur ravive les discussions autour de l'égalité des chances et du financement public.\n\nD'une part, garantir la gratuité universitaire permettrait d'éliminer les barrières financières qui freinent l'accès des jeunes issus de milieux défavorisés aux diplômes du supérieur, favorisant ainsi une méritocratie réelle et la mobilité sociale.\n\nD'autre part, la gratuité universelle représenterait un coût budgétaire colossal pour l'État, risquant de dégrader la qualité des infrastructures et du corps professoral sans financement privé complémentaire.\n\nEn conclusion, l'accès à l'université doit être garanti à tous, mais une gratuité ciblée sous forme de bourses sociales élevées me semble plus équitable qu'une gratuité aveugle bénéficiant également aux ménages aisés."
+    }
   ]
 ];
 
@@ -878,7 +1185,8 @@ export function getExamRegistry(): ExamPaper[] {
             wordCountMin: wt.min,
             wordCountMax: wt.max,
             timeLimitMins: wt.time,
-            guidedTips: ["Introduction claire", "Présenter 2 arguments développés", "Conclusion synthétique avec prise de position"]
+            guidedTips: ["Introduction claire", "Présenter 2 arguments développés", "Conclusion synthétique avec prise de position"],
+            sampleResponse: wt.sampleResponse
           }))
         },
         {
