@@ -456,31 +456,31 @@ export function AuthenticCBTExamPage() {
         const data = json.data;
         const totalScoreOutOf20 = typeof data.scoreOutOf20 === 'number' ? data.scoreOutOf20 : (typeof data.score === 'number' ? Math.round((data.score / 100) * 20) : 0);
 
-        let nclcGrade = data.nclcGrade || "NCLC 7 (B2 Benchmark Target)";
-        let expressEntryPoints = data.expressEntryPoints ?? 17;
+        let nclcGrade = "NCLC 1-2 (Below A1 / Beginner)";
+        let expressEntryPoints = 0;
 
-        if (totalScoreOutOf20 >= 19 || data.score >= 95) {
+        if (totalScoreOutOf20 >= 19) {
           nclcGrade = "NCLC 10 (C2 Mastery)";
           expressEntryPoints = 34;
-        } else if (totalScoreOutOf20 >= 17 || data.score >= 85) {
+        } else if (totalScoreOutOf20 >= 17) {
           nclcGrade = "NCLC 9 (C1 Advanced)";
           expressEntryPoints = 31;
-        } else if (totalScoreOutOf20 >= 14 || data.score >= 70) {
+        } else if (totalScoreOutOf20 >= 14) {
           nclcGrade = "NCLC 8 (B2 Upper)";
           expressEntryPoints = 23;
-        } else if (totalScoreOutOf20 >= 12 || data.score >= 60) {
+        } else if (totalScoreOutOf20 >= 12) {
           nclcGrade = "NCLC 7 (B2 Benchmark Target)";
           expressEntryPoints = 17;
-        } else if (totalScoreOutOf20 >= 10 || data.score >= 50) {
+        } else if (totalScoreOutOf20 >= 10) {
           nclcGrade = "NCLC 6 (B1 Intermediate)";
           expressEntryPoints = 12;
-        } else if (totalScoreOutOf20 >= 8 || data.score >= 40) {
+        } else if (totalScoreOutOf20 >= 8) {
           nclcGrade = "NCLC 5 (B1 Threshold)";
           expressEntryPoints = 6;
-        } else if (totalScoreOutOf20 >= 5 || data.score >= 25) {
+        } else if (totalScoreOutOf20 >= 5) {
           nclcGrade = "NCLC 4 (A2 Elementary)";
           expressEntryPoints = 0;
-        } else if (totalScoreOutOf20 >= 3 || data.score >= 15) {
+        } else if (totalScoreOutOf20 >= 3) {
           nclcGrade = "NCLC 3 (A1 Beginner)";
           expressEntryPoints = 0;
         } else if (totalScoreOutOf20 > 0) {

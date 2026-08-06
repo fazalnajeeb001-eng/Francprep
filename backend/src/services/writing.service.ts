@@ -235,10 +235,10 @@ ${text}
 
 Respond ONLY with a valid JSON object matching this schema:
 {
-  "taskFulfillmentScore": 4,
-  "coherenceScore": 4,
-  "lexicalScore": 4,
-  "grammarScore": 3,
+  "taskFulfillmentScore": 5, 
+  "coherenceScore": 5, 
+  "lexicalScore": 5, 
+  "grammarScore": 5, 
   "feedback": "2-3 sentence precise examiner diagnostic summary highlighting strengths and primary area for improvement.",
   "corrections": [
     { "original": "error phrase", "corrected": "corrected phrase", "explanation": "Grammatical or lexical explanation in English." }
@@ -247,7 +247,9 @@ Respond ONLY with a valid JSON object matching this schema:
     "Actionable tip 1",
     "Actionable tip 2"
   ]
-}`;
+}
+
+REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore with exact integers from 0 to 5 corresponding to candidate level (C2=5, C1=4-5, B2=3-4, B1=2-3, A2=1-2, Below A1=0-1).`;
 
     try {
       const content = await generateAICompletion({
@@ -421,7 +423,12 @@ Respond ONLY with a valid JSON object matching this schema:
     const foundB2Gram = b2Grammar.filter((g) => textLower.includes(g));
 
     let grammarScore = 1;
-    if (foundC1C2Gram.length >= 2) grammarScore = 5;
+    if (wordCount < 15) {
+      grammarScore = 1;
+      lexicalScore = 1;
+      coherenceScore = 1;
+      taskFulfillmentScore = 1;
+    } else if (foundC1C2Gram.length >= 2) grammarScore = 5;
     else if (foundC1C2Gram.length >= 1 || foundB2Gram.length >= 2) grammarScore = 4;
     else if (foundB2Gram.length >= 1 || textLower.includes("parce que") || textLower.includes("j'ai")) grammarScore = 3;
     else if (textLower.includes("je suis") || textLower.includes("c'est") || textLower.includes("il y a")) grammarScore = 2;
