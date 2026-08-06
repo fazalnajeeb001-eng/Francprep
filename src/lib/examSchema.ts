@@ -1412,23 +1412,23 @@ export const SAMPLE_TEF_PAPER_2: ExamPaper = {
 
 // ─── DYNAMIC GENERATOR FOR 10 UNIQUE TCF CANADA PAPERS & 10 UNIQUE TEF CANADA PAPERS ───
 
-const TCF_WRITING_SUITE = [
+export const TCF_WRITING_SUITE = [
   [
     {
       title: "Tâche 1 : Message court (Problème de chauffage)",
-      prompt: "Vous avez loué un appartement pour vos vacances mais le chauffage ne fonctionne pas. Écrivez un message au propriétaire (60 à 120 mots) pour expliquer la situation et demander une solution rapide.",
+      prompt: "Vous louez un appartement au Québec. Le système de chauffage ne fonctionne plus en plein hiver. Rédigez un courriel au propriétaire (60 à 120 mots) pour expliquer la situation et demander une réparation urgente.",
       min: 60,
       max: 120,
       time: 15,
-      sampleResponse: "Bonjour Monsieur le Propriétaire,\n\nJe vous écris afin de vous signaler un problème urgent concernant l'appartement loué pour cette semaine. Depuis ce matin, le système de chauffage est entièrement hors service et la température intérieure a chuté de façon préoccupante.\n\nPourriez-vous faire intervenir un technicien dans les plus brefs délais afin de rétablir le chauffage ? De plus, pourriez-vous m'indiquer si des appareils d'appoint sont disponibles en attendant la réparation ?\n\nDans l'attente de votre intervention rapide, je vous prie d'agréer, Monsieur, mes salutations distinguées."
+      sampleResponse: "Monsieur le Propriétaire,\n\nJe vous écris en urgence afin de vous signaler un problème majeur dans l'appartement que je loue au 45 rue Saint-Denis. Depuis hier soir, le système de chauffage central est totalement en panne et la température intérieure a chuté de manière préoccupante en raison des températures négatives extérieures.\n\nEn conséquence, je vous saurais gré d'intervenir dans les plus brefs délais ou d'envoyer un technicien qualifié dès aujourd'hui pour procéder aux réparations nécessaires. Je reste joignable par téléphone à tout moment pour faciliter l'accès au logement.\n\nEn vous remerciant vivement pour votre réactivité et votre compréhension, je vous prie d'agréer mes salutations distinguées."
     },
     {
       title: "Tâche 2 : Compte-rendu (Récit de voyage au Canada)",
-      prompt: "Racontez dans un journal de voyage une expérience marquante lors d'un séjour au Canada (120 à 150 mots). Décrivez le lieu, les activités faites et vos impressions.",
+      prompt: "Racontez dans un journal de voyage une expérience marquante lors d'un séjour à l'étranger (120 à 150 mots). Décrivez le lieu, les activités faites et vos impressions.",
       min: 120,
       max: 150,
       time: 20,
-      sampleResponse: "Lors de mon récent séjour au Québec, j'ai vécu une expérience inoubliable en assistant au Carnaval d'hiver de Québec. Dès mon arrivée, la ville historique était magnifiquement recouverte d'un manteau de neige et illuminée de mille feux.\n\nJ'ai eu la chance d'admirer d'impressionnantes sculptures sur glace et d'assister à la traditionnelle course de canot sur le fleuve Saint-Laurent glacé. L'atmosphère était à la fois féerique et très chaleureuse, malgré des températures extrêmement froides.\n\nCette immersion culturelle exceptionnelle m'a permis d'enrichir mon vocabulaire français et d'échanger avec des habitants chaleureux. Je garde un souvenir impérissable de cette aventure nordique et je recommande vivement cette destination !"
+      sampleResponse: "Lors de mon récent séjour au Québec, j'ai vécu une aventure mémorable en assistant au traditionnel Carnaval d'hiver de la ville de Québec. Dès mon arrivée dans le Vieux-Québec, la cité historique était magnifiquement recouverte d'un manteau de neige féerique et illuminée de mille feux.\n\nPendant mon séjour, j'ai eu la chance d'admirer d'impressionnantes sculptures sur glace réalisées par des artistes internationaux et d'assister à la spectaculaire course de canot sur le fleuve Saint-Laurent glacé. L'atmosphère était chaleureuse et festive, malgré les températures froides.\n\nEn outre, cette immersion culturelle exceptionnelle m'a permis d'échanger avec des habitants accueillants et d'enrichir considérablement mes connaissances régionales. Bien que le climat fût rigoureux, je garde un souvenir impérissable de cette escapade nordique et je recommande chaleureusement cette destination féerique !"
     },
     {
       title: "Tâche 3 : Essai argumentatif (Transports gratuits)",
@@ -1436,7 +1436,7 @@ const TCF_WRITING_SUITE = [
       min: 140,
       max: 180,
       time: 25,
-      sampleResponse: "La gratuité totale des transports en commun fait aujourd'hui l'objet d'un vif débat au sein des municipalités modernes.\n\nD'un côté, les partisans de cette mesure soutiennent qu'elle favoriserait la transition écologique en incitant massivement les citoyens à délaisser leur véhicule individuel au profit du bus ou du métro, réduisant ainsi la pollution urbaine et l'empreinte carbone. De surcroît, elle constituerait une avancée sociale majeure pour les ménages à faibles revenus.\n\nD'un autre côté, certains économistes soulignent le coût financier considérable pour la collectivité. Sans recettes de billetterie, la rénovation et la modernisation des infrastructures risquerient d'être compromises.\n\nEn conclusion, bien que la gratuité soit séduisante sur le plan social, il me semble préférable de privilégier une tarification sociale adaptée aux revenus afin de garantir la pérennité du réseau."
+      sampleResponse: "La gratuité totale des transports en commun fait aujourd'hui l'objet d'un débat passionné au sein des métropoles contemporaines.\n\nD'un côté, les partisans de cette mesure soutiennent avec raison qu'elle favoriserait la transition écologique en incitant massivement les citoyens à délaisser leur véhicule individuel au profit du bus ou du métro, réduisant ainsi la pollution urbaine et l'empreinte carbone. De surcroît, elle constituerait une avancée sociale majeure pour les ménages à faibles revenus en augmentant directement leur pouvoir d'achat.\n\nD'un autre côté, certains économistes soulignent le coût financier considérable pour les collectivités locales. Sans recettes tarifaires, la rénovation, la sécurité et la modernisation des infrastructures risqueraient d'être compromises à long terme.\n\nEn conclusion, bien que la gratuité soit séduisante sur le plan environnemental et social, il me semble préférable de privilégier une tarification sociale adaptée aux revenus afin de garantir la pérennité et la qualité du réseau de transport public."
     }
   ],
   [
@@ -1446,7 +1446,7 @@ const TCF_WRITING_SUITE = [
       min: 60,
       max: 120,
       time: 15,
-      sampleResponse: "Monsieur le Directeur,\n\nJe vous écris afin d'obtenir des renseignements complémentaires concernant l'atelier de cuisine québécoise prévu le mois prochain. Passionné par la gastronomie régionale, je souhaiterais m'y inscrire avec enthousiasme.\n\nPourriez-vous m'indiquer la grille tarifaire ainsi que les éventuels prérequis techniques ? De plus, j'aimerais savoir si le matériel culinaire est fourni sur place ou s'il convient d'apporter notre propre équipement.\n\nEn vous remerciant par avance pour votre attention et dans l'attente de votre réponse, je vous prie d'agréer mes salutations distinguées."
+      sampleResponse: "Monsieur le Directeur,\n\nJe vous écris afin d'obtenir des renseignements complémentaires concernant l'atelier de cuisine québécoise prévu le mois prochain dans votre établissement. Passionné par la gastronomie régionale, je souhaiterais m'y inscrire avec enthousiasme.\n\nPourriez-vous m'indiquer la grille tarifaire ainsi que les éventuels prérequis techniques ? De plus, j'aimerais savoir si le matériel culinaire est fourni sur place ou s'il convient d'apporter notre propre équipement personnel.\n\nEn vous remerciant par avance pour votre attention et dans l'attente de votre réponse, je vous prie d'agréer mes salutations distinguées."
     },
     {
       title: "Tâche 2 : Article de témoignage (Festival culturel)",
@@ -1454,7 +1454,7 @@ const TCF_WRITING_SUITE = [
       min: 120,
       max: 150,
       time: 20,
-      sampleResponse: "Lors de mon dernier séjour au Québec, j'ai eu l'immense privilège de participer au Festival International de Jazz de Montréal. Dès mon arrivée sur la place des Festivals, j'ai été émerveillé par l'atmosphère festive et l'énergie vibrante des spectateurs réunis.\n\nPendant trois jours consécutifs, j'ai pu assister à des concerts en plein air mémorables et découvrir des artistes locaux pétris de talent. La diversité des styles musicaux et la convivialité des Québécois ont rendu cette expérience inoubliable.\n\nJe recommande vivement cet événement culturel à quiconque souhaite s'immerger dans l'âme musicale montréalaise. C'est une immersion festive sans égale que vous ne regretterez pas !"
+      sampleResponse: "Lors de mon dernier séjour au Canada, j'ai eu l'immense privilège de participer au prestigieux Festival International de Jazz de Montréal. Dès mon arrivée sur la place des Festivals, j'ai été immédiatement émerveillé par l'atmosphère festive et l'énergie vibrante des milliers de spectateurs réunis.\n\nPendant trois jours consécutifs, j'ai pu assister à des concerts en plein air mémorables et découvrir des artistes locaux pétris de talent. La diversité des styles musicaux présentés et la convivialité légendaire des Québécois ont rendu cette expérience absolument inoubliable.\n\nEn outre, les dégustations culinaires proposées sur place ont agréablement complété cette escapade. Je recommande vivement cet événement culturel à quiconque souhaite s'immerger dans l'âme musicale montréalaise. C'est une expérience festive d'une richesse exceptionnelle que vous ne regretterez pas !"
     },
     {
       title: "Tâche 3 : Essai argumentatif (Langues à l'école)",
@@ -1462,7 +1462,7 @@ const TCF_WRITING_SUITE = [
       min: 140,
       max: 180,
       time: 25,
-      sampleResponse: "L'opportunité d'imposer l'apprentissage obligatoire des langues étrangères dès le niveau primaire suscite de vifs débats sociétaux.\n\nD'une part, les partisans soulignent à juste titre la plasticité cérébrale exceptionnelle des jeunes enfants, qui favorise une assimilation naturelle et intuitive des structures phonétiques. De surcroît, une maîtrise précoce constitue un atout indiscutable dans un monde professionnel globalisé.\n\nD'autre part, les détracteurs craignent qu'une surcharge cognitive n'entrave l'acquisition fondamentale de la langue maternelle et du calcul.\n\nEn somme, bien que ces réserves soient légitimes, je suis convaincu que l'apprentissage précoce des langues demeure un levier d'ouverture culturelle indispensable, à condition d'adapter la pédagogie au rythme de chaque élève."
+      sampleResponse: "L'opportunité d'imposer l'apprentissage obligatoire des langues étrangères dès le niveau primaire suscite d'intenses débats éducatifs et sociétaux à travers le monde.\n\nD'une part, les défenseurs de cette mesure soulignent à juste titre la plasticité cérébrale exceptionnelle des jeunes enfants, qui favorise une assimilation naturelle et intuitive des phonèmes et structures linguistiques complexe. De surcroît, une maîtrise précoce des langues étrangères constitue un atout culturel et professionnel indiscutable dans une société globale hautement interconnectée.\n\nD'autre part, les détracteurs mettent en garde contre le risque d'une surcharge des programmes scolaires qui pourrait entraver l'acquisition fondamentale des compétences de base en langue maternelle et en mathématiques.\n\nEn somme, bien que ces réserves soient parfaitement légitimes, je demeure convaincu que l'apprentissage précoce des langues demeure un levier d'ouverture culturelle et d'épanouissement personnel indispensable, à condition toutefois d'adapter une pédagogie ludique au rythme d'apprentissage de chaque élève."
     }
   ],
   [
@@ -1480,7 +1480,7 @@ const TCF_WRITING_SUITE = [
       min: 120,
       max: 150,
       time: 20,
-      sampleResponse: "Samedi dernier, notre quartier a été le théâtre d'une magnifique journée de solidarité consacrée au nettoyage des berges du parc local. Plus de cinquante citoyens de tous âges se sont rassemblés dès le matin munis de gants et de sacs écologiques.\n\nGrâce à l'effort collectif et à une organisation impeccable, nous avons réussi à collecter plus de deux cents kilos de déchets plastiques et recyclables. Cette journée s'est clôturée autour d'un repas partagé convivial plein d'échanges chaleureux.\n\nCette initiative inspirante prouve que l'engagement citoyen local peut transformer positivement notre environnement. Une expérience enrichissante à renouveler sans hésiter !"
+      sampleResponse: "Samedi dernier, notre quartier a été le théâtre d'une magnifique journée de solidarité consacrée au nettoyage environnemental des berges du parc local. Plus de soixante citoyens enthousiastes de tous âges se sont rassemblés dès le matin munis de gants robustes et de bacs de collecte écologiques.\n\nGrâce à un effort collectif remarquable et à une organisation logistique sans faille, nous avons réussi à récolter plus de trois cents kilos de déchets plastiques et recyclables. Cette journée inspirante s'est ensuite clôturée chaleureusement autour d'un grand pique-nique partagé riche en échanges bienveillants entre voisins.\n\nEn conclusion, cette initiative citoyenne démontre avec force qu'un engagement local concret peut préserver notre cadre de vie commun. Une expérience humaine profondément gratifiante à renouveler impérativement dans les mois à venir !"
     },
     {
       title: "Tâche 3 : Essai argumentatif (Télétravail à 100%)",
@@ -1488,7 +1488,7 @@ const TCF_WRITING_SUITE = [
       min: 140,
       max: 180,
       time: 25,
-      sampleResponse: "La généralisation du télétravail à temps plein transforme en profondeur l'organisation contemporaine du monde du travail.\n\nD'un côté, les avantages pour les employés sont indéniables : élimination des temps de transport stressants, meilleure gestion de l'équilibre entre vie privée et professionnelle, et autonomie accrue dans l'exécution des tâches quotidiennes.\n\nCependant, un isolement professionnel prolongé risque d'altérer la cohésion d'équipe et d'affaiblir le sentiment d'appartenance à l'entreprise. En outre, la frontière entre sphère personnelle et obligations professionnelles devient parfois perméable.\n\nEn conclusion, bien que le travail à distance offre une flexibilité appréciable, le modèle hybride associant présentiel et distanciel me paraît être l'équation optimale pour préserver le bien-être individuel et la dynamique collective."
+      sampleResponse: "La généralisation du télétravail à temps plein transforme aujourd'hui en profondeur l'organisation contemporaine du monde professionnel.\n\nD'un côté, les avantages pour les employés sont indiscutables : élimination des trajets quotidiens stressants, réduction des dépenses de transport et meilleure conciliation entre vie privée et obligations professionnelles. De surcroît, de nombreux salariés rapportent une concentration accrue dans la réalisation de leurs tâches complexes et une autonomie renforcée au quotidien.\n\nCependant, un isolement professionnel prolongé risque d'affaiblir la cohésion d'équipe, d'entraver le transfert informel de connaissances et de détériorer le sentiment d'appartenance à l'entreprise. En outre, la frontière entre sphère personnelle et vie professionnelle devient parfois floue.\n\nEn conclusion, bien que le travail à distance offre une flexibilité appréciable, le modèle hybride combinant harmonieusement présentiel et distanciel me paraît être l'équation optimale pour concilier le bien-être individuel des salariés et la performance collective à long terme."
     }
   ],
   [
@@ -1506,7 +1506,7 @@ const TCF_WRITING_SUITE = [
       min: 120,
       max: 150,
       time: 20,
-      sampleResponse: "Cher Julien,\n\nJe prends enfin le temps de t'écrire pour partager avec toi une grande nouvelle : j'ai officiellement décidé de réorienter ma carrière professionnelle vers les éco-technologies.\n\nAprès dix années stimulantes dans la finance, je ressentais le besoin fondamental de donner davantage de sens à mon quotidien et de contribuer activement à des projets durables. J'ai donc entrepris une formation intensive de six mois en gestion de projets environnementaux.\n\nBien que ce changement exige de sortir de ma zone de confort, je me sens immensément motivé par ce nouveau défi. J'espère que nous pourrons nous voir très vite pour en discuter autour d'un café !\n\nAmicalement,\nMarc"
+      sampleResponse: "Cher Julien,\n\nJe prends enfin le temps de t'écrire pour partager avec toi une grande nouvelle : j'ai officiellement décidé de réorienter ma carrière professionnelle vers le secteur passionnant des éco-technologies.\n\nAprès dix années stimulantes dans le domaine financier, je ressentais le besoin fondamental de donner davantage de sens à mon quotidien et de contribuer activement à des projets d'innovation durable. J'ai donc suivi avec succès une formation intensive de six mois en gestion de projets environnementaux.\n\nBien que cette transition exige de sortir de ma zone de confort et de relever de nouveaux défis, je me sens immensément motivé par cette aventure. En outre, la diversité des projets me stimule énormément. J'espère que nous pourrons nous retrouver très prochainement pour en discuter de vive voix !\n\nAmicalement,\nMarc"
     },
     {
       title: "Tâche 3 : Essai argumentatif (Interdiction des véhicules à essence)",
@@ -1514,7 +1514,7 @@ const TCF_WRITING_SUITE = [
       min: 140,
       max: 180,
       time: 25,
-      sampleResponse: "L'interdiction projetée des véhicules thermiques neufs d'ici 2035 suscite d'intenses débats entre impératifs écologiques et réalités économiques.\n\nD'une part, les partisans de cette mesure rappellent que le secteur des transports est le principal émetteur de gaz à effet de serre. Interdire les moteurs à essence constitue donc une étape décisive pour lutter contre le réchauffement climatique et assainir la qualité de l'air urbain.\n\nD'autre part, les opposants mettent en avant les coûts élevés des véhicules électriques et l'insuffisance actuelle des infrastructures de recharge. De plus, les répercussions sociales sur l'industrie automobile et l'emploi sont préoccupantes.\n\nEn conclusion, il est incontestable que la décarbonation des transports est nécessaire, mais sa réussite dépendra d'un accompagnement financier équitable des citoyens et d'un investissement massif dans les réseaux de recharge."
+      sampleResponse: "L'interdiction projetée de la vente de véhicules thermiques neufs d'ici 2035 suscite d'intenses débats entre impératifs écologiques vitaux et réalités socio-économiques.\n\nD'une part, les partisans de cette législation rappellent à juste titre que le secteur des transports constitue l'un des principaux émetteurs de gaz à effet de serre. Interdire les moteurs à essence apparaît donc comme une étape indispensable pour accélérer la décarbonation globale de l'économie et assainir durablement la qualité de l'air urbain au bénéfice de la santé publique.\n\nD'autre part, les opposants mettent en avant le coût financier élevé des véhicules électriques et l'insuffisance actuelle des infrastructures de recharge rapide. De surcroît, les répercussions sur l'emploi dans l'industrie automobile classique sont préoccupantes pour de nombreuses régions industrielles.\n\nEn conclusion, bien que la transition vers la mobilité électrique soit inéluctable, sa réussite dépendra d'un soutien financier équitable aux ménages modestes et d'un investissement massif dans les réseaux énergétiques."
     }
   ],
   [
@@ -1532,7 +1532,7 @@ const TCF_WRITING_SUITE = [
       min: 120,
       max: 150,
       time: 20,
-      sampleResponse: "Installé à Montréal depuis maintenant six mois, je souhaite partager mon expérience d'intégration avec les futurs arrivants. Le choc culturel initial s'est rapidement dissipé grâce à l'accueil d'une bienveillance remarquable réservé par les Québécois.\n\nDès les premières semaines, je me suis inscrit à des ateliers de réseautage et j'ai exploré les différents quartiers de la ville. Bien que les procédures administratives exigent de la patience et de la rigueur, l'environnement social et professionnel canadien offre des perspectives d'épanouissement exceptionnelles.\n\nUn conseil essentiel : n'hésitez pas à aller au-devant des gens et à participer aux événements communautaires locaux. C'est la clé d'une intégration réussie et épanouissante !"
+      sampleResponse: "Installé à Montréal depuis maintenant six mois, je souhaite partager mon expérience d'intégration avec les futurs arrivants. Le choc culturel et climatique initial s'est très rapidement dissipé grâce à l'accueil d'une bienveillance remarquable réservé au quotidien par les Québécois.\n\nDès les premières semaines de mon arrivée, je me suis inscrit à des ateliers de réseautage professionnel et j'ai exploré avec passion les différents quartiers de la métropole. Bien que les démarches administratives exigent de la rigueur et de la patience, l'environnement social offre des perspectives d'épanouissement remarquables.\n\nUn conseil fondamental aux futurs immigrants : n'hésitez surtout pas à aller spontanément au-devant des gens et à participer aux activités communautaires locales. C'est la clé absolue d'une intégration harmonieuse, enrichissante et réussie !"
     },
     {
       title: "Tâche 3 : Essai argumentatif (Intelligence Artificielle et Emploi)",
@@ -1540,7 +1540,7 @@ const TCF_WRITING_SUITE = [
       min: 140,
       max: 180,
       time: 25,
-      sampleResponse: "L'essor fulgurant de l'intelligence artificielle suscite de profondes inquiétudes quant à l'avenir du marché de l'emploi mondial.\n\nD'un côté, les détracteurs soulignent le risque d'automatisation massive qui pourrait détruire de nombreux emplois administratifs et techniques, créant une précarité accrue pour les travailleurs non qualifiés.\n\nD'un autre côté, les défenseurs de l'IA rappellent que chaque révolution technologique génère de nouveaux métiers et libère les humains des tâches répétitives au profit d'activités créatives et stratégiques. De surcroît, l'IA constitue un multiplicateur de productivité sans précédent.\n\nEn somme, l'intelligence artificielle ne doit pas être crainte mais encadrée par des politiques de formation continue ambitieuses pour accompagner la reconversion des professionnels."
+      sampleResponse: "L'essor fulgurant des technologies d'intelligence artificielle suscite aujourd'hui de profondes inquiétudes quant à la pérennité du marché de l'emploi mondial.\n\nD'un côté, les détracteurs soulignent à juste titre le risque d'une automatisation massive qui pourrait supprimer de nombreux postes administratifs et techniques, créant une précarité inédite pour les travailleurs dont les tâches sont répétitives et prévisibles.\n\nD'un autre côté, les défenseurs de l'IA rappellent opportunément que chaque révolution technologique génère de nouveaux métiers spécialisés et libère les humains des contraintes exécutives au profit d'activités créatives, stratégiques et relationnelles. De surcroît, l'IA constitue un multiplicateur de productivité sans précédent pour les entreprises modernes du XXIe siècle.\n\nEn somme, l'intelligence artificielle ne doit pas être redoutée mais encadrée par des politiques gouvernementales et institutionnelles très ambitieuses de formation continue afin de garantir une transition numérique inclusive et équitable pour l'ensemble des travailleurs."
     }
   ],
   [
@@ -1558,7 +1558,7 @@ const TCF_WRITING_SUITE = [
       min: 120,
       max: 150,
       time: 20,
-      sampleResponse: "Week-end dernier, j'ai visité la nouvelle exposition immersive consacrée à l'impressionnisme au Musée des Beaux-Arts. Dès l'entrée, les projections numériques géantes accompagnées d'une symphonie captivante transportent immédiatement le visiteur au cœur des chefs-d'œuvre.\n\nLa scénographie audacieuse et l'éclairage méticuleusement étudié mettent en valeur la texture et les nuances chromatiques de chaque toile. Ce parcours sensoriel original offre un regard totalement renouvelé sur des œuvres classiques.\n\nUne visite incontournable que je recommande chaleureusement à tous les passionnés d'art et d'histoire !"
+      sampleResponse: "Le week-end dernier, j'ai eu le plaisir de visiter la nouvelle exposition immersive consacrée à l'impressionnisme au Musée des Beaux-Arts. Dès l'entrée dans la grande galerie, les projections numériques géantes accompagnées d'une symphonie captivante transportent immédiatement le visiteur au cœur même des œuvres magistrales.\n\nLa scénographie audacieuse et l'éclairage méticuleusement étudié mettent en valeur la texture et la richesse des nuances chromatiques de chaque toile. Ce parcours sensoriel novateur offre ainsi une perspective totalement renouvelée sur l'histoire de l'art classique.\n\nEn outre, la section interactive proposée à la fin du parcours constitue un ajout très ludique. Une visite culturelle incontournable que je recommande chaleureusement à tous les passionnés d'art !"
     },
     {
       title: "Tâche 3 : Essai argumentatif (Écrans et réseaux sociaux)",
@@ -1566,7 +1566,7 @@ const TCF_WRITING_SUITE = [
       min: 140,
       max: 180,
       time: 25,
-      sampleResponse: "L'omniprésence des smartphones et des réseaux sociaux dans la vie des adolescents soulève des interrogations légitimes quant aux risques d'addiction.\n\nD'un côté, les partisans d'une réglementation stricte mettent en garde contre les ravages du cyberharcèlement, la détérioration du sommeil et la baisse de la concentration scolaire provoquée par la surconsommation d'écrans.\n\nD'un autre côté, interdire totalement ces technologies semble illusoire à l'ère numérique. Les réseaux sociaux constituent également des espaces d'expression créative et de socialisation précieuses pour la jeunesse.\n\nEn conclusion, plus qu'une interdiction autoritaire, il convient de privilégier une éducation aux médias numériques dès le collège pour responsabiliser les jeunes."
+      sampleResponse: "L'omniprésence des smartphones et des plateformes numériques dans le quotidien des adolescents soulève aujourd'hui d'importantes interrogations quant aux risques d'addiction.\n\nD'un côté, les partisans d'une réglementation stricte mettent en garde avec fermeté contre les méfaits du cyberharcèlement, la perturbation du sommeil et la baisse de l'attention scolaire entraînées par l'exposition excessive aux écrans.\n\nD'un autre côté, interdire autoritairement ces technologies semble illusoire à l'ère du numérique. Les réseaux sociaux constituent également d'épatants espaces d'apprentissage interactif, de création artistique et de socialisation pour la jeunesse contemporaine.\n\nEn conclusion, plus qu'une interdiction coercitive, il convient de privilégier une véritable éducation aux médias numériques dès le collège pour accompagner les adolescents vers un usage responsable et équilibré."
     }
   ],
   [
@@ -1584,7 +1584,7 @@ const TCF_WRITING_SUITE = [
       min: 120,
       max: 150,
       time: 20,
-      sampleResponse: "Au printemps dernier, les résidents de notre quartier se sont mobilisés pour transformer une friche abandonnée en un jardin potager communautaire verdoyant. Grâce au soutien de la mairie et au travail enthousiaste de bénévole de tous âges, nous avons aménagé des bacs de culture écologiques.\n\nAujourd'hui, ce jardin est devenu un lieu de rencontre intergénérationnel dynamique où voisins échangent conseils de jardinage et légumes frais dans une ambiance conviviale.\n\nUne réussite collective remarquable qui a revitalisé notre quartier et renforcé le sentiment d'appartenance citoyenne !"
+      sampleResponse: "Au printemps dernier, les résidents de notre quartier se sont mobilisés avec enthousiasme pour transformer un terrain vague abandonné en un magnifique jardin potager communautaire. Grâce au précieux soutien municipal et à l'implication de bénévoles de tous âges, nous avons aménagé des parcelles de culture biologiques écologiques.\n\nAujourd'hui, cet espace vert est devenu un véritable lieu de rassemblement intergénérationnel dynamique où voisins échangent conseils d'horticulture, graines et légumes frais dans une atmosphère extrêmement conviviale.\n\nEn outre, ce projet exemplaire a sensiblement renforcé la cohésion sociale de notre communauté. Une réussite citoyenne remarquable qui a revitalisé notre quartier et que nous souhaitons prolonger durablement !"
     },
     {
       title: "Tâche 3 : Essai argumentatif (Semaine de 4 jours)",
@@ -1592,7 +1592,7 @@ const TCF_WRITING_SUITE = [
       min: 140,
       max: 180,
       time: 25,
-      sampleResponse: "Le passage à la semaine de travail de quatre jours sans réduction de salaire s'impose comme une expérimentation sociale majeure.\n\nD'un côté, les entreprises ayant testé ce modèle observent une réduction spectaculaire du burn-out, une baisse de l'absentéisme et un regain de motivation des salariés, ce qui compense largement le jour chômé.\n\nCependant, certains secteurs d'activité comme la santé, les transports ou le commerce de détail peineraient à financer la réorganisation des plannings et les embauches compensatoires nécessaires.\n\nEn conclusion, bien que la semaine de quatre jours offre un équilibre de vie remarquable, sa mise en œuvre doit rester flexible et adaptée aux spécificités de chaque secteur d'activité."
+      sampleResponse: "Le passage à la semaine de travail de quatre jours sans diminution de salaire s'impose actuellement comme une expérimentation sociale majeure.\n\nD'un côté, les organisations ayant mis en œuvre ce modèle constatent une baisse spectaculaire du niveau d'épuisement professionnel, une diminution de l'absentéisme et un regain notable de productivité chez les salariés, ce qui compense amplement la journée non travaillée.\n\nCependant, plusieurs secteurs d'activité essentiels comme la santé publique, les transports et les services de secours peineraient à financer la réorganisation complexe des plannings et les recrutements compensatoires nécessaires.\n\nEn conclusion, bien que la semaine de quatre jours offre un équilibre personnel précieux, sa généralisation doit s'effectuer avec flexibilité et s'adapter aux réalités spécifiques de chaque secteur d'activité."
     }
   ],
   [
@@ -1610,7 +1610,7 @@ const TCF_WRITING_SUITE = [
       min: 120,
       max: 150,
       time: 20,
-      sampleResponse: "J'ai récemment suivi un stage de formation intensive consacrée au marketing numérique et aux stratégies de médias sociaux. Durant deux semaines stimulantes, des experts du secteur nous ont initiés aux derniers outils d'analyse de données et d'optimisation de campagnes.\n\nGrâce aux cas pratiques traités en équipe, j'ai pu acquérir des compétences directement applicables dans mes fonctions quotidiennes, ce qui m'a permis d'augmenter la visibilité en ligne de mon entreprise de 30%.\n\nUne expérience d'apprentissage extrêmement valorisante que je recommande à tout professionnel désireux de faire évoluer sa carrière !"
+      sampleResponse: "J'ai récemment suivi une formation continue intensive consacrée au marketing numérique et à l'analyse des médias sociaux. Durant deux semaines particulièrement stimulantes, des formateurs expérimentés nous ont enseigné les dernières méthodologies d'optimisation de campagnes web et de stratégie de contenu.\n\nGrâce aux cas pratiques traités en équipe et aux outils modernes manipulés en atelier, j'ai pu acquérir des compétences techniques immédiatement transposables dans mon activité quotidienne. Cela m'a permis d'augmenter le taux d'engagement en ligne de mon entreprise de plus de trente pour cent.\n\nEn outre, cette expérience m'a donné un véritable élan professionnel. Une formation hautement enrichissante que je recommande vivement à tout professionnel souhaitant faire évoluer sa carrière !"
     },
     {
       title: "Tâche 3 : Essai argumentatif (Consommation de produits locaux)",
@@ -1618,7 +1618,7 @@ const TCF_WRITING_SUITE = [
       min: 140,
       max: 180,
       time: 25,
-      sampleResponse: "La promotion du locavorisme, prônant la consommation exclusive d'aliments produits localement, gagne une grande popularité face aux défis écologiques actuels.\n\nD'une part, privilegier les circuits courts permet de soutenir l'économie rurale régionale et de réduire considérablement l'empreinte carbone liée au transport des marchandises.\n\nD'autre part, exigez le 100% local se heurte à des contraintes financières pour les ménages à budget modeste, car les produits d'agriculture locale sont souvent plus chers que les produits importés en masse. De plus, la diversité alimentaire hivernale reste limitée sous certains climats nordiques.\n\nEn somme, si la consommation locale est un idéal vertueux, elle doit s'inscrire dans une démarche progressive sans devenir une contrainte punitive pour les ménages."
+      sampleResponse: "La promotion du locavorisme, qui préconise la consommation exclusive de denrées alimentaires produites localement, suscite un intérêt croissant face aux défis écologiques contemporains.\n\nD'une part, privilégier les circuits de distribution courts permet de soutenir concrètement l'économie agricole régionale et de réduire de manière drastique les émissions de carbone liées au transport international des marchandises.\n\nD'autre part, exiger le 100% local se heurte à des contraintes budgétaires majeures pour les ménages à revenus modestes, les produits issus d'exploitations locales étant souvent plus coûteux. De surcroît, la variété alimentaire en période hivernale s'avère restreinte sous les climats nordiques.\n\nEn somme, bien que la consommation locale représente un idéal vertueux, elle doit s'inscrire dans une démarche pragmatique sans devenir une contrainte financière inaccessible."
     }
   ],
   [
@@ -1636,7 +1636,7 @@ const TCF_WRITING_SUITE = [
       min: 120,
       max: 150,
       time: 20,
-      sampleResponse: "Dimanche dernier, j'ai participé pour la première fois au Marathon de Montréal aux côtés de milliers de coureurs venus du monde entier. Le parcours sillonnait les plus beaux quartiers de la ville sous les encouragements enthousiastes d'une foule nombreuse.\n\nBien que la deuxième moitié de la course ait exigé un effort physique et mental intense, l'énergie collective et les orchestres disposés le long du trajet m'ont porté jusqu'à la ligne d'arrivée.\n\nFranchir la ligne d'arrivée après 42 kilomètres de course a été un moment d'intense fierté et une aventure humaine gravée à jamais dans ma mémoire !"
+      sampleResponse: "Dimanche dernier, j'ai eu l'immense bonheur de participer au Marathon de Montréal aux côtés de milliers de coureurs passionnés venus du monde entier. Le parcours pittoresque sillonnait les plus emblématiques quartiers de la métropole sous les encouragements vifs d'une foule nombreuse et enthousiaste.\n\nBien que la seconde moitié du parcours ait exigé un effort physique particulièrement intense, l'énergie collective formidable et les fanfares musicales réparties le long du trajet m'ont transcendé jusqu'à la ligne d'arrivée.\n\nEn outre, cette épreuve exigeante m'a permis de dépasser mes limites personnelles. Franchir l'arrivée après quarante-deux kilomètres d'effort reste un moment d'intense fierté et une aventure sportive inoubliable !"
     },
     {
       title: "Tâche 3 : Essai argumentatif (Quotas touristiques)",
@@ -1644,7 +1644,7 @@ const TCF_WRITING_SUITE = [
       min: 140,
       max: 180,
       time: 25,
-      sampleResponse: "Face aux ravages du surtourisme, l'instauration de quotas d'accès aux sites naturels et monuments historiques divise l'opinion publique.\n\nD'un côté, les défenseurs de l'environnement soulignent que la surfréquentation touristique dégrade irréversiblement les écosystèmes fragiles, érode le patrimoine et détruit la qualité de vie des habitants locaux. Restreindre le nombre de visiteurs est donc l'unique moyen d'assurer la préservation de ces trésors pour les générations futures.\n\nD'un autre côté, les acteurs du secteur économique craignent des pertes financières massives et dénoncent une mesure discriminatoire qui réserverait l'accès à la culture à une minorité privilégiée.\n\nEn conclusion, la régulation des flux touristiques est devenue inévitable, mais elle doit s'accompagner d'une sensibilisation au tourisme responsable."
+      sampleResponse: "Face aux dégradations entraînées par le surtourisme de masse, la mise en place de quotas d'accès aux sites naturels et patrimoniaux suscite d'importants débats.\n\nD'un côté, les écologistes soulignent à juste titre que la surfréquentation touristique détruit irréversiblement les écosystèmes fragiles, accélère l'érosion des monuments historiques et nuit à la quiétude des résidents locaux. Limiter le nombre de visiteurs quotidiens constitue donc le seul moyen efficace de préserver ces trésors pour les générations futures.\n\nD'un autre côté, les acteurs économiques redoutent des baisses de revenus dévastatrices et dénoncent une mesure inégalitaire qui risquerait de réserver la culture aux publics privilégiés.\n\nEn conclusion, bien que la régulation des flux touristiques soit devenue indispensable, elle doit s'accompagner d'une promotion active du tourisme écoresponsable."
     }
   ],
   [
