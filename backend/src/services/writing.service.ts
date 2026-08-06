@@ -206,57 +206,46 @@ export class WritingService {
       };
     }
 
-    const prompt = `You are an official Senior Certified Examiner for France Éducation International (FEI) evaluating ${targetLanguage} writing for official TCF Canada Express Entry.
+    const prompt = `You are an official France Éducation International (FEI) Senior Certified Examiner evaluating ${targetLanguage} writing for official TCF Canada.
 
-CRITICAL FEI HORS-SUJET (OFF-TOPIC) RULE:
-- Check if the student's submission directly answers the specific topic, scenario, and questions in the prompt.
-- IF THE SUBMISSION IS COMPLETELY OFF-TOPIC (HORS-SUJET) — e.g. discussing a cooking workshop when asked about a car ban or apartment heating issue — YOU MUST AWARD 0 MARKS FOR TASK FULFILLMENT (0/5) AND 0 MARKS TOTAL (0/20, NCLC 0).
-- Official FEI rules mandate an automatic 0 grade (Hors-sujet Total = 0 Marks) for off-topic submissions regardless of grammar.
+CRITICAL EVALUATION GUIDELINES:
+- Grade strictly according to the candidate's actual linguistic quality. DO NOT DEFAULT TO B2 OR ANY MID-LEVEL GRADE.
+- Flawless C1/C2 masterwork responses MUST receive 19-20/20 (NCLC 10 / C2).
+- Strong B2 responses MUST receive 13-16/20 (NCLC 7-8 / B2).
+- Intermediate B1 responses MUST receive 8-11/20 (NCLC 5-6 / B1).
+- Basic A2 responses MUST receive 5-7/20 (NCLC 4 / A2).
+- Below A1 / simple sentence responses MUST receive 1-4/20 (NCLC 1-3 / A1).
+- OFF-TOPIC (HORS-SUJET) or PLAGIARIZED responses MUST receive 0/20 (NCLC 0).
 
-OFFICIAL FEI TCF EVALUATION GRID (4 CRITERIA - TOTAL 20 MARKS):
-1. Task Fulfillment & Word Count (0-5 pts): Respecting prompt instructions and word count range. (0/5 if Off-Topic!)
-2. Coherence & Connectors (0-5 pts): Paragraph structure and transition markers (e.g. en outre, cependant, par conséquent).
-3. Lexical Variety & Richness (0-5 pts): Precise topic vocabulary range without repetition.
-4. Morphosyntax & Grammar (0-5 pts): Tense agreement, adjective agreement, complex structures (subjunctive, conditional).
-
-OFFICIAL NCLC SCALING (Based on Total Marks out of 20):
-- 19-20 / 20 = NCLC 10 (C2 Mastery) (+34 CRS Points)
-- 17-18 / 20 = NCLC 9 (C1 Advanced) (+31 CRS Points)
-- 14-16 / 20 = NCLC 8 (B2 Upper Vantage) (+23 CRS Points)
-- 12-13 / 20 = NCLC 7 (B2 Benchmark Target) (+17 CRS Points)
-- 10-11 / 20 = NCLC 6 (B1 Intermediate) (+12 CRS Points)
-- 8-9 / 20 = NCLC 5 (B1 Threshold) (+6 CRS Points)
-- 5-7 / 20 = NCLC 4 (A2 Elementary) (0 CRS Points)
-- 1-4 / 20 = NCLC 3 (A1 Beginner / Below Benchmark) (0 CRS Points)
-- 0 / 20 = NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet / Plagiarism / Gibberish) (0 CRS Points)
+OFFICIAL FEI 4-CRITERIA MARKS (0-5 EACH):
+1. taskFulfillmentScore (0-5): Address all prompt points, respect word count. (0/5 if Off-Topic)
+2. coherenceScore (0-5): Logical paragraph structure and transitional connectors (e.g. en outre, cependant, par conséquent).
+3. lexicalScore (0-5): Vocabulary range and precision appropriate to level.
+4. grammarScore (0-5): Morphosyntax, tense agreement (subjonctif, conditionnel, etc.), sentence structure.
 
 Context / Task Prompt:
 Task / Topic: "${lessonTitle || `${targetLanguage} Writing Examination`}"
 ${expectedAnswer ? `Task Prompt & Model Expectations:\n"""\n${expectedAnswer}\n"""` : ''}
 ${checklist && checklist.length > 0 ? `Required Checklist Elements:\n${checklist.map((item, i) => `${i + 1}. ${item}`).join('\n')}` : ''}
 
-Student's Typed Writing Submission (${targetLanguage}):
+Candidate Submission (${targetLanguage}):
 """
 ${text}
 """
 
-Evaluate strictly according to official FEI TCF Canada examiner criteria. Respond ONLY with a valid JSON object:
+Respond ONLY with a valid JSON object matching this schema:
 {
-  "scoreOutOf20": 15,
-  "nclcGrade": "NCLC 8 (B2 Upper)",
-  "cefrLevel": "B2",
-  "expressEntryPoints": 23,
   "taskFulfillmentScore": 4,
   "coherenceScore": 4,
   "lexicalScore": 4,
   "grammarScore": 3,
   "feedback": "2-3 sentence precise examiner diagnostic summary highlighting strengths and primary area for improvement.",
   "corrections": [
-    { "original": "student error text", "corrected": "corrected text", "explanation": "Grammatical or lexical explanation in English." }
+    { "original": "error phrase", "corrected": "corrected phrase", "explanation": "Grammatical or lexical explanation in English." }
   ],
   "tips": [
-    "Actionable tip 1 to raise CEFR score.",
-    "Actionable tip 2 for task adherence."
+    "Actionable tip 1",
+    "Actionable tip 2"
   ]
 }`;
 
@@ -265,14 +254,22 @@ Evaluate strictly according to official FEI TCF Canada examiner criteria. Respon
         model: 'gpt-4o-mini',
         prompt,
         systemPrompt: `You are an official France Éducation International (FEI) Senior Examiner evaluating TCF Canada writing.`,
-        temperature: 0.2,
+        temperature: 0.1,
         maxTokens: 1000,
       });
 
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
-        let scoreOutOf20 = typeof parsed.scoreOutOf20 === 'number' ? parsed.scoreOutOf20 : 12;
+        const t = Math.max(0, Math.min(5, typeof parsed.taskFulfillmentScore === 'number' ? parsed.taskFulfillmentScore : 0));
+        const c = Math.max(0, Math.min(5, typeof parsed.coherenceScore === 'number' ? parsed.coherenceScore : 0));
+        const l = Math.max(0, Math.min(5, typeof parsed.lexicalScore === 'number' ? parsed.lexicalScore : 0));
+        const g = Math.max(0, Math.min(5, typeof parsed.grammarScore === 'number' ? parsed.grammarScore : 0));
+
+        let scoreOutOf20 = t + c + l + g;
+        if (scoreOutOf20 === 0 && typeof parsed.scoreOutOf20 === 'number') {
+          scoreOutOf20 = parsed.scoreOutOf20;
+        }
 
         const feedbackLower = (parsed.feedback || '').toLowerCase();
         const isOffTopicFeedback = feedbackLower.includes('off-topic') ||

@@ -454,7 +454,7 @@ export function AuthenticCBTExamPage() {
       const json = await res.json();
       if (json.success && json.data) {
         const data = json.data;
-        const totalScoreOutOf20 = data.scoreOutOf20 || Math.round(((data.score || 75) / 100) * 20);
+        const totalScoreOutOf20 = typeof data.scoreOutOf20 === 'number' ? data.scoreOutOf20 : (typeof data.score === 'number' ? Math.round((data.score / 100) * 20) : 0);
 
         let nclcGrade = data.nclcGrade || "NCLC 7 (B2 Benchmark Target)";
         let expressEntryPoints = data.expressEntryPoints ?? 17;
