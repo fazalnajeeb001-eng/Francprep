@@ -220,13 +220,15 @@ OFFICIAL FEI TCF EVALUATION GRID (4 CRITERIA - TOTAL 20 MARKS):
 4. Morphosyntax & Grammar (0-5 pts): Tense agreement, adjective agreement, complex structures (subjunctive, conditional).
 
 OFFICIAL NCLC SCALING (Based on Total Marks out of 20):
-- 17-20 / 20 = NCLC 9 (C1 Advanced) (+31 CRS Points)
-- 14-16 / 20 = NCLC 8 (B2 Upper) (+23 CRS Points)
+- 19-20 / 20 = NCLC 10 (C2 Mastery) (+34 CRS Points)
+- 17-18 / 20 = NCLC 9 (C1 Advanced) (+31 CRS Points)
+- 14-16 / 20 = NCLC 8 (B2 Upper Vantage) (+23 CRS Points)
 - 12-13 / 20 = NCLC 7 (B2 Benchmark Target) (+17 CRS Points)
 - 10-11 / 20 = NCLC 6 (B1 Intermediate) (+12 CRS Points)
 - 8-9 / 20 = NCLC 5 (B1 Threshold) (+6 CRS Points)
-- < 8 / 20 = NCLC 1-4 (A1-A2) (0 CRS Points)
-- 0 / 20 = NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet) (0 CRS Points)
+- 5-7 / 20 = NCLC 4 (A2 Elementary) (0 CRS Points)
+- 1-4 / 20 = NCLC 3 (A1 Beginner / Below Benchmark) (0 CRS Points)
+- 0 / 20 = NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet / Plagiarism / Gibberish) (0 CRS Points)
 
 Context / Task Prompt:
 Task / Topic: "${lessonTitle || `${targetLanguage} Writing Examination`}"
@@ -302,11 +304,11 @@ Evaluate strictly according to official FEI TCF Canada examiner criteria. Respon
         let cefrLevel = parsed.cefrLevel || "B2";
         let expressEntryPoints = 17;
 
-        if (scoreOutOf20 >= 18) {
-          nclcGrade = "NCLC 10+ (C2 Mastery)";
+        if (scoreOutOf20 >= 19) {
+          nclcGrade = "NCLC 10 (C2 Mastery)";
           cefrLevel = "C2";
           expressEntryPoints = 34;
-        } else if (scoreOutOf20 >= 16) {
+        } else if (scoreOutOf20 >= 17) {
           nclcGrade = "NCLC 9 (C1 Advanced)";
           cefrLevel = "C1";
           expressEntryPoints = 31;
@@ -331,7 +333,7 @@ Evaluate strictly according to official FEI TCF Canada examiner criteria. Respon
           cefrLevel = "A2";
           expressEntryPoints = 0;
         } else if (scoreOutOf20 >= 3) {
-          nclcGrade = "NCLC 3 (A1 Break-Through)";
+          nclcGrade = "NCLC 3 (A1 Beginner)";
           cefrLevel = "A1";
           expressEntryPoints = 0;
         } else {

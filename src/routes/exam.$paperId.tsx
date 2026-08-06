@@ -457,11 +457,15 @@ export function AuthenticCBTExamPage() {
         const totalScoreOutOf20 = data.scoreOutOf20 || Math.round(((data.score || 75) / 100) * 20);
 
         let nclcGrade = data.nclcGrade || "NCLC 7 (B2 Benchmark Target)";
-        let expressEntryPoints = 17;
-        if (totalScoreOutOf20 >= 17 || data.score >= 85) {
+        let expressEntryPoints = data.expressEntryPoints ?? 17;
+
+        if (totalScoreOutOf20 >= 19 || data.score >= 95) {
+          nclcGrade = "NCLC 10 (C2 Mastery)";
+          expressEntryPoints = 34;
+        } else if (totalScoreOutOf20 >= 17 || data.score >= 85) {
           nclcGrade = "NCLC 9 (C1 Advanced)";
           expressEntryPoints = 31;
-        } else if (totalScoreOutOf20 >= 14 || data.score >= 75) {
+        } else if (totalScoreOutOf20 >= 14 || data.score >= 70) {
           nclcGrade = "NCLC 8 (B2 Upper)";
           expressEntryPoints = 23;
         } else if (totalScoreOutOf20 >= 12 || data.score >= 60) {
@@ -470,6 +474,21 @@ export function AuthenticCBTExamPage() {
         } else if (totalScoreOutOf20 >= 10 || data.score >= 50) {
           nclcGrade = "NCLC 6 (B1 Intermediate)";
           expressEntryPoints = 12;
+        } else if (totalScoreOutOf20 >= 8 || data.score >= 40) {
+          nclcGrade = "NCLC 5 (B1 Threshold)";
+          expressEntryPoints = 6;
+        } else if (totalScoreOutOf20 >= 5 || data.score >= 25) {
+          nclcGrade = "NCLC 4 (A2 Elementary)";
+          expressEntryPoints = 0;
+        } else if (totalScoreOutOf20 >= 3 || data.score >= 15) {
+          nclcGrade = "NCLC 3 (A1 Beginner)";
+          expressEntryPoints = 0;
+        } else if (totalScoreOutOf20 > 0) {
+          nclcGrade = "NCLC 1-2 (Below A1 / Beginner)";
+          expressEntryPoints = 0;
+        } else {
+          nclcGrade = "NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet)";
+          expressEntryPoints = 0;
         }
 
         setWritingAiResults((prev) => ({
@@ -490,7 +509,7 @@ export function AuthenticCBTExamPage() {
       }
     } catch {}
 
-    // 2. Calibrated Local Rule Engine Fallback
+    // 2. Calibrated Local Rule Engine Fallback (Strict CEFR Calibration)
     let taskFulfillmentScore = 5;
     if (wordCount < minWords) {
       taskFulfillmentScore = Math.max(1, Math.round(5 * (wordCount / minWords)));
@@ -498,17 +517,34 @@ export function AuthenticCBTExamPage() {
       taskFulfillmentScore = 4;
     }
 
-    const connectors = ["d'abord", "en outre", "de plus", "cependant", "néanmoins", "par conséquent", "ainsi", "en conclusion", "toutefois", "en effet"];
+    const connectors = ["d'abord", "en outre", "de plus", "cependant", "néanmoins", "par conséquent", "ainsi", "en conclusion", "toutefois", "en effet", "d'une part", "d'autre part", "de surcroît"];
     const foundConnectors = connectors.filter((c) => clean.toLowerCase().includes(c));
-    let coherenceScore = Math.min(5, 2 + foundConnectors.length);
+    let coherenceScore = Math.min(5, Math.max(1, 1 + foundConnectors.length));
 
-    const uniqueWords = new Set(clean.toLowerCase().split(/\s+/)).size;
+    const words = clean.toLowerCase().split(/\s+/);
+    const uniqueWords = new Set(words).size;
     const lexicalRatio = wordCount > 0 ? uniqueWords / wordCount : 0;
-    let lexicalScore = lexicalRatio > 0.65 ? 5 : lexicalRatio > 0.5 ? 4 : 3;
+    let lexicalScore = 1;
+    if (wordCount >= minWords) {
+      if (lexicalRatio >= 0.70 && wordCount >= 100) lexicalScore = 5;
+      else if (lexicalRatio >= 0.60) lexicalScore = 4;
+      else if (lexicalRatio >= 0.50) lexicalScore = 3;
+      else lexicalScore = 2;
+    } else if (wordCount >= Math.round(minWords / 2)) {
+      lexicalScore = 2;
+    }
 
-    const complexStructures = ["que je", "afin que", "pour que", "bien que", "si vous", "je voudrais", "il faut que", "ayant", "étant"];
+    const complexStructures = ["que je", "afin que", "pour que", "bien que", "si vous", "je voudrais", "il faut que", "ayant", "étant", "serait", "aurait", "puisse", "soit"];
     const foundComplex = complexStructures.filter((cs) => clean.toLowerCase().includes(cs));
-    let grammarScore = Math.min(5, 3 + foundComplex.length);
+    let grammarScore = 1;
+    if (wordCount >= minWords) {
+      if (foundComplex.length >= 3) grammarScore = 5;
+      else if (foundComplex.length >= 2) grammarScore = 4;
+      else if (foundComplex.length >= 1) grammarScore = 3;
+      else grammarScore = 2;
+    } else if (wordCount >= Math.round(minWords / 2)) {
+      grammarScore = 2;
+    }
 
     const totalScoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
 
@@ -517,6 +553,9 @@ export function AuthenticCBTExamPage() {
     if (taskFulfillmentScore === 0 || totalScoreOutOf20 === 0) {
       nclcGrade = "NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet)";
       expressEntryPoints = 0;
+    } else if (totalScoreOutOf20 >= 19) {
+      nclcGrade = "NCLC 10 (C2 Mastery)";
+      expressEntryPoints = 34;
     } else if (totalScoreOutOf20 >= 17) {
       nclcGrade = "NCLC 9 (C1 Advanced)";
       expressEntryPoints = 31;
@@ -532,8 +571,14 @@ export function AuthenticCBTExamPage() {
     } else if (totalScoreOutOf20 >= 8) {
       nclcGrade = "NCLC 5 (B1 Threshold)";
       expressEntryPoints = 6;
-    } else {
+    } else if (totalScoreOutOf20 >= 5) {
       nclcGrade = "NCLC 4 (A2 Elementary)";
+      expressEntryPoints = 0;
+    } else if (totalScoreOutOf20 >= 3) {
+      nclcGrade = "NCLC 3 (A1 Beginner)";
+      expressEntryPoints = 0;
+    } else {
+      nclcGrade = "NCLC 1-2 (Below A1 / Beginner)";
       expressEntryPoints = 0;
     }
 
