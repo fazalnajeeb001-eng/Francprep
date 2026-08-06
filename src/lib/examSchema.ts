@@ -1701,7 +1701,7 @@ export function getExamRegistry(): ExamPaper[] {
         ? `Guided practice paper with step-by-step hints, audio transcripts, and 2-attempt answer validation (84 Items / 119 Mins).`
         : `Strict official FEI test-center exam paper with unpausable timers, zero hints, and authentic candidate scoring (84 Items / 119 Mins).`,
       totalDurationMins: 119,
-      isSamplePaper: paperNum <= 2,
+      isSamplePaper: isPractice,
       published: true,
       sections: [
         {
@@ -1797,7 +1797,7 @@ export function getExamRegistry(): ExamPaper[] {
         ? `Guided practice paper tailored for TEF Canada Paris Chamber of Commerce (CCI) standards with hints and transcripts (84 Items / 135 Mins).`
         : `Strict official CCI test-center exam paper with unpausable timers, zero hints, and authentic candidate scoring (84 Items / 135 Mins).`,
       totalDurationMins: 135,
-      isSamplePaper: paperNum <= 2,
+      isSamplePaper: isPractice,
       published: true,
       sections: [
         {
