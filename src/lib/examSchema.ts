@@ -1900,42 +1900,42 @@ export function calculateNCLCScore(pctScore: number, _examType: ExamType, _secti
     cefrEquivalent = "Unrated";
     expressEntryPoints = 0;
     isNCLC7TargetReached = false;
-  } else if (pct >= 90) { // 35-39 / 39 (C2 Mastery)
+  } else if (pct >= 89.7) { // 35-39 / 39 (C2 Mastery)
     nclcLevel = 10;
     cefrEquivalent = "C2";
     expressEntryPoints = 34;
     isNCLC7TargetReached = true;
-  } else if (pct >= 77) { // 30-34 / 39 (C1 Advanced)
+  } else if (pct >= 82.0) { // 32-34 / 39 (NCLC 9 C1 Advanced - 31 CRS Points)
     nclcLevel = 9;
     cefrEquivalent = "C1";
     expressEntryPoints = 31;
     isNCLC7TargetReached = true;
-  } else if (pct >= 69) { // 27-29 / 39 (NCLC 8 B2)
+  } else if (pct >= 71.7) { // 28-31 / 39 (NCLC 8 B2 Upper - 23 CRS Points)
     nclcLevel = 8;
     cefrEquivalent = "B2";
     expressEntryPoints = 23;
     isNCLC7TargetReached = true;
-  } else if (pct >= 59) { // 23-26 / 39 (NCLC 7 B2 Benchmark Target for Express Entry)
+  } else if (pct >= 58.9) { // 23-27 / 39 (NCLC 7 B2 Target Benchmark for Express Entry - 17 CRS Points)
     nclcLevel = 7;
     cefrEquivalent = "B2";
     expressEntryPoints = 17;
     isNCLC7TargetReached = true;
-  } else if (pct >= 48) { // 19-22 / 39 (NCLC 6 B1 Intermediate)
+  } else if (pct >= 46.1) { // 18-22 / 39 (NCLC 6 B1 Intermediate - 12 CRS Points)
     nclcLevel = 6;
     cefrEquivalent = "B1";
     expressEntryPoints = 12;
     isNCLC7TargetReached = false;
-  } else if (pct >= 38) { // 15-18 / 39 (NCLC 5 B1 Threshold)
+  } else if (pct >= 35.8) { // 14-17 / 39 (NCLC 5 B1 Threshold - 6 CRS Points)
     nclcLevel = 5;
     cefrEquivalent = "B1";
     expressEntryPoints = 6;
     isNCLC7TargetReached = false;
-  } else if (pct >= 25) { // 10-14 / 39 (NCLC 4 A2 Elementary)
+  } else if (pct >= 25.6) { // 10-13 / 39 (NCLC 4 A2 Elementary - 0 CRS Points)
     nclcLevel = 4;
     cefrEquivalent = "A2";
     expressEntryPoints = 0;
     isNCLC7TargetReached = false;
-  } else {
+  } else { // < 10 / 39 (NCLC 3 A1 - 0 CRS Points)
     nclcLevel = 3;
     cefrEquivalent = "A1";
     expressEntryPoints = 0;
@@ -1946,7 +1946,7 @@ export function calculateNCLCScore(pctScore: number, _examType: ExamType, _secti
     ? `⚠️ No questions attempted or 0% score recorded. Please complete the test questions in each section to receive a diagnostic NCLC rating.`
     : isNCLC7TargetReached
     ? `🎉 Excellent! Score achieves NCLC ${nclcLevel} (${cefrEquivalent}) — Meets Canadian Express Entry PR Benchmark!`
-    : `💪 NCLC ${nclcLevel} (${cefrEquivalent}) recorded. Aim for 65%+ to hit the official NCLC 7 (B2) immigration benchmark.`;
+    : `💪 NCLC ${nclcLevel} (${cefrEquivalent}) recorded. Aim for 23/39 (58.9%+) to hit the official NCLC 7 (B2) immigration benchmark.`;
 
   return {
     nclcLevel,
