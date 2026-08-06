@@ -445,11 +445,31 @@ const LISTENING_TOPICS = [
     en: "Retrospective analysis shows infrastructure alone is insufficient; lasting behavioral change requires incentive pricing and citizen education.",
     hint: "⚠️ Trap Alert: Note that infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: 'transformation exige tarification et accompagnement'.\n🎧 Acoustic Cues: Nuanced argumentation following 'exige'."
   },
+  {
+    level: "C1",
+    title: "Conférence sur la transition énergétique navale",
+    text: "L'électrification partielle des flottes maritimes de cabotage combinée à l'usage de voiles rigides automatisées permet de réduire l'empreinte carbone du fret maritime de 28 % sur les lignes côtières nord-atlantiques.",
+    opt: ["Réduire l'empreinte carbone du fret maritime de 28%", "Doubler le nombre de conteneurs transportés", "Interdire la circulation des bateaux de pêche", "Construire des ports en eaux profondes uniquement"],
+    ans: 0,
+    tr: "L'électrification partielle combinée aux voiles automatisées permet de réduire l'empreinte carbone de 28 %.",
+    en: "Partial electrification combined with automated rigid sails cuts maritime freight carbon footprint by 28%.",
+    hint: "⚠️ Trap Alert: Connect tech innovation to -28% emissions.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone de 28%'.\n🎧 Acoustic Cues: Percentage stats after 'permet de'."
+  },
+  {
+    level: "C1",
+    title: "Débat sur la préservation de la biodiversité marine",
+    text: "La création de réserves marines hauturières totalement fermées à l'extraction minière sous-marine constitue l'unique moyen d'assurer la survie des écosystèmes des fosses abyssales face à la pression industrielle émergente.",
+    opt: ["Protéger les écosystèmes abyssaux de l'extraction minière", "Multiplier les autorisations de forage en haute mer", "Financer la pêche industrielle d'espèces menacées", "Fermer tous les laboratoires de biologie marine"],
+    ans: 0,
+    tr: "La création de réserves fermées à l'extraction minière est l'unique moyen de protéger les écosystèmes abyssaux.",
+    en: "Creating marine reserves closed to deep-sea mining is the sole way to protect abyssal ecosystems.",
+    hint: "⚠️ Trap Alert: Protection mandate vs industrial mining expansion.\n🔄 Paraphrase Key: 'protéger les écosystèmes abyssaux'.\n🎧 Acoustic Cues: Conservation terms after 'l'unique moyen'."
+  },
 
-  // C2 MASTERY (Q38 - Q39)
+  // C2 MASTERY (Q38 - Q40)
   {
     level: "C2",
-    title: "Conférence de recherche scientifique",
+    title: "Conférence de recherche scientifique quantique",
     text: "L'avènement de la cryptographie quantique intégrée aux protocoles de communication de nouvelle génération permet d'envisager une étanchéité théoriquement absolue des flux de données face aux risques de cyber-intrusion.",
     opt: ["Garantir une étanchéité théoriquement absolue des données", "Accélérer les composants électroniques mobiles", "Diminuer les investissements dans la recherche", "Remplacer les serveurs informatiques distants"],
     ans: 0,
@@ -466,6 +486,26 @@ const LISTENING_TOPICS = [
     tr: "La délégation aux systèmes automatisés risque de substituer l'arbitraire du code à la délibération contradictoire des citoyens.",
     en: "Delegating administrative decisions to automated systems poses an ontological challenge to democracy, risking replacing citizen debate with algorithmic code.",
     hint: "⚠️ Trap Alert: Focus on the core risk identified by the philosopher ('substituer l'arbitraire du code au débat').\n🔄 Paraphrase Key: 'substituer le code à la délibération'.\n🎧 Acoustic Cues: High-register philosophical concepts."
+  },
+  {
+    level: "C2",
+    title: "Sémiotique et analyse du discours médiatique",
+    text: "L'analyse sémiotique de la surabondance d'informations révélée par la culture numérique montre une saturation cognitive où la vitesse de diffusion l'emporte sur l'exigence de vérification des faits, fragilisant l'espace public délibératif.",
+    opt: ["La vitesse de diffusion supplante la vérification des faits", "L'amélioration spectaculaire de la mémoire humaine", "La disparition complète des réseaux de télévision", "L'obligation légale de lire uniquement des livres imprimés"],
+    ans: 0,
+    tr: "L'analyse sémiotique montre que la vitesse de diffusion l'emporte sur la vérification des faits.",
+    en: "Semiotic analysis shows diffusion speed outweighs fact-checking, fragileing deliberative public space.",
+    hint: "⚠️ Trap Alert: Speed vs factual verification tension.\n🔄 Paraphrase Key: 'vitesse de diffusion l'emporte sur la vérification'.\n🎧 Acoustic Cues: Epistemological critique."
+  },
+  {
+    level: "C2",
+    title: "Économie politique des communs mondiaux",
+    text: "La théorie de la gouvernance polycentrique appliquée aux biens communs mondiaux démontre que la seule réglementation étatique ou l'abandon aux lois du marché s'avèrent incapables d'enrayer l'épuisement des ressources naturelles partagées.",
+    opt: ["Réglementation étatique et marché seuls sont incapables d'éviter l'épuisement", "La privatisation totale garantit la protection éternelle", "L'interdiction absolue de tout échange commercial", "La suppression de tous les gouvernements nationaux"],
+    ans: 0,
+    tr: "La gouvernance polycentrique démontre que ni l'État seul ni le marché ne suffisent à protéger les communs.",
+    en: "Polycentric governance demonstrates neither state regulation alone nor market forces suffice to protect global commons.",
+    hint: "⚠️ Trap Alert: Failure of state-only or market-only approaches.\n🔄 Paraphrase Key: 'incapables d'enrayer l'épuisement'.\n🎧 Acoustic Cues: Institutional economics terminology."
   }
 ];
 
@@ -880,11 +920,34 @@ function shuffleOptions(rawOpt: string[], origCorrectIdx: number) {
 
 function generateListeningQuestions(count: number, prefix: string, seedOffset: number = 0): ExamQuestion[] {
   const qList: ExamQuestion[] = [];
+  const usedIndices = new Set<number>();
+
   for (let i = 1; i <= count; i++) {
     const targetLevel = getTargetLevel(i);
-    const matchingTopics = LISTENING_TOPICS.filter(t => t.level === targetLevel || (targetLevel === "C2" && t.level === "C1"));
-    const pool = matchingTopics.length > 0 ? matchingTopics : LISTENING_TOPICS;
-    const t = pool[(i - 1 + seedOffset) % pool.length];
+    const matchingIndices: number[] = [];
+
+    LISTENING_TOPICS.forEach((t, idx) => {
+      if (t.level === targetLevel || (targetLevel === "C2" && t.level === "C1")) {
+        matchingIndices.push(idx);
+      }
+    });
+
+    const pool = matchingIndices.length > 0
+      ? matchingIndices
+      : LISTENING_TOPICS.map((_, idx) => idx);
+
+    let chosenIdx = pool[(i - 1 + seedOffset) % pool.length];
+    if (usedIndices.has(chosenIdx)) {
+      const unused = pool.find((idx) => !usedIndices.has(idx));
+      if (unused !== undefined) {
+        chosenIdx = unused;
+      } else {
+        const globalUnused = LISTENING_TOPICS.findIndex((_, idx) => !usedIndices.has(idx));
+        if (globalUnused !== -1) chosenIdx = globalUnused;
+      }
+    }
+    usedIndices.add(chosenIdx);
+    const t = LISTENING_TOPICS[chosenIdx];
 
     const isQuestionInAudio = i <= 29;
     const { options, correctIndex, correctText } = shuffleOptions(t.opt, t.ans);
@@ -912,11 +975,34 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
 
 function generateReadingQuestions(count: number, prefix: string, seedOffset: number = 0): ExamQuestion[] {
   const qList: ExamQuestion[] = [];
+  const usedIndices = new Set<number>();
+
   for (let i = 1; i <= count; i++) {
     const targetLevel = getTargetLevel(i);
-    const matchingTopics = READING_TOPICS.filter(t => t.level === targetLevel || (targetLevel === "C2" && t.level === "C1"));
-    const pool = matchingTopics.length > 0 ? matchingTopics : READING_TOPICS;
-    const t = pool[(i - 1 + seedOffset) % pool.length];
+    const matchingIndices: number[] = [];
+
+    READING_TOPICS.forEach((t, idx) => {
+      if (t.level === targetLevel || (targetLevel === "C2" && t.level === "C1")) {
+        matchingIndices.push(idx);
+      }
+    });
+
+    const pool = matchingIndices.length > 0
+      ? matchingIndices
+      : READING_TOPICS.map((_, idx) => idx);
+
+    let chosenIdx = pool[(i - 1 + seedOffset) % pool.length];
+    if (usedIndices.has(chosenIdx)) {
+      const unused = pool.find((idx) => !usedIndices.has(idx));
+      if (unused !== undefined) {
+        chosenIdx = unused;
+      } else {
+        const globalUnused = READING_TOPICS.findIndex((_, idx) => !usedIndices.has(idx));
+        if (globalUnused !== -1) chosenIdx = globalUnused;
+      }
+    }
+    usedIndices.add(chosenIdx);
+    const t = READING_TOPICS[chosenIdx];
 
     const { options, correctIndex, correctText } = shuffleOptions(t.opt, t.ans);
 
