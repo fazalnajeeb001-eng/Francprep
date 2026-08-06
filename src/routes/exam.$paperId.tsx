@@ -557,7 +557,12 @@ export function AuthenticCBTExamPage() {
     const foundB2Gram = b2Grammar.filter((g) => textLower.includes(g));
 
     let grammarScore = 1;
-    if (foundC1C2Gram.length >= 2) grammarScore = 5;
+    if (wordCount < 15) {
+      grammarScore = 1;
+      lexicalScore = 1;
+      coherenceScore = 1;
+      taskFulfillmentScore = 1;
+    } else if (foundC1C2Gram.length >= 2) grammarScore = 5;
     else if (foundC1C2Gram.length >= 1 || foundB2Gram.length >= 2) grammarScore = 4;
     else if (foundB2Gram.length >= 1 || textLower.includes("parce que") || textLower.includes("j'ai")) grammarScore = 3;
     else if (textLower.includes("je suis") || textLower.includes("c'est") || textLower.includes("il y a")) grammarScore = 2;
@@ -766,7 +771,10 @@ export function AuthenticCBTExamPage() {
 
           {/* Submit Button */}
           <button
-            onClick={() => setIsSubmitted(true)}
+            onClick={() => {
+              try { localStorage.removeItem(sessionKey); } catch {}
+              setIsSubmitted(true);
+            }}
             className="px-3 sm:px-4 py-1 sm:py-1.5 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow shrink-0 cursor-pointer"
           >
             <Send className="w-3.5 h-3.5" />
@@ -1780,16 +1788,39 @@ export function AuthenticCBTExamPage() {
                 );
               })()}
 
-              <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-[11px] text-slate-600 dark:text-slate-400 text-left leading-relaxed">
-                🛑 <strong>Independent Practice Disclaimer:</strong> This score is a diagnostic estimation for exam preparation purposes only. FrancPrep is an independent platform and does not provide official language certification.
-              </div>
+              <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+                <button
+                  onClick={() => {
+                    try { localStorage.removeItem(sessionKey); } catch {}
+                    setSelectedAnswers({});
+                    setWritingResponses({});
+                    setSpeakingTranscripts({});
+                    setWritingAiResults({});
+                    setSpeakingAiResults({});
+                    setFlaggedQuestions({});
+                    setAttemptsMap({});
+                    setCheckedMap({});
+                    setActiveSectionIdx(0);
+                    setCurrentQuestionIdx(0);
+                    setIsSubmitted(false);
+                  }}
+                  className="w-full sm:w-1/2 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs shadow flex items-center justify-center gap-2 cursor-pointer transition-all"
+                >
+                  <RotateCcw className="w-4 h-4 text-emerald-400" />
+                  <span>Retake Test (Reset All Answers)</span>
+                </button>
 
-              <button
-                onClick={() => navigate({ to: "/exam" })}
-                className="w-full py-3.5 rounded bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow"
-              >
-                Return to Exam Simulator Hub
-              </button>
+                <button
+                  onClick={() => {
+                    try { localStorage.removeItem(sessionKey); } catch {}
+                    navigate({ to: "/exam" });
+                  }}
+                  className="w-full sm:w-1/2 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2 cursor-pointer transition-all"
+                >
+                  <Home className="w-4 h-4 text-white" />
+                  <span>Return to Exam Hub</span>
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}
