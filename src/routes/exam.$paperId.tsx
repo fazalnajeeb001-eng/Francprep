@@ -786,7 +786,7 @@ export function AuthenticCBTExamPage() {
         const hasC1C2Lex = foundC1C2Lex.length > 0;
         const hasC1C2Gram = foundC1C2Gram.length > 0;
         const hasC1C2Conn = foundC1C2Conn.length > 0;
-        if (!hasC1C2Conn || !hasC1C2Lex || !hasC1C2Gram) {
+        if (!hasC1C2Conn && !hasC1C2Lex && !hasC1C2Gram) {
           rawSum = Math.min(15, rawSum);
         }
         return rawSum;
@@ -1507,13 +1507,31 @@ export function AuthenticCBTExamPage() {
                     <h3 className="text-base sm:text-lg font-bold text-slate-950 dark:text-slate-100 leading-snug">{task.prompt}</h3>
                   </div>
 
-                  {mode === "PRACTICE" && task.guidedTips && (
+                  {mode === "PRACTICE" && (
                     <div className="p-3 sm:p-3.5 rounded-lg bg-pink-50 dark:bg-pink-950/30 border border-pink-200 dark:border-pink-800 text-xs space-y-1">
                       <p className="font-bold text-pink-700 dark:text-pink-300 uppercase text-[10px]">Guided Structure Tips:</p>
                       <ul className="list-disc list-inside space-y-0.5 text-slate-800 dark:text-slate-200">
-                        {task.guidedTips.map((tip, idx) => (
-                          <li key={idx}>{tip}</li>
-                        ))}
+                        {task.guidedTips ? (
+                          task.guidedTips.map((tip: string, idx: number) => <li key={idx}>{tip}</li>)
+                        ) : task.title?.includes("Tâche 1") || task.wordCountMin === 60 || task.min === 60 ? (
+                          <>
+                            <li>Salutation adaptée (ex. Bonjour Monsieur/Madame)</li>
+                            <li>Explication claire du besoin / motif du message</li>
+                            <li>Formule de politesse & signature finale</li>
+                          </>
+                        ) : task.title?.includes("Tâche 2") || task.wordCountMin === 120 || task.min === 120 ? (
+                          <>
+                            <li>Introduction brève (présentation du lieu / contexte)</li>
+                            <li>Récit chronologique des événements et activités faites</li>
+                            <li>Impressions personnelles et sentiment final</li>
+                          </>
+                        ) : (
+                          <>
+                            <li>Introduction claire posant le problème</li>
+                            <li>Présenter 2 arguments développés avec exemples</li>
+                            <li>Conclusion synthétique avec prise de position</li>
+                          </>
+                        )}
                       </ul>
                     </div>
                   )}

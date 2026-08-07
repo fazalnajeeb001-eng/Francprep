@@ -296,18 +296,18 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
         const textLower = (text || '').toLowerCase();
         const words = (text || '').trim().replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
 
-        // Detect Tâche 1 Personal Email format pasted in Tâche 3 / Tâche 2
+        // Detect Tâche 1 Personal Email format pasted in Tâche 3 (Argumentative Essay)
         const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test((text || '').trim()) && /(cordialement|bien à vous|salutations)/i.test((text || '').trim());
-        const isTache3Or2 = lessonTitle?.includes('Tâche 3') || lessonTitle?.includes('Tâche 2') || expectedAnswer?.includes('140') || expectedAnswer?.includes('120');
+        const isTache3Only = lessonTitle?.includes('Tâche 3') || expectedAnswer?.includes('140');
 
-        if (isTache3Or2 && isLetterFormat && words.length < 100) {
+        if (isTache3Only && isLetterFormat && words.length < 100) {
           t = 0;
         }
 
-        const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part)\b/i.test(textLower);
-        const hasB2Grammar = /\b(pourriez|pourrait|serait|aimerais|fussent|puisse|soit|dont|auquel|laquelle|bien que|afin de|en vue de)\b/i.test(textLower);
+        const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part|sans conteste|indéniablement|lors de|au cours de|de surcroît|en effet|en somme|en conclusion)\b/i.test(textLower);
+        const hasB2Grammar = /\b(pourriez|pourrait|serait|aimerais|fussent|puisse|soit|dont|auquel|laquelle|bien que|afin de|en vue de|fut|me laissant|entouré|bordé|restés|visité|pris|fait|exploré|observé|procuré)\b/i.test(textLower);
 
-        // Strict B2 Capping: Absence of B2 connectors & B2 syntax caps score at 9/20 (B1) max
+        // Strict B2 Capping: Absence of B2/C1 connectors & syntax caps score at 9/20 (B1) max
         if (!hasB2Connectors && !hasB2Grammar) {
           t = Math.min(3, t);
           c = Math.min(3, c);
@@ -325,12 +325,12 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
           scoreOutOf20 = Math.min(9, scoreOutOf20);
         }
 
-        // Strict C1/C2 Capping: Standard formal emails without C1 academic vocabulary or C1 connectors cap at 15/20 (B2 Upper)
-        const hasC1C2Conn = /\b(de surcroît|par conséquent|néanmoins|toutefois|d'une part|d'autre part|en somme|nonobstant)\b/i.test(textLower);
-        const hasC1C2Lex = /\b(incontournable|perspective|sensibilisation|préconiser|solliciter|manifestation|bienveillance|réciproque|controverse|conciliation|inéluctable|épanouissement|assimilation|détériorer|dysfonctionnement|dégradation|aggravation)\b/i.test(textLower);
-        const hasC1C2Gram = /\b(puisse|soit|fassions|sachiez|ayez|fussent|dont|auquel|laquelle|duquel|lesquelles|aurait été|aurait dû|eût|demeure|entraver)\b/i.test(textLower);
+        // Strict C1/C2 Capping: Submissions lacking any C1/C2 vocabulary, grammar, or connectors cap at 15/20 (B2 Upper)
+        const hasC1C2Conn = /\b(de surcroît|par conséquent|néanmoins|toutefois|d'une part|d'autre part|en somme|nonobstant|sans conteste|indéniablement|lors de)\b/i.test(textLower);
+        const hasC1C2Lex = /\b(incontournable|perspective|sensibilisation|préconiser|solliciter|manifestation|bienveillance|réciproque|controverse|conciliation|inéluctable|plasticité|épanouissement|décarbonation|assimilation|détériorer|dysfonctionnement|dégradation|aggravation|périple|majestueux|féerique|dépaysement|spectaculaire|ascension|émerveillement|sérénité|enrichissantes|impérissables|irrépressible|d'exception)\b/i.test(textLower);
+        const hasC1C2Gram = /\b(puisse|soit|fassions|sachiez|ayez|fussent|dont|auquel|laquelle|duquel|lesquelles|aurait été|aurait dû|eût|demeure|entraver|fut|me laissant|entouré|bordé)\b/i.test(textLower);
 
-        if (!hasC1C2Conn || !hasC1C2Lex || !hasC1C2Gram) {
+        if (!hasC1C2Conn && !hasC1C2Lex && !hasC1C2Gram) {
           scoreOutOf20 = Math.min(15, scoreOutOf20);
         }
         if (scoreOutOf20 === 0 && typeof parsed.scoreOutOf20 === 'number') {
@@ -525,7 +525,7 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
     const hasC1C2Lex = foundC1C2Lex.length > 0;
     const hasC1C2Gram = foundC1C2Gram.length > 0;
     const hasC1C2Conn = foundC1C2Conn.length > 0;
-    if (!hasC1C2Conn || !hasC1C2Lex || !hasC1C2Gram) {
+    if (!hasC1C2Conn && !hasC1C2Lex && !hasC1C2Gram) {
       scoreOutOf20 = Math.min(15, scoreOutOf20);
     }
     const scorePct = Math.round((scoreOutOf20 / 20) * 100);
