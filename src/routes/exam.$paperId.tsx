@@ -787,7 +787,43 @@ export function AuthenticCBTExamPage() {
     const speakingAvg = speakingScores.length > 0 ? Math.round(speakingScores.reduce((a, b) => a + b, 0) / speakingScores.length) : 0;
     const speakingNCLC = calculateNCLCScore(speakingAvg, paper.type, "EXPRESSION_ORALE");
 
-    const overallResult = calculateNCLCScore(overallPct, paper.type, currentSection.type);
+    // Collect all valid NCLC levels from attempted skills (IRCC lowest-skill benchmark rule)
+    const attemptedNCLCs: number[] = [];
+    if (listeningTotal > 0 && listeningCorrect > 0) attemptedNCLCs.push(listeningNCLC.nclcLevel);
+    if (readingTotal > 0 && readingCorrect > 0) attemptedNCLCs.push(readingNCLC.nclcLevel);
+    if (writingWeightedScore > 0 && writingNCLC.nclcLevel > 0) attemptedNCLCs.push(writingNCLC.nclcLevel);
+    if (speakingAvg > 0 && speakingNCLC.nclcLevel > 0) attemptedNCLCs.push(speakingNCLC.nclcLevel);
+
+    let finalNCLCLevel = 0;
+    let finalCEFREquivalent = "Unrated";
+    let finalExpressEntryPoints = 0;
+    let isTargetReached = false;
+    let statusMsg = "⚠️ No test questions were attempted in this session.";
+
+    if (attemptedNCLCs.length > 0) {
+      finalNCLCLevel = Math.min(...attemptedNCLCs);
+      if (finalNCLCLevel >= 10) {
+        finalCEFREquivalent = "C2"; finalExpressEntryPoints = 34; isTargetReached = true;
+      } else if (finalNCLCLevel === 9) {
+        finalCEFREquivalent = "C1"; finalExpressEntryPoints = 31; isTargetReached = true;
+      } else if (finalNCLCLevel === 8) {
+        finalCEFREquivalent = "B2"; finalExpressEntryPoints = 23; isTargetReached = true;
+      } else if (finalNCLCLevel === 7) {
+        finalCEFREquivalent = "B2"; finalExpressEntryPoints = 17; isTargetReached = true;
+      } else if (finalNCLCLevel === 6) {
+        finalCEFREquivalent = "B1"; finalExpressEntryPoints = 12; isTargetReached = false;
+      } else if (finalNCLCLevel === 5) {
+        finalCEFREquivalent = "B1"; finalExpressEntryPoints = 6; isTargetReached = false;
+      } else if (finalNCLCLevel === 4) {
+        finalCEFREquivalent = "A2"; finalExpressEntryPoints = 0; isTargetReached = false;
+      } else {
+        finalCEFREquivalent = "A1"; finalExpressEntryPoints = 0; isTargetReached = false;
+      }
+
+      statusMsg = isTargetReached
+        ? `🎉 Excellent! Attempted skill modules achieve CLB / NCLC ${finalNCLCLevel} (${finalCEFREquivalent}) — Meets Canadian Express Entry PR Benchmark!`
+        : `💪 CLB / NCLC ${finalNCLCLevel} (${finalCEFREquivalent}) recorded across attempted skill modules. Aim for NCLC 7+ (B2) in all sections for Express Entry PR points.`;
+    }
 
     return {
       totalCorrect,
@@ -805,7 +841,11 @@ export function AuthenticCBTExamPage() {
       writingNCLC,
       speakingAvg,
       speakingNCLC,
-      ...overallResult
+      nclcLevel: finalNCLCLevel,
+      cefrEquivalent: finalCEFREquivalent,
+      expressEntryPoints: finalExpressEntryPoints,
+      statusMessage: statusMsg,
+      isNCLC7TargetReached: isTargetReached
     };
   };
 
