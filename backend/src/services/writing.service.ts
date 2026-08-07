@@ -96,7 +96,10 @@ export class WritingService {
     });
     const triRatio = tri1.size > 0 ? triMatch / tri1.size : 0;
 
-    return Math.max(jaccard, triRatio);
+    if (tri1.size > 0 && triMatch > 0) {
+      return Math.max(triRatio, jaccard * 0.7);
+    }
+    return jaccard * 0.4;
   }
 
   private isFrenchText(text: string): boolean {

@@ -32,9 +32,32 @@ import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } fr
 
 function calculateTextSimilarity(str1: string, str2: string): number {
   if (!str1 || !str2) return 0;
-  const words1 = str1.toLowerCase().replace(/[^\w\sàâæçéèêëîïôœùûüÿ]/g, "").split(/\s+/).filter((w) => w.length > 2);
-  const words2 = str2.toLowerCase().replace(/[^\w\sàâæçéèêëîïôœùûüÿ]/g, "").split(/\s+/).filter((w) => w.length > 2);
-  if (words1.length === 0 || words2.length === 0) return 0;
+  const normalize = (s: string) =>
+    s
+      .toLowerCase()
+      .replace(/[^\w\sàâæçéèêëîïôœùûüÿ]/g, "")
+      .split(/\s+/)
+      .filter((w) => w.length > 2);
+
+  const words1 = normalize(str1);
+  const words2 = normalize(str2);
+  if (words1.length < 5 || words2.length < 5) return 0;
+
+  const getTrigrams = (words: string[]) => {
+    const trigrams = new Set<string>();
+    for (let i = 0; i <= words.length - 3; i++) {
+      trigrams.add(words.slice(i, i + 3).join(" "));
+    }
+    return trigrams;
+  };
+
+  const tri1 = getTrigrams(words1);
+  const tri2 = getTrigrams(words2);
+  let triMatches = 0;
+  tri1.forEach((t) => {
+    if (tri2.has(t)) triMatches++;
+  });
+  const trigramRatio = tri1.size > 0 ? (triMatches / tri1.size) * 100 : 0;
 
   const set1 = new Set(words1);
   const set2 = new Set(words2);
@@ -42,9 +65,14 @@ function calculateTextSimilarity(str1: string, str2: string): number {
   set1.forEach((w) => {
     if (set2.has(w)) intersection++;
   });
-
   const union = new Set([...words1, ...words2]).size;
-  return union > 0 ? Math.round((intersection / union) * 100) : 0;
+  const jaccardRatio = union > 0 ? (intersection / union) * 100 : 0;
+
+  if (tri1.size > 0 && triMatches > 0) {
+    return Math.round(Math.max(trigramRatio, jaccardRatio * 0.7));
+  }
+
+  return Math.round(jaccardRatio * 0.4);
 }
 
 export const Route = createFileRoute("/exam/$paperId")({
@@ -732,7 +760,7 @@ export function AuthenticCBTExamPage() {
       const t1Score = getTaskScore(wTasks[0], 0);
       const t2Score = getTaskScore(wTasks[1], 1);
       const t3Score = getTaskScore(wTasks[2], 2);
-      writingWeightedScore = Math.round(0.3 * t1Score + 0.3 * t2Score + 0.4 * t3Score);
+      writingWeightedScore = Math.round(0.20 * t1Score + 0.30 * t2Score + 0.50 * t3Score);
     } else {
       const scores = wTasks.map((t, idx) => getTaskScore(t, idx));
       writingWeightedScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
