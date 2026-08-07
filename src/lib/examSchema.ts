@@ -1902,12 +1902,12 @@ export function calculateNCLCScore(pctScore: number, _examType: ExamType, sectio
     isNCLC7TargetReached = false;
   } else if (sectionType === "EXPRESSION_ECRITE" || sectionType === "EXPRESSION_ORALE") {
     // Official 20-Point Scale Cutoffs for Writing & Speaking (FEI / Paris Standards)
-    if (pct >= 95.0) { // 19-20 / 20 (C2 Mastery)
+    if (pct >= 90.0) { // 18-20 / 20 (C2 Mastery)
       nclcLevel = 10;
       cefrEquivalent = "C2";
       expressEntryPoints = 34;
       isNCLC7TargetReached = true;
-    } else if (pct >= 85.0) { // 17-18 / 20 (C1 Advanced)
+    } else if (pct >= 80.0) { // 16-17 / 20 (C1 Advanced)
       nclcLevel = 9;
       cefrEquivalent = "C1";
       expressEntryPoints = 31;
