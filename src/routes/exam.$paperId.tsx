@@ -700,9 +700,15 @@ export function AuthenticCBTExamPage() {
     let writingWeightedScore = 0;
 
     const getTaskScore = (task: any, idx: number) => {
-      const key = task.id || `task_${idx}`;
-      if (writingAiResults[key]?.scoreOutOf20 !== undefined) {
-        return writingAiResults[key].scoreOutOf20;
+      const key = task.id || task.title || `task_${idx}`;
+      const aiRes = writingAiResults[key] ||
+                    (task.id && writingAiResults[task.id]) ||
+                    (task.title && writingAiResults[task.title]) ||
+                    writingAiResults[`task_${idx}`] ||
+                    writingAiResults[idx];
+
+      if (aiRes?.scoreOutOf20 !== undefined) {
+        return aiRes.scoreOutOf20;
       }
       const typedText = writingResponses[key] || writingResponses[idx] || writingResponses[task.title] || "";
       if (typedText && typedText.trim().length > 0) {
