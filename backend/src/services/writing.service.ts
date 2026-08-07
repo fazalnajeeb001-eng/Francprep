@@ -342,10 +342,16 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
                                    feedbackLower.includes('off topic') ||
                                    feedbackLower.includes('hors-sujet') ||
                                    feedbackLower.includes('hors sujet') ||
-                                   feedbackLower.includes('does not address the prompt') ||
-                                   feedbackLower.includes('unrelated to the prompt');
+                                   feedbackLower.includes('does not address') ||
+                                   feedbackLower.includes('does not fulfill') ||
+                                   feedbackLower.includes('fails to address') ||
+                                   feedbackLower.includes('fails to fulfill') ||
+                                   feedbackLower.includes('different topic') ||
+                                   feedbackLower.includes('wrong topic') ||
+                                   feedbackLower.includes('unrelated') ||
+                                   t <= 1;
 
-        if (scoreOutOf20 === 0 || t === 0 || isOffTopicFeedback) {
+        if (scoreOutOf20 === 0 || t <= 1 || isOffTopicFeedback) {
           return {
             score: 0,
             scoreOutOf20: 0,
