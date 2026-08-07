@@ -211,20 +211,20 @@ export class WritingService {
 
     const prompt = `You are an official France Éducation International (FEI) Senior Certified Examiner evaluating ${targetLanguage} writing for official TCF Canada.
 
-CRITICAL EVALUATION GUIDELINES:
-- Grade strictly according to the candidate's actual linguistic quality. DO NOT DEFAULT TO B2 OR ANY MID-LEVEL GRADE.
-- Flawless C1/C2 masterwork responses MUST receive 19-20/20 (NCLC 10 / C2).
-- Strong B2 responses MUST receive 13-16/20 (NCLC 7-8 / B2).
-- Intermediate B1 responses MUST receive 8-11/20 (NCLC 5-6 / B1).
-- Basic A2 responses MUST receive 5-7/20 (NCLC 4 / A2).
-- Below A1 / simple sentence responses MUST receive 1-4/20 (NCLC 1-3 / A1).
-- OFF-TOPIC (HORS-SUJET) or PLAGIARIZED responses MUST receive 0/20 (NCLC 0).
+CRITICAL IMPARTIAL EVALUATION GUIDELINES (STRICT FEI CEFR STANDARDS — NO GRADE INFLATION):
+- Grade strictly according to candidate linguistic quality. DO NOT DEFAULT TO B2 OR ANY MID-LEVEL GRADE.
+- Flawless C2/C1 masterwork responses (rich vocabulary, complex subjonctif/conditionnel, immaculate cohesion) receive 18–20/20 (NCLC 10+ / C2 or NCLC 9 / C1).
+- Solid B2 responses with good connectors, complex structures (conditionnel/subjonctif), and minor errors receive 12–15/20 (NCLC 7–8 / B2).
+- Basic/Intermediate B1 responses (simple sentences, repetitive connectors like et/mais/parce que, basic vocabulary) MUST be capped at 8–11/20 (NCLC 5–6 / B1). They CANNOT receive B2 (12+).
+- Elementary A2 responses receive 5–7/20 (NCLC 4 / A2).
+- Beginner A1 responses receive 3–4/20 (NCLC 3 / A1) or 1–2/20 (Below A1).
+- OFF-TOPIC (HORS-SUJET), PLAGIARIZED, or GIBBERISH submissions MUST receive 0/20 (NCLC 0).
 
 OFFICIAL FEI 4-CRITERIA MARKS (0-5 EACH):
-1. taskFulfillmentScore (0-5): Address all prompt points, respect word count. (0/5 if Off-Topic)
-2. coherenceScore (0-5): Logical paragraph structure and transitional connectors (e.g. en outre, cependant, par conséquent).
-3. lexicalScore (0-5): Vocabulary range and precision appropriate to level.
-4. grammarScore (0-5): Morphosyntax, tense agreement (subjonctif, conditionnel, etc.), sentence structure.
+1. taskFulfillmentScore (0-5): Address all prompt points, respect word count boundaries. Deduct 1-2 pts if candidate falls short of minimum word count or exceeds maximum. (0/5 if Off-Topic)
+2. coherenceScore (0-5): Logical paragraph structure and transitional connectors (e.g. en outre, cependant, par conséquent, toutefois, d'une part... d'autre part). Repetitive basic connectors (et, mais, alors) cap this at 2-3/5.
+3. lexicalScore (0-5): Vocabulary range, domain-specific precision, and register appropriate to task. Repetitive basic words cap this at 2-3/5.
+4. grammarScore (0-5): Morphosyntax, tense agreement, complex sentence structures (subjonctif, conditionnel, relative pronouns dont/auquel). Absence of complex B2 structures caps this at 2-3/5.
 
 Context / Task Prompt:
 Task / Topic: "${lessonTitle || `${targetLanguage} Writing Examination`}"
@@ -252,13 +252,13 @@ Respond ONLY with a valid JSON object matching this schema:
   ]
 }
 
-REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore with exact integers from 0 to 5 corresponding to candidate level (C2=5, C1=4-5, B2=3-4, B1=2-3, A2=1-2, Below A1=0-1).`;
+REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore with exact integers from 0 to 5 corresponding to candidate level (5=C2/C1 flawless, 4=B2 advanced, 3=B1 intermediate, 2=A2 elementary, 1=A1 beginner, 0=Off-topic/Gibberish).`;
 
     try {
       const content = await generateAICompletion({
         model: 'gpt-4o-mini',
         prompt,
-        systemPrompt: `You are an official France Éducation International (FEI) Senior Examiner evaluating TCF Canada writing.`,
+        systemPrompt: `You are an official France Éducation International (FEI) Senior Examiner evaluating TCF Canada writing with strict, uninflated accuracy.`,
         temperature: 0.1,
         maxTokens: 1000,
       });
@@ -266,9 +266,9 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
-        const t = Math.max(0, Math.min(5, typeof parsed.taskFulfillmentScore === 'number' ? parsed.taskFulfillmentScore : 0));
-        const c = Math.max(0, Math.min(5, typeof parsed.coherenceScore === 'number' ? parsed.coherenceScore : 0));
-        const l = Math.max(0, Math.min(5, typeof parsed.lexicalScore === 'number' ? parsed.lexicalScore : 0));
+        const t = Math.max(0, Math.min(5, typeof parsed.taskFulfillmentScore === 'number' ? parsed.taskFulfillmentScore : (typeof parsed.taskCompletionScore === 'number' ? parsed.taskCompletionScore : 0)));
+        const c = Math.max(0, Math.min(5, typeof parsed.coherenceScore === 'number' ? parsed.coherenceScore : (typeof parsed.cohesionScore === 'number' ? parsed.cohesionScore : 0)));
+        const l = Math.max(0, Math.min(5, typeof parsed.lexicalScore === 'number' ? parsed.lexicalScore : (typeof parsed.vocabularyScore === 'number' ? parsed.vocabularyScore : 0)));
         const g = Math.max(0, Math.min(5, typeof parsed.grammarScore === 'number' ? parsed.grammarScore : 0));
 
         let scoreOutOf20 = t + c + l + g;
@@ -284,7 +284,7 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
                                    feedbackLower.includes('does not address the prompt') ||
                                    feedbackLower.includes('unrelated to the prompt');
 
-        if (scoreOutOf20 === 0 || parsed.taskFulfillmentScore === 0 || isOffTopicFeedback) {
+        if (scoreOutOf20 === 0 || t === 0 || isOffTopicFeedback) {
           return {
             score: 0,
             scoreOutOf20: 0,
@@ -306,11 +306,11 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
         let cefrLevel = parsed.cefrLevel || "B2";
         let expressEntryPoints = 17;
 
-        if (scoreOutOf20 >= 19) {
+        if (scoreOutOf20 >= 18) {
           nclcGrade = "NCLC 10 (C2 Mastery)";
           cefrLevel = "C2";
           expressEntryPoints = 34;
-        } else if (scoreOutOf20 >= 17) {
+        } else if (scoreOutOf20 >= 16) {
           nclcGrade = "NCLC 9 (C1 Advanced)";
           cefrLevel = "C1";
           expressEntryPoints = 31;
@@ -350,10 +350,10 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
           nclcGrade,
           cefrLevel,
           expressEntryPoints,
-          taskFulfillmentScore: typeof parsed.taskFulfillmentScore === 'number' ? parsed.taskFulfillmentScore : Math.min(5, Math.ceil(scoreOutOf20 / 4)),
-          coherenceScore: typeof parsed.coherenceScore === 'number' ? parsed.coherenceScore : Math.min(5, Math.ceil(scoreOutOf20 / 4)),
-          lexicalScore: typeof parsed.lexicalScore === 'number' ? parsed.lexicalScore : Math.min(5, Math.ceil(scoreOutOf20 / 4)),
-          grammarScore: typeof parsed.grammarScore === 'number' ? parsed.grammarScore : Math.min(5, Math.ceil(scoreOutOf20 / 4)),
+          taskFulfillmentScore: t,
+          coherenceScore: c,
+          lexicalScore: l,
+          grammarScore: g,
           feedback: parsed.feedback || 'Good effort on this writing task.',
           corrections: Array.isArray(parsed.corrections) ? parsed.corrections : [],
           tips: Array.isArray(parsed.tips) ? parsed.tips : [],
@@ -444,11 +444,11 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
     let cefrLevel = "B1";
     let expressEntryPoints = 6;
 
-    if (scoreOutOf20 >= 19) {
+    if (scoreOutOf20 >= 18) {
       nclcGrade = "NCLC 10 (C2 Mastery)";
       cefrLevel = "C2";
       expressEntryPoints = 34;
-    } else if (scoreOutOf20 >= 17) {
+    } else if (scoreOutOf20 >= 16) {
       nclcGrade = "NCLC 9 (C1 Advanced)";
       cefrLevel = "C1";
       expressEntryPoints = 31;

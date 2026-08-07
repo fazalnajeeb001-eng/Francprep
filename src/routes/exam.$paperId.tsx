@@ -493,10 +493,10 @@ export function AuthenticCBTExamPage() {
         let nclcGrade = "NCLC 1-2 (Below A1 / Beginner)";
         let expressEntryPoints = 0;
 
-        if (totalScoreOutOf20 >= 19) {
+        if (totalScoreOutOf20 >= 18) {
           nclcGrade = "NCLC 10 (C2 Mastery)";
           expressEntryPoints = 34;
-        } else if (totalScoreOutOf20 >= 17) {
+        } else if (totalScoreOutOf20 >= 16) {
           nclcGrade = "NCLC 9 (C1 Advanced)";
           expressEntryPoints = 31;
         } else if (totalScoreOutOf20 >= 14) {
@@ -531,9 +531,9 @@ export function AuthenticCBTExamPage() {
             nclcGrade,
             expressEntryPoints,
             scoreOutOf20: totalScoreOutOf20,
-            taskFulfillmentScore: data.taskCompletionScore || data.taskFulfillmentScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
-            coherenceScore: data.cohesionScore || data.coherenceScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
-            lexicalScore: data.vocabularyScore || data.lexicalScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+            taskFulfillmentScore: data.taskFulfillmentScore || data.taskCompletionScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+            coherenceScore: data.coherenceScore || data.cohesionScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+            lexicalScore: data.lexicalScore || data.vocabularyScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
             grammarScore: data.grammarScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
             feedback: data.feedback || `Official FEI Evaluation: Total ${totalScoreOutOf20}/20.`
           }
@@ -609,10 +609,10 @@ export function AuthenticCBTExamPage() {
     if (taskFulfillmentScore === 0 || totalScoreOutOf20 === 0) {
       nclcGrade = "NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet)";
       expressEntryPoints = 0;
-    } else if (totalScoreOutOf20 >= 19) {
+    } else if (totalScoreOutOf20 >= 18) {
       nclcGrade = "NCLC 10 (C2 Mastery)";
       expressEntryPoints = 34;
-    } else if (totalScoreOutOf20 >= 17) {
+    } else if (totalScoreOutOf20 >= 16) {
       nclcGrade = "NCLC 9 (C1 Advanced)";
       expressEntryPoints = 31;
     } else if (totalScoreOutOf20 >= 14) {
@@ -706,11 +706,18 @@ export function AuthenticCBTExamPage() {
       const typedText = writingResponses[key] || writingResponses[idx] || writingResponses[task.title] || "";
       if (typedText && typedText.trim().length > 0) {
         const clean = typedText.trim();
+
+        // Plagiarism check against sample model answer (if provided)
+        if (task.sampleResponse) {
+          const sim = calculateTextSimilarity(clean, task.sampleResponse);
+          if (sim >= 35) return 0;
+        }
+
         const wordCount = countFrenchWords(clean);
         const textLower = clean.toLowerCase();
 
-        let minWords = task.min || 60;
-        let maxWords = task.max || 120;
+        let minWords = task.wordCountMin || task.min || 60;
+        let maxWords = task.wordCountMax || task.max || 120;
 
         let taskFulfillmentScore = 1;
         if (wordCount >= minWords && wordCount <= maxWords + 30) taskFulfillmentScore = 5;
