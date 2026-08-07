@@ -1955,7 +1955,7 @@ export function calculateNCLCScore(pctScore: number, _examType: ExamType, sectio
       cefrEquivalent = "C1";
       expressEntryPoints = 31;
       isNCLC7TargetReached = true;
-    } else if (pct >= 70.0) { // 27.3-31 / 39 (NCLC 8 B2 Upper - 23 CRS Points)
+    } else if (pct >= 69.2) { // 27-31 / 39 (NCLC 8 B2 Upper - 23 CRS Points)
       nclcLevel = 8;
       cefrEquivalent = "B2";
       expressEntryPoints = 23;
