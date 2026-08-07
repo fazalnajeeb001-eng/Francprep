@@ -30,6 +30,11 @@ import { useAuth } from "~/lib/AuthContext";
 import { apiFetch } from "~/lib/apiFetch";
 import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } from "~/lib/examSchema";
 
+function countFrenchWords(str: string): number {
+  if (!str || !str.trim()) return 0;
+  return str.trim().replace(/['’]/g, " ").split(/\s+/).filter(Boolean).length;
+}
+
 function calculateTextSimilarity(str1: string, str2: string): number {
   if (!str1 || !str2) return 0;
   const normalize = (s: string) =>
@@ -433,7 +438,7 @@ export function AuthenticCBTExamPage() {
     maxWords = 180
   ) => {
     const clean = textVal ? textVal.trim() : "";
-    const wordCount = clean ? clean.split(/\s+/).length : 0;
+    const wordCount = countFrenchWords(clean);
 
     if (wordCount < 10) {
       alert("Veuillez saisir au moins 10 mots avant de demander l'évaluation IA.");
@@ -700,7 +705,7 @@ export function AuthenticCBTExamPage() {
       const typedText = writingResponses[key] || writingResponses[idx] || writingResponses[task.title] || "";
       if (typedText && typedText.trim().length > 0) {
         const clean = typedText.trim();
-        const wordCount = clean.split(/\s+/).length;
+        const wordCount = countFrenchWords(clean);
         const textLower = clean.toLowerCase();
 
         let minWords = task.min || 60;
@@ -1410,7 +1415,7 @@ export function AuthenticCBTExamPage() {
               if (!task) return null;
 
               const textVal = writingResponses[task.id] || "";
-              const wordCount = textVal.trim() ? textVal.trim().split(/\s+/).length : 0;
+              const wordCount = countFrenchWords(textVal);
               const isValid = wordCount >= task.wordCountMin && wordCount <= task.wordCountMax;
               const aiEval = writingAiResults[task.id];
               const isEvaluating = evaluatingWriting[task.id];

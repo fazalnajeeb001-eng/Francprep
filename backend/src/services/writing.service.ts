@@ -369,7 +369,7 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
 
   private evaluateLocalCEFR(text: string, lessonTitle?: string, expectedAnswer?: string, targetLanguage = 'French') {
     const clean = (text || '').trim();
-    const words = clean.split(/\s+/).filter(Boolean);
+    const words = clean.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
     const wordCount = words.length;
     const textLower = clean.toLowerCase();
 
