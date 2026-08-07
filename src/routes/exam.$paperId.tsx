@@ -508,7 +508,7 @@ export function AuthenticCBTExamPage() {
         } else if (totalScoreOutOf20 >= 10) {
           nclcGrade = "NCLC 6 (B1 Intermediate)";
           expressEntryPoints = 12;
-        } else if (totalScoreOutOf20 >= 8) {
+        } else if (totalScoreOutOf20 >= 9) {
           nclcGrade = "NCLC 5 (B1 Threshold)";
           expressEntryPoints = 6;
         } else if (totalScoreOutOf20 >= 5) {
@@ -544,6 +544,9 @@ export function AuthenticCBTExamPage() {
     } catch {}
 
     // 2. Calibrated Local Rule Engine Fallback (Full-Spectrum CEFR Calibration)
+    const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks)\b/i.test(clean);
+    const hasTelegraphicGrammar = /\b(je\s+maladie|je\s+malade|moi\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances)\b/i.test(clean);
+
     let taskFulfillmentScore = 1;
     if (wordCount >= minWords && wordCount <= maxWords + 30) {
       taskFulfillmentScore = 5;
@@ -578,7 +581,8 @@ export function AuthenticCBTExamPage() {
     const foundB2Lex = b2Lexical.filter((w) => textLower.includes(w));
 
     let lexicalScore = 1;
-    if (foundC1C2Lex.length >= 2) lexicalScore = 5;
+    if (hasEnglishWords) lexicalScore = 1;
+    else if (foundC1C2Lex.length >= 2) lexicalScore = 5;
     else if (foundC1C2Lex.length >= 1 || foundB2Lex.length >= 2) lexicalScore = 4;
     else if (foundB2Lex.length >= 1) lexicalScore = 3;
     else if (wordCount >= 30) lexicalScore = 2;
@@ -591,11 +595,8 @@ export function AuthenticCBTExamPage() {
     const foundB2Gram = b2Grammar.filter((g) => textLower.includes(g));
 
     let grammarScore = 1;
-    if (wordCount < 15) {
+    if (hasEnglishWords || hasTelegraphicGrammar || wordCount < 15) {
       grammarScore = 1;
-      lexicalScore = 1;
-      coherenceScore = 1;
-      taskFulfillmentScore = 1;
     } else if (foundC1C2Gram.length >= 2) grammarScore = 5;
     else if (foundC1C2Gram.length >= 1 || foundB2Gram.length >= 2) grammarScore = 4;
     else if (foundB2Gram.length >= 1 || textLower.includes("parce que") || textLower.includes("j'ai")) grammarScore = 3;
@@ -604,8 +605,8 @@ export function AuthenticCBTExamPage() {
 
     const totalScoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
 
-    let nclcGrade = "NCLC 5 (B1 Threshold)";
-    let expressEntryPoints = 6;
+    let nclcGrade = "NCLC 4 (A2 Elementary)";
+    let expressEntryPoints = 0;
     if (taskFulfillmentScore === 0 || totalScoreOutOf20 === 0) {
       nclcGrade = "NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet)";
       expressEntryPoints = 0;
@@ -624,7 +625,7 @@ export function AuthenticCBTExamPage() {
     } else if (totalScoreOutOf20 >= 10) {
       nclcGrade = "NCLC 6 (B1 Intermediate)";
       expressEntryPoints = 12;
-    } else if (totalScoreOutOf20 >= 8) {
+    } else if (totalScoreOutOf20 >= 9) {
       nclcGrade = "NCLC 5 (B1 Threshold)";
       expressEntryPoints = 6;
     } else if (totalScoreOutOf20 >= 5) {

@@ -215,16 +215,21 @@ CRITICAL IMPARTIAL EVALUATION GUIDELINES (STRICT FEI CEFR STANDARDS — NO GRADE
 - Grade strictly according to candidate linguistic quality. DO NOT DEFAULT TO B2 OR ANY MID-LEVEL GRADE.
 - Flawless C2/C1 masterwork responses (rich vocabulary, complex subjonctif/conditionnel, immaculate cohesion) receive 18–20/20 (NCLC 10+ / C2 or NCLC 9 / C1).
 - Solid B2 responses with good connectors, complex structures (conditionnel/subjonctif), and minor errors receive 12–15/20 (NCLC 7–8 / B2).
-- Basic/Intermediate B1 responses (simple sentences, repetitive connectors like et/mais/parce que, basic vocabulary) MUST be capped at 8–11/20 (NCLC 5–6 / B1). They CANNOT receive B2 (12+).
-- Elementary A2 responses receive 5–7/20 (NCLC 4 / A2).
+- Basic/Intermediate B1 responses (simple sentences, basic connectors like et/mais/parce que, basic vocabulary) MUST be capped at 9–11/20 (NCLC 5–6 / B1). They CANNOT receive B2 (12+).
+- Elementary A2 responses receive 5–8/20 (NCLC 4 / A2).
 - Beginner A1 responses receive 3–4/20 (NCLC 3 / A1) or 1–2/20 (Below A1).
 - OFF-TOPIC (HORS-SUJET), PLAGIARIZED, or GIBBERISH submissions MUST receive 0/20 (NCLC 0).
+
+CRITICAL PENALTY RULES FOR CODE-SWITCHING, BROKEN A1 GRAMMAR & WORD COUNT:
+1. ENGLISH WORDS / CODE-SWITCHING (e.g. "is no work", "the", "with"): Inserting non-French English words in a French essay MUST cap GrammarScore at 1/5 and LexicalScore at 1/5.
+2. BROKEN TELEGRAPHIC GRAMMAR (e.g. "moi très froid", "Je malade", "pas possible dormir"): Non-conjugated/telegraphic sentences MUST cap GrammarScore at 1/5.
+3. WORD COUNT SHORTFALL: If candidate text is below minimum word count (e.g. <60 words for Task 1, <120 words for Task 2, <140 words for Task 3), TaskFulfillmentScore MUST be capped at 1-2/5.
 
 OFFICIAL FEI 4-CRITERIA MARKS (0-5 EACH):
 1. taskFulfillmentScore (0-5): Address all prompt points, respect word count boundaries. Deduct 1-2 pts if candidate falls short of minimum word count or exceeds maximum. (0/5 if Off-Topic)
 2. coherenceScore (0-5): Logical paragraph structure and transitional connectors (e.g. en outre, cependant, par conséquent, toutefois, d'une part... d'autre part). Repetitive basic connectors (et, mais, alors) cap this at 2-3/5.
-3. lexicalScore (0-5): Vocabulary range, domain-specific precision, and register appropriate to task. Repetitive basic words cap this at 2-3/5.
-4. grammarScore (0-5): Morphosyntax, tense agreement, complex sentence structures (subjonctif, conditionnel, relative pronouns dont/auquel). Absence of complex B2 structures caps this at 2-3/5.
+3. lexicalScore (0-5): Vocabulary range, domain-specific precision, and register appropriate to task. English word insertion caps this at 1/5.
+4. grammarScore (0-5): Morphosyntax, tense agreement, complex sentence structures. English insertion or broken telegraphic A1 grammar caps this at 1/5.
 
 Context / Task Prompt:
 Task / Topic: "${lessonTitle || `${targetLanguage} Writing Examination`}"
@@ -326,7 +331,7 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
           nclcGrade = "NCLC 6 (B1 Intermediate)";
           cefrLevel = "B1";
           expressEntryPoints = 12;
-        } else if (scoreOutOf20 >= 8) {
+        } else if (scoreOutOf20 >= 9) {
           nclcGrade = "NCLC 5 (B1 Threshold)";
           cefrLevel = "B1";
           expressEntryPoints = 6;
@@ -383,6 +388,10 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
       maxWords = 180;
     }
 
+    // Code-switching & English word check
+    const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks)\b/i.test(textLower);
+    const hasTelegraphicGrammar = /\b(je\s+maladie|je\s+malade|moi\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances)\b/i.test(textLower);
+
     let taskFulfillmentScore = 1;
     if (wordCount >= minWords && wordCount <= maxWords + 30) {
       taskFulfillmentScore = 5;
@@ -414,7 +423,8 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
     const foundB2Lex = b2Lexical.filter((w) => textLower.includes(w));
 
     let lexicalScore = 1;
-    if (foundC1C2Lex.length >= 2) lexicalScore = 5;
+    if (hasEnglishWords) lexicalScore = 1;
+    else if (foundC1C2Lex.length >= 2) lexicalScore = 5;
     else if (foundC1C2Lex.length >= 1 || foundB2Lex.length >= 2) lexicalScore = 4;
     else if (foundB2Lex.length >= 1) lexicalScore = 3;
     else if (wordCount >= 30) lexicalScore = 2;
@@ -426,11 +436,8 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
     const foundB2Gram = b2Grammar.filter((g) => textLower.includes(g));
 
     let grammarScore = 1;
-    if (wordCount < 15) {
+    if (hasEnglishWords || hasTelegraphicGrammar || wordCount < 15) {
       grammarScore = 1;
-      lexicalScore = 1;
-      coherenceScore = 1;
-      taskFulfillmentScore = 1;
     } else if (foundC1C2Gram.length >= 2) grammarScore = 5;
     else if (foundC1C2Gram.length >= 1 || foundB2Gram.length >= 2) grammarScore = 4;
     else if (foundB2Gram.length >= 1 || textLower.includes("parce que") || textLower.includes("j'ai")) grammarScore = 3;
@@ -440,9 +447,9 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
     const scoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
     const scorePct = Math.round((scoreOutOf20 / 20) * 100);
 
-    let nclcGrade = "NCLC 5 (B1 Threshold)";
-    let cefrLevel = "B1";
-    let expressEntryPoints = 6;
+    let nclcGrade = "NCLC 4 (A2 Elementary)";
+    let cefrLevel = "A2";
+    let expressEntryPoints = 0;
 
     if (scoreOutOf20 >= 18) {
       nclcGrade = "NCLC 10 (C2 Mastery)";
@@ -464,7 +471,7 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
       nclcGrade = "NCLC 6 (B1 Intermediate)";
       cefrLevel = "B1";
       expressEntryPoints = 12;
-    } else if (scoreOutOf20 >= 8) {
+    } else if (scoreOutOf20 >= 9) {
       nclcGrade = "NCLC 5 (B1 Threshold)";
       cefrLevel = "B1";
       expressEntryPoints = 6;
