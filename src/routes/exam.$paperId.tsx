@@ -1758,13 +1758,13 @@ export function AuthenticCBTExamPage() {
                 <span className="text-xs font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">
                   Diagnostic Simulator Evaluation ({mode === "EXAM" ? "REAL EXAM MODE" : "GUIDED PRACTICE MODE"})
                 </span>
-                <h2 className="text-3xl font-extrabold">Estimated NCLC Level {calculateResults().nclcLevel} ({calculateResults().cefrEquivalent})</h2>
+                <h2 className="text-3xl font-extrabold">Estimated CLB / NCLC Level {calculateResults().nclcLevel} ({calculateResults().cefrEquivalent})</h2>
                 <p className="text-xs text-slate-500">
                   Total Score: <strong>{calculateResults().percentage}%</strong> ({calculateResults().totalCorrect} / {calculateResults().totalQs} Questions Correct)
                 </p>
               </div>
 
-              {/* 4-SKILL MODULE NCLC SCORECARD GRID */}
+              {/* 4-SKILL MODULE CLB / NCLC SCORECARD GRID */}
               {(() => {
                 const res = calculateResults();
                 return (
@@ -1775,7 +1775,7 @@ export function AuthenticCBTExamPage() {
                         <div className="flex items-center justify-between text-[11px] font-bold text-purple-900 dark:text-purple-300">
                           <span className="flex items-center gap-1">🎧 Listening (CO)</span>
                           <span className="px-2 py-0.5 rounded bg-purple-600 text-white font-mono text-[10px]">
-                            {res.listeningNCLC.nclcLevel === 0 ? "Unrated" : `NCLC ${res.listeningNCLC.nclcLevel}`}
+                            {res.listeningNCLC.nclcLevel === 0 ? "Unrated" : `CLB / NCLC ${res.listeningNCLC.nclcLevel}`}
                           </span>
                         </div>
                         <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
@@ -1788,7 +1788,7 @@ export function AuthenticCBTExamPage() {
                         <div className="flex items-center justify-between text-[11px] font-bold text-blue-900 dark:text-blue-300">
                           <span className="flex items-center gap-1">📖 Reading (CE)</span>
                           <span className="px-2 py-0.5 rounded bg-blue-600 text-white font-mono text-[10px]">
-                            {res.readingNCLC.nclcLevel === 0 ? "Unrated" : `NCLC ${res.readingNCLC.nclcLevel}`}
+                            {res.readingNCLC.nclcLevel === 0 ? "Unrated" : `CLB / NCLC ${res.readingNCLC.nclcLevel}`}
                           </span>
                         </div>
                         <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
@@ -1801,7 +1801,7 @@ export function AuthenticCBTExamPage() {
                         <div className="flex items-center justify-between text-[11px] font-bold text-pink-900 dark:text-pink-300">
                           <span className="flex items-center gap-1">✍️ Writing (EE)</span>
                           <span className="px-2 py-0.5 rounded bg-pink-600 text-white font-mono text-[10px]">
-                            {res.writingAvg === 0 ? "Unrated" : `NCLC ${res.writingNCLC.nclcLevel}`}
+                            {res.writingAvg === 0 ? "Unrated" : `CLB / NCLC ${res.writingNCLC.nclcLevel}`}
                           </span>
                         </div>
                         <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
@@ -1814,7 +1814,7 @@ export function AuthenticCBTExamPage() {
                         <div className="flex items-center justify-between text-[11px] font-bold text-indigo-900 dark:text-indigo-300">
                           <span className="flex items-center gap-1">🎙️ Speaking (EO)</span>
                           <span className="px-2 py-0.5 rounded bg-indigo-600 text-white font-mono text-[10px]">
-                            {res.speakingAvg === 0 ? "Unrated" : `NCLC ${res.speakingNCLC.nclcLevel}`}
+                            {res.speakingAvg === 0 ? "Unrated" : `CLB / NCLC ${res.speakingNCLC.nclcLevel}`}
                           </span>
                         </div>
                         <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
