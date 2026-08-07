@@ -560,8 +560,8 @@ export function AuthenticCBTExamPage() {
       taskFulfillmentScore = 1;
     }
 
-    const c1c2Connectors = ["de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet", "néanmoins", "en somme", "en conclusion"];
-    const b2Connectors = ["en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin"];
+    const c1c2Connectors = ["de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet", "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement"];
+    const b2Connectors = ["en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin", "au cours de", "par conséquent", "toutefois", "néanmoins"];
     const textLower = clean.toLowerCase();
 
     const foundC1C2Conn = c1c2Connectors.filter((c) => textLower.includes(c));
@@ -570,11 +570,11 @@ export function AuthenticCBTExamPage() {
     let coherenceScore = 1;
     if (foundC1C2Conn.length >= 2) coherenceScore = 5;
     else if (foundC1C2Conn.length >= 1 || foundB2Conn.length >= 2) coherenceScore = 4;
-    else if (foundB2Conn.length >= 1 || textLower.includes("mais") || textLower.includes("donc") || textLower.includes("car")) coherenceScore = 3;
-    else if (textLower.includes("et") || textLower.includes("ou")) coherenceScore = 2;
+    else if (foundB2Conn.length >= 1 || textLower.includes("donc") || textLower.includes("car")) coherenceScore = 3;
+    else if (textLower.includes("mais") || textLower.includes("en plus") || textLower.includes("parce que")) coherenceScore = 2;
     else coherenceScore = 1;
 
-    const c1c2Lexical = ["opportunité", "perspective", "incontournable", "sensibilisation", "préconiser", "déception", "solliciter", "manifestation", "bienveillance", "réciproque", "controverse", "conciliation", "préconiser", "inéluctable", "plasticité", "épanouissement", "décarbonation", "assimilation", "détériorer", "attentivement"];
+    const c1c2Lexical = ["opportunité", "perspective", "incontournable", "sensibilisation", "préconiser", "déception", "solliciter", "manifestation", "bienveillance", "réciproque", "controverse", "conciliation", "inéluctable", "plasticité", "épanouissement", "décarbonation", "assimilation", "détériorer", "attentivement", "dysfonctionnement", "préjudice", "locataire"];
     const b2Lexical = ["avantage", "inconvénient", "participation", "installation", "inscription", "abonnement", "formation", "réclamation", "matériel", "garantie", "projet", "expérience", "quartier", "collègue", "souhaiter", "demander", "préciser"];
     
     const foundC1C2Lex = c1c2Lexical.filter((w) => textLower.includes(w));
@@ -588,8 +588,8 @@ export function AuthenticCBTExamPage() {
     else if (wordCount >= 30) lexicalScore = 2;
     else lexicalScore = 1;
 
-    const c1c2Grammar = ["puisse", "soit", "fassions", "sachiez", "ayez", "fussent", "a été", "ont été", "fut", "dont", "auquel", "laquelle", "duquel", "lesquelles", "en observant", "en prenant", "tout en", "aurait été", "aurait dû", "eût", "demeure", "entraver"];
-    const b2Grammar = ["serait", "pourrait", "devrais", "j'aimerais", "il faut que", "pour que", "bien que", "afin de", "en vue de", "je vous prie", "veuillez", "pourriez-vous"];
+    const c1c2Grammar = ["puisse", "soit", "fassions", "sachiez", "ayez", "fussent", "dont", "auquel", "laquelle", "duquel", "lesquelles", "en observant", "en prenant", "tout en", "aurait été", "aurait dû", "eût", "demeure", "entraver"];
+    const b2Grammar = ["pourriez-vous", "pourrait-il", "serait-il", "j'aimerais", "nous aimerions", "il conviendrait", "bien que", "afin de", "en vue de", "après avoir", "étant donné", "je vous prie d'agréer", "veuillez agréer", "il faut que", "pour que"];
     
     const foundC1C2Gram = c1c2Grammar.filter((g) => textLower.includes(g));
     const foundB2Gram = b2Grammar.filter((g) => textLower.includes(g));
@@ -599,11 +599,24 @@ export function AuthenticCBTExamPage() {
       grammarScore = 1;
     } else if (foundC1C2Gram.length >= 2) grammarScore = 5;
     else if (foundC1C2Gram.length >= 1 || foundB2Gram.length >= 2) grammarScore = 4;
-    else if (foundB2Gram.length >= 1 || textLower.includes("parce que") || textLower.includes("j'ai")) grammarScore = 3;
-    else if (textLower.includes("je suis") || textLower.includes("c'est") || textLower.includes("il y a")) grammarScore = 2;
+    else if (foundB2Gram.length >= 1 || textLower.includes("j'ai ") || textLower.includes("nous avons")) grammarScore = 3;
+    else if (textLower.includes("je suis") || textLower.includes("c'est") || textLower.includes("il fait") || textLower.includes("vous pouvez")) grammarScore = 2;
     else grammarScore = 1;
 
-    const totalScoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
+    let totalScoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
+
+    const hasB2Conn = foundB2Conn.length > 0 || foundC1C2Conn.length > 0;
+    const hasB2Gram = foundB2Gram.length > 0 || foundC1C2Gram.length > 0;
+    if (!hasB2Conn || !hasB2Gram) {
+      totalScoreOutOf20 = Math.min(8, totalScoreOutOf20);
+    }
+
+    const hasC1C2Lex = foundC1C2Lex.length > 0;
+    const hasC1C2Gram = foundC1C2Gram.length > 0;
+    const hasC1C2Conn = foundC1C2Conn.length > 0;
+    if (!hasC1C2Conn && !hasC1C2Lex && !hasC1C2Gram) {
+      totalScoreOutOf20 = Math.min(15, totalScoreOutOf20);
+    }
 
     let nclcGrade = "NCLC 4 (A2 Elementary)";
     let expressEntryPoints = 0;
@@ -625,7 +638,7 @@ export function AuthenticCBTExamPage() {
     } else if (totalScoreOutOf20 >= 10) {
       nclcGrade = "NCLC 6 (B1 Intermediate)";
       expressEntryPoints = 12;
-    } else if (totalScoreOutOf20 >= 9) {
+    } else if (totalScoreOutOf20 >= 8) {
       nclcGrade = "NCLC 5 (B1 Threshold)";
       expressEntryPoints = 6;
     } else if (totalScoreOutOf20 >= 5) {
@@ -710,7 +723,7 @@ export function AuthenticCBTExamPage() {
       if (aiRes?.scoreOutOf20 !== undefined) {
         return aiRes.scoreOutOf20;
       }
-      const typedText = writingResponses[key] || writingResponses[idx] || writingResponses[task.title] || "";
+      const typedText = writingResponses[key] || (task.id && writingResponses[task.id]) || (task.title && writingResponses[task.title]) || writingResponses[idx] || writingResponses[`task_${idx}`] || "";
       if (typedText && typedText.trim().length > 0) {
         const clean = typedText.trim();
 
@@ -741,19 +754,19 @@ export function AuthenticCBTExamPage() {
         const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|travel|city|park|food|good|experience)\b/i.test(clean);
         const hasTelegraphicGrammar = /\b(je\s+maladie|je\s+malade|moi\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances|je\s+allé|je\s+faire|nous\s+manger|prendre\s+photo|je\s+aimé|je\s+très)\b/i.test(clean);
 
-        const c1c2Connectors = ["de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet", "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement", "lors de"];
-        const b2Connectors = ["en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin", "au cours de", "pendant le"];
+        const c1c2Connectors = ["de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet", "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement"];
+        const b2Connectors = ["en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin", "au cours de", "par conséquent", "toutefois", "néanmoins"];
         const foundC1C2Conn = c1c2Connectors.filter((c) => textLower.includes(c));
         const foundB2Conn = b2Connectors.filter((c) => textLower.includes(c));
 
         let coherenceScore = 1;
         if (foundC1C2Conn.length >= 2) coherenceScore = 5;
         else if (foundC1C2Conn.length >= 1 || foundB2Conn.length >= 2) coherenceScore = 4;
-        else if (foundB2Conn.length >= 1 || textLower.includes("mais") || textLower.includes("donc") || textLower.includes("car")) coherenceScore = 3;
-        else if (textLower.includes("et") || textLower.includes("ou")) coherenceScore = 2;
+        else if (foundB2Conn.length >= 1 || textLower.includes("donc") || textLower.includes("car")) coherenceScore = 3;
+        else if (textLower.includes("mais") || textLower.includes("en plus") || textLower.includes("parce que")) coherenceScore = 2;
         else coherenceScore = 1;
 
-        const c1c2Lexical = ["opportunité", "perspective", "incontournable", "sensibilisation", "préconiser", "déception", "solliciter", "manifestation", "bienveillance", "réciproque", "controverse", "conciliation", "inéluctable", "plasticité", "épanouissement", "décarbonation", "assimilation", "détériorer", "attentivement", "périple", "majestueux", "féerique", "dépaysement", "spectaculaire", "ascension", "émerveillement", "sérénité", "enrichissantes", "impérissables", "irrépressible", "d'exception"];
+        const c1c2Lexical = ["opportunité", "perspective", "incontournable", "sensibilisation", "préconiser", "déception", "solliciter", "manifestation", "bienveillance", "réciproque", "controverse", "conciliation", "inéluctable", "plasticité", "épanouissement", "décarbonation", "assimilation", "détériorer", "attentivement", "périple", "majestueux", "féerique", "dépaysement", "spectaculaire", "ascension", "émerveillement", "sérénité", "enrichissantes", "impérissables", "irrépressible", "d'exception", "dysfonctionnement", "préjudice", "locataire"];
         const b2Lexical = ["avantage", "inconvénient", "participation", "installation", "inscription", "abonnement", "formation", "réclamation", "matériel", "garantie", "projet", "expérience", "quartier", "collègue", "souhaiter", "demander", "préciser", "bâtiments", "paysage", "renouvelé"];
         const foundC1C2Lex = c1c2Lexical.filter((w) => textLower.includes(w));
         const foundB2Lex = b2Lexical.filter((w) => textLower.includes(w));
@@ -766,8 +779,8 @@ export function AuthenticCBTExamPage() {
         else if (wordCount >= 30) lexicalScore = 2;
         else lexicalScore = 1;
 
-        const c1c2Grammar = ["puisse", "soit", "fassions", "sachiez", "ayez", "fussent", "a été", "ont été", "fut", "dont", "auquel", "laquelle", "duquel", "lesquelles", "en observant", "en prenant", "tout en", "aurait été", "aurait dû", "eût", "demeure", "entraver", "me laissant", "entouré de", "bordé par"];
-        const b2Grammar = ["serait", "pourrait", "devrais", "j'aimerais", "il faut que", "pour que", "bien que", "afin de", "en vue de", "je vous prie", "veuillez", "pourriez-vous", "sommes restés", "avons visité", "avons pris", "avons fait"];
+        const c1c2Grammar = ["puisse", "soit", "fassions", "sachiez", "ayez", "fussent", "dont", "auquel", "laquelle", "duquel", "lesquelles", "en observant", "en prenant", "tout en", "aurait été", "aurait dû", "eût", "demeure", "entraver", "me laissant"];
+        const b2Grammar = ["pourriez-vous", "pourrait-il", "serait-il", "j'aimerais", "nous aimerions", "il conviendrait", "bien que", "afin de", "en vue de", "après avoir", "étant donné", "je vous prie d'agréer", "veuillez agréer", "il faut que", "pour que", "sommes restés", "avons visité"];
         const foundC1C2Gram = c1c2Grammar.filter((g) => textLower.includes(g));
         const foundB2Gram = b2Grammar.filter((g) => textLower.includes(g));
 
@@ -776,12 +789,16 @@ export function AuthenticCBTExamPage() {
           grammarScore = 1; lexicalScore = 1; coherenceScore = 1; taskFulfillmentScore = 1;
         } else if (foundC1C2Gram.length >= 2) grammarScore = 5;
         else if (foundC1C2Gram.length >= 1 || foundB2Gram.length >= 2) grammarScore = 4;
+        else if (foundB2Gram.length >= 1 || textLower.includes("j'ai ") || textLower.includes("nous avons")) grammarScore = 3;
+        else if (textLower.includes("je suis") || textLower.includes("c'est") || textLower.includes("il fait") || textLower.includes("vous pouvez")) grammarScore = 2;
+        else grammarScore = 1;
+
         if (taskFulfillmentScore === 0) return 0;
         let rawSum = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
         const hasB2Conn = foundB2Conn.length > 0 || foundC1C2Conn.length > 0;
         const hasB2Gram = foundB2Gram.length > 0 || foundC1C2Gram.length > 0;
-        if (!hasB2Conn && !hasB2Gram) {
-          rawSum = Math.min(9, rawSum);
+        if (!hasB2Conn || !hasB2Gram) {
+          rawSum = Math.min(8, rawSum);
         }
         const hasC1C2Lex = foundC1C2Lex.length > 0;
         const hasC1C2Gram = foundC1C2Gram.length > 0;
@@ -798,10 +815,27 @@ export function AuthenticCBTExamPage() {
       const t1Score = getTaskScore(wTasks[0], 0);
       const t2Score = getTaskScore(wTasks[1], 1);
       const t3Score = getTaskScore(wTasks[2], 2);
-      writingWeightedScore = Math.round(0.20 * t1Score + 0.30 * t2Score + 0.50 * t3Score);
+
+      const attemptedTasks = [
+        { score: t1Score, weight: 0.20 },
+        { score: t2Score, weight: 0.30 },
+        { score: t3Score, weight: 0.50 }
+      ].filter((t) => t.score > 0);
+
+      if (attemptedTasks.length === 3) {
+        writingWeightedScore = Math.round(0.20 * t1Score + 0.30 * t2Score + 0.50 * t3Score);
+      } else if (attemptedTasks.length > 0) {
+        const totalWeight = attemptedTasks.reduce((sum, t) => sum + t.weight, 0);
+        writingWeightedScore = Math.round(
+          attemptedTasks.reduce((sum, t) => sum + t.score * t.weight, 0) / totalWeight
+        );
+      } else {
+        writingWeightedScore = 0;
+      }
     } else {
       const scores = wTasks.map((t, idx) => getTaskScore(t, idx));
-      writingWeightedScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+      const validScores = scores.filter((s) => s > 0);
+      writingWeightedScore = validScores.length > 0 ? Math.round(validScores.reduce((a, b) => a + b, 0) / validScores.length) : 0;
     }
 
     const writingPct = Math.round((writingWeightedScore / 20) * 100);
@@ -811,42 +845,79 @@ export function AuthenticCBTExamPage() {
     const speakingAvg = speakingScores.length > 0 ? Math.round(speakingScores.reduce((a, b) => a + b, 0) / speakingScores.length) : 0;
     const speakingNCLC = calculateNCLCScore(speakingAvg, paper.type, "EXPRESSION_ORALE");
 
+    // Calculate individual skill CRS points according to official IRCC scale
+    const getModulePoints = (nclc: number) => {
+      if (nclc >= 10) return 34;
+      if (nclc === 9) return 31;
+      if (nclc === 8) return 23;
+      if (nclc === 7) return 17;
+      if (nclc === 6) return 12;
+      if (nclc === 5) return 6;
+      return 0;
+    };
+
+    const listeningPoints = (listeningTotal > 0 && listeningCorrect > 0) ? getModulePoints(listeningNCLC.nclcLevel) : 0;
+    const readingPoints = (readingTotal > 0 && readingCorrect > 0) ? getModulePoints(readingNCLC.nclcLevel) : 0;
+    const writingPoints = (writingWeightedScore > 0 && writingNCLC.nclcLevel > 0) ? getModulePoints(writingNCLC.nclcLevel) : 0;
+    const speakingPoints = (speakingAvg > 0 && speakingNCLC.nclcLevel > 0) ? getModulePoints(speakingNCLC.nclcLevel) : 0;
+
+    const cumulativeCRSPoints = listeningPoints + readingPoints + writingPoints + speakingPoints;
+
     // Collect all valid NCLC levels from attempted skills (IRCC lowest-skill benchmark rule)
     const attemptedNCLCs: number[] = [];
-    if (listeningTotal > 0 && listeningCorrect > 0) attemptedNCLCs.push(listeningNCLC.nclcLevel);
-    if (readingTotal > 0 && readingCorrect > 0) attemptedNCLCs.push(readingNCLC.nclcLevel);
-    if (writingWeightedScore > 0 && writingNCLC.nclcLevel > 0) attemptedNCLCs.push(writingNCLC.nclcLevel);
-    if (speakingAvg > 0 && speakingNCLC.nclcLevel > 0) attemptedNCLCs.push(speakingNCLC.nclcLevel);
+    const attemptedModuleNames: string[] = [];
+    if (listeningTotal > 0 && listeningCorrect > 0) {
+      attemptedNCLCs.push(listeningNCLC.nclcLevel);
+      attemptedModuleNames.push("Listening (CO)");
+    }
+    if (readingTotal > 0 && readingCorrect > 0) {
+      attemptedNCLCs.push(readingNCLC.nclcLevel);
+      attemptedModuleNames.push("Reading (CE)");
+    }
+    if (writingWeightedScore > 0 && writingNCLC.nclcLevel > 0) {
+      attemptedNCLCs.push(writingNCLC.nclcLevel);
+      attemptedModuleNames.push("Writing (EE)");
+    }
+    if (speakingAvg > 0 && speakingNCLC.nclcLevel > 0) {
+      attemptedNCLCs.push(speakingNCLC.nclcLevel);
+      attemptedModuleNames.push("Speaking (EO)");
+    }
 
     let finalNCLCLevel = 0;
     let finalCEFREquivalent = "Unrated";
-    let finalExpressEntryPoints = 0;
     let isTargetReached = false;
     let statusMsg = "⚠️ No test questions were attempted in this session.";
 
     if (attemptedNCLCs.length > 0) {
       finalNCLCLevel = Math.min(...attemptedNCLCs);
       if (finalNCLCLevel >= 10) {
-        finalCEFREquivalent = "C2"; finalExpressEntryPoints = 34; isTargetReached = true;
+        finalCEFREquivalent = "C2"; isTargetReached = true;
       } else if (finalNCLCLevel === 9) {
-        finalCEFREquivalent = "C1"; finalExpressEntryPoints = 31; isTargetReached = true;
+        finalCEFREquivalent = "C1"; isTargetReached = true;
       } else if (finalNCLCLevel === 8) {
-        finalCEFREquivalent = "B2"; finalExpressEntryPoints = 23; isTargetReached = true;
+        finalCEFREquivalent = "B2"; isTargetReached = true;
       } else if (finalNCLCLevel === 7) {
-        finalCEFREquivalent = "B2"; finalExpressEntryPoints = 17; isTargetReached = true;
+        finalCEFREquivalent = "B2"; isTargetReached = true;
       } else if (finalNCLCLevel === 6) {
-        finalCEFREquivalent = "B1"; finalExpressEntryPoints = 12; isTargetReached = false;
+        finalCEFREquivalent = "B1"; isTargetReached = false;
       } else if (finalNCLCLevel === 5) {
-        finalCEFREquivalent = "B1"; finalExpressEntryPoints = 6; isTargetReached = false;
+        finalCEFREquivalent = "B1"; isTargetReached = false;
       } else if (finalNCLCLevel === 4) {
-        finalCEFREquivalent = "A2"; finalExpressEntryPoints = 0; isTargetReached = false;
+        finalCEFREquivalent = "A2"; isTargetReached = false;
       } else {
-        finalCEFREquivalent = "A1"; finalExpressEntryPoints = 0; isTargetReached = false;
+        finalCEFREquivalent = "A1"; isTargetReached = false;
       }
 
-      statusMsg = isTargetReached
-        ? `🎉 Excellent! Attempted skill modules achieve CLB / NCLC ${finalNCLCLevel} (${finalCEFREquivalent}) — Meets Canadian Express Entry PR Benchmark!`
-        : `💪 CLB / NCLC ${finalNCLCLevel} (${finalCEFREquivalent}) recorded across attempted skill modules. Aim for NCLC 7+ (B2) in all sections for Express Entry PR points.`;
+      if (attemptedNCLCs.length === 1) {
+        const modName = attemptedModuleNames[0] || "Module";
+        statusMsg = isTargetReached
+          ? `🎉 Excellent! Your ${modName} performance achieves CLB / NCLC ${finalNCLCLevel} (${finalCEFREquivalent}) — Meeting Canadian Express Entry PR Benchmark (+${cumulativeCRSPoints} CRS Points)!`
+          : `💪 ${modName} scored at CLB / NCLC ${finalNCLCLevel} (${finalCEFREquivalent}). Aim for NCLC 7+ (B2) in all sections for Express Entry PR points.`;
+      } else {
+        statusMsg = isTargetReached
+          ? `🎉 Excellent! Attempted skill modules achieve overall benchmark of CLB / NCLC ${finalNCLCLevel} (${finalCEFREquivalent}) — Total +${cumulativeCRSPoints} Express Entry CRS Points Earned!`
+          : `💪 CLB / NCLC ${finalNCLCLevel} (${finalCEFREquivalent}) recorded as overall benchmark across ${attemptedNCLCs.length} attempted modules (+${cumulativeCRSPoints} Total CRS Points). Aim for NCLC 7+ (B2) in all sections.`;
+      }
     }
 
     return {
@@ -857,17 +928,23 @@ export function AuthenticCBTExamPage() {
       listeningTotal,
       listeningPct,
       listeningNCLC,
+      listeningPoints,
       readingCorrect,
       readingTotal,
       readingPct,
       readingNCLC,
+      readingPoints,
       writingAvg: writingWeightedScore,
       writingNCLC,
+      writingPoints,
       speakingAvg,
       speakingNCLC,
+      speakingPoints,
+      attemptedCount: attemptedNCLCs.length,
+      attemptedModuleNames,
       nclcLevel: finalNCLCLevel,
       cefrEquivalent: finalCEFREquivalent,
-      expressEntryPoints: finalExpressEntryPoints,
+      expressEntryPoints: cumulativeCRSPoints,
       statusMessage: statusMsg,
       isNCLC7TargetReached: isTargetReached
     };
@@ -1837,21 +1914,59 @@ export function AuthenticCBTExamPage() {
                 <Trophy className="w-8 h-8" />
               </div>
 
-              <div className="space-y-1">
-                <span className="text-xs font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-                  Diagnostic Simulator Evaluation ({mode === "EXAM" ? "REAL EXAM MODE" : "GUIDED PRACTICE MODE"})
-                </span>
-                <h2 className="text-3xl font-extrabold">Estimated CLB / NCLC Level {calculateResults().nclcLevel} ({calculateResults().cefrEquivalent})</h2>
-                <p className="text-xs text-slate-500">
+              <div className="space-y-2">
+                <div className="flex flex-wrap items-center justify-center gap-1.5">
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                    Diagnostic Simulator Evaluation ({mode === "EXAM" ? "REAL EXAM MODE" : "PRACTICE MODE"})
+                  </span>
                   {(() => {
                     const r = calculateResults();
-                    if (r.listeningTotal + r.readingTotal > 0 && (r.listeningCorrect > 0 || r.readingCorrect > 0)) {
-                      return <>MCQ Accuracy: <strong>{r.percentage}%</strong> ({r.totalCorrect} / {r.totalQs} Questions Correct)</>;
+                    if (r.attemptedCount === 1) {
+                      return (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-200">
+                          Single-Module: {r.attemptedModuleNames[0]}
+                        </span>
+                      );
                     }
-                    if (r.writingAvg > 0) {
-                      return <>Writing Submission Evaluated: <strong>{r.writingAvg}/20 Marks</strong> ({r.writingNCLC.nclcGrade})</>;
+                    if (r.attemptedCount > 1) {
+                      return (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-100 dark:bg-purple-900/60 text-purple-800 dark:text-purple-200">
+                          Comprehensive ({r.attemptedCount}/4 Modules)
+                        </span>
+                      );
                     }
-                    return <>Diagnostic Session Results</>;
+                    return null;
+                  })()}
+                </div>
+
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+                  {(() => {
+                    const r = calculateResults();
+                    if (r.nclcLevel === 0) return "Unrated Session (0 Items Attempted)";
+                    return `Overall Benchmark: CLB / NCLC ${r.nclcLevel} (${r.cefrEquivalent})`;
+                  })()}
+                </h2>
+
+                <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
+                  {(() => {
+                    const r = calculateResults();
+                    if (r.attemptedCount === 1) {
+                      if (r.writingAvg > 0) {
+                        return <>Evaluated Writing Task: <strong>{r.writingAvg}/20 Marks</strong> ({r.writingNCLC.nclcGrade}) • <strong>+{r.expressEntryPoints} CRS Points</strong></>;
+                      }
+                      if (r.listeningTotal > 0 && r.listeningCorrect > 0) {
+                        return <>Listening Accuracy: <strong>{r.listeningPct}%</strong> ({r.listeningCorrect}/{r.listeningTotal} Correct) • <strong>+{r.expressEntryPoints} CRS Points</strong></>;
+                      }
+                      if (r.readingTotal > 0 && r.readingCorrect > 0) {
+                        return <>Reading Accuracy: <strong>{r.readingPct}%</strong> ({r.readingCorrect}/{r.readingTotal} Correct) • <strong>+{r.expressEntryPoints} CRS Points</strong></>;
+                      }
+                      if (r.speakingAvg > 0) {
+                        return <>Speaking Performance: <strong>{r.speakingAvg}%</strong> ({r.speakingNCLC.nclcGrade}) • <strong>+{r.expressEntryPoints} CRS Points</strong></>;
+                      }
+                    } else if (r.attemptedCount > 1) {
+                      return <>Total Express Entry Point Contribution: <strong>+{r.expressEntryPoints} CRS Points</strong> across {r.attemptedCount} attempted skill modules</>;
+                    }
+                    return <>Complete exam sections to view your comprehensive Canadian immigration scorecard.</>;
                   })()}
                 </p>
               </div>
@@ -1867,11 +1982,14 @@ export function AuthenticCBTExamPage() {
                         <div className="flex items-center justify-between text-[11px] font-bold text-purple-900 dark:text-purple-300">
                           <span className="flex items-center gap-1">🎧 Listening (CO)</span>
                           <span className="px-2 py-0.5 rounded bg-purple-600 text-white font-mono text-[10px]">
-                            {res.listeningNCLC.nclcLevel === 0 ? "Unrated" : `CLB / NCLC ${res.listeningNCLC.nclcLevel}`}
+                            {res.listeningNCLC.nclcLevel === 0 ? "Unrated" : `CLB ${res.listeningNCLC.nclcLevel}`}
                           </span>
                         </div>
                         <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
                           {res.listeningNCLC.nclcLevel === 0 ? "Unattempted (0/39)" : `${res.listeningPct}% Correct (${res.listeningCorrect}/${res.listeningTotal})`}
+                        </p>
+                        <p className="text-[10px] font-semibold text-purple-700 dark:text-purple-300 pt-0.5">
+                          {res.listeningPoints > 0 ? `+${res.listeningPoints} CRS Points` : "0 CRS Points"}
                         </p>
                       </div>
 
@@ -1880,11 +1998,14 @@ export function AuthenticCBTExamPage() {
                         <div className="flex items-center justify-between text-[11px] font-bold text-blue-900 dark:text-blue-300">
                           <span className="flex items-center gap-1">📖 Reading (CE)</span>
                           <span className="px-2 py-0.5 rounded bg-blue-600 text-white font-mono text-[10px]">
-                            {res.readingNCLC.nclcLevel === 0 ? "Unrated" : `CLB / NCLC ${res.readingNCLC.nclcLevel}`}
+                            {res.readingNCLC.nclcLevel === 0 ? "Unrated" : `CLB ${res.readingNCLC.nclcLevel}`}
                           </span>
                         </div>
                         <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
                           {res.readingNCLC.nclcLevel === 0 ? "Unattempted (0/39)" : `${res.readingPct}% Correct (${res.readingCorrect}/${res.readingTotal})`}
+                        </p>
+                        <p className="text-[10px] font-semibold text-blue-700 dark:text-blue-300 pt-0.5">
+                          {res.readingPoints > 0 ? `+${res.readingPoints} CRS Points` : "0 CRS Points"}
                         </p>
                       </div>
 
@@ -1893,11 +2014,14 @@ export function AuthenticCBTExamPage() {
                         <div className="flex items-center justify-between text-[11px] font-bold text-pink-900 dark:text-pink-300">
                           <span className="flex items-center gap-1">✍️ Writing (EE)</span>
                           <span className="px-2 py-0.5 rounded bg-pink-600 text-white font-mono text-[10px]">
-                            {res.writingAvg === 0 ? "Unrated" : `CLB / NCLC ${res.writingNCLC.nclcLevel}`}
+                            {res.writingAvg === 0 ? "Unrated" : `CLB ${res.writingNCLC.nclcLevel}`}
                           </span>
                         </div>
                         <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
                           {res.writingAvg === 0 ? "No submission" : `${res.writingAvg}/20 Marks (${res.writingNCLC.cefrEquivalent})`}
+                        </p>
+                        <p className="text-[10px] font-semibold text-pink-700 dark:text-pink-300 pt-0.5">
+                          {res.writingPoints > 0 ? `+${res.writingPoints} CRS Points` : "0 CRS Points"}
                         </p>
                       </div>
 
@@ -1906,11 +2030,14 @@ export function AuthenticCBTExamPage() {
                         <div className="flex items-center justify-between text-[11px] font-bold text-indigo-900 dark:text-indigo-300">
                           <span className="flex items-center gap-1">🎙️ Speaking (EO)</span>
                           <span className="px-2 py-0.5 rounded bg-indigo-600 text-white font-mono text-[10px]">
-                            {res.speakingAvg === 0 ? "Unrated" : `CLB / NCLC ${res.speakingNCLC.nclcLevel}`}
+                            {res.speakingAvg === 0 ? "Unrated" : `CLB ${res.speakingNCLC.nclcLevel}`}
                           </span>
                         </div>
                         <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
                           {res.speakingAvg === 0 ? "No submission" : `${res.speakingAvg}% AI Grade`}
+                        </p>
+                        <p className="text-[10px] font-semibold text-indigo-700 dark:text-indigo-300 pt-0.5">
+                          {res.speakingPoints > 0 ? `+${res.speakingPoints} CRS Points` : "0 CRS Points"}
                         </p>
                       </div>
                     </div>
@@ -1920,14 +2047,20 @@ export function AuthenticCBTExamPage() {
                         ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300"
                         : "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-300"
                     }`}>
-                      <p className="font-bold">
-                        🍁 Estimated Express Entry CRS Point Contribution:
+                      <p className="font-bold flex items-center justify-between">
+                        <span>🍁 Official Express Entry CRS Point Contribution:</span>
+                        <span className="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white font-mono font-extrabold text-[11px]">
+                          +{res.expressEntryPoints} Total CRS Points
+                        </span>
                       </p>
                       <p className="leading-relaxed font-medium">
                         {res.statusMessage}
                       </p>
                       <p className="pt-1 text-[11px] opacity-80 border-t border-slate-300 dark:border-slate-700">
-                        Calculated Express Entry CLB Point Contribution: <strong>+{res.expressEntryPoints} Points</strong>
+                        {res.attemptedCount === 1 
+                          ? `Single module evaluated (${res.attemptedModuleNames[0]}). Complete all 4 modules for maximum +136 CRS points.`
+                          : `Calculated from ${res.attemptedCount} attempted skill modules under IRCC Canadian Language Benchmark conversion standards.`
+                        }
                       </p>
                     </div>
 

@@ -212,11 +212,11 @@ export class WritingService {
     const prompt = `You are an official France Éducation International (FEI) Senior Certified Examiner evaluating ${targetLanguage} writing for official TCF Canada.
 
 CRITICAL IMPARTIAL EVALUATION GUIDELINES (STRICT FEI CEFR STANDARDS — NO GRADE INFLATION):
-- Grade strictly according to candidate linguistic quality. DO NOT DEFAULT TO B2 OR ANY MID-LEVEL GRADE.
-- Flawless C2/C1 masterwork responses (rich vocabulary, complex subjonctif/conditionnel, immaculate cohesion) receive 18–20/20 (NCLC 10+ / C2 or NCLC 9 / C1).
-- Solid B2 responses with good connectors, complex structures (conditionnel/subjonctif), and minor errors receive 12–15/20 (NCLC 7–8 / B2).
-- Basic/Intermediate B1 responses (simple sentences, basic connectors like et/mais/parce que, basic vocabulary) MUST be capped at 9–10/20 (NCLC 5 / B1). They CANNOT receive B2 (12+).
-- Elementary A2 responses receive 5–8/20 (NCLC 4 / A2).
+- Grade strictly according to candidate linguistic quality. DO NOT DEFAULT TO B2 OR 3/5 ACROSS CRITERIA.
+- Flawless C2/C1 masterwork responses (rich academic vocabulary, complex subjonctif/conditionnel, immaculate cohesion) receive 18–20/20 (NCLC 10+ / C2 or NCLC 9 / C1).
+- Solid B2 responses with formal connectors (cependant, toutefois, en outre, par conséquent), complex structures (conditionnel "pourriez-vous / j'aimerais", subjonctif), and formal register receive 12–15/20 (NCLC 7–8 / B2).
+- Basic/Intermediate B1 responses (passé composé/imparfait, standard connectors like donc/alors/car, simple paragraphs) MUST be graded at 9–10/20 (NCLC 5-6 / B1). They CANNOT receive B2 (12+).
+- Elementary A2 responses relying ONLY on simple present tense (je suis, il fait, c'est, vous pouvez) and basic spoken connectors (mais, parce que, en plus) and basic vocabulary (froid, marcher, réparer, dormir) MUST BE GRADED AT 2/5 ON EACH CRITERION (Total: 6–8/20, NCLC 4–5 / A2–B1). THEY CANNOT RECEIVE B2 (12+).
 - Beginner A1 responses receive 3–4/20 (NCLC 3 / A1) or 1–2/20 (Below A1).
 - OFF-TOPIC (HORS-SUJET), PLAGIARIZED, or GIBBERISH submissions MUST receive 0/20 (NCLC 0).
 
@@ -229,24 +229,15 @@ IF CANDIDATE SUBMITS A TÂCHE 1 PERSONAL EMAIL (e.g. "Bonjour... Je suis dans vo
 - This is a TASK TYPE & FORMAT MISMATCH (HORS-SUJET).
 - Official FEI rules mandate an automatic 0/5 on TaskFulfillmentScore and 0/20 Total Marks (NCLC 0 Zero Grade).
 
-CRITICAL CAPPING RULE FOR C1/C2 MASTERY (NCLC 9–10 / 16–20 MARKS):
-- Standard formal B2 emails with polite request formulas ("Pourriez-vous", "je vous prie d'agréer") and standard connectors ("de plus", "car", "alors que") MUST BE GRADED AT 13–15/20 (B2 / B2 Upper NCLC 7-8). THEY CANNOT RECEIVE C1 OR C2 (16–20 Marks).
-- To receive 16/20+ (C1/C2), candidate text MUST feature sophisticated academic/literary vocabulary (e.g. incontournable, dysfonctionnement, préconiser, solliciter, déchéance, aggravation) AND advanced connectors (de surcroît, par conséquent, néanmoins) AND complex syntax (subjonctif, conditionnel passé, relative pronouns dont/auquel).
-
 CRITICAL CAPPING RULE FOR B2 LEVEL (NCLC 7 / 12+ MARKS):
-- To receive 12/20 or higher (NCLC 7+ B2), candidate text MUST feature AT LEAST ONE formal B2/C1 connector (e.g. cependant, toutefois, en outre, par conséquent, néanmoins, d'une part) AND AT LEAST ONE B2 complex syntactic structure (e.g. conditionnel "pourriez-vous / j'aimerais", subjonctif "pour que nous puissions", relative pronouns "dont / auquel").
-- Simple A2/B1 texts relying ONLY on present tense (je suis, il fait, vous pouvez) and basic A2 connectors (mais, parce que, en plus) MUST BE CAPPED AT 7–9/20 (A2/B1 NCLC 4/5). THEY CANNOT RECEIVE B2 (12+).
-
-CRITICAL PENALTY RULES FOR CODE-SWITCHING, BROKEN A1 GRAMMAR & WORD COUNT:
-1. ENGLISH WORDS / CODE-SWITCHING (e.g. "is no work", "the", "with"): Inserting non-French English words in a French essay MUST cap GrammarScore at 1/5 and LexicalScore at 1/5.
-2. BROKEN TELEGRAPHIC GRAMMAR (e.g. "moi très froid", "Je malade", "pas possible dormir"): Non-conjugated/telegraphic sentences MUST cap GrammarScore at 1/5.
-3. WORD COUNT SHORTFALL: If candidate text is below minimum word count (e.g. <60 words for Task 1, <120 words for Task 2, <140 words for Task 3), TaskFulfillmentScore MUST be capped at 1-2/5.
+- To receive 12/20 or higher (NCLC 7+ B2), candidate text MUST feature AT LEAST ONE formal B2/C1 connector (e.g. cependant, toutefois, en outre, par conséquent, néanmoins, d'une part) AND AT LEAST ONE B2 complex syntactic structure (e.g. conditionnel "pourriez-vous / j'aimerais", subjonctif "afin que vous puissiez", relative pronouns "dont / auquel").
+- Simple A2/B1 texts relying ONLY on present tense (je suis, il fait, vous pouvez) and basic A2 connectors (mais, parce que, en plus) MUST BE CAPPED AT 7–8/20 (A2/B1 NCLC 4/5).
 
 OFFICIAL FEI 4-CRITERIA MARKS (0-5 EACH):
-1. taskFulfillmentScore (0-5): Address all prompt points, respect word count boundaries. Deduct 1-2 pts if candidate falls short of minimum word count or exceeds maximum. (0/5 if Off-Topic)
-2. coherenceScore (0-5): Logical paragraph structure and transitional connectors (e.g. en outre, cependant, par conséquent, toutefois, d'une part... d'autre part). Repetitive basic connectors (et, mais, alors) cap this at 2-3/5.
-3. lexicalScore (0-5): Vocabulary range, domain-specific precision, and register appropriate to task. English word insertion caps this at 1/5.
-4. grammarScore (0-5): Morphosyntax, tense agreement, complex sentence structures. English insertion or broken telegraphic A1 grammar caps this at 1/5.
+1. taskFulfillmentScore (0-5): 5=flawless B2/C1 formal email, 4=good B2, 3=adequate B1, 2=simple A2, 1=A1 short. (0/5 if Off-Topic)
+2. coherenceScore (0-5): 4-5=formal B2 connectors (cependant, toutefois, en outre, par conséquent), 2-3=basic A2 connectors only (et, mais, parce que, en plus), 1=no connectors.
+3. lexicalScore (0-5): 4-5=domain-specific B2/C1 terms (dysfonctionnement, système défaillant, température glaciale, locataire, préjudice), 2=basic everyday A2 words (froid, marcher, réparer, vacances, dormir), 1=English words or broken lexicon.
+4. grammarScore (0-5): 4-5=conditionnel (pourriez-vous, j'aimerais), subjonctif, complex syntax. 2=simple present tense only (je suis, il fait, vous pouvez). 1=broken grammar.
 
 Context / Task Prompt:
 Task / Topic: "${lessonTitle || `${targetLanguage} Writing Examination`}"
@@ -260,10 +251,10 @@ ${text}
 
 Respond ONLY with a valid JSON object matching this schema:
 {
-  "taskFulfillmentScore": 5, 
-  "coherenceScore": 5, 
-  "lexicalScore": 5, 
-  "grammarScore": 5, 
+  "taskFulfillmentScore": 2, 
+  "coherenceScore": 2, 
+  "lexicalScore": 2, 
+  "grammarScore": 2, 
   "feedback": "2-3 sentence precise examiner diagnostic summary highlighting strengths and primary area for improvement.",
   "corrections": [
     { "original": "error phrase", "corrected": "corrected phrase", "explanation": "Grammatical or lexical explanation in English." }
@@ -304,14 +295,14 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
           t = 0;
         }
 
-        const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part|sans conteste|indéniablement|lors de|au cours de|de surcroît|en effet|en somme|en conclusion)\b/i.test(textLower);
-        const hasB2Grammar = /\b(pourriez|pourrait|serait|aimerais|fussent|puisse|soit|dont|auquel|laquelle|bien que|afin de|en vue de|fut|me laissant|entouré|bordé|restés|visité|pris|fait|exploré|observé|procuré)\b/i.test(textLower);
+        const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part|sans conteste|indéniablement|au cours de|de surcroît|en effet|en somme|en conclusion|par ailleurs)\b/i.test(textLower);
+        const hasB2Grammar = /\b(pourriez[- ]vous|pourrait[- ]il|serait[- ]il|j'aimerais|nous aimerions|il conviendrait|puisse|soit|fassions|dont|auquel|laquelle|duquel|lesquels|bien que|afin de|en vue de|après avoir|étant donné|je vous prie d'agréer|veuillez agréer|sommes restés|avons visité)\b/i.test(textLower);
 
-        // Strict B2 Capping: Absence of B2/C1 connectors & syntax caps score at 9/20 (B1) max
-        if (!hasB2Connectors && !hasB2Grammar) {
+        // Strict B2 Capping: Absence of formal B2 connectors OR formal B2 syntax caps score at 8/20 (A2/B1) max
+        if (!hasB2Connectors || !hasB2Grammar) {
           t = Math.min(3, t);
-          c = Math.min(3, c);
-          l = Math.min(3, l);
+          c = Math.min(2, c);
+          l = Math.min(2, l);
           g = Math.min(2, g);
         }
 
@@ -321,14 +312,14 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
           scoreOutOf20 = 0;
         }
 
-        if (!hasB2Connectors && !hasB2Grammar) {
-          scoreOutOf20 = Math.min(9, scoreOutOf20);
+        if (!hasB2Connectors || !hasB2Grammar) {
+          scoreOutOf20 = Math.min(8, scoreOutOf20);
         }
 
         // Strict C1/C2 Capping: Submissions lacking any C1/C2 vocabulary, grammar, or connectors cap at 15/20 (B2 Upper)
-        const hasC1C2Conn = /\b(de surcroît|par conséquent|néanmoins|toutefois|d'une part|d'autre part|en somme|nonobstant|sans conteste|indéniablement|lors de)\b/i.test(textLower);
+        const hasC1C2Conn = /\b(de surcroît|par conséquent|néanmoins|toutefois|d'une part|d'autre part|en somme|nonobstant|sans conteste|indéniablement)\b/i.test(textLower);
         const hasC1C2Lex = /\b(incontournable|perspective|sensibilisation|préconiser|solliciter|manifestation|bienveillance|réciproque|controverse|conciliation|inéluctable|plasticité|épanouissement|décarbonation|assimilation|détériorer|dysfonctionnement|dégradation|aggravation|périple|majestueux|féerique|dépaysement|spectaculaire|ascension|émerveillement|sérénité|enrichissantes|impérissables|irrépressible|d'exception)\b/i.test(textLower);
-        const hasC1C2Gram = /\b(puisse|soit|fassions|sachiez|ayez|fussent|dont|auquel|laquelle|duquel|lesquelles|aurait été|aurait dû|eût|demeure|entraver|fut|me laissant|entouré|bordé)\b/i.test(textLower);
+        const hasC1C2Gram = /\b(puisse|soit|fassions|sachiez|ayez|fussent|dont|auquel|laquelle|duquel|lesquelles|aurait été|aurait dû|eût|demeure|entraver)\b/i.test(textLower);
 
         if (!hasC1C2Conn && !hasC1C2Lex && !hasC1C2Gram) {
           scoreOutOf20 = Math.min(15, scoreOutOf20);
