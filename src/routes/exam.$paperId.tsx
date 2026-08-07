@@ -1801,7 +1801,16 @@ export function AuthenticCBTExamPage() {
                 </span>
                 <h2 className="text-3xl font-extrabold">Estimated CLB / NCLC Level {calculateResults().nclcLevel} ({calculateResults().cefrEquivalent})</h2>
                 <p className="text-xs text-slate-500">
-                  Total Score: <strong>{calculateResults().percentage}%</strong> ({calculateResults().totalCorrect} / {calculateResults().totalQs} Questions Correct)
+                  {(() => {
+                    const r = calculateResults();
+                    if (r.listeningTotal + r.readingTotal > 0 && (r.listeningCorrect > 0 || r.readingCorrect > 0)) {
+                      return <>MCQ Accuracy: <strong>{r.percentage}%</strong> ({r.totalCorrect} / {r.totalQs} Questions Correct)</>;
+                    }
+                    if (r.writingAvg > 0) {
+                      return <>Writing Submission Evaluated: <strong>{r.writingAvg}/20 Marks</strong> ({r.writingNCLC.nclcGrade})</>;
+                    }
+                    return <>Diagnostic Session Results</>;
+                  })()}
                 </p>
               </div>
 
@@ -1820,7 +1829,7 @@ export function AuthenticCBTExamPage() {
                           </span>
                         </div>
                         <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
-                          {res.listeningPct}% Correct ({res.listeningCorrect}/{res.listeningTotal})
+                          {res.listeningNCLC.nclcLevel === 0 ? "Unattempted (0/39)" : `${res.listeningPct}% Correct (${res.listeningCorrect}/${res.listeningTotal})`}
                         </p>
                       </div>
 
@@ -1833,7 +1842,7 @@ export function AuthenticCBTExamPage() {
                           </span>
                         </div>
                         <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
-                          {res.readingPct}% Correct ({res.readingCorrect}/{res.readingTotal})
+                          {res.readingNCLC.nclcLevel === 0 ? "Unattempted (0/39)" : `${res.readingPct}% Correct (${res.readingCorrect}/${res.readingTotal})`}
                         </p>
                       </div>
 
@@ -1846,7 +1855,7 @@ export function AuthenticCBTExamPage() {
                           </span>
                         </div>
                         <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
-                          {res.writingAvg === 0 ? "No submission" : `${res.writingAvg}% AI Grade`}
+                          {res.writingAvg === 0 ? "No submission" : `${res.writingAvg}/20 Marks (${res.writingNCLC.cefrEquivalent})`}
                         </p>
                       </div>
 
@@ -1893,29 +1902,55 @@ export function AuthenticCBTExamPage() {
                       </div>
 
                       <div className="space-y-2 text-slate-800 dark:text-slate-200">
-                        {res.totalCorrect === 0 ? (
+                        {res.nclcLevel === 0 ? (
                           <div className="p-3 rounded bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-300 text-xs font-semibold">
-                            ⚠️ <strong>Zero Questions Attempted:</strong> No test questions were answered in this session. To receive a personalized weakness breakdown, complete the items in each section before submitting.
+                            ⚠️ <strong>No Test Items Attempted:</strong> Complete items or submit writing/speaking responses before finishing to receive a personalized weakness breakdown.
                           </div>
                         ) : (
                           <>
-                            <div className="p-2.5 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 space-y-1">
-                              <p className="font-bold text-purple-900 dark:text-purple-300 text-[11px]">🎧 Listening (CO Focus):</p>
-                              <p className="text-[11px] leading-relaxed">
-                                {res.listeningPct >= 65
-                                  ? `✓ Strong retention (${res.listeningPct}%). High accuracy on single-play audio items.`
-                                  : `⚠️ Practice audio-only items (Q1–29). Focus on identifying key acoustic markers before reading distractors.`}
-                              </p>
-                            </div>
+                            {res.listeningTotal > 0 && res.listeningPct > 0 && (
+                              <div className="p-2.5 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 space-y-1">
+                                <p className="font-bold text-purple-900 dark:text-purple-300 text-[11px]">🎧 Listening (CO Focus):</p>
+                                <p className="text-[11px] leading-relaxed">
+                                  {res.listeningPct >= 65
+                                    ? `✓ Strong retention (${res.listeningPct}%). High accuracy on single-play audio items.`
+                                    : `⚠️ Practice audio-only items (Q1–29). Focus on identifying key acoustic markers before reading distractors.`}
+                                </p>
+                              </div>
+                            )}
 
-                            <div className="p-2.5 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 space-y-1">
-                              <p className="font-bold text-purple-900 dark:text-purple-300 text-[11px]">📖 Reading (CE Focus):</p>
-                              <p className="text-[11px] leading-relaxed">
-                                {res.readingPct >= 65
-                                  ? `✓ Strong scanning speed (${res.readingPct}%). Excellent grasp of academic B2/C1 connectors.`
-                                  : `⚠️ Work on paragraph structure scanning in B2/C1 texts. Use keyword matching between questions and passage.`}
-                              </p>
-                            </div>
+                            {res.readingTotal > 0 && res.readingPct > 0 && (
+                              <div className="p-2.5 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 space-y-1">
+                                <p className="font-bold text-purple-900 dark:text-purple-300 text-[11px]">📖 Reading (CE Focus):</p>
+                                <p className="text-[11px] leading-relaxed">
+                                  {res.readingPct >= 65
+                                    ? `✓ Strong scanning speed (${res.readingPct}%). Excellent grasp of academic B2/C1 connectors.`
+                                    : `⚠️ Work on paragraph structure scanning in B2/C1 texts. Use keyword matching between questions and passage.`}
+                                </p>
+                              </div>
+                            )}
+
+                            {res.writingAvg > 0 && (
+                              <div className="p-2.5 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 space-y-1">
+                                <p className="font-bold text-purple-900 dark:text-purple-300 text-[11px]">✍️ Writing (EE Focus):</p>
+                                <p className="text-[11px] leading-relaxed">
+                                  {res.writingAvg >= 12
+                                    ? `✓ Strong writing score (${res.writingAvg}/20 Marks — ${res.writingNCLC.nclcGrade}). High mastery of B2 connectors and structures.`
+                                    : `⚠️ Writing score is ${res.writingAvg}/20 Marks (${res.writingNCLC.nclcGrade}). Focus on reaching word count bounds (60-120 T1, 120-150 T2, 140-180 T3), inserting formal connectors (cependant, toutefois), and avoiding English word code-switching.`}
+                                </p>
+                              </div>
+                            )}
+
+                            {res.speakingAvg > 0 && (
+                              <div className="p-2.5 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 space-y-1">
+                                <p className="font-bold text-purple-900 dark:text-purple-300 text-[11px]">🎙️ Speaking (EO Focus):</p>
+                                <p className="text-[11px] leading-relaxed">
+                                  {res.speakingAvg >= 60
+                                    ? `✓ Strong oral fluency (${res.speakingAvg}% — ${res.speakingNCLC.nclcGrade}).`
+                                    : `⚠️ Oral score is ${res.speakingAvg}% (${res.speakingNCLC.nclcGrade}). Focus on formal question structures and argument organization.`}
+                                </p>
+                              </div>
+                            )}
                           </>
                         )}
                       </div>
