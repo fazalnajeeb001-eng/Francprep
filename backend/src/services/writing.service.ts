@@ -220,6 +220,10 @@ CRITICAL IMPARTIAL EVALUATION GUIDELINES (STRICT FEI CEFR STANDARDS — NO GRADE
 - Beginner A1 responses receive 3–4/20 (NCLC 3 / A1) or 1–2/20 (Below A1).
 - OFF-TOPIC (HORS-SUJET), PLAGIARIZED, or GIBBERISH submissions MUST receive 0/20 (NCLC 0).
 
+CRITICAL CAPPING RULE FOR C1/C2 MASTERY (NCLC 9–10 / 16–20 MARKS):
+- Standard formal B2 emails with polite request formulas ("Pourriez-vous", "je vous prie d'agréer") and standard connectors ("de plus", "car", "alors que") MUST BE GRADED AT 13–15/20 (B2 / B2 Upper NCLC 7-8). THEY CANNOT RECEIVE C1 OR C2 (16–20 Marks).
+- To receive 16/20+ (C1/C2), candidate text MUST feature sophisticated academic/literary vocabulary (e.g. incontournable, dysfonctionnement, préconiser, solliciter, déchéance, aggravation) AND advanced connectors (de surcroît, par conséquent, néanmoins) AND complex syntax (subjonctif, conditionnel passé, relative pronouns dont/auquel).
+
 CRITICAL CAPPING RULE FOR B2 LEVEL (NCLC 7 / 12+ MARKS):
 - To receive 12/20 or higher (NCLC 7+ B2), candidate text MUST feature AT LEAST ONE formal B2/C1 connector (e.g. cependant, toutefois, en outre, par conséquent, néanmoins, d'une part) AND AT LEAST ONE B2 complex syntactic structure (e.g. conditionnel "pourriez-vous / j'aimerais", subjonctif "pour que nous puissions", relative pronouns "dont / auquel").
 - Simple A2/B1 texts relying ONLY on present tense (je suis, il fait, vous pouvez) and basic A2 connectors (mais, parce que, en plus) MUST BE CAPPED AT 7–9/20 (A2/B1 NCLC 4/5). THEY CANNOT RECEIVE B2 (12+).
@@ -280,11 +284,11 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
         let l = Math.max(0, Math.min(5, typeof parsed.lexicalScore === 'number' ? parsed.lexicalScore : (typeof parsed.vocabularyScore === 'number' ? parsed.vocabularyScore : 0)));
         let g = Math.max(0, Math.min(5, typeof parsed.grammarScore === 'number' ? parsed.grammarScore : 0));
 
-        // Enforce B2 Capping Rule: Absence of B2 connectors & B2 syntax caps score at 9/20 (B1) max
         const textLower = (text || '').toLowerCase();
         const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part)\b/i.test(textLower);
         const hasB2Grammar = /\b(pourriez|pourrait|serait|aimerais|fussent|puisse|soit|dont|auquel|laquelle|bien que|afin de|en vue de)\b/i.test(textLower);
 
+        // Strict B2 Capping: Absence of B2 connectors & B2 syntax caps score at 9/20 (B1) max
         if (!hasB2Connectors && !hasB2Grammar) {
           t = Math.min(3, t);
           c = Math.min(3, c);
@@ -293,8 +297,18 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
         }
 
         let scoreOutOf20 = t + c + l + g;
+
         if (!hasB2Connectors && !hasB2Grammar) {
           scoreOutOf20 = Math.min(9, scoreOutOf20);
+        }
+
+        // Strict C1/C2 Capping: Standard formal emails without C1 academic vocabulary or C1 connectors cap at 15/20 (B2 Upper)
+        const hasC1C2Conn = /\b(de surcroît|par conséquent|néanmoins|toutefois|d'une part|d'autre part|en somme|nonobstant)\b/i.test(textLower);
+        const hasC1C2Lex = /\b(incontournable|perspective|sensibilisation|préconiser|solliciter|manifestation|bienveillance|réciproque|controverse|conciliation|inéluctable|épanouissement|assimilation|détériorer|dysfonctionnement|dégradation|aggravation)\b/i.test(textLower);
+        const hasC1C2Gram = /\b(puisse|soit|fassions|sachiez|ayez|fussent|dont|auquel|laquelle|duquel|lesquelles|aurait été|aurait dû|eût|demeure|entraver)\b/i.test(textLower);
+
+        if (!hasC1C2Conn || !hasC1C2Lex || !hasC1C2Gram) {
+          scoreOutOf20 = Math.min(15, scoreOutOf20);
         }
         if (scoreOutOf20 === 0 && typeof parsed.scoreOutOf20 === 'number') {
           scoreOutOf20 = parsed.scoreOutOf20;
@@ -470,6 +484,14 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
     const hasB2Gram = foundB2Gram.length > 0 || foundC1C2Gram.length > 0;
     if (!hasB2Conn && !hasB2Gram) {
       scoreOutOf20 = Math.min(9, scoreOutOf20);
+    }
+
+    // Enforce strict C1/C2 capping rule: Standard formal emails without C1 academic vocabulary or connectors cap at 15/20 (B2 Upper)
+    const hasC1C2Lex = foundC1C2Lex.length > 0;
+    const hasC1C2Gram = foundC1C2Gram.length > 0;
+    const hasC1C2Conn = foundC1C2Conn.length > 0;
+    if (!hasC1C2Conn || !hasC1C2Lex || !hasC1C2Gram) {
+      scoreOutOf20 = Math.min(15, scoreOutOf20);
     }
     const scorePct = Math.round((scoreOutOf20 / 20) * 100);
 

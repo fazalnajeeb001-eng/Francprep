@@ -768,6 +768,12 @@ export function AuthenticCBTExamPage() {
         if (!hasB2Conn && !hasB2Gram) {
           rawSum = Math.min(9, rawSum);
         }
+        const hasC1C2Lex = foundC1C2Lex.length > 0;
+        const hasC1C2Gram = foundC1C2Gram.length > 0;
+        const hasC1C2Conn = foundC1C2Conn.length > 0;
+        if (!hasC1C2Conn || !hasC1C2Lex || !hasC1C2Gram) {
+          rawSum = Math.min(15, rawSum);
+        }
         return rawSum;
       }
       return 0;
