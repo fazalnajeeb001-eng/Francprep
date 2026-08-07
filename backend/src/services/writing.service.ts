@@ -215,10 +215,14 @@ CRITICAL IMPARTIAL EVALUATION GUIDELINES (STRICT FEI CEFR STANDARDS — NO GRADE
 - Grade strictly according to candidate linguistic quality. DO NOT DEFAULT TO B2 OR ANY MID-LEVEL GRADE.
 - Flawless C2/C1 masterwork responses (rich vocabulary, complex subjonctif/conditionnel, immaculate cohesion) receive 18–20/20 (NCLC 10+ / C2 or NCLC 9 / C1).
 - Solid B2 responses with good connectors, complex structures (conditionnel/subjonctif), and minor errors receive 12–15/20 (NCLC 7–8 / B2).
-- Basic/Intermediate B1 responses (simple sentences, basic connectors like et/mais/parce que, basic vocabulary) MUST be capped at 9–11/20 (NCLC 5–6 / B1). They CANNOT receive B2 (12+).
+- Basic/Intermediate B1 responses (simple sentences, basic connectors like et/mais/parce que, basic vocabulary) MUST be capped at 9–10/20 (NCLC 5 / B1). They CANNOT receive B2 (12+).
 - Elementary A2 responses receive 5–8/20 (NCLC 4 / A2).
 - Beginner A1 responses receive 3–4/20 (NCLC 3 / A1) or 1–2/20 (Below A1).
 - OFF-TOPIC (HORS-SUJET), PLAGIARIZED, or GIBBERISH submissions MUST receive 0/20 (NCLC 0).
+
+CRITICAL CAPPING RULE FOR B2 LEVEL (NCLC 7 / 12+ MARKS):
+- To receive 12/20 or higher (NCLC 7+ B2), candidate text MUST feature AT LEAST ONE formal B2/C1 connector (e.g. cependant, toutefois, en outre, par conséquent, néanmoins, d'une part) AND AT LEAST ONE B2 complex syntactic structure (e.g. conditionnel "pourriez-vous / j'aimerais", subjonctif "pour que nous puissions", relative pronouns "dont / auquel").
+- Simple A2/B1 texts relying ONLY on present tense (je suis, il fait, vous pouvez) and basic A2 connectors (mais, parce que, en plus) MUST BE CAPPED AT 7–9/20 (A2/B1 NCLC 4/5). THEY CANNOT RECEIVE B2 (12+).
 
 CRITICAL PENALTY RULES FOR CODE-SWITCHING, BROKEN A1 GRAMMAR & WORD COUNT:
 1. ENGLISH WORDS / CODE-SWITCHING (e.g. "is no work", "the", "with"): Inserting non-French English words in a French essay MUST cap GrammarScore at 1/5 and LexicalScore at 1/5.
@@ -271,12 +275,27 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
-        const t = Math.max(0, Math.min(5, typeof parsed.taskFulfillmentScore === 'number' ? parsed.taskFulfillmentScore : (typeof parsed.taskCompletionScore === 'number' ? parsed.taskCompletionScore : 0)));
-        const c = Math.max(0, Math.min(5, typeof parsed.coherenceScore === 'number' ? parsed.coherenceScore : (typeof parsed.cohesionScore === 'number' ? parsed.cohesionScore : 0)));
-        const l = Math.max(0, Math.min(5, typeof parsed.lexicalScore === 'number' ? parsed.lexicalScore : (typeof parsed.vocabularyScore === 'number' ? parsed.vocabularyScore : 0)));
-        const g = Math.max(0, Math.min(5, typeof parsed.grammarScore === 'number' ? parsed.grammarScore : 0));
+        let t = Math.max(0, Math.min(5, typeof parsed.taskFulfillmentScore === 'number' ? parsed.taskFulfillmentScore : (typeof parsed.taskCompletionScore === 'number' ? parsed.taskCompletionScore : 0)));
+        let c = Math.max(0, Math.min(5, typeof parsed.coherenceScore === 'number' ? parsed.coherenceScore : (typeof parsed.cohesionScore === 'number' ? parsed.cohesionScore : 0)));
+        let l = Math.max(0, Math.min(5, typeof parsed.lexicalScore === 'number' ? parsed.lexicalScore : (typeof parsed.vocabularyScore === 'number' ? parsed.vocabularyScore : 0)));
+        let g = Math.max(0, Math.min(5, typeof parsed.grammarScore === 'number' ? parsed.grammarScore : 0));
+
+        // Enforce B2 Capping Rule: Absence of B2 connectors & B2 syntax caps score at 9/20 (B1) max
+        const textLower = (text || '').toLowerCase();
+        const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part)\b/i.test(textLower);
+        const hasB2Grammar = /\b(pourriez|pourrait|serait|aimerais|fussent|puisse|soit|dont|auquel|laquelle|bien que|afin de|en vue de)\b/i.test(textLower);
+
+        if (!hasB2Connectors && !hasB2Grammar) {
+          t = Math.min(3, t);
+          c = Math.min(3, c);
+          l = Math.min(3, l);
+          g = Math.min(2, g);
+        }
 
         let scoreOutOf20 = t + c + l + g;
+        if (!hasB2Connectors && !hasB2Grammar) {
+          scoreOutOf20 = Math.min(9, scoreOutOf20);
+        }
         if (scoreOutOf20 === 0 && typeof parsed.scoreOutOf20 === 'number') {
           scoreOutOf20 = parsed.scoreOutOf20;
         }
@@ -444,7 +463,14 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
     else if (textLower.includes("je suis") || textLower.includes("c'est") || textLower.includes("il y a")) grammarScore = 2;
     else grammarScore = 1;
 
-    const scoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
+    let scoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
+
+    // Enforce strict B2 capping rule for simple A2/B1 texts without B2 connectors & syntax
+    const hasB2Conn = foundB2Conn.length > 0 || foundC1C2Conn.length > 0;
+    const hasB2Gram = foundB2Gram.length > 0 || foundC1C2Gram.length > 0;
+    if (!hasB2Conn && !hasB2Gram) {
+      scoreOutOf20 = Math.min(9, scoreOutOf20);
+    }
     const scorePct = Math.round((scoreOutOf20 / 20) * 100);
 
     let nclcGrade = "NCLC 4 (A2 Elementary)";

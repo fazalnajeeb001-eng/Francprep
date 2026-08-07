@@ -762,10 +762,13 @@ export function AuthenticCBTExamPage() {
         } else if (foundC1C2Gram.length >= 2) grammarScore = 5;
         else if (foundC1C2Gram.length >= 1 || foundB2Gram.length >= 2) grammarScore = 4;
         else if (foundB2Gram.length >= 1 || textLower.includes("parce que") || textLower.includes("j'ai")) grammarScore = 3;
-        else if (textLower.includes("je suis") || textLower.includes("c'est") || textLower.includes("il y a")) grammarScore = 2;
-        else grammarScore = 1;
-
-        return taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
+        let rawSum = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
+        const hasB2Conn = foundB2Conn.length > 0 || foundC1C2Conn.length > 0;
+        const hasB2Gram = foundB2Gram.length > 0 || foundC1C2Gram.length > 0;
+        if (!hasB2Conn && !hasB2Gram) {
+          rawSum = Math.min(9, rawSum);
+        }
+        return rawSum;
       }
       return 0;
     };
