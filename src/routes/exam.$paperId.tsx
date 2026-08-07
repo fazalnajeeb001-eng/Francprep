@@ -21,7 +21,8 @@ import {
   Sun,
   Moon,
   Square,
-  RotateCcw
+  RotateCcw,
+  Home
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 import { useSpeak } from "~/lib/speech";
