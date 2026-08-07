@@ -720,8 +720,13 @@ export function AuthenticCBTExamPage() {
         let minWords = task.wordCountMin || task.min || 60;
         let maxWords = task.wordCountMax || task.max || 120;
 
+        const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test(clean) && /(cordialement|bien à vous|salutations)/i.test(clean);
+        const isTache3 = idx === 2 || task.title?.includes("Tâche 3") || minWords >= 140;
+
         let taskFulfillmentScore = 1;
-        if (wordCount >= minWords && wordCount <= maxWords + 30) taskFulfillmentScore = 5;
+        if (isTache3 && isLetterFormat && wordCount < 100) {
+          taskFulfillmentScore = 0;
+        } else if (wordCount >= minWords && wordCount <= maxWords + 30) taskFulfillmentScore = 5;
         else if (wordCount > maxWords + 30) taskFulfillmentScore = 4;
         else if (wordCount >= Math.round(minWords * 0.75)) taskFulfillmentScore = 3;
         else if (wordCount >= Math.round(minWords * 0.4)) taskFulfillmentScore = 2;
@@ -761,7 +766,7 @@ export function AuthenticCBTExamPage() {
           grammarScore = 1; lexicalScore = 1; coherenceScore = 1; taskFulfillmentScore = 1;
         } else if (foundC1C2Gram.length >= 2) grammarScore = 5;
         else if (foundC1C2Gram.length >= 1 || foundB2Gram.length >= 2) grammarScore = 4;
-        else if (foundB2Gram.length >= 1 || textLower.includes("parce que") || textLower.includes("j'ai")) grammarScore = 3;
+        if (taskFulfillmentScore === 0) return 0;
         let rawSum = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
         const hasB2Conn = foundB2Conn.length > 0 || foundC1C2Conn.length > 0;
         const hasB2Gram = foundB2Gram.length > 0 || foundC1C2Gram.length > 0;

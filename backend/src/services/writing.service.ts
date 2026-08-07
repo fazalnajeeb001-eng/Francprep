@@ -220,6 +220,15 @@ CRITICAL IMPARTIAL EVALUATION GUIDELINES (STRICT FEI CEFR STANDARDS — NO GRADE
 - Beginner A1 responses receive 3–4/20 (NCLC 3 / A1) or 1–2/20 (Below A1).
 - OFF-TOPIC (HORS-SUJET), PLAGIARIZED, or GIBBERISH submissions MUST receive 0/20 (NCLC 0).
 
+CRITICAL TASK TYPE & FORMAT ALIGNMENT RULES (0 MARKS FOR MISMATCH):
+- TÂCHE 1 EXPECTATION: Short personal message/email (60-120 words) responding to a daily situation or request.
+- TÂCHE 2 EXPECTATION: Narrative article or personal experience report (120-150 words) describing a travel, event, or personal story.
+- TÂCHE 3 EXPECTATION: Argumentative essay on a societal/public topic discussing two contrasting viewpoints (140-180 words).
+
+IF CANDIDATE SUBMITS A TÂCHE 1 PERSONAL EMAIL (e.g. "Bonjour... Je suis dans votre appartement... Cordialement") FOR A TÂCHE 3 ARGUMENTATIVE ESSAY OR TÂCHE 2 NARRATIVE REPORT:
+- This is a TASK TYPE & FORMAT MISMATCH (HORS-SUJET).
+- Official FEI rules mandate an automatic 0/5 on TaskFulfillmentScore and 0/20 Total Marks (NCLC 0 Zero Grade).
+
 CRITICAL CAPPING RULE FOR C1/C2 MASTERY (NCLC 9–10 / 16–20 MARKS):
 - Standard formal B2 emails with polite request formulas ("Pourriez-vous", "je vous prie d'agréer") and standard connectors ("de plus", "car", "alors que") MUST BE GRADED AT 13–15/20 (B2 / B2 Upper NCLC 7-8). THEY CANNOT RECEIVE C1 OR C2 (16–20 Marks).
 - To receive 16/20+ (C1/C2), candidate text MUST feature sophisticated academic/literary vocabulary (e.g. incontournable, dysfonctionnement, préconiser, solliciter, déchéance, aggravation) AND advanced connectors (de surcroît, par conséquent, néanmoins) AND complex syntax (subjonctif, conditionnel passé, relative pronouns dont/auquel).
@@ -285,6 +294,16 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
         let g = Math.max(0, Math.min(5, typeof parsed.grammarScore === 'number' ? parsed.grammarScore : 0));
 
         const textLower = (text || '').toLowerCase();
+        const words = (text || '').trim().replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
+
+        // Detect Tâche 1 Personal Email format pasted in Tâche 3 / Tâche 2
+        const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test((text || '').trim()) && /(cordialement|bien à vous|salutations)/i.test((text || '').trim());
+        const isTache3Or2 = lessonTitle?.includes('Tâche 3') || lessonTitle?.includes('Tâche 2') || expectedAnswer?.includes('140') || expectedAnswer?.includes('120');
+
+        if (isTache3Or2 && isLetterFormat && words.length < 100) {
+          t = 0;
+        }
+
         const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part)\b/i.test(textLower);
         const hasB2Grammar = /\b(pourriez|pourrait|serait|aimerais|fussent|puisse|soit|dont|auquel|laquelle|bien que|afin de|en vue de)\b/i.test(textLower);
 
@@ -297,6 +316,10 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
         }
 
         let scoreOutOf20 = t + c + l + g;
+
+        if (t === 0) {
+          scoreOutOf20 = 0;
+        }
 
         if (!hasB2Connectors && !hasB2Grammar) {
           scoreOutOf20 = Math.min(9, scoreOutOf20);
@@ -426,7 +449,13 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
     const hasTelegraphicGrammar = /\b(je\s+maladie|je\s+malade|moi\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances)\b/i.test(textLower);
 
     let taskFulfillmentScore = 1;
-    if (wordCount >= minWords && wordCount <= maxWords + 30) {
+    const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test(clean) && /(cordialement|bien à vous|salutations)/i.test(clean);
+    const isTache3 = lessonTitle?.includes('Tâche 3') || expectedAnswer?.includes('140');
+    const isTache2 = lessonTitle?.includes('Tâche 2') || expectedAnswer?.includes('120');
+
+    if (isTache3 && isLetterFormat && wordCount < 100) {
+      taskFulfillmentScore = 0;
+    } else if (wordCount >= minWords && wordCount <= maxWords + 30) {
       taskFulfillmentScore = 5;
     } else if (wordCount > maxWords + 30) {
       taskFulfillmentScore = 4;
