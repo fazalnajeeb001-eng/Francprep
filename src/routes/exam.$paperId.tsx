@@ -456,6 +456,132 @@ export function AuthenticCBTExamPage() {
     setEvaluatingSpeaking((prev) => ({ ...prev, [taskId]: false }));
   };
 
+  const [isSubmittingExam, setIsSubmittingExam] = useState(false);
+
+  const handleFinishTest = async () => {
+    if (isSubmittingExam) return;
+    setIsSubmittingExam(true);
+    try {
+      // 1. Batch evaluate any completed writing tasks that do not yet have AI results
+      const writingSec = paper.sections.find((s) => s.type === "EXPRESSION_ECRITE");
+      if (writingSec?.writingTasks) {
+        const pendingWriting = writingSec.writingTasks.filter((t) => {
+          const typed = writingResponses[t.id];
+          const hasAI = writingAiResults[t.id];
+          return typed && typed.trim().length > 0 && !hasAI;
+        });
+
+        if (pendingWriting.length > 0) {
+          await Promise.all(
+            pendingWriting.map(async (t) => {
+              const text = writingResponses[t.id];
+              try {
+                const res = await apiFetch("/writing/feedback", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    studentText: text,
+                    taskPrompt: t.prompt,
+                    sampleResponse: t.sampleResponse,
+                    wordCountMin: t.wordCountMin,
+                    wordCountMax: t.wordCountMax,
+                    paperTitle: paper.title,
+                  }),
+                });
+                const json = await res.json();
+                if (json.success && json.data) {
+                  setWritingAiResults((prev) => ({
+                    ...prev,
+                    [t.id]: json.data,
+                  }));
+                }
+              } catch (e) {
+                console.error("Batch writing eval error:", e);
+              }
+            })
+          );
+        }
+      }
+
+      // 2. Batch evaluate any completed speaking tasks that do not yet have AI results
+      const speakingSec = paper.sections.find((s) => s.type === "EXPRESSION_ORALE");
+      if (speakingSec?.speakingTasks) {
+        const pendingSpeaking = speakingSec.speakingTasks.filter((t) => {
+          const transcript = speakingTranscripts[t.id];
+          const dialogue = speakingDialogueMap[t.id];
+          const hasAI = speakingAiResults[t.id];
+          const hasSpoken = (transcript && transcript.trim().length > 0) || (dialogue && dialogue.length > 0);
+          return hasSpoken && !hasAI;
+        });
+
+        if (pendingSpeaking.length > 0) {
+          await Promise.all(
+            pendingSpeaking.map(async (t) => {
+              const dialogue = speakingDialogueMap[t.id] || [];
+              const combinedSpeech = dialogue.length > 0
+                ? dialogue.map((m) => `${m.sender === 'candidate' ? 'Candidat' : 'Examinateur'}: ${m.text}`).join('\n')
+                : (speakingTranscripts[t.id] || '');
+              try {
+                const res = await apiFetch("/writing/analyze-speaking", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    transcription: combinedSpeech,
+                    expectedText: t.scenario,
+                    lessonTitle: paper.title,
+                  }),
+                });
+                const json = await res.json();
+                if (json.success && json.data) {
+                  const data = json.data;
+                  const totalScoreOutOf20 = typeof data.scoreOutOf20 === 'number'
+                    ? data.scoreOutOf20
+                    : (typeof data.score === 'number' ? Math.round((data.score / 100) * 20) : 15);
+                  let nclcGrade = data.nclcGrade || "NCLC 7 (B2 Benchmark Target)";
+                  let expressEntryPoints = data.expressEntryPoints || 17;
+                  if (totalScoreOutOf20 >= 18) { nclcGrade = "NCLC 10 (C2 Mastery)"; expressEntryPoints = 34; }
+                  else if (totalScoreOutOf20 >= 16) { nclcGrade = "NCLC 9 (C1 Advanced)"; expressEntryPoints = 31; }
+                  else if (totalScoreOutOf20 >= 14) { nclcGrade = "NCLC 8 (B2 Upper)"; expressEntryPoints = 23; }
+                  else if (totalScoreOutOf20 >= 12) { nclcGrade = "NCLC 7 (B2 Benchmark Target)"; expressEntryPoints = 17; }
+                  else if (totalScoreOutOf20 >= 10) { nclcGrade = "NCLC 6 (B1 Intermediate)"; expressEntryPoints = 12; }
+                  else if (totalScoreOutOf20 >= 8) { nclcGrade = "NCLC 5 (B1 Threshold)"; expressEntryPoints = 6; }
+                  else if (totalScoreOutOf20 >= 5) { nclcGrade = "NCLC 4 (A2 Elementary)"; expressEntryPoints = 0; }
+                  else if (totalScoreOutOf20 >= 3) { nclcGrade = "NCLC 3 (A1 Beginner)"; expressEntryPoints = 0; }
+                  else { nclcGrade = "NCLC 0 (Zero Grade — Gibberish / Non-French)"; expressEntryPoints = 0; }
+
+                  setSpeakingAiResults((prev) => ({
+                    ...prev,
+                    [t.id]: {
+                      scoreOutOf20: totalScoreOutOf20,
+                      score: data.score || Math.round((totalScoreOutOf20 / 20) * 100),
+                      taskFulfillmentScore: data.taskFulfillmentScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+                      coherenceScore: data.coherenceScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+                      lexicalScore: data.lexicalScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+                      grammarScore: data.grammarScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+                      nclcGrade,
+                      expressEntryPoints,
+                      feedback: data.feedback || `Official FEI Oral Evaluation: Total ${totalScoreOutOf20}/20 Marks.`,
+                      corrections: data.corrections || [],
+                      tips: data.tips || [],
+                    },
+                  }));
+                }
+              } catch (e) {
+                console.error("Batch speaking eval error:", e);
+              }
+            })
+          );
+        }
+      }
+    } catch (e) {
+      console.error("Submission evaluation error:", e);
+    } finally {
+      setIsSubmittingExam(false);
+      try { localStorage.removeItem(sessionKey); } catch {}
+      setIsSubmitted(true);
+    }
+  };
+
   const [seenStrategySections, setSeenStrategySections] = useState<Record<string, boolean>>(() => {
     if (typeof window === "undefined") return {};
     try {
@@ -888,7 +1014,7 @@ export function AuthenticCBTExamPage() {
         let minWords = task.wordCountMin || task.min || 60;
         let maxWords = task.wordCountMax || task.max || 120;
 
-        const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test(clean) && /(cordialement|bien à vous|salutations)/i.test(clean);
+        const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test(clean) && /(cordialement|bien à vous|salutations|haute considération|respectueusement)/i.test(clean);
         const isTache3 = idx === 2 || task.title?.includes("Tâche 3") || minWords >= 140;
 
         let taskFulfillmentScore = 1;
@@ -900,11 +1026,19 @@ export function AuthenticCBTExamPage() {
         else if (wordCount >= Math.round(minWords * 0.4)) taskFulfillmentScore = 2;
         else taskFulfillmentScore = 1;
 
-        const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|travel|city|park|food|good|experience)\b/i.test(clean);
+        const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|travel|city|park|food|good|experience|like|you|know|actually)\b/i.test(clean);
         const hasTelegraphicGrammar = /\b(je\s+maladie|je\s+malade|moi\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances|je\s+allé|je\s+faire|nous\s+manger|prendre\s+photo|je\s+aimé|je\s+très)\b/i.test(clean);
 
-        const c1c2Connectors = ["de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet", "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement"];
-        const b2Connectors = ["en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin", "au cours de", "par conséquent", "toutefois", "néanmoins"];
+        const c1c2Connectors = [
+          "de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet",
+          "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement", "d'un côté",
+          "en revanche", "ainsi", "par ailleurs", "étant donné", "dans cette optique"
+        ];
+        const b2Connectors = [
+          "en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin",
+          "au cours de", "selon moi", "à mon avis", "pour ma part", "en ce qui concerne", "afin de",
+          "bien que", "en premier lieu", "en second lieu"
+        ];
         const foundC1C2Conn = c1c2Connectors.filter((c) => textLower.includes(c));
         const foundB2Conn = b2Connectors.filter((c) => textLower.includes(c));
 
@@ -915,8 +1049,23 @@ export function AuthenticCBTExamPage() {
         else if (textLower.includes("mais") || textLower.includes("en plus") || textLower.includes("parce que")) coherenceScore = 2;
         else coherenceScore = 1;
 
-        const c1c2Lexical = ["opportunité", "perspective", "incontournable", "sensibilisation", "préconiser", "déception", "solliciter", "manifestation", "bienveillance", "réciproque", "controverse", "conciliation", "inéluctable", "plasticité", "épanouissement", "décarbonation", "assimilation", "détériorer", "attentivement", "périple", "majestueux", "féerique", "dépaysement", "spectaculaire", "ascension", "émerveillement", "sérénité", "enrichissantes", "impérissables", "irrépressible", "d'exception", "dysfonctionnement", "préjudice", "locataire"];
-        const b2Lexical = ["avantage", "inconvénient", "participation", "installation", "inscription", "abonnement", "formation", "réclamation", "matériel", "garantie", "projet", "expérience", "quartier", "collègue", "souhaiter", "demander", "préciser", "bâtiments", "paysage", "renouvelé"];
+        // Universal lexical dictionary across all 10 TCF Papers & TEF Papers
+        const c1c2Lexical = [
+          "opportunité", "perspective", "incontournable", "sensibilisation", "préconiser", "déception", "solliciter",
+          "manifestation", "bienveillance", "réciproque", "controverse", "conciliation", "inéluctable", "plasticité",
+          "épanouissement", "décarbonation", "assimilation", "détériorer", "attentivement", "périple", "majestueux",
+          "féerique", "dépaysement", "spectaculaire", "ascension", "émerveillement", "sérénité", "enrichissantes",
+          "impérissables", "irrépressible", "d'exception", "dysfonctionnement", "préjudice", "locataire", "pérennité",
+          "intergénérationnel", "sollicitation", "infrastructure", "mobilisation", "écologique", "écosystème",
+          "automatisation", "cybersécurité", "méritocratie", "régulation", "pédagogie", "convivialité"
+        ];
+        const b2Lexical = [
+          "avantage", "inconvénient", "participation", "installation", "inscription", "abonnement", "formation",
+          "réclamation", "matériel", "garantie", "projet", "expérience", "quartier", "collègue", "souhaiter",
+          "demander", "préciser", "bâtiments", "paysage", "renouvelé", "logement", "loyer", "charges", "chauffage",
+          "panne", "transport", "véhicule", "écologique", "bénévole", "solidaire", "développement", "numérique",
+          "culturel", "festival", "conférence", "débat", "avis", "opinion", "argument", "mesure", "citoyen", "société"
+        ];
         const foundC1C2Lex = c1c2Lexical.filter((w) => textLower.includes(w));
         const foundB2Lex = b2Lexical.filter((w) => textLower.includes(w));
 
@@ -928,8 +1077,17 @@ export function AuthenticCBTExamPage() {
         else if (wordCount >= 30) lexicalScore = 2;
         else lexicalScore = 1;
 
-        const c1c2Grammar = ["puisse", "soit", "fassions", "sachiez", "ayez", "fussent", "dont", "auquel", "laquelle", "duquel", "lesquelles", "en observant", "en prenant", "tout en", "aurait été", "aurait dû", "eût", "demeure", "entraver", "me laissant"];
-        const b2Grammar = ["pourriez-vous", "pourrait-il", "serait-il", "j'aimerais", "nous aimerions", "il conviendrait", "bien que", "afin de", "en vue de", "après avoir", "étant donné", "je vous prie d'agréer", "veuillez agréer", "il faut que", "pour que", "sommes restés", "avons visité"];
+        const c1c2Grammar = [
+          "puisse", "soit", "fassions", "sachiez", "ayez", "fussent", "dont", "auquel", "laquelle", "duquel",
+          "lesquelles", "en observant", "en prenant", "tout en", "aurait été", "aurait dû", "eût", "demeure",
+          "entraver", "me laissant", "soient", "prenne", "apprenne", "comprenne", "parvienne", "fût"
+        ];
+        const b2Grammar = [
+          "pourriez-vous", "pourrait-il", "serait-il", "j'aimerais", "nous aimerions", "il conviendrait",
+          "bien que", "afin de", "en vue de", "après avoir", "étant donné", "je vous prie d'agréer",
+          "veuillez agréer", "il faut que", "pour que", "sommes restés", "avons visité", "j'ai participé",
+          "j'ai eu l'opportunité", "nous avons réussi", "j'ai décidé"
+        ];
         const foundC1C2Gram = c1c2Grammar.filter((g) => textLower.includes(g));
         const foundB2Gram = b2Grammar.filter((g) => textLower.includes(g));
 
@@ -992,9 +1150,42 @@ export function AuthenticCBTExamPage() {
     const writingPct = Math.round((writingWeightedScore / 20) * 100);
     const writingNCLC = calculateNCLCScore(writingPct, paper.type, "EXPRESSION_ECRITE");
 
-    const speakingScores = Object.values(speakingAiResults).map((r: any) => r.score || 0);
-    const speakingAvg = speakingScores.length > 0 ? Math.round(speakingScores.reduce((a, b) => a + b, 0) / speakingScores.length) : 0;
-    const speakingNCLC = calculateNCLCScore(speakingAvg, paper.type, "EXPRESSION_ORALE");
+    const spkTasks = currentSection.speakingTasks || [];
+    let speakingWeightedScore = 0;
+    if (spkTasks.length >= 3) {
+      const getSpkScore = (t: any, idx: number) => {
+        const res = speakingAiResults[t.id] || speakingAiResults[idx];
+        if (res?.scoreOutOf20 !== undefined) return res.scoreOutOf20;
+        if (res?.score !== undefined) return Math.round((res.score / 100) * 20);
+        return 0;
+      };
+      const s1 = getSpkScore(spkTasks[0], 0);
+      const s2 = getSpkScore(spkTasks[1], 1);
+      const s3 = getSpkScore(spkTasks[2], 2);
+      const attemptedSpk = [
+        { score: s1, weight: 0.20 },
+        { score: s2, weight: 0.30 },
+        { score: s3, weight: 0.50 }
+      ].filter((t) => t.score > 0);
+
+      if (attemptedSpk.length === 3) {
+        speakingWeightedScore = Math.round(0.20 * s1 + 0.30 * s2 + 0.50 * s3);
+      } else if (attemptedSpk.length > 0) {
+        const totalW = attemptedSpk.reduce((sum, t) => sum + t.weight, 0);
+        speakingWeightedScore = Math.round(attemptedSpk.reduce((sum, t) => sum + t.score * t.weight, 0) / totalW);
+      }
+    } else {
+      const speakingScores = Object.values(speakingAiResults).map((r: any) => {
+        if (typeof r.scoreOutOf20 === 'number') return r.scoreOutOf20;
+        if (typeof r.score === 'number') return Math.round((r.score / 100) * 20);
+        return 0;
+      });
+      const validSpk = speakingScores.filter((s) => s > 0);
+      speakingWeightedScore = validSpk.length > 0 ? Math.round(validSpk.reduce((a, b) => a + b, 0) / validSpk.length) : 0;
+    }
+
+    const speakingPct = Math.round((speakingWeightedScore / 20) * 100);
+    const speakingNCLC = calculateNCLCScore(speakingPct, paper.type, "EXPRESSION_ORALE");
 
     // Calculate individual skill CRS points according to official IRCC scale
     const getModulePoints = (nclc: number) => {
@@ -1010,7 +1201,7 @@ export function AuthenticCBTExamPage() {
     const listeningPoints = (listeningTotal > 0 && listeningCorrect > 0) ? getModulePoints(listeningNCLC.nclcLevel) : 0;
     const readingPoints = (readingTotal > 0 && readingCorrect > 0) ? getModulePoints(readingNCLC.nclcLevel) : 0;
     const writingPoints = (writingWeightedScore > 0 && writingNCLC.nclcLevel > 0) ? getModulePoints(writingNCLC.nclcLevel) : 0;
-    const speakingPoints = (speakingAvg > 0 && speakingNCLC.nclcLevel > 0) ? getModulePoints(speakingNCLC.nclcLevel) : 0;
+    const speakingPoints = (speakingWeightedScore > 0 && speakingNCLC.nclcLevel > 0) ? getModulePoints(speakingNCLC.nclcLevel) : 0;
 
     const cumulativeCRSPoints = listeningPoints + readingPoints + writingPoints + speakingPoints;
 
@@ -1169,15 +1360,22 @@ export function AuthenticCBTExamPage() {
 
           {/* Submit Button */}
           <button
-            onClick={() => {
-              try { localStorage.removeItem(sessionKey); } catch {}
-              setIsSubmitted(true);
-            }}
-            className="px-3 sm:px-4 py-1 sm:py-1.5 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow shrink-0 cursor-pointer"
+            disabled={isSubmittingExam}
+            onClick={handleFinishTest}
+            className="px-3 sm:px-4 py-1 sm:py-1.5 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow shrink-0 cursor-pointer disabled:opacity-50 transition-all active:scale-95"
           >
-            <Send className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Finish Test</span>
-            <span className="sm:hidden">Finish</span>
+            {isSubmittingExam ? (
+              <>
+                <Sparkles className="w-3.5 h-3.5 animate-spin" />
+                <span>Evaluating...</span>
+              </>
+            ) : (
+              <>
+                <Send className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Finish Test</span>
+                <span className="sm:hidden">Finish</span>
+              </>
+            )}
           </button>
         </div>
       </header>
@@ -2236,9 +2434,45 @@ export function AuthenticCBTExamPage() {
         </footer>
       )}
 
+      {/* ─── EXAM EVALUATION PROGRESS MODAL ─── */}
+      <AnimatePresence>
+        {isSubmittingExam && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="w-full max-w-md p-6 rounded-2xl border bg-white dark:bg-[#101828] border-slate-300 dark:border-slate-800 shadow-2xl space-y-4 text-center"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center mx-auto shadow-lg animate-pulse">
+                <Sparkles className="w-7 h-7 animate-spin" />
+              </div>
+              <div className="space-y-1.5">
+                <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+                  🇨🇦 Evaluating Official Exam Submission
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                  Official France Éducation International (FEI) AI Engine is scoring your Writing Tasks (1, 2, 3) and Oral Production across the 4-Criteria Analytic Grid...
+                </p>
+              </div>
+              <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 h-2 rounded-full animate-pulse w-full" />
+              </div>
+              <p className="text-[11px] text-blue-600 dark:text-blue-400 font-bold font-mono">
+                Calculating NCLC Benchmarks & IRCC Express Entry CRS Points...
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* ─── SUBMISSION & DIAGNOSTIC RESULT MODAL ─── */}
       <AnimatePresence>
-        {isSubmitted && (
+        {isSubmitted && !isSubmittingExam && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
