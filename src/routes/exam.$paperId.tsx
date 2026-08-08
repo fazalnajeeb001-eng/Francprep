@@ -860,7 +860,7 @@ export function AuthenticCBTExamPage() {
 
     const c1c2Connectors = [
       "de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet",
-      "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement", "dans cette optique", "dès lors"
+      "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement", "dans cette optique", "dès lors", "outre", "en toute urgence"
     ];
     const b2Connectors = [
       "en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin",
@@ -889,7 +889,9 @@ export function AuthenticCBTExamPage() {
       "épanouissement", "décarbonation", "assimilation", "détériorer", "attentivement", "périple", "majestueux",
       "féerique", "dépaysement", "spectaculaire", "ascension", "émerveillement", "sérénité", "enrichissantes",
       "impérissables", "irrépressible", "d'exception", "dysfonctionnement", "préjudice", "locataire", "pérennité",
-      "intergénérationnel", "sollicitation", "infrastructure", "mobilisation", "écosystème", "automatisation", "cybersécurité"
+      "intergénérationnel", "sollicitation", "infrastructure", "mobilisation", "écosystème", "automatisation", "cybersécurité",
+      "défaillance", "manquement", "invivable", "sanitaires inacceptables", "inacceptables", "je vous somme", "règlement immédiat",
+      "dans les plus brefs délais"
     ];
     const b2Lexical = [
       "autorisation", "absence", "exceptionnelle", "impératif", "familial", "majeur", "perturber", "fonctionnement",
@@ -922,7 +924,8 @@ export function AuthenticCBTExamPage() {
     const c1c2Grammar = [
       "puisse", "soit", "fassions", "sachiez", "ayez", "fussent", "a été", "ont été", "fut", "dont", "auquel",
       "laquelle", "duquel", "lesquelles", "en observant", "en prenant", "tout en", "aurait été", "aurait dû",
-      "eût", "demeure", "entraver", "me laissant", "entouré de", "bordé par", "ferez preuve", "ai veillé à"
+      "eût", "demeure", "entraver", "me laissant", "entouré de", "bordé par", "ferez preuve", "ai veillé à",
+      "je vous somme d'ordonner", "dès mon arrivée", "rend la température", "nuit gravement", "expose ma famille"
     ];
     const b2Grammar = [
       "je me permets", "veuillez", "je vous prie", "a accepté de", "dont vous", "pourriez-vous", "pourrait-il", "serait-il",
@@ -957,17 +960,21 @@ export function AuthenticCBTExamPage() {
 
     let totalScoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
 
-    // Distinguish formal B2 correspondence vs conversational A2 emails
+    // Distinguish formal B2 correspondence vs conversational A2 emails vs advanced C1 emails
     const hasFormalGreeting = /^\s*(monsieur le|madame la|monsieur,|madame,)/i.test(clean);
     const hasFormalSignOff = /(je vous prie d'agréer|veuillez agréer|salutations distinguées|haute considération|respectueusement)/i.test(clean);
     const hasFormalConditional = /(pourriez-vous|auriez-vous|serait-il possible|je souhaiterais|nous souhaiterions|je vous saurais gré)/i.test(clean);
+    const hasAdvancedC1Markers = (foundC1C2Lex.length >= 2 || (foundC1C2Lex.length >= 1 && foundC1C2Conn.length >= 1)) && hasFormalSignOff;
 
     if (isTache1) {
       if (!hasFormalGreeting && !hasFormalSignOff && !hasFormalConditional) {
         // Conversational / Oral style email without formal register is strictly A2 (6-8/20 | NCLC 4-5)
         totalScoreOutOf20 = Math.min(8, totalScoreOutOf20);
+      } else if (hasAdvancedC1Markers) {
+        // Advanced C1 formal administrative email with high register (16-17/20 | NCLC 9)
+        totalScoreOutOf20 = Math.min(17, totalScoreOutOf20);
       } else {
-        // Formal polite correspondence capped at B2 Upper (15/20 max)
+        // Standard B2 formal polite correspondence (14-15/20 | NCLC 8)
         totalScoreOutOf20 = Math.min(15, totalScoreOutOf20);
       }
     } else if (isTache2) {
@@ -1132,7 +1139,7 @@ export function AuthenticCBTExamPage() {
 
         const c1c2Connectors = [
           "de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet",
-          "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement", "dans cette optique", "dès lors"
+          "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement", "dans cette optique", "dès lors", "outre", "en toute urgence"
         ];
         const b2Connectors = [
           "en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin",
@@ -1167,7 +1174,9 @@ export function AuthenticCBTExamPage() {
           "épanouissement", "décarbonation", "assimilation", "détériorer", "attentivement", "périple", "majestueux",
           "féerique", "dépaysement", "spectaculaire", "ascension", "émerveillement", "sérénité", "enrichissantes",
           "impérissables", "irrépressible", "d'exception", "dysfonctionnement", "préjudice", "locataire", "pérennité",
-          "intergénérationnel", "sollicitation", "infrastructure", "mobilisation", "écosystème", "automatisation", "cybersécurité"
+          "intergénérationnel", "sollicitation", "infrastructure", "mobilisation", "écosystème", "automatisation", "cybersécurité",
+          "défaillance", "manquement", "invivable", "sanitaires inacceptables", "inacceptables", "je vous somme", "règlement immédiat",
+          "dans les plus brefs délais"
         ];
         const b2Lexical = [
           "autorisation", "absence", "exceptionnelle", "impératif", "familial", "majeur", "perturber", "fonctionnement",
@@ -1207,7 +1216,8 @@ export function AuthenticCBTExamPage() {
         const c1c2Grammar = [
           "puisse", "soit", "fassions", "sachiez", "ayez", "fussent", "a été", "ont été", "fut", "dont", "auquel",
           "laquelle", "duquel", "lesquelles", "en observant", "en prenant", "tout en", "aurait été", "aurait dû",
-          "eût", "demeure", "entraver", "me laissant", "entouré de", "bordé par", "ferez preuve", "ai veillé à"
+          "eût", "demeure", "entraver", "me laissant", "entouré de", "bordé par", "ferez preuve", "ai veillé à",
+          "je vous somme d'ordonner", "dès mon arrivée", "rend la température", "nuit gravement", "expose ma famille"
         ];
         const b2Grammar = [
           "je me permets", "veuillez", "je vous prie", "a accepté de", "dont vous", "pourriez-vous", "pourrait-il", "serait-il",
@@ -1243,17 +1253,21 @@ export function AuthenticCBTExamPage() {
         if (taskFulfillmentScore === 0) return 0;
         let rawSum = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
 
-        // Distinguish formal B2 correspondence vs conversational A2 emails
+        // Distinguish formal B2 correspondence vs conversational A2 emails vs advanced C1 emails
         const hasFormalGreeting = /^\s*(monsieur le|madame la|monsieur,|madame,)/i.test(clean);
         const hasFormalSignOff = /(je vous prie d'agréer|veuillez agréer|salutations distinguées|haute considération|respectueusement)/i.test(clean);
         const hasFormalConditional = /(pourriez-vous|auriez-vous|serait-il possible|je souhaiterais|nous souhaiterions|je vous saurais gré)/i.test(clean);
+        const hasAdvancedC1Markers = (foundC1C2Lex.length >= 2 || (foundC1C2Lex.length >= 1 && foundC1C2Conn.length >= 1)) && hasFormalSignOff;
 
         if (isTache1) {
           if (!hasFormalGreeting && !hasFormalSignOff && !hasFormalConditional) {
             // Conversational / Oral style email without formal register is strictly A2 (6-8/20 | NCLC 4-5)
             rawSum = Math.min(8, rawSum);
+          } else if (hasAdvancedC1Markers) {
+            // Advanced C1 formal administrative email with high register (16-17/20 | NCLC 9)
+            rawSum = Math.min(17, rawSum);
           } else {
-            // Formal polite correspondence capped at B2 Upper (15/20 max)
+            // Standard B2 formal polite correspondence (14-15/20 | NCLC 8)
             rawSum = Math.min(15, rawSum);
           }
         } else if (isTache2) {

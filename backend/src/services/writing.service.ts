@@ -219,11 +219,12 @@ CRITICAL TASK-AWARE FEI CEFR EVALUATION STANDARDS (STRICT CALIBRATION WITHOUT IN
 - Grade strictly according to the candidate's linguistic quality across the 4 official FEI criteria (0–5 points each, 20 total marks per task).
 
 TASK-SPECIFIC CALIBRATION RULES:
-1. TÂCHE 1 (Short message / formal email, 60–120 words | Target: A1–B2):
-   - Flawless B2 formal email (formal greeting "Monsieur le Propriétaire" / "Monsieur le Directeur", polite formula "je vous écris concernant", polite conditional request "pourriez-vous envoyer" / "auriez-vous l'amabilité de", formal polite sign-off "dans l'attente de votre réponse, je vous prie d'agréer mes salutations distinguées", clear logical organization) = 14–15/20 (Solid B2 Upper / NCLC 8). Note: Tâche 1 alone cannot prove C2 mastery (ceiling is 15-16/20 max).
-   - Structured B1 email (semi-formal phrasing, clear paragraphing, varied B1 connectors beyond conversational coordinators, polite request like "je souhaiterais vous demander de bien vouloir intervenir") = 10–11/20 (Solid B1 Intermediate / NCLC 6).
-   - Conversational / Elementary A2 message (basic spoken style like "Bonjour", "ne marche pas du tout", "il fait très froid", direct spoken question "vous pouvez venir réparer ?", simple coordinate words "mais", "parce que", "en plus", "Merci pour votre aide. Cordialement") = 7–8/20 (NCLC 4–5 / A2).
-   - Beginner A1 message (broken sentences, high error rate, isolated words) = 3–5/20 (NCLC 3 / A1).
+1. TÂCHE 1 (Short message / formal email, 60–120 words | Target: A1–C1):
+   - Advanced C1 formal email (high administrative / legal register like "Je me permets de vous contacter en toute urgence", "défaillance totale", "outre le manquement évident", "je vous somme d'ordonner", "dans les plus brefs délais", "veuillez agréer mes salutations distinguées") = 16–17/20 (C1 Advanced / NCLC 9 | +31 CRS Points).
+   - Flawless B2 formal email (formal greeting "Monsieur le Propriétaire" / "Monsieur le Directeur", polite formula "je vous écris concernant", polite conditional request "pourriez-vous envoyer" / "auriez-vous l'amabilité de", formal polite sign-off "dans l'attente de votre réponse, je vous prie d'agréer mes salutations distinguées", clear logical organization) = 14–15/20 (Solid B2 Upper / NCLC 8 | +23 CRS Points).
+   - Structured B1 email (semi-formal phrasing, clear paragraphing, varied B1 connectors beyond conversational coordinators, polite request like "je souhaiterais vous demander de bien vouloir intervenir") = 10–11/20 (Solid B1 Intermediate / NCLC 6 | +12 CRS Points).
+   - Conversational / Elementary A2 message (basic spoken style like "Bonjour", "ne marche pas du tout", "il fait très froid", direct spoken question "vous pouvez venir réparer ?", simple coordinate words "mais", "parce que", "en plus", "Merci pour votre aide. Cordialement") = 7–8/20 (NCLC 4–5 / A2 | 0 CRS Points).
+   - Beginner A1 message (broken sentences, high error rate, isolated words) = 3–5/20 (NCLC 3 / A1 | 0 CRS Points).
 
 2. TÂCHE 2 (Personal article / narrative report, 120–150 words | Target: A2–C1):
    - Rich past narrative (passé composé / imparfait), sensory description, emotional reflections, varied vocabulary = 14–16/20 (B2–C1 / NCLC 8–9).
@@ -305,15 +306,6 @@ Respond STRICTLY with a valid JSON object matching this schema:
         }
 
         let scoreOutOf20 = t + c + l + g;
-
-        // Apply task-level ceilings
-        if (isTache1) {
-          // Tâche 1 is an everyday communicative task (60-120 words) capped at 15-16/20 max (B2 Upper)
-          scoreOutOf20 = Math.min(15, scoreOutOf20);
-        } else if (isTache2) {
-          // Tâche 2 is a narrative report capped at 17/20 max (C1)
-          scoreOutOf20 = Math.min(17, scoreOutOf20);
-        }
 
         if (t === 0) {
           scoreOutOf20 = 0;
@@ -459,12 +451,12 @@ Respond STRICTLY with a valid JSON object matching this schema:
 
     const c1c2Connectors = [
       "de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet",
-      "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement", "dans cette optique", "dès lors"
+      "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement", "dans cette optique", "dès lors", "outre", "en toute urgence"
     ];
     const b2Connectors = [
       "en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin",
       "au cours de", "pendant le", "afin de", "en raison de", "à cet effet", "dans ce cadre", "par la présente",
-      "en vue de", "d'ores et déjà", "ainsi que", "pour cette raison", "dans l'attente de", "concernant", "quant à", "selon moi", "à mon avis"
+      "en vue de", "d'ores et déjà", "ainsi que", "pour cette raison", "dans l'attente de", "concernant", "quant à", "dès lors", "selon moi", "à mon avis"
     ];
     const b1Connectors = [
       "mais", "parce que", "en plus", "donc", "car", "alors", "puis", "aussi", "comme", "quand", "si", "pendant que"
@@ -493,7 +485,9 @@ Respond STRICTLY with a valid JSON object matching this schema:
       "épanouissement", "décarbonation", "assimilation", "détériorer", "attentivement", "périple", "majestueux",
       "féerique", "dépaysement", "spectaculaire", "ascension", "émerveillement", "sérénité", "enrichissantes",
       "impérissables", "irrépressible", "d'exception", "dysfonctionnement", "préjudice", "locataire", "pérennité",
-      "intergénérationnel", "sollicitation", "infrastructure", "mobilisation", "écosystème", "automatisation", "cybersécurité"
+      "intergénérationnel", "sollicitation", "infrastructure", "mobilisation", "écosystème", "automatisation", "cybersécurité",
+      "défaillance", "manquement", "invivable", "sanitaires inacceptables", "inacceptables", "je vous somme", "règlement immédiat",
+      "dans les plus brefs délais"
     ];
     const b2Lexical = [
       "autorisation", "absence", "exceptionnelle", "impératif", "familial", "majeur", "perturber", "fonctionnement",
@@ -533,7 +527,8 @@ Respond STRICTLY with a valid JSON object matching this schema:
     const c1c2Grammar = [
       "puisse", "soit", "fassions", "sachiez", "ayez", "fussent", "a été", "ont été", "fut", "dont", "auquel",
       "laquelle", "duquel", "lesquelles", "en observant", "en prenant", "tout en", "aurait été", "aurait dû",
-      "eût", "demeure", "entraver", "me laissant", "entouré de", "bordé par", "ferez preuve", "ai veillé à"
+      "eût", "demeure", "entraver", "me laissant", "entouré de", "bordé par", "ferez preuve", "ai veillé à",
+      "je vous somme d'ordonner", "dès mon arrivée", "rend la température", "nuit gravement", "expose ma famille"
     ];
     const b2Grammar = [
       "je me permets", "veuillez", "je vous prie", "a accepté de", "dont vous", "pourriez-vous", "pourrait-il", "serait-il",
@@ -585,17 +580,21 @@ Respond STRICTLY with a valid JSON object matching this schema:
 
     let scoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
 
-    // Distinguish formal B2 correspondence vs conversational A2 emails
+    // Distinguish formal B2 correspondence vs conversational A2 emails vs advanced C1 emails
     const hasFormalGreeting = /^\s*(monsieur le|madame la|monsieur,|madame,)/i.test(clean);
     const hasFormalSignOff = /(je vous prie d'agréer|veuillez agréer|salutations distinguées|haute considération|respectueusement)/i.test(clean);
     const hasFormalConditional = /(pourriez-vous|auriez-vous|serait-il possible|je souhaiterais|nous souhaiterions|je vous saurais gré)/i.test(clean);
+    const hasAdvancedC1Markers = (foundC1C2Lex.length >= 2 || (foundC1C2Lex.length >= 1 && foundC1C2Conn.length >= 1)) && hasFormalSignOff;
 
     if (isTache1) {
       if (!hasFormalGreeting && !hasFormalSignOff && !hasFormalConditional) {
         // Conversational / Oral style email without formal register is strictly A2 (6-8/20 | NCLC 4-5)
         scoreOutOf20 = Math.min(8, scoreOutOf20);
+      } else if (hasAdvancedC1Markers) {
+        // Advanced C1 formal administrative email with high register (16-17/20 | NCLC 9)
+        scoreOutOf20 = Math.min(17, scoreOutOf20);
       } else {
-        // Formal polite correspondence capped at B2 Upper (15/20 max)
+        // Standard B2 formal polite correspondence (14-15/20 | NCLC 8)
         scoreOutOf20 = Math.min(15, scoreOutOf20);
       }
     } else if (isTache2) {
