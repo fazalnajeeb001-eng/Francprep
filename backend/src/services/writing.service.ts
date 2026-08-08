@@ -220,10 +220,10 @@ CRITICAL TASK-AWARE FEI CEFR EVALUATION STANDARDS (STRICT CALIBRATION WITHOUT IN
 
 TASK-SPECIFIC CALIBRATION RULES:
 1. TÂCHE 1 (Short message / formal email, 60–120 words | Target: A1–B2):
-   - Flawless B2 formal email (polite formula "je vous écris concernant", polite request "pourriez-vous", polite sign-off "je vous prie d'agréer mes salutations distinguées", clear logical organization) = 14–15/20 (Solid B2 Upper / NCLC 8). Note: Tâche 1 alone cannot prove C2 mastery (ceiling is 15-16/20 max).
-   - Clear communicative B1 email (explains situation clearly, uses connectors like "mais", "parce que", "en plus", "donc", explains causes and consequences like "risquent d'être malades", makes request with "vous pouvez venir réparer") = 10–11/20 (Solid B1 Intermediate / NCLC 6).
-   - Elementary A2 message (isolated present tense phrases, basic vocabulary, limited connectors "et", "mais") = 6–8/20 (NCLC 4–5 / A2).
-   - Beginner A1 message = 3–5/20 (NCLC 3 / A1).
+   - Flawless B2 formal email (formal greeting "Monsieur le Propriétaire" / "Monsieur le Directeur", polite formula "je vous écris concernant", polite conditional request "pourriez-vous envoyer" / "auriez-vous l'amabilité de", formal polite sign-off "dans l'attente de votre réponse, je vous prie d'agréer mes salutations distinguées", clear logical organization) = 14–15/20 (Solid B2 Upper / NCLC 8). Note: Tâche 1 alone cannot prove C2 mastery (ceiling is 15-16/20 max).
+   - Structured B1 email (semi-formal phrasing, clear paragraphing, varied B1 connectors beyond conversational coordinators, polite request like "je souhaiterais vous demander de bien vouloir intervenir") = 10–11/20 (Solid B1 Intermediate / NCLC 6).
+   - Conversational / Elementary A2 message (basic spoken style like "Bonjour", "ne marche pas du tout", "il fait très froid", direct spoken question "vous pouvez venir réparer ?", simple coordinate words "mais", "parce que", "en plus", "Merci pour votre aide. Cordialement") = 7–8/20 (NCLC 4–5 / A2).
+   - Beginner A1 message (broken sentences, high error rate, isolated words) = 3–5/20 (NCLC 3 / A1).
 
 2. TÂCHE 2 (Personal article / narrative report, 120–150 words | Target: A2–C1):
    - Rich past narrative (passé composé / imparfait), sensory description, emotional reflections, varied vocabulary = 14–16/20 (B2–C1 / NCLC 8–9).
@@ -585,9 +585,19 @@ Respond STRICTLY with a valid JSON object matching this schema:
 
     let scoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
 
-    // Apply task ceilings
+    // Distinguish formal B2 correspondence vs conversational A2 emails
+    const hasFormalGreeting = /^\s*(monsieur le|madame la|monsieur,|madame,)/i.test(clean);
+    const hasFormalSignOff = /(je vous prie d'agréer|veuillez agréer|salutations distinguées|haute considération|respectueusement)/i.test(clean);
+    const hasFormalConditional = /(pourriez-vous|auriez-vous|serait-il possible|je souhaiterais|nous souhaiterions|je vous saurais gré)/i.test(clean);
+
     if (isTache1) {
-      scoreOutOf20 = Math.min(15, scoreOutOf20);
+      if (!hasFormalGreeting && !hasFormalSignOff && !hasFormalConditional) {
+        // Conversational / Oral style email without formal register is strictly A2 (6-8/20 | NCLC 4-5)
+        scoreOutOf20 = Math.min(8, scoreOutOf20);
+      } else {
+        // Formal polite correspondence capped at B2 Upper (15/20 max)
+        scoreOutOf20 = Math.min(15, scoreOutOf20);
+      }
     } else if (isTache2) {
       scoreOutOf20 = Math.min(17, scoreOutOf20);
     }

@@ -957,9 +957,19 @@ export function AuthenticCBTExamPage() {
 
     let totalScoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
 
-    // Apply task ceilings
+    // Distinguish formal B2 correspondence vs conversational A2 emails
+    const hasFormalGreeting = /^\s*(monsieur le|madame la|monsieur,|madame,)/i.test(clean);
+    const hasFormalSignOff = /(je vous prie d'agréer|veuillez agréer|salutations distinguées|haute considération|respectueusement)/i.test(clean);
+    const hasFormalConditional = /(pourriez-vous|auriez-vous|serait-il possible|je souhaiterais|nous souhaiterions|je vous saurais gré)/i.test(clean);
+
     if (isTache1) {
-      totalScoreOutOf20 = Math.min(15, totalScoreOutOf20);
+      if (!hasFormalGreeting && !hasFormalSignOff && !hasFormalConditional) {
+        // Conversational / Oral style email without formal register is strictly A2 (6-8/20 | NCLC 4-5)
+        totalScoreOutOf20 = Math.min(8, totalScoreOutOf20);
+      } else {
+        // Formal polite correspondence capped at B2 Upper (15/20 max)
+        totalScoreOutOf20 = Math.min(15, totalScoreOutOf20);
+      }
     } else if (isTache2) {
       totalScoreOutOf20 = Math.min(17, totalScoreOutOf20);
     }
@@ -1233,9 +1243,19 @@ export function AuthenticCBTExamPage() {
         if (taskFulfillmentScore === 0) return 0;
         let rawSum = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
 
-        // Apply task ceilings
+        // Distinguish formal B2 correspondence vs conversational A2 emails
+        const hasFormalGreeting = /^\s*(monsieur le|madame la|monsieur,|madame,)/i.test(clean);
+        const hasFormalSignOff = /(je vous prie d'agréer|veuillez agréer|salutations distinguées|haute considération|respectueusement)/i.test(clean);
+        const hasFormalConditional = /(pourriez-vous|auriez-vous|serait-il possible|je souhaiterais|nous souhaiterions|je vous saurais gré)/i.test(clean);
+
         if (isTache1) {
-          rawSum = Math.min(15, rawSum);
+          if (!hasFormalGreeting && !hasFormalSignOff && !hasFormalConditional) {
+            // Conversational / Oral style email without formal register is strictly A2 (6-8/20 | NCLC 4-5)
+            rawSum = Math.min(8, rawSum);
+          } else {
+            // Formal polite correspondence capped at B2 Upper (15/20 max)
+            rawSum = Math.min(15, rawSum);
+          }
         } else if (isTache2) {
           rawSum = Math.min(17, rawSum);
         }
