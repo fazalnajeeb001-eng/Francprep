@@ -298,8 +298,17 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
         const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part|sans conteste|indéniablement|au cours de|de surcroît|en effet|en somme|en conclusion|par ailleurs)\b/i.test(textLower);
         const hasB2Grammar = /\b(pourriez[- ]vous|pourrait[- ]il|serait[- ]il|j'aimerais|nous aimerions|il conviendrait|puisse|soit|fassions|dont|auquel|laquelle|duquel|lesquels|bien que|afin de|en vue de|après avoir|étant donné|je vous prie d'agréer|veuillez agréer|sommes restés|avons visité)\b/i.test(textLower);
 
-        // Strict B2 Capping: Absence of formal B2 connectors OR formal B2 syntax caps score at 8/20 (A2/B1) max
-        if (!hasB2Connectors || !hasB2Grammar) {
+        const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|travel|city|park|food|good|experience)\b/i.test(textLower);
+        const hasTelegraphicGrammar = /\b(je\s+allé|je\s+faire|nous\s+manger|je\s+aimé|je\s+très|lieu\s+est|parce\s+que\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances|prendre\s+photo)\b/i.test(textLower);
+
+        // Strict A1 Capping: English words or broken telegraphic sentences cap strictly at 4/20 (A1 Beginner / NCLC 3)
+        if (hasEnglishWords || hasTelegraphicGrammar) {
+          t = Math.min(1, t);
+          c = Math.min(1, c);
+          l = Math.min(1, l);
+          g = Math.min(1, g);
+        } else if (!hasB2Connectors || !hasB2Grammar) {
+          // Strict B2 Capping: Absence of formal B2 connectors OR formal B2 syntax caps score at 8/20 (A2/B1) max
           t = Math.min(3, t);
           c = Math.min(2, c);
           l = Math.min(2, l);
@@ -312,7 +321,9 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
           scoreOutOf20 = 0;
         }
 
-        if (!hasB2Connectors || !hasB2Grammar) {
+        if (hasEnglishWords || hasTelegraphicGrammar) {
+          scoreOutOf20 = Math.min(4, scoreOutOf20);
+        } else if (!hasB2Connectors || !hasB2Grammar) {
           scoreOutOf20 = Math.min(8, scoreOutOf20);
         }
 

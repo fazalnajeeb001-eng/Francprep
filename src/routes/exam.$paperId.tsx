@@ -607,7 +607,9 @@ export function AuthenticCBTExamPage() {
 
     const hasB2Conn = foundB2Conn.length > 0 || foundC1C2Conn.length > 0;
     const hasB2Gram = foundB2Gram.length > 0 || foundC1C2Gram.length > 0;
-    if (!hasB2Conn || !hasB2Gram) {
+    if (hasEnglishWords || hasTelegraphicGrammar) {
+      totalScoreOutOf20 = Math.min(4, totalScoreOutOf20);
+    } else if (!hasB2Conn || !hasB2Gram) {
       totalScoreOutOf20 = Math.min(8, totalScoreOutOf20);
     }
 
@@ -797,7 +799,9 @@ export function AuthenticCBTExamPage() {
         let rawSum = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
         const hasB2Conn = foundB2Conn.length > 0 || foundC1C2Conn.length > 0;
         const hasB2Gram = foundB2Gram.length > 0 || foundC1C2Gram.length > 0;
-        if (!hasB2Conn || !hasB2Gram) {
+        if (hasEnglishWords || hasTelegraphicGrammar) {
+          rawSum = Math.min(4, rawSum);
+        } else if (!hasB2Conn || !hasB2Gram) {
           rawSum = Math.min(8, rawSum);
         }
         const hasC1C2Lex = foundC1C2Lex.length > 0;
