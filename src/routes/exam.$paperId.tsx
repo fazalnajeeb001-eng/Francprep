@@ -1293,31 +1293,32 @@ export function AuthenticCBTExamPage() {
       return 0;
     };
 
+    let t1Score = 0;
+    let t2Score = 0;
+    let t3Score = 0;
+    let writingAttemptedCount = 0;
+
     if (wTasks.length >= 3) {
-      const t1Score = getTaskScore(wTasks[0], 0);
-      const t2Score = getTaskScore(wTasks[1], 1);
-      const t3Score = getTaskScore(wTasks[2], 2);
+      t1Score = getTaskScore(wTasks[0], 0);
+      t2Score = getTaskScore(wTasks[1], 1);
+      t3Score = getTaskScore(wTasks[2], 2);
 
-      const attemptedTasks = [
-        { score: t1Score, weight: 0.20 },
-        { score: t2Score, weight: 0.30 },
-        { score: t3Score, weight: 0.50 }
-      ].filter((t) => t.score > 0);
+      const hasAnyWriting = t1Score > 0 || t2Score > 0 || t3Score > 0;
+      writingAttemptedCount = [t1Score, t2Score, t3Score].filter((s) => s > 0).length;
 
-      if (attemptedTasks.length === 3) {
+      if (hasAnyWriting) {
+        // Official France Éducation International (FEI) Composite Weighting:
+        // Tâche 1 = 20% (max 4.0 pts) | Tâche 2 = 30% (max 6.0 pts) | Tâche 3 = 50% (max 10.0 pts)
+        // Any unattempted tasks receive 0 marks and count towards the total exam average.
         writingWeightedScore = Math.round(0.20 * t1Score + 0.30 * t2Score + 0.50 * t3Score);
-      } else if (attemptedTasks.length > 0) {
-        const totalWeight = attemptedTasks.reduce((sum, t) => sum + t.weight, 0);
-        writingWeightedScore = Math.round(
-          attemptedTasks.reduce((sum, t) => sum + t.score * t.weight, 0) / totalWeight
-        );
       } else {
         writingWeightedScore = 0;
       }
     } else {
       const scores = wTasks.map((t, idx) => getTaskScore(t, idx));
       const validScores = scores.filter((s) => s > 0);
-      writingWeightedScore = validScores.length > 0 ? Math.round(validScores.reduce((a, b) => a + b, 0) / validScores.length) : 0;
+      writingAttemptedCount = validScores.length;
+      writingWeightedScore = validScores.length > 0 ? Math.round(validScores.reduce((a, b) => a + b, 0) / (wTasks.length || 3)) : 0;
     }
 
     const writingPct = Math.round((writingWeightedScore / 20) * 100);
@@ -1325,6 +1326,11 @@ export function AuthenticCBTExamPage() {
 
     const spkTasks = currentSection.speakingTasks || [];
     let speakingWeightedScore = 0;
+    let s1 = 0;
+    let s2 = 0;
+    let s3 = 0;
+    let speakingAttemptedCount = 0;
+
     if (spkTasks.length >= 3) {
       const getSpkScore = (t: any, idx: number) => {
         const res = speakingAiResults[t.id] || speakingAiResults[idx];
@@ -1332,20 +1338,18 @@ export function AuthenticCBTExamPage() {
         if (res?.score !== undefined) return Math.round((res.score / 100) * 20);
         return 0;
       };
-      const s1 = getSpkScore(spkTasks[0], 0);
-      const s2 = getSpkScore(spkTasks[1], 1);
-      const s3 = getSpkScore(spkTasks[2], 2);
-      const attemptedSpk = [
-        { score: s1, weight: 0.20 },
-        { score: s2, weight: 0.30 },
-        { score: s3, weight: 0.50 }
-      ].filter((t) => t.score > 0);
+      s1 = getSpkScore(spkTasks[0], 0);
+      s2 = getSpkScore(spkTasks[1], 1);
+      s3 = getSpkScore(spkTasks[2], 2);
 
-      if (attemptedSpk.length === 3) {
+      const hasAnySpk = s1 > 0 || s2 > 0 || s3 > 0;
+      speakingAttemptedCount = [s1, s2, s3].filter((s) => s > 0).length;
+
+      if (hasAnySpk) {
+        // Official FEI Speaking Weighting: 20% Task 1 + 30% Task 2 + 50% Task 3
         speakingWeightedScore = Math.round(0.20 * s1 + 0.30 * s2 + 0.50 * s3);
-      } else if (attemptedSpk.length > 0) {
-        const totalW = attemptedSpk.reduce((sum, t) => sum + t.weight, 0);
-        speakingWeightedScore = Math.round(attemptedSpk.reduce((sum, t) => sum + t.score * t.weight, 0) / totalW);
+      } else {
+        speakingWeightedScore = 0;
       }
     } else {
       const speakingScores = Object.values(speakingAiResults).map((r: any) => {
@@ -1354,7 +1358,8 @@ export function AuthenticCBTExamPage() {
         return 0;
       });
       const validSpk = speakingScores.filter((s) => s > 0);
-      speakingWeightedScore = validSpk.length > 0 ? Math.round(validSpk.reduce((a, b) => a + b, 0) / validSpk.length) : 0;
+      speakingAttemptedCount = validSpk.length;
+      speakingWeightedScore = validSpk.length > 0 ? Math.round(validSpk.reduce((a, b) => a + b, 0) / (spkTasks.length || 3)) : 0;
     }
 
     const speakingAvg = speakingWeightedScore;
@@ -1453,9 +1458,13 @@ export function AuthenticCBTExamPage() {
       writingAvg: writingWeightedScore,
       writingNCLC,
       writingPoints,
+      writingAttemptedCount,
+      writingTaskScores: { t1: t1Score, t2: t2Score, t3: t3Score },
       speakingAvg,
       speakingNCLC,
       speakingPoints,
+      speakingAttemptedCount,
+      speakingTaskScores: { s1, s2, s3 },
       attemptedCount: attemptedNCLCs.length,
       attemptedModuleNames,
       nclcLevel: finalNCLCLevel,
@@ -2700,8 +2709,18 @@ export function AuthenticCBTExamPage() {
                   {(() => {
                     const r = calculateResults();
                     if (r.attemptedCount === 1) {
-                      if (r.writingAvg > 0) {
-                        return <>Evaluated Writing Task: <strong>{r.writingAvg}/20 Marks</strong> ({r.writingNCLC.nclcGrade}) • <strong>+{r.expressEntryPoints} CRS Points</strong></>;
+                      if (r.writingAttemptedCount > 0) {
+                        return (
+                          <>
+                            Writing Module (EE): <strong>{r.writingAvg}/20 Marks</strong> ({r.writingNCLC.nclcGrade})
+                            {r.writingAttemptedCount < 3 && (
+                              <span className="opacity-90 font-medium ml-1">
+                                • ({r.writingAttemptedCount}/3 tasks completed: T1 {r.writingTaskScores.t1}/20, T2 {r.writingTaskScores.t2}/20, T3 {r.writingTaskScores.t3}/20)
+                              </span>
+                            )}
+                            {" "}• <strong>+{r.expressEntryPoints} CRS Points</strong>
+                          </>
+                        );
                       }
                       if (r.listeningTotal > 0 && r.listeningCorrect > 0) {
                         return <>Listening Accuracy: <strong>{r.listeningPct}%</strong> ({r.listeningCorrect}/{r.listeningTotal} Correct) • <strong>+{r.expressEntryPoints} CRS Points</strong></>;
@@ -2709,8 +2728,18 @@ export function AuthenticCBTExamPage() {
                       if (r.readingTotal > 0 && r.readingCorrect > 0) {
                         return <>Reading Accuracy: <strong>{r.readingPct}%</strong> ({r.readingCorrect}/{r.readingTotal} Correct) • <strong>+{r.expressEntryPoints} CRS Points</strong></>;
                       }
-                      if (r.speakingAvg > 0) {
-                        return <>Speaking Performance: <strong>{r.speakingAvg}%</strong> ({r.speakingNCLC.nclcGrade}) • <strong>+{r.expressEntryPoints} CRS Points</strong></>;
+                      if (r.speakingAttemptedCount > 0) {
+                        return (
+                          <>
+                            Speaking Module (EO): <strong>{r.speakingAvg}/20 Marks</strong> ({r.speakingNCLC.nclcGrade})
+                            {r.speakingAttemptedCount < 3 && (
+                              <span className="opacity-90 font-medium ml-1">
+                                • ({r.speakingAttemptedCount}/3 tasks completed: T1 {r.speakingTaskScores.s1}/20, T2 {r.speakingTaskScores.s2}/20, T3 {r.speakingTaskScores.s3}/20)
+                              </span>
+                            )}
+                            {" "}• <strong>+{r.expressEntryPoints} CRS Points</strong>
+                          </>
+                        );
                       }
                     } else if (r.attemptedCount > 1) {
                       return <>Total Express Entry Point Contribution: <strong>+{r.expressEntryPoints} CRS Points</strong> across {r.attemptedCount} attempted skill modules</>;
@@ -2763,12 +2792,17 @@ export function AuthenticCBTExamPage() {
                         <div className="flex items-center justify-between text-[11px] font-bold text-pink-900 dark:text-pink-300">
                           <span className="flex items-center gap-1">✍️ Writing (EE)</span>
                           <span className="px-2 py-0.5 rounded bg-pink-600 text-white font-mono text-[10px]">
-                            {res.writingAvg === 0 ? "Unrated" : `CLB ${res.writingNCLC.nclcLevel}`}
+                            {res.writingAttemptedCount === 0 ? "Unrated" : `CLB ${res.writingNCLC.nclcLevel}`}
                           </span>
                         </div>
                         <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
-                          {res.writingAvg === 0 ? "No submission" : `${res.writingAvg}/20 Marks (${res.writingNCLC.cefrEquivalent})`}
+                          {res.writingAttemptedCount === 0 ? "No submission" : `${res.writingAvg}/20 Marks (${res.writingNCLC.cefrEquivalent})`}
                         </p>
+                        {res.writingAttemptedCount > 0 && res.writingAttemptedCount < 3 && (
+                          <p className="text-[10px] font-medium text-amber-700 dark:text-amber-300 leading-tight">
+                            ⚠️ {res.writingAttemptedCount}/3 tasks completed (T1: {res.writingTaskScores.t1}/20, T2: {res.writingTaskScores.t2}/20, T3: {res.writingTaskScores.t3}/20). Real TCF requires all 3 tasks (20%+30%+50%).
+                          </p>
+                        )}
                         <p className="text-[10px] font-semibold text-pink-700 dark:text-pink-300 pt-0.5">
                           {res.writingPoints > 0 ? `+${res.writingPoints} CRS Points` : "0 CRS Points"}
                         </p>
@@ -2779,12 +2813,17 @@ export function AuthenticCBTExamPage() {
                         <div className="flex items-center justify-between text-[11px] font-bold text-indigo-900 dark:text-indigo-300">
                           <span className="flex items-center gap-1">🎙️ Speaking (EO)</span>
                           <span className="px-2 py-0.5 rounded bg-indigo-600 text-white font-mono text-[10px]">
-                            {res.speakingAvg === 0 ? "Unrated" : `CLB ${res.speakingNCLC.nclcLevel}`}
+                            {res.speakingAttemptedCount === 0 ? "Unrated" : `CLB ${res.speakingNCLC.nclcLevel}`}
                           </span>
                         </div>
                         <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
-                          {res.speakingAvg === 0 ? "No submission" : `${res.speakingAvg}% AI Grade`}
+                          {res.speakingAttemptedCount === 0 ? "No submission" : `${res.speakingAvg}/20 Marks (${res.speakingNCLC.cefrEquivalent})`}
                         </p>
+                        {res.speakingAttemptedCount > 0 && res.speakingAttemptedCount < 3 && (
+                          <p className="text-[10px] font-medium text-amber-700 dark:text-amber-300 leading-tight">
+                            ⚠️ {res.speakingAttemptedCount}/3 tasks completed (T1: {res.speakingTaskScores.s1}/20, T2: {res.speakingTaskScores.s2}/20, T3: {res.speakingTaskScores.s3}/20). Real TCF requires all 3 tasks (20%+30%+50%).
+                          </p>
+                        )}
                         <p className="text-[10px] font-semibold text-indigo-700 dark:text-indigo-300 pt-0.5">
                           {res.speakingPoints > 0 ? `+${res.speakingPoints} CRS Points` : "0 CRS Points"}
                         </p>
@@ -2854,13 +2893,19 @@ export function AuthenticCBTExamPage() {
                               </div>
                             )}
 
-                            {res.writingAvg > 0 && (
+                            {res.writingAttemptedCount > 0 && (
                               <div className="p-2.5 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 space-y-1">
                                 <p className="font-bold text-purple-900 dark:text-purple-300 text-[11px]">✍️ Writing (EE Focus):</p>
                                 <p className="text-[11px] leading-relaxed">
-                                  {res.writingAvg >= 12
-                                    ? `✓ Strong writing score (${res.writingAvg}/20 Marks — ${res.writingNCLC.nclcGrade}). High mastery of B2 connectors and structures.`
-                                    : `⚠️ Writing score is ${res.writingAvg}/20 Marks (${res.writingNCLC.nclcGrade}). Focus on reaching word count bounds (60-120 T1, 120-150 T2, 140-180 T3), inserting formal connectors (cependant, toutefois), and avoiding English word code-switching.`}
+                                  {res.writingAttemptedCount < 3 ? (
+                                    <>
+                                      ⚠️ <strong>Incomplete Writing Submission:</strong> Attempted {res.writingAttemptedCount}/3 tasks (T1: {res.writingTaskScores.t1}/20, T2: {res.writingTaskScores.t2}/20, T3: {res.writingTaskScores.t3}/20), giving an overall composite grade of <strong>{res.writingAvg}/20 Marks ({res.writingNCLC.nclcGrade})</strong>. In the official TCF exam, completing all 3 tasks (20% + 30% + 50%) is mandatory for CLB 7+ benchmark scoring.
+                                    </>
+                                  ) : res.writingAvg >= 12 ? (
+                                    `✓ Strong writing score (${res.writingAvg}/20 Marks — ${res.writingNCLC.nclcGrade}). High mastery of B2 connectors and structures across all 3 tasks.`
+                                  ) : (
+                                    `⚠️ Writing score is ${res.writingAvg}/20 Marks (${res.writingNCLC.nclcGrade}). Focus on reaching word count bounds (60-120 T1, 120-150 T2, 140-180 T3), inserting formal connectors (cependant, toutefois), and avoiding English word code-switching.`
+                                  )}
                                 </p>
                               </div>
                             )}
