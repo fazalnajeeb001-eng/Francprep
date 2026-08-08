@@ -114,38 +114,42 @@ export class WritingService {
     if (!text || text.trim().length < 10) return false;
     const words = text
       .toLowerCase()
-      .replace(/[^\w\sàâäéèêëîïôöùûüç]/g, '')
+      .replace(/[^\w\sàâäéèêëîïôöùûüçœæ]/g, '')
       .trim()
       .split(/\s+/);
 
-    if (words.length < 5) return false;
+    if (words.length < 4) return false;
 
     const frenchCommonWords = new Set([
-      'le', 'la', 'les', 'de', 'du', 'des', 'un', 'une', 'et', 'est', 'en', 'dans',
-      'que', 'qui', 'pour', 'pas', 'sur', 'avec', 'ce', 'nous', 'vous', 'je', 'il', 'elle',
-      'ont', 'sont', 'par', 'plus', 'ne', 'ou', 'mais', 'donc', 'car', 'ni', 'si', 'tout',
-      'faire', 'me', 'te', 'se', 'mon', 'ma', 'mes', 'ton', 'ta', 'tes', 'son', 'sa', 'ses',
-      'notre', 'votre', 'leur', 'monsieur', 'madame', 'bonjour', 'salut', 'merci', 'appartement',
-      'logement', 'loyer', 'chauffage', 'cours', 'travail', 'ville', 'transport', 'ecrit',
-      'reponse', 'sujet', 'avis', 'accord', 'mots', 'apres', 'avant', 'cette', 'cet', 'très',
-      'bien', 'beaucoup', 'aussi', 'comme', 'plusieurs', 'tous', 'toujours', 'jamais'
+      'le', 'la', 'les', 'l', 'un', 'une', 'des', 'du', 'de', 'd', 'au', 'aux',
+      'et', 'ou', 'mais', 'donc', 'or', 'ni', 'car', 'si', 'que', 'qui', 'quoi', 'dont', 'où',
+      'ce', 'cet', 'cette', 'ces', 'ceci', 'cela', 'ça', 'mon', 'ma', 'mes', 'ton', 'ta', 'tes',
+      'son', 'sa', 'ses', 'notre', 'nos', 'votre', 'vos', 'leur', 'leurs',
+      'je', 'j', 'tu', 'il', 'elle', 'on', 'nous', 'vous', 'ils', 'elles', 'me', 'm', 'te', 't', 'se', 's', 'lui', 'leur', 'y', 'en',
+      'est', 'sont', 'suis', 'es', 'sommes', 'êtes', 'été', 'était', 'étaient', 'sera', 'seront', 'serait', 'soit',
+      'a', 'ai', 'as', 'avons', 'avez', 'ont', 'eu', 'avait', 'avaient', 'aura', 'auront', 'aurait', 'ayez',
+      'va', 'vais', 'vas', 'allons', 'allez', 'vont', 'allé', 'allée', 'allés',
+      'fait', 'fais', 'faisons', 'faites', 'font', 'faire',
+      'pour', 'dans', 'sur', 'sous', 'avec', 'sans', 'par', 'en', 'vers', 'chez', 'entre', 'contre',
+      'pas', 'plus', 'moins', 'très', 'bien', 'mal', 'trop', 'beaucoup', 'peu', 'aussi', 'encore', 'toujours', 'jamais',
+      'bonjour', 'salut', 'monsieur', 'madame', 'merci', 'cordialement', 'salutations', 'appartement', 'maison', 'logement',
+      'loyer', 'chauffage', 'température', 'froid', 'chaud', 'hiver', 'été', 'travail', 'ville', 'pays', 'monde',
+      'problème', 'question', 'réponse', 'demande', 'aide', 'temps', 'jour', 'nuit', 'heure', 'semaine', 'mois', 'an', 'année'
     ]);
 
     let matchedCount = 0;
     for (const w of words) {
       if (frenchCommonWords.has(w)) {
         matchedCount += 1;
-      } else {
-        const hasVowels = /[aeiouyàâäéèêëîïôöùûü]/i.test(w);
-        const isMashing = /^[bcdfghjklmnpqrstvwxz]{4,}$/i.test(w) || /^[aeiouy]{4,}$/i.test(w);
-        if (hasVowels && !isMashing && w.length >= 3) {
-          matchedCount += 0.5;
-        }
+      } else if (/[éèêëàâäôöùûüçœæ]/.test(w)) {
+        matchedCount += 1;
+      } else if (/(tion|ment|isme|iste|ique|able|ible|ité|ance|ence|eur|euse|eux|euse|ier|ière|ant|ante|ants|antes|ez|ons|ont|ait|aient|ent)$/.test(w) && w.length >= 4) {
+        matchedCount += 0.8;
       }
     }
 
     const ratio = matchedCount / words.length;
-    return ratio >= 0.25;
+    return ratio >= 0.22;
   }
 
   async getFeedback(text: string, lessonTitle?: string, expectedAnswer?: string, checklist?: string[], targetLanguage = 'French', examName = 'DELF / TCF'): Promise<ComprehensiveWritingFeedback> {
@@ -201,45 +205,43 @@ export class WritingService {
     }
 
     if (!apiKey) {
-      return {
-        score: 0,
-        scoreOutOf20: 0,
-        nclcGrade: 'N/A',
-        cefrLevel: 'N/A',
-        expressEntryPoints: 0,
-        taskFulfillmentScore: 0,
-        coherenceScore: 0,
-        lexicalScore: 0,
-        grammarScore: 0,
-        feedback: 'AI feedback is not configured. Please set up OpenRouter API Key in Admin Settings or Environment variables.',
-        corrections: [],
-        tips: ['Set OPENROUTER_API_KEY in your environment or Admin Settings to enable AI feedback.'],
-      };
+      return this.evaluateLocalCEFR(text, lessonTitle, expectedAnswer, targetLanguage);
     }
+
+    // Task Type & Official FEI Target CEFR Bounds
+    const isTache1 = Boolean(lessonTitle?.includes('Tâche 1') || lessonTitle?.includes('-w1') || (expectedAnswer && expectedAnswer.includes('60') && !expectedAnswer.includes('140')));
+    const isTache2 = Boolean(lessonTitle?.includes('Tâche 2') || lessonTitle?.includes('-w2') || (expectedAnswer && expectedAnswer.includes('120') && !expectedAnswer.includes('140')));
+    const isTache3 = Boolean(lessonTitle?.includes('Tâche 3') || lessonTitle?.includes('-w3') || (expectedAnswer && expectedAnswer.includes('140')));
 
     const prompt = `You are an official France Éducation International (FEI) Senior Certified Examiner evaluating ${targetLanguage} writing for official TCF Canada.
 
-CRITICAL IMPARTIAL EVALUATION GUIDELINES (STRICT FEI CEFR STANDARDS):
-- Grade strictly and accurately according to candidate linguistic quality across the 4 official criteria.
-- Flawless C2/C1 formal correspondence or argumentative essays (rich professional/administrative vocabulary, complex subordinate clauses, future/conditional/subjunctive, immaculate cohesion and formal formulas) receive 18–20/20 (NCLC 10+ / C2 or NCLC 9 / C1).
-- Solid B2 responses with formal connectors (de plus, en outre, cependant, par conséquent, afin de, en raison de), formal register, and polite formulas (je me permets de, pourriez-vous, j'aimerais, veuillez agréer) receive 14–17/20 (NCLC 7–8 / B2).
-- Basic/Intermediate B1 responses (passé composé/imparfait, standard connectors like donc/alors/car, simple structure) receive 9–11/20 (NCLC 5-6 / B1).
-- Elementary A2 responses relying ONLY on simple present tense (je suis, il fait, c'est, vous pouvez) and basic spoken connectors (mais, parce que, en plus) receive 6–8/20 (NCLC 4–5 / A2).
-- Beginner A1 responses receive 3–5/20 (NCLC 3 / A1) or 1–2/20 (Below A1).
-- OFF-TOPIC (HORS-SUJET), PLAGIARIZED, or GIBBERISH submissions MUST receive 0/20 (NCLC 0).
+CRITICAL TASK-AWARE FEI CEFR EVALUATION STANDARDS (STRICT CALIBRATION WITHOUT INFLATION OR ARTIFICIAL DEFLATION):
+- Grade strictly according to the candidate's linguistic quality across the 4 official FEI criteria (0–5 points each, 20 total marks per task).
 
-CRITICAL TASK TYPE & FORMAT ALIGNMENT RULES:
-- TÂCHE 1 EXPECTATION: Short formal message/email (60-120 words) responding to a workplace, administrative, or daily situation (e.g. asking for leave, inquiring about an apartment, requesting information).
-- TÂCHE 2 EXPECTATION: Narrative article or personal experience report (120-150 words) describing a travel, event, or personal story.
-- TÂCHE 3 EXPECTATION: Argumentative essay on a societal/public topic discussing two contrasting viewpoints (140-180 words).
+TASK-SPECIFIC CALIBRATION RULES:
+1. TÂCHE 1 (Short message / formal email, 60–120 words | Target: A1–B2):
+   - Flawless B2 formal email (polite formula "je vous écris concernant", polite request "pourriez-vous", polite sign-off "je vous prie d'agréer mes salutations distinguées", clear logical organization) = 14–15/20 (Solid B2 Upper / NCLC 8). Note: Tâche 1 alone cannot prove C2 mastery (ceiling is 15-16/20 max).
+   - Clear communicative B1 email (explains situation clearly, uses connectors like "mais", "parce que", "en plus", "donc", explains causes and consequences like "risquent d'être malades", makes request with "vous pouvez venir réparer") = 10–11/20 (Solid B1 Intermediate / NCLC 6).
+   - Elementary A2 message (isolated present tense phrases, basic vocabulary, limited connectors "et", "mais") = 6–8/20 (NCLC 4–5 / A2).
+   - Beginner A1 message = 3–5/20 (NCLC 3 / A1).
 
-OFFICIAL FEI 4-CRITERIA MARKS (0-5 EACH):
-1. taskFulfillmentScore (0-5): 5=flawless B2/C1 formal email meeting all prompt requirements within word count, 4=good B2, 3=adequate B1, 2=simple A2, 1=A1 short. (0/5 if Off-Topic)
-2. coherenceScore (0-5): 5=flawless discourse connectors (afin de, de plus, en raison de, par conséquent, en outre, toutefois), 4=good B2 transitions, 2-3=basic connectors (et, mais, parce que), 1=no connectors.
-3. lexicalScore (0-5): 5=rich professional, administrative or domain-specific vocabulary (solliciter, autorisation d'absence, impératif familial, indisponibilité, prendre le relais, affaires courantes, joignable par courriel, salutations distinguées), 4=good B2 range, 2=basic everyday A2 words, 1=English words or broken lexicon.
-4. grammarScore (0-5): 5=mastery of complex syntax (je me permets de + inf, afin de ne pas + inf, j'ai veillé à, dont vous ferez preuve, future/conditional/subjunctive), 4=solid B2 structures, 2=simple present tense only (je suis, il fait). 1=broken grammar.
+2. TÂCHE 2 (Personal article / narrative report, 120–150 words | Target: A2–C1):
+   - Rich past narrative (passé composé / imparfait), sensory description, emotional reflections, varied vocabulary = 14–16/20 (B2–C1 / NCLC 8–9).
+   - Standard past narrative describing an event clearly = 10–13/20 (B1–B2 / NCLC 6–7).
+   - Simple present narrative with minimal past tenses = 6–8/20 (A2 / NCLC 4).
 
-Context / Task Prompt:
+3. TÂCHE 3 (Argumentative essay / Prise de position, 140–180 words | Target: B1–C2):
+   - Nuanced balanced debate examining two opposing viewpoints ("D'un côté... D'un autre côté... En conclusion..."), complex connectors ("de surcroît", "néanmoins", "par conséquent", "en revanche"), sophisticated modalization and abstract vocabulary = 18–20/20 (C2 Mastery / NCLC 10+) or 16–17/20 (C1 Advanced / NCLC 9).
+   - Good balanced essay with formal B2 connectors ("de plus", "cependant", "afin de", "ainsi") = 12–15/20 (B2 / NCLC 7–8).
+   - Simple one-sided opinion with basic connectors = 9–11/20 (B1 / NCLC 5–6).
+
+OFFICIAL FEI 4-CRITERIA MARKS (0–5 EACH):
+1. taskFulfillmentScore (0-5): Meets prompt scenario, appropriate register (tu vs vous), respects word count bounds. (0/5 if Off-Topic).
+2. coherenceScore (0-5): Logical progression, paragraph structure, level-appropriate discourse connectors.
+3. lexicalScore (0-5): Range, thematic precision, variety. Insertion of English words caps lexical score at 1/5.
+4. grammarScore (0-5): Morphosyntax, tense agreement (passé composé, conditionnel, subjonctif), sentence complexity.
+
+Context / Task Information:
 Task / Topic: "${lessonTitle || `${targetLanguage} Writing Examination`}"
 ${expectedAnswer ? `Task Prompt & Model Expectations:\n"""\n${expectedAnswer}\n"""` : ''}
 ${checklist && checklist.length > 0 ? `Required Checklist Elements:\n${checklist.map((item, i) => `${i + 1}. ${item}`).join('\n')}` : ''}
@@ -249,13 +251,13 @@ Candidate Submission (${targetLanguage}):
 ${text}
 """
 
-Respond ONLY with a valid JSON object matching this schema:
+Respond STRICTLY with a valid JSON object matching this schema:
 {
-  "taskFulfillmentScore": 5, 
-  "coherenceScore": 5, 
-  "lexicalScore": 5, 
-  "grammarScore": 5, 
-  "feedback": "2-3 sentence precise examiner diagnostic summary highlighting strengths and areas of linguistic excellence.",
+  "taskFulfillmentScore": 4, 
+  "coherenceScore": 4, 
+  "lexicalScore": 4, 
+  "grammarScore": 3, 
+  "feedback": "2-3 sentence precise official examiner diagnostic summary analyzing communicative effectiveness, structural coherence, vocabulary, and morphosyntax.",
   "corrections": [
     { "original": "error phrase (if any)", "corrected": "corrected phrase", "explanation": "Grammatical or lexical explanation in English." }
   ],
@@ -263,15 +265,13 @@ Respond ONLY with a valid JSON object matching this schema:
     "Actionable examiner tip 1",
     "Actionable examiner tip 2"
   ]
-}
-
-REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore with exact integers from 0 to 5 corresponding to candidate level (5=C2/C1 flawless, 4=B2 advanced, 3=B1 intermediate, 2=A2 elementary, 1=A1 beginner, 0=Off-topic/Gibberish).`;
+}`;
 
     try {
       const content = await generateAICompletion({
         model: 'gpt-4o-mini',
         prompt,
-        systemPrompt: `You are an official France Éducation International (FEI) Senior Examiner evaluating TCF Canada writing with strict, uninflated accuracy according to the official CEFR scale.`,
+        systemPrompt: `You are an official France Éducation International (FEI) Senior Certified Examiner evaluating TCF Canada writing with strict, calibrated accuracy according to official CEFR and NCLC scales.`,
         temperature: 0.1,
         maxTokens: 1000,
       });
@@ -289,14 +289,9 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
 
         // Detect Tâche 1 Personal Email format pasted in Tâche 3 (Argumentative Essay)
         const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test((text || '').trim()) && /(cordialement|bien à vous|salutations|haute considération|respectueusement)/i.test((text || '').trim());
-        const isTache3Only = lessonTitle?.includes('Tâche 3') || expectedAnswer?.includes('140');
-
-        if (isTache3Only && isLetterFormat && words.length < 100) {
+        if (isTache3 && isLetterFormat && words.length < 100) {
           t = 0;
         }
-
-        const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part|sans conteste|indéniablement|au cours de|de surcroît|en effet|en somme|en conclusion|par ailleurs|de plus|afin de|en raison de|à cet effet|dans ce cadre|par la présente|en vue de|d'ores et déjà|ainsi que|pour cette raison|dans l'attente de|concernant|quant à|dès lors)\b/i.test(textLower);
-        const hasB2Grammar = /\b(je me permets|veuillez|je vous prie|ferez preuve|a accepté de|ai veillé à|dont vous|pourriez[- ]vous|pourrait[- ]il|serait[- ]il|j'aimerais|nous aimerions|il conviendrait|puisse|soit|fassions|sachiez|ayez|fussent|dont|auquel|laquelle|duquel|lesquels|lesquelles|bien que|afin de|en vue de|après avoir|étant donné|je vous prie d'agréer|veuillez agréer|sommes restés|avons visité|resterai joignable|avons pris|avons fait)\b/i.test(textLower);
 
         const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|travel|city|park|food|good|experience|like|you|know|actually)\b/i.test(textLower);
         const hasTelegraphicGrammar = /\b(je\s+allé|je\s+faire|nous\s+manger|je\s+aimé|je\s+très|lieu\s+est|parce\s+que\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances|prendre\s+photo)\b/i.test(textLower);
@@ -307,15 +302,18 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
           c = Math.min(1, c);
           l = Math.min(1, l);
           g = Math.min(1, g);
-        } else if (!hasB2Connectors && !hasB2Grammar) {
-          // Strict B2 Capping: Complete absence of any B2 connectors AND syntax caps score at 8/20 (A2/B1) max
-          t = Math.min(3, t);
-          c = Math.min(2, c);
-          l = Math.min(2, l);
-          g = Math.min(2, g);
         }
 
         let scoreOutOf20 = t + c + l + g;
+
+        // Apply task-level ceilings
+        if (isTache1) {
+          // Tâche 1 is an everyday communicative task (60-120 words) capped at 15-16/20 max (B2 Upper)
+          scoreOutOf20 = Math.min(15, scoreOutOf20);
+        } else if (isTache2) {
+          // Tâche 2 is a narrative report capped at 17/20 max (C1)
+          scoreOutOf20 = Math.min(17, scoreOutOf20);
+        }
 
         if (t === 0) {
           scoreOutOf20 = 0;
@@ -323,12 +321,6 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
 
         if (hasEnglishWords || hasTelegraphicGrammar) {
           scoreOutOf20 = Math.min(4, scoreOutOf20);
-        } else if (!hasB2Connectors && !hasB2Grammar) {
-          scoreOutOf20 = Math.min(8, scoreOutOf20);
-        }
-
-        if (scoreOutOf20 === 0 && typeof parsed.scoreOutOf20 === 'number') {
-          scoreOutOf20 = parsed.scoreOutOf20;
         }
 
         const feedbackLower = (parsed.feedback || '').toLowerCase();
@@ -383,7 +375,7 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
           nclcGrade = "NCLC 6 (B1 Intermediate)";
           cefrLevel = "B1";
           expressEntryPoints = 12;
-        } else if (scoreOutOf20 >= 9) {
+        } else if (scoreOutOf20 >= 8) {
           nclcGrade = "NCLC 5 (B1 Threshold)";
           cefrLevel = "B1";
           expressEntryPoints = 6;
@@ -430,12 +422,16 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
     const wordCount = words.length;
     const textLower = clean.toLowerCase();
 
+    const isTache1 = Boolean(lessonTitle?.includes('Tâche 1') || lessonTitle?.includes('-w1') || (expectedAnswer && expectedAnswer.includes('60') && !expectedAnswer.includes('140')));
+    const isTache2 = Boolean(lessonTitle?.includes('Tâche 2') || lessonTitle?.includes('-w2') || (expectedAnswer && expectedAnswer.includes('120') && !expectedAnswer.includes('140')));
+    const isTache3 = Boolean(lessonTitle?.includes('Tâche 3') || lessonTitle?.includes('-w3') || (expectedAnswer && expectedAnswer.includes('140')));
+
     let minWords = 60;
     let maxWords = 120;
-    if (lessonTitle?.includes('Tâche 2') || expectedAnswer?.includes('120')) {
+    if (isTache2) {
       minWords = 120;
       maxWords = 150;
-    } else if (lessonTitle?.includes('Tâche 3') || expectedAnswer?.includes('140')) {
+    } else if (isTache3) {
       minWords = 140;
       maxWords = 180;
     }
@@ -445,9 +441,7 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
     const hasTelegraphicGrammar = /\b(je\s+maladie|je\s+malade|moi\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances|je\s+allé|je\s+faire|nous\s+manger|prendre\s+photo|je\s+aimé|je\s+très)\b/i.test(textLower);
 
     let taskFulfillmentScore = 1;
-    const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test(clean) && /(cordialement|bien à vous|salutations)/i.test(clean);
-    const isTache3 = lessonTitle?.includes('Tâche 3') || expectedAnswer?.includes('140');
-    const isTache2 = lessonTitle?.includes('Tâche 2') || expectedAnswer?.includes('120');
+    const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test(clean) && /(cordialement|bien à vous|salutations|respectueusement)/i.test(clean);
 
     if (isTache3 && isLetterFormat && wordCount < 100) {
       taskFulfillmentScore = 0;
@@ -463,21 +457,35 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
       taskFulfillmentScore = 1;
     }
 
-    const c1c2Connectors = ["de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet", "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement", "lors de", "dans cette optique"];
-    const b2Connectors = [
-      "en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin", "au cours de", "pendant le",
-      "afin de", "en raison de", "à cet effet", "dans ce cadre", "par la présente", "en vue de", "d'ores et déjà", "ainsi que",
-      "pour cette raison", "dans l'attente de", "concernant", "quant à", "dès lors", "selon moi", "à mon avis"
+    const c1c2Connectors = [
+      "de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet",
+      "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement", "dans cette optique", "dès lors"
     ];
+    const b2Connectors = [
+      "en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin",
+      "au cours de", "pendant le", "afin de", "en raison de", "à cet effet", "dans ce cadre", "par la présente",
+      "en vue de", "d'ores et déjà", "ainsi que", "pour cette raison", "dans l'attente de", "concernant", "quant à", "selon moi", "à mon avis"
+    ];
+    const b1Connectors = [
+      "mais", "parce que", "en plus", "donc", "car", "alors", "puis", "aussi", "comme", "quand", "si", "pendant que"
+    ];
+
     const foundC1C2Conn = c1c2Connectors.filter((c) => textLower.includes(c));
     const foundB2Conn = b2Connectors.filter((c) => textLower.includes(c));
+    const foundB1Conn = b1Connectors.filter((c) => textLower.includes(c));
 
     let coherenceScore = 1;
-    if (foundC1C2Conn.length >= 2 || (foundC1C2Conn.length >= 1 && foundB2Conn.length >= 1)) coherenceScore = 5;
-    else if (foundC1C2Conn.length >= 1 || foundB2Conn.length >= 2) coherenceScore = 4;
-    else if (foundB2Conn.length >= 1 || textLower.includes("mais") || textLower.includes("donc") || textLower.includes("car")) coherenceScore = 3;
-    else if (textLower.includes("et") || textLower.includes("ou")) coherenceScore = 2;
-    else coherenceScore = 1;
+    if (foundC1C2Conn.length >= 2 || (foundC1C2Conn.length >= 1 && foundB2Conn.length >= 1)) {
+      coherenceScore = 5;
+    } else if (foundC1C2Conn.length >= 1 || foundB2Conn.length >= 2) {
+      coherenceScore = 4;
+    } else if (foundB2Conn.length >= 1 || foundB1Conn.length >= 2) {
+      coherenceScore = 3;
+    } else if (foundB1Conn.length >= 1 || textLower.includes("et") || textLower.includes("ou")) {
+      coherenceScore = 2;
+    } else {
+      coherenceScore = 1;
+    }
 
     const c1c2Lexical = [
       "opportunité", "perspective", "incontournable", "sensibilisation", "préconiser", "déception", "solliciter",
@@ -495,18 +503,32 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
       "réclamation", "matériel", "garantie", "projet", "expérience", "quartier", "collègue", "souhaiter", "demander",
       "préciser", "bâtiments", "paysage", "renouvelé", "logement", "loyer", "charges", "chauffage", "panne", "transport",
       "véhicule", "écologique", "bénévole", "solidaire", "développement", "numérique", "culturel", "festival", "conférence",
-      "débat", "avis", "opinion", "argument", "mesure", "citoyen", "société"
+      "débat", "avis", "opinion", "argument", "mesure", "citoyen", "société", "températures", "glaciales", "chute"
     ];
+    const b1Lexical = [
+      "appartement", "maison", "froid", "hiver", "vacances", "dormir", "malade", "enfants", "nuit",
+      "problème", "réparer", "système", "temps", "travail", "voyage", "visite", "ville", "aide", "merci",
+      "question", "besoin", "semaine", "jour", "heure", "prix", "service"
+    ];
+
     const foundC1C2Lex = c1c2Lexical.filter((w) => textLower.includes(w));
     const foundB2Lex = b2Lexical.filter((w) => textLower.includes(w));
+    const foundB1Lex = b1Lexical.filter((w) => textLower.includes(w));
 
     let lexicalScore = 1;
-    if (hasEnglishWords) lexicalScore = 1;
-    else if (foundC1C2Lex.length >= 2 || (foundC1C2Lex.length >= 1 && foundB2Lex.length >= 2)) lexicalScore = 5;
-    else if (foundC1C2Lex.length >= 1 || foundB2Lex.length >= 2) lexicalScore = 4;
-    else if (foundB2Lex.length >= 1) lexicalScore = 3;
-    else if (wordCount >= 30) lexicalScore = 2;
-    else lexicalScore = 1;
+    if (hasEnglishWords) {
+      lexicalScore = 1;
+    } else if (foundC1C2Lex.length >= 2 || (foundC1C2Lex.length >= 1 && foundB2Lex.length >= 2)) {
+      lexicalScore = 5;
+    } else if (foundC1C2Lex.length >= 1 || foundB2Lex.length >= 2) {
+      lexicalScore = 4;
+    } else if (foundB2Lex.length >= 1 || foundB1Lex.length >= 3) {
+      lexicalScore = 3;
+    } else if (foundB1Lex.length >= 1 || wordCount >= 30) {
+      lexicalScore = 2;
+    } else {
+      lexicalScore = 1;
+    }
 
     const c1c2Grammar = [
       "puisse", "soit", "fassions", "sachiez", "ayez", "fussent", "a été", "ont été", "fut", "dont", "auquel",
@@ -517,36 +539,63 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
       "je me permets", "veuillez", "je vous prie", "a accepté de", "dont vous", "pourriez-vous", "pourrait-il", "serait-il",
       "j'aimerais", "nous aimerions", "il conviendrait", "bien que", "afin de", "en vue de", "après avoir", "étant donné",
       "je vous prie d'agréer", "veuillez agréer", "sommes restés", "avons visité", "avons pris", "avons fait", "resterai joignable",
-      "il faut que", "pour que", "j'ai participé", "nous avons réussi", "j'ai décidé"
+      "il faut que", "pour que", "j'ai participé", "nous avons réussi", "j'ai décidé", "je vous écris", "dans l'attente"
     ];
+    const b1Grammar = [
+      "il est impossible de", "nous ne pouvons pas", "vous pouvez", "risquent d'être", "ne fonctionne plus",
+      "ne marche pas", "il fait très froid", "c'est un véritable", "c'est très important", "je suis", "nous avons",
+      "j'ai", "il y a", "nous sommes", "je viens de"
+    ];
+
     const foundC1C2Gram = c1c2Grammar.filter((g) => textLower.includes(g));
     const foundB2Gram = b2Grammar.filter((g) => textLower.includes(g));
+    const foundB1Gram = b1Grammar.filter((g) => textLower.includes(g));
 
     let grammarScore = 1;
     if (hasEnglishWords || hasTelegraphicGrammar || wordCount < 15) {
       grammarScore = 1;
-    } else if (foundC1C2Gram.length >= 2 || (foundC1C2Gram.length >= 1 && foundB2Gram.length >= 1)) grammarScore = 5;
-    else if (foundC1C2Gram.length >= 1 || foundB2Gram.length >= 2) grammarScore = 4;
-    else if (foundB2Gram.length >= 1 || textLower.includes("parce que") || textLower.includes("j'ai")) grammarScore = 3;
-    else if (textLower.includes("je suis") || textLower.includes("c'est") || textLower.includes("il y a")) grammarScore = 2;
-    else grammarScore = 1;
+    } else if (foundC1C2Gram.length >= 2 || (foundC1C2Gram.length >= 1 && foundB2Gram.length >= 1)) {
+      grammarScore = 5;
+    } else if (foundC1C2Gram.length >= 1 || foundB2Gram.length >= 2) {
+      grammarScore = 4;
+    } else if (foundB2Gram.length >= 1 || foundB1Gram.length >= 2) {
+      grammarScore = 3;
+    } else if (foundB1Gram.length >= 1 || textLower.includes("je suis") || textLower.includes("c'est")) {
+      grammarScore = 2;
+    } else {
+      grammarScore = 1;
+    }
+
+    if (taskFulfillmentScore === 0) {
+      return {
+        score: 0,
+        scoreOutOf20: 0,
+        nclcGrade: "NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet)",
+        cefrLevel: "N/A",
+        expressEntryPoints: 0,
+        taskFulfillmentScore: 0,
+        coherenceScore: 1,
+        lexicalScore: 1,
+        grammarScore: 1,
+        feedback: "🚨 ZERO GRADE (0/20 Marks): Off-topic submission.",
+        corrections: [],
+        tips: ["Lisez attentivement la consigne."]
+      };
+    }
 
     let scoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
 
-    // Enforce strict B2 capping rule for simple A2/B1 texts without B2 connectors & syntax
-    const hasB2Conn = foundB2Conn.length > 0 || foundC1C2Conn.length > 0;
-    const hasB2Gram = foundB2Gram.length > 0 || foundC1C2Gram.length > 0;
-    if (!hasB2Conn && !hasB2Gram) {
-      scoreOutOf20 = Math.min(9, scoreOutOf20);
+    // Apply task ceilings
+    if (isTache1) {
+      scoreOutOf20 = Math.min(15, scoreOutOf20);
+    } else if (isTache2) {
+      scoreOutOf20 = Math.min(17, scoreOutOf20);
     }
 
-    // Enforce strict C1/C2 capping rule: Standard formal emails without C1 academic vocabulary or connectors cap at 15/20 (B2 Upper)
-    const hasC1C2Lex = foundC1C2Lex.length > 0;
-    const hasC1C2Gram = foundC1C2Gram.length > 0;
-    const hasC1C2Conn = foundC1C2Conn.length > 0;
-    if (!hasC1C2Conn && !hasC1C2Lex && !hasC1C2Gram) {
-      scoreOutOf20 = Math.min(15, scoreOutOf20);
+    if (hasEnglishWords || hasTelegraphicGrammar) {
+      scoreOutOf20 = Math.min(4, scoreOutOf20);
     }
+
     const scorePct = Math.round((scoreOutOf20 / 20) * 100);
 
     let nclcGrade = "NCLC 4 (A2 Elementary)";
@@ -573,7 +622,7 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
       nclcGrade = "NCLC 6 (B1 Intermediate)";
       cefrLevel = "B1";
       expressEntryPoints = 12;
-    } else if (scoreOutOf20 >= 9) {
+    } else if (scoreOutOf20 >= 8) {
       nclcGrade = "NCLC 5 (B1 Threshold)";
       cefrLevel = "B1";
       expressEntryPoints = 6;
@@ -601,7 +650,7 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
       coherenceScore,
       lexicalScore,
       grammarScore,
-      feedback: `Official FEI Calibrated Evaluation: Total ${scoreOutOf20}/20.`,
+      feedback: `Official FEI Calibrated Evaluation: Total ${scoreOutOf20}/20 Marks • Task Fulfillment: ${taskFulfillmentScore}/5, Coherence & Connectors: ${coherenceScore}/5, Lexical Range: ${lexicalScore}/5, Morphosyntax & Grammar: ${grammarScore}/5.`,
       corrections: [],
       tips: ["Consultez la consigne et structurez vos paragraphes."]
     };
