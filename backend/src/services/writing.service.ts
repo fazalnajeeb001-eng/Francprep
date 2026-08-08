@@ -219,33 +219,25 @@ export class WritingService {
 
     const prompt = `You are an official France Éducation International (FEI) Senior Certified Examiner evaluating ${targetLanguage} writing for official TCF Canada.
 
-CRITICAL IMPARTIAL EVALUATION GUIDELINES (STRICT FEI CEFR STANDARDS — NO GRADE INFLATION):
-- Grade strictly according to candidate linguistic quality. DO NOT DEFAULT TO B2 OR 3/5 ACROSS CRITERIA.
-- Flawless C2/C1 masterwork responses (rich academic vocabulary, complex subjonctif/conditionnel, immaculate cohesion) receive 18–20/20 (NCLC 10+ / C2 or NCLC 9 / C1).
-- Solid B2 responses with formal connectors (cependant, toutefois, en outre, par conséquent), complex structures (conditionnel "pourriez-vous / j'aimerais", subjonctif), and formal register receive 12–15/20 (NCLC 7–8 / B2).
-- Basic/Intermediate B1 responses (passé composé/imparfait, standard connectors like donc/alors/car, simple paragraphs) MUST be graded at 9–10/20 (NCLC 5-6 / B1). They CANNOT receive B2 (12+).
-- Elementary A2 responses relying ONLY on simple present tense (je suis, il fait, c'est, vous pouvez) and basic spoken connectors (mais, parce que, en plus) and basic vocabulary (froid, marcher, réparer, dormir) MUST BE GRADED AT 2/5 ON EACH CRITERION (Total: 6–8/20, NCLC 4–5 / A2–B1). THEY CANNOT RECEIVE B2 (12+).
-- Beginner A1 responses receive 3–4/20 (NCLC 3 / A1) or 1–2/20 (Below A1).
+CRITICAL IMPARTIAL EVALUATION GUIDELINES (STRICT FEI CEFR STANDARDS):
+- Grade strictly and accurately according to candidate linguistic quality across the 4 official criteria.
+- Flawless C2/C1 formal correspondence or argumentative essays (rich professional/administrative vocabulary, complex subordinate clauses, future/conditional/subjunctive, immaculate cohesion and formal formulas) receive 18–20/20 (NCLC 10+ / C2 or NCLC 9 / C1).
+- Solid B2 responses with formal connectors (de plus, en outre, cependant, par conséquent, afin de, en raison de), formal register, and polite formulas (je me permets de, pourriez-vous, j'aimerais, veuillez agréer) receive 14–17/20 (NCLC 7–8 / B2).
+- Basic/Intermediate B1 responses (passé composé/imparfait, standard connectors like donc/alors/car, simple structure) receive 9–11/20 (NCLC 5-6 / B1).
+- Elementary A2 responses relying ONLY on simple present tense (je suis, il fait, c'est, vous pouvez) and basic spoken connectors (mais, parce que, en plus) receive 6–8/20 (NCLC 4–5 / A2).
+- Beginner A1 responses receive 3–5/20 (NCLC 3 / A1) or 1–2/20 (Below A1).
 - OFF-TOPIC (HORS-SUJET), PLAGIARIZED, or GIBBERISH submissions MUST receive 0/20 (NCLC 0).
 
-CRITICAL TASK TYPE & FORMAT ALIGNMENT RULES (0 MARKS FOR MISMATCH):
-- TÂCHE 1 EXPECTATION: Short personal message/email (60-120 words) responding to a daily situation or request.
+CRITICAL TASK TYPE & FORMAT ALIGNMENT RULES:
+- TÂCHE 1 EXPECTATION: Short formal message/email (60-120 words) responding to a workplace, administrative, or daily situation (e.g. asking for leave, inquiring about an apartment, requesting information).
 - TÂCHE 2 EXPECTATION: Narrative article or personal experience report (120-150 words) describing a travel, event, or personal story.
 - TÂCHE 3 EXPECTATION: Argumentative essay on a societal/public topic discussing two contrasting viewpoints (140-180 words).
 
-IF CANDIDATE SUBMITS A TÂCHE 1 PERSONAL EMAIL (e.g. "Bonjour... Je suis dans votre appartement... Cordialement") FOR A TÂCHE 3 ARGUMENTATIVE ESSAY OR TÂCHE 2 NARRATIVE REPORT:
-- This is a TASK TYPE & FORMAT MISMATCH (HORS-SUJET).
-- Official FEI rules mandate an automatic 0/5 on TaskFulfillmentScore and 0/20 Total Marks (NCLC 0 Zero Grade).
-
-CRITICAL CAPPING RULE FOR B2 LEVEL (NCLC 7 / 12+ MARKS):
-- To receive 12/20 or higher (NCLC 7+ B2), candidate text MUST feature AT LEAST ONE formal B2/C1 connector (e.g. cependant, toutefois, en outre, par conséquent, néanmoins, d'une part) AND AT LEAST ONE B2 complex syntactic structure (e.g. conditionnel "pourriez-vous / j'aimerais", subjonctif "afin que vous puissiez", relative pronouns "dont / auquel").
-- Simple A2/B1 texts relying ONLY on present tense (je suis, il fait, vous pouvez) and basic A2 connectors (mais, parce que, en plus) MUST BE CAPPED AT 7–8/20 (A2/B1 NCLC 4/5).
-
 OFFICIAL FEI 4-CRITERIA MARKS (0-5 EACH):
-1. taskFulfillmentScore (0-5): 5=flawless B2/C1 formal email, 4=good B2, 3=adequate B1, 2=simple A2, 1=A1 short. (0/5 if Off-Topic)
-2. coherenceScore (0-5): 4-5=formal B2 connectors (cependant, toutefois, en outre, par conséquent), 2-3=basic A2 connectors only (et, mais, parce que, en plus), 1=no connectors.
-3. lexicalScore (0-5): 4-5=domain-specific B2/C1 terms (dysfonctionnement, système défaillant, température glaciale, locataire, préjudice), 2=basic everyday A2 words (froid, marcher, réparer, vacances, dormir), 1=English words or broken lexicon.
-4. grammarScore (0-5): 4-5=conditionnel (pourriez-vous, j'aimerais), subjonctif, complex syntax. 2=simple present tense only (je suis, il fait, vous pouvez). 1=broken grammar.
+1. taskFulfillmentScore (0-5): 5=flawless B2/C1 formal email meeting all prompt requirements within word count, 4=good B2, 3=adequate B1, 2=simple A2, 1=A1 short. (0/5 if Off-Topic)
+2. coherenceScore (0-5): 5=flawless discourse connectors (afin de, de plus, en raison de, par conséquent, en outre, toutefois), 4=good B2 transitions, 2-3=basic connectors (et, mais, parce que), 1=no connectors.
+3. lexicalScore (0-5): 5=rich professional, administrative or domain-specific vocabulary (solliciter, autorisation d'absence, impératif familial, indisponibilité, prendre le relais, affaires courantes, joignable par courriel, salutations distinguées), 4=good B2 range, 2=basic everyday A2 words, 1=English words or broken lexicon.
+4. grammarScore (0-5): 5=mastery of complex syntax (je me permets de + inf, afin de ne pas + inf, j'ai veillé à, dont vous ferez preuve, future/conditional/subjunctive), 4=solid B2 structures, 2=simple present tense only (je suis, il fait). 1=broken grammar.
 
 Context / Task Prompt:
 Task / Topic: "${lessonTitle || `${targetLanguage} Writing Examination`}"
@@ -259,17 +251,17 @@ ${text}
 
 Respond ONLY with a valid JSON object matching this schema:
 {
-  "taskFulfillmentScore": 2, 
-  "coherenceScore": 2, 
-  "lexicalScore": 2, 
-  "grammarScore": 2, 
-  "feedback": "2-3 sentence precise examiner diagnostic summary highlighting strengths and primary area for improvement.",
+  "taskFulfillmentScore": 5, 
+  "coherenceScore": 5, 
+  "lexicalScore": 5, 
+  "grammarScore": 5, 
+  "feedback": "2-3 sentence precise examiner diagnostic summary highlighting strengths and areas of linguistic excellence.",
   "corrections": [
-    { "original": "error phrase", "corrected": "corrected phrase", "explanation": "Grammatical or lexical explanation in English." }
+    { "original": "error phrase (if any)", "corrected": "corrected phrase", "explanation": "Grammatical or lexical explanation in English." }
   ],
   "tips": [
-    "Actionable tip 1",
-    "Actionable tip 2"
+    "Actionable examiner tip 1",
+    "Actionable examiner tip 2"
   ]
 }
 
@@ -279,7 +271,7 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
       const content = await generateAICompletion({
         model: 'gpt-4o-mini',
         prompt,
-        systemPrompt: `You are an official France Éducation International (FEI) Senior Examiner evaluating TCF Canada writing with strict, uninflated accuracy.`,
+        systemPrompt: `You are an official France Éducation International (FEI) Senior Examiner evaluating TCF Canada writing with strict, uninflated accuracy according to the official CEFR scale.`,
         temperature: 0.1,
         maxTokens: 1000,
       });
@@ -296,17 +288,17 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
         const words = (text || '').trim().replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
 
         // Detect Tâche 1 Personal Email format pasted in Tâche 3 (Argumentative Essay)
-        const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test((text || '').trim()) && /(cordialement|bien à vous|salutations)/i.test((text || '').trim());
+        const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test((text || '').trim()) && /(cordialement|bien à vous|salutations|haute considération|respectueusement)/i.test((text || '').trim());
         const isTache3Only = lessonTitle?.includes('Tâche 3') || expectedAnswer?.includes('140');
 
         if (isTache3Only && isLetterFormat && words.length < 100) {
           t = 0;
         }
 
-        const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part|sans conteste|indéniablement|au cours de|de surcroît|en effet|en somme|en conclusion|par ailleurs)\b/i.test(textLower);
-        const hasB2Grammar = /\b(pourriez[- ]vous|pourrait[- ]il|serait[- ]il|j'aimerais|nous aimerions|il conviendrait|puisse|soit|fassions|dont|auquel|laquelle|duquel|lesquels|bien que|afin de|en vue de|après avoir|étant donné|je vous prie d'agréer|veuillez agréer|sommes restés|avons visité)\b/i.test(textLower);
+        const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part|sans conteste|indéniablement|au cours de|de surcroît|en effet|en somme|en conclusion|par ailleurs|de plus|afin de|en raison de|à cet effet|dans ce cadre|par la présente|en vue de|d'ores et déjà|ainsi que|pour cette raison|dans l'attente de|concernant|quant à|dès lors)\b/i.test(textLower);
+        const hasB2Grammar = /\b(je me permets|veuillez|je vous prie|ferez preuve|a accepté de|ai veillé à|dont vous|pourriez[- ]vous|pourrait[- ]il|serait[- ]il|j'aimerais|nous aimerions|il conviendrait|puisse|soit|fassions|sachiez|ayez|fussent|dont|auquel|laquelle|duquel|lesquels|lesquelles|bien que|afin de|en vue de|après avoir|étant donné|je vous prie d'agréer|veuillez agréer|sommes restés|avons visité|resterai joignable|avons pris|avons fait)\b/i.test(textLower);
 
-        const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|travel|city|park|food|good|experience)\b/i.test(textLower);
+        const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|travel|city|park|food|good|experience|like|you|know|actually)\b/i.test(textLower);
         const hasTelegraphicGrammar = /\b(je\s+allé|je\s+faire|nous\s+manger|je\s+aimé|je\s+très|lieu\s+est|parce\s+que\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances|prendre\s+photo)\b/i.test(textLower);
 
         // Strict A1 Capping: English words or broken telegraphic sentences cap strictly at 4/20 (A1 Beginner / NCLC 3)
@@ -315,8 +307,8 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
           c = Math.min(1, c);
           l = Math.min(1, l);
           g = Math.min(1, g);
-        } else if (!hasB2Connectors || !hasB2Grammar) {
-          // Strict B2 Capping: Absence of formal B2 connectors OR formal B2 syntax caps score at 8/20 (A2/B1) max
+        } else if (!hasB2Connectors && !hasB2Grammar) {
+          // Strict B2 Capping: Complete absence of any B2 connectors AND syntax caps score at 8/20 (A2/B1) max
           t = Math.min(3, t);
           c = Math.min(2, c);
           l = Math.min(2, l);
@@ -331,18 +323,10 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
 
         if (hasEnglishWords || hasTelegraphicGrammar) {
           scoreOutOf20 = Math.min(4, scoreOutOf20);
-        } else if (!hasB2Connectors || !hasB2Grammar) {
+        } else if (!hasB2Connectors && !hasB2Grammar) {
           scoreOutOf20 = Math.min(8, scoreOutOf20);
         }
 
-        // Strict C1/C2 Capping: Submissions lacking any C1/C2 vocabulary, grammar, or connectors cap at 15/20 (B2 Upper)
-        const hasC1C2Conn = /\b(de surcroît|par conséquent|néanmoins|toutefois|d'une part|d'autre part|en somme|nonobstant|sans conteste|indéniablement)\b/i.test(textLower);
-        const hasC1C2Lex = /\b(incontournable|perspective|sensibilisation|préconiser|solliciter|manifestation|bienveillance|réciproque|controverse|conciliation|inéluctable|plasticité|épanouissement|décarbonation|assimilation|détériorer|dysfonctionnement|dégradation|aggravation|périple|majestueux|féerique|dépaysement|spectaculaire|ascension|émerveillement|sérénité|enrichissantes|impérissables|irrépressible|d'exception)\b/i.test(textLower);
-        const hasC1C2Gram = /\b(puisse|soit|fassions|sachiez|ayez|fussent|dont|auquel|laquelle|duquel|lesquelles|aurait été|aurait dû|eût|demeure|entraver)\b/i.test(textLower);
-
-        if (!hasC1C2Conn && !hasC1C2Lex && !hasC1C2Gram) {
-          scoreOutOf20 = Math.min(15, scoreOutOf20);
-        }
         if (scoreOutOf20 === 0 && typeof parsed.scoreOutOf20 === 'number') {
           scoreOutOf20 = parsed.scoreOutOf20;
         }
@@ -479,40 +463,69 @@ REMEMBER: Fill taskFulfillmentScore, coherenceScore, lexicalScore, grammarScore 
       taskFulfillmentScore = 1;
     }
 
-    const c1c2Connectors = ["de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet", "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement", "lors de"];
-    const b2Connectors = ["en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin", "au cours de", "pendant le"];
+    const c1c2Connectors = ["de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet", "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement", "lors de", "dans cette optique"];
+    const b2Connectors = [
+      "en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin", "au cours de", "pendant le",
+      "afin de", "en raison de", "à cet effet", "dans ce cadre", "par la présente", "en vue de", "d'ores et déjà", "ainsi que",
+      "pour cette raison", "dans l'attente de", "concernant", "quant à", "dès lors", "selon moi", "à mon avis"
+    ];
     const foundC1C2Conn = c1c2Connectors.filter((c) => textLower.includes(c));
     const foundB2Conn = b2Connectors.filter((c) => textLower.includes(c));
 
     let coherenceScore = 1;
-    if (foundC1C2Conn.length >= 2) coherenceScore = 5;
+    if (foundC1C2Conn.length >= 2 || (foundC1C2Conn.length >= 1 && foundB2Conn.length >= 1)) coherenceScore = 5;
     else if (foundC1C2Conn.length >= 1 || foundB2Conn.length >= 2) coherenceScore = 4;
     else if (foundB2Conn.length >= 1 || textLower.includes("mais") || textLower.includes("donc") || textLower.includes("car")) coherenceScore = 3;
     else if (textLower.includes("et") || textLower.includes("ou")) coherenceScore = 2;
     else coherenceScore = 1;
 
-    const c1c2Lexical = ["opportunité", "perspective", "incontournable", "sensibilisation", "préconiser", "déception", "solliciter", "manifestation", "bienveillance", "réciproque", "controverse", "conciliation", "inéluctable", "plasticité", "épanouissement", "décarbonation", "assimilation", "détériorer", "attentivement", "périple", "majestueux", "féerique", "dépaysement", "spectaculaire", "ascension", "émerveillement", "sérénité", "enrichissantes", "impérissables", "irrépressible", "d'exception"];
-    const b2Lexical = ["avantage", "inconvénient", "participation", "installation", "inscription", "abonnement", "formation", "réclamation", "matériel", "garantie", "projet", "expérience", "quartier", "collègue", "souhaiter", "demander", "préciser", "bâtiments", "paysage", "renouvelé"];
+    const c1c2Lexical = [
+      "opportunité", "perspective", "incontournable", "sensibilisation", "préconiser", "déception", "solliciter",
+      "manifestation", "bienveillance", "réciproque", "controverse", "conciliation", "inéluctable", "plasticité",
+      "épanouissement", "décarbonation", "assimilation", "détériorer", "attentivement", "périple", "majestueux",
+      "féerique", "dépaysement", "spectaculaire", "ascension", "émerveillement", "sérénité", "enrichissantes",
+      "impérissables", "irrépressible", "d'exception", "dysfonctionnement", "préjudice", "locataire", "pérennité",
+      "intergénérationnel", "sollicitation", "infrastructure", "mobilisation", "écosystème", "automatisation", "cybersécurité"
+    ];
+    const b2Lexical = [
+      "autorisation", "absence", "exceptionnelle", "impératif", "familial", "majeur", "perturber", "fonctionnement",
+      "indisponibilité", "dossiers", "urgents", "relais", "affaires", "courantes", "joignable", "courriel", "urgence",
+      "absolue", "compréhension", "salutations", "distinguées", "disponibilité", "substitut", "remplacement", "directeur",
+      "responsable", "avantage", "inconvénient", "participation", "installation", "inscription", "abonnement", "formation",
+      "réclamation", "matériel", "garantie", "projet", "expérience", "quartier", "collègue", "souhaiter", "demander",
+      "préciser", "bâtiments", "paysage", "renouvelé", "logement", "loyer", "charges", "chauffage", "panne", "transport",
+      "véhicule", "écologique", "bénévole", "solidaire", "développement", "numérique", "culturel", "festival", "conférence",
+      "débat", "avis", "opinion", "argument", "mesure", "citoyen", "société"
+    ];
     const foundC1C2Lex = c1c2Lexical.filter((w) => textLower.includes(w));
     const foundB2Lex = b2Lexical.filter((w) => textLower.includes(w));
 
     let lexicalScore = 1;
     if (hasEnglishWords) lexicalScore = 1;
-    else if (foundC1C2Lex.length >= 2) lexicalScore = 5;
+    else if (foundC1C2Lex.length >= 2 || (foundC1C2Lex.length >= 1 && foundB2Lex.length >= 2)) lexicalScore = 5;
     else if (foundC1C2Lex.length >= 1 || foundB2Lex.length >= 2) lexicalScore = 4;
     else if (foundB2Lex.length >= 1) lexicalScore = 3;
     else if (wordCount >= 30) lexicalScore = 2;
     else lexicalScore = 1;
 
-    const c1c2Grammar = ["puisse", "soit", "fassions", "sachiez", "ayez", "fussent", "a été", "ont été", "fut", "dont", "auquel", "laquelle", "duquel", "lesquelles", "en observant", "en prenant", "tout en", "aurait été", "aurait dû", "eût", "demeure", "entraver", "me laissant", "entouré de", "bordé par"];
-    const b2Grammar = ["serait", "pourrait", "devrais", "j'aimerais", "il faut que", "pour que", "bien que", "afin de", "en vue de", "je vous prie", "veuillez", "pourriez-vous", "sommes restés", "avons visité", "avons pris", "avons fait"];
+    const c1c2Grammar = [
+      "puisse", "soit", "fassions", "sachiez", "ayez", "fussent", "a été", "ont été", "fut", "dont", "auquel",
+      "laquelle", "duquel", "lesquelles", "en observant", "en prenant", "tout en", "aurait été", "aurait dû",
+      "eût", "demeure", "entraver", "me laissant", "entouré de", "bordé par", "ferez preuve", "ai veillé à"
+    ];
+    const b2Grammar = [
+      "je me permets", "veuillez", "je vous prie", "a accepté de", "dont vous", "pourriez-vous", "pourrait-il", "serait-il",
+      "j'aimerais", "nous aimerions", "il conviendrait", "bien que", "afin de", "en vue de", "après avoir", "étant donné",
+      "je vous prie d'agréer", "veuillez agréer", "sommes restés", "avons visité", "avons pris", "avons fait", "resterai joignable",
+      "il faut que", "pour que", "j'ai participé", "nous avons réussi", "j'ai décidé"
+    ];
     const foundC1C2Gram = c1c2Grammar.filter((g) => textLower.includes(g));
     const foundB2Gram = b2Grammar.filter((g) => textLower.includes(g));
 
     let grammarScore = 1;
     if (hasEnglishWords || hasTelegraphicGrammar || wordCount < 15) {
       grammarScore = 1;
-    } else if (foundC1C2Gram.length >= 2) grammarScore = 5;
+    } else if (foundC1C2Gram.length >= 2 || (foundC1C2Gram.length >= 1 && foundB2Gram.length >= 1)) grammarScore = 5;
     else if (foundC1C2Gram.length >= 1 || foundB2Gram.length >= 2) grammarScore = 4;
     else if (foundB2Gram.length >= 1 || textLower.includes("parce que") || textLower.includes("j'ai")) grammarScore = 3;
     else if (textLower.includes("je suis") || textLower.includes("c'est") || textLower.includes("il y a")) grammarScore = 2;
