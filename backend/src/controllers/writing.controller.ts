@@ -19,16 +19,19 @@ function getLanguageAndExamInfo(req: AuthRequest, bodyLang?: string) {
 export class WritingController {
   async submit(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { text, lessonTitle, expectedAnswer, checklist, targetLanguage } = req.body;
+      const rawText = req.body.text || req.body.studentText || req.body.answer || '';
+      const rawTitle = req.body.lessonTitle || req.body.paperTitle || req.body.title || 'Expression Écrite Task';
+      const rawExpected = req.body.expectedAnswer || req.body.taskPrompt || req.body.prompt || '';
+      const { checklist, targetLanguage } = req.body;
       
-      if (!text || typeof text !== 'string' || text.trim().length === 0) {
+      if (!rawText || typeof rawText !== 'string' || rawText.trim().length === 0) {
         res.status(400).json({ success: false, error: 'Please provide text to evaluate.' });
         return;
       }
 
       const { targetLanguage: lang, examName } = getLanguageAndExamInfo(req, targetLanguage);
 
-      const result = await writingService.getFeedback(text, lessonTitle, expectedAnswer, checklist, lang, examName);
+      const result = await writingService.getFeedback(rawText, rawTitle, rawExpected, checklist, lang, examName);
       
       res.status(200).json({
         success: true,
@@ -63,16 +66,19 @@ export class WritingController {
 
   async analyzeSpeaking(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { transcription, expectedText, lessonTitle, targetLanguage } = req.body;
-      
-      if (!transcription || !expectedText) {
-        res.status(400).json({ success: false, error: 'Please provide transcription and expected text.' });
+      const rawTranscription = req.body.transcription || req.body.transcript || '';
+      const rawExpected = req.body.expectedText || req.body.scenario || req.body.prompt || req.body.lessonTitle || 'TCF Canada Oral Interaction';
+      const rawTitle = req.body.lessonTitle || req.body.paperTitle || 'Expression Orale';
+      const { targetLanguage } = req.body;
+
+      if (!rawTranscription) {
+        res.status(400).json({ success: false, error: 'Please provide speech transcription.' });
         return;
       }
 
       const { targetLanguage: lang } = getLanguageAndExamInfo(req, targetLanguage);
 
-      const result = await writingService.analyzeSpeaking(transcription, expectedText, lessonTitle, lang);
+      const result = await writingService.analyzeSpeaking(rawTranscription, rawExpected, rawTitle, lang);
       
       res.status(200).json({
         success: true,

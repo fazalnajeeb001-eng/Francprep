@@ -480,19 +480,30 @@ export function AuthenticCBTExamPage() {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
+                    text,
                     studentText: text,
+                    lessonTitle: `${paper.title} - ${t.id}`,
+                    paperTitle: paper.title,
+                    expectedAnswer: t.prompt + (t.sampleResponse ? `\nSample Exemplar Response:\n${t.sampleResponse}` : ""),
                     taskPrompt: t.prompt,
                     sampleResponse: t.sampleResponse,
                     wordCountMin: t.wordCountMin,
                     wordCountMax: t.wordCountMax,
-                    paperTitle: paper.title,
+                    targetLanguage: "French",
                   }),
                 });
                 const json = await res.json();
                 if (json.success && json.data) {
+                  const data = json.data;
+                  const totalScoreOutOf20 = typeof data.scoreOutOf20 === 'number'
+                    ? data.scoreOutOf20
+                    : (typeof data.score === 'number' ? Math.round((data.score / 100) * 20) : 15);
                   setWritingAiResults((prev) => ({
                     ...prev,
-                    [t.id]: json.data,
+                    [t.id]: {
+                      ...data,
+                      scoreOutOf20: totalScoreOutOf20,
+                    },
                   }));
                 }
               } catch (e) {
