@@ -47,7 +47,7 @@ function calculateTextSimilarity(str1: string, str2: string): number {
 
   const words1 = normalize(str1);
   const words2 = normalize(str2);
-  if (words1.length < 5 || words2.length < 5) return 0;
+  if (words1.length < 4 || words2.length < 4) return 0;
 
   const getTrigrams = (words: string[]) => {
     const trigrams = new Set<string>();
@@ -63,7 +63,8 @@ function calculateTextSimilarity(str1: string, str2: string): number {
   tri1.forEach((t) => {
     if (tri2.has(t)) triMatches++;
   });
-  const trigramRatio = tri1.size > 0 ? (triMatches / tri1.size) * 100 : 0;
+  const trigramRatio1 = tri1.size > 0 ? (triMatches / tri1.size) * 100 : 0;
+  const trigramRatio2 = tri2.size > 0 ? (triMatches / tri2.size) * 100 : 0;
 
   const set1 = new Set(words1);
   const set2 = new Set(words2);
@@ -75,7 +76,7 @@ function calculateTextSimilarity(str1: string, str2: string): number {
   const jaccardRatio = union > 0 ? (intersection / union) * 100 : 0;
 
   if (tri1.size > 0 && triMatches > 0) {
-    return Math.round(Math.max(trigramRatio, jaccardRatio * 0.7));
+    return Math.round(Math.max(trigramRatio1, trigramRatio2 * 0.7, jaccardRatio * 0.7));
   }
 
   return Math.round(jaccardRatio * 0.4);

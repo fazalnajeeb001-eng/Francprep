@@ -75,7 +75,7 @@ export class WritingService {
     const words1 = normalize(studentText);
     const words2 = normalize(modelText);
 
-    if (words1.length < 5 || words2.length < 5) return 0;
+    if (words1.length < 4 || words2.length < 4) return 0;
 
     const set1 = new Set(words1);
     const set2 = new Set(words2);
@@ -102,10 +102,11 @@ export class WritingService {
     tri1.forEach((t) => {
       if (tri2.has(t)) triMatch++;
     });
-    const triRatio = tri1.size > 0 ? triMatch / tri1.size : 0;
+    const triRatio1 = tri1.size > 0 ? triMatch / tri1.size : 0;
+    const triRatio2 = tri2.size > 0 ? triMatch / tri2.size : 0;
 
     if (tri1.size > 0 && triMatch > 0) {
-      return Math.max(triRatio, jaccard * 0.7);
+      return Math.max(triRatio1, triRatio2 * 0.7, jaccard * 0.7);
     }
     return jaccard * 0.4;
   }
