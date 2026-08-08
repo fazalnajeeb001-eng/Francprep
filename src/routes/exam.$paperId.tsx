@@ -1195,6 +1195,7 @@ export function AuthenticCBTExamPage() {
       speakingWeightedScore = validSpk.length > 0 ? Math.round(validSpk.reduce((a, b) => a + b, 0) / validSpk.length) : 0;
     }
 
+    const speakingAvg = speakingWeightedScore;
     const speakingPct = Math.round((speakingWeightedScore / 20) * 100);
     const speakingNCLC = calculateNCLCScore(speakingPct, paper.type, "EXPRESSION_ORALE");
 
@@ -1231,7 +1232,7 @@ export function AuthenticCBTExamPage() {
       attemptedNCLCs.push(writingNCLC.nclcLevel);
       attemptedModuleNames.push("Writing (EE)");
     }
-    if (speakingAvg > 0 && speakingNCLC.nclcLevel > 0) {
+    if (speakingWeightedScore > 0 && speakingNCLC.nclcLevel > 0) {
       attemptedNCLCs.push(speakingNCLC.nclcLevel);
       attemptedModuleNames.push("Speaking (EO)");
     }
