@@ -763,8 +763,14 @@ export function AuthenticCBTExamPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           text: clean,
+          studentText: clean,
           lessonTitle: `${paper.title} - ${taskId}`,
+          paperTitle: paper.title,
           expectedAnswer: prompt + (sampleResponse ? `\nSample Exemplar Response:\n${sampleResponse}` : ""),
+          taskPrompt: prompt,
+          sampleResponse,
+          wordCountMin: minWords,
+          wordCountMax: maxWords,
           targetLanguage: "French"
         })
       });
@@ -828,8 +834,8 @@ export function AuthenticCBTExamPage() {
     } catch {}
 
     // 2. Calibrated Local Rule Engine Fallback (Full-Spectrum CEFR Calibration)
-    const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks)\b/i.test(clean);
-    const hasTelegraphicGrammar = /\b(je\s+maladie|je\s+malade|moi\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances)\b/i.test(clean);
+    const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|travel|city|park|food|good|experience|like|you|know|actually)\b/i.test(clean);
+    const hasTelegraphicGrammar = /\b(je\s+allé|je\s+faire|nous\s+manger|je\s+aimé|je\s+très|lieu\s+est|parce\s+que\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances|prendre\s+photo)\b/i.test(clean);
 
     let taskFulfillmentScore = 1;
     if (wordCount >= minWords && wordCount <= maxWords + 30) {
@@ -844,36 +850,68 @@ export function AuthenticCBTExamPage() {
       taskFulfillmentScore = 1;
     }
 
-    const c1c2Connectors = ["de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet", "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement"];
-    const b2Connectors = ["en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin", "au cours de", "par conséquent", "toutefois", "néanmoins"];
+    const c1c2Connectors = [
+      "de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet",
+      "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement", "dans cette optique", "lors de"
+    ];
+    const b2Connectors = [
+      "en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin",
+      "au cours de", "pendant le", "afin de", "en raison de", "à cet effet", "dans ce cadre", "par la présente",
+      "en vue de", "d'ores et déjà", "ainsi que", "pour cette raison", "dans l'attente de", "concernant", "quant à", "dès lors", "selon moi", "à mon avis"
+    ];
     const textLower = clean.toLowerCase();
 
     const foundC1C2Conn = c1c2Connectors.filter((c) => textLower.includes(c));
     const foundB2Conn = b2Connectors.filter((c) => textLower.includes(c));
 
     let coherenceScore = 1;
-    if (foundC1C2Conn.length >= 2) coherenceScore = 5;
+    if (foundC1C2Conn.length >= 2 || (foundC1C2Conn.length >= 1 && foundB2Conn.length >= 1)) coherenceScore = 5;
     else if (foundC1C2Conn.length >= 1 || foundB2Conn.length >= 2) coherenceScore = 4;
-    else if (foundB2Conn.length >= 1 || textLower.includes("donc") || textLower.includes("car")) coherenceScore = 3;
-    else if (textLower.includes("mais") || textLower.includes("en plus") || textLower.includes("parce que")) coherenceScore = 2;
+    else if (foundB2Conn.length >= 1 || textLower.includes("mais") || textLower.includes("donc") || textLower.includes("car")) coherenceScore = 3;
+    else if (textLower.includes("et") || textLower.includes("ou")) coherenceScore = 2;
     else coherenceScore = 1;
 
-    const c1c2Lexical = ["opportunité", "perspective", "incontournable", "sensibilisation", "préconiser", "déception", "solliciter", "manifestation", "bienveillance", "réciproque", "controverse", "conciliation", "inéluctable", "plasticité", "épanouissement", "décarbonation", "assimilation", "détériorer", "attentivement", "dysfonctionnement", "préjudice", "locataire"];
-    const b2Lexical = ["avantage", "inconvénient", "participation", "installation", "inscription", "abonnement", "formation", "réclamation", "matériel", "garantie", "projet", "expérience", "quartier", "collègue", "souhaiter", "demander", "préciser"];
+    const c1c2Lexical = [
+      "opportunité", "perspective", "incontournable", "sensibilisation", "préconiser", "déception", "solliciter",
+      "manifestation", "bienveillance", "réciproque", "controverse", "conciliation", "inéluctable", "plasticité",
+      "épanouissement", "décarbonation", "assimilation", "détériorer", "attentivement", "périple", "majestueux",
+      "féerique", "dépaysement", "spectaculaire", "ascension", "émerveillement", "sérénité", "enrichissantes",
+      "impérissables", "irrépressible", "d'exception", "dysfonctionnement", "préjudice", "locataire", "pérennité",
+      "intergénérationnel", "sollicitation", "infrastructure", "mobilisation", "écosystème", "automatisation", "cybersécurité"
+    ];
+    const b2Lexical = [
+      "autorisation", "absence", "exceptionnelle", "impératif", "familial", "majeur", "perturber", "fonctionnement",
+      "indisponibilité", "dossiers", "urgents", "relais", "affaires", "courantes", "joignable", "courriel", "urgence",
+      "absolue", "compréhension", "salutations", "distinguées", "disponibilité", "substitut", "remplacement", "directeur",
+      "responsable", "avantage", "inconvénient", "participation", "installation", "inscription", "abonnement", "formation",
+      "réclamation", "matériel", "garantie", "projet", "expérience", "quartier", "collègue", "souhaiter", "demander",
+      "préciser", "bâtiments", "paysage", "renouvelé", "logement", "loyer", "charges", "chauffage", "panne", "transport",
+      "véhicule", "écologique", "bénévole", "solidaire", "développement", "numérique", "culturel", "festival", "conférence",
+      "débat", "avis", "opinion", "argument", "mesure", "citoyen", "société"
+    ];
     
     const foundC1C2Lex = c1c2Lexical.filter((w) => textLower.includes(w));
     const foundB2Lex = b2Lexical.filter((w) => textLower.includes(w));
 
     let lexicalScore = 1;
     if (hasEnglishWords) lexicalScore = 1;
-    else if (foundC1C2Lex.length >= 2) lexicalScore = 5;
+    else if (foundC1C2Lex.length >= 2 || (foundC1C2Lex.length >= 1 && foundB2Lex.length >= 2)) lexicalScore = 5;
     else if (foundC1C2Lex.length >= 1 || foundB2Lex.length >= 2) lexicalScore = 4;
     else if (foundB2Lex.length >= 1) lexicalScore = 3;
     else if (wordCount >= 30) lexicalScore = 2;
     else lexicalScore = 1;
 
-    const c1c2Grammar = ["puisse", "soit", "fassions", "sachiez", "ayez", "fussent", "dont", "auquel", "laquelle", "duquel", "lesquelles", "en observant", "en prenant", "tout en", "aurait été", "aurait dû", "eût", "demeure", "entraver"];
-    const b2Grammar = ["pourriez-vous", "pourrait-il", "serait-il", "j'aimerais", "nous aimerions", "il conviendrait", "bien que", "afin de", "en vue de", "après avoir", "étant donné", "je vous prie d'agréer", "veuillez agréer", "il faut que", "pour que"];
+    const c1c2Grammar = [
+      "puisse", "soit", "fassions", "sachiez", "ayez", "fussent", "a été", "ont été", "fut", "dont", "auquel",
+      "laquelle", "duquel", "lesquelles", "en observant", "en prenant", "tout en", "aurait été", "aurait dû",
+      "eût", "demeure", "entraver", "me laissant", "entouré de", "bordé par", "ferez preuve", "ai veillé à"
+    ];
+    const b2Grammar = [
+      "je me permets", "veuillez", "je vous prie", "a accepté de", "dont vous", "pourriez-vous", "pourrait-il", "serait-il",
+      "j'aimerais", "nous aimerions", "il conviendrait", "bien que", "afin de", "en vue de", "après avoir", "étant donné",
+      "je vous prie d'agréer", "veuillez agréer", "sommes restés", "avons visité", "avons pris", "avons fait", "resterai joignable",
+      "il faut que", "pour que", "j'ai participé", "nous avons réussi", "j'ai décidé"
+    ];
     
     const foundC1C2Gram = c1c2Grammar.filter((g) => textLower.includes(g));
     const foundB2Gram = b2Grammar.filter((g) => textLower.includes(g));
@@ -881,10 +919,10 @@ export function AuthenticCBTExamPage() {
     let grammarScore = 1;
     if (hasEnglishWords || hasTelegraphicGrammar || wordCount < 15) {
       grammarScore = 1;
-    } else if (foundC1C2Gram.length >= 2) grammarScore = 5;
+    } else if (foundC1C2Gram.length >= 2 || (foundC1C2Gram.length >= 1 && foundB2Gram.length >= 1)) grammarScore = 5;
     else if (foundC1C2Gram.length >= 1 || foundB2Gram.length >= 2) grammarScore = 4;
-    else if (foundB2Gram.length >= 1 || textLower.includes("j'ai ") || textLower.includes("nous avons")) grammarScore = 3;
-    else if (textLower.includes("je suis") || textLower.includes("c'est") || textLower.includes("il fait") || textLower.includes("vous pouvez")) grammarScore = 2;
+    else if (foundB2Gram.length >= 1 || textLower.includes("parce que") || textLower.includes("j'ai")) grammarScore = 3;
+    else if (textLower.includes("je suis") || textLower.includes("c'est") || textLower.includes("il y a")) grammarScore = 2;
     else grammarScore = 1;
 
     let totalScoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
@@ -893,15 +931,8 @@ export function AuthenticCBTExamPage() {
     const hasB2Gram = foundB2Gram.length > 0 || foundC1C2Gram.length > 0;
     if (hasEnglishWords || hasTelegraphicGrammar) {
       totalScoreOutOf20 = Math.min(4, totalScoreOutOf20);
-    } else if (!hasB2Conn || !hasB2Gram) {
+    } else if (!hasB2Conn && !hasB2Gram) {
       totalScoreOutOf20 = Math.min(8, totalScoreOutOf20);
-    }
-
-    const hasC1C2Lex = foundC1C2Lex.length > 0;
-    const hasC1C2Gram = foundC1C2Gram.length > 0;
-    const hasC1C2Conn = foundC1C2Conn.length > 0;
-    if (!hasC1C2Conn && !hasC1C2Lex && !hasC1C2Gram) {
-      totalScoreOutOf20 = Math.min(15, totalScoreOutOf20);
     }
 
     let nclcGrade = "NCLC 4 (A2 Elementary)";
