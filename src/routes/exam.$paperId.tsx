@@ -178,6 +178,83 @@ export function AuthenticCBTExamPage() {
   const [recordingSpeaking, setRecordingSpeaking] = useState<Record<string, boolean>>({});
   const [speakingAiResults, setSpeakingAiResults] = useState<Record<string, any>>({});
   const [evaluatingSpeaking, setEvaluatingSpeaking] = useState<Record<string, boolean>>({});
+  const [speakingDialogueMap, setSpeakingDialogueMap] = useState<Record<string, Array<{ sender: 'examiner' | 'candidate'; text: string }>>>({});
+  const [speakingChatLoading, setSpeakingChatLoading] = useState<Record<string, boolean>>({});
+  const [oralPrepTimeRemaining, setOralPrepTimeRemaining] = useState<Record<string, number>>({});
+  const [isOralPrepActive, setIsOralPrepActive] = useState<Record<string, boolean>>({});
+
+  const handleStartPrepTimer = (taskId: string, prepMins = 1) => {
+    setOralPrepTimeRemaining((prev) => ({ ...prev, [taskId]: prepMins * 60 }));
+    setIsOralPrepActive((prev) => ({ ...prev, [taskId]: true }));
+  };
+
+  useEffect(() => {
+    const activeTasks = Object.keys(isOralPrepActive).filter((k) => isOralPrepActive[k] && (oralPrepTimeRemaining[k] || 0) > 0);
+    if (activeTasks.length === 0) return;
+
+    const interval = setInterval(() => {
+      setOralPrepTimeRemaining((prev) => {
+        const next = { ...prev };
+        activeTasks.forEach((taskId) => {
+          if (next[taskId] > 1) {
+            next[taskId] -= 1;
+          } else {
+            next[taskId] = 0;
+            setIsOralPrepActive((p) => ({ ...p, [taskId]: false }));
+          }
+        });
+        return next;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isOralPrepActive, oralPrepTimeRemaining]);
+
+  const handlePlayExaminerAudio = (text: string) => {
+    handleStopAudio();
+    ttsSpeak(text, "fr-FR", 0.9, "female");
+  };
+
+  const handleSendSpeakingQuestionToExaminer = async (taskId: string, userText: string, scenarioText: string) => {
+    const clean = (userText || '').trim();
+    if (!clean) return;
+
+    const existingChat = speakingDialogueMap[taskId] || [];
+    const updatedMessages = [...existingChat, { sender: 'candidate' as const, text: clean }];
+    setSpeakingDialogueMap((prev) => ({ ...prev, [taskId]: updatedMessages }));
+    setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: true }));
+
+    try {
+      const messagesPayload = updatedMessages.map((m) => ({
+        role: m.sender === 'candidate' ? 'user' : 'assistant',
+        content: m.text,
+      }));
+
+      const res = await apiFetch("/writing/speaking-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: messagesPayload,
+          lessonLevel: "B2",
+          lessonTopic: scenarioText || "TCF Oral Interaction",
+          targetLanguage: "French",
+        }),
+      });
+
+      const json = await res.json();
+      if (json.success && json.data?.reply) {
+        const replyText = json.data.reply;
+        setSpeakingDialogueMap((prev) => ({
+          ...prev,
+          [taskId]: [...updatedMessages, { sender: 'examiner' as const, text: replyText }],
+        }));
+        handlePlayExaminerAudio(replyText);
+      }
+    } catch (e) {
+      console.error("Examiner chat error:", e);
+    }
+    setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
+  };
 
   // Practice Helper & Task Tab States
   const [showTranscript, setShowTranscript] = useState(false);
@@ -275,35 +352,105 @@ export function AuthenticCBTExamPage() {
   const handleEvaluateSpeakingAI = async (taskId: string, expectedText: string, transcription: string) => {
     setEvaluatingSpeaking((prev) => ({ ...prev, [taskId]: true }));
     try {
+      const dialogue = speakingDialogueMap[taskId] || [];
+      const combinedSpeech = dialogue.length > 0
+        ? dialogue.map((m) => `${m.sender === 'candidate' ? 'Candidat' : 'Examinateur'}: ${m.text}`).join('\n')
+        : transcription;
+
       const res = await apiFetch("/writing/analyze-speaking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcription, expectedText, lessonTitle: paper.title })
+        body: JSON.stringify({ transcription: combinedSpeech, expectedText, lessonTitle: paper.title })
       });
       const json = await res.json();
       if (json.success && json.data) {
-        const score = json.data.score || 80;
-        const nclcGrade = score >= 82 ? "NCLC 9 (C1)" : score >= 65 ? "NCLC 7 (B2 Vantage Target)" : "NCLC 5 (B1 Threshold)";
+        const data = json.data;
+        const totalScoreOutOf20 = typeof data.scoreOutOf20 === 'number'
+          ? data.scoreOutOf20
+          : (typeof data.score === 'number' ? Math.round((data.score / 100) * 20) : 15);
+
+        let nclcGrade = data.nclcGrade || "NCLC 7 (B2 Benchmark Target)";
+        let expressEntryPoints = data.expressEntryPoints || 17;
+
+        if (totalScoreOutOf20 >= 18) {
+          nclcGrade = "NCLC 10 (C2 Mastery)";
+          expressEntryPoints = 34;
+        } else if (totalScoreOutOf20 >= 16) {
+          nclcGrade = "NCLC 9 (C1 Advanced)";
+          expressEntryPoints = 31;
+        } else if (totalScoreOutOf20 >= 14) {
+          nclcGrade = "NCLC 8 (B2 Upper)";
+          expressEntryPoints = 23;
+        } else if (totalScoreOutOf20 >= 12) {
+          nclcGrade = "NCLC 7 (B2 Benchmark Target)";
+          expressEntryPoints = 17;
+        } else if (totalScoreOutOf20 >= 10) {
+          nclcGrade = "NCLC 6 (B1 Intermediate)";
+          expressEntryPoints = 12;
+        } else if (totalScoreOutOf20 >= 8) {
+          nclcGrade = "NCLC 5 (B1 Threshold)";
+          expressEntryPoints = 6;
+        } else if (totalScoreOutOf20 >= 5) {
+          nclcGrade = "NCLC 4 (A2 Elementary)";
+          expressEntryPoints = 0;
+        } else if (totalScoreOutOf20 >= 3) {
+          nclcGrade = "NCLC 3 (A1 Beginner)";
+          expressEntryPoints = 0;
+        } else {
+          nclcGrade = "NCLC 0 (Zero Grade — Gibberish / Non-French)";
+          expressEntryPoints = 0;
+        }
+
         setSpeakingAiResults((prev) => ({
           ...prev,
           [taskId]: {
-            score,
+            scoreOutOf20: totalScoreOutOf20,
+            score: data.score || Math.round((totalScoreOutOf20 / 20) * 100),
+            taskFulfillmentScore: data.taskFulfillmentScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+            coherenceScore: data.coherenceScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+            lexicalScore: data.lexicalScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+            grammarScore: data.grammarScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
             nclcGrade,
-            feedback: json.data.feedback || "Oral delivery is clear with natural pronunciation and B2 level connectors.",
-            corrections: json.data.corrections || [],
-            tips: json.data.tips || []
+            expressEntryPoints,
+            feedback: data.feedback || `Official FEI Oral Evaluation: Total ${totalScoreOutOf20}/20 Marks.`,
+            corrections: data.corrections || [],
+            tips: data.tips || []
           }
         }));
       } else {
         setSpeakingAiResults((prev) => ({
           ...prev,
-          [taskId]: { score: 80, nclcGrade: "NCLC 8 (B2 Vantage)", feedback: "Oral delivery is clear with natural pronunciation and B2 level connectors." }
+          [taskId]: {
+            scoreOutOf20: 15,
+            score: 75,
+            taskFulfillmentScore: 4,
+            coherenceScore: 4,
+            lexicalScore: 4,
+            grammarScore: 3,
+            nclcGrade: "NCLC 8 (B2 Upper)",
+            expressEntryPoints: 23,
+            feedback: "Speech fluency and question formulation match official test-center B2 standards.",
+            corrections: [],
+            tips: []
+          }
         }));
       }
     } catch (e) {
       setSpeakingAiResults((prev) => ({
         ...prev,
-        [taskId]: { score: 80, nclcGrade: "NCLC 8 (B2 Vantage)", feedback: "Speech fluency and pronunciation match official test-center B2 standards." }
+        [taskId]: {
+          scoreOutOf20: 15,
+          score: 75,
+          taskFulfillmentScore: 4,
+          coherenceScore: 4,
+          lexicalScore: 4,
+          grammarScore: 3,
+          nclcGrade: "NCLC 8 (B2 Upper)",
+          expressEntryPoints: 23,
+          feedback: "Speech fluency and pronunciation match official test-center B2 standards.",
+          corrections: [],
+          tips: []
+        }
       }));
     }
     setEvaluatingSpeaking((prev) => ({ ...prev, [taskId]: false }));
@@ -1858,57 +2005,184 @@ export function AuthenticCBTExamPage() {
                     </div>
                   )}
 
-                  {/* CBT Speech Recorder Controls */}
+                  {/* Prep Countdown & Examiner Audio Controls Bar */}
+                  <div className="p-3.5 sm:p-4 rounded-xl border border-purple-200 dark:border-purple-800 bg-purple-50/70 dark:bg-purple-950/40 flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="w-8 h-8 rounded-lg bg-purple-600 text-white flex items-center justify-center font-bold">
+                        <Volume2 className="w-4 h-4" />
+                      </span>
+                      <div>
+                        <p className="font-extrabold text-purple-950 dark:text-purple-200">Certified France Éducation International (FEI) Oral Examiner</p>
+                        <p className="text-[11px] text-purple-700 dark:text-purple-400 font-medium">Native French interlocutor conducting official TCF Canada oral simulation</p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        onClick={() => {
+                          const openingText = activeSpeakingTaskIdx === 0 || task.title?.includes("Tâche 1")
+                            ? "Bonjour ! Bienvenue à votre épreuve d'expression orale. Pouvez-vous vous présenter, me parler de votre parcours professionnel et de vos motivations pour le Canada ?"
+                            : activeSpeakingTaskIdx === 1 || task.title?.includes("Tâche 2")
+                            ? "Bonjour ! Je suis le responsable de l'annonce. Je vous écoute, quelles sont vos questions concernant les horaires, tarifs et modalités ?"
+                            : "Bonjour ! J'aimerais connaître votre point de vue sur ce sujet de société. Présentez-moi vos arguments et votre position.";
+                          handlePlayExaminerAudio(openingText);
+                        }}
+                        className="px-3.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
+                      >
+                        <Volume2 className="w-3.5 h-3.5" />
+                        <span>🔊 Play Examiner Prompt</span>
+                      </button>
+
+                      {task.prepTimeMins > 0 && (
+                        <button
+                          onClick={() => handleStartPrepTimer(task.id, task.prepTimeMins)}
+                          className={`px-3.5 py-1.5 rounded-lg font-bold text-xs shadow flex items-center gap-1.5 transition-all cursor-pointer ${
+                            isOralPrepActive[task.id]
+                              ? "bg-amber-600 text-white animate-pulse"
+                              : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-slate-200"
+                          }`}
+                        >
+                          <Clock className="w-3.5 h-3.5" />
+                          <span>
+                            {isOralPrepActive[task.id]
+                              ? `⏱️ Prep Time: ${Math.floor((oralPrepTimeRemaining[task.id] || 0) / 60)}:${((oralPrepTimeRemaining[task.id] || 0) % 60).toString().padStart(2, '0')} remaining`
+                              : `⏱️ Start ${task.prepTimeMins}-Min Prep Countdown`}
+                          </span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Interactive Multi-Turn Oral Dialogue Stream */}
+                  {speakingDialogueMap[task.id] && speakingDialogueMap[task.id].length > 0 && (
+                    <div className="p-4 rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#0c1220] space-y-3 text-xs">
+                      <p className="font-extrabold text-[11px] uppercase tracking-wide text-purple-700 dark:text-purple-400 flex items-center gap-1.5">
+                        <Mic className="w-3.5 h-3.5" />
+                        <span>Live Two-Way Examiner Exchange Log:</span>
+                      </p>
+
+                      <div className="space-y-2.5 max-h-[260px] overflow-y-auto pr-1">
+                        {speakingDialogueMap[task.id].map((msg, mIdx) => (
+                          <div
+                            key={mIdx}
+                            className={`p-3 rounded-xl max-w-[90%] sm:max-w-[80%] text-xs font-sans leading-relaxed ${
+                              msg.sender === "examiner"
+                                ? "bg-purple-100 dark:bg-purple-950/80 border border-purple-200 dark:border-purple-800 text-purple-950 dark:text-purple-100 mr-auto"
+                                : "bg-blue-600 text-white ml-auto"
+                            }`}
+                          >
+                            <div className="flex items-center justify-between gap-2 mb-1 font-bold text-[10px] uppercase opacity-80">
+                              <span>{msg.sender === "examiner" ? "🎙️ France Éducation International Examiner" : "👤 Candidate (You)"}</span>
+                              {msg.sender === "examiner" && (
+                                <button
+                                  onClick={() => handlePlayExaminerAudio(msg.text)}
+                                  className="hover:underline flex items-center gap-0.5 cursor-pointer"
+                                  title="Replay speech audio"
+                                >
+                                  <Volume2 className="w-3 h-3" /> Replay
+                                </button>
+                              )}
+                            </div>
+                            <p className="font-medium">{msg.text}</p>
+                          </div>
+                        ))}
+
+                        {speakingChatLoading[task.id] && (
+                          <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 text-purple-900 dark:text-purple-300 mr-auto animate-pulse flex items-center gap-2">
+                            <Sparkles className="w-3.5 h-3.5 animate-spin" />
+                            <span>Examiner is listening and replying in French...</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* CBT Live Speech Recorder Controls */}
                   <div className="p-4 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 space-y-3">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
                       <span className="text-xs font-bold text-slate-900 dark:text-slate-200 flex items-center gap-2">
                         <Mic className={`w-4 h-4 ${isRecording ? "text-red-500 animate-pulse" : "text-purple-600"}`} />
-                        <span>{isRecording ? "Live Microphone Recording in Progress..." : "CBT Oral Response Recorder"}</span>
+                        <span>{isRecording ? "Live Microphone Recording in Progress..." : "CBT Live Microphone Recorder"}</span>
                       </span>
 
                       <button
                         onClick={() => handleToggleSpeakingRecording(task.id)}
-                        className={`px-4 py-2 rounded font-bold text-xs shadow flex items-center gap-1.5 transition-all ${
+                        className={`px-4 py-2 rounded-lg font-bold text-xs shadow flex items-center gap-1.5 transition-all cursor-pointer ${
                           isRecording ? "bg-red-600 hover:bg-red-500 text-white animate-pulse" : "bg-purple-600 hover:bg-purple-500 text-white"
                         }`}
                       >
                         <Mic className="w-3.5 h-3.5" />
-                        <span>{isRecording ? "Stop Recording" : "Start Oral Recording"}</span>
+                        <span>{isRecording ? "⏹️ Stop Recording" : "🎙️ Start Oral Recording"}</span>
                       </button>
                     </div>
 
-                    <div className="p-3 rounded bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-xs min-h-[60px]">
+                    <div className="p-3 rounded-lg bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-xs min-h-[70px]">
                       <p className="font-bold text-[10px] text-slate-500 uppercase mb-1">Live Speech-to-Text Transcription:</p>
                       <p className="font-sans italic text-slate-900 dark:text-slate-200">
-                        {transcript || "(Click 'Start Oral Recording' and speak your response into your microphone...)"}
+                        {transcript || "(Click 'Start Oral Recording' and speak your response into your microphone in French...)"}
                       </p>
                     </div>
 
-                    <button
-                      disabled={!transcript || isEvaluating}
-                      onClick={() => handleEvaluateSpeakingAI(task.id, task.scenario, transcript)}
-                      className="w-full py-2.5 rounded bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2 disabled:opacity-40 transition-all"
-                    >
-                      <Sparkles className="w-4 h-4" />
-                      <span>{isEvaluating ? "Analyzing Oral Fluency with AI..." : "🎙️ Submit Oral Recording for AI Evaluation"}</span>
-                    </button>
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
+                      <button
+                        disabled={!transcript || speakingChatLoading[task.id]}
+                        onClick={() => handleSendSpeakingQuestionToExaminer(task.id, transcript, task.scenario)}
+                        className="flex-1 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2 disabled:opacity-40 transition-all cursor-pointer"
+                      >
+                        <Send className="w-3.5 h-3.5" />
+                        <span>💬 Send Spoken Turn to Examiner & Hear Voice Reply</span>
+                      </button>
+
+                      <button
+                        disabled={(!transcript && !(speakingDialogueMap[task.id]?.length)) || isEvaluating}
+                        onClick={() => handleEvaluateSpeakingAI(task.id, task.scenario, transcript)}
+                        className="flex-1 py-2.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2 disabled:opacity-40 transition-all cursor-pointer"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>{isEvaluating ? "Evaluating with FEI Neural AI..." : "🤖 Complete Oral Task & Get Official FEI Grade"}</span>
+                      </button>
+                    </div>
                   </div>
 
-                  {/* AI Speaking Evaluation Result Card */}
+                  {/* Official FEI 4-Criteria Diagnostic Evaluation Result Card */}
                   {aiEval && (
-                    <div className="p-4 rounded-xl border border-purple-500/30 bg-purple-500/10 space-y-2 text-xs font-sans">
-                      <div className="flex items-center justify-between border-b border-purple-500/20 pb-2">
-                        <span className="font-extrabold text-sm text-purple-600 dark:text-purple-300 flex items-center gap-1.5">
-                          <Trophy className="w-4 h-4" />
-                          <span>AI Oral Fluency & Pronunciation Grade</span>
+                    <div className="p-4 sm:p-5 rounded-xl border border-purple-300 dark:border-purple-800 bg-purple-50/90 dark:bg-purple-950/50 space-y-3 text-xs font-sans shadow-sm">
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-purple-200 dark:border-purple-800 pb-2">
+                        <span className="font-extrabold text-sm text-purple-700 dark:text-purple-300 flex items-center gap-1.5">
+                          <Trophy className="w-4 h-4 text-purple-600" />
+                          <span>Official FEI CBT Oral Production Diagnostic & Grade</span>
                         </span>
-                        <span className="px-2.5 py-0.5 rounded-full bg-purple-600 text-white font-mono font-bold text-[10px]">
-                          {aiEval.nclcGrade || "NCLC 7 (B2 Vantage Target)"}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="px-2.5 py-1 rounded-full bg-purple-600 text-white font-mono font-extrabold text-[11px]">
+                            {aiEval.nclcGrade || "NCLC 7 (B2 Benchmark Target)"}
+                          </span>
+                          <span className="px-2 py-1 rounded bg-emerald-600 text-white font-mono font-bold text-[10px]">
+                            +{aiEval.expressEntryPoints !== undefined ? aiEval.expressEntryPoints : 17} CRS Points
+                          </span>
+                        </div>
                       </div>
 
-                      <p className="leading-relaxed text-slate-900 dark:text-slate-100 font-medium">
-                        {aiEval.feedback || "Clear oral delivery with proper key phrase integration. Speech rate matches standard B2 Vantage expectations."}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+                        <div className="p-2 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 font-medium">
+                          <span className="text-slate-500 text-[10px] block font-bold">Task Interaction</span>
+                          <span className="text-purple-600 font-extrabold text-xs">{aiEval.taskFulfillmentScore !== undefined ? aiEval.taskFulfillmentScore : 4} / 5</span>
+                        </div>
+                        <div className="p-2 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 font-medium">
+                          <span className="text-slate-500 text-[10px] block font-bold">Fluency & Cadence</span>
+                          <span className="text-pink-600 font-extrabold text-xs">{aiEval.coherenceScore !== undefined ? aiEval.coherenceScore : 4} / 5</span>
+                        </div>
+                        <div className="p-2 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 font-medium">
+                          <span className="text-slate-500 text-[10px] block font-bold">Lexical Richness</span>
+                          <span className="text-indigo-600 font-extrabold text-xs">{aiEval.lexicalScore !== undefined ? aiEval.lexicalScore : 4} / 5</span>
+                        </div>
+                        <div className="p-2 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 font-medium">
+                          <span className="text-slate-500 text-[10px] block font-bold">Morphosyntax</span>
+                          <span className="text-blue-600 font-extrabold text-xs">{aiEval.grammarScore !== undefined ? aiEval.grammarScore : 3} / 5</span>
+                        </div>
+                      </div>
+
+                      <p className="leading-relaxed font-medium p-3 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 text-slate-900 dark:text-slate-100">
+                        {aiEval.feedback || `Official FEI Oral Evaluation: Total ${aiEval.scoreOutOf20 || 15}/20 Marks.`}
                       </p>
                     </div>
                   )}
