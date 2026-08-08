@@ -1065,7 +1065,11 @@ export function AuthenticCBTExamPage() {
             <span>
               {currentSection.type === "COMPREHENSION_ORALE"
                 ? showHints ? "Hide Audio Coach 🎧" : "🎧 Audio Coach & Trap Alert"
-                : showHints ? "Hide Reading Coach 📖" : "📖 Reading Strategy & Trap Alert"}
+                : currentSection.type === "COMPREHENSION_ECRITE"
+                ? showHints ? "Hide Reading Coach 📖" : "📖 Reading Strategy & Trap Alert"
+                : currentSection.type === "EXPRESSION_ECRITE"
+                ? showHints ? "Hide Writing Coach ✍️" : "✍️ Writing Strategy & Trap Alert"
+                : showHints ? "Hide Speaking Coach 🎙️" : "🎙️ Speaking Strategy & Trap Alert"}
             </span>
           </button>
 
@@ -1617,6 +1621,37 @@ export function AuthenticCBTExamPage() {
                     </div>
                   )}
 
+                  {/* Writing Strategy & Trap Alert Display */}
+                  {mode === "PRACTICE" && showHints && (
+                    <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800 text-xs text-amber-950 dark:text-amber-200 space-y-2 shadow-sm font-sans">
+                      <div className="flex items-center gap-1.5 font-extrabold text-amber-900 dark:text-amber-300 text-[11px] uppercase tracking-wide">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                        <span>✍️ Writing Strategy & Trap Alert (FEI Certified Scoring Criteria)</span>
+                      </div>
+                      <div className="leading-relaxed font-medium whitespace-pre-line text-xs space-y-1.5">
+                        {activeWritingTaskIdx === 0 || task.title?.includes("Tâche 1") || task.wordCountMin === 60 || task.min === 60 ? (
+                          <>
+                            <p><strong>⚠️ Trap Alert:</strong> Do NOT omit formal salutations (<em>Monsieur le Propriétaire, Madame la Directrice,</em>) or formal closings (<em>Je vous prie d'agréer mes salutations distinguées</em>). Words copied directly from the prompt instructions are deducted from your word count and earn zero credit!</p>
+                            <p><strong>🔄 Connectors & Syntax Key:</strong> Use conditional polite requests (<em>Pourriez-vous m'indiquer..., J'aimerais savoir si...</em>) and formal connectors (<em>de plus, par ailleurs, en conséquence</em>) to secure NCLC 7+ (B2).</p>
+                            <p><strong>🎯 Word Count Target:</strong> Stay strictly within {task.wordCountMin} to {task.wordCountMax} words. Responses below {task.wordCountMin} words suffer an automatic Task Fulfillment penalty.</p>
+                          </>
+                        ) : activeWritingTaskIdx === 1 || task.title?.includes("Tâche 2") || task.wordCountMin === 120 || task.min === 120 ? (
+                          <>
+                            <p><strong>⚠️ Trap Alert:</strong> Do NOT write a basic list of actions. Official FEI examiners evaluate your capacity to narrate personal experiences with emotions, sensations, and recommendations using past tenses (<em>passé composé</em> for events, <em>imparfait</em> for descriptions).</p>
+                            <p><strong>🔄 Connectors & Lexical Key:</strong> Enrich your narrative with vivid adjectives (<em>féerique, inoubliable, chaleureux</em>) and transitional temporal markers (<em>Dès mon arrivée, pendant mon séjour, en outre, en conclusion</em>).</p>
+                            <p><strong>🎯 Word Count Target:</strong> Must reach {task.wordCountMin} to {task.wordCountMax} words. Never insert English words (causes automatic grammar score cap at 1/5).</p>
+                          </>
+                        ) : (
+                          <>
+                            <p><strong>⚠️ Trap Alert:</strong> Do NOT write a personal letter (<em>"Bonjour, je vous écris..."</em>) — format mismatch receives an automatic 0 grade! Structure as a 4-paragraph argumentative essay (Introduction → Thesis/Pros → Antithesis/Cons → Synthesis Conclusion).</p>
+                            <p><strong>🔄 Connectors & Subjunctive Key:</strong> Mandatory B2/C1 connectors (<em>D'une part / d'autre part, de surcroît, cependant, néanmoins, en somme</em>) and subjunctive structures (<em>bien que + subjonctif, afin que nous puissions</em>) to unlock 14–20/20.</p>
+                            <p><strong>🎯 Word Count Target:</strong> Strictly {task.wordCountMin} to {task.wordCountMax} words. Balanced synthesis addressing both sides of the societal debate.</p>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
                   <textarea
                     rows={9}
                     value={textVal}
@@ -1791,6 +1826,34 @@ export function AuthenticCBTExamPage() {
                             "{phrase}"
                           </span>
                         ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Speaking Strategy & Trap Alert Display */}
+                  {mode === "PRACTICE" && showHints && (
+                    <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800 text-xs text-amber-950 dark:text-amber-200 space-y-2 shadow-sm font-sans">
+                      <div className="flex items-center gap-1.5 font-extrabold text-amber-900 dark:text-amber-300 text-[11px] uppercase tracking-wide">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                        <span>🎙️ Speaking Strategy & Trap Alert (Live Oral Examiner Protocol)</span>
+                      </div>
+                      <div className="leading-relaxed font-medium whitespace-pre-line text-xs space-y-1.5">
+                        {activeSpeakingTaskIdx === 0 || task.title?.includes("Tâche 1") || task.taskNumber === 1 ? (
+                          <>
+                            <p><strong>⚠️ Trap Alert:</strong> Avoid prolonged hesitation (&gt;5 seconds) or reading prepared notes with a monotone robotic pitch. The examiner evaluates spontaneous conversational flow, accurate present/passé tenses, and Canadian Express Entry motivation.</p>
+                            <p><strong>🔄 Oral Expression Key:</strong> Open naturally (<em>"Bonjour ! Je m'appelle..., je travaille actuellement comme..."</em>) and connect ideas smoothly (<em>"Ce qui me motive particulièrement à m'installer au Canada, c'est..."</em>).</p>
+                          </>
+                        ) : activeSpeakingTaskIdx === 1 || task.title?.includes("Tâche 2") || task.taskNumber === 2 ? (
+                          <>
+                            <p><strong>⚠️ Trap Alert:</strong> You must lead the interaction by asking at least 8 to 10 distinct, varied questions! Do NOT wait for the examiner to ask you questions or just repeat the same question stem.</p>
+                            <p><strong>🔄 Question Variety Key:</strong> Invert structures (<em>"Pourriez-vous me préciser les tarifs ?", "Est-il nécessaire de réserver à l'avance ?", "Quels sont les équipements fournis sur place ?", "Proposez-vous des formules d'essai ?"</em>).</p>
+                          </>
+                        ) : (
+                          <>
+                            <p><strong>⚠️ Trap Alert:</strong> Do not just state a one-sided opinion. You must present a nuanced debate: analyze advantages, acknowledge disadvantages, refute counter-arguments, and conclude with your personal verdict.</p>
+                            <p><strong>🔄 Argumentation Key:</strong> Use debate signposts (<em>"Selon moi...", "D'un côté..., mais d'un autre côté...", "Bien que certains prétendent que..., je demeure convaincu que...", "Pour conclure..."</em>).</p>
+                          </>
+                        )}
                       </div>
                     </div>
                   )}
