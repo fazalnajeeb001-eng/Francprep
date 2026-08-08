@@ -22,7 +22,7 @@ export class WritingController {
       const rawText = req.body.text || req.body.studentText || req.body.answer || '';
       const rawTitle = req.body.lessonTitle || req.body.paperTitle || req.body.title || 'Expression Écrite Task';
       const rawExpected = req.body.expectedAnswer || req.body.taskPrompt || req.body.prompt || '';
-      const { checklist, targetLanguage } = req.body;
+      const { checklist, targetLanguage, taskNumber, wordCountMin, wordCountMax, taskPrompt, sampleResponse } = req.body;
       
       if (!rawText || typeof rawText !== 'string' || rawText.trim().length === 0) {
         res.status(400).json({ success: false, error: 'Please provide text to evaluate.' });
@@ -31,7 +31,23 @@ export class WritingController {
 
       const { targetLanguage: lang, examName } = getLanguageAndExamInfo(req, targetLanguage);
 
-      const result = await writingService.getFeedback(rawText, rawTitle, rawExpected, checklist, lang, examName);
+      const parsedTaskNum = typeof taskNumber === 'number' ? taskNumber : (typeof taskNumber === 'string' ? parseInt(taskNumber, 10) : undefined);
+      const parsedMin = typeof wordCountMin === 'number' ? wordCountMin : (typeof wordCountMin === 'string' ? parseInt(wordCountMin, 10) : undefined);
+      const parsedMax = typeof wordCountMax === 'number' ? wordCountMax : (typeof wordCountMax === 'string' ? parseInt(wordCountMax, 10) : undefined);
+
+      const result = await writingService.getFeedback(
+        rawText,
+        rawTitle,
+        rawExpected,
+        checklist,
+        lang,
+        examName,
+        parsedTaskNum,
+        parsedMin,
+        parsedMax,
+        taskPrompt,
+        sampleResponse
+      );
       
       res.status(200).json({
         success: true,

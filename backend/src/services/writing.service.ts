@@ -152,7 +152,19 @@ export class WritingService {
     return ratio >= 0.22;
   }
 
-  async getFeedback(text: string, lessonTitle?: string, expectedAnswer?: string, checklist?: string[], targetLanguage = 'French', examName = 'DELF / TCF'): Promise<ComprehensiveWritingFeedback> {
+  async getFeedback(
+    text: string,
+    lessonTitle?: string,
+    expectedAnswer?: string,
+    checklist?: string[],
+    targetLanguage = 'French',
+    examName = 'DELF / TCF',
+    taskNumber?: number,
+    wordCountMin?: number,
+    wordCountMax?: number,
+    taskPrompt?: string,
+    sampleResponse?: string
+  ): Promise<ComprehensiveWritingFeedback> {
     const apiKey = await this.getOpenRouterKey();
 
     // CRITICAL GIBBERISH & NON-FRENCH PRE-SCREENING (Zero Grade Enforcement)
@@ -178,9 +190,10 @@ export class WritingService {
       };
     }
 
-    // CRITICAL PROMPT TEXT COPYING CHECK: If student copies >45% of the prompt text
-    if (expectedAnswer && text && text.trim().length > 30) {
-      const promptSimilarity = this.computeSimilarity(text, expectedAnswer);
+    // 1. CRITICAL PROMPT TEXT COPYING CHECK: If student copies >45% of the prompt instructions
+    const promptToCheck = taskPrompt || (expectedAnswer && !expectedAnswer.includes('Sample Exemplar Response') ? expectedAnswer : '');
+    if (promptToCheck && text && text.trim().length > 30) {
+      const promptSimilarity = this.computeSimilarity(text, promptToCheck);
       if (promptSimilarity > 0.45) {
         return {
           score: 0,
@@ -192,9 +205,9 @@ export class WritingService {
           coherenceScore: 0,
           lexicalScore: 0,
           grammarScore: 0,
-          feedback: `🚨 PROMPT COPYING DETECTED (Score: 0/20): Your submission shares ${(promptSimilarity * 100).toFixed(0)}% similarity with the prompt instructions or model answer. Official TCF Canada examiners award 0 points for copied text.`,
+          feedback: `🚨 PROMPT COPYING DETECTED (Score: 0/20): Your submission shares ${(promptSimilarity * 100).toFixed(0)}% similarity with the prompt instructions. Official TCF Canada examiners award 0 points for copied prompt text.`,
           corrections: [
-            { original: text.slice(0, 80) + '...', corrected: 'Rédigez votre propre argumentation originale.', explanation: 'Copying prompt instructions or model text receives an automatic zero grade.' }
+            { original: text.slice(0, 80) + '...', corrected: 'Rédigez votre propre argumentation originale sans recopier la consigne.', explanation: 'Copying prompt instructions receives an automatic zero grade in official FEI testing.' }
           ],
           tips: [
             'Rédigez votre propre texte sans recopier la consigne.',
@@ -204,14 +217,44 @@ export class WritingService {
       }
     }
 
-    if (!apiKey) {
-      return this.evaluateLocalCEFR(text, lessonTitle, expectedAnswer, targetLanguage);
+    // 2. CRITICAL EXEMPLAR PLAGIARISM CHECK: If student copies >=35% of the official model answer
+    const sampleToCheck = sampleResponse || (expectedAnswer && expectedAnswer.includes('Sample Exemplar Response') ? expectedAnswer.split('Sample Exemplar Response:\n')[1] : '');
+    if (sampleToCheck && text && text.trim().length > 30) {
+      const sampleSimilarity = this.computeSimilarity(text, sampleToCheck);
+      if (sampleSimilarity >= 0.35) {
+        return {
+          score: 0,
+          scoreOutOf20: 0,
+          nclcGrade: 'NCLC 0 (Zero Grade — Exemplar Plagiarism Detected)',
+          cefrLevel: 'N/A',
+          expressEntryPoints: 0,
+          taskFulfillmentScore: 0,
+          coherenceScore: 0,
+          lexicalScore: 0,
+          grammarScore: 0,
+          feedback: `⚠️ PLAGIARISM DETECTED (Score: 0/20): Your submission matches ${(sampleSimilarity * 100).toFixed(0)}% of the official sample model answer. Under official FEI CBT rules, plagiarized sample responses receive an automatic zero grade.`,
+          corrections: [
+            { original: text.slice(0, 80) + '...', corrected: 'Rédigez votre propre réponse originale dans vos propres mots.', explanation: 'Submitting memorized or copied sample responses receives an automatic zero grade.' }
+          ],
+          tips: [
+            'Formulez vos propres phrases originales pour chaque épreuve.',
+            'Utilisez vos propres idées et connecteurs.'
+          ]
+        };
+      }
     }
 
     // Task Type & Official FEI Target CEFR Bounds
-    const isTache1 = Boolean(lessonTitle?.includes('Tâche 1') || lessonTitle?.includes('-w1') || (expectedAnswer && expectedAnswer.includes('60') && !expectedAnswer.includes('140')));
-    const isTache2 = Boolean(lessonTitle?.includes('Tâche 2') || lessonTitle?.includes('-w2') || (expectedAnswer && expectedAnswer.includes('120') && !expectedAnswer.includes('140')));
-    const isTache3 = Boolean(lessonTitle?.includes('Tâche 3') || lessonTitle?.includes('-w3') || (expectedAnswer && expectedAnswer.includes('140')));
+    const isTache1 = taskNumber === 1 || Boolean(lessonTitle?.includes('Tâche 1') || lessonTitle?.includes('-w1') || (wordCountMin === 60 && (wordCountMax ?? 120) <= 120) || (expectedAnswer && expectedAnswer.includes('60') && !expectedAnswer.includes('140')));
+    const isTache2 = taskNumber === 2 || Boolean(lessonTitle?.includes('Tâche 2') || lessonTitle?.includes('-w2') || (wordCountMin === 120 && (wordCountMax ?? 150) <= 150) || (expectedAnswer && expectedAnswer.includes('120') && !expectedAnswer.includes('140')));
+    const isTache3 = taskNumber === 3 || Boolean(lessonTitle?.includes('Tâche 3') || lessonTitle?.includes('-w3') || (wordCountMin !== undefined && wordCountMin >= 140) || (expectedAnswer && expectedAnswer.includes('140')));
+
+    const targetMin = wordCountMin ?? (isTache2 ? 120 : isTache3 ? 140 : 60);
+    const targetMax = wordCountMax ?? (isTache2 ? 150 : isTache3 ? 180 : 120);
+
+    if (!apiKey) {
+      return this.evaluateLocalCEFR(text, lessonTitle, expectedAnswer, targetLanguage, taskNumber, targetMin, targetMax, taskPrompt, sampleResponse);
+    }
 
     const prompt = `You are an official France Éducation International (FEI) Senior Certified Examiner evaluating ${targetLanguage} writing for official TCF Canada.
 
@@ -219,32 +262,32 @@ CRITICAL TASK-AWARE FEI CEFR EVALUATION STANDARDS (STRICT CALIBRATION WITHOUT IN
 - Grade strictly according to the candidate's linguistic quality across the 4 official FEI criteria (0–5 points each, 20 total marks per task).
 
 TASK-SPECIFIC CALIBRATION RULES:
-1. TÂCHE 1 (Short message / formal email, 60–120 words | Target: A1–C1):
+1. TÂCHE 1 (Short message / formal email, ${targetMin}–${targetMax} words | Target: A1–C1):
    - Advanced C1 formal email (high administrative / legal register like "Je me permets de vous contacter en toute urgence", "défaillance totale", "outre le manquement évident", "je vous somme d'ordonner", "dans les plus brefs délais", "veuillez agréer mes salutations distinguées") = 16–17/20 (C1 Advanced / NCLC 9 | +31 CRS Points).
    - Flawless B2 formal email (formal greeting "Monsieur le Propriétaire" / "Monsieur le Directeur", polite formula "je vous écris concernant", polite conditional request "pourriez-vous envoyer" / "auriez-vous l'amabilité de", formal polite sign-off "dans l'attente de votre réponse, je vous prie d'agréer mes salutations distinguées", clear logical organization) = 14–15/20 (Solid B2 Upper / NCLC 8 | +23 CRS Points).
    - Structured B1 email (semi-formal phrasing, clear paragraphing, varied B1 connectors beyond conversational coordinators, polite request like "je souhaiterais vous demander de bien vouloir intervenir") = 10–11/20 (Solid B1 Intermediate / NCLC 6 | +12 CRS Points).
    - Conversational / Elementary A2 message (basic spoken style like "Bonjour", "ne marche pas du tout", "il fait très froid", direct spoken question "vous pouvez venir réparer ?", simple coordinate words "mais", "parce que", "en plus", "Merci pour votre aide. Cordialement") = 7–8/20 (NCLC 4–5 / A2 | 0 CRS Points).
    - Beginner A1 message (broken sentences, high error rate, isolated words) = 3–5/20 (NCLC 3 / A1 | 0 CRS Points).
 
-2. TÂCHE 2 (Personal article / narrative report, 120–150 words | Target: A2–C1):
+2. TÂCHE 2 (Personal article / narrative report, ${targetMin}–${targetMax} words | Target: A2–C1):
    - Rich past narrative (passé composé / imparfait), sensory description, emotional reflections, varied vocabulary = 14–16/20 (B2–C1 / NCLC 8–9).
    - Standard past narrative describing an event clearly = 10–13/20 (B1–B2 / NCLC 6–7).
    - Simple present narrative with minimal past tenses = 6–8/20 (A2 / NCLC 4).
 
-3. TÂCHE 3 (Argumentative essay / Prise de position, 140–180 words | Target: B1–C2):
+3. TÂCHE 3 (Argumentative essay / Prise de position, ${targetMin}–${targetMax} words | Target: B1–C2):
    - Nuanced balanced debate examining two opposing viewpoints ("D'un côté... D'un autre côté... En conclusion..."), complex connectors ("de surcroît", "néanmoins", "par conséquent", "en revanche"), sophisticated modalization and abstract vocabulary = 18–20/20 (C2 Mastery / NCLC 10+) or 16–17/20 (C1 Advanced / NCLC 9).
    - Good balanced essay with formal B2 connectors ("de plus", "cependant", "afin de", "ainsi") = 12–15/20 (B2 / NCLC 7–8).
    - Simple one-sided opinion with basic connectors = 9–11/20 (B1 / NCLC 5–6).
 
 OFFICIAL FEI 4-CRITERIA MARKS (0–5 EACH):
-1. taskFulfillmentScore (0-5): Meets prompt scenario, appropriate register (tu vs vous), respects word count bounds. (0/5 if Off-Topic).
+1. taskFulfillmentScore (0-5): Meets prompt scenario, appropriate register (tu vs vous), respects word count bounds (${targetMin}-${targetMax} words). (0/5 if Off-Topic).
 2. coherenceScore (0-5): Logical progression, paragraph structure, level-appropriate discourse connectors.
 3. lexicalScore (0-5): Range, thematic precision, variety. Insertion of English words caps lexical score at 1/5.
 4. grammarScore (0-5): Morphosyntax, tense agreement (passé composé, conditionnel, subjonctif), sentence complexity.
 
 Context / Task Information:
 Task / Topic: "${lessonTitle || `${targetLanguage} Writing Examination`}"
-${expectedAnswer ? `Task Prompt & Model Expectations:\n"""\n${expectedAnswer}\n"""` : ''}
+${taskPrompt ? `Task Prompt Scenario:\n"""\n${taskPrompt}\n"""` : (expectedAnswer ? `Task Prompt & Model Expectations:\n"""\n${expectedAnswer}\n"""` : '')}
 ${checklist && checklist.length > 0 ? `Required Checklist Elements:\n${checklist.map((item, i) => `${i + 1}. ${item}`).join('\n')}` : ''}
 
 Candidate Submission (${targetLanguage}):
@@ -272,7 +315,7 @@ Respond STRICTLY with a valid JSON object matching this schema:
       const content = await generateAICompletion({
         model: 'gpt-4o-mini',
         prompt,
-        systemPrompt: `You are an official France Éducation International (FEI) Senior Certified Examiner evaluating TCF Canada writing with strict, calibrated accuracy according to official CEFR and NCLC scales.`,
+        systemPrompt: `You are an official France Education International (FEI) Senior Certified Examiner evaluating TCF Canada writing with strict, calibrated accuracy according to official CEFR and NCLC scales.`,
         temperature: 0.1,
         maxTokens: 1000,
       });
@@ -401,32 +444,35 @@ Respond STRICTLY with a valid JSON object matching this schema:
         };
       }
 
-      return this.evaluateLocalCEFR(text, lessonTitle, expectedAnswer, targetLanguage);
+      return this.evaluateLocalCEFR(text, lessonTitle, expectedAnswer, targetLanguage, taskNumber, targetMin, targetMax, taskPrompt, sampleResponse);
     } catch (error) {
       console.error('AI feedback request failed:', error);
-      return this.evaluateLocalCEFR(text, lessonTitle, expectedAnswer, targetLanguage);
+      return this.evaluateLocalCEFR(text, lessonTitle, expectedAnswer, targetLanguage, taskNumber, targetMin, targetMax, taskPrompt, sampleResponse);
     }
   }
 
-  private evaluateLocalCEFR(text: string, lessonTitle?: string, expectedAnswer?: string, targetLanguage = 'French') {
+  private evaluateLocalCEFR(
+    text: string,
+    lessonTitle?: string,
+    expectedAnswer?: string,
+    targetLanguage = 'French',
+    taskNumber?: number,
+    targetMin?: number,
+    targetMax?: number,
+    taskPrompt?: string,
+    sampleResponse?: string
+  ) {
     const clean = (text || '').trim();
     const words = clean.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
     const wordCount = words.length;
     const textLower = clean.toLowerCase();
 
-    const isTache1 = Boolean(lessonTitle?.includes('Tâche 1') || lessonTitle?.includes('-w1') || (expectedAnswer && expectedAnswer.includes('60') && !expectedAnswer.includes('140')));
-    const isTache2 = Boolean(lessonTitle?.includes('Tâche 2') || lessonTitle?.includes('-w2') || (expectedAnswer && expectedAnswer.includes('120') && !expectedAnswer.includes('140')));
-    const isTache3 = Boolean(lessonTitle?.includes('Tâche 3') || lessonTitle?.includes('-w3') || (expectedAnswer && expectedAnswer.includes('140')));
+    const isTache1 = taskNumber === 1 || Boolean(lessonTitle?.includes('Tâche 1') || lessonTitle?.includes('-w1') || (targetMin === 60 && (targetMax ?? 120) <= 120) || (expectedAnswer && expectedAnswer.includes('60') && !expectedAnswer.includes('140')));
+    const isTache2 = taskNumber === 2 || Boolean(lessonTitle?.includes('Tâche 2') || lessonTitle?.includes('-w2') || (targetMin === 120 && (targetMax ?? 150) <= 150) || (expectedAnswer && expectedAnswer.includes('120') && !expectedAnswer.includes('140')));
+    const isTache3 = taskNumber === 3 || Boolean(lessonTitle?.includes('Tâche 3') || lessonTitle?.includes('-w3') || (targetMin !== undefined && targetMin >= 140) || (expectedAnswer && expectedAnswer.includes('140')));
 
-    let minWords = 60;
-    let maxWords = 120;
-    if (isTache2) {
-      minWords = 120;
-      maxWords = 150;
-    } else if (isTache3) {
-      minWords = 140;
-      maxWords = 180;
-    }
+    let minWords = targetMin ?? (isTache2 ? 120 : isTache3 ? 140 : 60);
+    let maxWords = targetMax ?? (isTache2 ? 150 : isTache3 ? 180 : 120);
 
     // Code-switching & English word check
     const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|travel|city|park|food|good|experience)\b/i.test(textLower);
@@ -584,7 +630,8 @@ Respond STRICTLY with a valid JSON object matching this schema:
     const hasFormalGreeting = /^\s*(monsieur le|madame la|monsieur,|madame,)/i.test(clean);
     const hasFormalSignOff = /(je vous prie d'agréer|veuillez agréer|salutations distinguées|haute considération|respectueusement)/i.test(clean);
     const hasFormalConditional = /(pourriez-vous|auriez-vous|serait-il possible|je souhaiterais|nous souhaiterions|je vous saurais gré)/i.test(clean);
-    const hasAdvancedC1Markers = (foundC1C2Lex.length >= 2 || (foundC1C2Lex.length >= 1 && foundC1C2Conn.length >= 1)) && hasFormalSignOff;
+    const hasHighC1AdminRegister = /(en toute urgence|défaillance totale|manquement évident|je vous somme|sanitaires inacceptables|préjudice|règlement immédiat|dans cette optique)/i.test(clean);
+    const hasAdvancedC1Markers = (hasHighC1AdminRegister || (foundC1C2Lex.length >= 3 && foundC1C2Conn.length >= 1)) && hasFormalSignOff;
 
     if (isTache1) {
       if (!hasFormalGreeting && !hasFormalSignOff && !hasFormalConditional) {

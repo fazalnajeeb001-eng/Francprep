@@ -475,6 +475,7 @@ export function AuthenticCBTExamPage() {
           await Promise.all(
             pendingWriting.map(async (t) => {
               const text = writingResponses[t.id];
+              const taskNumber = t.taskNumber || (t.id?.includes('w1') ? 1 : t.id?.includes('w2') ? 2 : t.id?.includes('w3') ? 3 : 1);
               try {
                 const res = await apiFetch("/writing/feedback", {
                   method: "POST",
@@ -484,6 +485,7 @@ export function AuthenticCBTExamPage() {
                     studentText: text,
                     lessonTitle: `${paper.title} - ${t.id}`,
                     paperTitle: paper.title,
+                    taskNumber,
                     expectedAnswer: t.prompt + (t.sampleResponse ? `\nSample Exemplar Response:\n${t.sampleResponse}` : ""),
                     taskPrompt: t.prompt,
                     sampleResponse: t.sampleResponse,
@@ -756,6 +758,10 @@ export function AuthenticCBTExamPage() {
       }
     }
 
+    const taskNumber = taskId?.includes('w1') || taskId?.includes('task_0') || minWords === 60 ? 1
+      : taskId?.includes('w2') || taskId?.includes('task_1') || minWords === 120 ? 2
+      : taskId?.includes('w3') || taskId?.includes('task_2') || minWords >= 140 ? 3 : 1;
+
     try {
       // Call backend AI writing evaluation API endpoint
       const res = await apiFetch("/writing/feedback", {
@@ -766,6 +772,7 @@ export function AuthenticCBTExamPage() {
           studentText: clean,
           lessonTitle: `${paper.title} - ${taskId}`,
           paperTitle: paper.title,
+          taskNumber,
           expectedAnswer: prompt + (sampleResponse ? `\nSample Exemplar Response:\n${sampleResponse}` : ""),
           taskPrompt: prompt,
           sampleResponse,
@@ -798,7 +805,7 @@ export function AuthenticCBTExamPage() {
         } else if (totalScoreOutOf20 >= 10) {
           nclcGrade = "NCLC 6 (B1 Intermediate)";
           expressEntryPoints = 12;
-        } else if (totalScoreOutOf20 >= 9) {
+        } else if (totalScoreOutOf20 >= 8) {
           nclcGrade = "NCLC 5 (B1 Threshold)";
           expressEntryPoints = 6;
         } else if (totalScoreOutOf20 >= 5) {
@@ -964,7 +971,8 @@ export function AuthenticCBTExamPage() {
     const hasFormalGreeting = /^\s*(monsieur le|madame la|monsieur,|madame,)/i.test(clean);
     const hasFormalSignOff = /(je vous prie d'agréer|veuillez agréer|salutations distinguées|haute considération|respectueusement)/i.test(clean);
     const hasFormalConditional = /(pourriez-vous|auriez-vous|serait-il possible|je souhaiterais|nous souhaiterions|je vous saurais gré)/i.test(clean);
-    const hasAdvancedC1Markers = (foundC1C2Lex.length >= 2 || (foundC1C2Lex.length >= 1 && foundC1C2Conn.length >= 1)) && hasFormalSignOff;
+    const hasHighC1AdminRegister = /(en toute urgence|défaillance totale|manquement évident|je vous somme|sanitaires inacceptables|préjudice|règlement immédiat|dans cette optique)/i.test(clean);
+    const hasAdvancedC1Markers = (hasHighC1AdminRegister || (foundC1C2Lex.length >= 3 && foundC1C2Conn.length >= 1)) && hasFormalSignOff;
 
     if (isTache1) {
       if (!hasFormalGreeting && !hasFormalSignOff && !hasFormalConditional) {
@@ -1257,7 +1265,8 @@ export function AuthenticCBTExamPage() {
         const hasFormalGreeting = /^\s*(monsieur le|madame la|monsieur,|madame,)/i.test(clean);
         const hasFormalSignOff = /(je vous prie d'agréer|veuillez agréer|salutations distinguées|haute considération|respectueusement)/i.test(clean);
         const hasFormalConditional = /(pourriez-vous|auriez-vous|serait-il possible|je souhaiterais|nous souhaiterions|je vous saurais gré)/i.test(clean);
-        const hasAdvancedC1Markers = (foundC1C2Lex.length >= 2 || (foundC1C2Lex.length >= 1 && foundC1C2Conn.length >= 1)) && hasFormalSignOff;
+        const hasHighC1AdminRegister = /(en toute urgence|défaillance totale|manquement évident|je vous somme|sanitaires inacceptables|préjudice|règlement immédiat|dans cette optique)/i.test(clean);
+    const hasAdvancedC1Markers = (hasHighC1AdminRegister || (foundC1C2Lex.length >= 3 && foundC1C2Conn.length >= 1)) && hasFormalSignOff;
 
         if (isTache1) {
           if (!hasFormalGreeting && !hasFormalSignOff && !hasFormalConditional) {
