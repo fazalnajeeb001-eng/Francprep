@@ -867,16 +867,16 @@ export function AuthenticCBTExamPage() {
     }
 
     const c1c2Connectors = [
-      "de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet",
-      "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement", "dans cette optique", "dès lors", "outre", "en toute urgence"
+      "de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois",
+      "néanmoins", "sans conteste", "indéniablement", "dans cette optique", "dès lors", "outre", "en toute urgence", "à l'inverse"
     ];
     const b2Connectors = [
-      "en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin",
+      "en outre", "cependant", "de plus", "ainsi", "par ailleurs", "en revanche", "en conclusion", "en somme", "en effet",
       "au cours de", "pendant le", "afin de", "en raison de", "à cet effet", "dans ce cadre", "par la présente",
-      "en vue de", "d'ores et déjà", "ainsi que", "pour cette raison", "dans l'attente de", "concernant", "quant à", "dès lors", "selon moi", "à mon avis"
+      "en vue de", "d'ores et déjà", "ainsi que", "pour cette raison", "dans l'attente de", "concernant", "quant à", "à cet égard"
     ];
     const b1Connectors = [
-      "mais", "parce que", "en plus", "donc", "car", "alors", "puis", "aussi", "comme", "quand", "si", "pendant que"
+      "d'abord", "ensuite", "enfin", "mais", "parce que", "en plus", "donc", "car", "alors", "puis", "aussi", "comme", "quand", "si", "pendant que", "à mon avis", "selon moi"
     ];
     const textLower = clean.toLowerCase();
 
@@ -897,6 +897,7 @@ export function AuthenticCBTExamPage() {
       "épanouissement", "décarbonation", "assimilation", "détériorer", "attentivement", "périple", "majestueux",
       "féerique", "dépaysement", "spectaculaire", "ascension", "émerveillement", "sérénité", "enrichissantes",
       "impérissables", "irrépressible", "d'exception", "dysfonctionnement", "préjudice", "locataire", "pérennité",
+      "pérenne", "équité", "disparités", "substantiels", "substantielle", "déploiement", "incontestablement",
       "intergénérationnel", "sollicitation", "infrastructure", "mobilisation", "écosystème", "automatisation", "cybersécurité",
       "défaillance", "manquement", "invivable", "sanitaires inacceptables", "inacceptables", "je vous somme", "règlement immédiat",
       "dans les plus brefs délais"
@@ -979,6 +980,9 @@ export function AuthenticCBTExamPage() {
       if (!hasFormalGreeting && !hasFormalSignOff && !hasFormalConditional) {
         // Conversational / Oral style email without formal register is strictly A2 (6-8/20 | NCLC 4-5)
         totalScoreOutOf20 = Math.min(8, totalScoreOutOf20);
+      } else if (!hasFormalSignOff && !hasAdvancedC1Markers) {
+        // Semi-formal B1 email (e.g. ended with "Cordialement" or missing formal epistolary formulas) -> strictly B1 (10-11/20 | NCLC 6)
+        totalScoreOutOf20 = Math.min(11, totalScoreOutOf20);
       } else if (hasAdvancedC1Markers) {
         // Advanced C1 formal administrative email with high register (16-17/20 | NCLC 9)
         totalScoreOutOf20 = Math.min(17, totalScoreOutOf20);
@@ -987,7 +991,22 @@ export function AuthenticCBTExamPage() {
         totalScoreOutOf20 = Math.min(15, totalScoreOutOf20);
       }
     } else if (isTache2) {
-      totalScoreOutOf20 = Math.min(17, totalScoreOutOf20);
+      scoreOutOf20: totalScoreOutOf20 = Math.min(17, totalScoreOutOf20);
+    } else if (isTache3) {
+      const hasTwoOpposingViews = (textLower.includes("d'un côté") || textLower.includes("d'une part")) && (textLower.includes("d'autre part") || textLower.includes("d'un autre côté") || textLower.includes("en revanche") || textLower.includes("cependant") || textLower.includes("toutefois"));
+      if (!hasTwoOpposingViews && foundB2Conn.length < 2 && foundC1C2Conn.length === 0) {
+        // Simple one-sided opinion with basic connectors -> strictly B1 (9-11/20 | NCLC 5-6)
+        totalScoreOutOf20 = Math.min(11, totalScoreOutOf20);
+      } else if (foundC1C2Lex.length >= 3 && foundC1C2Conn.length >= 2 && foundC1C2Gram.length >= 2) {
+        // C2 Mastery
+        totalScoreOutOf20 = Math.min(20, totalScoreOutOf20);
+      } else if (foundC1C2Lex.length >= 1 && foundC1C2Conn.length >= 1) {
+        // C1 Advanced
+        totalScoreOutOf20 = Math.min(17, totalScoreOutOf20);
+      } else {
+        // Standard B2 essay
+        totalScoreOutOf20 = Math.min(15, totalScoreOutOf20);
+      }
     }
 
     if (hasEnglishWords || hasTelegraphicGrammar) {
@@ -1147,16 +1166,16 @@ export function AuthenticCBTExamPage() {
         const hasTelegraphicGrammar = /\b(je\s+maladie|je\s+malade|moi\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances|je\s+allé|je\s+faire|nous\s+manger|prendre\s+photo|je\s+aimé|je\s+très)\b/i.test(clean);
 
         const c1c2Connectors = [
-          "de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois", "en effet",
-          "néanmoins", "en somme", "en conclusion", "sans conteste", "indéniablement", "dans cette optique", "dès lors", "outre", "en toute urgence"
+          "de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois",
+          "néanmoins", "sans conteste", "indéniablement", "dans cette optique", "dès lors", "outre", "en toute urgence", "à l'inverse"
         ];
         const b2Connectors = [
-          "en outre", "cependant", "de plus", "ainsi", "par ailleurs", "d'abord", "ensuite", "enfin",
+          "en outre", "cependant", "de plus", "ainsi", "par ailleurs", "en revanche", "en conclusion", "en somme", "en effet",
           "au cours de", "pendant le", "afin de", "en raison de", "à cet effet", "dans ce cadre", "par la présente",
-          "en vue de", "d'ores et déjà", "ainsi que", "pour cette raison", "dans l'attente de", "concernant", "quant à", "dès lors", "selon moi", "à mon avis"
+          "en vue de", "d'ores et déjà", "ainsi que", "pour cette raison", "dans l'attente de", "concernant", "quant à", "à cet égard"
         ];
         const b1Connectors = [
-          "mais", "parce que", "en plus", "donc", "car", "alors", "puis", "aussi", "comme", "quand", "si", "pendant que"
+          "d'abord", "ensuite", "enfin", "mais", "parce que", "en plus", "donc", "car", "alors", "puis", "aussi", "comme", "quand", "si", "pendant que", "à mon avis", "selon moi"
         ];
 
         const foundC1C2Conn = c1c2Connectors.filter((c) => textLower.includes(c));
@@ -1183,6 +1202,7 @@ export function AuthenticCBTExamPage() {
           "épanouissement", "décarbonation", "assimilation", "détériorer", "attentivement", "périple", "majestueux",
           "féerique", "dépaysement", "spectaculaire", "ascension", "émerveillement", "sérénité", "enrichissantes",
           "impérissables", "irrépressible", "d'exception", "dysfonctionnement", "préjudice", "locataire", "pérennité",
+          "pérenne", "équité", "disparités", "substantiels", "substantielle", "déploiement", "incontestablement",
           "intergénérationnel", "sollicitation", "infrastructure", "mobilisation", "écosystème", "automatisation", "cybersécurité",
           "défaillance", "manquement", "invivable", "sanitaires inacceptables", "inacceptables", "je vous somme", "règlement immédiat",
           "dans les plus brefs délais"
@@ -1273,6 +1293,9 @@ export function AuthenticCBTExamPage() {
           if (!hasFormalGreeting && !hasFormalSignOff && !hasFormalConditional) {
             // Conversational / Oral style email without formal register is strictly A2 (6-8/20 | NCLC 4-5)
             rawSum = Math.min(8, rawSum);
+          } else if (!hasFormalSignOff && !hasAdvancedC1Markers) {
+            // Semi-formal B1 email (e.g. ended with "Cordialement" or missing formal epistolary formulas) -> strictly B1 (10-11/20 | NCLC 6)
+            rawSum = Math.min(11, rawSum);
           } else if (hasAdvancedC1Markers) {
             // Advanced C1 formal administrative email with high register (16-17/20 | NCLC 9)
             rawSum = Math.min(17, rawSum);
@@ -1282,6 +1305,21 @@ export function AuthenticCBTExamPage() {
           }
         } else if (isTache2) {
           rawSum = Math.min(17, rawSum);
+        } else if (isTache3) {
+          const hasTwoOpposingViews = (textLower.includes("d'un côté") || textLower.includes("d'une part")) && (textLower.includes("d'autre part") || textLower.includes("d'un autre côté") || textLower.includes("en revanche") || textLower.includes("cependant") || textLower.includes("toutefois"));
+          if (!hasTwoOpposingViews && foundB2Conn.length < 2 && foundC1C2Conn.length === 0) {
+            // Simple one-sided opinion with basic connectors -> strictly B1 (9-11/20 | NCLC 5-6)
+            rawSum = Math.min(11, rawSum);
+          } else if (foundC1C2Lex.length >= 3 && foundC1C2Conn.length >= 2 && foundC1C2Gram.length >= 2) {
+            // C2 Mastery
+            rawSum = Math.min(20, rawSum);
+          } else if (foundC1C2Lex.length >= 1 && foundC1C2Conn.length >= 1) {
+            // C1 Advanced
+            rawSum = Math.min(17, rawSum);
+          } else {
+            // Standard B2 essay
+            rawSum = Math.min(15, rawSum);
+          }
         }
 
         if (hasEnglishWords || hasTelegraphicGrammar) {
