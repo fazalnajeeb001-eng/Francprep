@@ -138,6 +138,9 @@ export function AuthenticCBTExamPage() {
           clearInterval(interval);
           if (currentQuestionIdx < currentQuestions.length - 1) {
             setCurrentQuestionIdx((idx) => idx + 1);
+          } else if (activeSectionIdx < paper.sections.length - 1) {
+            setActiveSectionIdx((sIdx) => sIdx + 1);
+            setCurrentQuestionIdx(0);
           }
           return 0;
         }
@@ -146,7 +149,7 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, currentQuestions.length]);
+  }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, currentQuestions.length, paper.sections.length]);
 
   // Practice Mode Toggles
   const [showHints, setShowHints] = useState(false);
