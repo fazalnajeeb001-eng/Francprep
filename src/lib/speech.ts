@@ -114,8 +114,16 @@ export function speak(
             }
           }
           audio.src = src;
+          audio.onplay = () => {
+            audio.playbackRate = rate;
+          };
+          audio.oncanplay = () => {
+            audio.playbackRate = rate;
+          };
           audio.playbackRate = rate;
-          audio.play().catch(() => {
+          audio.play().then(() => {
+            audio.playbackRate = rate;
+          }).catch(() => {
             playDirectHDFallback(cleanText, langCode, rate, audio);
           });
           return;
@@ -137,8 +145,16 @@ function playDirectHDFallback(text: string, langCode: string, rate: number, audi
   try {
     const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text.slice(0, 200))}&tl=${langCode}&client=tw-ob`;
     audio.src = audioUrl;
+    audio.onplay = () => {
+      audio.playbackRate = rate;
+    };
+    audio.oncanplay = () => {
+      audio.playbackRate = rate;
+    };
     audio.playbackRate = rate;
-    audio.play().catch(() => {
+    audio.play().then(() => {
+      audio.playbackRate = rate;
+    }).catch(() => {
       if (onPlaybackStateChange) onPlaybackStateChange(false);
     });
   } catch {
@@ -309,8 +325,16 @@ export function speakDialogue(
               }
             }
             audio.src = src;
+            audio.onplay = () => {
+              audio.playbackRate = rate;
+            };
+            audio.oncanplay = () => {
+              audio.playbackRate = rate;
+            };
             audio.playbackRate = rate;
-            audio.play().catch(() => playNextLine());
+            audio.play().then(() => {
+              audio.playbackRate = rate;
+            }).catch(() => playNextLine());
             return;
           }
         }
