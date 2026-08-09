@@ -21,8 +21,9 @@ export const errorHandler = (
     console.error('[GlobalErrorHandler]', err);
   }
 
-  res.status(statusCode).json({
+  res.status(200).json({
     success: false,
+    statusCode,
     error: message,
     ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
   });
