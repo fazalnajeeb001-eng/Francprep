@@ -292,6 +292,54 @@ function NavBarInner() {
   );
 }
 
+function VersionSyncListener() {
+  const [newVersionAvailable, setNewVersionAvailable] = useState(false);
+
+  useEffect(() => {
+    let initialVersion: string | null = null;
+
+    const checkVersion = async () => {
+      try {
+        const res = await apiFetch("/version");
+        if (res.ok) {
+          const json = await res.json();
+          const ver = json.version || json.buildTime;
+          if (ver) {
+            if (!initialVersion) {
+              initialVersion = ver;
+            } else if (initialVersion !== ver) {
+              setNewVersionAvailable(true);
+            }
+          }
+        }
+      } catch {}
+    };
+
+    checkVersion();
+    const interval = setInterval(checkVersion, 25000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (!newVersionAvailable) return null;
+
+  return (
+    <div className="fixed top-0 left-0 right-0 z-[9999] bg-gradient-to-r from-purple-700 via-pink-600 to-indigo-700 text-white px-4 py-2.5 text-xs font-bold shadow-2xl flex items-center justify-between">
+      <div className="flex items-center gap-2">
+        <span className="text-base animate-pulse">🚀</span>
+        <span>New live platform deployment ready! Click to apply the latest exam features.</span>
+      </div>
+      <button
+        onClick={() => {
+          window.location.reload();
+        }}
+        className="px-3 py-1 rounded-lg bg-white text-purple-950 font-black hover:bg-purple-100 transition-all shadow cursor-pointer shrink-0"
+      >
+        Reload Now ⚡
+      </button>
+    </div>
+  );
+}
+
 function RootComponent() {
   return (
     <ErrorBoundary>
@@ -300,6 +348,7 @@ function RootComponent() {
           <AuthProvider>
             <WidgetsProvider>
               <RootDocument>
+                <VersionSyncListener />
                 <NavBarInner />
                 <Outlet />
               </RootDocument>
