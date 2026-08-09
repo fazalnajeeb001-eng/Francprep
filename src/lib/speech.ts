@@ -266,14 +266,16 @@ export function speakDialogue(
     const lowerSpeaker = speakerName.toLowerCase();
     let gender: "male" | "female" = "female";
 
-    if (lowerSpeaker.includes("annonceur") || lowerSpeaker.includes("examinateur")) {
-      gender = "male"; // Official Test Announcer is ALWAYS Studio Male Voice (Henri/Onyx)
-    } else if (knownFemaleNames.some((f) => lowerSpeaker.includes(f))) {
+    if (lowerSpeaker.includes("annonceuse")) {
       gender = "female";
-    } else if (knownMaleNames.some((m) => lowerSpeaker.includes(m))) {
+    } else if (lowerSpeaker.includes("annonceur") || lowerSpeaker.includes("examinateur")) {
+      gender = "male";
+    } else if (lowerSpeaker.includes("locutrice") || knownFemaleNames.some((f) => lowerSpeaker.includes(f))) {
+      gender = "female";
+    } else if (lowerSpeaker.includes("locuteur") || knownMaleNames.some((m) => lowerSpeaker.includes(m))) {
       gender = "male";
     } else {
-      gender = "female"; // Document passage speaker is Studio Female Voice (Charlotte/Nova)
+      gender = "female";
     }
 
     parsedDialogue.push({ speaker: speakerName, text: speechText, gender });

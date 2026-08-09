@@ -972,8 +972,12 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       }
     }
 
+    const isMaleSpeaker = i % 2 === 1;
+    const passageSpeakerLabel = isMaleSpeaker ? "Locuteur" : "Locutrice";
+    const announcerLabel = isMaleSpeaker ? "Annonceuse" : "Annonceur";
+
     const fullSpokenTranscript = isQuestionInAudio
-      ? `Locuteur 1: ${t.tr}\nAnnonceur: Écoutez la question. Question N°${i} : ${questionTextPrompt}`
+      ? `${passageSpeakerLabel}: ${t.tr}\n${announcerLabel}: Écoutez la question. Question N°${i} : ${questionTextPrompt}`
       : t.tr;
 
     const speakingRate = i <= 7 ? 0.85 : i <= 15 ? 0.92 : i <= 25 ? 1.00 : i <= 33 ? 1.15 : 1.30;
