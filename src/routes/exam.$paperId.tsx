@@ -2028,9 +2028,6 @@ export function AuthenticCBTExamPage() {
                             Niveau {(currentQ as any).level || 'A1-C2'} • Vitesse ({(currentQ as any).speakingRate || 1.0}x)
                           </span>
                         </div>
-                        <p className="text-xs text-purple-100 leading-snug">
-                          En mode examen officiel, <strong>la question est posée à l'oral à la fin de la bande sonore</strong> (Questions 1 à 29). Écoutez attentivement l'audio complet, puis sélectionnez votre réponse (A, B, C, D).
-                        </p>
                         {mode === "PRACTICE" && (
                           <div className="pt-1 flex items-center gap-2">
                             <button
@@ -2038,8 +2035,7 @@ export function AuthenticCBTExamPage() {
                               onClick={() => setShowTranscript(!showTranscript)}
                               className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition-all flex items-center gap-1.5 shadow cursor-pointer"
                             >
-                              <FileText className="w-3.5 h-3.5" />
-                              <span>{showTranscript ? "Masquer le texte de la question 👁️" : "👁️ Afficher le texte de la question (Mode Entraînement)"}</span>
+                              <span>{showTranscript ? "🙈 Hide Question Text" : "👁️ Show Question Text (Practice Mode)"}</span>
                             </button>
                           </div>
                         )}
@@ -2058,15 +2054,17 @@ export function AuthenticCBTExamPage() {
                       </div>
                     )}
 
-                    {(showTranslation || showTranscripts) && currentQ.transcriptEnglish && (
+                    {(showTranslation || showTranscripts) && (currentQ.transcriptEnglish || currentQ.text) && (
                       <div className="pt-3 border-t border-indigo-300 dark:border-indigo-800 text-xs space-y-1.5">
                         <p className="font-bold text-indigo-900 dark:text-indigo-300 uppercase text-[10px] flex items-center gap-1">
                           <Globe className="w-3.5 h-3.5" />
-                          <span>English Audio Translation</span>
+                          <span>English Audio & Question Translation</span>
                         </p>
-                        <p className="italic font-semibold text-slate-950 dark:text-slate-100 p-2.5 rounded-lg bg-white dark:bg-slate-950 border border-indigo-200 dark:border-indigo-900">
-                          "{currentQ.transcriptEnglish}"
-                        </p>
+                        {currentQ.transcriptEnglish && (
+                          <p className="italic font-semibold text-slate-950 dark:text-slate-100 p-2.5 rounded-lg bg-white dark:bg-slate-950 border border-indigo-200 dark:border-indigo-900">
+                            "{currentQ.transcriptEnglish}"
+                          </p>
+                        )}
                       </div>
                     )}
                   </div>
@@ -2103,34 +2101,23 @@ export function AuthenticCBTExamPage() {
                     </p>
 
                     {showPassageTranslation && currentQ.passageEnglish && (
-                      <div className="pt-2 border-t border-blue-300 dark:border-blue-800 text-xs text-blue-900 dark:text-blue-300">
-                        <p className="font-bold uppercase text-[10px] flex items-center gap-1">
-                          <Globe className="w-3 h-3" />
-                          <span>English Passage Translation:</span>
-                        </p>
-                        <p className="italic font-medium p-2.5 rounded-lg bg-white dark:bg-slate-950 border border-blue-200 dark:border-blue-900 max-h-[200px] overflow-y-auto">
-                          "{currentQ.passageEnglish}"
-                        </p>
+                      <div className="pt-2 border-t border-blue-300 dark:border-blue-800 text-xs text-blue-900 dark:border-blue-800">
+                        <p className="font-bold uppercase text-[10px] mb-1">English Passage Translation:</p>
+                        <p className="italic text-slate-700 dark:text-slate-300">{currentQ.passageEnglish}</p>
                       </div>
                     )}
                   </div>
                 )}
               </div>
 
-              {/* Audio & Reading Coach Display */}
-              {showHints && currentQ.hint && (
-                <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800 text-xs text-amber-950 dark:text-amber-200 space-y-1 shadow-sm font-sans">
-                  <div className="flex items-center gap-1.5 font-extrabold text-amber-900 dark:text-amber-300 text-[11px] uppercase tracking-wide">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                    <span>
-                      {currentSection.type === "COMPREHENSION_ORALE"
-                        ? "🎧 Audio Coach & Trap Alert (English)"
-                        : "📖 Reading Strategy & Trap Alert (English)"}
-                    </span>
-                  </div>
-                  <p className="leading-relaxed font-medium whitespace-pre-line text-xs">
-                    {currentQ.hint}
+              {/* Practice Hint Bar */}
+              {mode === "PRACTICE" && showHints && currentQ.hint && (
+                <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs font-medium space-y-1">
+                  <p className="font-extrabold flex items-center gap-1.5 text-amber-700 dark:text-amber-400">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Practice Coach & Strategy Tip:</span>
                   </p>
+                  <p className="whitespace-pre-line leading-relaxed text-[11px]">{currentQ.hint}</p>
                 </div>
               )}
             </div>
@@ -2147,6 +2134,12 @@ export function AuthenticCBTExamPage() {
                   {currentQ.questionInAudio && !showTranscript && (
                     <p className="text-xs text-purple-700 dark:text-purple-400 font-medium italic">
                       Écoutez la question posée à la fin du document audio et choisissez l'option (A, B, C, D) ci-dessous.
+                    </p>
+                  )}
+                  {showTranslation && (
+                    <p className="text-xs font-semibold text-indigo-700 dark:text-indigo-300 italic pt-1 flex items-center gap-1">
+                      <Globe className="w-3 h-3 shrink-0" />
+                      <span>Question (EN): "{currentQ.text}"</span>
                     </p>
                   )}
                 </div>
