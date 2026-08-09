@@ -85,7 +85,7 @@ export class WritingController {
       const rawTranscription = req.body.transcription || req.body.transcript || '';
       const rawExpected = req.body.expectedText || req.body.scenario || req.body.prompt || req.body.lessonTitle || 'TCF Canada Oral Interaction';
       const rawTitle = req.body.lessonTitle || req.body.paperTitle || 'Expression Orale';
-      const { targetLanguage } = req.body;
+      const { targetLanguage, taskNumber } = req.body;
 
       if (!rawTranscription) {
         res.status(400).json({ success: false, error: 'Please provide speech transcription.' });
@@ -93,8 +93,9 @@ export class WritingController {
       }
 
       const { targetLanguage: lang } = getLanguageAndExamInfo(req, targetLanguage);
+      const parsedTaskNum = typeof taskNumber === 'number' ? taskNumber : (typeof taskNumber === 'string' ? parseInt(taskNumber, 10) : undefined);
 
-      const result = await writingService.analyzeSpeaking(rawTranscription, rawExpected, rawTitle, lang);
+      const result = await writingService.analyzeSpeaking(rawTranscription, rawExpected, rawTitle, lang, parsedTaskNum);
       
       res.status(200).json({
         success: true,

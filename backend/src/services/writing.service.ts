@@ -830,7 +830,7 @@ Respond STRICTLY with a raw JSON object:
     }
   }
 
-  async analyzeSpeaking(transcription: string, expectedText: string, lessonTitle?: string, targetLanguage = 'French'): Promise<SpeakingResult> {
+  async analyzeSpeaking(transcription: string, expectedText: string, lessonTitle?: string, targetLanguage = 'French', taskNumber?: number): Promise<SpeakingResult> {
     const apiKey = await this.getOpenRouterKey();
     const cleanSpeech = (transcription || '').trim();
 
@@ -854,6 +854,10 @@ Respond STRICTLY with a raw JSON object:
         tips: ['Parlez distinctement en français en répondant directement à la consigne orale.']
       };
     }
+
+    const isTache1 = taskNumber === 1 || Boolean(lessonTitle?.includes('Tâche 1') || lessonTitle?.includes('spk-1'));
+    const isTache2 = taskNumber === 2 || Boolean(lessonTitle?.includes('Tâche 2') || lessonTitle?.includes('spk-2'));
+    const taskNum = taskNumber || (isTache1 ? 1 : isTache2 ? 2 : 3);
 
     if (!apiKey) {
       // Local calibrated oral evaluation fallback
@@ -916,48 +920,101 @@ Respond STRICTLY with a raw JSON object:
       };
     }
 
-    const prompt = `You are an official France Éducation International (FEI) Senior Certified Oral Examiner evaluating ${targetLanguage} oral production for official TCF Canada.
+    const prompt = `You are an official France Éducation International (FEI) TCF Canada Speaking Examiner. Your sole task is to evaluate the candidate's spoken response transcript with 100% fidelity to official TCF Canada assessment criteria.
 
-CRITICAL IMPARTIAL EVALUATION GUIDELINES (STRICT FEI CEFR STANDARDS — NO GRADE INFLATION):
-- Grade strictly according to oral linguistic competence (0–5 per criterion, 20 total marks).
-- Flawless C2/C1 native fluency (rich vocabulary, effortless nuance, complex syntax, spontaneous debate) receive 16–20/20 (NCLC 9–10 / C1–C2).
-- Solid B2 responses with good connectors, clear question formulation (T2) or balanced argumentation (T3), and minor slips receive 12–15/20 (NCLC 7–8 / B2).
-- Basic/Intermediate B1 responses (present tense only, basic questions, simple connectors like et/mais/parce que) MUST be capped at 8–11/20 (NCLC 5–6 / B1).
-- Elementary A2 responses receive 5–7/20 (NCLC 4 / A2).
-- Beginner A1 responses receive 3–4/20 (NCLC 3 / A1).
-- English words / code-switching (e.g. "actually", "like", "you know") MUST cap GrammarScore at 1/5 and LexicalScore at 1/5.
-- Off-topic, refusal, or non-French submissions MUST receive 0/20 (NCLC 0).
+### DYNAMIC INPUT CONTEXT:
+- Task Number: ${taskNum} (${taskNum === 1 ? 'Tâche 1: Entretien dirigé' : taskNum === 2 ? 'Tâche 2: Exercice en interaction' : 'Tâche 3: Expression d\'un point de vue'})
+- Official Prompt/Scenario: "${expectedText}"
+- Candidate Spoken Transcript: "${cleanSpeech}"
 
-OFFICIAL FEI 4-CRITERIA MARKS (0-5 EACH):
-1. taskFulfillmentScore (0-5): Conversational initiative, question variety in T2 (8-10 questions), sustained stance in T3, polite register (Vous).
-2. coherenceScore (0-5): Fluency, natural spoken cadence, discourse transition markers (tout d'abord, en ce qui me concerne, en somme).
-3. lexicalScore (0-5): Breadth and thematic precision of spoken vocabulary. English insertion caps at 1/5.
-4. grammarScore (0-5): Accurate syntax, question inversion / polite conditionnel, subjunctive, tense agreement.
+---
 
-Task Context & Scenario:
-Scenario / Topic: "${lessonTitle || `${targetLanguage} Oral Production`}"
-Target Task Expectation: "${expectedText}"
+### TASK SPECIFICATIONS & CEFR CEILING CHECKS:
 
-Transcribed Candidate Speech (${targetLanguage}):
-"""
-${cleanSpeech}
-"""
+1. TÂCHE 1 (Entretien dirigé - 2 minutes):
+   - Focus: Self-presentation, personal environment, daily life.
+   - Max Natural CEFR Ceiling: B1 (NCLC 5-6).
+   - Expected Output: Simple, continuous presentation and answers about oneself.
 
-Respond STRICTLY with a JSON object matching this schema:
+2. TÂCHE 2 (Exercice en interaction - 3 minutes 30):
+   - Focus: Roleplay / Information seeking.
+   - Max Natural CEFR Ceiling: B2 (NCLC 7-8).
+   - Expected Output: Asking relevant, varied questions (formal/informal) to obtain specific details from the interlocutor based on the scenario.
+
+3. TÂCHE 3 (Expression d'un point de vue - 4 minutes 30):
+   - Focus: Argumentative discourse / Opinion on a societal topic.
+   - Natural CEFR Scope: B2 to C2 (NCLC 7-12).
+   - Expected Output: Clear opinion, structured arguments, concrete examples, logical connectors, elevated lexicon.
+
+---
+
+### EVALUATION STEP 1: TOPIC RELEVANCE & OFF-TOPIC CHECK (CRITICAL)
+Analyze whether the transcript directly addresses "${expectedText}".
+- IF the transcript is completely off-topic (e.g., candidate speaks about their family when Tâche 3 asks about environmental policy):
+  * Task Fulfillment MUST be set to 0/5.
+  * Overall Raw Task Score MUST be set to 0.
+  * Set "is_off_topic": true.
+  * Set "off_topic_reason": "The candidate's response does not address the required topic/scenario."
+  * STOP further scoring for this task.
+
+---
+
+### EVALUATION STEP 2: SCORING CRITERIA (1 to 5 scale per metric)
+
+1. Task Fulfillment & Pragmatic Competence (Consigne & Intention de communication):
+   - 5/5: Fully addresses all aspects of the scenario with appropriate register (formal/informal).
+   - 3-4/5: Addresses the topic well but misses minor details or exhibits slight register inconsistencies.
+   - 1-2/5: Minimal response, fails to maintain roleplay or construct an argument.
+   - 0/5: Off-topic, silent, or incoherent.
+
+2. Coherence, Flow & Interaction (Fluidité & Structuration):
+   - 5/5: Fluid delivery, natural pauses, logical progression with advanced connectors (en effet, par conséquent, certes).
+   - 4/5: Clear discourse with minor hesitation, basic logical organization.
+   - 3/5: Noticeable hesitation, choppy delivery, repetitive transition words.
+   - 1-2/5: Fragmented speech, severe hesitation halting communication.
+
+3. Lexical Variety & Precision (Richesse Lexicale):
+   - 5/5 (C1/C2): Rich, precise, nuanced vocabulary suited to formal/abstract discussion.
+   - 4/5 (B2): Varied everyday and thematic vocabulary, accurate word choices.
+   - 3/5 (A2/B1): Basic vocabulary, frequent repetition, simple descriptive words.
+   - 1-2/5 (A1): Extremely limited vocabulary, heavy reliance on filler or non-French words.
+
+4. Morphosyntax & Grammatical Accuracy (Grammaire & Syntaxe):
+   - 5/5: Masterful control of complex structures (subjunctive, conditionals, relative clauses) with zero systemic errors.
+   - 4/5: Good control of complex tenses with minor, non-systemic mistakes.
+   - 3/5: Frequent grammar errors in complex sentences, but basic tenses (présent, passé composé) are generally correct.
+   - 1-2/5: Systematic grammar errors impacting comprehension, heavy English/foreign language interference.
+
+---
+
+### EVALUATION STEP 3: MANDATORY ERROR-PROOF GUARDRAIL
+- You MUST extract every identified grammatical or lexical error into the "spoken_errors" array with its exact substring quote from the transcript.
+- CRITICAL RULE: IF the "spoken_errors" array is EMPTY [], Morphosyntax MUST BE 5/5. You are STRICTLY FORBIDDEN from deducting points or writing generic feedback like "minor grammatical errors are present" if you cannot cite the exact error quote from the transcript.
+
+---
+
+### EXPECTED JSON OUTPUT FORMAT:
+Return JSON only:
 {
-  "taskFulfillmentScore": 4,
-  "coherenceScore": 4,
-  "lexicalScore": 4,
-  "grammarScore": 4,
-  "scoreOutOf20": 16,
-  "feedback": "2-3 sentence precise oral examiner diagnostic summary highlighting strengths and primary area for improvement.",
-  "corrections": [
-    { "original": "error phrase", "corrected": "corrected phrase", "explanation": "Grammatical, lexical, or pronunciation explanation in English." }
+  "is_off_topic": boolean,
+  "off_topic_reason": string | null,
+  "word_count": number,
+  "subscores": {
+    "task_fulfillment": number,
+    "coherence_and_flow": number,
+    "lexical_variety": number,
+    "morphosyntax": number
+  },
+  "raw_task_score_out_of_20": number,
+  "assigned_nclc_level": "NCLC 1" | "NCLC 2" | "NCLC 3" | "NCLC 4" | "NCLC 5" | "NCLC 6" | "NCLC 7" | "NCLC 8" | "NCLC 9" | "NCLC 10" | "NCLC 11" | "NCLC 12",
+  "spoken_errors": [
+    {
+      "quote": "exact phrase from transcript",
+      "correction": "correct French phrase",
+      "explanation": "concise explanation of the grammar/lexical mistake"
+    }
   ],
-  "tips": [
-    "Actionable oral delivery tip 1",
-    "Actionable oral delivery tip 2"
-  ]
+  "feedback_summary": "Detailed performance summary pointing out strengths and specific areas for improvement."
 }`;
 
     try {
@@ -966,20 +1023,47 @@ Respond STRICTLY with a JSON object matching this schema:
         prompt,
         systemPrompt: `You are an official France Éducation International (FEI) Senior Oral Examiner evaluating TCF Canada speaking with strict, uninflated accuracy.`,
         temperature: 0.1,
-        maxTokens: 500,
+        maxTokens: 600,
       });
 
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
-        let t = Math.max(0, Math.min(5, typeof parsed.taskFulfillmentScore === 'number' ? parsed.taskFulfillmentScore : 3));
-        let c = Math.max(0, Math.min(5, typeof parsed.coherenceScore === 'number' ? parsed.coherenceScore : (typeof parsed.fluencyScore === 'number' ? parsed.fluencyScore : 3)));
-        let l = Math.max(0, Math.min(5, typeof parsed.lexicalScore === 'number' ? parsed.lexicalScore : 3));
-        let g = Math.max(0, Math.min(5, typeof parsed.grammarScore === 'number' ? parsed.grammarScore : 3));
+
+        if (parsed.is_off_topic) {
+          return {
+            transcription: cleanSpeech,
+            feedback: `🚨 ZERO GRADE (0/20 Marks): ${parsed.off_topic_reason || "The candidate's response does not address the required topic/scenario (Hors-sujet)."}`,
+            score: 0,
+            scoreOutOf20: 0,
+            accuracy: 0,
+            fluency: 0,
+            taskFulfillmentScore: 0,
+            coherenceScore: typeof parsed.subscores?.coherence_and_flow === 'number' ? Math.min(2, parsed.subscores.coherence_and_flow) : 1,
+            lexicalScore: typeof parsed.subscores?.lexical_variety === 'number' ? Math.min(2, parsed.subscores.lexical_variety) : 1,
+            grammarScore: typeof parsed.subscores?.morphosyntax === 'number' ? Math.min(2, parsed.subscores.morphosyntax) : 1,
+            nclcGrade: "NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet)",
+            cefrLevel: "N/A",
+            expressEntryPoints: 0,
+            corrections: [],
+            tips: ["Répondez directement au sujet et à la consigne de l'épreuve orale."]
+          };
+        }
+
+        const sub = parsed.subscores || {};
+        let t = Math.max(0, Math.min(5, typeof sub.task_fulfillment === 'number' ? sub.task_fulfillment : (typeof parsed.taskFulfillmentScore === 'number' ? parsed.taskFulfillmentScore : 3)));
+        let c = Math.max(0, Math.min(5, typeof sub.coherence_and_flow === 'number' ? sub.coherence_and_flow : (typeof parsed.coherenceScore === 'number' ? parsed.coherenceScore : 3)));
+        let l = Math.max(0, Math.min(5, typeof sub.lexical_variety === 'number' ? sub.lexical_variety : (typeof parsed.lexicalScore === 'number' ? parsed.lexicalScore : 3)));
+        let g = Math.max(0, Math.min(5, typeof sub.morphosyntax === 'number' ? sub.morphosyntax : (typeof parsed.grammarScore === 'number' ? parsed.grammarScore : 3)));
+
+        const errorsList = Array.isArray(parsed.spoken_errors) ? parsed.spoken_errors : (Array.isArray(parsed.corrections) ? parsed.corrections : []);
+        // MANDATORY ERROR-PROOF GUARDRAIL: If spoken_errors is empty [], Morphosyntax MUST be 5/5
+        if (errorsList.length === 0) {
+          g = 5;
+        }
 
         const textLower = cleanSpeech.toLowerCase();
-        const isTache2 = /tâche 2|task 2|interaction|spk-2/i.test((lessonTitle || '') + (expectedText || ''));
-        if (isTache2) {
+        if (taskNum === 2) {
           const questionMatches = cleanSpeech.match(/\?|\b(pourriez|pouvez|est-ce|quel|quelle|quels|quelles|combien|comment|où|quand|pourquoi|avez-vous)\b/gi) || [];
           if (questionMatches.length < 8) {
             t = Math.min(3, t);
@@ -992,41 +1076,33 @@ Respond STRICTLY with a JSON object matching this schema:
           g = Math.min(1, g);
         }
 
-        const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part|en somme|selon moi|à mon avis|en effet)\b/i.test(textLower);
-        const hasB2Grammar = /\b(pourriez|serait|aimerais|puisse|soit|dont|auquel|bien que|afin de|avons|sommes|ai fait|ai visité)\b/i.test(textLower);
-
-        // Strict B2 capping: absence of B2 connectors & grammar caps score at 9/20 (B1)
-        if (!hasB2Connectors && !hasB2Grammar) {
-          t = Math.min(3, t);
-          c = Math.min(3, c);
-          l = Math.min(3, l);
-          g = Math.min(2, g);
-        }
-
-        let scoreOutOf20 = t + c + l + g;
+        let scoreOutOf20 = typeof parsed.raw_task_score_out_of_20 === 'number' ? Math.max(0, Math.min(20, parsed.raw_task_score_out_of_20)) : (t + c + l + g);
         if (t === 0) scoreOutOf20 = 0;
-        if (!hasB2Connectors && !hasB2Grammar) {
-          scoreOutOf20 = Math.min(9, scoreOutOf20);
-        }
 
         const scorePct = Math.round((scoreOutOf20 / 20) * 100);
-        let nclcGrade = "NCLC 7 (B2 Benchmark Target)";
+        let nclcGrade = parsed.assigned_nclc_level ? `${parsed.assigned_nclc_level} (FEI Evaluated)` : "NCLC 7 (B2 Benchmark Target)";
         let cefrLevel = "B2";
         let expressEntryPoints = 17;
 
-        if (scoreOutOf20 >= 18) { nclcGrade = "NCLC 10 (C2 Mastery)"; cefrLevel = "C2"; expressEntryPoints = 34; }
-        else if (scoreOutOf20 >= 16) { nclcGrade = "NCLC 9 (C1 Advanced)"; cefrLevel = "C1"; expressEntryPoints = 31; }
-        else if (scoreOutOf20 >= 14) { nclcGrade = "NCLC 8 (B2 Upper)"; cefrLevel = "B2"; expressEntryPoints = 23; }
-        else if (scoreOutOf20 >= 12) { nclcGrade = "NCLC 7 (B2 Benchmark Target)"; cefrLevel = "B2"; expressEntryPoints = 17; }
-        else if (scoreOutOf20 >= 10) { nclcGrade = "NCLC 6 (B1 Intermediate)"; cefrLevel = "B1"; expressEntryPoints = 12; }
-        else if (scoreOutOf20 >= 8) { nclcGrade = "NCLC 5 (B1 Threshold)"; cefrLevel = "B1"; expressEntryPoints = 6; }
-        else if (scoreOutOf20 >= 5) { nclcGrade = "NCLC 4 (A2 Elementary)"; cefrLevel = "A2"; expressEntryPoints = 0; }
-        else if (scoreOutOf20 >= 3) { nclcGrade = "NCLC 3 (A1 Beginner)"; cefrLevel = "A1"; expressEntryPoints = 0; }
+        if (scoreOutOf20 >= 18) { nclcGrade = parsed.assigned_nclc_level || "NCLC 10 (C2 Mastery)"; cefrLevel = "C2"; expressEntryPoints = 34; }
+        else if (scoreOutOf20 >= 16) { nclcGrade = parsed.assigned_nclc_level || "NCLC 9 (C1 Advanced)"; cefrLevel = "C1"; expressEntryPoints = 31; }
+        else if (scoreOutOf20 >= 14) { nclcGrade = parsed.assigned_nclc_level || "NCLC 8 (B2 Upper)"; cefrLevel = "B2"; expressEntryPoints = 23; }
+        else if (scoreOutOf20 >= 12) { nclcGrade = parsed.assigned_nclc_level || "NCLC 7 (B2 Benchmark Target)"; cefrLevel = "B2"; expressEntryPoints = 17; }
+        else if (scoreOutOf20 >= 10) { nclcGrade = parsed.assigned_nclc_level || "NCLC 6 (B1 Intermediate)"; cefrLevel = "B1"; expressEntryPoints = 12; }
+        else if (scoreOutOf20 >= 8) { nclcGrade = parsed.assigned_nclc_level || "NCLC 5 (B1 Threshold)"; cefrLevel = "B1"; expressEntryPoints = 6; }
+        else if (scoreOutOf20 >= 5) { nclcGrade = parsed.assigned_nclc_level || "NCLC 4 (A2 Elementary)"; cefrLevel = "A2"; expressEntryPoints = 0; }
+        else if (scoreOutOf20 >= 3) { nclcGrade = parsed.assigned_nclc_level || "NCLC 3 (A1 Beginner)"; cefrLevel = "A1"; expressEntryPoints = 0; }
         else { nclcGrade = "NCLC 1-2 (Below A1 / Beginner)"; cefrLevel = "Below A1"; expressEntryPoints = 0; }
+
+        const corrections = errorsList.map((err: any) => ({
+          original: err.quote || err.original || '',
+          corrected: err.correction || '',
+          explanation: err.explanation || ''
+        }));
 
         return {
           transcription: cleanSpeech,
-          feedback: parsed.feedback || `Official FEI Oral Evaluation: Total ${scoreOutOf20}/20 Marks.`,
+          feedback: parsed.feedback_summary || parsed.feedback || `Official FEI Oral Evaluation: Total ${scoreOutOf20}/20 Marks.`,
           score: scorePct,
           scoreOutOf20,
           accuracy: scorePct,
@@ -1038,8 +1114,8 @@ Respond STRICTLY with a JSON object matching this schema:
           nclcGrade,
           cefrLevel,
           expressEntryPoints,
-          corrections: Array.isArray(parsed.corrections) ? parsed.corrections : [],
-          tips: Array.isArray(parsed.tips) ? parsed.tips : [],
+          corrections,
+          tips: [],
         };
       }
     } catch (e) {

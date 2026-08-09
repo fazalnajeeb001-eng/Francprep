@@ -417,10 +417,14 @@ export function AuthenticCBTExamPage() {
         ? dialogue.map((m) => `${m.sender === 'candidate' ? 'Candidat' : 'Examinateur'}: ${m.text}`).join('\n')
         : transcription;
 
+      const taskNumber = taskId?.includes('spk-1') || taskId?.includes('task_0') ? 1
+        : taskId?.includes('spk-2') || taskId?.includes('task_1') ? 2
+        : taskId?.includes('spk-3') || taskId?.includes('task_2') ? 3 : 1;
+
       const res = await apiFetch("/writing/analyze-speaking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcription: combinedSpeech, expectedText, lessonTitle: paper.title })
+        body: JSON.stringify({ transcription: combinedSpeech, expectedText, lessonTitle: `${paper.title} - ${taskId}`, taskNumber })
       });
       const json = await res.json();
       if (json.success && json.data) {
@@ -595,13 +599,15 @@ export function AuthenticCBTExamPage() {
                 ? dialogue.map((m) => `${m.sender === 'candidate' ? 'Candidat' : 'Examinateur'}: ${m.text}`).join('\n')
                 : (speakingTranscripts[t.id] || '');
               try {
+                const taskNumber = t.taskNumber || (t.id?.includes('spk-1') ? 1 : t.id?.includes('spk-2') ? 2 : t.id?.includes('spk-3') ? 3 : 1);
                 const res = await apiFetch("/writing/analyze-speaking", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
                     transcription: combinedSpeech,
                     expectedText: t.scenario,
-                    lessonTitle: paper.title,
+                    lessonTitle: `${paper.title} - ${t.id}`,
+                    taskNumber,
                   }),
                 });
                 const json = await res.json();
