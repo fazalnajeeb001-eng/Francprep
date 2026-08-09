@@ -12,43 +12,51 @@ export async function apiFetch(
   path: string,
   options: RequestInit = {}
 ): Promise<Response> {
-  const token = typeof window !== "undefined"
-    ? localStorage.getItem(STORAGE_KEY)
-    : null;
+  try {
+    const token = typeof window !== "undefined"
+      ? localStorage.getItem(STORAGE_KEY)
+      : null;
 
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    ...(options.headers as Record<string, string>),
-  };
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      ...(options.headers as Record<string, string>),
+    };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
 
-  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+    const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
 
-  const isBackgroundPath = path.includes("/heartbeat") || path.includes("/presence") || path.includes("/analytics") || path.includes("/speaking");
+    const isBackgroundPath = path.includes("/heartbeat") || path.includes("/presence") || path.includes("/analytics") || path.includes("/speaking");
 
-  if ((res.status === 401 || res.status === 403) && typeof window !== "undefined" && !isBackgroundPath) {
-    const clone = res.clone();
-    try {
-      const data = await clone.json();
-      if (data?.code === 'USER_DELETED' || data?.code === 'USER_BANNED') {
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem("francprep_user");
-        if (!window.location.pathname.startsWith("/login") && !window.location.pathname.startsWith("/signup")) {
-          window.location.href = `/login?error=${data.code}`;
-        }
-      } else if (res.status === 401) {
-        if (path.includes("/auth/me") || path.includes("/admin/")) {
+    if ((res.status === 401 || res.status === 403) && typeof window !== "undefined" && !isBackgroundPath) {
+      const clone = res.clone();
+      try {
+        const data = await clone.json();
+        if (data?.code === 'USER_DELETED' || data?.code === 'USER_BANNED') {
           localStorage.removeItem(STORAGE_KEY);
           localStorage.removeItem("francprep_user");
           if (!window.location.pathname.startsWith("/login") && !window.location.pathname.startsWith("/signup")) {
-            window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+            window.location.href = `/login?error=${data.code}`;
+          }
+        } else if (res.status === 401) {
+          if (path.includes("/auth/me") || path.includes("/admin/")) {
+            localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem("francprep_user");
+            if (!window.location.pathname.startsWith("/login") && !window.location.pathname.startsWith("/signup")) {
+              window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
+            }
           }
         }
-      }
-    } catch {}
-  }
+      } catch {}
+    }
 
-  return res;
+    return res;
+  } catch (err: any) {
+    console.warn("[apiFetch Fallback]", err?.message || err);
+    return new Response(JSON.stringify({ success: false, fallback: true, error: "Service unavailable" }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 }
