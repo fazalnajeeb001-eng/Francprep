@@ -8,15 +8,24 @@ export class AuthController {
    */
   async signup(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const result = await authService.signup(req.body);
+      const result: any = await authService.signup(req.body);
+
+      if (result.refreshToken) {
+        res.cookie('refreshToken', result.refreshToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+      }
+
       res.status(201).json({
         success: true,
         data: {
-          email: result.email,
-          requiresVerification: true,
-          devOtpCode: result.devOtpCode,
+          user: result.user,
+          accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
         },
-        devOtpCode: result.devOtpCode,
         message: result.message,
       });
     } catch (error) {

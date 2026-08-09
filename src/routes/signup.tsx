@@ -82,12 +82,18 @@ function SignupPage() {
       });
       const json = await res.json();
       if (res.ok && json.success) {
-        const receivedOtp = json.devOtpCode || json.data?.devOtpCode;
-        if (receivedOtp) {
-          setDevOtpCode(receivedOtp);
-          setOtpCode(receivedOtp);
+        const token = json.data?.accessToken || json.accessToken;
+        const userObj = json.data?.user || json.user;
+        if (token) {
+          localStorage.setItem("francprep_access_token", token);
         }
-        setShowOtpModal(true);
+        if (userObj) {
+          localStorage.setItem("francprep_user", JSON.stringify(userObj));
+        }
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new Event("active-language-changed"));
+        }
+        navigate({ to: "/onboarding" });
       } else {
         setError(json.error || json.message || "Signup failed. Please try again.");
       }
