@@ -2150,12 +2150,13 @@ export function AuthenticCBTExamPage() {
                   )}
                 </div>
 
-                {/* Multiple Choice Options */}
+                {/* Multiple Choice Options (Text & Visual Cards) */}
                 <div className="space-y-2.5">
                   {currentQ.options.map((opt, idx) => {
                     const letter = String.fromCharCode(65 + idx); // A, B, C, D
                     const isChosen = selectedAnswers[currentQ.id] === idx;
                     const isLocked = mode === "PRACTICE" && checkedMap[currentQ.id];
+                    const imgUrl = (currentQ as any).optionImages?.[idx];
 
                     return (
                       <div
@@ -2181,6 +2182,9 @@ export function AuthenticCBTExamPage() {
                           }`}>
                             {letter}
                           </span>
+                          {imgUrl && (
+                            <img src={imgUrl} alt={`Option ${letter}`} className="w-6 h-6 object-contain shrink-0 filter drop-shadow-sm" />
+                          )}
                           <span className="leading-snug break-words">{opt}</span>
                         </div>
                       </div>

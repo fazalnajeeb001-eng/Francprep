@@ -7,6 +7,7 @@ export interface ExamQuestion {
   questionNumber: number;
   text: string;
   options: string[];
+  optionImages?: string[];
   correctIndex: number;
   explanation: string;
   hint?: string;
@@ -982,6 +983,37 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
 
     const speakingRate = i <= 7 ? 0.85 : i <= 15 ? 0.92 : i <= 25 ? 1.00 : i <= 33 ? 1.15 : 1.30;
 
+    let optionImages: string[] | undefined = undefined;
+    if (i === 1) {
+      optionImages = [
+        "https://api.iconify.design/heroicons:building-office-2.svg?color=%233b82f6",
+        "https://api.iconify.design/heroicons:paper-airplane.svg?color=%238b5cf6",
+        "https://api.iconify.design/heroicons:truck.svg?color=%23ef4444",
+        "https://api.iconify.design/heroicons:archive-box.svg?color=%2310b981"
+      ];
+    } else if (i === 2) {
+      optionImages = [
+        "https://api.iconify.design/heroicons:shopping-bag.svg?color=%233b82f6",
+        "https://api.iconify.design/heroicons:building-storefront.svg?color=%238b5cf6",
+        "https://api.iconify.design/heroicons:home.svg?color=%23ef4444",
+        "https://api.iconify.design/heroicons:film.svg?color=%2310b981"
+      ];
+    } else if (i === 3) {
+      optionImages = [
+        "https://api.iconify.design/heroicons:clock.svg?color=%233b82f6",
+        "https://api.iconify.design/heroicons:sparkles.svg?color=%238b5cf6",
+        "https://api.iconify.design/heroicons:shopping-cart.svg?color=%23ef4444",
+        "https://api.iconify.design/heroicons:credit-card.svg?color=%2310b981"
+      ];
+    } else if (i === 4) {
+      optionImages = [
+        "https://api.iconify.design/heroicons:calendar.svg?color=%233b82f6",
+        "https://api.iconify.design/heroicons:sun.svg?color=%238b5cf6",
+        "https://api.iconify.design/heroicons:moon.svg?color=%23ef4444",
+        "https://api.iconify.design/heroicons:user-group.svg?color=%2310b981"
+      ];
+    }
+
     qList.push({
       id: `${prefix}-lis-${i}`,
       questionNumber: i,
@@ -991,6 +1023,7 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
         ? `Écoutez le document sonore et la question audio N°${i}. Choisissez la bonne option.`
         : `${t.text}`,
       options,
+      optionImages,
       correctIndex,
       explanation: `Pedagogical Explanation [Level ${t.level}]: The spoken document confirms "${correctText}".`,
       hint: specificHint,
