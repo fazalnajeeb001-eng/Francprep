@@ -742,7 +742,7 @@ export function AuthenticCBTExamPage() {
   };
 
   const handleSelectOption = (qId: string, optionIdx: number) => {
-    if (isSubmitted) return;
+    if (isSubmitted || (mode === "PRACTICE" && checkedMap[qId])) return;
     setSelectedAnswers((prev) => ({ ...prev, [qId]: optionIdx }));
   };
 
@@ -2182,13 +2182,19 @@ export function AuthenticCBTExamPage() {
                         {currentQ.options.map((optText, idx) => {
                           const letter = String.fromCharCode(65 + idx); // A, B, C, D
                           const isChosen = selectedAnswers[currentQ.id] === idx;
+                          const isLocked = mode === "PRACTICE" && checkedMap[currentQ.id];
 
                           return (
                             <button
                               key={idx}
                               type="button"
-                              onClick={() => handleSelectOption(currentQ.id, idx)}
-                              className={`w-full p-3 sm:p-3.5 rounded-xl border-2 font-bold text-sm sm:text-base flex flex-col justify-center transition-all duration-200 shadow-sm cursor-pointer active:scale-[0.99] ${
+                              disabled={isLocked}
+                              onClick={() => {
+                                if (!isLocked) handleSelectOption(currentQ.id, idx);
+                              }}
+                              className={`w-full p-3 sm:p-3.5 rounded-xl border-2 font-bold text-sm sm:text-base flex flex-col justify-center transition-all duration-200 shadow-sm ${
+                                isLocked ? "opacity-60 cursor-not-allowed" : "cursor-pointer active:scale-[0.99]"
+                              } ${
                                 isChosen
                                   ? "bg-blue-600 border-blue-500 text-white ring-2 ring-blue-400/50 shadow-blue-900/50"
                                   : "bg-slate-800 border-slate-700 text-slate-200 hover:border-blue-400 hover:bg-slate-700/80"
