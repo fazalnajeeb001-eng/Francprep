@@ -8,6 +8,7 @@ export interface ExamQuestion {
   text: string;
   options: string[];
   optionImages?: string[];
+  mainImage?: string;
   correctIndex: number;
   explanation: string;
   hint?: string;
@@ -958,13 +959,10 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
     const isQuestionInAudio = i <= 29;
 
     let rawImages: string[] | undefined = undefined;
+    let mainImage: string | undefined = undefined;
+
     if (i === 1) {
-      rawImages = [
-        "https://images.unsplash.com/photo-1515165562839-978bbcf18277?auto=format&fit=crop&w=400&q=80",
-        "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=400&q=80",
-        "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=400&q=80",
-        "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=400&q=80"
-      ];
+      mainImage = "https://images.unsplash.com/photo-1515165562839-978bbcf18277?auto=format&fit=crop&w=600&q=80";
     } else if (i === 2) {
       rawImages = [
         "https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=400&q=80",
@@ -1030,6 +1028,7 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
         : `${t.text}`,
       options,
       optionImages,
+      mainImage,
       correctIndex,
       explanation: `Pedagogical Explanation [Level ${t.level}]: The spoken document confirms "${correctText}".`,
       hint: specificHint,

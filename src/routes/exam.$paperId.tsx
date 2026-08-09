@@ -2018,6 +2018,22 @@ export function AuthenticCBTExamPage() {
                       </div>
                     </div>
 
+                    {(currentQ as any).mainImage && (
+                      <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-700 text-white space-y-2 shadow-md">
+                        <div className="flex items-center justify-between text-xs font-bold text-amber-300">
+                          <span>🖼️ Illustration Officielle N°{currentQ.questionNumber}</span>
+                          <span className="text-[10px] text-slate-400 font-mono">Observez l'image avant d'écouter les 4 propositions</span>
+                        </div>
+                        <div className="relative aspect-[16/10] w-full rounded-lg overflow-hidden border border-slate-800">
+                          <img
+                            src={(currentQ as any).mainImage}
+                            alt={`Illustration N°${currentQ.questionNumber}`}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </div>
+                    )}
+
                     {currentQ.questionInAudio && (
                       <div className="p-3.5 rounded-xl bg-gradient-to-r from-purple-900 via-indigo-900 to-purple-950 text-white border border-purple-500/50 shadow-md space-y-2">
                         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -2129,11 +2145,11 @@ export function AuthenticCBTExamPage() {
               <div className="space-y-4">
                 <div className="space-y-1">
                   <h3 className="text-sm sm:text-base font-bold leading-snug text-slate-950 dark:text-slate-100">
-                    {currentQ.questionInAudio && !showTranscript
+                    {currentQ.questionInAudio && !showTranscript && (currentQ.questionNumber || 0) < 34
                       ? `Question Audio N°${currentQ.questionNumber}`
                       : currentQ.text}
                   </h3>
-                  {currentQ.questionInAudio && !showTranscript && (
+                  {currentQ.questionInAudio && !showTranscript && (currentQ.questionNumber || 0) < 34 && (
                     <p className="text-xs text-purple-700 dark:text-purple-400 font-medium italic">
                       Écoutez la question posée à la fin du document audio et choisissez l'option (A, B, C, D) ci-dessous.
                     </p>

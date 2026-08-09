@@ -128,6 +128,34 @@ export function playRadioNewsJingle(): Promise<void> {
 }
 
 /**
+ * 📞 Telephone Receiver Bandwidth Filter (350 Hz - 3400 Hz)
+ * Simulates real PSTN telephone call acoustic bandwidth for Q8 - Q15 voicemails & answering machine messages.
+ */
+export function applyTelephoneFilter(audioElement: HTMLAudioElement): void {
+  try {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    const source = ctx.createMediaElementSource(audioElement);
+
+    // Highpass filter at 350 Hz to cut deep bass
+    const highpass = ctx.createBiquadFilter();
+    highpass.type = "highpass";
+    highpass.frequency.value = 350;
+
+    // Lowpass filter at 3400 Hz to simulate 3.4 kHz telephone bandwidth cutoff
+    const lowpass = ctx.createBiquadFilter();
+    lowpass.type = "lowpass";
+    lowpass.frequency.value = 3400;
+
+    source.connect(highpass);
+    highpass.connect(lowpass);
+    lowpass.connect(ctx.destination);
+  } catch {
+    // Gracefully ignore if audio element is already connected or blocked by CORS
+  }
+}
+
+/**
  * Automatically triggers the authentic acoustic sound effect matching the TCF Listening Question item number!
  */
 export async function triggerAcousticSoundForQuestion(qNum: number): Promise<void> {
@@ -142,3 +170,4 @@ export async function triggerAcousticSoundForQuestion(qNum: number): Promise<voi
     await playRadioNewsJingle();
   }
 }
+
