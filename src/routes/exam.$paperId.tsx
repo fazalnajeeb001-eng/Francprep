@@ -1963,7 +1963,7 @@ export function AuthenticCBTExamPage() {
                               if (isSpeaking || isAudioPaused) {
                                 handlePauseResumeAudio();
                               } else {
-                                handlePlayAudio(currentQ.transcript || currentQ.text);
+                                handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || 1.0);
                               }
                             }}
                             className="px-3.5 sm:px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold flex items-center gap-1.5 shadow cursor-pointer active:scale-95 transition-all"
@@ -2001,7 +2001,7 @@ export function AuthenticCBTExamPage() {
                             <button
                               onClick={() => {
                                 handleStopAudio();
-                                setTimeout(() => handlePlayAudio(currentQ.transcript || currentQ.text), 50);
+                                setTimeout(() => handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || 1.0), 50);
                               }}
                               className="p-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1 shadow cursor-pointer"
                               title="Replay Audio From Start"
