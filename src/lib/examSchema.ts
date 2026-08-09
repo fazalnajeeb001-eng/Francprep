@@ -72,890 +72,5857 @@ export interface ExamPaper {
 
 // ─── HELPER TO GENERATE AUTHENTIC FULL-LENGTH QUESTION ARRAYS (39/40 ITEMS) ───
 const LISTENING_TOPICS = [
-  // A1 ELEMENTARY (Q1 - Q10)
   {
-    level: "A1",
-    title: "Annonce de gare SNCF / Via Rail",
-    text: "Chers voyageurs, votre attention s'il vous plaît. Le TGV numéro 7842 à destination de Paris-Gare de Lyon, départ initialement prévu à 14h15, partira exceptionnellement de la voie 4. Veuillez assurer l'embarquement immédiat.",
-    opt: ["Au quai / voie 4", "À la gare du Nord", "En retard de 45 minutes", "Annulé sans correspondance"],
-    ans: 0,
-    tr: "Chers voyageurs, votre attention s'il vous plaît. Le TGV numéro 7842 à destination de Paris-Gare de Lyon, départ initialement prévu à 14h15, partira exceptionnellement de la voie 4. Veuillez assurer l'embarquement immédiat.",
-    en: "Dear passengers, attention please. TGV train 7842 to Paris-Gare de Lyon, originally scheduled for 2:15pm, will exceptionally depart from platform 4. Please proceed to immediate boarding.",
-    hint: "⚠️ Trap Alert: Notice the departure platform shift marker 'exceptionnellement'.\n🔄 Paraphrase Key: 'partira de la voie 4' defines the exact platform location.\n🎧 Acoustic Cues: Listen for 'voie' or 'quai'."
+    "level": "A1",
+    "title": "Annonce A1 N°1 à Montréal",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1000 à destination de Montréal, départ initialement prévu à 7h00, partira exceptionnellement de la voie 1. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 1 à 7h00",
+      "Annulation complète du train N°1000",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1000 à destination de Montréal partira de la voie 1.",
+    "en": "Dear passengers, attention please. Train N°1000 to Montréal will depart from platform 1.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (1) and time (7h00).\n🔄 Paraphrase Key: 'partira de la voie 1' specifies platform location."
   },
   {
-    level: "A1",
-    title: "Message vocal d'un ami au supermarché",
-    text: "Salut Thomas ! C'est Marc. Je suis actuellement au supermarché du centre-ville pour faire les courses de la semaine. Dis-moi, est-ce que tu as besoin que je prenne du pain frais ou du fromage pour le dîner ce soir ?",
-    opt: ["Au supermarché", "À la boulangerie du quartier", "À la maison", "Au cinéma municipal"],
-    ans: 0,
-    tr: "Salut Thomas ! C'est Marc. Je suis actuellement au supermarché du centre-ville pour faire les courses de la semaine. Dis-moi, est-ce que tu as besoin que je prenne du pain frais ou du fromage pour le dîner ce soir ?",
-    en: "Hi Thomas! It's Marc. I'm currently at the downtown supermarket doing weekly grocery shopping. Tell me, do you need me to pick up fresh bread or cheese for dinner tonight?",
-    hint: "⚠️ Trap Alert: Do not confuse items the speaker offers to buy with where the speaker currently is.\n🔄 Paraphrase Key: 'je suis actuellement au...' establishes the physical location.\n🎧 Acoustic Cues: Listen for location prepositions like 'au'."
+    "level": "A1",
+    "title": "Annonce A1 N°2 à Québec",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1013 à destination de Québec, départ initialement prévu à 8h15, partira exceptionnellement de la voie 2. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 2 à 8h15",
+      "Annulation complète du train N°1013",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1013 à destination de Québec partira de la voie 2.",
+    "en": "Dear passengers, attention please. Train N°1013 to Québec will depart from platform 2.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (2) and time (8h15).\n🔄 Paraphrase Key: 'partira de la voie 2' specifies platform location."
   },
   {
-    level: "A1",
-    title: "Annonce dans un magasin de vêtements",
-    text: "Chers clients, votre magasin informe que le rayon des vêtements d'hiver ferme dans 15 minutes. Profitez de nos promotions de 50 % sur toutes les vestes et manteaux à la caisse principale.",
-    opt: ["Fermeture du rayon dans 15 minutes", "Ouverture d'un nouveau magasin", "Perte d'un sac à main", "Distribution de cartes de fidélité gratuites"],
-    ans: 0,
-    tr: "Chers clients, votre magasin informe que le rayon des vêtements d'hiver ferme dans 15 minutes. Profitez de nos promotions de 50 % sur toutes les vestes et manteaux à la caisse principale.",
-    en: "Dear customers, your store informs you that the winter clothing department closes in 15 minutes. Take advantage of 50% discounts on all jackets and coats at the main checkout.",
-    hint: "⚠️ Trap Alert: Distinguish department closing time (15 mins) from discount percentage (50%).\n🔄 Paraphrase Key: 'ferme dans 15 minutes' states the closing delay.\n🎧 Acoustic Cues: Listen for time expressions after 'ferme dans'."
+    "level": "A1",
+    "title": "Annonce A1 N°3 à Ottawa",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1026 à destination de Ottawa, départ initialement prévu à 9h30, partira exceptionnellement de la voie 3. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 3 à 9h30",
+      "Annulation complète du train N°1026",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1026 à destination de Ottawa partira de la voie 3.",
+    "en": "Dear passengers, attention please. Train N°1026 to Ottawa will depart from platform 3.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (3) and time (9h30).\n🔄 Paraphrase Key: 'partira de la voie 3' specifies platform location."
   },
   {
-    level: "A1",
-    title: "Message de confirmation de livraison",
-    text: "Bonjour Madame Martin, votre colis Amazon numéro 4590 sera livré à votre domicile ce mercredi entre 9h et 12h. En cas d'absence, il sera déposé chez votre voisin du rez-de-chaussée.",
-    opt: ["Mercredi matin entre 9h et 12h", "Jeudi après-midi à 16h", "Lundi soir à 20h", "Vendredi durant le week-end"],
-    ans: 0,
-    tr: "Bonjour Madame Martin, votre colis numéro 4590 sera livré à votre domicile ce mercredi entre 9h et 12h. En cas d'absence, il sera déposé chez votre voisin.",
-    en: "Hello Mrs. Martin, your package 4590 will be delivered to your home this Wednesday between 9am and 12pm. If absent, it will be left with your neighbor.",
-    hint: "⚠️ Trap Alert: Listen for the primary delivery window before the fallback option.\n🔄 Paraphrase Key: 'livré ce mercredi entre 9h et 12h'.\n🎧 Acoustic Cues: Pay attention to day names and hour numbers."
+    "level": "A1",
+    "title": "Annonce A1 N°4 à Toronto",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1039 à destination de Toronto, départ initialement prévu à 10h45, partira exceptionnellement de la voie 4. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 4 à 10h45",
+      "Annulation complète du train N°1039",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1039 à destination de Toronto partira de la voie 4.",
+    "en": "Dear passengers, attention please. Train N°1039 to Toronto will depart from platform 4.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (4) and time (10h45).\n🔄 Paraphrase Key: 'partira de la voie 4' specifies platform location."
   },
   {
-    level: "A1",
-    title: "Annonce d'aéroport / Embarquement",
-    text: "Attention aux passagers du vol Air Canada AC870 à destination de Montréal. L'embarquement commence maintenant à la porte B12. Veuillez présenter votre carte d'embarquement et votre passeport.",
-    opt: ["À la porte B12", "À la porte A5", "Au comptoir des bagages", "Dans la salle d'attente principale"],
-    ans: 0,
-    tr: "Attention aux passagers du vol Air Canada AC870 à destination de Montréal. L'embarquement commence maintenant à la porte B12.",
-    en: "Attention passengers on Air Canada flight AC870 to Montreal. Boarding is now starting at gate B12.",
-    hint: "⚠️ Trap Alert: Do not confuse flight number (AC870) with gate number (B12).\n🔄 Paraphrase Key: 'à la porte B12' gives the gate location.\n🎧 Acoustic Cues: Gate numbers follow 'porte'."
+    "level": "A1",
+    "title": "Annonce A1 N°5 à Vancouver",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1052 à destination de Vancouver, départ initialement prévu à 11h00, partira exceptionnellement de la voie 5. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 5 à 11h00",
+      "Annulation complète du train N°1052",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1052 à destination de Vancouver partira de la voie 5.",
+    "en": "Dear passengers, attention please. Train N°1052 to Vancouver will depart from platform 5.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (5) and time (11h00).\n🔄 Paraphrase Key: 'partira de la voie 5' specifies platform location."
   },
   {
-    level: "A1",
-    title: "Message sur répondeur d'un restaurant",
-    text: "Bonjour, vous êtes bien au restaurant Le Petit Bistro. Nous sommes ouverts du mardi au samedi pour le déjeuner et le dîner. Pour toute réservation, veuillez laisser un message après le signal sonore.",
-    opt: ["Du mardi au samedi", "Tous les jours 24h/24", "Uniquement le dimanche midi", "Le lundi soir seulement"],
-    ans: 0,
-    tr: "Bonjour, vous êtes au restaurant Le Petit Bistro. Nous sommes ouverts du mardi au samedi pour le déjeuner et le dîner.",
-    en: "Hello, you have reached Le Petit Bistro restaurant. We are open Tuesday to Saturday for lunch and dinner.",
-    hint: "⚠️ Trap Alert: Listen for exact open days vs closed days.\n🔄 Paraphrase Key: 'ouverts du mardi au samedi'.\n🎧 Acoustic Cues: Focus on day range after 'ouverts'."
+    "level": "A1",
+    "title": "Annonce A1 N°6 à Gatineau",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1065 à destination de Gatineau, départ initialement prévu à 12h15, partira exceptionnellement de la voie 6. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 6 à 12h15",
+      "Annulation complète du train N°1065",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1065 à destination de Gatineau partira de la voie 6.",
+    "en": "Dear passengers, attention please. Train N°1065 to Gatineau will depart from platform 6.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (6) and time (12h15).\n🔄 Paraphrase Key: 'partira de la voie 6' specifies platform location."
   },
   {
-    level: "A1",
-    title: "Message d'une amie pour un café",
-    text: "Coucou Sarah ! C'est Julie. Es-tu libre cet après-midi pour prendre un café vers 15h30 sur la place de la Comédie ? Rappelle-moi dès que tu peux !",
-    opt: ["Prendre un café à 15h30", "Faire du sport au parc", "Aller au cinéma à 20h", "Visiter un musée"],
-    ans: 0,
-    tr: "Coucou Sarah ! C'est Julie. Es-tu libre cet après-midi pour prendre un café vers 15h30 sur la place de la Comédie ?",
-    en: "Hi Sarah! It's Julie. Are you free this afternoon to grab a coffee around 3:30pm at Place de la Comédie?",
-    hint: "⚠️ Trap Alert: Identify the activity (coffee) and proposed time (15h30).\n🔄 Paraphrase Key: 'prendre un café vers 15h30'.\n🎧 Acoustic Cues: Time indicators follow 'vers'."
+    "level": "A1",
+    "title": "Annonce A1 N°7 à Sherbrooke",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1078 à destination de Sherbrooke, départ initialement prévu à 13h30, partira exceptionnellement de la voie 7. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 7 à 13h30",
+      "Annulation complète du train N°1078",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1078 à destination de Sherbrooke partira de la voie 7.",
+    "en": "Dear passengers, attention please. Train N°1078 to Sherbrooke will depart from platform 7.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (7) and time (13h30).\n🔄 Paraphrase Key: 'partira de la voie 7' specifies platform location."
   },
   {
-    level: "A1",
-    title: "Annonce dans un bus de ville",
-    text: "Prochain arrêt : Place de l'Hôtel de Ville. Correspondance avec la ligne de métro 1 et la ligne de bus 14. Terminus pour ce véhicule.",
-    opt: ["Place de l'Hôtel de Ville", "Gare Centrale", "Aéroport International", "Parc des Expositions"],
-    ans: 0,
-    tr: "Prochain arrêt : Place de l'Hôtel de Ville. Correspondance avec la ligne de métro 1 et la ligne de bus 14.",
-    en: "Next stop: City Hall Square. Transfer with metro line 1 and bus line 14.",
-    hint: "⚠️ Trap Alert: Distinguish stop name from connecting metro/bus line numbers.\n🔄 Paraphrase Key: 'Prochain arrêt : Place de l'Hôtel de Ville'.\n🎧 Acoustic Cues: Listen for words following 'prochain arrêt'."
+    "level": "A1",
+    "title": "Annonce A1 N°8 à Laval",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1091 à destination de Laval, départ initialement prévu à 14h45, partira exceptionnellement de la voie 8. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 8 à 14h45",
+      "Annulation complète du train N°1091",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1091 à destination de Laval partira de la voie 8.",
+    "en": "Dear passengers, attention please. Train N°1091 to Laval will depart from platform 8.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (8) and time (14h45).\n🔄 Paraphrase Key: 'partira de la voie 8' specifies platform location."
   },
   {
-    level: "A1",
-    title: "Message vocal d'un collègue de travail",
-    text: "Bonjour Paul, c'est Antoine du bureau. J'ai laissé le dossier de présentation sur ton bureau à côté de ton ordinateur. N'oublie pas de le lire avant la réunion de 14h.",
-    opt: ["Sur le bureau d'ordinateur", "Dans le tiroir de l'accueil", "À la cafétéria", "Dans la voiture du directeur"],
-    ans: 0,
-    tr: "Bonjour Paul, c'est Antoine. J'ai laissé le dossier de présentation sur ton bureau à côté de ton ordinateur.",
-    en: "Hello Paul, it's Antoine from the office. I left the presentation file on your desk next to your computer.",
-    hint: "⚠️ Trap Alert: Note the exact location of the document.\n🔄 Paraphrase Key: 'sur ton bureau à côté de ton ordinateur'.\n🎧 Acoustic Cues: Prepositions of place 'sur' or 'à côté de'."
+    "level": "A1",
+    "title": "Annonce A1 N°9 à Trois-Rivières",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1104 à destination de Trois-Rivières, départ initialement prévu à 15h00, partira exceptionnellement de la voie 1. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 1 à 15h00",
+      "Annulation complète du train N°1104",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1104 à destination de Trois-Rivières partira de la voie 1.",
+    "en": "Dear passengers, attention please. Train N°1104 to Trois-Rivières will depart from platform 1.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (1) and time (15h00).\n🔄 Paraphrase Key: 'partira de la voie 1' specifies platform location."
   },
   {
-    level: "A1",
-    title: "Annonce de pharmacie de garde",
-    text: "La pharmacie Saint-Jean vous informe que la garde de nuit ce dimanche est assurée par la pharmacie du Centre située 12 rue de la Paix.",
-    opt: ["La pharmacie du Centre", "La pharmacie de la Gare", "La clinique vétérinaire", "L'hôpital général"],
-    ans: 0,
-    tr: "La pharmacie Saint-Jean vous informe que la garde de nuit ce dimanche est assurée par la pharmacie du Centre.",
-    en: "Saint-Jean Pharmacy informs you that night duty this Sunday is provided by Centre Pharmacy located at 12 rue de la Paix.",
-    hint: "⚠️ Trap Alert: Saint-Jean Pharmacy is making the call, but Centre Pharmacy is providing night service.\n🔄 Paraphrase Key: 'assurée par la pharmacie du Centre'.\n🎧 Acoustic Cues: Listen for names following 'assurée par'."
-  },
-
-  // A2 BASIC (Q11 - Q18)
-  {
-    level: "A2",
-    title: "Bulletin météo radio",
-    text: "Bonjour à tous, voici vos prévisions météorologiques pour la journée de mardi. Pensez à vous équiper d'un parapluie robuste dès ce matin, car de fortes averses orageuses sont attendues sur l'ensemble de la région au cours de l'après-midi.",
-    opt: ["Prendre un parapluie pour les averses", "Mettre des lunettes de soleil", "Rester à la maison toute la journée", "Prendre la voiture pour éviter la neige"],
-    ans: 0,
-    tr: "Bonjour à tous, voici vos prévisions météorologiques pour la journée de mardi. Pensez à vous équiper d'un parapluie robuste dès ce matin, car de fortes averses orageuses sont attendues.",
-    en: "Hello everyone, here is your weather forecast for Tuesday. Be sure to bring a sturdy umbrella this morning, as heavy thunderstorm showers are expected in the afternoon.",
-    hint: "⚠️ Trap Alert: Distinguish morning weather conditions from afternoon weather changes.\n🔄 Paraphrase Key: 'parapluie' relates to 'averses'.\n🎧 Acoustic Cues: Recommendations given after 'pensez à vous équiper de...'."
+    "level": "A1",
+    "title": "Annonce A1 N°10 à Saguenay",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1117 à destination de Saguenay, départ initialement prévu à 16h15, partira exceptionnellement de la voie 2. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 2 à 16h15",
+      "Annulation complète du train N°1117",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1117 à destination de Saguenay partira de la voie 2.",
+    "en": "Dear passengers, attention please. Train N°1117 to Saguenay will depart from platform 2.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (2) and time (16h15).\n🔄 Paraphrase Key: 'partira de la voie 2' specifies platform location."
   },
   {
-    level: "A2",
-    title: "Rappel de rendez-vous médical",
-    text: "Bonjour, vous êtes bien sur le répondeur du cabinet dentaire. Nous vous rappelons que votre rendez-vous de contrôle annuel avec le docteur Mercier est confirmé pour ce mardi à 10h00 précises.",
-    opt: ["Mardi à 10h00", "Mercredi à 14h00", "Lundi matin à 9h00", "Jeudi en fin d'après-midi"],
-    ans: 0,
-    tr: "Bonjour, nous vous rappelons que votre rendez-vous de contrôle annuel avec le docteur Mercier est confirmé pour ce mardi à 10h00 précises.",
-    en: "Hello, we are reminding you that your annual dental check-up with Dr. Mercier is confirmed for this Tuesday at 10:00am.",
-    hint: "⚠️ Trap Alert: Distinguish office name from appointment day/time.\n🔄 Paraphrase Key: 'confirmé pour ce mardi à 10h00'.\n🎧 Acoustic Cues: Pay attention to numbers and days of the week."
+    "level": "A1",
+    "title": "Annonce A1 N°11 à Montréal",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1130 à destination de Montréal, départ initialement prévu à 17h30, partira exceptionnellement de la voie 3. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 3 à 17h30",
+      "Annulation complète du train N°1130",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1130 à destination de Montréal partira de la voie 3.",
+    "en": "Dear passengers, attention please. Train N°1130 to Montréal will depart from platform 3.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (3) and time (17h30).\n🔄 Paraphrase Key: 'partira de la voie 3' specifies platform location."
   },
   {
-    level: "A2",
-    title: "Annonce d'incident de transport en commun",
-    text: "En raison d'une panne de signalisation entre les stations Berri-UQAM et Lionel-Groulx, le service de la ligne verte du métro est interrompu pour environ 30 minutes. Des bus navettes de remplacement sont déployés.",
-    opt: ["Service interrompu pour 30 minutes", "Grève générale des conducteurs", "Augmentation du prix du billet", "Fermeture définitive de la station"],
-    ans: 0,
-    tr: "En raison d'une panne de signalisation, le service de la ligne verte du métro est interrompu pour environ 30 minutes.",
-    en: "Due to a signaling breakdown, service on the green line is interrupted for approximately 30 minutes. Replacement shuttle buses are deployed.",
-    hint: "⚠️ Trap Alert: Note the reason (signal breakdown) and delay duration (30 mins).\n🔄 Paraphrase Key: 'interrompu pour environ 30 minutes'.\n🎧 Acoustic Cues: Time duration follows 'interrompu pour'."
+    "level": "A1",
+    "title": "Annonce A1 N°12 à Québec",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1143 à destination de Québec, départ initialement prévu à 18h45, partira exceptionnellement de la voie 4. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 4 à 18h45",
+      "Annulation complète du train N°1143",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1143 à destination de Québec partira de la voie 4.",
+    "en": "Dear passengers, attention please. Train N°1143 to Québec will depart from platform 4.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (4) and time (18h45).\n🔄 Paraphrase Key: 'partira de la voie 4' specifies platform location."
   },
   {
-    level: "A2",
-    title: "Message d'hôtel / Réservation",
-    text: "Bonjour Monsieur Laval, nous vous confirmons votre réservation d'une chambre double pour trois nuits du 14 au 17 juillet. Le petit-déjeuner buffet est inclus de 7h à 10h au rez-de-chaussée.",
-    opt: ["Trois nuits avec petit-déjeuner inclus", "Deux nuits sans repas", "Une semaine complète en pension complète", "Une nuit en chambre simple"],
-    ans: 0,
-    tr: "Bonjour Monsieur Laval, nous vous confirmons votre réservation d'une chambre double pour trois nuits du 14 au 17 juillet. Le petit-déjeuner buffet est inclus.",
-    en: "Hello Mr. Laval, we confirm your reservation of a double room for three nights from July 14 to 17. Breakfast buffet is included.",
-    hint: "⚠️ Trap Alert: Calculate total nights (July 14-17 = 3 nights).\n🔄 Paraphrase Key: 'pour trois nuits... petit-déjeuner inclus'.\n🎧 Acoustic Cues: Listen for 'trois nuits' and 'inclus'."
+    "level": "A1",
+    "title": "Annonce A1 N°13 à Ottawa",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1156 à destination de Ottawa, départ initialement prévu à 19h00, partira exceptionnellement de la voie 5. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 5 à 19h00",
+      "Annulation complète du train N°1156",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1156 à destination de Ottawa partira de la voie 5.",
+    "en": "Dear passengers, attention please. Train N°1156 to Ottawa will depart from platform 5.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (5) and time (19h00).\n🔄 Paraphrase Key: 'partira de la voie 5' specifies platform location."
   },
   {
-    level: "A2",
-    title: "Message de centre sportif municipal",
-    text: "Le centre aquatique municipal informe ses usagers que le grand bassin sera exceptionnellement fermé ce vendredi après-midi pour des travaux d'entretien sanitaire. Le petit bassin reste accessible aux familles.",
-    opt: ["Fermeture du grand bassin ce vendredi après-midi", "Fermeture totale de toute la piscine", "Ouverture d'un nouveau sauna", "Cours de natation gratuits le samedi"],
-    ans: 0,
-    tr: "Le centre aquatique informe que le grand bassin sera exceptionnellement fermé ce vendredi après-midi pour travaux.",
-    en: "The municipal aquatic center informs users that the main pool will be exceptionally closed this Friday afternoon for maintenance. The small pool remains open.",
-    hint: "⚠️ Trap Alert: Only the main pool (grand bassin) is closed, not the whole facility.\n🔄 Paraphrase Key: 'le grand bassin sera fermé'.\n🎧 Acoustic Cues: Facility parts after 'fermé'."
+    "level": "A1",
+    "title": "Annonce A1 N°14 à Toronto",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1169 à destination de Toronto, départ initialement prévu à 20h15, partira exceptionnellement de la voie 6. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 6 à 20h15",
+      "Annulation complète du train N°1169",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1169 à destination de Toronto partira de la voie 6.",
+    "en": "Dear passengers, attention please. Train N°1169 to Toronto will depart from platform 6.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (6) and time (20h15).\n🔄 Paraphrase Key: 'partira de la voie 6' specifies platform location."
   },
   {
-    level: "A2",
-    title: "Message vocal d'un mécanicien",
-    text: "Bonjour Monsieur Roy, c'est le garage automobile. Votre voiture est prête. Les freins et la batterie ont été réparés. La facture totale s'élève à 240 dollars. Vous pouvez venir chercher votre véhicule avant 18h.",
-    opt: ["Voiture prête pour 240 dollars", "Réparation impossible", "Nécessité de changer le moteur", "Retard de livraison de trois jours"],
-    ans: 0,
-    tr: "Bonjour, c'est le garage. Votre voiture est prête. La facture totale s'élève à 240 dollars. Vous pouvez venir la chercher avant 18h.",
-    en: "Hello Mr. Roy, this is the auto garage. Your car is ready. Total bill is 240 dollars. You can pick it up before 6pm.",
-    hint: "⚠️ Trap Alert: Note the status (ready) and exact price (240$).\n🔄 Paraphrase Key: 'votre voiture est prête... s'élève à 240 dollars'.\n🎧 Acoustic Cues: Price numbers follow 's'élève à'."
+    "level": "A1",
+    "title": "Annonce A1 N°15 à Vancouver",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1182 à destination de Vancouver, départ initialement prévu à 7h30, partira exceptionnellement de la voie 7. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 7 à 7h30",
+      "Annulation complète du train N°1182",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1182 à destination de Vancouver partira de la voie 7.",
+    "en": "Dear passengers, attention please. Train N°1182 to Vancouver will depart from platform 7.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (7) and time (7h30).\n🔄 Paraphrase Key: 'partira de la voie 7' specifies platform location."
   },
   {
-    level: "A2",
-    title: "Annonce d'exposition culturelle",
-    text: "Le musée des Beaux-Arts propose une visite guidée gratuite de l'exposition impressionniste ce samedi à 14h30. Les places étant limitées, veuillez réserver votre billet sur notre site internet.",
-    opt: ["Visite guidée gratuite ce samedi à 14h30", "Exposition fermée au public", "Entrée payante à 50 dollars", "Concert de musique classique le soir"],
-    ans: 0,
-    tr: "Le musée propose une visite guidée gratuite de l'exposition impressionniste ce samedi à 14h30.",
-    en: "The Museum of Fine Arts offers a free guided tour of the Impressionist exhibition this Saturday at 2:30pm. Reservation online required.",
-    hint: "⚠️ Trap Alert: Guided tour is free ('gratuite') but online reservation is mandatory.\n🔄 Paraphrase Key: 'visite guidée gratuite ce samedi'.\n🎧 Acoustic Cues: Listen for 'gratuite' and time."
+    "level": "A1",
+    "title": "Annonce A1 N°16 à Gatineau",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1195 à destination de Gatineau, départ initialement prévu à 8h45, partira exceptionnellement de la voie 8. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 8 à 8h45",
+      "Annulation complète du train N°1195",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1195 à destination de Gatineau partira de la voie 8.",
+    "en": "Dear passengers, attention please. Train N°1195 to Gatineau will depart from platform 8.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (8) and time (8h45).\n🔄 Paraphrase Key: 'partira de la voie 8' specifies platform location."
   },
   {
-    level: "A2",
-    title: "Message de bibliothèque universitaire",
-    text: "Chers étudiants, nous vous rappelons que les livres empruntés le mois dernier doivent être retournés avant le 20 mai. Au-delà de cette date, des pénalités de retard seront appliquées.",
-    opt: ["Retourner les livres avant le 20 mai", "Acheter de nouveaux manuels", "Fermeture de la bibliothèque pour travaux", "Inscriptions gratuites pour l'été"],
-    ans: 0,
-    tr: "Chers étudiants, nous vous rappelons que les livres empruntés doivent être retournés avant le 20 mai.",
-    en: "Dear students, we remind you that books borrowed last month must be returned before May 20. Late penalties apply after.",
-    hint: "⚠️ Trap Alert: Pay attention to return deadline date (20 mai).\n🔄 Paraphrase Key: 'doivent être retournés avant le 20 mai'.\n🎧 Acoustic Cues: Deadline date follows 'avant le'."
-  },
-
-  // B1 INTERMEDIATE (Q19 - Q26)
-  {
-    level: "B1",
-    title: "Annonce d'organisation d'entreprise",
-    text: "Bonjour à l'équipe projet. Veuillez noter que la réunion stratégique initialement programmée ce jeudi matin est reportée à vendredi 15h00 dans la grande salle de conférence B au deuxième étage.",
-    opt: ["Vendredi à 15h00 en salle B", "Jeudi matin en salle A", "Lundi matin au rez-de-chaussée", "Annulée définitivement"],
-    ans: 0,
-    tr: "Bonjour à l'équipe projet. Veuillez noter que la réunion stratégique est reportée à vendredi 15h00 dans la grande salle B.",
-    en: "Hello project team. Please note that the strategic meeting is postponed to Friday at 3:00pm in large conference room B.",
-    hint: "⚠️ Trap Alert: The initial schedule is overridden by 'reportée à'.\n🔄 Paraphrase Key: 'reportée à vendredi 15h00' establishes the new schedule.\n🎧 Acoustic Cues: Watch for workplace change verbs like 'reporté'."
+    "level": "A1",
+    "title": "Annonce A1 N°17 à Sherbrooke",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1208 à destination de Sherbrooke, départ initialement prévu à 9h00, partira exceptionnellement de la voie 1. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 1 à 9h00",
+      "Annulation complète du train N°1208",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1208 à destination de Sherbrooke partira de la voie 1.",
+    "en": "Dear passengers, attention please. Train N°1208 to Sherbrooke will depart from platform 1.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (1) and time (9h00).\n🔄 Paraphrase Key: 'partira de la voie 1' specifies platform location."
   },
   {
-    level: "B1",
-    title: "Consigne de sécurité incendie",
-    text: "Attention, exercice de sécurité incendie dans le bâtiment. En cas d'alarme sonore, veuillez évacuer calmement les locaux en empruntant exclusivement les escaliers de secours et ne pas utiliser les ascenseurs.",
-    opt: ["Utiliser les escaliers de secours", "Prendre les ascenseurs principaux", "Rester enfermé dans son bureau", "Ouvrir toutes les fenêtres"],
-    ans: 0,
-    tr: "Attention, exercice de sécurité incendie. En cas d'alarme, veuillez évacuer calmement en empruntant exclusivement les escaliers de secours.",
-    en: "Attention, fire safety drill. In case of alarm, please evacuate calmly using exclusively emergency stairs and do not use elevators.",
-    hint: "⚠️ Trap Alert: Listen for mandatory safety actions vs forbidden actions (elevators).\n🔄 Paraphrase Key: 'empruntant exclusivement' means using only that exit path.\n🎧 Acoustic Cues: Safety commands following 'en cas d'alarme'."
+    "level": "A1",
+    "title": "Annonce A1 N°18 à Laval",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1221 à destination de Laval, départ initialement prévu à 10h15, partira exceptionnellement de la voie 2. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 2 à 10h15",
+      "Annulation complète du train N°1221",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1221 à destination de Laval partira de la voie 2.",
+    "en": "Dear passengers, attention please. Train N°1221 to Laval will depart from platform 2.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (2) and time (10h15).\n🔄 Paraphrase Key: 'partira de la voie 2' specifies platform location."
   },
   {
-    level: "B1",
-    title: "Message de syndic de copropriété",
-    text: "Chers résidents, en raison de travaux de rénovation de la tuyauterie principale, l'eau chaude sanitaire sera coupée demain jeudi entre 8h00 et 16h00. Nous vous prions de nous excuser pour ce désagrément temporaire.",
-    opt: ["Coupure d'eau chaude demain de 8h à 16h", "Panne d'électricité dans tout l'immeuble", "Nettoyage des tapis du hall principal", "Interdiction de garer les voitures au parking"],
-    ans: 0,
-    tr: "Chers résidents, l'eau chaude sanitaire sera coupée demain jeudi entre 8h00 et 16h00 en raison de travaux.",
-    en: "Dear residents, due to pipe renovation work, hot water will be shut off tomorrow Thursday between 8:00am and 4:00pm.",
-    hint: "⚠️ Trap Alert: Note what is cut off (hot water) vs electricity/parking.\n🔄 Paraphrase Key: 'l'eau chaude sera coupée'.\n🎧 Acoustic Cues: Interruption details after 'sera coupée'."
+    "level": "A1",
+    "title": "Annonce A1 N°19 à Trois-Rivières",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1234 à destination de Trois-Rivières, départ initialement prévu à 11h30, partira exceptionnellement de la voie 3. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 3 à 11h30",
+      "Annulation complète du train N°1234",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1234 à destination de Trois-Rivières partira de la voie 3.",
+    "en": "Dear passengers, attention please. Train N°1234 to Trois-Rivières will depart from platform 3.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (3) and time (11h30).\n🔄 Paraphrase Key: 'partira de la voie 3' specifies platform location."
   },
   {
-    level: "B1",
-    title: "Interview sur le bénévolat communautaire",
-    text: "Pour moi, donner deux heures par semaine à l'épicerie solidaire du quartier n'est pas seulement un acte généreux. Cela permet de briser l'isolement social des personnes âgées tout en luttant contre le gaspillage alimentaire.",
-    opt: ["Lutter contre l'isolement et le gaspillage", "Gagner un salaire complémentaire", "Obtenir des réductions sur les courses", "Voyager gratuitement à l'étranger"],
-    ans: 0,
-    tr: "Donner deux heures par semaine permet de briser l'isolement social des personnes âgées tout en luttant contre le gaspillage.",
-    en: "Volunteering two hours a week helps break social isolation for seniors while fighting food waste.",
-    hint: "⚠️ Trap Alert: The speaker emphasizes social impact over financial gain.\n🔄 Paraphrase Key: 'briser l'isolement... lutter contre le gaspillage'.\n🎧 Acoustic Cues: Listen for benefits after 'cela permet de'."
+    "level": "A1",
+    "title": "Annonce A1 N°20 à Saguenay",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1247 à destination de Saguenay, départ initialement prévu à 12h45, partira exceptionnellement de la voie 4. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 4 à 12h45",
+      "Annulation complète du train N°1247",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1247 à destination de Saguenay partira de la voie 4.",
+    "en": "Dear passengers, attention please. Train N°1247 to Saguenay will depart from platform 4.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (4) and time (12h45).\n🔄 Paraphrase Key: 'partira de la voie 4' specifies platform location."
   },
   {
-    level: "B1",
-    title: "Annonce de formation continue",
-    text: "La chambre de commerce propose une formation de trois jours consacrée à la gestion des réseaux sociaux pour les petites entreprises. La session débutera le premier lundi du mois prochain. Tarif préférentiel pour les membres.",
-    opt: ["Formation de 3 jours sur les réseaux sociaux", "Stage de comptabilité d'un an", "Cours d'anglais des affaires le soir", "Séminaire de vente immobilière"],
-    ans: 0,
-    tr: "La chambre de commerce propose une formation de trois jours consacrée à la gestion des réseaux sociaux.",
-    en: "The chamber of commerce offers a 3-day training course on social media management for small businesses.",
-    hint: "⚠️ Trap Alert: Course duration (3 days) vs subject (social media).\n🔄 Paraphrase Key: 'consacrée à la gestion des réseaux sociaux'.\n🎧 Acoustic Cues: Topic keywords after 'consacrée à'."
+    "level": "A1",
+    "title": "Annonce A1 N°21 à Montréal",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1260 à destination de Montréal, départ initialement prévu à 13h00, partira exceptionnellement de la voie 5. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 5 à 13h00",
+      "Annulation complète du train N°1260",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1260 à destination de Montréal partira de la voie 5.",
+    "en": "Dear passengers, attention please. Train N°1260 to Montréal will depart from platform 5.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (5) and time (13h00).\n🔄 Paraphrase Key: 'partira de la voie 5' specifies platform location."
   },
   {
-    level: "B1",
-    title: "Extrait de radio associative locale",
-    text: "Ce week-end, l'association 'Jardins Partagés' organise une grande bourse aux plantes et graines dans le parc municipal. L'objectif est d'encourager la biodiversité urbaine et d'échanger des conseils de jardinage écologique.",
-    opt: ["Partager plantes, graines et conseils écologiques", "Vendre des outils de jardinage industriels", "Construire des serres privées", "Organiser un concours de cuisine régionale"],
-    ans: 0,
-    tr: "L'association organise une bourse aux plantes et graines pour encourager la biodiversité urbaine et échanger des conseils.",
-    en: "The association is organizing a plant and seed swap to encourage urban biodiversity and share ecological gardening advice.",
-    hint: "⚠️ Trap Alert: Exchange of plants/seeds vs commercial sales.\n🔄 Paraphrase Key: 'bourse aux plantes... échanger des conseils'.\n🎧 Acoustic Cues: Action verbs after 'l'objectif est de'."
+    "level": "A1",
+    "title": "Annonce A1 N°22 à Québec",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1273 à destination de Québec, départ initialement prévu à 14h15, partira exceptionnellement de la voie 6. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 6 à 14h15",
+      "Annulation complète du train N°1273",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1273 à destination de Québec partira de la voie 6.",
+    "en": "Dear passengers, attention please. Train N°1273 to Québec will depart from platform 6.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (6) and time (14h15).\n🔄 Paraphrase Key: 'partira de la voie 6' specifies platform location."
   },
   {
-    level: "B1",
-    title: "Message de service des ressources humaines",
-    text: "Chers collaborateurs, l'entreprise met en place un nouveau système de réservation de postes de travail en flex-office. Merci de valider vos présences hebdomadaires sur le logiciel interne avant chaque vendredi soir.",
-    opt: ["Réserver son poste de travail avant vendredi soir", "Changer de bureau définitivement", "Demander une augmentation de salaire", "Prendre un congé payé obligatoire"],
-    ans: 0,
-    tr: "Chers collaborateurs, merci de valider vos présences hebdomadaires sur le logiciel interne avant chaque vendredi soir.",
-    en: "Dear staff, please confirm your weekly presence on internal software before every Friday evening for flex-office booking.",
-    hint: "⚠️ Trap Alert: Action required (booking before Friday evening).\n🔄 Paraphrase Key: 'valider vos présences... avant vendredi'.\n🎧 Acoustic Cues: Deadline instructions after 'merci de'."
+    "level": "A1",
+    "title": "Annonce A1 N°23 à Ottawa",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1286 à destination de Ottawa, départ initialement prévu à 15h30, partira exceptionnellement de la voie 7. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 7 à 15h30",
+      "Annulation complète du train N°1286",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1286 à destination de Ottawa partira de la voie 7.",
+    "en": "Dear passengers, attention please. Train N°1286 to Ottawa will depart from platform 7.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (7) and time (15h30).\n🔄 Paraphrase Key: 'partira de la voie 7' specifies platform location."
   },
   {
-    level: "B1",
-    title: "Compte-rendu de réunion de quartier",
-    text: "Lors de la réunion citoyenne d'hier, les résidents ont voté à la majorité en faveur de la création d'une piste cyclable sécurisée le long du boulevard principal pour encourager les déplacements à vélo.",
-    opt: ["Création d'une piste cyclable sécurisée", "Fermeture totale de l'avenue principale", "Augmentation du prix du stationnement", "Installation de nouveaux feux de circulation"],
-    ans: 0,
-    tr: "Les résidents ont voté à la majorité en faveur de la création d'une piste cyclable sécurisée le long du boulevard.",
-    en: "Residents voted by majority in favor of creating a protected bike lane along the main boulevard.",
-    hint: "⚠️ Trap Alert: Note the approved project (bike lane) vs traffic light or parking distractor options.\n🔄 Paraphrase Key: 'vote en faveur d'une piste cyclable'.\n🎧 Acoustic Cues: Approved decision follows 'en faveur de'."
-  },
-
-  // B2 UPPER INTERMEDIATE - NCLC 7 TARGET (Q27 - Q34)
-  {
-    level: "B2",
-    title: "Chronique environnementale radio",
-    text: "Selon la nouvelle réglementation municipale entrée en vigueur ce mois-ci, la collecte sélective et le compostage obligatoire des déchets organiques permettent d'abaisser le volume global des ordures ménagères de 30 % dans les arrondissements pilotes.",
-    opt: ["Réduire le volume des poubelles de 30%", "Augmenter la taxe d'enlèvement d'ordures", "Interdire la vente d'emballages en plastique", "Construire de nouvelles usines d'incinération"],
-    ans: 0,
-    tr: "La collecte sélective et le compostage obligatoire permettent d'abaisser le volume global des ordures de 30 %.",
-    en: "Selective collection and mandatory composting reduce household waste volume by 30% in pilot boroughs.",
-    hint: "⚠️ Trap Alert: Watch for percentage figures (30%) associated with waste reduction.\n🔄 Paraphrase Key: 'abaisser le volume' = 'réduire le volume'.\n🎧 Acoustic Cues: Policy statistics after 'permettent de'."
+    "level": "A1",
+    "title": "Annonce A1 N°24 à Toronto",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1299 à destination de Toronto, départ initialement prévu à 16h45, partira exceptionnellement de la voie 8. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 8 à 16h45",
+      "Annulation complète du train N°1299",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1299 à destination de Toronto partira de la voie 8.",
+    "en": "Dear passengers, attention please. Train N°1299 to Toronto will depart from platform 8.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (8) and time (16h45).\n🔄 Paraphrase Key: 'partira de la voie 8' specifies platform location."
   },
   {
-    level: "B2",
-    title: "Reportage économique et marché du travail",
-    text: "L'accélération du travail hybride au Québec a stimulé les ventes d'équipements informatiques et d'ergonomie de bureau, enregistrant une hausse nette de 25 % du chiffre d'affaires du secteur au cours du dernier trimestre.",
-    opt: ["Une hausse de 25% des ventes d'équipements", "Une baisse drastique des salaires", "La fermeture massive des commerces physiques", "La fin du matériel informatique de bureau"],
-    ans: 0,
-    tr: "L'accélération du travail hybride a stimulé les ventes d'équipements, enregistrant une hausse nette de 25 % du chiffre d'affaires.",
-    en: "The acceleration of hybrid work boosted equipment sales, recording a net 25% increase in revenue.",
-    hint: "⚠️ Trap Alert: Connect financial trends ('hausse') with 25%.\n🔄 Paraphrase Key: 'stimulé les ventes... hausse nette'.\n🎧 Acoustic Cues: Economic terms following 'chiffre d'affaires'."
+    "level": "A1",
+    "title": "Annonce A1 N°25 à Vancouver",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1312 à destination de Vancouver, départ initialement prévu à 17h00, partira exceptionnellement de la voie 1. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 1 à 17h00",
+      "Annulation complète du train N°1312",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1312 à destination de Vancouver partira de la voie 1.",
+    "en": "Dear passengers, attention please. Train N°1312 to Vancouver will depart from platform 1.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (1) and time (17h00).\n🔄 Paraphrase Key: 'partira de la voie 1' specifies platform location."
   },
   {
-    level: "B2",
-    title: "Analyse sur la numérisation des services publics",
-    text: "Bien que la dématérialisation des démarches administratives simplifie la gestion pour la majorité des citoyens, plusieurs sociologues alertent sur le risque d'accentuer la fracture numérique auprès des populations vulnérables et des aînés.",
-    opt: ["Risque d'accentuer la fracture numérique", "Suppression totale des impôts régionaux", "Obligation de posséder deux ordinateurs", "Fermeture définitive des préfectures"],
-    ans: 0,
-    tr: "Bien que la dématérialisation simplifie la gestion, les sociologues alertent sur le risque d'accentuer la fracture numérique.",
-    en: "Although digitization simplifies management, sociologists warn of the risk of widening the digital divide for vulnerable groups.",
-    hint: "⚠️ Trap Alert: Contrast marker 'bien que' introduces the benefit, while main clause states the risk.\n🔄 Paraphrase Key: 'accentuer la fracture numérique'.\n🎧 Acoustic Cues: Main concern follows 'alertent sur'."
+    "level": "A1",
+    "title": "Annonce A1 N°26 à Gatineau",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1325 à destination de Gatineau, départ initialement prévu à 18h15, partira exceptionnellement de la voie 2. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 2 à 18h15",
+      "Annulation complète du train N°1325",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1325 à destination de Gatineau partira de la voie 2.",
+    "en": "Dear passengers, attention please. Train N°1325 to Gatineau will depart from platform 2.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (2) and time (18h15).\n🔄 Paraphrase Key: 'partira de la voie 2' specifies platform location."
   },
   {
-    level: "B2",
-    title: "Reportage sur la rénovation énergétique",
-    text: "Les nouvelles subventions gouvernementales destinées à l'isolation thermique des bâtiments anciens visent à réduire de 40 % la consommation d'énergie d'ici 2030, tout en luttant contre la précarité énergétique hivernale.",
-    opt: ["Réduire la consommation d'énergie de 40%", "Doubler le prix du gaz naturel", "Interdire le chauffage électrique", "Démolir les bâtiments anciens de la métropole"],
-    ans: 0,
-    tr: "Les subventions pour l'isolation visent à réduire de 40 % la consommation d'énergie d'ici 2030.",
-    en: "New government subsidies for thermal insulation aim to cut energy consumption by 40% by 2030 while fighting winter fuel poverty.",
-    hint: "⚠️ Trap Alert: Link target figure (40%) to energy reduction goal.\n🔄 Paraphrase Key: 'réduire de 40 % la consommation'.\n🎧 Acoustic Cues: Objective stated after 'visent à'."
+    "level": "A1",
+    "title": "Annonce A1 N°27 à Sherbrooke",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1338 à destination de Sherbrooke, départ initialement prévu à 19h30, partira exceptionnellement de la voie 3. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 3 à 19h30",
+      "Annulation complète du train N°1338",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1338 à destination de Sherbrooke partira de la voie 3.",
+    "en": "Dear passengers, attention please. Train N°1338 to Sherbrooke will depart from platform 3.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (3) and time (19h30).\n🔄 Paraphrase Key: 'partira de la voie 3' specifies platform location."
   },
   {
-    level: "B2",
-    title: "Chronique santé et alimentation durable",
-    text: "L'introduction de menus végétariens deux fois par semaine dans la restauration scolaire a permis de diminuer l'empreinte carbone des cantines de 18 %, tout en sensibilisant les enfants à la nutrition équilibrée et locale.",
-    opt: ["Diminuer l'empreinte carbone de 18%", "Multiplier par trois le coût des repas", "Supprimer totalement les viandes et poissons", "Interdire la vente de produits laitiers"],
-    ans: 0,
-    tr: "L'introduction de menus végétariens a permis de diminuer l'empreinte carbone des cantines de 18 %.",
-    en: "Introducing vegetarian menus twice a week in school canteens reduced their carbon footprint by 18% while promoting balanced nutrition.",
-    hint: "⚠️ Trap Alert: Note frequency (twice a week) vs environmental result (-18% carbon footprint).\n🔄 Paraphrase Key: 'diminuer l'empreinte carbone de 18 %'.\n🎧 Acoustic Cues: Results follow 'a permis de'."
+    "level": "A1",
+    "title": "Annonce A1 N°28 à Laval",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1351 à destination de Laval, départ initialement prévu à 20h45, partira exceptionnellement de la voie 4. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 4 à 20h45",
+      "Annulation complète du train N°1351",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1351 à destination de Laval partira de la voie 4.",
+    "en": "Dear passengers, attention please. Train N°1351 to Laval will depart from platform 4.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (4) and time (20h45).\n🔄 Paraphrase Key: 'partira de la voie 4' specifies platform location."
   },
   {
-    level: "B2",
-    title: "Interview sur le développement des transports collectifs",
-    text: "L'extension du réseau de tramway en périphérie métropolitaine ne vise pas uniquement à désengorger le trafic automobile, mais répond également au besoin de désenclaver les quartiers résidentiels excentrés.",
-    opt: ["Désengorger le trafic et désenclaver les quartiers", "Augmenter la vitesse autorisée sur autoroute", "Remplacer les bus par des taxis électriques", "Construire un deuxième aéroport régional"],
-    ans: 0,
-    tr: "L'extension du tramway vise à désengorger le trafic automobile et désenclaver les quartiers excentrés.",
-    en: "Expanding the suburban tramway network aims not only to relieve traffic congestion but also to connect remote residential neighborhoods.",
-    hint: "⚠️ Trap Alert: 'ne vise pas uniquement X mais également Y' implies dual benefits.\n🔄 Paraphrase Key: 'désengorger le trafic... désenclaver'.\n🎧 Acoustic Cues: Connective 'mais répond également'."
+    "level": "A1",
+    "title": "Annonce A1 N°29 à Trois-Rivières",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1364 à destination de Trois-Rivières, départ initialement prévu à 7h00, partira exceptionnellement de la voie 5. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 5 à 7h00",
+      "Annulation complète du train N°1364",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1364 à destination de Trois-Rivières partira de la voie 5.",
+    "en": "Dear passengers, attention please. Train N°1364 to Trois-Rivières will depart from platform 5.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (5) and time (7h00).\n🔄 Paraphrase Key: 'partira de la voie 5' specifies platform location."
   },
   {
-    level: "B2",
-    title: "Débat sur la semaine de travail de 4 jours",
-    text: "Les premières expérimentations de la semaine de quatre jours en entreprise révèlent une baisse du stress professionnel et un gain de productivité de 15 %, à condition d'optimiser l'organisation des réunions.",
-    opt: ["Baisse du stress et gain de productivité de 15%", "Réduction des salaires de 20%", "Augmentation du temps de trajet quotidien", "Obligation de travailler les week-ends"],
-    ans: 0,
-    tr: "La semaine de 4 jours révèle une baisse du stress et un gain de productivité de 15 %.",
-    en: "Initial 4-day workweek trials reveal reduced workplace stress and a 15% productivity gain, provided meetings are streamlined.",
-    hint: "⚠️ Trap Alert: Salary remains constant despite day reduction.\n🔄 Paraphrase Key: 'gain de productivité de 15 %'.\n🎧 Acoustic Cues: Results following 'révèlent'."
+    "level": "A1",
+    "title": "Annonce A1 N°30 à Saguenay",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1377 à destination de Saguenay, départ initialement prévu à 8h15, partira exceptionnellement de la voie 6. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 6 à 8h15",
+      "Annulation complète du train N°1377",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1377 à destination de Saguenay partira de la voie 6.",
+    "en": "Dear passengers, attention please. Train N°1377 to Saguenay will depart from platform 6.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (6) and time (8h15).\n🔄 Paraphrase Key: 'partira de la voie 6' specifies platform location."
   },
   {
-    level: "B2",
-    title: "Reportage sur l'économie circulaire",
-    text: "La mise en place de filières locales de réemploi des matériaux de construction permet de détourner des décharges plus de 50 000 tonnes de débris chaque année, créant simultanément des emplois non délocalisables.",
-    opt: ["Détourner 50 000 tonnes de déchets et créer des emplois", "Exporter les débris vers l'étranger", "Augmenter le prix du ciment neuf", "Interdire la rénovation des bâtiments historiques"],
-    ans: 0,
-    tr: "Le réemploi des matériaux permet de détourner des décharges plus de 50 000 tonnes de débris et créer des emplois.",
-    en: "Establishing local construction material reuse networks diverts over 50,000 tons of debris from landfills yearly while creating local jobs.",
-    hint: "⚠️ Trap Alert: Link tonnage figure (50,000 tons) to landfill diversion.\n🔄 Paraphrase Key: 'détourner des décharges... créer des emplois'.\n🎧 Acoustic Cues: Key metrics after 'permet de'."
-  },
-
-  // C1 ADVANCED (Q35 - Q37)
-  {
-    level: "C1",
-    title: "Interview radio d'urbanisme métropolitain",
-    text: "Dans cette perspective d'adaptation climatique, l'aménagement de micro-forêts urbaines et la végétalisation systématique des toitures contribuent de manière décisive à l'atténuation des îlots de chaleur au cœur des grandes métropoles.",
-    opt: ["Combattre les îlots de chaleur urbains", "Accélérer la bétonisation des voies publiques", "Augmenter la vitesse de circulation automobile", "Remplacer les espaces verts par des parkings"],
-    ans: 0,
-    tr: "La végétalisation systématique des toitures contribue de manière décisive à l'atténuation des îlots de chaleur.",
-    en: "Systematic rooftop greening contributes decisively to mitigating urban heat islands in major metropolitan centers.",
-    hint: "⚠️ Trap Alert: Distinguish climate adaptation goals from negative development distractors.\n🔄 Paraphrase Key: 'atténuation des îlots de chaleur'.\n🎧 Acoustic Cues: Urban planning terms like 'végétalisation'."
+    "level": "A1",
+    "title": "Annonce A1 N°31 à Montréal",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1390 à destination de Montréal, départ initialement prévu à 9h30, partira exceptionnellement de la voie 7. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 7 à 9h30",
+      "Annulation complète du train N°1390",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1390 à destination de Montréal partira de la voie 7.",
+    "en": "Dear passengers, attention please. Train N°1390 to Montréal will depart from platform 7.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (7) and time (9h30).\n🔄 Paraphrase Key: 'partira de la voie 7' specifies platform location."
   },
   {
-    level: "C1",
-    title: "Chronique scientifique sur l'intelligence artificielle",
-    text: "L'intégration d'algorithmes d'apprentissage profond dans le diagnostic imagerie médicale permet de détecter précocement des anomalies invisibles à l'œil humain, tout en exigeant une rigueur éthique stricte quant à la souveraineté des données patients.",
-    opt: ["Détecter précocement des anomalies avec rigueur éthique", "Remplacer intégralement les médecins spécialistes", "Rendre le diagnostic médical entièrement gratuit", "Interdire l'usage des ordinateurs en hôpital"],
-    ans: 0,
-    tr: "L'apprentissage profond en imagerie médicale permet de détecter précocement des anomalies tout en exigeant une rigueur éthique.",
-    en: "Integrating deep learning algorithms in medical imaging enables early anomaly detection while demanding strict data privacy ethics.",
-    hint: "⚠️ Trap Alert: AI assists early detection; it does NOT replace human doctors completely.\n🔄 Paraphrase Key: 'détecter précocement des anomalies... rigueur éthique'.\n🎧 Acoustic Cues: Scientific terms after 'permet de'."
+    "level": "A1",
+    "title": "Annonce A1 N°32 à Québec",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1403 à destination de Québec, départ initialement prévu à 10h45, partira exceptionnellement de la voie 8. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 8 à 10h45",
+      "Annulation complète du train N°1403",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1403 à destination de Québec partira de la voie 8.",
+    "en": "Dear passengers, attention please. Train N°1403 to Québec will depart from platform 8.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (8) and time (10h45).\n🔄 Paraphrase Key: 'partira de la voie 8' specifies platform location."
   },
   {
-    level: "C1",
-    title: "Analyse sociologique de la mobilité durable",
-    text: "L'analyse rétrospective des politiques d'intermodalité montre que la seule création d'infrastructures ne suffit pas ; une transformation pérenne des comportements exige une tarification incitative et un accompagnement pédagogique citoyen.",
-    opt: ["Combiner infrastructures, tarification et accompagnement", "Mier exclusivement sur la construction d'autoroutes", "Supprimer les transports en commun urbains", "Interdire la marche à pied en centre-ville"],
-    ans: 0,
-    tr: "La transformation pérenne exige une tarification incitative et un accompagnement pédagogique citoyen en plus des infrastructures.",
-    en: "Retrospective analysis shows infrastructure alone is insufficient; lasting behavioral change requires incentive pricing and citizen education.",
-    hint: "⚠️ Trap Alert: Note that infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: 'transformation exige tarification et accompagnement'.\n🎧 Acoustic Cues: Nuanced argumentation following 'exige'."
+    "level": "A1",
+    "title": "Annonce A1 N°33 à Ottawa",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1416 à destination de Ottawa, départ initialement prévu à 11h00, partira exceptionnellement de la voie 1. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 1 à 11h00",
+      "Annulation complète du train N°1416",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1416 à destination de Ottawa partira de la voie 1.",
+    "en": "Dear passengers, attention please. Train N°1416 to Ottawa will depart from platform 1.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (1) and time (11h00).\n🔄 Paraphrase Key: 'partira de la voie 1' specifies platform location."
   },
   {
-    level: "C1",
-    title: "Conférence sur la transition énergétique navale",
-    text: "L'électrification partielle des flottes maritimes de cabotage combinée à l'usage de voiles rigides automatisées permet de réduire l'empreinte carbone du fret maritime de 28 % sur les lignes côtières nord-atlantiques.",
-    opt: ["Réduire l'empreinte carbone du fret maritime de 28%", "Doubler le nombre de conteneurs transportés", "Interdire la circulation des bateaux de pêche", "Construire des ports en eaux profondes uniquement"],
-    ans: 0,
-    tr: "L'électrification partielle combinée aux voiles automatisées permet de réduire l'empreinte carbone de 28 %.",
-    en: "Partial electrification combined with automated rigid sails cuts maritime freight carbon footprint by 28%.",
-    hint: "⚠️ Trap Alert: Connect tech innovation to -28% emissions.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone de 28%'.\n🎧 Acoustic Cues: Percentage stats after 'permet de'."
+    "level": "A1",
+    "title": "Annonce A1 N°34 à Toronto",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1429 à destination de Toronto, départ initialement prévu à 12h15, partira exceptionnellement de la voie 2. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 2 à 12h15",
+      "Annulation complète du train N°1429",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1429 à destination de Toronto partira de la voie 2.",
+    "en": "Dear passengers, attention please. Train N°1429 to Toronto will depart from platform 2.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (2) and time (12h15).\n🔄 Paraphrase Key: 'partira de la voie 2' specifies platform location."
   },
   {
-    level: "C1",
-    title: "Débat sur la préservation de la biodiversité marine",
-    text: "La création de réserves marines hauturières totalement fermées à l'extraction minière sous-marine constitue l'unique moyen d'assurer la survie des écosystèmes des fosses abyssales face à la pression industrielle émergente.",
-    opt: ["Protéger les écosystèmes abyssaux de l'extraction minière", "Multiplier les autorisations de forage en haute mer", "Financer la pêche industrielle d'espèces menacées", "Fermer tous les laboratoires de biologie marine"],
-    ans: 0,
-    tr: "La création de réserves fermées à l'extraction minière est l'unique moyen de protéger les écosystèmes abyssaux.",
-    en: "Creating marine reserves closed to deep-sea mining is the sole way to protect abyssal ecosystems.",
-    hint: "⚠️ Trap Alert: Protection mandate vs industrial mining expansion.\n🔄 Paraphrase Key: 'protéger les écosystèmes abyssaux'.\n🎧 Acoustic Cues: Conservation terms after 'l'unique moyen'."
-  },
-
-  // C2 MASTERY (Q38 - Q40)
-  {
-    level: "C2",
-    title: "Conférence de recherche scientifique quantique",
-    text: "L'avènement de la cryptographie quantique intégrée aux protocoles de communication de nouvelle génération permet d'envisager une étanchéité théoriquement absolue des flux de données face aux risques de cyber-intrusion.",
-    opt: ["Garantir une étanchéité théoriquement absolue des données", "Accélérer les composants électroniques mobiles", "Diminuer les investissements dans la recherche", "Remplacer les serveurs informatiques distants"],
-    ans: 0,
-    tr: "L'avènement de la cryptographie quantique permet d'envisager une étanchéité théoriquement absolue des flux de données.",
-    en: "The advent of quantum cryptography allows for theoretically absolute data flow security against cyber intrusions.",
-    hint: "⚠️ Trap Alert: Avoid mistaking technical cryptography hardware for server options.\n🔄 Paraphrase Key: 'étanchéité théoriquement absolue'.\n🎧 Acoustic Cues: High-level academic discourse."
+    "level": "A1",
+    "title": "Annonce A1 N°35 à Vancouver",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1442 à destination de Vancouver, départ initialement prévu à 13h30, partira exceptionnellement de la voie 3. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 3 à 13h30",
+      "Annulation complète du train N°1442",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1442 à destination de Vancouver partira de la voie 3.",
+    "en": "Dear passengers, attention please. Train N°1442 to Vancouver will depart from platform 3.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (3) and time (13h30).\n🔄 Paraphrase Key: 'partira de la voie 3' specifies platform location."
   },
   {
-    level: "C2",
-    title: "Essai philosophique sur la gouvernance algorithmique",
-    text: "La délégation croissante des décisions administratives à des systèmes décisionnels automatisés pose un défi ontologique à la démocratie, risquant de substituer l'arbitraire du code informatique à la délibération contradictoire des citoyens.",
-    opt: ["Risque de substituer le code informatique au débat citoyen", "Garantie d'une égalité parfaite sans contestation possible", "Fin définitive de la bureaucratie administrative", "Obligation pour chaque citoyen de programmer du code"],
-    ans: 0,
-    tr: "La délégation aux systèmes automatisés risque de substituer l'arbitraire du code à la délibération contradictoire des citoyens.",
-    en: "Delegating administrative decisions to automated systems poses an ontological challenge to democracy, risking replacing citizen debate with algorithmic code.",
-    hint: "⚠️ Trap Alert: Focus on the core risk identified by the philosopher ('substituer l'arbitraire du code au débat').\n🔄 Paraphrase Key: 'substituer le code à la délibération'.\n🎧 Acoustic Cues: High-register philosophical concepts."
+    "level": "A1",
+    "title": "Annonce A1 N°36 à Gatineau",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1455 à destination de Gatineau, départ initialement prévu à 14h45, partira exceptionnellement de la voie 4. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 4 à 14h45",
+      "Annulation complète du train N°1455",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1455 à destination de Gatineau partira de la voie 4.",
+    "en": "Dear passengers, attention please. Train N°1455 to Gatineau will depart from platform 4.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (4) and time (14h45).\n🔄 Paraphrase Key: 'partira de la voie 4' specifies platform location."
   },
   {
-    level: "C2",
-    title: "Sémiotique et analyse du discours médiatique",
-    text: "L'analyse sémiotique de la surabondance d'informations révélée par la culture numérique montre une saturation cognitive où la vitesse de diffusion l'emporte sur l'exigence de vérification des faits, fragilisant l'espace public délibératif.",
-    opt: ["La vitesse de diffusion supplante la vérification des faits", "L'amélioration spectaculaire de la mémoire humaine", "La disparition complète des réseaux de télévision", "L'obligation légale de lire uniquement des livres imprimés"],
-    ans: 0,
-    tr: "L'analyse sémiotique montre que la vitesse de diffusion l'emporte sur la vérification des faits.",
-    en: "Semiotic analysis shows diffusion speed outweighs fact-checking, fragileing deliberative public space.",
-    hint: "⚠️ Trap Alert: Speed vs factual verification tension.\n🔄 Paraphrase Key: 'vitesse de diffusion l'emporte sur la vérification'.\n🎧 Acoustic Cues: Epistemological critique."
+    "level": "A1",
+    "title": "Annonce A1 N°37 à Sherbrooke",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1468 à destination de Sherbrooke, départ initialement prévu à 15h00, partira exceptionnellement de la voie 5. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 5 à 15h00",
+      "Annulation complète du train N°1468",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1468 à destination de Sherbrooke partira de la voie 5.",
+    "en": "Dear passengers, attention please. Train N°1468 to Sherbrooke will depart from platform 5.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (5) and time (15h00).\n🔄 Paraphrase Key: 'partira de la voie 5' specifies platform location."
   },
   {
-    level: "C2",
-    title: "Économie politique des communs mondiaux",
-    text: "La théorie de la gouvernance polycentrique appliquée aux biens communs mondiaux démontre que la seule réglementation étatique ou l'abandon aux lois du marché s'avèrent incapables d'enrayer l'épuisement des ressources naturelles partagées.",
-    opt: ["Réglementation étatique et marché seuls sont incapables d'éviter l'épuisement", "La privatisation totale garantit la protection éternelle", "L'interdiction absolue de tout échange commercial", "La suppression de tous les gouvernements nationaux"],
-    ans: 0,
-    tr: "La gouvernance polycentrique démontre que ni l'État seul ni le marché ne suffisent à protéger les communs.",
-    en: "Polycentric governance demonstrates neither state regulation alone nor market forces suffice to protect global commons.",
-    hint: "⚠️ Trap Alert: Failure of state-only or market-only approaches.\n🔄 Paraphrase Key: 'incapables d'enrayer l'épuisement'.\n🎧 Acoustic Cues: Institutional economics terminology."
+    "level": "A1",
+    "title": "Annonce A1 N°38 à Laval",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1481 à destination de Laval, départ initialement prévu à 16h15, partira exceptionnellement de la voie 6. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 6 à 16h15",
+      "Annulation complète du train N°1481",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1481 à destination de Laval partira de la voie 6.",
+    "en": "Dear passengers, attention please. Train N°1481 to Laval will depart from platform 6.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (6) and time (16h15).\n🔄 Paraphrase Key: 'partira de la voie 6' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°39 à Trois-Rivières",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1494 à destination de Trois-Rivières, départ initialement prévu à 17h30, partira exceptionnellement de la voie 7. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 7 à 17h30",
+      "Annulation complète du train N°1494",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1494 à destination de Trois-Rivières partira de la voie 7.",
+    "en": "Dear passengers, attention please. Train N°1494 to Trois-Rivières will depart from platform 7.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (7) and time (17h30).\n🔄 Paraphrase Key: 'partira de la voie 7' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°40 à Saguenay",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1507 à destination de Saguenay, départ initialement prévu à 18h45, partira exceptionnellement de la voie 8. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 8 à 18h45",
+      "Annulation complète du train N°1507",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1507 à destination de Saguenay partira de la voie 8.",
+    "en": "Dear passengers, attention please. Train N°1507 to Saguenay will depart from platform 8.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (8) and time (18h45).\n🔄 Paraphrase Key: 'partira de la voie 8' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°41 à Montréal",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1520 à destination de Montréal, départ initialement prévu à 19h00, partira exceptionnellement de la voie 1. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 1 à 19h00",
+      "Annulation complète du train N°1520",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1520 à destination de Montréal partira de la voie 1.",
+    "en": "Dear passengers, attention please. Train N°1520 to Montréal will depart from platform 1.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (1) and time (19h00).\n🔄 Paraphrase Key: 'partira de la voie 1' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°42 à Québec",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1533 à destination de Québec, départ initialement prévu à 20h15, partira exceptionnellement de la voie 2. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 2 à 20h15",
+      "Annulation complète du train N°1533",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1533 à destination de Québec partira de la voie 2.",
+    "en": "Dear passengers, attention please. Train N°1533 to Québec will depart from platform 2.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (2) and time (20h15).\n🔄 Paraphrase Key: 'partira de la voie 2' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°43 à Ottawa",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1546 à destination de Ottawa, départ initialement prévu à 7h30, partira exceptionnellement de la voie 3. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 3 à 7h30",
+      "Annulation complète du train N°1546",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1546 à destination de Ottawa partira de la voie 3.",
+    "en": "Dear passengers, attention please. Train N°1546 to Ottawa will depart from platform 3.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (3) and time (7h30).\n🔄 Paraphrase Key: 'partira de la voie 3' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°44 à Toronto",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1559 à destination de Toronto, départ initialement prévu à 8h45, partira exceptionnellement de la voie 4. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 4 à 8h45",
+      "Annulation complète du train N°1559",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1559 à destination de Toronto partira de la voie 4.",
+    "en": "Dear passengers, attention please. Train N°1559 to Toronto will depart from platform 4.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (4) and time (8h45).\n🔄 Paraphrase Key: 'partira de la voie 4' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°45 à Vancouver",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1572 à destination de Vancouver, départ initialement prévu à 9h00, partira exceptionnellement de la voie 5. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 5 à 9h00",
+      "Annulation complète du train N°1572",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1572 à destination de Vancouver partira de la voie 5.",
+    "en": "Dear passengers, attention please. Train N°1572 to Vancouver will depart from platform 5.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (5) and time (9h00).\n🔄 Paraphrase Key: 'partira de la voie 5' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°46 à Gatineau",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1585 à destination de Gatineau, départ initialement prévu à 10h15, partira exceptionnellement de la voie 6. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 6 à 10h15",
+      "Annulation complète du train N°1585",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1585 à destination de Gatineau partira de la voie 6.",
+    "en": "Dear passengers, attention please. Train N°1585 to Gatineau will depart from platform 6.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (6) and time (10h15).\n🔄 Paraphrase Key: 'partira de la voie 6' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°47 à Sherbrooke",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1598 à destination de Sherbrooke, départ initialement prévu à 11h30, partira exceptionnellement de la voie 7. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 7 à 11h30",
+      "Annulation complète du train N°1598",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1598 à destination de Sherbrooke partira de la voie 7.",
+    "en": "Dear passengers, attention please. Train N°1598 to Sherbrooke will depart from platform 7.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (7) and time (11h30).\n🔄 Paraphrase Key: 'partira de la voie 7' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°48 à Laval",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1611 à destination de Laval, départ initialement prévu à 12h45, partira exceptionnellement de la voie 8. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 8 à 12h45",
+      "Annulation complète du train N°1611",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1611 à destination de Laval partira de la voie 8.",
+    "en": "Dear passengers, attention please. Train N°1611 to Laval will depart from platform 8.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (8) and time (12h45).\n🔄 Paraphrase Key: 'partira de la voie 8' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°49 à Trois-Rivières",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1624 à destination de Trois-Rivières, départ initialement prévu à 13h00, partira exceptionnellement de la voie 1. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 1 à 13h00",
+      "Annulation complète du train N°1624",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1624 à destination de Trois-Rivières partira de la voie 1.",
+    "en": "Dear passengers, attention please. Train N°1624 to Trois-Rivières will depart from platform 1.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (1) and time (13h00).\n🔄 Paraphrase Key: 'partira de la voie 1' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°50 à Saguenay",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1637 à destination de Saguenay, départ initialement prévu à 14h15, partira exceptionnellement de la voie 2. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 2 à 14h15",
+      "Annulation complète du train N°1637",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1637 à destination de Saguenay partira de la voie 2.",
+    "en": "Dear passengers, attention please. Train N°1637 to Saguenay will depart from platform 2.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (2) and time (14h15).\n🔄 Paraphrase Key: 'partira de la voie 2' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°51 à Montréal",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1650 à destination de Montréal, départ initialement prévu à 15h30, partira exceptionnellement de la voie 3. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 3 à 15h30",
+      "Annulation complète du train N°1650",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1650 à destination de Montréal partira de la voie 3.",
+    "en": "Dear passengers, attention please. Train N°1650 to Montréal will depart from platform 3.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (3) and time (15h30).\n🔄 Paraphrase Key: 'partira de la voie 3' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°52 à Québec",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1663 à destination de Québec, départ initialement prévu à 16h45, partira exceptionnellement de la voie 4. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 4 à 16h45",
+      "Annulation complète du train N°1663",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1663 à destination de Québec partira de la voie 4.",
+    "en": "Dear passengers, attention please. Train N°1663 to Québec will depart from platform 4.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (4) and time (16h45).\n🔄 Paraphrase Key: 'partira de la voie 4' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°53 à Ottawa",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1676 à destination de Ottawa, départ initialement prévu à 17h00, partira exceptionnellement de la voie 5. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 5 à 17h00",
+      "Annulation complète du train N°1676",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1676 à destination de Ottawa partira de la voie 5.",
+    "en": "Dear passengers, attention please. Train N°1676 to Ottawa will depart from platform 5.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (5) and time (17h00).\n🔄 Paraphrase Key: 'partira de la voie 5' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°54 à Toronto",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1689 à destination de Toronto, départ initialement prévu à 18h15, partira exceptionnellement de la voie 6. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 6 à 18h15",
+      "Annulation complète du train N°1689",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1689 à destination de Toronto partira de la voie 6.",
+    "en": "Dear passengers, attention please. Train N°1689 to Toronto will depart from platform 6.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (6) and time (18h15).\n🔄 Paraphrase Key: 'partira de la voie 6' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°55 à Vancouver",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1702 à destination de Vancouver, départ initialement prévu à 19h30, partira exceptionnellement de la voie 7. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 7 à 19h30",
+      "Annulation complète du train N°1702",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1702 à destination de Vancouver partira de la voie 7.",
+    "en": "Dear passengers, attention please. Train N°1702 to Vancouver will depart from platform 7.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (7) and time (19h30).\n🔄 Paraphrase Key: 'partira de la voie 7' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°56 à Gatineau",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1715 à destination de Gatineau, départ initialement prévu à 20h45, partira exceptionnellement de la voie 8. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 8 à 20h45",
+      "Annulation complète du train N°1715",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1715 à destination de Gatineau partira de la voie 8.",
+    "en": "Dear passengers, attention please. Train N°1715 to Gatineau will depart from platform 8.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (8) and time (20h45).\n🔄 Paraphrase Key: 'partira de la voie 8' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°57 à Sherbrooke",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1728 à destination de Sherbrooke, départ initialement prévu à 7h00, partira exceptionnellement de la voie 1. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 1 à 7h00",
+      "Annulation complète du train N°1728",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1728 à destination de Sherbrooke partira de la voie 1.",
+    "en": "Dear passengers, attention please. Train N°1728 to Sherbrooke will depart from platform 1.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (1) and time (7h00).\n🔄 Paraphrase Key: 'partira de la voie 1' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°58 à Laval",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1741 à destination de Laval, départ initialement prévu à 8h15, partira exceptionnellement de la voie 2. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 2 à 8h15",
+      "Annulation complète du train N°1741",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1741 à destination de Laval partira de la voie 2.",
+    "en": "Dear passengers, attention please. Train N°1741 to Laval will depart from platform 2.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (2) and time (8h15).\n🔄 Paraphrase Key: 'partira de la voie 2' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°59 à Trois-Rivières",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1754 à destination de Trois-Rivières, départ initialement prévu à 9h30, partira exceptionnellement de la voie 3. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 3 à 9h30",
+      "Annulation complète du train N°1754",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1754 à destination de Trois-Rivières partira de la voie 3.",
+    "en": "Dear passengers, attention please. Train N°1754 to Trois-Rivières will depart from platform 3.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (3) and time (9h30).\n🔄 Paraphrase Key: 'partira de la voie 3' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°60 à Saguenay",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1767 à destination de Saguenay, départ initialement prévu à 10h45, partira exceptionnellement de la voie 4. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 4 à 10h45",
+      "Annulation complète du train N°1767",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1767 à destination de Saguenay partira de la voie 4.",
+    "en": "Dear passengers, attention please. Train N°1767 to Saguenay will depart from platform 4.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (4) and time (10h45).\n🔄 Paraphrase Key: 'partira de la voie 4' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°61 à Montréal",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1780 à destination de Montréal, départ initialement prévu à 11h00, partira exceptionnellement de la voie 5. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 5 à 11h00",
+      "Annulation complète du train N°1780",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1780 à destination de Montréal partira de la voie 5.",
+    "en": "Dear passengers, attention please. Train N°1780 to Montréal will depart from platform 5.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (5) and time (11h00).\n🔄 Paraphrase Key: 'partira de la voie 5' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°62 à Québec",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1793 à destination de Québec, départ initialement prévu à 12h15, partira exceptionnellement de la voie 6. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 6 à 12h15",
+      "Annulation complète du train N°1793",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1793 à destination de Québec partira de la voie 6.",
+    "en": "Dear passengers, attention please. Train N°1793 to Québec will depart from platform 6.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (6) and time (12h15).\n🔄 Paraphrase Key: 'partira de la voie 6' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°63 à Ottawa",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1806 à destination de Ottawa, départ initialement prévu à 13h30, partira exceptionnellement de la voie 7. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 7 à 13h30",
+      "Annulation complète du train N°1806",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1806 à destination de Ottawa partira de la voie 7.",
+    "en": "Dear passengers, attention please. Train N°1806 to Ottawa will depart from platform 7.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (7) and time (13h30).\n🔄 Paraphrase Key: 'partira de la voie 7' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°64 à Toronto",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1819 à destination de Toronto, départ initialement prévu à 14h45, partira exceptionnellement de la voie 8. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 8 à 14h45",
+      "Annulation complète du train N°1819",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1819 à destination de Toronto partira de la voie 8.",
+    "en": "Dear passengers, attention please. Train N°1819 to Toronto will depart from platform 8.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (8) and time (14h45).\n🔄 Paraphrase Key: 'partira de la voie 8' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°65 à Vancouver",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1832 à destination de Vancouver, départ initialement prévu à 15h00, partira exceptionnellement de la voie 1. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 1 à 15h00",
+      "Annulation complète du train N°1832",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1832 à destination de Vancouver partira de la voie 1.",
+    "en": "Dear passengers, attention please. Train N°1832 to Vancouver will depart from platform 1.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (1) and time (15h00).\n🔄 Paraphrase Key: 'partira de la voie 1' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°66 à Gatineau",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1845 à destination de Gatineau, départ initialement prévu à 16h15, partira exceptionnellement de la voie 2. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 2 à 16h15",
+      "Annulation complète du train N°1845",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1845 à destination de Gatineau partira de la voie 2.",
+    "en": "Dear passengers, attention please. Train N°1845 to Gatineau will depart from platform 2.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (2) and time (16h15).\n🔄 Paraphrase Key: 'partira de la voie 2' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°67 à Sherbrooke",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1858 à destination de Sherbrooke, départ initialement prévu à 17h30, partira exceptionnellement de la voie 3. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 3 à 17h30",
+      "Annulation complète du train N°1858",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1858 à destination de Sherbrooke partira de la voie 3.",
+    "en": "Dear passengers, attention please. Train N°1858 to Sherbrooke will depart from platform 3.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (3) and time (17h30).\n🔄 Paraphrase Key: 'partira de la voie 3' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°68 à Laval",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1871 à destination de Laval, départ initialement prévu à 18h45, partira exceptionnellement de la voie 4. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 4 à 18h45",
+      "Annulation complète du train N°1871",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1871 à destination de Laval partira de la voie 4.",
+    "en": "Dear passengers, attention please. Train N°1871 to Laval will depart from platform 4.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (4) and time (18h45).\n🔄 Paraphrase Key: 'partira de la voie 4' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°69 à Trois-Rivières",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1884 à destination de Trois-Rivières, départ initialement prévu à 19h00, partira exceptionnellement de la voie 5. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 5 à 19h00",
+      "Annulation complète du train N°1884",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1884 à destination de Trois-Rivières partira de la voie 5.",
+    "en": "Dear passengers, attention please. Train N°1884 to Trois-Rivières will depart from platform 5.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (5) and time (19h00).\n🔄 Paraphrase Key: 'partira de la voie 5' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°70 à Saguenay",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1897 à destination de Saguenay, départ initialement prévu à 20h15, partira exceptionnellement de la voie 6. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 6 à 20h15",
+      "Annulation complète du train N°1897",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1897 à destination de Saguenay partira de la voie 6.",
+    "en": "Dear passengers, attention please. Train N°1897 to Saguenay will depart from platform 6.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (6) and time (20h15).\n🔄 Paraphrase Key: 'partira de la voie 6' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°71 à Montréal",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1910 à destination de Montréal, départ initialement prévu à 7h30, partira exceptionnellement de la voie 7. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 7 à 7h30",
+      "Annulation complète du train N°1910",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1910 à destination de Montréal partira de la voie 7.",
+    "en": "Dear passengers, attention please. Train N°1910 to Montréal will depart from platform 7.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (7) and time (7h30).\n🔄 Paraphrase Key: 'partira de la voie 7' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°72 à Québec",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1923 à destination de Québec, départ initialement prévu à 8h45, partira exceptionnellement de la voie 8. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 8 à 8h45",
+      "Annulation complète du train N°1923",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1923 à destination de Québec partira de la voie 8.",
+    "en": "Dear passengers, attention please. Train N°1923 to Québec will depart from platform 8.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (8) and time (8h45).\n🔄 Paraphrase Key: 'partira de la voie 8' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°73 à Ottawa",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1936 à destination de Ottawa, départ initialement prévu à 9h00, partira exceptionnellement de la voie 1. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 1 à 9h00",
+      "Annulation complète du train N°1936",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1936 à destination de Ottawa partira de la voie 1.",
+    "en": "Dear passengers, attention please. Train N°1936 to Ottawa will depart from platform 1.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (1) and time (9h00).\n🔄 Paraphrase Key: 'partira de la voie 1' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°74 à Toronto",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1949 à destination de Toronto, départ initialement prévu à 10h15, partira exceptionnellement de la voie 2. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 2 à 10h15",
+      "Annulation complète du train N°1949",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1949 à destination de Toronto partira de la voie 2.",
+    "en": "Dear passengers, attention please. Train N°1949 to Toronto will depart from platform 2.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (2) and time (10h15).\n🔄 Paraphrase Key: 'partira de la voie 2' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°75 à Vancouver",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1962 à destination de Vancouver, départ initialement prévu à 11h30, partira exceptionnellement de la voie 3. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 3 à 11h30",
+      "Annulation complète du train N°1962",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1962 à destination de Vancouver partira de la voie 3.",
+    "en": "Dear passengers, attention please. Train N°1962 to Vancouver will depart from platform 3.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (3) and time (11h30).\n🔄 Paraphrase Key: 'partira de la voie 3' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°76 à Gatineau",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1975 à destination de Gatineau, départ initialement prévu à 12h45, partira exceptionnellement de la voie 4. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 4 à 12h45",
+      "Annulation complète du train N°1975",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1975 à destination de Gatineau partira de la voie 4.",
+    "en": "Dear passengers, attention please. Train N°1975 to Gatineau will depart from platform 4.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (4) and time (12h45).\n🔄 Paraphrase Key: 'partira de la voie 4' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°77 à Sherbrooke",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°1988 à destination de Sherbrooke, départ initialement prévu à 13h00, partira exceptionnellement de la voie 5. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 5 à 13h00",
+      "Annulation complète du train N°1988",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°1988 à destination de Sherbrooke partira de la voie 5.",
+    "en": "Dear passengers, attention please. Train N°1988 to Sherbrooke will depart from platform 5.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (5) and time (13h00).\n🔄 Paraphrase Key: 'partira de la voie 5' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°78 à Laval",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2001 à destination de Laval, départ initialement prévu à 14h15, partira exceptionnellement de la voie 6. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 6 à 14h15",
+      "Annulation complète du train N°2001",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2001 à destination de Laval partira de la voie 6.",
+    "en": "Dear passengers, attention please. Train N°2001 to Laval will depart from platform 6.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (6) and time (14h15).\n🔄 Paraphrase Key: 'partira de la voie 6' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°79 à Trois-Rivières",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2014 à destination de Trois-Rivières, départ initialement prévu à 15h30, partira exceptionnellement de la voie 7. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 7 à 15h30",
+      "Annulation complète du train N°2014",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2014 à destination de Trois-Rivières partira de la voie 7.",
+    "en": "Dear passengers, attention please. Train N°2014 to Trois-Rivières will depart from platform 7.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (7) and time (15h30).\n🔄 Paraphrase Key: 'partira de la voie 7' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°80 à Saguenay",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2027 à destination de Saguenay, départ initialement prévu à 16h45, partira exceptionnellement de la voie 8. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 8 à 16h45",
+      "Annulation complète du train N°2027",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2027 à destination de Saguenay partira de la voie 8.",
+    "en": "Dear passengers, attention please. Train N°2027 to Saguenay will depart from platform 8.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (8) and time (16h45).\n🔄 Paraphrase Key: 'partira de la voie 8' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°81 à Montréal",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2040 à destination de Montréal, départ initialement prévu à 17h00, partira exceptionnellement de la voie 1. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 1 à 17h00",
+      "Annulation complète du train N°2040",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2040 à destination de Montréal partira de la voie 1.",
+    "en": "Dear passengers, attention please. Train N°2040 to Montréal will depart from platform 1.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (1) and time (17h00).\n🔄 Paraphrase Key: 'partira de la voie 1' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°82 à Québec",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2053 à destination de Québec, départ initialement prévu à 18h15, partira exceptionnellement de la voie 2. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 2 à 18h15",
+      "Annulation complète du train N°2053",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2053 à destination de Québec partira de la voie 2.",
+    "en": "Dear passengers, attention please. Train N°2053 to Québec will depart from platform 2.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (2) and time (18h15).\n🔄 Paraphrase Key: 'partira de la voie 2' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°83 à Ottawa",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2066 à destination de Ottawa, départ initialement prévu à 19h30, partira exceptionnellement de la voie 3. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 3 à 19h30",
+      "Annulation complète du train N°2066",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2066 à destination de Ottawa partira de la voie 3.",
+    "en": "Dear passengers, attention please. Train N°2066 to Ottawa will depart from platform 3.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (3) and time (19h30).\n🔄 Paraphrase Key: 'partira de la voie 3' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°84 à Toronto",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2079 à destination de Toronto, départ initialement prévu à 20h45, partira exceptionnellement de la voie 4. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 4 à 20h45",
+      "Annulation complète du train N°2079",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2079 à destination de Toronto partira de la voie 4.",
+    "en": "Dear passengers, attention please. Train N°2079 to Toronto will depart from platform 4.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (4) and time (20h45).\n🔄 Paraphrase Key: 'partira de la voie 4' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°85 à Vancouver",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2092 à destination de Vancouver, départ initialement prévu à 7h00, partira exceptionnellement de la voie 5. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 5 à 7h00",
+      "Annulation complète du train N°2092",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2092 à destination de Vancouver partira de la voie 5.",
+    "en": "Dear passengers, attention please. Train N°2092 to Vancouver will depart from platform 5.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (5) and time (7h00).\n🔄 Paraphrase Key: 'partira de la voie 5' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°86 à Gatineau",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2105 à destination de Gatineau, départ initialement prévu à 8h15, partira exceptionnellement de la voie 6. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 6 à 8h15",
+      "Annulation complète du train N°2105",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2105 à destination de Gatineau partira de la voie 6.",
+    "en": "Dear passengers, attention please. Train N°2105 to Gatineau will depart from platform 6.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (6) and time (8h15).\n🔄 Paraphrase Key: 'partira de la voie 6' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°87 à Sherbrooke",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2118 à destination de Sherbrooke, départ initialement prévu à 9h30, partira exceptionnellement de la voie 7. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 7 à 9h30",
+      "Annulation complète du train N°2118",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2118 à destination de Sherbrooke partira de la voie 7.",
+    "en": "Dear passengers, attention please. Train N°2118 to Sherbrooke will depart from platform 7.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (7) and time (9h30).\n🔄 Paraphrase Key: 'partira de la voie 7' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°88 à Laval",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2131 à destination de Laval, départ initialement prévu à 10h45, partira exceptionnellement de la voie 8. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 8 à 10h45",
+      "Annulation complète du train N°2131",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2131 à destination de Laval partira de la voie 8.",
+    "en": "Dear passengers, attention please. Train N°2131 to Laval will depart from platform 8.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (8) and time (10h45).\n🔄 Paraphrase Key: 'partira de la voie 8' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°89 à Trois-Rivières",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2144 à destination de Trois-Rivières, départ initialement prévu à 11h00, partira exceptionnellement de la voie 1. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 1 à 11h00",
+      "Annulation complète du train N°2144",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2144 à destination de Trois-Rivières partira de la voie 1.",
+    "en": "Dear passengers, attention please. Train N°2144 to Trois-Rivières will depart from platform 1.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (1) and time (11h00).\n🔄 Paraphrase Key: 'partira de la voie 1' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°90 à Saguenay",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2157 à destination de Saguenay, départ initialement prévu à 12h15, partira exceptionnellement de la voie 2. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 2 à 12h15",
+      "Annulation complète du train N°2157",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2157 à destination de Saguenay partira de la voie 2.",
+    "en": "Dear passengers, attention please. Train N°2157 to Saguenay will depart from platform 2.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (2) and time (12h15).\n🔄 Paraphrase Key: 'partira de la voie 2' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°91 à Montréal",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2170 à destination de Montréal, départ initialement prévu à 13h30, partira exceptionnellement de la voie 3. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 3 à 13h30",
+      "Annulation complète du train N°2170",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2170 à destination de Montréal partira de la voie 3.",
+    "en": "Dear passengers, attention please. Train N°2170 to Montréal will depart from platform 3.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (3) and time (13h30).\n🔄 Paraphrase Key: 'partira de la voie 3' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°92 à Québec",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2183 à destination de Québec, départ initialement prévu à 14h45, partira exceptionnellement de la voie 4. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 4 à 14h45",
+      "Annulation complète du train N°2183",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2183 à destination de Québec partira de la voie 4.",
+    "en": "Dear passengers, attention please. Train N°2183 to Québec will depart from platform 4.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (4) and time (14h45).\n🔄 Paraphrase Key: 'partira de la voie 4' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°93 à Ottawa",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2196 à destination de Ottawa, départ initialement prévu à 15h00, partira exceptionnellement de la voie 5. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 5 à 15h00",
+      "Annulation complète du train N°2196",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2196 à destination de Ottawa partira de la voie 5.",
+    "en": "Dear passengers, attention please. Train N°2196 to Ottawa will depart from platform 5.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (5) and time (15h00).\n🔄 Paraphrase Key: 'partira de la voie 5' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°94 à Toronto",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2209 à destination de Toronto, départ initialement prévu à 16h15, partira exceptionnellement de la voie 6. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 6 à 16h15",
+      "Annulation complète du train N°2209",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2209 à destination de Toronto partira de la voie 6.",
+    "en": "Dear passengers, attention please. Train N°2209 to Toronto will depart from platform 6.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (6) and time (16h15).\n🔄 Paraphrase Key: 'partira de la voie 6' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°95 à Vancouver",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2222 à destination de Vancouver, départ initialement prévu à 17h30, partira exceptionnellement de la voie 7. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 7 à 17h30",
+      "Annulation complète du train N°2222",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2222 à destination de Vancouver partira de la voie 7.",
+    "en": "Dear passengers, attention please. Train N°2222 to Vancouver will depart from platform 7.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (7) and time (17h30).\n🔄 Paraphrase Key: 'partira de la voie 7' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°96 à Gatineau",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2235 à destination de Gatineau, départ initialement prévu à 18h45, partira exceptionnellement de la voie 8. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 8 à 18h45",
+      "Annulation complète du train N°2235",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2235 à destination de Gatineau partira de la voie 8.",
+    "en": "Dear passengers, attention please. Train N°2235 to Gatineau will depart from platform 8.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (8) and time (18h45).\n🔄 Paraphrase Key: 'partira de la voie 8' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°97 à Sherbrooke",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2248 à destination de Sherbrooke, départ initialement prévu à 19h00, partira exceptionnellement de la voie 1. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 1 à 19h00",
+      "Annulation complète du train N°2248",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2248 à destination de Sherbrooke partira de la voie 1.",
+    "en": "Dear passengers, attention please. Train N°2248 to Sherbrooke will depart from platform 1.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (1) and time (19h00).\n🔄 Paraphrase Key: 'partira de la voie 1' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°98 à Laval",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2261 à destination de Laval, départ initialement prévu à 20h15, partira exceptionnellement de la voie 2. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 2 à 20h15",
+      "Annulation complète du train N°2261",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2261 à destination de Laval partira de la voie 2.",
+    "en": "Dear passengers, attention please. Train N°2261 to Laval will depart from platform 2.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (2) and time (20h15).\n🔄 Paraphrase Key: 'partira de la voie 2' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°99 à Trois-Rivières",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2274 à destination de Trois-Rivières, départ initialement prévu à 7h30, partira exceptionnellement de la voie 3. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 3 à 7h30",
+      "Annulation complète du train N°2274",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2274 à destination de Trois-Rivières partira de la voie 3.",
+    "en": "Dear passengers, attention please. Train N°2274 to Trois-Rivières will depart from platform 3.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (3) and time (7h30).\n🔄 Paraphrase Key: 'partira de la voie 3' specifies platform location."
+  },
+  {
+    "level": "A1",
+    "title": "Annonce A1 N°100 à Saguenay",
+    "text": "Chers voyageurs, attention s'il vous plaît. Le train N°2287 à destination de Saguenay, départ initialement prévu à 8h45, partira exceptionnellement de la voie 4. Veuillez procéder à l'embarquement immédiat.",
+    "opt": [
+      "Départ de la voie 4 à 8h45",
+      "Annulation complète du train N°2287",
+      "Arrivée en retard de 2 heures",
+      "Changement de destination pour Toronto"
+    ],
+    "ans": 0,
+    "tr": "Chers voyageurs, attention s'il vous plaît. Le train N°2287 à destination de Saguenay partira de la voie 4.",
+    "en": "Dear passengers, attention please. Train N°2287 to Saguenay will depart from platform 4.",
+    "hint": "⚠️ Trap Alert: Identify departure platform (4) and time (8h45).\n🔄 Paraphrase Key: 'partira de la voie 4' specifies platform location."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°1 de Montréal",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Montréal est confirmé pour le 1 janvier à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 1 janvier à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Montréal est confirmé pour le 1 janvier à 10h30.",
+    "en": "Hello, your appointment at the Montréal clinic is confirmed for janvier 1 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (1 janvier).\n🔄 Paraphrase Key: 'confirmé pour le 1 janvier' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°2 de Québec",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Québec est confirmé pour le 2 février à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 2 février à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Québec est confirmé pour le 2 février à 10h30.",
+    "en": "Hello, your appointment at the Québec clinic is confirmed for février 2 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (2 février).\n🔄 Paraphrase Key: 'confirmé pour le 2 février' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°3 de Ottawa",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Ottawa est confirmé pour le 3 mars à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 3 mars à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Ottawa est confirmé pour le 3 mars à 10h30.",
+    "en": "Hello, your appointment at the Ottawa clinic is confirmed for mars 3 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (3 mars).\n🔄 Paraphrase Key: 'confirmé pour le 3 mars' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°4 de Toronto",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Toronto est confirmé pour le 4 avril à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 4 avril à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Toronto est confirmé pour le 4 avril à 10h30.",
+    "en": "Hello, your appointment at the Toronto clinic is confirmed for avril 4 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (4 avril).\n🔄 Paraphrase Key: 'confirmé pour le 4 avril' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°5 de Vancouver",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Vancouver est confirmé pour le 5 mai à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 5 mai à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Vancouver est confirmé pour le 5 mai à 10h30.",
+    "en": "Hello, your appointment at the Vancouver clinic is confirmed for mai 5 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (5 mai).\n🔄 Paraphrase Key: 'confirmé pour le 5 mai' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°6 de Gatineau",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Gatineau est confirmé pour le 6 juin à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 6 juin à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Gatineau est confirmé pour le 6 juin à 10h30.",
+    "en": "Hello, your appointment at the Gatineau clinic is confirmed for juin 6 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (6 juin).\n🔄 Paraphrase Key: 'confirmé pour le 6 juin' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°7 de Sherbrooke",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Sherbrooke est confirmé pour le 7 juillet à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 7 juillet à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Sherbrooke est confirmé pour le 7 juillet à 10h30.",
+    "en": "Hello, your appointment at the Sherbrooke clinic is confirmed for juillet 7 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (7 juillet).\n🔄 Paraphrase Key: 'confirmé pour le 7 juillet' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°8 de Laval",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Laval est confirmé pour le 8 août à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 8 août à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Laval est confirmé pour le 8 août à 10h30.",
+    "en": "Hello, your appointment at the Laval clinic is confirmed for août 8 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (8 août).\n🔄 Paraphrase Key: 'confirmé pour le 8 août' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°9 de Trois-Rivières",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Trois-Rivières est confirmé pour le 9 septembre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 9 septembre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Trois-Rivières est confirmé pour le 9 septembre à 10h30.",
+    "en": "Hello, your appointment at the Trois-Rivières clinic is confirmed for septembre 9 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (9 septembre).\n🔄 Paraphrase Key: 'confirmé pour le 9 septembre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°10 de Saguenay",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Saguenay est confirmé pour le 10 octobre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 10 octobre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Saguenay est confirmé pour le 10 octobre à 10h30.",
+    "en": "Hello, your appointment at the Saguenay clinic is confirmed for octobre 10 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (10 octobre).\n🔄 Paraphrase Key: 'confirmé pour le 10 octobre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°11 de Montréal",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Montréal est confirmé pour le 11 novembre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 11 novembre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Montréal est confirmé pour le 11 novembre à 10h30.",
+    "en": "Hello, your appointment at the Montréal clinic is confirmed for novembre 11 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (11 novembre).\n🔄 Paraphrase Key: 'confirmé pour le 11 novembre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°12 de Québec",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Québec est confirmé pour le 12 décembre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 12 décembre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Québec est confirmé pour le 12 décembre à 10h30.",
+    "en": "Hello, your appointment at the Québec clinic is confirmed for décembre 12 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (12 décembre).\n🔄 Paraphrase Key: 'confirmé pour le 12 décembre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°13 de Ottawa",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Ottawa est confirmé pour le 13 janvier à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 13 janvier à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Ottawa est confirmé pour le 13 janvier à 10h30.",
+    "en": "Hello, your appointment at the Ottawa clinic is confirmed for janvier 13 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (13 janvier).\n🔄 Paraphrase Key: 'confirmé pour le 13 janvier' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°14 de Toronto",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Toronto est confirmé pour le 14 février à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 14 février à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Toronto est confirmé pour le 14 février à 10h30.",
+    "en": "Hello, your appointment at the Toronto clinic is confirmed for février 14 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (14 février).\n🔄 Paraphrase Key: 'confirmé pour le 14 février' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°15 de Vancouver",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Vancouver est confirmé pour le 15 mars à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 15 mars à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Vancouver est confirmé pour le 15 mars à 10h30.",
+    "en": "Hello, your appointment at the Vancouver clinic is confirmed for mars 15 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (15 mars).\n🔄 Paraphrase Key: 'confirmé pour le 15 mars' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°16 de Gatineau",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Gatineau est confirmé pour le 16 avril à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 16 avril à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Gatineau est confirmé pour le 16 avril à 10h30.",
+    "en": "Hello, your appointment at the Gatineau clinic is confirmed for avril 16 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (16 avril).\n🔄 Paraphrase Key: 'confirmé pour le 16 avril' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°17 de Sherbrooke",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Sherbrooke est confirmé pour le 17 mai à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 17 mai à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Sherbrooke est confirmé pour le 17 mai à 10h30.",
+    "en": "Hello, your appointment at the Sherbrooke clinic is confirmed for mai 17 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (17 mai).\n🔄 Paraphrase Key: 'confirmé pour le 17 mai' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°18 de Laval",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Laval est confirmé pour le 18 juin à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 18 juin à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Laval est confirmé pour le 18 juin à 10h30.",
+    "en": "Hello, your appointment at the Laval clinic is confirmed for juin 18 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (18 juin).\n🔄 Paraphrase Key: 'confirmé pour le 18 juin' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°19 de Trois-Rivières",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Trois-Rivières est confirmé pour le 19 juillet à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 19 juillet à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Trois-Rivières est confirmé pour le 19 juillet à 10h30.",
+    "en": "Hello, your appointment at the Trois-Rivières clinic is confirmed for juillet 19 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (19 juillet).\n🔄 Paraphrase Key: 'confirmé pour le 19 juillet' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°20 de Saguenay",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Saguenay est confirmé pour le 20 août à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 20 août à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Saguenay est confirmé pour le 20 août à 10h30.",
+    "en": "Hello, your appointment at the Saguenay clinic is confirmed for août 20 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (20 août).\n🔄 Paraphrase Key: 'confirmé pour le 20 août' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°21 de Montréal",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Montréal est confirmé pour le 21 septembre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 21 septembre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Montréal est confirmé pour le 21 septembre à 10h30.",
+    "en": "Hello, your appointment at the Montréal clinic is confirmed for septembre 21 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (21 septembre).\n🔄 Paraphrase Key: 'confirmé pour le 21 septembre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°22 de Québec",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Québec est confirmé pour le 22 octobre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 22 octobre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Québec est confirmé pour le 22 octobre à 10h30.",
+    "en": "Hello, your appointment at the Québec clinic is confirmed for octobre 22 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (22 octobre).\n🔄 Paraphrase Key: 'confirmé pour le 22 octobre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°23 de Ottawa",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Ottawa est confirmé pour le 23 novembre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 23 novembre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Ottawa est confirmé pour le 23 novembre à 10h30.",
+    "en": "Hello, your appointment at the Ottawa clinic is confirmed for novembre 23 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (23 novembre).\n🔄 Paraphrase Key: 'confirmé pour le 23 novembre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°24 de Toronto",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Toronto est confirmé pour le 24 décembre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 24 décembre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Toronto est confirmé pour le 24 décembre à 10h30.",
+    "en": "Hello, your appointment at the Toronto clinic is confirmed for décembre 24 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (24 décembre).\n🔄 Paraphrase Key: 'confirmé pour le 24 décembre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°25 de Vancouver",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Vancouver est confirmé pour le 25 janvier à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 25 janvier à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Vancouver est confirmé pour le 25 janvier à 10h30.",
+    "en": "Hello, your appointment at the Vancouver clinic is confirmed for janvier 25 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (25 janvier).\n🔄 Paraphrase Key: 'confirmé pour le 25 janvier' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°26 de Gatineau",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Gatineau est confirmé pour le 1 février à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 1 février à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Gatineau est confirmé pour le 1 février à 10h30.",
+    "en": "Hello, your appointment at the Gatineau clinic is confirmed for février 1 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (1 février).\n🔄 Paraphrase Key: 'confirmé pour le 1 février' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°27 de Sherbrooke",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Sherbrooke est confirmé pour le 2 mars à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 2 mars à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Sherbrooke est confirmé pour le 2 mars à 10h30.",
+    "en": "Hello, your appointment at the Sherbrooke clinic is confirmed for mars 2 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (2 mars).\n🔄 Paraphrase Key: 'confirmé pour le 2 mars' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°28 de Laval",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Laval est confirmé pour le 3 avril à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 3 avril à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Laval est confirmé pour le 3 avril à 10h30.",
+    "en": "Hello, your appointment at the Laval clinic is confirmed for avril 3 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (3 avril).\n🔄 Paraphrase Key: 'confirmé pour le 3 avril' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°29 de Trois-Rivières",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Trois-Rivières est confirmé pour le 4 mai à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 4 mai à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Trois-Rivières est confirmé pour le 4 mai à 10h30.",
+    "en": "Hello, your appointment at the Trois-Rivières clinic is confirmed for mai 4 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (4 mai).\n🔄 Paraphrase Key: 'confirmé pour le 4 mai' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°30 de Saguenay",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Saguenay est confirmé pour le 5 juin à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 5 juin à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Saguenay est confirmé pour le 5 juin à 10h30.",
+    "en": "Hello, your appointment at the Saguenay clinic is confirmed for juin 5 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (5 juin).\n🔄 Paraphrase Key: 'confirmé pour le 5 juin' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°31 de Montréal",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Montréal est confirmé pour le 6 juillet à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 6 juillet à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Montréal est confirmé pour le 6 juillet à 10h30.",
+    "en": "Hello, your appointment at the Montréal clinic is confirmed for juillet 6 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (6 juillet).\n🔄 Paraphrase Key: 'confirmé pour le 6 juillet' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°32 de Québec",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Québec est confirmé pour le 7 août à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 7 août à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Québec est confirmé pour le 7 août à 10h30.",
+    "en": "Hello, your appointment at the Québec clinic is confirmed for août 7 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (7 août).\n🔄 Paraphrase Key: 'confirmé pour le 7 août' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°33 de Ottawa",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Ottawa est confirmé pour le 8 septembre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 8 septembre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Ottawa est confirmé pour le 8 septembre à 10h30.",
+    "en": "Hello, your appointment at the Ottawa clinic is confirmed for septembre 8 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (8 septembre).\n🔄 Paraphrase Key: 'confirmé pour le 8 septembre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°34 de Toronto",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Toronto est confirmé pour le 9 octobre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 9 octobre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Toronto est confirmé pour le 9 octobre à 10h30.",
+    "en": "Hello, your appointment at the Toronto clinic is confirmed for octobre 9 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (9 octobre).\n🔄 Paraphrase Key: 'confirmé pour le 9 octobre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°35 de Vancouver",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Vancouver est confirmé pour le 10 novembre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 10 novembre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Vancouver est confirmé pour le 10 novembre à 10h30.",
+    "en": "Hello, your appointment at the Vancouver clinic is confirmed for novembre 10 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (10 novembre).\n🔄 Paraphrase Key: 'confirmé pour le 10 novembre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°36 de Gatineau",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Gatineau est confirmé pour le 11 décembre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 11 décembre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Gatineau est confirmé pour le 11 décembre à 10h30.",
+    "en": "Hello, your appointment at the Gatineau clinic is confirmed for décembre 11 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (11 décembre).\n🔄 Paraphrase Key: 'confirmé pour le 11 décembre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°37 de Sherbrooke",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Sherbrooke est confirmé pour le 12 janvier à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 12 janvier à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Sherbrooke est confirmé pour le 12 janvier à 10h30.",
+    "en": "Hello, your appointment at the Sherbrooke clinic is confirmed for janvier 12 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (12 janvier).\n🔄 Paraphrase Key: 'confirmé pour le 12 janvier' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°38 de Laval",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Laval est confirmé pour le 13 février à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 13 février à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Laval est confirmé pour le 13 février à 10h30.",
+    "en": "Hello, your appointment at the Laval clinic is confirmed for février 13 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (13 février).\n🔄 Paraphrase Key: 'confirmé pour le 13 février' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°39 de Trois-Rivières",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Trois-Rivières est confirmé pour le 14 mars à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 14 mars à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Trois-Rivières est confirmé pour le 14 mars à 10h30.",
+    "en": "Hello, your appointment at the Trois-Rivières clinic is confirmed for mars 14 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (14 mars).\n🔄 Paraphrase Key: 'confirmé pour le 14 mars' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°40 de Saguenay",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Saguenay est confirmé pour le 15 avril à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 15 avril à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Saguenay est confirmé pour le 15 avril à 10h30.",
+    "en": "Hello, your appointment at the Saguenay clinic is confirmed for avril 15 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (15 avril).\n🔄 Paraphrase Key: 'confirmé pour le 15 avril' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°41 de Montréal",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Montréal est confirmé pour le 16 mai à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 16 mai à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Montréal est confirmé pour le 16 mai à 10h30.",
+    "en": "Hello, your appointment at the Montréal clinic is confirmed for mai 16 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (16 mai).\n🔄 Paraphrase Key: 'confirmé pour le 16 mai' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°42 de Québec",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Québec est confirmé pour le 17 juin à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 17 juin à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Québec est confirmé pour le 17 juin à 10h30.",
+    "en": "Hello, your appointment at the Québec clinic is confirmed for juin 17 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (17 juin).\n🔄 Paraphrase Key: 'confirmé pour le 17 juin' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°43 de Ottawa",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Ottawa est confirmé pour le 18 juillet à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 18 juillet à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Ottawa est confirmé pour le 18 juillet à 10h30.",
+    "en": "Hello, your appointment at the Ottawa clinic is confirmed for juillet 18 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (18 juillet).\n🔄 Paraphrase Key: 'confirmé pour le 18 juillet' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°44 de Toronto",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Toronto est confirmé pour le 19 août à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 19 août à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Toronto est confirmé pour le 19 août à 10h30.",
+    "en": "Hello, your appointment at the Toronto clinic is confirmed for août 19 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (19 août).\n🔄 Paraphrase Key: 'confirmé pour le 19 août' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°45 de Vancouver",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Vancouver est confirmé pour le 20 septembre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 20 septembre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Vancouver est confirmé pour le 20 septembre à 10h30.",
+    "en": "Hello, your appointment at the Vancouver clinic is confirmed for septembre 20 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (20 septembre).\n🔄 Paraphrase Key: 'confirmé pour le 20 septembre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°46 de Gatineau",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Gatineau est confirmé pour le 21 octobre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 21 octobre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Gatineau est confirmé pour le 21 octobre à 10h30.",
+    "en": "Hello, your appointment at the Gatineau clinic is confirmed for octobre 21 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (21 octobre).\n🔄 Paraphrase Key: 'confirmé pour le 21 octobre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°47 de Sherbrooke",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Sherbrooke est confirmé pour le 22 novembre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 22 novembre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Sherbrooke est confirmé pour le 22 novembre à 10h30.",
+    "en": "Hello, your appointment at the Sherbrooke clinic is confirmed for novembre 22 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (22 novembre).\n🔄 Paraphrase Key: 'confirmé pour le 22 novembre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°48 de Laval",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Laval est confirmé pour le 23 décembre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 23 décembre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Laval est confirmé pour le 23 décembre à 10h30.",
+    "en": "Hello, your appointment at the Laval clinic is confirmed for décembre 23 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (23 décembre).\n🔄 Paraphrase Key: 'confirmé pour le 23 décembre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°49 de Trois-Rivières",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Trois-Rivières est confirmé pour le 24 janvier à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 24 janvier à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Trois-Rivières est confirmé pour le 24 janvier à 10h30.",
+    "en": "Hello, your appointment at the Trois-Rivières clinic is confirmed for janvier 24 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (24 janvier).\n🔄 Paraphrase Key: 'confirmé pour le 24 janvier' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°50 de Saguenay",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Saguenay est confirmé pour le 25 février à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 25 février à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Saguenay est confirmé pour le 25 février à 10h30.",
+    "en": "Hello, your appointment at the Saguenay clinic is confirmed for février 25 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (25 février).\n🔄 Paraphrase Key: 'confirmé pour le 25 février' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°51 de Montréal",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Montréal est confirmé pour le 1 mars à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 1 mars à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Montréal est confirmé pour le 1 mars à 10h30.",
+    "en": "Hello, your appointment at the Montréal clinic is confirmed for mars 1 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (1 mars).\n🔄 Paraphrase Key: 'confirmé pour le 1 mars' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°52 de Québec",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Québec est confirmé pour le 2 avril à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 2 avril à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Québec est confirmé pour le 2 avril à 10h30.",
+    "en": "Hello, your appointment at the Québec clinic is confirmed for avril 2 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (2 avril).\n🔄 Paraphrase Key: 'confirmé pour le 2 avril' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°53 de Ottawa",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Ottawa est confirmé pour le 3 mai à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 3 mai à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Ottawa est confirmé pour le 3 mai à 10h30.",
+    "en": "Hello, your appointment at the Ottawa clinic is confirmed for mai 3 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (3 mai).\n🔄 Paraphrase Key: 'confirmé pour le 3 mai' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°54 de Toronto",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Toronto est confirmé pour le 4 juin à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 4 juin à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Toronto est confirmé pour le 4 juin à 10h30.",
+    "en": "Hello, your appointment at the Toronto clinic is confirmed for juin 4 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (4 juin).\n🔄 Paraphrase Key: 'confirmé pour le 4 juin' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°55 de Vancouver",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Vancouver est confirmé pour le 5 juillet à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 5 juillet à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Vancouver est confirmé pour le 5 juillet à 10h30.",
+    "en": "Hello, your appointment at the Vancouver clinic is confirmed for juillet 5 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (5 juillet).\n🔄 Paraphrase Key: 'confirmé pour le 5 juillet' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°56 de Gatineau",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Gatineau est confirmé pour le 6 août à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 6 août à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Gatineau est confirmé pour le 6 août à 10h30.",
+    "en": "Hello, your appointment at the Gatineau clinic is confirmed for août 6 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (6 août).\n🔄 Paraphrase Key: 'confirmé pour le 6 août' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°57 de Sherbrooke",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Sherbrooke est confirmé pour le 7 septembre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 7 septembre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Sherbrooke est confirmé pour le 7 septembre à 10h30.",
+    "en": "Hello, your appointment at the Sherbrooke clinic is confirmed for septembre 7 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (7 septembre).\n🔄 Paraphrase Key: 'confirmé pour le 7 septembre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°58 de Laval",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Laval est confirmé pour le 8 octobre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 8 octobre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Laval est confirmé pour le 8 octobre à 10h30.",
+    "en": "Hello, your appointment at the Laval clinic is confirmed for octobre 8 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (8 octobre).\n🔄 Paraphrase Key: 'confirmé pour le 8 octobre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°59 de Trois-Rivières",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Trois-Rivières est confirmé pour le 9 novembre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 9 novembre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Trois-Rivières est confirmé pour le 9 novembre à 10h30.",
+    "en": "Hello, your appointment at the Trois-Rivières clinic is confirmed for novembre 9 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (9 novembre).\n🔄 Paraphrase Key: 'confirmé pour le 9 novembre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°60 de Saguenay",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Saguenay est confirmé pour le 10 décembre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 10 décembre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Saguenay est confirmé pour le 10 décembre à 10h30.",
+    "en": "Hello, your appointment at the Saguenay clinic is confirmed for décembre 10 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (10 décembre).\n🔄 Paraphrase Key: 'confirmé pour le 10 décembre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°61 de Montréal",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Montréal est confirmé pour le 11 janvier à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 11 janvier à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Montréal est confirmé pour le 11 janvier à 10h30.",
+    "en": "Hello, your appointment at the Montréal clinic is confirmed for janvier 11 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (11 janvier).\n🔄 Paraphrase Key: 'confirmé pour le 11 janvier' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°62 de Québec",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Québec est confirmé pour le 12 février à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 12 février à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Québec est confirmé pour le 12 février à 10h30.",
+    "en": "Hello, your appointment at the Québec clinic is confirmed for février 12 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (12 février).\n🔄 Paraphrase Key: 'confirmé pour le 12 février' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°63 de Ottawa",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Ottawa est confirmé pour le 13 mars à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 13 mars à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Ottawa est confirmé pour le 13 mars à 10h30.",
+    "en": "Hello, your appointment at the Ottawa clinic is confirmed for mars 13 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (13 mars).\n🔄 Paraphrase Key: 'confirmé pour le 13 mars' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°64 de Toronto",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Toronto est confirmé pour le 14 avril à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 14 avril à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Toronto est confirmé pour le 14 avril à 10h30.",
+    "en": "Hello, your appointment at the Toronto clinic is confirmed for avril 14 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (14 avril).\n🔄 Paraphrase Key: 'confirmé pour le 14 avril' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°65 de Vancouver",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Vancouver est confirmé pour le 15 mai à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 15 mai à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Vancouver est confirmé pour le 15 mai à 10h30.",
+    "en": "Hello, your appointment at the Vancouver clinic is confirmed for mai 15 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (15 mai).\n🔄 Paraphrase Key: 'confirmé pour le 15 mai' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°66 de Gatineau",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Gatineau est confirmé pour le 16 juin à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 16 juin à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Gatineau est confirmé pour le 16 juin à 10h30.",
+    "en": "Hello, your appointment at the Gatineau clinic is confirmed for juin 16 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (16 juin).\n🔄 Paraphrase Key: 'confirmé pour le 16 juin' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°67 de Sherbrooke",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Sherbrooke est confirmé pour le 17 juillet à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 17 juillet à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Sherbrooke est confirmé pour le 17 juillet à 10h30.",
+    "en": "Hello, your appointment at the Sherbrooke clinic is confirmed for juillet 17 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (17 juillet).\n🔄 Paraphrase Key: 'confirmé pour le 17 juillet' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°68 de Laval",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Laval est confirmé pour le 18 août à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 18 août à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Laval est confirmé pour le 18 août à 10h30.",
+    "en": "Hello, your appointment at the Laval clinic is confirmed for août 18 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (18 août).\n🔄 Paraphrase Key: 'confirmé pour le 18 août' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°69 de Trois-Rivières",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Trois-Rivières est confirmé pour le 19 septembre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 19 septembre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Trois-Rivières est confirmé pour le 19 septembre à 10h30.",
+    "en": "Hello, your appointment at the Trois-Rivières clinic is confirmed for septembre 19 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (19 septembre).\n🔄 Paraphrase Key: 'confirmé pour le 19 septembre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°70 de Saguenay",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Saguenay est confirmé pour le 20 octobre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 20 octobre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Saguenay est confirmé pour le 20 octobre à 10h30.",
+    "en": "Hello, your appointment at the Saguenay clinic is confirmed for octobre 20 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (20 octobre).\n🔄 Paraphrase Key: 'confirmé pour le 20 octobre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°71 de Montréal",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Montréal est confirmé pour le 21 novembre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 21 novembre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Montréal est confirmé pour le 21 novembre à 10h30.",
+    "en": "Hello, your appointment at the Montréal clinic is confirmed for novembre 21 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (21 novembre).\n🔄 Paraphrase Key: 'confirmé pour le 21 novembre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°72 de Québec",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Québec est confirmé pour le 22 décembre à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 22 décembre à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Québec est confirmé pour le 22 décembre à 10h30.",
+    "en": "Hello, your appointment at the Québec clinic is confirmed for décembre 22 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (22 décembre).\n🔄 Paraphrase Key: 'confirmé pour le 22 décembre' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°73 de Ottawa",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Ottawa est confirmé pour le 23 janvier à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 23 janvier à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Ottawa est confirmé pour le 23 janvier à 10h30.",
+    "en": "Hello, your appointment at the Ottawa clinic is confirmed for janvier 23 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (23 janvier).\n🔄 Paraphrase Key: 'confirmé pour le 23 janvier' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°74 de Toronto",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Toronto est confirmé pour le 24 février à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 24 février à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Toronto est confirmé pour le 24 février à 10h30.",
+    "en": "Hello, your appointment at the Toronto clinic is confirmed for février 24 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (24 février).\n🔄 Paraphrase Key: 'confirmé pour le 24 février' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°75 de Vancouver",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Vancouver est confirmé pour le 25 mars à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 25 mars à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Vancouver est confirmé pour le 25 mars à 10h30.",
+    "en": "Hello, your appointment at the Vancouver clinic is confirmed for mars 25 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (25 mars).\n🔄 Paraphrase Key: 'confirmé pour le 25 mars' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°76 de Gatineau",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Gatineau est confirmé pour le 1 avril à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 1 avril à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Gatineau est confirmé pour le 1 avril à 10h30.",
+    "en": "Hello, your appointment at the Gatineau clinic is confirmed for avril 1 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (1 avril).\n🔄 Paraphrase Key: 'confirmé pour le 1 avril' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°77 de Sherbrooke",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Sherbrooke est confirmé pour le 2 mai à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 2 mai à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Sherbrooke est confirmé pour le 2 mai à 10h30.",
+    "en": "Hello, your appointment at the Sherbrooke clinic is confirmed for mai 2 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (2 mai).\n🔄 Paraphrase Key: 'confirmé pour le 2 mai' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°78 de Laval",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Laval est confirmé pour le 3 juin à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 3 juin à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Laval est confirmé pour le 3 juin à 10h30.",
+    "en": "Hello, your appointment at the Laval clinic is confirmed for juin 3 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (3 juin).\n🔄 Paraphrase Key: 'confirmé pour le 3 juin' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°79 de Trois-Rivières",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Trois-Rivières est confirmé pour le 4 juillet à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 4 juillet à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Trois-Rivières est confirmé pour le 4 juillet à 10h30.",
+    "en": "Hello, your appointment at the Trois-Rivières clinic is confirmed for juillet 4 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (4 juillet).\n🔄 Paraphrase Key: 'confirmé pour le 4 juillet' establishes the date."
+  },
+  {
+    "level": "A2",
+    "title": "Message vocal A2 N°80 de Saguenay",
+    "text": "Bonjour, nous vous rappelons que votre rendez-vous annuel à la clinique de Saguenay est confirmé pour le 5 août à 10h30. En cas d'empêchement, veuillez décommander au moins 24 heures à l'avance.",
+    "opt": [
+      "Rendez-vous confirmé le 5 août à 10h30",
+      "Annulation définitive de toutes les consultations",
+      "Fermeture de la clinique pour travaux",
+      "Changement d'adresse vers le centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Bonjour, votre rendez-vous à la clinique de Saguenay est confirmé pour le 5 août à 10h30.",
+    "en": "Hello, your appointment at the Saguenay clinic is confirmed for août 5 at 10:30am.",
+    "hint": "⚠️ Trap Alert: Note appointment confirmation date (5 août).\n🔄 Paraphrase Key: 'confirmé pour le 5 août' establishes the date."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°1 de réunion citoyenne à Montréal",
+    "text": "Lors de la séance du conseil municipal de Montréal, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Montréal ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Montréal voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°2 de réunion citoyenne à Québec",
+    "text": "Lors de la séance du conseil municipal de Québec, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Québec ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Québec voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°3 de réunion citoyenne à Ottawa",
+    "text": "Lors de la séance du conseil municipal de Ottawa, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Ottawa ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Ottawa voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°4 de réunion citoyenne à Toronto",
+    "text": "Lors de la séance du conseil municipal de Toronto, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Toronto ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Toronto voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°5 de réunion citoyenne à Vancouver",
+    "text": "Lors de la séance du conseil municipal de Vancouver, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Vancouver ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Vancouver voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°6 de réunion citoyenne à Gatineau",
+    "text": "Lors de la séance du conseil municipal de Gatineau, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Gatineau ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Gatineau voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°7 de réunion citoyenne à Sherbrooke",
+    "text": "Lors de la séance du conseil municipal de Sherbrooke, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Sherbrooke ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Sherbrooke voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°8 de réunion citoyenne à Laval",
+    "text": "Lors de la séance du conseil municipal de Laval, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Laval ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Laval voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°9 de réunion citoyenne à Trois-Rivières",
+    "text": "Lors de la séance du conseil municipal de Trois-Rivières, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Trois-Rivières ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Trois-Rivières voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°10 de réunion citoyenne à Saguenay",
+    "text": "Lors de la séance du conseil municipal de Saguenay, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Saguenay ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Saguenay voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°11 de réunion citoyenne à Montréal",
+    "text": "Lors de la séance du conseil municipal de Montréal, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Montréal ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Montréal voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°12 de réunion citoyenne à Québec",
+    "text": "Lors de la séance du conseil municipal de Québec, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Québec ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Québec voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°13 de réunion citoyenne à Ottawa",
+    "text": "Lors de la séance du conseil municipal de Ottawa, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Ottawa ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Ottawa voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°14 de réunion citoyenne à Toronto",
+    "text": "Lors de la séance du conseil municipal de Toronto, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Toronto ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Toronto voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°15 de réunion citoyenne à Vancouver",
+    "text": "Lors de la séance du conseil municipal de Vancouver, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Vancouver ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Vancouver voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°16 de réunion citoyenne à Gatineau",
+    "text": "Lors de la séance du conseil municipal de Gatineau, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Gatineau ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Gatineau voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°17 de réunion citoyenne à Sherbrooke",
+    "text": "Lors de la séance du conseil municipal de Sherbrooke, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Sherbrooke ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Sherbrooke voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°18 de réunion citoyenne à Laval",
+    "text": "Lors de la séance du conseil municipal de Laval, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Laval ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Laval voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°19 de réunion citoyenne à Trois-Rivières",
+    "text": "Lors de la séance du conseil municipal de Trois-Rivières, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Trois-Rivières ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Trois-Rivières voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°20 de réunion citoyenne à Saguenay",
+    "text": "Lors de la séance du conseil municipal de Saguenay, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Saguenay ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Saguenay voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°21 de réunion citoyenne à Montréal",
+    "text": "Lors de la séance du conseil municipal de Montréal, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Montréal ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Montréal voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°22 de réunion citoyenne à Québec",
+    "text": "Lors de la séance du conseil municipal de Québec, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Québec ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Québec voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°23 de réunion citoyenne à Ottawa",
+    "text": "Lors de la séance du conseil municipal de Ottawa, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Ottawa ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Ottawa voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°24 de réunion citoyenne à Toronto",
+    "text": "Lors de la séance du conseil municipal de Toronto, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Toronto ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Toronto voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°25 de réunion citoyenne à Vancouver",
+    "text": "Lors de la séance du conseil municipal de Vancouver, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Vancouver ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Vancouver voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°26 de réunion citoyenne à Gatineau",
+    "text": "Lors de la séance du conseil municipal de Gatineau, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Gatineau ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Gatineau voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°27 de réunion citoyenne à Sherbrooke",
+    "text": "Lors de la séance du conseil municipal de Sherbrooke, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Sherbrooke ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Sherbrooke voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°28 de réunion citoyenne à Laval",
+    "text": "Lors de la séance du conseil municipal de Laval, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Laval ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Laval voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°29 de réunion citoyenne à Trois-Rivières",
+    "text": "Lors de la séance du conseil municipal de Trois-Rivières, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Trois-Rivières ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Trois-Rivières voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°30 de réunion citoyenne à Saguenay",
+    "text": "Lors de la séance du conseil municipal de Saguenay, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Saguenay ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Saguenay voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°31 de réunion citoyenne à Montréal",
+    "text": "Lors de la séance du conseil municipal de Montréal, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Montréal ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Montréal voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°32 de réunion citoyenne à Québec",
+    "text": "Lors de la séance du conseil municipal de Québec, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Québec ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Québec voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°33 de réunion citoyenne à Ottawa",
+    "text": "Lors de la séance du conseil municipal de Ottawa, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Ottawa ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Ottawa voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°34 de réunion citoyenne à Toronto",
+    "text": "Lors de la séance du conseil municipal de Toronto, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Toronto ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Toronto voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°35 de réunion citoyenne à Vancouver",
+    "text": "Lors de la séance du conseil municipal de Vancouver, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Vancouver ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Vancouver voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°36 de réunion citoyenne à Gatineau",
+    "text": "Lors de la séance du conseil municipal de Gatineau, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Gatineau ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Gatineau voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°37 de réunion citoyenne à Sherbrooke",
+    "text": "Lors de la séance du conseil municipal de Sherbrooke, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Sherbrooke ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Sherbrooke voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°38 de réunion citoyenne à Laval",
+    "text": "Lors de la séance du conseil municipal de Laval, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Laval ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Laval voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°39 de réunion citoyenne à Trois-Rivières",
+    "text": "Lors de la séance du conseil municipal de Trois-Rivières, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Trois-Rivières ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Trois-Rivières voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°40 de réunion citoyenne à Saguenay",
+    "text": "Lors de la séance du conseil municipal de Saguenay, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Saguenay ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Saguenay voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°41 de réunion citoyenne à Montréal",
+    "text": "Lors de la séance du conseil municipal de Montréal, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Montréal ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Montréal voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°42 de réunion citoyenne à Québec",
+    "text": "Lors de la séance du conseil municipal de Québec, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Québec ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Québec voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°43 de réunion citoyenne à Ottawa",
+    "text": "Lors de la séance du conseil municipal de Ottawa, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Ottawa ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Ottawa voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°44 de réunion citoyenne à Toronto",
+    "text": "Lors de la séance du conseil municipal de Toronto, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Toronto ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Toronto voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°45 de réunion citoyenne à Vancouver",
+    "text": "Lors de la séance du conseil municipal de Vancouver, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Vancouver ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Vancouver voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°46 de réunion citoyenne à Gatineau",
+    "text": "Lors de la séance du conseil municipal de Gatineau, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Gatineau ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Gatineau voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°47 de réunion citoyenne à Sherbrooke",
+    "text": "Lors de la séance du conseil municipal de Sherbrooke, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Sherbrooke ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Sherbrooke voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°48 de réunion citoyenne à Laval",
+    "text": "Lors de la séance du conseil municipal de Laval, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Laval ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Laval voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°49 de réunion citoyenne à Trois-Rivières",
+    "text": "Lors de la séance du conseil municipal de Trois-Rivières, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Trois-Rivières ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Trois-Rivières voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°50 de réunion citoyenne à Saguenay",
+    "text": "Lors de la séance du conseil municipal de Saguenay, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Saguenay ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Saguenay voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°51 de réunion citoyenne à Montréal",
+    "text": "Lors de la séance du conseil municipal de Montréal, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Montréal ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Montréal voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°52 de réunion citoyenne à Québec",
+    "text": "Lors de la séance du conseil municipal de Québec, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Québec ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Québec voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°53 de réunion citoyenne à Ottawa",
+    "text": "Lors de la séance du conseil municipal de Ottawa, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Ottawa ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Ottawa voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°54 de réunion citoyenne à Toronto",
+    "text": "Lors de la séance du conseil municipal de Toronto, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Toronto ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Toronto voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°55 de réunion citoyenne à Vancouver",
+    "text": "Lors de la séance du conseil municipal de Vancouver, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Vancouver ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Vancouver voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°56 de réunion citoyenne à Gatineau",
+    "text": "Lors de la séance du conseil municipal de Gatineau, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Gatineau ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Gatineau voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°57 de réunion citoyenne à Sherbrooke",
+    "text": "Lors de la séance du conseil municipal de Sherbrooke, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Sherbrooke ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Sherbrooke voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°58 de réunion citoyenne à Laval",
+    "text": "Lors de la séance du conseil municipal de Laval, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Laval ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Laval voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°59 de réunion citoyenne à Trois-Rivières",
+    "text": "Lors de la séance du conseil municipal de Trois-Rivières, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Trois-Rivières ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Trois-Rivières voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°60 de réunion citoyenne à Saguenay",
+    "text": "Lors de la séance du conseil municipal de Saguenay, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Saguenay ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Saguenay voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°61 de réunion citoyenne à Montréal",
+    "text": "Lors de la séance du conseil municipal de Montréal, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Montréal ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Montréal voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°62 de réunion citoyenne à Québec",
+    "text": "Lors de la séance du conseil municipal de Québec, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Québec ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Québec voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°63 de réunion citoyenne à Ottawa",
+    "text": "Lors de la séance du conseil municipal de Ottawa, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Ottawa ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Ottawa voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°64 de réunion citoyenne à Toronto",
+    "text": "Lors de la séance du conseil municipal de Toronto, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Toronto ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Toronto voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°65 de réunion citoyenne à Vancouver",
+    "text": "Lors de la séance du conseil municipal de Vancouver, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Vancouver ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Vancouver voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°66 de réunion citoyenne à Gatineau",
+    "text": "Lors de la séance du conseil municipal de Gatineau, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Gatineau ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Gatineau voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°67 de réunion citoyenne à Sherbrooke",
+    "text": "Lors de la séance du conseil municipal de Sherbrooke, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Sherbrooke ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Sherbrooke voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°68 de réunion citoyenne à Laval",
+    "text": "Lors de la séance du conseil municipal de Laval, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Laval ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Laval voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°69 de réunion citoyenne à Trois-Rivières",
+    "text": "Lors de la séance du conseil municipal de Trois-Rivières, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Trois-Rivières ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Trois-Rivières voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°70 de réunion citoyenne à Saguenay",
+    "text": "Lors de la séance du conseil municipal de Saguenay, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Saguenay ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Saguenay voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°71 de réunion citoyenne à Montréal",
+    "text": "Lors de la séance du conseil municipal de Montréal, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Montréal ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Montréal voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°72 de réunion citoyenne à Québec",
+    "text": "Lors de la séance du conseil municipal de Québec, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Québec ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Québec voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°73 de réunion citoyenne à Ottawa",
+    "text": "Lors de la séance du conseil municipal de Ottawa, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Ottawa ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Ottawa voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°74 de réunion citoyenne à Toronto",
+    "text": "Lors de la séance du conseil municipal de Toronto, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Toronto ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Toronto voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°75 de réunion citoyenne à Vancouver",
+    "text": "Lors de la séance du conseil municipal de Vancouver, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Vancouver ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Vancouver voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°76 de réunion citoyenne à Gatineau",
+    "text": "Lors de la séance du conseil municipal de Gatineau, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Gatineau ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Gatineau voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°77 de réunion citoyenne à Sherbrooke",
+    "text": "Lors de la séance du conseil municipal de Sherbrooke, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Sherbrooke ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Sherbrooke voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°78 de réunion citoyenne à Laval",
+    "text": "Lors de la séance du conseil municipal de Laval, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Laval ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Laval voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°79 de réunion citoyenne à Trois-Rivières",
+    "text": "Lors de la séance du conseil municipal de Trois-Rivières, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Trois-Rivières ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Trois-Rivières voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B1",
+    "title": "Compte-rendu B1 N°80 de réunion citoyenne à Saguenay",
+    "text": "Lors de la séance du conseil municipal de Saguenay, les résidents ont voté à la majorité en faveur du déploiement de nouvelles pistes cyclables sécurisées et de l'augmentation des zones vertes au cœur des quartiers résidentiels.",
+    "opt": [
+      "Approbation des nouvelles pistes cyclables et zones vertes",
+      "Fermeture définitive des parcs municipaux",
+      "Augmentation de 50% du prix des billets de bus",
+      "Interdiction totale des vélos en centre-ville"
+    ],
+    "ans": 0,
+    "tr": "Les résidents de Saguenay ont voté en faveur du déploiement de nouvelles pistes cyclables sécurisées.",
+    "en": "Residents in Saguenay voted in favor of deploying new protected bike lanes.",
+    "hint": "⚠️ Trap Alert: Distinguish approved infrastructure (bike lanes) from traffic distractors.\n🔄 Paraphrase Key: 'voté en faveur' = civic approval."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°1 sur l'économie à Montréal",
+    "text": "L'accélération de la transition énergétique à Montréal a permis de réduire l'empreinte carbone des transports publics de 12 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 12% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Montréal a réduit l'empreinte carbone des transports de 12 %.",
+    "en": "The energy transition in Montréal reduced transit carbon footprint by 12%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (12%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°2 sur l'économie à Québec",
+    "text": "L'accélération de la transition énergétique à Québec a permis de réduire l'empreinte carbone des transports publics de 13 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 13% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Québec a réduit l'empreinte carbone des transports de 13 %.",
+    "en": "The energy transition in Québec reduced transit carbon footprint by 13%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (13%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°3 sur l'économie à Ottawa",
+    "text": "L'accélération de la transition énergétique à Ottawa a permis de réduire l'empreinte carbone des transports publics de 14 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 14% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Ottawa a réduit l'empreinte carbone des transports de 14 %.",
+    "en": "The energy transition in Ottawa reduced transit carbon footprint by 14%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (14%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°4 sur l'économie à Toronto",
+    "text": "L'accélération de la transition énergétique à Toronto a permis de réduire l'empreinte carbone des transports publics de 15 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 15% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Toronto a réduit l'empreinte carbone des transports de 15 %.",
+    "en": "The energy transition in Toronto reduced transit carbon footprint by 15%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (15%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°5 sur l'économie à Vancouver",
+    "text": "L'accélération de la transition énergétique à Vancouver a permis de réduire l'empreinte carbone des transports publics de 16 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 16% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Vancouver a réduit l'empreinte carbone des transports de 16 %.",
+    "en": "The energy transition in Vancouver reduced transit carbon footprint by 16%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (16%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°6 sur l'économie à Gatineau",
+    "text": "L'accélération de la transition énergétique à Gatineau a permis de réduire l'empreinte carbone des transports publics de 17 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 17% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Gatineau a réduit l'empreinte carbone des transports de 17 %.",
+    "en": "The energy transition in Gatineau reduced transit carbon footprint by 17%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (17%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°7 sur l'économie à Sherbrooke",
+    "text": "L'accélération de la transition énergétique à Sherbrooke a permis de réduire l'empreinte carbone des transports publics de 18 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 18% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Sherbrooke a réduit l'empreinte carbone des transports de 18 %.",
+    "en": "The energy transition in Sherbrooke reduced transit carbon footprint by 18%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (18%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°8 sur l'économie à Laval",
+    "text": "L'accélération de la transition énergétique à Laval a permis de réduire l'empreinte carbone des transports publics de 19 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 19% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Laval a réduit l'empreinte carbone des transports de 19 %.",
+    "en": "The energy transition in Laval reduced transit carbon footprint by 19%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (19%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°9 sur l'économie à Trois-Rivières",
+    "text": "L'accélération de la transition énergétique à Trois-Rivières a permis de réduire l'empreinte carbone des transports publics de 20 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 20% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Trois-Rivières a réduit l'empreinte carbone des transports de 20 %.",
+    "en": "The energy transition in Trois-Rivières reduced transit carbon footprint by 20%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (20%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°10 sur l'économie à Saguenay",
+    "text": "L'accélération de la transition énergétique à Saguenay a permis de réduire l'empreinte carbone des transports publics de 21 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 21% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Saguenay a réduit l'empreinte carbone des transports de 21 %.",
+    "en": "The energy transition in Saguenay reduced transit carbon footprint by 21%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (21%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°11 sur l'économie à Montréal",
+    "text": "L'accélération de la transition énergétique à Montréal a permis de réduire l'empreinte carbone des transports publics de 22 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 22% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Montréal a réduit l'empreinte carbone des transports de 22 %.",
+    "en": "The energy transition in Montréal reduced transit carbon footprint by 22%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (22%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°12 sur l'économie à Québec",
+    "text": "L'accélération de la transition énergétique à Québec a permis de réduire l'empreinte carbone des transports publics de 23 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 23% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Québec a réduit l'empreinte carbone des transports de 23 %.",
+    "en": "The energy transition in Québec reduced transit carbon footprint by 23%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (23%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°13 sur l'économie à Ottawa",
+    "text": "L'accélération de la transition énergétique à Ottawa a permis de réduire l'empreinte carbone des transports publics de 24 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 24% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Ottawa a réduit l'empreinte carbone des transports de 24 %.",
+    "en": "The energy transition in Ottawa reduced transit carbon footprint by 24%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (24%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°14 sur l'économie à Toronto",
+    "text": "L'accélération de la transition énergétique à Toronto a permis de réduire l'empreinte carbone des transports publics de 25 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 25% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Toronto a réduit l'empreinte carbone des transports de 25 %.",
+    "en": "The energy transition in Toronto reduced transit carbon footprint by 25%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (25%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°15 sur l'économie à Vancouver",
+    "text": "L'accélération de la transition énergétique à Vancouver a permis de réduire l'empreinte carbone des transports publics de 26 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 26% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Vancouver a réduit l'empreinte carbone des transports de 26 %.",
+    "en": "The energy transition in Vancouver reduced transit carbon footprint by 26%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (26%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°16 sur l'économie à Gatineau",
+    "text": "L'accélération de la transition énergétique à Gatineau a permis de réduire l'empreinte carbone des transports publics de 27 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 27% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Gatineau a réduit l'empreinte carbone des transports de 27 %.",
+    "en": "The energy transition in Gatineau reduced transit carbon footprint by 27%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (27%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°17 sur l'économie à Sherbrooke",
+    "text": "L'accélération de la transition énergétique à Sherbrooke a permis de réduire l'empreinte carbone des transports publics de 28 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 28% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Sherbrooke a réduit l'empreinte carbone des transports de 28 %.",
+    "en": "The energy transition in Sherbrooke reduced transit carbon footprint by 28%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (28%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°18 sur l'économie à Laval",
+    "text": "L'accélération de la transition énergétique à Laval a permis de réduire l'empreinte carbone des transports publics de 29 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 29% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Laval a réduit l'empreinte carbone des transports de 29 %.",
+    "en": "The energy transition in Laval reduced transit carbon footprint by 29%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (29%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°19 sur l'économie à Trois-Rivières",
+    "text": "L'accélération de la transition énergétique à Trois-Rivières a permis de réduire l'empreinte carbone des transports publics de 30 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 30% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Trois-Rivières a réduit l'empreinte carbone des transports de 30 %.",
+    "en": "The energy transition in Trois-Rivières reduced transit carbon footprint by 30%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (30%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°20 sur l'économie à Saguenay",
+    "text": "L'accélération de la transition énergétique à Saguenay a permis de réduire l'empreinte carbone des transports publics de 31 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 31% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Saguenay a réduit l'empreinte carbone des transports de 31 %.",
+    "en": "The energy transition in Saguenay reduced transit carbon footprint by 31%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (31%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°21 sur l'économie à Montréal",
+    "text": "L'accélération de la transition énergétique à Montréal a permis de réduire l'empreinte carbone des transports publics de 32 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 32% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Montréal a réduit l'empreinte carbone des transports de 32 %.",
+    "en": "The energy transition in Montréal reduced transit carbon footprint by 32%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (32%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°22 sur l'économie à Québec",
+    "text": "L'accélération de la transition énergétique à Québec a permis de réduire l'empreinte carbone des transports publics de 33 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 33% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Québec a réduit l'empreinte carbone des transports de 33 %.",
+    "en": "The energy transition in Québec reduced transit carbon footprint by 33%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (33%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°23 sur l'économie à Ottawa",
+    "text": "L'accélération de la transition énergétique à Ottawa a permis de réduire l'empreinte carbone des transports publics de 34 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 34% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Ottawa a réduit l'empreinte carbone des transports de 34 %.",
+    "en": "The energy transition in Ottawa reduced transit carbon footprint by 34%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (34%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°24 sur l'économie à Toronto",
+    "text": "L'accélération de la transition énergétique à Toronto a permis de réduire l'empreinte carbone des transports publics de 35 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 35% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Toronto a réduit l'empreinte carbone des transports de 35 %.",
+    "en": "The energy transition in Toronto reduced transit carbon footprint by 35%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (35%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°25 sur l'économie à Vancouver",
+    "text": "L'accélération de la transition énergétique à Vancouver a permis de réduire l'empreinte carbone des transports publics de 36 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 36% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Vancouver a réduit l'empreinte carbone des transports de 36 %.",
+    "en": "The energy transition in Vancouver reduced transit carbon footprint by 36%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (36%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°26 sur l'économie à Gatineau",
+    "text": "L'accélération de la transition énergétique à Gatineau a permis de réduire l'empreinte carbone des transports publics de 37 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 37% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Gatineau a réduit l'empreinte carbone des transports de 37 %.",
+    "en": "The energy transition in Gatineau reduced transit carbon footprint by 37%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (37%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°27 sur l'économie à Sherbrooke",
+    "text": "L'accélération de la transition énergétique à Sherbrooke a permis de réduire l'empreinte carbone des transports publics de 38 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 38% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Sherbrooke a réduit l'empreinte carbone des transports de 38 %.",
+    "en": "The energy transition in Sherbrooke reduced transit carbon footprint by 38%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (38%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°28 sur l'économie à Laval",
+    "text": "L'accélération de la transition énergétique à Laval a permis de réduire l'empreinte carbone des transports publics de 39 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 39% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Laval a réduit l'empreinte carbone des transports de 39 %.",
+    "en": "The energy transition in Laval reduced transit carbon footprint by 39%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (39%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°29 sur l'économie à Trois-Rivières",
+    "text": "L'accélération de la transition énergétique à Trois-Rivières a permis de réduire l'empreinte carbone des transports publics de 12 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 12% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Trois-Rivières a réduit l'empreinte carbone des transports de 12 %.",
+    "en": "The energy transition in Trois-Rivières reduced transit carbon footprint by 12%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (12%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°30 sur l'économie à Saguenay",
+    "text": "L'accélération de la transition énergétique à Saguenay a permis de réduire l'empreinte carbone des transports publics de 13 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 13% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Saguenay a réduit l'empreinte carbone des transports de 13 %.",
+    "en": "The energy transition in Saguenay reduced transit carbon footprint by 13%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (13%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°31 sur l'économie à Montréal",
+    "text": "L'accélération de la transition énergétique à Montréal a permis de réduire l'empreinte carbone des transports publics de 14 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 14% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Montréal a réduit l'empreinte carbone des transports de 14 %.",
+    "en": "The energy transition in Montréal reduced transit carbon footprint by 14%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (14%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°32 sur l'économie à Québec",
+    "text": "L'accélération de la transition énergétique à Québec a permis de réduire l'empreinte carbone des transports publics de 15 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 15% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Québec a réduit l'empreinte carbone des transports de 15 %.",
+    "en": "The energy transition in Québec reduced transit carbon footprint by 15%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (15%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°33 sur l'économie à Ottawa",
+    "text": "L'accélération de la transition énergétique à Ottawa a permis de réduire l'empreinte carbone des transports publics de 16 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 16% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Ottawa a réduit l'empreinte carbone des transports de 16 %.",
+    "en": "The energy transition in Ottawa reduced transit carbon footprint by 16%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (16%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°34 sur l'économie à Toronto",
+    "text": "L'accélération de la transition énergétique à Toronto a permis de réduire l'empreinte carbone des transports publics de 17 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 17% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Toronto a réduit l'empreinte carbone des transports de 17 %.",
+    "en": "The energy transition in Toronto reduced transit carbon footprint by 17%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (17%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°35 sur l'économie à Vancouver",
+    "text": "L'accélération de la transition énergétique à Vancouver a permis de réduire l'empreinte carbone des transports publics de 18 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 18% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Vancouver a réduit l'empreinte carbone des transports de 18 %.",
+    "en": "The energy transition in Vancouver reduced transit carbon footprint by 18%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (18%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°36 sur l'économie à Gatineau",
+    "text": "L'accélération de la transition énergétique à Gatineau a permis de réduire l'empreinte carbone des transports publics de 19 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 19% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Gatineau a réduit l'empreinte carbone des transports de 19 %.",
+    "en": "The energy transition in Gatineau reduced transit carbon footprint by 19%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (19%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°37 sur l'économie à Sherbrooke",
+    "text": "L'accélération de la transition énergétique à Sherbrooke a permis de réduire l'empreinte carbone des transports publics de 20 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 20% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Sherbrooke a réduit l'empreinte carbone des transports de 20 %.",
+    "en": "The energy transition in Sherbrooke reduced transit carbon footprint by 20%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (20%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°38 sur l'économie à Laval",
+    "text": "L'accélération de la transition énergétique à Laval a permis de réduire l'empreinte carbone des transports publics de 21 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 21% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Laval a réduit l'empreinte carbone des transports de 21 %.",
+    "en": "The energy transition in Laval reduced transit carbon footprint by 21%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (21%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°39 sur l'économie à Trois-Rivières",
+    "text": "L'accélération de la transition énergétique à Trois-Rivières a permis de réduire l'empreinte carbone des transports publics de 22 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 22% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Trois-Rivières a réduit l'empreinte carbone des transports de 22 %.",
+    "en": "The energy transition in Trois-Rivières reduced transit carbon footprint by 22%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (22%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°40 sur l'économie à Saguenay",
+    "text": "L'accélération de la transition énergétique à Saguenay a permis de réduire l'empreinte carbone des transports publics de 23 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 23% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Saguenay a réduit l'empreinte carbone des transports de 23 %.",
+    "en": "The energy transition in Saguenay reduced transit carbon footprint by 23%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (23%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°41 sur l'économie à Montréal",
+    "text": "L'accélération de la transition énergétique à Montréal a permis de réduire l'empreinte carbone des transports publics de 24 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 24% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Montréal a réduit l'empreinte carbone des transports de 24 %.",
+    "en": "The energy transition in Montréal reduced transit carbon footprint by 24%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (24%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°42 sur l'économie à Québec",
+    "text": "L'accélération de la transition énergétique à Québec a permis de réduire l'empreinte carbone des transports publics de 25 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 25% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Québec a réduit l'empreinte carbone des transports de 25 %.",
+    "en": "The energy transition in Québec reduced transit carbon footprint by 25%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (25%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°43 sur l'économie à Ottawa",
+    "text": "L'accélération de la transition énergétique à Ottawa a permis de réduire l'empreinte carbone des transports publics de 26 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 26% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Ottawa a réduit l'empreinte carbone des transports de 26 %.",
+    "en": "The energy transition in Ottawa reduced transit carbon footprint by 26%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (26%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°44 sur l'économie à Toronto",
+    "text": "L'accélération de la transition énergétique à Toronto a permis de réduire l'empreinte carbone des transports publics de 27 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 27% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Toronto a réduit l'empreinte carbone des transports de 27 %.",
+    "en": "The energy transition in Toronto reduced transit carbon footprint by 27%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (27%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°45 sur l'économie à Vancouver",
+    "text": "L'accélération de la transition énergétique à Vancouver a permis de réduire l'empreinte carbone des transports publics de 28 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 28% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Vancouver a réduit l'empreinte carbone des transports de 28 %.",
+    "en": "The energy transition in Vancouver reduced transit carbon footprint by 28%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (28%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°46 sur l'économie à Gatineau",
+    "text": "L'accélération de la transition énergétique à Gatineau a permis de réduire l'empreinte carbone des transports publics de 29 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 29% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Gatineau a réduit l'empreinte carbone des transports de 29 %.",
+    "en": "The energy transition in Gatineau reduced transit carbon footprint by 29%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (29%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°47 sur l'économie à Sherbrooke",
+    "text": "L'accélération de la transition énergétique à Sherbrooke a permis de réduire l'empreinte carbone des transports publics de 30 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 30% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Sherbrooke a réduit l'empreinte carbone des transports de 30 %.",
+    "en": "The energy transition in Sherbrooke reduced transit carbon footprint by 30%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (30%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°48 sur l'économie à Laval",
+    "text": "L'accélération de la transition énergétique à Laval a permis de réduire l'empreinte carbone des transports publics de 31 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 31% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Laval a réduit l'empreinte carbone des transports de 31 %.",
+    "en": "The energy transition in Laval reduced transit carbon footprint by 31%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (31%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°49 sur l'économie à Trois-Rivières",
+    "text": "L'accélération de la transition énergétique à Trois-Rivières a permis de réduire l'empreinte carbone des transports publics de 32 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 32% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Trois-Rivières a réduit l'empreinte carbone des transports de 32 %.",
+    "en": "The energy transition in Trois-Rivières reduced transit carbon footprint by 32%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (32%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°50 sur l'économie à Saguenay",
+    "text": "L'accélération de la transition énergétique à Saguenay a permis de réduire l'empreinte carbone des transports publics de 33 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 33% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Saguenay a réduit l'empreinte carbone des transports de 33 %.",
+    "en": "The energy transition in Saguenay reduced transit carbon footprint by 33%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (33%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°51 sur l'économie à Montréal",
+    "text": "L'accélération de la transition énergétique à Montréal a permis de réduire l'empreinte carbone des transports publics de 34 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 34% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Montréal a réduit l'empreinte carbone des transports de 34 %.",
+    "en": "The energy transition in Montréal reduced transit carbon footprint by 34%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (34%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°52 sur l'économie à Québec",
+    "text": "L'accélération de la transition énergétique à Québec a permis de réduire l'empreinte carbone des transports publics de 35 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 35% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Québec a réduit l'empreinte carbone des transports de 35 %.",
+    "en": "The energy transition in Québec reduced transit carbon footprint by 35%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (35%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°53 sur l'économie à Ottawa",
+    "text": "L'accélération de la transition énergétique à Ottawa a permis de réduire l'empreinte carbone des transports publics de 36 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 36% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Ottawa a réduit l'empreinte carbone des transports de 36 %.",
+    "en": "The energy transition in Ottawa reduced transit carbon footprint by 36%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (36%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°54 sur l'économie à Toronto",
+    "text": "L'accélération de la transition énergétique à Toronto a permis de réduire l'empreinte carbone des transports publics de 37 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 37% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Toronto a réduit l'empreinte carbone des transports de 37 %.",
+    "en": "The energy transition in Toronto reduced transit carbon footprint by 37%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (37%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°55 sur l'économie à Vancouver",
+    "text": "L'accélération de la transition énergétique à Vancouver a permis de réduire l'empreinte carbone des transports publics de 38 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 38% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Vancouver a réduit l'empreinte carbone des transports de 38 %.",
+    "en": "The energy transition in Vancouver reduced transit carbon footprint by 38%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (38%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°56 sur l'économie à Gatineau",
+    "text": "L'accélération de la transition énergétique à Gatineau a permis de réduire l'empreinte carbone des transports publics de 39 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 39% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Gatineau a réduit l'empreinte carbone des transports de 39 %.",
+    "en": "The energy transition in Gatineau reduced transit carbon footprint by 39%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (39%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°57 sur l'économie à Sherbrooke",
+    "text": "L'accélération de la transition énergétique à Sherbrooke a permis de réduire l'empreinte carbone des transports publics de 12 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 12% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Sherbrooke a réduit l'empreinte carbone des transports de 12 %.",
+    "en": "The energy transition in Sherbrooke reduced transit carbon footprint by 12%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (12%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°58 sur l'économie à Laval",
+    "text": "L'accélération de la transition énergétique à Laval a permis de réduire l'empreinte carbone des transports publics de 13 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 13% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Laval a réduit l'empreinte carbone des transports de 13 %.",
+    "en": "The energy transition in Laval reduced transit carbon footprint by 13%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (13%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°59 sur l'économie à Trois-Rivières",
+    "text": "L'accélération de la transition énergétique à Trois-Rivières a permis de réduire l'empreinte carbone des transports publics de 14 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 14% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Trois-Rivières a réduit l'empreinte carbone des transports de 14 %.",
+    "en": "The energy transition in Trois-Rivières reduced transit carbon footprint by 14%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (14%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°60 sur l'économie à Saguenay",
+    "text": "L'accélération de la transition énergétique à Saguenay a permis de réduire l'empreinte carbone des transports publics de 15 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 15% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Saguenay a réduit l'empreinte carbone des transports de 15 %.",
+    "en": "The energy transition in Saguenay reduced transit carbon footprint by 15%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (15%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°61 sur l'économie à Montréal",
+    "text": "L'accélération de la transition énergétique à Montréal a permis de réduire l'empreinte carbone des transports publics de 16 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 16% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Montréal a réduit l'empreinte carbone des transports de 16 %.",
+    "en": "The energy transition in Montréal reduced transit carbon footprint by 16%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (16%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°62 sur l'économie à Québec",
+    "text": "L'accélération de la transition énergétique à Québec a permis de réduire l'empreinte carbone des transports publics de 17 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 17% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Québec a réduit l'empreinte carbone des transports de 17 %.",
+    "en": "The energy transition in Québec reduced transit carbon footprint by 17%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (17%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°63 sur l'économie à Ottawa",
+    "text": "L'accélération de la transition énergétique à Ottawa a permis de réduire l'empreinte carbone des transports publics de 18 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 18% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Ottawa a réduit l'empreinte carbone des transports de 18 %.",
+    "en": "The energy transition in Ottawa reduced transit carbon footprint by 18%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (18%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°64 sur l'économie à Toronto",
+    "text": "L'accélération de la transition énergétique à Toronto a permis de réduire l'empreinte carbone des transports publics de 19 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 19% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Toronto a réduit l'empreinte carbone des transports de 19 %.",
+    "en": "The energy transition in Toronto reduced transit carbon footprint by 19%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (19%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°65 sur l'économie à Vancouver",
+    "text": "L'accélération de la transition énergétique à Vancouver a permis de réduire l'empreinte carbone des transports publics de 20 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 20% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Vancouver a réduit l'empreinte carbone des transports de 20 %.",
+    "en": "The energy transition in Vancouver reduced transit carbon footprint by 20%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (20%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°66 sur l'économie à Gatineau",
+    "text": "L'accélération de la transition énergétique à Gatineau a permis de réduire l'empreinte carbone des transports publics de 21 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 21% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Gatineau a réduit l'empreinte carbone des transports de 21 %.",
+    "en": "The energy transition in Gatineau reduced transit carbon footprint by 21%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (21%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°67 sur l'économie à Sherbrooke",
+    "text": "L'accélération de la transition énergétique à Sherbrooke a permis de réduire l'empreinte carbone des transports publics de 22 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 22% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Sherbrooke a réduit l'empreinte carbone des transports de 22 %.",
+    "en": "The energy transition in Sherbrooke reduced transit carbon footprint by 22%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (22%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°68 sur l'économie à Laval",
+    "text": "L'accélération de la transition énergétique à Laval a permis de réduire l'empreinte carbone des transports publics de 23 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 23% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Laval a réduit l'empreinte carbone des transports de 23 %.",
+    "en": "The energy transition in Laval reduced transit carbon footprint by 23%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (23%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°69 sur l'économie à Trois-Rivières",
+    "text": "L'accélération de la transition énergétique à Trois-Rivières a permis de réduire l'empreinte carbone des transports publics de 24 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 24% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Trois-Rivières a réduit l'empreinte carbone des transports de 24 %.",
+    "en": "The energy transition in Trois-Rivières reduced transit carbon footprint by 24%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (24%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°70 sur l'économie à Saguenay",
+    "text": "L'accélération de la transition énergétique à Saguenay a permis de réduire l'empreinte carbone des transports publics de 25 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 25% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Saguenay a réduit l'empreinte carbone des transports de 25 %.",
+    "en": "The energy transition in Saguenay reduced transit carbon footprint by 25%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (25%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°71 sur l'économie à Montréal",
+    "text": "L'accélération de la transition énergétique à Montréal a permis de réduire l'empreinte carbone des transports publics de 26 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 26% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Montréal a réduit l'empreinte carbone des transports de 26 %.",
+    "en": "The energy transition in Montréal reduced transit carbon footprint by 26%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (26%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°72 sur l'économie à Québec",
+    "text": "L'accélération de la transition énergétique à Québec a permis de réduire l'empreinte carbone des transports publics de 27 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 27% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Québec a réduit l'empreinte carbone des transports de 27 %.",
+    "en": "The energy transition in Québec reduced transit carbon footprint by 27%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (27%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°73 sur l'économie à Ottawa",
+    "text": "L'accélération de la transition énergétique à Ottawa a permis de réduire l'empreinte carbone des transports publics de 28 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 28% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Ottawa a réduit l'empreinte carbone des transports de 28 %.",
+    "en": "The energy transition in Ottawa reduced transit carbon footprint by 28%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (28%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°74 sur l'économie à Toronto",
+    "text": "L'accélération de la transition énergétique à Toronto a permis de réduire l'empreinte carbone des transports publics de 29 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 29% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Toronto a réduit l'empreinte carbone des transports de 29 %.",
+    "en": "The energy transition in Toronto reduced transit carbon footprint by 29%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (29%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°75 sur l'économie à Vancouver",
+    "text": "L'accélération de la transition énergétique à Vancouver a permis de réduire l'empreinte carbone des transports publics de 30 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 30% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Vancouver a réduit l'empreinte carbone des transports de 30 %.",
+    "en": "The energy transition in Vancouver reduced transit carbon footprint by 30%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (30%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°76 sur l'économie à Gatineau",
+    "text": "L'accélération de la transition énergétique à Gatineau a permis de réduire l'empreinte carbone des transports publics de 31 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 31% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Gatineau a réduit l'empreinte carbone des transports de 31 %.",
+    "en": "The energy transition in Gatineau reduced transit carbon footprint by 31%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (31%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°77 sur l'économie à Sherbrooke",
+    "text": "L'accélération de la transition énergétique à Sherbrooke a permis de réduire l'empreinte carbone des transports publics de 32 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 32% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Sherbrooke a réduit l'empreinte carbone des transports de 32 %.",
+    "en": "The energy transition in Sherbrooke reduced transit carbon footprint by 32%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (32%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°78 sur l'économie à Laval",
+    "text": "L'accélération de la transition énergétique à Laval a permis de réduire l'empreinte carbone des transports publics de 33 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 33% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Laval a réduit l'empreinte carbone des transports de 33 %.",
+    "en": "The energy transition in Laval reduced transit carbon footprint by 33%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (33%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°79 sur l'économie à Trois-Rivières",
+    "text": "L'accélération de la transition énergétique à Trois-Rivières a permis de réduire l'empreinte carbone des transports publics de 34 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 34% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Trois-Rivières a réduit l'empreinte carbone des transports de 34 %.",
+    "en": "The energy transition in Trois-Rivières reduced transit carbon footprint by 34%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (34%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "B2",
+    "title": "Chronique B2 N°80 sur l'économie à Saguenay",
+    "text": "L'accélération de la transition énergétique à Saguenay a permis de réduire l'empreinte carbone des transports publics de 35 % au cours de l'année écoulée, tout en générant plus de 500 emplois non délocalisables dans la filière électrique.",
+    "opt": [
+      "Réduction de 35% de l'empreinte carbone et création d'emplois",
+      "Augmentation spectaculaire des émissions polluantes",
+      "Suppression de tous les budgets d'investissement écologiques",
+      "Privatisation complète du réseau de transports publics"
+    ],
+    "ans": 0,
+    "tr": "La transition énergétique à Saguenay a réduit l'empreinte carbone des transports de 35 %.",
+    "en": "The energy transition in Saguenay reduced transit carbon footprint by 35%.",
+    "hint": "⚠️ Trap Alert: Connect target percentage (35%) to carbon footprint reduction.\n🔄 Paraphrase Key: 'réduire l'empreinte carbone' = environmental progress."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°1 sur la gouvernance à Montréal",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Montréal montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°2 sur la gouvernance à Québec",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Québec montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°3 sur la gouvernance à Ottawa",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Ottawa montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°4 sur la gouvernance à Toronto",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Toronto montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°5 sur la gouvernance à Vancouver",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Vancouver montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°6 sur la gouvernance à Gatineau",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Gatineau montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°7 sur la gouvernance à Sherbrooke",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Sherbrooke montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°8 sur la gouvernance à Laval",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Laval montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°9 sur la gouvernance à Trois-Rivières",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Trois-Rivières montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°10 sur la gouvernance à Saguenay",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Saguenay montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°11 sur la gouvernance à Montréal",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Montréal montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°12 sur la gouvernance à Québec",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Québec montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°13 sur la gouvernance à Ottawa",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Ottawa montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°14 sur la gouvernance à Toronto",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Toronto montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°15 sur la gouvernance à Vancouver",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Vancouver montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°16 sur la gouvernance à Gatineau",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Gatineau montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°17 sur la gouvernance à Sherbrooke",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Sherbrooke montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°18 sur la gouvernance à Laval",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Laval montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°19 sur la gouvernance à Trois-Rivières",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Trois-Rivières montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°20 sur la gouvernance à Saguenay",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Saguenay montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°21 sur la gouvernance à Montréal",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Montréal montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°22 sur la gouvernance à Québec",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Québec montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°23 sur la gouvernance à Ottawa",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Ottawa montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°24 sur la gouvernance à Toronto",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Toronto montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°25 sur la gouvernance à Vancouver",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Vancouver montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°26 sur la gouvernance à Gatineau",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Gatineau montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°27 sur la gouvernance à Sherbrooke",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Sherbrooke montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°28 sur la gouvernance à Laval",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Laval montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°29 sur la gouvernance à Trois-Rivières",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Trois-Rivières montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C1",
+    "title": "Conférence C1 N°30 sur la gouvernance à Saguenay",
+    "text": "L'analyse rétrospective des politiques d'intermodalité urbaine à Saguenay montre que l'infrastructures seule ne suffit pas ; une transformation pérenne des habitudes de mobilité exige une tarification incitative et un accompagnement pédagogique citoyen.",
+    "opt": [
+      "Necessité d'associer infrastructures, tarification et pédagogie",
+      "Efficacité exclusive de la construction de nouvelles autoroutes",
+      "Suppression totale des aides au transport public",
+      "Abandon de toute politique de mobilité durable"
+    ],
+    "ans": 0,
+    "tr": "L'analyse montre que l'infrastructure seule ne suffit pas ; il faut tarification incitative et pédagogie.",
+    "en": "Analysis shows infrastructure alone is insufficient; incentive pricing and education are required.",
+    "hint": "⚠️ Trap Alert: Infrastructure ALONE is insufficient ('ne suffit pas').\n🔄 Paraphrase Key: Integrated policy approach."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°1 de philosophie et culture à Montréal",
+    "text": "La saturation de l'espace public numérique à Montréal par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°2 de philosophie et culture à Québec",
+    "text": "La saturation de l'espace public numérique à Québec par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°3 de philosophie et culture à Ottawa",
+    "text": "La saturation de l'espace public numérique à Ottawa par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°4 de philosophie et culture à Toronto",
+    "text": "La saturation de l'espace public numérique à Toronto par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°5 de philosophie et culture à Vancouver",
+    "text": "La saturation de l'espace public numérique à Vancouver par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°6 de philosophie et culture à Gatineau",
+    "text": "La saturation de l'espace public numérique à Gatineau par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°7 de philosophie et culture à Sherbrooke",
+    "text": "La saturation de l'espace public numérique à Sherbrooke par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°8 de philosophie et culture à Laval",
+    "text": "La saturation de l'espace public numérique à Laval par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°9 de philosophie et culture à Trois-Rivières",
+    "text": "La saturation de l'espace public numérique à Trois-Rivières par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°10 de philosophie et culture à Saguenay",
+    "text": "La saturation de l'espace public numérique à Saguenay par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°11 de philosophie et culture à Montréal",
+    "text": "La saturation de l'espace public numérique à Montréal par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°12 de philosophie et culture à Québec",
+    "text": "La saturation de l'espace public numérique à Québec par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°13 de philosophie et culture à Ottawa",
+    "text": "La saturation de l'espace public numérique à Ottawa par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°14 de philosophie et culture à Toronto",
+    "text": "La saturation de l'espace public numérique à Toronto par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°15 de philosophie et culture à Vancouver",
+    "text": "La saturation de l'espace public numérique à Vancouver par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°16 de philosophie et culture à Gatineau",
+    "text": "La saturation de l'espace public numérique à Gatineau par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°17 de philosophie et culture à Sherbrooke",
+    "text": "La saturation de l'espace public numérique à Sherbrooke par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°18 de philosophie et culture à Laval",
+    "text": "La saturation de l'espace public numérique à Laval par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°19 de philosophie et culture à Trois-Rivières",
+    "text": "La saturation de l'espace public numérique à Trois-Rivières par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
+  },
+  {
+    "level": "C2",
+    "title": "Essai C2 N°20 de philosophie et culture à Saguenay",
+    "text": "La saturation de l'espace public numérique à Saguenay par des flux informationnels algorithmiques pose un risque d'altération de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle.",
+    "opt": [
+      "Substitution de l'analyse factuelle par l'immédiateté émotionnelle",
+      "Perfectionnement spectaculaire du débat démocratique en ligne",
+      "Disparition complète des moyens de communication électroniques",
+      "Obligation légale d'utiliser uniquement la presse papier"
+    ],
+    "ans": 0,
+    "tr": "Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.",
+    "en": "Algorithmic flows risk replacing factual analysis with emotional immediacy.",
+    "hint": "⚠️ Trap Alert: Identify core philosophical risk ('substituer l'immédiateté à l'analyse').\n🔄 Paraphrase Key: High-register critical analysis."
   }
 ];
-
-const READING_TOPICS = [
-  // A1 DISCOVERY (Q1 - Q10)
-  {
-    level: "A1",
-    text: "Horaires de la boulangerie 'La Parisis' : Ouvert du mardi au dimanche de 7h00 à 19h00 sans interruption. Fermeture hebdomadaire le lundi.",
-    q: "Quand la boulangerie est-elle fermée ?",
-    opt: ["Le lundi", "Le dimanche", "Le mardi", "Tous les après-midis"],
-    ans: 0,
-    passEn: "Opening hours for 'La Parisis' Bakery: Open Tuesday to Sunday from 7:00 AM to 7:00 PM non-stop. Weekly closure on Mondays.",
-    hint: "⚠️ Trap Alert: Do not confuse daily operating hours (Tuesday-Sunday) with the weekly closure day.\n🔄 Paraphrase Key: 'Fermeture hebdomadaire le lundi' directly specifies the closed day.\n📖 Structural Cue: Look for exact day names following 'Fermeture'."
-  },
-  {
-    level: "A1",
-    text: "Avis de passage de la Poste canadienne : Votre colis recommandé est disponible au bureau central à partir de demain 14h. Veuillez vous munir d'une pièce d'identité.",
-    q: "Où et quand récupérer votre colis ?",
-    opt: ["Au bureau central dès demain 14h", "À la maison aujourd'hui", "À la mairie la semaine prochaine", "Chez le voisin ce soir"],
-    ans: 0,
-    passEn: "Canada Post Delivery Notice: Your registered package is available at the central office starting tomorrow at 2:00 PM. Please bring a valid photo ID.",
-    hint: "⚠️ Trap Alert: Distinguish the pick-up location (bureau central) from home delivery.\n🔄 Paraphrase Key: 'disponible à partir de demain 14h' defines the availability time.\n📖 Structural Cue: Focus on location prepositions after 'au'."
-  },
-  {
-    level: "A1",
-    text: "Annonce de la bibliothèque municipale : Les ateliers de lecture pour enfants ont lieu chaque samedi matin de 10h00 à 11h30. Entrée libre et gratuite.",
-    q: "À quel moment ont lieu les ateliers de lecture ?",
-    opt: ["Le samedi matin de 10h00 à 11h30", "Le vendredi soir", "Le dimanche après-midi", "Tous les jours à midi"],
-    ans: 0,
-    passEn: "Municipal Library Announcement: Children's reading workshops take place every Saturday morning from 10:00 AM to 11:30 AM. Free admission for all.",
-    hint: "⚠️ Trap Alert: Watch for specific day/time combinations.\n🔄 Paraphrase Key: 'chaque samedi matin de 10h00 à 11h30'.\n📖 Structural Cue: Identify day markers after 'ont lieu'."
-  },
-  {
-    level: "A1",
-    text: "Message de la clinique médicale : Le cabinet du docteur Roy sera exceptionnellement fermé du 15 au 20 août pour congés annuels.",
-    q: "Pourquoi le cabinet médical est-il fermé ?",
-    opt: ["Pour congés annuels du docteur", "Pour rénovation complète", "En raison d'un problème technique", "Pour déménagement"],
-    ans: 0,
-    passEn: "Medical Clinic Message: Dr. Roy's office will be exceptionally closed from August 15th to August 20th for annual vacation.",
-    hint: "⚠️ Trap Alert: Pay attention to the reason given after 'pour'.\n🔄 Paraphrase Key: 'congés annuels' means annual vacation leave.\n📖 Structural Cue: Look for cause prepositions like 'pour'."
-  },
-  {
-    level: "A1",
-    text: "Pharmacie du Centre — Service de garde : En dehors des heures d'ouverture normales, adressez-vous à la pharmacie Saint-Jean située au 12 rue de la Paix.",
-    q: "Où se rendre en dehors des heures d'ouverture ?",
-    opt: ["À la pharmacie Saint-Jean rue de la Paix", "À l'hôpital général de nuit", "Chez le médecin de famille", "À la mairie du quartier"],
-    ans: 0,
-    passEn: "Center Pharmacy — Emergency On-Call Service: Outside of normal operating hours, please visit Saint-Jean Pharmacy located at 12 rue de la Paix.",
-    hint: "⚠️ Trap Alert: Distinguish the primary pharmacy from the after-hours referral pharmacy.\n🔄 Paraphrase Key: 'adressez-vous à...' points to the emergency destination.\n📖 Structural Cue: Note address details following location directives."
-  },
-  {
-    level: "A1",
-    text: "Musée des Beaux-Arts de Montréal : Tarif réduit pour tous les étudiants et les jeunes de moins de 25 ans sur présentation de leur carte.",
-    q: "Qui peut obtenir un tarif réduit au musée ?",
-    opt: ["Les étudiants et jeunes de moins de 25 ans", "Seulement les enfants de moins de 5 ans", "Uniquement les professeurs d'université", "Tous les groupes de touristes"],
-    ans: 0,
-    passEn: "Montreal Museum of Fine Arts: Reduced rate for all students and young people under 25 upon presentation of their card.",
-    hint: "⚠️ Trap Alert: Identify the eligible age/status criteria mentioned in the notice.\n🔄 Paraphrase Key: 'étudiants et jeunes de moins de 25 ans'.\n📖 Structural Cue: Look for qualification criteria after 'pour'."
-  },
-  {
-    level: "A1",
-    text: "Supermarché Métro — Promotion de la semaine : Pour deux paquets de café achetés, le troisième est offert. Offre valable jusqu'à ce dimanche soir.",
-    q: "Quelle est la condition de la promotion sur le café ?",
-    opt: ["Troisième paquet offert pour deux achetés", "Café gratuit sans achat", "Réduction de 80% sur les fruits", "Livraison à domicile gratuite"],
-    ans: 0,
-    passEn: "Metro Supermarket — Weekly Special: Buy two packs of coffee, get the third free. Offer valid through this Sunday evening.",
-    hint: "⚠️ Trap Alert: Note the quantity ratio (buy 2 get 1 free).\n🔄 Paraphrase Key: 'le troisième est offert pour deux achetés'.\n📖 Structural Cue: Look for promotional terms after 'pour'."
-  },
-  {
-    level: "A1",
-    text: "Centre aquatique municipal : Les cours d'aquagym pour adultes ont lieu tous les mardis et jeudis de 18h30 à 19h30. Bonnet de bain obligatoire.",
-    q: "Quel équipement est obligatoire pour les cours d'aquagym ?",
-    opt: ["Un bonnet de bain", "Des lunettes de plongée", "Des palmes professionnelles", "Un peignoir de bain"],
-    ans: 0,
-    passEn: "Municipal Aquatic Center: Adult aquagym classes take place every Tuesday and Thursday from 6:30 PM to 7:30 PM. Swim cap required.",
-    hint: "⚠️ Trap Alert: Identify mandatory gear requirement ('bonnet de bain').\n🔄 Paraphrase Key: 'bonnet de bain obligatoire'.\n📖 Structural Cue: Look for obligation adjectives."
-  },
-  {
-    level: "A1",
-    text: "Pizzeria Napolitaine : Livraison gratuite à domicile à partir de 25$ d'achat. Commande par téléphone ou directement sur notre site web.",
-    q: "À partir de quel montant la livraison est-elle gratuite ?",
-    opt: ["À partir de 25 dollars d'achat", "À partir de 50 dollars", "Pour toutes les commandes sans minimum", "Uniquement les week-ends"],
-    ans: 0,
-    passEn: "Neapolitan Pizzeria: Free home delivery on orders over $25. Order by phone or directly on our website.",
-    hint: "⚠️ Trap Alert: Identify the minimum spending amount ($25).\n🔄 Paraphrase Key: 'à partir de 25$ d'achat'.\n📖 Structural Cue: Amount figures following 'à partir de'."
-  },
-  {
-    level: "A1",
-    text: "Gare routière régionale : Le guichet de vente des billets d'autobus est ouvert du lundi au vendredi de 6h00 à 20h00. Les week-ends, utilisez l'automate.",
-    q: "Comment acheter un billet le samedi ou le dimanche ?",
-    opt: ["En utilisant l'automate de vente", "Au guichet principal", "Auprès du chauffeur de bus", "Par courrier postal"],
-    ans: 0,
-    passEn: "Regional Bus Station: Ticket window is open Monday to Friday 6:00 AM to 8:00 PM. On weekends, use the ticket machine.",
-    hint: "⚠️ Trap Alert: Weekday ticket window vs weekend automated kiosk.\n🔄 Paraphrase Key: 'Les week-ends, utilisez l'automate'.\n📖 Structural Cue: Weekend instructions following 'week-ends'."
-  },
-
-  // A2 BREAKTHROUGH (Q11 - Q18)
-  {
-    level: "A2",
-    text: "Règlement municipal de la piscine municipale : Les enfants âgés de moins de 12 ans doivent obligatoirement être accompagnés d'un adulte majeur dans l'enceinte des bassins.",
-    q: "Quelle condition est exigée pour les enfants de moins de 12 ans ?",
-    opt: ["Être accompagné par un adulte majeur", "Avoir un certificat médical", "Venir uniquement le matin", "Payer un tarif spécial"],
-    ans: 0,
-    passEn: "Municipal Swimming Pool Regulations: Children under 12 years of age must strictly be accompanied by an adult inside the pool enclosure.",
-    hint: "⚠️ Trap Alert: Listen for mandatory requirements ('doivent obligatoirement').\n🔄 Paraphrase Key: 'accompagnés d'un adulte majeur'.\n📖 Structural Cue: Focus on obligation modal verbs like 'doivent'."
-  },
-  {
-    level: "A2",
-    text: "Offre d'emploi spécialisée : Restaurant gastronomique du Vieux-Montréal recherche un serveur bilingue français-anglais avec 2 ans d'expérience au service en salle.",
-    q: "Quel profil correspond exactement à cette offre ?",
-    opt: ["Un serveur bilingue expérimenté", "Un cuisinier italien débutant", "Un comptable à mi-temps", "Un gérant de magasin"],
-    ans: 0,
-    passEn: "Specialized Job Offer: Fine dining restaurant in Old Montreal is seeking a bilingual French-English server with 2 years of table service experience.",
-    hint: "⚠️ Trap Alert: Match both language fluency (bilingue) and experience.\n🔄 Paraphrase Key: '2 ans d'expérience' = experienced server.\n📖 Structural Cue: Job title keywords preceding experience requirements."
-  },
-  {
-    level: "A2",
-    text: "Note d'information aux résidents : Des travaux de réfection de la chaussée auront lieu dans la rue Sherbrooke le mercredi 12 octobre. Le stationnement sera interdit de 7h à 18h.",
-    q: "Quelle interdiction concerne les résidents le mercredi 12 octobre ?",
-    opt: ["L'interdiction de stationner dans la rue de 7h à 18h", "L'interdiction de sortir de chez soi", "L'interdiction de prendre le bus", "L'interdiction d'utiliser l'eau courante"],
-    ans: 0,
-    passEn: "Information Notice to Residents: Road resurfacing work will take place on Sherbrooke Street on Wednesday, October 12. Parking will be prohibited from 7:00 AM to 6:00 PM.",
-    hint: "⚠️ Trap Alert: Note the prohibited action ('stationnement interdit').\n🔄 Paraphrase Key: 'stationnement interdit' = parking prohibition.\n📖 Structural Cue: Time restrictions given."
-  },
-  {
-    level: "A2",
-    text: "Annonce du centre communautaire : Inscriptions aux cours de langue italienne et espagnole ouvertes pour la session d'automne. Tarif réduit pour les étudiants et retraités.",
-    q: "Qui peut bénéficier d'un tarif réduit ?",
-    opt: ["Les étudiants et les retraités", "Seulement les enfants de moins de 5 ans", "Uniquement les professeurs", "Tous les touristes de passage"],
-    ans: 0,
-    passEn: "Community Center Announcement: Registration for Italian and Spanish language classes is now open for fall. Reduced rate for students and retirees.",
-    hint: "⚠️ Trap Alert: Distinguish eligible discount groups.\n🔄 Paraphrase Key: 'étudiants et retraités'.\n📖 Structural Cue: Look for recipient nouns following 'pour'."
-  },
-  {
-    level: "A2",
-    text: "Avis de coupure d'eau potable : En raison de travaux de maintenance sur le réseau aqueduc, l'alimentation en eau sera interrompue ce jeudi de 22h00 à 05h00 du matin.",
-    q: "À quel moment l'eau sera-t-elle coupée ?",
-    opt: ["Ce jeudi durant la nuit de 22h à 05h", "Vendredi toute la journée", "Samedi après-midi", "Lundi matin à partir de 8h"],
-    ans: 0,
-    passEn: "Drinking Water Notice: Due to aqueduct maintenance, water supply will be cut off this Thursday from 10:00 PM to 5:00 AM.",
-    hint: "⚠️ Trap Alert: Overnight time window (22h00 à 05h00).\n🔄 Paraphrase Key: 'interrompue ce jeudi de 22h00 à 05h00'.\n📖 Structural Cue: Time range prepositions 'de... à'."
-  },
-  {
-    level: "A2",
-    text: "Annonce d'agence immobilière : Appartement 3 pièces à louer en centre-ville, rénové, lumineux, proche métro. Loyer 1100$/mois, chauffage et eau chaude inclus.",
-    q: "Quelles charges sont incluses dans le loyer de 1100$ ?",
-    opt: ["Le chauffage et l'eau chaude", "L'électricité et l'internet haut débit", "Le garage sous-sol sécurisé", "La taxe d'habitation municipale"],
-    ans: 0,
-    passEn: "Real Estate Announcement: Renovated 3-room apartment for rent downtown, bright, near metro. Rent $1100/month, heating and hot water included.",
-    hint: "⚠️ Trap Alert: Identify explicitly included utilities (chauffage, eau chaude).\n🔄 Paraphrase Key: 'chauffage et eau chaude inclus'.\n📖 Structural Cue: Included items follow 'inclus'."
-  },
-  {
-    level: "A2",
-    text: "Compagnie d'assurance auto : Pensez à renouveler votre contrat d'assurance véhicule avant la date d'échéance du 30 juin pour éviter toute interruption de couverture.",
-    q: "Quelle est la date limite pour renouveler le contrat d'assurance ?",
-    opt: ["Le 30 juin", "Le 1er janvier", "Le 15 août", "Le 31 décembre"],
-    ans: 0,
-    passEn: "Auto Insurance Company: Remember to renew your vehicle insurance policy before the June 30 expiration date to avoid coverage gaps.",
-    hint: "⚠️ Trap Alert: Deadline date is June 30th.\n🔄 Paraphrase Key: 'date d'échéance du 30 juin'.\n📖 Structural Cue: Date follows 'échéance'."
-  },
-  {
-    level: "A2",
-    text: "Service de transport par ferroutage : Les voyageurs à mobilité réduite sont invités à contacter le service d'assistance 48 heures avant leur départ pour réserver un accompagnement.",
-    q: "Quel délai est demandé aux voyageurs à mobilité réduite ?",
-    opt: ["Contacter le service 48 heures avant le départ", "Reserver deux semaines à l'avance", "Arriver 10 minutes avant l'embarquement", "Demander de l'aide une fois à bord"],
-    ans: 0,
-    passEn: "Rail Transport Service: Passengers with reduced mobility are invited to contact the assistance service 48 hours prior to departure to book support.",
-    hint: "⚠️ Trap Alert: Time delay requirement (48h before departure).\n🔄 Paraphrase Key: '48 heures avant leur départ'.\n📖 Structural Cue: Time window after 'contacter'."
-  },
-
-  // B1 THRESHOLD (Q19 - Q26)
-  {
-    level: "B1",
-    text: `ÉCONOMIE ET NUTRITION — LE POUVOIR D'ACHAT ET LA SANTÉ AU QUÉBEC\n\nUn rapport récent de l'Institut National de Santé Publique du Québec souligne l'importance des choix alimentaires quotidiens sur la santé cardiaque. Selon les chercheurs, réduire sa consommation de sel de seulement 3 grammes par jour diminuerait de 15 % les risques d'hypertension artérielle à l'échelle nationale.\n\nCette recommandation s'inscrit dans une campagne globale d'éducation à la nutrition. Les professionnels du secteur médical encouragent les consommateurs à privilégier les aliments frais préparés à la maison plutôt que les plats industriels transformés, souvent riches en sodium et en conservateurs artificiels.\n\nEn outre, les autorités canadiennes envisagent d'imposer un étiquetage nutritionnel plus clair sur la face avant des emballages afin d'aider les familles à identifier rapidement les produits à forte teneur en sel et en sucres ajoutés.`,
-    q: "Selon l'étude, quel est l'impact direct d'une diminution quotidienne de 3 grammes de sel ?",
-    opt: ["Une baisse de 15% des risques d'hypertension artérielle", "Une hausse de 20% du pouvoir d'achat des ménages", "La fermeture immédiate des usines agroalimentaires", "Une réduction automatique de la consommation de sucre"],
-    ans: 0,
-    passEn: `ECONOMY AND NUTRITION — PURCHASING POWER AND HEALTH IN QUEBEC\n\nA recent report from the National Institute of Public Health of Quebec emphasizes the importance of daily food choices on heart health. According to researchers, reducing daily salt intake by just 3 grams per day would lower the risk of high blood pressure by 15% nationwide.\n\nThis recommendation is part of a comprehensive nutrition education campaign. Medical professionals encourage consumers to favor fresh home-cooked meals over processed industrial foods, which are often high in sodium and artificial preservatives.\n\nFurthermore, Canadian authorities are considering mandating clearer front-of-package nutritional labeling to help families quickly identify products with high salt and added sugar content.`,
-    hint: "⚠️ Trap Alert: Link 3g salt reduction directly to hypertension risk statistics.\n🔄 Paraphrase Key: 'diminuerait de 15% les risques' = 'Une baisse de 15% des risques'.\n📖 Structural Cue: Causal percentage figure in paragraph 1."
-  },
-  {
-    level: "B1",
-    text: `TRANSPORT URBAIN ET MOBILITÉ DURABLE — ROULEZ VERT À MONTRÉAL\n\nLa Société de Transport de Montréal (STM) a annoncé une restructuration majeure de son réseau routier nocturne. Afin de poursuivre les travaux d'électrification des infrastructures, les lignes de tramway et de métro léger seront remplacées par des bus électriques articulés dès 22h00 les soirs de semaine.\n\nCette transition permettra non seulement d'accélérer la rénovation des voies ferroviaires, mais garantira également un niveau de bruit réduit pour les résidents des quartiers centraux. Les usagers sont invités à consulter la nouvelle application mobile pour suivre la position des bus en temps réel.\n\nMalgré quelques réticences initiales liées aux légers retards de correspondance, la majorité des voyageurs salue cette initiative moderne qui s'inscrit pleinement dans le plan climat de la métropole.`,
-    q: "Quelle mesure la Société de Transport prend-elle les soirs de semaine dès 22h00 ?",
-    opt: ["Le remplacement des lignes ferroviaires par des bus électriques", "La gratuité totale de l'ensemble du réseau de métro", "L'arrêt complet de tous les transports collectifs", "L'interdiction de circuler pour les piétons"],
-    ans: 0,
-    passEn: `URBAN TRANSIT AND SUSTAINABLE MOBILITY — RIDE GREEN IN MONTREAL\n\nThe Montreal Transit Corporation (STM) has announced a major restructuring of its night road network. In order to continue infrastructure electrification work, tramway and light rail lines will be replaced by articulated electric buses starting at 10:00 PM on weeknights.\n\nThis transition will not only accelerate railway track renovation, but will also guarantee reduced noise levels for central neighborhood residents. Riders are invited to check the new mobile application to track bus locations in real time.\n\nDespite some initial hesitation regarding minor transfer delays, the majority of travelers welcome this modern initiative, which aligns fully with the metropolis's climate plan.`,
-    hint: "⚠️ Trap Alert: Note shift to electric buses at 22h00, not a total shutdown.\n🔄 Paraphrase Key: 'remplacées par des bus électriques'.\n📖 Structural Cue: Action verbs following 'dès 22h00'."
-  },
-  {
-    level: "B1",
-    text: `ÉDUCATION ET TECHNOLOGIE — LES MANUELS NUMÉRIQUES DANS LES ÉCOLES\n\nL'introduction généralisée des tablettes numériques dans les établissements secondaires du Nouveau-Brunswick suscite des débats passionnés parmi les enseignants et les parents d'élèves. Selon une enquête menée auprès de 500 éducateurs, 68 % constatent une augmentation significative de l'engagement des étudiants lors des activités de recherche documentaire.\n\nCependant, plusieurs spécialistes en pédiatrie mettent en garde contre l'augmentation du temps d'écran quotidien et soulignent l'importance de maintenir un équilibre avec l'apprentissage sur support papier traditionnel. Les écoles mettent donc en place des chartes d'utilisation responsable pour encadrer cet usage en classe.`,
-    q: "Que constate la majorité des enseignants enquêtés concernant les tablettes ?",
-    opt: ["Une hausse de l'engagement des élèves dans la recherche documentaire", "Une baisse drastique des résultats scolaires généraux", "L'abandon complet de tous les cours de lecture", "Le refus des parents d'acheter des fournitures"],
-    ans: 0,
-    passEn: `EDUCATION AND TECHNOLOGY — DIGITAL TEXTBOOKS IN SCHOOLS\n\nThe widespread introduction of digital tablets in New Brunswick secondary schools is sparking passionate debates among teachers and parents. According to a survey of 500 educators, 68% report a significant increase in student engagement during documentary research activities.\n\nHowever, several pediatric specialists warn against increased daily screen time and emphasize the importance of maintaining a balance with traditional paper-based learning. Schools are therefore implementing responsible use charters to regulate classroom tablet usage.`,
-    hint: "⚠️ Trap Alert: Focus on positive survey statistic (68%).\n🔄 Paraphrase Key: 'augmentation significative de l'engagement' = 'hausse de l'engagement'.\n📖 Structural Cue: Locate '68%' in paragraph 1."
-  },
-  {
-    level: "B1",
-    text: `ENVIRONNEMENT ET GESTION DES DÉCHETS — LE COMPOSTAGE OBLIGATOIRE\n\nDans le cadre de son plan de réduction de l'empreinte carbone, la Ville de Québec a rendu obligatoire le bac brun pour la collecte des résidus alimentaires ménagers. Cette mesure vise à détourner 40 000 tonnes de matière organique des sites d'enfouissement chaque année.\n\nLe compost produit sera redistribué gratuitement aux agriculteurs régionaux et aux jardins communautaires urbains. Cette démarche écologique contribue à enrichir les sols sans recourir aux engrais chimiques industriels.`,
-    q: "Quel est l'objectif principal de la collecte obligatoire du bac brun ?",
-    opt: ["Détourner la matière organique des sites d'enfouissement", "Vendre le compost aux entreprises étrangères", "Interdire les jardins communautaires urbains", "Augmenter la taxe de collecte des ordures"],
-    ans: 0,
-    passEn: `ENVIRONMENT AND WASTE MANAGEMENT — MANDATORY COMPOSTING\n\nAs part of its carbon footprint reduction plan, the City of Quebec has mandated the brown bin for household food waste collection. This measure aims to divert 40,000 tons of organic material from landfills every year.\n\nThe resulting compost will be distributed free of charge to regional farmers and urban community gardens. This eco-friendly approach helps enrich the soil without relying on industrial chemical fertilizers.`,
-    hint: "⚠️ Trap Alert: Environmental goal (diverting organic waste).\n🔄 Paraphrase Key: 'détourner 40 000 tonnes de matière organique'.\n📖 Structural Cue: Purpose expressions after 'vise à'."
-  },
-  {
-    level: "B1",
-    text: `SANTÉ PUBLIQUE ET ACTIVITÉ PHYSIQUE EN ENTREPRISE\n\nDe nombreuses entreprises québécoises intègrent désormais des pauses actives de 15 minutes et des aménagements d'ergonomie de bureau dans leur quotidien. Selon une étude de l'Université de Montréal, encourager l'activité physique modérée durant la journée de travail réduit les arrêts maladie liés aux troubles musculosquelettiques de 22 %.\n\nDe surcroît, les salariés participant à ces programmes témoignent d'un sentiment d'appartenance renforcé et d'une meilleure gestion du stress quotidien.`,
-    q: "Quel est l'effet mesuré des pauses actives de 15 minutes en entreprise ?",
-    opt: ["Une baisse de 22% des arrêts maladie musculosquelettiques", "L'obligation d'effectuer des heures supplémentaires payées", "La suppression de la pause déjeuner", "Une augmentation des accidents du travail"],
-    ans: 0,
-    passEn: `PUBLIC HEALTH AND PHYSICAL ACTIVITY AT WORK\n\nMany Quebec companies are now incorporating 15-minute active breaks and office ergonomic arrangements into daily routines. According to a study by the University of Montreal, encouraging moderate physical activity reduces musculoskeletal sick leave by 22%.\n\nFurthermore, employees participating in these programs report a stronger sense of belonging and improved daily stress management.`,
-    hint: "⚠️ Trap Alert: Link 15-minute breaks to -22% sick leave reduction.\n🔄 Paraphrase Key: 'réduit les arrêts maladie de 22%'.\n📖 Structural Cue: Percentage statistic in paragraph 1."
-  },
-  {
-    level: "B1",
-    text: `CULTURE ET PATRIMOINE — LA VALORISATION DES LANGUES AUTOCHTONES\n\nUn nouveau programme national soutient la numérisation et la conservation des récits oraux traduits dans plusieurs langues autochtones au Canada. En créant des archives sonores accessibles en ligne, les communautés cherchent à transmettre ce patrimoine linguistique précieux aux jeunes générations.\n\nCette initiative favorise également la création de manuels scolaires bilingues et le développement d'applications mobiles d'apprentissage de la langue.`,
-    q: "Quel est le but central du projet d'archives sonores en ligne ?",
-    opt: ["Transmettre le patrimoine linguistique aux jeunes générations", "Vendre des disques audio aux touristes", "Remplacer l'enseignement du français à l'école", "Fermer les musées d'histoire régionale"],
-    ans: 0,
-    passEn: `CULTURE AND HERITAGE — PROMOTING INDIGENOUS LANGUAGES\n\nA new national program supports the digitization and preservation of oral narratives translated into several Indigenous languages in Canada. By creating online accessible audio archives, communities seek to pass this language heritage to younger generations.\n\nThis initiative also supports creating bilingual textbooks and language learning mobile apps.`,
-    hint: "⚠️ Trap Alert: Heritage transmission to youth, not commercial sales.\n🔄 Paraphrase Key: 'transmettre ce patrimoine linguistique'.\n📖 Structural Cue: Purpose statement after 'cherche à'."
-  },
-  {
-    level: "B1",
-    text: `AGRICULTURE BIOLOGIQUE ET CIRCUITS COURTS AU QUÉBEC\n\nL'engouement des consommateurs pour les paniers de légumes biologiques livrés directement par les producteurs locaux a connu une progression de 30 % cette année. Cette formule d'agriculture soutenue par la communauté garantit un revenu stable aux maraîchers tout en réduisant le transport des marchandises.\n\nLes abonnés bénéficient de produits de saison fraîchement récoltés sans intermédiaires commerciaux.`,
-    q: "Quel avantage la formule des paniers bios offre-t-elle aux producteurs locaux ?",
-    opt: ["Garantir un revenu stable en éliminant les intermédiaires", "Doubler la taille de leurs fermes gratuitement", "Exporter leur récolte vers l'Europe", "Interdire la vente sur les marchés publics"],
-    ans: 0,
-    passEn: `ORGANIC AGRICULTURE AND SHORT SUPPLY CHAINS IN QUEBEC\n\nConsumer enthusiasm for organic vegetable baskets delivered directly by local farmers grew by 30% this year. This community-supported agriculture model guarantees stable revenue for farmers while reducing freight transport.\n\nSubscribers enjoy freshly harvested seasonal produce without commercial middlemen.`,
-    hint: "⚠️ Trap Alert: Producer benefit (stable income without middlemen).\n🔄 Paraphrase Key: 'garantit un revenu stable... sans intermédiaires'.\n📖 Structural Cue: Farmer benefits in paragraph 1."
-  },
-  {
-    level: "B1",
-    text: `TOURISME DURABLE ET PROTECTION DES PARCS NATIONAUX\n\nAfin de protéger la faune sauvage et préserver les sentiers de randonnée de l'érosion, la direction des Parcs Canada instaure un système de réservation préalable en ligne pour les visiteurs durant la haute saison estivale.\n\nCette régulation des flux touristiques permet d'éviter la surfréquentation des sites fragiles tout en maintenant une expérience immersive de qualité pour les usagers.`,
-    q: "Pourquoi Parcs Canada impose-t-il une réservation préalable en ligne ?",
-    opt: ["Éviter la surfréquentation et protéger la faune et les sentiers", "Multiplier par dix le prix d'entrée des parcs", "Fermer tous les sentiers aux randonneurs", "Autoriser les véhicules à moteur dans les réserves"],
-    ans: 0,
-    passEn: `SUSTAINABLE TOURISM AND NATIONAL PARK PROTECTION\n\nTo protect wildlife and preserve hiking trails from erosion, Parks Canada management is introducing a mandatory online advance reservation system for visitors during peak summer season.\n\nThis tourist flow regulation avoids overcrowding fragile sites while maintaining a high-quality immersive experience.`,
-    hint: "⚠️ Trap Alert: Conservation goal (avoiding overcrowding, protecting nature).\n🔄 Paraphrase Key: 'protéger la faune... éviter la surfréquentation'.\n📖 Structural Cue: Purpose after 'Afin de'."
-  },
-
-  // B2 VANTAGE TARGET (Q27 - Q34)
-  {
-    level: "B2",
-    text: `URBANISME ÉCOLOGIQUE ET ÎLOTS DE CHALEUR MÉTROPOLITAINS\n\nDans la plupart des grandes agglomérations nord-américaines, la multiplication des îlots de chaleur constitue désormais un enjeu sanitaire et environnemental préoccupant. L'accumulation d'asphalte et de béton accentue l'absorption thermique, entraînant des températures estivales étouffantes au cœur des cités.\n\nPour contrer ce phénomène, les urbanistes préconisent la mise en place de péages urbains incitatifs couplée à un vaste programme de végétalisation des toitures d'immeubles. Les premiers résultats observés dans les quartiers pilotes démontrent une réduction de 20 % de la circulation automobile, corrélée à une baisse mesurable de la pollution atmosphérique.\n\nCependant, les commerçants du centre-ville expriment des inquiétudes quant à la baisse potentielle du chalandage. Les municipalités s'engagent donc à compenser ces effets en renforçant la fréquence des transports en commun.`,
-    q: "Selon l'article, quel est l'effet combiné de la végétalisation et des péages incitatifs ?",
-    opt: ["Une baisse de 20% du trafic automobile et une réduction de la pollution", "La disparition complète des commerces de proximité", "Une hausse de la température estivale au centre-ville", "L'obligation d'utiliser uniquement des véhicules électriques"],
-    ans: 0,
-    passEn: `ECOLOGICAL URBANISM AND METROPOLITAN HEAT ISLANDS\n\nIn most major North American urban areas, the proliferation of heat islands has become a pressing health concern. Asphalt and concrete accumulation increases heat absorption, leading to stifling summer temperatures.\n\nTo combat this, urban planners recommend incentive tolls combined with rooftop greening. Initial results in pilot neighborhoods show a 20% reduction in traffic, correlated with dropped air pollution.\n\nHowever, downtown merchants express concern regarding foot traffic drops. Municipalities commit to boosting public transit frequency.`,
-    hint: "⚠️ Trap Alert: 20% reduction figure linked to car traffic.\n🔄 Paraphrase Key: 'réduction de 20% de la circulation' = 'baisse de 20% du trafic'.\n📖 Structural Cue: Pilot result data in paragraph 2."
-  },
-  {
-    level: "B2",
-    text: `INTELLIGENCE ARTIFICIELLE ET DIAGNOSTIC MÉDICAL AU CANADA\n\nL'intégration d'algorithmes d'apprentissage profond dans le réseau hospitalier canadien révolutionne le dépistage précoce des pathologies radiologiques. En analysant des milliers d'imageries médicales en quelques secondes, ces outils d'intelligence artificielle assistent efficacement les médecins dans la détection d'anomalies microscopiques.\n\nNéanmoins, les comités de bioéthique rappellent que la décision thérapeutique finale doit impérativement demeurer sous la responsabilité exclusive du practitioner humain. La technologie est conçue comme un puissant levier d'aide à la décision et non comme un substitut à l'expertise clinique.\n\nDe plus, la protection de la confidentialité des données médicales des patients exige le déploiement de protocoles de cryptage de haute sécurité avant tout partage interhospitalier.`,
-    q: "Quelle est la recommandation majeure des comités de bioéthique concernant l'IA médicale ?",
-    opt: ["La décision thérapeutique finale doit rester sous responsabilité humaine", "L'IA doit remplacer définitivement les radiologues", "Les données des patients peuvent être publiées librement", "Les examens d'imagerie doivent être supprimés"],
-    ans: 0,
-    passEn: `ARTIFICIAL INTELLIGENCE AND MEDICAL DIAGNOSTICS IN CANADA\n\nIntegrating deep learning algorithms into the Canadian hospital network is revolutionizing early radiological screening. By analyzing medical images in seconds, AI tools effectively assist physicians in detecting anomalies.\n\nNevertheless, bioethics committees emphasize that the final treatment decision must strictly remain the sole responsibility of the human practitioner. Technology is a decision-support tool, not a replacement for clinical expertise.\n\nFurthermore, protecting patient data confidentiality requires deploying high-security encryption protocols.`,
-    hint: "⚠️ Trap Alert: Bioethics contrast marker 'Néanmoins' preserving human clinical authority.\n🔄 Paraphrase Key: 'demeurer sous la responsabilité exclusive du praticien humain'.\n📖 Structural Cue: Bioethical guidelines in paragraph 2."
-  },
-  {
-    level: "B2",
-    text: `ÉCONOMIE CIRCULAIRE ET RECYCLAGE DES ÉQUIPEMENTS ÉLECTRONIQUES\n\nLa gestion des déchets électroniques représente un défi environnemental majeur à l'ère du numérique. Chaque année, des millions de tonnes d'ordinateurs, téléphones et batteries usagées sont jetées sans subir de traitement approprié, provoquant le gaspillage de métaux précieux comme le cobalt, le lithium et l'or.\n\nFace à ce constat, plusieurs provinces canadiennes adoptent une législation sur la Responsabilité Élargie des Producteurs (REP). Cette réglementation oblige désormais les fabricants de matériel informatique à financer et organiser la collecte ainsi que le recyclage sécurisé de leurs produits en fin de vie.\n\nCette démarche favorise l'émergence d'une véritable économie circulaire, créatrice d'emplois locaux spécialisés dans la décontamination et le réemploi des composants électroniques.`,
-    q: "Que stipule la réglementation sur la Responsabilité Élargie des Producteurs (REP) ?",
-    opt: ["Les fabricants doivent financer la collecte et le recyclage de leurs produits", "Les consommateurs doivent payer une amende pour chaque téléphone jeté", "L'importation de matériel électronique est désormais interdite", "Toutes les batteries usagées doivent être incinérées sans tri"],
-    ans: 0,
-    passEn: `CIRCULAR ECONOMY AND ELECTRONIC WASTE RECYCLING\n\nElectronic waste management represents a major environmental challenge in the digital age. Used electronics discarding causes waste of precious metals like cobalt, lithium, and gold.\n\nCanadian provinces are adopting Extended Producer Responsibility (EPR) legislation, requiring electronics manufacturers to fund and organize collection and safe recycling of end-of-life products.\n\nThis approach fosters a circular economy creating local decontamination jobs.`,
-    hint: "⚠️ Trap Alert: EPR obligates manufacturers to fund recycling.\n🔄 Paraphrase Key: 'oblige les fabricants... à financer la collecte'.\n📖 Structural Cue: Legislative mandate in paragraph 2."
-  },
-  {
-    level: "B2",
-    text: `IMMIGRATION FRANCOPHONE HORS QUÉBEC ET DYNAMISME COMMUNAUTAIRE\n\nLe gouvernement fédéral canadien intensifie ses efforts pour atteindre les objectifs de recrutement d'immigrants francophones s'établissant dans les communautés en minorité linguistique hors du Québec, notamment en Ontario, au Nouveau-Brunswick et au Manitoba.\n\nL'installation de nouveaux arrivants d'expression française contribue au dynamisme économique régional, à la pérennité des écoles de langue française et à l'enrichissement culturel des collectivités locales. Des services d'accueil personnalisés facilitent leur intégration professionnelle dès leur arrivée.\n\nDes programmes de parrainage communautaire permettent également aux familles immigrantes de tisser rapidement des liens sociaux durables et de trouver un logement adapté.`,
-    q: "Quel est l'impact recherché de l'immigration francophone hors Québec ?",
-    opt: ["Renforcer le dynamisme économique et la vitalité culturelle des collectivités", "Obliger toutes les provinces à devenir exclusivement unilingues françaises", "Fermer les centres d'accueil communautaires régionaux", "Limiter l'accès aux écoles publiques d'expression française"],
-    ans: 0,
-    passEn: `FRANCOPHONE IMMIGRATION OUTSIDE QUEBEC AND COMMUNITY VITALITY\n\nThe Canadian federal government is stepping up efforts to meet recruitment targets for French-speaking immigrants settling in minority communities outside Quebec.\n\nSettlement of French-speaking newcomers contributes to regional economic dynamism, school sustainability, and cultural enrichment. Personalized welcoming services facilitate professional integration.\n\nCommunity mentorship programs enable immigrant families to build lasting connections.`,
-    hint: "⚠️ Trap Alert: Focus on positive community vitality and school sustainability.\n🔄 Paraphrase Key: 'contribue au dynamisme économique... et à l'enrichissement culturel'.\n📖 Structural Cue: Positive impact nouns in paragraph 2."
-  },
-  {
-    level: "B2",
-    text: `TRANSITION ÉNERGÉTIQUE ET ARCHITECTURE BIOCLIMATIQUE\n\nLa construction de bâtiments à haute performance énergétique s'impose progressivement comme la norme architecturale dans les projets de rénovation urbaine. L'intégration de matériaux isolants biosourcés, comme la fibre de bois ou le chanvre, permet de réduire considérablement la consommation de chauffage en hiver.\n\nDe plus, la conception bioclimatique exploite l'orientation naturelle du soleil pour optimiser la luminosité et la chaleur passive. Des systèmes de ventilation à double flux avec récupération d'énergie assurent un renouvellement continu de l'air intérieur sans déperdition thermique.\n\nLes propriétaires bénéficient d'aides financières gouvernementales incitatives pour compenser le surcoût initial des travaux de rénovation verte.`,
-    q: "Quel principe fondamental caractérise la conception bioclimatique ?",
-    opt: ["Exploiter l'orientation du soleil pour optimiser la chaleur passive", "Utiliser exclusivement de la climatisation électrique en continu", "Supprimer toutes les fenêtres des façades exposées au nord", "Consommer plus de mazout durant les périodes de grand froid"],
-    ans: 0,
-    passEn: `ENERGY TRANSITION AND BIOCLIMATIC ARCHITECTURE\n\nBuilding high-performance energy-efficient structures is becoming standard. Incorporating bio-sourced insulation (wood fiber, hemp) significantly cuts winter heating consumption.\n\nBioclimatic design harnesses natural sun orientation for passive solar heat. Dual-flow ventilation with heat recovery ensures air turnover without heat loss.\n\nHomeowners benefit from government grants to offset green renovation costs.`,
-    hint: "⚠️ Trap Alert: Natural passive solar design vs heavy electric HVAC usage.\n🔄 Paraphrase Key: 'exploite l'orientation naturelle du soleil'.\n📖 Structural Cue: Technical definitions in paragraph 2."
-  },
-  {
-    level: "B2",
-    text: `DÉCARBONATION DES TRANSPORTS DE MARCHANDISES AU CANADA\n\nLe secteur de la logistique canadienne opère un virage technologique vers le camionnage lourd à hydrogène vert. En remplaçant les moteurs diesel traditionnels sur les longs parcours interprovinciaux, cette innovation vise à éliminer plusieurs millions de tonnes d'émissions de gaz à effet de serre d'ici 2035.\n\nCependant, le déploiement massif de cette flotte propre nécessite la construction rapide d'un réseau national de stations de recharge à haute pression le long des grands corridors autoroutiers.`,
-    q: "Quel obstacle majeur entrave le déploiement rapide des camions à hydrogène ?",
-    opt: ["La nécessité de construire un réseau de stations de recharge à haute pression", "L'interdiction absolue de transporter des marchandises interprovinciales", "Le refus des conducteurs de conduire des camions neufs", "La baisse du prix du pétrole brut"],
-    ans: 0,
-    passEn: `FREIGHT DECARBONIZATION IN CANADA\n\nCanadian logistics is shifting toward green hydrogen heavy trucking. Replacing diesel engines on long interprovincial routes aims to eliminate millions of tons of greenhouse gases by 2035.\n\nHowever, massive rollout requires rapidly constructing a national high-pressure refueling station network along major highway corridors.`,
-    hint: "⚠️ Trap Alert: Infrastructure bottleneck (refueling station network).\n🔄 Paraphrase Key: 'nécessite la construction d'un réseau de stations'.\n📖 Structural Cue: Challenge statement after 'Cependant'."
-  },
-  {
-    level: "B2",
-    text: `ÉCONOMIE DU SAVOIR ET CYBERSÉCURITÉ INDUSTRIELLE\n\nLa recrudescence des cyberattaques ciblant les infrastructures critiques au Canada pousse le gouvernement fédéral à durcir les normes de protection informatique imposées aux entreprises stratégiques. Les compagnies de distribution d'énergie, de télécommunications et de transport doivent désormais réaliser des audits de vulnérabilité semestriels obligatoires.\n\nLes entreprises manquant à ces obligations d'étanchéité numérique s'exposent à des sanctions financières lourdes et à la suspension temporaire de leurs licences d'exploitation.`,
-    q: "Quelle obligation nouvelle concerne les entreprises d'infrastructures critiques ?",
-    opt: ["Réaliser des audits de vulnérabilité informatique semestriels obligatoires", "Remplacer tous leurs employés par des robots informatiques", "Publier leurs codes secrets sur internet", "Fermer leurs réseaux de distribution d'énergie"],
-    ans: 0,
-    passEn: `KNOWLEDGE ECONOMY AND INDUSTRIAL CYBERSECURITY\n\nSurging cyberattacks targeting critical infrastructure prompt the federal government to tighten IT protection standards for strategic firms. Energy, telecom, and transit companies must now undergo mandatory semi-annual vulnerability audits.\n\nFirms failing to meet digital security mandates face heavy financial penalties and temporary operating license suspensions.`,
-    hint: "⚠️ Trap Alert: Mandate (mandatory semi-annual audits).\n🔄 Paraphrase Key: 'audits de vulnérabilité semestriels obligatoires'.\n📖 Structural Cue: New rule in paragraph 1."
-  },
-  {
-    level: "B2",
-    text: `ÉVALUATION PEDAGOGIQUE ET APPRENTISSAGE DES LANGUES AU SECOND-AIRE\n\nUne réforme ministérielle récente introduit l'évaluation par compétences intégrées dans l'enseignement des langues secondes au secondaire. Plutôt que de privilégier la mémorisation théorique de règles grammaticales isolées, les examens évaluent la capacité des élèves à réaliser des tâches communicatives authentiques en situation réelle.\n\nLes enseignants rapportent que cette approche pragmatique stimule la confiance orale des apprenants et réduit l'anxiété liée aux épreuves d'examen.`,
-    q: "Quel est le principe central de la réforme de l'évaluation en langues ?",
-    opt: ["Évaluer la capacité à accomplir des tâches communicatives authentiques", "Multiplier par deux le nombre de règles de grammaire à réciter", "Supprimer totalement les cours de langue au secondaire", "Remplacer les professeurs par des logiciels automatisés"],
-    ans: 0,
-    passEn: `PEDAGOGICAL ASSESSMENT AND SECONDARY LANGUAGE LEARNING\n\nA recent ministerial reform introduces competency-based assessment in secondary second language teaching. Rather than favoring theoretical memorization of isolated grammar rules, exams assess students' ability to perform authentic communicative tasks in real-life situations.\n\nTeachers report that this pragmatic approach boosts learners' oral confidence and reduces exam anxiety.`,
-    hint: "⚠️ Trap Alert: Shift to authentic communicative tasks vs rote grammar.\n🔄 Paraphrase Key: 'réaliser des tâches communicatives authentiques'.\n📖 Structural Cue: Core principle in paragraph 1."
-  },
-
-  // C1 AUTONOMOUS (Q35 - Q37)
-  {
-    level: "C1",
-    text: `SOCIOLOGIE DU TRAVAIL — LA MUTATION DES MODÈLES ORGANISATIONNELS\n\nL'expérimentation à grande échelle de la semaine de travail de quatre jours dans le secteur tertiaire suscite un intérêt croissant auprès des chercheurs en gestion et des décideurs économiques. Loin de nuire au rendement des entreprises, ce modèle fondé sur la réduction du temps de travail sans baisse de salaire démontre une préservation, voire une amélioration de la productivité globale.\n\nSur le plan de la santé mentale des salariés, les données recueillies indiquent une diminution remarquable de 35 % des épisodes de surmenage professionnel et de syndrome d'épuisement (burnout). Les employés bénéficiant d'un équilibre renforcé entre vie privée et engagement professionnel affichent une fidélité accrued envers leur organisation.\n\nNéanmoins, la transposabilité de cette organisation aux secteurs industriels à feu continu ou aux services d'urgence médicale soulève des défis logistiques majeurs.`,
-    q: "Quel résultat marquant ressort de l'analyse sociologique de la semaine de 4 jours ?",
-    opt: ["Une diminution de 35% du surmenage professionnel chez les salariés", "Une baisse inévitable de la productivité globale de l'entreprise", "Une augmentation généralisée du taux d'absentéisme", "L'obligation de baisser les salaires des employés"],
-    ans: 0,
-    passEn: `WORKPLACE SOCIOLOGY — MUTATION OF ORGANIZATIONAL MODELS\n\nTrials of the four-day workweek in the service sector show that reducing hours without pay cuts preserves or improves overall productivity.\n\nRegarding mental health, data indicates a 35% decrease in workplace overwork and burnout. Balanced employees display increased loyalty.\n\nNevertheless, applying this to continuous industrial sectors or emergency services presents major logistical challenges.`,
-    hint: "⚠️ Trap Alert: 35% burnout reduction figure.\n🔄 Paraphrase Key: 'diminution remarquable de 35% des épisodes de surmenage'.\n📖 Structural Cue: Mental health survey results in paragraph 2."
-  },
-  {
-    level: "C1",
-    text: `AMÉNAGEMENT DU TERRITOIRE ET GESTION DES RESSOURCES EN EAU\n\nLa gestion concertée des bassins versants face aux aléas pluviométriques extrêmes exige le dépassement des découpages administratifs traditionnels au profit de gouvernances environnementales intégrées. L'accentuation des épisodes de sécheresse estivale couplée aux risques de ruissellement torrentiel impose une réévaluation fondamentale des schémas d'aménagement urbain et agricole.\n\nLes spécialistes de l'hydrologie préconisent la restauration prioritaire des zones humides naturelles qui jouent le rôle d'éponges écologiques régulatrices. Ces écosystèmes absorbent les surplus d'eau lors des crues printanières et restituent progressivement l'humidité durant les périodes d'étiage.\n\nCette approche fondée sur la nature s'avère économiquement plus pérenne que le dimensionnement perpétuel d'ouvrages de génie civil lourds.`,
-    q: "Quel rôle écologique majeur remplissent les zones humides naturelles ?",
-    opt: ["Réguler le cycle de l'eau en absorbant les crues et restituant l'humidité", "Accélérer l'assèchement définitif des terres agricoles", "Favoriser le ruissellement torrentiel vers les zones urbaines", "Remplacer l'eau douce par des réservoirs d'eau de mer"],
-    ans: 0,
-    passEn: `TERRITORIAL PLANNING AND WATER RESOURCE MANAGEMENT\n\nConcerted watershed management in extreme rainfall hazards demands transcending administrative boundaries for integrated environmental governance. Intensifying summer droughts and torrential runoff risks mandate re-evaluating urban and agricultural development plans.\n\nHydrology specialists advocate restoring natural wetlands as regulating ecological sponges. These ecosystems absorb excess spring flood water and release moisture during dry spells.\n\nThis nature-based approach proves economically more sustainable than perpetual heavy civil engineering.`,
-    hint: "⚠️ Trap Alert: Natural sponge concept (absorbing floods, releasing moisture).\n🔄 Paraphrase Key: 'éponges écologiques régulatrices... absorbent... restituent'.\n📖 Structural Cue: Hydrological function definitions in paragraph 2."
-  },
-  {
-    level: "C1",
-    text: `DROIT INTERNATIONAL ET ÉTIQUETAGE DES PRODUITS DE LA MER\n\nL'harmonisation transfrontalière des exigences de traçabilité des produits halieutiques constitue un impératif éthique et juridique face au fléau de la pêche illégale et non réglementée. L'adoption de certificats numériques infalsifiables de la capture jusqu'au consommateur final vise à garantir la durabilité des stocks d'espèces marines menacées.\n\nCependant, les pays en développement soulignent la lourdeur des investissements technologiques requis pour certifier leurs flottes artisanales, réclamant un fonds de transfert de compétences équitable.`,
-    q: "Quel est l'objectif premier des certificats numériques de traçabilité halieutique ?",
-    opt: ["Garantir la durabilité des stocks de pêche et lutter contre la pêche illégale", "Augmenter le prix du poisson de 200% pour les consommateurs", "Interdire définitivement la consommation de fruits de mer", "Favoriser les grandes flottes de pêche industrielles non certifiées"],
-    ans: 0,
-    passEn: `INTERNATIONAL LAW AND SEAFOOD LABELS\n\nCross-border harmonization of seafood traceability requirements is an ethical imperative against illegal fishing. Digital tamper-proof capture-to-consumer certificates guarantee stock sustainability.\n\nHowever, developing nations highlight heavy tech investment burdens for artisanal fleets, demanding an equitable skills transfer fund.`,
-    hint: "⚠️ Trap Alert: Sustainability goal (combating illegal fishing, preserving stocks).\n🔄 Paraphrase Key: 'garantir la durabilité des stocks... lutter contre la pêche illégale'.\n📖 Structural Cue: Legal goal in paragraph 1."
-  },
-  {
-    level: "C1",
-    text: `ÉCONOMIE POLITIQUE DE LA TRANSITION ÉNERGÉTIQUE EN AMÉRIQUE DU NORD\n\nLa reconversion industrielle des bassins miniers et pétroliers vers les énergies renouvelables exige une planification stratégique anticipatrice pour prévenir la dévitalisation sociale des territoires dépendants des énergies fossiles. La réussite de ce virage repose sur des programmes de reconversion professionnelle ciblés et des investissements publics massifs dans la filière hydrogène.\n\nLes analystes insistent sur la nécessité d'un contrat social équitable garantissant que les coûts de la transition ne reposent pas de manière disproportionnée sur les travailleurs les plus vulnérables.`,
-    q: "Quelle condition est jugée indispensable pour réussir la reconversion des bassins fossiles ?",
-    opt: ["Assurer des formations de reconversion et un contrat social équitable pour les travailleurs", "Fermer toutes les usines sans indemnisation pour les employés", "Mier uniquement sur les forces du marché sans intervention publique", "Augmenter l'extraction de charbon pour financer le solaire"],
-    ans: 0,
-    passEn: `POLITICAL ECONOMY OF NORTH AMERICAN ENERGY TRANSITION\n\nIndustrial conversion of mining and oil basins toward renewables demands anticipatory strategic planning to prevent social devitalisation. Success relies on targeted retraining and public hydrogen investment.\n\nAnalysts emphasize an equitable social contract ensuring transition costs do not fall disproportionately on vulnerable workers.`,
-    hint: "⚠️ Trap Alert: Retraining and equitable social contract for workers.\n🔄 Paraphrase Key: 'reconversion professionnelle ciblée... contrat social équitable'.\n📖 Structural Cue: Policy requirement in paragraph 2."
-  },
-
-  // C2 MASTERY (Q38 - Q39)
-  {
-    level: "C2",
-    text: `ÉPISTÉMOLOGIE ET NARRATIFS DE LA TRANSITION ÉCOLOGIQUE\n\nLa déconstruction des paradigmes extractivistes contemporains requiert un réexamen épistémologique profond de notre rapport à la matérialité du monde et aux communs terrestres. L'obsolescence théorique des modèles de croissance linéaire illimitée impose l'élaboration de nouvelles métriques de prospérité intégrant les limites planétaires infranchissables.\n\nDans cette perspective, la pensée complexe rejette les solutions technocratiques réductrices qui prétendent résoudre la crise systémique par un simple ajustement marginal des mécanismes de marché. Il s'agit d'opérer une mutation culturelle refondant les représentations collectives de l'abondance et du progrès.\n\nCette réorientation philosophique implique une redéfinition globale des responsabilités éthiques envers les générations futures et le vivant non humain.`,
-    q: "Que préconise l'analyse épistémologique face à la crise systémique ?",
-    opt: ["Une mutation culturelle refondant les représentations collectives du progrès", "La poursuite indéfinie des modèles de croissance linéaire illimitée", "L'abandon de toute réflexion éthique envers les générations futures", "Le recours exclusif à des ajustements marchands marginaux"],
-    ans: 0,
-    passEn: `EPISTEMOLOGY AND ECOLOGICAL TRANSITION NARRATIVES\n\nDeconstructing extractivist paradigms requires an epistemological re-examination of planetary commons. Obsolescence of unlimited growth models mandates metrics incorporating planetary boundaries.\n\nComplex thinking rejects technocratic market adjustments, urging a cultural mutation reframing abundance and progress.\n\nThis implies redefining ethical responsibilities toward future generations and non-human life.`,
-    hint: "⚠️ Trap Alert: Reject technocratic market-only fixes in favor of deep cultural shift.\n🔄 Paraphrase Key: 'opérer une mutation culturelle refondant les représentations'.\n📖 Structural Cue: Analyze philosophical stance in paragraph 2."
-  },
-  {
-    level: "C2",
-    text: `PHILOSOPHIE DE LA TECHNIQUE ET GOUVERNANCE DES ALGORITHMES\n\nL'omniprésence des architectures algorithmiques d'optimisation comportementale au sein de la sphère publique contemporaine soulève une interrogation fondamentale sur la pérennité de l'autonomie délibérative des citoyens. En orientant de façon imperceptible les flux d'information et les choix individuels, la gouvernementalité algorithmique risque d'atrophier l'espace d'affrontement contradictoire indispensable à l'exercice démocratique.\n\nFace à cette dérive, les théoriciens du droit constitutionnel plaident pour l'instauration d'un principe d'explicabilité et d'auditabilité publique des systèmes décisionnels automatisés, garantissant le maintien de la souveraineté citoyenne face à l'arbitraire du code.`,
-    q: "Quel principe constitutionnel est préconisé pour protéger la démocratie face aux algorithmes ?",
-    opt: ["L'explicabilité et l'auditabilité publique des systèmes automatisés", "L'interdiction totale de tout réseau de télécommunication", "La délégation complète du pouvoir législatif aux ordinateurs", "La suppression des lois sur la protection des données"],
-    ans: 0,
-    passEn: `PHILOSOPHY OF TECHNOLOGY AND ALGORITHMIC GOVERNANCE\n\nThe ubiquity of behavioral optimization algorithmic architectures in the contemporary public sphere raises a fundamental question about citizen deliberative autonomy.\n\nConstitutional law theorists advocate establishing a principle of public explainability and auditability for automated decision systems to preserve citizen sovereignty.`,
-    hint: "⚠️ Trap Alert: Constitutional safeguard (public explainability and auditability).\n🔄 Paraphrase Key: 'explicabilité et auditabilité publique'.\n📖 Structural Cue: Legal solution in paragraph 2."
-  },
-  {
-    level: "C2",
-    text: `ESTHÉTIQUE LITTÉRAIRE ET POÉTIQUE DE LA MODERNITÉ EN FRANCOPHONIE\n\nL'émergence de nouvelles formes romanesques hybrides au sein de la littérature francophone contemporaine témoigne d'un éclatement salutaire des canons esthétiques classiques. En entrelaçant fragments poétiques, archives historiques recontextualisées et polyphonie narrative, ces œuvres déstabilisent la posture traditionnelle de l'auteur démiurge au profit d'une expérience de lecture participative et critique.\n\nCette poétique du métissage formel réinvente la langue française en la libérant de son académisme institutionnel, en faisant un réceptacle vibrant des mémoires périphériques et des imaginaires décentrés.`,
-    q: "Quelle caractéristique majeure définit la nouvelle poétique romanesque francophone ?",
-    opt: ["Un métissage formel libérant la langue de son académisme institutionnel", "Un retour à la rigidité absolue de la poésie classique du XVIIe siècle", "L'abandon complet de l'écriture en langue française", "L'obligation d'écrire uniquement des récits autobiographiques univoques"],
-    ans: 0,
-    passEn: `LITERARY AESTHETICS AND POETICS OF MODERNITY IN FRANCOPHONIE\n\nThe emergence of hybrid novelistic forms in contemporary Francophone literature reflects a salutary breaking of classic aesthetic canons. Interweaving poetic fragments, historical archives, and narrative polyphony, these works dismantle the demiurgic author posture for a participatory reading experience.\n\nThis formal hybridization redefines the French language, freeing it from institutional academicism to make it a vibrant vessel for peripheral memories.`,
-    hint: "⚠️ Trap Alert: Formal hybridization freeing language from academicism.\n🔄 Paraphrase Key: 'métissage formel libérant la langue de son académisme'.\n📖 Structural Cue: Aesthetic analysis in paragraph 2."
-  }
-];
-
-function getTargetLevel(questionNum: number): string {
-  if (questionNum <= 10) return "A1";
-  if (questionNum <= 18) return "A2";
-  if (questionNum <= 26) return "B1";
-  if (questionNum <= 34) return "B2";
-  if (questionNum <= 37) return "C1";
-  return "C2";
-}
-
-function shuffleOptions(rawOpt: string[], origCorrectIdx: number, rawImages?: string[]) {
-  const correctText = rawOpt[origCorrectIdx];
-  const indexed = rawOpt.map((optText, i) => ({
-    optText,
-    isCorrect: i === origCorrectIdx,
-    imgUrl: rawImages ? rawImages[i] : undefined
-  }));
-
-  // Deterministic shuffle using option text lengths to vary option order
-  for (let i = indexed.length - 1; i > 0; i--) {
-    const j = (indexed[i].optText.length + i) % (i + 1);
-    const temp = indexed[i];
-    indexed[i] = indexed[j];
-    indexed[j] = temp;
-  }
-
-  const options = indexed.map((item) => item.optText);
-  const correctIndex = indexed.findIndex((item) => item.isCorrect);
-  const optionImages = rawImages ? indexed.map((item) => item.imgUrl as string) : undefined;
-  return { options, correctIndex, correctText, optionImages };
-}
-
-function customizeListeningTopicForPaper(t: any, i: number, prefix: string, seedOffset: number) {
-  let text = t.text;
-  let tr = t.tr;
-  let en = t.en;
-  let opt = [...t.opt];
-  let ans = t.ans;
-
-  return { text, tr, en, opt, ans };
-}
-
-function getDrawingPropositions(sceneIdx: number) {
-  const scenes = [
-    { opt: ["Deux collègues discutent debout dans un bureau.", "Le directeur dort à son poste de travail.", "Les deux hommes jouent au tennis en extérieur.", "Un employé répare un ordinateur portable."], ans: 0 },
-    { opt: ["Un client demande une information à la réceptionniste.", "Le pilote de l'avion s'installe dans le cockpit.", "Deux personnes nagent dans la piscine de l'hôtel.", "Le technicien répare la porte d'entrée."], ans: 0 },
-    { opt: ["Le boulanger sert du pain frais au client.", "Un mécanicien change la roue d'une voiture.", "Les voyageurs montent dans le train en gare.", "Le professeur écrit au tableau dans la classe."], ans: 0 },
-    { opt: ["L'agente d'escale vérifie le billet du passager.", "Un cuisinier prépare une pizza dans le four.", "Deux jardiniers arrosent les fleurs du parc.", "Le médecin consulte le dossier du patient."], ans: 0 },
-    { opt: ["Le chef cuisinier goûte le plat en cuisine.", "Le jardinier coupe la pelouse du jardin.", "Le mécanicien gonfle un pneu de vélo.", "Le comptable vérifie une facture papier."], ans: 0 },
-    { opt: ["Le passager attend son train sur le quai de la gare.", "Le pilote fait le plein du réservoir.", "Un nageur plonge dans la rivière.", "Le menuisier rabote une planche en bois."], ans: 0 },
-    { opt: ["L'étudiant consulte un livre à la bibliothèque.", "Le serveur apporte la carte des desserts.", "Le photographe règle l'objectif de son appareil.", "Le vendeur range les chaussures en rayon."], ans: 0 },
-    { opt: ["Le mécanicien répare le moteur de la voiture.", "Le peintre repeint les volets de la maison.", "Le coiffeur coupe les cheveux du client.", "Le serveur remplit les verres d'eau."], ans: 0 },
-    { opt: ["Le médecin examine le patient dans son cabinet.", "Le maçon pose des briques sur le mur.", "Le facteur dépose une lettre dans la boîte.", "Le pompier éteint le feu de forêt."], ans: 0 },
-    { opt: ["Le caissier scanne les articles au supermarché.", "Le chauffeur de bus contrôle les billets.", "Le cordonnier répare une botte en cuir.", "Le coursier livre un colis à domicile."], ans: 0 },
-  ];
-
-  const idx = sceneIdx % scenes.length;
-  return scenes[idx];
-}
 
 function generateListeningQuestions(count: number, prefix: string, seedOffset: number = 0): ExamQuestion[] {
   const qList: ExamQuestion[] = [];

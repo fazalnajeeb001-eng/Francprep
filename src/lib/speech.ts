@@ -203,6 +203,47 @@ export function stopAudio(): void {
   if (onPlaybackStateChange) onPlaybackStateChange(false);
 }
 
+/**
+ * Authentic TCF Dual-Voice Audio Synthesizer
+ * Plays Passage Speaker Audio followed seamlessly by Official Test Announcer Audio ("Écoutez la question...").
+ */
+export function ttsSpeakListening(
+  text: string,
+  lang = "fr-FR",
+  rate = 0.85,
+  defaultGender: "female" | "male" = "female",
+  onEnded?: () => void
+): boolean {
+  if (typeof window === "undefined" || !text || !text.trim()) return false;
+  const cleanText = text.trim();
+
+  // Check if text has Announcer prompt separation
+  const announcerMatch = cleanText.match(/\b(Annonceur|Annonceuse)\s*:\s*/i);
+  if (announcerMatch && announcerMatch.index !== undefined && announcerMatch.index > 0) {
+    const passagePart = cleanText.slice(0, announcerMatch.index).trim();
+    const announcerPart = cleanText.slice(announcerMatch.index).trim();
+
+    // Determine passage speaker gender
+    const isPassageFemale = /\b(Locutrice|Annonceuse)\b/i.test(passagePart);
+    const passageGender: "female" | "male" = isPassageFemale ? "female" : (/\bLocuteur\b/i.test(passagePart) ? "male" : defaultGender);
+
+    // Determine announcer speaker gender
+    const isAnnouncerFemale = /\bAnnonceuse\b/i.test(announcerPart);
+    const announcerGender: "female" | "male" = isAnnouncerFemale ? "female" : "male";
+
+    // Clean speaker prefix tags
+    const cleanPassage = passagePart.replace(/^(Locuteur|Locutrice)\s*:\s*/i, "").trim();
+    const cleanAnnouncer = announcerPart.replace(/^(Annonceur|Annonceuse)\s*:\s*/i, "").trim();
+
+    return speak(cleanPassage, lang, rate, passageGender, undefined, undefined, undefined, () => {
+      speak(cleanAnnouncer, lang, rate, announcerGender, undefined, undefined, undefined, onEnded);
+    });
+  }
+
+  // Single speaker fallback
+  return speak(cleanText, lang, rate, defaultGender, undefined, undefined, undefined, onEnded);
+}
+
 export function pauseAudio(): void {
   if (currentAudioPlayer && !currentAudioPlayer.paused) {
     currentAudioPlayer.pause();

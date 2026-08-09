@@ -120,6 +120,33 @@ export function AuthenticCBTExamPage() {
   // Timer State
   const [timeLeft, setTimeLeft] = useState(currentSection.durationMins * 60);
   const [isTimerPaused, setIsTimerPaused] = useState(false);
+  const [qTimeLeft, setQTimeLeft] = useState<number | null>(null);
+
+  // Per-Question CBT Countdown Timer & Auto-Advance in Exam Mode
+  useEffect(() => {
+    if (mode !== "EXAM" || currentSection.type !== "COMPREHENSION_ORALE" || !currentQ || isSubmitted) {
+      setQTimeLeft(null);
+      return;
+    }
+
+    const timerSecs = (currentQ as any).perQuestionTimerSeconds || (currentQ.questionNumber <= 10 ? 15 : currentQ.questionNumber <= 26 ? 20 : 25);
+    setQTimeLeft(timerSecs);
+
+    const interval = setInterval(() => {
+      setQTimeLeft((prev) => {
+        if (prev === null || prev <= 1) {
+          clearInterval(interval);
+          if (currentQuestionIdx < currentQuestions.length - 1) {
+            setCurrentQuestionIdx((idx) => idx + 1);
+          }
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, currentQuestions.length]);
 
   // Practice Mode Toggles
   const [showHints, setShowHints] = useState(false);
@@ -1906,17 +1933,25 @@ export function AuthenticCBTExamPage() {
                   <span className="text-xs font-mono font-bold text-blue-600 dark:text-blue-400 uppercase truncate max-w-[200px] sm:max-w-none">
                     {currentSection.title} — Item {currentQ.questionNumber} of {currentQuestions.length}
                   </span>
-                  <button
-                    onClick={() => toggleFlag(currentQ.id)}
-                    className={`px-2.5 py-1 rounded text-xs font-semibold border flex items-center gap-1 shrink-0 cursor-pointer ${
-                      flaggedQuestions[currentQ.id]
-                        ? "bg-amber-500 text-white border-amber-500"
-                        : "bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200"
-                    }`}
-                  >
-                    <Flag className="w-3.5 h-3.5" />
-                    <span className="hidden xs:inline">{flaggedQuestions[currentQ.id] ? "Flagged" : "Flag"}</span>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE" && qTimeLeft !== null && (
+                      <div className="px-2.5 py-1 rounded bg-amber-500/20 border border-amber-500/40 text-amber-900 dark:text-amber-300 font-mono font-bold text-xs flex items-center gap-1.5 animate-pulse">
+                        <Clock className="w-3.5 h-3.5 text-amber-600" />
+                        <span>Auto-Next: {qTimeLeft}s</span>
+                      </div>
+                    )}
+                    <button
+                      onClick={() => toggleFlag(currentQ.id)}
+                      className={`px-2.5 py-1 rounded text-xs font-semibold border flex items-center gap-1 shrink-0 cursor-pointer ${
+                        flaggedQuestions[currentQ.id]
+                          ? "bg-amber-500 text-white border-amber-500"
+                          : "bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200"
+                      }`}
+                    >
+                      <Flag className="w-3.5 h-3.5" />
+                      <span className="hidden xs:inline">{flaggedQuestions[currentQ.id] ? "Flagged" : "Flag"}</span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Official Listening Audio Component */}
