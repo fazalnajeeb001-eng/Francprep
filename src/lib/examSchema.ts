@@ -954,9 +954,23 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
 
     const specificHint = (t as any).hint || `Level ${t.level} Listening Guidance: Focus on the speaker's main intent and tone. Pay attention to key transition words (e.g. "cependant", "en revanche") to identify the correct message without guessing.`;
 
-    const questionTextPrompt = (t as any).q
-      ? (t as any).q
-      : (t.opt && t.opt[0] ? `Où se déroule cette scène ou quelle est la consigne exacte ?` : `Quel est l'élément principal à retenir ?`);
+    let questionTextPrompt = (t as any).q;
+    if (!questionTextPrompt) {
+      const lowerTitle = (t.title || '').toLowerCase();
+      if (lowerTitle.includes('gare') || lowerTitle.includes('aéroport') || lowerTitle.includes('bus') || lowerTitle.includes('vol')) {
+        questionTextPrompt = "Quelle est l'information essentielle concernant le lieu, le quai ou la porte d'embarquement ?";
+      } else if (lowerTitle.includes('supermarché') || lowerTitle.includes('magasin') || lowerTitle.includes('boutique') || lowerTitle.includes('pizzeria')) {
+        questionTextPrompt = "Quel est le lieu où se trouve la personne ou la promotion annoncée ?";
+      } else if (lowerTitle.includes('météo')) {
+        questionTextPrompt = "Quel conseil ou prévision météorologique est annoncé pour la journée ?";
+      } else if (lowerTitle.includes('livraison') || lowerTitle.includes('colis') || lowerTitle.includes('rendez-vous') || lowerTitle.includes('mécanicien')) {
+        questionTextPrompt = "Quelle est la date, l'heure ou la consigne exacte transmise dans ce message ?";
+      } else if (lowerTitle.includes('sécurité') || lowerTitle.includes('incendie') || lowerTitle.includes('copropriété') || lowerTitle.includes('entreprise')) {
+        questionTextPrompt = "Quelle consigne de sécurité ou quel changement d'organisation devez-vous suivre ?";
+      } else {
+        questionTextPrompt = "Quel est l'élément ou le message principal à retenir de ce document sonore ?";
+      }
+    }
 
     const fullSpokenTranscript = isQuestionInAudio
       ? `${t.tr}\n\nÉcoutez la question. Question N°${i} : ${questionTextPrompt}`
