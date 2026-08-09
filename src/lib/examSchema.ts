@@ -941,16 +941,16 @@ function customizeListeningTopicForPaper(t: any, i: number, prefix: string, seed
 
 function getDrawingPropositions(sceneIdx: number) {
   const scenes = [
-    { opt: ["Deux collègues discutent debout dans un bureau.", "Le directeur dort à son poste de travail.", "Les deux hommes jouent au tennis en extérieur.", "Un employé répare un ordinateur portable."], ans: "Deux collègues discutent debout dans un bureau." },
-    { opt: ["Un client demande une information à la réceptionniste.", "Le pilote de l'avion s'installe dans le cockpit.", "Deux personnes nagent dans la piscine de l'hôtel.", "Le technicien répare la porte d'entrée."], ans: "Un client demande une information à la réceptionniste." },
-    { opt: ["Le boulanger sert du pain frais au client.", "Un mécanicien change la roue d'une voiture.", "Les voyageurs montent dans le train en gare.", "Le professeur écrit au tableau dans la classe."], ans: "Le boulanger sert du pain frais au client." },
-    { opt: ["L'agente d'escale vérifie le billet du passager.", "Un cuisinier prépare une pizza dans le four.", "Deux jardiniers arrosent les fleurs du parc.", "Le médecin consulte le dossier du patient."], ans: "L'agente d'escale vérifie le billet du passager." },
-    { opt: ["Le chef cuisinier goûte le plat en cuisine.", "Le jardinier coupe la pelouse du jardin.", "Le mécanicien gonfle un pneu de vélo.", "Le comptable vérifie une facture papier."], ans: "Le chef cuisinier goûte le plat en cuisine." },
-    { opt: ["Le passager attend son train sur le quai de la gare.", "Le pilote fait le plein du réservoir.", "Un nageur plonge dans la rivière.", "Le menuisier rabote une planche en bois."], ans: "Le passager attend son train sur le quai de la gare." },
-    { opt: ["L'étudiant consulte un livre à la bibliothèque.", "Le serveur apporte la carte des desserts.", "Le photographe règle l'objectif de son appareil.", "Le vendeur range les chaussures en rayon."], ans: "L'étudiant consulte un livre à la bibliothèque." },
-    { opt: ["Le mécanicien répare le moteur de la voiture.", "Le peintre repeint les volets de la maison.", "Le coiffeur coupe les cheveux du client.", "Le serveur remplit les verres d'eau."], ans: "Le mécanicien répare le moteur de la voiture." },
-    { opt: ["Le médecin examine le patient dans son cabinet.", "Le maçon pose des briques sur le mur.", "Le facteur dépose une lettre dans la boîte.", "Le pompier éteint le feu de forêt."], ans: "Le médecin examine le patient dans son cabinet." },
-    { opt: ["Le caissier scanne les articles au supermarché.", "Le chauffeur de bus contrôle les billets.", "Le cordonnier répare une botte en cuir.", "Le coursier livre un colis à domicile."], ans: "Le caissier scanne les articles au supermarché." },
+    { opt: ["Deux collègues discutent debout dans un bureau.", "Le directeur dort à son poste de travail.", "Les deux hommes jouent au tennis en extérieur.", "Un employé répare un ordinateur portable."], ans: 0 },
+    { opt: ["Un client demande une information à la réceptionniste.", "Le pilote de l'avion s'installe dans le cockpit.", "Deux personnes nagent dans la piscine de l'hôtel.", "Le technicien répare la porte d'entrée."], ans: 0 },
+    { opt: ["Le boulanger sert du pain frais au client.", "Un mécanicien change la roue d'une voiture.", "Les voyageurs montent dans le train en gare.", "Le professeur écrit au tableau dans la classe."], ans: 0 },
+    { opt: ["L'agente d'escale vérifie le billet du passager.", "Un cuisinier prépare une pizza dans le four.", "Deux jardiniers arrosent les fleurs du parc.", "Le médecin consulte le dossier du patient."], ans: 0 },
+    { opt: ["Le chef cuisinier goûte le plat en cuisine.", "Le jardinier coupe la pelouse du jardin.", "Le mécanicien gonfle un pneu de vélo.", "Le comptable vérifie une facture papier."], ans: 0 },
+    { opt: ["Le passager attend son train sur le quai de la gare.", "Le pilote fait le plein du réservoir.", "Un nageur plonge dans la rivière.", "Le menuisier rabote une planche en bois."], ans: 0 },
+    { opt: ["L'étudiant consulte un livre à la bibliothèque.", "Le serveur apporte la carte des desserts.", "Le photographe règle l'objectif de son appareil.", "Le vendeur range les chaussures en rayon."], ans: 0 },
+    { opt: ["Le mécanicien répare le moteur de la voiture.", "Le peintre repeint les volets de la maison.", "Le coiffeur coupe les cheveux du client.", "Le serveur remplit les verres d'eau."], ans: 0 },
+    { opt: ["Le médecin examine le patient dans son cabinet.", "Le maçon pose des briques sur le mur.", "Le facteur dépose une lettre dans la boîte.", "Le pompier éteint le feu de forêt."], ans: 0 },
+    { opt: ["Le caissier scanne les articles au supermarché.", "Le chauffeur de bus contrôle les billets.", "Le cordonnier répare une botte en cuir.", "Le coursier livre un colis à domicile."], ans: 0 },
   ];
 
   const idx = sceneIdx % scenes.length;
