@@ -1011,7 +1011,8 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
 
     const { options, correctIndex, correctText, optionImages } = shuffleOptions(topicOpt, topicAns, rawImages);
 
-    const specificHint = (t as any).hint || `Level ${t.level} Listening Guidance: Focus on the speaker's main intent and tone. Pay attention to key transition words (e.g. "cependant", "en revanche") to identify the correct message without guessing.`;
+    const itemLevel = t.level || "A1";
+    const specificHint = (t as any).hint || `Level ${itemLevel} Listening Guidance: Focus on the speaker's main intent and tone. Pay attention to key transition words (e.g. "cependant", "en revanche") to identify the correct message without guessing.`;
 
     let questionTextPrompt = (t as any).q;
     if (!questionTextPrompt) {
@@ -1059,7 +1060,7 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
     qList.push({
       id: `${prefix}-lis-${i}`,
       questionNumber: i,
-      level: t.level,
+      level: itemLevel,
       speakingRate,
       hasSpokenOptions: isSpokenOptionQuestion || (i <= 4 && !!mainImageSvg),
       text: i <= 4 && mainImageSvg
@@ -1074,7 +1075,7 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       mainImage,
       mainImageSvg,
       correctIndex,
-      explanation: `Pedagogical Explanation [Level ${t.level}]: The spoken document confirms "${correctText}".`,
+      explanation: `Pedagogical Explanation [Level ${itemLevel}]: The spoken document confirms "${correctText}".`,
       hint: specificHint,
       transcript: fullSpokenTranscript,
       transcriptEnglish: spokenEnglishTranslation,
