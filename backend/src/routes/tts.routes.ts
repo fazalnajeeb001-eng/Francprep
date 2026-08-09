@@ -30,9 +30,17 @@ router.post('/speak', async (req: Request, res: Response) => {
       return;
     }
 
-    res.status(500).json({ success: false, message: 'Failed to synthesize studio audio' });
+    res.status(200).json({
+      success: false,
+      fallbackActive: true,
+      message: 'Failed to synthesize studio audio, using direct client stream fallback',
+    });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message || 'TTS Error' });
+    res.status(200).json({
+      success: false,
+      fallbackActive: true,
+      message: error.message || 'TTS Error, using direct client stream fallback',
+    });
   }
 });
 
