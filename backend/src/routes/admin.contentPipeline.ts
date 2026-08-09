@@ -852,6 +852,17 @@ router.post('/content-pipeline/drafts/:id/publish', async (req: AuthRequest, res
       await Lesson.create(lessonPayload);
     }
 
+    // Always ensure parent chapter is published so published lessons appear on student dashboard
+    if (resolvedChapterId) {
+      try {
+        if (mongoose.Types.ObjectId.isValid(resolvedChapterId)) {
+          await Chapter.findByIdAndUpdate(resolvedChapterId, { isPublished: true });
+        } else {
+          await Chapter.findOneAndUpdate({ chapterId: resolvedChapterId }, { isPublished: true });
+        }
+      } catch (err) {}
+    }
+
     // Mark previous published drafts for this lesson as superseded (saved in published history)
     const previouslyPublishedDrafts = await Draft.find({
       $or: [
@@ -984,6 +995,16 @@ router.post('/content-pipeline/drafts/publish-bulk', async (req: AuthRequest, re
           { upsert: true }
         );
 
+        if (resolvedChapterId) {
+          try {
+            if (mongoose.Types.ObjectId.isValid(resolvedChapterId)) {
+              await Chapter.findByIdAndUpdate(resolvedChapterId, { isPublished: true });
+            } else {
+              await Chapter.findOneAndUpdate({ chapterId: resolvedChapterId }, { isPublished: true });
+            }
+          } catch (err) {}
+        }
+
         draft.status = 'published';
         draft.publishedAt = new Date();
         draft.publishedBy = req.user?.email || 'admin';
@@ -1001,13 +1022,47 @@ router.post('/content-pipeline/drafts/publish-bulk', async (req: AuthRequest, re
 
     res.json({
       success: true,
-      count: publishedResults.length,
-      publishedLessons: publishedResults,
+      message: `Bulk published ${publishedResults.length} drafts successfully.`,
+      data: publishedResults,
       errors: errors.length > 0 ? errors : undefined,
     });
   } catch (error: any) {
     console.error('Bulk publish error:', error);
     res.status(500).json({ success: false, error: error.message || 'Failed bulk publishing' });
+  }
+});
+
+// ─── POST /content-pipeline/chapters/:chapterId/publish ────────────────────
+router.post('/content-pipeline/chapters/:chapterId/publish', async (req: AuthRequest, res: Response) => {
+  try {
+    const { chapterId } = req.params;
+    if (!chapterId) {
+      res.status(400).json({ success: false, error: 'Chapter ID is required' });
+      return;
+    }
+
+    // 1. Mark Chapter as published
+    let chapterDoc: any = null;
+    if (mongoose.Types.ObjectId.isValid(chapterId)) {
+      chapterDoc = await Chapter.findByIdAndUpdate(chapterId, { isPublished: true }, { new: true });
+    } else {
+      chapterDoc = await Chapter.findOneAndUpdate({ chapterId }, { isPublished: true }, { new: true });
+    }
+
+    // 2. Mark all lessons under this chapter as published
+    const chapterMatch = chapterDoc ? { $or: [{ chapterId: chapterDoc._id }, { chapterId }] } : { chapterId };
+    await Lesson.updateMany(chapterMatch, { $set: { isPublished: true } });
+
+    // 3. Mark all drafts under this chapter as published
+    await Draft.updateMany({ chapterId }, { $set: { status: 'published', publishedAt: new Date() } });
+
+    res.json({
+      success: true,
+      message: `Chapter and all associated lessons published successfully!`,
+      data: { chapterId, isPublished: true },
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message || 'Failed to publish chapter' });
   }
 });
 

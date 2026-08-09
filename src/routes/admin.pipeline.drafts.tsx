@@ -336,17 +336,22 @@ function DraftsSubSectionPage() {
         });
         const json = await res.json();
         if (json.success) {
-          const firstItem = json.publishedLessons?.[0];
+          const publishedList = json.data || json.publishedLessons || [];
+          const firstItem = publishedList[0];
+          const count = publishedList.length || json.count || 1;
           setPublishedSuccessItem({
             lessonId: firstItem?.lessonId || publishConfirmItem.lessonId || "a1-ch1-l1",
-            title: `Entire Chapter (${json.count} Lessons Published)`,
+            title: `Entire Chapter (${count} Lessons Published)`,
             publishedAt: new Date().toLocaleTimeString(),
           });
-          setActionStatus({ loading: false, error: "", success: `All ${json.count} lessons of chapter published successfully!` });
+          setActionStatus({ loading: false, error: "", success: `All ${count} lessons of chapter published successfully!` });
           setPublishConfirmItem(null);
           setPublishConfirmId(null);
           setPublishWordInput("");
           setSelectedDraft(null);
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new Event("active-language-changed"));
+          }
           fetchDrafts();
         } else {
           setActionStatus({ loading: false, error: json.error || "Chapter publish failed", success: "" });
@@ -370,6 +375,9 @@ function DraftsSubSectionPage() {
           setPublishConfirmId(null);
           setPublishWordInput("");
           setSelectedDraft(null);
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new Event("active-language-changed"));
+          }
           fetchDrafts();
         } else {
           setActionStatus({ loading: false, error: json.error || "Publishing failed", success: "" });
