@@ -930,35 +930,31 @@ function shuffleOptions(rawOpt: string[], origCorrectIdx: number, rawImages?: st
 }
 
 function customizeListeningTopicForPaper(t: any, i: number, prefix: string, seedOffset: number) {
-  const paperNum = (parseInt(prefix.replace(/\D/g, ""), 10) || 1) + seedOffset;
   let text = t.text;
   let tr = t.tr;
   let en = t.en;
   let opt = [...t.opt];
   let ans = t.ans;
 
-  if (i === 1) {
-    const tracks = ["voie 4", "quai 2", "porte B15", "arrêt 3", "embarcadère 7", "quai 12", "voie 8", "quai 1", "pont 5", "quai 4"];
-    const trains = ["TGV 7842", "VIA Rail 5619", "Air Canada AC402", "Exo Bus 24", "Traversier 102", "Orléans Express 804", "TGV 9104", "REM 303", "Navette 505", "TransLink 99"];
-    const dests = ["Paris-Gare de Lyon", "Québec", "Toronto", "Laval", "Lévis", "Gatineau", "Lyon", "Aéroport", "Trois-Rivières", "Vancouver"];
-    const track = tracks[(paperNum - 1) % tracks.length];
-    const train = trains[(paperNum - 1) % trains.length];
-    const dest = dests[(paperNum - 1) % dests.length];
-
-    tr = `Chers voyageurs, votre attention s'il vous plaît. Le transport ${train} à destination de ${dest}, départ initialement prévu, partira exceptionnellement du ${track}. Veuillez assurer l'embarquement immédiat.`;
-    en = `Dear passengers, attention please. Transport ${train} bound for ${dest} will exceptionally depart from ${track}. Please proceed to immediate boarding.`;
-    opt = [`Au ${track}`, `À la gare centrale`, `En retard de 45 minutes`, `Annulé sans correspondance`];
-    ans = 0;
-  } else if (i === 2) {
-    const places = ["au supermarché du centre-ville", "à la boulangerie du quartier", "au grand marché public", "à la pharmacie de garde", "au magasin d'électronique", "à la caisse du supermarché"];
-    const place = places[(paperNum - 1) % places.length];
-    tr = `Salut Thomas ! C'est Marc. Je suis actuellement ${place} pour faire les courses de la semaine. Dis-moi, est-ce que tu as besoin que je prenne du pain frais ou du fromage pour le dîner ce soir ?`;
-    en = `Hi Thomas! It's Marc. I'm currently at ${place} doing weekly shopping. Tell me, do you need me to pick up fresh bread or cheese for dinner tonight?`;
-    opt = [place.charAt(0).toUpperCase() + place.slice(1), "À la maison", "Au cinéma municipal", "Au parc communautaire"];
-    ans = 0;
-  }
-
   return { text, tr, en, opt, ans };
+}
+
+function getDrawingPropositions(sceneIdx: number) {
+  const scenes = [
+    { opt: ["Deux collègues discutent debout dans un bureau.", "Le directeur dort à son poste de travail.", "Les deux hommes jouent au tennis en extérieur.", "Un employé répare un ordinateur portable."], ans: "Deux collègues discutent debout dans un bureau." },
+    { opt: ["Un client demande une information à la réceptionniste.", "Le pilote de l'avion s'installe dans le cockpit.", "Deux personnes nagent dans la piscine de l'hôtel.", "Le technicien répare la porte d'entrée."], ans: "Un client demande une information à la réceptionniste." },
+    { opt: ["Le boulanger sert du pain frais au client.", "Un mécanicien change la roue d'une voiture.", "Les voyageurs montent dans le train en gare.", "Le professeur écrit au tableau dans la classe."], ans: "Le boulanger sert du pain frais au client." },
+    { opt: ["L'agente d'escale vérifie le billet du passager.", "Un cuisinier prépare une pizza dans le four.", "Deux jardiniers arrosent les fleurs du parc.", "Le médecin consulte le dossier du patient."], ans: "L'agente d'escale vérifie le billet du passager." },
+    { opt: ["Le chef cuisinier goûte le plat en cuisine.", "Le jardinier coupe la pelouse du jardin.", "Le mécanicien gonfle un pneu de vélo.", "Le comptable vérifie une facture papier."], ans: "Le chef cuisinier goûte le plat en cuisine." },
+    { opt: ["Le passager attend son train sur le quai de la gare.", "Le pilote fait le plein du réservoir.", "Un nageur plonge dans la rivière.", "Le menuisier rabote une planche en bois."], ans: "Le passager attend son train sur le quai de la gare." },
+    { opt: ["L'étudiant consulte un livre à la bibliothèque.", "Le serveur apporte la carte des desserts.", "Le photographe règle l'objectif de son appareil.", "Le vendeur range les chaussures en rayon."], ans: "L'étudiant consulte un livre à la bibliothèque." },
+    { opt: ["Le mécanicien répare le moteur de la voiture.", "Le peintre repeint les volets de la maison.", "Le coiffeur coupe les cheveux du client.", "Le serveur remplit les verres d'eau."], ans: "Le mécanicien répare le moteur de la voiture." },
+    { opt: ["Le médecin examine le patient dans son cabinet.", "Le maçon pose des briques sur le mur.", "Le facteur dépose une lettre dans la boîte.", "Le pompier éteint le feu de forêt."], ans: "Le médecin examine le patient dans son cabinet." },
+    { opt: ["Le caissier scanne les articles au supermarché.", "Le chauffeur de bus contrôle les billets.", "Le cordonnier répare une botte en cuir.", "Le coursier livre un colis à domicile."], ans: "Le caissier scanne les articles au supermarché." },
+  ];
+
+  const idx = sceneIdx % scenes.length;
+  return scenes[idx];
 }
 
 function generateListeningQuestions(count: number, prefix: string, seedOffset: number = 0): ExamQuestion[] {
@@ -1007,40 +1003,10 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
     let topicAns = t.ans;
 
     if (i <= 4) {
-      const type = ((i + seedOffset) % 4) + 1;
-      if (type === 1) {
-        topicOpt = [
-          "Deux collègues discutent debout dans un bureau.",
-          "Le directeur dort à son poste de travail.",
-          "Les deux hommes jouent au tennis en extérieur.",
-          "Un employé répare un ordinateur portable."
-        ];
-        topicAns = "Deux collègues discutent debout dans un bureau.";
-      } else if (type === 2) {
-        topicOpt = [
-          "Un client demande une information à la réceptionniste.",
-          "Le pilote de l'avion s'installe dans le cockpit.",
-          "Deux personnes nagent dans la piscine de l'hôtel.",
-          "Le technicien répare la porte d'entrée."
-        ];
-        topicAns = "Un client demande une information à la réceptionniste.";
-      } else if (type === 3) {
-        topicOpt = [
-          "Le boulanger sert du pain frais au client.",
-          "Un mécanicien change la roue d'une voiture.",
-          "Les voyageurs montent dans le train en gare.",
-          "Le professeur écrit au tableau dans la classe."
-        ];
-        topicAns = "Le boulanger sert du pain frais au client.";
-      } else if (type === 4) {
-        topicOpt = [
-          "L'agente d'escale vérifie le billet du passager.",
-          "Un cuisinier prépare une pizza dans le four.",
-          "Deux jardiniers arrosent les fleurs du parc.",
-          "Le médecin consulte le dossier du patient."
-        ];
-        topicAns = "L'agente d'escale vérifie le billet du passager.";
-      }
+      const sceneIdx = ((seedOffset % 10) * 4) + (i - 1);
+      const props = getDrawingPropositions(sceneIdx);
+      topicOpt = props.opt;
+      topicAns = props.ans;
     }
 
     const { options, correctIndex, correctText, optionImages } = shuffleOptions(topicOpt, topicAns, rawImages);
