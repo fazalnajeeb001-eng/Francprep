@@ -1,5 +1,16 @@
+import { useRef, useState, useEffect, Suspense, lazy, Component, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { getSkinById } from "./avatarSkins";
+
+const VRMAvatar = lazy(() =>
+  import("./VRMAvatar").then((m) => ({ default: m.VRMAvatar }))
+);
+
+class AvatarErrorBoundary extends Component<{ children: ReactNode; fallback: ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+  static getDerivedStateFromError() { return { hasError: true }; }
+  render() { return this.state.hasError ? this.props.fallback : this.props.children; }
+}
 
 export function AvatarIcon({ features, size = 36 }: { features?: { gender?: string; skinTone?: string; hairColor?: string; outfitColor?: string } | null; size?: number }) {
   const gender = features?.gender || "female";
@@ -72,24 +83,17 @@ interface SmartAvatarProps {
 export function SmartAvatar({ gender: propGender, features, size = 80, animate = "idle" }: SmartAvatarProps) {
   const gender = propGender || features?.gender || "female";
   const isMale = gender === "male";
-  const avatarImg = isMale ? "/models/leo-avatar.png" : "/models/chloe-avatar.png";
-
-  const getAnimationVariants = () => {
-    if (animate === "walk") {
-      return { y: [0, -6, 0], transition: { repeat: Infinity, duration: 0.6 } };
-    }
-    if (animate === "celebrate") {
-      return { y: [0, -12, 0], scale: [1, 1.08, 1], transition: { repeat: Infinity, duration: 0.8 } };
-    }
-    if (animate === "wave") {
-      return { rotate: [0, 8, -8, 0], transition: { repeat: Infinity, duration: 1 } };
-    }
-    // Idle breathing
-    return { y: [0, -3, 0], transition: { repeat: Infinity, duration: 2.5, ease: "easeInOut" } };
-  };
+  const modelUrl = isMale ? "/models/leo-avatar.glb" : "/models/female-avatar.glb";
+  const containerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div style={{ width: size, height: size }} className="relative shrink-0 flex items-center justify-center">
+    <motion.div
+      initial={{ y: 80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      style={{ width: size, height: size }}
+      className="relative shrink-0 flex items-center justify-center overflow-visible"
+    >
       {/* 🔮 Glowing Blue/Cyan Ground Circle Base */}
       <motion.div
         className="absolute left-1/2 -translate-x-1/2 rounded-full pointer-events-none z-0"
@@ -97,7 +101,7 @@ export function SmartAvatar({ gender: propGender, features, size = 80, animate =
           bottom: -size * 0.05,
           width: size * 0.85,
           height: size * 0.22,
-          background: "radial-gradient(ellipse, rgba(56,189,248,0.8) 0%, rgba(59,130,246,0.4) 45%, rgba(147,51,234,0.15) 70%, transparent 90%)",
+          background: "radial-gradient(ellipse, rgba(56,189,248,0.85) 0%, rgba(59,130,246,0.45) 45%, rgba(147,51,234,0.18) 70%, transparent 90%)",
           filter: "blur(6px)",
         }}
         animate={{ opacity: [0.6, 1, 0.6], scale: [0.95, 1.05, 0.95] }}
@@ -111,33 +115,30 @@ export function SmartAvatar({ gender: propGender, features, size = 80, animate =
           bottom: -size * 0.03,
           width: size * 0.72,
           height: size * 0.14,
-          border: "2px solid rgba(56,189,248,0.7)",
-          boxShadow: "0 0 16px rgba(56,189,248,0.6), inset 0 0 10px rgba(59,130,246,0.4)",
+          border: "2px solid rgba(56,189,248,0.75)",
+          boxShadow: "0 0 16px rgba(56,189,248,0.7), inset 0 0 10px rgba(59,130,246,0.5)",
         }}
-        animate={{ opacity: [0.5, 0.9, 0.5] }}
+        animate={{ opacity: [0.5, 0.95, 0.5] }}
         transition={{ duration: 2.0, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {/* 3D Animated Avatar Container */}
-      <motion.div
-        animate={getAnimationVariants()}
-        style={{ width: size, height: size }}
-        className="relative z-10 shrink-0 flex items-center justify-center"
-      >
-        <div className={`w-full h-full rounded-full overflow-hidden border-2 shadow-2xl ${
-          isMale
-            ? "border-blue-400/60 bg-gradient-to-br from-blue-900/60 via-indigo-900/50 to-slate-950"
-            : "border-pink-400/60 bg-gradient-to-br from-pink-900/60 via-purple-900/50 to-slate-950"
-        }`}>
-          <img
-            src={avatarImg}
-            alt="Avatar"
-            loading="eager"
-            className="w-full h-full object-cover object-top"
-            style={{ objectPosition: "50% 15%" }}
-          />
-        </div>
-      </motion.div>
-    </div>
+      {/* 3D Animated VRM Avatar Model */}
+      <div ref={containerRef} className="relative z-10 w-full h-full flex items-center justify-center">
+        <AvatarErrorBoundary fallback={<AvatarFallback size={size} gender={gender} />}>
+          <Suspense fallback={<AvatarFallback size={size} gender={gender} />}>
+            <VRMAvatar
+              modelUrl={modelUrl}
+              size={size}
+              animate={animate}
+              tint={{
+                skinColor: features?.skinTone ? getSkinById(features.skinTone).color : undefined,
+                hairColor: features?.hairColor,
+                outfitColor: features?.outfitColor,
+              }}
+            />
+          </Suspense>
+        </AvatarErrorBoundary>
+      </div>
+    </motion.div>
   );
 }
