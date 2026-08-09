@@ -621,30 +621,22 @@ function generateReadingQuestions(count: number, prefix: string, seedOffset: num
   return qList;
 }
 
-// ─── LAZY PROXY EXPORTS FOR SAMPLE PAPERS (0 TDZ / INITIALIZATION ERRORS) ───
-export const SAMPLE_TCF_PAPER_1: ExamPaper = new Proxy({} as ExamPaper, {
-  get(_target, prop) {
-    return (getExamRegistry()[0] as any)[prop];
-  }
-});
+// ─── LAZY GETTER EXPORTS FOR SAMPLE PAPERS (0 TDZ / INITIALIZATION ERRORS) ───
+export function getSampleTcfPaper1(): ExamPaper {
+  return getExamRegistry()[0];
+}
 
-export const SAMPLE_TCF_PAPER_2: ExamPaper = new Proxy({} as ExamPaper, {
-  get(_target, prop) {
-    return (getExamRegistry()[1] as any)[prop];
-  }
-});
+export function getSampleTcfPaper2(): ExamPaper {
+  return getExamRegistry()[1];
+}
 
-export const SAMPLE_TEF_PAPER_1: ExamPaper = new Proxy({} as ExamPaper, {
-  get(_target, prop) {
-    return (getExamRegistry()[10] as any)[prop];
-  }
-});
+export function getSampleTefPaper1(): ExamPaper {
+  return getExamRegistry()[10];
+}
 
-export const SAMPLE_TEF_PAPER_2: ExamPaper = new Proxy({} as ExamPaper, {
-  get(_target, prop) {
-    return (getExamRegistry()[11] as any)[prop];
-  }
-});
+export function getSampleTefPaper2(): ExamPaper {
+  return getExamRegistry()[11];
+}
 
 // ─── DYNAMIC GENERATOR FOR 10 UNIQUE TCF CANADA PAPERS & 10 UNIQUE TEF CANADA PAPERS ───
 
