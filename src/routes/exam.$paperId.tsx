@@ -2146,50 +2146,104 @@ export function AuthenticCBTExamPage() {
                   )}
                 </div>
 
-                {/* Multiple Choice Options (Text & Visual Cards) */}
+                {/* Multiple Choice Options (Photographic Situation Cards vs Text Options) */}
                 <div className="space-y-2.5">
-                  {currentQ.options.map((opt, idx) => {
-                    const letter = String.fromCharCode(65 + idx); // A, B, C, D
-                    const isChosen = selectedAnswers[currentQ.id] === idx;
-                    const isLocked = mode === "PRACTICE" && checkedMap[currentQ.id];
-                    const imgUrl = (currentQ as any).optionImages?.[idx];
+                  {(currentQ as any).optionImages && (currentQ as any).optionImages.length === 4 ? (
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                      {currentQ.options.map((opt, idx) => {
+                        const letter = String.fromCharCode(65 + idx); // A, B, C, D
+                        const isChosen = selectedAnswers[currentQ.id] === idx;
+                        const isLocked = mode === "PRACTICE" && checkedMap[currentQ.id];
+                        const imgUrl = (currentQ as any).optionImages[idx];
 
-                    return (
-                      <div
-                        key={idx}
-                        onClick={() => {
-                          if (!isLocked) handleSelectOption(currentQ.id, idx);
-                        }}
-                        className={`p-3.5 sm:p-4 rounded-xl border text-xs sm:text-sm font-semibold cursor-pointer transition-all flex items-center justify-between min-h-[48px] touch-manipulation active:scale-[0.99] ${
-                          isChosen
-                            ? "bg-blue-600 text-white border-blue-600 shadow-md font-bold"
-                            : cbtDark
-                            ? "bg-slate-800/80 text-slate-200 border-slate-700 hover:border-blue-400"
-                            : "bg-slate-50 text-slate-950 border-slate-300 hover:border-blue-500 hover:bg-blue-50/50"
-                        } ${isLocked ? "cursor-not-allowed opacity-90" : ""}`}
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <span className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ${
+                        return (
+                          <div
+                            key={idx}
+                            onClick={() => {
+                              if (!isLocked) handleSelectOption(currentQ.id, idx);
+                            }}
+                            className={`group relative rounded-xl border-2 overflow-hidden cursor-pointer transition-all duration-200 shadow-sm flex flex-col justify-between active:scale-[0.98] ${
+                              isChosen
+                                ? "border-blue-600 ring-2 ring-blue-500/50 bg-blue-50/20 dark:bg-blue-950/30 shadow-md"
+                                : cbtDark
+                                ? "bg-slate-800/80 border-slate-700 hover:border-blue-400"
+                                : "bg-white border-slate-300 hover:border-blue-500 hover:shadow-md"
+                            } ${isLocked ? "cursor-not-allowed opacity-90" : ""}`}
+                          >
+                            {/* Card Top Letter Header */}
+                            <div className={`px-3 py-2 flex items-center justify-between font-extrabold text-xs border-b ${
+                              isChosen
+                                ? "bg-blue-600 text-white border-blue-600"
+                                : cbtDark
+                                ? "bg-slate-700/80 text-slate-200 border-slate-700"
+                                : "bg-slate-100 text-slate-900 border-slate-200"
+                            }`}>
+                              <span className="flex items-center gap-1.5 font-mono">
+                                <span className={`w-5 h-5 rounded-md flex items-center justify-center font-black ${
+                                  isChosen ? "bg-white text-blue-600" : "bg-slate-200 dark:bg-slate-600 text-slate-900 dark:text-slate-100"
+                                }`}>
+                                  {letter}
+                                </span>
+                                <span>Image {letter}</span>
+                              </span>
+                              {isChosen && <CheckCircle2 className="w-4 h-4 text-white" />}
+                            </div>
+
+                            {/* HD Photo Display */}
+                            <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-900">
+                              <img
+                                src={imgUrl}
+                                alt={`Situation Image ${letter}`}
+                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                              />
+                            </div>
+
+                            {/* Text Caption: Practice Mode Only for Guidance, Hidden in Official CBT Exam Mode */}
+                            {mode === "PRACTICE" && (
+                              <div className="p-2 text-[11px] font-semibold text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 border-t border-slate-200 dark:border-slate-800 text-center leading-snug">
+                                {opt}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    currentQ.options.map((opt, idx) => {
+                      const letter = String.fromCharCode(65 + idx); // A, B, C, D
+                      const isChosen = selectedAnswers[currentQ.id] === idx;
+                      const isLocked = mode === "PRACTICE" && checkedMap[currentQ.id];
+
+                      return (
+                        <div
+                          key={idx}
+                          onClick={() => {
+                            if (!isLocked) handleSelectOption(currentQ.id, idx);
+                          }}
+                          className={`p-3.5 sm:p-4 rounded-xl border text-xs sm:text-sm font-semibold cursor-pointer transition-all flex items-center justify-between min-h-[48px] touch-manipulation active:scale-[0.99] ${
                             isChosen
-                              ? "bg-white text-blue-600"
+                              ? "bg-blue-600 text-white border-blue-600 shadow-md font-bold"
                               : cbtDark
-                              ? "bg-slate-700 text-slate-200"
-                              : "bg-slate-200 text-slate-900 font-extrabold"
-                          }`}>
-                            {letter}
-                          </span>
-                          {imgUrl && (
-                            <img
-                              src={imgUrl}
-                              alt={`Option ${letter}`}
-                              className="w-16 h-12 rounded-lg object-cover shrink-0 shadow-sm border border-slate-300 dark:border-slate-600"
-                            />
-                          )}
-                          <span className="leading-snug break-words">{opt}</span>
+                              ? "bg-slate-800/80 text-slate-200 border-slate-700 hover:border-blue-400"
+                              : "bg-slate-50 text-slate-950 border-slate-300 hover:border-blue-500 hover:bg-blue-50/50"
+                          } ${isLocked ? "cursor-not-allowed opacity-90" : ""}`}
+                        >
+                          <div className="flex items-center gap-3 min-w-0">
+                            <span className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ${
+                              isChosen
+                                ? "bg-white text-blue-600"
+                                : cbtDark
+                                ? "bg-slate-700 text-slate-200"
+                                : "bg-slate-200 text-slate-900 font-extrabold"
+                            }`}>
+                              {letter}
+                            </span>
+                            <span className="leading-snug break-words">{opt}</span>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  )}
                 </div>
 
                 {/* Practice Mode 2-Attempt Check Answer Button & Feedback Panel */}

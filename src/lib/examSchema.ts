@@ -902,9 +902,13 @@ function getTargetLevel(questionNum: number): string {
   return "C2";
 }
 
-function shuffleOptions(rawOpt: string[], origCorrectIdx: number) {
+function shuffleOptions(rawOpt: string[], origCorrectIdx: number, rawImages?: string[]) {
   const correctText = rawOpt[origCorrectIdx];
-  const indexed = rawOpt.map((optText, i) => ({ optText, isCorrect: i === origCorrectIdx }));
+  const indexed = rawOpt.map((optText, i) => ({
+    optText,
+    isCorrect: i === origCorrectIdx,
+    imgUrl: rawImages ? rawImages[i] : undefined
+  }));
 
   // Deterministic shuffle using option text lengths to vary option order
   for (let i = indexed.length - 1; i > 0; i--) {
@@ -916,7 +920,8 @@ function shuffleOptions(rawOpt: string[], origCorrectIdx: number) {
 
   const options = indexed.map((item) => item.optText);
   const correctIndex = indexed.findIndex((item) => item.isCorrect);
-  return { options, correctIndex, correctText };
+  const optionImages = rawImages ? indexed.map((item) => item.imgUrl as string) : undefined;
+  return { options, correctIndex, correctText, optionImages };
 }
 
 function generateListeningQuestions(count: number, prefix: string, seedOffset: number = 0): ExamQuestion[] {
@@ -951,7 +956,39 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
     const t = LISTENING_TOPICS[chosenIdx];
 
     const isQuestionInAudio = i <= 29;
-    const { options, correctIndex, correctText } = shuffleOptions(t.opt, t.ans);
+
+    let rawImages: string[] | undefined = undefined;
+    if (i === 1) {
+      rawImages = [
+        "https://images.unsplash.com/photo-1515165562839-978bbcf18277?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=400&q=80"
+      ];
+    } else if (i === 2) {
+      rawImages = [
+        "https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=400&q=80"
+      ];
+    } else if (i === 3) {
+      rawImages = [
+        "https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1556742049-0a670fc80789?auto=format&fit=crop&w=400&q=80"
+      ];
+    } else if (i === 4) {
+      rawImages = [
+        "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=400&q=80"
+      ];
+    }
+
+    const { options, correctIndex, correctText, optionImages } = shuffleOptions(t.opt, t.ans, rawImages);
 
     const specificHint = (t as any).hint || `Level ${t.level} Listening Guidance: Focus on the speaker's main intent and tone. Pay attention to key transition words (e.g. "cependant", "en revanche") to identify the correct message without guessing.`;
 
@@ -982,37 +1019,6 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       : t.tr;
 
     const speakingRate = i <= 7 ? 0.85 : i <= 15 ? 0.92 : i <= 25 ? 1.00 : i <= 33 ? 1.15 : 1.30;
-
-    let optionImages: string[] | undefined = undefined;
-    if (i === 1) {
-      optionImages = [
-        "https://images.unsplash.com/photo-1515165562839-978bbcf18277?auto=format&fit=crop&w=400&q=80",
-        "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=400&q=80",
-        "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=400&q=80",
-        "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=400&q=80"
-      ];
-    } else if (i === 2) {
-      optionImages = [
-        "https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=400&q=80",
-        "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=400&q=80",
-        "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=400&q=80",
-        "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=400&q=80"
-      ];
-    } else if (i === 3) {
-      optionImages = [
-        "https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?auto=format&fit=crop&w=400&q=80",
-        "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=400&q=80",
-        "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=400&q=80",
-        "https://images.unsplash.com/photo-1556742049-0a670fc80789?auto=format&fit=crop&w=400&q=80"
-      ];
-    } else if (i === 4) {
-      optionImages = [
-        "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=400&q=80",
-        "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=400&q=80",
-        "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=400&q=80",
-        "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=400&q=80"
-      ];
-    }
 
     qList.push({
       id: `${prefix}-lis-${i}`,
