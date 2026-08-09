@@ -455,35 +455,6 @@ export function LevelProgress({ levels, dark, overall, avatarUrl, avatarFeatures
           glowColor="purple"
         />
 
-        {/* Ground glow circle — centered under avatar */}
-        <motion.div
-          className="absolute left-1/2 -translate-x-1/2"
-          style={{
-            bottom: -avatarSize * 0.06,
-            width: avatarSize * 0.85,
-            height: avatarSize * 0.18,
-            borderRadius: "50%",
-            background: "radial-gradient(ellipse, rgba(139,92,246,0.7) 0%, rgba(139,92,246,0.3) 40%, rgba(168,85,247,0.1) 65%, transparent 80%)",
-            filter: "blur(6px)",
-          }}
-          animate={{ opacity: [0.6, 1, 0.6] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        {/* Glowing ring on ground */}
-        <motion.div
-          className="absolute left-1/2 -translate-x-1/2"
-          style={{
-            bottom: -avatarSize * 0.04,
-            width: avatarSize * 0.65,
-            height: avatarSize * 0.1,
-            borderRadius: "50%",
-            border: "1.5px solid rgba(168,85,247,0.5)",
-            boxShadow: "0 0 15px rgba(139,92,246,0.3), inset 0 0 10px rgba(139,92,246,0.15)",
-          }}
-          animate={{ opacity: [0.4, 0.8, 0.4], scale: [0.95, 1.05, 0.95] }}
-          transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-        />
 
         {/* Sparkle effect (chapter complete) */}
         {showSparkles && (

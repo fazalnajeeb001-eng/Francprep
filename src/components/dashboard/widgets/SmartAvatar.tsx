@@ -87,27 +87,26 @@ export function SmartAvatar({ gender: propGender, features, size = 80, animate =
   const modelUrl = isMale ? "/models/leo-avatar.glb" : "/models/female-avatar.glb";
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Purple level glow styling (or fallback cyan/pink if requested)
   const isPurple = glowColor === "purple";
   const isCyan = glowColor === "cyan";
 
   const groundBg = isPurple
-    ? "radial-gradient(ellipse, rgba(168,85,247,0.95) 0%, rgba(147,51,234,0.6) 45%, rgba(192,132,252,0.25) 75%, transparent 95%)"
+    ? "radial-gradient(ellipse, rgba(147,51,234,0.45) 0%, rgba(168,85,247,0.2) 45%, rgba(192,132,252,0.05) 75%, transparent 95%)"
     : isCyan
-    ? "radial-gradient(ellipse, rgba(56,189,248,0.9) 0%, rgba(59,130,246,0.5) 45%, rgba(147,51,234,0.2) 75%, transparent 95%)"
-    : "radial-gradient(ellipse, rgba(236,72,153,0.9) 0%, rgba(219,39,119,0.5) 45%, rgba(168,85,247,0.2) 75%, transparent 95%)";
+    ? "radial-gradient(ellipse, rgba(56,189,248,0.45) 0%, rgba(59,130,246,0.2) 45%, rgba(147,51,234,0.05) 75%, transparent 95%)"
+    : "radial-gradient(ellipse, rgba(236,72,153,0.45) 0%, rgba(219,39,119,0.2) 45%, rgba(168,85,247,0.05) 75%, transparent 95%)";
 
   const ringBorder = isPurple
-    ? "2px solid rgba(216,180,254,0.9)"
+    ? "1.5px dashed rgba(192,132,252,0.65)"
     : isCyan
-    ? "2px solid rgba(125,211,252,0.9)"
-    : "2px solid rgba(249,168,212,0.9)";
+    ? "1.5px dashed rgba(125,211,252,0.65)"
+    : "1.5px dashed rgba(249,168,212,0.65)";
 
   const ringShadow = isPurple
-    ? "0 0 24px rgba(168,85,247,0.85), inset 0 0 14px rgba(147,51,234,0.6)"
+    ? "0 0 14px rgba(168,85,247,0.35), inset 0 0 8px rgba(147,51,234,0.2)"
     : isCyan
-    ? "0 0 20px rgba(56,189,248,0.8), inset 0 0 12px rgba(59,130,246,0.5)"
-    : "0 0 20px rgba(236,72,153,0.8), inset 0 0 12px rgba(219,39,119,0.5)";
+    ? "0 0 14px rgba(56,189,248,0.35), inset 0 0 8px rgba(59,130,246,0.2)"
+    : "0 0 14px rgba(236,72,153,0.35), inset 0 0 8px rgba(219,39,119,0.2)";
 
   return (
     <motion.div
@@ -117,33 +116,35 @@ export function SmartAvatar({ gender: propGender, features, size = 80, animate =
       style={{ width: size, height: size }}
       className="relative shrink-0 flex items-center justify-center overflow-visible"
     >
-      {/* 🔮 Glowing Purple Ground Circle Base (Shows Active Student Level) */}
+      {/* 🔮 Subtle Soft Purple Base Radial Highlight */}
       <motion.div
         className="absolute left-1/2 -translate-x-1/2 rounded-full pointer-events-none z-0"
         style={{
-          bottom: -size * 0.05,
-          width: size * 0.9,
-          height: size * 0.24,
+          bottom: -size * 0.04,
+          width: size * 0.85,
+          height: size * 0.2,
           background: groundBg,
-          filter: "blur(7px)",
-          boxShadow: isPurple ? "0 0 35px rgba(168,85,247,0.7)" : undefined,
+          filter: "blur(5px)",
         }}
-        animate={{ opacity: [0.65, 1, 0.65], scale: [0.94, 1.06, 0.94] }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+        animate={{ opacity: [0.5, 0.85, 0.5], scale: [0.96, 1.04, 0.96] }}
+        transition={{ duration: 3.0, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {/* ⭕ Glowing Purple Precision Outer Level Ring */}
+      {/* ⭕ Elegant Rotating Purple Precision Highlight Ring */}
       <motion.div
         className="absolute left-1/2 -translate-x-1/2 rounded-full pointer-events-none z-0"
         style={{
-          bottom: -size * 0.03,
-          width: size * 0.75,
-          height: size * 0.15,
+          bottom: -size * 0.02,
+          width: size * 0.72,
+          height: size * 0.14,
           border: ringBorder,
           boxShadow: ringShadow,
         }}
-        animate={{ opacity: [0.55, 0.95, 0.55] }}
-        transition={{ duration: 2.0, repeat: Infinity, ease: "easeInOut" }}
+        animate={{ rotate: 360, opacity: [0.55, 0.9, 0.55] }}
+        transition={{
+          rotate: { duration: 12, repeat: Infinity, ease: "linear" },
+          opacity: { duration: 2.5, repeat: Infinity, ease: "easeInOut" }
+        }}
       />
 
       {/* 3D Animated VRM Avatar Model */}
