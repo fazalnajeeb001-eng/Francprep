@@ -755,14 +755,14 @@ export function AuthenticCBTExamPage() {
     handleStopAudio();
   }, [currentQuestionIdx, activeSectionIdx]);
 
-  const handlePlayAudio = (text: string) => {
+  const handlePlayAudio = (text: string, lang = "fr-FR", rate = 1.0) => {
     handleStopAudio();
     setIsAudioPaused(false);
-    if (text.includes(":") || text.includes("\n") || text.includes("—")) {
-      ttsSpeakDialogue(text, "fr-FR", 0.85);
+    if (text.includes("Locuteur") || text.includes("Annonceur:") || text.includes("\n") || text.includes(":")) {
+      ttsSpeakDialogue(text, lang, rate);
     } else {
       const isMale = /\b(monsieur|m\.|homme|paul|léo|marc|antoine|pierre|thomas|hugo|louis)\b/i.test(text);
-      ttsSpeak(text, "fr-FR", 0.85, isMale ? "male" : "female");
+      ttsSpeak(text, lang, rate, isMale ? "male" : "female");
     }
   };
 
@@ -1967,12 +1967,7 @@ export function AuthenticCBTExamPage() {
                               if (isSpeaking || isAudioPaused) {
                                 handlePauseResumeAudio();
                               } else {
-                                const textToPlay = currentQ.transcript || currentQ.text;
-                                if (textToPlay.includes("Locuteur") || textToPlay.includes("Annonceur:")) {
-                                  speakDialogue(textToPlay, "fr-FR", (currentQ as any).speakingRate || 1.0);
-                                } else {
-                                  handlePlayAudio(textToPlay, "fr-FR", (currentQ as any).speakingRate || 1.0);
-                                }
+                                handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || 1.0);
                               }
                             }}
                             className="px-3.5 sm:px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold flex items-center gap-1.5 shadow cursor-pointer active:scale-95 transition-all"
@@ -2010,14 +2005,7 @@ export function AuthenticCBTExamPage() {
                             <button
                               onClick={() => {
                                 handleStopAudio();
-                                setTimeout(() => {
-                                  const textToPlay = currentQ.transcript || currentQ.text;
-                                  if (textToPlay.includes("Locuteur") || textToPlay.includes("Annonceur:")) {
-                                    speakDialogue(textToPlay, "fr-FR", (currentQ as any).speakingRate || 1.0);
-                                  } else {
-                                    handlePlayAudio(textToPlay, "fr-FR", (currentQ as any).speakingRate || 1.0);
-                                  }
-                                }, 50);
+                                setTimeout(() => handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || 1.0), 50);
                               }}
                               className="p-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1 shadow cursor-pointer"
                               title="Replay Audio From Start"
