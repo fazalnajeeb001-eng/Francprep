@@ -2561,12 +2561,10 @@ export function AuthenticCBTExamPage() {
                   <div className="p-4 sm:p-5 rounded-2xl border border-purple-300 dark:border-purple-800 bg-gradient-to-r from-purple-900/10 via-indigo-900/10 to-slate-900/10 dark:from-purple-950/60 dark:via-indigo-950/60 dark:to-slate-950/60 flex flex-col md:flex-row items-center justify-between gap-4 shadow-md">
                     <div className="flex items-center gap-4 w-full md:w-auto">
                       <div className="relative shrink-0">
-                        <img
-                          src="/fei_examiner.png"
-                          alt="Mme Élodie Martin - Certified FEI Oral Examiner"
-                          className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-purple-500/50 shadow-lg"
-                        />
-                        <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white dark:border-slate-900 ${
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-purple-600 text-white flex items-center justify-center shadow-lg border border-purple-400/40">
+                          <Volume2 className="w-6 h-6 sm:w-7 sm:h-7" />
+                        </div>
+                        <span className={`absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-slate-900 ${
                           isPlayingAudio ? "bg-emerald-500 animate-ping" : isRecording ? "bg-red-500 animate-pulse" : "bg-emerald-500"
                         }`} />
                       </div>
