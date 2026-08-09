@@ -182,7 +182,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const updateUser = useCallback((updated: User) => setUser(updated), []);
+  const updateUser = useCallback((updated: User) => {
+    setUser(updated);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updated));
+        if ((updated as any).activeLanguage) {
+          localStorage.setItem("fp_active_language", (updated as any).activeLanguage);
+          window.dispatchEvent(new Event("active-language-changed"));
+        }
+      } catch {}
+    }
+  }, []);
 
   const value: AuthContextValue = {
     user,

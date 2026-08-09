@@ -7,6 +7,7 @@ import { createCheckout, createPortal, getSubscription, type Subscription } from
 import { Moon, Sun, Shield, Key, CreditCard, Check, AlertTriangle, RefreshCw, ChevronDown, ChevronUp, Target, User, LogOut, Zap, Crown, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { GOAL_OPTIONS, getGoalOptionsForLanguage, type LearningGoal, setGoal as saveGoalToStorage, getGoal, getDailyStudyGoal, setDailyStudyGoal } from "~/components/dashboard/utils/userPrefs";
+import { getActiveLanguageCode } from "~/lib/trackBranding";
 
 export const Route = createFileRoute("/dashboard/settings")({ component: SettingsPage });
 
@@ -55,14 +56,24 @@ function SettingsPage() {
     { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪', examName: 'Goethe / TestDaF' },
     { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸', examName: 'DELE / SIELE' }
   ]);
-  const [activeLang, setActiveLang] = useState<string>(user?.activeLanguage || "fr");
+  const [activeLang, setActiveLang] = useState<string>(() => getActiveLanguageCode(user));
   const [langSaving, setLangSaving] = useState(false);
   const [langMsg, setLangMsg] = useState("");
 
-  useEffect(() => { setFirstName(user?.firstName || ""); setLastName(user?.lastName || ""); setActiveLang(user?.activeLanguage || "fr"); }, [user]);
+  useEffect(() => { 
+    setFirstName(user?.firstName || ""); 
+    setLastName(user?.lastName || ""); 
+    setActiveLang(getActiveLanguageCode(user)); 
+  }, [user]);
 
   useEffect(() => {
-    apiFetch("/languages?includeUnpublished=true")
+    const syncLang = () => setActiveLang(getActiveLanguageCode(user));
+    window.addEventListener("active-language-changed", syncLang);
+    return () => window.removeEventListener("active-language-changed", syncLang);
+  }, [user]);
+
+  useEffect(() => {
+    apiFetch("/languages")
       .then(r => r.json())
       .then(res => {
         if (res.data && Array.isArray(res.data) && res.data.length > 0) {

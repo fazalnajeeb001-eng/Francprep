@@ -75,7 +75,6 @@ export function clearAuthStorage(): void {
   localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
   localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
   localStorage.removeItem(STORAGE_KEYS.USER);
-  localStorage.removeItem("fp_active_language");
   localStorage.removeItem("francprep_onboarding_completed");
   localStorage.removeItem("francprep_user_level");
 }
