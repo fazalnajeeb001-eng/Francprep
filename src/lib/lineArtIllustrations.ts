@@ -386,3 +386,10 @@ export function getOfficialLineArtSvg(qNum: number, seedOffset: number = 0): str
 
   return `${containerStart}${renderScene()}${containerEnd}`;
 }
+
+export function getOfficialOptionImageSvgs(qNum: number, seedOffset: number = 0): string[] {
+  return [0, 1, 2, 3].map((optIdx) =>
+    getOfficialLineArtSvg(qNum, seedOffset + optIdx * 7 + 1)
+  );
+}
+

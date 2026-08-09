@@ -29,6 +29,7 @@ import { useSpeak } from "~/lib/speech";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
 import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } from "~/lib/examSchema";
+import { getOfficialOptionImageSvgs } from "~/lib/lineArtIllustrations";
 
 function countFrenchWords(str: string): number {
   if (!str || !str.trim()) return 0;
@@ -2211,7 +2212,81 @@ export function AuthenticCBTExamPage() {
 
                 {/* Multiple Choice Options (Official FEI Radio Buttons for Spoken Option Items vs Standard Text Options) */}
                 <div className="space-y-2.5">
-                  {(currentQ.hasSpokenOptions || currentQ.questionNumber <= 4) ? (
+                  {((currentQ as any).optionImages && (currentQ as any).optionImages.length === 4) || (currentSection.type === "COMPREHENSION_ORALE" && currentQ.questionNumber <= 4) ? (
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                      {(() => {
+                        const optSvgs = currentQ.questionNumber <= 4 && !(currentQ as any).optionImages
+                          ? getOfficialOptionImageSvgs(currentQ.questionNumber, (paper?.code ? parseInt(paper.code.replace(/\D/g, "") || "1", 10) : 1))
+                          : null;
+
+                        return currentQ.options.map((opt, idx) => {
+                          const letter = String.fromCharCode(65 + idx); // A, B, C, D
+                          const isChosen = selectedAnswers[currentQ.id] === idx;
+                          const isLocked = mode === "PRACTICE" && checkedMap[currentQ.id];
+                          const imgUrl = (currentQ as any).optionImages?.[idx];
+                          const svgCard = optSvgs?.[idx];
+
+                          return (
+                            <div
+                              key={idx}
+                              onClick={() => {
+                                if (!isLocked) handleSelectOption(currentQ.id, idx);
+                              }}
+                              className={`group relative rounded-xl border-2 overflow-hidden cursor-pointer transition-all duration-200 shadow-sm flex flex-col justify-between active:scale-[0.98] ${
+                                isChosen
+                                  ? "border-blue-600 ring-2 ring-blue-500/50 bg-blue-50/20 dark:bg-blue-950/30 shadow-md"
+                                  : cbtDark
+                                  ? "bg-slate-800/80 border-slate-700 hover:border-blue-400"
+                                  : "bg-white border-slate-300 hover:border-blue-500 hover:shadow-md"
+                              } ${isLocked ? "cursor-not-allowed opacity-90" : ""}`}
+                            >
+                              {/* Card Top Letter Header */}
+                              <div className={`px-3 py-2 flex items-center justify-between font-extrabold text-xs border-b ${
+                                isChosen
+                                  ? "bg-blue-600 text-white border-blue-600"
+                                  : cbtDark
+                                  ? "bg-slate-700/80 text-slate-200 border-slate-700"
+                                  : "bg-slate-100 text-slate-900 border-slate-200"
+                              }`}>
+                                <span className="flex items-center gap-1.5 font-mono">
+                                  <span className={`w-5 h-5 rounded-md flex items-center justify-center font-black ${
+                                    isChosen ? "bg-white text-blue-600" : "bg-slate-200 dark:bg-slate-600 text-slate-900 dark:text-slate-100"
+                                  }`}>
+                                    {letter}
+                                  </span>
+                                  <span>Image {letter}</span>
+                                </span>
+                                {isChosen && <CheckCircle2 className="w-4 h-4 text-white" />}
+                              </div>
+
+                              {/* HD Photo or Line Art SVG Display */}
+                              <div className="relative aspect-[4/3] w-full overflow-hidden bg-white dark:bg-slate-900 flex items-center justify-center">
+                                {svgCard ? (
+                                  <div
+                                    className="w-full h-full p-1"
+                                    dangerouslySetInnerHTML={{ __html: svgCard }}
+                                  />
+                                ) : imgUrl ? (
+                                  <img
+                                    src={imgUrl}
+                                    alt={`Option ${letter}`}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                  />
+                                ) : null}
+                              </div>
+
+                              {/* In PRACTICE mode, show text caption below image */}
+                              {mode === "PRACTICE" && (
+                                <div className="p-2 text-[11px] font-semibold text-slate-700 dark:text-slate-300 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+                                  {opt}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        });
+                      })()}
+                    </div>
+                  ) : (currentQ.hasSpokenOptions || (currentQ.questionNumber >= 5 && currentQ.questionNumber <= 29)) ? (
                     <div className="space-y-3 p-4 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-100 shadow-md">
                       <p className="text-xs font-black uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
                         <span>Choisissez la bonne réponse (A, B, C ou D) :</span>
@@ -2262,66 +2337,6 @@ export function AuthenticCBTExamPage() {
                           );
                         })}
                       </div>
-                    </div>
-                  ) : (currentQ as any).optionImages && (currentQ as any).optionImages.length === 4 ? (
-                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                      {currentQ.options.map((opt, idx) => {
-                        const letter = String.fromCharCode(65 + idx); // A, B, C, D
-                        const isChosen = selectedAnswers[currentQ.id] === idx;
-                        const isLocked = mode === "PRACTICE" && checkedMap[currentQ.id];
-                        const imgUrl = (currentQ as any).optionImages[idx];
-
-                        return (
-                          <div
-                            key={idx}
-                            onClick={() => {
-                              if (!isLocked) handleSelectOption(currentQ.id, idx);
-                            }}
-                            className={`group relative rounded-xl border-2 overflow-hidden cursor-pointer transition-all duration-200 shadow-sm flex flex-col justify-between active:scale-[0.98] ${
-                              isChosen
-                                ? "border-blue-600 ring-2 ring-blue-500/50 bg-blue-50/20 dark:bg-blue-950/30 shadow-md"
-                                : cbtDark
-                                ? "bg-slate-800/80 border-slate-700 hover:border-blue-400"
-                                : "bg-white border-slate-300 hover:border-blue-500 hover:shadow-md"
-                            } ${isLocked ? "cursor-not-allowed opacity-90" : ""}`}
-                          >
-                            {/* Card Top Letter Header */}
-                            <div className={`px-3 py-2 flex items-center justify-between font-extrabold text-xs border-b ${
-                              isChosen
-                                ? "bg-blue-600 text-white border-blue-600"
-                                : cbtDark
-                                ? "bg-slate-700/80 text-slate-200 border-slate-700"
-                                : "bg-slate-100 text-slate-900 border-slate-200"
-                            }`}>
-                              <span className="flex items-center gap-1.5 font-mono">
-                                <span className={`w-5 h-5 rounded-md flex items-center justify-center font-black ${
-                                  isChosen ? "bg-white text-blue-600" : "bg-slate-200 dark:bg-slate-600 text-slate-900 dark:text-slate-100"
-                                }`}>
-                                  {letter}
-                                </span>
-                                <span>Image {letter}</span>
-                              </span>
-                              {isChosen && <CheckCircle2 className="w-4 h-4 text-white" />}
-                            </div>
-
-                            {/* HD Photo Display */}
-                            <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-900">
-                              <img
-                                src={imgUrl}
-                                alt={`Option ${letter}`}
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                              />
-                            </div>
-
-                            {/* In PRACTICE mode, show text caption below image */}
-                            {mode === "PRACTICE" && (
-                              <div className="p-2 text-[11px] font-semibold text-slate-700 dark:text-slate-300 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
-                                {opt}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
                     </div>
                   ) : (
                     currentQ.options.map((opt, idx) => {
