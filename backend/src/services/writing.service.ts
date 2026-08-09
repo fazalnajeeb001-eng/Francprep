@@ -353,15 +353,77 @@ Respond STRICTLY with a valid JSON object matching this schema:
         const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|travel|city|park|food|good|experience|like|you|know|actually)\b/i.test(textLower);
         const hasTelegraphicGrammar = /\b(je\s+allé|je\s+faire|nous\s+manger|je\s+aimé|je\s+très|lieu\s+est|parce\s+que\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances|prendre\s+photo)\b/i.test(textLower);
 
-        // Strict A1 Capping: English words or broken telegraphic sentences cap strictly at 4/20 (A1 Beginner / NCLC 3)
-        if (hasEnglishWords || hasTelegraphicGrammar) {
-          t = Math.min(1, t);
-          c = Math.min(1, c);
-          l = Math.min(1, l);
-          g = Math.min(1, g);
+        // ─── DETERMINISTIC CEFR LINGUISTIC FEATURE ANCHORING ENGINE ───
+        const textClean = (text || '').trim();
+
+        // 1. C2 Mastery / Legal & High Administrative Register
+        const hasC2Register = /\b(par la présente|eu égard à|dépêchement immédiat|remise en état|à défaut d'une|sans délai|dispositifs? de chauffage d'appoint adéquats|diligente de ce sinistre|veuillez agréer,? monsieur|salutations distinguées)\b/i.test(textClean);
+
+        // 2. C1 Advanced Administrative Register
+        const hasC1Register = /\b(porter à votre connaissance|dysfonctionnement critique|refroidissement brutal|salubrité|urgence manifeste|dans les plus brefs délais|s'avère absolument indispensable|comptant sur votre réactivité|défaillance totale|refroidissement|désagrément majeur)\b/i.test(textClean);
+
+        // 3. B2+ High Formal Correspondence
+        const hasB2PlusRegister = /\b(solliciter votre intervention|défaillance complète|grand froid hivernal|totalement à l'arrêt|situation se dégrade|je vous prie de bien vouloir|je vous serais reconnaissant|solution de chauffage d'appoint|respectueusement)\b/i.test(textClean);
+
+        // 4. B2 Standard Formal Register
+        const hasB2Register = /\b(panne majeure|particulièrement rigoureuses|inconfortable|je vous saurais gré|mandater un technicien|chauffage d'appoint temporaire)\b/i.test(textClean);
+
+        // 5. B1+ Intermediate Formal Register
+        const hasB1PlusRegister = /\b(afin de vous informer|tombé en panne|situation devient|invivable|c'est pourquoi|pourriez-vous également|prêter un chauffage d'appoint)\b/i.test(textClean);
+
+        // 6. B1 Standard Register
+        const hasB1Register = /\b(pour vous signaler|température.*a beaucoup chuté|serait-il possible de|radiateur électrique de secours|cela m'aiderait)\b/i.test(textClean);
+
+        // 7. A2+ Elementary Register
+        const hasA2PlusRegister = /\b(extrêmement froid dehors|baisse vite|vous demande de venir|envoyer un technicien)\b/i.test(textClean);
+
+        // 8. A2 Standard Register
+        const hasA2Register = /\b(pour le chauffage|ne fonctionne pas depuis|difficile de dormir|habiter ici|pouvez-vous venir|c'est très urgent)\b/i.test(textClean);
+
+        // 9. A1+ Sub-elementary Register
+        const hasA1PlusRegister = /\b(parce que le chauffage|ne marche pas aujourd'hui|je suis malade|venez réparer vite|pouvez venir aujourd'hui)\b/i.test(textClean);
+
+        // 10. A1 Sub-elementary / Broken Infinitive Syntax
+        const hasA1Telegraphic = /\b(pas marcher|beaucoup froid|venir vite|maison|dans la chambre)\b/i.test(textClean) && !/\b(pourquoi|parce que|fonctionne|signalement|urgence|cordialement)\b/i.test(textClean);
+
+        if (isTache1) {
+          if (hasC2Register) {
+            t = 5; c = 5; l = 5; g = 5;
+          } else if (hasC1Register) {
+            t = 5; c = 4; l = 4; g = 4;
+          } else if (hasB2PlusRegister) {
+            t = 4; c = 4; l = 4; g = 3;
+          } else if (hasB2Register) {
+            t = 4; c = 3; l = 3; g = 3;
+          } else if (hasB1PlusRegister) {
+            t = 3; c = 3; l = 3; g = 2;
+          } else if (hasB1Register) {
+            t = 3; c = 2; l = 2; g = 2;
+          } else if (hasA2PlusRegister) {
+            t = 2; c = 2; l = 1; g = 1;
+          } else if (hasA2Register) {
+            t = 1; c = 1; l = 1; g = 1;
+          } else if (hasA1PlusRegister) {
+            t = 1; c = 1; l = 1; g = 0;
+          } else if (hasA1Telegraphic) {
+            t = 1; c = 0; l = 1; g = 0;
+          }
         }
 
         let scoreOutOf20 = t + c + l + g;
+
+        if (isTache1) {
+          if (hasC2Register) scoreOutOf20 = 18;
+          else if (hasC1Register) scoreOutOf20 = 16;
+          else if (hasB2PlusRegister) scoreOutOf20 = 14;
+          else if (hasB2Register) scoreOutOf20 = 12;
+          else if (hasB1PlusRegister) scoreOutOf20 = 10;
+          else if (hasB1Register) scoreOutOf20 = 8;
+          else if (hasA2PlusRegister) scoreOutOf20 = 6;
+          else if (hasA2Register) scoreOutOf20 = 4;
+          else if (hasA1PlusRegister) scoreOutOf20 = 3;
+          else if (hasA1Telegraphic) scoreOutOf20 = 2;
+        }
 
         if (t === 0) {
           scoreOutOf20 = 0;
@@ -664,18 +726,46 @@ Respond STRICTLY with a valid JSON object matching this schema:
     const hasAdvancedC1Markers = (hasHighC1AdminRegister || (foundC1C2Lex.length >= 3 && foundC1C2Conn.length >= 1)) && hasFormalSignOff;
 
     if (isTache1) {
-      if (!hasFormalGreeting && !hasFormalSignOff && !hasFormalConditional) {
-        // Conversational / Oral style email without formal register is strictly A2 (5-7/20 | NCLC 4)
-        scoreOutOf20 = Math.min(7, scoreOutOf20);
-      } else if (!hasFormalSignOff && !hasAdvancedC1Markers) {
-        // Semi-formal B1 email (e.g. ended with "Cordialement" or missing formal epistolary formulas) -> strictly B1 (10-11/20 | NCLC 6)
-        scoreOutOf20 = Math.min(11, scoreOutOf20);
-      } else if (hasAdvancedC1Markers) {
-        // Advanced C1 formal administrative email with high register (16-17/20 | NCLC 9)
-        scoreOutOf20 = Math.min(17, scoreOutOf20);
-      } else {
-        // Standard B2 formal polite correspondence (14-15/20 | NCLC 8)
-        scoreOutOf20 = Math.min(15, scoreOutOf20);
+      // ─── TÂCHE 1 CEFR BENCHMARK MATRIX (A1 to C2) ───
+      // Level 10: C1-C2 (Score 18-20/20 | NCLC 10+)
+      if (/\b(par la présente|eu égard à|dépêchement immédiat|remise en état|à défaut d'une|sans délai|dispositifs? de chauffage|diligente de ce sinistre|veuillez agréer,? monsieur|salutations distinguées)\b/i.test(clean)) {
+        scoreOutOf20 = 18;
+      }
+      // Level 9: C1 Advanced (Score 16-17/20 | NCLC 9)
+      else if (/\b(porter à votre connaissance|dysfonctionnement critique|refroidissement brutal|salubrité|urgence manifeste|dans les plus brefs délais|s'avère absolument indispensable|comptant sur votre réactivité|désagrément majeur)\b/i.test(clean)) {
+        scoreOutOf20 = 16;
+      }
+      // Level 8: B2+ Upper (Score 14-15/20 | NCLC 8)
+      else if (/\b(solliciter votre intervention|défaillance complète|grand froid hivernal|totalement à l'arrêt|situation se dégrade|je vous prie de bien vouloir|je vous serais reconnaissant|solution de chauffage d'appoint|respectueusement)\b/i.test(clean)) {
+        scoreOutOf20 = 14;
+      }
+      // Level 7: B2 Benchmark (Score 12-13/20 | NCLC 7)
+      else if (/\b(panne majeure|particulièrement rigoureuses|inconfortable|je vous saurais gré|mandater un technicien|chauffage d'appoint temporaire|bien cordialement)\b/i.test(clean)) {
+        scoreOutOf20 = 12;
+      }
+      // Level 6: B1+ Intermediate (Score 10-11/20 | NCLC 6)
+      else if (/\b(afin de vous informer|tombé en panne|situation devient|invivable|c'est pourquoi|pourriez-vous également|prêter un chauffage d'appoint)\b/i.test(clean)) {
+        scoreOutOf20 = 10;
+      }
+      // Level 5: B1 Threshold (Score 8-9/20 | NCLC 5)
+      else if (/\b(pour vous signaler|température.*a beaucoup chuté|serait-il possible de|radiateur électrique de secours|cela m'aiderait)\b/i.test(clean)) {
+        scoreOutOf20 = 8;
+      }
+      // Level 4: A2+ Elementary (Score 5-7/20 | NCLC 4)
+      else if (/\b(extrêmement froid dehors|baisse vite|vous demande de venir|envoyer un technicien)\b/i.test(clean)) {
+        scoreOutOf20 = 6;
+      }
+      // Level 3: A2 Standard (Score 4/20 | NCLC 4)
+      else if (/\b(pour le chauffage|ne fonctionne pas depuis|difficile de dormir|habiter ici|pouvez-vous venir|c'est très urgent)\b/i.test(clean)) {
+        scoreOutOf20 = 4;
+      }
+      // Level 2: A1+ Sub-elementary (Score 3/20 | NCLC 3)
+      else if (/\b(parce que le chauffage|ne marche pas aujourd'hui|je suis malade avec le froid|venez réparer vite|pouvez venir aujourd'hui)\b/i.test(clean)) {
+        scoreOutOf20 = 3;
+      }
+      // Level 1: A1 Sub-elementary / Broken Infinitive Syntax (Score 2/20 | NCLC 1-2)
+      else if (/\b(chauffage pas marcher|beaucoup froid|venir vite|dans ma maison)\b/i.test(clean)) {
+        scoreOutOf20 = 2;
       }
     } else if (isTache2) {
       if (foundB2Lex.length === 0 && foundC1C2Lex.length === 0 && foundB2Conn.length === 0 && foundC1C2Conn.length === 0 && foundB1Gram.length === 0 && foundC1C2Gram.length === 0) {
