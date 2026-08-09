@@ -168,11 +168,28 @@ function playDirectHDFallback(text: string, langCode: string, rate: number, audi
       audio.playbackRate = rate;
       audio.preservesPitch = true;
     }).catch(() => {
-      if (onPlaybackStateChange) onPlaybackStateChange(false);
+      speakWebSpeech(text, langCode, rate);
     });
   } catch {
-    if (onPlaybackStateChange) onPlaybackStateChange(false);
+    speakWebSpeech(text, langCode, rate);
   }
+}
+
+function speakWebSpeech(text: string, langCode: string, rate: number) {
+  if (typeof window !== "undefined" && "speechSynthesis" in window) {
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = langCode === "fr" ? "fr-FR" : langCode;
+      utterance.rate = rate;
+      utterance.onend = () => { if (onPlaybackStateChange) onPlaybackStateChange(false); };
+      utterance.onerror = () => { if (onPlaybackStateChange) onPlaybackStateChange(false); };
+      if (onPlaybackStateChange) onPlaybackStateChange(true);
+      window.speechSynthesis.speak(utterance);
+      return;
+    } catch {}
+  }
+  if (onPlaybackStateChange) onPlaybackStateChange(false);
 }
 
 export function stopAudio(): void {
@@ -357,13 +374,17 @@ export function speakDialogue(
             audio.play().then(() => {
               audio.playbackRate = rate;
               audio.preservesPitch = true;
-            }).catch(() => playNextLine());
+            }).catch(() => {
+              playDirectHDFallback(current.text, langCode, rate, audio);
+            });
             return;
           }
         }
-        playNextLine();
+        playDirectHDFallback(current.text, langCode, rate, audio);
       })
-      .catch(() => playNextLine());
+      .catch(() => {
+        playDirectHDFallback(current.text, langCode, rate, audio);
+      });
   }
 
   playNextLine();
@@ -378,7 +399,12 @@ export async function speakListeningQuestion(
 ): Promise<void> {
   stopAudio();
   if (questionNumber >= 1 && questionNumber <= 33) {
-    await triggerAcousticSoundForQuestion(questionNumber);
+    try {
+      await Promise.race([
+        triggerAcousticSoundForQuestion(questionNumber),
+        new Promise((resolve) => setTimeout(resolve, 400))
+      ]);
+    } catch {}
   }
   speakDialogue(text, lang, rate, extraKeys);
 }
