@@ -577,3 +577,5 @@ export function VRMAvatar({
     </ErrorBoundary>
   );
 }
+
+export default VRMAvatar;

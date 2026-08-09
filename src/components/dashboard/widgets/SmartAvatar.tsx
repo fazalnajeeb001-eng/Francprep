@@ -2,9 +2,7 @@ import { useRef, useState, useEffect, Suspense, lazy, Component, type ReactNode 
 import { motion, AnimatePresence } from "framer-motion";
 import { getSkinById } from "./avatarSkins";
 
-const VRMAvatar = lazy(() =>
-  import("./VRMAvatar").then((m) => ({ default: m.VRMAvatar }))
-);
+const VRMAvatar = lazy(() => import("./VRMAvatar"));
 
 class AvatarErrorBoundary extends Component<{ children: ReactNode; fallback: ReactNode }, { hasError: boolean }> {
   state = { hasError: false };
@@ -115,16 +113,21 @@ export function SmartAvatar({ gender: propGender, features, size = 80, animate =
   const modelUrl = isMale ? "/models/leo-avatar.glb" : "/models/female-avatar.glb";
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const [isMounted, setIsMounted] = useState(false);
   const [activeThought, setActiveThought] = useState<string | null>(null);
   const [currentAnim, setCurrentAnim] = useState<string>(animate);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     setCurrentAnim(animate);
   }, [animate]);
 
   useEffect(() => {
-    const lang = (localStorage.getItem("fp_active_language") || "fr").toLowerCase();
-    const thoughts = COACH_THOUGHTS[lang] || COACH_THOUGHTS.fr;
+    const lang = (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : "fr") || "fr";
+    const thoughts = COACH_THOUGHTS[lang.toLowerCase()] || COACH_THOUGHTS.fr;
 
     const triggerThought = () => {
       const randomMsg = thoughts[Math.floor(Math.random() * thoughts.length)];
@@ -145,8 +148,8 @@ export function SmartAvatar({ gender: propGender, features, size = 80, animate =
   }, []);
 
   const handleAvatarClick = () => {
-    const lang = (localStorage.getItem("fp_active_language") || "fr").toLowerCase();
-    const thoughts = COACH_THOUGHTS[lang] || COACH_THOUGHTS.fr;
+    const lang = (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : "fr") || "fr";
+    const thoughts = COACH_THOUGHTS[lang.toLowerCase()] || COACH_THOUGHTS.fr;
     const randomMsg = thoughts[Math.floor(Math.random() * thoughts.length)];
     setActiveThought(randomMsg);
     setCurrentAnim("wave");
@@ -230,16 +233,20 @@ export function SmartAvatar({ gender: propGender, features, size = 80, animate =
       <div ref={containerRef} className="relative z-10 w-full h-full flex items-center justify-center">
         <AvatarErrorBoundary fallback={<AvatarFallback size={size} gender={gender} />}>
           <Suspense fallback={<AvatarFallback size={size} gender={gender} />}>
-            <VRMAvatar
-              modelUrl={modelUrl}
-              size={size}
-              animate={currentAnim}
-              tint={{
-                skinColor: features?.skinTone ? getSkinById(features.skinTone).color : undefined,
-                hairColor: features?.hairColor,
-                outfitColor: features?.outfitColor,
-              }}
-            />
+            {isMounted ? (
+              <VRMAvatar
+                modelUrl={modelUrl}
+                size={size}
+                animate={currentAnim}
+                tint={{
+                  skinColor: features?.skinTone ? getSkinById(features.skinTone).color : undefined,
+                  hairColor: features?.hairColor,
+                  outfitColor: features?.outfitColor,
+                }}
+              />
+            ) : (
+              <AvatarFallback size={size} gender={gender} />
+            )}
           </Suspense>
         </AvatarErrorBoundary>
       </div>
