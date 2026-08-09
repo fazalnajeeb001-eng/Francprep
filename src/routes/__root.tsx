@@ -294,6 +294,8 @@ function NavBarInner() {
 
 function VersionSyncListener() {
   const [newVersionAvailable, setNewVersionAvailable] = useState(false);
+  const routerState = useRouterState();
+  const isExamPage = routerState.location.pathname.startsWith("/exam/");
 
   useEffect(() => {
     let initialVersion: string | null = null;
@@ -316,25 +318,22 @@ function VersionSyncListener() {
     };
 
     checkVersion();
-    const interval = setInterval(checkVersion, 25000);
+    const interval = setInterval(checkVersion, 30000);
     return () => clearInterval(interval);
   }, []);
 
-  if (!newVersionAvailable) return null;
+  // Suppress popups during active timed exams to prevent candidate distraction
+  if (!newVersionAvailable || isExamPage) return null;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[9999] bg-gradient-to-r from-purple-700 via-pink-600 to-indigo-700 text-white px-4 py-2.5 text-xs font-bold shadow-2xl flex items-center justify-between">
-      <div className="flex items-center gap-2">
-        <span className="text-base animate-pulse">🚀</span>
-        <span>New live platform deployment ready! Click to apply the latest exam features.</span>
-      </div>
+    <div className="fixed bottom-5 right-5 z-[9999] bg-slate-950/95 backdrop-blur-md border border-purple-500/40 text-white px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-3 text-xs font-semibold">
+      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
+      <span className="text-slate-200">A new version of FrancPrep is available</span>
       <button
-        onClick={() => {
-          window.location.reload();
-        }}
-        className="px-3 py-1 rounded-lg bg-white text-purple-950 font-black hover:bg-purple-100 transition-all shadow cursor-pointer shrink-0"
+        onClick={() => window.location.reload()}
+        className="px-3 py-1 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition-all shadow cursor-pointer shrink-0"
       >
-        Reload Now ⚡
+        Update
       </button>
     </div>
   );
