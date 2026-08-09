@@ -984,8 +984,8 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       level: t.level,
       speakingRate,
       text: isQuestionInAudio
-        ? `Écoutez le document sonore et la question audio N°${i} [Niveau ${t.level}]. Choisissez la bonne option.`
-        : `[Question ${i} - Niveau ${t.level}] ${t.text} Quel est l'élément principal à retenir ?`,
+        ? `Écoutez le document sonore et la question audio N°${i}. Choisissez la bonne option.`
+        : `${t.text}`,
       options,
       correctIndex,
       explanation: `Pedagogical Explanation [Level ${t.level}]: The spoken document confirms "${correctText}".`,

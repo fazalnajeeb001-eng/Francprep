@@ -2024,9 +2024,11 @@ export function AuthenticCBTExamPage() {
                           <span className="text-xs font-extrabold text-amber-300 flex items-center gap-1.5">
                             🎧 <strong>Notice Examen Officiel TCF CBT :</strong>
                           </span>
-                          <span className="px-2.5 py-0.5 rounded-full bg-purple-500/40 text-purple-200 text-[11px] font-mono font-bold border border-purple-400/30">
-                            Niveau {(currentQ as any).level || 'A1-C2'}
-                          </span>
+                          {mode === "PRACTICE" && (
+                            <span className="px-2.5 py-0.5 rounded-full bg-purple-500/40 text-purple-200 text-[11px] font-mono font-bold border border-purple-400/30">
+                              Niveau {(currentQ as any).level || 'A1-C2'}
+                            </span>
+                          )}
                         </div>
                         {mode === "PRACTICE" && (
                           <div className="pt-1 flex items-center gap-2">
