@@ -329,6 +329,11 @@ Respond STRICTLY with a valid JSON object matching this schema:
         let l = Math.max(0, Math.min(5, typeof parsed.lexicalScore === 'number' ? parsed.lexicalScore : (typeof parsed.vocabularyScore === 'number' ? parsed.vocabularyScore : 0)));
         let g = Math.max(0, Math.min(5, typeof parsed.grammarScore === 'number' ? parsed.grammarScore : 0));
 
+        const correctionsList = Array.isArray(parsed.corrections) ? parsed.corrections : [];
+        if (correctionsList.length === 0) {
+          g = 5;
+        }
+
         const textLower = (text || '').toLowerCase();
         const words = (text || '').trim().replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
 
