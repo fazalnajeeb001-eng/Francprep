@@ -954,6 +954,14 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
 
     const specificHint = (t as any).hint || `Level ${t.level} Listening Guidance: Focus on the speaker's main intent and tone. Pay attention to key transition words (e.g. "cependant", "en revanche") to identify the correct message without guessing.`;
 
+    const questionTextPrompt = (t as any).q
+      ? (t as any).q
+      : (t.opt && t.opt[0] ? `Où se déroule cette scène ou quelle est la consigne exacte ?` : `Quel est l'élément principal à retenir ?`);
+
+    const fullSpokenTranscript = isQuestionInAudio
+      ? `${t.tr}\n\nÉcoutez la question. Question N°${i} : ${questionTextPrompt}`
+      : t.tr;
+
     qList.push({
       id: `${prefix}-lis-${i}`,
       questionNumber: i,
@@ -964,7 +972,7 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       correctIndex,
       explanation: `Pedagogical Explanation [Level ${t.level}]: The spoken document confirms "${correctText}".`,
       hint: specificHint,
-      transcript: t.tr,
+      transcript: fullSpokenTranscript,
       transcriptEnglish: t.en,
       questionInAudio: isQuestionInAudio,
       perQuestionTimerSeconds: 15
