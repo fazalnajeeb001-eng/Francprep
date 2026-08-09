@@ -761,13 +761,9 @@ export function AuthenticCBTExamPage() {
   const handlePlayAudio = (text: string, lang = "fr-FR", rate = 1.0) => {
     handleStopAudio();
     setIsAudioPaused(false);
-    if (text.includes("Locuteur") || text.includes("Annonceur:") || text.includes("\n") || text.includes(":")) {
-      const qNum = (currentQ as any)?.questionNumber || 1;
-      ttsSpeakListening(text, qNum, lang, rate);
-    } else {
-      const isMale = /\b(monsieur|m\.|homme|paul|léo|marc|antoine|pierre|thomas|hugo|louis)\b/i.test(text);
-      ttsSpeak(text, lang, rate, isMale ? "male" : "female");
-    }
+    const fullTextToPlay = currentQ?.transcript || text;
+    const qNum = (currentQ as any)?.questionNumber || 1;
+    ttsSpeakListening(fullTextToPlay, qNum, lang, rate);
   };
 
   const handlePauseResumeAudio = () => {

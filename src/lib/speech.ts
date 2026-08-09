@@ -322,6 +322,7 @@ export function speakDialogue(
         text: current.text,
         gender: current.gender,
         lang: langCode,
+        rate,
         elevenLabsApiKey: extraKeys?.elevenLabsApiKey,
         openaiApiKey: extraKeys?.openaiApiKey,
         huggingFaceToken: extraKeys?.huggingFaceToken,
