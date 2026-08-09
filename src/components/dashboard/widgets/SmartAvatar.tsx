@@ -91,22 +91,34 @@ export function SmartAvatar({ gender: propGender, features, size = 80, animate =
   const isCyan = glowColor === "cyan";
 
   const groundBg = isPurple
-    ? "radial-gradient(ellipse, rgba(147,51,234,0.45) 0%, rgba(168,85,247,0.2) 45%, rgba(192,132,252,0.05) 75%, transparent 95%)"
+    ? "radial-gradient(ellipse, rgba(168,85,247,0.5) 0%, rgba(147,51,234,0.22) 45%, rgba(192,132,252,0.06) 75%, transparent 95%)"
     : isCyan
-    ? "radial-gradient(ellipse, rgba(56,189,248,0.45) 0%, rgba(59,130,246,0.2) 45%, rgba(147,51,234,0.05) 75%, transparent 95%)"
-    : "radial-gradient(ellipse, rgba(236,72,153,0.45) 0%, rgba(219,39,119,0.2) 45%, rgba(168,85,247,0.05) 75%, transparent 95%)";
+    ? "radial-gradient(ellipse, rgba(56,189,248,0.5) 0%, rgba(59,130,246,0.22) 45%, rgba(147,51,234,0.06) 75%, transparent 95%)"
+    : "radial-gradient(ellipse, rgba(236,72,153,0.5) 0%, rgba(219,39,119,0.22) 45%, rgba(168,85,247,0.06) 75%, transparent 95%)";
+
+  const beamBg = isPurple
+    ? "linear-gradient(to top, rgba(168,85,247,0.2) 0%, rgba(147,51,234,0.06) 55%, transparent 100%)"
+    : isCyan
+    ? "linear-gradient(to top, rgba(56,189,248,0.2) 0%, rgba(59,130,246,0.06) 55%, transparent 100%)"
+    : "linear-gradient(to top, rgba(236,72,153,0.2) 0%, rgba(219,39,119,0.06) 55%, transparent 100%)";
 
   const ringBorder = isPurple
-    ? "1.5px dashed rgba(192,132,252,0.65)"
+    ? "1.5px solid rgba(192,132,252,0.65)"
     : isCyan
-    ? "1.5px dashed rgba(125,211,252,0.65)"
-    : "1.5px dashed rgba(249,168,212,0.65)";
+    ? "1.5px solid rgba(125,211,252,0.65)"
+    : "1.5px solid rgba(249,168,212,0.65)";
 
   const ringShadow = isPurple
-    ? "0 0 14px rgba(168,85,247,0.35), inset 0 0 8px rgba(147,51,234,0.2)"
+    ? "0 0 16px rgba(168,85,247,0.45), inset 0 0 10px rgba(147,51,234,0.25)"
     : isCyan
-    ? "0 0 14px rgba(56,189,248,0.35), inset 0 0 8px rgba(59,130,246,0.2)"
-    : "0 0 14px rgba(236,72,153,0.35), inset 0 0 8px rgba(219,39,119,0.2)";
+    ? "0 0 16px rgba(56,189,248,0.45), inset 0 0 10px rgba(59,130,246,0.25)"
+    : "0 0 16px rgba(236,72,153,0.45), inset 0 0 10px rgba(219,39,119,0.25)";
+
+  const innerDashedBorder = isPurple
+    ? "1.5px dashed rgba(233,213,255,0.8)"
+    : isCyan
+    ? "1.5px dashed rgba(224,242,254,0.8)"
+    : "1.5px dashed rgba(252,231,243,0.8)";
 
   return (
     <motion.div
@@ -116,34 +128,63 @@ export function SmartAvatar({ gender: propGender, features, size = 80, animate =
       style={{ width: size, height: size }}
       className="relative shrink-0 flex items-center justify-center overflow-visible"
     >
-      {/* 🔮 Subtle Soft Purple Base Radial Highlight */}
+      {/* 🔮 1. Soft Movie-Grade Ground Spotlight Base */}
       <motion.div
         className="absolute left-1/2 -translate-x-1/2 rounded-full pointer-events-none z-0"
         style={{
-          bottom: -size * 0.04,
-          width: size * 0.85,
-          height: size * 0.2,
+          bottom: -size * 0.05,
+          width: size * 0.9,
+          height: size * 0.22,
           background: groundBg,
-          filter: "blur(5px)",
+          filter: "blur(7px)",
         }}
-        animate={{ opacity: [0.5, 0.85, 0.5], scale: [0.96, 1.04, 0.96] }}
+        animate={{ opacity: [0.65, 0.95, 0.65], scale: [0.97, 1.03, 0.97] }}
         transition={{ duration: 3.0, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {/* ⭕ Elegant Rotating Purple Precision Highlight Ring */}
+      {/* ✨ 2. Ultra-Soft Upward Vertical Spotlight Beam */}
+      <motion.div
+        className="absolute left-1/2 -translate-x-1/2 pointer-events-none z-0"
+        style={{
+          bottom: -size * 0.02,
+          width: size * 0.65,
+          height: size * 0.55,
+          background: beamBg,
+          clipPath: "polygon(15% 100%, 85% 100%, 100% 0%, 0% 0%)",
+          filter: "blur(5px)",
+        }}
+        animate={{ opacity: [0.35, 0.65, 0.35] }}
+        transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* ⭕ 3. Outer Neon Pulsing Highlight Ring */}
+      <motion.div
+        className="absolute left-1/2 -translate-x-1/2 rounded-full pointer-events-none z-0"
+        style={{
+          bottom: -size * 0.03,
+          width: size * 0.78,
+          height: size * 0.16,
+          border: ringBorder,
+          boxShadow: ringShadow,
+        }}
+        animate={{ opacity: [0.55, 0.9, 0.55], scale: [0.98, 1.02, 0.98] }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* 💫 4. Rotating Inner Cinematic Precision Highlight Ring */}
       <motion.div
         className="absolute left-1/2 -translate-x-1/2 rounded-full pointer-events-none z-0"
         style={{
           bottom: -size * 0.02,
-          width: size * 0.72,
-          height: size * 0.14,
-          border: ringBorder,
-          boxShadow: ringShadow,
+          width: size * 0.64,
+          height: size * 0.12,
+          border: innerDashedBorder,
+          boxShadow: "0 0 10px rgba(192,132,252,0.5)",
         }}
-        animate={{ rotate: 360, opacity: [0.55, 0.9, 0.55] }}
+        animate={{ rotate: 360, opacity: [0.6, 0.95, 0.6] }}
         transition={{
-          rotate: { duration: 12, repeat: Infinity, ease: "linear" },
-          opacity: { duration: 2.5, repeat: Infinity, ease: "easeInOut" }
+          rotate: { duration: 14, repeat: Infinity, ease: "linear" },
+          opacity: { duration: 2.0, repeat: Infinity, ease: "easeInOut" }
         }}
       />
 
