@@ -299,6 +299,29 @@ export function AuthenticCBTExamPage() {
   const [showReadingHint, setShowReadingHint] = useState(false);
   const [activeWritingTaskIdx, setActiveWritingTaskIdx] = useState(0);
   const [activeSpeakingTaskIdx, setActiveSpeakingTaskIdx] = useState(0);
+  const [showSpeakingDisclaimer, setShowSpeakingDisclaimer] = useState(false);
+  const [hasAcceptedSpeakingDisclaimer, setHasAcceptedSpeakingDisclaimer] = useState(false);
+
+  const startSpeakingTaskSession = (idx: number) => {
+    const tasks = currentSection?.speakingTasks;
+    if (!tasks || tasks.length === 0) return;
+    const task = tasks[Math.min(idx, tasks.length - 1)];
+    if (!task) return;
+
+    const openingText = idx === 0 || task.title?.includes("Tâche 1")
+      ? "Bonjour ! Bienvenue à votre épreuve d'expression orale. Pouvez-vous vous présenter, me parler de votre parcours professionnel et de vos motivations pour le Canada ?"
+      : idx === 1 || task.title?.includes("Tâche 2")
+      ? "Bonjour ! Je suis le responsable de l'annonce. Je vous écoute, quelles sont vos questions concernant les horaires, tarifs et modalités ?"
+      : "Bonjour ! J'aimerais connaître votre point de vue sur ce sujet de société. Présentez-moi vos arguments et votre position.";
+
+    handlePlayExaminerAudio(openingText);
+
+    if (task.prepTimeMins > 0) {
+      handleStartPrepTimer(task.id, task.prepTimeMins);
+    } else {
+      handleStartSpeakingTimer(task.id, task.speakingTimeMins);
+    }
+  };
 
   // Submission & Results & Strategy Modals State
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -646,6 +669,14 @@ export function AuthenticCBTExamPage() {
     setTimeLeft(currentSection.durationMins * 60);
     setCurrentQuestionIdx(0);
 
+    if (currentSection.type === "EXPRESSION_ORALE") {
+      if (!hasAcceptedSpeakingDisclaimer) {
+        setShowSpeakingDisclaimer(true);
+      } else {
+        startSpeakingTaskSession(activeSpeakingTaskIdx);
+      }
+    }
+
     // Auto-popup strategy modal strictly ONCE per section in Practice Mode
     if (mode === "PRACTICE" && !seenStrategySections[currentSection.type]) {
       setShowStrategyModal(true);
@@ -657,7 +688,7 @@ export function AuthenticCBTExamPage() {
         return next;
       });
     }
-  }, [activeSectionIdx, currentSection.durationMins, mode, currentSection.type, paper.id]);
+  }, [activeSectionIdx, currentSection.durationMins, mode, currentSection.type, paper.id, hasAcceptedSpeakingDisclaimer]);
 
   // Timer Countdown
   useEffect(() => {
@@ -2411,7 +2442,10 @@ export function AuthenticCBTExamPage() {
               {currentSection.speakingTasks.map((t, idx) => (
                 <button
                   key={t.id}
-                  onClick={() => setActiveSpeakingTaskIdx(idx)}
+                  onClick={() => {
+                    setActiveSpeakingTaskIdx(idx);
+                    startSpeakingTaskSession(idx);
+                  }}
                   className={`px-4 py-2 rounded-t-lg text-xs font-bold transition-all flex items-center gap-2 shrink-0 border-b-2 ${
                     activeSpeakingTaskIdx === idx
                       ? "bg-purple-600 text-white border-purple-600 shadow"
@@ -2763,6 +2797,79 @@ export function AuthenticCBTExamPage() {
           </div>
         </footer>
       )}
+
+      {/* ─── SPEAKING PRE-TEST DISCLAIMER MODAL ─── */}
+      <AnimatePresence>
+        {showSpeakingDisclaimer && !hasAcceptedSpeakingDisclaimer && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="w-full max-w-lg p-6 sm:p-8 rounded-2xl border bg-white dark:bg-[#101828] border-purple-300 dark:border-purple-800 shadow-2xl space-y-5 text-center my-auto"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-purple-600 text-white flex items-center justify-center mx-auto shadow-xl">
+                <Mic className="w-8 h-8" />
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-[11px] font-extrabold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+                  Official TCF Canada Simulator
+                </span>
+                <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
+                  Épreuve d'Expression Orale (Speaking Section)
+                </h2>
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed pt-1">
+                  This test simulates the real France Éducation International (FEI) Computer-Based Testing environment:
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 text-left text-xs space-y-2.5">
+                <div className="flex items-start gap-2.5">
+                  <Volume2 className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-purple-950 dark:text-purple-200 block">Automatic Examiner Voice Audio:</strong>
+                    <span className="text-slate-600 dark:text-slate-400 font-medium">The certified examiner voice prompt plays automatically when each task launches.</span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <Clock className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-purple-950 dark:text-purple-200 block">Automatic Countdown Timers:</strong>
+                    <span className="text-slate-600 dark:text-slate-400 font-medium">Preparation time (2 mins for Tâche 2) and speaking timers start automatically when you select a task.</span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <Mic className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-purple-950 dark:text-purple-200 block">Microphone Setup & Speech Recording:</strong>
+                    <span className="text-slate-600 dark:text-slate-400 font-medium">Ensure your microphone is enabled and speak clearly in French.</span>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  setHasAcceptedSpeakingDisclaimer(true);
+                  setShowSpeakingDisclaimer(false);
+                  startSpeakingTaskSession(activeSpeakingTaskIdx);
+                }}
+                className="w-full py-3.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-sm shadow-xl flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>Begin Speaking Test Now</span>
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ─── EXAM EVALUATION PROGRESS MODAL ─── */}
       <AnimatePresence>
