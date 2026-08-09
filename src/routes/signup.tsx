@@ -82,9 +82,10 @@ function SignupPage() {
       });
       const json = await res.json();
       if (res.ok && json.success) {
-        if (json.devOtpCode) {
-          setDevOtpCode(json.devOtpCode);
-          setOtpCode(json.devOtpCode);
+        const receivedOtp = json.devOtpCode || json.data?.devOtpCode;
+        if (receivedOtp) {
+          setDevOtpCode(receivedOtp);
+          setOtpCode(receivedOtp);
         }
         setShowOtpModal(true);
       } else {

@@ -14,7 +14,9 @@ export class AuthController {
         data: {
           email: result.email,
           requiresVerification: true,
+          devOtpCode: result.devOtpCode,
         },
+        devOtpCode: result.devOtpCode,
         message: result.message,
       });
     } catch (error) {
