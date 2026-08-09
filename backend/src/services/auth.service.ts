@@ -149,9 +149,9 @@ export class AuthService {
   }
 
   /**
-   * Update profile (firstName, lastName)
+   * Update profile (firstName, lastName, activeLanguage)
    */
-  async updateProfile(userId: string, data: { firstName?: string; lastName?: string }) {
+  async updateProfile(userId: string, data: { firstName?: string; lastName?: string; activeLanguage?: string }) {
     const user = await User.findByIdAndUpdate(
       userId,
       { $set: data },

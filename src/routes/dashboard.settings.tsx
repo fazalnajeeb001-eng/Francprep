@@ -62,7 +62,7 @@ function SettingsPage() {
   useEffect(() => { setFirstName(user?.firstName || ""); setLastName(user?.lastName || ""); setActiveLang(user?.activeLanguage || "fr"); }, [user]);
 
   useEffect(() => {
-    apiFetch("/languages")
+    apiFetch("/languages?includeUnpublished=true")
       .then(r => r.json())
       .then(res => {
         if (res.data && Array.isArray(res.data) && res.data.length > 0) {

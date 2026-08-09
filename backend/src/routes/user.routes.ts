@@ -61,12 +61,12 @@ router.post('/milestones', authenticate, async (req: AuthRequest, res: Response,
 
 router.get('/profile', authenticate, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const user = await User.findById(req.user!.userId).select('firstName lastName email learningGoal avatarUrl avatarFeatures onboardingComplete rpmGlbUrl');
+    const user = await User.findById(req.user!.userId).select('firstName lastName email learningGoal avatarUrl avatarFeatures onboardingComplete rpmGlbUrl activeLanguage');
     if (!user) { res.status(404).json({ success: false, message: 'User not found' }); return; }
     res.status(200).json({ success: true, data: {
       firstName: user.firstName, lastName: user.lastName, email: user.email,
       learningGoal: user.learningGoal, avatarUrl: user.avatarUrl, avatarFeatures: user.avatarFeatures,
-      onboardingComplete: user.onboardingComplete, rpmGlbUrl: user.rpmGlbUrl,
+      onboardingComplete: user.onboardingComplete, rpmGlbUrl: user.rpmGlbUrl, activeLanguage: (user as any).activeLanguage || 'fr',
     }});
   } catch (error) { next(error); }
 });
