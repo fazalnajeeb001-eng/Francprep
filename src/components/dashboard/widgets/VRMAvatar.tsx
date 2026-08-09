@@ -21,15 +21,15 @@ interface VRMAvatarProps {
   };
 }
 
-/* ─── Camera: frames upper torso and head for 3D AI Coach ─── */
+/* ─── Camera: Frames full body standing in the exact middle ─── */
 function CameraController({ modelCenterY, modelHeight }: { modelCenterY: number; modelHeight: number }) {
   const { camera } = useThree();
   useEffect(() => {
-    // Exactly center Leo's head, face, and chest in frame with generous margins (no top head cropping!)
-    const headCenterY = modelHeight * 0.56;
-    const fov = 35;
-    camera.position.set(0, headCenterY, 1.85);
-    camera.lookAt(0, headCenterY, 0);
+    // Center full body from head to toe in the exact middle of the frame
+    const bodyCenterY = modelHeight * 0.46;
+    const fov = 32;
+    camera.position.set(0, bodyCenterY, 2.75);
+    camera.lookAt(0, bodyCenterY, 0);
     (camera as THREE.PerspectiveCamera).fov = fov;
     (camera as THREE.PerspectiveCamera).updateProjectionMatrix();
   }, [camera, modelCenterY, modelHeight]);
@@ -233,31 +233,50 @@ function VRMModel({
     }
     const animT = t - animStartRef.current;
 
-    if (animate === "idle") {
-      // Natural grounded AI Coach posture (no floaty walking/drifting)
-      const breathe = Math.sin(t * 1.4) * 0.002;
-      g.position.x = 0;
+    if (animate === "idle" || !animate) {
+      // Realistic grounded AI Coach idle breathing & subtle life movement (alive 100% of the time)
+      const breatheCycle = Math.sin(t * 1.6);
+      const subtleSway = Math.sin(t * 0.8) * 0.015;
+      const subtleHeadTilt = Math.cos(t * 0.7) * 0.02;
+      const subtleHeadNod = Math.sin(t * 1.2) * 0.015;
+
+      g.position.x = subtleSway * 0.2;
       g.position.z = 0;
-      g.position.y = breathe;
+      g.position.y = breatheCycle * 0.003;
 
       g.rotation.x = 0;
-      g.rotation.y = Math.sin(t * 0.4) * 0.02;
-      g.rotation.z = 0;
+      g.rotation.y = Math.sin(t * 0.5) * 0.025;
+      g.rotation.z = subtleSway * 0.3;
 
       if (bones.spine) {
         const rp2 = rp.spine || bones.spine.rotation;
-        bones.spine.rotation.x = rp2.x + breathe * 0.2;
-        bones.spine.rotation.y = rp2.y;
+        bones.spine.rotation.x = rp2.x + breatheCycle * 0.015;
+        bones.spine.rotation.y = rp2.y + subtleSway * 0.5;
         bones.spine.rotation.z = rp2.z;
       }
 
       if (bones.head) {
         const rp2 = rp.head || bones.head.rotation;
-        const subtleNod = Math.sin(t * 1.2) * 0.02;
-        const subtleLook = Math.sin(t * 0.6) * 0.025;
-        bones.head.rotation.x = rp2.x + subtleNod;
-        bones.head.rotation.y = rp2.y + subtleLook;
-        bones.head.rotation.z = rp2.z;
+        bones.head.rotation.x = rp2.x + subtleHeadNod;
+        bones.head.rotation.y = rp2.y + Math.sin(t * 0.6) * 0.035;
+        bones.head.rotation.z = rp2.z + subtleHeadTilt;
+      }
+
+      if (bones.leftArm) {
+        const rp2 = rp.leftArm || bones.leftArm.rotation;
+        bones.leftArm.rotation.z = rp2.z + 0.08 + Math.sin(t * 1.4) * 0.015;
+        bones.leftArm.rotation.x = rp2.x + Math.cos(t * 1.1) * 0.015;
+      }
+
+      if (bones.rightArm) {
+        const rp2 = rp.rightArm || bones.rightArm.rotation;
+        bones.rightArm.rotation.z = rp2.z - 0.08 - Math.sin(t * 1.4) * 0.015;
+        bones.rightArm.rotation.x = rp2.x + Math.cos(t * 1.1) * 0.015;
+      }
+
+      if (bones.hips) {
+        const rp2 = rp.hips || bones.hips.rotation;
+        bones.hips.rotation.y = rp2.y + subtleSway * 0.4;
       }
 
     } else if (animate === "wave") {
