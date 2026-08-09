@@ -1083,6 +1083,13 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
 
     const speakingRate = i <= 7 ? 0.85 : i <= 15 ? 0.92 : i <= 25 ? 1.00 : i <= 33 ? 1.15 : 1.30;
 
+    let spokenEnglishTranslation = t.en;
+    if (i <= 4 && mainImageSvg) {
+      spokenEnglishTranslation = `Instruction: Listen to the 4 options. Choose the option that corresponds to the image.\n• Option A: ${options[0]}\n• Option B: ${options[1]}\n• Option C: ${options[2]}\n• Option D: ${options[3]}`;
+    } else if (isSpokenOptionQuestion) {
+      spokenEnglishTranslation = `${t.en}\nInstruction: Listen to the audio document, question N°${i}, and 4 spoken options.\n• Option A: ${options[0]}\n• Option B: ${options[1]}\n• Option C: ${options[2]}\n• Option D: ${options[3]}`;
+    }
+
     qList.push({
       id: `${prefix}-lis-${i}`,
       questionNumber: i,
@@ -1090,7 +1097,7 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       speakingRate,
       hasSpokenOptions: isSpokenOptionQuestion || (i <= 4 && !!mainImageSvg),
       text: i <= 4 && mainImageSvg
-        ? "Écoutez les 4 propositions. Choisissez celle qui correspond à l'image."
+        ? "Écoutez les 4 propositions, choisissez celle qui correspond à l'image."
         : isSpokenOptionQuestion
         ? `Écoutez le document sonore, la question audio N°${i} et les 4 réponses. Cochez la bonne réponse.`
         : isQuestionInAudio
@@ -1104,7 +1111,7 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       explanation: `Pedagogical Explanation [Level ${t.level}]: The spoken document confirms "${correctText}".`,
       hint: specificHint,
       transcript: fullSpokenTranscript,
-      transcriptEnglish: t.en,
+      transcriptEnglish: spokenEnglishTranslation,
       questionInAudio: isQuestionInAudio,
       perQuestionTimerSeconds: 15
     });

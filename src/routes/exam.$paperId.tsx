@@ -2173,13 +2173,13 @@ export function AuthenticCBTExamPage() {
 
                 {/* Multiple Choice Options (Official FEI Radio Buttons for Spoken Option Items vs Standard Text Options) */}
                 <div className="space-y-2.5">
-                  {(currentQ.hasSpokenOptions || currentQ.questionNumber <= 4) && mode === "EXAM" ? (
+                  {(currentQ.hasSpokenOptions || currentQ.questionNumber <= 4) ? (
                     <div className="space-y-3 p-4 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-100 shadow-md">
                       <p className="text-xs font-black uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
-                        <span>Cochez la bonne réponse :</span>
+                        <span>Choisissez la bonne réponse (A, B, C ou D) :</span>
                       </p>
-                      <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                        {currentQ.options.map((_, idx) => {
+                      <div className="flex flex-col gap-2.5 sm:gap-3">
+                        {currentQ.options.map((optText, idx) => {
                           const letter = String.fromCharCode(65 + idx); // A, B, C, D
                           const isChosen = selectedAnswers[currentQ.id] === idx;
 
@@ -2188,18 +2188,32 @@ export function AuthenticCBTExamPage() {
                               key={idx}
                               type="button"
                               onClick={() => handleSelectOption(currentQ.id, idx)}
-                              className={`p-3.5 sm:p-4 rounded-xl border-2 font-black text-sm sm:text-base flex items-center justify-center gap-3 transition-all duration-200 shadow-sm cursor-pointer active:scale-95 ${
+                              className={`w-full p-3 sm:p-3.5 rounded-xl border-2 font-bold text-sm sm:text-base flex flex-col justify-center transition-all duration-200 shadow-sm cursor-pointer active:scale-[0.99] ${
                                 isChosen
                                   ? "bg-blue-600 border-blue-500 text-white ring-2 ring-blue-400/50 shadow-blue-900/50"
                                   : "bg-slate-800 border-slate-700 text-slate-200 hover:border-blue-400 hover:bg-slate-700/80"
                               }`}
                             >
-                              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-mono font-black ${
-                                isChosen ? "border-white bg-white text-blue-600" : "border-slate-400 text-slate-300"
-                              }`}>
-                                {letter}
+                              <div className="flex items-center justify-between w-full">
+                                <div className="flex items-center gap-3">
+                                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-mono font-black shrink-0 ${
+                                    isChosen ? "border-white bg-white text-blue-600" : "border-slate-400 text-slate-300"
+                                  }`}>
+                                    {letter}
+                                  </div>
+                                  <span className="font-mono tracking-wide text-base font-black">{letter}.</span>
+                                </div>
+                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                                  isChosen ? "border-white bg-white" : "border-slate-500"
+                                }`}>
+                                  {isChosen && <div className="w-2.5 h-2.5 rounded-full bg-blue-600" />}
+                                </div>
                               </div>
-                              <span className="font-mono tracking-wide">{letter}</span>
+                              {showTranscript && mode === "PRACTICE" && (
+                                <p className="text-xs opacity-90 font-medium italic pt-1.5 pl-9 text-left">
+                                  "{optText}"
+                                </p>
+                              )}
                             </button>
                           );
                         })}
