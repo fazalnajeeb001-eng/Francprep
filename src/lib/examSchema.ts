@@ -986,31 +986,31 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
     let optionImages: string[] | undefined = undefined;
     if (i === 1) {
       optionImages = [
-        "https://api.iconify.design/heroicons:building-office-2.svg?color=%233b82f6",
-        "https://api.iconify.design/heroicons:paper-airplane.svg?color=%238b5cf6",
-        "https://api.iconify.design/heroicons:truck.svg?color=%23ef4444",
-        "https://api.iconify.design/heroicons:archive-box.svg?color=%2310b981"
+        "https://images.unsplash.com/photo-1515165562839-978bbcf18277?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=400&q=80"
       ];
     } else if (i === 2) {
       optionImages = [
-        "https://api.iconify.design/heroicons:shopping-bag.svg?color=%233b82f6",
-        "https://api.iconify.design/heroicons:building-storefront.svg?color=%238b5cf6",
-        "https://api.iconify.design/heroicons:home.svg?color=%23ef4444",
-        "https://api.iconify.design/heroicons:film.svg?color=%2310b981"
+        "https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=400&q=80"
       ];
     } else if (i === 3) {
       optionImages = [
-        "https://api.iconify.design/heroicons:clock.svg?color=%233b82f6",
-        "https://api.iconify.design/heroicons:sparkles.svg?color=%238b5cf6",
-        "https://api.iconify.design/heroicons:shopping-cart.svg?color=%23ef4444",
-        "https://api.iconify.design/heroicons:credit-card.svg?color=%2310b981"
+        "https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1556742049-0a670fc80789?auto=format&fit=crop&w=400&q=80"
       ];
     } else if (i === 4) {
       optionImages = [
-        "https://api.iconify.design/heroicons:calendar.svg?color=%233b82f6",
-        "https://api.iconify.design/heroicons:sun.svg?color=%238b5cf6",
-        "https://api.iconify.design/heroicons:moon.svg?color=%23ef4444",
-        "https://api.iconify.design/heroicons:user-group.svg?color=%2310b981"
+        "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=400&q=80"
       ];
     }
 

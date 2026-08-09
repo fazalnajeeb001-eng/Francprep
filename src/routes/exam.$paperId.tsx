@@ -2183,7 +2183,11 @@ export function AuthenticCBTExamPage() {
                             {letter}
                           </span>
                           {imgUrl && (
-                            <img src={imgUrl} alt={`Option ${letter}`} className="w-6 h-6 object-contain shrink-0 filter drop-shadow-sm" />
+                            <img
+                              src={imgUrl}
+                              alt={`Option ${letter}`}
+                              className="w-16 h-12 rounded-lg object-cover shrink-0 shadow-sm border border-slate-300 dark:border-slate-600"
+                            />
                           )}
                           <span className="leading-snug break-words">{opt}</span>
                         </div>
