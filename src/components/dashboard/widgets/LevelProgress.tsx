@@ -399,11 +399,11 @@ export function LevelProgress({ levels, dark, overall, avatarUrl, avatarFeatures
         </svg>
       </div>
 
-      {/* === CURRENT LEVEL BADGE === */}
+      {/* === CURRENT LEVEL BADGE (RIGHT ABOVE ACTIVE CLB LEVEL NODE) === */}
       <motion.div
         className="absolute z-[11]"
         style={{
-          left: "5%",
+          left: `${[5, 23, 41, 59, 77, 95][activeIndex >= 0 ? activeIndex : 0]}%`,
           top: "13%",
           transform: "translateX(-50%)",
         }}
@@ -412,15 +412,15 @@ export function LevelProgress({ levels, dark, overall, avatarUrl, avatarFeatures
         transition={{ delay: 0.8, duration: 0.6, ease: "easeOut" }}
       >
         <motion.div
-          className="px-4 py-1.5 rounded-full text-xs font-bold text-white whitespace-nowrap"
+          className="px-4 py-1.5 rounded-full text-xs font-bold text-white whitespace-nowrap shadow-2xl"
           style={{
             background: "linear-gradient(135deg, #7C3AED, #A855F7)",
-            boxShadow: "0 4px 20px rgba(139,92,246,0.5), 0 0 40px rgba(139,92,246,0.2)",
+            boxShadow: "0 4px 20px rgba(139,92,246,0.7), 0 0 40px rgba(168,85,247,0.4)",
           }}
           animate={{ y: [0, -3, 0] }}
           transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
         >
-          {levelBackgrounds[activeLevel]?.scene || "📍"} {levelBackgrounds[activeLevel]?.label || "Current Level"}
+          {levelBackgrounds[activeLevel]?.scene || "📍"} {activeLevel} - {levelBackgrounds[activeLevel]?.label || "Active CLB Level"}
           <div
             className="absolute left-1/2 -translate-x-1/2 -bottom-1.5"
             style={{
@@ -433,12 +433,13 @@ export function LevelProgress({ levels, dark, overall, avatarUrl, avatarFeatures
         </motion.div>
       </motion.div>
 
-      {/* === AVATAR with glow === */}
+      {/* === 3D AVATAR (RIGHT BELOW ACTIVE CLB LEVEL NODE) === */}
       <motion.div
         className="absolute z-[12]"
         style={{
-          left: "-3%",
-          bottom: "0%",
+          left: `${[5, 23, 41, 59, 77, 95][activeIndex >= 0 ? activeIndex : 0]}%`,
+          bottom: "1%",
+          transform: "translateX(-50%)",
           width: avatarSize,
           height: avatarSize,
         }}
@@ -446,11 +447,12 @@ export function LevelProgress({ levels, dark, overall, avatarUrl, avatarFeatures
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.2, ease: "easeOut", delay: 0.5 }}
       >
-        {/* Avatar */}
+        {/* 3D Animated Avatar */}
         <SmartAvatar
           features={avatarFeatures as any}
           size={avatarSize}
           animate={avatarAnim}
+          glowColor="purple"
         />
 
         {/* Ground glow circle — centered under avatar */}
