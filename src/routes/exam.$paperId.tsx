@@ -743,7 +743,7 @@ export function AuthenticCBTExamPage() {
     setSelectedAnswers((prev) => ({ ...prev, [qId]: optionIdx }));
   };
 
-  const { speak: ttsSpeak, speakDialogue: ttsSpeakDialogue, isSpeaking, stop: ttsStop, pause: ttsPause, resume: ttsResume } = useSpeak();
+  const { speak: ttsSpeak, speakDialogue: ttsSpeakDialogue, speakListening: ttsSpeakListening, isSpeaking, stop: ttsStop, pause: ttsPause, resume: ttsResume } = useSpeak();
 
   const handleStopAudio = () => {
     ttsStop();
@@ -759,7 +759,8 @@ export function AuthenticCBTExamPage() {
     handleStopAudio();
     setIsAudioPaused(false);
     if (text.includes("Locuteur") || text.includes("Annonceur:") || text.includes("\n") || text.includes(":")) {
-      ttsSpeakDialogue(text, lang, rate);
+      const qNum = (currentQ as any)?.questionNumber || 1;
+      ttsSpeakListening(text, qNum, lang, rate);
     } else {
       const isMale = /\b(monsieur|m\.|homme|paul|léo|marc|antoine|pierre|thomas|hugo|louis)\b/i.test(text);
       ttsSpeak(text, lang, rate, isMale ? "male" : "female");

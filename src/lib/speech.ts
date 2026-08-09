@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { apiFetch } from "~/lib/apiFetch";
+import { triggerAcousticSoundForQuestion } from "./soundEffects";
 
 let currentAudioPlayer: HTMLAudioElement | null = null;
 let onPlaybackStateChange: ((playing: boolean) => void) | null = null;
@@ -265,13 +266,14 @@ export function speakDialogue(
     const lowerSpeaker = speakerName.toLowerCase();
     let gender: "male" | "female" = "female";
 
-    if (knownFemaleNames.some((f) => lowerSpeaker.includes(f))) {
+    if (lowerSpeaker.includes("annonceur") || lowerSpeaker.includes("examinateur")) {
+      gender = "male"; // Official Test Announcer is ALWAYS Studio Male Voice (Henri/Onyx)
+    } else if (knownFemaleNames.some((f) => lowerSpeaker.includes(f))) {
       gender = "female";
     } else if (knownMaleNames.some((m) => lowerSpeaker.includes(m))) {
       gender = "male";
     } else {
-      gender = isMaleNext ? "male" : "female";
-      isMaleNext = !isMaleNext;
+      gender = "female"; // Document passage speaker is Studio Female Voice (Charlotte/Nova)
     }
 
     parsedDialogue.push({ speaker: speakerName, text: speechText, gender });
@@ -364,6 +366,20 @@ export function speakDialogue(
   playNextLine();
 }
 
+export async function speakListeningQuestion(
+  text: string,
+  questionNumber: number,
+  lang = "fr-FR",
+  rate = 0.85,
+  extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string }
+): Promise<void> {
+  stopAudio();
+  if (questionNumber >= 1 && questionNumber <= 33) {
+    await triggerAcousticSoundForQuestion(questionNumber);
+  }
+  speakDialogue(text, lang, rate, extraKeys);
+}
+
 /**
  * React hook that wraps `speak()` and exposes `isSpeaking`, `stop`, `pause`, and `toggle`.
  */
@@ -394,6 +410,8 @@ export function useSpeak() {
   return {
     speak: speakWithState,
     speakDialogue: speakDialogueWithState,
+    speakListening: (text: string, qNum: number, lang = "fr-FR", rate = 0.85) =>
+      speakListeningQuestion(text, qNum, lang, rate),
     isSpeaking,
     stop: stopAudio,
     pause: pauseAudio,
