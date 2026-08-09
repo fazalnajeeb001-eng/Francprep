@@ -78,10 +78,17 @@ function SettingsPage() {
       .then(res => {
         if (res.data && Array.isArray(res.data) && res.data.length > 0) {
           setAvailableLanguages(res.data);
+          // If candidate's current activeLang is an unpublished track (disabled in Admin), auto-fallback to first active published track
+          const publishedCodes = res.data.map((l: any) => (l.code || '').toLowerCase().trim());
+          const currentCode = (activeLang || 'fr').toLowerCase().trim();
+          if (!publishedCodes.includes(currentCode)) {
+            const fallbackCode = res.data[0].code || 'fr';
+            handleSwitchLanguage(fallbackCode);
+          }
         }
       })
       .catch(() => {});
-  }, []);
+  }, [activeLang]);
 
   const handleSwitchLanguage = async (code: string) => {
     setLangSaving(true);
