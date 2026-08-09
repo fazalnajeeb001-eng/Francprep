@@ -89,22 +89,55 @@ export function SmartAvatar({ gender: propGender, features, size = 80, animate =
   };
 
   return (
-    <motion.div
-      animate={getAnimationVariants()}
-      style={{ width: size, height: size }}
-      className="relative shrink-0 flex items-center justify-center"
-    >
-      <div className={`w-full h-full rounded-full overflow-hidden border-2 shadow-xl ${
-        isMale ? "border-purple-500/40 bg-gradient-to-br from-purple-900/40 to-indigo-900/40" : "border-pink-500/40 bg-gradient-to-br from-pink-900/40 to-purple-900/40"
-      }`}>
-        <img
-          src={avatarImg}
-          alt="Avatar"
-          loading="eager"
-          className="w-full h-full object-cover object-top"
-          style={{ objectPosition: "50% 15%" }}
-        />
-      </div>
-    </motion.div>
+    <div style={{ width: size, height: size }} className="relative shrink-0 flex items-center justify-center">
+      {/* 🔮 Glowing Blue/Cyan Ground Circle Base */}
+      <motion.div
+        className="absolute left-1/2 -translate-x-1/2 rounded-full pointer-events-none z-0"
+        style={{
+          bottom: -size * 0.05,
+          width: size * 0.85,
+          height: size * 0.22,
+          background: "radial-gradient(ellipse, rgba(56,189,248,0.8) 0%, rgba(59,130,246,0.4) 45%, rgba(147,51,234,0.15) 70%, transparent 90%)",
+          filter: "blur(6px)",
+        }}
+        animate={{ opacity: [0.6, 1, 0.6], scale: [0.95, 1.05, 0.95] }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* ⭕ Glowing Cyan Precision Outer Ring */}
+      <motion.div
+        className="absolute left-1/2 -translate-x-1/2 rounded-full pointer-events-none z-0"
+        style={{
+          bottom: -size * 0.03,
+          width: size * 0.72,
+          height: size * 0.14,
+          border: "2px solid rgba(56,189,248,0.7)",
+          boxShadow: "0 0 16px rgba(56,189,248,0.6), inset 0 0 10px rgba(59,130,246,0.4)",
+        }}
+        animate={{ opacity: [0.5, 0.9, 0.5] }}
+        transition={{ duration: 2.0, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* 3D Animated Avatar Container */}
+      <motion.div
+        animate={getAnimationVariants()}
+        style={{ width: size, height: size }}
+        className="relative z-10 shrink-0 flex items-center justify-center"
+      >
+        <div className={`w-full h-full rounded-full overflow-hidden border-2 shadow-2xl ${
+          isMale
+            ? "border-blue-400/60 bg-gradient-to-br from-blue-900/60 via-indigo-900/50 to-slate-950"
+            : "border-pink-400/60 bg-gradient-to-br from-pink-900/60 via-purple-900/50 to-slate-950"
+        }`}>
+          <img
+            src={avatarImg}
+            alt="Avatar"
+            loading="eager"
+            className="w-full h-full object-cover object-top"
+            style={{ objectPosition: "50% 15%" }}
+          />
+        </div>
+      </motion.div>
+    </div>
   );
 }
