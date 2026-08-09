@@ -335,6 +335,113 @@ function getRichListeningTopics(): ListeningTopicItem[] {
 
 const LISTENING_TOPICS = getRichListeningTopics();
 
+export interface ReadingTopicItem {
+  level: string;
+  q: string;
+  text: string;
+  opt: string[];
+  ans: number;
+  passEn: string;
+  hint?: string;
+}
+
+function getRichReadingTopics(): ReadingTopicItem[] {
+  const topics: ReadingTopicItem[] = [];
+  const cities = ["Montréal", "Québec", "Ottawa", "Vancouver", "Toronto", "Calgary"];
+
+  for (let i = 0; i < 390; i++) {
+    const qNum = (i % 39) + 1;
+    const city = cities[i % cities.length];
+
+    if (qNum <= 7) {
+      topics.push({
+        level: "A1",
+        q: "Quel est l'objet principal de cette annonce ?",
+        text: `Vente de garage le samedi 15 mai à ${city}. Vêtements, meubles et livres en parfait état. Adresse : 124 rue Principale, de 9h à 16h.`,
+        opt: ["Une vente de garage de meubles et livres", "L'ouverture d'un nouveau magasin de vêtements", "Une fête de quartier municipale", "La fermeture d'une bibliothèque"],
+        ans: 0,
+        passEn: `Garage sale on Saturday May 15 in ${city}. Clothes, furniture, and books in perfect condition.`
+      });
+    } else if (qNum <= 15) {
+      topics.push({
+        level: "A2",
+        q: "Quelle est la consigne principale donnée dans ce courriel ?",
+        text: `Chers employés, nous vous rappelons que les travaux de rénovation du parking principal débuteront lundi. Veuillez utiliser le stationnement B.`,
+        opt: ["Utiliser le stationnement B à partir de lundi", "Stationner gratuitement dans la rue", "Venir au travail uniquement en transport en commun", "Payer les frais de stationnement d'avance"],
+        ans: 0,
+        passEn: `Dear employees, please note that main parking renovation starts Monday. Please use Parking B.`
+      });
+    } else if (qNum <= 25) {
+      topics.push({
+        level: "B1",
+        q: `Selon l'article, quel est le bénéfice majeur de cette initiative à ${city} ?`,
+        text: `Le programme municipal d'embellissement urbain à ${city} a permis de planter plus de 5 000 arbres cette année, contribuant à rafraîchir le centre-ville.`,
+        opt: ["La réduction des îlots de chaleur grâce aux 5 000 arbres", "L'augmentation des tarifs de stationnement en centre-ville", "La fermeture complète des axes routiers principaux", "La création d'un nouveau centre commercial"],
+        ans: 0,
+        passEn: `The urban greening program in ${city} planted over 5,000 trees this year, helping cool the city center.`
+      });
+    } else if (qNum <= 33) {
+      topics.push({
+        level: "B2",
+        q: "Quelle est l'analyse clé développée par l'auteur concernant l'économie numérique ?",
+        text: `L'essor du télétravail redéfinit l'aménagement du territoire canadien. Si la décentralisation favorise le dynamisme des régions périphériques, elle pose d'importants défis d'infrastructures.`,
+        opt: ["La redéfinition du territoire et les défis d'infrastructures régionales", "L'abandon total des bureaux en centre-ville", "La baisse généralisée de la productivité des salariés", "L'obligation légale du retour au travail en présentiel"],
+        ans: 0,
+        passEn: `The rise of remote work redefines Canadian territorial planning. While decentralization boosts regional dynamism, it poses infrastructure challenges.`
+      });
+    } else {
+      topics.push({
+        level: "C1",
+        q: "Quelle est la thèse centrale formulée par les chercheurs dans cette étude académique ?",
+        text: `L'analyse des modèles climatologiques récents démontre une corrélation directe entre la préservation des zones humides boréales et la régulation des événements météorologiques extrêmes.`,
+        opt: ["Rôle crucial des zones humides boréales dans la régulation climatique", "Inefficacité totale des politiques de conservation environnementale", "Nécessité d'industrialiser les territoires du Nord canadien", "Disparition irréversible de tous les écosystèmes aquatiques"],
+        ans: 0,
+        passEn: `Analysis of climatological models demonstrates a direct correlation between boreal wetland preservation and extreme weather event regulation.`
+      });
+    }
+  }
+
+  return topics;
+}
+
+const READING_TOPICS = getRichReadingTopics();
+
+function getTargetLevel(questionNumber: number): string {
+  if (questionNumber <= 7) return "A1";
+  if (questionNumber <= 15) return "A2";
+  if (questionNumber <= 25) return "B1";
+  if (questionNumber <= 33) return "B2";
+  if (questionNumber <= 37) return "C1";
+  return "C2";
+}
+
+function customizeListeningTopicForPaper(topic: ListeningTopicItem, _qNum: number, _prefix: string, _seedOffset: number): ListeningTopicItem {
+  return { ...topic };
+}
+
+function getDrawingPropositions(sceneIdx: number): { opt: string[]; ans: number } {
+  const optionsList = [
+    { opt: ["Option A: Quai de gare avec voyageurs", "Option B: Rue piétonne enneigée", "Option C: Terrasse de café", "Option D: Parc municipal"], ans: 0 },
+    { opt: ["Option A: Entrée du supermarché", "Option B: Boulangerie artisanale", "Option C: Station de métro", "Option D: Arrêt de bus"], ans: 1 },
+    { opt: ["Option A: Horloge de la gare", "Option B: Distributeur automatique", "Option C: Panneau d'affichage", "Option D: Guichet d'accueil"], ans: 0 },
+    { opt: ["Option A: Camion de livraison", "Option B: Voiture électrique", "Option C: Vélo en libre-service", "Option D: Autobus urbain"], ans: 0 }
+  ];
+  return optionsList[sceneIdx % optionsList.length];
+}
+
+function shuffleOptions(
+  options: string[],
+  correctIndex: number,
+  optionImages?: string[]
+): { options: string[]; correctIndex: number; correctText: string; optionImages?: string[] } {
+  return {
+    options: [...options],
+    correctIndex,
+    correctText: options[correctIndex] || options[0] || "",
+    optionImages: optionImages ? [...optionImages] : undefined
+  };
+}
+
 function generateListeningQuestions(count: number, prefix: string, seedOffset: number = 0): ExamQuestion[] {
   const qList: ExamQuestion[] = [];
   const usedIndices = new Set<number>();
