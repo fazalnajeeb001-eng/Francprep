@@ -925,6 +925,38 @@ function shuffleOptions(rawOpt: string[], origCorrectIdx: number, rawImages?: st
   return { options, correctIndex, correctText, optionImages };
 }
 
+function customizeListeningTopicForPaper(t: any, i: number, prefix: string, seedOffset: number) {
+  const paperNum = (parseInt(prefix.replace(/\D/g, ""), 10) || 1) + seedOffset;
+  let text = t.text;
+  let tr = t.tr;
+  let en = t.en;
+  let opt = [...t.opt];
+  let ans = t.ans;
+
+  if (i === 1) {
+    const tracks = ["voie 4", "quai 2", "porte B15", "arrêt 3", "embarcadère 7", "quai 12", "voie 8", "quai 1", "pont 5", "quai 4"];
+    const trains = ["TGV 7842", "VIA Rail 5619", "Air Canada AC402", "Exo Bus 24", "Traversier 102", "Orléans Express 804", "TGV 9104", "REM 303", "Navette 505", "TransLink 99"];
+    const dests = ["Paris-Gare de Lyon", "Québec", "Toronto", "Laval", "Lévis", "Gatineau", "Lyon", "Aéroport", "Trois-Rivières", "Vancouver"];
+    const track = tracks[(paperNum - 1) % tracks.length];
+    const train = trains[(paperNum - 1) % trains.length];
+    const dest = dests[(paperNum - 1) % dests.length];
+
+    tr = `Chers voyageurs, votre attention s'il vous plaît. Le transport ${train} à destination de ${dest}, départ initialement prévu, partira exceptionnellement du ${track}. Veuillez assurer l'embarquement immédiat.`;
+    en = `Dear passengers, attention please. Transport ${train} bound for ${dest} will exceptionally depart from ${track}. Please proceed to immediate boarding.`;
+    opt = [`Au ${track}`, `À la gare centrale`, `En retard de 45 minutes`, `Annulé sans correspondance`];
+    ans = 0;
+  } else if (i === 2) {
+    const places = ["au supermarché du centre-ville", "à la boulangerie du quartier", "au grand marché public", "à la pharmacie de garde", "au magasin d'électronique", "à la caisse du supermarché"];
+    const place = places[(paperNum - 1) % places.length];
+    tr = `Salut Thomas ! C'est Marc. Je suis actuellement ${place} pour faire les courses de la semaine. Dis-moi, est-ce que tu as besoin que je prenne du pain frais ou du fromage pour le dîner ce soir ?`;
+    en = `Hi Thomas! It's Marc. I'm currently at ${place} doing weekly shopping. Tell me, do you need me to pick up fresh bread or cheese for dinner tonight?`;
+    opt = [place.charAt(0).toUpperCase() + place.slice(1), "À la maison", "Au cinéma municipal", "Au parc communautaire"];
+    ans = 0;
+  }
+
+  return { text, tr, en, opt, ans };
+}
+
 function generateListeningQuestions(count: number, prefix: string, seedOffset: number = 0): ExamQuestion[] {
   const qList: ExamQuestion[] = [];
   const usedIndices = new Set<number>();
@@ -954,7 +986,8 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       }
     }
     usedIndices.add(chosenIdx);
-    const t = LISTENING_TOPICS[chosenIdx];
+    const rawT = LISTENING_TOPICS[chosenIdx];
+    const t = customizeListeningTopicForPaper(rawT, i, prefix, seedOffset);
 
     const isQuestionInAudio = i <= 29;
 
