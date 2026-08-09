@@ -25,11 +25,11 @@ const SERVER_BUILD_TIME = new Date().toISOString();
 
 const router = Router();
 router.get('/health', (_req, res) => {
-  res.status(200).json({ success: true, version: '1.0.v99', buildTime: SERVER_BUILD_TIME, message: 'FrancPrep API is running', timestamp: new Date().toISOString() });
+  res.status(200).json({ success: true, version: '1.0.v100', buildTime: SERVER_BUILD_TIME, message: 'FrancPrep API is running', timestamp: new Date().toISOString() });
 });
 
 router.get('/version', (_req, res) => {
-  res.status(200).json({ success: true, version: '1.0.v99', buildTime: SERVER_BUILD_TIME });
+  res.status(200).json({ success: true, version: '1.0.v100', buildTime: SERVER_BUILD_TIME });
 });
 
 router.get('/subscriptions/plans', async (_req, res) => {
