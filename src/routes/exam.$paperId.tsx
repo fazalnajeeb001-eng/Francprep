@@ -984,8 +984,8 @@ export function AuthenticCBTExamPage() {
 
     if (isTache1) {
       if (!hasFormalGreeting && !hasFormalSignOff && !hasFormalConditional) {
-        // Conversational / Oral style email without formal register is strictly A2 (6-8/20 | NCLC 4-5)
-        totalScoreOutOf20 = Math.min(8, totalScoreOutOf20);
+        // Conversational / Oral style email without formal register is strictly A2 (5-7/20 | NCLC 4)
+        totalScoreOutOf20 = Math.min(7, totalScoreOutOf20);
       } else if (!hasFormalSignOff && !hasAdvancedC1Markers) {
         // Semi-formal B1 email (e.g. ended with "Cordialement" or missing formal epistolary formulas) -> strictly B1 (10-11/20 | NCLC 6)
         totalScoreOutOf20 = Math.min(11, totalScoreOutOf20);
@@ -997,10 +997,18 @@ export function AuthenticCBTExamPage() {
         totalScoreOutOf20 = Math.min(15, totalScoreOutOf20);
       }
     } else if (isTache2) {
-      scoreOutOf20: totalScoreOutOf20 = Math.min(17, totalScoreOutOf20);
+      if (foundB2Lex.length === 0 && foundC1C2Lex.length === 0 && foundB2Conn.length === 0 && foundC1C2Conn.length === 0 && foundB1Gram.length === 0 && foundC1C2Gram.length === 0) {
+        // Simple A2 narrative with basic vocabulary -> strictly A2 (5-7/20 | NCLC 4)
+        totalScoreOutOf20 = Math.min(7, totalScoreOutOf20);
+      } else {
+        totalScoreOutOf20 = Math.min(17, totalScoreOutOf20);
+      }
     } else if (isTache3) {
       const hasTwoOpposingViews = (textLower.includes("d'un côté") || textLower.includes("d'une part")) && (textLower.includes("d'autre part") || textLower.includes("d'un autre côté") || textLower.includes("en revanche") || textLower.includes("cependant") || textLower.includes("toutefois"));
-      if (!hasTwoOpposingViews && foundB2Conn.length < 2 && foundC1C2Conn.length === 0) {
+      if (foundB2Lex.length === 0 && foundC1C2Lex.length === 0 && foundB2Conn.length === 0 && foundC1C2Conn.length === 0 && foundB1Conn.length <= 1) {
+        // Simple A2 opinion essay -> strictly A2 (5-7/20 | NCLC 4)
+        totalScoreOutOf20 = Math.min(7, totalScoreOutOf20);
+      } else if (!hasTwoOpposingViews && foundB2Conn.length < 2 && foundC1C2Conn.length === 0) {
         // Simple one-sided opinion with basic connectors -> strictly B1 (9-11/20 | NCLC 5-6)
         totalScoreOutOf20 = Math.min(11, totalScoreOutOf20);
       } else if (foundC1C2Lex.length >= 3 && foundC1C2Conn.length >= 2 && foundC1C2Gram.length >= 2) {
@@ -1303,8 +1311,8 @@ export function AuthenticCBTExamPage() {
 
         if (isTache1) {
           if (!hasFormalGreeting && !hasFormalSignOff && !hasFormalConditional) {
-            // Conversational / Oral style email without formal register is strictly A2 (6-8/20 | NCLC 4-5)
-            rawSum = Math.min(8, rawSum);
+            // Conversational / Oral style email without formal register is strictly A2 (5-7/20 | NCLC 4)
+            rawSum = Math.min(7, rawSum);
           } else if (!hasFormalSignOff && !hasAdvancedC1Markers) {
             // Semi-formal B1 email (e.g. ended with "Cordialement" or missing formal epistolary formulas) -> strictly B1 (10-11/20 | NCLC 6)
             rawSum = Math.min(11, rawSum);
@@ -1316,10 +1324,18 @@ export function AuthenticCBTExamPage() {
             rawSum = Math.min(15, rawSum);
           }
         } else if (isTache2) {
-          rawSum = Math.min(17, rawSum);
+          if (foundB2Lex.length === 0 && foundC1C2Lex.length === 0 && foundB2Conn.length === 0 && foundC1C2Conn.length === 0 && foundB1Gram.length === 0 && foundC1C2Gram.length === 0) {
+            // Simple A2 narrative with basic vocabulary -> strictly A2 (5-7/20 | NCLC 4)
+            rawSum = Math.min(7, rawSum);
+          } else {
+            rawSum = Math.min(17, rawSum);
+          }
         } else if (isTache3) {
           const hasTwoOpposingViews = (textLower.includes("d'un côté") || textLower.includes("d'une part")) && (textLower.includes("d'autre part") || textLower.includes("d'un autre côté") || textLower.includes("en revanche") || textLower.includes("cependant") || textLower.includes("toutefois"));
-          if (!hasTwoOpposingViews && foundB2Conn.length < 2 && foundC1C2Conn.length === 0) {
+          if (foundB2Lex.length === 0 && foundC1C2Lex.length === 0 && foundB2Conn.length === 0 && foundC1C2Conn.length === 0 && foundB1Conn.length <= 1) {
+            // Simple A2 opinion essay -> strictly A2 (5-7/20 | NCLC 4)
+            rawSum = Math.min(7, rawSum);
+          } else if (!hasTwoOpposingViews && foundB2Conn.length < 2 && foundC1C2Conn.length === 0) {
             // Simple one-sided opinion with basic connectors -> strictly B1 (9-11/20 | NCLC 5-6)
             rawSum = Math.min(11, rawSum);
           } else if (foundC1C2Lex.length >= 3 && foundC1C2Conn.length >= 2 && foundC1C2Gram.length >= 2) {
