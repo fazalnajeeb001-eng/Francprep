@@ -175,12 +175,33 @@ function NavBarInner() {
     sendHeartbeat();
     const interval = setInterval(sendHeartbeat, 15000);
 
+    // Silent background version checker for seamless zero-downtime deployment sync
+    let lastBuildTime: string | null = null;
+    const checkVersion = () => {
+      apiFetch("/version")
+        .then((r) => r.json())
+        .then((res) => {
+          if (res.buildTime) {
+            if (lastBuildTime && lastBuildTime !== res.buildTime) {
+              queryClient.invalidateQueries();
+              window.dispatchEvent(new Event("active-language-changed"));
+            }
+            lastBuildTime = res.buildTime;
+          }
+        })
+        .catch(() => {});
+    };
+
+    checkVersion();
+    const versionInterval = setInterval(checkVersion, 60000);
+
     document.addEventListener("visibilitychange", handleVisibilityChange);
     window.addEventListener("pagehide", sendOfflineBeacon);
     window.addEventListener("beforeunload", sendOfflineBeacon);
 
     return () => {
       clearInterval(interval);
+      clearInterval(versionInterval);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("pagehide", sendOfflineBeacon);
       window.removeEventListener("beforeunload", sendOfflineBeacon);
