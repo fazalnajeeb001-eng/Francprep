@@ -1003,7 +1003,47 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       mainImageSvg = getOfficialLineArtSvg(i, seedOffset);
     }
 
-    const { options, correctIndex, correctText, optionImages } = shuffleOptions(t.opt, t.ans, rawImages);
+    let topicOpt = t.opt;
+    let topicAns = t.ans;
+
+    if (i <= 4) {
+      const type = ((i + seedOffset) % 4) + 1;
+      if (type === 1) {
+        topicOpt = [
+          "Deux collègues discutent debout dans un bureau.",
+          "Le directeur dort à son poste de travail.",
+          "Les deux hommes jouent au tennis en extérieur.",
+          "Un employé répare un ordinateur portable."
+        ];
+        topicAns = "Deux collègues discutent debout dans un bureau.";
+      } else if (type === 2) {
+        topicOpt = [
+          "Un client demande une information à la réceptionniste.",
+          "Le pilote de l'avion s'installe dans le cockpit.",
+          "Deux personnes nagent dans la piscine de l'hôtel.",
+          "Le technicien répare la porte d'entrée."
+        ];
+        topicAns = "Un client demande une information à la réceptionniste.";
+      } else if (type === 3) {
+        topicOpt = [
+          "Le boulanger sert du pain frais au client.",
+          "Un mécanicien change la roue d'une voiture.",
+          "Les voyageurs montent dans le train en gare.",
+          "Le professeur écrit au tableau dans la classe."
+        ];
+        topicAns = "Le boulanger sert du pain frais au client.";
+      } else if (type === 4) {
+        topicOpt = [
+          "L'agente d'escale vérifie le billet du passager.",
+          "Un cuisinier prépare une pizza dans le four.",
+          "Deux jardiniers arrosent les fleurs du parc.",
+          "Le médecin consulte le dossier du patient."
+        ];
+        topicAns = "L'agente d'escale vérifie le billet du passager.";
+      }
+    }
+
+    const { options, correctIndex, correctText, optionImages } = shuffleOptions(topicOpt, topicAns, rawImages);
 
     const specificHint = (t as any).hint || `Level ${t.level} Listening Guidance: Focus on the speaker's main intent and tone. Pay attention to key transition words (e.g. "cependant", "en revanche") to identify the correct message without guessing.`;
 
