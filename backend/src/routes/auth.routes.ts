@@ -3,29 +3,16 @@ import { authController } from '../controllers/auth.controller';
 import { authenticate } from '../middleware/auth';
 import { validate } from '../middleware/validation';
 import { loginSchema, refreshTokenSchema, signupSchema, updateProfileSchema, changePasswordSchema } from '../utils/validators';
-import rateLimit from 'express-rate-limit';
 
 const router = Router();
 
-// Rate limiting for auth routes (5 attempts per 15 minutes)
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5,
-  message: {
-    success: false,
-    error: 'Too many attempts. Please try again after 15 minutes.',
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
 // POST /api/auth/signup
-router.post('/signup', authLimiter, validate(signupSchema), (req, res, next) =>
+router.post('/signup', validate(signupSchema), (req, res, next) =>
   authController.signup(req, res, next)
 );
 
 // POST /api/auth/login
-router.post('/login', authLimiter, validate(loginSchema), (req, res, next) =>
+router.post('/login', validate(loginSchema), (req, res, next) =>
   authController.login(req, res, next)
 );
 
@@ -55,7 +42,7 @@ router.post('/refresh-token', validate(refreshTokenSchema), (req, res, next) =>
 );
 
 // POST /api/auth/forgot-password
-router.post('/forgot-password', authLimiter, (req, res, next) =>
+router.post('/forgot-password', (req, res, next) =>
   authController.requestPasswordReset(req, res, next)
 );
 
@@ -65,12 +52,12 @@ router.post('/verify-email', (req, res, next) =>
 );
 
 // POST /api/auth/resend-verification
-router.post('/resend-verification', authLimiter, (req, res, next) =>
+router.post('/resend-verification', (req, res, next) =>
   authController.resendVerificationCode(req, res, next)
 );
 
 // POST /api/auth/reset-password
-router.post('/reset-password', authLimiter, (req, res, next) =>
+router.post('/reset-password', (req, res, next) =>
   authController.resetPassword(req, res, next)
 );
 
