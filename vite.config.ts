@@ -28,6 +28,7 @@ export default defineConfig({
     tanstackStart(),
     nitro({
       preset: process.env.NETLIFY ? "netlify" : (process.env.VERCEL ? "vercel" : (process.env.NITRO_PRESET || "vercel")),
+      errorHandler: "./server/errorHandler.ts",
     }),
     viteReact(),
   ],
