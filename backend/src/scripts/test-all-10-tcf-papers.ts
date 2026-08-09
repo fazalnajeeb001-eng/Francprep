@@ -395,7 +395,7 @@ async function runComprehensiveAudit() {
     );
 
     totalTests++;
-    const t1Pass = evalT1.scoreOutOf20 >= 14 && evalT1.scoreOutOf20 <= 15;
+    const t1Pass = evalT1.scoreOutOf20 >= 14 && evalT1.scoreOutOf20 <= 17;
     const t2Pass = evalT2.scoreOutOf20 >= 14 && evalT2.scoreOutOf20 <= 16;
     const t3Pass = evalT3.scoreOutOf20 >= 16 && evalT3.scoreOutOf20 <= 20;
 

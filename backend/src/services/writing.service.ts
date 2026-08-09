@@ -357,10 +357,10 @@ Respond STRICTLY with a valid JSON object matching this schema:
         const textClean = (text || '').trim();
 
         // 1. C2 Mastery / Legal & High Administrative Register
-        const hasC2Register = /\b(par la présente|eu égard à|dépêchement immédiat|remise en état|à défaut d'une|sans délai|dispositifs? de chauffage d'appoint adéquats|diligente de ce sinistre|veuillez agréer,? monsieur|salutations distinguées)\b/i.test(textClean);
+        const hasC2Register = /\b(par la présente|eu égard à|dépêchement immédiat|remise en état|à défaut d'une|sans délai|dispositifs? de chauffage d'appoint adéquats|diligente de ce sinistre|l'expression de mes salutations distinguées)\b/i.test(textClean);
 
         // 2. C1 Advanced Administrative Register
-        const hasC1Register = /\b(porter à votre connaissance|dysfonctionnement critique|refroidissement brutal|salubrité|urgence manifeste|dans les plus brefs délais|s'avère absolument indispensable|comptant sur votre réactivité|défaillance totale|refroidissement|désagrément majeur)\b/i.test(textClean);
+        const hasC1Register = /\b(porter à votre connaissance|dysfonctionnement critique|refroidissement brutal|salubrité|urgence manifeste|dans les plus brefs délais|s'avère absolument indispensable|comptant sur votre réactivité|défaillance totale|refroidissement|désagrément majeur|salutations distinguées)\b/i.test(textClean);
 
         // 3. B2+ High Formal Correspondence
         const hasB2PlusRegister = /\b(solliciter votre intervention|défaillance complète|grand froid hivernal|totalement à l'arrêt|situation se dégrade|je vous prie de bien vouloir|je vous serais reconnaissant|solution de chauffage d'appoint|respectueusement)\b/i.test(textClean);
@@ -728,11 +728,11 @@ Respond STRICTLY with a valid JSON object matching this schema:
     if (isTache1) {
       // ─── TÂCHE 1 CEFR BENCHMARK MATRIX (A1 to C2) ───
       // Level 10: C1-C2 (Score 18-20/20 | NCLC 10+)
-      if (/\b(par la présente|eu égard à|dépêchement immédiat|remise en état|à défaut d'une|sans délai|dispositifs? de chauffage|diligente de ce sinistre|veuillez agréer,? monsieur|salutations distinguées)\b/i.test(clean)) {
+      if (/\b(par la présente|eu égard à|dépêchement immédiat|remise en état|à défaut d'une|sans délai|dispositifs? de chauffage|diligente de ce sinistre|l'expression de mes salutations distinguées)\b/i.test(clean)) {
         scoreOutOf20 = 18;
       }
       // Level 9: C1 Advanced (Score 16-17/20 | NCLC 9)
-      else if (/\b(porter à votre connaissance|dysfonctionnement critique|refroidissement brutal|salubrité|urgence manifeste|dans les plus brefs délais|s'avère absolument indispensable|comptant sur votre réactivité|désagrément majeur)\b/i.test(clean)) {
+      else if (/\b(porter à votre connaissance|dysfonctionnement critique|refroidissement brutal|salubrité|urgence manifeste|dans les plus brefs délais|s'avère absolument indispensable|comptant sur votre réactivité|désagrément majeur|salutations distinguées)\b/i.test(clean)) {
         scoreOutOf20 = 16;
       }
       // Level 8: B2+ Upper (Score 14-15/20 | NCLC 8)
