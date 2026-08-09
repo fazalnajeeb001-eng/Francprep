@@ -55,7 +55,7 @@ export async function apiFetch(
   } catch (err: any) {
     console.warn("[apiFetch Fallback]", err?.message || err);
     return new Response(JSON.stringify({ success: false, fallback: true, error: "Service unavailable" }), {
-      status: 200,
+      status: 503,
       headers: { "Content-Type": "application/json" },
     });
   }
