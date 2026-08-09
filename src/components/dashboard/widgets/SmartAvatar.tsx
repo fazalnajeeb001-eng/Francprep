@@ -53,13 +53,13 @@ export function AvatarIcon({ features, size = 36 }: { features?: { gender?: stri
 
 export function AvatarFallback({ size, gender }: { size: number; gender: string }) {
   const bg = gender === "male"
-    ? "bg-gradient-to-br from-purple-600 to-indigo-700"
-    : "bg-gradient-to-br from-pink-500 to-rose-600";
+    ? "bg-gradient-to-br from-purple-600 via-indigo-700 to-slate-900"
+    : "bg-gradient-to-br from-purple-500 via-pink-600 to-slate-900";
   const avatarImg = gender === "male" ? "/models/leo-avatar.png" : "/models/chloe-avatar.png";
   return (
     <div
       style={{ width: size, height: size }}
-      className={`${bg} rounded-full overflow-hidden shadow-lg border-2 border-white/20 relative flex items-center justify-center`}
+      className={`${bg} rounded-full overflow-hidden shadow-2xl border-2 border-purple-400/40 relative flex items-center justify-center`}
     >
       <img src={avatarImg} alt="Avatar" className="w-full h-full object-cover object-top" style={{ objectPosition: "50% 15%" }} />
     </div>
@@ -78,13 +78,36 @@ interface SmartAvatarProps {
   } | null;
   size?: number;
   animate?: string;
+  glowColor?: "purple" | "cyan" | "pink";
 }
 
-export function SmartAvatar({ gender: propGender, features, size = 80, animate = "idle" }: SmartAvatarProps) {
+export function SmartAvatar({ gender: propGender, features, size = 80, animate = "idle", glowColor = "purple" }: SmartAvatarProps) {
   const gender = propGender || features?.gender || "female";
   const isMale = gender === "male";
   const modelUrl = isMale ? "/models/leo-avatar.glb" : "/models/female-avatar.glb";
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Purple level glow styling (or fallback cyan/pink if requested)
+  const isPurple = glowColor === "purple";
+  const isCyan = glowColor === "cyan";
+
+  const groundBg = isPurple
+    ? "radial-gradient(ellipse, rgba(168,85,247,0.95) 0%, rgba(147,51,234,0.6) 45%, rgba(192,132,252,0.25) 75%, transparent 95%)"
+    : isCyan
+    ? "radial-gradient(ellipse, rgba(56,189,248,0.9) 0%, rgba(59,130,246,0.5) 45%, rgba(147,51,234,0.2) 75%, transparent 95%)"
+    : "radial-gradient(ellipse, rgba(236,72,153,0.9) 0%, rgba(219,39,119,0.5) 45%, rgba(168,85,247,0.2) 75%, transparent 95%)";
+
+  const ringBorder = isPurple
+    ? "2px solid rgba(216,180,254,0.9)"
+    : isCyan
+    ? "2px solid rgba(125,211,252,0.9)"
+    : "2px solid rgba(249,168,212,0.9)";
+
+  const ringShadow = isPurple
+    ? "0 0 24px rgba(168,85,247,0.85), inset 0 0 14px rgba(147,51,234,0.6)"
+    : isCyan
+    ? "0 0 20px rgba(56,189,248,0.8), inset 0 0 12px rgba(59,130,246,0.5)"
+    : "0 0 20px rgba(236,72,153,0.8), inset 0 0 12px rgba(219,39,119,0.5)";
 
   return (
     <motion.div
@@ -94,31 +117,32 @@ export function SmartAvatar({ gender: propGender, features, size = 80, animate =
       style={{ width: size, height: size }}
       className="relative shrink-0 flex items-center justify-center overflow-visible"
     >
-      {/* 🔮 Glowing Blue/Cyan Ground Circle Base */}
+      {/* 🔮 Glowing Purple Ground Circle Base (Shows Active Student Level) */}
       <motion.div
         className="absolute left-1/2 -translate-x-1/2 rounded-full pointer-events-none z-0"
         style={{
           bottom: -size * 0.05,
-          width: size * 0.85,
-          height: size * 0.22,
-          background: "radial-gradient(ellipse, rgba(56,189,248,0.85) 0%, rgba(59,130,246,0.45) 45%, rgba(147,51,234,0.18) 70%, transparent 90%)",
-          filter: "blur(6px)",
+          width: size * 0.9,
+          height: size * 0.24,
+          background: groundBg,
+          filter: "blur(7px)",
+          boxShadow: isPurple ? "0 0 35px rgba(168,85,247,0.7)" : undefined,
         }}
-        animate={{ opacity: [0.6, 1, 0.6], scale: [0.95, 1.05, 0.95] }}
+        animate={{ opacity: [0.65, 1, 0.65], scale: [0.94, 1.06, 0.94] }}
         transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {/* ⭕ Glowing Cyan Precision Outer Ring */}
+      {/* ⭕ Glowing Purple Precision Outer Level Ring */}
       <motion.div
         className="absolute left-1/2 -translate-x-1/2 rounded-full pointer-events-none z-0"
         style={{
           bottom: -size * 0.03,
-          width: size * 0.72,
-          height: size * 0.14,
-          border: "2px solid rgba(56,189,248,0.75)",
-          boxShadow: "0 0 16px rgba(56,189,248,0.7), inset 0 0 10px rgba(59,130,246,0.5)",
+          width: size * 0.75,
+          height: size * 0.15,
+          border: ringBorder,
+          boxShadow: ringShadow,
         }}
-        animate={{ opacity: [0.5, 0.95, 0.5] }}
+        animate={{ opacity: [0.55, 0.95, 0.55] }}
         transition={{ duration: 2.0, repeat: Infinity, ease: "easeInOut" }}
       />
 
