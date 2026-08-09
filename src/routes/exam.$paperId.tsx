@@ -247,9 +247,10 @@ export function AuthenticCBTExamPage() {
     return () => clearInterval(interval);
   }, [isOralSpeakingActive, oralSpeakingTimeRemaining]);
 
-  const handlePlayExaminerAudio = (text: string) => {
+  const handlePlayExaminerAudio = (text: string, onEnded?: () => void) => {
     handleStopAudio();
-    ttsSpeak(text, "fr-FR", 0.9, "female");
+    const isMale = /\b(monsieur|m\.|homme|paul|léo|marc|antoine|pierre|thomas|hugo|louis)\b/i.test(text);
+    ttsSpeak(text, "fr-FR", 0.9, isMale ? "male" : "female", undefined, undefined, undefined, onEnded);
   };
 
   const handleSendSpeakingQuestionToExaminer = async (taskId: string, userText: string, scenarioText: string) => {
@@ -314,12 +315,28 @@ export function AuthenticCBTExamPage() {
       ? "Bonjour ! Je suis le responsable de l'annonce. Je vous écoute, quelles sont vos questions concernant les horaires, tarifs et modalités ?"
       : "Bonjour ! J'aimerais connaître votre point de vue sur ce sujet de société. Présentez-moi vos arguments et votre position.";
 
-    handlePlayExaminerAudio(openingText);
-
     if (task.prepTimeMins > 0) {
+      // Tâche 2 (Interaction with prep time):
+      // Preparation Timer starts IMMEDIATELY along with the question audio!
       handleStartPrepTimer(task.id, task.prepTimeMins);
+      handlePlayExaminerAudio(openingText);
     } else {
-      handleStartSpeakingTimer(task.id, task.speakingTimeMins);
+      // Tâche 1 & Tâche 3 (Direct speaking without prep time):
+      // Speaking Timer starts AFTER the examiner question audio finishes speaking!
+      let timerStarted = false;
+      const startTimer = () => {
+        if (!timerStarted) {
+          timerStarted = true;
+          handleStartSpeakingTimer(task.id, task.speakingTimeMins);
+        }
+      };
+
+      handlePlayExaminerAudio(openingText, startTimer);
+
+      // Fallback safety timeout (5 seconds) in case audio is blocked or delayed
+      setTimeout(() => {
+        startTimer();
+      }, 5000);
     }
   };
 

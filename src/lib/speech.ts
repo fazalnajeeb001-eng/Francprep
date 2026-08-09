@@ -37,7 +37,8 @@ export function speak(
   gender: "female" | "male" = "female",
   voiceId?: string,
   provider?: string,
-  extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string }
+  extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string },
+  onEnded?: () => void
 ): boolean {
   if (typeof window === "undefined") return false;
   const cleanText = text.trim();
@@ -64,10 +65,12 @@ export function speak(
   audio.onended = () => {
     if (currentAudioPlayer === audio) currentAudioPlayer = null;
     if (onPlaybackStateChange) onPlaybackStateChange(false);
+    if (onEnded) onEnded();
   };
   audio.onerror = () => {
     if (currentAudioPlayer === audio) currentAudioPlayer = null;
     if (onPlaybackStateChange) onPlaybackStateChange(false);
+    if (onEnded) onEnded();
   };
 
   // Call neural TTS backend service (which routes to Kokoro-82M, ElevenLabs, or OpenAI)
@@ -333,8 +336,8 @@ export function useSpeak() {
   }, []);
 
   const speakWithState = useCallback(
-    (text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female", voiceId?: string, provider?: string, extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string }) => {
-      speak(text, lang, rate, gender, voiceId, provider, extraKeys);
+    (text: string, lang = "fr-FR", rate = 0.85, gender: "female" | "male" = "female", voiceId?: string, provider?: string, extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string }, onEnded?: () => void) => {
+      speak(text, lang, rate, gender, voiceId, provider, extraKeys, onEnded);
     },
     []
   );
