@@ -433,13 +433,13 @@ export function LevelProgress({ levels, dark, overall, avatarUrl, avatarFeatures
         </motion.div>
       </motion.div>
 
-      {/* === 3D AVATAR (STANDING AT VERY VERY LEFT FOR A1) === */}
+      {/* === 3D AVATAR (CENTERED UNDER ACTIVE CLB LEVEL NODE) === */}
       <motion.div
         className="absolute z-[12]"
         style={{
-          left: activeIndex === 0 ? "-2%" : `${[5, 23, 41, 59, 77, 95][activeIndex >= 0 ? activeIndex : 0]}%`,
+          left: `${[5, 23, 41, 59, 77, 95][activeIndex >= 0 ? activeIndex : 0]}%`,
           bottom: "0%",
-          transform: activeIndex === 0 ? "none" : "translateX(-50%)",
+          transform: "translateX(-50%)",
           width: avatarSize,
           height: avatarSize,
         }}
