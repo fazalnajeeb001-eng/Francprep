@@ -112,11 +112,18 @@ function SignupPage() {
       });
       const json = await res.json();
       if (res.ok && json.success) {
-        if (json.data?.accessToken) {
-          localStorage.setItem("francprep_access_token", json.data.accessToken);
-          localStorage.setItem("francprep_user", JSON.stringify(json.data.user));
+        const token = json.data?.accessToken || json.accessToken;
+        const userObj = json.data?.user || json.user;
+        if (token) {
+          localStorage.setItem("francprep_access_token", token);
+        }
+        if (userObj) {
+          localStorage.setItem("francprep_user", JSON.stringify(userObj));
         }
         setShowOtpModal(false);
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new Event("active-language-changed"));
+        }
         navigate({ to: "/onboarding" });
       } else {
         setOtpError(json.error || json.message || "Invalid 6-digit verification code. Please check your email.");

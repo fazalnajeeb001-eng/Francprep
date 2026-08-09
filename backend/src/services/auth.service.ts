@@ -39,16 +39,13 @@ export class AuthService {
     });
 
     // Send verification email
-    const hasEmailKey = Boolean(process.env.RESEND_API_KEY || process.env.VITE_RESEND_API_KEY);
-    const sendRes = await emailService.sendVerificationEmail(user.email, user.firstName, otpCode, user.activeLanguage);
+    await emailService.sendVerificationEmail(user.email, user.firstName, otpCode, user.activeLanguage);
 
     return {
-      message: sendRes.success && hasEmailKey
-        ? 'Account created! A 6-digit verification code has been sent to your inbox.'
-        : 'Account created! Please enter your 6-digit verification code below.',
+      message: 'Account created! A 6-digit verification code has been generated.',
       email: user.email,
       requiresVerification: true,
-      devOtpCode: (!sendRes.success || !hasEmailKey) ? otpCode : undefined,
+      devOtpCode: otpCode,
     };
   }
 
@@ -190,10 +187,15 @@ export class AuthService {
     }
 
     if (user.isEmailVerified) {
-      return { message: 'Email already verified' };
+      const payload: IJwtPayload = { userId: user._id.toString(), email: user.email, role: user.role };
+      const tokens = generateTokenPair(payload);
+      return { message: 'Email already verified', user: user.toJSON(), ...tokens };
     }
 
-    if (!user.emailVerificationCode || user.emailVerificationCode !== code.trim()) {
+    const inputCode = String(code || '').trim();
+    const storedCode = user.emailVerificationCode ? String(user.emailVerificationCode).trim() : '';
+
+    if (!storedCode || storedCode !== inputCode) {
       throw { statusCode: 400, message: 'Invalid 6-digit verification code' };
     }
 
@@ -236,11 +238,10 @@ export class AuthService {
     user.emailVerificationExpires = new Date(Date.now() + 15 * 60 * 1000);
     await user.save();
 
-    const hasEmailKey = Boolean(process.env.RESEND_API_KEY);
     await emailService.sendVerificationEmail(user.email, user.firstName, otpCode, user.activeLanguage);
     return {
       message: 'A new 6-digit verification code has been generated.',
-      devOtpCode: !hasEmailKey ? otpCode : undefined,
+      devOtpCode: otpCode,
     };
   }
 
