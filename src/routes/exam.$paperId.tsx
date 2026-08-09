@@ -1967,7 +1967,12 @@ export function AuthenticCBTExamPage() {
                               if (isSpeaking || isAudioPaused) {
                                 handlePauseResumeAudio();
                               } else {
-                                handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || 1.0);
+                                const textToPlay = currentQ.transcript || currentQ.text;
+                                if (textToPlay.includes("Locuteur") || textToPlay.includes("Annonceur:")) {
+                                  speakDialogue(textToPlay, "fr-FR", (currentQ as any).speakingRate || 1.0);
+                                } else {
+                                  handlePlayAudio(textToPlay, "fr-FR", (currentQ as any).speakingRate || 1.0);
+                                }
                               }
                             }}
                             className="px-3.5 sm:px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold flex items-center gap-1.5 shadow cursor-pointer active:scale-95 transition-all"
@@ -2005,7 +2010,14 @@ export function AuthenticCBTExamPage() {
                             <button
                               onClick={() => {
                                 handleStopAudio();
-                                setTimeout(() => handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || 1.0), 50);
+                                setTimeout(() => {
+                                  const textToPlay = currentQ.transcript || currentQ.text;
+                                  if (textToPlay.includes("Locuteur") || textToPlay.includes("Annonceur:")) {
+                                    speakDialogue(textToPlay, "fr-FR", (currentQ as any).speakingRate || 1.0);
+                                  } else {
+                                    handlePlayAudio(textToPlay, "fr-FR", (currentQ as any).speakingRate || 1.0);
+                                  }
+                                }, 50);
                               }}
                               className="p-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1 shadow cursor-pointer"
                               title="Replay Audio From Start"
@@ -2025,7 +2037,7 @@ export function AuthenticCBTExamPage() {
                             🎧 <strong>Notice Examen Officiel TCF CBT :</strong>
                           </span>
                           <span className="px-2.5 py-0.5 rounded-full bg-purple-500/40 text-purple-200 text-[11px] font-mono font-bold border border-purple-400/30">
-                            Niveau {(currentQ as any).level || 'A1-C2'} • Vitesse ({(currentQ as any).speakingRate || 1.0}x)
+                            Niveau {(currentQ as any).level || 'A1-C2'}
                           </span>
                         </div>
                         {mode === "PRACTICE" && (

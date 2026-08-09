@@ -112,7 +112,7 @@ export async function generateNeuralAudio(
           {
             text: cleanText,
             model_id: 'eleven_multilingual_v2',
-            voice_settings: voiceSettings,
+            voice_settings: { ...voiceSettings, speed: speakingRate },
           },
           {
             headers: { 'xi-api-key': elevenLabsKey, 'Content-Type': 'application/json', Accept: 'audio/mpeg' },

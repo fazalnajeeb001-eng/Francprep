@@ -973,7 +973,7 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
     }
 
     const fullSpokenTranscript = isQuestionInAudio
-      ? `${t.tr}\n\nÉcoutez la question. Question N°${i} : ${questionTextPrompt}`
+      ? `Locuteur 1: ${t.tr}\nAnnonceur: Écoutez la question. Question N°${i} : ${questionTextPrompt}`
       : t.tr;
 
     const speakingRate = i <= 7 ? 0.85 : i <= 15 ? 0.92 : i <= 25 ? 1.00 : i <= 33 ? 1.15 : 1.30;
