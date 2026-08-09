@@ -61,9 +61,11 @@ export async function apiFetch(
       } catch {}
     }
 
-    // SSR Guard: Prevent SSR loaders from throwing unhandled HTTPError when API is unavailable or non-2xx
-    if (isServer && !res.ok) {
-      return new Response(JSON.stringify({ success: false, fallback: true, error: `SSR Status ${res.status}` }), {
+    // Catch 5xx backend proxy failures (e.g. 502 Bad Gateway from Railway or 503 Service Unavailable)
+    // to prevent TanStack Start / Nitro SSR loaders from crashing with unhandled HTTPError!
+    if (res.status >= 500 || (isServer && !res.ok)) {
+      console.warn(`[apiFetch Proxy Guard] Intercepted HTTP ${res.status} for ${path}. Returning graceful JSON fallback.`);
+      return new Response(JSON.stringify({ success: false, fallback: true, error: `Backend Status ${res.status}` }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
