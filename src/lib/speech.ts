@@ -184,10 +184,8 @@ export function toggleAudio(
     if (!currentAudioPlayer.paused) {
       pauseAudio();
       return false;
-    } else if (currentAudioPlayer.src) {
-      resumeAudio();
-      return true;
     }
+    stopAudio();
   }
   return speak(text, lang, rate, gender, voiceId, provider, extraKeys);
 }

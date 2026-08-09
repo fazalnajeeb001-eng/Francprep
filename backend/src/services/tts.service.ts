@@ -5,7 +5,7 @@ import Settings from '../models/Settings';
 import { generateKokoroAudio } from './kokoro.service';
 
 function getHash(text: string, gender: string, lang: string, provider: string, voiceId: string = '', rate: number = 1.0): string {
-  return crypto.createHash('md5').update(`${text.trim().toLowerCase()}_${gender}_${lang}_${provider}_${voiceId}_${rate}`).digest('hex');
+  return crypto.createHash('md5').update(`${text.trim().toLowerCase()}_${gender}_${lang}_${provider}_${voiceId}_${rate}_v9_speed`).digest('hex');
 }
 
 export async function generateNeuralAudio(

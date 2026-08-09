@@ -365,6 +365,10 @@ export function AuthenticCBTExamPage() {
   }, [selectedAnswers, flaggedQuestions, writingResponses, speakingTranscripts, activeSectionIdx, currentQuestionIdx, isSubmitted, sessionKey]);
 
   useEffect(() => {
+    handleStopAudio();
+  }, [currentQuestionIdx, activeSectionIdx]);
+
+  useEffect(() => {
     document.documentElement.classList.remove("dark");
     return () => {
       const stored = typeof window !== "undefined" ? localStorage.getItem("fp_theme") : null;
@@ -2136,11 +2140,13 @@ export function AuthenticCBTExamPage() {
               <div className="space-y-4">
                 <div className="space-y-1">
                   <h3 className="text-sm sm:text-base font-bold leading-snug text-slate-950 dark:text-slate-100">
-                    {currentQ.questionInAudio ? `Question Audio N°${currentQ.questionNumber}` : currentQ.text}
+                    {currentQ.questionInAudio && !showTranscript
+                      ? `Question Audio N°${currentQ.questionNumber}`
+                      : currentQ.text}
                   </h3>
-                  {currentQ.questionInAudio && (
-                    <p className="text-xs text-purple-700 font-medium italic">
-                      Écoutez la question dans l'enregistrement audio et choisissez la bonne option ci-dessous.
+                  {currentQ.questionInAudio && !showTranscript && (
+                    <p className="text-xs text-purple-700 dark:text-purple-400 font-medium italic">
+                      Écoutez la question posée à la fin du document audio et choisissez l'option (A, B, C, D) ci-dessous.
                     </p>
                   )}
                 </div>
