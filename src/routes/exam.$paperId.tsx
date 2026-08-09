@@ -366,6 +366,9 @@ export function AuthenticCBTExamPage() {
 
   useEffect(() => {
     handleStopAudio();
+    return () => {
+      handleStopAudio();
+    };
   }, [currentQuestionIdx, activeSectionIdx]);
 
   useEffect(() => {
