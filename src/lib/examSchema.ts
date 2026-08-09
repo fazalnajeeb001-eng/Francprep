@@ -12,6 +12,7 @@ export interface ExamQuestion {
   optionImages?: string[];
   mainImage?: string;
   mainImageSvg?: string;
+  hasSpokenOptions?: boolean;
   correctIndex: number;
   explanation: string;
   hint?: string;
@@ -1028,8 +1029,12 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
     const passageSpeakerLabel = isMaleSpeaker ? "Locuteur" : "Locutrice";
     const announcerLabel = isMaleSpeaker ? "Annonceuse" : "Annonceur";
 
+    const isSpokenOptionQuestion = (i >= 5 && i <= 8);
+
     let fullSpokenTranscript = isQuestionInAudio
-      ? `${passageSpeakerLabel}: ${t.tr}\n${announcerLabel}: Écoutez la question. Question N°${i} : ${questionTextPrompt}`
+      ? (isSpokenOptionQuestion
+        ? `${passageSpeakerLabel}: ${t.tr}\n${announcerLabel}: Écoutez la question et les 4 réponses. Question N°${i} : ${questionTextPrompt}\n... A : ${options[0]}.\n... B : ${options[1]}.\n... C : ${options[2]}.\n... D : ${options[3]}.`
+        : `${passageSpeakerLabel}: ${t.tr}\n${announcerLabel}: Écoutez la question. Question N°${i} : ${questionTextPrompt}`)
       : t.tr;
 
     if (i <= 4 && mainImageSvg) {
@@ -1043,8 +1048,11 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       questionNumber: i,
       level: t.level,
       speakingRate,
+      hasSpokenOptions: isSpokenOptionQuestion || (i <= 4 && !!mainImageSvg),
       text: i <= 4 && mainImageSvg
         ? "Écoutez les 4 propositions. Choisissez celle qui correspond à l'image."
+        : isSpokenOptionQuestion
+        ? `Écoutez le document sonore, la question audio N°${i} et les 4 réponses. Cochez la bonne réponse.`
         : isQuestionInAudio
         ? `Écoutez le document sonore et la question audio N°${i}. Choisissez la bonne option.`
         : `${t.text}`,

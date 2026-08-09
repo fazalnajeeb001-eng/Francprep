@@ -2171,9 +2171,9 @@ export function AuthenticCBTExamPage() {
                   )}
                 </div>
 
-                {/* Multiple Choice Options (Official FEI Radio Buttons for Q1-Q4 Image Items vs Standard Text Options) */}
+                {/* Multiple Choice Options (Official FEI Radio Buttons for Spoken Option Items vs Standard Text Options) */}
                 <div className="space-y-2.5">
-                  {currentQ.questionNumber <= 4 && (currentQ as any).mainImage && mode === "EXAM" ? (
+                  {(currentQ.hasSpokenOptions || currentQ.questionNumber <= 4) && mode === "EXAM" ? (
                     <div className="space-y-3 p-4 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-100 shadow-md">
                       <p className="text-xs font-black uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
                         <span>Cochez la bonne réponse :</span>
