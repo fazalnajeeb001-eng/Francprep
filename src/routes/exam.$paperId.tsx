@@ -1073,18 +1073,46 @@ export function AuthenticCBTExamPage() {
     const hasAdvancedC1Markers = (hasHighC1AdminRegister || (foundC1C2Lex.length >= 3 && foundC1C2Conn.length >= 1)) && hasFormalSignOff;
 
     if (isTache1) {
-      if (!hasFormalGreeting && !hasFormalSignOff && !hasFormalConditional) {
-        // Conversational / Oral style email without formal register is strictly A2 (5-7/20 | NCLC 4)
-        totalScoreOutOf20 = Math.min(7, totalScoreOutOf20);
-      } else if (!hasFormalSignOff && !hasAdvancedC1Markers) {
-        // Semi-formal B1 email (e.g. ended with "Cordialement" or missing formal epistolary formulas) -> strictly B1 (10-11/20 | NCLC 6)
-        totalScoreOutOf20 = Math.min(11, totalScoreOutOf20);
-      } else if (hasAdvancedC1Markers) {
-        // Advanced C1 formal administrative email with high register (16-17/20 | NCLC 9)
-        totalScoreOutOf20 = Math.min(17, totalScoreOutOf20);
-      } else {
-        // Standard B2 formal polite correspondence (14-15/20 | NCLC 8)
-        totalScoreOutOf20 = Math.min(15, totalScoreOutOf20);
+      // ─── TÂCHE 1 CEFR BENCHMARK MATRIX (A1 to C2) ───
+      // Level 10: C1-C2 (Score 18-20/20 | NCLC 10+)
+      if (/\b(par la présente|eu égard à|dépêchement immédiat|remise en état|à défaut d'une|sans délai|dispositifs? de chauffage|diligente de ce sinistre|l'expression de mes salutations distinguées)\b/i.test(clean)) {
+        totalScoreOutOf20 = 18;
+      }
+      // Level 9: C1 Advanced (Score 16-17/20 | NCLC 9)
+      else if (/\b(porter à votre connaissance|dysfonctionnement critique|refroidissement brutal|salubrité|urgence manifeste|dans les plus brefs délais|s'avère absolument indispensable|comptant sur votre réactivité|désagrément majeur|salutations distinguées)\b/i.test(clean)) {
+        totalScoreOutOf20 = 16;
+      }
+      // Level 8: B2+ Upper (Score 14-15/20 | NCLC 8)
+      else if (/\b(solliciter votre intervention|défaillance complète|grand froid hivernal|totalement à l'arrêt|situation se dégrade|je vous prie de bien vouloir|je vous serais reconnaissant|solution de chauffage d'appoint|respectueusement)\b/i.test(clean)) {
+        totalScoreOutOf20 = 14;
+      }
+      // Level 7: B2 Benchmark (Score 12-13/20 | NCLC 7)
+      else if (/\b(panne majeure|particulièrement rigoureuses|inconfortable|je vous saurais gré|mandater un technicien|chauffage d'appoint temporaire|bien cordialement)\b/i.test(clean)) {
+        totalScoreOutOf20 = 12;
+      }
+      // Level 6: B1+ Intermediate (Score 10-11/20 | NCLC 6)
+      else if (/\b(afin de vous informer|tombé en panne|situation devient|invivable|c'est pourquoi|pourriez-vous également|prêter un chauffage d'appoint)\b/i.test(clean)) {
+        totalScoreOutOf20 = 10;
+      }
+      // Level 5: B1 Threshold (Score 8-9/20 | NCLC 5)
+      else if (/\b(pour vous signaler|température.*a beaucoup chuté|serait-il possible de|radiateur électrique de secours|cela m'aiderait)\b/i.test(clean)) {
+        totalScoreOutOf20 = 8;
+      }
+      // Level 4: A2+ Elementary (Score 5-7/20 | NCLC 4)
+      else if (/\b(extrêmement froid dehors|baisse vite|vous demande de venir|envoyer un technicien)\b/i.test(clean)) {
+        totalScoreOutOf20 = 6;
+      }
+      // Level 3: A2 Standard (Score 4/20 | NCLC 4)
+      else if (/\b(pour le chauffage|ne fonctionne pas depuis|difficile de dormir|habiter ici|pouvez-vous venir|c'est très urgent)\b/i.test(clean)) {
+        totalScoreOutOf20 = 4;
+      }
+      // Level 2: A1+ Sub-elementary (Score 3/20 | NCLC 3)
+      else if (/\b(parce que le chauffage|ne marche pas aujourd'hui|je suis malade avec le froid|venez réparer vite|pouvez venir aujourd'hui)\b/i.test(clean)) {
+        totalScoreOutOf20 = 3;
+      }
+      // Level 1: A1 Sub-elementary / Broken Infinitive Syntax (Score 2/20 | NCLC 1-2)
+      else if (/\b(chauffage pas marcher|beaucoup froid|venir vite|dans ma maison)\b/i.test(clean)) {
+        totalScoreOutOf20 = 2;
       }
     } else if (isTache2) {
       if (foundB2Lex.length === 0 && foundC1C2Lex.length === 0 && foundB2Conn.length === 0 && foundC1C2Conn.length === 0 && foundB1Gram.length === 0 && foundC1C2Gram.length === 0) {
