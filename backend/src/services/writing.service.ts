@@ -978,6 +978,14 @@ Respond STRICTLY with a JSON object matching this schema:
         let g = Math.max(0, Math.min(5, typeof parsed.grammarScore === 'number' ? parsed.grammarScore : 3));
 
         const textLower = cleanSpeech.toLowerCase();
+        const isTache2 = /tâche 2|task 2|interaction|spk-2/i.test((lessonTitle || '') + (expectedText || ''));
+        if (isTache2) {
+          const questionMatches = cleanSpeech.match(/\?|\b(pourriez|pouvez|est-ce|quel|quelle|quels|quelles|combien|comment|où|quand|pourquoi|avez-vous)\b/gi) || [];
+          if (questionMatches.length < 8) {
+            t = Math.min(3, t);
+          }
+        }
+
         const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|like|you|know|actually)\b/i.test(textLower);
         if (hasEnglishWords) {
           l = Math.min(1, l);

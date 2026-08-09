@@ -183,10 +183,17 @@ export function AuthenticCBTExamPage() {
   const [speakingChatLoading, setSpeakingChatLoading] = useState<Record<string, boolean>>({});
   const [oralPrepTimeRemaining, setOralPrepTimeRemaining] = useState<Record<string, number>>({});
   const [isOralPrepActive, setIsOralPrepActive] = useState<Record<string, boolean>>({});
+  const [oralSpeakingTimeRemaining, setOralSpeakingTimeRemaining] = useState<Record<string, number>>({});
+  const [isOralSpeakingActive, setIsOralSpeakingActive] = useState<Record<string, boolean>>({});
 
   const handleStartPrepTimer = (taskId: string, prepMins = 1) => {
     setOralPrepTimeRemaining((prev) => ({ ...prev, [taskId]: prepMins * 60 }));
     setIsOralPrepActive((prev) => ({ ...prev, [taskId]: true }));
+  };
+
+  const handleStartSpeakingTimer = (taskId: string, speakingMins = 2) => {
+    setOralSpeakingTimeRemaining((prev) => ({ ...prev, [taskId]: Math.round(speakingMins * 60) }));
+    setIsOralSpeakingActive((prev) => ({ ...prev, [taskId]: true }));
   };
 
   useEffect(() => {
@@ -202,6 +209,8 @@ export function AuthenticCBTExamPage() {
           } else {
             next[taskId] = 0;
             setIsOralPrepActive((p) => ({ ...p, [taskId]: false }));
+            // Auto announce end of prep time
+            handlePlayExaminerAudio("Le temps de préparation est terminé. Vous pouvez maintenant vous exprimer en français.");
           }
         });
         return next;
@@ -210,6 +219,28 @@ export function AuthenticCBTExamPage() {
 
     return () => clearInterval(interval);
   }, [isOralPrepActive, oralPrepTimeRemaining]);
+
+  useEffect(() => {
+    const activeTasks = Object.keys(isOralSpeakingActive).filter((k) => isOralSpeakingActive[k] && (oralSpeakingTimeRemaining[k] || 0) > 0);
+    if (activeTasks.length === 0) return;
+
+    const interval = setInterval(() => {
+      setOralSpeakingTimeRemaining((prev) => {
+        const next = { ...prev };
+        activeTasks.forEach((taskId) => {
+          if (next[taskId] > 1) {
+            next[taskId] -= 1;
+          } else {
+            next[taskId] = 0;
+            setIsOralSpeakingActive((p) => ({ ...p, [taskId]: false }));
+          }
+        });
+        return next;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isOralSpeakingActive, oralSpeakingTimeRemaining]);
 
   const handlePlayExaminerAudio = (text: string) => {
     handleStopAudio();
@@ -2452,19 +2483,48 @@ export function AuthenticCBTExamPage() {
                     </div>
                   )}
 
-                  {/* Prep Countdown & Examiner Audio Controls Bar */}
-                  <div className="p-3.5 sm:p-4 rounded-xl border border-purple-200 dark:border-purple-800 bg-purple-50/70 dark:bg-purple-950/40 flex flex-wrap items-center justify-between gap-3 text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="w-8 h-8 rounded-lg bg-purple-600 text-white flex items-center justify-center font-bold">
-                        <Volume2 className="w-4 h-4" />
-                      </span>
-                      <div>
-                        <p className="font-extrabold text-purple-950 dark:text-purple-200">Certified France Éducation International (FEI) Oral Examiner</p>
-                        <p className="text-[11px] text-purple-700 dark:text-purple-400 font-medium">Native French interlocutor conducting official TCF Canada oral simulation</p>
+                  {/* Photorealistic FEI Certified Examiner Persona Card & Audio Controls Bar */}
+                  <div className="p-4 sm:p-5 rounded-2xl border border-purple-300 dark:border-purple-800 bg-gradient-to-r from-purple-900/10 via-indigo-900/10 to-slate-900/10 dark:from-purple-950/60 dark:via-indigo-950/60 dark:to-slate-950/60 flex flex-col md:flex-row items-center justify-between gap-4 shadow-md">
+                    <div className="flex items-center gap-4 w-full md:w-auto">
+                      <div className="relative shrink-0">
+                        <img
+                          src="/fei_examiner.png"
+                          alt="Mme Élodie Martin - Certified FEI Oral Examiner"
+                          className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-purple-500/50 shadow-lg"
+                        />
+                        <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white dark:border-slate-900 ${
+                          isPlayingAudio ? "bg-emerald-500 animate-ping" : isRecording ? "bg-red-500 animate-pulse" : "bg-emerald-500"
+                        }`} />
+                      </div>
+
+                      <div className="space-y-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h4 className="font-extrabold text-sm sm:text-base text-slate-950 dark:text-slate-100">
+                            Mme Élodie Martin
+                          </h4>
+                          <span className="px-2 py-0.5 rounded bg-purple-600 text-white font-mono font-bold text-[10px] uppercase">
+                            Senior FEI Certified Interlocutor
+                          </span>
+                        </div>
+                        <p className="text-xs text-purple-700 dark:text-purple-300 font-medium">
+                          Official TCF Canada Oral Examination Simulator • Interactive Audio Examiner
+                        </p>
+                        
+                        {/* Audio Waveform Equalizer Display */}
+                        {isPlayingAudio && (
+                          <div className="flex items-center gap-1 pt-1">
+                            <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase mr-1">Speaking:</span>
+                            <span className="w-1 h-3 bg-emerald-500 rounded animate-bounce" style={{ animationDelay: '0ms' }} />
+                            <span className="w-1 h-4 bg-emerald-500 rounded animate-bounce" style={{ animationDelay: '150ms' }} />
+                            <span className="w-1 h-2 bg-emerald-500 rounded animate-bounce" style={{ animationDelay: '300ms' }} />
+                            <span className="w-1 h-4 bg-emerald-500 rounded animate-bounce" style={{ animationDelay: '450ms' }} />
+                          </div>
+                        )}
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2">
+                    {/* Timer Controls & Audio Trigger */}
+                    <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
                       <button
                         onClick={() => {
                           const openingText = activeSpeakingTaskIdx === 0 || task.title?.includes("Tâche 1")
@@ -2474,29 +2534,45 @@ export function AuthenticCBTExamPage() {
                             : "Bonjour ! J'aimerais connaître votre point de vue sur ce sujet de société. Présentez-moi vos arguments et votre position.";
                           handlePlayExaminerAudio(openingText);
                         }}
-                        className="px-3.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
+                        className="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 shrink-0"
                       >
-                        <Volume2 className="w-3.5 h-3.5" />
-                        <span>🔊 Play Examiner Prompt</span>
+                        <Volume2 className="w-4 h-4" />
+                        <span>🔊 Play Examiner Voice Prompt</span>
                       </button>
 
                       {task.prepTimeMins > 0 && (
                         <button
                           onClick={() => handleStartPrepTimer(task.id, task.prepTimeMins)}
-                          className={`px-3.5 py-1.5 rounded-lg font-bold text-xs shadow flex items-center gap-1.5 transition-all cursor-pointer ${
+                          className={`px-3.5 py-2 rounded-xl font-bold text-xs shadow flex items-center gap-1.5 transition-all cursor-pointer shrink-0 ${
                             isOralPrepActive[task.id]
                               ? "bg-amber-600 text-white animate-pulse"
                               : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-slate-200"
                           }`}
                         >
-                          <Clock className="w-3.5 h-3.5" />
+                          <Clock className="w-4 h-4" />
                           <span>
                             {isOralPrepActive[task.id]
-                              ? `⏱️ Prep Time: ${Math.floor((oralPrepTimeRemaining[task.id] || 0) / 60)}:${((oralPrepTimeRemaining[task.id] || 0) % 60).toString().padStart(2, '0')} remaining`
-                              : `⏱️ Start ${task.prepTimeMins}-Min Prep Countdown`}
+                              ? `⏱️ Prep: ${Math.floor((oralPrepTimeRemaining[task.id] || 0) / 60)}:${((oralPrepTimeRemaining[task.id] || 0) % 60).toString().padStart(2, '0')}`
+                              : `⏱️ ${task.prepTimeMins}-Min Prep Timer`}
                           </span>
                         </button>
                       )}
+
+                      <button
+                        onClick={() => handleStartSpeakingTimer(task.id, task.speakingTimeMins)}
+                        className={`px-3.5 py-2 rounded-xl font-bold text-xs shadow flex items-center gap-1.5 transition-all cursor-pointer shrink-0 ${
+                          isOralSpeakingActive[task.id]
+                            ? "bg-emerald-600 text-white animate-pulse"
+                            : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-slate-200"
+                        }`}
+                      >
+                        <Mic className="w-4 h-4 text-emerald-500" />
+                        <span>
+                          {isOralSpeakingActive[task.id]
+                            ? `🎙️ Speaking: ${Math.floor((oralSpeakingTimeRemaining[task.id] || 0) / 60)}:${((oralSpeakingTimeRemaining[task.id] || 0) % 60).toString().padStart(2, '0')}`
+                            : `🎙️ ${task.speakingTimeMins}-Min Speaking Timer`}
+                        </span>
+                      </button>
                     </div>
                   </div>
 
