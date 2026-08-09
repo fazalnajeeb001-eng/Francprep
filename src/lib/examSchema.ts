@@ -976,9 +976,13 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       ? `${t.tr}\n\nÉcoutez la question. Question N°${i} : ${questionTextPrompt}`
       : t.tr;
 
+    const speakingRate = i <= 7 ? 0.85 : i <= 15 ? 0.92 : i <= 25 ? 1.00 : i <= 33 ? 1.15 : 1.30;
+
     qList.push({
       id: `${prefix}-lis-${i}`,
       questionNumber: i,
+      level: t.level,
+      speakingRate,
       text: isQuestionInAudio
         ? `Écoutez le document sonore et la question audio N°${i} [Niveau ${t.level}]. Choisissez la bonne option.`
         : `[Question ${i} - Niveau ${t.level}] ${t.text} Quel est l'élément principal à retenir ?`,

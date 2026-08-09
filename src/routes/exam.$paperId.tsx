@@ -2015,8 +2015,30 @@ export function AuthenticCBTExamPage() {
                     </div>
 
                     {currentQ.questionInAudio && (
-                      <div className="p-2.5 rounded-lg bg-purple-100 border border-purple-300 text-purple-950 text-xs font-semibold flex items-center gap-2">
-                        <span>🎧 <strong>Notice Épreuve CBT :</strong> La question n'est pas écrite à l'écran. Écoutez attentivement l'audio où le document et la question sont énoncés, puis choisissez l'option (A, B, C, D) ci-contre.</span>
+                      <div className="p-3.5 rounded-xl bg-gradient-to-r from-purple-900 via-indigo-900 to-purple-950 text-white border border-purple-500/50 shadow-md space-y-2">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <span className="text-xs font-extrabold text-amber-300 flex items-center gap-1.5">
+                            🎧 <strong>Notice Examen Officiel TCF CBT :</strong>
+                          </span>
+                          <span className="px-2.5 py-0.5 rounded-full bg-purple-500/40 text-purple-200 text-[11px] font-mono font-bold border border-purple-400/30">
+                            Niveau {(currentQ as any).level || 'A1-C2'} • Vitesse ({(currentQ as any).speakingRate || 1.0}x)
+                          </span>
+                        </div>
+                        <p className="text-xs text-purple-100 leading-snug">
+                          En mode examen officiel, <strong>la question est posée à l'oral à la fin de la bande sonore</strong> (Questions 1 à 29). Écoutez attentivement l'audio complet, puis sélectionnez votre réponse (A, B, C, D).
+                        </p>
+                        {mode === "PRACTICE" && (
+                          <div className="pt-1 flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setShowTranscript(!showTranscript)}
+                              className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition-all flex items-center gap-1.5 shadow cursor-pointer"
+                            >
+                              <FileText className="w-3.5 h-3.5" />
+                              <span>{showTranscript ? "Masquer le texte de la question 👁️" : "👁️ Afficher le texte de la question (Mode Entraînement)"}</span>
+                            </button>
+                          </div>
+                        )}
                       </div>
                     )}
 

@@ -4,8 +4,8 @@ import TTSCache from '../models/TTSCache';
 import Settings from '../models/Settings';
 import { generateKokoroAudio } from './kokoro.service';
 
-function getHash(text: string, gender: string, lang: string, provider: string, voiceId: string = ''): string {
-  return crypto.createHash('md5').update(`${text.trim().toLowerCase()}_${gender}_${lang}_${provider}_${voiceId}`).digest('hex');
+function getHash(text: string, gender: string, lang: string, provider: string, voiceId: string = '', rate: number = 1.0): string {
+  return crypto.createHash('md5').update(`${text.trim().toLowerCase()}_${gender}_${lang}_${provider}_${voiceId}_${rate}`).digest('hex');
 }
 
 export async function generateNeuralAudio(
@@ -14,7 +14,8 @@ export async function generateNeuralAudio(
   lang: string = 'fr',
   forcedProvider?: string,
   forcedVoiceId?: string,
-  tempKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string }
+  tempKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string },
+  speakingRate: number = 1.0
 ): Promise<{ audioBase64: string; contentType: string; provider: string } | null> {
   const cleanText = text.trim();
   if (!cleanText) return null;
@@ -44,7 +45,7 @@ export async function generateNeuralAudio(
     }
   }
 
-  const textHash = getHash(cleanText, gender, lang, activeProvider, targetVoiceId);
+  const textHash = getHash(cleanText, gender, lang, activeProvider, targetVoiceId, speakingRate);
 
   // 1. Check MongoDB Cache first — bypass if testing forced voice/provider to guarantee distinct live voice test playback
   if (!forcedVoiceId && !forcedProvider) {
@@ -192,7 +193,7 @@ export async function generateNeuralAudio(
 
       const response = await axios.post(
         'https://api.openai.com/v1/audio/speech',
-        { model: 'tts-1-hd', input: cleanText, voice: voiceName, speed: 0.95 },
+        { model: 'tts-1-hd', input: cleanText, voice: voiceName, speed: Math.min(4.0, Math.max(0.25, speakingRate)) },
         { headers: { Authorization: `Bearer ${openaiKey}`, 'Content-Type': 'application/json' }, responseType: 'arraybuffer', timeout: 30000 }
       );
 

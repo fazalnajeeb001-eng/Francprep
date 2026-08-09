@@ -83,6 +83,8 @@ export function speak(
       lang: langCode,
       voiceId,
       provider,
+      speakingRate: rate,
+      rate,
       elevenLabsApiKey: extraKeys?.elevenLabsApiKey,
       openaiApiKey: extraKeys?.openaiApiKey,
       huggingFaceToken: extraKeys?.huggingFaceToken,
