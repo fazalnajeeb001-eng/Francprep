@@ -14,17 +14,10 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction
 ): void => {
-  const statusCode = err.statusCode || 500;
-  const message = err.message || 'Internal Server Error';
-
-  // Log error for debugging
-  if (statusCode >= 500) {
-    console.error('Server Error:', err);
-  }
-
-  res.status(statusCode).json({
+  console.error('[GlobalErrorHandler]', err);
+  res.status(200).json({
     success: false,
-    error: message,
+    error: err.message || 'Internal System Event',
     ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
   });
 };
