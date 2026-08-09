@@ -334,8 +334,15 @@ Respond STRICTLY with a valid JSON object matching this schema:
 
         // Detect Tâche 1 Personal Email format pasted in Tâche 3 (Argumentative Essay)
         const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test((text || '').trim()) && /(cordialement|bien à vous|salutations|haute considération|respectueusement)/i.test((text || '').trim());
-        if (isTache3 && isLetterFormat && words.length < 100) {
+        if (isTache3 && isLetterFormat) {
           t = 0;
+        }
+
+        // Formal register check in Tâche 1 (Informal tu/ton/ta in formal email caps fulfillment at 3/5)
+        const isFormalRecipientPrompt = /(propriétaire|directeur|responsable|service client|organisateur|administration|bureau|supérieur|manager)/i.test((lessonTitle || '') + (taskPrompt || '') + (expectedAnswer || ''));
+        const hasInformalTu = /\b(tu|te|t'|ton|ta|tes|toi)\b/i.test(textLower);
+        if (isTache1 && isFormalRecipientPrompt && hasInformalTu) {
+          t = Math.min(3, t);
         }
 
         const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|travel|city|park|food|good|experience|like|you|know|actually)\b/i.test(textLower);
@@ -482,7 +489,7 @@ Respond STRICTLY with a valid JSON object matching this schema:
     let taskFulfillmentScore = 1;
     const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test(clean) && /(cordialement|bien à vous|salutations|respectueusement)/i.test(clean);
 
-    if (isTache3 && isLetterFormat && wordCount < 100) {
+    if (isTache3 && isLetterFormat) {
       taskFulfillmentScore = 0;
     } else if (wordCount >= minWords && wordCount <= maxWords + 30) {
       taskFulfillmentScore = 5;
@@ -496,6 +503,13 @@ Respond STRICTLY with a valid JSON object matching this schema:
       taskFulfillmentScore = 1;
     }
 
+    // Formal register check in Tâche 1 (Informal tu/ton/ta in formal email caps fulfillment at 3/5)
+    const isFormalRecipientPrompt = /(propriétaire|directeur|responsable|service client|organisateur|administration|bureau|supérieur|manager)/i.test((lessonTitle || '') + (taskPrompt || '') + (expectedAnswer || ''));
+    const hasInformalTu = /\b(tu|te|t'|ton|ta|tes|toi)\b/i.test(textLower);
+    if (isTache1 && isFormalRecipientPrompt && hasInformalTu && taskFulfillmentScore > 0) {
+      taskFulfillmentScore = Math.min(3, taskFulfillmentScore);
+    }
+
     const c1c2Connectors = [
       "de surcroît", "par conséquent", "d'une part", "d'autre part", "toutefois",
       "néanmoins", "sans conteste", "indéniablement", "dans cette optique", "dès lors", "outre", "en toute urgence", "à l'inverse"
@@ -506,12 +520,16 @@ Respond STRICTLY with a valid JSON object matching this schema:
       "en vue de", "d'ores et déjà", "ainsi que", "pour cette raison", "dans l'attente de", "concernant", "quant à", "à cet égard"
     ];
     const b1Connectors = [
-      "d'abord", "ensuite", "enfin", "mais", "parce que", "en plus", "donc", "car", "alors", "puis", "aussi", "comme", "quand", "si", "pendant que", "à mon avis", "selon moi"
+      "donc", "car", "alors", "puis", "comme", "quand", "si", "pendant que", "d'abord", "ensuite", "enfin", "à mon avis", "selon moi"
+    ];
+    const a2Connectors = [
+      "mais", "parce que", "en plus", "et", "ou", "aussi"
     ];
 
     const foundC1C2Conn = c1c2Connectors.filter((c) => textLower.includes(c));
     const foundB2Conn = b2Connectors.filter((c) => textLower.includes(c));
     const foundB1Conn = b1Connectors.filter((c) => textLower.includes(c));
+    const foundA2Conn = a2Connectors.filter((c) => textLower.includes(c));
 
     let coherenceScore = 1;
     if (foundC1C2Conn.length >= 2 || (foundC1C2Conn.length >= 1 && foundB2Conn.length >= 1)) {
@@ -520,7 +538,7 @@ Respond STRICTLY with a valid JSON object matching this schema:
       coherenceScore = 4;
     } else if (foundB2Conn.length >= 1 || foundB1Conn.length >= 2) {
       coherenceScore = 3;
-    } else if (foundB1Conn.length >= 1 || textLower.includes("et") || textLower.includes("ou")) {
+    } else if (foundB1Conn.length >= 1 || foundA2Conn.length >= 1 || textLower.includes("et") || textLower.includes("ou")) {
       coherenceScore = 2;
     } else {
       coherenceScore = 1;
@@ -535,27 +553,28 @@ Respond STRICTLY with a valid JSON object matching this schema:
       "pérenne", "équité", "disparités", "substantiels", "substantielle", "déploiement", "incontestablement",
       "intergénérationnel", "sollicitation", "infrastructure", "mobilisation", "écosystème", "automatisation", "cybersécurité",
       "défaillance", "manquement", "invivable", "sanitaires inacceptables", "inacceptables", "je vous somme", "règlement immédiat",
-      "dans les plus brefs délais"
+      "dans les plus brefs délais", "cristallise", "dilemme", "vecteur", "émancipation", "redistributive", "efficience"
     ];
     const b2Lexical = [
       "autorisation", "absence", "exceptionnelle", "impératif", "familial", "majeur", "perturber", "fonctionnement",
       "indisponibilité", "dossiers", "urgents", "relais", "affaires", "courantes", "joignable", "courriel", "urgence",
       "absolue", "compréhension", "salutations", "distinguées", "disponibilité", "substitut", "remplacement", "directeur",
       "responsable", "avantage", "inconvénient", "participation", "installation", "inscription", "abonnement", "formation",
-      "réclamation", "matériel", "garantie", "projet", "expérience", "quartier", "collègue", "souhaiter", "demander",
-      "préciser", "bâtiments", "paysage", "renouvelé", "logement", "loyer", "charges", "chauffage", "panne", "transport",
-      "véhicule", "écologique", "bénévole", "solidaire", "développement", "numérique", "culturel", "festival", "conférence",
-      "débat", "avis", "opinion", "argument", "mesure", "citoyen", "société", "températures", "glaciales", "chute"
+      "réclamation", "matériel", "garantie", "écologique", "bénévole", "solidaire", "développement", "numérique", "culturel",
+      "festival", "conférence", "débat", "opinion", "argument", "mesure", "citoyen", "société", "températures", "glaciales", "chute"
     ];
     const b1Lexical = [
-      "appartement", "maison", "froid", "hiver", "vacances", "dormir", "malade", "enfants", "nuit",
-      "problème", "réparer", "système", "temps", "travail", "voyage", "visite", "ville", "aide", "merci",
-      "question", "besoin", "semaine", "jour", "heure", "prix", "service"
+      "appartement", "problème", "réparer", "système", "séjour", "randonnée", "région", "traditionnel", "activité", "participer",
+      "bulletin", "quartier", "projet", "expérience", "conseil", "précision", "renseignement", "tarif", "horaire", "service"
+    ];
+    const a2Lexical = [
+      "maison", "vacances", "ville", "magasin", "famille", "gens", "froid", "chaud", "manger", "dormir", "malade", "enfants", "nuit", "argent", "payer", "voiture", "bus", "train", "temps", "jour", "heure", "merci", "aide"
     ];
 
     const foundC1C2Lex = c1c2Lexical.filter((w) => textLower.includes(w));
     const foundB2Lex = b2Lexical.filter((w) => textLower.includes(w));
     const foundB1Lex = b1Lexical.filter((w) => textLower.includes(w));
+    const foundA2Lex = a2Lexical.filter((w) => textLower.includes(w));
 
     let lexicalScore = 1;
     if (hasEnglishWords) {
@@ -564,9 +583,9 @@ Respond STRICTLY with a valid JSON object matching this schema:
       lexicalScore = 5;
     } else if (foundC1C2Lex.length >= 1 || foundB2Lex.length >= 2) {
       lexicalScore = 4;
-    } else if (foundB2Lex.length >= 1 || foundB1Lex.length >= 3) {
+    } else if (foundB2Lex.length >= 1 || foundB1Lex.length >= 2) {
       lexicalScore = 3;
-    } else if (foundB1Lex.length >= 1 || wordCount >= 30) {
+    } else if (foundB1Lex.length >= 1 || foundA2Lex.length >= 1 || wordCount >= 30) {
       lexicalScore = 2;
     } else {
       lexicalScore = 1;
@@ -585,14 +604,18 @@ Respond STRICTLY with a valid JSON object matching this schema:
       "il faut que", "pour que", "j'ai participé", "nous avons réussi", "j'ai décidé", "je vous écris", "dans l'attente"
     ];
     const b1Grammar = [
-      "il est impossible de", "nous ne pouvons pas", "vous pouvez", "risquent d'être", "ne fonctionne plus",
-      "ne marche pas", "il fait très froid", "c'est un véritable", "c'est très important", "je suis", "nous avons",
-      "j'ai", "il y a", "nous sommes", "je viens de"
+      "il est impossible de", "nous ne pouvons pas", "risquent d'être", "ne fonctionne plus",
+      "ne marche pas", "il fait très froid", "c'est un véritable", "c'est très important",
+      "j'ai pu", "nous avons pu", "je souhaiterais", "je voudrais", "était", "faisait", "pouvait", "nous pensions"
+    ];
+    const a2Grammar = [
+      "je suis", "nous avons", "j'ai", "il y a", "nous sommes", "vous pouvez", "c'est", "je viens de"
     ];
 
     const foundC1C2Gram = c1c2Grammar.filter((g) => textLower.includes(g));
     const foundB2Gram = b2Grammar.filter((g) => textLower.includes(g));
     const foundB1Gram = b1Grammar.filter((g) => textLower.includes(g));
+    const foundA2Gram = a2Grammar.filter((g) => textLower.includes(g));
 
     let grammarScore = 1;
     if (hasEnglishWords || hasTelegraphicGrammar || wordCount < 15) {
@@ -603,7 +626,7 @@ Respond STRICTLY with a valid JSON object matching this schema:
       grammarScore = 4;
     } else if (foundB2Gram.length >= 1 || foundB1Gram.length >= 2) {
       grammarScore = 3;
-    } else if (foundB1Gram.length >= 1 || textLower.includes("je suis") || textLower.includes("c'est")) {
+    } else if (foundB1Gram.length >= 1 || foundA2Gram.length >= 1 || textLower.includes("je suis") || textLower.includes("c'est")) {
       grammarScore = 2;
     } else {
       grammarScore = 1;

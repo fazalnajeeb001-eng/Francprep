@@ -852,7 +852,7 @@ export function AuthenticCBTExamPage() {
     let taskFulfillmentScore = 1;
     const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test(clean) && /(cordialement|bien à vous|salutations|respectueusement)/i.test(clean);
 
-    if (isTache3 && isLetterFormat && wordCount < 100) {
+    if (isTache3 && isLetterFormat) {
       taskFulfillmentScore = 0;
     } else if (wordCount >= minWords && wordCount <= maxWords + 30) {
       taskFulfillmentScore = 5;
@@ -864,6 +864,12 @@ export function AuthenticCBTExamPage() {
       taskFulfillmentScore = 2;
     } else {
       taskFulfillmentScore = 1;
+    }
+
+    const isFormalRecipientPrompt = /(propriétaire|directeur|responsable|service client|organisateur|administration|bureau|supérieur|manager)/i.test((paper.title || '') + (prompt || ''));
+    const hasInformalTu = /\b(tu|te|t'|ton|ta|tes|toi)\b/i.test(clean.toLowerCase());
+    if (isTache1 && isFormalRecipientPrompt && hasInformalTu && taskFulfillmentScore > 0) {
+      taskFulfillmentScore = Math.min(3, taskFulfillmentScore);
     }
 
     const c1c2Connectors = [
@@ -1148,7 +1154,7 @@ export function AuthenticCBTExamPage() {
         const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test(clean) && /(cordialement|bien à vous|salutations|respectueusement)/i.test(clean);
 
         let taskFulfillmentScore = 1;
-        if (isTache3 && isLetterFormat && wordCount < 100) {
+        if (isTache3 && isLetterFormat) {
           taskFulfillmentScore = 0;
         } else if (wordCount >= minWords && wordCount <= maxWords + 30) {
           taskFulfillmentScore = 5;
@@ -1160,6 +1166,12 @@ export function AuthenticCBTExamPage() {
           taskFulfillmentScore = 2;
         } else {
           taskFulfillmentScore = 1;
+        }
+
+        const isFormalRecipientPrompt = /(propriétaire|directeur|responsable|service client|organisateur|administration|bureau|supérieur|manager)/i.test((paper.title || '') + (task.title || '') + (task.prompt || ''));
+        const hasInformalTu = /\b(tu|te|t'|ton|ta|tes|toi)\b/i.test(clean.toLowerCase());
+        if (isTache1 && isFormalRecipientPrompt && hasInformalTu && taskFulfillmentScore > 0) {
+          taskFulfillmentScore = Math.min(3, taskFulfillmentScore);
         }
 
         const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|travel|city|park|food|good|experience|like|you|know|actually)\b/i.test(clean);
