@@ -1,5 +1,3 @@
-import { getVectorIllustrationSvg, getVectorOptionCardsSvg } from "./svgIllustrations";
-
 export type ExamType = "TCF_CANADA" | "TEF_CANADA";
 export type ExamMode = "PRACTICE" | "EXAM";
 export type SectionType = "COMPREHENSION_ORALE" | "COMPREHENSION_ECRITE" | "EXPRESSION_ECRITE" | "EXPRESSION_ORALE";
@@ -11,8 +9,6 @@ export interface ExamQuestion {
   options: string[];
   optionImages?: string[];
   mainImage?: string;
-  mainImageSvg?: string;
-  optionImagesSvg?: string[];
   correctIndex: number;
   explanation: string;
   hint?: string;
@@ -996,14 +992,35 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
     const isQuestionInAudio = i <= 29;
 
     let rawImages: string[] | undefined = undefined;
-    let mainImage: string | undefined = undefined;
-    let mainImageSvg: string | undefined = undefined;
-    let optionImagesSvg: string[] | undefined = undefined;
 
-    if (i === 1 || i === 3) {
-      mainImageSvg = getVectorIllustrationSvg(i, seedOffset);
-    } else if (i === 2 || i === 4) {
-      optionImagesSvg = getVectorOptionCardsSvg();
+    if (i === 1) {
+      rawImages = [
+        "https://images.unsplash.com/photo-1515165562839-978bbcf18277?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=400&q=80"
+      ];
+    } else if (i === 2) {
+      rawImages = [
+        "https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=400&q=80"
+      ];
+    } else if (i === 3) {
+      rawImages = [
+        "https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1556742049-0a670fc80789?auto=format&fit=crop&w=400&q=80"
+      ];
+    } else if (i === 4) {
+      rawImages = [
+        "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=400&q=80",
+        "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=400&q=80"
+      ];
     }
 
     const { options, correctIndex, correctText, optionImages } = shuffleOptions(t.opt, t.ans, rawImages);
@@ -1032,13 +1049,9 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
     const passageSpeakerLabel = isMaleSpeaker ? "Locuteur" : "Locutrice";
     const announcerLabel = isMaleSpeaker ? "Annonceuse" : "Annonceur";
 
-    let fullSpokenTranscript = isQuestionInAudio
+    const fullSpokenTranscript = isQuestionInAudio
       ? `${passageSpeakerLabel}: ${t.tr}\n${announcerLabel}: Écoutez la question. Question N°${i} : ${questionTextPrompt}`
       : t.tr;
-
-    if (mainImageSvg) {
-      fullSpokenTranscript = `${announcerLabel}: Regardez l'illustration N°${i}. Écoutez les 4 propositions :\n... Proposition A : ${options[0]}.\n... Proposition B : ${options[1]}.\n... Proposition C : ${options[2]}.\n... Proposition D : ${options[3]}.`;
-    }
 
     const speakingRate = i <= 7 ? 0.85 : i <= 15 ? 0.92 : i <= 25 ? 1.00 : i <= 33 ? 1.15 : 1.30;
 
@@ -1048,13 +1061,10 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       level: t.level,
       speakingRate,
       text: isQuestionInAudio
-        ? (mainImageSvg ? `Regardez l'illustration N°${i} et écoutez les 4 propositions (A, B, C, D) ci-dessous.` : `Écoutez le document sonore et la question audio N°${i}. Choisissez la bonne option.`)
+        ? `Écoutez le document sonore et la question audio N°${i}. Choisissez la bonne option.`
         : `${t.text}`,
       options,
       optionImages,
-      mainImage,
-      mainImageSvg,
-      optionImagesSvg,
       correctIndex,
       explanation: `Pedagogical Explanation [Level ${t.level}]: The spoken document confirms "${correctText}".`,
       hint: specificHint,
