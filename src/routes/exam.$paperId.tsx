@@ -2162,9 +2162,41 @@ export function AuthenticCBTExamPage() {
                   )}
                 </div>
 
-                {/* Multiple Choice Options (Photographic Situation Cards vs Text Options) */}
+                {/* Multiple Choice Options (Official FEI Radio Buttons for Q1-Q4 Image Items vs Standard Text Options) */}
                 <div className="space-y-2.5">
-                  {(currentQ as any).optionImages && (currentQ as any).optionImages.length === 4 ? (
+                  {currentQ.questionNumber <= 4 && (currentQ as any).mainImage && mode === "EXAM" ? (
+                    <div className="space-y-3 p-4 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-100 shadow-md">
+                      <p className="text-xs font-black uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
+                        <span>Cochez la bonne réponse :</span>
+                      </p>
+                      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                        {currentQ.options.map((_, idx) => {
+                          const letter = String.fromCharCode(65 + idx); // A, B, C, D
+                          const isChosen = selectedAnswers[currentQ.id] === idx;
+
+                          return (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => handleSelectOption(currentQ.id, idx)}
+                              className={`p-3.5 sm:p-4 rounded-xl border-2 font-black text-sm sm:text-base flex items-center justify-center gap-3 transition-all duration-200 shadow-sm cursor-pointer active:scale-95 ${
+                                isChosen
+                                  ? "bg-blue-600 border-blue-500 text-white ring-2 ring-blue-400/50 shadow-blue-900/50"
+                                  : "bg-slate-800 border-slate-700 text-slate-200 hover:border-blue-400 hover:bg-slate-700/80"
+                              }`}
+                            >
+                              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-mono font-black ${
+                                isChosen ? "border-white bg-white text-blue-600" : "border-slate-400 text-slate-300"
+                              }`}>
+                                {letter}
+                              </div>
+                              <span className="font-mono tracking-wide">{letter}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ) : (currentQ as any).optionImages && (currentQ as any).optionImages.length === 4 ? (
                     <div className="grid grid-cols-2 gap-3 sm:gap-4">
                       {currentQ.options.map((opt, idx) => {
                         const letter = String.fromCharCode(65 + idx); // A, B, C, D
