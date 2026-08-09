@@ -1,3 +1,5 @@
+import { getOfficialLineArtSvg } from "./lineArtIllustrations";
+
 export type ExamType = "TCF_CANADA" | "TEF_CANADA";
 export type ExamMode = "PRACTICE" | "EXAM";
 export type SectionType = "COMPREHENSION_ORALE" | "COMPREHENSION_ECRITE" | "EXPRESSION_ECRITE" | "EXPRESSION_ORALE";
@@ -9,6 +11,7 @@ export interface ExamQuestion {
   options: string[];
   optionImages?: string[];
   mainImage?: string;
+  mainImageSvg?: string;
   correctIndex: number;
   explanation: string;
   hint?: string;
@@ -993,15 +996,10 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
 
     let rawImages: string[] | undefined = undefined;
     let mainImage: string | undefined = undefined;
+    let mainImageSvg: string | undefined = undefined;
 
-    if (i === 1) {
-      mainImage = "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80";
-    } else if (i === 2) {
-      mainImage = "https://images.unsplash.com/photo-1515165562839-978bbcf18277?auto=format&fit=crop&w=800&q=80";
-    } else if (i === 3) {
-      mainImage = "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80";
-    } else if (i === 4) {
-      mainImage = "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80";
+    if (i <= 4) {
+      mainImageSvg = getOfficialLineArtSvg(i, seedOffset);
     }
 
     const { options, correctIndex, correctText, optionImages } = shuffleOptions(t.opt, t.ans, rawImages);
@@ -1034,7 +1032,7 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       ? `${passageSpeakerLabel}: ${t.tr}\n${announcerLabel}: Écoutez la question. Question N°${i} : ${questionTextPrompt}`
       : t.tr;
 
-    if (i <= 4 && mainImage) {
+    if (i <= 4 && mainImageSvg) {
       fullSpokenTranscript = `${announcerLabel}: Consigne : Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... A : ${options[0]}.\n... B : ${options[1]}.\n... C : ${options[2]}.\n... D : ${options[3]}.`;
     }
 
@@ -1045,7 +1043,7 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       questionNumber: i,
       level: t.level,
       speakingRate,
-      text: i <= 4 && mainImage
+      text: i <= 4 && mainImageSvg
         ? "Écoutez les 4 propositions. Choisissez celle qui correspond à l'image."
         : isQuestionInAudio
         ? `Écoutez le document sonore et la question audio N°${i}. Choisissez la bonne option.`
@@ -1053,6 +1051,7 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       options,
       optionImages,
       mainImage,
+      mainImageSvg,
       correctIndex,
       explanation: `Pedagogical Explanation [Level ${t.level}]: The spoken document confirms "${correctText}".`,
       hint: specificHint,
