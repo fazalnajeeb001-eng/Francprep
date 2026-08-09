@@ -2520,23 +2520,35 @@ export function AuthenticCBTExamPage() {
                   {/* Speaking Strategy & Trap Alert Display */}
                   {mode === "PRACTICE" && showHints && (
                     <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800 text-xs text-amber-950 dark:text-amber-200 space-y-2 shadow-sm font-sans">
-                      <div className="flex items-center gap-1.5 font-extrabold text-amber-900 dark:text-amber-300 text-[11px] uppercase tracking-wide">
-                        <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                        <span>🎙️ Speaking Strategy & Trap Alert (Live Oral Examiner Protocol)</span>
+                      <div className="flex items-center justify-between gap-2 flex-wrap border-b border-amber-200 dark:border-amber-800/60 pb-1.5 font-extrabold text-amber-900 dark:text-amber-300 text-[11px] uppercase tracking-wide">
+                        <span className="flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                          <span>🎙️ Speaking Strategy & Preparation Rules (Live FEI Examiner Protocol)</span>
+                        </span>
+                        <span className="px-2 py-0.5 rounded bg-amber-200 dark:bg-amber-900/60 font-mono text-[10px]">
+                          {activeSpeakingTaskIdx === 0 || task.title?.includes("Tâche 1") || task.taskNumber === 1
+                            ? "T1: 0m Prep • 2m Speaking (Timer starts after audio)"
+                            : activeSpeakingTaskIdx === 1 || task.title?.includes("Tâche 2") || task.taskNumber === 2
+                            ? "T2: 2m Prep (Starts with audio) • 3.5m Speaking"
+                            : "T3: 0m Prep • 4.5m Speaking (Timer starts after audio)"}
+                        </span>
                       </div>
                       <div className="leading-relaxed font-medium whitespace-pre-line text-xs space-y-1.5">
                         {activeSpeakingTaskIdx === 0 || task.title?.includes("Tâche 1") || task.taskNumber === 1 ? (
                           <>
-                            <p><strong>⚠️ Trap Alert:</strong> Avoid prolonged hesitation (&gt;5 seconds) or reading prepared notes with a monotone robotic pitch. The examiner evaluates spontaneous conversational flow, accurate present/passé tenses, and Canadian Express Entry motivation.</p>
+                            <p><strong>⏱️ Timer Protocol:</strong> Tâche 1 has <strong>0 mins preparation time</strong>. The 2-minute Speaking Timer starts automatically right after the examiner's opening greeting finishes.</p>
+                            <p><strong>⚠️ Trap Alert:</strong> Avoid prolonged hesitation (&gt;5 seconds) or reading prepared notes with a monotone pitch. The examiner evaluates spontaneous conversational flow and accurate present/passé tenses.</p>
                             <p><strong>🔄 Oral Expression Key:</strong> Open naturally (<em>"Bonjour ! Je m'appelle..., je travaille actuellement comme..."</em>) and connect ideas smoothly (<em>"Ce qui me motive particulièrement à m'installer au Canada, c'est..."</em>).</p>
                           </>
                         ) : activeSpeakingTaskIdx === 1 || task.title?.includes("Tâche 2") || task.taskNumber === 2 ? (
                           <>
+                            <p><strong>⏱️ Timer Protocol:</strong> Tâche 2 has <strong>2 mins preparation time</strong>. The 2-minute Prep Timer starts <strong>IMMEDIATELY along with the question audio</strong> so you can examine the scenario details.</p>
                             <p><strong>⚠️ Trap Alert:</strong> You must lead the interaction by asking at least 8 to 10 distinct, varied questions! Do NOT wait for the examiner to ask you questions or just repeat the same question stem.</p>
                             <p><strong>🔄 Question Variety Key:</strong> Invert structures (<em>"Pourriez-vous me préciser les tarifs ?", "Est-il nécessaire de réserver à l'avance ?", "Quels sont les équipements fournis sur place ?", "Proposez-vous des formules d'essai ?"</em>).</p>
                           </>
                         ) : (
                           <>
+                            <p><strong>⏱️ Timer Protocol:</strong> Tâche 3 has <strong>0 mins preparation time</strong>. The 4.5-minute Speaking Timer starts automatically right after the examiner presents the societal debate topic.</p>
                             <p><strong>⚠️ Trap Alert:</strong> Do not just state a one-sided opinion. You must present a nuanced debate: analyze advantages, acknowledge disadvantages, refute counter-arguments, and conclude with your personal verdict.</p>
                             <p><strong>🔄 Argumentation Key:</strong> Use debate signposts (<em>"Selon moi...", "D'un côté..., mais d'un autre côté...", "Bien que certains prétendent que..., je demeure convaincu que...", "Pour conclure..."</em>).</p>
                           </>
@@ -2852,7 +2864,7 @@ export function AuthenticCBTExamPage() {
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 text-left text-xs space-y-2.5">
+              <div className="p-4 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 text-left text-xs space-y-3">
                 <div className="flex items-start gap-2.5">
                   <Volume2 className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
                   <div>
@@ -2863,9 +2875,22 @@ export function AuthenticCBTExamPage() {
 
                 <div className="flex items-start gap-2.5">
                   <Clock className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
-                  <div>
-                    <strong className="text-purple-950 dark:text-purple-200 block">Automatic Countdown Timers:</strong>
-                    <span className="text-slate-600 dark:text-slate-400 font-medium">Preparation time (2 mins for Tâche 2) and speaking timers start automatically when you select a task.</span>
+                  <div className="space-y-1 w-full">
+                    <strong className="text-purple-950 dark:text-purple-200 block">Official Prep & Speaking Timers:</strong>
+                    <div className="grid grid-cols-1 gap-1 text-[11px] font-medium text-slate-700 dark:text-slate-300 pt-0.5">
+                      <div className="flex items-center justify-between p-1.5 rounded bg-white dark:bg-slate-900 border border-purple-200/60 dark:border-purple-900/60">
+                        <span><strong>Tâche 1 (Entretien dirigé):</strong> 0m Prep</span>
+                        <span className="font-mono text-purple-600 font-bold">2m Speaking (Timer starts after audio)</span>
+                      </div>
+                      <div className="flex items-center justify-between p-1.5 rounded bg-white dark:bg-slate-900 border border-purple-200/60 dark:border-purple-900/60">
+                        <span><strong>Tâche 2 (Interaction):</strong> 2m Prep (Starts with audio)</span>
+                        <span className="font-mono text-purple-600 font-bold">3.5m Speaking</span>
+                      </div>
+                      <div className="flex items-center justify-between p-1.5 rounded bg-white dark:bg-slate-900 border border-purple-200/60 dark:border-purple-900/60">
+                        <span><strong>Tâche 3 (Point de vue):</strong> 0m Prep</span>
+                        <span className="font-mono text-purple-600 font-bold">4.5m Speaking (Timer starts after audio)</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -2873,7 +2898,7 @@ export function AuthenticCBTExamPage() {
                   <Mic className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
                   <div>
                     <strong className="text-purple-950 dark:text-purple-200 block">Microphone Setup & Speech Recording:</strong>
-                    <span className="text-slate-600 dark:text-slate-400 font-medium">Ensure your microphone is enabled and speak clearly in French.</span>
+                    <span className="text-slate-600 dark:text-slate-400 font-medium">Ensure your microphone is enabled and speak clearly into your mic in French.</span>
                   </div>
                 </div>
               </div>
