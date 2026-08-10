@@ -234,49 +234,61 @@ function VRMModel({
     const animT = t - animStartRef.current;
 
     if (animate === "idle" || !animate) {
-      // Realistic grounded AI Coach idle breathing & subtle life movement (alive 100% of the time)
-      const breatheCycle = Math.sin(t * 1.6);
-      const subtleSway = Math.sin(t * 0.8) * 0.015;
-      const subtleHeadTilt = Math.cos(t * 0.7) * 0.02;
-      const subtleHeadNod = Math.sin(t * 1.2) * 0.015;
+      // 🌟 Visible, Lively AI Coach Idle Movement (Feet 100% Firmly Grounded on Floor)
+      const breatheCycle = Math.sin(t * 1.8);
+      const subtleSway = Math.sin(t * 1.1) * 0.06;
+      const subtleHeadTilt = Math.cos(t * 0.9) * 0.07;
+      const subtleHeadNod = Math.sin(t * 1.4) * 0.06;
+      const armSway = Math.sin(t * 1.3) * 0.08;
 
-      g.position.x = subtleSway * 0.2;
+      // Feet stay 100% grounded on floor - zero floating/levitation!
+      g.position.x = 0;
       g.position.z = 0;
-      g.position.y = breatheCycle * 0.003;
+      g.position.y = 0;
 
       g.rotation.x = 0;
-      g.rotation.y = Math.sin(t * 0.5) * 0.025;
-      g.rotation.z = subtleSway * 0.3;
+      g.rotation.y = Math.sin(t * 0.7) * 0.08;
+      g.rotation.z = subtleSway * 0.2;
 
       if (bones.spine) {
         const rp2 = rp.spine || bones.spine.rotation;
-        bones.spine.rotation.x = rp2.x + breatheCycle * 0.015;
-        bones.spine.rotation.y = rp2.y + subtleSway * 0.5;
+        bones.spine.rotation.x = rp2.x + breatheCycle * 0.035;
+        bones.spine.rotation.y = rp2.y + subtleSway * 0.6;
         bones.spine.rotation.z = rp2.z;
       }
 
       if (bones.head) {
         const rp2 = rp.head || bones.head.rotation;
         bones.head.rotation.x = rp2.x + subtleHeadNod;
-        bones.head.rotation.y = rp2.y + Math.sin(t * 0.6) * 0.035;
+        bones.head.rotation.y = rp2.y + Math.sin(t * 0.8) * 0.14;
         bones.head.rotation.z = rp2.z + subtleHeadTilt;
       }
 
       if (bones.leftArm) {
         const rp2 = rp.leftArm || bones.leftArm.rotation;
-        bones.leftArm.rotation.z = rp2.z + 0.08 + Math.sin(t * 1.4) * 0.015;
-        bones.leftArm.rotation.x = rp2.x + Math.cos(t * 1.1) * 0.015;
+        bones.leftArm.rotation.z = rp2.z + 0.12 + Math.sin(t * 1.4) * 0.06;
+        bones.leftArm.rotation.x = rp2.x + Math.cos(t * 1.1) * 0.06;
       }
 
       if (bones.rightArm) {
         const rp2 = rp.rightArm || bones.rightArm.rotation;
-        bones.rightArm.rotation.z = rp2.z - 0.08 - Math.sin(t * 1.4) * 0.015;
-        bones.rightArm.rotation.x = rp2.x + Math.cos(t * 1.1) * 0.015;
+        bones.rightArm.rotation.z = rp2.z - 0.12 - Math.sin(t * 1.4) * 0.06;
+        bones.rightArm.rotation.x = rp2.x + Math.cos(t * 1.1) * 0.06;
+      }
+
+      if (bones.leftForearm) {
+        const rp2 = rp.leftForearm || bones.leftForearm.rotation;
+        bones.leftForearm.rotation.x = rp2.x - 0.15 + armSway * 0.4;
+      }
+
+      if (bones.rightForearm) {
+        const rp2 = rp.rightForearm || bones.rightForearm.rotation;
+        bones.rightForearm.rotation.x = rp2.x - 0.15 - armSway * 0.4;
       }
 
       if (bones.hips) {
         const rp2 = rp.hips || bones.hips.rotation;
-        bones.hips.rotation.y = rp2.y + subtleSway * 0.4;
+        bones.hips.rotation.y = rp2.y + subtleSway * 0.6;
       }
 
     } else if (animate === "wave") {
@@ -286,7 +298,11 @@ function VRMModel({
       const waveOut = 1 - smoothStep(1.8, waveDur, waveT);
       const waveBlend = waveIn * waveOut;
 
-      g.position.y = Math.sin(t * 2.5) * 0.005;
+      g.position.x = 0;
+      g.position.y = 0;
+      g.position.z = 0;
+      g.rotation.y = Math.sin(t * 1.2) * 0.03 * waveBlend;
+      g.rotation.z = Math.sin(t * 1.5) * 0.02 * waveBlend;
       g.rotation.y = Math.sin(t * 1.2) * 0.03 * waveBlend;
       g.rotation.z = Math.sin(t * 1.5) * 0.02 * waveBlend;
 

@@ -183,17 +183,10 @@ export function SmartAvatar({ gender: propGender, features, size = 80, animate =
   }, []);
 
   const handleAvatarClick = () => {
-    const lang = (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : "fr") || "fr";
-    const thoughts = COACH_THOUGHTS[lang.toLowerCase()] || COACH_THOUGHTS.fr;
-    const randomMsg = thoughts[Math.floor(Math.random() * thoughts.length)];
-    setActiveThought(randomMsg);
     setCurrentAnim("wave");
     setTimeout(() => {
       setCurrentAnim("idle");
-    }, 4000);
-    setTimeout(() => {
-      setActiveThought(null);
-    }, 6000);
+    }, 3500);
   };
 
   return (
@@ -205,42 +198,6 @@ export function SmartAvatar({ gender: propGender, features, size = 80, animate =
       className="relative shrink-0 flex items-center justify-center overflow-visible cursor-pointer select-none"
       onClick={handleAvatarClick}
     >
-      {/* 💭 Coach Multi-Language Thought Cloud Bubble */}
-      <AnimatePresence>
-        {activeThought && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: -10 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="absolute left-1/2 -translate-x-1/2 z-30 pointer-events-none whitespace-nowrap"
-            style={{ top: -size * 0.28 }}
-          >
-            <motion.div
-              className="px-3.5 py-1.5 rounded-2xl text-xs font-semibold text-white bg-slate-900/90 border border-purple-400/40 backdrop-blur-md shadow-2xl relative flex items-center gap-1.5"
-              style={{
-                boxShadow: "0 8px 32px rgba(139,92,246,0.4), 0 0 15px rgba(168,85,247,0.3)",
-              }}
-              animate={{ y: [0, -3, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <span>💭</span>
-              <span>{activeThought}</span>
-              {/* Cloud Stem Tail */}
-              <div
-                className="absolute left-1/2 -translate-x-1/2 -bottom-2"
-                style={{
-                  width: 0,
-                  height: 0,
-                  borderLeft: "6px solid transparent",
-                  borderRight: "6px solid transparent",
-                  borderTop: "8px solid rgba(15, 23, 42, 0.9)",
-                }}
-              />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* 🔮 Single Radiant Purple Glowing Circle Base (Centered Exactly Under Avatar Feet) */}
       <motion.div
