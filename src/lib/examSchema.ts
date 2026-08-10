@@ -526,7 +526,7 @@ function getRichListeningTopics(): ListeningTopicItem[] {
       ];
       topics.push({ level: "B2", ...b2Topics[b2Variant] });
     } else if (qNum <= 37) {
-      const c1Variant = (Math.floor(i / 39) + (qNum - 34)) % 4;
+      const c1Variant = (Math.floor(i / 39) + (qNum - 34)) % 10;
       const c1Topics = [
         {
           title: `Conférence Académique C1 N°${i + 1}`,
@@ -583,11 +583,95 @@ function getRichListeningTopics(): ListeningTopicItem[] {
           tr: `La réhabilitation urbaine attire des capitaux mais provoque l'éviction des résidents historiques.`,
           en: `Urban gentrification attracts investment while displacing longstanding working-class residents.`,
           hint: `⚠️ Trap Alert: Identify sociological contrast (architectural upgrade vs resident displacement).`
+        },
+        {
+          title: `Dossier Économie Monétaire C1 N°${i + 1}`,
+          text: `La conduite des politiques monétaires contemporaines impose aux banques centrales un arbitrage complexe entre le resserrement du crédit pour contenir l'inflation et le maintien des investissements productifs indispensables à la transition écologique.`,
+          opt: [
+            `Arbitrage monétaire délicat entre contrôle de l'inflation et soutien des investissements vertueux`,
+            `Suppression immédiate des taux d'intérêt directeurs au niveau mondial`,
+            `Disparition de toute monnaie fiduciaire au profit des échanges de troc`,
+            `Mise en place d'une planification économique rigide sans aucune flexibilité de marché`
+          ],
+          ans: 0,
+          tr: `Les banques centrales doivent équilibrer la lutte anti-inflation et le financement écologique.`,
+          en: `Central banks must balance inflation control with financing the green transition.`,
+          hint: `⚠️ Trap Alert: Focus on policy dilemma (inflation control vs productive green investments).`
+        },
+        {
+          title: `Colloque Droit International C1 N°${i + 1}`,
+          text: `L'amplification des déplacements de populations engendrés par le dérèglement climatique révèle les lacunes de la Convention de Genève de 1951, qui ne reconnaît pas juridiquement le statut de réfugié environnemental.`,
+          opt: [
+            `Inadaptation du cadre juridique actuel face au statut des déplacés environnementaux`,
+            `Adoption d'un traité universel garantissant des indemnités financières automatiques`,
+            `Baisse générale du nombre de migrants climatiques recensés dans le monde`,
+            `Obligation pour chaque citoyen de résider définitivement dans son pays de naissance`
+          ],
+          ans: 0,
+          tr: `Le droit international actuel ne reconnaît pas encore le statut de réfugié climatique.`,
+          en: `International law currently lacks legal recognition for environmental refugees.`,
+          hint: `⚠️ Trap Alert: Identify legal gap (1951 Geneva Convention limitations).`
+        },
+        {
+          title: `Séminaire Ergonomie Cognitive C1 N°${i + 1}`,
+          text: `La surabondance des notifications numériques génère une fragmentation permanente de la charge attentionnelle, altérant la mémoire de travail et diminuant la capacité d'analyse en profondeur chez les professionnels du savoir.`,
+          opt: [
+            `Fragmentation de l'attention et diminution de la capacité d'analyse approfondie`,
+            `Augmentation exceptionnelle des facultés de mémorisation à long terme`,
+            `Disparition complète du stress professionnel grâce aux outils de communication`,
+            `Obligation de bannir tous les ordinateurs des environnements de travail administratifs`
+          ],
+          ans: 0,
+          tr: `La surabondance de notifications nuit à la mémoire de travail et à l'analyse réflexive.`,
+          en: `Overabundant digital notifications fragment attention and degrade deep analytical focus.`,
+          hint: `⚠️ Trap Alert: Identify cognitive impact (attention fragmentation & analytical decline).`
+        },
+        {
+          title: `Conférence Biomimétisme C1 N°${i + 1}`,
+          text: `L'intégration des principes du biomimétisme dans le secteur de la construction permet de développer des matériaux autosuffisants capables de capter le dioxyde de carbone ambiant tout en régulant la température des bâtiments.`,
+          opt: [
+            `Développement de matériaux constructifs intelligents inspirés de la nature`,
+            `Interdiction d'utiliser le bois et le béton dans l'architecture contemporaine`,
+            `Hausse dramatique de la consommation énergétique des constructions neuves`,
+            `Remplacement des architectes par des systèmes informatiques entièrement automatisés`
+          ],
+          ans: 0,
+          tr: `Le biomimétisme produit des matériaux de construction capables de capter le CO2.`,
+          en: `Biomimicry enables building materials that capture CO2 and self-regulate temperature.`,
+          hint: `⚠️ Trap Alert: Identify innovative dual function (carbon capture + thermal regulation).`
+        },
+        {
+          title: `Colloque Linguistique C1 N°${i + 1}`,
+          text: `L'uniformisation des canaux de communication globaux accélère la régression des dialectes régionaux et des langues minoritaires, menaçant de faire disparaître une part irremplaçable du patrimoine intangible de l'humanité.`,
+          opt: [
+            `Menace d'extinction pesant sur les langues minoritaires sous l'effet de l'uniformisation globale`,
+            `Revitalisation spontanée et universelle des parlers régionaux oubliés`,
+            `Création d'une langue unique mondiale obligatoire pour tous les échanges commerciaux`,
+            `Abandon définitif de l'apprentissage des langues vivantes dans les écoles`
+          ],
+          ans: 0,
+          tr: `L'uniformisation mondiale accélère la disparition des langues minoritaires.`,
+          en: `Global standardization accelerates the decline of endangered regional minority languages.`,
+          hint: `⚠️ Trap Alert: Identify cultural risk (loss of intangible human linguistic heritage).`
+        },
+        {
+          title: `Conférence Économie Comportementale C1 N°${i + 1}`,
+          text: `Les interventions fondées sur la théorie de l'incitation douce (ou 'nudge') cherchent à orienter les choix individuels vers des comportements favorables à la santé publique ou à l'environnement, sans recourir à la contrainte réglementaire ou fiscale.`,
+          opt: [
+            `Orientation bienveillante des choix citoyens sans recourir à la coercition légale`,
+            `Imposition de sanctions financières dures pour tout comportement non écologique`,
+            `Suppression complète de toute forme de réglementation en matière de santé publique`,
+            `Obligation légale de suivre un régime alimentaire fixé par le gouvernement`
+          ],
+          ans: 0,
+          tr: `La théorie du nudge oriente les comportements de manière douce sans contrainte fiscale.`,
+          en: `Nudge theory gently guides public behavior without regulatory coercion or taxes.`,
+          hint: `⚠️ Trap Alert: Highlight non-coercive mechanism (gentle nudges vs mandates/taxes).`
         }
       ];
       topics.push({ level: "C1", ...c1Topics[c1Variant] });
     } else {
-      const c2Variant = (Math.floor(i / 39) + (qNum - 38)) % 2;
+      const c2Variant = (Math.floor(i / 39) + (qNum - 38)) % 10;
       const c2Topics = [
         {
           title: `Épistémologie & Culture C2 N°${i + 1}`,
@@ -616,6 +700,118 @@ function getRichListeningTopics(): ListeningTopicItem[] {
           tr: `L'IA artistique bouscule le concept d'authenticité en séparant l'art de l'intention de l'auteur.`,
           en: `AI-generated art challenges authenticity by disconnecting creation from human subjectivity.`,
           hint: `⚠️ Trap Alert: Identify philosophical thesis (disruption of artistic authenticity & intent).`
+        },
+        {
+          title: `Philosophie des Sciences C2 N°${i + 1}`,
+          text: `L'illusion d'une neutralité empirique pure dans l'exploitation des données de masse dissimule les présupposés théoriques qui président à la conception des algorithmes d'apprentissage automatique, réintroduisant subrepticement les biais cognitifs de leurs concepteurs.`,
+          opt: [
+            `Illusion de neutralité masquant l'inscription des biais conceptuels au cœur des algorithmes`,
+            `Garantie d'une vérité scientifique absolue et exempte de tout préjugé humain`,
+            `Abandon définitif du traitement informatique de la donnée dans les laboratoires`,
+            `Remplacement universel de l'expérimentation biologique par des simulations virtuelles`
+          ],
+          ans: 0,
+          tr: `L'exploitation empirique du Big Data dissimule les biais conceptuels des algorithmes.`,
+          en: `Big Data empiricism conceals algorithmic bias and embedded designer assumptions.`,
+          hint: `⚠️ Trap Alert: Identify epistemological critique (illusory neutrality vs embedded bias).`
+        },
+        {
+          title: `Philosophie du Langage C2 N°${i + 1}`,
+          text: `La déconstruction de la fixité sémantique dans la théorie de la déconstruction post-structuraliste remet en cause le paradigme de la représentation directe, affirmant que le sens d'un texte s'élabore dans le jeu inépuisable des renvois intertextuels.`,
+          opt: [
+            `Remise en question de la fixité du sens au profit d'un jeu inépuisable de renvois`,
+            `Affirmation de la clarté univoque et définitive de tout énoncé linguistique`,
+            `Disparition totale de la capacité des individus à communiquer oralement`,
+            `Obligation de traduire l'ensemble de la littérature mondiale dans une langue artificielle`
+          ],
+          ans: 0,
+          tr: `Le post-structuralisme remet en cause la fixité sémantique du texte.`,
+          en: `Post-structuralism challenges fixed semantic meaning in favor of open intertextuality.`,
+          hint: `⚠️ Trap Alert: Focus on linguistic thesis (fluidity of meaning vs fixed representation).`
+        },
+        {
+          title: `Éthique & Robotique C2 N°${i + 1}`,
+          text: `La délégation des décisions d'engagement létal à des systèmes d'armes autonomes induit une dilution de la responsabilité morale et juridique, créant un vide éthique quant à l'imputabilité des violations du droit international humanitaire.`,
+          opt: [
+            `Dilution de la responsabilité morale engendrée par la décision létale automatisée`,
+            `Perfectionnement exceptionnel des mécanismes de justice militaire internationale`,
+            `Interdiction universelle et immédiate de toute recherche militaire technologique`,
+            `Remplacement intégral des diplomates par des agents conversationnels automatisés`
+          ],
+          ans: 0,
+          tr: `L'automatisation des décisions militaires crée une dilution de la responsabilité éthique.`,
+          en: `Automated military engagement dilutes moral responsibility and accountability.`,
+          hint: `⚠️ Trap Alert: Identify ethical void (dilution of moral and legal accountability).`
+        },
+        {
+          title: `Neuro-éthique & Philosophie C2 N°${i + 1}`,
+          text: `Le développement des interfaces cerveau-machine bidirectionnelles pose la question de l'intégrité de la conscience individuelle, menaçant de brouiller la frontière entre la souveraineté du sujet pensant et l'influence des données exogènes.`,
+          opt: [
+            `Menace sur l'intégrité de la conscience et la souveraineté du sujet pensant`,
+            `Éradication complète et définitive de toutes les affections neurologiques dégénératives`,
+            `Suppression du besoin de sommeil chez l'ensemble des êtres humains`,
+            `Interdiction stricte de toute forme d'imagerie cérébrale dans les hôpitaux`
+          ],
+          ans: 0,
+          tr: `Les interfaces cerveau-machine posent la question de la souveraineté de la pensée.`,
+          en: `Brain-computer interfaces raise profound concerns regarding mental sovereignty and autonomy.`,
+          hint: `⚠️ Trap Alert: Focus on existential question (individual mental sovereignty).`
+        },
+        {
+          title: `Sociologie du Temps C2 N°${i + 1}`,
+          text: `L'accélération sociale de la modernité tardive engendre une forme d'aliénation temporelle, où la compression du présent prive l'individu de la capacité de s'inscrire dans une trajectoire biographique cohérente et réfléchie.`,
+          opt: [
+            `Aliénation temporelle et perte de capacité à construire une trajectoire biographique`,
+            `Harmonie parfaite entre le rythme de vie individuel et les exigences de la société`,
+            `Retour généralisé aux modes de vie préindustriels dans les grandes métropoles`,
+            `Allongement significatif du temps consacré à la contemplation et aux loisirs`
+          ],
+          ans: 0,
+          tr: `L'accélération sociale prive l'individu de la capacité de construire son temps.`,
+          en: `Social acceleration produces temporal alienation, undermining coherent self-narratives.`,
+          hint: `⚠️ Trap Alert: Identify sociological concept (temporal alienation & narrative fragmentation).`
+        },
+        {
+          title: `Écologie Politique & Ontologie C2 N°${i + 1}`,
+          text: `L'affranchissement des limites de la biosphère par l'idéologie du progrès indéfini se heurte désormais à la finitude des ressources planétaires, imposant un changement de paradigme ontologique quant à notre relation à la nature.`,
+          opt: [
+            `Impasse de la croissance indéfinie imposant la refonte de notre rapport au vivant`,
+            `Découverte de ressources énergétiques infinies assurant la pérennité du modèle industriel`,
+            `Colonisation immédiate des planètes du système solaire par l'espèce humaine`,
+            `Abandon de toute préoccupation environnementale par les instances internationales`
+          ],
+          ans: 0,
+          tr: `La finitude des ressources terrestres exige une refonte de notre rapport à la nature.`,
+          en: `Planetary finitude exposes the myth of infinite growth, demanding an ontological shift.`,
+          hint: `⚠️ Trap Alert: Focus on core thesis (planetary limits vs myth of infinite growth).`
+        },
+        {
+          title: `Épistémologie des Données C2 N°${i + 1}`,
+          text: `La prépondérance des modèles prédictifs fondés sur des corrélations statistiques substitue l'efficacité opérationnelle à la quête de causalité explicative, remplaçant la compréhension scientifique par la gestion des probabilités.`,
+          opt: [
+            `Substitution de la gestion des probabilités à la recherche des causes explicatives`,
+            `Triomphe de la méthode scientifique cartésienne traditionnelle`,
+            `Incapacité totale des systèmes informatiques à traiter les prévisions financières`,
+            `Rétablissement du monopole des sciences humaines sur la recherche médicale`
+          ],
+          ans: 0,
+          tr: `Les modèles statistiques privilégient la prédiction probabilitiste à l'explication causale.`,
+          en: `Predictive models substitute statistical correlation for explanatory causal understanding.`,
+          hint: `⚠️ Trap Alert: Identify epistemological shift (statistical probability vs causal explanation).`
+        },
+        {
+          title: `Phénoménologie Numérique C2 N°${i + 1}`,
+          text: `L'immersion dans des espaces de réalité virtuelle modifie le rapport corporalité-espace, instaurant une présence spectrale où l'expérience sensible se trouve déconnectée des contraintes de l'ancrage physique traditionnel.`,
+          opt: [
+            `Reconfiguration de l'expérience corporelle déconnectée de l'ancrage physique`,
+            `Renforcement de la perception tactile directe du monde matériel environnant`,
+            `Disparition irréversible de l'intérêt pour les arts visuels et la musique`,
+            `Obligation de porter un équipement immersif pour toute activité quotidienne`
+          ],
+          ans: 0,
+          tr: `La réalité virtuelle déconnecte l'expérience sensible de l'ancrage physique.`,
+          en: `Virtual reality reconfigures bodily experience, disconnecting perception from physical grounding.`,
+          hint: `⚠️ Trap Alert: Identify phenomenological shift (spectral presence vs physical grounding).`
         }
       ];
       topics.push({ level: "C2", ...c2Topics[c2Variant] });
