@@ -408,46 +408,48 @@ function SettingsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 {/* Leo */}
-                <button onClick={() => selectAvatar("male")} disabled={avatarSaving}
+                <div
+                  onClick={() => selectAvatar("male")}
                   className={`relative rounded-2xl border-2 p-4 transition-all flex flex-col items-center gap-3 cursor-pointer ${
                     avatarFeatures?.gender === "male"
                       ? "border-purple-500 bg-purple-500/10 shadow-lg shadow-purple-500/20"
                       : `${inputBg} border-transparent hover:border-purple-500/40`
                   }`}>
                   <div className={`w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center p-2 ${dark ? "bg-[#070B17]" : "bg-gray-100"}`}>
-                    <img src="/models/leo-avatar.png" alt="Coach Léo" className="w-full h-full object-cover rounded-lg shadow-inner" style={{ objectPosition: "50% 15%" }} />
+                    <SmartAvatar gender="male" size={130} animate="static" showThoughts={false} interactive360={true} />
                   </div>
                   <div className="text-center">
                     <p className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>Coach Leo</p>
-                    <p className={`text-[10px] ${txtSec}`}>Male AI Companion</p>
+                    <p className={`text-[10px] ${txtSec}`}>3D Male • 🔄 Drag 360°</p>
                   </div>
                   {avatarFeatures?.gender === "male" && (
                     <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center">
                       <Check className="w-3.5 h-3.5 text-white" />
                     </div>
                   )}
-                </button>
+                </div>
 
                 {/* Chloe */}
-                <button onClick={() => selectAvatar("female")} disabled={avatarSaving}
+                <div
+                  onClick={() => selectAvatar("female")}
                   className={`relative rounded-2xl border-2 p-4 transition-all flex flex-col items-center gap-3 cursor-pointer ${
                     avatarFeatures?.gender === "female"
                       ? "border-purple-500 bg-purple-500/10 shadow-lg shadow-purple-500/20"
                       : `${inputBg} border-transparent hover:border-purple-500/40`
                   }`}>
                   <div className={`w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center p-2 ${dark ? "bg-[#070B17]" : "bg-gray-100"}`}>
-                    <img src="/models/chloe-avatar.png" alt="Coach Chloé" className="w-full h-full object-cover rounded-lg shadow-inner" style={{ objectPosition: "50% 15%" }} />
+                    <SmartAvatar gender="female" size={130} animate="static" showThoughts={false} interactive360={true} />
                   </div>
                   <div className="text-center">
                     <p className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>Coach Chloe</p>
-                    <p className={`text-[10px] ${txtSec}`}>Female AI Companion</p>
+                    <p className={`text-[10px] ${txtSec}`}>3D Female • 🔄 Drag 360°</p>
                   </div>
                   {avatarFeatures?.gender === "female" && (
                     <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center">
                       <Check className="w-3.5 h-3.5 text-white" />
                     </div>
                   )}
-                </button>
+                </div>
               </div>
 
               {avatarSaving && <p className="text-xs text-purple-400 text-center mt-3">Saving...</p>}

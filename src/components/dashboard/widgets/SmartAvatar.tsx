@@ -153,6 +153,7 @@ interface SmartAvatarProps {
   glowColor?: "purple" | "cyan" | "pink";
   showThoughts?: boolean;
   miniHeaderMode?: boolean;
+  interactive360?: boolean;
 }
 
 export function SmartAvatar({
@@ -162,6 +163,7 @@ export function SmartAvatar({
   animate = "idle",
   showThoughts = true,
   miniHeaderMode = false,
+  interactive360 = false,
 }: SmartAvatarProps) {
   const [activeGender, setActiveGender] = useState<string>(() => {
     return propGender || features?.gender || (typeof window !== "undefined" ? (JSON.parse(localStorage.getItem("fp_avatar_features") || "{}")?.gender) : undefined) || "female";
@@ -312,6 +314,7 @@ export function SmartAvatar({
             modelUrl={modelUrl}
             size={size}
             animate={currentAnim}
+            interactive360={interactive360}
             tint={{
               skinColor: features?.skinTone ? getSkinById(features.skinTone).color : undefined,
               hairColor: features?.hairColor,

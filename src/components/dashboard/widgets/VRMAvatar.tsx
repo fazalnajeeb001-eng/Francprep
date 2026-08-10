@@ -202,21 +202,22 @@ function VRMModel({
     }
 
     loadModel();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [modelUrl, tint]);
 
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime();
-    const dt = clock.getDelta();
+  useFrame(({ clock }, delta) => {
+    if (!modelRef.current || !groupRef.current) return;
     const g = groupRef.current;
-    const m = modelRef.current;
-    if (!g || !m) return;
     const bones = bonesRef.current;
     const rp = restposesRef.current;
+    const t = clock.getElapsedTime();
+    const dt = Math.min(delta, 0.1);
 
     const noise = noiseRef.current;
-    noise.v1 += (Math.random() - 0.5) * dt * 2;
-    noise.v1 *= 0.95;
+    noise.v1 += (Math.random() - 0.5) * dt * 2.0;
+    noise.v1 *= 0.92;
     noise.v2 += (Math.random() - 0.5) * dt * 1.5;
     noise.v2 *= 0.93;
     noise.v3 += (Math.random() - 0.5) * dt * 1.8;
@@ -232,7 +233,15 @@ function VRMModel({
     }
     const animT = t - animStartRef.current;
 
-    if (animate === "idle" || !animate) {
+    if (animate === "static") {
+      g.position.set(0, 0, 0);
+      g.rotation.set(0, userRotY, 0);
+      const breatheCycle = Math.sin(t * 1.5);
+      if (bones.spine) {
+        const rp2 = rp.spine || bones.spine.rotation;
+        bones.spine.rotation.x = rp2.x + breatheCycle * 0.015;
+      }
+    } else if (animate === "idle" || !animate) {
       // 🌟 Visible, Lively AI Coach Idle Movement (Feet 100% Firmly Grounded on Floor)
       const breatheCycle = Math.sin(t * 1.8);
       const subtleSway = Math.sin(t * 1.1) * 0.06;
@@ -246,7 +255,7 @@ function VRMModel({
       g.position.y = 0;
 
       g.rotation.x = 0;
-      g.rotation.y = Math.sin(t * 0.7) * 0.08;
+      g.rotation.y = userRotY + Math.sin(t * 0.7) * 0.08;
       g.rotation.z = subtleSway * 0.2;
 
       if (bones.spine) {
@@ -572,10 +581,40 @@ export function VRMAvatar({
   size = 80,
   animate = "idle",
   tint,
-}: VRMAvatarProps) {
+  interactive360 = false,
+}: VRMAvatarProps & { interactive360?: boolean }) {
+  const [userRotY, setUserRotY] = useState(0);
+  const isDraggingRef = useRef(false);
+  const prevXRef = useRef(0);
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if (!interactive360) return;
+    isDraggingRef.current = true;
+    prevXRef.current = e.clientX;
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!interactive360 || !isDraggingRef.current) return;
+    const deltaX = e.clientX - prevXRef.current;
+    prevXRef.current = e.clientX;
+    setUserRotY((prev) => prev + deltaX * 0.02);
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (!interactive360) return;
+    isDraggingRef.current = false;
+  };
+
   return (
     <ErrorBoundary fallback={null}>
-      <div style={{ width: size, height: size }} className="relative">
+      <div
+        style={{ width: size, height: size }}
+        className={`relative ${interactive360 ? "cursor-grab active:cursor-grabbing select-none" : ""}`}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+      >
         <Canvas
           gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
           style={{ background: "transparent" }}
@@ -584,7 +623,7 @@ export function VRMAvatar({
         >
           <TimeBasedLights />
           <Suspense fallback={<LoadingBox />}>
-            <VRMModel modelUrl={modelUrl} animate={animate} tint={tint} />
+            <VRMModel modelUrl={modelUrl} animate={animate} tint={tint} userRotY={userRotY} />
           </Suspense>
         </Canvas>
       </div>
