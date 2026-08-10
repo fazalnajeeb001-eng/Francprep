@@ -256,36 +256,29 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
 
   return (
     <div className="flex flex-col h-[560px]">
-      {/* Prominent Interactive Coach Avatar Banner */}
-      <div className={`p-4 border-b dark:border-[#1e2a4a] border-gray-200 flex items-center justify-between gap-4 ${dark ? "bg-gradient-to-r from-purple-950/40 via-[#0c1224] to-pink-950/40" : "bg-gradient-to-r from-purple-50 via-white to-pink-50"}`}>
-        <div className="flex items-center gap-3.5">
-          <div className="relative flex items-center justify-center">
-            <div className={`rounded-2xl p-1 shadow-lg transition-all ${
-              isSpeaking ? "bg-gradient-to-r from-emerald-400 to-teal-400 animate-pulse ring-4 ring-emerald-500/30" : "bg-gradient-to-r from-purple-500 to-pink-500"
+      {/* Prominent Interactive 3D AI Coach Stage */}
+      <div className={`p-6 border-b dark:border-[#1e2a4a] border-gray-200 flex flex-col md:flex-row items-center justify-between gap-6 ${dark ? "bg-gradient-to-r from-purple-950/60 via-[#0c1224] to-indigo-950/60" : "bg-gradient-to-r from-purple-50 via-white to-indigo-50"}`}>
+        <div className="flex flex-col sm:flex-row items-center gap-6">
+          <div className="relative shrink-0 flex items-center justify-center p-2 rounded-3xl bg-slate-900/60 border border-purple-500/30 backdrop-blur-md shadow-xl">
+            <SmartAvatar gender={avatarGender} size={190} animate={isSpeaking ? "speaking" : isThinking ? "thinking" : "idle"} showThoughts={false} />
+            <span className={`absolute bottom-2 right-2 px-2.5 py-1 rounded-full border text-[10px] font-bold shadow-md flex items-center gap-1.5 backdrop-blur-md ${
+              isSpeaking ? "bg-emerald-500/90 text-white border-emerald-400" : isThinking ? "bg-amber-500/90 text-white border-amber-400" : "bg-purple-600/90 text-white border-purple-400"
             }`}>
-              <SmartAvatar gender={avatarGender} size={56} animate={isSpeaking ? "speaking" : isThinking ? "thinking" : "idle"} showThoughts={false} miniHeaderMode={true} />
-            </div>
-            <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-[#0c1224] flex items-center justify-center text-[8px] ${
-              isSpeaking ? "bg-emerald-500" : isThinking ? "bg-amber-500 animate-spin" : "bg-emerald-400"
-            }`}>
-              {isSpeaking ? "🗣️" : isThinking ? "🧠" : "✨"}
+              <span>{isSpeaking ? "🗣️" : isThinking ? "🧠" : "✨"}</span>
+              <span>{isSpeaking ? "Speaking" : isThinking ? "Thinking" : "Ready"}</span>
             </span>
           </div>
 
-          <div>
-            <div className="flex items-center gap-2">
-              <h4 className={`text-sm font-extrabold ${dark ? "text-white" : "text-slate-900"}`}>{coachName}</h4>
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                isSpeaking
-                  ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 animate-pulse"
-                  : isThinking
-                  ? "bg-amber-500/10 text-amber-400 border-amber-500/30"
-                  : "bg-purple-500/10 text-purple-400 border-purple-500/20"
-              }`}>
-                {isSpeaking ? "Speaking..." : isThinking ? "Thinking..." : "Conversation Tutor"}
+          <div className="text-center sm:text-left space-y-1">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+              <h4 className={`text-lg font-extrabold ${dark ? "text-white" : "text-slate-900"}`}>{coachName}</h4>
+              <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-400">
+                AI Coach • Level {lessonLevel}
               </span>
             </div>
-            <p className={`text-xs mt-0.5 ${textSec}`}>Interactive AI French Speaking Drill • {lessonLevel} Level</p>
+            <p className={`text-xs ${textSec}`}>
+              Listen to Coach {coachName}'s spoken pronunciation model and record your voice response!
+            </p>
           </div>
         </div>
 
