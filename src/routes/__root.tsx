@@ -92,7 +92,8 @@ function NavBarInner() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
   const routerState = useRouterState();
-  const isOnboarding = routerState.location.pathname === "/onboarding";
+  const pathname = routerState.location.pathname;
+  const isOnboarding = pathname === "/onboarding";
   const [avatarGender, setAvatarGender] = useState<string | null>(null);
   const [isAdminPreview, setIsAdminPreview] = useState(false);
 
