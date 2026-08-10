@@ -8,6 +8,7 @@ import { Moon, Sun, Shield, Key, CreditCard, Check, AlertTriangle, RefreshCw, Ch
 import { motion } from "framer-motion";
 import { GOAL_OPTIONS, getGoalOptionsForLanguage, type LearningGoal, setGoal as saveGoalToStorage, getGoal, getDailyStudyGoal, setDailyStudyGoal } from "~/components/dashboard/utils/userPrefs";
 import { getActiveLanguageCode } from "~/lib/trackBranding";
+import { SmartAvatar } from "~/components/dashboard/widgets/SmartAvatar";
 
 export const Route = createFileRoute("/dashboard/settings")({ component: SettingsPage });
 
@@ -409,12 +410,12 @@ function SettingsPage() {
                       ? "border-purple-500 bg-purple-500/10 shadow-lg shadow-purple-500/20"
                       : `${inputBg} border-transparent hover:border-purple-500/40`
                   }`}>
-                  <div className={`w-full aspect-square rounded-xl overflow-hidden flex items-end justify-center ${dark ? "bg-[#070B17]" : "bg-gray-100"}`}>
-                    <img src="/models/leo-avatar.png" alt="Leo" className="w-full h-full object-contain" />
+                  <div className={`w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center py-2 ${dark ? "bg-[#070B17]" : "bg-gray-100"}`}>
+                    <SmartAvatar gender="male" size={88} animate="idle" showThoughts={false} />
                   </div>
                   <div className="text-center">
                     <p className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>Coach Leo</p>
-                    <p className={`text-[10px] ${txtSec}`}>Male AI Companion</p>
+                    <p className={`text-[10px] ${txtSec}`}>3D Male AI Companion</p>
                   </div>
                   {avatarFeatures?.gender === "male" && (
                     <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center">
@@ -430,12 +431,12 @@ function SettingsPage() {
                       ? "border-purple-500 bg-purple-500/10 shadow-lg shadow-purple-500/20"
                       : `${inputBg} border-transparent hover:border-purple-500/40`
                   }`}>
-                  <div className={`w-full aspect-square rounded-xl overflow-hidden flex items-end justify-center ${dark ? "bg-[#070B17]" : "bg-gray-100"}`}>
-                    <img src="/models/chloe-avatar.png" alt="Chloe" className="w-full h-full object-contain" />
+                  <div className={`w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center py-2 ${dark ? "bg-[#070B17]" : "bg-gray-100"}`}>
+                    <SmartAvatar gender="female" size={88} animate="idle" showThoughts={false} />
                   </div>
                   <div className="text-center">
                     <p className={`text-sm font-bold ${dark ? "text-white" : "text-gray-900"}`}>Coach Chloe</p>
-                    <p className={`text-[10px] ${txtSec}`}>Female AI Companion</p>
+                    <p className={`text-[10px] ${txtSec}`}>3D Female AI Companion</p>
                   </div>
                   {avatarFeatures?.gender === "female" && (
                     <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center">

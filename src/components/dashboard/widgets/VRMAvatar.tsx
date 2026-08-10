@@ -300,25 +300,24 @@ function VRMModel({
       g.position.x = 0;
       g.position.y = 0;
       g.position.z = 0;
-      g.rotation.y = Math.sin(t * 1.2) * 0.03 * waveBlend;
-      g.rotation.z = Math.sin(t * 1.5) * 0.02 * waveBlend;
-      g.rotation.y = Math.sin(t * 1.2) * 0.03 * waveBlend;
+      g.rotation.x = 0;
+      g.rotation.y = Math.sin(t * 1.2) * 0.04 * waveBlend;
       g.rotation.z = Math.sin(t * 1.5) * 0.02 * waveBlend;
 
       if (bones.head) {
         const rp2 = rp.head || bones.head.rotation;
         bones.head.rotation.x = rp2.x - 0.04 * waveBlend;
-        bones.head.rotation.y = rp2.y + Math.sin(t * 1.8) * 0.05 * waveBlend;
+        bones.head.rotation.y = rp2.y + Math.sin(t * 1.8) * 0.08 * waveBlend;
         bones.head.rotation.z = rp2.z + 0.06 * waveBlend;
       }
       if (bones.rightArm) {
         const rp2 = rp.rightArm || bones.rightArm.rotation;
-        bones.rightArm.rotation.z = rp2.z - (1.0 + Math.sin(t * 3.5) * 0.3) * waveBlend;
-        bones.rightArm.rotation.x = rp2.x - 0.15 * waveBlend;
+        bones.rightArm.rotation.z = rp2.z - (1.1 + Math.sin(t * 4.0) * 0.25) * waveBlend;
+        bones.rightArm.rotation.x = rp2.x - 0.2 * waveBlend;
       }
       if (bones.rightForearm) {
         const rp2 = rp.rightForearm || bones.rightForearm.rotation;
-        bones.rightForearm.rotation.x = rp2.x - (0.6 + Math.sin(t * 3.5) * 0.15) * waveBlend;
+        bones.rightForearm.rotation.x = rp2.x - (0.65 + Math.sin(t * 4.0) * 0.2) * waveBlend;
       }
       if (bones.leftArm) {
         const rp2 = rp.leftArm || bones.leftArm.rotation;

@@ -8,6 +8,7 @@ import { Sidebar } from "~/components/dashboard/Sidebar";
 import { LoadingSkeleton } from "~/components/dashboard/LoadingSkeleton";
 import { ErrorState } from "~/components/dashboard/ErrorState";
 import { LevelProgress } from "~/components/dashboard/widgets/LevelProgress";
+import { SmartAvatar } from "~/components/dashboard/widgets/SmartAvatar";
 import { JourneyBanner } from "~/components/dashboard/widgets/JourneyBanner";
 import { TodayPlan } from "~/components/dashboard/widgets/TodayPlan";
 import { DailyChallenge } from "~/components/dashboard/widgets/DailyChallenge";
@@ -160,6 +161,14 @@ function DashboardPage() {
                     <span>Placement Test</span>
                   </Link>
                 )}
+                {/* 3D Mini Avatar Bust Profile Icon */}
+                <Link to="/dashboard/settings" className="hover:scale-105 transition-transform" title="Customize AI Coach Avatar">
+                  <SmartAvatar
+                    features={data.user.avatarFeatures}
+                    size={40}
+                    miniHeaderMode={true}
+                  />
+                </Link>
               </div>
             </div>
           </header>

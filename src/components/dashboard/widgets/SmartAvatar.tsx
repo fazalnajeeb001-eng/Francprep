@@ -145,9 +145,18 @@ interface SmartAvatarProps {
   size?: number;
   animate?: string;
   glowColor?: "purple" | "cyan" | "pink";
+  showThoughts?: boolean;
+  miniHeaderMode?: boolean;
 }
 
-export function SmartAvatar({ gender: propGender, features, size = 80, animate = "idle" }: SmartAvatarProps) {
+export function SmartAvatar({
+  gender: propGender,
+  features,
+  size = 80,
+  animate = "idle",
+  showThoughts = true,
+  miniHeaderMode = false,
+}: SmartAvatarProps) {
   const gender = propGender || features?.gender || "female";
   const isMale = gender === "male";
   const modelUrl = isMale ? "/models/leo-avatar.glb" : "/models/female-avatar.glb";
@@ -161,33 +170,61 @@ export function SmartAvatar({ gender: propGender, features, size = 80, animate =
   }, [animate]);
 
   useEffect(() => {
+    if (!showThoughts || miniHeaderMode) return;
     const lang = (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : "fr") || "fr";
     const thoughts = COACH_THOUGHTS[lang.toLowerCase()] || COACH_THOUGHTS.fr;
 
     const triggerThought = () => {
       const randomMsg = thoughts[Math.floor(Math.random() * thoughts.length)];
       setActiveThought(randomMsg);
-      setTimeout(() => setActiveThought(null), 6000);
+      setTimeout(() => setActiveThought(null), 5500);
     };
 
     // First thought pops up after 3s
-    const firstTimer = setTimeout(triggerThought, 3000);
+    const firstTimer = setTimeout(triggerThought, 3500);
 
-    // Periodic thought pop up every 16s
-    const interval = setInterval(triggerThought, 16000);
+    // Periodic thought pop up every 18s
+    const interval = setInterval(triggerThought, 18000);
 
     return () => {
       clearTimeout(firstTimer);
       clearInterval(interval);
     };
-  }, []);
+  }, [showThoughts, miniHeaderMode]);
 
   const handleAvatarClick = () => {
     setCurrentAnim("wave");
+    if (showThoughts && !miniHeaderMode) {
+      const lang = (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : "fr") || "fr";
+      const thoughts = COACH_THOUGHTS[lang.toLowerCase()] || COACH_THOUGHTS.fr;
+      const randomMsg = thoughts[Math.floor(Math.random() * thoughts.length)];
+      setActiveThought(randomMsg);
+      setTimeout(() => setActiveThought(null), 5500);
+    }
     setTimeout(() => {
       setCurrentAnim("idle");
     }, 3500);
   };
+
+  if (miniHeaderMode) {
+    return (
+      <div style={{ width: size, height: size }} className="relative shrink-0 rounded-full overflow-hidden border border-purple-400/40 shadow-md">
+        <AvatarErrorBoundary fallback={<AvatarFallback size={size} gender={gender} />}>
+          <DynamicVRMAvatar
+            modelUrl={modelUrl}
+            size={size}
+            animate={currentAnim}
+            tint={{
+              skinColor: features?.skinTone ? getSkinById(features.skinTone).color : undefined,
+              hairColor: features?.hairColor,
+              outfitColor: features?.outfitColor,
+            }}
+            gender={gender}
+          />
+        </AvatarErrorBoundary>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -198,6 +235,28 @@ export function SmartAvatar({ gender: propGender, features, size = 80, animate =
       className="relative shrink-0 flex items-center justify-center overflow-visible cursor-pointer select-none"
       onClick={handleAvatarClick}
     >
+      {/* 💭 Mobile-Responsive Sleek Glassmorphism Thought Pill Badge */}
+      <AnimatePresence>
+        {activeThought && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85, y: 6 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.85, y: -6 }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            className="absolute left-1/2 -translate-x-1/2 z-30 pointer-events-none max-w-[170px] sm:max-w-[240px] text-center"
+            style={{ top: -size * 0.22 }}
+          >
+            <div
+              className="px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-semibold text-white bg-slate-950/90 border border-purple-400/50 backdrop-blur-md shadow-xl truncate leading-snug"
+              style={{
+                boxShadow: "0 4px 20px rgba(139,92,246,0.4), 0 0 10px rgba(168,85,247,0.25)",
+              }}
+            >
+              <span>💭 {activeThought}</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* 🔮 Single Radiant Purple Glowing Circle Base (Centered Exactly Under Avatar Feet) */}
       <motion.div

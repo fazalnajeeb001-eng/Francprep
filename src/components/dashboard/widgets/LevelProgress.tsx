@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { Link } from "@tanstack/react-router";
 import { SmartAvatar } from "./SmartAvatar";
 import type { DashboardData } from "../types";
 import { CEFR_ORDER, getLevelBackgrounds } from "../utils/userPrefs";
@@ -433,13 +434,13 @@ export function LevelProgress({ levels, dark, overall, avatarUrl, avatarFeatures
         </motion.div>
       </motion.div>
 
-      {/* === 3D AVATAR (CENTERED UNDER ACTIVE CLB LEVEL NODE) === */}
+      {/* === 3D AVATAR (STANDING AT EXTREME FAR-LEFT FOR A1) === */}
       <motion.div
         className="absolute z-[12]"
         style={{
-          left: `${[5, 23, 41, 59, 77, 95][activeIndex >= 0 ? activeIndex : 0]}%`,
+          left: activeIndex === 0 ? "0%" : `${[5, 23, 41, 59, 77, 95][activeIndex >= 0 ? activeIndex : 0]}%`,
           bottom: "0%",
-          transform: "translateX(-50%)",
+          transform: activeIndex === 0 ? "none" : "translateX(-50%)",
           width: avatarSize,
           height: avatarSize,
         }}
@@ -454,6 +455,17 @@ export function LevelProgress({ levels, dark, overall, avatarUrl, avatarFeatures
           animate={avatarAnim}
           glowColor="purple"
         />
+
+        {/* 🎙️ Talk Freely with AI Coach Button */}
+        <Link
+          to="/speaking"
+          search={{ mode: "free", level: activeLevel }}
+          className="absolute -bottom-2 left-1/2 -translate-x-1/2 z-20 px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold text-white bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 border border-purple-300/40 shadow-lg flex items-center gap-1.5 transition-all transform hover:scale-105 active:scale-95 whitespace-nowrap"
+          title="Open Dedicated AI Free-Speaking Coach"
+        >
+          <span>🎙️</span>
+          <span>Speak Freely</span>
+        </Link>
 
 
         {/* Sparkle effect (chapter complete) */}
