@@ -986,6 +986,7 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
     let mainImageSvg: string | undefined = undefined;
 
     if (i <= 4) {
+      mainImage = `/illustrations/tcf_p1_q${i}.png`;
       mainImageSvg = getOfficialLineArtSvg(i, seedOffset);
     }
 

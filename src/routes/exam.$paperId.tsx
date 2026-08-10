@@ -2046,7 +2046,21 @@ export function AuthenticCBTExamPage() {
                       </div>
                     </div>
 
-                    {(currentQ as any).mainImageSvg ? (
+                    {(currentQ as any).mainImage ? (
+                      <div className="p-3.5 rounded-xl bg-white border border-slate-300 text-slate-900 space-y-2 shadow-md">
+                        <div className="flex items-center justify-between text-xs font-bold text-slate-800 border-b pb-1.5 border-slate-200">
+                          <span>🎨 Sur le livret / l'écran, vous voyez :</span>
+                          <span className="text-[10px] text-slate-500 font-mono">Dessin au trait (Style officiel FEI)</span>
+                        </div>
+                        <div className="relative aspect-[16/10] w-full rounded-lg overflow-hidden border border-slate-300 bg-white flex items-center justify-center">
+                          <img
+                            src={(currentQ as any).mainImage}
+                            alt={`Illustration N°${currentQ.questionNumber}`}
+                            className="w-full h-full object-contain p-1 bg-white"
+                          />
+                        </div>
+                      </div>
+                    ) : (currentQ as any).mainImageSvg ? (
                       <div className="p-3.5 rounded-xl bg-white border border-slate-300 text-slate-900 space-y-2 shadow-md">
                         <div className="flex items-center justify-between text-xs font-bold text-slate-800 border-b pb-1.5 border-slate-200">
                           <span>🎨 Sur le livret / l'écran, vous voyez :</span>
@@ -2054,20 +2068,6 @@ export function AuthenticCBTExamPage() {
                         </div>
                         <div className="relative aspect-[16/10] w-full rounded-lg overflow-hidden border border-slate-300 bg-white"
                              dangerouslySetInnerHTML={{ __html: (currentQ as any).mainImageSvg }} />
-                      </div>
-                    ) : (currentQ as any).mainImage ? (
-                      <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-700 text-white space-y-2 shadow-md">
-                        <div className="flex items-center justify-between text-xs font-bold text-amber-300">
-                          <span>🖼️ Illustration N°{currentQ.questionNumber}</span>
-                          <span className="text-[10px] text-slate-400 font-mono">Observez l'image avant d'écouter les 4 propositions</span>
-                        </div>
-                        <div className="relative aspect-[16/10] w-full rounded-lg overflow-hidden border border-slate-800">
-                          <img
-                            src={(currentQ as any).mainImage}
-                            alt={`Illustration N°${currentQ.questionNumber}`}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
                       </div>
                     ) : null}
 
