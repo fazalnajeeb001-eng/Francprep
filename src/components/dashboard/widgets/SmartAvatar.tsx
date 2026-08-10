@@ -1,8 +1,6 @@
-import { useRef, useState, useEffect, Suspense, lazy, Component, type ReactNode } from "react";
+import { useRef, useState, useEffect, Suspense, Component, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getSkinById } from "./avatarSkins";
-
-const VRMAvatar = lazy(() => import("./VRMAvatar"));
 
 class AvatarErrorBoundary extends Component<{ children: ReactNode; fallback: ReactNode }, { hasError: boolean }> {
   state = { hasError: false };
@@ -64,6 +62,48 @@ export function AvatarFallback({ size, gender }: { size: number; gender: string 
   );
 }
 
+function DynamicVRMAvatar({
+  modelUrl,
+  size,
+  animate,
+  tint,
+  gender,
+}: {
+  modelUrl: string;
+  size: number;
+  animate: string;
+  tint?: any;
+  gender: string;
+}) {
+  const [VRMComp, setVRMComp] = useState<any>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    import("./VRMAvatar")
+      .then((mod) => {
+        if (mounted) {
+          setVRMComp(() => mod.default || mod.VRMAvatar);
+        }
+      })
+      .catch((err) => {
+        console.warn("[SmartAvatar] WebGL 3D dynamic import failed:", err);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (!VRMComp) {
+    return <AvatarFallback size={size} gender={gender} />;
+  }
+
+  return (
+    <Suspense fallback={<AvatarFallback size={size} gender={gender} />}>
+      <VRMComp modelUrl={modelUrl} size={size} animate={animate} tint={tint} />
+    </Suspense>
+  );
+}
+
 const COACH_THOUGHTS: Record<string, string[]> = {
   fr: [
     "Prêt pour la séance d'aujourd'hui ? 🇨🇦",
@@ -113,13 +153,8 @@ export function SmartAvatar({ gender: propGender, features, size = 80, animate =
   const modelUrl = isMale ? "/models/leo-avatar.glb" : "/models/female-avatar.glb";
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const [isMounted, setIsMounted] = useState(false);
   const [activeThought, setActiveThought] = useState<string | null>(null);
   const [currentAnim, setCurrentAnim] = useState<string>(animate);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   useEffect(() => {
     setCurrentAnim(animate);
@@ -232,22 +267,17 @@ export function SmartAvatar({ gender: propGender, features, size = 80, animate =
       {/* 3D Animated VRM Avatar Model */}
       <div ref={containerRef} className="relative z-10 w-full h-full flex items-center justify-center">
         <AvatarErrorBoundary fallback={<AvatarFallback size={size} gender={gender} />}>
-          <Suspense fallback={<AvatarFallback size={size} gender={gender} />}>
-            {isMounted ? (
-              <VRMAvatar
-                modelUrl={modelUrl}
-                size={size}
-                animate={currentAnim}
-                tint={{
-                  skinColor: features?.skinTone ? getSkinById(features.skinTone).color : undefined,
-                  hairColor: features?.hairColor,
-                  outfitColor: features?.outfitColor,
-                }}
-              />
-            ) : (
-              <AvatarFallback size={size} gender={gender} />
-            )}
-          </Suspense>
+          <DynamicVRMAvatar
+            modelUrl={modelUrl}
+            size={size}
+            animate={currentAnim}
+            tint={{
+              skinColor: features?.skinTone ? getSkinById(features.skinTone).color : undefined,
+              hairColor: features?.hairColor,
+              outfitColor: features?.outfitColor,
+            }}
+            gender={gender}
+          />
         </AvatarErrorBoundary>
       </div>
     </motion.div>
