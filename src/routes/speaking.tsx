@@ -186,10 +186,9 @@ function SpeakingPage() {
     setAvatarAnim("idle");
 
     try {
+      const activeLang = getActiveLanguageCode(user);
       const isBeginner = activeLevel === "A1" || activeLevel === "A2";
-      const systemInstruction = isBeginner
-        ? `You are Coach Léo/Chloé, an encouraging French AI language coach for Francprep. The student is at beginner level (${activeLevel}). Respond in 2-3 short sentences in French followed by a brief 1-sentence English translation/explanation to guide them and build 200% confidence. Maintain strict OpenAI safety guidelines.`
-        : `You are Coach Léo/Chloé, an encouraging French AI language coach for Francprep. The student is at level (${activeLevel}). Respond naturally in immersive French in 2-3 sentences at a CEFR ${activeLevel} level, giving constructive feedback and asking a follow-up question. Maintain strict safety boundaries.`;
+      const systemInstruction = `You are Coach Léo/Chloé, an encouraging French AI language coach for Francprep. The student's native language preference is ${activeLang.toUpperCase()} and CEFR Level is ${activeLevel}. Respond in French at a CEFR ${activeLevel} level (2 concise sentences), followed by a helpful 1-sentence English translation & grammar correction to guide the student and boost speaking fluency by 200%. Maintain strict safety boundaries.`;
 
       const res = await apiFetch("/ai/evaluate-writing", {
         method: "POST",

@@ -263,7 +263,7 @@ export function SpeakingDrill({ lessonLevel = "A1", lessonTopic, guidedActivity,
             <div className={`rounded-2xl p-1 shadow-lg transition-all ${
               isSpeaking ? "bg-gradient-to-r from-emerald-400 to-teal-400 animate-pulse ring-4 ring-emerald-500/30" : "bg-gradient-to-r from-purple-500 to-pink-500"
             }`}>
-              <SmartAvatar gender={avatarGender} size={56} animate={isSpeaking ? "speaking" : isThinking ? "thinking" : "idle"} />
+              <SmartAvatar gender={avatarGender} size={56} animate={isSpeaking ? "speaking" : isThinking ? "thinking" : "idle"} showThoughts={false} miniHeaderMode={true} />
             </div>
             <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-[#0c1224] flex items-center justify-center text-[8px] ${
               isSpeaking ? "bg-emerald-500" : isThinking ? "bg-amber-500 animate-spin" : "bg-emerald-400"

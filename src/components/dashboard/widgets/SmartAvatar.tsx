@@ -262,11 +262,11 @@ export function SmartAvatar({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.85, y: -6 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
-            className="absolute left-1/2 -translate-x-1/2 z-30 pointer-events-none max-w-[170px] sm:max-w-[240px] text-center"
-            style={{ top: -size * 0.22 }}
+            className="absolute left-1/2 -translate-x-1/2 z-30 pointer-events-none w-[170px] sm:w-[220px] text-center"
+            style={{ top: -size * 0.28 }}
           >
             <div
-              className="px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-semibold text-white bg-slate-950/90 border border-purple-400/50 backdrop-blur-md shadow-xl truncate leading-snug"
+              className="px-3 py-1.5 rounded-2xl text-[10px] sm:text-[11px] font-semibold text-white bg-slate-950/95 border border-purple-400/50 backdrop-blur-md shadow-2xl whitespace-normal break-words leading-tight"
               style={{
                 boxShadow: "0 4px 20px rgba(139,92,246,0.4), 0 0 10px rgba(168,85,247,0.25)",
               }}
