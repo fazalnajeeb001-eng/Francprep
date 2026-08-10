@@ -117,6 +117,7 @@ export function ExamHubPage() {
 
   const bg = dark ? "bg-[#070B17] text-white" : "bg-[#F8FAFC] text-slate-900";
   const cardBg = dark ? "bg-[#101828]/90 border-[#1e2a4a]" : "bg-white border-slate-200 shadow-sm shadow-slate-200/50";
+  const txtSec = dark ? "text-gray-400" : "text-slate-600";
   return (
     <div className={`min-h-screen ${bg} p-4 md:p-8 transition-colors duration-300`}>
       <div className="max-w-5xl mx-auto space-y-8 pb-20">
