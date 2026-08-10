@@ -6,8 +6,6 @@ import { useTheme } from "~/lib/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Flame, Calendar as CalendarIcon, BookOpen, ArrowLeft, TrendingUp, Target } from "lucide-react";
 
-export const Route = createFileRoute("/dashboard/calendar")({ component: CalendarPage });
-
 interface DashboardData {
   streakCalendar: Array<{ date: string; count: number }>;
   stats: { streak: number; xp: number; totalStudyTime: number; hearts: number };
@@ -226,3 +224,5 @@ function CalendarPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/dashboard/calendar")({ component: CalendarPage });

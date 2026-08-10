@@ -19,8 +19,6 @@ import {
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 
-export const Route = createFileRoute("/admin/gating")({ component: AdminGatingPage });
-
 interface StudentUser {
   _id: string;
   firstName: string;
@@ -461,3 +459,5 @@ function Globe(props: any) {
     </svg>
   );
 }
+
+export const Route = createFileRoute("/admin/gating")({ component: AdminGatingPage });

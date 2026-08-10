@@ -7,8 +7,6 @@ import {
   UserCheck, Activity, ArrowUp, ArrowDown
 } from "lucide-react";
 
-export const Route = createFileRoute("/admin/")({ component: AdminDashboardPage });
-
 interface AdminStats {
   totalUsers: number;
   totalLessons: number;
@@ -181,3 +179,5 @@ function AdminError({ error }: { error: string }) {
     </div>
   );
 }
+
+export const Route = createFileRoute("/admin/")({ component: AdminDashboardPage });

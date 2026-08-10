@@ -9,8 +9,6 @@ import { reviewFlashcards, getDueCards, getFlashcardStats, type FlashcardProgres
 import { speak } from "~/lib/speech";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 
-export const Route = createFileRoute("/flashcards")({ component: FlashcardsPage });
-
 interface VocabCard {
   id: string;
   french: string;
@@ -695,3 +693,5 @@ function FlashcardsPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/flashcards")({ component: FlashcardsPage });

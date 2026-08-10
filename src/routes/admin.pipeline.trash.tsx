@@ -17,10 +17,6 @@ import {
 import { useTheme } from "~/lib/ThemeContext";
 import { apiFetch } from "~/lib/apiFetch";
 
-export const Route = createFileRoute("/admin/pipeline/trash")({
-  component: AdminPipelineTrashPage,
-});
-
 interface TrashItem {
   _id: string;
   title: string;
@@ -296,3 +292,7 @@ export function AdminPipelineTrashPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/admin/pipeline/trash")({
+  component: AdminPipelineTrashPage,
+});

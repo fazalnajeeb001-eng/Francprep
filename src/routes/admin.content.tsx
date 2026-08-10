@@ -9,8 +9,6 @@ import {
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 
-export const Route = createFileRoute("/admin/content")({ component: ContentGeneratorPage });
-
 const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
 const categories = ["grammar", "vocabulary", "listening", "reading", "writing", "speaking"];
 
@@ -775,3 +773,5 @@ function ContentGeneratorPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/admin/content")({ component: ContentGeneratorPage });

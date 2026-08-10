@@ -16,10 +16,6 @@ import {
 import { useTheme } from "~/lib/ThemeContext";
 import { OFFICIAL_DELF_DALF_PAPERS } from "~/lib/delfExamSchema";
 
-export const Route = createFileRoute("/exam/delf/")({
-  component: DELFExamHubPage,
-});
-
 export function DELFExamHubPage() {
   const { dark } = useTheme();
   const [selectedLevel, setSelectedLevel] = useState<string>("ALL");
@@ -131,3 +127,7 @@ export function DELFExamHubPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/exam/delf/")({
+  component: DELFExamHubPage,
+});

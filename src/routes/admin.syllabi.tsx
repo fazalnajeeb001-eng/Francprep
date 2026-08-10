@@ -4,8 +4,6 @@ import { apiFetch } from "~/lib/apiFetch";
 import { motion } from "framer-motion";
 import { BookOpen, ChevronRight, Layers, FileText, Plus } from "lucide-react";
 
-export const Route = createFileRoute("/admin/syllabi")({ component: AdminSyllabiPage });
-
 interface Syllabus {
   _id: string;
   level: string;
@@ -224,3 +222,5 @@ function AdminSyllabiPage() {
     </motion.div>
   );
 }
+
+export const Route = createFileRoute("/admin/syllabi")({ component: AdminSyllabiPage });

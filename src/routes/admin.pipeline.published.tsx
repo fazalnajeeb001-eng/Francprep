@@ -9,8 +9,6 @@ import {
 } from "lucide-react";
 import { LessonPage } from "~/components/content/LessonPage";
 
-export const Route = createFileRoute("/admin/pipeline/published")({ component: PublishedContentSubSectionPage });
-
 interface LessonItem {
   _id: string;
   lessonId: string;
@@ -546,3 +544,5 @@ function PublishedContentSubSectionPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/admin/pipeline/published")({ component: PublishedContentSubSectionPage });

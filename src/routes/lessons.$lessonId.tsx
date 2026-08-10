@@ -3,10 +3,6 @@ import { useAuth } from "~/lib/AuthContext";
 import { LessonPage } from "~/components/content/LessonPage";
 import { motion } from "framer-motion";
 
-export const Route = createFileRoute("/lessons/$lessonId")({
-  component: LessonRoute,
-});
-
 function LessonRoute() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const { lessonId } = (useParams({ strict: false }) || {}) as any;
@@ -38,3 +34,7 @@ function LessonRoute() {
 
   return <LessonPage lessonId={lessonId} onBack={handleBack} />;
 }
+
+export const Route = createFileRoute("/lessons/$lessonId")({
+  component: LessonRoute,
+});

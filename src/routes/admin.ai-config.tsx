@@ -19,8 +19,6 @@ import {
 import { useTheme } from "~/lib/ThemeContext";
 import { speak, stopAudio } from "~/lib/speech";
 
-export const Route = createFileRoute("/admin/ai-config")({ component: AdminAIConfigPage });
-
 export function AdminAIConfigPage() {
   const { dark } = useTheme();
   const [loading, setLoading] = useState(true);
@@ -686,3 +684,5 @@ export function AdminAIConfigPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/admin/ai-config")({ component: AdminAIConfigPage });

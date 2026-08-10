@@ -8,8 +8,6 @@ import { FlagIcon } from "~/components/common/FlagIcon";
 import { motion, AnimatePresence } from "framer-motion";
 import { GraduationCap, Mail, Lock, Sparkles, CheckCircle2, ShieldCheck, KeyRound, ArrowRight, RefreshCw } from "lucide-react";
 
-export const Route = createFileRoute("/signup")({ component: SignupPage });
-
 function SignupPage() {
   const { dark } = useTheme();
   const { signup, user } = useAuth();
@@ -398,3 +396,5 @@ function SignupPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/signup")({ component: SignupPage });

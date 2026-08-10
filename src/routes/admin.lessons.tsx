@@ -8,8 +8,6 @@ import {
   Lock, Unlock, EyeOff, AlertTriangle, CheckCircle, ShieldCheck, RefreshCw, Trash2
 } from "lucide-react";
 
-export const Route = createFileRoute("/admin/lessons")({ component: AdminLessonsPage });
-
 interface Lesson {
   _id: string;
   lessonId: string;
@@ -639,3 +637,5 @@ function AdminLessonsPage() {
 function Loader2({ className }: { className?: string }) {
   return <RefreshCw className={`${className} animate-spin`} />;
 }
+
+export const Route = createFileRoute("/admin/lessons")({ component: AdminLessonsPage });

@@ -5,8 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Megaphone, Plus, Trash2, Edit3, Check, X, AlertTriangle, Info, AlertCircle, BookOpen, Clock, Filter } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 
-export const Route = createFileRoute("/admin/announcements")({ component: AnnouncementsPage });
-
 const types = [
   { value: "info", label: "Info", icon: Info, color: "text-blue-400 bg-blue-500/10 border-blue-500/20" },
   { value: "warning", label: "Warning", icon: AlertCircle, color: "text-amber-400 bg-amber-500/10 border-amber-500/20" },
@@ -206,3 +204,5 @@ function AnnouncementsPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/admin/announcements")({ component: AnnouncementsPage });

@@ -29,10 +29,6 @@ import {
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 
-export const Route = createFileRoute("/admin/subscriptions")({
-  component: SubscriptionsPage,
-});
-
 interface PricingPlan {
   id: string;
   title: string;
@@ -717,3 +713,7 @@ export function SubscriptionsPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/admin/subscriptions")({
+  component: SubscriptionsPage,
+});

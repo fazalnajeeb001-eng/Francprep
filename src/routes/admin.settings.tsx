@@ -17,8 +17,6 @@ import {
 import { useTheme } from "~/lib/ThemeContext";
 import { speak, toggleAudio, stopAudio } from "~/lib/speech";
 
-export const Route = createFileRoute("/admin/settings")({ component: AdminSettingsPage });
-
 export function AdminSettingsPage() {
   const { dark } = useTheme();
   const [loading, setLoading] = useState(true);
@@ -549,3 +547,5 @@ export function AdminSettingsPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/admin/settings")({ component: AdminSettingsPage });

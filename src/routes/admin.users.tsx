@@ -9,8 +9,6 @@ import {
   X, Check, AlertTriangle, Eye, EyeOff, UserCog, Mail, Lock
 } from "lucide-react";
 
-export const Route = createFileRoute("/admin/users")({ component: AdminUsersPage });
-
 interface AdminUser {
   _id: string;
   firstName: string;
@@ -636,3 +634,5 @@ function AdminUsersPage() {
     </motion.div>
   );
 }
+
+export const Route = createFileRoute("/admin/users")({ component: AdminUsersPage });

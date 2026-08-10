@@ -23,10 +23,6 @@ import {
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 
-export const Route = createFileRoute("/admin/analytics")({
-  component: AnalyticsPage,
-});
-
 class AnalyticsSectionBoundary extends Component<{ children: ReactNode; title?: string }, { hasError: boolean; error: string }> {
   state = { hasError: false, error: "" };
   static getDerivedStateFromError(err: Error) {
@@ -488,3 +484,7 @@ export function AnalyticsPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/admin/analytics")({
+  component: AnalyticsPage,
+});

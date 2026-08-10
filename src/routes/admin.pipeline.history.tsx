@@ -8,8 +8,6 @@ import {
 } from "lucide-react";
 import { LessonPage } from "~/components/content/LessonPage";
 
-export const Route = createFileRoute("/admin/pipeline/history")({ component: PublishedHistorySubSectionPage });
-
 interface HistoryDraftItem {
   _id: string;
   lessonId: string;
@@ -244,3 +242,5 @@ function PublishedHistorySubSectionPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/admin/pipeline/history")({ component: PublishedHistorySubSectionPage });

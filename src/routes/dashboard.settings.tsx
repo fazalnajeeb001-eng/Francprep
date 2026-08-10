@@ -10,8 +10,6 @@ import { GOAL_OPTIONS, getGoalOptionsForLanguage, type LearningGoal, setGoal as 
 import { getActiveLanguageCode } from "~/lib/trackBranding";
 import { SmartAvatar } from "~/components/dashboard/widgets/SmartAvatar";
 
-export const Route = createFileRoute("/dashboard/settings")({ component: SettingsPage });
-
 interface DynamicPlan {
   id: string;
   title: string;
@@ -626,3 +624,5 @@ function SettingsPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/dashboard/settings")({ component: SettingsPage });

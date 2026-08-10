@@ -6,9 +6,7 @@ import { apiFetch } from "~/lib/apiFetch";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { FlagIcon } from "~/components/common/FlagIcon";
 import { motion, AnimatePresence } from "framer-motion";
-import { GraduationCap, Mail, Lock, LogIn, Eye, EyeOff, KeyRound, CheckCircle2, ArrowLeft, Sparkles, ShieldCheck } from "lucide-react";
-
-export const Route = createFileRoute("/login")({ component: LoginPage });
+import { GraduationCap, Mail, Lock, Sparkles, AlertCircle, ArrowLeft, ShieldCheck, KeyRound } from "lucide-react";
 
 function LoginPage() {
   const { dark } = useTheme();
@@ -501,3 +499,5 @@ function LoginPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/login")({ component: LoginPage });

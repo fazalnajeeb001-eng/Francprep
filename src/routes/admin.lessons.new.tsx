@@ -4,8 +4,6 @@ import { apiFetch } from "~/lib/apiFetch";
 import { motion } from "framer-motion";
 import { ArrowLeft, Save, X } from "lucide-react";
 
-export const Route = createFileRoute("/admin/lessons/new")({ component: LessonFormPage });
-
 const levels = ["A0", "A1", "A2", "B1", "B2", "C1", "C2"] as const;
 const skills = ["R", "W", "L", "S", "INT", "REV"] as const;
 const anchorSkills = ["reading", "writing", "listening", "speaking", "integrated", "review"] as const;
@@ -223,3 +221,5 @@ function LessonFormPage() {
     </motion.div>
   );
 }
+
+export const Route = createFileRoute("/admin/lessons/new")({ component: LessonFormPage });

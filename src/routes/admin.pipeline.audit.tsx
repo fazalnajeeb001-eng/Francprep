@@ -9,8 +9,6 @@ import {
 } from "lucide-react";
 import { LessonPage } from "~/components/content/LessonPage";
 
-export const Route = createFileRoute("/admin/pipeline/audit")({ component: AuditsAndQualityPage });
-
 interface AuditReportItem {
   lessonId: string;
   title: string;
@@ -449,3 +447,5 @@ function AuditsAndQualityPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/admin/pipeline/audit")({ component: AuditsAndQualityPage });

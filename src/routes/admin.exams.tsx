@@ -21,10 +21,6 @@ import { useTheme } from "~/lib/ThemeContext";
 import { getExamRegistry, type ExamPaper } from "~/lib/examSchema";
 import { OFFICIAL_DELF_DALF_PAPERS } from "~/lib/delfExamSchema";
 
-export const Route = createFileRoute("/admin/exams")({
-  component: AdminExamsPage,
-});
-
 export function AdminExamsPage() {
   const { dark } = useTheme();
   const [examTypeFilter, setExamTypeFilter] = useState<"ALL" | "TCF_CANADA" | "TEF_CANADA" | "DELF_DALF">("ALL");
@@ -175,3 +171,7 @@ export function AdminExamsPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/admin/exams")({
+  component: AdminExamsPage,
+});

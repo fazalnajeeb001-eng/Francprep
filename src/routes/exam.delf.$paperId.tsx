@@ -22,10 +22,6 @@ import { speak, speakDialogue } from "~/lib/speech";
 import { OFFICIAL_DELF_DALF_PAPERS, type DELFExamPaper } from "~/lib/delfExamSchema";
 import { apiFetch } from "~/lib/apiFetch";
 
-export const Route = createFileRoute("/exam/delf/$paperId")({
-  component: DELFExamCanvasPage,
-});
-
 export function DELFExamCanvasPage() {
   const { paperId } = (useParams({ strict: false }) || {}) as any;
   const navigate = useNavigate();
@@ -353,3 +349,7 @@ export function DELFExamCanvasPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/exam/delf/$paperId")({
+  component: DELFExamCanvasPage,
+});

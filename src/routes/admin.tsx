@@ -9,14 +9,6 @@ import {
   ChevronDown, ChevronUp, Layers, Clock
 } from "lucide-react";
 
-export const Route = createFileRoute("/admin")({
-  component: AdminLayout,
-  beforeLoad: ({ context }) => {
-    // Redirect non-admin users away
-    // Auth check is also done in the component for reactivity
-  },
-});
-
 const navGroups = [
   {
     title: "Content Pipeline",
@@ -242,3 +234,11 @@ function AdminLayout() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/admin")({
+  component: AdminLayout,
+  beforeLoad: ({ context }) => {
+    // Redirect non-admin users away
+    // Auth check is also done in the component for reactivity
+  },
+});

@@ -23,8 +23,6 @@ import { useAuth } from "~/lib/AuthContext";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { getExamRegistry, type ExamMode, type ExamType } from "~/lib/examSchema";
 
-export const Route = createFileRoute("/exam")({ component: ExamRouteLayout });
-
 function ExamRouteLayout() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const matchDelfIndex = useMatch({ from: "/exam/delf/", shouldThrow: false });
@@ -641,3 +639,5 @@ export function ExamHubPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/exam")({ component: ExamRouteLayout });

@@ -1,10 +1,6 @@
 import { createFileRoute, useRouter, useParams } from "@tanstack/react-router";
 import { LessonPage } from "~/components/content/LessonPage";
 
-export const Route = createFileRoute("/lesson/$id")({
-  component: LessonRoute,
-});
-
 function LessonRoute() {
   const { id } = (useParams({ strict: false }) || {}) as any;
   const router = useRouter();
@@ -19,3 +15,7 @@ function LessonRoute() {
 
   return <LessonPage lessonId={id} onBack={handleBack} />;
 }
+
+export const Route = createFileRoute("/lesson/$id")({
+  component: LessonRoute,
+});

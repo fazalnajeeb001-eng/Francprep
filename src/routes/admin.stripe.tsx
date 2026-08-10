@@ -13,8 +13,6 @@ import {
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 
-export const Route = createFileRoute("/admin/stripe")({ component: AdminStripePage });
-
 export function AdminStripePage() {
   const { dark } = useTheme();
   const [loading, setLoading] = useState(true);
@@ -203,3 +201,5 @@ export function AdminStripePage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/admin/stripe")({ component: AdminStripePage });

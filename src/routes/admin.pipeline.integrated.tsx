@@ -9,8 +9,6 @@ import {
 } from "lucide-react";
 import { LessonPage } from "~/components/content/LessonPage";
 
-export const Route = createFileRoute("/admin/pipeline/integrated")({ component: IntegratedDraftsSubSectionPage });
-
 interface DraftItem {
   _id: string;
   lessonId: string;
@@ -323,3 +321,5 @@ function IntegratedDraftsSubSectionPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/admin/pipeline/integrated")({ component: IntegratedDraftsSubSectionPage });
