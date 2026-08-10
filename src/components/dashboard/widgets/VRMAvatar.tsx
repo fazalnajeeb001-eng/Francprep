@@ -1,6 +1,8 @@
 import { useRef, useState, useEffect, useMemo, Suspense, Component, type ReactNode } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 
 class ErrorBoundary extends Component<{ children: ReactNode; fallback: ReactNode }, { hasError: boolean }> {
   state = { hasError: false };
@@ -107,11 +109,8 @@ function VRMModel({
   useEffect(() => {
     let cancelled = false;
 
-    async function loadModel() {
+    function loadModel() {
       try {
-        const { GLTFLoader } = await import("three/addons/loaders/GLTFLoader.js");
-        const { DRACOLoader } = await import("three/addons/loaders/DRACOLoader.js");
-
         const loader = new GLTFLoader();
         const dracoLoader = new DRACOLoader();
         dracoLoader.setDecoderPath("/draco/");

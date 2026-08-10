@@ -6,12 +6,20 @@ import tsConfigPaths from "vite-tsconfig-paths";
 import { nitro } from "nitro/vite";
 
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules/three") || id.includes("node_modules/@react-three")) {
+            return "three-vendor";
+          }
+        },
+      },
+    },
+  },
   server: {
     port: 3000,
     host: true,
-    // The site is reverse-proxied behind <label>.<PUBLIC_SITE_DOMAIN>; the proxy
-    // masks the Host to localhost:3000, but accept any host so a dev server never
-    // rejects a proxied request with "Blocked request".
     allowedHosts: true,
     proxy: {
       '/api': {
