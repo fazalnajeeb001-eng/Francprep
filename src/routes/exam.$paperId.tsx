@@ -2201,7 +2201,7 @@ export function AuthenticCBTExamPage() {
 
                 {/* Multiple Choice Options (Official FEI Radio Buttons for Spoken Option Items vs Standard Text Options) */}
                 <div className="space-y-2.5">
-                  {((currentQ as any).optionImages && (currentQ as any).optionImages.length === 4) || (currentSection.type === "COMPREHENSION_ORALE" && currentQ.questionNumber <= 4) ? (
+                  {((currentQ as any).optionImages && (currentQ as any).optionImages.length === 4) ? (
                     <div className="grid grid-cols-2 gap-3 sm:gap-4">
                       {(() => {
                         const optSvgs = currentQ.questionNumber <= 4 && !(currentQ as any).optionImages
