@@ -10,10 +10,10 @@ import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { SmartAvatar } from "~/components/dashboard/widgets/SmartAvatar";
 
 export const Route = createFileRoute("/speaking")({
-  validateSearch: (search: Record<string, unknown>) => {
+  validateSearch: (search: Record<string, unknown> = {}) => {
     return {
-      mode: (search.mode as string) || "drill",
-      level: (search.level as string) || "A1",
+      mode: (search?.mode as string) || "drill",
+      level: (search?.level as string) || "A1",
     };
   },
   component: SpeakingPage,
@@ -271,7 +271,7 @@ function SpeakingPage() {
               AI Coach active
             </div>
             <SmartAvatar
-              features={user.avatarFeatures}
+              features={user?.avatarFeatures}
               size={230}
               animate={avatarAnim}
               glowColor="purple"

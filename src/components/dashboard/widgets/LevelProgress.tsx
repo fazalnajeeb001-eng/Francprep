@@ -451,9 +451,9 @@ export function LevelProgress({ levels, dark, overall, avatarUrl, avatarFeatures
         {/* Tapping/Clicking 3D Avatar Directly Opens AI Free-Speaking Coach Page */}
         <Link
           to="/speaking"
-          search={{ mode: "free", level: activeLevel }}
+          search={{ mode: "free", level: activeLevel || "A1" }}
           className="block w-full h-full cursor-pointer group"
-          title={`Click to Speak Freely with AI Coach in French (${activeLevel} Level)`}
+          title={`Click to Speak Freely with AI Coach in French (${activeLevel || "A1"} Level)`}
         >
           <SmartAvatar
             features={avatarFeatures as any}
