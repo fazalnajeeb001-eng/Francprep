@@ -87,13 +87,58 @@ interface ChatMessage {
   timestamp: string;
 }
 
-const LEVEL_INITIAL_GREETINGS: Record<string, string> = {
-  A1: "Bonjour ! Bienvenue. Comment allez-vous aujourd'hui ? On va pratiquer le français ensemble !",
-  A2: "Salut ! Ravi de vous voir. Parlez-moi un peu de votre journée ou de vos passe-temps !",
-  B1: "Bonjour ! Prêt pour une vraie conversation ? Quel sujet aimeriez-vous aborder aujourd'hui ?",
-  B2: "Bienvenue ! Discutons d'un sujet d'actualité ou d'une opinion personnelle. Qu'en pensez-vous ?",
-  C1: "Bonjour. Abordons un débat complexe adapté au TCF Canada. Quel thème souhaitez-vous analyser ?",
-  C2: "Bonjour. Entraînons-nous au niveau d'expression le plus élevé. Exposez votre thèse sur le sujet de votre choix.",
+const TTS_LOCALE_MAP: Record<string, string> = {
+  fr: "fr-FR",
+  de: "de-DE",
+  es: "es-ES",
+  it: "it-IT",
+  en: "en-US",
+  pt: "pt-PT",
+  ru: "ru-RU",
+  zh: "zh-CN",
+};
+
+const MULTILINGUAL_GREETINGS: Record<string, Record<string, string>> = {
+  fr: {
+    A1: "Bonjour ! Bienvenue. Comment allez-vous aujourd'hui ? On va pratiquer le français ensemble !",
+    A2: "Salut ! Ravi de vous voir. Parlez-moi un peu de votre journée ou de vos passe-temps !",
+    B1: "Bonjour ! Prêt pour une vraie conversation ? Quel sujet aimeriez-vous aborder aujourd'hui ?",
+    B2: "Bienvenue ! Discutons d'un sujet d'actualité ou d'une opinion personnelle. Qu'en pensez-vous ?",
+    C1: "Bonjour. Abordons un débat complexe adapté au TCF Canada. Quel thème souhaitez-vous analyser ?",
+    C2: "Bonjour. Entraînons-nous au niveau d'expression le plus élevé. Exposez votre thèse sur le sujet de votre choix.",
+  },
+  de: {
+    A1: "Hallo! Willkommen. Wie geht es Ihnen heute? Lass uns zusammen Deutsch üben!",
+    A2: "Hi! Schön dich zu sehen. Erzähl mir etwas über deinen Tag oder deine Hobbys!",
+    B1: "Hallo! Bereit für ein echtes Gespräch? Welches Thema möchtest du heute besprechen?",
+    B2: "Willkommen! Lass uns über aktuelle Themen oder persönliche Meinungen sprechen.",
+    C1: "Guten Tag. Lass uns eine komplexe Debatte führen. Welches Thema möchtest du analysieren?",
+    C2: "Willkommen. Üben wir auf höchstem sprachlichem Niveau. Präsentiere deine Ausführungen.",
+  },
+  es: {
+    A1: "¡Hola! Bienvenido. ¿Cómo estás hoy? ¡Vamos a practicar español juntos!",
+    A2: "¡Hola! Qué gusto verte. Cuéntame un poco sobre tu día o tus pasatiempos.",
+    B1: "¡Hola! ¿Listo para una conversación real? ¿Qué tema te gustaría abordar hoy?",
+    B2: "¡Bienvenido! Hablemos de un tema de actualidad o tu opinión personal.",
+    C1: "Buenas tardes. Debatamos sobre un tema complejo. ¿Qué tema deseas analizar?",
+    C2: "Bienvenido. Practiquemos al más alto nivel de fluidez. Presenta tus argumentos.",
+  },
+  it: {
+    A1: "Ciao! Benvenuto. Come stai oggi? Pratichiamo l'italiano insieme!",
+    A2: "Ciao! Che bello vederti. Raccontami della tua giornata o dei tuoi hobby!",
+    B1: "Ciao! Pronto per una vera conversazione? Di cosa vorresti parlare oggi?",
+    B2: "Benvenuto! Parliamo di attualità o della tua opinione personale.",
+    C1: "Buongiorno. Affrontiamo un dibattito complesso. Quale argomento vuoi analizzare?",
+    C2: "Benvenuto. Alleniamoci al massimo livello di espressione orale.",
+  },
+  en: {
+    A1: "Hello! Welcome. How are you feeling today? Let's practice speaking together!",
+    A2: "Hi! Great to see you. Tell me a bit about your day or your favorite hobbies!",
+    B1: "Hello! Ready for a real conversation? What topic would you like to explore today?",
+    B2: "Welcome! Let me know your thoughts on current affairs or your personal opinions.",
+    C1: "Good day. Let me guide your advanced fluency with complex analytical topics.",
+    C2: "Welcome. Let's practice at the highest native fluency level. Share your insights.",
+  },
 };
 
 function SpeakingPage() {
@@ -111,14 +156,20 @@ function SpeakingPage() {
   
   // Free-Speaking Coach State
   const activeLevel = (level || "A1").toUpperCase();
-  const [avatarAnim, setAvatarAnim] = useState<"idle" | "wave" | "speak" | "celebrate">("idle");
-  const recognitionRef = useRef<any>(null);
+  const activeLang = getActiveLanguageCode(user);
+  const targetTtsLocale = TTS_LOCALE_MAP[activeLang] || "fr-FR";
   const coachGender: "male" | "female" = user?.avatarFeatures?.gender === "male" ? "male" : "female";
   
+  const initialGreetingText = MULTILINGUAL_GREETINGS[activeLang]?.[activeLevel] || MULTILINGUAL_GREETINGS.fr[activeLevel] || MULTILINGUAL_GREETINGS.fr.A1;
+
+  const [avatarAnim, setAvatarAnim] = useState<"idle" | "wave" | "speak" | "celebrate">("idle");
+  const recognitionRef = useRef<any>(null);
+  const hasAutoGreetedRef = useRef(false);
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       sender: "coach",
-      text: LEVEL_INITIAL_GREETINGS[activeLevel] || LEVEL_INITIAL_GREETINGS.A1,
+      text: initialGreetingText,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
@@ -133,6 +184,17 @@ function SpeakingPage() {
     };
   }, []);
 
+  // 🔊 Auto-Speak Greeting on Page Open
+  useEffect(() => {
+    if (mode === "free" && user && !hasAutoGreetedRef.current) {
+      hasAutoGreetedRef.current = true;
+      setAvatarAnim("speak");
+      speakText(initialGreetingText, targetTtsLocale, 0.85, coachGender);
+      const timer = setTimeout(() => setAvatarAnim("idle"), 4500);
+      return () => clearTimeout(timer);
+    }
+  }, [mode, user, initialGreetingText, targetTtsLocale, coachGender]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen dark:bg-[#070B17] bg-gray-50 flex items-center justify-center">
@@ -146,7 +208,7 @@ function SpeakingPage() {
     return <Navigate to="/login" search={{ redirect: "/speaking" }} replace />;
   }
 
-  const activeBranding = getTrackBranding(getActiveLanguageCode(user));
+  const activeBranding = getTrackBranding(activeLang);
 
   useEffect(() => {
     collectPhrases().then(setCardPhrases);
@@ -159,7 +221,7 @@ function SpeakingPage() {
   const btnHover = dark ? "hover:bg-[#1e2a4a]" : "hover:bg-slate-100";
 
   const handleSpeak = (text: string) => {
-    speakText(text, "fr-FR", 0.85, coachGender);
+    speakText(text, targetTtsLocale, 0.85, coachGender);
   };
 
   const startListening = useCallback(() => {
@@ -173,7 +235,7 @@ function SpeakingPage() {
       return;
     }
     const rec = new SpeechRecognition();
-    rec.lang = "fr-FR";
+    rec.lang = targetTtsLocale;
     rec.interimResults = true;
     rec.continuous = false;
 
@@ -208,7 +270,7 @@ function SpeakingPage() {
     } catch {
       setIsListening(false);
     }
-  }, [mode]);
+  }, [mode, targetTtsLocale]);
 
   const stopListening = useCallback(() => {
     if (recognitionRef.current) {
@@ -234,8 +296,7 @@ function SpeakingPage() {
     setAvatarAnim("idle");
 
     try {
-      const activeLang = getActiveLanguageCode(user);
-      const systemInstruction = `You are Coach Léo/Chloé, an encouraging AI language coach for Francprep. The student's selected active language is ${activeLang.toUpperCase()} (French/German/Spanish/Italian/English) and CEFR Level is ${activeLevel}. Respond in the target language at a CEFR ${activeLevel} level (2 concise sentences), followed by a helpful 1-sentence English explanation & grammar correction to guide the student and boost speaking fluency by 200%. Maintain strict safety boundaries.`;
+      const systemInstruction = `You are Coach Léo/Chloé, an encouraging AI language coach for Francprep. The student's selected active language is ${activeLang.toUpperCase()} and CEFR Level is ${activeLevel}. Respond in ${activeLang.toUpperCase()} at a CEFR ${activeLevel} level (2 concise sentences), followed by a helpful 1-sentence English explanation & grammar correction to guide the student and boost speaking fluency by 200%. Maintain strict safety boundaries.`;
 
       const res = await apiFetch("/ai/evaluate-writing", {
         method: "POST",
@@ -248,7 +309,7 @@ function SpeakingPage() {
       });
 
       const json = await res.json();
-      let coachReply = "C'est super ! Continuez comme ça, vous vous exprimez de plus en plus naturellement en français !";
+      let coachReply = "Great job! Keep practicing, you are expressing yourself more naturally!";
       if (json.data && json.data.feedback) {
         coachReply = json.data.feedback.split("\n")[0].replace(/^Coach:\s*/i, "").trim();
       }
@@ -261,17 +322,17 @@ function SpeakingPage() {
 
       setMessages((prev) => [...prev, coachMsg]);
       setAvatarAnim("speak");
-      speakText(coachReply, "fr-FR", 0.85, coachGender);
+      speakText(coachReply, targetTtsLocale, 0.85, coachGender);
       setTimeout(() => setAvatarAnim("idle"), 4000);
     } catch {
-      const fallbackReply = `Très bien ! En niveau ${activeLevel}, votre phrasing est compréhensible. Continuez à parler !`;
+      const fallbackReply = `Very good! At ${activeLevel} level, your phrasing is clear. Keep speaking!`;
       setMessages((prev) => [...prev, {
         sender: "coach",
         text: fallbackReply,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       }]);
       setAvatarAnim("speak");
-      speakText(fallbackReply, "fr-FR", 0.85, coachGender);
+      speakText(fallbackReply, targetTtsLocale, 0.85, coachGender);
       setTimeout(() => setAvatarAnim("idle"), 3000);
     } finally {
       setIsAiProcessing(false);
