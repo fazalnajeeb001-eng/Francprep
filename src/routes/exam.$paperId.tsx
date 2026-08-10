@@ -89,9 +89,6 @@ export function AuthenticCBTExamPage() {
   const activeLang = getActiveLanguageCode(user);
   const activeBranding = getTrackBranding(activeLang);
 
-  if (activeLang !== "fr" && activeLang !== "fre" && activeLang !== "french") {
-    return <Navigate to="/exam" replace />;
-  }
   const { paperId } = (useParams({ strict: false }) || {}) as { paperId?: string };
   const search = (useSearch({ strict: false }) || {}) as { mode?: ExamMode };
   const mode: ExamMode = search.mode || "PRACTICE";
