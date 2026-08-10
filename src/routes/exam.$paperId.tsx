@@ -83,6 +83,15 @@ function calculateTextSimilarity(str1: string, str2: string): number {
   return Math.round(jaccardRatio * 0.4);
 }
 
+export const Route = createFileRoute("/exam/$paperId")({
+  validateSearch: (search: Record<string, unknown>) => {
+    return {
+      mode: (search.mode as ExamMode) || "PRACTICE",
+    };
+  },
+  component: AuthenticCBTExamPage,
+});
+
 export function AuthenticCBTExamPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -3648,11 +3657,4 @@ export function AuthenticCBTExamPage() {
   );
 }
 
-export const Route = createFileRoute("/exam/$paperId")({
-  validateSearch: (search: Record<string, unknown>) => {
-    return {
-      mode: (search.mode as ExamMode) || "PRACTICE",
-    };
-  },
-  component: AuthenticCBTExamPage,
-});
+

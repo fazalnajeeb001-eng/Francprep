@@ -23,6 +23,8 @@ import { Flame, Diamond, Timer, Compass } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { DashboardData } from "~/components/dashboard/types";
 
+export const Route = createFileRoute("/dashboard")({ component: DashboardPage });
+
 function GoalModal({ dark, onClose }: { dark: boolean; onClose: (goal: LearningGoal) => void }) {
   const activeLang = (typeof window !== "undefined" ? localStorage.getItem("fp_active_language") : "fr") || "fr";
   const goalOptions = getGoalOptionsForLanguage(activeLang);
@@ -236,5 +238,3 @@ function DashboardPage() {
     </div>
   );
 }
-
-export const Route = createFileRoute("/dashboard")({ component: DashboardPage });

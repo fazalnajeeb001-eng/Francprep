@@ -37,6 +37,10 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { speak } from "~/lib/speech";
 
+export const Route = createFileRoute("/community")({
+  component: CommunityExamHubPage,
+});
+
 interface Post {
   id: string;
   authorName: string;
@@ -1391,7 +1395,3 @@ function CommunityExamHubPage() {
     </div>
   );
 }
-
-export const Route = createFileRoute("/community")({
-  component: CommunityExamHubPage,
-});

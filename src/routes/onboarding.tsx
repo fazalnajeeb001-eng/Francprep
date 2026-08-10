@@ -24,6 +24,8 @@ import { apiFetch } from "~/lib/apiFetch";
 import { GOAL_OPTIONS, getGoalOptionsForLanguage, setGoal as saveGoalToStorage, setDailyStudyGoal, type LearningGoal } from "~/components/dashboard/utils/userPrefs";
 import { getTrackBranding } from "~/lib/trackBranding";
 
+export const Route = createFileRoute("/onboarding")({ component: OnboardingPage });
+
 interface Question {
   id: number;
   level: "A1" | "A2" | "B1" | "B2";
@@ -999,5 +1001,3 @@ export function OnboardingPage() {
     </div>
   );
 }
-
-export const Route = createFileRoute("/onboarding")({ component: OnboardingPage });
