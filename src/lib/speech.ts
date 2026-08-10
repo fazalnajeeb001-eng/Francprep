@@ -202,9 +202,16 @@ function speakWebSpeech(text: string, langCode: string, rate: number, gender: "f
       utterance.onend = () => { if (onPlaybackStateChange) onPlaybackStateChange(false); };
       utterance.onerror = () => { if (onPlaybackStateChange) onPlaybackStateChange(false); };
       if (onPlaybackStateChange) onPlaybackStateChange(true);
-      window.speechSynthesis.speak(utterance);
+      try {
+        window.speechSynthesis.speak(utterance);
+      } catch (err) {
+        console.warn("[Speech] WebSpeech speak blocked:", err);
+        if (onPlaybackStateChange) onPlaybackStateChange(false);
+      }
       return;
-    } catch {}
+    } catch (err) {
+      console.warn("[Speech] WebSpeech error:", err);
+    }
   }
   if (onPlaybackStateChange) onPlaybackStateChange(false);
 }
