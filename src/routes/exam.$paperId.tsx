@@ -115,35 +115,6 @@ export function AuthenticCBTExamPage() {
   const [isTimerPaused, setIsTimerPaused] = useState(false);
   const [qTimeLeft, setQTimeLeft] = useState<number | null>(null);
 
-  // Per-Question CBT Countdown Timer & Auto-Advance in Exam Mode
-  useEffect(() => {
-    if (mode !== "EXAM" || currentSection.type !== "COMPREHENSION_ORALE" || !currentQ || isSubmitted) {
-      setQTimeLeft(null);
-      return;
-    }
-
-    const timerSecs = (currentQ as any).perQuestionTimerSeconds || (currentQ.questionNumber <= 10 ? 15 : currentQ.questionNumber <= 26 ? 20 : 25);
-    setQTimeLeft(timerSecs);
-
-    const interval = setInterval(() => {
-      setQTimeLeft((prev) => {
-        if (prev === null || prev <= 1) {
-          clearInterval(interval);
-          if (currentQuestionIdx < currentQuestions.length - 1) {
-            setCurrentQuestionIdx((idx) => idx + 1);
-          } else if (activeSectionIdx < paper.sections.length - 1) {
-            setActiveSectionIdx((sIdx) => sIdx + 1);
-            setCurrentQuestionIdx(0);
-          }
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, currentQuestions.length, paper.sections.length]);
-
   // Practice Mode Toggles
   const [showHints, setShowHints] = useState(false);
   const [showTranscripts, setShowTranscripts] = useState(false);
@@ -207,6 +178,51 @@ export function AuthenticCBTExamPage() {
   const [isOralPrepActive, setIsOralPrepActive] = useState<Record<string, boolean>>({});
   const [oralSpeakingTimeRemaining, setOralSpeakingTimeRemaining] = useState<Record<string, number>>({});
   const [isOralSpeakingActive, setIsOralSpeakingActive] = useState<Record<string, boolean>>({});
+
+  // Practice Helper & Task Tab States
+  const [showTranscript, setShowTranscript] = useState(false);
+  const [showTranslation, setShowTranslation] = useState(false);
+  const [showReadingHint, setShowReadingHint] = useState(false);
+  const [activeWritingTaskIdx, setActiveWritingTaskIdx] = useState(0);
+  const [activeSpeakingTaskIdx, setActiveSpeakingTaskIdx] = useState(0);
+  const [showSpeakingDisclaimer, setShowSpeakingDisclaimer] = useState(false);
+  const [hasAcceptedSpeakingDisclaimer, setHasAcceptedSpeakingDisclaimer] = useState(false);
+
+  // Submission & Results & Strategy Modals State
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [isAudioPaused, setIsAudioPaused] = useState(false);
+  const [showStrategyModal, setShowStrategyModal] = useState(false);
+  const [openModelAnswerTaskId, setOpenModelAnswerTaskId] = useState<string | null>(null);
+
+  // Per-Question CBT Countdown Timer & Auto-Advance in Exam Mode
+  useEffect(() => {
+    if (mode !== "EXAM" || currentSection.type !== "COMPREHENSION_ORALE" || !currentQ || isSubmitted) {
+      setQTimeLeft(null);
+      return;
+    }
+
+    const timerSecs = (currentQ as any).perQuestionTimerSeconds || (currentQ.questionNumber <= 10 ? 15 : currentQ.questionNumber <= 26 ? 20 : 25);
+    setQTimeLeft(timerSecs);
+
+    const interval = setInterval(() => {
+      setQTimeLeft((prev) => {
+        if (prev === null || prev <= 1) {
+          clearInterval(interval);
+          if (currentQuestionIdx < currentQuestions.length - 1) {
+            setCurrentQuestionIdx((idx) => idx + 1);
+          } else if (activeSectionIdx < paper.sections.length - 1) {
+            setActiveSectionIdx((sIdx) => sIdx + 1);
+            setCurrentQuestionIdx(0);
+          }
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, currentQuestions.length, paper.sections.length]);
 
   const handleStartPrepTimer = (taskId: string, prepMins = 1) => {
     setOralPrepTimeRemaining((prev) => ({ ...prev, [taskId]: prepMins * 60 }));
@@ -317,15 +333,6 @@ export function AuthenticCBTExamPage() {
     setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
   };
 
-  // Practice Helper & Task Tab States
-  const [showTranscript, setShowTranscript] = useState(false);
-  const [showTranslation, setShowTranslation] = useState(false);
-  const [showReadingHint, setShowReadingHint] = useState(false);
-  const [activeWritingTaskIdx, setActiveWritingTaskIdx] = useState(0);
-  const [activeSpeakingTaskIdx, setActiveSpeakingTaskIdx] = useState(0);
-  const [showSpeakingDisclaimer, setShowSpeakingDisclaimer] = useState(false);
-  const [hasAcceptedSpeakingDisclaimer, setHasAcceptedSpeakingDisclaimer] = useState(false);
-
   const startSpeakingTaskSession = (idx: number) => {
     const tasks = currentSection?.speakingTasks;
     if (!tasks || tasks.length === 0) return;
@@ -362,13 +369,6 @@ export function AuthenticCBTExamPage() {
       }, 5000);
     }
   };
-
-  // Submission & Results & Strategy Modals State
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  const [isAudioPaused, setIsAudioPaused] = useState(false);
-  const [showStrategyModal, setShowStrategyModal] = useState(false);
-  const [openModelAnswerTaskId, setOpenModelAnswerTaskId] = useState<string | null>(null);
 
   // Auto-save candidate progress continuously to localStorage
   useEffect(() => {
