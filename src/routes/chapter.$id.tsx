@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { ChapterPage } from "~/components/content/ChapterPage";
 
 export const Route = createFileRoute("/chapter/$id")({
@@ -6,6 +6,6 @@ export const Route = createFileRoute("/chapter/$id")({
 });
 
 function ChapterRoute() {
-  const { id } = Route.useParams();
+  const { id } = (useParams({ strict: false }) || {}) as any;
   return <ChapterPage chapterId={id} />;
 }

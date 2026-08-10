@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
+import { createFileRoute, Link, Navigate, useSearch } from "@tanstack/react-router";
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Volume2, ArrowLeft, Mic, MicOff, CheckCircle2, XCircle, ChevronLeft, ChevronRight, Shuffle, MessageSquare, Send, Sparkles, ShieldCheck } from "lucide-react";
@@ -142,7 +142,7 @@ const MULTILINGUAL_GREETINGS: Record<string, Record<string, string>> = {
 };
 
 function SpeakingPage() {
-  const rawSearch = (Route.useSearch() || {}) as { mode?: string; level?: string };
+  const rawSearch = (useSearch({ strict: false }) || {}) as { mode?: string; level?: string };
   const mode = rawSearch.mode || "drill";
   const level = rawSearch.level || "A1";
   const { dark } = useTheme();

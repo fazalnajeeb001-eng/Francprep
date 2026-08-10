@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useParams, useSearch, Navigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -101,8 +101,8 @@ export function AuthenticCBTExamPage() {
   if (activeLang !== "fr" && activeLang !== "fre" && activeLang !== "french") {
     return <Navigate to="/exam" replace />;
   }
-  const { paperId } = Route.useParams();
-  const search = Route.useSearch();
+  const { paperId } = (useParams({ strict: false }) || {}) as { paperId?: string };
+  const search = (useSearch({ strict: false }) || {}) as { mode?: ExamMode };
   const mode: ExamMode = search.mode || "PRACTICE";
   const { dark } = useTheme();
 

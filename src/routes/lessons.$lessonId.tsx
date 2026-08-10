@@ -1,4 +1,4 @@
-import { createFileRoute, useRouter, Navigate } from "@tanstack/react-router";
+import { createFileRoute, useRouter, Navigate, useParams } from "@tanstack/react-router";
 import { useAuth } from "~/lib/AuthContext";
 import { LessonPage } from "~/components/content/LessonPage";
 import { motion } from "framer-motion";
@@ -9,7 +9,7 @@ export const Route = createFileRoute("/lessons/$lessonId")({
 
 function LessonRoute() {
   const { user, isAuthenticated, isLoading } = useAuth();
-  const { lessonId } = Route.useParams() as any;
+  const { lessonId } = (useParams({ strict: false }) || {}) as any;
   const router = useRouter();
 
   if (isLoading) {

@@ -1,4 +1,4 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, useRouter, useParams } from "@tanstack/react-router";
 import { LessonPage } from "~/components/content/LessonPage";
 
 export const Route = createFileRoute("/lesson/$id")({
@@ -6,7 +6,7 @@ export const Route = createFileRoute("/lesson/$id")({
 });
 
 function LessonRoute() {
-  const { id } = Route.useParams() as any;
+  const { id } = (useParams({ strict: false }) || {}) as any;
   const router = useRouter();
 
   const handleBack = () => {

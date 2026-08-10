@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/exam/delf/$paperId")({
 });
 
 export function DELFExamCanvasPage() {
-  const { paperId } = Route.useParams() as any;
+  const { paperId } = (useParams({ strict: false }) || {}) as any;
   const navigate = useNavigate();
   const { dark } = useTheme();
 
