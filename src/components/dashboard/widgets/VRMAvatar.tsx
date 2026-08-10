@@ -111,7 +111,12 @@ function setupSceneMaterials(scene: THREE.Group) {
 function processAndSetupModel(scene: THREE.Group, bonesRef: any, morphMeshesRef: any, setModelInfo: any, restposesRef: any, modelRef: any, setLoaded: any) {
   setupSceneMaterials(scene);
 
+  // Reset transform to raw state first
+  scene.scale.set(1, 1, 1);
+  scene.position.set(0, 0, 0);
+  scene.rotation.set(0, 0, 0);
   scene.updateMatrixWorld(true);
+
   const bbox = new THREE.Box3().setFromObject(scene);
   const bsize = bbox.getSize(new THREE.Vector3());
   const rawHeight = bsize.y > 0.5 ? bsize.y : 1.85;
@@ -125,8 +130,8 @@ function processAndSetupModel(scene: THREE.Group, bonesRef: any, morphMeshesRef:
   const scaledCenter = scaledBox.getCenter(new THREE.Vector3());
 
   scene.position.y = -scaledBox.min.y;
-  scene.position.x -= scaledCenter.x;
-  scene.position.z -= scaledCenter.z;
+  scene.position.x = -scaledCenter.x;
+  scene.position.z = -scaledCenter.z;
 
   const cameraCenterY = targetHeight * 0.56;
   setModelInfo({ centerY: cameraCenterY, height: targetHeight });
