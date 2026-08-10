@@ -2046,80 +2046,67 @@ export function AuthenticCBTExamPage() {
                       </div>
                     </div>
 
-                    {(currentQ as any).mainImage ? (
+                    {/* Visual Illustration Drawing for Q1-Q4 */}
+                    {(currentQ as any).mainImageSvg ? (
                       <div className="p-3.5 rounded-xl bg-white border border-slate-300 text-slate-900 space-y-2 shadow-md">
                         <div className="flex items-center justify-between text-xs font-bold text-slate-800 border-b pb-1.5 border-slate-200">
-                          <span>🎨 Sur le livret / l'écran, vous voyez :</span>
+                          <span className="flex items-center gap-1.5">🎨 <strong>Sur le livret / l'écran, vous voyez :</strong></span>
                           <span className="text-[10px] text-slate-500 font-mono">Dessin au trait (Style officiel FEI)</span>
+                        </div>
+                        <div className="relative aspect-[16/10] w-full rounded-lg overflow-hidden border border-slate-300 bg-white"
+                             dangerouslySetInnerHTML={{ __html: (currentQ as any).mainImageSvg }} />
+                      </div>
+                    ) : (currentQ as any).mainImage ? (
+                      <div className="p-3.5 rounded-xl bg-white border border-slate-300 text-slate-900 space-y-2 shadow-md">
+                        <div className="flex items-center justify-between text-xs font-bold text-slate-800 border-b pb-1.5 border-slate-200">
+                          <span className="flex items-center gap-1.5">🖼️ <strong>Illustration N°{currentQ.questionNumber} :</strong></span>
+                          <span className="text-[10px] text-slate-500 font-mono">Style officiel FEI</span>
                         </div>
                         <div className="relative aspect-[16/10] w-full rounded-lg overflow-hidden border border-slate-300 bg-white flex items-center justify-center">
                           <img
                             src={(currentQ as any).mainImage}
                             alt={`Illustration N°${currentQ.questionNumber}`}
                             className="w-full h-full object-contain p-1 bg-white"
+                            onError={(e) => {
+                              // If image fails to load, fallback to SVG renderer gracefully
+                              const target = e.target as HTMLElement;
+                              target.style.display = 'none';
+                            }}
                           />
                         </div>
                       </div>
-                    ) : (currentQ as any).mainImageSvg ? (
-                      <div className="p-3.5 rounded-xl bg-white border border-slate-300 text-slate-900 space-y-2 shadow-md">
-                        <div className="flex items-center justify-between text-xs font-bold text-slate-800 border-b pb-1.5 border-slate-200">
-                          <span>🎨 Sur le livret / l'écran, vous voyez :</span>
-                          <span className="text-[10px] text-slate-500 font-mono">Dessin au trait (Style officiel FEI)</span>
-                        </div>
-                        <div className="relative aspect-[16/10] w-full rounded-lg overflow-hidden border border-slate-300 bg-white"
-                             dangerouslySetInnerHTML={{ __html: (currentQ as any).mainImageSvg }} />
-                      </div>
                     ) : null}
 
-                    {currentQ.questionInAudio && (
-                      <div className="p-3.5 rounded-xl bg-gradient-to-r from-purple-900 via-indigo-900 to-purple-950 text-white border border-purple-500/50 shadow-md space-y-2">
-                        <div className="flex flex-wrap items-center justify-between gap-2">
-                          <span className="text-xs font-extrabold text-amber-300 flex items-center gap-1.5">
-                            🎧 <strong>Notice Examen Officiel TCF CBT :</strong>
-                          </span>
-                          {mode === "PRACTICE" && (
-                            <span className="px-2.5 py-0.5 rounded-full bg-purple-500/40 text-purple-200 text-[11px] font-mono font-bold border border-purple-400/30">
-                              Niveau {(currentQ as any).level || 'A1-C2'}
-                            </span>
-                          )}
-                        </div>
-                        {mode === "PRACTICE" && (
-                          <div className="pt-1 flex items-center gap-2">
-                            <button
-                              type="button"
-                              onClick={() => setShowTranscript(!showTranscript)}
-                              className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition-all flex items-center gap-1.5 shadow cursor-pointer"
-                            >
-                              <span>{showTranscript ? "🙈 Hide Question Text" : "👁️ Show Question Text (Practice Mode)"}</span>
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
+                    {/* Practice Mode Audio Transcript Display */}
                     {(showTranscript || showTranscripts) && currentQ.transcript && (
-                      <div className="pt-3 border-t border-purple-300 dark:border-purple-800 text-xs space-y-1.5">
-                        <p className="font-bold text-purple-900 dark:text-purple-300 uppercase text-[10px] flex items-center gap-1">
-                          <FileText className="w-3.5 h-3.5" />
-                          <span>{activeBranding.transcriptLabel}</span>
-                        </p>
-                        <p className="font-serif italic font-semibold text-slate-950 dark:text-slate-100 p-2.5 rounded-lg bg-white dark:bg-slate-950 border border-purple-200 dark:border-purple-900">
-                          "{currentQ.transcript}"
-                        </p>
+                      <div className="p-4 rounded-xl bg-slate-900 text-white border border-purple-500/40 shadow-lg space-y-2">
+                        <div className="flex items-center justify-between text-xs font-bold text-amber-300 border-b border-slate-800 pb-2">
+                          <span className="flex items-center gap-1.5 uppercase font-mono tracking-wider">
+                            <FileText className="w-4 h-4 text-purple-400" />
+                            <span>{activeBranding.transcriptLabel}</span>
+                          </span>
+                          <span className="px-2 py-0.5 rounded bg-purple-900/60 text-purple-200 text-[10px] font-mono">
+                            Niveau {(currentQ as any).level || 'A1-C2'}
+                          </span>
+                        </div>
+                        <div className="p-3 rounded-lg bg-slate-950/80 border border-slate-800 text-sm leading-relaxed text-slate-100 font-sans">
+                          {currentQ.transcript}
+                        </div>
                       </div>
                     )}
 
+                    {/* Practice Mode English Translation Display */}
                     {(showTranslation || showTranscripts) && (currentQ.transcriptEnglish || currentQ.text) && (
-                      <div className="pt-3 border-t border-indigo-300 dark:border-indigo-800 text-xs space-y-1.5">
-                        <p className="font-bold text-indigo-900 dark:text-indigo-300 uppercase text-[10px] flex items-center gap-1">
-                          <Globe className="w-3.5 h-3.5" />
-                          <span>English Audio & Question Translation</span>
-                        </p>
-                        {currentQ.transcriptEnglish && (
-                          <p className="italic font-semibold text-slate-950 dark:text-slate-100 p-2.5 rounded-lg bg-white dark:bg-slate-950 border border-indigo-200 dark:border-indigo-900">
-                            "{currentQ.transcriptEnglish}"
-                          </p>
-                        )}
+                      <div className="p-4 rounded-xl bg-slate-900 text-white border border-indigo-500/40 shadow-lg space-y-2">
+                        <div className="flex items-center justify-between text-xs font-bold text-cyan-300 border-b border-slate-800 pb-2">
+                          <span className="flex items-center gap-1.5 uppercase font-mono tracking-wider">
+                            <Globe className="w-4 h-4 text-indigo-400" />
+                            <span>English Translation</span>
+                          </span>
+                        </div>
+                        <div className="p-3 rounded-lg bg-slate-950/80 border border-slate-800 text-sm leading-relaxed text-slate-200 italic font-sans">
+                          "{currentQ.transcriptEnglish || currentQ.text}"
+                        </div>
                       </div>
                     )}
                   </div>
