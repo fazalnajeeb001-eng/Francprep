@@ -986,7 +986,8 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
     let mainImageSvg: string | undefined = undefined;
 
     if (i <= 4) {
-      mainImage = `/illustrations/tcf_p1_q${i}.png`;
+      const paperNum = (seedOffset % 10) + 1;
+      mainImage = `/illustrations/tcf_p${paperNum}_q${i}.png`;
       mainImageSvg = getOfficialLineArtSvg(i, seedOffset);
     }
 

@@ -1947,6 +1947,21 @@ export function AuthenticCBTExamPage() {
                   </div>
                 </div>
 
+                {/* Question Prompt Card (Prominently displayed on top) */}
+                <div className="p-4 rounded-xl bg-slate-900 border border-slate-700 text-white shadow-md space-y-2">
+                  <div className="flex items-center justify-between text-xs font-bold text-amber-300">
+                    <span className="flex items-center gap-1.5 font-mono">
+                      <span>📝 Question N°{currentQ.questionNumber}</span>
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 font-mono">
+                      Niveau {(currentQ as any).level || "A1-C2"}
+                    </span>
+                  </div>
+                  <div className="text-sm font-semibold text-slate-100 leading-snug">
+                    {currentQ.text || `Écoutez le document sonore et choisissez la bonne réponse.`}
+                  </div>
+                </div>
+
                 {/* Official Listening Audio Component */}
                 {currentSection.type === "COMPREHENSION_ORALE" && (
                   <div className="p-3.5 sm:p-4 rounded-xl border space-y-3 bg-purple-50 border-purple-300 text-slate-950">
@@ -2047,7 +2062,21 @@ export function AuthenticCBTExamPage() {
                     </div>
 
                     {/* Visual Illustration Drawing for Q1-Q4 */}
-                    {(currentQ as any).mainImageSvg ? (
+                    {(currentQ as any).mainImage ? (
+                      <div className="p-3.5 rounded-xl bg-white border border-slate-300 text-slate-900 space-y-2 shadow-md">
+                        <div className="flex items-center justify-between text-xs font-bold text-slate-800 border-b pb-1.5 border-slate-200">
+                          <span className="flex items-center gap-1.5">🖼️ <strong>Sur le livret / l'écran, vous voyez :</strong></span>
+                          <span className="text-[10px] text-slate-500 font-mono">Illustration Officielle FEI (HD)</span>
+                        </div>
+                        <div className="relative aspect-[16/10] w-full rounded-lg overflow-hidden border border-slate-300 bg-white flex items-center justify-center">
+                          <img
+                            src={(currentQ as any).mainImage}
+                            alt={`Illustration N°${currentQ.questionNumber}`}
+                            className="w-full h-full object-contain p-1 bg-white"
+                          />
+                        </div>
+                      </div>
+                    ) : (currentQ as any).mainImageSvg ? (
                       <div className="p-3.5 rounded-xl bg-white border border-slate-300 text-slate-900 space-y-2 shadow-md">
                         <div className="flex items-center justify-between text-xs font-bold text-slate-800 border-b pb-1.5 border-slate-200">
                           <span className="flex items-center gap-1.5">🎨 <strong>Sur le livret / l'écran, vous voyez :</strong></span>
@@ -2055,25 +2084,6 @@ export function AuthenticCBTExamPage() {
                         </div>
                         <div className="relative aspect-[16/10] w-full rounded-lg overflow-hidden border border-slate-300 bg-white"
                              dangerouslySetInnerHTML={{ __html: (currentQ as any).mainImageSvg }} />
-                      </div>
-                    ) : (currentQ as any).mainImage ? (
-                      <div className="p-3.5 rounded-xl bg-white border border-slate-300 text-slate-900 space-y-2 shadow-md">
-                        <div className="flex items-center justify-between text-xs font-bold text-slate-800 border-b pb-1.5 border-slate-200">
-                          <span className="flex items-center gap-1.5">🖼️ <strong>Illustration N°{currentQ.questionNumber} :</strong></span>
-                          <span className="text-[10px] text-slate-500 font-mono">Style officiel FEI</span>
-                        </div>
-                        <div className="relative aspect-[16/10] w-full rounded-lg overflow-hidden border border-slate-300 bg-white flex items-center justify-center">
-                          <img
-                            src={(currentQ as any).mainImage}
-                            alt={`Illustration N°${currentQ.questionNumber}`}
-                            className="w-full h-full object-contain p-1 bg-white"
-                            onError={(e) => {
-                              // If image fails to load, fallback to SVG renderer gracefully
-                              const target = e.target as HTMLElement;
-                              target.style.display = 'none';
-                            }}
-                          />
-                        </div>
                       </div>
                     ) : null}
 
