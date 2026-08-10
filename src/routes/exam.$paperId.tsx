@@ -118,6 +118,7 @@ export function AuthenticCBTExamPage() {
   // Practice Mode Toggles
   const [showHints, setShowHints] = useState(false);
   const [showTranscripts, setShowTranscripts] = useState(false);
+  const [showQuestionPrompt, setShowQuestionPrompt] = useState(mode === "PRACTICE");
   const [showPassageTranslation, setShowPassageTranslation] = useState(false);
 
   // Session Key
@@ -1947,20 +1948,22 @@ export function AuthenticCBTExamPage() {
                   </div>
                 </div>
 
-                {/* Question Prompt Card (Prominently displayed on top) */}
-                <div className="p-4 rounded-xl bg-slate-900 border border-slate-700 text-white shadow-md space-y-2">
-                  <div className="flex items-center justify-between text-xs font-bold text-amber-300">
-                    <span className="flex items-center gap-1.5 font-mono">
-                      <span>📝 Question N°{currentQ.questionNumber}</span>
-                    </span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 font-mono">
-                      Niveau {(currentQ as any).level || "A1-C2"}
-                    </span>
+                {/* Question Prompt Card (Prominently displayed when enabled or in Practice Mode) */}
+                {(mode === "PRACTICE" || showQuestionPrompt) && (
+                  <div className="p-4 rounded-xl bg-slate-900 border border-slate-700 text-white shadow-md space-y-2">
+                    <div className="flex items-center justify-between text-xs font-bold text-amber-300">
+                      <span className="flex items-center gap-1.5 font-mono">
+                        <span>📝 Question N°{currentQ.questionNumber}</span>
+                      </span>
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 font-mono">
+                        Niveau {(currentQ as any).level || "A1-C2"}
+                      </span>
+                    </div>
+                    <div className="text-sm font-semibold text-slate-100 leading-snug">
+                      {currentQ.text || `Écoutez le document sonore et choisissez la bonne réponse.`}
+                    </div>
                   </div>
-                  <div className="text-sm font-semibold text-slate-100 leading-snug">
-                    {currentQ.text || `Écoutez le document sonore et choisissez la bonne réponse.`}
-                  </div>
-                </div>
+                )}
 
                 {/* Official Listening Audio Component */}
                 {currentSection.type === "COMPREHENSION_ORALE" && (
@@ -1974,6 +1977,19 @@ export function AuthenticCBTExamPage() {
                       <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                         {mode === "PRACTICE" && (
                           <div className="flex flex-wrap items-center gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => setShowQuestionPrompt(!showQuestionPrompt)}
+                              className={`px-2.5 sm:px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border cursor-pointer ${
+                                showQuestionPrompt
+                                  ? "bg-amber-600 text-white border-amber-700"
+                                  : "bg-amber-100 text-amber-950 border-amber-300 hover:bg-amber-200"
+                              }`}
+                            >
+                              <FileText className="w-3.5 h-3.5" />
+                              <span>{showQuestionPrompt ? "Hide Question Text 📝" : "📝 Show Question Text"}</span>
+                            </button>
+
                             <button
                               type="button"
                               onClick={() => setShowTranscript(!showTranscript)}

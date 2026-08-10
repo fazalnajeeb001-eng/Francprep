@@ -1,4 +1,5 @@
 import { getOfficialLineArtSvg } from "./lineArtIllustrations";
+import { getHdIllustration } from "./hdIllustrationAssets";
 
 export type ExamType = "TCF_CANADA" | "TEF_CANADA";
 export type ExamMode = "PRACTICE" | "EXAM";
@@ -987,7 +988,7 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
 
     if (i <= 4) {
       const paperNum = (seedOffset % 10) + 1;
-      mainImage = `/illustrations/tcf_p${paperNum}_q${i}.png`;
+      mainImage = getHdIllustration(paperNum, i);
       mainImageSvg = getOfficialLineArtSvg(i, seedOffset);
     }
 
