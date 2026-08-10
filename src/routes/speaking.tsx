@@ -78,11 +78,13 @@ function SpeakingPage() {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [result, setResult] = useState<"correct" | "incorrect" | null>(null);
-  const [recognition, setRecognition] = useState<any>(null);
-
+  
   // Free-Speaking Coach State
   const activeLevel = (level || "A1").toUpperCase();
   const [avatarAnim, setAvatarAnim] = useState<"idle" | "wave" | "speak" | "celebrate">("idle");
+  const recognitionRef = useRef<any>(null);
+  const coachGender: "male" | "female" = user?.avatarFeatures?.gender === "male" ? "male" : "female";
+  
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       sender: "coach",
@@ -92,6 +94,14 @@ function SpeakingPage() {
   ]);
   const [userInputText, setUserInputText] = useState("");
   const [isAiProcessing, setIsAiProcessing] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        try { recognitionRef.current.abort(); } catch {}
+      }
+    };
+  }, []);
 
   if (isLoading) {
     return (
@@ -119,11 +129,15 @@ function SpeakingPage() {
   const btnHover = dark ? "hover:bg-[#1e2a4a]" : "hover:bg-slate-100";
 
   const handleSpeak = (text: string) => {
-    speakText(text, "fr-FR");
+    speakText(text, "fr-FR", 0.85, coachGender);
   };
 
   const startListening = useCallback(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (recognitionRef.current) {
+      try { recognitionRef.current.abort(); } catch {}
+    }
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       alert("Speech recognition is not supported in this browser. Try Chrome or Edge.");
       return;
@@ -158,16 +172,20 @@ function SpeakingPage() {
       setIsListening(false);
     };
 
-    rec.start();
-    setRecognition(rec);
+    try {
+      rec.start();
+      recognitionRef.current = rec;
+    } catch {
+      setIsListening(false);
+    }
   }, [mode]);
 
   const stopListening = useCallback(() => {
-    if (recognition) {
-      recognition.stop();
+    if (recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch {}
       setIsListening(false);
     }
-  }, [recognition]);
+  }, []);
 
   // AI Free Speaking Conversation Handler
   const sendFreeConversationMessage = async (textToSend?: string) => {
@@ -213,7 +231,7 @@ function SpeakingPage() {
 
       setMessages((prev) => [...prev, coachMsg]);
       setAvatarAnim("speak");
-      speakText(coachReply, "fr-FR");
+      speakText(coachReply, "fr-FR", 0.85, coachGender);
       setTimeout(() => setAvatarAnim("idle"), 4000);
     } catch {
       const fallbackReply = `Très bien ! En niveau ${activeLevel}, votre phrasing est compréhensible. Continuez à parler !`;
@@ -223,7 +241,7 @@ function SpeakingPage() {
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       }]);
       setAvatarAnim("speak");
-      speakText(fallbackReply, "fr-FR");
+      speakText(fallbackReply, "fr-FR", 0.85, coachGender);
       setTimeout(() => setAvatarAnim("idle"), 3000);
     } finally {
       setIsAiProcessing(false);
@@ -243,7 +261,7 @@ function SpeakingPage() {
               </Link>
               <div>
                 <h1 className={`text-base sm:text-lg font-bold flex items-center gap-2 ${dark ? "text-white" : "text-gray-900"}`}>
-                  <span>🎙️ Free AI Speaking Coach</span>
+                  <span>{user?.avatarFeatures?.gender === "male" ? "Coach Léo 👨‍🏫" : "Coach Chloé 👩‍🏫"}</span>
                   <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-400 font-bold">
                     Level {activeLevel}
                   </span>
@@ -274,7 +292,7 @@ function SpeakingPage() {
               features={user?.avatarFeatures}
               size={230}
               animate={avatarAnim}
-              glowColor="purple"
+              glowColor="none"
               showThoughts={false}
             />
             <p className="text-xs text-purple-300 font-semibold mt-4 text-center">

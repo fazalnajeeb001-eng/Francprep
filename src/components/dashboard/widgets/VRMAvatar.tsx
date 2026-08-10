@@ -84,14 +84,87 @@ function findMorphTargets(scene: THREE.Group) {
   return morphMeshes;
 }
 
+const gltfSceneCache = new Map<string, THREE.Group>();
+
+function setupSceneMaterials(scene: THREE.Group) {
+  scene.traverse((child: any) => {
+    if (child.isMesh) {
+      child.frustumCulled = false;
+      child.castShadow = true;
+      child.receiveShadow = true;
+      if (child.material) {
+        const mat = child.material;
+        if (mat.emissiveMap && !mat.map) {
+          const tex = mat.emissiveMap;
+          child.material = new THREE.MeshStandardMaterial({
+            map: tex,
+            roughness: 0.6,
+            metalness: 0.0,
+          });
+        }
+      }
+    }
+  });
+}
+
+function processAndSetupModel(scene: THREE.Group, bonesRef: any, morphMeshesRef: any, setModelInfo: any, restposesRef: any, modelRef: any, setLoaded: any) {
+  setupSceneMaterials(scene);
+  const MIXAMO_HEAD_TOP_Y = 1.88;
+  const MIXAMO_TOE_BOTTOM_Y = -0.18;
+  const MIXAMO_HEIGHT = MIXAMO_HEAD_TOP_Y - MIXAMO_TOE_BOTTOM_Y;
+
+  let hasMixamo = false;
+  scene.traverse((child: any) => {
+    if (!hasMixamo && child.name && child.name.startsWith("mixamorig:")) hasMixamo = true;
+  });
+
+  let boneMinY: number, skeletonHeight: number;
+  if (hasMixamo) {
+    boneMinY = MIXAMO_TOE_BOTTOM_Y;
+    skeletonHeight = MIXAMO_HEIGHT;
+  } else {
+    const bbox = new THREE.Box3().setFromObject(scene);
+    const bsize = bbox.getSize(new THREE.Vector3());
+    boneMinY = 0;
+    skeletonHeight = bsize.y || 1.85;
+  }
+
+  const targetHeight = 1.4;
+  const scale = targetHeight / skeletonHeight;
+  scene.scale.set(scale, scale, scale);
+  scene.position.y = -boneMinY * scale;
+
+  scene.updateMatrixWorld(true);
+  const hbox = new THREE.Box3().setFromObject(scene);
+  const hcenter = hbox.getCenter(new THREE.Vector3());
+  scene.position.x -= hcenter.x;
+  scene.position.z -= hcenter.z;
+
+  const cameraCenterY = targetHeight * 0.56;
+  setModelInfo({ centerY: cameraCenterY, height: targetHeight });
+  bonesRef.current = findBones(scene);
+  morphMeshesRef.current = findMorphTargets(scene);
+
+  const rps: Record<string, THREE.Euler> = {};
+  for (const [k, v] of Object.entries(bonesRef.current)) {
+    rps[k] = v.rotation.clone();
+  }
+  restposesRef.current = rps;
+
+  modelRef.current = scene;
+  setLoaded(true);
+}
+
 function VRMModel({
   modelUrl,
   animate,
   tint,
+  userRotY = 0,
 }: {
   modelUrl: string;
   animate: string;
   tint?: VRMAvatarProps["tint"];
+  userRotY?: number;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const modelRef = useRef<THREE.Group | null>(null);
@@ -109,6 +182,13 @@ function VRMModel({
   useEffect(() => {
     let cancelled = false;
 
+    if (gltfSceneCache.has(modelUrl)) {
+      const cached = gltfSceneCache.get(modelUrl)!;
+      const cloned = cached.clone(true);
+      processAndSetupModel(cloned, bonesRef, morphMeshesRef, setModelInfo, restposesRef, modelRef, setLoaded);
+      return;
+    }
+
     function loadModel() {
       try {
         const loader = new GLTFLoader();
@@ -121,72 +201,8 @@ function VRMModel({
           (gltf: any) => {
             if (cancelled) return;
             const scene = gltf.scene;
-
-            scene.traverse((child: any) => {
-              if (child.isMesh) {
-                child.frustumCulled = false;
-                child.castShadow = true;
-                child.receiveShadow = true;
-
-                if (child.material) {
-                  const mat = child.material;
-                  if (mat.emissiveMap && !mat.map) {
-                    const tex = mat.emissiveMap;
-                    child.material = new THREE.MeshStandardMaterial({
-                      map: tex,
-                      roughness: 0.6,
-                      metalness: 0.0,
-                    });
-                  }
-                }
-              }
-            });
-
-            const MIXAMO_HIPS_Y = 1.011;
-            const MIXAMO_HEAD_TOP_Y = 1.88;
-            const MIXAMO_TOE_BOTTOM_Y = -0.18;
-            const MIXAMO_HEIGHT = MIXAMO_HEAD_TOP_Y - MIXAMO_TOE_BOTTOM_Y;
-
-            let hasMixamo = false;
-            scene.traverse((child: any) => {
-              if (!hasMixamo && child.name && child.name.startsWith("mixamorig:")) hasMixamo = true;
-            });
-
-            let boneMinY: number, skeletonHeight: number;
-            if (hasMixamo) {
-              boneMinY = MIXAMO_TOE_BOTTOM_Y;
-              skeletonHeight = MIXAMO_HEIGHT;
-            } else {
-              const bbox = new THREE.Box3().setFromObject(scene);
-              const bsize = bbox.getSize(new THREE.Vector3());
-              boneMinY = 0;
-              skeletonHeight = bsize.y || 1.85;
-            }
-
-            const targetHeight = 1.4;
-            const scale = targetHeight / skeletonHeight;
-            scene.scale.set(scale, scale, scale);
-            scene.position.y = -boneMinY * scale;
-
-            scene.updateMatrixWorld(true);
-            const hbox = new THREE.Box3().setFromObject(scene);
-            const hcenter = hbox.getCenter(new THREE.Vector3());
-            scene.position.x -= hcenter.x;
-            scene.position.z -= hcenter.z;
-
-            const cameraCenterY = targetHeight * 0.56;
-            setModelInfo({ centerY: cameraCenterY, height: targetHeight });
-            bonesRef.current = findBones(scene);
-            morphMeshesRef.current = findMorphTargets(scene);
-
-            const rps: Record<string, THREE.Euler> = {};
-            for (const [k, v] of Object.entries(bonesRef.current)) {
-              rps[k] = v.rotation.clone();
-            }
-            restposesRef.current = rps;
-
-            modelRef.current = scene;
-            setLoaded(true);
+            gltfSceneCache.set(modelUrl, scene.clone(true));
+            processAndSetupModel(scene, bonesRef, morphMeshesRef, setModelInfo, restposesRef, modelRef, setLoaded);
             dracoLoader.dispose();
           },
           undefined,

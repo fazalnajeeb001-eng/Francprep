@@ -131,15 +131,15 @@ export function speak(
             audio.playbackRate = rate;
             audio.preservesPitch = true;
           }).catch(() => {
-            playDirectHDFallback(cleanText, langCode, rate, audio);
+            playDirectHDFallback(cleanText, langCode, rate, audio, finalGender);
           });
           return;
         }
       }
-      playDirectHDFallback(cleanText, langCode, rate, audio);
+      playDirectHDFallback(cleanText, langCode, rate, audio, finalGender);
     })
     .catch(() => {
-      playDirectHDFallback(cleanText, langCode, rate, audio);
+      playDirectHDFallback(cleanText, langCode, rate, audio, finalGender);
     });
 
   return true;
@@ -148,7 +148,7 @@ export function speak(
 /**
  * Direct 24kHz HD MP3 Audio Stream Fallback (Zero Browser Web TTS / Zero Robotic OS Voice)
  */
-function playDirectHDFallback(text: string, langCode: string, rate: number, audio: HTMLAudioElement) {
+function playDirectHDFallback(text: string, langCode: string, rate: number, audio: HTMLAudioElement, gender: "female" | "male" = "female") {
   try {
     const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text.slice(0, 200))}&tl=${langCode}&client=tw-ob`;
     audio.src = audioUrl;
@@ -168,20 +168,37 @@ function playDirectHDFallback(text: string, langCode: string, rate: number, audi
       audio.playbackRate = rate;
       audio.preservesPitch = true;
     }).catch(() => {
-      speakWebSpeech(text, langCode, rate);
+      speakWebSpeech(text, langCode, rate, gender);
     });
   } catch {
-    speakWebSpeech(text, langCode, rate);
+    speakWebSpeech(text, langCode, rate, gender);
   }
 }
 
-function speakWebSpeech(text: string, langCode: string, rate: number) {
+function speakWebSpeech(text: string, langCode: string, rate: number, gender: "female" | "male" = "female") {
   if (typeof window !== "undefined" && "speechSynthesis" in window) {
     try {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = langCode === "fr" ? "fr-FR" : langCode;
       utterance.rate = rate;
+
+      const voices = window.speechSynthesis.getVoices();
+      const langVoices = voices.filter(v => v.lang.toLowerCase().startsWith(langCode));
+      if (langVoices.length > 0) {
+        const maleKeywords = ["male", "man", "thomas", "paul", "nicolas", "henri", "daniel", "george"];
+        const femaleKeywords = ["female", "woman", "hortense", "julie", "denise", "celeste", "aurelie", "amélie", "alice"];
+        const matchedVoice = langVoices.find(v => {
+          const vName = v.name.toLowerCase();
+          return gender === "male"
+            ? maleKeywords.some(k => vName.includes(k))
+            : femaleKeywords.some(k => vName.includes(k));
+        });
+        if (matchedVoice) {
+          utterance.voice = matchedVoice;
+        }
+      }
+
       utterance.onend = () => { if (onPlaybackStateChange) onPlaybackStateChange(false); };
       utterance.onerror = () => { if (onPlaybackStateChange) onPlaybackStateChange(false); };
       if (onPlaybackStateChange) onPlaybackStateChange(true);

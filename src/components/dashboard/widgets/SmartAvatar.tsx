@@ -150,7 +150,7 @@ interface SmartAvatarProps {
   } | null;
   size?: number;
   animate?: string;
-  glowColor?: "purple" | "cyan" | "pink";
+  glowColor?: "purple" | "cyan" | "pink" | "none";
   showThoughts?: boolean;
   miniHeaderMode?: boolean;
   interactive360?: boolean;
@@ -161,6 +161,7 @@ export function SmartAvatar({
   features,
   size = 80,
   animate = "idle",
+  glowColor = "purple",
   showThoughts = true,
   miniHeaderMode = false,
   interactive360 = false,
@@ -286,26 +287,28 @@ export function SmartAvatar({
       </AnimatePresence>
 
       {/* 🔮 Single Radiant Purple Glowing Circle Base (Centered Exactly Under Avatar Feet) */}
-      <motion.div
-        className="absolute left-1/2 -translate-x-1/2 rounded-full pointer-events-none z-0"
-        style={{
-          bottom: -size * 0.05,
-          width: size * 0.85,
-          height: size * 0.22,
-          background: "radial-gradient(ellipse at center, rgba(168,85,247,0.95) 0%, rgba(147,51,234,0.55) 45%, rgba(192,132,252,0.2) 70%, transparent 95%)",
-          filter: "blur(6px)",
-          boxShadow: "0 0 35px rgba(168,85,247,0.75), inset 0 0 15px rgba(147,51,234,0.4)",
-        }}
-        animate={{
-          opacity: [0.35, 1.0, 0.35],
-          scale: [0.93, 1.07, 0.93],
-        }}
-        transition={{
-          duration: 2.2,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
+      {glowColor !== "none" && (
+        <motion.div
+          className="absolute left-1/2 -translate-x-1/2 rounded-full pointer-events-none z-0"
+          style={{
+            bottom: -size * 0.05,
+            width: size * 0.85,
+            height: size * 0.22,
+            background: "radial-gradient(ellipse at center, rgba(168,85,247,0.95) 0%, rgba(147,51,234,0.55) 45%, rgba(192,132,252,0.2) 70%, transparent 95%)",
+            filter: "blur(6px)",
+            boxShadow: "0 0 35px rgba(168,85,247,0.75), inset 0 0 15px rgba(147,51,234,0.4)",
+          }}
+          animate={{
+            opacity: [0.35, 1.0, 0.35],
+            scale: [0.93, 1.07, 0.93],
+          }}
+          transition={{
+            duration: 2.2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      )}
 
       {/* 3D Animated VRM Avatar Model */}
       <div ref={containerRef} className="relative z-10 w-full h-full flex items-center justify-center">
