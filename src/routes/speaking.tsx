@@ -9,6 +9,30 @@ import { speak as speakText } from "~/lib/speech";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { SmartAvatar } from "~/components/dashboard/widgets/SmartAvatar";
 
+import { Component, type ReactNode } from "react";
+
+class SpeakingErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+  static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(error: any) {
+    console.error("[SpeakingPage] Boundary caught error:", error);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-[#070B17] text-white flex flex-col items-center justify-center p-6 text-center">
+          <h2 className="text-xl font-bold mb-2 text-purple-400">AI Coach Assistant</h2>
+          <p className="text-sm text-gray-400 mb-6 max-w-md">The speaking session encountered a mobile audio initialization issue. Tap below to reload safely.</p>
+          <button onClick={() => window.location.reload()} className="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-sm shadow-lg shadow-purple-600/30">
+            Reload AI Coach
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export const Route = createFileRoute("/speaking")({
   validateSearch: (search: Record<string, unknown> = {}) => {
     return {
@@ -16,7 +40,11 @@ export const Route = createFileRoute("/speaking")({
       level: (search?.level as string) || "A1",
     };
   },
-  component: SpeakingPage,
+  component: () => (
+    <SpeakingErrorBoundary>
+      <SpeakingPage />
+    </SpeakingErrorBoundary>
+  ),
 });
 
 function collectPhrases() {
@@ -69,7 +97,9 @@ const LEVEL_INITIAL_GREETINGS: Record<string, string> = {
 };
 
 function SpeakingPage() {
-  const { mode, level } = Route.useSearch();
+  const rawSearch = (Route.useSearch() || {}) as { mode?: string; level?: string };
+  const mode = rawSearch.mode || "drill";
+  const level = rawSearch.level || "A1";
   const { dark } = useTheme();
   const { user, isAuthenticated, isLoading } = useAuth();
   

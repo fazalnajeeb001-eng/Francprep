@@ -266,18 +266,20 @@ function NavBarInner() {
                   </div>
                 </>
               )}
-              <button
-                onClick={() => navigate({ to: "/dashboard/settings" })}
-                className="w-9 h-9 rounded-full overflow-hidden shadow-lg hover:opacity-90 hover:scale-110 transition-all border border-purple-500/30"
-                aria-label="Settings"
-              >
-                <img
-                  src={avatarGender === "male" ? "/models/leo-avatar.png" : "/models/chloe-avatar.png"}
-                  alt="Avatar"
-                  className="w-full h-full object-cover object-top"
-                  style={{ objectPosition: "50% 15%" }}
-                />
-              </button>
+              {!pathname.startsWith("/dashboard") && (
+                <button
+                  onClick={() => navigate({ to: "/dashboard/settings" })}
+                  className="w-9 h-9 rounded-full overflow-hidden shadow-lg hover:opacity-90 hover:scale-110 transition-all border border-purple-500/30"
+                  aria-label="Settings"
+                >
+                  <img
+                    src={avatarGender === "male" ? "/models/leo-avatar.png" : "/models/chloe-avatar.png"}
+                    alt="Avatar"
+                    className="w-full h-full object-cover object-top"
+                    style={{ objectPosition: "50% 15%" }}
+                  />
+                </button>
+              )}
             </div>
           ) : (
             <div className="flex items-center gap-2">

@@ -110,36 +110,23 @@ function setupSceneMaterials(scene: THREE.Group) {
 
 function processAndSetupModel(scene: THREE.Group, bonesRef: any, morphMeshesRef: any, setModelInfo: any, restposesRef: any, modelRef: any, setLoaded: any) {
   setupSceneMaterials(scene);
-  const MIXAMO_HEAD_TOP_Y = 1.88;
-  const MIXAMO_TOE_BOTTOM_Y = -0.18;
-  const MIXAMO_HEIGHT = MIXAMO_HEAD_TOP_Y - MIXAMO_TOE_BOTTOM_Y;
-
-  let hasMixamo = false;
-  scene.traverse((child: any) => {
-    if (!hasMixamo && child.name && child.name.startsWith("mixamorig:")) hasMixamo = true;
-  });
-
-  let boneMinY: number, skeletonHeight: number;
-  if (hasMixamo) {
-    boneMinY = MIXAMO_TOE_BOTTOM_Y;
-    skeletonHeight = MIXAMO_HEIGHT;
-  } else {
-    const bbox = new THREE.Box3().setFromObject(scene);
-    const bsize = bbox.getSize(new THREE.Vector3());
-    boneMinY = 0;
-    skeletonHeight = bsize.y || 1.85;
-  }
-
-  const targetHeight = 1.4;
-  const scale = targetHeight / skeletonHeight;
-  scene.scale.set(scale, scale, scale);
-  scene.position.y = -boneMinY * scale;
 
   scene.updateMatrixWorld(true);
-  const hbox = new THREE.Box3().setFromObject(scene);
-  const hcenter = hbox.getCenter(new THREE.Vector3());
-  scene.position.x -= hcenter.x;
-  scene.position.z -= hcenter.z;
+  const bbox = new THREE.Box3().setFromObject(scene);
+  const bsize = bbox.getSize(new THREE.Vector3());
+  const rawHeight = bsize.y > 0.5 ? bsize.y : 1.85;
+
+  const targetHeight = 1.4;
+  const scale = targetHeight / rawHeight;
+  scene.scale.set(scale, scale, scale);
+
+  scene.updateMatrixWorld(true);
+  const scaledBox = new THREE.Box3().setFromObject(scene);
+  const scaledCenter = scaledBox.getCenter(new THREE.Vector3());
+
+  scene.position.y = -scaledBox.min.y;
+  scene.position.x -= scaledCenter.x;
+  scene.position.z -= scaledCenter.z;
 
   const cameraCenterY = targetHeight * 0.56;
   setModelInfo({ centerY: cameraCenterY, height: targetHeight });
