@@ -130,6 +130,12 @@ const COACH_THOUGHTS: Record<string, string[]> = {
     "Practice 10 mins daily for top results! 🚀",
     "Great progress! Keep up the momentum 💪",
   ],
+  it: [
+    "Pronto per la sessione di oggi? 🇮🇹",
+    "Ogni lezione ti avvicina al C2! ✨",
+    "Pratica 10 min al giorno per il successo! 🚀",
+    "Ottimi progressi! Continua così 💪",
+  ],
 };
 
 interface SmartAvatarProps {

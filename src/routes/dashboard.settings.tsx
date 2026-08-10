@@ -55,7 +55,8 @@ function SettingsPage() {
   const [availableLanguages, setAvailableLanguages] = useState<any[]>([
     { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', examName: 'DELF / TCF' },
     { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪', examName: 'Goethe / TestDaF' },
-    { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸', examName: 'DELE / SIELE' }
+    { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸', examName: 'DELE / SIELE' },
+    { code: 'it', name: 'Italian', nativeName: 'Italiano', flag: '🇮🇹', examName: 'CELI / CILS' },
   ]);
   const [activeLang, setActiveLang] = useState<string>(() => getActiveLanguageCode(user));
   const [langSaving, setLangSaving] = useState(false);
