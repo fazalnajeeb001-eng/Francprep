@@ -264,69 +264,361 @@ function getRichListeningTopics(): ListeningTopicItem[] {
         });
       }
     } else if (qNum <= 25) {
-      topics.push({
-        level: "B1",
-        title: `Reportage Société B1 N°${i + 1} à ${city}`,
-        text: `Selon un récent sondage réalisé à ${city}, l'aménagement de nouvelles pistes cyclables sécurisées et l'extension du réseau de transports collectifs rencontrent l'adhésion d'une large majorité de citoyens soucieux de réduire leur empreinte carbone.`,
-        opt: [
-          `Approbation citoyenne des nouvelles pistes cyclables et transports`,
-          `Refus massif des habitants face aux travaux d'aménagement`,
-          `Augmentation brutale des tarifs de transport en commun`,
-          `Suppression définitive du réseau de vélos en libre-service`
-        ],
-        ans: 0,
-        tr: `Un sondage montre l'adhésion des citoyens pour les pistes cyclables et transports à ${city}.`,
-        en: `A survey shows citizen approval for bike lanes and transit in ${city}.`,
-        hint: `⚠️ Trap Alert: Focus on overall public sentiment ('adhésion d'une large majorité').`
-      });
+      const b1Variant = (Math.floor(i / 39) + (qNum - 16)) % 10;
+      const b1Topics = [
+        {
+          title: `Reportage Écologie Urbaine B1 N°${i + 1} à ${city}`,
+          text: `Selon un récent sondage réalisé à ${city}, l'aménagement de nouvelles pistes cyclables sécurisées et l'extension du réseau de transports collectifs rencontrent l'adhésion d'une large majorité de citoyens soucieux de réduire leur empreinte carbone.`,
+          opt: [
+            `Approbation citoyenne des nouvelles pistes cyclables et transports`,
+            `Refus massif des habitants face aux travaux d'aménagement`,
+            `Augmentation brutale des tarifs de transport en commun`,
+            `Suppression définitive du réseau de vélos en libre-service`
+          ],
+          ans: 0,
+          tr: `Un sondage montre l'adhésion des citoyens pour les pistes cyclables et transports à ${city}.`,
+          en: `A survey shows citizen approval for bike lanes and transit in ${city}.`,
+          hint: `⚠️ Trap Alert: Focus on overall public sentiment ('adhésion d'une large majorité').`
+        },
+        {
+          title: `Chronique Travail & Société B1 N°${i + 1}`,
+          text: `Une étude menée auprès d'entreprises québécoises révèle que l'expérimentation de la semaine de 4 jours a permis de réduire l'épuisement professionnel de 35% tout en maintenant un niveau de productivité équivalent.`,
+          opt: [
+            `Baisse de l'épuisement professionnel et maintien de la productivité`,
+            `Effondrement de la productivité des employés de bureau`,
+            `Obligation de réaliser des heures supplémentaires le week-end`,
+            `Hausse importante du taux de démission au sein des équipes`
+          ],
+          ans: 0,
+          tr: `La semaine de 4 jours réduit l'épuisement professionnel sans baisser la productivité.`,
+          en: `The 4-day workweek reduces burnout without lowering productivity.`,
+          hint: `⚠️ Trap Alert: Identify both benefits (reduced burnout) and steady metric (maintained productivity).`
+        },
+        {
+          title: `Chronique Culture B1 N°${i + 1} à ${city}`,
+          text: `Le festival annuel de musique indépendante de ${city} mettra à l'honneur cette année des artistes régionaux émergents, afin de promouvoir la diversité culturelle et le développement de la scène locale.`,
+          opt: [
+            `Valorisation des artistes régionaux et de la scène culturelle locale`,
+            `Annulation des concerts en raison de contraintes budgétaires`,
+            `Invitation exclusive d'artistes internationaux renommés`,
+            `Fermeture définitive de la grande salle de spectacle municipale`
+          ],
+          ans: 0,
+          tr: `Le festival de ${city} met en valeur les artistes régionaux et la culture locale.`,
+          en: `The ${city} festival highlights regional artists and local culture.`,
+          hint: `⚠️ Trap Alert: Note the main objective ('promouvoir la diversité culturelle et locale').`
+        },
+        {
+          title: `Reportage Consommation B1 N°${i + 1}`,
+          text: `De plus en plus de familles adoptent l'achat en vrac dans les supermarchés spécialisés. Cette pratique permet non seulement d'économiser sur le budget alimentaire, mais contribue aussi à éliminer les emballages plastiques jetables.`,
+          opt: [
+            `Économies financières et réduction des déchets plastiques jetables`,
+            `Augmentation significative des dépenses alimentaires mensuelles`,
+            `Disparition complète des magasins d'alimentation générale`,
+            `Obligation d'acheter uniquement des produits surgelés industriels`
+          ],
+          ans: 0,
+          tr: `L'achat en vrac permet d'économiser et d'éliminer les emballages plastiques.`,
+          en: `Bulk buying saves money and reduces plastic packaging waste.`,
+          hint: `⚠️ Trap Alert: Identify the double advantage (budget savings + eco impact).`
+        },
+        {
+          title: `Initiative Citoyenne B1 N°${i + 1} à ${city}`,
+          text: `À ${city}, un réseau de bénévoles a mis en place un service d'entraide téléphonique et de visites à domicile pour accompagner les personnes âgées isolées pendant la période hivernale.`,
+          opt: [
+            `Soutien bénévole et visites de convivialité pour séniors isolés`,
+            `Fermeture des centres communautaires de quartier`,
+            `Paiement obligatoire d'une cotisation mensuelle de santé`,
+            `Remplacement des travailleurs sociaux par des robots automatisés`
+          ],
+          ans: 0,
+          tr: `Un réseau bénévole accompagne les personnes âgées isolées à ${city}.`,
+          en: `A volunteer network assists isolated seniors in ${city}.`,
+          hint: `⚠️ Trap Alert: Identify target audience (personnes âgées isolées) and nature of service.`
+        },
+        {
+          title: `Dossier Tourisme Écoresponsable B1 N°${i + 1}`,
+          text: `Le tourisme vert connaît un essor remarquable dans les parcs nationaux. Les voyageurs privilégient désormais les hébergements en bois certifiés et les déplacements en transports doux sans voiture individuelle.`,
+          opt: [
+            `Engouement pour les hébergements durables et transports doux`,
+            `Baisse de fréquentation des espaces naturels protégés`,
+            `Construction de grands complexes hôteliers sur les berges`,
+            `Interdiction totale d'accès aux randonneurs en été`
+          ],
+          ans: 0,
+          tr: `Le tourisme vert privilégie les hébergements écologiques et les mobilités douces.`,
+          en: `Green tourism favors eco-lodges and sustainable mobility.`,
+          hint: `⚠️ Trap Alert: Recognize sustainable choices ('hébergements certifiés', 'transports doux').`
+        },
+        {
+          title: `Reportage Éducation B1 N°${i + 1}`,
+          text: `Les bibliothèques publiques de la région ont généralisé le prêt de livres numériques et de tablettes éducatives, facilitant l'accès à la lecture pour les étudiants résidant en zone rurale.`,
+          opt: [
+            `Accès démocratisé à la lecture numérique en milieu rural`,
+            `Suppression des collections de livres physiques dans les établissements`,
+            `Augmentation des frais d'inscription aux bibliothèques`,
+            `Fermeture nocturne des espaces de travail étudiants`
+          ],
+          ans: 0,
+          tr: `Le prêt numérique en bibliothèque facilite la lecture pour les jeunes ruraux.`,
+          en: `Digital library lending expands reading access for rural students.`,
+          hint: `⚠️ Trap Alert: Identify key demographic benefit ('accès à la lecture en zone rurale').`
+        },
+        {
+          title: `Chronique Logement B1 N°${i + 1} à ${city}`,
+          text: `Le co-logement intergénérationnel gagne du terrain à ${city}. Des étudiants partagent l'appartement de personnes âgées en échange d'une présence rassurante et d'un loyer modéré.`,
+          opt: [
+            `Partage de logement solidaire entre étudiants et personnes âgées`,
+            `Augmentation incontrôlée des loyers du secteur privé`,
+            `Expulsion systématique des jeunes locataires du centre-ville`,
+            `Obligation légale de vivre uniquement dans des résidences universitaires`
+          ],
+          ans: 0,
+          tr: `Le co-logement permet aux étudiants de vivre chez des séniors à loyer modéré.`,
+          en: `Intergenerational housing pairs students with seniors for affordable rent.`,
+          hint: `⚠️ Trap Alert: Identify mutual benefit (reassuring presence + moderate rent).`
+        },
+        {
+          title: `Santé & Bien-être B1 N°${i + 1}`,
+          text: `Des entreprises canadiennes adoptent le programme 'Pause Active'. Les salariés sont invités à pratiquer dix minutes d'étirements collectifs au milieu de la journée pour lutter contre la sédentarité.`,
+          opt: [
+            `Mise en place d'exercices physiques quotidiens contre la sédentarité`,
+            `Suppression des pauses déjeuner pour les employés du secteur privé`,
+            `Obligation de souscrire à une assurance maladie sportive individuelle`,
+            `Fermeture des cantines d'entreprise durant l'après-midi`
+          ],
+          ans: 0,
+          tr: `Le programme 'Pause Active' propose des étirements quotidiens en entreprise.`,
+          en: `The 'Pause Active' program encourages daily stretching at work.`,
+          hint: `⚠️ Trap Alert: Identify initiative purpose ('lutter contre la sédentarité').`
+        },
+        {
+          title: `Initiative Environnement B1 N°${i + 1} à ${city}`,
+          text: `La municipalité de ${city} lance une vaste campagne de végétalisation des façades et des toits d'immeubles afin d'absorber l'eau de pluie et réduire l'effet d'îlot de chaleur urbain.`,
+          opt: [
+            `Végétalisation des bâtiments pour réduire la chaleur et l'eau de pluie`,
+            `Destruction des espaces verts existants au centre-ville`,
+            `Interdiction de planter des arbres dans les cours d'école`,
+            `Taxation supplémentaire sur les propriétaires de jardins privatifs`
+          ],
+          ans: 0,
+          tr: `La végétalisation des bâtiments à ${city} réduit la chaleur et gère les eaux.`,
+          en: `Greening buildings in ${city} reduces heat islands and manages rainwater.`,
+          hint: `⚠️ Trap Alert: Focus on dual environmental target (rainwater absorption + heat reduction).`
+        }
+      ];
+      topics.push({ level: "B1", ...b1Topics[b1Variant] });
     } else if (qNum <= 33) {
-      topics.push({
-        level: "B2",
-        title: `Chronique Économie & Écologie B2 N°${i + 1}`,
-        text: `L'accélération de la transition énergétique dans le secteur industriel canadien suscite un débat approfondi. Si les investissements dans les technologies propres créent de nouvelles opportunités d'emploi, le coût de réadaptation des infrastructures traditionnelles demeure une préoccupation majeure pour les entreprises.`,
-        opt: [
-          `Opportunités d'emploi mais coût élevé de réadaptation des infrastructures`,
-          `Disparition complète des emplois industriels traditionnels`,
-          `Baisse spectaculaire des investissements dans le secteur vert`,
-          `Abrogation des réglementations environnementales en vigueur`
-        ],
-        ans: 0,
-        tr: `La transition énergétique offre des emplois mais impose des coûts d'infrastructure.`,
-        en: `The energy transition offers jobs but imposes high infrastructure costs.`,
-        hint: `⚠️ Trap Alert: Identify the nuanced duality (employment growth vs infrastructure cost).`
-      });
+      const b2Variant = (Math.floor(i / 39) + (qNum - 26)) % 8;
+      const b2Topics = [
+        {
+          title: `Chronique Économie & Écologie B2 N°${i + 1}`,
+          text: `L'accélération de la transition énergétique dans le secteur industriel canadien suscite un débat approfondi. Si les investissements dans les technologies propres créent de nouvelles opportunités d'emploi, le coût de réadaptation des infrastructures traditionnelles demeure une préoccupation majeure pour les entreprises.`,
+          opt: [
+            `Opportunités d'emploi mais coût élevé de réadaptation des infrastructures`,
+            `Disparition complète des emplois industriels traditionnels`,
+            `Baisse spectaculaire des investissements dans le secteur vert`,
+            `Abrogation des réglementations environnementales en vigueur`
+          ],
+          ans: 0,
+          tr: `La transition énergétique offre des emplois mais impose des coûts d'infrastructure.`,
+          en: `The energy transition offers jobs but imposes high infrastructure costs.`,
+          hint: `⚠️ Trap Alert: Identify the nuanced duality (employment growth vs infrastructure cost).`
+        },
+        {
+          title: `Débat Santé & Technologie B2 N°${i + 1}`,
+          text: `L'intégration de l'intelligence artificielle dans l'imagerie médicale révolutionne la précision des diagnostics précoces. Toutefois, plusieurs comités d'éthique mettent en garde contre le risque de déshumanisation du colloque singulier entre le médecin et son patient.`,
+          opt: [
+            `Haute précision médicale nuancée par le risque de déshumanisation du soin`,
+            `Remplacement intégral et immédiat du corps médical par des algorithmes`,
+            `Inutilité constatée de l'intelligence artificielle en milieu hospitalier`,
+            `Interdiction stricte des outils informatiques dans les hôpitaux publics`
+          ],
+          ans: 0,
+          tr: `L'IA en imagerie médicale améliore les diagnostics mais inquiète quant à la relation humaine.`,
+          en: `AI in medical imaging enhances diagnostics but raises human relation concerns.`,
+          hint: `⚠️ Trap Alert: Identify main ethical tension (diagnostic gain vs loss of human touch).`
+        },
+        {
+          title: `Dossier Climat & Tourisme B2 N°${i + 1}`,
+          text: `Face au réchauffement climatique, les stations de ski québécoises investissent massivement dans la neige de culture. Bien que cette technologie sécurise la saison touristique, la forte consommation d'eau et d'électricité pose la question de sa durabilité écologique à long terme.`,
+          opt: [
+            `Garantie économique de la saison touristique face au coût environnemental`,
+            `Fermeture définitive des domaines skiables à travers le pays`,
+            `Interdiction fédérale de produire de la neige artificielle en hiver`,
+            `Conversion complète des montagnes en parcs d'attractions estivaux`
+          ],
+          ans: 0,
+          tr: `La neige de culture sécurise le tourisme mais consomme beaucoup d'eau et d'énergie.`,
+          en: `Artificial snow secures tourism revenue but consumes significant water and power.`,
+          hint: `⚠️ Trap Alert: Identify the trade-off (tourism revenue vs resource consumption).`
+        },
+        {
+          title: `Chronique Urbanisme B2 N°${i + 1}`,
+          text: `La pérennisation du télétravail transforme le paysage de l'immobilier d'entreprise. La conversion des tours de bureaux inoccupées en logements résidentiels est présentée comme une solution d'avenir, malgré la complexité des normes architecturales de sécurité.`,
+          opt: [
+            `Reconversion de bureaux vacants en logements freinée par la complexité technique`,
+            `Obligation pour tous les salariés de retravailler en présentiel cinq jours sur cinq`,
+            `Démolition systématique des immeubles de bureaux dans les grands centres`,
+            `Baisse spectaculaire de la demande de logements en centre-ville`
+          ],
+          ans: 0,
+          tr: `La reconversion des bureaux vacants en logements fait face à des contraintes techniques.`,
+          en: `Converting vacant office towers to residential housing faces technical hurdles.`,
+          hint: `⚠️ Trap Alert: Identify opportunity (housing creation) vs obstacle (architectural norms).`
+        },
+        {
+          title: `Débat Éducation & Emploi B2 N°${i + 1}`,
+          text: `La montée en puissance des micro-certifications en ligne bouscule le monopole des diplômes universitaires traditionnels. Les recruteurs apprécient l'agilité de ces formations courtes, bien que certains universitaires dénoncent le risque de marchandisation de l'enseignement.`,
+          opt: [
+            `Agilité des formations courtes saluée par les entreprises malgré les réserves académiques`,
+            `Disparition complète des universités publiques au profit de plateformes privées`,
+            `Refus catégorique des recruteurs de reconnaître les diplômes en ligne`,
+            `Obligation de détenir un doctorat pour accéder à tout emploi du secteur tertiaire`
+          ],
+          ans: 0,
+          tr: `Les micro-certifications séduisent les employeurs mais suscitent des réserves universitaires.`,
+          en: `Micro-credentials appeal to employers but spark debate among academics.`,
+          hint: `⚠️ Trap Alert: Note opposing viewpoints (recruiter agility vs academic skepticism).`
+        },
+        {
+          title: `Dossier Industrie Textile B2 N°${i + 1}`,
+          text: `Le gouvernement envisage de durcir les réglementations contre l'obsolescence programmée dans le secteur de la mode rapide. Les industriels mettent en avant le risque d'augmentation des prix de vente pour les consommateurs à faible revenu.`,
+          opt: [
+            `Encadrement écologique du textile confronté au risque de hausse des prix`,
+            `Interdiction totale de vendre des vêtements neufs en magasin`,
+            `Baisse généralisée des exigences de qualité sur les textiles fabriqués`,
+            `Fermeture des frontières commerciales pour tous les produits vestimentaires`
+          ],
+          ans: 0,
+          tr: `Le durcissement écologique dans le textile fait craindre une hausse des prix.`,
+          en: `Tightening environmental rules in fashion raises concerns over consumer price hikes.`,
+          hint: `⚠️ Trap Alert: Identify conflict between regulatory rigor and consumer purchasing power.`
+        },
+        {
+          title: `Chronique Ville Connectée B2 N°${i + 1}`,
+          text: `Le déploiement des réseaux de capteurs intelligents permet d'optimiser le trafic automobile et la collecte des déchets urbains. Néanmoins, les associations de défense des droits civiques réclament un encadrement strict de la gestion des données personnelles.`,
+          opt: [
+            `Efficacité de la gestion urbaine intelligente associée à des exigences de confidentialité`,
+            `Abandon pur et simple de l'utilisation des technologies dans les services publics`,
+            `Vente commerciale incontrôlée des données citoyennes aux entreprises privées`,
+            `Suppression des feux de circulation dans l'ensemble des agglomérations`
+          ],
+          ans: 0,
+          tr: `Les capteurs intelligents améliorent les services urbains mais posent des questions de vie privée.`,
+          en: `Smart sensors optimize city services but raise privacy governance questions.`,
+          hint: `⚠️ Trap Alert: Highlight balance between urban efficiency and data privacy rights.`
+        },
+        {
+          title: `Débat Économie du Travail B2 N°${i + 1}`,
+          text: `Le statut de travailleur indépendant des livreurs de plateformes numériques fait l'objet de vives contestations judiciaires. Les syndicats revendiquent l'accès aux droits sociaux classiques, tandis que les plateformes défendent la flexibilité horaire plébiscitée par une partie des coursiers.`,
+          opt: [
+            `Revendication de protection sociale complète face au maintien de la flexibilité horaire`,
+            `Interdiction définitive du travail indépendant dans le secteur de la livraison`,
+            `Suppression de toute rémunération horaire au profit du bénévolat`,
+            `Nationalisation immédiate de l'ensemble des plateformes de livraison rapide`
+          ],
+          ans: 0,
+          tr: `Les coursiers réclament une protection sociale sans renoncer à la flexibilité.`,
+          en: `Platform couriers seek social security rights while maintaining scheduling flexibility.`,
+          hint: `⚠️ Trap Alert: Identify core dispute (social safety net vs scheduling autonomy).`
+        }
+      ];
+      topics.push({ level: "B2", ...b2Topics[b2Variant] });
     } else if (qNum <= 37) {
-      topics.push({
-        level: "C1",
-        title: `Conférence Académique C1 N°${i + 1}`,
-        text: `L'émergence des technologies quantiques en ingénierie de l'information impose une redéfinition fondamentale des architectures cryptographiques. La cohérence des q-bits et la réduction des erreurs algorithmiques constituent les défis centraux de la recherche contemporaine.`,
-        opt: [
-          `Défis majeurs liés à la cohérence quantique et aux architectures cryptographiques`,
-          `Abandon définitif des recherches sur l'informatique quantique`,
-          `Adoption universelle et immédiate sans aucune contrainte technique`,
-          `Remplacement intégral des systèmes informatiques traditionnels par analogie`
-        ],
-        ans: 0,
-        tr: `L'informatique quantique nécessite de redéfinir les architectures cryptographiques.`,
-        en: `Quantum computing requires redefining cryptographic architectures.`,
-        hint: `⚠️ Trap Alert: Identify high-register academic vocabulary (cohérence, architectures).`
-      });
+      const c1Variant = (Math.floor(i / 39) + (qNum - 34)) % 4;
+      const c1Topics = [
+        {
+          title: `Conférence Académique C1 N°${i + 1}`,
+          text: `L'émergence des technologies quantiques en ingénierie de l'information impose une redéfinition fondamentale des architectures cryptographiques. La cohérence des q-bits et la réduction des erreurs algorithmiques constituent les défis centraux de la recherche contemporaine.`,
+          opt: [
+            `Défis majeurs liés à la cohérence quantique et aux architectures cryptographiques`,
+            `Abandon définitif des recherches sur l'informatique quantique`,
+            `Adoption universelle et immédiate sans aucune contrainte technique`,
+            `Remplacement intégral des systèmes informatiques traditionnels par analogie`
+          ],
+          ans: 0,
+          tr: `L'informatique quantique nécessite de redéfinir les architectures cryptographiques.`,
+          en: `Quantum computing requires redefining cryptographic architectures.`,
+          hint: `⚠️ Trap Alert: Identify high-register academic vocabulary (cohérence, architectures).`
+        },
+        {
+          title: `Colloque Bioéthique & Génétique C1 N°${i + 1}`,
+          text: `Les récentes percées accomplies par l'outil de réécriture génomique CRISPR-Cas9 ouvrent des perspectives thérapeutiques inédites pour les maladies héréditaires rares. Cependant, la communauté scientifique internationale s'accorde sur l'exigence d'un moratoire strict concernant les modifications transmissibles de la lignée germinale humaine.`,
+          opt: [
+            `Potentiel thérapeutique majeur soumis à un moratoire éthique sur la lignée germinale`,
+            `Autorisation inconditionnelle de toutes les manipulations génétiques embryonnaires`,
+            `Inefficacité thérapeutique démontrée des ciseaux moléculaires en cancérologie`,
+            `Abandon des recherches biochimiques au profit de la médecine conventionnelle`
+          ],
+          ans: 0,
+          tr: `CRISPR-Cas9 offre des thérapies prometteuses mais exige un moratoire sur les modifications germinales.`,
+          en: `CRISPR-Cas9 opens therapeutic avenues but demands a strict moratorium on germline edits.`,
+          hint: `⚠️ Trap Alert: Distinguish somatic therapies (approved) from germline edits (restricted).`
+        },
+        {
+          title: `Séminaire Neurosciences C1 N°${i + 1}`,
+          text: `Les recherches contemporaines sur la neuroplasticité cérébrale chez les adultes apprenant une seconde langue démontrent une réorganisation fonctionnelle significative des réseaux cortex-sous-corticaux. La maîtrise tardive dépend davantage de la densité du réseau d'interconnexions axonales que de l'âge biologique strict de l'apprenant.`,
+          opt: [
+            `Réorganisation neuroplastique tardive dépendant de la densité des connexions nerveuses`,
+            `Impossibilité biologique absolue d'acquérir une seconde langue après la puberté`,
+            `Absence totale de modification de la structure cérébrale lors de l'apprentissage linguistique`,
+            `Dégradation irréversible des compétences linguistiques en langue maternelle`
+          ],
+          ans: 0,
+          tr: `La neuroplasticité permet l'apprentissage tardif d'une langue via la densité neuronale.`,
+          en: `Neuroplasticity enables late language acquisition through axonal network density.`,
+          hint: `⚠️ Trap Alert: Focus on scientific thesis (neural network density over biological age).`
+        },
+        {
+          title: `Conférence Sociologie Urbaine C1 N°${i + 1}`,
+          text: `La gentrification accélérée des faubourgs historiques s'accompagne d'une marchandisation du patrimoine culturel. Si la réhabilitation du bâti attire des capitaux privés, elle tend à fragiliser le tissu social d'origine par l'éviction progressive des classes populaires.`,
+          opt: [
+            `Valorisation immobilière contrastant avec l'éviction des populations d'origine`,
+            `Enrichissement uniforme et harmonieux de toutes les couches de la population`,
+            `Baisse spectaculaire des investissements locatifs dans les zones patrimoniales`,
+            `Conservation intacte des structures démographiques et commerciales locales`
+          ],
+          ans: 0,
+          tr: `La réhabilitation urbaine attire des capitaux mais provoque l'éviction des résidents historiques.`,
+          en: `Urban gentrification attracts investment while displacing longstanding working-class residents.`,
+          hint: `⚠️ Trap Alert: Identify sociological contrast (architectural upgrade vs resident displacement).`
+        }
+      ];
+      topics.push({ level: "C1", ...c1Topics[c1Variant] });
     } else {
-      topics.push({
-        level: "C2",
-        title: `Épistémologie & Culture C2 N°${i + 1}`,
-        text: `La saturation de l'espace public numérique par des flux d'informations générés algorithmiquement risque d'altérer les mécanismes traditionnels de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle et réflexive.`,
-        opt: [
-          `Risque de substitution de l'analyse factuelle par l'immédiateté émotionnelle`,
-          `Perfectionnement exceptionnel et harmonieux du débat démocratique`,
-          `Disparition totale des moyens de communication électroniques`,
-          `Obligation légale d'utiliser uniquement la presse papier`
-        ],
-        ans: 0,
-        tr: `Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.`,
-        en: `Algorithmic flows risk replacing factual analysis with emotional immediacy.`,
-        hint: `⚠️ Trap Alert: Identify abstract philosophical thesis ('substituer l'immédiateté à l'analyse').`
-      });
+      const c2Variant = (Math.floor(i / 39) + (qNum - 38)) % 2;
+      const c2Topics = [
+        {
+          title: `Épistémologie & Culture C2 N°${i + 1}`,
+          text: `La saturation de l'espace public numérique par des flux d'informations générés algorithmiquement risque d'altérer les mécanismes traditionnels de la délibération citoyenne, substituant l'immédiateté émotionnelle à la rigueur de l'analyse factuelle et réflexive.`,
+          opt: [
+            `Risque de substitution de l'analyse factuelle par l'immédiateté émotionnelle`,
+            `Perfectionnement exceptionnel et harmonieux du débat démocratique`,
+            `Disparition totale des moyens de communication électroniques`,
+            `Obligation légale d'utiliser uniquement la presse papier`
+          ],
+          ans: 0,
+          tr: `Les flux algorithmiques risquent de substituer l'immédiateté émotionnelle à l'analyse factuelle.`,
+          en: `Algorithmic flows risk replacing factual analysis with emotional immediacy.`,
+          hint: `⚠️ Trap Alert: Identify abstract philosophical thesis ('substituer l'immédiateté à l'analyse').`
+        },
+        {
+          title: `Esthétique & Philosophie C2 N°${i + 1}`,
+          text: `L'émergence des œuvres d'art générées par réseaux de neurones artificiels remet en question les fondements métaphysiques de la création. En dissociant la production esthétique de la subjectivité de l'artiste, l'intelligence artificielle ébranle la notion même d'authenticité et d'intentionnalité poétique.`,
+          opt: [
+            `Remise en cause de l'authenticité par dissociation entre art et subjectivité humaine`,
+            `Consécration définitive du statut d'auteur pour les programmes informatiques`,
+            `Restauration des canons esthétiques de l'Antiquité classique`,
+            `Disparition complète des galeries et des musées d'art contemporain`
+          ],
+          ans: 0,
+          tr: `L'IA artistique bouscule le concept d'authenticité en séparant l'art de l'intention de l'auteur.`,
+          en: `AI-generated art challenges authenticity by disconnecting creation from human subjectivity.`,
+          hint: `⚠️ Trap Alert: Identify philosophical thesis (disruption of artistic authenticity & intent).`
+        }
+      ];
+      topics.push({ level: "C2", ...c2Topics[c2Variant] });
     }
   }
 

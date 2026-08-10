@@ -51,8 +51,13 @@ export function speak(
     currentAudioPlayer = null;
   }
 
-  // Respect explicit gender parameter (female / male)
+  // Respect explicit gender parameter or auto-detect speaker labels in dialogue text
   let finalGender = gender;
+  if (/^\s*(Locuteur|Annonceur|Monsieur|M\.|Paul|Léo|Marc|Antoine|Pierre|Thomas|Hugo|Louis)\s*:/i.test(cleanText)) {
+    finalGender = "male";
+  } else if (/^\s*(Locutrice|Annonceuse|Madame|Mme|Chloé|Marie|Sophie|Camille|Emma|Léa)\s*:/i.test(cleanText)) {
+    finalGender = "female";
+  }
 
   // Extract ISO 2-letter language code (e.g. de, es, it, pt, fr, en, ru, zh, ja, ko, ar)
   let langCode = lang ? lang.split('-')[0].toLowerCase() : 'fr';
