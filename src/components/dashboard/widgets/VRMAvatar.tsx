@@ -3,6 +3,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
+import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js";
 
 class ErrorBoundary extends Component<{ children: ReactNode; fallback: ReactNode }, { hasError: boolean }> {
   state = { hasError: false };
@@ -184,7 +185,7 @@ function VRMModel({
 
     if (gltfSceneCache.has(modelUrl)) {
       const cached = gltfSceneCache.get(modelUrl)!;
-      const cloned = cached.clone(true);
+      const cloned = SkeletonUtils.clone(cached) as THREE.Group;
       processAndSetupModel(cloned, bonesRef, morphMeshesRef, setModelInfo, restposesRef, modelRef, setLoaded);
       return;
     }
@@ -201,7 +202,7 @@ function VRMModel({
           (gltf: any) => {
             if (cancelled) return;
             const scene = gltf.scene;
-            gltfSceneCache.set(modelUrl, scene.clone(true));
+            gltfSceneCache.set(modelUrl, SkeletonUtils.clone(scene) as THREE.Group);
             processAndSetupModel(scene, bonesRef, morphMeshesRef, setModelInfo, restposesRef, modelRef, setLoaded);
             dracoLoader.dispose();
           },
