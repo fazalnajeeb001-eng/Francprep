@@ -161,13 +161,13 @@ function DashboardPage() {
                     <span>Placement Test</span>
                   </Link>
                 )}
-                {/* 3D Mini Avatar Bust Profile Icon */}
-                <Link to="/dashboard/settings" className="hover:scale-105 transition-transform" title="Customize AI Coach Avatar">
-                  <SmartAvatar
-                    features={data.user.avatarFeatures}
-                    size={40}
-                    miniHeaderMode={true}
-                  />
+                {/* Original Profile Avatar Button */}
+                <Link
+                  to="/dashboard/settings"
+                  className="w-9 h-9 rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 flex items-center justify-center text-white font-extrabold text-sm shadow-md hover:scale-105 active:scale-95 transition-transform border border-purple-300/40"
+                  title="Settings & Profile"
+                >
+                  {data.user.firstName?.[0]?.toUpperCase() || "U"}
                 </Link>
               </div>
             </div>
