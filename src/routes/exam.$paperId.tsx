@@ -28,6 +28,7 @@ import { useTheme } from "~/lib/ThemeContext";
 import { useSpeak } from "~/lib/speech";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
+import { SmartAvatar } from "~/components/dashboard/widgets/SmartAvatar";
 import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } from "~/lib/examSchema";
 import { getOfficialOptionImageSvgs } from "~/lib/lineArtIllustrations";
 
@@ -2736,14 +2737,25 @@ export function AuthenticCBTExamPage() {
 
               return (
                 <div key={task.id} className={`p-6 rounded-lg border ${cbtCard} shadow-sm space-y-5`}>
-                  <div className="space-y-1">
-                    <span className="text-xs font-mono font-bold text-purple-600 dark:text-purple-400 uppercase">
-                      {task.title}
-                    </span>
-                    <h3 className="text-lg font-bold text-slate-950 dark:text-slate-100 leading-snug">{task.scenario}</h3>
-                    <div className="flex items-center gap-4 text-xs text-slate-500 font-semibold pt-1">
-                      <span>Prep Time: {task.prepTimeMins} min</span>
-                      <span>Speaking Time: {task.speakingTimeMins} min</span>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl bg-purple-950/20 border border-purple-500/30">
+                    <div className="space-y-1 flex-1">
+                      <span className="text-xs font-mono font-bold text-purple-600 dark:text-purple-400 uppercase">
+                        {task.title}
+                      </span>
+                      <h3 className="text-lg font-bold text-slate-950 dark:text-slate-100 leading-snug">{task.scenario}</h3>
+                      <div className="flex items-center gap-4 text-xs text-slate-500 font-semibold pt-1">
+                        <span>Prep Time: {task.prepTimeMins} min</span>
+                        <span>Speaking Time: {task.speakingTimeMins} min</span>
+                      </div>
+                    </div>
+                    {/* 3D Examiner Coach Stage */}
+                    <div className="shrink-0 flex items-center gap-2 pl-2">
+                      <SmartAvatar
+                        features={user?.avatarFeatures}
+                        size={110}
+                        animate={isRecording ? "speaking" : "idle"}
+                        showThoughts={false}
+                      />
                     </div>
                   </div>
 

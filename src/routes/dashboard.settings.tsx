@@ -205,6 +205,9 @@ function SettingsPage() {
       await apiFetch("/user/profile/avatar", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ avatarFeatures: features }) });
       setAvatarFeatures(features);
       localStorage.setItem("fp_avatar_features", JSON.stringify(features));
+      if (updateUser) {
+        updateUser({ avatarFeatures: features });
+      }
       window.dispatchEvent(new Event("avatar-changed"));
     } catch {}
     setAvatarSaving(false);

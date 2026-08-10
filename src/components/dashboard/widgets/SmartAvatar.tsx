@@ -157,8 +157,27 @@ export function SmartAvatar({
   showThoughts = true,
   miniHeaderMode = false,
 }: SmartAvatarProps) {
-  const gender = propGender || features?.gender || "female";
-  const isMale = gender === "male";
+  const [activeGender, setActiveGender] = useState<string>(() => {
+    return propGender || features?.gender || (typeof window !== "undefined" ? (JSON.parse(localStorage.getItem("fp_avatar_features") || "{}")?.gender) : undefined) || "female";
+  });
+
+  useEffect(() => {
+    const updated = propGender || features?.gender;
+    if (updated) setActiveGender(updated);
+  }, [propGender, features]);
+
+  useEffect(() => {
+    const handleAvatarChange = () => {
+      try {
+        const stored = JSON.parse(localStorage.getItem("fp_avatar_features") || "{}");
+        if (stored.gender) setActiveGender(stored.gender);
+      } catch {}
+    };
+    window.addEventListener("avatar-changed", handleAvatarChange);
+    return () => window.removeEventListener("avatar-changed", handleAvatarChange);
+  }, []);
+
+  const isMale = activeGender === "male";
   const modelUrl = isMale ? "/models/leo-avatar.glb" : "/models/female-avatar.glb";
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -209,7 +228,7 @@ export function SmartAvatar({
   if (miniHeaderMode) {
     return (
       <div style={{ width: size, height: size }} className="relative shrink-0 rounded-full overflow-hidden border border-purple-400/40 shadow-md">
-        <AvatarErrorBoundary fallback={<AvatarFallback size={size} gender={gender} />}>
+        <AvatarErrorBoundary fallback={<AvatarFallback size={size} gender={activeGender} />}>
           <DynamicVRMAvatar
             modelUrl={modelUrl}
             size={size}
@@ -219,7 +238,7 @@ export function SmartAvatar({
               hairColor: features?.hairColor,
               outfitColor: features?.outfitColor,
             }}
-            gender={gender}
+            gender={activeGender}
           />
         </AvatarErrorBoundary>
       </div>
@@ -282,7 +301,7 @@ export function SmartAvatar({
 
       {/* 3D Animated VRM Avatar Model */}
       <div ref={containerRef} className="relative z-10 w-full h-full flex items-center justify-center">
-        <AvatarErrorBoundary fallback={<AvatarFallback size={size} gender={gender} />}>
+        <AvatarErrorBoundary fallback={<AvatarFallback size={size} gender={activeGender} />}>
           <DynamicVRMAvatar
             modelUrl={modelUrl}
             size={size}
@@ -292,7 +311,7 @@ export function SmartAvatar({
               hairColor: features?.hairColor,
               outfitColor: features?.outfitColor,
             }}
-            gender={gender}
+            gender={activeGender}
           />
         </AvatarErrorBoundary>
       </div>
