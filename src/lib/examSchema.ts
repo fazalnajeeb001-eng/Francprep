@@ -432,13 +432,30 @@ function getDrawingPropositions(sceneIdx: number): { opt: string[]; ans: number 
 function shuffleOptions(
   options: string[],
   correctIndex: number,
+  seed: number = 0,
   optionImages?: string[]
 ): { options: string[]; correctIndex: number; correctText: string; optionImages?: string[] } {
+  const originalCorrectText = options[correctIndex] || options[0] || "";
+  const indexed = options.map((opt, idx) => ({ opt, isCorrect: idx === correctIndex, img: optionImages?.[idx] }));
+
+  // Deterministic pseudo-random shuffle based on seed
+  for (let i = indexed.length - 1; i > 0; i--) {
+    const pseudoRandom = Math.abs(Math.sin(seed + i * 997) * 10000);
+    const j = Math.floor((pseudoRandom - Math.floor(pseudoRandom)) * (i + 1));
+    const temp = indexed[i];
+    indexed[i] = indexed[j];
+    indexed[j] = temp;
+  }
+
+  const shuffledOptions = indexed.map((item) => item.opt);
+  const newCorrectIndex = indexed.findIndex((item) => item.isCorrect);
+  const shuffledImages = optionImages ? indexed.map((item) => item.img || "") : undefined;
+
   return {
-    options: [...options],
-    correctIndex,
-    correctText: options[correctIndex] || options[0] || "",
-    optionImages: optionImages ? [...optionImages] : undefined
+    options: shuffledOptions,
+    correctIndex: newCorrectIndex !== -1 ? newCorrectIndex : 0,
+    correctText: originalCorrectText,
+    optionImages: shuffledImages
   };
 }
 
@@ -494,7 +511,8 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       topicAns = props.ans;
     }
 
-    const { options, correctIndex, correctText, optionImages } = shuffleOptions(topicOpt, topicAns, rawImages);
+    const seed = seedOffset * 100 + i;
+    const { options, correctIndex, correctText, optionImages } = shuffleOptions(topicOpt, topicAns, seed, rawImages);
 
     const itemLevel = t.level || "A1";
     const specificHint = (t as any).hint || `Level ${itemLevel} Listening Guidance: Focus on the speaker's main intent and tone. Pay attention to key transition words (e.g. "cependant", "en revanche") to identify the correct message without guessing.`;
