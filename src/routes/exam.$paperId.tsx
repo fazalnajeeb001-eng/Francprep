@@ -118,6 +118,8 @@ export function AuthenticCBTExamPage() {
 
   // Active Question Index
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
+  const currentQuestions = currentSection.questions || [];
+  const currentQ = currentQuestions[currentQuestionIdx] || currentQuestions[0];
 
   // Timer State
   const [timeLeft, setTimeLeft] = useState(currentSection.durationMins * 60);
@@ -1694,9 +1696,6 @@ export function AuthenticCBTExamPage() {
       isNCLC7TargetReached: isTargetReached
     };
   };
-
-  const currentQuestions = currentSection.questions || [];
-  const currentQ = currentQuestions[currentQuestionIdx] || currentQuestions[0];
 
   // CBT Theme Styles - Official Real Exam CBT Light Mode
   const cbtBg = "bg-[#F1F5F9] text-[#0F172A]";
