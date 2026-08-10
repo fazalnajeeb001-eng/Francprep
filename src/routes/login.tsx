@@ -8,7 +8,6 @@ import { FlagIcon } from "~/components/common/FlagIcon";
 import { motion, AnimatePresence } from "framer-motion";
 import { GraduationCap, Mail, Lock, Sparkles, AlertCircle, ArrowLeft, ShieldCheck, KeyRound, Eye, EyeOff, CheckCircle2, LogIn } from "lucide-react";
 
-export const Route = createFileRoute("/login")({ component: LoginPage });
 
 function LoginPage() {
   const { dark } = useTheme();
@@ -501,3 +500,6 @@ function LoginPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/login")({ component: LoginPage });
+

@@ -36,19 +36,6 @@ class SpeakingErrorBoundary extends Component<{ children: ReactNode }, { hasErro
   }
 }
 
-export const Route = createFileRoute("/speaking")({
-  validateSearch: (search: Record<string, unknown> = {}) => {
-    return {
-      mode: (search?.mode as string) || "drill",
-      level: (search?.level as string) || "A1",
-    };
-  },
-  component: () => (
-    <SpeakingErrorBoundary>
-      <SpeakingPage />
-    </SpeakingErrorBoundary>
-  ),
-});
 
 function collectPhrases() {
   return apiFetch("/lessons?limit=100")
@@ -642,3 +629,17 @@ function SpeakingPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/speaking")({
+  validateSearch: (search: Record<string, unknown> = {}) => {
+    return {
+      mode: (search?.mode as string) || "drill",
+      level: (search?.level as string) || "A1",
+    };
+  },
+  component: () => (
+    <SpeakingErrorBoundary>
+      <SpeakingPage />
+    </SpeakingErrorBoundary>
+  ),
+});

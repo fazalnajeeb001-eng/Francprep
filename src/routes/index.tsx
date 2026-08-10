@@ -3,10 +3,6 @@ import { useEffect } from "react";
 import { useAuth } from "~/lib/AuthContext";
 import { LandingPage } from "~/components/landing/LandingPage";
 
-export const Route = createFileRoute("/")({
-  component: IndexPage,
-});
-
 function IndexPage() {
   const { user, isLoading } = useAuth();
   const navigate = useNavigate();
@@ -19,3 +15,8 @@ function IndexPage() {
 
   return <LandingPage />;
 }
+
+export const Route = createFileRoute("/")({
+  component: IndexPage,
+});
+

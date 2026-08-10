@@ -8,7 +8,6 @@ import { ArrowLeft, BookOpen, ChevronRight, Sparkles, Clock, Layers, GraduationC
 
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 
-export const Route = createFileRoute("/learn")({ component: LearnPage });
 
 const CEFR_STYLES: Record<string, { gradient: string; bg: string; border: string; text: string }> = {
   A1: { gradient: "from-emerald-500 to-teal-500", bg: "bg-emerald-500/10", border: "border-emerald-500/30", text: "text-emerald-500" },
@@ -508,3 +507,5 @@ function LearnPage() {
     </div>
   );
 }
+
+export const Route = createFileRoute("/learn")({ component: LearnPage });
