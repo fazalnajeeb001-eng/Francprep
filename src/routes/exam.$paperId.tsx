@@ -98,20 +98,31 @@ export function AuthenticCBTExamPage() {
   // Test-Center High-Contrast Toggle (Default light CBT canvas for authentic exam day feel)
   const [cbtDark, setCbtDark] = useState(false);
 
-  const registry = getExamRegistry();
-  const paper: ExamPaper | undefined = registry.find((p) => p.id === paperId) || registry[0];
+  const registry = getExamRegistry() || [];
+  const paper: ExamPaper = registry.find((p) => p.id === paperId) || registry[0] || {
+    id: paperId || "tcf1",
+    title: "TCF Canada Exam Paper 1",
+    type: "TCF_CANADA",
+    code: "P1",
+    sections: []
+  };
 
   // Active Section Index
   const [activeSectionIdx, setActiveSectionIdx] = useState(0);
-  const currentSection = paper.sections[activeSectionIdx] || paper.sections[0];
+  const currentSection = paper?.sections?.[activeSectionIdx] || paper?.sections?.[0] || {
+    type: "COMPREHENSION_ORALE",
+    title: "Compréhension Orale",
+    durationMins: 35,
+    questions: []
+  };
 
   // Active Question Index
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
-  const currentQuestions = currentSection.questions || [];
+  const currentQuestions = currentSection?.questions || [];
   const currentQ = currentQuestions[currentQuestionIdx] || currentQuestions[0];
 
   // Timer State
-  const [timeLeft, setTimeLeft] = useState(currentSection.durationMins * 60);
+  const [timeLeft, setTimeLeft] = useState((currentSection?.durationMins || 35) * 60);
   const [isTimerPaused, setIsTimerPaused] = useState(false);
   const [qTimeLeft, setQTimeLeft] = useState<number | null>(null);
 
@@ -122,7 +133,7 @@ export function AuthenticCBTExamPage() {
   const [showPassageTranslation, setShowPassageTranslation] = useState(false);
 
   // Session Key
-  const sessionKey = `fp_exam_session_${paper.id}_${mode}`;
+  const sessionKey = `fp_exam_session_${paper?.id || "default"}_${mode}`;
 
   // User Responses State (with localStorage Session Restoration)
   const [selectedAnswers, setSelectedAnswers] = useState<{ [qId: string]: number }>(() => {
@@ -807,7 +818,8 @@ export function AuthenticCBTExamPage() {
       setQTimeLeft(initialTimer);
 
       // Q30-Q39 are always printed on screen per FEI rules, or if student already selected an answer
-      if (qNum >= 30 || selectedAnswers[currentQ.id] !== undefined) {
+      const hasAnswer = currentQ?.id ? selectedAnswers?.[currentQ.id] !== undefined : false;
+      if (qNum >= 30 || hasAnswer) {
         setShowQuestionPrompt(true);
       } else {
         setShowQuestionPrompt(false);
