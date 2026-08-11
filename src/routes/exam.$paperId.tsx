@@ -1948,12 +1948,13 @@ export function AuthenticCBTExamPage() {
                   </div>
                 </div>
 
-                {/* Question Prompt Card (Toggled via "Show/Hide Question Text" button) */}
-                {showQuestionPrompt && (
-                  <div className="p-4 rounded-xl bg-slate-900 border border-slate-700 text-white shadow-md space-y-2">
+                {/* Question Prompt Card (Toggled via "Show/Hide Question Text" button OR auto-revealed upon selecting an option) */}
+                {(showQuestionPrompt || selectedAnswers[currentQ.id] !== undefined || isSubmitted) && (
+                  <div className="p-4 rounded-xl bg-slate-900 border border-slate-700 text-white shadow-md space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
                     <div className="flex items-center justify-between text-xs font-bold text-amber-300">
                       <span className="flex items-center gap-1.5 font-mono">
-                        <span>📝 Question N°{currentQ.questionNumber}</span>
+                        <FileText className="w-3.5 h-3.5 text-amber-400" />
+                        <span>📝 Intitulé de la question N°{currentQ.questionNumber}</span>
                       </span>
                       <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 font-mono">
                         Niveau {(currentQ as any).level || "A1-C2"}
@@ -1977,50 +1978,52 @@ export function AuthenticCBTExamPage() {
                       </span>
 
                       <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-                        {mode === "PRACTICE" && (
-                          <div className="flex flex-wrap items-center gap-1.5">
-                            <button
-                              type="button"
-                              onClick={() => setShowQuestionPrompt(!showQuestionPrompt)}
-                              className={`px-2.5 sm:px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border cursor-pointer ${
-                                showQuestionPrompt
-                                  ? "bg-amber-600 text-white border-amber-700"
-                                  : "bg-amber-100 text-amber-950 border-amber-300 hover:bg-amber-200"
-                              }`}
-                            >
-                              <FileText className="w-3.5 h-3.5" />
-                              <span>{showQuestionPrompt ? "Hide Question Text 📝" : "📝 Show Question Text"}</span>
-                            </button>
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => setShowQuestionPrompt(!showQuestionPrompt)}
+                            className={`px-2.5 sm:px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border cursor-pointer ${
+                              showQuestionPrompt
+                                ? "bg-amber-600 text-white border-amber-700"
+                                : "bg-amber-100 text-amber-950 border-amber-300 hover:bg-amber-200"
+                            }`}
+                          >
+                            <FileText className="w-3.5 h-3.5" />
+                            <span>{showQuestionPrompt ? "Hide Question Text 📝" : "📝 Show Question Text"}</span>
+                          </button>
 
-                            <button
-                              type="button"
-                              onClick={() => setShowTranscript(!showTranscript)}
-                              className={`px-2.5 sm:px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border cursor-pointer ${
-                                showTranscript
-                                  ? "bg-purple-700 text-white border-purple-800"
-                                  : "bg-purple-100 text-purple-950 border-purple-300 hover:bg-purple-200"
-                              }`}
-                            >
-                              <FileText className="w-3.5 h-3.5" />
-                              <span>{showTranscript ? "Hide Transcript 📄" : "📄 French Transcript"}</span>
-                            </button>
-
-                            {currentQ.transcriptEnglish && (
+                          {mode === "PRACTICE" && (
+                            <>
                               <button
                                 type="button"
-                                onClick={() => setShowTranslation(!showTranslation)}
+                                onClick={() => setShowTranscript(!showTranscript)}
                                 className={`px-2.5 sm:px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border cursor-pointer ${
-                                  showTranslation
-                                    ? "bg-indigo-700 text-white border-indigo-800"
-                                    : "bg-indigo-100 text-indigo-950 border-indigo-300 hover:bg-indigo-200"
+                                  showTranscript
+                                    ? "bg-purple-700 text-white border-purple-800"
+                                    : "bg-purple-100 text-purple-950 border-purple-300 hover:bg-purple-200"
                                 }`}
                               >
-                                <Globe className="w-3.5 h-3.5" />
-                                <span>{showTranslation ? "Hide Translation 🌐" : "🌐 English Translation"}</span>
+                                <FileText className="w-3.5 h-3.5" />
+                                <span>{showTranscript ? "Hide Transcript 📄" : "📄 French Transcript"}</span>
                               </button>
-                            )}
-                          </div>
-                        )}
+
+                              {currentQ.transcriptEnglish && (
+                                <button
+                                  type="button"
+                                  onClick={() => setShowTranslation(!showTranslation)}
+                                  className={`px-2.5 sm:px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border cursor-pointer ${
+                                    showTranslation
+                                      ? "bg-indigo-700 text-white border-indigo-800"
+                                      : "bg-indigo-100 text-indigo-950 border-indigo-300 hover:bg-indigo-200"
+                                  }`}
+                                >
+                                  <Globe className="w-3.5 h-3.5" />
+                                  <span>{showTranslation ? "Hide Translation 🌐" : "🌐 English Translation"}</span>
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </div>
 
                         <div className="flex items-center gap-2">
                           <button
