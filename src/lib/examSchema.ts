@@ -1,4 +1,3 @@
-import { getOfficialLineArtSvg } from "./lineArtIllustrations";
 import { getHdIllustration } from "./hdIllustrationAssets";
 
 export type ExamType = "TCF_CANADA" | "TEF_CANADA";
@@ -13,7 +12,6 @@ export interface ExamQuestion {
   options: string[];
   optionImages?: string[];
   mainImage?: string;
-  mainImageSvg?: string;
   hasSpokenOptions?: boolean;
   correctIndex: number;
   explanation: string;
@@ -1433,12 +1431,11 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
 
     let rawImages: string[] | undefined = undefined;
     let mainImage: string | undefined = undefined;
-    let mainImageSvg: string | undefined = undefined;
 
     if (i <= 4) {
-      const paperNum = (seedOffset % 10) + 1;
-      mainImage = paperNum === 1 ? getHdIllustration(paperNum, i) : undefined;
-      mainImageSvg = getOfficialLineArtSvg(i, seedOffset);
+      const paperNumMatch = prefix.match(/\d+/);
+      const paperNum = paperNumMatch ? parseInt(paperNumMatch[0], 10) : ((seedOffset % 10) + 1);
+      mainImage = getHdIllustration(paperNum, i);
     }
 
     let topicOpt = t.opt;
@@ -1503,14 +1500,14 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
         : `${passageSpeakerLabel}: ${t.tr}\n${announcerLabel}: Écoutez la question. Question N°${i} : ${questionTextPrompt}`)
       : t.tr;
 
-    if (i <= 4 && (mainImage || mainImageSvg)) {
+    if (i <= 4) {
       fullSpokenTranscript = `${announcerLabel}: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : ${options[0]}.\n... Proposition B : ${options[1]}.\n... Proposition C : ${options[2]}.\n... Proposition D : ${options[3]}.`;
     }
 
     const speakingRate = i <= 7 ? 0.85 : i <= 15 ? 0.92 : i <= 25 ? 1.00 : i <= 33 ? 1.15 : 1.30;
 
     let spokenEnglishTranslation = t.en;
-    if (i <= 4 && (mainImage || mainImageSvg)) {
+    if (i <= 4) {
       spokenEnglishTranslation = `Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image.\n• Proposition A: ${options[0]}\n• Proposition B: ${options[1]}\n• Proposition C: ${options[2]}\n• Proposition D: ${options[3]}`;
     } else if (isSpokenOptionQuestion) {
       spokenEnglishTranslation = `${t.en}\nInstruction: Listen to the audio document, question N°${i}, and 4 spoken options.\n• Option A: ${options[0]}\n• Option B: ${options[1]}\n• Option C: ${options[2]}\n• Option D: ${options[3]}`;
@@ -1521,9 +1518,9 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       questionNumber: i,
       level: itemLevel,
       speakingRate,
-      hasSpokenOptions: isSpokenOptionQuestion || (i <= 4 && (!!mainImage || !!mainImageSvg)),
+      hasSpokenOptions: isSpokenOptionQuestion || i <= 4,
       questionPrompt: questionTextPrompt,
-      text: i <= 4 && (mainImage || mainImageSvg)
+      text: i <= 4
         ? "Écoutez les 4 propositions, choisissez celle qui correspond à l'image."
         : isSpokenOptionQuestion
         ? `Écoutez le document sonore, la question audio N°${i} et les 4 réponses. Cochez la bonne réponse.`
@@ -1533,7 +1530,6 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       options,
       optionImages,
       mainImage,
-      mainImageSvg,
       correctIndex,
       explanation: `Pedagogical Explanation [Level ${itemLevel}]: The spoken document confirms "${correctText}".`,
       hint: specificHint,

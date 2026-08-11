@@ -23,8 +23,8 @@ async function runPhase1Verification() {
     q1q4.forEach((q) => {
       totalQ1Q4Count++;
 
-      // Check visual representation (mainImage or mainImageSvg)
-      if (q.mainImage || q.mainImageSvg) {
+      // Check visual representation (mainImage or hasSpokenOptions for Q1-Q4)
+      if (q.mainImage || q.hasSpokenOptions) {
         validVisualCount++;
       }
 

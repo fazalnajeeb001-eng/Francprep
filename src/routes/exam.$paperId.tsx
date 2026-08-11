@@ -2082,7 +2082,7 @@ export function AuthenticCBTExamPage() {
                       </div>
                     </div>
 
-                    {/* Visual Illustration Drawing for Q1-Q4 */}
+                    {/* Visual Illustration Image for Q1-Q4 */}
                     {(currentQ as any).mainImage ? (
                       <div className="p-3.5 rounded-xl bg-white border border-slate-300 text-slate-900 space-y-2 shadow-md">
                         <div className="flex items-center justify-between text-xs font-bold text-slate-800 border-b pb-1.5 border-slate-200">
@@ -2097,14 +2097,25 @@ export function AuthenticCBTExamPage() {
                           />
                         </div>
                       </div>
-                    ) : (currentQ as any).mainImageSvg ? (
-                      <div className="p-3.5 rounded-xl bg-white border border-slate-300 text-slate-900 space-y-2 shadow-md">
-                        <div className="flex items-center justify-between text-xs font-bold text-slate-800 border-b pb-1.5 border-slate-200">
-                          <span className="flex items-center gap-1.5">🎨 <strong>Sur le livret / l'écran, vous voyez :</strong></span>
-                          <span className="text-[10px] text-slate-500 font-mono">Dessin au trait (Style officiel FEI)</span>
+                    ) : currentQ.questionNumber <= 4 ? (
+                      <div className="p-4 rounded-xl bg-slate-900 border border-slate-700 text-white space-y-3 shadow-md">
+                        <div className="flex items-center justify-between text-xs font-bold text-amber-300 border-b border-slate-800 pb-2">
+                          <span className="flex items-center gap-1.5 font-mono">
+                            <Sparkles className="w-4 h-4 text-amber-400" />
+                            <span>🎨 Illustration Visuelle HD TCF (Épreuve {paper?.code ? paper.code.replace(/\D/g, "") : "1"})</span>
+                          </span>
+                          <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 font-mono">
+                            Q{currentQ.questionNumber} / 4
+                          </span>
                         </div>
-                        <div className="relative aspect-[16/10] w-full rounded-lg overflow-hidden border border-slate-300 bg-white"
-                             dangerouslySetInnerHTML={{ __html: (currentQ as any).mainImageSvg }} />
+                        <div className="p-6 rounded-lg bg-slate-950/80 border border-slate-800 text-center space-y-2">
+                          <p className="text-sm font-semibold text-slate-200">
+                            🖼️ Image HD en cours de création pour cette épreuve.
+                          </p>
+                          <p className="text-xs text-slate-400 italic">
+                            Écoutez attentivement les 4 propositions sonores et cochez la bonne réponse.
+                          </p>
+                        </div>
                       </div>
                     ) : null}
 
