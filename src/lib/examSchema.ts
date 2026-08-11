@@ -3747,7 +3747,7 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       const a1a2 = getA1A2Propositions(a1a2Idx);
       topicOpt = a1a2.opt;
       topicAns = a1a2.ans;
-      t = { ...t, title: a1a2.title, text: a1a2.text, tr: a1a2.tr, en: a1a2.en, hint: a1a2.hint, level: a1a2.level };
+      t = { ...t, title: a1a2.title, text: a1a2.text, q: a1a2.q, tr: a1a2.tr, en: a1a2.en, hint: a1a2.hint, level: a1a2.level };
     } else if (i >= 16 && i <= 25) {
       const paperNumMatch = prefix.match(/\d+/);
       const paperIdx = paperNumMatch ? (parseInt(paperNumMatch[0], 10) - 1) % 10 : (seedOffset % 10);
@@ -3755,7 +3755,7 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       const b1 = getB1Propositions(b1Idx);
       topicOpt = b1.opt;
       topicAns = b1.ans;
-      t = { ...t, title: b1.title, text: b1.text, tr: b1.tr, en: b1.en, hint: b1.hint, level: b1.level };
+      t = { ...t, title: b1.title, text: b1.text, q: b1.q, tr: b1.tr, en: b1.en, hint: b1.hint, level: b1.level };
     } else if (i >= 26 && i <= 33) {
       const paperNumMatch = prefix.match(/\d+/);
       const paperIdx = paperNumMatch ? (parseInt(paperNumMatch[0], 10) - 1) % 10 : (seedOffset % 10);
@@ -3763,7 +3763,7 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       const b2 = getB2Propositions(b2Idx);
       topicOpt = b2.opt;
       topicAns = b2.ans;
-      t = { ...t, title: b2.title, text: b2.text, tr: b2.tr, en: b2.en, hint: b2.hint, level: b2.level };
+      t = { ...t, title: b2.title, text: b2.text, q: b2.q, tr: b2.tr, en: b2.en, hint: b2.hint, level: b2.level };
     } else if (i >= 34 && i <= 39) {
       const paperNumMatch = prefix.match(/\d+/);
       const paperIdx = paperNumMatch ? (parseInt(paperNumMatch[0], 10) - 1) % 10 : (seedOffset % 10);
@@ -3771,7 +3771,7 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       const c1c2 = getC1C2Propositions(c1c2Idx);
       topicOpt = c1c2.opt;
       topicAns = c1c2.ans;
-      t = { ...t, title: c1c2.title, text: c1c2.text, tr: c1c2.tr, en: c1c2.en, hint: c1c2.hint, level: c1c2.level };
+      t = { ...t, title: c1c2.title, text: c1c2.text, q: c1c2.q, tr: c1c2.tr, en: c1c2.en, hint: c1c2.hint, level: c1c2.level };
     }
 
     const seed = seedOffset * 100 + i;
@@ -3780,23 +3780,7 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
     const itemLevel = t.level || "A1";
     const specificHint = (t as any).hint || `Level ${itemLevel} Listening Guidance: Focus on the speaker's main intent and tone. Pay attention to key transition words (e.g. "cependant", "en revanche") to identify the correct message without guessing.`;
 
-    let questionTextPrompt = (t as any).q;
-    if (!questionTextPrompt) {
-      const lowerTitle = (t.title || '').toLowerCase();
-      if (lowerTitle.includes('gare') || lowerTitle.includes('aéroport') || lowerTitle.includes('bus') || lowerTitle.includes('vol')) {
-        questionTextPrompt = "Quelle est l'information essentielle concernant le lieu, le quai ou la porte d'embarquement ?";
-      } else if (lowerTitle.includes('supermarché') || lowerTitle.includes('magasin') || lowerTitle.includes('boutique') || lowerTitle.includes('pizzeria')) {
-        questionTextPrompt = "Quel est le lieu où se trouve la personne ou la promotion annoncée ?";
-      } else if (lowerTitle.includes('météo')) {
-        questionTextPrompt = "Quel conseil ou prévision météorologique est annoncé pour la journée ?";
-      } else if (lowerTitle.includes('livraison') || lowerTitle.includes('colis') || lowerTitle.includes('rendez-vous') || lowerTitle.includes('mécanicien')) {
-        questionTextPrompt = "Quelle est la date, l'heure ou la consigne exacte transmise dans ce message ?";
-      } else if (lowerTitle.includes('sécurité') || lowerTitle.includes('incendie') || lowerTitle.includes('copropriété') || lowerTitle.includes('entreprise')) {
-        questionTextPrompt = "Quelle consigne de sécurité ou quel changement d'organisation devez-vous suivre ?";
-      } else {
-        questionTextPrompt = "Quel est l'élément ou le message principal à retenir de ce document sonore ?";
-      }
-    }
+    let questionTextPrompt = (t as any).q || (t as any).title || "Quel est le message principal de ce document sonore ?";
 
     const isMaleSpeaker = i % 2 === 1;
     const passageSpeakerLabel = isMaleSpeaker ? "Locuteur" : "Locutrice";
@@ -3818,9 +3802,9 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
 
     let spokenEnglishTranslation = t.en;
     if (i <= 4) {
-      spokenEnglishTranslation = `Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image.\n• Proposition A: ${options[0]}\n• Proposition B: ${options[1]}\n• Proposition C: ${options[2]}\n• Proposition D: ${options[3]}`;
+      spokenEnglishTranslation = `Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image.`;
     } else if (isSpokenOptionQuestion) {
-      spokenEnglishTranslation = `${t.en}\nInstruction: Listen to the audio document, question N°${i}, and 4 spoken options.\n• Option A: ${options[0]}\n• Option B: ${options[1]}\n• Option C: ${options[2]}\n• Option D: ${options[3]}`;
+      spokenEnglishTranslation = `${t.en}\nInstruction: Listen to the audio document and answer the audio question N°${i}.`;
     }
 
     qList.push({
