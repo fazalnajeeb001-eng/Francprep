@@ -1983,6 +1983,13 @@ export function AuthenticCBTExamPage() {
                         <span>Official Audio Document:</span>
                       </span>
 
+                      {mode === "PRACTICE" && (
+                        <div className="px-2 py-0.5 rounded bg-purple-100 border border-purple-300 text-purple-900 font-mono font-extrabold text-[11px] flex items-center gap-1">
+                          <Clock className="w-3 h-3 text-purple-700" />
+                          <span>CBT Pace: {currentQ.questionNumber <= 10 ? 15 : currentQ.questionNumber <= 26 ? 20 : 25}s</span>
+                        </div>
+                      )}
+
                       <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                         <div className="flex flex-wrap items-center gap-1.5">
                           <button

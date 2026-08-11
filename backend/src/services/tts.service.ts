@@ -84,14 +84,19 @@ export async function generateNeuralAudio(
       const announcerVoiceId = 'EXAVITQu4vr4xnSDxMaL'; // Official French Announcer Voice
 
       const cleanPassage = passagePart.replace(/^(Locuteur|Locutrice)\s*:\s*/i, '').trim();
-      const cleanAnnouncer = announcerPart.replace(/^(Annonceur|Annonceuse)\s*:\s*/i, '').trim();
+      let cleanAnnouncer = announcerPart.replace(/^(Annonceur|Annonceuse)\s*:\s*/i, '').trim();
+
+      // Ensure clean 1.0s pause spacing between spoken options A, B, C, D
+      cleanAnnouncer = cleanAnnouncer
+        .replace(/\n\.\.\.\s*/g, ' ... ')
+        .replace(/\.\.\.\s*/g, ' ... ');
 
       try {
         console.log(`[ElevenLabs Multi-Voice] Synthesizing Passage Voice (${passageVoiceId}) + Announcer Voice (${announcerVoiceId})...`);
         const [resPassage, resAnnouncer] = await Promise.all([
           axios.post(
             `https://api.elevenlabs.io/v1/text-to-speech/${passageVoiceId}`,
-            { text: cleanPassage, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.50, similarity_boost: 0.80, style: 0.15, use_speaker_boost: true, speed: speakingRate } },
+            { text: cleanPassage + ' ... ', model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.50, similarity_boost: 0.80, style: 0.15, use_speaker_boost: true, speed: speakingRate } },
             { headers: { 'xi-api-key': elevenLabsKey, 'Content-Type': 'application/json', Accept: 'audio/mpeg' }, responseType: 'arraybuffer', timeout: 30000 }
           ),
           axios.post(
