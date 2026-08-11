@@ -1189,6 +1189,184 @@ export function getA1A2Propositions(sceneIdx: number): {
   }
 }
 
+export function getB1Propositions(sceneIdx: number): {
+  level: string;
+  title: string;
+  text: string;
+  opt: string[];
+  ans: number;
+  tr: string;
+  en: string;
+  hint: string;
+} {
+  const cities = ["Montréal", "Québec", "Ottawa", "Vancouver", "Toronto", "Calgary", "Sherbrooke", "Trois-Rivières", "Gatineau", "Moncton"];
+  const p = Math.floor(sceneIdx / 10) + 1;
+  const qNum = (sceneIdx % 10) + 16;
+  const city = cities[(p - 1) % cities.length];
+
+  if (qNum === 16) {
+    return {
+      level: "B1",
+      title: `Reportage Écologie Urbaine B1 P${p}Q16`,
+      text: `Selon un récent sondage réalisé à ${city}, l'aménagement de nouvelles pistes cyclables sécurisées et l'extension des voies réservées aux bus rencontrent l'adhésion de ${65 + p * 2}% des citoyens soucieux de réduire les émissions de carbone.`,
+      opt: [
+        `Approbation par ${65 + p * 2}% des citoyens de ${city} des nouvelles pistes cyclables et bus`,
+        `Refus massif des habitants de ${city} face aux récents travaux d'aménagement routier`,
+        `Augmentation brutale des tarifs de transport en commun dans la ville de ${city}`,
+        `Suppression définitive du réseau de vélos en libre-service par la municipalité`
+      ],
+      ans: 0,
+      tr: `Locuteur: Un sondage montre l'adhésion de ${65 + p * 2}% des citoyens pour les mobilités douces à ${city}.`,
+      en: `A survey shows ${65 + p * 2}% citizen approval for bike lanes and bus transit in ${city}.`,
+      hint: `⚠️ Trap Alert: Focus on overall public sentiment (${65 + p * 2}% approval) and main infrastructure goal.`
+    };
+  } else if (qNum === 17) {
+    return {
+      level: "B1",
+      title: `Chronique Travail & Société B1 P${p}Q17`,
+      text: `Une étude menée auprès d'entreprises de ${city} révèle que l'expérimentation de la semaine de 4 jours a permis de réduire le niveau d'épuisement professionnel de ${30 + p}% tout en maintenant la productivité globale.`,
+      opt: [
+        `Réduction de l'épuisement professionnel de ${30 + p}% et maintien de la productivité à ${city}`,
+        `Effondrement dramatique de la productivité globale des employés de bureau`,
+        `Obligation pour les salariés de ${city} de réaliser des heures supplémentaires le week-end`,
+        `Hausse importante du taux de démission volontaire au sein des entreprises`
+      ],
+      ans: 0,
+      tr: `Locutrice: La semaine de 4 jours à ${city} réduit l'épuisement de ${30 + p}% sans baisser la productivité.`,
+      en: `The 4-day workweek in ${city} reduces burnout by ${30 + p}% without lowering productivity.`,
+      hint: `⚠️ Trap Alert: Identify both benefits (reduced burnout by ${30 + p}%) and steady productivity.`
+    };
+  } else if (qNum === 18) {
+    return {
+      level: "B1",
+      title: `Chronique Culture B1 P${p}Q18`,
+      text: `Le festival annuel de musique émergente de ${city} mettra à l'honneur cette année ${10 + p * 3} groupes régionaux, afin de promouvoir la diversité culturelle et le dynamisme artistique local.`,
+      opt: [
+        `Valorisation de ${10 + p * 3} groupes régionaux et de la scène musicale locale à ${city}`,
+        `Annulation des spectacles en raison de restrictions budgétaires municipales`,
+        `Invitation exclusive d'artistes internationaux renommés au détriment des locaux`,
+        `Fermeture définitive de la principale salle de spectacle de la ville de ${city}`
+      ],
+      ans: 0,
+      tr: `Locuteur: Le festival de ${city} met en valeur ${10 + p * 3} groupes locaux et la culture régionale.`,
+      en: `The ${city} festival highlights ${10 + p * 3} regional music groups and local culture.`,
+      hint: `⚠️ Trap Alert: Note the main artistic goal (promoting ${10 + p * 3} local emerging groups).`
+    };
+  } else if (qNum === 19) {
+    return {
+      level: "B1",
+      title: `Reportage Consommation B1 P${p}Q19`,
+      text: `De plus en plus de foyers de ${city} adoptent l'achat en vrac dans les épiceries écoresponsables. Cette pratique permet de réduire les dépenses alimentaires de ${15 + p}% tout en éliminant les emballages plastiques.`,
+      opt: [
+        `Économies de ${15 + p}% sur le budget alimentaire et élimination des emballages plastiques à ${city}`,
+        `Augmentation significative des dépenses mensuelles consacrées à l'alimentation`,
+        `Disparition complète des commerces de proximité dans le centre-ville de ${city}`,
+        `Obligation légale d'acheter uniquement des produits alimentaires industriels surgelés`
+      ],
+      ans: 0,
+      tr: `Locutrice: L'achat en vrac à ${city} permet d'économiser ${15 + p}% et d'éliminer le plastique.`,
+      en: `Bulk buying in ${city} saves ${15 + p}% on groceries and eliminates plastic packaging.`,
+      hint: `⚠️ Trap Alert: Identify the double advantage (saving ${15 + p}% + eco-friendly packaging reduction).`
+    };
+  } else if (qNum === 20) {
+    return {
+      level: "B1",
+      title: `Initiative Citoyenne B1 P${p}Q20`,
+      text: `À ${city}, un réseau de bénévoles a mis en place un service de soutien téléphonique et d'accompagnement pour soutenir plus de ${100 + p * 20} personnes âgées isolées durant les mois d'hiver.`,
+      opt: [
+        `Soutien bénévole et visites de convivialité pour ${100 + p * 20} séniors isolés à ${city}`,
+        `Fermeture définitive des centres communautaires d'accueil de quartier`,
+        `Paiement obligatoire d'une cotisation mensuelle de santé par les usagers`,
+        `Remplacement intégral des intervenants sociaux par des systèmes automatiques`
+      ],
+      ans: 0,
+      tr: `Locuteur: Un réseau bénévole accompagne ${100 + p * 20} personnes âgées isolées à ${city}.`,
+      en: `A volunteer network assists ${100 + p * 20} isolated seniors in ${city}.`,
+      hint: `⚠️ Trap Alert: Identify target demographic (${100 + p * 20} isolated seniors) and volunteer service.`
+    };
+  } else if (qNum === 21) {
+    return {
+      level: "B1",
+      title: `Tourisme Écoresponsable B1 P${p}Q21`,
+      text: `Le tourisme vert connaît un essor de ${20 + p * 2}% dans les espaces naturels autour de ${city}. Les visiteurs privilégient les gîtes écologiques en bois et les déplacements à vélo ou en navette électrique.`,
+      opt: [
+        `Engouement de ${20 + p * 2}% pour les hébergements écologiques et mobilités douces à ${city}`,
+        `Baisse marquée de la fréquentation touristique des espaces naturels protégés`,
+        `Construction de complexes hôteliers en béton sur les rives des lacs régionaux`,
+        `Interdiction totale d'accès aux sentiers de randonnée pendant la saison estivale`
+      ],
+      ans: 0,
+      tr: `Locutrice: Le tourisme vert à ${city} progresse de ${20 + p * 2}% en favorisant les mobilités douces.`,
+      en: `Green tourism around ${city} grew by ${20 + p * 2}%, favoring eco-lodges and soft mobility.`,
+      hint: `⚠️ Trap Alert: Recognize eco-friendly choices (wooden lodges, bikes, electric shuttles).`
+    };
+  } else if (qNum === 22) {
+    return {
+      level: "B1",
+      title: `Reportage Éducation B1 P${p}Q22`,
+      text: `Les bibliothèques publiques de la région de ${city} ont étendu leur service de prêt de tablettes et de livres numériques à ${15 + p} communes rurales, facilitant l'accès à l'information et à la lecture.`,
+      opt: [
+        `Accès démocratisé à la lecture numérique dans ${15 + p} communes rurales près de ${city}`,
+        `Suppression de la totalité des collections de livres papier dans les établissements`,
+        `Augmentation considérable des tarifs d'inscription annuelle à la bibliothèque`,
+        `Fermeture définitive des espaces de travail étudiants durant la période des examens`
+      ],
+      ans: 0,
+      tr: `Locuteur: Le prêt numérique s'étend à ${15 + p} communes rurales autour de ${city}.`,
+      en: `Digital lending expands to ${15 + p} rural communities around ${city}.`,
+      hint: `⚠️ Trap Alert: Identify main geographical benefit (${15 + p} rural communities).`
+    };
+  } else if (qNum === 23) {
+    return {
+      level: "B1",
+      title: `Chronique Logement B1 P${p}Q23`,
+      text: `Le co-logement intergénérationnel se développe à ${city}. Plus de ${50 + p * 10} étudiants partagent l'appartement de personnes âgées en échange d'une présence bienveillante et d'un loyer très modéré.`,
+      opt: [
+        `Partage de logement solidaire pour ${50 + p * 10} étudiants et séniors à ${city}`,
+        `Augmentation incontrôlée des loyers d'habitation dans le secteur privé`,
+        `Expulsion des jeunes locataires des logements du centre-ville de ${city}`,
+        `Obligation légale de résider uniquement dans des cités universitaires fermées`
+      ],
+      ans: 0,
+      tr: `Locutrice: Le co-logement réunit ${50 + p * 10} étudiants et séniors à ${city} pour un loyer modéré.`,
+      en: `Intergenerational housing pairs ${50 + p * 10} students with seniors in ${city} for affordable rent.`,
+      hint: `⚠️ Trap Alert: Identify mutual benefit (student affordable rent + senior presence).`
+    };
+  } else if (qNum === 24) {
+    return {
+      level: "B1",
+      title: `Santé & Bien-être B1 P${p}Q24`,
+      text: `À ${city}, ${10 + p * 2} entreprises ont introduit la pause d'activité physique guidée. Les salariés consacrent 15 minutes chaque midi à des étirements collectifs pour prévenir les risques liés à la sédentarité.`,
+      opt: [
+        `Mise en place d'exercices physiques quotidiens dans ${10 + p * 2} entreprises de ${city}`,
+        `Suppression complète de la pause déjeuner pour l'ensemble des employés`,
+        `Obligation de souscrire à un abonnement sportif individuel payant`,
+        `Fermeture des restaurants d'entreprise pendant l'après-midi`
+      ],
+      ans: 0,
+      tr: `Locuteur: Des étirements quotidiens sont organisés dans ${10 + p * 2} entreprises à ${city}.`,
+      en: `Daily stretching breaks are adopted by ${10 + p * 2} companies in ${city}.`,
+      hint: `⚠️ Trap Alert: Identify health program goal (countering sedentary work habits).`
+    };
+  } else {
+    return {
+      level: "B1",
+      title: `Initiative Environnement B1 P${p}Q25`,
+      text: `La municipalité de ${city} a inauguré la végétalisation de ${20 + p * 5} toitures et façades d'immeubles publics afin de réguler la température urbaine et de capter l'eau de pluie.`,
+      opt: [
+        `Végétalisation de ${20 + p * 5} bâtiments publics pour réduire la chaleur à ${city}`,
+        `Destruction des parcs et espaces verts existants au cœur de la ville`,
+        `Interdiction de planter des arbres dans les cours des établissements scolaires`,
+        `Taxation supplémentaire sur les propriétaires disposant d'un jardin privé`
+      ],
+      ans: 0,
+      tr: `Locutrice: La végétalisation de ${20 + p * 5} bâtiments à ${city} réduit les îlots de chaleur.`,
+      en: `Greening ${20 + p * 5} buildings in ${city} reduces urban heat and manages rainwater.`,
+      hint: `⚠️ Trap Alert: Focus on environmental targets (heat island reduction + rainwater capture).`
+    };
+  }
+}
+
 function shuffleOptions(
   options: string[],
   correctIndex: number,
@@ -1279,6 +1457,14 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       topicOpt = a1a2.opt;
       topicAns = a1a2.ans;
       t = { ...t, title: a1a2.title, text: a1a2.text, tr: a1a2.tr, en: a1a2.en, hint: a1a2.hint, level: a1a2.level };
+    } else if (i >= 16 && i <= 25) {
+      const paperNumMatch = prefix.match(/\d+/);
+      const paperIdx = paperNumMatch ? (parseInt(paperNumMatch[0], 10) - 1) % 10 : (seedOffset % 10);
+      const b1Idx = (paperIdx * 10) + (i - 16);
+      const b1 = getB1Propositions(b1Idx);
+      topicOpt = b1.opt;
+      topicAns = b1.ans;
+      t = { ...t, title: b1.title, text: b1.text, tr: b1.tr, en: b1.en, hint: b1.hint, level: b1.level };
     }
 
     const seed = seedOffset * 100 + i;
