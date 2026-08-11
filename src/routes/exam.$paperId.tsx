@@ -197,9 +197,9 @@ export function AuthenticCBTExamPage() {
   const [showStrategyModal, setShowStrategyModal] = useState(false);
   const [openModelAnswerTaskId, setOpenModelAnswerTaskId] = useState<string | null>(null);
 
-  // Per-Question CBT Countdown Timer & Auto-Advance in Exam Mode
+  // Per-Question CBT Countdown Timer & Auto-Advance (Runs in both Practice & Exam Modes for Comprehension Orale)
   useEffect(() => {
-    if (mode !== "EXAM" || currentSection.type !== "COMPREHENSION_ORALE" || !currentQ || isSubmitted) {
+    if (currentSection.type !== "COMPREHENSION_ORALE" || !currentQ || isSubmitted) {
       setQTimeLeft(null);
       return;
     }
@@ -1934,7 +1934,7 @@ export function AuthenticCBTExamPage() {
                     {currentSection.title} — Item {currentQ.questionNumber} of {currentQuestions.length}
                   </span>
                   <div className="flex items-center gap-2">
-                    {mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE" && qTimeLeft !== null && (
+                    {currentSection.type === "COMPREHENSION_ORALE" && qTimeLeft !== null && (
                       <div className="px-2.5 py-1 rounded bg-amber-500/20 border border-amber-500/40 text-amber-900 dark:text-amber-300 font-mono font-bold text-xs flex items-center gap-1.5 animate-pulse">
                         <Clock className="w-3.5 h-3.5 text-amber-600" />
                         <span>Auto-Next: {qTimeLeft}s</span>
