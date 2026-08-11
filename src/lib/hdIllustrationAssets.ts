@@ -11,7 +11,10 @@
 export const AVAILABLE_HD_IMAGES = new Set<string>([
   "tcf_p1_q1", "tcf_p1_q2", "tcf_p1_q3", "tcf_p1_q4",
   "tcf_p2_q1", "tcf_p2_q2", "tcf_p2_q3", "tcf_p2_q4",
-  "tcf_p3_q1"
+  "tcf_p3_q1", "tcf_p3_q2", "tcf_p3_q3", "tcf_p3_q4",
+  "tcf_p4_q1", "tcf_p4_q2", "tcf_p4_q3", "tcf_p4_q4",
+  "tcf_p5_q1", "tcf_p5_q2", "tcf_p5_q3", "tcf_p5_q4",
+  "tcf_p6_q1"
 ]);
 
 export function getHdIllustration(paperIdx: number, qNum: number): string | undefined {
