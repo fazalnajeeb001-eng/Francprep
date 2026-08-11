@@ -39,6 +39,7 @@ backend/.env
 # Keep specific directories that need images
 !public/draco/**
 !public/images/**
+!public/illustrations/**
 !src/**/*.png
 !src/**/*.jpg
 !src/**/*.svg
