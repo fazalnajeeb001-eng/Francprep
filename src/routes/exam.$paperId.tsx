@@ -126,6 +126,9 @@ export function AuthenticCBTExamPage() {
   const [isTimerPaused, setIsTimerPaused] = useState(false);
   const [qTimeLeft, setQTimeLeft] = useState<number | null>(null);
 
+  // Audio Speech Hook (Declared at top of component to prevent TDZ ReferenceError)
+  const { speak: ttsSpeak, speakDialogue: ttsSpeakDialogue, speakListening: ttsSpeakListening, isSpeaking, stop: ttsStop, pause: ttsPause, resume: ttsResume } = useSpeak();
+
   // Practice Mode Toggles
   const [showHints, setShowHints] = useState(false);
   const [showTranscripts, setShowTranscripts] = useState(false);
@@ -799,8 +802,6 @@ export function AuthenticCBTExamPage() {
     // FEI CBT Rule (Both Exam & Practice Modes): Selecting choice A, B, C, D automatically reveals the question prompt!
     setShowQuestionPrompt(true);
   };
-
-  const { speak: ttsSpeak, speakDialogue: ttsSpeakDialogue, speakListening: ttsSpeakListening, isSpeaking, stop: ttsStop, pause: ttsPause, resume: ttsResume } = useSpeak();
 
   const handleStopAudio = () => {
     ttsStop();
