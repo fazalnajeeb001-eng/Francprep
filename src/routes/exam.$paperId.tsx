@@ -198,25 +198,30 @@ export function AuthenticCBTExamPage() {
   const [showStrategyModal, setShowStrategyModal] = useState(false);
   const [openModelAnswerTaskId, setOpenModelAnswerTaskId] = useState<string | null>(null);
 
-  // Per-Question CBT Countdown Timer & Auto-Advance (Runs in both Practice & Exam Modes for Comprehension Orale)
+  // Per-Question CBT Countdown Timer & Auto-Advance (Runs in BOTH Practice & Exam Modes for Comprehension Orale)
   useEffect(() => {
     if (currentSection.type !== "COMPREHENSION_ORALE" || !currentQ || isSubmitted) {
       setQTimeLeft(null);
       return;
     }
 
-    // In Exam Mode, wait until audio finishes playing before starting the countdown timer!
-    if (mode === "EXAM" && !isAudioFinished) {
-      setQTimeLeft(null);
+    // Do NOT count down while audio is actively playing or while student has audio paused!
+    if (isSpeaking || isAudioPaused) {
       return;
     }
 
-    const timerSecs = (currentQ as any).perQuestionTimerSeconds || (currentQ.questionNumber <= 10 ? 15 : currentQ.questionNumber <= 26 ? 20 : 25);
-    setQTimeLeft(timerSecs);
+    // In BOTH Exam & Practice Modes, wait until audio finishes playing before starting the countdown timer!
+    if (!isAudioFinished) {
+      return;
+    }
 
     const interval = setInterval(() => {
       setQTimeLeft((prev) => {
-        if (prev === null || prev <= 1) {
+        if (prev === null) {
+          const timerSecs = (currentQ as any).perQuestionTimerSeconds || (currentQ.questionNumber <= 10 ? 15 : currentQ.questionNumber <= 26 ? 20 : 25);
+          return timerSecs;
+        }
+        if (prev <= 1) {
           clearInterval(interval);
           if (currentQuestionIdx < currentQuestions.length - 1) {
             setCurrentQuestionIdx((idx) => idx + 1);
@@ -231,7 +236,7 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, isAudioFinished, currentQuestions.length, paper.sections.length]);
+  }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, isSpeaking, isAudioPaused, isAudioFinished, currentQuestions.length, paper.sections.length]);
 
   const handleStartPrepTimer = (taskId: string, prepMins = 1) => {
     setOralPrepTimeRemaining((prev) => ({ ...prev, [taskId]: prepMins * 60 }));
@@ -780,6 +785,8 @@ export function AuthenticCBTExamPage() {
   const handleSelectOption = (qId: string, optionIdx: number) => {
     if (isSubmitted || (mode === "PRACTICE" && checkedMap[qId])) return;
     setSelectedAnswers((prev) => ({ ...prev, [qId]: optionIdx }));
+    // FEI CBT Rule (Both Exam & Practice Modes): Selecting choice A, B, C, D automatically reveals the question prompt!
+    setShowQuestionPrompt(true);
   };
 
   const { speak: ttsSpeak, speakDialogue: ttsSpeakDialogue, speakListening: ttsSpeakListening, isSpeaking, stop: ttsStop, pause: ttsPause, resume: ttsResume } = useSpeak();
@@ -796,6 +803,17 @@ export function AuthenticCBTExamPage() {
 
     if (currentSection?.type === "COMPREHENSION_ORALE" && currentQ) {
       const qNum = currentQ.questionNumber;
+      const initialTimer = (currentQ as any).perQuestionTimerSeconds || (qNum <= 10 ? 15 : qNum <= 26 ? 20 : 25);
+      setQTimeLeft(initialTimer);
+
+      // Q30-Q39 are always printed on screen per FEI rules, or if student already selected an answer
+      if (qNum >= 30 || selectedAnswers[currentQ.id] !== undefined) {
+        setShowQuestionPrompt(true);
+      } else {
+        setShowQuestionPrompt(false);
+      }
+
+      // Auto-play audio on question load in Exam Mode
       if (mode === "EXAM" && !isSubmitted) {
         const rate = (currentQ as any).speakingRate || 1.0;
         const fullText = currentQ.transcript || currentQ.text;
@@ -805,8 +823,6 @@ export function AuthenticCBTExamPage() {
           });
         }, 300);
         return () => clearTimeout(timer);
-      } else {
-        setIsAudioFinished(true);
       }
     }
   }, [currentQuestionIdx, activeSectionIdx]);
@@ -1960,10 +1976,10 @@ export function AuthenticCBTExamPage() {
                     {currentSection.title} — Item {currentQ.questionNumber} of {currentQuestions.length}
                   </span>
                   <div className="flex items-center gap-2">
-                    {currentSection.type === "COMPREHENSION_ORALE" && qTimeLeft !== null && (
-                      <div className="px-2.5 py-1 rounded bg-amber-500/20 border border-amber-500/40 text-amber-900 dark:text-amber-300 font-mono font-bold text-xs flex items-center gap-1.5 animate-pulse">
-                        <Clock className="w-3.5 h-3.5 text-amber-600" />
-                        <span>Auto-Next: {qTimeLeft}s</span>
+                    {currentSection.type === "COMPREHENSION_ORALE" && mode === "PRACTICE" && qTimeLeft !== null && (
+                      <div className="px-2.5 py-1 rounded bg-purple-500/20 border border-purple-500/40 text-purple-900 dark:text-purple-300 font-mono font-bold text-xs flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-purple-600" />
+                        <span>Target Pace: {qTimeLeft}s</span>
                       </div>
                     )}
                     <button
