@@ -30,7 +30,6 @@ import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
 import { SmartAvatar } from "~/components/dashboard/widgets/SmartAvatar";
 import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } from "~/lib/examSchema";
-import { getOfficialOptionImageSvgs } from "~/lib/lineArtIllustrations";
 
 function countFrenchWords(str: string): number {
   if (!str || !str.trim()) return 0;
