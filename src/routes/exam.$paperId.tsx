@@ -2327,7 +2327,7 @@ export function AuthenticCBTExamPage() {
                         });
                       })()}
                     </div>
-                  ) : (currentQ.hasSpokenOptions || (currentQ.questionNumber >= 5 && currentQ.questionNumber <= 29)) ? (
+                  ) : (currentQ.hasSpokenOptions || (currentQ.questionNumber >= 5 && currentQ.questionNumber <= 8)) ? (
                     <div className="space-y-3 p-4 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-100 shadow-md">
                       <p className="text-xs font-black uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
                         <span>Choisissez la bonne réponse (A, B, C ou D) :</span>
