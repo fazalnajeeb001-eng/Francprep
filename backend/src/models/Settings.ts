@@ -39,8 +39,8 @@ const settingsSchema = new Schema<ISettingsDocument>(
     huggingFaceToken: { type: String, default: "" },
     preferredVoiceEngine: { type: String, default: "elevenlabs" },
     activeTTSProvider: { type: String, enum: ['auto', 'elevenlabs', 'openai', 'huggingface', 'google'], default: 'elevenlabs' },
-    selectedElevenLabsFemaleVoice: { type: String, default: "21m00Tcm4TlvDq8ikWAM" }, // Rachel (Studio French Female)
-    selectedElevenLabsMaleVoice: { type: String, default: "ErXwobaYiN019PkySvjV" },   // Antoni (Studio French Male)
+    selectedElevenLabsFemaleVoice: { type: String, default: "XB0fDUnXU5powctDhC70" }, // Charlotte (Native French Female)
+    selectedElevenLabsMaleVoice: { type: String, default: "ONwBz21w4p8b7X1s5kL0" },   // Henri (Native French Male)
     selectedOpenAIFemaleVoice: { type: String, default: "nova" },                      // Nova HD
     selectedOpenAIMaleVoice: { type: String, default: "onyx" },                         // Onyx HD
     selectedKokoroFemaleVoice: { type: String, default: "ff_siwis" },                  // Siwis French Female

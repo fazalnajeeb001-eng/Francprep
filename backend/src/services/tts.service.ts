@@ -73,8 +73,50 @@ export async function generateNeuralAudio(
 
     const elevenLabsKey = rawKey.trim().replace(/^["']|["']$/g, '');
 
-    const defaultFemale = settings?.selectedElevenLabsFemaleVoice || '21m00Tcm4TlvDq8ikWAM';
-    const defaultMale = settings?.selectedElevenLabsMaleVoice || 'ErXwobaYiN019PkySvjV';
+    // Multi-Speaker Passage vs Announcer Voice Contrast Engine
+    const announcerMatch = cleanText.match(/\b(Annonceur|Annonceuse)\s*:\s*/i);
+    if (announcerMatch && announcerMatch.index !== undefined && announcerMatch.index > 0) {
+      const passagePart = cleanText.slice(0, announcerMatch.index).trim();
+      const announcerPart = cleanText.slice(announcerMatch.index).trim();
+
+      const isPassageFemale = /\b(Locutrice|Annonceuse)\b/i.test(passagePart);
+      const passageVoiceId = isPassageFemale ? 'XB0fDUnXU5powctDhC70' : 'ONwBz21w4p8b7X1s5kL0'; // Charlotte (Female) or Henri (Male)
+      const announcerVoiceId = 'EXAVITQu4vr4xnSDxMaL'; // Official French Announcer Voice
+
+      const cleanPassage = passagePart.replace(/^(Locuteur|Locutrice)\s*:\s*/i, '').trim();
+      const cleanAnnouncer = announcerPart.replace(/^(Annonceur|Annonceuse)\s*:\s*/i, '').trim();
+
+      try {
+        console.log(`[ElevenLabs Multi-Voice] Synthesizing Passage Voice (${passageVoiceId}) + Announcer Voice (${announcerVoiceId})...`);
+        const [resPassage, resAnnouncer] = await Promise.all([
+          axios.post(
+            `https://api.elevenlabs.io/v1/text-to-speech/${passageVoiceId}`,
+            { text: cleanPassage, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.50, similarity_boost: 0.80, style: 0.15, use_speaker_boost: true, speed: speakingRate } },
+            { headers: { 'xi-api-key': elevenLabsKey, 'Content-Type': 'application/json', Accept: 'audio/mpeg' }, responseType: 'arraybuffer', timeout: 30000 }
+          ),
+          axios.post(
+            `https://api.elevenlabs.io/v1/text-to-speech/${announcerVoiceId}`,
+            { text: cleanAnnouncer, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.50, similarity_boost: 0.80, style: 0.15, use_speaker_boost: true, speed: speakingRate } },
+            { headers: { 'xi-api-key': elevenLabsKey, 'Content-Type': 'application/json', Accept: 'audio/mpeg' }, responseType: 'arraybuffer', timeout: 30000 }
+          )
+        ]);
+
+        if (resPassage.status === 200 && resAnnouncer.status === 200) {
+          const combinedBuffer = Buffer.concat([Buffer.from(resPassage.data), Buffer.from(resAnnouncer.data)]);
+          const audioBase64 = combinedBuffer.toString('base64');
+          const contentType = 'audio/mp3';
+          if (!forcedVoiceId) {
+            TTSCache.create({ textHash, text: cleanText, voice: 'elevenlabs-multi-voice', gender, audioBase64, contentType }).catch(() => {});
+          }
+          return { audioBase64, contentType, provider: 'elevenlabs-multi-voice' };
+        }
+      } catch (err: any) {
+        console.warn('[ElevenLabs Multi-Voice Error]:', err?.message);
+      }
+    }
+
+    const defaultFemale = settings?.selectedElevenLabsFemaleVoice || 'XB0fDUnXU5powctDhC70';
+    const defaultMale = settings?.selectedElevenLabsMaleVoice || 'ONwBz21w4p8b7X1s5kL0';
     const primaryVoiceId = forcedVoiceId || (gender === 'male' ? defaultMale : defaultFemale);
 
     const langNativeVoiceMap: Record<string, { female: string; male: string }> = {
@@ -88,7 +130,7 @@ export async function generateNeuralAudio(
     const langCode = lang ? lang.toLowerCase().slice(0, 2) : 'fr';
     const langNative = langNativeVoiceMap[langCode];
     const langFallback = langNative ? (gender === 'male' ? langNative.male : langNative.female) : null;
-    const universalFallback = gender === 'male' ? 'ErXwobaYiN019PkySvjV' : '21m00Tcm4TlvDq8ikWAM';
+    const universalFallback = gender === 'male' ? 'ONwBz21w4p8b7X1s5kL0' : 'XB0fDUnXU5powctDhC70';
 
     const voices = Array.from(new Set([primaryVoiceId, langFallback, universalFallback].filter(Boolean) as string[]));
 

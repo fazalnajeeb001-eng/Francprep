@@ -391,6 +391,10 @@ export function AuthenticCBTExamPage() {
 
   useEffect(() => {
     handleStopAudio();
+    setShowQuestionPrompt(false);
+    setShowTranscript(false);
+    setShowTranslation(false);
+    setShowReadingHint(false);
     return () => {
       handleStopAudio();
     };
