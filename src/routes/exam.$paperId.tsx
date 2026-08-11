@@ -118,7 +118,7 @@ export function AuthenticCBTExamPage() {
   // Practice Mode Toggles
   const [showHints, setShowHints] = useState(false);
   const [showTranscripts, setShowTranscripts] = useState(false);
-  const [showQuestionPrompt, setShowQuestionPrompt] = useState(mode === "PRACTICE");
+  const [showQuestionPrompt, setShowQuestionPrompt] = useState(false);
   const [showPassageTranslation, setShowPassageTranslation] = useState(false);
 
   // Session Key
@@ -1950,8 +1950,8 @@ export function AuthenticCBTExamPage() {
                   </div>
                 </div>
 
-                {/* Question Prompt Card (Toggled via "Show/Hide Question Text" button OR auto-revealed upon selecting an option) */}
-                {(showQuestionPrompt || selectedAnswers[currentQ.id] !== undefined || isSubmitted) && (
+                {/* Question Prompt Card (Strictly toggled ONLY via "Show/Hide Question Text" button or upon test submission) */}
+                {(showQuestionPrompt || isSubmitted) && (
                   <div className="p-4 rounded-xl bg-slate-900 border border-slate-700 text-white shadow-md space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
                     <div className="flex items-center justify-between text-xs font-bold text-amber-300">
                       <span className="flex items-center gap-1.5 font-mono">
