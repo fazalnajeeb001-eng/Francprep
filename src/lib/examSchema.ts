@@ -9,6 +9,7 @@ export interface ExamQuestion {
   id: string;
   questionNumber: number;
   text: string;
+  questionPrompt?: string;
   options: string[];
   optionImages?: string[];
   mainImage?: string;
@@ -1056,8 +1057,9 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       questionNumber: i,
       level: itemLevel,
       speakingRate,
-      hasSpokenOptions: isSpokenOptionQuestion || (i <= 4 && !!mainImageSvg),
-      text: i <= 4 && mainImageSvg
+      hasSpokenOptions: isSpokenOptionQuestion || (i <= 4 && (!!mainImage || !!mainImageSvg)),
+      questionPrompt: questionTextPrompt,
+      text: i <= 4 && (mainImage || mainImageSvg)
         ? "Écoutez les 4 propositions, choisissez celle qui correspond à l'image."
         : isSpokenOptionQuestion
         ? `Écoutez le document sonore, la question audio N°${i} et les 4 réponses. Cochez la bonne réponse.`

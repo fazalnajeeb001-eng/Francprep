@@ -1960,7 +1960,9 @@ export function AuthenticCBTExamPage() {
                       </span>
                     </div>
                     <div className="text-sm font-semibold text-slate-100 leading-snug">
-                      {currentQ.text || `Écoutez le document sonore et choisissez la bonne réponse.`}
+                      {currentQ.questionNumber <= 4
+                        ? "Écoutez les 4 propositions, choisissez celle qui correspond à l'image."
+                        : (currentQ as any).questionPrompt || currentQ.text || `Écoutez le document sonore et choisissez la bonne réponse.`}
                     </div>
                   </div>
                 )}
