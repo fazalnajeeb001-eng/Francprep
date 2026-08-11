@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 import { useSpeak } from "~/lib/speech";
+import { triggerAcousticSoundForQuestion } from "~/lib/soundEffects";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
 import { SmartAvatar } from "~/components/dashboard/widgets/SmartAvatar";
@@ -781,11 +782,12 @@ export function AuthenticCBTExamPage() {
     handleStopAudio();
   }, [currentQuestionIdx, activeSectionIdx]);
 
-  const handlePlayAudio = (text: string, lang = "fr-FR", rate = 1.0) => {
+  const handlePlayAudio = async (text: string, lang = "fr-FR", rate = 1.0) => {
     handleStopAudio();
     setIsAudioPaused(false);
-    const fullTextToPlay = currentQ?.transcript || text;
     const qNum = (currentQ as any)?.questionNumber || 1;
+    await triggerAcousticSoundForQuestion(qNum);
+    const fullTextToPlay = currentQ?.transcript || text;
     ttsSpeakListening(fullTextToPlay, qNum, lang, rate);
   };
 
