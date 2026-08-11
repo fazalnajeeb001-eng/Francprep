@@ -1948,8 +1948,8 @@ export function AuthenticCBTExamPage() {
                   </div>
                 </div>
 
-                {/* Question Prompt Card (Prominently displayed when enabled or in Practice Mode) */}
-                {(mode === "PRACTICE" || showQuestionPrompt) && (
+                {/* Question Prompt Card (Toggled via "Show/Hide Question Text" button) */}
+                {showQuestionPrompt && (
                   <div className="p-4 rounded-xl bg-slate-900 border border-slate-700 text-white shadow-md space-y-2">
                     <div className="flex items-center justify-between text-xs font-bold text-amber-300">
                       <span className="flex items-center gap-1.5 font-mono">
