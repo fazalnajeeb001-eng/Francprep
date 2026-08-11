@@ -911,12 +911,282 @@ function customizeListeningTopicForPaper(topic: ListeningTopicItem, _qNum: numbe
 
 function getDrawingPropositions(sceneIdx: number): { opt: string[]; ans: number } {
   const optionsList = [
-    { opt: ["Option A: Quai de gare avec voyageurs", "Option B: Rue piétonne enneigée", "Option C: Terrasse de café", "Option D: Parc municipal"], ans: 0 },
-    { opt: ["Option A: Entrée du supermarché", "Option B: Boulangerie artisanale", "Option C: Station de métro", "Option D: Arrêt de bus"], ans: 1 },
-    { opt: ["Option A: Horloge de la gare", "Option B: Distributeur automatique", "Option C: Panneau d'affichage", "Option D: Guichet d'accueil"], ans: 0 },
-    { opt: ["Option A: Camion de livraison", "Option B: Voiture électrique", "Option C: Vélo en libre-service", "Option D: Autobus urbain"], ans: 0 }
+    // 0: Train Station Platform
+    { opt: ["Des voyageurs attendent l'arrivée du train sur le quai.", "Des clients boivent un café à la terrasse d'un bistrot.", "Un homme fait des achats dans un supermarché.", "Des promeneurs marchent dans un parc enneigé."], ans: 0 },
+    // 1: Hotel Reception Desk
+    { opt: ["Une personne commande un plat au restaurant.", "Un client s'adresse au réceptionniste à l'accueil de l'hôtel.", "Un passager monte dans un taxi devant la gare.", "Une femme achète un billet au guichet du cinéma."], ans: 1 },
+    // 2: Bakery Storefront
+    { opt: ["Un mécanicien répare une voiture au garage.", "Un médecin examine un patient dans son cabinet.", "Une cliente achète du pain et des viennoiseries à la boulangerie.", "Un jardinier taille des arbres dans un jardin public."], ans: 2 },
+    // 3: Airport Gate & Plane
+    { opt: ["Les passagers s'installent dans une salle d'embarquement à l'aéroport.", "Des skieurs descendent une piste enneigée en montagne.", "Des étudiants travaillent au calme dans une bibliothèque.", "Un facteur dépose des lettres dans une boîte aux lettres."], ans: 0 },
+    // 4: Metro Ticket Machine
+    { opt: ["Des cyclistes roulent sur une piste cyclable.", "Une personne achète un titre de transport à un distributeur automatique du métro.", "Un serveur apporte des boissons sur un plateau.", "Des enfants jouent sur un terrain de football."], ans: 1 },
+    // 5: Doctor Office
+    { opt: ["Un client demande un renseignement dans une banque.", "Un peintre réalise un tableau dans un atelier.", "Un patient est en consultation chez le médecin.", "Un cuisinier prépare un repas dans une cuisine."], ans: 2 },
+    // 6: Outdoor Terrace Cafe
+    { opt: ["Des clients sont installés à la terrasse d'un café.", "Des voyageurs attendent leur vol dans un aéroport.", "Un mécanicien vérifie le niveau d'huile d'un véhicule.", "Une personne dépose son sac à la consigne automatique."], ans: 0 },
+    // 7: Bus Stop & Street
+    { opt: ["Des randonneurs marchent le long d'une rivière.", "Des personnes attendent l'arrivée du bus à un arrêt en ville.", "Un homme répare son vélo sur le trottoir.", "Des clients font la queue devant un guichet de théâtre."], ans: 1 },
+    // 8: Supermarket Grocery Aisle
+    { opt: ["Un voyageur enregistre ses bagages à l'aéroport.", "Une femme choisit des fruits et légumes au supermarché.", "Un coiffeur coupe les cheveux d'un client dans un salon.", "Des nageurs se baignent dans une piscine municipale."], ans: 1 },
+    // 9: Library Reading Room
+    { opt: ["Un policier dirige la circulation à un carrefour.", "Des personnes lisent et étudient silencieusement dans une bibliothèque.", "Un chauffeur livre des colis à un domicile.", "Des musiciens jouent du piano lors d'un concert."], ans: 1 },
+    // 10: Car Repair Garage
+    { opt: ["Un mécanicien inspecte le moteur d'une voiture dans un garage.", "Un serveur essuie les tables d'un restaurant.", "Des touristes prennent des photos devant un monument historique.", "Un barbier taille la barbe d'un client."], ans: 0 },
+    // 11: Pharmacy Counter
+    { opt: ["Un boulanger prépare des tartes aux pommes.", "Une personne achète des médicaments au comptoir d'une pharmacie.", "Un photographe prend un portrait en studio.", "Des athlètes s'entraînent sur une piste de course."], ans: 1 },
+    // 12: Post Office Counter
+    { opt: ["Un homme envoie un colis recommandé au guichet de la poste.", "Un marin pilote un bateau sur le fleuve.", "Une couturière coud un vêtement dans son atelier.", "Des spectateurs applaudissent à la fin d'un film."], ans: 0 },
+    // 13: Clothing Store
+    { opt: ["Un serveur prend la commande d'une table en terrasse.", "Un mécanicien change les pneus d'un camion.", "Une cliente essaie un manteau dans un magasin de vêtements.", "Un professeur donne un cours devant un tableau vert."], ans: 2 },
+    // 14: Train Dining Car
+    { opt: ["Des voyageurs mangent dans le wagon-restaurant d'un train.", "Des enfants font du vélo dans la cour de récréation.", "Un fermier nourrit des animaux dans une ferme.", "Un dentiste soigne les dents d'un enfant."], ans: 0 },
+    // 15: Airport Baggage Claim
+    { opt: ["Un pompier éteint un feu de forêt.", "Des passagers récupèrent leurs bagages sur le tapis roulant à l'aéroport.", "Un jardinier plante des fleurs dans une serre.", "Un guide explique l'histoire d'un château."], ans: 1 },
+    // 16: Hair Salon
+    { opt: ["Une cliente se fait coiffer dans un salon de coiffure.", "Un livreur transporte des cartons dans un monte-charge.", "Un garde surveille les œuvres d'un musée.", "Un ingénieur travaille devant son ordinateur de bureau."], ans: 0 },
+    // 17: Gas Station
+    { opt: ["Un conducteur fait le plein de carburant à une station-service.", "Un serveur sert des tasses de thé dans un salon.", "Des randonneurs montent vers le sommet d'une colline.", "Un horloger répare un réveil mécanique."], ans: 0 },
+    // 18: Public Park Bench
+    { opt: ["Un policier vérifie les papiers d'un chauffeur.", "Deux personnes discutent assises sur un banc dans un parc public.", "Un cuisinier découpe de la viande en cuisine.", "Des étudiants écoutent une conférence à l'université."], ans: 1 },
+    // 19: Bank Teller Counter
+    { opt: ["Un maçon construit un mur de briques.", "Un client effectue un dépôt d'argent au guichet d'une banque.", "Un marin amarre son navire au port.", "Un photographe développe des clichés dans une chambre noire."], ans: 1 },
+    // 20: Florist Shop
+    { opt: ["Une fleuriste compose un bouquet de fleurs fraîches dans sa boutique.", "Un mécanicien nettoie le pare-brise d'une automobile.", "Un chauffeur de bus valide les tickets des voyageurs.", "Un violoniste répète son morceau de musique."], ans: 0 },
+    // 21: Shoe Store
+    { opt: ["Un serveur verse du vin dans des verres.", "Un client essaie une paire de chaussures dans un magasin.", "Un électricien répare un tableau électrique.", "Un pêcheur attrape un poisson sur un lac."], ans: 1 },
+    // 22: Gym Sports Center
+    { opt: ["Des personnes font du sport et s'entraînent dans une salle de gym.", "Un steward sert des repas aux passagers d'un avion.", "Un cordonnier répare une botte en cuir.", "Un vétérinaire examine un chien sur une table."], ans: 0 },
+    // 23: Cinema Ticket Booth
+    { opt: ["Un serveur prépare des cafés au comptoir.", "Des spectateurs achètent leurs billets au guichet d'un cinéma.", "Un facteur livre un paquet dans un immeuble.", "Un boulanger périt la pâte à pain."], ans: 1 },
+    // 24: Taxi Stand
+    { opt: ["Des passagers montent à bord d'un taxi à une station en ville.", "Des jardiniers arrosent les fleurs d'un jardin public.", "Un infirmier prend la tension d'un patient.", "Un peintre applique de la peinture sur une façade."], ans: 0 },
+    // 25: Bookstore
+    { opt: ["Un client parcourt des ouvrages sur les étagères d'une librairie.", "Un mécanicien vérifie les freins d'une motocyclette.", "Un maître-nageur surveille une plage surveillée.", "Un chauffeur charge du fret dans une camionnette."], ans: 0 },
+    // 26: Optician Shop
+    { opt: ["Un charpentier fabrique un meuble en bois.", "Un client choisit une monture de lunettes chez un opticien.", "Un arbitre siffle une faute pendant un match.", "Un contrôleur vérifie les billets dans le train."], ans: 1 },
+    // 27: Museum Art Gallery
+    { opt: ["Des visiteurs admirent des tableaux accrochés dans une galerie de musée.", "Un cuisinier dresse des assiettes pour le service du soir.", "Un fermier ramasse des légumes dans son potager.", "Un coiffeur applique une coloration capillaire."], ans: 0 },
+    // 28: Ice Cream Parlor Stand
+    { opt: ["Des clients achètent des glaces auprès d'un marchand ambulant.", "Un serrurier remplace la serrure d'une porte d'entrée.", "Un pompier inspecte un extincteur de sécurité.", "Un comptable vérifie des factures sur un ordinateur."], ans: 0 },
+    // 29: Outdoor Fruit Market
+    { opt: ["Un plongeur explore les fonds marins.", "Des consommateurs achètent des fruits frais sur un marché en plein air.", "Un réparateur ajuste la chaîne d'une bicyclette.", "Un hôte d'accueil accueille des visiteurs dans une exposition."], ans: 1 },
+    // 30: Train Ticket Counter
+    { opt: ["Un usager demande un itinéraire au guichet d'information de la gare.", "Un couturier dessine le patron d'une robe.", "Un ouvrier manœuvre une grue sur un chantier.", "Un serveur sert des desserts dans un salon de thé."], ans: 0 },
+    // 31: Laundromat Dry Cleaner
+    { opt: ["Un mécanicien fait la vidange d'un moteur.", "Une personne lave son linge dans une laverie automatique.", "Un journaliste interviewe un passant dans la rue.", "Un boulanger enfourne des tartes aux cerises."], ans: 1 },
+    // 32: Jewelry Store
+    { opt: ["Un client regarde des bijoux exposés dans la vitrine d'une bijouterie.", "Un steward ferme les coffres à bagages d'un avion.", "Un agriculteur conduit un tracteur dans un champ.", "Un plombier répare une fuite sous un évier."], ans: 0 },
+    // 33: Fast Food Cafeteria Counter
+    { opt: ["Un serveur prépare un sandwich derrière le comptoir d'une cafétéria.", "Un déménageur transporte un meuble lourd dans les escaliers.", "Un maître d'hôtel accueille les clients à l'entrée du restaurant.", "Un botaniste étudie des plantes sous une serre."], ans: 0 },
+    // 34: Hardware Store Tools
+    { opt: ["Un peintre dessine un modèle dans son atelier.", "Un bricoleur choisit des outils dans un magasin de bricolage.", "Un marin dresse la voile d'un voilier.", "Un masseur prodigue un soin dans un spa."], ans: 1 },
+    // 35: Ski Resort Snow Street
+    { opt: ["Des skieurs s'équipent au pied des pistes enneigées d'une station.", "Un serveur apporte l'addition aux clients en salle.", "Un guichetier vend des billets de loterie dans un kiosque.", "Un technicien répare une ligne téléphonique."], ans: 0 },
+    // 36: University Lecture Hall
+    { opt: ["Un photographe ajuste son objectif d'appareil photo.", "Des étudiants écoutent attentivement un cours dans un grand amphithéâtre.", "Un serveur essuie le comptoir en fin de journée.", "Un facteur distribue le courrier dans les boîtes."], ans: 1 },
+    // 37: Pet Clinic Vet Office
+    { opt: ["Un mécanicien contrôle la pression des pneus d'une berline.", "Un vétérinaire osculte un chat sur une table d'examen.", "Un barbier rase le visage d'un client au rasoir.", "Un conducteur paie au péage d'une autoroute."], ans: 1 },
+    // 38: Music Store Guitars
+    { opt: ["Un musicien essaie une guitare dans un magasin d'instruments.", "Un boulanger prépare des croissants au beurre.", "Un jardinier tond la pelouse d'une grande propriété.", "Un bagagiste transporte des valises sur un chariot."], ans: 0 },
+    // 39: Parking Meter Street
+    { opt: ["Un automobiliste paie son stationnement à un horodateur dans la rue.", "Un cuisinier fait revenir des légumes dans une poêle.", "Un serveur débarrasse les assiettes d'une table.", "Un marin nettoie le pont d'un navire de pêche."], ans: 0 }
   ];
   return optionsList[sceneIdx % optionsList.length];
+}
+
+export function getA1A2Propositions(sceneIdx: number): {
+  level: string;
+  title: string;
+  text: string;
+  opt: string[];
+  ans: number;
+  tr: string;
+  en: string;
+  hint: string;
+} {
+  const cities = ["Montréal", "Québec", "Ottawa", "Vancouver", "Toronto", "Calgary", "Sherbrooke", "Trois-Rivières", "Gatineau", "Moncton"];
+  const p = Math.floor(sceneIdx / 11) + 1;
+  const qNum = (sceneIdx % 11) + 5;
+  const city = cities[(p - 1) % cities.length];
+
+  if (qNum === 5) {
+    return {
+      level: "A1",
+      title: `Annonce Transport A1 P${p}Q5`,
+      text: `Annonce gare de ${city} : Le train express N°${400 + p * 12} à destination de la gare centrale partira exceptionnellement de la voie ${p + 1} à ${10 + p}h15.`,
+      opt: [
+        `Départ du train express pour la gare centrale de ${city} voie ${p + 1} à ${10 + p}h15`,
+        `Annulation complète du trajet vers ${city} en raison d'un problème technique`,
+        `Changement de destination du train vers la gare du Nord à ${10 + p}h15`,
+        `Fermeture temporaire du guichet de vente des billets de la gare de ${city}`
+      ],
+      ans: 0,
+      tr: `Annonce gare de ${city} : Le train express N°${400 + p * 12} partira voie ${p + 1} à ${10 + p}h15.`,
+      en: `Station announcement in ${city}: Express train N°${400 + p * 12} departs track ${p + 1} at ${10 + p}:15.`,
+      hint: `⚠️ Trap Alert: Identify track number (voie ${p + 1}) and departure time (${10 + p}h15).`
+    };
+  } else if (qNum === 6) {
+    return {
+      level: "A1",
+      title: `Annonce Magasin A1 P${p}Q6`,
+      text: `Annonce supermarché à ${city} : Offre spéciale aujourd'hui au rayon n°${p}. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.`,
+      opt: [
+        `Offre promotionnelle au rayon n°${p} à ${city} avec le 3e article à demi-prix`,
+        `Fermeture exceptionnelle du magasin de ${city} en raison de travaux`,
+        `Arrivée de nouveaux produits d'entretien écologiques au rayon n°${p}`,
+        `Distribution gratuite de cartes de fidélité à l'accueil du magasin de ${city}`
+      ],
+      ans: 0,
+      tr: `Annonce supermarché : Offre spéciale au rayon n°${p}, le 3e article est à demi-prix.`,
+      en: `Store announcement: Special offer in aisle ${p}, 3rd item at half price.`,
+      hint: `⚠️ Trap Alert: Note promotion deal (3rd item half price in aisle ${p}).`
+    };
+  } else if (qNum === 7) {
+    return {
+      level: "A1",
+      title: `Annonce Météo A1 P${p}Q7`,
+      text: `Bulletin météo pour ${city} : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de ${12 + p}°C.`,
+      opt: [
+        `Prévision de vent fort et pluie à ${city} avec une température de ${12 + p}°C`,
+        `Vague de chaleur et soleil radieux toute la journée sur ${city}`,
+        `Chute de neige abondante à ${city} bloquant la circulation routière`,
+        `Aucun changement climatique annoncé pour le week-end à ${city}`
+      ],
+      ans: 0,
+      tr: `Bulletin météo pour ${city} : Pluie et vent prévus avec ${12 + p}°C.`,
+      en: `Weather forecast for ${city}: Rain and strong wind expected with ${12 + p}°C.`,
+      hint: `⚠️ Trap Alert: Focus on weather condition (pluie/vent) and temperature (${12 + p}°C).`
+    };
+  } else if (qNum === 8) {
+    return {
+      level: "A2",
+      title: `Message Médical A2 P${p}Q8`,
+      text: `Bonjour, ici le secrétariat médical du docteur Tremblay à ${city}. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à ${8 + p}h30. Merci d'apporter votre carte de santé.`,
+      opt: [
+        `Rappel du rendez-vous médical de suivi à ${city} fixé à mardi à ${8 + p}h30`,
+        `Annulation définitive de la consultation médicale du docteur Tremblay`,
+        `Changement d'adresse du cabinet médical de quartier à ${city}`,
+        `Demande d'envoi des résultats d'analyse médicale par courrier`
+      ],
+      ans: 0,
+      tr: `Bonjour, ici le secrétariat médical. Votre rendez-vous de suivi est mardi à ${8 + p}h30.`,
+      en: `Hello, medical office calling. Your follow-up appointment is Tuesday at ${8 + p}:30.`,
+      hint: `⚠️ Trap Alert: Identify confirmed day (mardi) and time (${8 + p}h30).`
+    };
+  } else if (qNum === 9) {
+    return {
+      level: "A2",
+      title: `Message Garage Auto A2 P${p}Q9`,
+      text: `Bonjour, votre garage automobile de ${city} vous informe que la révision de votre véhicule et le remplacement des freins sont terminés. Le montant total est de ${180 + p * 15}$. Vous pouvez passer avant 18h.`,
+      opt: [
+        `Véhicule prêt au garage de ${city} après révision et freins pour un montant de ${180 + p * 15}$`,
+        `Retard des travaux au garage de ${city} en raison d'une pièce manquante`,
+        `Obligation de laisser la voiture au garage de ${city} tout le week-end`,
+        `Fermeture annuelle du garage automobile de ${city} dès ce soir`
+      ],
+      ans: 0,
+      tr: `Votre véhicule est prêt suite aux travaux de révision. Total: ${180 + p * 15}$.`,
+      en: `Your car is ready after brake replacement and service. Total: $${180 + p * 15}.`,
+      hint: `⚠️ Trap Alert: Identify completion status and total bill ($${180 + p * 15}).`
+    };
+  } else if (qNum === 10) {
+    return {
+      level: "A2",
+      title: `Message Livraison Colis A2 P${p}Q10`,
+      text: `Bonjour, le service de livraison vous informe que votre colis n°${8000 + p * 37} est disponible au guichet automatique de la rue Principale à ${city}. Votre code d'accès est le ${4000 + p * 11}.`,
+      opt: [
+        `Colis n°${8000 + p * 37} disponible en consignes automatiques à ${city} avec le code ${4000 + p * 11}`,
+        `Impossibilité de livrer le colis n°${8000 + p * 37} en raison d'une adresse erronée`,
+        `Retour du colis n°${8000 + p * 37} à l'expéditeur d'origine à ${city}`,
+        `Paiement obligatoire de frais de douane supplémentaires pour le colis`
+      ],
+      ans: 0,
+      tr: `Votre colis n°${8000 + p * 37} est disponible. Code d'accès: ${4000 + p * 11}.`,
+      en: `Your parcel N°${8000 + p * 37} is ready in the locker. Access code: ${4000 + p * 11}.`,
+      hint: `⚠️ Trap Alert: Identify access code (${4000 + p * 11}) and pickup location.`
+    };
+  } else if (qNum === 11) {
+    return {
+      level: "A2",
+      title: `Message Agence Immobilière A2 P${p}Q11`,
+      text: `Bonjour, l'agence immobilière de ${city} vous confirme la visite de l'appartement 3 pièces prévue ce jeudi à ${10 + p}h00. Le point de rendez-vous est fixé devant l'immeuble.`,
+      opt: [
+        `Confirmation de la visite de l'appartement à ${city} ce jeudi à ${10 + p}h00`,
+        `Annulation du rendez-up car le logement à ${city} a déjà été loué`,
+        `Augmentation du montant du loyer mensuel demandé pour l'appartement`,
+        `Report de la visite de l'appartement à ${city} à la fin du mois prochain`
+      ],
+      ans: 0,
+      tr: `L'agence vous confirme la visite de l'appartement ce jeudi à ${10 + p}h00.`,
+      en: `Real estate agency confirms apartment viewing this Thursday at ${10 + p}:00 AM.`,
+      hint: `⚠️ Trap Alert: Identify confirmed visit day (jeudi) and time.`
+    };
+  } else if (qNum === 12) {
+    return {
+      level: "A2",
+      title: `Message Salon de Coiffure A2 P${p}Q12`,
+      text: `Bonjour, le salon de coiffure de ${city} vous informe que votre coiffeuse habituelle sera absente vendredi. Nous vous proposons d'avancer votre rendez-vous à jeudi à ${9 + p}h.`,
+      opt: [
+        `Proposition de modifier le rendez-vous au salon de ${city} à jeudi à ${9 + p}h en raison d'une absence`,
+        `Confirmation du rendez-vous de vendredi au salon de ${city} sans aucun changement`,
+        `Fermeture définitive du salon de coiffure de ${city} pour travaux`,
+        `Offre d'une réduction exceptionnelle sur les soins capillaires au salon`
+      ],
+      ans: 0,
+      tr: `Changement de rendez-vous proposé à jeudi à ${9 + p}h suite à une absence.`,
+      en: `Hair salon proposes moving appointment to Thursday at ${9 + p} AM due to staff absence.`,
+      hint: `⚠️ Trap Alert: Identify proposed alternative slot (jeudi) and reason (absence).`
+    };
+  } else if (qNum === 13) {
+    return {
+      level: "A2",
+      title: `Message Club de Sport A2 P${p}Q13`,
+      text: `Bonjour, l'équipe du centre sportif de ${city} vous informe que la séance d'entraînement de natation de ce samedi est déplacée au bassin extérieur à partir de ${8 + p}h.`,
+      opt: [
+        `Changement de lieu et d'horaire pour l'entraînement de natation à ${city} ce samedi à ${8 + p}h`,
+        `Annulation définitive de l'inscription au club de sport de ${city}`,
+        `Augmentation de la cotisation annuelle pour les membres du club de sport`,
+        `Fermeture des vestiaires du centre sportif de ${city} pour travaux d'assainissement`
+      ],
+      ans: 0,
+      tr: `L'entraînement de natation de samedi est déplacé au bassin extérieur à ${8 + p}h.`,
+      en: `Saturday swimming practice moved to outdoor pool at ${8 + p} AM.`,
+      hint: `⚠️ Trap Alert: Identify change of location (bassin extérieur) and start time.`
+    };
+  } else if (qNum === 14) {
+    return {
+      level: "A2",
+      title: `Message Médiathèque A2 P${p}Q14`,
+      text: `Bonjour, la bibliothèque municipale de ${city} vous informe que le livre d'histoire que vous avez réservé est arrivé. Vous avez jusqu'à samedi ${10 + p}h pour venir le récupérer.`,
+      opt: [
+        `Ouvrage réservé disponible à la bibliothèque de ${city} à retirer avant samedi ${10 + p}h`,
+        `Obligation de payer une amende pour retard de restitution à la bibliothèque`,
+        `Perte définitive de l'ouvrage emprunté par la médiathèque de ${city}`,
+        `Rappel de la date de renouvellement de la carte d'abonné de la bibliothèque`
+      ],
+      ans: 0,
+      tr: `Votre livre réservé est disponible à la bibliothèque jusqu'à samedi ${10 + p}h.`,
+      en: `Reserved book is available at the library until Saturday at ${10 + p} AM.`,
+      hint: `⚠️ Trap Alert: Identify pickup deadline (samedi) for reserved item.`
+    };
+  } else {
+    return {
+      level: "A2",
+      title: `Message Recrutement Emploi A2 P${p}Q15`,
+      text: `Bonjour, le service des ressources humaines de l'entreprise à ${city} a bien reçu votre candidature. Nous souhaiterions vous proposer un entretien téléphonique lundi à ${11 + p}h30.`,
+      opt: [
+        `Proposition d'entretien téléphonique préalable avec l'entreprise de ${city} lundi à ${11 + p}h30`,
+        `Refus immédiat de la candidature transmise à l'entreprise de ${city}`,
+        `Demande d'envoi d'une lettre de recommandation imprimée à l'entreprise`,
+        `Convocation à un examen écrit dans les locaux de l'entreprise de ${city}`
+      ],
+      ans: 0,
+      tr: `Le service RH vous propose un entretien téléphonique lundi à ${11 + p}h30.`,
+      en: `HR offers a phone interview next Monday at ${11 + p}:30 AM.`,
+      hint: `⚠️ Trap Alert: Identify format of interview (téléphonique) and proposed time.`
+    };
+  }
 }
 
 function shuffleOptions(
@@ -949,7 +1219,7 @@ function shuffleOptions(
   };
 }
 
-function generateListeningQuestions(count: number, prefix: string, seedOffset: number = 0): ExamQuestion[] {
+export function generateListeningQuestions(count: number, prefix: string, seedOffset: number = 0): ExamQuestion[] {
   const qList: ExamQuestion[] = [];
   const usedIndices = new Set<number>();
 
@@ -979,7 +1249,7 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
     }
     usedIndices.add(chosenIdx);
     const rawT = LISTENING_TOPICS[chosenIdx];
-    const t = customizeListeningTopicForPaper(rawT, i, prefix, seedOffset);
+    let t = customizeListeningTopicForPaper(rawT, i, prefix, seedOffset);
 
     const isQuestionInAudio = i <= 29;
 
@@ -989,7 +1259,7 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
 
     if (i <= 4) {
       const paperNum = (seedOffset % 10) + 1;
-      mainImage = getHdIllustration(paperNum, i);
+      mainImage = paperNum === 1 ? getHdIllustration(paperNum, i) : undefined;
       mainImageSvg = getOfficialLineArtSvg(i, seedOffset);
     }
 
@@ -1001,6 +1271,14 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
       const props = getDrawingPropositions(sceneIdx);
       topicOpt = props.opt;
       topicAns = props.ans;
+    } else if (i >= 5 && i <= 15) {
+      const paperNumMatch = prefix.match(/\d+/);
+      const paperIdx = paperNumMatch ? (parseInt(paperNumMatch[0], 10) - 1) % 10 : (seedOffset % 10);
+      const a1a2Idx = (paperIdx * 11) + (i - 5);
+      const a1a2 = getA1A2Propositions(a1a2Idx);
+      topicOpt = a1a2.opt;
+      topicAns = a1a2.ans;
+      t = { ...t, title: a1a2.title, text: a1a2.text, tr: a1a2.tr, en: a1a2.en, hint: a1a2.hint, level: a1a2.level };
     }
 
     const seed = seedOffset * 100 + i;
@@ -1039,15 +1317,15 @@ function generateListeningQuestions(count: number, prefix: string, seedOffset: n
         : `${passageSpeakerLabel}: ${t.tr}\n${announcerLabel}: Écoutez la question. Question N°${i} : ${questionTextPrompt}`)
       : t.tr;
 
-    if (i <= 4 && mainImageSvg) {
-      fullSpokenTranscript = `${announcerLabel}: Consigne : Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... A : ${options[0]}.\n... B : ${options[1]}.\n... C : ${options[2]}.\n... D : ${options[3]}.`;
+    if (i <= 4 && (mainImage || mainImageSvg)) {
+      fullSpokenTranscript = `${announcerLabel}: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : ${options[0]}.\n... Proposition B : ${options[1]}.\n... Proposition C : ${options[2]}.\n... Proposition D : ${options[3]}.`;
     }
 
     const speakingRate = i <= 7 ? 0.85 : i <= 15 ? 0.92 : i <= 25 ? 1.00 : i <= 33 ? 1.15 : 1.30;
 
     let spokenEnglishTranslation = t.en;
-    if (i <= 4 && mainImageSvg) {
-      spokenEnglishTranslation = `Instruction: Listen to the 4 options. Choose the option that corresponds to the image.\n• Option A: ${options[0]}\n• Option B: ${options[1]}\n• Option C: ${options[2]}\n• Option D: ${options[3]}`;
+    if (i <= 4 && (mainImage || mainImageSvg)) {
+      spokenEnglishTranslation = `Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image.\n• Proposition A: ${options[0]}\n• Proposition B: ${options[1]}\n• Proposition C: ${options[2]}\n• Proposition D: ${options[3]}`;
     } else if (isSpokenOptionQuestion) {
       spokenEnglishTranslation = `${t.en}\nInstruction: Listen to the audio document, question N°${i}, and 4 spoken options.\n• Option A: ${options[0]}\n• Option B: ${options[1]}\n• Option C: ${options[2]}\n• Option D: ${options[3]}`;
     }

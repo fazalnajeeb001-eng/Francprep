@@ -16,5 +16,5 @@ export const HD_ILLUSTRATIONS: Record<string, string> = {
 
 export function getHdIllustration(paperIdx: number, qNum: number): string | undefined {
   const key = `tcf_p${paperIdx}_q${qNum}`;
-  return HD_ILLUSTRATIONS[key] || HD_ILLUSTRATIONS[`tcf_p1_q${qNum}`];
+  return HD_ILLUSTRATIONS[key] || `/illustrations/tcf_p${paperIdx}_q${qNum}.png`;
 }
