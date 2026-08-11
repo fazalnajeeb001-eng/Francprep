@@ -3950,7 +3950,7 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       transcript: fullSpokenTranscript,
       transcriptEnglish: spokenEnglishTranslation,
       questionInAudio: isQuestionInAudio,
-      perQuestionTimerSeconds: 15
+      perQuestionTimerSeconds: i <= 10 ? 15 : i <= 26 ? 20 : 25
     });
   }
   return qList;

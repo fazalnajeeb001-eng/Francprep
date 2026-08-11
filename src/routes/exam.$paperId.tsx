@@ -194,12 +194,19 @@ export function AuthenticCBTExamPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isAudioPaused, setIsAudioPaused] = useState(false);
+  const [isAudioFinished, setIsAudioFinished] = useState(false);
   const [showStrategyModal, setShowStrategyModal] = useState(false);
   const [openModelAnswerTaskId, setOpenModelAnswerTaskId] = useState<string | null>(null);
 
   // Per-Question CBT Countdown Timer & Auto-Advance (Runs in both Practice & Exam Modes for Comprehension Orale)
   useEffect(() => {
     if (currentSection.type !== "COMPREHENSION_ORALE" || !currentQ || isSubmitted) {
+      setQTimeLeft(null);
+      return;
+    }
+
+    // In Exam Mode, wait until audio finishes playing before starting the countdown timer!
+    if (mode === "EXAM" && !isAudioFinished) {
       setQTimeLeft(null);
       return;
     }
@@ -224,7 +231,7 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, currentQuestions.length, paper.sections.length]);
+  }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, isAudioFinished, currentQuestions.length, paper.sections.length]);
 
   const handleStartPrepTimer = (taskId: string, prepMins = 1) => {
     setOralPrepTimeRemaining((prev) => ({ ...prev, [taskId]: prepMins * 60 }));
@@ -782,9 +789,26 @@ export function AuthenticCBTExamPage() {
     setIsAudioPaused(false);
   };
 
-  // Automatically kill and clean up any playing or paused audio when switching questions or sections!
+  // Automatically kill audio and manage audio completion state / auto-play when switching questions!
   useEffect(() => {
     handleStopAudio();
+    setIsAudioFinished(false);
+
+    if (currentSection?.type === "COMPREHENSION_ORALE" && currentQ) {
+      const qNum = currentQ.questionNumber;
+      if (mode === "EXAM" && !isSubmitted) {
+        const rate = (currentQ as any).speakingRate || 1.0;
+        const fullText = currentQ.transcript || currentQ.text;
+        const timer = setTimeout(() => {
+          ttsSpeakListening(fullText, qNum, "fr-FR", rate, undefined, () => {
+            setIsAudioFinished(true);
+          });
+        }, 300);
+        return () => clearTimeout(timer);
+      } else {
+        setIsAudioFinished(true);
+      }
+    }
   }, [currentQuestionIdx, activeSectionIdx]);
 
   const handlePlayAudio = async (text: string, lang = "fr-FR", rate = 1.0) => {
@@ -793,7 +817,9 @@ export function AuthenticCBTExamPage() {
     const qNum = (currentQ as any)?.questionNumber || 1;
     await triggerAcousticSoundForQuestion(qNum);
     const fullTextToPlay = currentQ?.transcript || text;
-    ttsSpeakListening(fullTextToPlay, qNum, lang, rate);
+    ttsSpeakListening(fullTextToPlay, qNum, lang, rate, undefined, () => {
+      setIsAudioFinished(true);
+    });
   };
 
   const handlePauseResumeAudio = () => {
