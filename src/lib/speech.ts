@@ -314,7 +314,8 @@ export function speakDialogue(
   dialogueText: string,
   lang = "fr-FR",
   rate = 0.85,
-  extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string }
+  extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string },
+  onEnded?: () => void
 ): void {
   if (typeof window === "undefined") return;
   const clean = dialogueText.trim();
@@ -369,7 +370,7 @@ export function speakDialogue(
   }
 
   if (parsedDialogue.length === 0) {
-    speak(clean, lang, rate, "female", undefined, undefined, extraKeys);
+    speak(clean, lang, rate, "female", undefined, undefined, extraKeys, onEnded);
     return;
   }
 
@@ -379,6 +380,7 @@ export function speakDialogue(
     if (myDialogueId !== currentDialogueId) return; // Terminate if dialogue was stopped or replaced
     if (currentIndex >= parsedDialogue.length) {
       if (onPlaybackStateChange) onPlaybackStateChange(false);
+      if (onEnded) onEnded();
       return;
     }
 
@@ -391,12 +393,33 @@ export function speakDialogue(
 
     audio.onended = () => {
       if (myDialogueId === currentDialogueId) {
-        setTimeout(playNextLine, 300);
+        // Real TCF CBT Sound Design Pacing rules:
+        // 1. Passage -> Announcer ("Écoutez la question..."): 1500ms silent break
+        // 2. Between Spoken Options A, B, C, D (Q1-Q8): 1000ms silent break
+        // 3. Standard dialogue lines: 400ms break
+        let delayMs = 400;
+        if (currentIndex < parsedDialogue.length) {
+          const nextLine = parsedDialogue[currentIndex];
+          const isNextAnnouncer = nextLine.speaker.toLowerCase().includes("annonceur") ||
+                                  nextLine.speaker.toLowerCase().includes("annonceuse") ||
+                                  /^\s*(Écoutez|Regardez)\b/i.test(nextLine.text);
+          const isNextSpokenOption = /^\s*(Option\s+[A-D]|Propositions?\s+[A-D]|[A-D]\.)\b/i.test(nextLine.text) ||
+                                     /^\s*([A-D])\s*:/i.test(nextLine.speaker);
+          const isCurrentSpokenOption = /^\s*(Option\s+[A-D]|Propositions?\s+[A-D]|[A-D]\.)\b/i.test(current.text) ||
+                                        /^\s*([A-D])\s*:/i.test(current.speaker);
+
+          if (isNextAnnouncer) {
+            delayMs = 1500;
+          } else if (isNextSpokenOption || isCurrentSpokenOption) {
+            delayMs = 1000;
+          }
+        }
+        setTimeout(playNextLine, delayMs);
       }
     };
     audio.onerror = () => {
       if (myDialogueId === currentDialogueId) {
-        setTimeout(playNextLine, 300);
+        setTimeout(playNextLine, 400);
       }
     };
 
@@ -465,7 +488,8 @@ export async function speakListeningQuestion(
   questionNumber: number,
   lang = "fr-FR",
   rate = 0.85,
-  extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string }
+  extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string },
+  onEnded?: () => void
 ): Promise<void> {
   stopAudio();
   if (questionNumber >= 1 && questionNumber <= 33) {
@@ -476,7 +500,7 @@ export async function speakListeningQuestion(
       ]);
     } catch {}
   }
-  speakDialogue(text, lang, rate, extraKeys);
+  speakDialogue(text, lang, rate, extraKeys, onEnded);
 }
 
 /**
@@ -500,8 +524,8 @@ export function useSpeak() {
   );
 
   const speakDialogueWithState = useCallback(
-    (text: string, lang = "fr-FR", rate = 0.85, extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string }) => {
-      speakDialogue(text, lang, rate, extraKeys);
+    (text: string, lang = "fr-FR", rate = 0.85, extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string }, onEnded?: () => void) => {
+      speakDialogue(text, lang, rate, extraKeys, onEnded);
     },
     []
   );
@@ -509,8 +533,8 @@ export function useSpeak() {
   return {
     speak: speakWithState,
     speakDialogue: speakDialogueWithState,
-    speakListening: (text: string, qNum: number, lang = "fr-FR", rate = 0.85) =>
-      speakListeningQuestion(text, qNum, lang, rate),
+    speakListening: (text: string, qNum: number, lang = "fr-FR", rate = 0.85, extraKeys?: any, onEnded?: () => void) =>
+      speakListeningQuestion(text, qNum, lang, rate, extraKeys, onEnded),
     isSpeaking,
     stop: stopAudio,
     pause: pauseAudio,
