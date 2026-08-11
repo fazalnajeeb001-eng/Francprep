@@ -159,15 +159,16 @@ export function applyTelephoneFilter(audioElement: HTMLAudioElement): void {
  * Automatically triggers the authentic acoustic sound effect matching the TCF Listening Question item number!
  */
 export async function triggerAcousticSoundForQuestion(qNum: number): Promise<void> {
-  if (qNum >= 1 && qNum <= 7) {
-    // A1: Airport / Train station announcement chime
+  if (qNum >= 5 && qNum <= 7) {
+    // Q5-Q7 (A1 Public Announcements): Station / Airport "Ding-Dong" Chime
     await playAirportChime();
   } else if (qNum >= 8 && qNum <= 15) {
-    // A2: Voicemail / Phone beep
+    // Q8-Q15 (A2 Voicemails & Phone Messages): Answering Machine "Bip" Beep
     await playVoicemailBeep();
   } else if (qNum >= 16 && qNum <= 33) {
-    // B1/B2: Radio news flash jingle
+    // Q16-Q33 (B1/B2 Radio News & Debates): Radio Flash News Jingle
     await playRadioNewsJingle();
   }
+  // Q1-Q4 (Visual Studio Items) & Q34-Q39 (Academic Lectures): Direct Studio Audio (No Chimes)
 }
 
