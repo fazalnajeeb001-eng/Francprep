@@ -2,6 +2,7 @@ import { getHdIllustration } from "./hdIllustrationAssets";
 import { getPracticeQuestionTranslation } from "./practiceListeningTranslations";
 import { translateOptionMaster } from "./masterOptionsDictionary";
 import { getAuthenticB2Item, getAuthenticC1C2Item } from "./authenticListeningAdvancedBank";
+import { getQuestionGuidance } from "./practiceGuidanceBank";
 
 export type ExamType = "TCF_CANADA" | "TEF_CANADA";
 export type ExamMode = "PRACTICE" | "EXAM";
@@ -7113,6 +7114,8 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
     const finalTranscriptEnglish = spokenEnglishTranslation;
     const finalPassageEnglish = passageTextEn;
 
+    const guidance = getQuestionGuidance(i, itemLevel, questionTextPrompt, correctText, passageBodyText);
+
     qList.push({
       id: questionId,
       questionNumber: i,
@@ -7129,8 +7132,8 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       optionImages,
       mainImage,
       correctIndex,
-      explanation: `Pedagogical Explanation [Level ${itemLevel}]: The spoken document confirms "${correctText}".`,
-      hint: specificHint,
+      explanation: guidance.detailedExplanation,
+      hint: guidance.combinedHint,
       transcript: fullSpokenTranscript,
       transcriptEnglish: finalTranscriptEnglish,
       passage: passageBodyText,

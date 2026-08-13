@@ -2332,12 +2332,19 @@ export function AuthenticCBTExamPage() {
 
               {/* Practice Hint Bar */}
               {mode === "PRACTICE" && showHints && currentQ.hint && (
-                <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs font-medium space-y-1">
-                  <p className="font-extrabold flex items-center gap-1.5 text-amber-700 dark:text-amber-400">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>Practice Coach & Strategy Tip:</span>
-                  </p>
-                  <p className="whitespace-pre-line leading-relaxed text-[11px]">{currentQ.hint}</p>
+                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-slate-900 dark:text-slate-100 text-xs space-y-2.5 shadow-sm">
+                  <div className="flex items-center justify-between border-b border-amber-500/20 pb-2">
+                    <span className="font-extrabold flex items-center gap-1.5 text-amber-700 dark:text-amber-400 text-xs sm:text-sm">
+                      <Sparkles className="w-4 h-4" />
+                      <span>🎧 Audio Coach & Trap Alert — Niveau {(currentQ as any).level || 'A1-C2'}</span>
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-amber-600/20 text-amber-700 dark:text-amber-300 font-mono font-bold">
+                      Méthodologie TCF
+                    </span>
+                  </div>
+                  <div className="whitespace-pre-line leading-relaxed text-xs space-y-2 font-sans font-medium">
+                    {currentQ.hint}
+                  </div>
                 </div>
               )}
             </div>
@@ -2601,13 +2608,14 @@ export function AuthenticCBTExamPage() {
                           </p>
 
                           {currentQ.explanation && (
-                            <div className="pt-2 border-t border-slate-300 dark:border-slate-700/60 space-y-1">
-                              <span className="font-bold uppercase text-[10px] tracking-wider text-slate-700 dark:text-slate-300">
-                                Learning Explanation:
+                            <div className="pt-2.5 border-t border-slate-300 dark:border-slate-700/60 space-y-1.5">
+                              <span className="font-bold uppercase text-[10px] tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                                <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+                                <span>Analyse Pédagogique Détaillée :</span>
                               </span>
-                              <p className="leading-relaxed font-medium text-slate-900 dark:text-slate-200">
+                              <div className="whitespace-pre-line leading-relaxed font-medium text-xs text-slate-900 dark:text-slate-200">
                                 {currentQ.explanation}
-                              </p>
+                              </div>
                             </div>
                           )}
                         </div>
