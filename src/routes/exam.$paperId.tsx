@@ -2059,9 +2059,22 @@ export function AuthenticCBTExamPage() {
                       </span>
 
                       {mode === "PRACTICE" && (
-                        <div className="px-2 py-0.5 rounded bg-purple-100 border border-purple-300 text-purple-900 font-mono font-extrabold text-[11px] flex items-center gap-1">
-                          <Clock className="w-3 h-3 text-purple-700" />
-                          <span>CBT Pace: {currentQ.questionNumber <= 10 ? 15 : currentQ.questionNumber <= 26 ? 20 : 25}s</span>
+                        <div className="flex items-center gap-2">
+                          {isAudioPaused ? (
+                            <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-amber-900 text-amber-100 border border-amber-700 shadow-sm flex items-center gap-1.5 animate-pulse">
+                              <span>⏸️ ⏱️ {qTimeLeft !== null ? `${qTimeLeft}s (En pause)` : "En pause"}</span>
+                            </span>
+                          ) : isSpeaking ? (
+                            <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-blue-900 text-blue-100 border border-blue-700 shadow-sm flex items-center gap-1.5">
+                              <Volume2 className="w-3.5 h-3.5 animate-pulse text-blue-300" />
+                              <span>🎧 Lecture audio...</span>
+                            </span>
+                          ) : (
+                            <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-emerald-900 text-emerald-100 border border-emerald-700 shadow-sm flex items-center gap-1.5">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                              <span>⏱️ {qTimeLeft !== null ? `${qTimeLeft}s restantes` : `${currentQ.questionNumber <= 10 ? 15 : currentQ.questionNumber <= 26 ? 20 : 25}s (Pace)`}</span>
+                            </span>
+                          )}
                         </div>
                       )}
 
