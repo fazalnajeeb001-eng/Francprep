@@ -2153,26 +2153,6 @@ export function AuthenticCBTExamPage() {
                           </div>
                         </div>
                       )}
-                              <Square className="w-3.5 h-3.5 fill-current" />
-                              <span className="hidden sm:inline">Stop</span>
-                            </button>
-                          )}
-
-                          {mode === "PRACTICE" && (
-                            <button
-                              onClick={() => {
-                                handleStopAudio();
-                                setTimeout(() => handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || 1.0), 50);
-                              }}
-                              className="p-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1 shadow cursor-pointer"
-                              title="Replay Audio From Start"
-                            >
-                              <RotateCcw className="w-3.5 h-3.5" />
-                              <span className="hidden sm:inline">Replay</span>
-                            </button>
-                          )}
-                        </div>
-                      </div>
                     </div>
 
                     {/* Visual Illustration Image for Q1-Q4 */}
