@@ -2345,7 +2345,7 @@ export function AuthenticCBTExamPage() {
                   {showTranslation && (
                     <p className="text-xs font-semibold text-indigo-700 dark:text-indigo-300 italic pt-1 flex items-center gap-1">
                       <Globe className="w-3 h-3 shrink-0" />
-                      <span>Question (EN): "{currentQ.text}"</span>
+                      <span>Question (EN): "{(currentQ as any).questionPromptEnglish || currentQ.text}"</span>
                     </p>
                   )}
                 </div>
@@ -2417,8 +2417,13 @@ export function AuthenticCBTExamPage() {
 
                               {/* In PRACTICE mode, show text caption below image */}
                               {mode === "PRACTICE" && (
-                                <div className="p-2 text-[11px] font-semibold text-slate-700 dark:text-slate-300 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
-                                  {opt}
+                                <div className="p-2 text-[11px] font-semibold text-slate-700 dark:text-slate-300 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 space-y-0.5">
+                                  <div>{opt}</div>
+                                  {showTranslation && (currentQ as any).optionsEnglish?.[idx] && (
+                                    <div className="text-[10px] font-medium text-indigo-600 dark:text-indigo-400 italic">
+                                      EN: {(currentQ as any).optionsEnglish[idx]}
+                                    </div>
+                                  )}
                                 </div>
                               )}
                             </div>
@@ -2473,6 +2478,11 @@ export function AuthenticCBTExamPage() {
                                   "{optText}"
                                 </p>
                               )}
+                              {showTranslation && mode === "PRACTICE" && (currentQ as any).optionsEnglish?.[idx] && (
+                                <p className="text-xs text-indigo-300 font-medium italic pt-0.5 pl-9 text-left">
+                                  EN: "{(currentQ as any).optionsEnglish[idx]}"
+                                </p>
+                              )}
                             </button>
                           );
                         })}
@@ -2508,7 +2518,14 @@ export function AuthenticCBTExamPage() {
                             }`}>
                               {letter}
                             </span>
-                            <span className="leading-snug break-words">{opt}</span>
+                            <div className="flex flex-col min-w-0 text-left">
+                              <span className="leading-snug break-words">{opt}</span>
+                              {showTranslation && mode === "PRACTICE" && (currentQ as any).optionsEnglish?.[idx] && (
+                                <span className={`text-xs italic pt-0.5 ${isChosen ? "text-blue-100" : "text-indigo-600 dark:text-indigo-400"}`}>
+                                  EN: {(currentQ as any).optionsEnglish[idx]}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       );

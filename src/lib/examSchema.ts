@@ -1,4 +1,5 @@
 import { getHdIllustration } from "./hdIllustrationAssets";
+import { getPracticeQuestionTranslation } from "./practiceListeningTranslations";
 
 export type ExamType = "TCF_CANADA" | "TEF_CANADA";
 export type ExamMode = "PRACTICE" | "EXAM";
@@ -9,7 +10,9 @@ export interface ExamQuestion {
   questionNumber: number;
   text: string;
   questionPrompt?: string;
+  questionPromptEnglish?: string;
   options: string[];
+  optionsEnglish?: string[];
   optionImages?: string[];
   mainImage?: string;
   hasSpokenOptions?: boolean;
@@ -9252,12 +9255,7 @@ export function translateOptionToEnglish(opt: string): string {
   "Un vétérinaire osculte un chat sur une table d'examen.": "A veterinarian is examining a cat on an examination table.",
   "Un guide touristique fait visiter les ruines d'un château médiéval.": "A tour guide is leading a tour of medieval castle ruins.",
   "Un employé de voirie balaie les feuilles mortes sur le trottoir.": "A sanitation worker is sweeping dead leaves on the sidewalk.",
-  "Des passagers montent à bord d'un ferry au port.": "Passengers are boarding a ferry at the harbor.",
-  "Un musicien essaie une guitare dans un magasin d'instruments.": "A musician is trying out a guitar in a musical instruments store.",
-  "Un sommelier conseille un client sur le choix d'un vin.": "A sommelier is advising a customer on wine selection.",
-  "Un photographe fait des réglages sur son trépied.": "A photographer is adjusting settings on a camera tripod.",
-  "Des bénévoles distribuent des repas chauds dans un refuge.": "Volunteers are distributing hot meals in a shelter.",
-  "Un automobiliste paie son stationnement à un horodateur dans la rue.": "A driver is paying for parking at a curbside parking meter.",
+"Un automobiliste paie son stationnement à un horodateur dans la rue.": "A driver is paying for parking at a curbside parking meter.",
   "Un coiffeur peigne les cheveux d'un enfant assis sur un siège haut.": "A hairdresser is combing a child's hair sitting in a booster chair.",
   "Un menuisier vernit une table en bois massif dans son atelier.": "A woodworker is varnishing a solid wood table in a workshop.",
   "Des enfants dessinent à la craie sur le sol de la cour.": "Children are drawing with chalk on the schoolyard ground.",
@@ -9267,15 +9265,8 @@ export function translateOptionToEnglish(opt: string): string {
   "Un électricien répare un tableau électrique.": "An electrician is repairing an electrical panel.",
   "Un serveur verse du vin dans des verres.": "A server is pouring wine into glasses.",
   "Un pêcheur attrape un poisson sur un lac.": "A fisherman is catching a fish on a lake.",
-  "Un boulanger périt la pâte à pain.": "A baker is kneading bread dough.",
   "Un boulanger pétrit la pâte à pain.": "A baker is kneading bread dough.",
   "Un serveur prépare des cafés au comptoir.": "A server is making coffee at the counter.",
-  "Un facteur livre un paquet dans un immeuble.": "A mail carrier is delivering a package in an apartment building.",
-  "Un mécanicien vérifie les freins d'une motocyclette.": "A mechanic is checking motorcycle brakes.",
-  "Un serveur sert des desserts dans un salon de thé.": "A server is serving desserts in a tea room.",
-  "Un couturier dessine le patron d'une robe.": "A dressmaker is drawing a dress pattern.",
-  "Un ouvrier manœuvre une grue sur un chantier.": "A construction worker is operating a crane on a job site.",
-  "Un boulanger enfourne des tartes aux cerises.": "A baker is putting cherry pies into the oven.",
   "Un mécanicien fait la vidange d'un moteur.": "A mechanic is changing engine oil.",
   "Un journaliste interviewe un passant dans la rue.": "A journalist is interviewing a passerby in the street.",
   "Un serveur apporte l'addition aux clients en salle.": "A server is bringing the bill to dining room customers.",
@@ -9511,6 +9502,9 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       fullSpokenTranscript = `${announcerLabel}: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : ${options[0]}.\n... Proposition B : ${options[1]}.\n... Proposition C : ${options[2]}.\n... Proposition D : ${options[3]}.`;
     }
 
+    const questionId = `${prefix}-lis-${i}`;
+    const practiceTr = getPracticeQuestionTranslation(questionId);
+
     const speakingRate = i <= 7 ? 0.85 : i <= 15 ? 0.92 : i <= 25 ? 1.00 : i <= 33 ? 1.15 : 1.30;
 
     const optionsEn0 = translateOptionToEnglish(options[0]);
@@ -9536,24 +9530,33 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       spokenEnglishTranslation = t.en;
     }
 
+    const finalQuestionPromptEnglish = practiceTr?.questionPromptEnglish || (i <= 4 ? "Look at the image. Listen to the 4 options and choose the one that corresponds to the image." : undefined);
+    const finalOptionsEnglish = practiceTr?.optionsEnglish || [optionsEn0, optionsEn1, optionsEn2, optionsEn3];
+    const finalTranscriptEnglish = practiceTr?.transcriptEnglish || spokenEnglishTranslation;
+    const finalPassageEnglish = practiceTr?.passageEnglish || t.en;
+
     qList.push({
-      id: `${prefix}-lis-${i}`,
+      id: questionId,
       questionNumber: i,
       level: itemLevel,
       speakingRate,
       hasSpokenOptions: isSpokenOptionQuestion || i <= 4,
       questionPrompt: questionTextPrompt,
+      questionPromptEnglish: finalQuestionPromptEnglish,
       text: i <= 4
         ? "Écoutez les 4 propositions, choisissez celle qui correspond à l'image."
         : questionTextPrompt,
       options,
+      optionsEnglish: finalOptionsEnglish,
       optionImages,
       mainImage,
       correctIndex,
       explanation: `Pedagogical Explanation [Level ${itemLevel}]: The spoken document confirms "${correctText}".`,
       hint: specificHint,
       transcript: fullSpokenTranscript,
-      transcriptEnglish: spokenEnglishTranslation,
+      transcriptEnglish: finalTranscriptEnglish,
+      passage: passageBodyText,
+      passageEnglish: finalPassageEnglish,
       questionInAudio: isQuestionInAudio,
       perQuestionTimerSeconds: i <= 10 ? 15 : i <= 26 ? 20 : 25
     });
