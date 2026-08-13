@@ -168,7 +168,7 @@ export function speak(
 }
 
 /**
- * Direct 24kHz HD MP3 Audio Stream Fallback (Zero Browser Web TTS / Zero Robotic OS Voice)
+ * Direct HD MP3 Audio Stream Fallback (Pure Neural Fallback - Zero Browser WebSpeech / Zero Parallel Voices)
  */
 function playDirectHDFallback(text: string, langCode: string, rate: number, audio: HTMLAudioElement, gender: "female" | "male" = "female") {
   try {
@@ -190,52 +190,16 @@ function playDirectHDFallback(text: string, langCode: string, rate: number, audi
       audio.playbackRate = rate;
       audio.preservesPitch = true;
     }).catch(() => {
-      speakWebSpeech(text, langCode, rate, gender);
+      // Clean silent handle - zero parallel OS voices allowed
     });
   } catch {
-    speakWebSpeech(text, langCode, rate, gender);
+    // Clean silent handle - zero parallel OS voices allowed
   }
 }
 
 function speakWebSpeech(text: string, langCode: string, rate: number, gender: "female" | "male" = "female") {
-  if (typeof window !== "undefined" && "speechSynthesis" in window) {
-    try {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = langCode === "fr" ? "fr-FR" : langCode;
-      utterance.rate = rate;
-
-      const voices = window.speechSynthesis.getVoices();
-      const langVoices = voices.filter(v => v.lang.toLowerCase().startsWith(langCode));
-      if (langVoices.length > 0) {
-        const maleKeywords = ["male", "man", "thomas", "paul", "nicolas", "henri", "daniel", "george"];
-        const femaleKeywords = ["female", "woman", "hortense", "julie", "denise", "celeste", "aurelie", "amélie", "alice"];
-        const matchedVoice = langVoices.find(v => {
-          const vName = v.name.toLowerCase();
-          return gender === "male"
-            ? maleKeywords.some(k => vName.includes(k))
-            : femaleKeywords.some(k => vName.includes(k));
-        });
-        if (matchedVoice) {
-          utterance.voice = matchedVoice;
-        }
-      }
-
-      utterance.onend = () => { if (onPlaybackStateChange) onPlaybackStateChange(false); };
-      utterance.onerror = () => { if (onPlaybackStateChange) onPlaybackStateChange(false); };
-      if (onPlaybackStateChange) onPlaybackStateChange(true);
-      try {
-        window.speechSynthesis.speak(utterance);
-      } catch (err) {
-        console.warn("[Speech] WebSpeech speak blocked:", err);
-        if (onPlaybackStateChange) onPlaybackStateChange(false);
-      }
-      return;
-    } catch (err) {
-      console.warn("[Speech] WebSpeech error:", err);
-    }
-  }
-  if (onPlaybackStateChange) onPlaybackStateChange(false);
+  // WebSpeech API is 100% disabled to prevent robotic OS voices from playing over Neural TTS
+  return;
 }
 
 export function stopAudio(): void {
