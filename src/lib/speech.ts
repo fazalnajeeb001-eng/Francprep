@@ -97,8 +97,10 @@ export function speak(
     }),
   })
     .then(async (res) => {
+      if (myDialogueId !== currentDialogueId) return;
       if (res.ok) {
         const json = await res.json();
+        if (myDialogueId !== currentDialogueId) return;
         if (json.success && json.data?.audioUrl) {
           if (json.data.fallbackActive && typeof window !== "undefined") {
             window.dispatchEvent(
@@ -119,6 +121,7 @@ export function speak(
               src = URL.createObjectURL(blob);
             }
           }
+          if (myDialogueId !== currentDialogueId) return;
           audio.src = src;
           audio.preservesPitch = true;
           (audio as any).webkitPreservesPitch = true;
@@ -133,18 +136,29 @@ export function speak(
           };
           audio.playbackRate = rate;
           audio.play().then(() => {
+            if (myDialogueId !== currentDialogueId) {
+              audio.pause();
+              audio.src = "";
+              return;
+            }
             audio.playbackRate = rate;
             audio.preservesPitch = true;
           }).catch(() => {
-            playDirectHDFallback(cleanText, langCode, rate, audio, finalGender);
+            if (myDialogueId === currentDialogueId) {
+              playDirectHDFallback(cleanText, langCode, rate, audio, finalGender);
+            }
           });
           return;
         }
       }
-      playDirectHDFallback(cleanText, langCode, rate, audio, finalGender);
+      if (myDialogueId === currentDialogueId) {
+        playDirectHDFallback(cleanText, langCode, rate, audio, finalGender);
+      }
     })
     .catch(() => {
-      playDirectHDFallback(cleanText, langCode, rate, audio, finalGender);
+      if (myDialogueId === currentDialogueId) {
+        playDirectHDFallback(cleanText, langCode, rate, audio, finalGender);
+      }
     });
 
   return true;
@@ -450,8 +464,10 @@ export function speakDialogue(
       }),
     })
       .then(async (res) => {
+        if (myDialogueId !== currentDialogueId) return;
         if (res.ok) {
           const json = await res.json();
+          if (myDialogueId !== currentDialogueId) return;
           if (json.success && json.data?.audioUrl) {
             let src = json.data.audioUrl;
             if (src.startsWith("data:audio/")) {
@@ -462,6 +478,7 @@ export function speakDialogue(
                 src = URL.createObjectURL(blob);
               }
             }
+            if (myDialogueId !== currentDialogueId) return;
             audio.src = src;
             audio.preservesPitch = true;
             (audio as any).webkitPreservesPitch = true;
@@ -476,18 +493,29 @@ export function speakDialogue(
             };
             audio.playbackRate = rate;
             audio.play().then(() => {
+              if (myDialogueId !== currentDialogueId) {
+                audio.pause();
+                audio.src = "";
+                return;
+              }
               audio.playbackRate = rate;
               audio.preservesPitch = true;
             }).catch(() => {
-              playDirectHDFallback(current.text, langCode, rate, audio);
+              if (myDialogueId === currentDialogueId) {
+                playDirectHDFallback(current.text, langCode, rate, audio);
+              }
             });
             return;
           }
         }
-        playDirectHDFallback(current.text, langCode, rate, audio);
+        if (myDialogueId === currentDialogueId) {
+          playDirectHDFallback(current.text, langCode, rate, audio);
+        }
       })
       .catch(() => {
-        playDirectHDFallback(current.text, langCode, rate, audio);
+        if (myDialogueId === currentDialogueId) {
+          playDirectHDFallback(current.text, langCode, rate, audio);
+        }
       });
   }
 
