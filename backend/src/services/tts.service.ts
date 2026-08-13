@@ -15,7 +15,8 @@ export async function generateNeuralAudio(
   forcedProvider?: string,
   forcedVoiceId?: string,
   tempKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string },
-  speakingRate: number = 1.0
+  speakingRate: number = 1.0,
+  speaker?: string
 ): Promise<{ audioBase64: string; contentType: string; provider: string } | null> {
   const cleanText = text.trim();
   if (!cleanText) return null;
@@ -27,13 +28,24 @@ export async function generateNeuralAudio(
 
   const activeProvider = forcedProvider || settings?.preferredVoiceEngine || settings?.activeTTSProvider || 'auto';
 
-  // Determine active voice ID based on provider & gender
+  // Determine active voice ID based on provider, gender, and speaker persona tag
+  const lowerSpeaker = (speaker || '').toLowerCase();
   let targetVoiceId = forcedVoiceId || '';
   if (!targetVoiceId) {
-    if (activeProvider === 'elevenlabs') {
-      targetVoiceId = gender === 'male'
-        ? (settings?.selectedElevenLabsMaleVoice || 'ErXwobaYiN019PkySvjV')
-        : (settings?.selectedElevenLabsFemaleVoice || '21m00Tcm4TlvDq8ikWAM');
+    if (activeProvider === 'elevenlabs' || activeProvider === 'auto') {
+      if (lowerSpeaker.includes('annonceuse')) {
+        targetVoiceId = 'EXAVITQu4vr4xnSDxMaL'; // Official French Female Announcer
+      } else if (lowerSpeaker.includes('annonceur') || lowerSpeaker.includes('examinateur')) {
+        targetVoiceId = 'ErXwobaYiN019PkySvjV'; // Official French Male Announcer
+      } else if (lowerSpeaker.includes('locuteur 2') || lowerSpeaker.includes('homme 2')) {
+        targetVoiceId = 'VR6AewLTigWG4xSOukaG'; // Leo (Interlocutor Male 2)
+      } else if (lowerSpeaker.includes('locutrice 2') || lowerSpeaker.includes('femme 2')) {
+        targetVoiceId = '21m00Tcm4TlvDq8ikWAM'; // Rachel (Interlocutor Female 2)
+      } else if (gender === 'male' || lowerSpeaker.includes('locuteur') || lowerSpeaker.includes('homme')) {
+        targetVoiceId = settings?.selectedElevenLabsMaleVoice || 'ONwBz21w4p8b7X1s5kL0'; // Henri (Native French Male 1)
+      } else {
+        targetVoiceId = settings?.selectedElevenLabsFemaleVoice || 'XB0fDUnXU5powctDhC70'; // Charlotte (Native French Female 1)
+      }
     } else if (activeProvider === 'openai') {
       targetVoiceId = gender === 'male'
         ? (settings?.selectedOpenAIMaleVoice || 'onyx')

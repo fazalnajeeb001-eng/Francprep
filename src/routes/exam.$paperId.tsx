@@ -840,7 +840,7 @@ export function AuthenticCBTExamPage() {
         const currentSession = playAudioSessionRef.current;
         const timer = setTimeout(() => {
           if (playAudioSessionRef.current !== currentSession) return;
-          ttsSpeakListening(fullText, qNum, "fr-FR", rate, undefined, () => {
+          ttsSpeakListening(fullText, "fr-FR", rate, "female", () => {
             if (playAudioSessionRef.current === currentSession) {
               setIsAudioFinished(true);
             }
@@ -863,7 +863,7 @@ export function AuthenticCBTExamPage() {
     if (playAudioSessionRef.current !== sessionId) return;
 
     const fullTextToPlay = currentQ?.transcript || text;
-    ttsSpeakListening(fullTextToPlay, qNum, lang, rate, undefined, () => {
+    ttsSpeakListening(fullTextToPlay, lang, rate, "female", () => {
       if (playAudioSessionRef.current === sessionId) {
         setIsAudioFinished(true);
       }
