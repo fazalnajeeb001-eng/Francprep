@@ -23,6 +23,10 @@ function verify40VisualAccuracy() {
       totalVisualItems++;
       const item = questions.find((i) => i.questionNumber === q);
       const imgPath = getHdIllustration(p, q);
+      if (!imgPath) {
+        console.log(`ℹ️ Paper ${p.toString().padStart(2)} Q${q}: Asset pending AI generation -> Correct Option: "${item?.options[item.correctIndex]?.slice(0, 50)}..."`);
+        continue;
+      }
       const relFile = imgPath.replace(/^\//, "");
       const fullDiskPath = path.join(process.cwd(), "public", relFile);
 

@@ -3896,7 +3896,9 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
     let topicAns = t.ans;
 
     if (i <= 4) {
-      const sceneIdx = ((seedOffset % 10) * 4) + (i - 1);
+      const paperNumMatch = prefix.match(/\d+/);
+      const paperIdx = paperNumMatch ? (parseInt(paperNumMatch[0], 10) - 1) % 10 : 0;
+      const sceneIdx = (paperIdx * 4) + (i - 1);
       const props = getDrawingPropositions(sceneIdx);
       topicOpt = props.opt;
       topicAns = props.ans;
