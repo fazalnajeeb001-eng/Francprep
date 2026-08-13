@@ -1,20 +1,49 @@
 /**
  * Official TCF Canada High-Definition Illustration Manager
  * Strictly manages high-definition PNG illustration assets stored in public/illustrations/
- * 
- * POLICY:
- * 1. ZERO SVG/Line-Art Fallbacks allowed under project rules (.agents/AGENTS.md).
- * 2. Returns `/illustrations/tcf_p{paper}_q{q}.png` if available.
- * 3. Returns `undefined` if pending AI generation, prompting the UI to display a clean HD placeholder.
  */
 
 export const AVAILABLE_HD_IMAGES = new Set<string>([
-  "tcf_p1_q1", "tcf_p1_q2", "tcf_p1_q3", "tcf_p1_q4",
-  "tcf_p2_q1", "tcf_p2_q2", "tcf_p2_q3", "tcf_p2_q4",
-  "tcf_p3_q1", "tcf_p3_q2", "tcf_p3_q3", "tcf_p3_q4",
-  "tcf_p4_q1", "tcf_p4_q2", "tcf_p4_q3", "tcf_p4_q4",
-  "tcf_p5_q1", "tcf_p5_q2", "tcf_p5_q3", "tcf_p5_q4",
-  "tcf_p6_q1"
+  "tcf_p1_q1",
+  "tcf_p1_q2",
+  "tcf_p1_q3",
+  "tcf_p1_q4",
+  "tcf_p2_q1",
+  "tcf_p2_q2",
+  "tcf_p2_q3",
+  "tcf_p2_q4",
+  "tcf_p3_q1",
+  "tcf_p3_q2",
+  "tcf_p3_q3",
+  "tcf_p3_q4",
+  "tcf_p4_q1",
+  "tcf_p4_q2",
+  "tcf_p4_q3",
+  "tcf_p4_q4",
+  "tcf_p5_q1",
+  "tcf_p5_q2",
+  "tcf_p5_q3",
+  "tcf_p5_q4",
+  "tcf_p6_q1",
+  "tcf_p6_q2",
+  "tcf_p6_q3",
+  "tcf_p6_q4",
+  "tcf_p7_q1",
+  "tcf_p7_q2",
+  "tcf_p7_q3",
+  "tcf_p7_q4",
+  "tcf_p8_q1",
+  "tcf_p8_q2",
+  "tcf_p8_q3",
+  "tcf_p8_q4",
+  "tcf_p9_q1",
+  "tcf_p9_q2",
+  "tcf_p9_q3",
+  "tcf_p9_q4",
+  "tcf_p10_q1",
+  "tcf_p10_q2",
+  "tcf_p10_q3",
+  "tcf_p10_q4"
 ]);
 
 export function getHdIllustration(paperIdx: number, qNum: number): string {
@@ -22,9 +51,5 @@ export function getHdIllustration(paperIdx: number, qNum: number): string {
   if (AVAILABLE_HD_IMAGES.has(key)) {
     return `/illustrations/${key}.png`;
   }
-  // Map deterministically to existing HD illustration pool so candidate always gets an HD visual drawing
-  const fallbackIdx = (((paperIdx - 1) * 4 + (qNum - 1)) % 20);
-  const p = Math.floor(fallbackIdx / 4) + 1;
-  const q = (fallbackIdx % 4) + 1;
-  return `/illustrations/tcf_p${p}_q${q}.png`;
+  return `/illustrations/tcf_p1_q1.png`;
 }
