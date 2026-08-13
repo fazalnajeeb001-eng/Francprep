@@ -197,11 +197,20 @@ function playDirectHDFallback(text: string, langCode: string, rate: number, audi
           }
           audio.src = src;
           audio.playbackRate = rate;
-          audio.play().catch(() => {});
+          audio.play().catch(() => {
+            // Trigger onended manually if autoplay was blocked so next lines continue
+            if (audio.onended) (audio.onended as any)(new Event("ended"));
+          });
+        } else {
+          if (audio.onended) (audio.onended as any)(new Event("ended"));
         }
+      } else {
+        if (audio.onended) (audio.onended as any)(new Event("ended"));
       }
     })
-    .catch(() => {});
+    .catch(() => {
+      if (audio.onended) (audio.onended as any)(new Event("ended"));
+    });
 }
 
 function speakWebSpeech(text: string, langCode: string, rate: number, gender: "female" | "male" = "female") {
