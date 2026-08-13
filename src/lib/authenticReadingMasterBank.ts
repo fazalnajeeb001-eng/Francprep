@@ -2,6 +2,7 @@
  * Official TCF Canada Reading Comprehension Master Bank
  * 390 100% Unique, Original, Calibrated Questions (10 Papers x 39 Questions)
  * Strictly adheres to CEFR Levels A1, A2, B1, B2, C1, C2 and NCLC 3-10+ standards.
+ * Guaranteed 100% pure English translations (zero French leaks).
  */
 
 export interface ReadingItem {
@@ -30,9 +31,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Montréal ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant fruits et légumes locaux à Montréal","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Montréal) — Horaires de marché: fruits et légumes locaux within the community of Montréal. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Montréal?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding fruits et légumes locaux in Montréal","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Montreal) — Market Opening Hours: local fresh fruits and vegetables within the community of Montreal. Practical details, access guidelines, and opening hours available from municipal administrative offices in Montreal.",
+      qEn: "What is the primary purpose of this public document posted in Montreal?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding local fresh fruits and vegetables in Montreal","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 1,
@@ -43,9 +44,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Montréal ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant travaux d'entretien des bassins à Montréal","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Montréal) — Fermeture temporaire de piscine: travaux d'entretien des bassins within the community of Montréal. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Montréal?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding travaux d'entretien des bassins in Montréal","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Montreal) — Temporary Pool Closure: pool basin maintenance and cleaning within the community of Montreal. Practical details, access guidelines, and opening hours available from municipal administrative offices in Montreal.",
+      qEn: "What is the primary purpose of this public document posted in Montreal?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding pool basin maintenance and cleaning in Montreal","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 1,
@@ -56,9 +57,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Montréal ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant révision d'examen et prêt de livres à Montréal","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Montréal) — Rendez-vous à la bibliothèque: révision d'examen et prêt de livres within the community of Montréal. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Montréal?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding révision d'examen et prêt de livres in Montréal","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Montreal) — Library Study Meeting: exam revision and book lending within the community of Montreal. Practical details, access guidelines, and opening hours available from municipal administrative offices in Montreal.",
+      qEn: "What is the primary purpose of this public document posted in Montreal?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding exam revision and book lending in Montreal","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 1,
@@ -69,9 +70,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Montréal ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant viennoiseries offertes le matin à Montréal","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Montréal) — Boulangerie artisanale: viennoiseries offertes le matin within the community of Montréal. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Montréal?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding viennoiseries offertes le matin in Montréal","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Montreal) — Artisanal Bakery: complimentary morning pastries within the community of Montreal. Practical details, access guidelines, and opening hours available from municipal administrative offices in Montreal.",
+      qEn: "What is the primary purpose of this public document posted in Montreal?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding complimentary morning pastries in Montreal","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 1,
@@ -82,9 +83,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Montréal ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant bureau des objets trouvés à Montréal","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Montréal) — Clés trouvées dans le métro: bureau des objets trouvés within the community of Montréal. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Montréal?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding bureau des objets trouvés in Montréal","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Montreal) — Keys Found in Subway: lost and found claims office within the community of Montreal. Practical details, access guidelines, and opening hours available from municipal administrative offices in Montreal.",
+      qEn: "What is the primary purpose of this public document posted in Montreal?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding lost and found claims office in Montreal","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 1,
@@ -95,9 +96,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Montréal ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant vêtements et jouets d'occasion au parc à Montréal","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Montréal) — Vente de quartier: vêtements et jouets d'occasion au parc within the community of Montréal. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Montréal?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding vêtements et jouets d'occasion au parc in Montréal","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Montreal) — Neighborhood Garage Sale: second-hand clothing and toys at the park within the community of Montreal. Practical details, access guidelines, and opening hours available from municipal administrative offices in Montreal.",
+      qEn: "What is the primary purpose of this public document posted in Montreal?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding second-hand clothing and toys at the park in Montreal","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 1,
@@ -108,9 +109,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Montréal ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant rencontre de début de saison au parc à Montréal","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Montréal) — Pique-nique associatif: rencontre de début de saison au parc within the community of Montréal. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Montréal?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding rencontre de début de saison au parc in Montréal","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Montreal) — Community Picnic: seasonal kickoff gathering at the park within the community of Montreal. Practical details, access guidelines, and opening hours available from municipal administrative offices in Montreal.",
+      qEn: "What is the primary purpose of this public document posted in Montreal?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding seasonal kickoff gathering at the park in Montreal","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 1,
@@ -121,9 +122,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Montréal ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant temps partiel et accueil clientèle à Montréal","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Montréal) — Conseiller de vente en librairie: temps partiel et accueil clientèle organized by Hydro-Québec in Montréal. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Montréal?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning temps partiel et accueil clientèle in Montréal","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Montreal) — Bookstore Sales Advisor: part-time employment and customer service organized by Hydro-Quebec in Montreal. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Montreal?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning part-time employment and customer service in Montreal","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 1,
@@ -134,9 +135,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Montréal ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant logement rénové proche transports à Montréal","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Montréal) — Location d'appartement: logement rénové proche transports organized by Hydro-Québec in Montréal. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Montréal?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning logement rénové proche transports in Montréal","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Montreal) — Apartment Rental: renovated housing near transit organized by Hydro-Quebec in Montreal. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Montreal?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning renovated housing near transit in Montreal","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 1,
@@ -147,9 +148,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Montréal ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant accès par badge magnétique à Montréal","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Montréal) — Règlement du parking d'entreprise: accès par badge magnétique organized by Hydro-Québec in Montréal. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Montréal?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning accès par badge magnétique in Montréal","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Montreal) — Company Parking Lot Policy: magnetic badge access control organized by Hydro-Quebec in Montreal. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Montreal?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning magnetic badge access control in Montreal","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 1,
@@ -160,9 +161,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Montréal ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant parcours pédestre avec guide certifié à Montréal","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Montréal) — Visite guidée historique: parcours pédestre avec guide certifié organized by Hydro-Québec in Montréal. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Montréal?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning parcours pédestre avec guide certifié in Montréal","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Montreal) — Historical Guided Tour: walking itinerary with a certified guide organized by Hydro-Quebec in Montreal. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Montreal?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning walking itinerary with a certified guide in Montreal","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 1,
@@ -173,9 +174,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Montréal ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant plat du jour et dessert maison à Montréal","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Montréal) — Formule midi du chef: plat du jour et dessert maison organized by Hydro-Québec in Montréal. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Montréal?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning plat du jour et dessert maison in Montréal","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Montreal) — Chef's Lunch Special: daily main course and homemade dessert organized by Hydro-Quebec in Montreal. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Montreal?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning daily main course and homemade dessert in Montreal","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 1,
@@ -186,9 +187,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Montréal ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant demande de créneau horaire de livraison à Montréal","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Montréal) — Suivi de livraison de colis: demande de créneau horaire de livraison organized by Hydro-Québec in Montréal. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Montréal?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning demande de créneau horaire de livraison in Montréal","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Montreal) — Parcel Delivery Tracking: request for carrier delivery timeslot organized by Hydro-Quebec in Montreal. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Montreal?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning request for carrier delivery timeslot in Montreal","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 1,
@@ -199,9 +200,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Montréal ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant séance du samedi matin à Montréal","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Montréal) — Atelier de yoga pour débutants: séance du samedi matin organized by Hydro-Québec in Montréal. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Montréal?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning séance du samedi matin in Montréal","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Montreal) — Beginner Yoga Workshop: Saturday morning practice session organized by Hydro-Quebec in Montreal. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Montreal?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning Saturday morning practice session in Montreal","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 1,
@@ -212,9 +213,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Montréal ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant renouvellement de prêt en ligne à Montréal","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Montréal) — Conditions d'emprunt: renouvellement de prêt en ligne organized by Hydro-Québec in Montréal. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Montréal?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning renouvellement de prêt en ligne in Montréal","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Montreal) — Borrowing Terms: online book loan renewals organized by Hydro-Quebec in Montreal. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Montreal?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning online book loan renewals in Montreal","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 1,
@@ -225,9 +226,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant réduction des déchets municipaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Devoir) — Tri sélectif et compostage urbain: In the Montréal region, the initiative focusing on réduction des déchets municipaux is generating growing interest. According to actors at Université de Montréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Devoir, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning réduction des déchets municipaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Devoir Newspaper) — Waste Sorting and Urban Composting: In the Montreal region, this public initiative centered on municipal waste reduction targets is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing municipal waste reduction targets despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 1,
@@ -238,9 +239,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant équilibre vie professionnelle et personnelle malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Devoir) — Modèle de télétravail hybride: In the Montréal region, the initiative focusing on équilibre vie professionnelle et personnelle is generating growing interest. According to actors at Université de Montréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Devoir, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning équilibre vie professionnelle et personnelle despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Devoir Newspaper) — Hybrid Telecommuting Model: In the Montreal region, this public initiative centered on work-life balance and productivity is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing work-life balance and productivity despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 1,
@@ -251,9 +252,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant produits frais riches en antioxydants malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Devoir) — Alimentation de saison et immunité: In the Montréal region, the initiative focusing on produits frais riches en antioxydants is generating growing interest. According to actors at Université de Montréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Devoir, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning produits frais riches en antioxydants despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Devoir Newspaper) — Seasonal Nutrition and Immunity: In the Montreal region, this public initiative centered on fresh produce rich in antioxidants is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fresh produce rich in antioxidants despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 1,
@@ -264,9 +265,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant prolongation de la durée de vie du matériel malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Devoir) — Réparabilité des appareils électroniques: In the Montréal region, the initiative focusing on prolongation de la durée de vie du matériel is generating growing interest. According to actors at Université de Montréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Devoir, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning prolongation de la durée de vie du matériel despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Devoir Newspaper) — Electronic Device Repairability: In the Montreal region, this public initiative centered on extending equipment lifespan through repair is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing extending equipment lifespan through repair despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 1,
@@ -277,9 +278,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant hausse des déplacements à vélo à l'heure de pointe malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Devoir) — Nouveau réseau cyclable sécurisé: In the Montréal region, the initiative focusing on hausse des déplacements à vélo à l'heure de pointe is generating growing interest. According to actors at Université de Montréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Devoir, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning hausse des déplacements à vélo à l'heure de pointe despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Devoir Newspaper) — Protected Express Cycling Network: In the Montreal region, this public initiative centered on growth in rush-hour bicycle commuting is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing growth in rush-hour bicycle commuting despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 1,
@@ -290,9 +291,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant justesse de l'interprétation des comédiens malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Devoir) — Nouvelle pièce de théâtre contemporaine: In the Montréal region, the initiative focusing on justesse de l'interprétation des comédiens is generating growing interest. According to actors at Université de Montréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Devoir, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning justesse de l'interprétation des comédiens despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Devoir Newspaper) — Contemporary Theatrical Play: In the Montreal region, this public initiative centered on accuracy of actor performances and staging is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing accuracy of actor performances and staging despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 1,
@@ -303,9 +304,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant valorisation du travail des éleveurs locaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Devoir) — Coopérative fromagère et vente directe: In the Montréal region, the initiative focusing on valorisation du travail des éleveurs locaux is generating growing interest. According to actors at Université de Montréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Devoir, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning valorisation du travail des éleveurs locaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Devoir Newspaper) — Dairy Farming Cooperative and Direct Sales: In the Montreal region, this public initiative centered on fair financial compensation for local farmers is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fair financial compensation for local farmers despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 1,
@@ -316,9 +317,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant formation continue pour professionnels en reconversion malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Devoir) — Microprogrammes certifiants en ligne: In the Montréal region, the initiative focusing on formation continue pour professionnels en reconversion is generating growing interest. According to actors at Université de Montréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Devoir, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning formation continue pour professionnels en reconversion despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Devoir Newspaper) — Online Certifying Microprograms: In the Montreal region, this public initiative centered on continuing education for working professionals is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing continuing education for working professionals despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 1,
@@ -329,9 +330,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant relecture humaine nécessaire des sources malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Devoir) — Intelligence artificielle dans les cabinets juridiques: In the Montréal region, the initiative focusing on relecture humaine nécessaire des sources is generating growing interest. According to actors at Université de Montréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Devoir, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning relecture humaine nécessaire des sources despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Devoir Newspaper) — Artificial Intelligence in Legal Practice: In the Montreal region, this public initiative centered on rigorous human verification of cited legal sources is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing rigorous human verification of cited legal sources despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 1,
@@ -342,9 +343,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant parrainage entre étudiants et aînés malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Devoir) — Réseau d'entraide intergénérationnel: In the Montréal region, the initiative focusing on parrainage entre étudiants et aînés is generating growing interest. According to actors at Université de Montréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Devoir, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning parrainage entre étudiants et aînés despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Devoir Newspaper) — Intergenerational Mentorship Network: In the Montreal region, this public initiative centered on pairing university students with senior citizens is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing pairing university students with senior citizens despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 1,
@@ -355,9 +356,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de économie circulaire et éco-conception ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter responsabilité des industriels et réparabilité","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Devoir) — Économie circulaire et éco-conception: In-depth analysis conducted by researchers at Université de Montréal emphasizes that the issue of responsabilité des industriels et réparabilité cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding économie circulaire et éco-conception?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address responsabilité des industriels et réparabilité","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Devoir Newspaper) — Circular Economy and Eco-Design: In-depth analysis by academic researchers at University of Montreal underscores that the critical challenge of corporate manufacturing responsibility and repairability cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding circular economy and eco-design?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve corporate manufacturing responsibility and repairability","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 1,
@@ -368,9 +369,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de quête de sens chez les jeunes diplômés ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter impact sociétal et flexibilité professionnelle","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Devoir) — Quête de sens chez les jeunes diplômés: In-depth analysis conducted by researchers at Université de Montréal emphasizes that the issue of impact sociétal et flexibilité professionnelle cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding quête de sens chez les jeunes diplômés?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address impact sociétal et flexibilité professionnelle","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Devoir Newspaper) — Search for Meaning Among Recent Graduates: In-depth analysis by academic researchers at University of Montreal underscores that the critical challenge of societal impact and workplace schedule flexibility cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding search for meaning among recent graduates?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve societal impact and workplace schedule flexibility","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 1,
@@ -381,9 +382,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de déploiement des parcs éoliens ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter arbitrage entre urgence climatique et concertation locale","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Devoir) — Déploiement des parcs éoliens: In-depth analysis conducted by researchers at Université de Montréal emphasizes that the issue of arbitrage entre urgence climatique et concertation locale cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding déploiement des parcs éoliens?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address arbitrage entre urgence climatique et concertation locale","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Devoir Newspaper) — Renewable Wind Energy Deployment: In-depth analysis by academic researchers at University of Montreal underscores that the critical challenge of balancing climate urgency with local community consent cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding renewable wind energy deployment?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve balancing climate urgency with local community consent","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 1,
@@ -394,9 +395,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de ia générative dans l'enseignement supérieur ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter déplacement de l'évaluation vers l'analyse critique","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Devoir) — IA générative dans l'enseignement supérieur: In-depth analysis conducted by researchers at Université de Montréal emphasizes that the issue of déplacement de l'évaluation vers l'analyse critique cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding ia générative dans l'enseignement supérieur?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address déplacement de l'évaluation vers l'analyse critique","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Devoir Newspaper) — Generative AI in Higher Education: In-depth analysis by academic researchers at University of Montreal underscores that the critical challenge of shifting assessment toward critical reflexive analysis cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding generative ai in higher education?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve shifting assessment toward critical reflexive analysis","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 1,
@@ -407,9 +408,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de densification urbaine et patrimoine bâti ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter réhabilitation écologique des bâtiments historiques","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Devoir) — Densification urbaine et patrimoine bâti: In-depth analysis conducted by researchers at Université de Montréal emphasizes that the issue of réhabilitation écologique des bâtiments historiques cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding densification urbaine et patrimoine bâti?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address réhabilitation écologique des bâtiments historiques","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Devoir Newspaper) — Urban Densification and Built Heritage: In-depth analysis by academic researchers at University of Montreal underscores that the critical challenge of sustainable ecological rehabilitation of historic edifices cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding urban densification and built heritage?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve sustainable ecological rehabilitation of historic edifices","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 1,
@@ -420,9 +421,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de préservation de la biodiversité marine ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter contrôle des pollutions terrestres en amont","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Devoir) — Préservation de la biodiversité marine: In-depth analysis conducted by researchers at Université de Montréal emphasizes that the issue of contrôle des pollutions terrestres en amont cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding préservation de la biodiversité marine?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address contrôle des pollutions terrestres en amont","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Devoir Newspaper) — Marine Biodiversity Conservation: In-depth analysis by academic researchers at University of Montreal underscores that the critical challenge of strict control of upstream land-based pollution runoff cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding marine biodiversity conservation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve strict control of upstream land-based pollution runoff","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 1,
@@ -433,9 +434,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de éducation à l'esprit critique et désinformation ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter préservation du débat public fondé sur des faits","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Devoir) — Éducation à l'esprit critique et désinformation: In-depth analysis conducted by researchers at Université de Montréal emphasizes that the issue of préservation du débat public fondé sur des faits cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding éducation à l'esprit critique et désinformation?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address préservation du débat public fondé sur des faits","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Devoir Newspaper) — Critical Thinking and Combating Disinformation: In-depth analysis by academic researchers at University of Montreal underscores that the critical challenge of safeguarding fact-based democratic public discourse cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding critical thinking and combating disinformation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve safeguarding fact-based democratic public discourse","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 1,
@@ -446,9 +447,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de priorité à la médecine préventive ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter investissement précoce dans le dépistage et l'alimentation","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Devoir) — Priorité à la médecine préventive: In-depth analysis conducted by researchers at Université de Montréal emphasizes that the issue of investissement précoce dans le dépistage et l'alimentation cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding priorité à la médecine préventive?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address investissement précoce dans le dépistage et l'alimentation","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Devoir Newspaper) — Prioritizing Preventative Healthcare: In-depth analysis by academic researchers at University of Montreal underscores that the critical challenge of early investment in disease screening and wholesome nutrition cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding prioritizing preventative healthcare?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve early investment in disease screening and wholesome nutrition","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 1,
@@ -459,9 +460,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à érosion de la lenteur nécessaire à la maturation de la pensée","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université de Montréal) — Temporalité et culte de l'instantanéité: In this essay written in Montréal, the author explores the conceptual significance of érosion de la lenteur nécessaire à la maturation de la pensée. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding érosion de la lenteur nécessaire à la maturation de la pensée","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Montreal) — Temporality and the Cult of Instantaneity: In this philosophical essay composed in Montreal, the author investigates the conceptual implications of erosion of the contemplative stillness essential for thought maturation. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding erosion of the contemplative stillness essential for thought maturation","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 1,
@@ -472,9 +473,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à densité poétique et tension métaphorique du récit","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université de Montréal) — Esthétique du dépouillement syntaxique: In this essay written in Montréal, the author explores the conceptual significance of densité poétique et tension métaphorique du récit. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding densité poétique et tension métaphorique du récit","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Montreal) — Aesthetics of Syntactic Sobriety: In this philosophical essay composed in Montreal, the author investigates the conceptual implications of poetic density and metaphorical tension in prose. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic density and metaphorical tension in prose","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 1,
@@ -485,9 +486,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à distinction entre inférence statistique et conscience réflexive","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université de Montréal) — Illusion anthropomorphique de l'IA: In this essay written in Montréal, the author explores the conceptual significance of distinction entre inférence statistique et conscience réflexive. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding distinction entre inférence statistique et conscience réflexive","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Montreal) — The Anthropomorphic Illusion of AI: In this philosophical essay composed in Montreal, the author investigates the conceptual implications of distinguishing statistical inference from reflexive human consciousness. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding distinguishing statistical inference from reflexive human consciousness","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 1,
@@ -498,9 +499,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à vitalité des variétés régionales francophones mondiales","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université de Montréal) — Polyphonie pluricentrique de la francophonie: In this essay written in Montréal, the author explores the conceptual significance of vitalité des variétés régionales francophones mondiales. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding vitalité des variétés régionales francophones mondiales","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Montreal) — Pluricentric Polyphony of the Francophonie: In this philosophical essay composed in Montreal, the author investigates the conceptual implications of the vitality of global regional Francophone varieties. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding the vitality of global regional Francophone varieties","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 1,
@@ -511,9 +512,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à subversion poétique et révélation des tensions politiques","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université de Montréal) — L'art contemporain dans l'espace public: In this essay written in Montréal, the author explores the conceptual significance of subversion poétique et révélation des tensions politiques. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding subversion poétique et révélation des tensions politiques","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Montreal) — Contemporary Art in Civic Spaces: In this philosophical essay composed in Montreal, the author investigates the conceptual implications of poetic subversion and unmasking political civic tensions. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic subversion and unmasking political civic tensions","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 1,
@@ -524,9 +525,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à sélection axiologique et projection communautaire vers l'avenir","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université de Montréal) — Symbolique projective de la mémoire collective: In this essay written in Montréal, the author explores the conceptual significance of sélection axiologique et projection communautaire vers l'avenir. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding sélection axiologique et projection communautaire vers l'avenir","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Montreal) — Projective Symbolics of Collective Memory: In this philosophical essay composed in Montreal, the author investigates the conceptual implications of axiological selection and community projection toward the future. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding axiological selection and community projection toward the future","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
   ],
   // ==================== 📄 PAPER 2 (39 UNIQUE ITEMS) ====================
@@ -540,9 +541,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Québec ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant fruits et légumes locaux à Québec","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Québec) — Horaires de marché: fruits et légumes locaux within the community of Québec. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Québec?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding fruits et légumes locaux in Québec","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Quebec City) — Market Opening Hours: local fresh fruits and vegetables within the community of Quebec City. Practical details, access guidelines, and opening hours available from municipal administrative offices in Quebec City.",
+      qEn: "What is the primary purpose of this public document posted in Quebec City?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding local fresh fruits and vegetables in Quebec City","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 2,
@@ -553,9 +554,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Québec ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant travaux d'entretien des bassins à Québec","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Québec) — Fermeture temporaire de piscine: travaux d'entretien des bassins within the community of Québec. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Québec?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding travaux d'entretien des bassins in Québec","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Quebec City) — Temporary Pool Closure: pool basin maintenance and cleaning within the community of Quebec City. Practical details, access guidelines, and opening hours available from municipal administrative offices in Quebec City.",
+      qEn: "What is the primary purpose of this public document posted in Quebec City?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding pool basin maintenance and cleaning in Quebec City","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 2,
@@ -566,9 +567,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Québec ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant révision d'examen et prêt de livres à Québec","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Québec) — Rendez-vous à la bibliothèque: révision d'examen et prêt de livres within the community of Québec. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Québec?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding révision d'examen et prêt de livres in Québec","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Quebec City) — Library Study Meeting: exam revision and book lending within the community of Quebec City. Practical details, access guidelines, and opening hours available from municipal administrative offices in Quebec City.",
+      qEn: "What is the primary purpose of this public document posted in Quebec City?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding exam revision and book lending in Quebec City","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 2,
@@ -579,9 +580,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Québec ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant viennoiseries offertes le matin à Québec","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Québec) — Boulangerie artisanale: viennoiseries offertes le matin within the community of Québec. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Québec?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding viennoiseries offertes le matin in Québec","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Quebec City) — Artisanal Bakery: complimentary morning pastries within the community of Quebec City. Practical details, access guidelines, and opening hours available from municipal administrative offices in Quebec City.",
+      qEn: "What is the primary purpose of this public document posted in Quebec City?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding complimentary morning pastries in Quebec City","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 2,
@@ -592,9 +593,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Québec ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant bureau des objets trouvés à Québec","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Québec) — Clés trouvées dans le métro: bureau des objets trouvés within the community of Québec. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Québec?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding bureau des objets trouvés in Québec","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Quebec City) — Keys Found in Subway: lost and found claims office within the community of Quebec City. Practical details, access guidelines, and opening hours available from municipal administrative offices in Quebec City.",
+      qEn: "What is the primary purpose of this public document posted in Quebec City?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding lost and found claims office in Quebec City","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 2,
@@ -605,9 +606,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Québec ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant vêtements et jouets d'occasion au parc à Québec","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Québec) — Vente de quartier: vêtements et jouets d'occasion au parc within the community of Québec. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Québec?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding vêtements et jouets d'occasion au parc in Québec","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Quebec City) — Neighborhood Garage Sale: second-hand clothing and toys at the park within the community of Quebec City. Practical details, access guidelines, and opening hours available from municipal administrative offices in Quebec City.",
+      qEn: "What is the primary purpose of this public document posted in Quebec City?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding second-hand clothing and toys at the park in Quebec City","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 2,
@@ -618,9 +619,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Québec ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant rencontre de début de saison au parc à Québec","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Québec) — Pique-nique associatif: rencontre de début de saison au parc within the community of Québec. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Québec?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding rencontre de début de saison au parc in Québec","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Quebec City) — Community Picnic: seasonal kickoff gathering at the park within the community of Quebec City. Practical details, access guidelines, and opening hours available from municipal administrative offices in Quebec City.",
+      qEn: "What is the primary purpose of this public document posted in Quebec City?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding seasonal kickoff gathering at the park in Quebec City","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 2,
@@ -631,9 +632,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Québec ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant temps partiel et accueil clientèle à Québec","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Québec) — Conseiller de vente en librairie: temps partiel et accueil clientèle organized by Desjardins in Québec. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Québec?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning temps partiel et accueil clientèle in Québec","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Quebec City) — Bookstore Sales Advisor: part-time employment and customer service organized by Desjardins Group in Quebec City. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Quebec City?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning part-time employment and customer service in Quebec City","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 2,
@@ -644,9 +645,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Québec ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant logement rénové proche transports à Québec","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Québec) — Location d'appartement: logement rénové proche transports organized by Desjardins in Québec. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Québec?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning logement rénové proche transports in Québec","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Quebec City) — Apartment Rental: renovated housing near transit organized by Desjardins Group in Quebec City. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Quebec City?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning renovated housing near transit in Quebec City","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 2,
@@ -657,9 +658,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Québec ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant accès par badge magnétique à Québec","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Québec) — Règlement du parking d'entreprise: accès par badge magnétique organized by Desjardins in Québec. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Québec?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning accès par badge magnétique in Québec","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Quebec City) — Company Parking Lot Policy: magnetic badge access control organized by Desjardins Group in Quebec City. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Quebec City?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning magnetic badge access control in Quebec City","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 2,
@@ -670,9 +671,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Québec ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant parcours pédestre avec guide certifié à Québec","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Québec) — Visite guidée historique: parcours pédestre avec guide certifié organized by Desjardins in Québec. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Québec?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning parcours pédestre avec guide certifié in Québec","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Quebec City) — Historical Guided Tour: walking itinerary with a certified guide organized by Desjardins Group in Quebec City. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Quebec City?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning walking itinerary with a certified guide in Quebec City","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 2,
@@ -683,9 +684,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Québec ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant plat du jour et dessert maison à Québec","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Québec) — Formule midi du chef: plat du jour et dessert maison organized by Desjardins in Québec. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Québec?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning plat du jour et dessert maison in Québec","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Quebec City) — Chef's Lunch Special: daily main course and homemade dessert organized by Desjardins Group in Quebec City. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Quebec City?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning daily main course and homemade dessert in Quebec City","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 2,
@@ -696,9 +697,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Québec ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant demande de créneau horaire de livraison à Québec","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Québec) — Suivi de livraison de colis: demande de créneau horaire de livraison organized by Desjardins in Québec. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Québec?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning demande de créneau horaire de livraison in Québec","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Quebec City) — Parcel Delivery Tracking: request for carrier delivery timeslot organized by Desjardins Group in Quebec City. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Quebec City?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning request for carrier delivery timeslot in Quebec City","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 2,
@@ -709,9 +710,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Québec ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant séance du samedi matin à Québec","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Québec) — Atelier de yoga pour débutants: séance du samedi matin organized by Desjardins in Québec. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Québec?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning séance du samedi matin in Québec","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Quebec City) — Beginner Yoga Workshop: Saturday morning practice session organized by Desjardins Group in Quebec City. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Quebec City?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning Saturday morning practice session in Quebec City","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 2,
@@ -722,9 +723,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Québec ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant renouvellement de prêt en ligne à Québec","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Québec) — Conditions d'emprunt: renouvellement de prêt en ligne organized by Desjardins in Québec. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Québec?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning renouvellement de prêt en ligne in Québec","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Quebec City) — Borrowing Terms: online book loan renewals organized by Desjardins Group in Quebec City. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Quebec City?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning online book loan renewals in Quebec City","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 2,
@@ -735,9 +736,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant réduction des déchets municipaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Soleil) — Tri sélectif et compostage urbain: In the Québec region, the initiative focusing on réduction des déchets municipaux is generating growing interest. According to actors at Université Laval and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Soleil, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning réduction des déchets municipaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Soleil Newspaper) — Waste Sorting and Urban Composting: In the Quebec City region, this public initiative centered on municipal waste reduction targets is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing municipal waste reduction targets despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 2,
@@ -748,9 +749,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant équilibre vie professionnelle et personnelle malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Soleil) — Modèle de télétravail hybride: In the Québec region, the initiative focusing on équilibre vie professionnelle et personnelle is generating growing interest. According to actors at Université Laval and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Soleil, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning équilibre vie professionnelle et personnelle despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Soleil Newspaper) — Hybrid Telecommuting Model: In the Quebec City region, this public initiative centered on work-life balance and productivity is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing work-life balance and productivity despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 2,
@@ -761,9 +762,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant produits frais riches en antioxydants malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Soleil) — Alimentation de saison et immunité: In the Québec region, the initiative focusing on produits frais riches en antioxydants is generating growing interest. According to actors at Université Laval and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Soleil, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning produits frais riches en antioxydants despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Soleil Newspaper) — Seasonal Nutrition and Immunity: In the Quebec City region, this public initiative centered on fresh produce rich in antioxidants is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fresh produce rich in antioxidants despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 2,
@@ -774,9 +775,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant prolongation de la durée de vie du matériel malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Soleil) — Réparabilité des appareils électroniques: In the Québec region, the initiative focusing on prolongation de la durée de vie du matériel is generating growing interest. According to actors at Université Laval and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Soleil, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning prolongation de la durée de vie du matériel despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Soleil Newspaper) — Electronic Device Repairability: In the Quebec City region, this public initiative centered on extending equipment lifespan through repair is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing extending equipment lifespan through repair despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 2,
@@ -787,9 +788,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant hausse des déplacements à vélo à l'heure de pointe malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Soleil) — Nouveau réseau cyclable sécurisé: In the Québec region, the initiative focusing on hausse des déplacements à vélo à l'heure de pointe is generating growing interest. According to actors at Université Laval and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Soleil, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning hausse des déplacements à vélo à l'heure de pointe despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Soleil Newspaper) — Protected Express Cycling Network: In the Quebec City region, this public initiative centered on growth in rush-hour bicycle commuting is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing growth in rush-hour bicycle commuting despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 2,
@@ -800,9 +801,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant justesse de l'interprétation des comédiens malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Soleil) — Nouvelle pièce de théâtre contemporaine: In the Québec region, the initiative focusing on justesse de l'interprétation des comédiens is generating growing interest. According to actors at Université Laval and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Soleil, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning justesse de l'interprétation des comédiens despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Soleil Newspaper) — Contemporary Theatrical Play: In the Quebec City region, this public initiative centered on accuracy of actor performances and staging is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing accuracy of actor performances and staging despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 2,
@@ -813,9 +814,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant valorisation du travail des éleveurs locaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Soleil) — Coopérative fromagère et vente directe: In the Québec region, the initiative focusing on valorisation du travail des éleveurs locaux is generating growing interest. According to actors at Université Laval and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Soleil, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning valorisation du travail des éleveurs locaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Soleil Newspaper) — Dairy Farming Cooperative and Direct Sales: In the Quebec City region, this public initiative centered on fair financial compensation for local farmers is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fair financial compensation for local farmers despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 2,
@@ -826,9 +827,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant formation continue pour professionnels en reconversion malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Soleil) — Microprogrammes certifiants en ligne: In the Québec region, the initiative focusing on formation continue pour professionnels en reconversion is generating growing interest. According to actors at Université Laval and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Soleil, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning formation continue pour professionnels en reconversion despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Soleil Newspaper) — Online Certifying Microprograms: In the Quebec City region, this public initiative centered on continuing education for working professionals is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing continuing education for working professionals despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 2,
@@ -839,9 +840,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant relecture humaine nécessaire des sources malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Soleil) — Intelligence artificielle dans les cabinets juridiques: In the Québec region, the initiative focusing on relecture humaine nécessaire des sources is generating growing interest. According to actors at Université Laval and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Soleil, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning relecture humaine nécessaire des sources despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Soleil Newspaper) — Artificial Intelligence in Legal Practice: In the Quebec City region, this public initiative centered on rigorous human verification of cited legal sources is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing rigorous human verification of cited legal sources despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 2,
@@ -852,9 +853,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant parrainage entre étudiants et aînés malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Soleil) — Réseau d'entraide intergénérationnel: In the Québec region, the initiative focusing on parrainage entre étudiants et aînés is generating growing interest. According to actors at Université Laval and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Soleil, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning parrainage entre étudiants et aînés despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Soleil Newspaper) — Intergenerational Mentorship Network: In the Quebec City region, this public initiative centered on pairing university students with senior citizens is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing pairing university students with senior citizens despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 2,
@@ -865,9 +866,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de économie circulaire et éco-conception ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter responsabilité des industriels et réparabilité","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Soleil) — Économie circulaire et éco-conception: In-depth analysis conducted by researchers at Université Laval emphasizes that the issue of responsabilité des industriels et réparabilité cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding économie circulaire et éco-conception?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address responsabilité des industriels et réparabilité","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Soleil Newspaper) — Circular Economy and Eco-Design: In-depth analysis by academic researchers at Laval University underscores that the critical challenge of corporate manufacturing responsibility and repairability cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding circular economy and eco-design?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve corporate manufacturing responsibility and repairability","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 2,
@@ -878,9 +879,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de quête de sens chez les jeunes diplômés ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter impact sociétal et flexibilité professionnelle","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Soleil) — Quête de sens chez les jeunes diplômés: In-depth analysis conducted by researchers at Université Laval emphasizes that the issue of impact sociétal et flexibilité professionnelle cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding quête de sens chez les jeunes diplômés?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address impact sociétal et flexibilité professionnelle","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Soleil Newspaper) — Search for Meaning Among Recent Graduates: In-depth analysis by academic researchers at Laval University underscores that the critical challenge of societal impact and workplace schedule flexibility cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding search for meaning among recent graduates?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve societal impact and workplace schedule flexibility","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 2,
@@ -891,9 +892,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de déploiement des parcs éoliens ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter arbitrage entre urgence climatique et concertation locale","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Soleil) — Déploiement des parcs éoliens: In-depth analysis conducted by researchers at Université Laval emphasizes that the issue of arbitrage entre urgence climatique et concertation locale cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding déploiement des parcs éoliens?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address arbitrage entre urgence climatique et concertation locale","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Soleil Newspaper) — Renewable Wind Energy Deployment: In-depth analysis by academic researchers at Laval University underscores that the critical challenge of balancing climate urgency with local community consent cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding renewable wind energy deployment?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve balancing climate urgency with local community consent","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 2,
@@ -904,9 +905,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de ia générative dans l'enseignement supérieur ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter déplacement de l'évaluation vers l'analyse critique","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Soleil) — IA générative dans l'enseignement supérieur: In-depth analysis conducted by researchers at Université Laval emphasizes that the issue of déplacement de l'évaluation vers l'analyse critique cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding ia générative dans l'enseignement supérieur?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address déplacement de l'évaluation vers l'analyse critique","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Soleil Newspaper) — Generative AI in Higher Education: In-depth analysis by academic researchers at Laval University underscores that the critical challenge of shifting assessment toward critical reflexive analysis cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding generative ai in higher education?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve shifting assessment toward critical reflexive analysis","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 2,
@@ -917,9 +918,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de densification urbaine et patrimoine bâti ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter réhabilitation écologique des bâtiments historiques","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Soleil) — Densification urbaine et patrimoine bâti: In-depth analysis conducted by researchers at Université Laval emphasizes that the issue of réhabilitation écologique des bâtiments historiques cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding densification urbaine et patrimoine bâti?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address réhabilitation écologique des bâtiments historiques","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Soleil Newspaper) — Urban Densification and Built Heritage: In-depth analysis by academic researchers at Laval University underscores that the critical challenge of sustainable ecological rehabilitation of historic edifices cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding urban densification and built heritage?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve sustainable ecological rehabilitation of historic edifices","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 2,
@@ -930,9 +931,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de préservation de la biodiversité marine ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter contrôle des pollutions terrestres en amont","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Soleil) — Préservation de la biodiversité marine: In-depth analysis conducted by researchers at Université Laval emphasizes that the issue of contrôle des pollutions terrestres en amont cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding préservation de la biodiversité marine?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address contrôle des pollutions terrestres en amont","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Soleil Newspaper) — Marine Biodiversity Conservation: In-depth analysis by academic researchers at Laval University underscores that the critical challenge of strict control of upstream land-based pollution runoff cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding marine biodiversity conservation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve strict control of upstream land-based pollution runoff","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 2,
@@ -943,9 +944,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de éducation à l'esprit critique et désinformation ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter préservation du débat public fondé sur des faits","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Soleil) — Éducation à l'esprit critique et désinformation: In-depth analysis conducted by researchers at Université Laval emphasizes that the issue of préservation du débat public fondé sur des faits cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding éducation à l'esprit critique et désinformation?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address préservation du débat public fondé sur des faits","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Soleil Newspaper) — Critical Thinking and Combating Disinformation: In-depth analysis by academic researchers at Laval University underscores that the critical challenge of safeguarding fact-based democratic public discourse cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding critical thinking and combating disinformation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve safeguarding fact-based democratic public discourse","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 2,
@@ -956,9 +957,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de priorité à la médecine préventive ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter investissement précoce dans le dépistage et l'alimentation","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Soleil) — Priorité à la médecine préventive: In-depth analysis conducted by researchers at Université Laval emphasizes that the issue of investissement précoce dans le dépistage et l'alimentation cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding priorité à la médecine préventive?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address investissement précoce dans le dépistage et l'alimentation","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Soleil Newspaper) — Prioritizing Preventative Healthcare: In-depth analysis by academic researchers at Laval University underscores that the critical challenge of early investment in disease screening and wholesome nutrition cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding prioritizing preventative healthcare?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve early investment in disease screening and wholesome nutrition","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 2,
@@ -969,9 +970,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à érosion de la lenteur nécessaire à la maturation de la pensée","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université Laval) — Temporalité et culte de l'instantanéité: In this essay written in Québec, the author explores the conceptual significance of érosion de la lenteur nécessaire à la maturation de la pensée. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding érosion de la lenteur nécessaire à la maturation de la pensée","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Laval University) — Temporality and the Cult of Instantaneity: In this philosophical essay composed in Quebec City, the author investigates the conceptual implications of erosion of the contemplative stillness essential for thought maturation. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding erosion of the contemplative stillness essential for thought maturation","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 2,
@@ -982,9 +983,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à densité poétique et tension métaphorique du récit","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université Laval) — Esthétique du dépouillement syntaxique: In this essay written in Québec, the author explores the conceptual significance of densité poétique et tension métaphorique du récit. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding densité poétique et tension métaphorique du récit","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Laval University) — Aesthetics of Syntactic Sobriety: In this philosophical essay composed in Quebec City, the author investigates the conceptual implications of poetic density and metaphorical tension in prose. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic density and metaphorical tension in prose","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 2,
@@ -995,9 +996,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à distinction entre inférence statistique et conscience réflexive","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université Laval) — Illusion anthropomorphique de l'IA: In this essay written in Québec, the author explores the conceptual significance of distinction entre inférence statistique et conscience réflexive. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding distinction entre inférence statistique et conscience réflexive","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Laval University) — The Anthropomorphic Illusion of AI: In this philosophical essay composed in Quebec City, the author investigates the conceptual implications of distinguishing statistical inference from reflexive human consciousness. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding distinguishing statistical inference from reflexive human consciousness","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 2,
@@ -1008,9 +1009,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à vitalité des variétés régionales francophones mondiales","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université Laval) — Polyphonie pluricentrique de la francophonie: In this essay written in Québec, the author explores the conceptual significance of vitalité des variétés régionales francophones mondiales. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding vitalité des variétés régionales francophones mondiales","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Laval University) — Pluricentric Polyphony of the Francophonie: In this philosophical essay composed in Quebec City, the author investigates the conceptual implications of the vitality of global regional Francophone varieties. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding the vitality of global regional Francophone varieties","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 2,
@@ -1021,9 +1022,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à subversion poétique et révélation des tensions politiques","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université Laval) — L'art contemporain dans l'espace public: In this essay written in Québec, the author explores the conceptual significance of subversion poétique et révélation des tensions politiques. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding subversion poétique et révélation des tensions politiques","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Laval University) — Contemporary Art in Civic Spaces: In this philosophical essay composed in Quebec City, the author investigates the conceptual implications of poetic subversion and unmasking political civic tensions. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic subversion and unmasking political civic tensions","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 2,
@@ -1034,9 +1035,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à sélection axiologique et projection communautaire vers l'avenir","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université Laval) — Symbolique projective de la mémoire collective: In this essay written in Québec, the author explores the conceptual significance of sélection axiologique et projection communautaire vers l'avenir. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding sélection axiologique et projection communautaire vers l'avenir","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Laval University) — Projective Symbolics of Collective Memory: In this philosophical essay composed in Quebec City, the author investigates the conceptual implications of axiological selection and community projection toward the future. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding axiological selection and community projection toward the future","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
   ],
   // ==================== 📄 PAPER 3 (39 UNIQUE ITEMS) ====================
@@ -1050,9 +1051,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Gatineau-Ottawa ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant fruits et légumes locaux à Gatineau-Ottawa","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Gatineau-Ottawa) — Horaires de marché: fruits et légumes locaux within the community of Gatineau-Ottawa. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Gatineau-Ottawa?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding fruits et légumes locaux in Gatineau-Ottawa","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Gatineau-Ottawa) — Market Opening Hours: local fresh fruits and vegetables within the community of Gatineau-Ottawa. Practical details, access guidelines, and opening hours available from municipal administrative offices in Gatineau-Ottawa.",
+      qEn: "What is the primary purpose of this public document posted in Gatineau-Ottawa?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding local fresh fruits and vegetables in Gatineau-Ottawa","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 3,
@@ -1063,9 +1064,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Gatineau-Ottawa ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant travaux d'entretien des bassins à Gatineau-Ottawa","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Gatineau-Ottawa) — Fermeture temporaire de piscine: travaux d'entretien des bassins within the community of Gatineau-Ottawa. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Gatineau-Ottawa?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding travaux d'entretien des bassins in Gatineau-Ottawa","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Gatineau-Ottawa) — Temporary Pool Closure: pool basin maintenance and cleaning within the community of Gatineau-Ottawa. Practical details, access guidelines, and opening hours available from municipal administrative offices in Gatineau-Ottawa.",
+      qEn: "What is the primary purpose of this public document posted in Gatineau-Ottawa?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding pool basin maintenance and cleaning in Gatineau-Ottawa","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 3,
@@ -1076,9 +1077,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Gatineau-Ottawa ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant révision d'examen et prêt de livres à Gatineau-Ottawa","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Gatineau-Ottawa) — Rendez-vous à la bibliothèque: révision d'examen et prêt de livres within the community of Gatineau-Ottawa. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Gatineau-Ottawa?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding révision d'examen et prêt de livres in Gatineau-Ottawa","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Gatineau-Ottawa) — Library Study Meeting: exam revision and book lending within the community of Gatineau-Ottawa. Practical details, access guidelines, and opening hours available from municipal administrative offices in Gatineau-Ottawa.",
+      qEn: "What is the primary purpose of this public document posted in Gatineau-Ottawa?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding exam revision and book lending in Gatineau-Ottawa","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 3,
@@ -1089,9 +1090,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Gatineau-Ottawa ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant viennoiseries offertes le matin à Gatineau-Ottawa","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Gatineau-Ottawa) — Boulangerie artisanale: viennoiseries offertes le matin within the community of Gatineau-Ottawa. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Gatineau-Ottawa?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding viennoiseries offertes le matin in Gatineau-Ottawa","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Gatineau-Ottawa) — Artisanal Bakery: complimentary morning pastries within the community of Gatineau-Ottawa. Practical details, access guidelines, and opening hours available from municipal administrative offices in Gatineau-Ottawa.",
+      qEn: "What is the primary purpose of this public document posted in Gatineau-Ottawa?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding complimentary morning pastries in Gatineau-Ottawa","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 3,
@@ -1102,9 +1103,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Gatineau-Ottawa ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant bureau des objets trouvés à Gatineau-Ottawa","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Gatineau-Ottawa) — Clés trouvées dans le métro: bureau des objets trouvés within the community of Gatineau-Ottawa. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Gatineau-Ottawa?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding bureau des objets trouvés in Gatineau-Ottawa","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Gatineau-Ottawa) — Keys Found in Subway: lost and found claims office within the community of Gatineau-Ottawa. Practical details, access guidelines, and opening hours available from municipal administrative offices in Gatineau-Ottawa.",
+      qEn: "What is the primary purpose of this public document posted in Gatineau-Ottawa?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding lost and found claims office in Gatineau-Ottawa","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 3,
@@ -1115,9 +1116,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Gatineau-Ottawa ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant vêtements et jouets d'occasion au parc à Gatineau-Ottawa","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Gatineau-Ottawa) — Vente de quartier: vêtements et jouets d'occasion au parc within the community of Gatineau-Ottawa. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Gatineau-Ottawa?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding vêtements et jouets d'occasion au parc in Gatineau-Ottawa","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Gatineau-Ottawa) — Neighborhood Garage Sale: second-hand clothing and toys at the park within the community of Gatineau-Ottawa. Practical details, access guidelines, and opening hours available from municipal administrative offices in Gatineau-Ottawa.",
+      qEn: "What is the primary purpose of this public document posted in Gatineau-Ottawa?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding second-hand clothing and toys at the park in Gatineau-Ottawa","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 3,
@@ -1128,9 +1129,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Gatineau-Ottawa ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant rencontre de début de saison au parc à Gatineau-Ottawa","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Gatineau-Ottawa) — Pique-nique associatif: rencontre de début de saison au parc within the community of Gatineau-Ottawa. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Gatineau-Ottawa?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding rencontre de début de saison au parc in Gatineau-Ottawa","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Gatineau-Ottawa) — Community Picnic: seasonal kickoff gathering at the park within the community of Gatineau-Ottawa. Practical details, access guidelines, and opening hours available from municipal administrative offices in Gatineau-Ottawa.",
+      qEn: "What is the primary purpose of this public document posted in Gatineau-Ottawa?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding seasonal kickoff gathering at the park in Gatineau-Ottawa","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 3,
@@ -1141,9 +1142,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Gatineau-Ottawa ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant temps partiel et accueil clientèle à Gatineau-Ottawa","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Gatineau-Ottawa) — Conseiller de vente en librairie: temps partiel et accueil clientèle organized by Musées Nationaux in Gatineau-Ottawa. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Gatineau-Ottawa?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning temps partiel et accueil clientèle in Gatineau-Ottawa","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Gatineau-Ottawa) — Bookstore Sales Advisor: part-time employment and customer service organized by National Museums in Gatineau-Ottawa. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Gatineau-Ottawa?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning part-time employment and customer service in Gatineau-Ottawa","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 3,
@@ -1154,9 +1155,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Gatineau-Ottawa ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant logement rénové proche transports à Gatineau-Ottawa","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Gatineau-Ottawa) — Location d'appartement: logement rénové proche transports organized by Musées Nationaux in Gatineau-Ottawa. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Gatineau-Ottawa?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning logement rénové proche transports in Gatineau-Ottawa","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Gatineau-Ottawa) — Apartment Rental: renovated housing near transit organized by National Museums in Gatineau-Ottawa. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Gatineau-Ottawa?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning renovated housing near transit in Gatineau-Ottawa","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 3,
@@ -1167,9 +1168,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Gatineau-Ottawa ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant accès par badge magnétique à Gatineau-Ottawa","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Gatineau-Ottawa) — Règlement du parking d'entreprise: accès par badge magnétique organized by Musées Nationaux in Gatineau-Ottawa. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Gatineau-Ottawa?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning accès par badge magnétique in Gatineau-Ottawa","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Gatineau-Ottawa) — Company Parking Lot Policy: magnetic badge access control organized by National Museums in Gatineau-Ottawa. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Gatineau-Ottawa?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning magnetic badge access control in Gatineau-Ottawa","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 3,
@@ -1180,9 +1181,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Gatineau-Ottawa ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant parcours pédestre avec guide certifié à Gatineau-Ottawa","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Gatineau-Ottawa) — Visite guidée historique: parcours pédestre avec guide certifié organized by Musées Nationaux in Gatineau-Ottawa. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Gatineau-Ottawa?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning parcours pédestre avec guide certifié in Gatineau-Ottawa","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Gatineau-Ottawa) — Historical Guided Tour: walking itinerary with a certified guide organized by National Museums in Gatineau-Ottawa. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Gatineau-Ottawa?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning walking itinerary with a certified guide in Gatineau-Ottawa","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 3,
@@ -1193,9 +1194,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Gatineau-Ottawa ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant plat du jour et dessert maison à Gatineau-Ottawa","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Gatineau-Ottawa) — Formule midi du chef: plat du jour et dessert maison organized by Musées Nationaux in Gatineau-Ottawa. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Gatineau-Ottawa?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning plat du jour et dessert maison in Gatineau-Ottawa","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Gatineau-Ottawa) — Chef's Lunch Special: daily main course and homemade dessert organized by National Museums in Gatineau-Ottawa. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Gatineau-Ottawa?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning daily main course and homemade dessert in Gatineau-Ottawa","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 3,
@@ -1206,9 +1207,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Gatineau-Ottawa ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant demande de créneau horaire de livraison à Gatineau-Ottawa","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Gatineau-Ottawa) — Suivi de livraison de colis: demande de créneau horaire de livraison organized by Musées Nationaux in Gatineau-Ottawa. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Gatineau-Ottawa?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning demande de créneau horaire de livraison in Gatineau-Ottawa","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Gatineau-Ottawa) — Parcel Delivery Tracking: request for carrier delivery timeslot organized by National Museums in Gatineau-Ottawa. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Gatineau-Ottawa?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning request for carrier delivery timeslot in Gatineau-Ottawa","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 3,
@@ -1219,9 +1220,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Gatineau-Ottawa ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant séance du samedi matin à Gatineau-Ottawa","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Gatineau-Ottawa) — Atelier de yoga pour débutants: séance du samedi matin organized by Musées Nationaux in Gatineau-Ottawa. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Gatineau-Ottawa?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning séance du samedi matin in Gatineau-Ottawa","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Gatineau-Ottawa) — Beginner Yoga Workshop: Saturday morning practice session organized by National Museums in Gatineau-Ottawa. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Gatineau-Ottawa?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning Saturday morning practice session in Gatineau-Ottawa","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 3,
@@ -1232,9 +1233,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Gatineau-Ottawa ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant renouvellement de prêt en ligne à Gatineau-Ottawa","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Gatineau-Ottawa) — Conditions d'emprunt: renouvellement de prêt en ligne organized by Musées Nationaux in Gatineau-Ottawa. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Gatineau-Ottawa?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning renouvellement de prêt en ligne in Gatineau-Ottawa","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Gatineau-Ottawa) — Borrowing Terms: online book loan renewals organized by National Museums in Gatineau-Ottawa. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Gatineau-Ottawa?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning online book loan renewals in Gatineau-Ottawa","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 3,
@@ -1245,9 +1246,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Droit, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant réduction des déchets municipaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Droit) — Tri sélectif et compostage urbain: In the Gatineau-Ottawa region, the initiative focusing on réduction des déchets municipaux is generating growing interest. According to actors at Université d'Ottawa and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Droit, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning réduction des déchets municipaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Droit Newspaper) — Waste Sorting and Urban Composting: In the Gatineau-Ottawa region, this public initiative centered on municipal waste reduction targets is attracting widespread interest. According to researchers at University of Ottawa and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Droit Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing municipal waste reduction targets despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 3,
@@ -1258,9 +1259,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Droit, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant équilibre vie professionnelle et personnelle malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Droit) — Modèle de télétravail hybride: In the Gatineau-Ottawa region, the initiative focusing on équilibre vie professionnelle et personnelle is generating growing interest. According to actors at Université d'Ottawa and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Droit, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning équilibre vie professionnelle et personnelle despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Droit Newspaper) — Hybrid Telecommuting Model: In the Gatineau-Ottawa region, this public initiative centered on work-life balance and productivity is attracting widespread interest. According to researchers at University of Ottawa and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Droit Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing work-life balance and productivity despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 3,
@@ -1271,9 +1272,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Droit, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant produits frais riches en antioxydants malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Droit) — Alimentation de saison et immunité: In the Gatineau-Ottawa region, the initiative focusing on produits frais riches en antioxydants is generating growing interest. According to actors at Université d'Ottawa and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Droit, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning produits frais riches en antioxydants despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Droit Newspaper) — Seasonal Nutrition and Immunity: In the Gatineau-Ottawa region, this public initiative centered on fresh produce rich in antioxidants is attracting widespread interest. According to researchers at University of Ottawa and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Droit Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fresh produce rich in antioxidants despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 3,
@@ -1284,9 +1285,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Droit, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant prolongation de la durée de vie du matériel malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Droit) — Réparabilité des appareils électroniques: In the Gatineau-Ottawa region, the initiative focusing on prolongation de la durée de vie du matériel is generating growing interest. According to actors at Université d'Ottawa and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Droit, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning prolongation de la durée de vie du matériel despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Droit Newspaper) — Electronic Device Repairability: In the Gatineau-Ottawa region, this public initiative centered on extending equipment lifespan through repair is attracting widespread interest. According to researchers at University of Ottawa and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Droit Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing extending equipment lifespan through repair despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 3,
@@ -1297,9 +1298,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Droit, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant hausse des déplacements à vélo à l'heure de pointe malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Droit) — Nouveau réseau cyclable sécurisé: In the Gatineau-Ottawa region, the initiative focusing on hausse des déplacements à vélo à l'heure de pointe is generating growing interest. According to actors at Université d'Ottawa and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Droit, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning hausse des déplacements à vélo à l'heure de pointe despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Droit Newspaper) — Protected Express Cycling Network: In the Gatineau-Ottawa region, this public initiative centered on growth in rush-hour bicycle commuting is attracting widespread interest. According to researchers at University of Ottawa and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Droit Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing growth in rush-hour bicycle commuting despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 3,
@@ -1310,9 +1311,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Droit, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant justesse de l'interprétation des comédiens malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Droit) — Nouvelle pièce de théâtre contemporaine: In the Gatineau-Ottawa region, the initiative focusing on justesse de l'interprétation des comédiens is generating growing interest. According to actors at Université d'Ottawa and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Droit, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning justesse de l'interprétation des comédiens despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Droit Newspaper) — Contemporary Theatrical Play: In the Gatineau-Ottawa region, this public initiative centered on accuracy of actor performances and staging is attracting widespread interest. According to researchers at University of Ottawa and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Droit Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing accuracy of actor performances and staging despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 3,
@@ -1323,9 +1324,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Droit, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant valorisation du travail des éleveurs locaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Droit) — Coopérative fromagère et vente directe: In the Gatineau-Ottawa region, the initiative focusing on valorisation du travail des éleveurs locaux is generating growing interest. According to actors at Université d'Ottawa and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Droit, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning valorisation du travail des éleveurs locaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Droit Newspaper) — Dairy Farming Cooperative and Direct Sales: In the Gatineau-Ottawa region, this public initiative centered on fair financial compensation for local farmers is attracting widespread interest. According to researchers at University of Ottawa and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Droit Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fair financial compensation for local farmers despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 3,
@@ -1336,9 +1337,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Droit, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant formation continue pour professionnels en reconversion malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Droit) — Microprogrammes certifiants en ligne: In the Gatineau-Ottawa region, the initiative focusing on formation continue pour professionnels en reconversion is generating growing interest. According to actors at Université d'Ottawa and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Droit, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning formation continue pour professionnels en reconversion despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Droit Newspaper) — Online Certifying Microprograms: In the Gatineau-Ottawa region, this public initiative centered on continuing education for working professionals is attracting widespread interest. According to researchers at University of Ottawa and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Droit Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing continuing education for working professionals despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 3,
@@ -1349,9 +1350,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Droit, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant relecture humaine nécessaire des sources malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Droit) — Intelligence artificielle dans les cabinets juridiques: In the Gatineau-Ottawa region, the initiative focusing on relecture humaine nécessaire des sources is generating growing interest. According to actors at Université d'Ottawa and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Droit, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning relecture humaine nécessaire des sources despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Droit Newspaper) — Artificial Intelligence in Legal Practice: In the Gatineau-Ottawa region, this public initiative centered on rigorous human verification of cited legal sources is attracting widespread interest. According to researchers at University of Ottawa and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Droit Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing rigorous human verification of cited legal sources despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 3,
@@ -1362,9 +1363,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Droit, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant parrainage entre étudiants et aînés malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Droit) — Réseau d'entraide intergénérationnel: In the Gatineau-Ottawa region, the initiative focusing on parrainage entre étudiants et aînés is generating growing interest. According to actors at Université d'Ottawa and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Droit, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning parrainage entre étudiants et aînés despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Droit Newspaper) — Intergenerational Mentorship Network: In the Gatineau-Ottawa region, this public initiative centered on pairing university students with senior citizens is attracting widespread interest. According to researchers at University of Ottawa and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Droit Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing pairing university students with senior citizens despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 3,
@@ -1375,9 +1376,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de économie circulaire et éco-conception ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter responsabilité des industriels et réparabilité","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Droit) — Économie circulaire et éco-conception: In-depth analysis conducted by researchers at Université d'Ottawa emphasizes that the issue of responsabilité des industriels et réparabilité cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding économie circulaire et éco-conception?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address responsabilité des industriels et réparabilité","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Droit Newspaper) — Circular Economy and Eco-Design: In-depth analysis by academic researchers at University of Ottawa underscores that the critical challenge of corporate manufacturing responsibility and repairability cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding circular economy and eco-design?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve corporate manufacturing responsibility and repairability","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 3,
@@ -1388,9 +1389,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de quête de sens chez les jeunes diplômés ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter impact sociétal et flexibilité professionnelle","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Droit) — Quête de sens chez les jeunes diplômés: In-depth analysis conducted by researchers at Université d'Ottawa emphasizes that the issue of impact sociétal et flexibilité professionnelle cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding quête de sens chez les jeunes diplômés?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address impact sociétal et flexibilité professionnelle","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Droit Newspaper) — Search for Meaning Among Recent Graduates: In-depth analysis by academic researchers at University of Ottawa underscores that the critical challenge of societal impact and workplace schedule flexibility cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding search for meaning among recent graduates?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve societal impact and workplace schedule flexibility","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 3,
@@ -1401,9 +1402,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de déploiement des parcs éoliens ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter arbitrage entre urgence climatique et concertation locale","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Droit) — Déploiement des parcs éoliens: In-depth analysis conducted by researchers at Université d'Ottawa emphasizes that the issue of arbitrage entre urgence climatique et concertation locale cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding déploiement des parcs éoliens?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address arbitrage entre urgence climatique et concertation locale","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Droit Newspaper) — Renewable Wind Energy Deployment: In-depth analysis by academic researchers at University of Ottawa underscores that the critical challenge of balancing climate urgency with local community consent cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding renewable wind energy deployment?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve balancing climate urgency with local community consent","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 3,
@@ -1414,9 +1415,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de ia générative dans l'enseignement supérieur ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter déplacement de l'évaluation vers l'analyse critique","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Droit) — IA générative dans l'enseignement supérieur: In-depth analysis conducted by researchers at Université d'Ottawa emphasizes that the issue of déplacement de l'évaluation vers l'analyse critique cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding ia générative dans l'enseignement supérieur?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address déplacement de l'évaluation vers l'analyse critique","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Droit Newspaper) — Generative AI in Higher Education: In-depth analysis by academic researchers at University of Ottawa underscores that the critical challenge of shifting assessment toward critical reflexive analysis cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding generative ai in higher education?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve shifting assessment toward critical reflexive analysis","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 3,
@@ -1427,9 +1428,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de densification urbaine et patrimoine bâti ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter réhabilitation écologique des bâtiments historiques","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Droit) — Densification urbaine et patrimoine bâti: In-depth analysis conducted by researchers at Université d'Ottawa emphasizes that the issue of réhabilitation écologique des bâtiments historiques cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding densification urbaine et patrimoine bâti?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address réhabilitation écologique des bâtiments historiques","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Droit Newspaper) — Urban Densification and Built Heritage: In-depth analysis by academic researchers at University of Ottawa underscores that the critical challenge of sustainable ecological rehabilitation of historic edifices cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding urban densification and built heritage?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve sustainable ecological rehabilitation of historic edifices","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 3,
@@ -1440,9 +1441,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de préservation de la biodiversité marine ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter contrôle des pollutions terrestres en amont","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Droit) — Préservation de la biodiversité marine: In-depth analysis conducted by researchers at Université d'Ottawa emphasizes that the issue of contrôle des pollutions terrestres en amont cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding préservation de la biodiversité marine?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address contrôle des pollutions terrestres en amont","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Droit Newspaper) — Marine Biodiversity Conservation: In-depth analysis by academic researchers at University of Ottawa underscores that the critical challenge of strict control of upstream land-based pollution runoff cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding marine biodiversity conservation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve strict control of upstream land-based pollution runoff","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 3,
@@ -1453,9 +1454,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de éducation à l'esprit critique et désinformation ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter préservation du débat public fondé sur des faits","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Droit) — Éducation à l'esprit critique et désinformation: In-depth analysis conducted by researchers at Université d'Ottawa emphasizes that the issue of préservation du débat public fondé sur des faits cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding éducation à l'esprit critique et désinformation?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address préservation du débat public fondé sur des faits","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Droit Newspaper) — Critical Thinking and Combating Disinformation: In-depth analysis by academic researchers at University of Ottawa underscores that the critical challenge of safeguarding fact-based democratic public discourse cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding critical thinking and combating disinformation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve safeguarding fact-based democratic public discourse","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 3,
@@ -1466,9 +1467,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de priorité à la médecine préventive ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter investissement précoce dans le dépistage et l'alimentation","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Droit) — Priorité à la médecine préventive: In-depth analysis conducted by researchers at Université d'Ottawa emphasizes that the issue of investissement précoce dans le dépistage et l'alimentation cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding priorité à la médecine préventive?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address investissement précoce dans le dépistage et l'alimentation","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Droit Newspaper) — Prioritizing Preventative Healthcare: In-depth analysis by academic researchers at University of Ottawa underscores that the critical challenge of early investment in disease screening and wholesome nutrition cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding prioritizing preventative healthcare?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve early investment in disease screening and wholesome nutrition","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 3,
@@ -1479,9 +1480,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à érosion de la lenteur nécessaire à la maturation de la pensée","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université d'Ottawa) — Temporalité et culte de l'instantanéité: In this essay written in Gatineau-Ottawa, the author explores the conceptual significance of érosion de la lenteur nécessaire à la maturation de la pensée. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding érosion de la lenteur nécessaire à la maturation de la pensée","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Ottawa) — Temporality and the Cult of Instantaneity: In this philosophical essay composed in Gatineau-Ottawa, the author investigates the conceptual implications of erosion of the contemplative stillness essential for thought maturation. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding erosion of the contemplative stillness essential for thought maturation","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 3,
@@ -1492,9 +1493,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à densité poétique et tension métaphorique du récit","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université d'Ottawa) — Esthétique du dépouillement syntaxique: In this essay written in Gatineau-Ottawa, the author explores the conceptual significance of densité poétique et tension métaphorique du récit. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding densité poétique et tension métaphorique du récit","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Ottawa) — Aesthetics of Syntactic Sobriety: In this philosophical essay composed in Gatineau-Ottawa, the author investigates the conceptual implications of poetic density and metaphorical tension in prose. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic density and metaphorical tension in prose","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 3,
@@ -1505,9 +1506,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à distinction entre inférence statistique et conscience réflexive","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université d'Ottawa) — Illusion anthropomorphique de l'IA: In this essay written in Gatineau-Ottawa, the author explores the conceptual significance of distinction entre inférence statistique et conscience réflexive. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding distinction entre inférence statistique et conscience réflexive","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Ottawa) — The Anthropomorphic Illusion of AI: In this philosophical essay composed in Gatineau-Ottawa, the author investigates the conceptual implications of distinguishing statistical inference from reflexive human consciousness. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding distinguishing statistical inference from reflexive human consciousness","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 3,
@@ -1518,9 +1519,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à vitalité des variétés régionales francophones mondiales","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université d'Ottawa) — Polyphonie pluricentrique de la francophonie: In this essay written in Gatineau-Ottawa, the author explores the conceptual significance of vitalité des variétés régionales francophones mondiales. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding vitalité des variétés régionales francophones mondiales","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Ottawa) — Pluricentric Polyphony of the Francophonie: In this philosophical essay composed in Gatineau-Ottawa, the author investigates the conceptual implications of the vitality of global regional Francophone varieties. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding the vitality of global regional Francophone varieties","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 3,
@@ -1531,9 +1532,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à subversion poétique et révélation des tensions politiques","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université d'Ottawa) — L'art contemporain dans l'espace public: In this essay written in Gatineau-Ottawa, the author explores the conceptual significance of subversion poétique et révélation des tensions politiques. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding subversion poétique et révélation des tensions politiques","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Ottawa) — Contemporary Art in Civic Spaces: In this philosophical essay composed in Gatineau-Ottawa, the author investigates the conceptual implications of poetic subversion and unmasking political civic tensions. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic subversion and unmasking political civic tensions","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 3,
@@ -1544,9 +1545,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à sélection axiologique et projection communautaire vers l'avenir","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université d'Ottawa) — Symbolique projective de la mémoire collective: In this essay written in Gatineau-Ottawa, the author explores the conceptual significance of sélection axiologique et projection communautaire vers l'avenir. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding sélection axiologique et projection communautaire vers l'avenir","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Ottawa) — Projective Symbolics of Collective Memory: In this philosophical essay composed in Gatineau-Ottawa, the author investigates the conceptual implications of axiological selection and community projection toward the future. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding axiological selection and community projection toward the future","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
   ],
   // ==================== 📄 PAPER 4 (39 UNIQUE ITEMS) ====================
@@ -1560,9 +1561,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Toronto-Sudbury ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant fruits et légumes locaux à Toronto-Sudbury","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Toronto-Sudbury) — Horaires de marché: fruits et légumes locaux within the community of Toronto-Sudbury. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Toronto-Sudbury?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding fruits et légumes locaux in Toronto-Sudbury","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Toronto-Sudbury) — Market Opening Hours: local fresh fruits and vegetables within the community of Toronto-Sudbury. Practical details, access guidelines, and opening hours available from municipal administrative offices in Toronto-Sudbury.",
+      qEn: "What is the primary purpose of this public document posted in Toronto-Sudbury?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding local fresh fruits and vegetables in Toronto-Sudbury","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 4,
@@ -1573,9 +1574,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Toronto-Sudbury ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant travaux d'entretien des bassins à Toronto-Sudbury","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Toronto-Sudbury) — Fermeture temporaire de piscine: travaux d'entretien des bassins within the community of Toronto-Sudbury. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Toronto-Sudbury?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding travaux d'entretien des bassins in Toronto-Sudbury","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Toronto-Sudbury) — Temporary Pool Closure: pool basin maintenance and cleaning within the community of Toronto-Sudbury. Practical details, access guidelines, and opening hours available from municipal administrative offices in Toronto-Sudbury.",
+      qEn: "What is the primary purpose of this public document posted in Toronto-Sudbury?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding pool basin maintenance and cleaning in Toronto-Sudbury","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 4,
@@ -1586,9 +1587,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Toronto-Sudbury ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant révision d'examen et prêt de livres à Toronto-Sudbury","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Toronto-Sudbury) — Rendez-vous à la bibliothèque: révision d'examen et prêt de livres within the community of Toronto-Sudbury. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Toronto-Sudbury?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding révision d'examen et prêt de livres in Toronto-Sudbury","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Toronto-Sudbury) — Library Study Meeting: exam revision and book lending within the community of Toronto-Sudbury. Practical details, access guidelines, and opening hours available from municipal administrative offices in Toronto-Sudbury.",
+      qEn: "What is the primary purpose of this public document posted in Toronto-Sudbury?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding exam revision and book lending in Toronto-Sudbury","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 4,
@@ -1599,9 +1600,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Toronto-Sudbury ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant viennoiseries offertes le matin à Toronto-Sudbury","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Toronto-Sudbury) — Boulangerie artisanale: viennoiseries offertes le matin within the community of Toronto-Sudbury. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Toronto-Sudbury?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding viennoiseries offertes le matin in Toronto-Sudbury","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Toronto-Sudbury) — Artisanal Bakery: complimentary morning pastries within the community of Toronto-Sudbury. Practical details, access guidelines, and opening hours available from municipal administrative offices in Toronto-Sudbury.",
+      qEn: "What is the primary purpose of this public document posted in Toronto-Sudbury?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding complimentary morning pastries in Toronto-Sudbury","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 4,
@@ -1612,9 +1613,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Toronto-Sudbury ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant bureau des objets trouvés à Toronto-Sudbury","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Toronto-Sudbury) — Clés trouvées dans le métro: bureau des objets trouvés within the community of Toronto-Sudbury. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Toronto-Sudbury?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding bureau des objets trouvés in Toronto-Sudbury","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Toronto-Sudbury) — Keys Found in Subway: lost and found claims office within the community of Toronto-Sudbury. Practical details, access guidelines, and opening hours available from municipal administrative offices in Toronto-Sudbury.",
+      qEn: "What is the primary purpose of this public document posted in Toronto-Sudbury?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding lost and found claims office in Toronto-Sudbury","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 4,
@@ -1625,9 +1626,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Toronto-Sudbury ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant vêtements et jouets d'occasion au parc à Toronto-Sudbury","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Toronto-Sudbury) — Vente de quartier: vêtements et jouets d'occasion au parc within the community of Toronto-Sudbury. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Toronto-Sudbury?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding vêtements et jouets d'occasion au parc in Toronto-Sudbury","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Toronto-Sudbury) — Neighborhood Garage Sale: second-hand clothing and toys at the park within the community of Toronto-Sudbury. Practical details, access guidelines, and opening hours available from municipal administrative offices in Toronto-Sudbury.",
+      qEn: "What is the primary purpose of this public document posted in Toronto-Sudbury?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding second-hand clothing and toys at the park in Toronto-Sudbury","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 4,
@@ -1638,9 +1639,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Toronto-Sudbury ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant rencontre de début de saison au parc à Toronto-Sudbury","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Toronto-Sudbury) — Pique-nique associatif: rencontre de début de saison au parc within the community of Toronto-Sudbury. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Toronto-Sudbury?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding rencontre de début de saison au parc in Toronto-Sudbury","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Toronto-Sudbury) — Community Picnic: seasonal kickoff gathering at the park within the community of Toronto-Sudbury. Practical details, access guidelines, and opening hours available from municipal administrative offices in Toronto-Sudbury.",
+      qEn: "What is the primary purpose of this public document posted in Toronto-Sudbury?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding seasonal kickoff gathering at the park in Toronto-Sudbury","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 4,
@@ -1651,9 +1652,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Toronto-Sudbury ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant temps partiel et accueil clientèle à Toronto-Sudbury","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Toronto-Sudbury) — Conseiller de vente en librairie: temps partiel et accueil clientèle organized by Innovation Ontario in Toronto-Sudbury. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Toronto-Sudbury?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning temps partiel et accueil clientèle in Toronto-Sudbury","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Toronto-Sudbury) — Bookstore Sales Advisor: part-time employment and customer service organized by Innovation Ontario in Toronto-Sudbury. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Toronto-Sudbury?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning part-time employment and customer service in Toronto-Sudbury","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 4,
@@ -1664,9 +1665,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Toronto-Sudbury ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant logement rénové proche transports à Toronto-Sudbury","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Toronto-Sudbury) — Location d'appartement: logement rénové proche transports organized by Innovation Ontario in Toronto-Sudbury. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Toronto-Sudbury?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning logement rénové proche transports in Toronto-Sudbury","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Toronto-Sudbury) — Apartment Rental: renovated housing near transit organized by Innovation Ontario in Toronto-Sudbury. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Toronto-Sudbury?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning renovated housing near transit in Toronto-Sudbury","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 4,
@@ -1677,9 +1678,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Toronto-Sudbury ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant accès par badge magnétique à Toronto-Sudbury","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Toronto-Sudbury) — Règlement du parking d'entreprise: accès par badge magnétique organized by Innovation Ontario in Toronto-Sudbury. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Toronto-Sudbury?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning accès par badge magnétique in Toronto-Sudbury","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Toronto-Sudbury) — Company Parking Lot Policy: magnetic badge access control organized by Innovation Ontario in Toronto-Sudbury. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Toronto-Sudbury?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning magnetic badge access control in Toronto-Sudbury","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 4,
@@ -1690,9 +1691,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Toronto-Sudbury ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant parcours pédestre avec guide certifié à Toronto-Sudbury","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Toronto-Sudbury) — Visite guidée historique: parcours pédestre avec guide certifié organized by Innovation Ontario in Toronto-Sudbury. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Toronto-Sudbury?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning parcours pédestre avec guide certifié in Toronto-Sudbury","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Toronto-Sudbury) — Historical Guided Tour: walking itinerary with a certified guide organized by Innovation Ontario in Toronto-Sudbury. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Toronto-Sudbury?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning walking itinerary with a certified guide in Toronto-Sudbury","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 4,
@@ -1703,9 +1704,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Toronto-Sudbury ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant plat du jour et dessert maison à Toronto-Sudbury","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Toronto-Sudbury) — Formule midi du chef: plat du jour et dessert maison organized by Innovation Ontario in Toronto-Sudbury. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Toronto-Sudbury?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning plat du jour et dessert maison in Toronto-Sudbury","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Toronto-Sudbury) — Chef's Lunch Special: daily main course and homemade dessert organized by Innovation Ontario in Toronto-Sudbury. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Toronto-Sudbury?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning daily main course and homemade dessert in Toronto-Sudbury","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 4,
@@ -1716,9 +1717,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Toronto-Sudbury ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant demande de créneau horaire de livraison à Toronto-Sudbury","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Toronto-Sudbury) — Suivi de livraison de colis: demande de créneau horaire de livraison organized by Innovation Ontario in Toronto-Sudbury. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Toronto-Sudbury?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning demande de créneau horaire de livraison in Toronto-Sudbury","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Toronto-Sudbury) — Parcel Delivery Tracking: request for carrier delivery timeslot organized by Innovation Ontario in Toronto-Sudbury. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Toronto-Sudbury?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning request for carrier delivery timeslot in Toronto-Sudbury","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 4,
@@ -1729,9 +1730,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Toronto-Sudbury ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant séance du samedi matin à Toronto-Sudbury","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Toronto-Sudbury) — Atelier de yoga pour débutants: séance du samedi matin organized by Innovation Ontario in Toronto-Sudbury. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Toronto-Sudbury?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning séance du samedi matin in Toronto-Sudbury","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Toronto-Sudbury) — Beginner Yoga Workshop: Saturday morning practice session organized by Innovation Ontario in Toronto-Sudbury. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Toronto-Sudbury?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning Saturday morning practice session in Toronto-Sudbury","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 4,
@@ -1742,9 +1743,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Toronto-Sudbury ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant renouvellement de prêt en ligne à Toronto-Sudbury","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Toronto-Sudbury) — Conditions d'emprunt: renouvellement de prêt en ligne organized by Innovation Ontario in Toronto-Sudbury. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Toronto-Sudbury?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning renouvellement de prêt en ligne in Toronto-Sudbury","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Toronto-Sudbury) — Borrowing Terms: online book loan renewals organized by Innovation Ontario in Toronto-Sudbury. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Toronto-Sudbury?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning online book loan renewals in Toronto-Sudbury","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 4,
@@ -1755,9 +1756,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Express, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant réduction des déchets municipaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Express) — Tri sélectif et compostage urbain: In the Toronto-Sudbury region, the initiative focusing on réduction des déchets municipaux is generating growing interest. According to actors at Collège Boréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Express, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning réduction des déchets municipaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Express Newspaper) — Waste Sorting and Urban Composting: In the Toronto-Sudbury region, this public initiative centered on municipal waste reduction targets is attracting widespread interest. According to researchers at Boreal College and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Express Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing municipal waste reduction targets despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 4,
@@ -1768,9 +1769,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Express, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant équilibre vie professionnelle et personnelle malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Express) — Modèle de télétravail hybride: In the Toronto-Sudbury region, the initiative focusing on équilibre vie professionnelle et personnelle is generating growing interest. According to actors at Collège Boréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Express, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning équilibre vie professionnelle et personnelle despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Express Newspaper) — Hybrid Telecommuting Model: In the Toronto-Sudbury region, this public initiative centered on work-life balance and productivity is attracting widespread interest. According to researchers at Boreal College and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Express Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing work-life balance and productivity despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 4,
@@ -1781,9 +1782,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Express, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant produits frais riches en antioxydants malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Express) — Alimentation de saison et immunité: In the Toronto-Sudbury region, the initiative focusing on produits frais riches en antioxydants is generating growing interest. According to actors at Collège Boréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Express, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning produits frais riches en antioxydants despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Express Newspaper) — Seasonal Nutrition and Immunity: In the Toronto-Sudbury region, this public initiative centered on fresh produce rich in antioxidants is attracting widespread interest. According to researchers at Boreal College and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Express Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fresh produce rich in antioxidants despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 4,
@@ -1794,9 +1795,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Express, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant prolongation de la durée de vie du matériel malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Express) — Réparabilité des appareils électroniques: In the Toronto-Sudbury region, the initiative focusing on prolongation de la durée de vie du matériel is generating growing interest. According to actors at Collège Boréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Express, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning prolongation de la durée de vie du matériel despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Express Newspaper) — Electronic Device Repairability: In the Toronto-Sudbury region, this public initiative centered on extending equipment lifespan through repair is attracting widespread interest. According to researchers at Boreal College and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Express Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing extending equipment lifespan through repair despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 4,
@@ -1807,9 +1808,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Express, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant hausse des déplacements à vélo à l'heure de pointe malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Express) — Nouveau réseau cyclable sécurisé: In the Toronto-Sudbury region, the initiative focusing on hausse des déplacements à vélo à l'heure de pointe is generating growing interest. According to actors at Collège Boréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Express, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning hausse des déplacements à vélo à l'heure de pointe despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Express Newspaper) — Protected Express Cycling Network: In the Toronto-Sudbury region, this public initiative centered on growth in rush-hour bicycle commuting is attracting widespread interest. According to researchers at Boreal College and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Express Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing growth in rush-hour bicycle commuting despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 4,
@@ -1820,9 +1821,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Express, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant justesse de l'interprétation des comédiens malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Express) — Nouvelle pièce de théâtre contemporaine: In the Toronto-Sudbury region, the initiative focusing on justesse de l'interprétation des comédiens is generating growing interest. According to actors at Collège Boréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Express, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning justesse de l'interprétation des comédiens despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Express Newspaper) — Contemporary Theatrical Play: In the Toronto-Sudbury region, this public initiative centered on accuracy of actor performances and staging is attracting widespread interest. According to researchers at Boreal College and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Express Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing accuracy of actor performances and staging despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 4,
@@ -1833,9 +1834,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Express, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant valorisation du travail des éleveurs locaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Express) — Coopérative fromagère et vente directe: In the Toronto-Sudbury region, the initiative focusing on valorisation du travail des éleveurs locaux is generating growing interest. According to actors at Collège Boréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Express, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning valorisation du travail des éleveurs locaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Express Newspaper) — Dairy Farming Cooperative and Direct Sales: In the Toronto-Sudbury region, this public initiative centered on fair financial compensation for local farmers is attracting widespread interest. According to researchers at Boreal College and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Express Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fair financial compensation for local farmers despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 4,
@@ -1846,9 +1847,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Express, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant formation continue pour professionnels en reconversion malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Express) — Microprogrammes certifiants en ligne: In the Toronto-Sudbury region, the initiative focusing on formation continue pour professionnels en reconversion is generating growing interest. According to actors at Collège Boréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Express, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning formation continue pour professionnels en reconversion despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Express Newspaper) — Online Certifying Microprograms: In the Toronto-Sudbury region, this public initiative centered on continuing education for working professionals is attracting widespread interest. According to researchers at Boreal College and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Express Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing continuing education for working professionals despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 4,
@@ -1859,9 +1860,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Express, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant relecture humaine nécessaire des sources malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Express) — Intelligence artificielle dans les cabinets juridiques: In the Toronto-Sudbury region, the initiative focusing on relecture humaine nécessaire des sources is generating growing interest. According to actors at Collège Boréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Express, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning relecture humaine nécessaire des sources despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Express Newspaper) — Artificial Intelligence in Legal Practice: In the Toronto-Sudbury region, this public initiative centered on rigorous human verification of cited legal sources is attracting widespread interest. According to researchers at Boreal College and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Express Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing rigorous human verification of cited legal sources despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 4,
@@ -1872,9 +1873,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Express, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant parrainage entre étudiants et aînés malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Express) — Réseau d'entraide intergénérationnel: In the Toronto-Sudbury region, the initiative focusing on parrainage entre étudiants et aînés is generating growing interest. According to actors at Collège Boréal and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Express, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning parrainage entre étudiants et aînés despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Express Newspaper) — Intergenerational Mentorship Network: In the Toronto-Sudbury region, this public initiative centered on pairing university students with senior citizens is attracting widespread interest. According to researchers at Boreal College and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Express Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing pairing university students with senior citizens despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 4,
@@ -1885,9 +1886,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de économie circulaire et éco-conception ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter responsabilité des industriels et réparabilité","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (L'Express) — Économie circulaire et éco-conception: In-depth analysis conducted by researchers at Collège Boréal emphasizes that the issue of responsabilité des industriels et réparabilité cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding économie circulaire et éco-conception?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address responsabilité des industriels et réparabilité","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (L'Express Newspaper) — Circular Economy and Eco-Design: In-depth analysis by academic researchers at Boreal College underscores that the critical challenge of corporate manufacturing responsibility and repairability cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding circular economy and eco-design?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve corporate manufacturing responsibility and repairability","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 4,
@@ -1898,9 +1899,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de quête de sens chez les jeunes diplômés ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter impact sociétal et flexibilité professionnelle","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (L'Express) — Quête de sens chez les jeunes diplômés: In-depth analysis conducted by researchers at Collège Boréal emphasizes that the issue of impact sociétal et flexibilité professionnelle cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding quête de sens chez les jeunes diplômés?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address impact sociétal et flexibilité professionnelle","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (L'Express Newspaper) — Search for Meaning Among Recent Graduates: In-depth analysis by academic researchers at Boreal College underscores that the critical challenge of societal impact and workplace schedule flexibility cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding search for meaning among recent graduates?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve societal impact and workplace schedule flexibility","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 4,
@@ -1911,9 +1912,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de déploiement des parcs éoliens ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter arbitrage entre urgence climatique et concertation locale","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (L'Express) — Déploiement des parcs éoliens: In-depth analysis conducted by researchers at Collège Boréal emphasizes that the issue of arbitrage entre urgence climatique et concertation locale cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding déploiement des parcs éoliens?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address arbitrage entre urgence climatique et concertation locale","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (L'Express Newspaper) — Renewable Wind Energy Deployment: In-depth analysis by academic researchers at Boreal College underscores that the critical challenge of balancing climate urgency with local community consent cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding renewable wind energy deployment?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve balancing climate urgency with local community consent","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 4,
@@ -1924,9 +1925,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de ia générative dans l'enseignement supérieur ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter déplacement de l'évaluation vers l'analyse critique","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (L'Express) — IA générative dans l'enseignement supérieur: In-depth analysis conducted by researchers at Collège Boréal emphasizes that the issue of déplacement de l'évaluation vers l'analyse critique cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding ia générative dans l'enseignement supérieur?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address déplacement de l'évaluation vers l'analyse critique","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (L'Express Newspaper) — Generative AI in Higher Education: In-depth analysis by academic researchers at Boreal College underscores that the critical challenge of shifting assessment toward critical reflexive analysis cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding generative ai in higher education?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve shifting assessment toward critical reflexive analysis","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 4,
@@ -1937,9 +1938,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de densification urbaine et patrimoine bâti ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter réhabilitation écologique des bâtiments historiques","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (L'Express) — Densification urbaine et patrimoine bâti: In-depth analysis conducted by researchers at Collège Boréal emphasizes that the issue of réhabilitation écologique des bâtiments historiques cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding densification urbaine et patrimoine bâti?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address réhabilitation écologique des bâtiments historiques","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (L'Express Newspaper) — Urban Densification and Built Heritage: In-depth analysis by academic researchers at Boreal College underscores that the critical challenge of sustainable ecological rehabilitation of historic edifices cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding urban densification and built heritage?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve sustainable ecological rehabilitation of historic edifices","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 4,
@@ -1950,9 +1951,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de préservation de la biodiversité marine ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter contrôle des pollutions terrestres en amont","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (L'Express) — Préservation de la biodiversité marine: In-depth analysis conducted by researchers at Collège Boréal emphasizes that the issue of contrôle des pollutions terrestres en amont cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding préservation de la biodiversité marine?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address contrôle des pollutions terrestres en amont","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (L'Express Newspaper) — Marine Biodiversity Conservation: In-depth analysis by academic researchers at Boreal College underscores that the critical challenge of strict control of upstream land-based pollution runoff cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding marine biodiversity conservation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve strict control of upstream land-based pollution runoff","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 4,
@@ -1963,9 +1964,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de éducation à l'esprit critique et désinformation ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter préservation du débat public fondé sur des faits","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (L'Express) — Éducation à l'esprit critique et désinformation: In-depth analysis conducted by researchers at Collège Boréal emphasizes that the issue of préservation du débat public fondé sur des faits cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding éducation à l'esprit critique et désinformation?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address préservation du débat public fondé sur des faits","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (L'Express Newspaper) — Critical Thinking and Combating Disinformation: In-depth analysis by academic researchers at Boreal College underscores that the critical challenge of safeguarding fact-based democratic public discourse cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding critical thinking and combating disinformation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve safeguarding fact-based democratic public discourse","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 4,
@@ -1976,9 +1977,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de priorité à la médecine préventive ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter investissement précoce dans le dépistage et l'alimentation","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (L'Express) — Priorité à la médecine préventive: In-depth analysis conducted by researchers at Collège Boréal emphasizes that the issue of investissement précoce dans le dépistage et l'alimentation cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding priorité à la médecine préventive?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address investissement précoce dans le dépistage et l'alimentation","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (L'Express Newspaper) — Prioritizing Preventative Healthcare: In-depth analysis by academic researchers at Boreal College underscores that the critical challenge of early investment in disease screening and wholesome nutrition cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding prioritizing preventative healthcare?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve early investment in disease screening and wholesome nutrition","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 4,
@@ -1989,9 +1990,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à érosion de la lenteur nécessaire à la maturation de la pensée","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Collège Boréal) — Temporalité et culte de l'instantanéité: In this essay written in Toronto-Sudbury, the author explores the conceptual significance of érosion de la lenteur nécessaire à la maturation de la pensée. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding érosion de la lenteur nécessaire à la maturation de la pensée","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Boreal College) — Temporality and the Cult of Instantaneity: In this philosophical essay composed in Toronto-Sudbury, the author investigates the conceptual implications of erosion of the contemplative stillness essential for thought maturation. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding erosion of the contemplative stillness essential for thought maturation","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 4,
@@ -2002,9 +2003,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à densité poétique et tension métaphorique du récit","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Collège Boréal) — Esthétique du dépouillement syntaxique: In this essay written in Toronto-Sudbury, the author explores the conceptual significance of densité poétique et tension métaphorique du récit. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding densité poétique et tension métaphorique du récit","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Boreal College) — Aesthetics of Syntactic Sobriety: In this philosophical essay composed in Toronto-Sudbury, the author investigates the conceptual implications of poetic density and metaphorical tension in prose. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic density and metaphorical tension in prose","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 4,
@@ -2015,9 +2016,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à distinction entre inférence statistique et conscience réflexive","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Collège Boréal) — Illusion anthropomorphique de l'IA: In this essay written in Toronto-Sudbury, the author explores the conceptual significance of distinction entre inférence statistique et conscience réflexive. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding distinction entre inférence statistique et conscience réflexive","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Boreal College) — The Anthropomorphic Illusion of AI: In this philosophical essay composed in Toronto-Sudbury, the author investigates the conceptual implications of distinguishing statistical inference from reflexive human consciousness. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding distinguishing statistical inference from reflexive human consciousness","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 4,
@@ -2028,9 +2029,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à vitalité des variétés régionales francophones mondiales","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Collège Boréal) — Polyphonie pluricentrique de la francophonie: In this essay written in Toronto-Sudbury, the author explores the conceptual significance of vitalité des variétés régionales francophones mondiales. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding vitalité des variétés régionales francophones mondiales","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Boreal College) — Pluricentric Polyphony of the Francophonie: In this philosophical essay composed in Toronto-Sudbury, the author investigates the conceptual implications of the vitality of global regional Francophone varieties. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding the vitality of global regional Francophone varieties","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 4,
@@ -2041,9 +2042,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à subversion poétique et révélation des tensions politiques","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Collège Boréal) — L'art contemporain dans l'espace public: In this essay written in Toronto-Sudbury, the author explores the conceptual significance of subversion poétique et révélation des tensions politiques. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding subversion poétique et révélation des tensions politiques","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Boreal College) — Contemporary Art in Civic Spaces: In this philosophical essay composed in Toronto-Sudbury, the author investigates the conceptual implications of poetic subversion and unmasking political civic tensions. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic subversion and unmasking political civic tensions","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 4,
@@ -2054,9 +2055,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à sélection axiologique et projection communautaire vers l'avenir","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Collège Boréal) — Symbolique projective de la mémoire collective: In this essay written in Toronto-Sudbury, the author explores the conceptual significance of sélection axiologique et projection communautaire vers l'avenir. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding sélection axiologique et projection communautaire vers l'avenir","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Boreal College) — Projective Symbolics of Collective Memory: In this philosophical essay composed in Toronto-Sudbury, the author investigates the conceptual implications of axiological selection and community projection toward the future. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding axiological selection and community projection toward the future","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
   ],
   // ==================== 📄 PAPER 5 (39 UNIQUE ITEMS) ====================
@@ -2070,9 +2071,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Vancouver ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant fruits et légumes locaux à Vancouver","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Vancouver) — Horaires de marché: fruits et légumes locaux within the community of Vancouver. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Vancouver?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding fruits et légumes locaux in Vancouver","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Vancouver) — Market Opening Hours: local fresh fruits and vegetables within the community of Vancouver. Practical details, access guidelines, and opening hours available from municipal administrative offices in Vancouver.",
+      qEn: "What is the primary purpose of this public document posted in Vancouver?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding local fresh fruits and vegetables in Vancouver","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 5,
@@ -2083,9 +2084,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Vancouver ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant travaux d'entretien des bassins à Vancouver","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Vancouver) — Fermeture temporaire de piscine: travaux d'entretien des bassins within the community of Vancouver. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Vancouver?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding travaux d'entretien des bassins in Vancouver","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Vancouver) — Temporary Pool Closure: pool basin maintenance and cleaning within the community of Vancouver. Practical details, access guidelines, and opening hours available from municipal administrative offices in Vancouver.",
+      qEn: "What is the primary purpose of this public document posted in Vancouver?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding pool basin maintenance and cleaning in Vancouver","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 5,
@@ -2096,9 +2097,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Vancouver ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant révision d'examen et prêt de livres à Vancouver","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Vancouver) — Rendez-vous à la bibliothèque: révision d'examen et prêt de livres within the community of Vancouver. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Vancouver?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding révision d'examen et prêt de livres in Vancouver","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Vancouver) — Library Study Meeting: exam revision and book lending within the community of Vancouver. Practical details, access guidelines, and opening hours available from municipal administrative offices in Vancouver.",
+      qEn: "What is the primary purpose of this public document posted in Vancouver?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding exam revision and book lending in Vancouver","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 5,
@@ -2109,9 +2110,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Vancouver ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant viennoiseries offertes le matin à Vancouver","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Vancouver) — Boulangerie artisanale: viennoiseries offertes le matin within the community of Vancouver. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Vancouver?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding viennoiseries offertes le matin in Vancouver","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Vancouver) — Artisanal Bakery: complimentary morning pastries within the community of Vancouver. Practical details, access guidelines, and opening hours available from municipal administrative offices in Vancouver.",
+      qEn: "What is the primary purpose of this public document posted in Vancouver?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding complimentary morning pastries in Vancouver","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 5,
@@ -2122,9 +2123,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Vancouver ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant bureau des objets trouvés à Vancouver","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Vancouver) — Clés trouvées dans le métro: bureau des objets trouvés within the community of Vancouver. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Vancouver?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding bureau des objets trouvés in Vancouver","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Vancouver) — Keys Found in Subway: lost and found claims office within the community of Vancouver. Practical details, access guidelines, and opening hours available from municipal administrative offices in Vancouver.",
+      qEn: "What is the primary purpose of this public document posted in Vancouver?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding lost and found claims office in Vancouver","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 5,
@@ -2135,9 +2136,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Vancouver ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant vêtements et jouets d'occasion au parc à Vancouver","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Vancouver) — Vente de quartier: vêtements et jouets d'occasion au parc within the community of Vancouver. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Vancouver?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding vêtements et jouets d'occasion au parc in Vancouver","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Vancouver) — Neighborhood Garage Sale: second-hand clothing and toys at the park within the community of Vancouver. Practical details, access guidelines, and opening hours available from municipal administrative offices in Vancouver.",
+      qEn: "What is the primary purpose of this public document posted in Vancouver?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding second-hand clothing and toys at the park in Vancouver","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 5,
@@ -2148,9 +2149,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Vancouver ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant rencontre de début de saison au parc à Vancouver","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Vancouver) — Pique-nique associatif: rencontre de début de saison au parc within the community of Vancouver. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Vancouver?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding rencontre de début de saison au parc in Vancouver","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Vancouver) — Community Picnic: seasonal kickoff gathering at the park within the community of Vancouver. Practical details, access guidelines, and opening hours available from municipal administrative offices in Vancouver.",
+      qEn: "What is the primary purpose of this public document posted in Vancouver?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding seasonal kickoff gathering at the park in Vancouver","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 5,
@@ -2161,9 +2162,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Vancouver ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant temps partiel et accueil clientèle à Vancouver","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Vancouver) — Conseiller de vente en librairie: temps partiel et accueil clientèle organized by BC Ferries in Vancouver. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Vancouver?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning temps partiel et accueil clientèle in Vancouver","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Vancouver) — Bookstore Sales Advisor: part-time employment and customer service organized by BC Ferries in Vancouver. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Vancouver?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning part-time employment and customer service in Vancouver","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 5,
@@ -2174,9 +2175,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Vancouver ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant logement rénové proche transports à Vancouver","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Vancouver) — Location d'appartement: logement rénové proche transports organized by BC Ferries in Vancouver. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Vancouver?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning logement rénové proche transports in Vancouver","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Vancouver) — Apartment Rental: renovated housing near transit organized by BC Ferries in Vancouver. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Vancouver?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning renovated housing near transit in Vancouver","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 5,
@@ -2187,9 +2188,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Vancouver ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant accès par badge magnétique à Vancouver","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Vancouver) — Règlement du parking d'entreprise: accès par badge magnétique organized by BC Ferries in Vancouver. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Vancouver?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning accès par badge magnétique in Vancouver","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Vancouver) — Company Parking Lot Policy: magnetic badge access control organized by BC Ferries in Vancouver. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Vancouver?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning magnetic badge access control in Vancouver","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 5,
@@ -2200,9 +2201,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Vancouver ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant parcours pédestre avec guide certifié à Vancouver","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Vancouver) — Visite guidée historique: parcours pédestre avec guide certifié organized by BC Ferries in Vancouver. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Vancouver?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning parcours pédestre avec guide certifié in Vancouver","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Vancouver) — Historical Guided Tour: walking itinerary with a certified guide organized by BC Ferries in Vancouver. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Vancouver?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning walking itinerary with a certified guide in Vancouver","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 5,
@@ -2213,9 +2214,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Vancouver ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant plat du jour et dessert maison à Vancouver","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Vancouver) — Formule midi du chef: plat du jour et dessert maison organized by BC Ferries in Vancouver. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Vancouver?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning plat du jour et dessert maison in Vancouver","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Vancouver) — Chef's Lunch Special: daily main course and homemade dessert organized by BC Ferries in Vancouver. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Vancouver?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning daily main course and homemade dessert in Vancouver","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 5,
@@ -2226,9 +2227,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Vancouver ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant demande de créneau horaire de livraison à Vancouver","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Vancouver) — Suivi de livraison de colis: demande de créneau horaire de livraison organized by BC Ferries in Vancouver. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Vancouver?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning demande de créneau horaire de livraison in Vancouver","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Vancouver) — Parcel Delivery Tracking: request for carrier delivery timeslot organized by BC Ferries in Vancouver. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Vancouver?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning request for carrier delivery timeslot in Vancouver","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 5,
@@ -2239,9 +2240,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Vancouver ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant séance du samedi matin à Vancouver","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Vancouver) — Atelier de yoga pour débutants: séance du samedi matin organized by BC Ferries in Vancouver. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Vancouver?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning séance du samedi matin in Vancouver","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Vancouver) — Beginner Yoga Workshop: Saturday morning practice session organized by BC Ferries in Vancouver. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Vancouver?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning Saturday morning practice session in Vancouver","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 5,
@@ -2252,9 +2253,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Vancouver ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant renouvellement de prêt en ligne à Vancouver","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Vancouver) — Conditions d'emprunt: renouvellement de prêt en ligne organized by BC Ferries in Vancouver. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Vancouver?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning renouvellement de prêt en ligne in Vancouver","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Vancouver) — Borrowing Terms: online book loan renewals organized by BC Ferries in Vancouver. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Vancouver?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning online book loan renewals in Vancouver","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 5,
@@ -2265,9 +2266,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Source, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant réduction des déchets municipaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Source) — Tri sélectif et compostage urbain: In the Vancouver region, the initiative focusing on réduction des déchets municipaux is generating growing interest. According to actors at Université Simon Fraser and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Source, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning réduction des déchets municipaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Source Newspaper) — Waste Sorting and Urban Composting: In the Vancouver region, this public initiative centered on municipal waste reduction targets is attracting widespread interest. According to researchers at Simon Fraser University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Source Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing municipal waste reduction targets despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 5,
@@ -2278,9 +2279,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Source, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant équilibre vie professionnelle et personnelle malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Source) — Modèle de télétravail hybride: In the Vancouver region, the initiative focusing on équilibre vie professionnelle et personnelle is generating growing interest. According to actors at Université Simon Fraser and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Source, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning équilibre vie professionnelle et personnelle despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Source Newspaper) — Hybrid Telecommuting Model: In the Vancouver region, this public initiative centered on work-life balance and productivity is attracting widespread interest. According to researchers at Simon Fraser University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Source Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing work-life balance and productivity despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 5,
@@ -2291,9 +2292,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Source, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant produits frais riches en antioxydants malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Source) — Alimentation de saison et immunité: In the Vancouver region, the initiative focusing on produits frais riches en antioxydants is generating growing interest. According to actors at Université Simon Fraser and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Source, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning produits frais riches en antioxydants despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Source Newspaper) — Seasonal Nutrition and Immunity: In the Vancouver region, this public initiative centered on fresh produce rich in antioxidants is attracting widespread interest. According to researchers at Simon Fraser University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Source Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fresh produce rich in antioxidants despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 5,
@@ -2304,9 +2305,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Source, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant prolongation de la durée de vie du matériel malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Source) — Réparabilité des appareils électroniques: In the Vancouver region, the initiative focusing on prolongation de la durée de vie du matériel is generating growing interest. According to actors at Université Simon Fraser and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Source, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning prolongation de la durée de vie du matériel despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Source Newspaper) — Electronic Device Repairability: In the Vancouver region, this public initiative centered on extending equipment lifespan through repair is attracting widespread interest. According to researchers at Simon Fraser University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Source Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing extending equipment lifespan through repair despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 5,
@@ -2317,9 +2318,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Source, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant hausse des déplacements à vélo à l'heure de pointe malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Source) — Nouveau réseau cyclable sécurisé: In the Vancouver region, the initiative focusing on hausse des déplacements à vélo à l'heure de pointe is generating growing interest. According to actors at Université Simon Fraser and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Source, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning hausse des déplacements à vélo à l'heure de pointe despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Source Newspaper) — Protected Express Cycling Network: In the Vancouver region, this public initiative centered on growth in rush-hour bicycle commuting is attracting widespread interest. According to researchers at Simon Fraser University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Source Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing growth in rush-hour bicycle commuting despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 5,
@@ -2330,9 +2331,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Source, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant justesse de l'interprétation des comédiens malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Source) — Nouvelle pièce de théâtre contemporaine: In the Vancouver region, the initiative focusing on justesse de l'interprétation des comédiens is generating growing interest. According to actors at Université Simon Fraser and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Source, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning justesse de l'interprétation des comédiens despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Source Newspaper) — Contemporary Theatrical Play: In the Vancouver region, this public initiative centered on accuracy of actor performances and staging is attracting widespread interest. According to researchers at Simon Fraser University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Source Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing accuracy of actor performances and staging despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 5,
@@ -2343,9 +2344,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Source, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant valorisation du travail des éleveurs locaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Source) — Coopérative fromagère et vente directe: In the Vancouver region, the initiative focusing on valorisation du travail des éleveurs locaux is generating growing interest. According to actors at Université Simon Fraser and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Source, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning valorisation du travail des éleveurs locaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Source Newspaper) — Dairy Farming Cooperative and Direct Sales: In the Vancouver region, this public initiative centered on fair financial compensation for local farmers is attracting widespread interest. According to researchers at Simon Fraser University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Source Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fair financial compensation for local farmers despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 5,
@@ -2356,9 +2357,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Source, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant formation continue pour professionnels en reconversion malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Source) — Microprogrammes certifiants en ligne: In the Vancouver region, the initiative focusing on formation continue pour professionnels en reconversion is generating growing interest. According to actors at Université Simon Fraser and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Source, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning formation continue pour professionnels en reconversion despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Source Newspaper) — Online Certifying Microprograms: In the Vancouver region, this public initiative centered on continuing education for working professionals is attracting widespread interest. According to researchers at Simon Fraser University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Source Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing continuing education for working professionals despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 5,
@@ -2369,9 +2370,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Source, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant relecture humaine nécessaire des sources malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Source) — Intelligence artificielle dans les cabinets juridiques: In the Vancouver region, the initiative focusing on relecture humaine nécessaire des sources is generating growing interest. According to actors at Université Simon Fraser and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Source, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning relecture humaine nécessaire des sources despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Source Newspaper) — Artificial Intelligence in Legal Practice: In the Vancouver region, this public initiative centered on rigorous human verification of cited legal sources is attracting widespread interest. According to researchers at Simon Fraser University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Source Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing rigorous human verification of cited legal sources despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 5,
@@ -2382,9 +2383,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Source, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant parrainage entre étudiants et aînés malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Source) — Réseau d'entraide intergénérationnel: In the Vancouver region, the initiative focusing on parrainage entre étudiants et aînés is generating growing interest. According to actors at Université Simon Fraser and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Source, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning parrainage entre étudiants et aînés despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Source Newspaper) — Intergenerational Mentorship Network: In the Vancouver region, this public initiative centered on pairing university students with senior citizens is attracting widespread interest. According to researchers at Simon Fraser University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Source Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing pairing university students with senior citizens despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 5,
@@ -2395,9 +2396,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de économie circulaire et éco-conception ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter responsabilité des industriels et réparabilité","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (La Source) — Économie circulaire et éco-conception: In-depth analysis conducted by researchers at Université Simon Fraser emphasizes that the issue of responsabilité des industriels et réparabilité cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding économie circulaire et éco-conception?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address responsabilité des industriels et réparabilité","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (La Source Newspaper) — Circular Economy and Eco-Design: In-depth analysis by academic researchers at Simon Fraser University underscores that the critical challenge of corporate manufacturing responsibility and repairability cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding circular economy and eco-design?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve corporate manufacturing responsibility and repairability","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 5,
@@ -2408,9 +2409,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de quête de sens chez les jeunes diplômés ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter impact sociétal et flexibilité professionnelle","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (La Source) — Quête de sens chez les jeunes diplômés: In-depth analysis conducted by researchers at Université Simon Fraser emphasizes that the issue of impact sociétal et flexibilité professionnelle cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding quête de sens chez les jeunes diplômés?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address impact sociétal et flexibilité professionnelle","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (La Source Newspaper) — Search for Meaning Among Recent Graduates: In-depth analysis by academic researchers at Simon Fraser University underscores that the critical challenge of societal impact and workplace schedule flexibility cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding search for meaning among recent graduates?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve societal impact and workplace schedule flexibility","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 5,
@@ -2421,9 +2422,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de déploiement des parcs éoliens ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter arbitrage entre urgence climatique et concertation locale","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (La Source) — Déploiement des parcs éoliens: In-depth analysis conducted by researchers at Université Simon Fraser emphasizes that the issue of arbitrage entre urgence climatique et concertation locale cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding déploiement des parcs éoliens?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address arbitrage entre urgence climatique et concertation locale","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (La Source Newspaper) — Renewable Wind Energy Deployment: In-depth analysis by academic researchers at Simon Fraser University underscores that the critical challenge of balancing climate urgency with local community consent cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding renewable wind energy deployment?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve balancing climate urgency with local community consent","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 5,
@@ -2434,9 +2435,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de ia générative dans l'enseignement supérieur ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter déplacement de l'évaluation vers l'analyse critique","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (La Source) — IA générative dans l'enseignement supérieur: In-depth analysis conducted by researchers at Université Simon Fraser emphasizes that the issue of déplacement de l'évaluation vers l'analyse critique cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding ia générative dans l'enseignement supérieur?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address déplacement de l'évaluation vers l'analyse critique","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (La Source Newspaper) — Generative AI in Higher Education: In-depth analysis by academic researchers at Simon Fraser University underscores that the critical challenge of shifting assessment toward critical reflexive analysis cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding generative ai in higher education?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve shifting assessment toward critical reflexive analysis","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 5,
@@ -2447,9 +2448,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de densification urbaine et patrimoine bâti ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter réhabilitation écologique des bâtiments historiques","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (La Source) — Densification urbaine et patrimoine bâti: In-depth analysis conducted by researchers at Université Simon Fraser emphasizes that the issue of réhabilitation écologique des bâtiments historiques cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding densification urbaine et patrimoine bâti?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address réhabilitation écologique des bâtiments historiques","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (La Source Newspaper) — Urban Densification and Built Heritage: In-depth analysis by academic researchers at Simon Fraser University underscores that the critical challenge of sustainable ecological rehabilitation of historic edifices cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding urban densification and built heritage?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve sustainable ecological rehabilitation of historic edifices","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 5,
@@ -2460,9 +2461,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de préservation de la biodiversité marine ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter contrôle des pollutions terrestres en amont","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (La Source) — Préservation de la biodiversité marine: In-depth analysis conducted by researchers at Université Simon Fraser emphasizes that the issue of contrôle des pollutions terrestres en amont cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding préservation de la biodiversité marine?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address contrôle des pollutions terrestres en amont","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (La Source Newspaper) — Marine Biodiversity Conservation: In-depth analysis by academic researchers at Simon Fraser University underscores that the critical challenge of strict control of upstream land-based pollution runoff cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding marine biodiversity conservation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve strict control of upstream land-based pollution runoff","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 5,
@@ -2473,9 +2474,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de éducation à l'esprit critique et désinformation ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter préservation du débat public fondé sur des faits","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (La Source) — Éducation à l'esprit critique et désinformation: In-depth analysis conducted by researchers at Université Simon Fraser emphasizes that the issue of préservation du débat public fondé sur des faits cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding éducation à l'esprit critique et désinformation?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address préservation du débat public fondé sur des faits","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (La Source Newspaper) — Critical Thinking and Combating Disinformation: In-depth analysis by academic researchers at Simon Fraser University underscores that the critical challenge of safeguarding fact-based democratic public discourse cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding critical thinking and combating disinformation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve safeguarding fact-based democratic public discourse","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 5,
@@ -2486,9 +2487,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de priorité à la médecine préventive ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter investissement précoce dans le dépistage et l'alimentation","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (La Source) — Priorité à la médecine préventive: In-depth analysis conducted by researchers at Université Simon Fraser emphasizes that the issue of investissement précoce dans le dépistage et l'alimentation cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding priorité à la médecine préventive?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address investissement précoce dans le dépistage et l'alimentation","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (La Source Newspaper) — Prioritizing Preventative Healthcare: In-depth analysis by academic researchers at Simon Fraser University underscores that the critical challenge of early investment in disease screening and wholesome nutrition cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding prioritizing preventative healthcare?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve early investment in disease screening and wholesome nutrition","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 5,
@@ -2499,9 +2500,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à érosion de la lenteur nécessaire à la maturation de la pensée","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université Simon Fraser) — Temporalité et culte de l'instantanéité: In this essay written in Vancouver, the author explores the conceptual significance of érosion de la lenteur nécessaire à la maturation de la pensée. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding érosion de la lenteur nécessaire à la maturation de la pensée","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Simon Fraser University) — Temporality and the Cult of Instantaneity: In this philosophical essay composed in Vancouver, the author investigates the conceptual implications of erosion of the contemplative stillness essential for thought maturation. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding erosion of the contemplative stillness essential for thought maturation","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 5,
@@ -2512,9 +2513,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à densité poétique et tension métaphorique du récit","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université Simon Fraser) — Esthétique du dépouillement syntaxique: In this essay written in Vancouver, the author explores the conceptual significance of densité poétique et tension métaphorique du récit. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding densité poétique et tension métaphorique du récit","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Simon Fraser University) — Aesthetics of Syntactic Sobriety: In this philosophical essay composed in Vancouver, the author investigates the conceptual implications of poetic density and metaphorical tension in prose. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic density and metaphorical tension in prose","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 5,
@@ -2525,9 +2526,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à distinction entre inférence statistique et conscience réflexive","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université Simon Fraser) — Illusion anthropomorphique de l'IA: In this essay written in Vancouver, the author explores the conceptual significance of distinction entre inférence statistique et conscience réflexive. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding distinction entre inférence statistique et conscience réflexive","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Simon Fraser University) — The Anthropomorphic Illusion of AI: In this philosophical essay composed in Vancouver, the author investigates the conceptual implications of distinguishing statistical inference from reflexive human consciousness. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding distinguishing statistical inference from reflexive human consciousness","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 5,
@@ -2538,9 +2539,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à vitalité des variétés régionales francophones mondiales","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université Simon Fraser) — Polyphonie pluricentrique de la francophonie: In this essay written in Vancouver, the author explores the conceptual significance of vitalité des variétés régionales francophones mondiales. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding vitalité des variétés régionales francophones mondiales","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Simon Fraser University) — Pluricentric Polyphony of the Francophonie: In this philosophical essay composed in Vancouver, the author investigates the conceptual implications of the vitality of global regional Francophone varieties. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding the vitality of global regional Francophone varieties","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 5,
@@ -2551,9 +2552,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à subversion poétique et révélation des tensions politiques","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université Simon Fraser) — L'art contemporain dans l'espace public: In this essay written in Vancouver, the author explores the conceptual significance of subversion poétique et révélation des tensions politiques. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding subversion poétique et révélation des tensions politiques","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Simon Fraser University) — Contemporary Art in Civic Spaces: In this philosophical essay composed in Vancouver, the author investigates the conceptual implications of poetic subversion and unmasking political civic tensions. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic subversion and unmasking political civic tensions","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 5,
@@ -2564,9 +2565,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à sélection axiologique et projection communautaire vers l'avenir","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université Simon Fraser) — Symbolique projective de la mémoire collective: In this essay written in Vancouver, the author explores the conceptual significance of sélection axiologique et projection communautaire vers l'avenir. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding sélection axiologique et projection communautaire vers l'avenir","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Simon Fraser University) — Projective Symbolics of Collective Memory: In this philosophical essay composed in Vancouver, the author investigates the conceptual implications of axiological selection and community projection toward the future. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding axiological selection and community projection toward the future","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
   ],
   // ==================== 📄 PAPER 6 (39 UNIQUE ITEMS) ====================
@@ -2580,9 +2581,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Moncton-Caraquet ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant fruits et légumes locaux à Moncton-Caraquet","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Moncton-Caraquet) — Horaires de marché: fruits et légumes locaux within the community of Moncton-Caraquet. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Moncton-Caraquet?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding fruits et légumes locaux in Moncton-Caraquet","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Moncton-Caraquet) — Market Opening Hours: local fresh fruits and vegetables within the community of Moncton-Caraquet. Practical details, access guidelines, and opening hours available from municipal administrative offices in Moncton-Caraquet.",
+      qEn: "What is the primary purpose of this public document posted in Moncton-Caraquet?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding local fresh fruits and vegetables in Moncton-Caraquet","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 6,
@@ -2593,9 +2594,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Moncton-Caraquet ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant travaux d'entretien des bassins à Moncton-Caraquet","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Moncton-Caraquet) — Fermeture temporaire de piscine: travaux d'entretien des bassins within the community of Moncton-Caraquet. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Moncton-Caraquet?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding travaux d'entretien des bassins in Moncton-Caraquet","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Moncton-Caraquet) — Temporary Pool Closure: pool basin maintenance and cleaning within the community of Moncton-Caraquet. Practical details, access guidelines, and opening hours available from municipal administrative offices in Moncton-Caraquet.",
+      qEn: "What is the primary purpose of this public document posted in Moncton-Caraquet?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding pool basin maintenance and cleaning in Moncton-Caraquet","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 6,
@@ -2606,9 +2607,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Moncton-Caraquet ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant révision d'examen et prêt de livres à Moncton-Caraquet","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Moncton-Caraquet) — Rendez-vous à la bibliothèque: révision d'examen et prêt de livres within the community of Moncton-Caraquet. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Moncton-Caraquet?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding révision d'examen et prêt de livres in Moncton-Caraquet","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Moncton-Caraquet) — Library Study Meeting: exam revision and book lending within the community of Moncton-Caraquet. Practical details, access guidelines, and opening hours available from municipal administrative offices in Moncton-Caraquet.",
+      qEn: "What is the primary purpose of this public document posted in Moncton-Caraquet?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding exam revision and book lending in Moncton-Caraquet","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 6,
@@ -2619,9 +2620,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Moncton-Caraquet ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant viennoiseries offertes le matin à Moncton-Caraquet","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Moncton-Caraquet) — Boulangerie artisanale: viennoiseries offertes le matin within the community of Moncton-Caraquet. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Moncton-Caraquet?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding viennoiseries offertes le matin in Moncton-Caraquet","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Moncton-Caraquet) — Artisanal Bakery: complimentary morning pastries within the community of Moncton-Caraquet. Practical details, access guidelines, and opening hours available from municipal administrative offices in Moncton-Caraquet.",
+      qEn: "What is the primary purpose of this public document posted in Moncton-Caraquet?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding complimentary morning pastries in Moncton-Caraquet","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 6,
@@ -2632,9 +2633,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Moncton-Caraquet ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant bureau des objets trouvés à Moncton-Caraquet","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Moncton-Caraquet) — Clés trouvées dans le métro: bureau des objets trouvés within the community of Moncton-Caraquet. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Moncton-Caraquet?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding bureau des objets trouvés in Moncton-Caraquet","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Moncton-Caraquet) — Keys Found in Subway: lost and found claims office within the community of Moncton-Caraquet. Practical details, access guidelines, and opening hours available from municipal administrative offices in Moncton-Caraquet.",
+      qEn: "What is the primary purpose of this public document posted in Moncton-Caraquet?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding lost and found claims office in Moncton-Caraquet","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 6,
@@ -2645,9 +2646,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Moncton-Caraquet ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant vêtements et jouets d'occasion au parc à Moncton-Caraquet","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Moncton-Caraquet) — Vente de quartier: vêtements et jouets d'occasion au parc within the community of Moncton-Caraquet. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Moncton-Caraquet?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding vêtements et jouets d'occasion au parc in Moncton-Caraquet","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Moncton-Caraquet) — Neighborhood Garage Sale: second-hand clothing and toys at the park within the community of Moncton-Caraquet. Practical details, access guidelines, and opening hours available from municipal administrative offices in Moncton-Caraquet.",
+      qEn: "What is the primary purpose of this public document posted in Moncton-Caraquet?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding second-hand clothing and toys at the park in Moncton-Caraquet","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 6,
@@ -2658,9 +2659,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Moncton-Caraquet ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant rencontre de début de saison au parc à Moncton-Caraquet","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Moncton-Caraquet) — Pique-nique associatif: rencontre de début de saison au parc within the community of Moncton-Caraquet. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Moncton-Caraquet?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding rencontre de début de saison au parc in Moncton-Caraquet","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Moncton-Caraquet) — Community Picnic: seasonal kickoff gathering at the park within the community of Moncton-Caraquet. Practical details, access guidelines, and opening hours available from municipal administrative offices in Moncton-Caraquet.",
+      qEn: "What is the primary purpose of this public document posted in Moncton-Caraquet?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding seasonal kickoff gathering at the park in Moncton-Caraquet","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 6,
@@ -2671,9 +2672,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Moncton-Caraquet ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant temps partiel et accueil clientèle à Moncton-Caraquet","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Moncton-Caraquet) — Conseiller de vente en librairie: temps partiel et accueil clientèle organized by Pêcheries Acadiennes in Moncton-Caraquet. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Moncton-Caraquet?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning temps partiel et accueil clientèle in Moncton-Caraquet","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Moncton-Caraquet) — Bookstore Sales Advisor: part-time employment and customer service organized by Acadian Fisheries in Moncton-Caraquet. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Moncton-Caraquet?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning part-time employment and customer service in Moncton-Caraquet","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 6,
@@ -2684,9 +2685,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Moncton-Caraquet ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant logement rénové proche transports à Moncton-Caraquet","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Moncton-Caraquet) — Location d'appartement: logement rénové proche transports organized by Pêcheries Acadiennes in Moncton-Caraquet. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Moncton-Caraquet?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning logement rénové proche transports in Moncton-Caraquet","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Moncton-Caraquet) — Apartment Rental: renovated housing near transit organized by Acadian Fisheries in Moncton-Caraquet. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Moncton-Caraquet?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning renovated housing near transit in Moncton-Caraquet","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 6,
@@ -2697,9 +2698,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Moncton-Caraquet ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant accès par badge magnétique à Moncton-Caraquet","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Moncton-Caraquet) — Règlement du parking d'entreprise: accès par badge magnétique organized by Pêcheries Acadiennes in Moncton-Caraquet. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Moncton-Caraquet?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning accès par badge magnétique in Moncton-Caraquet","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Moncton-Caraquet) — Company Parking Lot Policy: magnetic badge access control organized by Acadian Fisheries in Moncton-Caraquet. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Moncton-Caraquet?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning magnetic badge access control in Moncton-Caraquet","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 6,
@@ -2710,9 +2711,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Moncton-Caraquet ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant parcours pédestre avec guide certifié à Moncton-Caraquet","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Moncton-Caraquet) — Visite guidée historique: parcours pédestre avec guide certifié organized by Pêcheries Acadiennes in Moncton-Caraquet. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Moncton-Caraquet?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning parcours pédestre avec guide certifié in Moncton-Caraquet","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Moncton-Caraquet) — Historical Guided Tour: walking itinerary with a certified guide organized by Acadian Fisheries in Moncton-Caraquet. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Moncton-Caraquet?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning walking itinerary with a certified guide in Moncton-Caraquet","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 6,
@@ -2723,9 +2724,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Moncton-Caraquet ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant plat du jour et dessert maison à Moncton-Caraquet","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Moncton-Caraquet) — Formule midi du chef: plat du jour et dessert maison organized by Pêcheries Acadiennes in Moncton-Caraquet. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Moncton-Caraquet?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning plat du jour et dessert maison in Moncton-Caraquet","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Moncton-Caraquet) — Chef's Lunch Special: daily main course and homemade dessert organized by Acadian Fisheries in Moncton-Caraquet. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Moncton-Caraquet?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning daily main course and homemade dessert in Moncton-Caraquet","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 6,
@@ -2736,9 +2737,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Moncton-Caraquet ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant demande de créneau horaire de livraison à Moncton-Caraquet","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Moncton-Caraquet) — Suivi de livraison de colis: demande de créneau horaire de livraison organized by Pêcheries Acadiennes in Moncton-Caraquet. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Moncton-Caraquet?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning demande de créneau horaire de livraison in Moncton-Caraquet","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Moncton-Caraquet) — Parcel Delivery Tracking: request for carrier delivery timeslot organized by Acadian Fisheries in Moncton-Caraquet. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Moncton-Caraquet?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning request for carrier delivery timeslot in Moncton-Caraquet","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 6,
@@ -2749,9 +2750,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Moncton-Caraquet ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant séance du samedi matin à Moncton-Caraquet","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Moncton-Caraquet) — Atelier de yoga pour débutants: séance du samedi matin organized by Pêcheries Acadiennes in Moncton-Caraquet. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Moncton-Caraquet?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning séance du samedi matin in Moncton-Caraquet","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Moncton-Caraquet) — Beginner Yoga Workshop: Saturday morning practice session organized by Acadian Fisheries in Moncton-Caraquet. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Moncton-Caraquet?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning Saturday morning practice session in Moncton-Caraquet","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 6,
@@ -2762,9 +2763,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Moncton-Caraquet ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant renouvellement de prêt en ligne à Moncton-Caraquet","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Moncton-Caraquet) — Conditions d'emprunt: renouvellement de prêt en ligne organized by Pêcheries Acadiennes in Moncton-Caraquet. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Moncton-Caraquet?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning renouvellement de prêt en ligne in Moncton-Caraquet","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Moncton-Caraquet) — Borrowing Terms: online book loan renewals organized by Acadian Fisheries in Moncton-Caraquet. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Moncton-Caraquet?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning online book loan renewals in Moncton-Caraquet","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 6,
@@ -2775,9 +2776,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Acadie Nouvelle, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant réduction des déchets municipaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Acadie Nouvelle) — Tri sélectif et compostage urbain: In the Moncton-Caraquet region, the initiative focusing on réduction des déchets municipaux is generating growing interest. According to actors at Université de Moncton and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Acadie Nouvelle, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning réduction des déchets municipaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Acadie Nouvelle) — Waste Sorting and Urban Composting: In the Moncton-Caraquet region, this public initiative centered on municipal waste reduction targets is attracting widespread interest. According to researchers at University of Moncton and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Acadie Nouvelle, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing municipal waste reduction targets despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 6,
@@ -2788,9 +2789,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Acadie Nouvelle, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant équilibre vie professionnelle et personnelle malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Acadie Nouvelle) — Modèle de télétravail hybride: In the Moncton-Caraquet region, the initiative focusing on équilibre vie professionnelle et personnelle is generating growing interest. According to actors at Université de Moncton and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Acadie Nouvelle, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning équilibre vie professionnelle et personnelle despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Acadie Nouvelle) — Hybrid Telecommuting Model: In the Moncton-Caraquet region, this public initiative centered on work-life balance and productivity is attracting widespread interest. According to researchers at University of Moncton and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Acadie Nouvelle, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing work-life balance and productivity despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 6,
@@ -2801,9 +2802,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Acadie Nouvelle, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant produits frais riches en antioxydants malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Acadie Nouvelle) — Alimentation de saison et immunité: In the Moncton-Caraquet region, the initiative focusing on produits frais riches en antioxydants is generating growing interest. According to actors at Université de Moncton and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Acadie Nouvelle, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning produits frais riches en antioxydants despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Acadie Nouvelle) — Seasonal Nutrition and Immunity: In the Moncton-Caraquet region, this public initiative centered on fresh produce rich in antioxidants is attracting widespread interest. According to researchers at University of Moncton and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Acadie Nouvelle, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fresh produce rich in antioxidants despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 6,
@@ -2814,9 +2815,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Acadie Nouvelle, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant prolongation de la durée de vie du matériel malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Acadie Nouvelle) — Réparabilité des appareils électroniques: In the Moncton-Caraquet region, the initiative focusing on prolongation de la durée de vie du matériel is generating growing interest. According to actors at Université de Moncton and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Acadie Nouvelle, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning prolongation de la durée de vie du matériel despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Acadie Nouvelle) — Electronic Device Repairability: In the Moncton-Caraquet region, this public initiative centered on extending equipment lifespan through repair is attracting widespread interest. According to researchers at University of Moncton and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Acadie Nouvelle, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing extending equipment lifespan through repair despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 6,
@@ -2827,9 +2828,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Acadie Nouvelle, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant hausse des déplacements à vélo à l'heure de pointe malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Acadie Nouvelle) — Nouveau réseau cyclable sécurisé: In the Moncton-Caraquet region, the initiative focusing on hausse des déplacements à vélo à l'heure de pointe is generating growing interest. According to actors at Université de Moncton and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Acadie Nouvelle, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning hausse des déplacements à vélo à l'heure de pointe despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Acadie Nouvelle) — Protected Express Cycling Network: In the Moncton-Caraquet region, this public initiative centered on growth in rush-hour bicycle commuting is attracting widespread interest. According to researchers at University of Moncton and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Acadie Nouvelle, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing growth in rush-hour bicycle commuting despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 6,
@@ -2840,9 +2841,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Acadie Nouvelle, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant justesse de l'interprétation des comédiens malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Acadie Nouvelle) — Nouvelle pièce de théâtre contemporaine: In the Moncton-Caraquet region, the initiative focusing on justesse de l'interprétation des comédiens is generating growing interest. According to actors at Université de Moncton and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Acadie Nouvelle, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning justesse de l'interprétation des comédiens despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Acadie Nouvelle) — Contemporary Theatrical Play: In the Moncton-Caraquet region, this public initiative centered on accuracy of actor performances and staging is attracting widespread interest. According to researchers at University of Moncton and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Acadie Nouvelle, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing accuracy of actor performances and staging despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 6,
@@ -2853,9 +2854,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Acadie Nouvelle, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant valorisation du travail des éleveurs locaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Acadie Nouvelle) — Coopérative fromagère et vente directe: In the Moncton-Caraquet region, the initiative focusing on valorisation du travail des éleveurs locaux is generating growing interest. According to actors at Université de Moncton and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Acadie Nouvelle, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning valorisation du travail des éleveurs locaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Acadie Nouvelle) — Dairy Farming Cooperative and Direct Sales: In the Moncton-Caraquet region, this public initiative centered on fair financial compensation for local farmers is attracting widespread interest. According to researchers at University of Moncton and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Acadie Nouvelle, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fair financial compensation for local farmers despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 6,
@@ -2866,9 +2867,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Acadie Nouvelle, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant formation continue pour professionnels en reconversion malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Acadie Nouvelle) — Microprogrammes certifiants en ligne: In the Moncton-Caraquet region, the initiative focusing on formation continue pour professionnels en reconversion is generating growing interest. According to actors at Université de Moncton and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Acadie Nouvelle, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning formation continue pour professionnels en reconversion despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Acadie Nouvelle) — Online Certifying Microprograms: In the Moncton-Caraquet region, this public initiative centered on continuing education for working professionals is attracting widespread interest. According to researchers at University of Moncton and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Acadie Nouvelle, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing continuing education for working professionals despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 6,
@@ -2879,9 +2880,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Acadie Nouvelle, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant relecture humaine nécessaire des sources malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Acadie Nouvelle) — Intelligence artificielle dans les cabinets juridiques: In the Moncton-Caraquet region, the initiative focusing on relecture humaine nécessaire des sources is generating growing interest. According to actors at Université de Moncton and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Acadie Nouvelle, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning relecture humaine nécessaire des sources despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Acadie Nouvelle) — Artificial Intelligence in Legal Practice: In the Moncton-Caraquet region, this public initiative centered on rigorous human verification of cited legal sources is attracting widespread interest. According to researchers at University of Moncton and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Acadie Nouvelle, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing rigorous human verification of cited legal sources despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 6,
@@ -2892,9 +2893,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal L'Acadie Nouvelle, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant parrainage entre étudiants et aînés malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (L'Acadie Nouvelle) — Réseau d'entraide intergénérationnel: In the Moncton-Caraquet region, the initiative focusing on parrainage entre étudiants et aînés is generating growing interest. According to actors at Université de Moncton and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in L'Acadie Nouvelle, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning parrainage entre étudiants et aînés despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (L'Acadie Nouvelle) — Intergenerational Mentorship Network: In the Moncton-Caraquet region, this public initiative centered on pairing university students with senior citizens is attracting widespread interest. According to researchers at University of Moncton and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in L'Acadie Nouvelle, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing pairing university students with senior citizens despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 6,
@@ -2905,9 +2906,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de économie circulaire et éco-conception ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter responsabilité des industriels et réparabilité","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (L'Acadie Nouvelle) — Économie circulaire et éco-conception: In-depth analysis conducted by researchers at Université de Moncton emphasizes that the issue of responsabilité des industriels et réparabilité cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding économie circulaire et éco-conception?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address responsabilité des industriels et réparabilité","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (L'Acadie Nouvelle) — Circular Economy and Eco-Design: In-depth analysis by academic researchers at University of Moncton underscores that the critical challenge of corporate manufacturing responsibility and repairability cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding circular economy and eco-design?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve corporate manufacturing responsibility and repairability","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 6,
@@ -2918,9 +2919,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de quête de sens chez les jeunes diplômés ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter impact sociétal et flexibilité professionnelle","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (L'Acadie Nouvelle) — Quête de sens chez les jeunes diplômés: In-depth analysis conducted by researchers at Université de Moncton emphasizes that the issue of impact sociétal et flexibilité professionnelle cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding quête de sens chez les jeunes diplômés?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address impact sociétal et flexibilité professionnelle","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (L'Acadie Nouvelle) — Search for Meaning Among Recent Graduates: In-depth analysis by academic researchers at University of Moncton underscores that the critical challenge of societal impact and workplace schedule flexibility cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding search for meaning among recent graduates?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve societal impact and workplace schedule flexibility","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 6,
@@ -2931,9 +2932,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de déploiement des parcs éoliens ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter arbitrage entre urgence climatique et concertation locale","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (L'Acadie Nouvelle) — Déploiement des parcs éoliens: In-depth analysis conducted by researchers at Université de Moncton emphasizes that the issue of arbitrage entre urgence climatique et concertation locale cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding déploiement des parcs éoliens?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address arbitrage entre urgence climatique et concertation locale","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (L'Acadie Nouvelle) — Renewable Wind Energy Deployment: In-depth analysis by academic researchers at University of Moncton underscores that the critical challenge of balancing climate urgency with local community consent cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding renewable wind energy deployment?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve balancing climate urgency with local community consent","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 6,
@@ -2944,9 +2945,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de ia générative dans l'enseignement supérieur ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter déplacement de l'évaluation vers l'analyse critique","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (L'Acadie Nouvelle) — IA générative dans l'enseignement supérieur: In-depth analysis conducted by researchers at Université de Moncton emphasizes that the issue of déplacement de l'évaluation vers l'analyse critique cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding ia générative dans l'enseignement supérieur?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address déplacement de l'évaluation vers l'analyse critique","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (L'Acadie Nouvelle) — Generative AI in Higher Education: In-depth analysis by academic researchers at University of Moncton underscores that the critical challenge of shifting assessment toward critical reflexive analysis cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding generative ai in higher education?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve shifting assessment toward critical reflexive analysis","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 6,
@@ -2957,9 +2958,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de densification urbaine et patrimoine bâti ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter réhabilitation écologique des bâtiments historiques","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (L'Acadie Nouvelle) — Densification urbaine et patrimoine bâti: In-depth analysis conducted by researchers at Université de Moncton emphasizes that the issue of réhabilitation écologique des bâtiments historiques cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding densification urbaine et patrimoine bâti?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address réhabilitation écologique des bâtiments historiques","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (L'Acadie Nouvelle) — Urban Densification and Built Heritage: In-depth analysis by academic researchers at University of Moncton underscores that the critical challenge of sustainable ecological rehabilitation of historic edifices cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding urban densification and built heritage?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve sustainable ecological rehabilitation of historic edifices","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 6,
@@ -2970,9 +2971,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de préservation de la biodiversité marine ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter contrôle des pollutions terrestres en amont","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (L'Acadie Nouvelle) — Préservation de la biodiversité marine: In-depth analysis conducted by researchers at Université de Moncton emphasizes that the issue of contrôle des pollutions terrestres en amont cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding préservation de la biodiversité marine?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address contrôle des pollutions terrestres en amont","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (L'Acadie Nouvelle) — Marine Biodiversity Conservation: In-depth analysis by academic researchers at University of Moncton underscores that the critical challenge of strict control of upstream land-based pollution runoff cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding marine biodiversity conservation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve strict control of upstream land-based pollution runoff","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 6,
@@ -2983,9 +2984,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de éducation à l'esprit critique et désinformation ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter préservation du débat public fondé sur des faits","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (L'Acadie Nouvelle) — Éducation à l'esprit critique et désinformation: In-depth analysis conducted by researchers at Université de Moncton emphasizes that the issue of préservation du débat public fondé sur des faits cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding éducation à l'esprit critique et désinformation?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address préservation du débat public fondé sur des faits","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (L'Acadie Nouvelle) — Critical Thinking and Combating Disinformation: In-depth analysis by academic researchers at University of Moncton underscores that the critical challenge of safeguarding fact-based democratic public discourse cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding critical thinking and combating disinformation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve safeguarding fact-based democratic public discourse","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 6,
@@ -2996,9 +2997,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de priorité à la médecine préventive ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter investissement précoce dans le dépistage et l'alimentation","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (L'Acadie Nouvelle) — Priorité à la médecine préventive: In-depth analysis conducted by researchers at Université de Moncton emphasizes that the issue of investissement précoce dans le dépistage et l'alimentation cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding priorité à la médecine préventive?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address investissement précoce dans le dépistage et l'alimentation","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (L'Acadie Nouvelle) — Prioritizing Preventative Healthcare: In-depth analysis by academic researchers at University of Moncton underscores that the critical challenge of early investment in disease screening and wholesome nutrition cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding prioritizing preventative healthcare?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve early investment in disease screening and wholesome nutrition","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 6,
@@ -3009,9 +3010,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à érosion de la lenteur nécessaire à la maturation de la pensée","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université de Moncton) — Temporalité et culte de l'instantanéité: In this essay written in Moncton-Caraquet, the author explores the conceptual significance of érosion de la lenteur nécessaire à la maturation de la pensée. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding érosion de la lenteur nécessaire à la maturation de la pensée","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Moncton) — Temporality and the Cult of Instantaneity: In this philosophical essay composed in Moncton-Caraquet, the author investigates the conceptual implications of erosion of the contemplative stillness essential for thought maturation. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding erosion of the contemplative stillness essential for thought maturation","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 6,
@@ -3022,9 +3023,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à densité poétique et tension métaphorique du récit","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université de Moncton) — Esthétique du dépouillement syntaxique: In this essay written in Moncton-Caraquet, the author explores the conceptual significance of densité poétique et tension métaphorique du récit. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding densité poétique et tension métaphorique du récit","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Moncton) — Aesthetics of Syntactic Sobriety: In this philosophical essay composed in Moncton-Caraquet, the author investigates the conceptual implications of poetic density and metaphorical tension in prose. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic density and metaphorical tension in prose","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 6,
@@ -3035,9 +3036,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à distinction entre inférence statistique et conscience réflexive","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université de Moncton) — Illusion anthropomorphique de l'IA: In this essay written in Moncton-Caraquet, the author explores the conceptual significance of distinction entre inférence statistique et conscience réflexive. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding distinction entre inférence statistique et conscience réflexive","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Moncton) — The Anthropomorphic Illusion of AI: In this philosophical essay composed in Moncton-Caraquet, the author investigates the conceptual implications of distinguishing statistical inference from reflexive human consciousness. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding distinguishing statistical inference from reflexive human consciousness","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 6,
@@ -3048,9 +3049,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à vitalité des variétés régionales francophones mondiales","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université de Moncton) — Polyphonie pluricentrique de la francophonie: In this essay written in Moncton-Caraquet, the author explores the conceptual significance of vitalité des variétés régionales francophones mondiales. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding vitalité des variétés régionales francophones mondiales","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Moncton) — Pluricentric Polyphony of the Francophonie: In this philosophical essay composed in Moncton-Caraquet, the author investigates the conceptual implications of the vitality of global regional Francophone varieties. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding the vitality of global regional Francophone varieties","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 6,
@@ -3061,9 +3062,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à subversion poétique et révélation des tensions politiques","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université de Moncton) — L'art contemporain dans l'espace public: In this essay written in Moncton-Caraquet, the author explores the conceptual significance of subversion poétique et révélation des tensions politiques. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding subversion poétique et révélation des tensions politiques","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Moncton) — Contemporary Art in Civic Spaces: In this philosophical essay composed in Moncton-Caraquet, the author investigates the conceptual implications of poetic subversion and unmasking political civic tensions. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic subversion and unmasking political civic tensions","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 6,
@@ -3074,9 +3075,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à sélection axiologique et projection communautaire vers l'avenir","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université de Moncton) — Symbolique projective de la mémoire collective: In this essay written in Moncton-Caraquet, the author explores the conceptual significance of sélection axiologique et projection communautaire vers l'avenir. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding sélection axiologique et projection communautaire vers l'avenir","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Moncton) — Projective Symbolics of Collective Memory: In this philosophical essay composed in Moncton-Caraquet, the author investigates the conceptual implications of axiological selection and community projection toward the future. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding axiological selection and community projection toward the future","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
   ],
   // ==================== 📄 PAPER 7 (39 UNIQUE ITEMS) ====================
@@ -3090,9 +3091,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Sherbrooke ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant fruits et légumes locaux à Sherbrooke","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Sherbrooke) — Horaires de marché: fruits et légumes locaux within the community of Sherbrooke. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Sherbrooke?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding fruits et légumes locaux in Sherbrooke","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Sherbrooke) — Market Opening Hours: local fresh fruits and vegetables within the community of Sherbrooke. Practical details, access guidelines, and opening hours available from municipal administrative offices in Sherbrooke.",
+      qEn: "What is the primary purpose of this public document posted in Sherbrooke?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding local fresh fruits and vegetables in Sherbrooke","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 7,
@@ -3103,9 +3104,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Sherbrooke ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant travaux d'entretien des bassins à Sherbrooke","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Sherbrooke) — Fermeture temporaire de piscine: travaux d'entretien des bassins within the community of Sherbrooke. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Sherbrooke?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding travaux d'entretien des bassins in Sherbrooke","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Sherbrooke) — Temporary Pool Closure: pool basin maintenance and cleaning within the community of Sherbrooke. Practical details, access guidelines, and opening hours available from municipal administrative offices in Sherbrooke.",
+      qEn: "What is the primary purpose of this public document posted in Sherbrooke?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding pool basin maintenance and cleaning in Sherbrooke","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 7,
@@ -3116,9 +3117,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Sherbrooke ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant révision d'examen et prêt de livres à Sherbrooke","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Sherbrooke) — Rendez-vous à la bibliothèque: révision d'examen et prêt de livres within the community of Sherbrooke. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Sherbrooke?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding révision d'examen et prêt de livres in Sherbrooke","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Sherbrooke) — Library Study Meeting: exam revision and book lending within the community of Sherbrooke. Practical details, access guidelines, and opening hours available from municipal administrative offices in Sherbrooke.",
+      qEn: "What is the primary purpose of this public document posted in Sherbrooke?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding exam revision and book lending in Sherbrooke","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 7,
@@ -3129,9 +3130,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Sherbrooke ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant viennoiseries offertes le matin à Sherbrooke","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Sherbrooke) — Boulangerie artisanale: viennoiseries offertes le matin within the community of Sherbrooke. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Sherbrooke?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding viennoiseries offertes le matin in Sherbrooke","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Sherbrooke) — Artisanal Bakery: complimentary morning pastries within the community of Sherbrooke. Practical details, access guidelines, and opening hours available from municipal administrative offices in Sherbrooke.",
+      qEn: "What is the primary purpose of this public document posted in Sherbrooke?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding complimentary morning pastries in Sherbrooke","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 7,
@@ -3142,9 +3143,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Sherbrooke ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant bureau des objets trouvés à Sherbrooke","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Sherbrooke) — Clés trouvées dans le métro: bureau des objets trouvés within the community of Sherbrooke. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Sherbrooke?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding bureau des objets trouvés in Sherbrooke","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Sherbrooke) — Keys Found in Subway: lost and found claims office within the community of Sherbrooke. Practical details, access guidelines, and opening hours available from municipal administrative offices in Sherbrooke.",
+      qEn: "What is the primary purpose of this public document posted in Sherbrooke?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding lost and found claims office in Sherbrooke","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 7,
@@ -3155,9 +3156,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Sherbrooke ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant vêtements et jouets d'occasion au parc à Sherbrooke","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Sherbrooke) — Vente de quartier: vêtements et jouets d'occasion au parc within the community of Sherbrooke. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Sherbrooke?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding vêtements et jouets d'occasion au parc in Sherbrooke","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Sherbrooke) — Neighborhood Garage Sale: second-hand clothing and toys at the park within the community of Sherbrooke. Practical details, access guidelines, and opening hours available from municipal administrative offices in Sherbrooke.",
+      qEn: "What is the primary purpose of this public document posted in Sherbrooke?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding second-hand clothing and toys at the park in Sherbrooke","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 7,
@@ -3168,9 +3169,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Sherbrooke ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant rencontre de début de saison au parc à Sherbrooke","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Sherbrooke) — Pique-nique associatif: rencontre de début de saison au parc within the community of Sherbrooke. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Sherbrooke?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding rencontre de début de saison au parc in Sherbrooke","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Sherbrooke) — Community Picnic: seasonal kickoff gathering at the park within the community of Sherbrooke. Practical details, access guidelines, and opening hours available from municipal administrative offices in Sherbrooke.",
+      qEn: "What is the primary purpose of this public document posted in Sherbrooke?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding seasonal kickoff gathering at the park in Sherbrooke","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 7,
@@ -3181,9 +3182,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Sherbrooke ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant temps partiel et accueil clientèle à Sherbrooke","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Sherbrooke) — Conseiller de vente en librairie: temps partiel et accueil clientèle organized by Coopérative de l'Estrie in Sherbrooke. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Sherbrooke?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning temps partiel et accueil clientèle in Sherbrooke","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Sherbrooke) — Bookstore Sales Advisor: part-time employment and customer service organized by Eastern Townships Cooperative in Sherbrooke. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Sherbrooke?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning part-time employment and customer service in Sherbrooke","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 7,
@@ -3194,9 +3195,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Sherbrooke ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant logement rénové proche transports à Sherbrooke","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Sherbrooke) — Location d'appartement: logement rénové proche transports organized by Coopérative de l'Estrie in Sherbrooke. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Sherbrooke?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning logement rénové proche transports in Sherbrooke","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Sherbrooke) — Apartment Rental: renovated housing near transit organized by Eastern Townships Cooperative in Sherbrooke. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Sherbrooke?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning renovated housing near transit in Sherbrooke","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 7,
@@ -3207,9 +3208,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Sherbrooke ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant accès par badge magnétique à Sherbrooke","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Sherbrooke) — Règlement du parking d'entreprise: accès par badge magnétique organized by Coopérative de l'Estrie in Sherbrooke. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Sherbrooke?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning accès par badge magnétique in Sherbrooke","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Sherbrooke) — Company Parking Lot Policy: magnetic badge access control organized by Eastern Townships Cooperative in Sherbrooke. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Sherbrooke?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning magnetic badge access control in Sherbrooke","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 7,
@@ -3220,9 +3221,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Sherbrooke ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant parcours pédestre avec guide certifié à Sherbrooke","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Sherbrooke) — Visite guidée historique: parcours pédestre avec guide certifié organized by Coopérative de l'Estrie in Sherbrooke. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Sherbrooke?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning parcours pédestre avec guide certifié in Sherbrooke","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Sherbrooke) — Historical Guided Tour: walking itinerary with a certified guide organized by Eastern Townships Cooperative in Sherbrooke. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Sherbrooke?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning walking itinerary with a certified guide in Sherbrooke","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 7,
@@ -3233,9 +3234,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Sherbrooke ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant plat du jour et dessert maison à Sherbrooke","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Sherbrooke) — Formule midi du chef: plat du jour et dessert maison organized by Coopérative de l'Estrie in Sherbrooke. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Sherbrooke?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning plat du jour et dessert maison in Sherbrooke","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Sherbrooke) — Chef's Lunch Special: daily main course and homemade dessert organized by Eastern Townships Cooperative in Sherbrooke. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Sherbrooke?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning daily main course and homemade dessert in Sherbrooke","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 7,
@@ -3246,9 +3247,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Sherbrooke ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant demande de créneau horaire de livraison à Sherbrooke","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Sherbrooke) — Suivi de livraison de colis: demande de créneau horaire de livraison organized by Coopérative de l'Estrie in Sherbrooke. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Sherbrooke?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning demande de créneau horaire de livraison in Sherbrooke","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Sherbrooke) — Parcel Delivery Tracking: request for carrier delivery timeslot organized by Eastern Townships Cooperative in Sherbrooke. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Sherbrooke?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning request for carrier delivery timeslot in Sherbrooke","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 7,
@@ -3259,9 +3260,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Sherbrooke ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant séance du samedi matin à Sherbrooke","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Sherbrooke) — Atelier de yoga pour débutants: séance du samedi matin organized by Coopérative de l'Estrie in Sherbrooke. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Sherbrooke?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning séance du samedi matin in Sherbrooke","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Sherbrooke) — Beginner Yoga Workshop: Saturday morning practice session organized by Eastern Townships Cooperative in Sherbrooke. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Sherbrooke?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning Saturday morning practice session in Sherbrooke","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 7,
@@ -3272,9 +3273,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Sherbrooke ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant renouvellement de prêt en ligne à Sherbrooke","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Sherbrooke) — Conditions d'emprunt: renouvellement de prêt en ligne organized by Coopérative de l'Estrie in Sherbrooke. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Sherbrooke?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning renouvellement de prêt en ligne in Sherbrooke","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Sherbrooke) — Borrowing Terms: online book loan renewals organized by Eastern Townships Cooperative in Sherbrooke. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Sherbrooke?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning online book loan renewals in Sherbrooke","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 7,
@@ -3285,9 +3286,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Tribune, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant réduction des déchets municipaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Tribune) — Tri sélectif et compostage urbain: In the Sherbrooke region, the initiative focusing on réduction des déchets municipaux is generating growing interest. According to actors at Université de Sherbrooke and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Tribune, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning réduction des déchets municipaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Tribune Newspaper) — Waste Sorting and Urban Composting: In the Sherbrooke region, this public initiative centered on municipal waste reduction targets is attracting widespread interest. According to researchers at University of Sherbrooke and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Tribune Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing municipal waste reduction targets despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 7,
@@ -3298,9 +3299,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Tribune, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant équilibre vie professionnelle et personnelle malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Tribune) — Modèle de télétravail hybride: In the Sherbrooke region, the initiative focusing on équilibre vie professionnelle et personnelle is generating growing interest. According to actors at Université de Sherbrooke and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Tribune, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning équilibre vie professionnelle et personnelle despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Tribune Newspaper) — Hybrid Telecommuting Model: In the Sherbrooke region, this public initiative centered on work-life balance and productivity is attracting widespread interest. According to researchers at University of Sherbrooke and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Tribune Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing work-life balance and productivity despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 7,
@@ -3311,9 +3312,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Tribune, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant produits frais riches en antioxydants malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Tribune) — Alimentation de saison et immunité: In the Sherbrooke region, the initiative focusing on produits frais riches en antioxydants is generating growing interest. According to actors at Université de Sherbrooke and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Tribune, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning produits frais riches en antioxydants despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Tribune Newspaper) — Seasonal Nutrition and Immunity: In the Sherbrooke region, this public initiative centered on fresh produce rich in antioxidants is attracting widespread interest. According to researchers at University of Sherbrooke and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Tribune Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fresh produce rich in antioxidants despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 7,
@@ -3324,9 +3325,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Tribune, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant prolongation de la durée de vie du matériel malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Tribune) — Réparabilité des appareils électroniques: In the Sherbrooke region, the initiative focusing on prolongation de la durée de vie du matériel is generating growing interest. According to actors at Université de Sherbrooke and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Tribune, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning prolongation de la durée de vie du matériel despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Tribune Newspaper) — Electronic Device Repairability: In the Sherbrooke region, this public initiative centered on extending equipment lifespan through repair is attracting widespread interest. According to researchers at University of Sherbrooke and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Tribune Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing extending equipment lifespan through repair despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 7,
@@ -3337,9 +3338,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Tribune, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant hausse des déplacements à vélo à l'heure de pointe malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Tribune) — Nouveau réseau cyclable sécurisé: In the Sherbrooke region, the initiative focusing on hausse des déplacements à vélo à l'heure de pointe is generating growing interest. According to actors at Université de Sherbrooke and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Tribune, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning hausse des déplacements à vélo à l'heure de pointe despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Tribune Newspaper) — Protected Express Cycling Network: In the Sherbrooke region, this public initiative centered on growth in rush-hour bicycle commuting is attracting widespread interest. According to researchers at University of Sherbrooke and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Tribune Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing growth in rush-hour bicycle commuting despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 7,
@@ -3350,9 +3351,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Tribune, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant justesse de l'interprétation des comédiens malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Tribune) — Nouvelle pièce de théâtre contemporaine: In the Sherbrooke region, the initiative focusing on justesse de l'interprétation des comédiens is generating growing interest. According to actors at Université de Sherbrooke and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Tribune, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning justesse de l'interprétation des comédiens despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Tribune Newspaper) — Contemporary Theatrical Play: In the Sherbrooke region, this public initiative centered on accuracy of actor performances and staging is attracting widespread interest. According to researchers at University of Sherbrooke and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Tribune Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing accuracy of actor performances and staging despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 7,
@@ -3363,9 +3364,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Tribune, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant valorisation du travail des éleveurs locaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Tribune) — Coopérative fromagère et vente directe: In the Sherbrooke region, the initiative focusing on valorisation du travail des éleveurs locaux is generating growing interest. According to actors at Université de Sherbrooke and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Tribune, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning valorisation du travail des éleveurs locaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Tribune Newspaper) — Dairy Farming Cooperative and Direct Sales: In the Sherbrooke region, this public initiative centered on fair financial compensation for local farmers is attracting widespread interest. According to researchers at University of Sherbrooke and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Tribune Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fair financial compensation for local farmers despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 7,
@@ -3376,9 +3377,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Tribune, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant formation continue pour professionnels en reconversion malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Tribune) — Microprogrammes certifiants en ligne: In the Sherbrooke region, the initiative focusing on formation continue pour professionnels en reconversion is generating growing interest. According to actors at Université de Sherbrooke and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Tribune, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning formation continue pour professionnels en reconversion despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Tribune Newspaper) — Online Certifying Microprograms: In the Sherbrooke region, this public initiative centered on continuing education for working professionals is attracting widespread interest. According to researchers at University of Sherbrooke and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Tribune Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing continuing education for working professionals despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 7,
@@ -3389,9 +3390,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Tribune, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant relecture humaine nécessaire des sources malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Tribune) — Intelligence artificielle dans les cabinets juridiques: In the Sherbrooke region, the initiative focusing on relecture humaine nécessaire des sources is generating growing interest. According to actors at Université de Sherbrooke and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Tribune, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning relecture humaine nécessaire des sources despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Tribune Newspaper) — Artificial Intelligence in Legal Practice: In the Sherbrooke region, this public initiative centered on rigorous human verification of cited legal sources is attracting widespread interest. According to researchers at University of Sherbrooke and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Tribune Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing rigorous human verification of cited legal sources despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 7,
@@ -3402,9 +3403,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal La Tribune, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant parrainage entre étudiants et aînés malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (La Tribune) — Réseau d'entraide intergénérationnel: In the Sherbrooke region, the initiative focusing on parrainage entre étudiants et aînés is generating growing interest. According to actors at Université de Sherbrooke and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in La Tribune, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning parrainage entre étudiants et aînés despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (La Tribune Newspaper) — Intergenerational Mentorship Network: In the Sherbrooke region, this public initiative centered on pairing university students with senior citizens is attracting widespread interest. According to researchers at University of Sherbrooke and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in La Tribune Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing pairing university students with senior citizens despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 7,
@@ -3415,9 +3416,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de économie circulaire et éco-conception ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter responsabilité des industriels et réparabilité","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (La Tribune) — Économie circulaire et éco-conception: In-depth analysis conducted by researchers at Université de Sherbrooke emphasizes that the issue of responsabilité des industriels et réparabilité cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding économie circulaire et éco-conception?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address responsabilité des industriels et réparabilité","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (La Tribune Newspaper) — Circular Economy and Eco-Design: In-depth analysis by academic researchers at University of Sherbrooke underscores that the critical challenge of corporate manufacturing responsibility and repairability cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding circular economy and eco-design?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve corporate manufacturing responsibility and repairability","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 7,
@@ -3428,9 +3429,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de quête de sens chez les jeunes diplômés ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter impact sociétal et flexibilité professionnelle","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (La Tribune) — Quête de sens chez les jeunes diplômés: In-depth analysis conducted by researchers at Université de Sherbrooke emphasizes that the issue of impact sociétal et flexibilité professionnelle cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding quête de sens chez les jeunes diplômés?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address impact sociétal et flexibilité professionnelle","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (La Tribune Newspaper) — Search for Meaning Among Recent Graduates: In-depth analysis by academic researchers at University of Sherbrooke underscores that the critical challenge of societal impact and workplace schedule flexibility cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding search for meaning among recent graduates?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve societal impact and workplace schedule flexibility","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 7,
@@ -3441,9 +3442,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de déploiement des parcs éoliens ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter arbitrage entre urgence climatique et concertation locale","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (La Tribune) — Déploiement des parcs éoliens: In-depth analysis conducted by researchers at Université de Sherbrooke emphasizes that the issue of arbitrage entre urgence climatique et concertation locale cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding déploiement des parcs éoliens?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address arbitrage entre urgence climatique et concertation locale","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (La Tribune Newspaper) — Renewable Wind Energy Deployment: In-depth analysis by academic researchers at University of Sherbrooke underscores that the critical challenge of balancing climate urgency with local community consent cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding renewable wind energy deployment?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve balancing climate urgency with local community consent","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 7,
@@ -3454,9 +3455,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de ia générative dans l'enseignement supérieur ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter déplacement de l'évaluation vers l'analyse critique","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (La Tribune) — IA générative dans l'enseignement supérieur: In-depth analysis conducted by researchers at Université de Sherbrooke emphasizes that the issue of déplacement de l'évaluation vers l'analyse critique cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding ia générative dans l'enseignement supérieur?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address déplacement de l'évaluation vers l'analyse critique","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (La Tribune Newspaper) — Generative AI in Higher Education: In-depth analysis by academic researchers at University of Sherbrooke underscores that the critical challenge of shifting assessment toward critical reflexive analysis cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding generative ai in higher education?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve shifting assessment toward critical reflexive analysis","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 7,
@@ -3467,9 +3468,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de densification urbaine et patrimoine bâti ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter réhabilitation écologique des bâtiments historiques","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (La Tribune) — Densification urbaine et patrimoine bâti: In-depth analysis conducted by researchers at Université de Sherbrooke emphasizes that the issue of réhabilitation écologique des bâtiments historiques cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding densification urbaine et patrimoine bâti?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address réhabilitation écologique des bâtiments historiques","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (La Tribune Newspaper) — Urban Densification and Built Heritage: In-depth analysis by academic researchers at University of Sherbrooke underscores that the critical challenge of sustainable ecological rehabilitation of historic edifices cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding urban densification and built heritage?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve sustainable ecological rehabilitation of historic edifices","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 7,
@@ -3480,9 +3481,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de préservation de la biodiversité marine ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter contrôle des pollutions terrestres en amont","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (La Tribune) — Préservation de la biodiversité marine: In-depth analysis conducted by researchers at Université de Sherbrooke emphasizes that the issue of contrôle des pollutions terrestres en amont cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding préservation de la biodiversité marine?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address contrôle des pollutions terrestres en amont","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (La Tribune Newspaper) — Marine Biodiversity Conservation: In-depth analysis by academic researchers at University of Sherbrooke underscores that the critical challenge of strict control of upstream land-based pollution runoff cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding marine biodiversity conservation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve strict control of upstream land-based pollution runoff","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 7,
@@ -3493,9 +3494,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de éducation à l'esprit critique et désinformation ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter préservation du débat public fondé sur des faits","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (La Tribune) — Éducation à l'esprit critique et désinformation: In-depth analysis conducted by researchers at Université de Sherbrooke emphasizes that the issue of préservation du débat public fondé sur des faits cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding éducation à l'esprit critique et désinformation?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address préservation du débat public fondé sur des faits","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (La Tribune Newspaper) — Critical Thinking and Combating Disinformation: In-depth analysis by academic researchers at University of Sherbrooke underscores that the critical challenge of safeguarding fact-based democratic public discourse cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding critical thinking and combating disinformation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve safeguarding fact-based democratic public discourse","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 7,
@@ -3506,9 +3507,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de priorité à la médecine préventive ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter investissement précoce dans le dépistage et l'alimentation","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (La Tribune) — Priorité à la médecine préventive: In-depth analysis conducted by researchers at Université de Sherbrooke emphasizes that the issue of investissement précoce dans le dépistage et l'alimentation cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding priorité à la médecine préventive?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address investissement précoce dans le dépistage et l'alimentation","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (La Tribune Newspaper) — Prioritizing Preventative Healthcare: In-depth analysis by academic researchers at University of Sherbrooke underscores that the critical challenge of early investment in disease screening and wholesome nutrition cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding prioritizing preventative healthcare?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve early investment in disease screening and wholesome nutrition","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 7,
@@ -3519,9 +3520,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à érosion de la lenteur nécessaire à la maturation de la pensée","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université de Sherbrooke) — Temporalité et culte de l'instantanéité: In this essay written in Sherbrooke, the author explores the conceptual significance of érosion de la lenteur nécessaire à la maturation de la pensée. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding érosion de la lenteur nécessaire à la maturation de la pensée","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Sherbrooke) — Temporality and the Cult of Instantaneity: In this philosophical essay composed in Sherbrooke, the author investigates the conceptual implications of erosion of the contemplative stillness essential for thought maturation. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding erosion of the contemplative stillness essential for thought maturation","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 7,
@@ -3532,9 +3533,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à densité poétique et tension métaphorique du récit","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université de Sherbrooke) — Esthétique du dépouillement syntaxique: In this essay written in Sherbrooke, the author explores the conceptual significance of densité poétique et tension métaphorique du récit. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding densité poétique et tension métaphorique du récit","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Sherbrooke) — Aesthetics of Syntactic Sobriety: In this philosophical essay composed in Sherbrooke, the author investigates the conceptual implications of poetic density and metaphorical tension in prose. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic density and metaphorical tension in prose","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 7,
@@ -3545,9 +3546,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à distinction entre inférence statistique et conscience réflexive","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université de Sherbrooke) — Illusion anthropomorphique de l'IA: In this essay written in Sherbrooke, the author explores the conceptual significance of distinction entre inférence statistique et conscience réflexive. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding distinction entre inférence statistique et conscience réflexive","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Sherbrooke) — The Anthropomorphic Illusion of AI: In this philosophical essay composed in Sherbrooke, the author investigates the conceptual implications of distinguishing statistical inference from reflexive human consciousness. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding distinguishing statistical inference from reflexive human consciousness","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 7,
@@ -3558,9 +3559,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à vitalité des variétés régionales francophones mondiales","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université de Sherbrooke) — Polyphonie pluricentrique de la francophonie: In this essay written in Sherbrooke, the author explores the conceptual significance of vitalité des variétés régionales francophones mondiales. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding vitalité des variétés régionales francophones mondiales","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Sherbrooke) — Pluricentric Polyphony of the Francophonie: In this philosophical essay composed in Sherbrooke, the author investigates the conceptual implications of the vitality of global regional Francophone varieties. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding the vitality of global regional Francophone varieties","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 7,
@@ -3571,9 +3572,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à subversion poétique et révélation des tensions politiques","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université de Sherbrooke) — L'art contemporain dans l'espace public: In this essay written in Sherbrooke, the author explores the conceptual significance of subversion poétique et révélation des tensions politiques. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding subversion poétique et révélation des tensions politiques","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Sherbrooke) — Contemporary Art in Civic Spaces: In this philosophical essay composed in Sherbrooke, the author investigates the conceptual implications of poetic subversion and unmasking political civic tensions. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic subversion and unmasking political civic tensions","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 7,
@@ -3584,9 +3585,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à sélection axiologique et projection communautaire vers l'avenir","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université de Sherbrooke) — Symbolique projective de la mémoire collective: In this essay written in Sherbrooke, the author explores the conceptual significance of sélection axiologique et projection communautaire vers l'avenir. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding sélection axiologique et projection communautaire vers l'avenir","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (University of Sherbrooke) — Projective Symbolics of Collective Memory: In this philosophical essay composed in Sherbrooke, the author investigates the conceptual implications of axiological selection and community projection toward the future. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding axiological selection and community projection toward the future","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
   ],
   // ==================== 📄 PAPER 8 (39 UNIQUE ITEMS) ====================
@@ -3600,9 +3601,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Trois-Rivières ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant fruits et légumes locaux à Trois-Rivières","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Trois-Rivières) — Horaires de marché: fruits et légumes locaux within the community of Trois-Rivières. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Trois-Rivières?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding fruits et légumes locaux in Trois-Rivières","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Trois-Rivieres) — Market Opening Hours: local fresh fruits and vegetables within the community of Trois-Rivieres. Practical details, access guidelines, and opening hours available from municipal administrative offices in Trois-Rivieres.",
+      qEn: "What is the primary purpose of this public document posted in Trois-Rivieres?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding local fresh fruits and vegetables in Trois-Rivieres","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 8,
@@ -3613,9 +3614,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Trois-Rivières ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant travaux d'entretien des bassins à Trois-Rivières","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Trois-Rivières) — Fermeture temporaire de piscine: travaux d'entretien des bassins within the community of Trois-Rivières. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Trois-Rivières?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding travaux d'entretien des bassins in Trois-Rivières","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Trois-Rivieres) — Temporary Pool Closure: pool basin maintenance and cleaning within the community of Trois-Rivieres. Practical details, access guidelines, and opening hours available from municipal administrative offices in Trois-Rivieres.",
+      qEn: "What is the primary purpose of this public document posted in Trois-Rivieres?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding pool basin maintenance and cleaning in Trois-Rivieres","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 8,
@@ -3626,9 +3627,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Trois-Rivières ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant révision d'examen et prêt de livres à Trois-Rivières","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Trois-Rivières) — Rendez-vous à la bibliothèque: révision d'examen et prêt de livres within the community of Trois-Rivières. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Trois-Rivières?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding révision d'examen et prêt de livres in Trois-Rivières","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Trois-Rivieres) — Library Study Meeting: exam revision and book lending within the community of Trois-Rivieres. Practical details, access guidelines, and opening hours available from municipal administrative offices in Trois-Rivieres.",
+      qEn: "What is the primary purpose of this public document posted in Trois-Rivieres?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding exam revision and book lending in Trois-Rivieres","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 8,
@@ -3639,9 +3640,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Trois-Rivières ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant viennoiseries offertes le matin à Trois-Rivières","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Trois-Rivières) — Boulangerie artisanale: viennoiseries offertes le matin within the community of Trois-Rivières. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Trois-Rivières?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding viennoiseries offertes le matin in Trois-Rivières","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Trois-Rivieres) — Artisanal Bakery: complimentary morning pastries within the community of Trois-Rivieres. Practical details, access guidelines, and opening hours available from municipal administrative offices in Trois-Rivieres.",
+      qEn: "What is the primary purpose of this public document posted in Trois-Rivieres?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding complimentary morning pastries in Trois-Rivieres","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 8,
@@ -3652,9 +3653,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Trois-Rivières ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant bureau des objets trouvés à Trois-Rivières","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Trois-Rivières) — Clés trouvées dans le métro: bureau des objets trouvés within the community of Trois-Rivières. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Trois-Rivières?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding bureau des objets trouvés in Trois-Rivières","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Trois-Rivieres) — Keys Found in Subway: lost and found claims office within the community of Trois-Rivieres. Practical details, access guidelines, and opening hours available from municipal administrative offices in Trois-Rivieres.",
+      qEn: "What is the primary purpose of this public document posted in Trois-Rivieres?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding lost and found claims office in Trois-Rivieres","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 8,
@@ -3665,9 +3666,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Trois-Rivières ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant vêtements et jouets d'occasion au parc à Trois-Rivières","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Trois-Rivières) — Vente de quartier: vêtements et jouets d'occasion au parc within the community of Trois-Rivières. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Trois-Rivières?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding vêtements et jouets d'occasion au parc in Trois-Rivières","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Trois-Rivieres) — Neighborhood Garage Sale: second-hand clothing and toys at the park within the community of Trois-Rivieres. Practical details, access guidelines, and opening hours available from municipal administrative offices in Trois-Rivieres.",
+      qEn: "What is the primary purpose of this public document posted in Trois-Rivieres?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding second-hand clothing and toys at the park in Trois-Rivieres","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 8,
@@ -3678,9 +3679,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Trois-Rivières ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant rencontre de début de saison au parc à Trois-Rivières","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Trois-Rivières) — Pique-nique associatif: rencontre de début de saison au parc within the community of Trois-Rivières. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Trois-Rivières?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding rencontre de début de saison au parc in Trois-Rivières","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Trois-Rivieres) — Community Picnic: seasonal kickoff gathering at the park within the community of Trois-Rivieres. Practical details, access guidelines, and opening hours available from municipal administrative offices in Trois-Rivieres.",
+      qEn: "What is the primary purpose of this public document posted in Trois-Rivieres?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding seasonal kickoff gathering at the park in Trois-Rivieres","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 8,
@@ -3691,9 +3692,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Trois-Rivières ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant temps partiel et accueil clientèle à Trois-Rivières","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Trois-Rivières) — Conseiller de vente en librairie: temps partiel et accueil clientèle organized by Port de Trois-Rivières in Trois-Rivières. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Trois-Rivières?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning temps partiel et accueil clientèle in Trois-Rivières","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Trois-Rivieres) — Bookstore Sales Advisor: part-time employment and customer service organized by Port of Trois-Rivieres in Trois-Rivieres. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Trois-Rivieres?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning part-time employment and customer service in Trois-Rivieres","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 8,
@@ -3704,9 +3705,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Trois-Rivières ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant logement rénové proche transports à Trois-Rivières","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Trois-Rivières) — Location d'appartement: logement rénové proche transports organized by Port de Trois-Rivières in Trois-Rivières. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Trois-Rivières?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning logement rénové proche transports in Trois-Rivières","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Trois-Rivieres) — Apartment Rental: renovated housing near transit organized by Port of Trois-Rivieres in Trois-Rivieres. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Trois-Rivieres?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning renovated housing near transit in Trois-Rivieres","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 8,
@@ -3717,9 +3718,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Trois-Rivières ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant accès par badge magnétique à Trois-Rivières","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Trois-Rivières) — Règlement du parking d'entreprise: accès par badge magnétique organized by Port de Trois-Rivières in Trois-Rivières. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Trois-Rivières?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning accès par badge magnétique in Trois-Rivières","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Trois-Rivieres) — Company Parking Lot Policy: magnetic badge access control organized by Port of Trois-Rivieres in Trois-Rivieres. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Trois-Rivieres?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning magnetic badge access control in Trois-Rivieres","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 8,
@@ -3730,9 +3731,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Trois-Rivières ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant parcours pédestre avec guide certifié à Trois-Rivières","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Trois-Rivières) — Visite guidée historique: parcours pédestre avec guide certifié organized by Port de Trois-Rivières in Trois-Rivières. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Trois-Rivières?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning parcours pédestre avec guide certifié in Trois-Rivières","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Trois-Rivieres) — Historical Guided Tour: walking itinerary with a certified guide organized by Port of Trois-Rivieres in Trois-Rivieres. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Trois-Rivieres?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning walking itinerary with a certified guide in Trois-Rivieres","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 8,
@@ -3743,9 +3744,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Trois-Rivières ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant plat du jour et dessert maison à Trois-Rivières","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Trois-Rivières) — Formule midi du chef: plat du jour et dessert maison organized by Port de Trois-Rivières in Trois-Rivières. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Trois-Rivières?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning plat du jour et dessert maison in Trois-Rivières","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Trois-Rivieres) — Chef's Lunch Special: daily main course and homemade dessert organized by Port of Trois-Rivieres in Trois-Rivieres. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Trois-Rivieres?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning daily main course and homemade dessert in Trois-Rivieres","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 8,
@@ -3756,9 +3757,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Trois-Rivières ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant demande de créneau horaire de livraison à Trois-Rivières","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Trois-Rivières) — Suivi de livraison de colis: demande de créneau horaire de livraison organized by Port de Trois-Rivières in Trois-Rivières. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Trois-Rivières?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning demande de créneau horaire de livraison in Trois-Rivières","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Trois-Rivieres) — Parcel Delivery Tracking: request for carrier delivery timeslot organized by Port of Trois-Rivieres in Trois-Rivieres. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Trois-Rivieres?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning request for carrier delivery timeslot in Trois-Rivieres","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 8,
@@ -3769,9 +3770,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Trois-Rivières ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant séance du samedi matin à Trois-Rivières","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Trois-Rivières) — Atelier de yoga pour débutants: séance du samedi matin organized by Port de Trois-Rivières in Trois-Rivières. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Trois-Rivières?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning séance du samedi matin in Trois-Rivières","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Trois-Rivieres) — Beginner Yoga Workshop: Saturday morning practice session organized by Port of Trois-Rivieres in Trois-Rivieres. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Trois-Rivieres?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning Saturday morning practice session in Trois-Rivieres","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 8,
@@ -3782,9 +3783,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Trois-Rivières ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant renouvellement de prêt en ligne à Trois-Rivières","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Trois-Rivières) — Conditions d'emprunt: renouvellement de prêt en ligne organized by Port de Trois-Rivières in Trois-Rivières. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Trois-Rivières?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning renouvellement de prêt en ligne in Trois-Rivières","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Trois-Rivieres) — Borrowing Terms: online book loan renewals organized by Port of Trois-Rivieres in Trois-Rivieres. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Trois-Rivieres?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning online book loan renewals in Trois-Rivieres","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 8,
@@ -3795,9 +3796,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Nouvelliste, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant réduction des déchets municipaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Nouvelliste) — Tri sélectif et compostage urbain: In the Trois-Rivières region, the initiative focusing on réduction des déchets municipaux is generating growing interest. According to actors at UQTR and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Nouvelliste, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning réduction des déchets municipaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Nouvelliste) — Waste Sorting and Urban Composting: In the Trois-Rivieres region, this public initiative centered on municipal waste reduction targets is attracting widespread interest. According to researchers at UQTR University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Nouvelliste, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing municipal waste reduction targets despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 8,
@@ -3808,9 +3809,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Nouvelliste, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant équilibre vie professionnelle et personnelle malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Nouvelliste) — Modèle de télétravail hybride: In the Trois-Rivières region, the initiative focusing on équilibre vie professionnelle et personnelle is generating growing interest. According to actors at UQTR and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Nouvelliste, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning équilibre vie professionnelle et personnelle despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Nouvelliste) — Hybrid Telecommuting Model: In the Trois-Rivieres region, this public initiative centered on work-life balance and productivity is attracting widespread interest. According to researchers at UQTR University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Nouvelliste, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing work-life balance and productivity despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 8,
@@ -3821,9 +3822,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Nouvelliste, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant produits frais riches en antioxydants malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Nouvelliste) — Alimentation de saison et immunité: In the Trois-Rivières region, the initiative focusing on produits frais riches en antioxydants is generating growing interest. According to actors at UQTR and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Nouvelliste, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning produits frais riches en antioxydants despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Nouvelliste) — Seasonal Nutrition and Immunity: In the Trois-Rivieres region, this public initiative centered on fresh produce rich in antioxidants is attracting widespread interest. According to researchers at UQTR University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Nouvelliste, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fresh produce rich in antioxidants despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 8,
@@ -3834,9 +3835,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Nouvelliste, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant prolongation de la durée de vie du matériel malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Nouvelliste) — Réparabilité des appareils électroniques: In the Trois-Rivières region, the initiative focusing on prolongation de la durée de vie du matériel is generating growing interest. According to actors at UQTR and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Nouvelliste, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning prolongation de la durée de vie du matériel despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Nouvelliste) — Electronic Device Repairability: In the Trois-Rivieres region, this public initiative centered on extending equipment lifespan through repair is attracting widespread interest. According to researchers at UQTR University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Nouvelliste, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing extending equipment lifespan through repair despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 8,
@@ -3847,9 +3848,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Nouvelliste, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant hausse des déplacements à vélo à l'heure de pointe malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Nouvelliste) — Nouveau réseau cyclable sécurisé: In the Trois-Rivières region, the initiative focusing on hausse des déplacements à vélo à l'heure de pointe is generating growing interest. According to actors at UQTR and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Nouvelliste, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning hausse des déplacements à vélo à l'heure de pointe despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Nouvelliste) — Protected Express Cycling Network: In the Trois-Rivieres region, this public initiative centered on growth in rush-hour bicycle commuting is attracting widespread interest. According to researchers at UQTR University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Nouvelliste, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing growth in rush-hour bicycle commuting despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 8,
@@ -3860,9 +3861,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Nouvelliste, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant justesse de l'interprétation des comédiens malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Nouvelliste) — Nouvelle pièce de théâtre contemporaine: In the Trois-Rivières region, the initiative focusing on justesse de l'interprétation des comédiens is generating growing interest. According to actors at UQTR and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Nouvelliste, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning justesse de l'interprétation des comédiens despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Nouvelliste) — Contemporary Theatrical Play: In the Trois-Rivieres region, this public initiative centered on accuracy of actor performances and staging is attracting widespread interest. According to researchers at UQTR University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Nouvelliste, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing accuracy of actor performances and staging despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 8,
@@ -3873,9 +3874,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Nouvelliste, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant valorisation du travail des éleveurs locaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Nouvelliste) — Coopérative fromagère et vente directe: In the Trois-Rivières region, the initiative focusing on valorisation du travail des éleveurs locaux is generating growing interest. According to actors at UQTR and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Nouvelliste, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning valorisation du travail des éleveurs locaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Nouvelliste) — Dairy Farming Cooperative and Direct Sales: In the Trois-Rivieres region, this public initiative centered on fair financial compensation for local farmers is attracting widespread interest. According to researchers at UQTR University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Nouvelliste, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fair financial compensation for local farmers despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 8,
@@ -3886,9 +3887,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Nouvelliste, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant formation continue pour professionnels en reconversion malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Nouvelliste) — Microprogrammes certifiants en ligne: In the Trois-Rivières region, the initiative focusing on formation continue pour professionnels en reconversion is generating growing interest. According to actors at UQTR and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Nouvelliste, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning formation continue pour professionnels en reconversion despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Nouvelliste) — Online Certifying Microprograms: In the Trois-Rivieres region, this public initiative centered on continuing education for working professionals is attracting widespread interest. According to researchers at UQTR University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Nouvelliste, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing continuing education for working professionals despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 8,
@@ -3899,9 +3900,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Nouvelliste, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant relecture humaine nécessaire des sources malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Nouvelliste) — Intelligence artificielle dans les cabinets juridiques: In the Trois-Rivières region, the initiative focusing on relecture humaine nécessaire des sources is generating growing interest. According to actors at UQTR and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Nouvelliste, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning relecture humaine nécessaire des sources despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Nouvelliste) — Artificial Intelligence in Legal Practice: In the Trois-Rivieres region, this public initiative centered on rigorous human verification of cited legal sources is attracting widespread interest. According to researchers at UQTR University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Nouvelliste, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing rigorous human verification of cited legal sources despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 8,
@@ -3912,9 +3913,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Nouvelliste, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant parrainage entre étudiants et aînés malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Nouvelliste) — Réseau d'entraide intergénérationnel: In the Trois-Rivières region, the initiative focusing on parrainage entre étudiants et aînés is generating growing interest. According to actors at UQTR and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Nouvelliste, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning parrainage entre étudiants et aînés despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Nouvelliste) — Intergenerational Mentorship Network: In the Trois-Rivieres region, this public initiative centered on pairing university students with senior citizens is attracting widespread interest. According to researchers at UQTR University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Nouvelliste, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing pairing university students with senior citizens despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 8,
@@ -3925,9 +3926,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de économie circulaire et éco-conception ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter responsabilité des industriels et réparabilité","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Nouvelliste) — Économie circulaire et éco-conception: In-depth analysis conducted by researchers at UQTR emphasizes that the issue of responsabilité des industriels et réparabilité cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding économie circulaire et éco-conception?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address responsabilité des industriels et réparabilité","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Nouvelliste) — Circular Economy and Eco-Design: In-depth analysis by academic researchers at UQTR University underscores that the critical challenge of corporate manufacturing responsibility and repairability cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding circular economy and eco-design?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve corporate manufacturing responsibility and repairability","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 8,
@@ -3938,9 +3939,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de quête de sens chez les jeunes diplômés ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter impact sociétal et flexibilité professionnelle","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Nouvelliste) — Quête de sens chez les jeunes diplômés: In-depth analysis conducted by researchers at UQTR emphasizes that the issue of impact sociétal et flexibilité professionnelle cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding quête de sens chez les jeunes diplômés?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address impact sociétal et flexibilité professionnelle","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Nouvelliste) — Search for Meaning Among Recent Graduates: In-depth analysis by academic researchers at UQTR University underscores that the critical challenge of societal impact and workplace schedule flexibility cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding search for meaning among recent graduates?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve societal impact and workplace schedule flexibility","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 8,
@@ -3951,9 +3952,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de déploiement des parcs éoliens ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter arbitrage entre urgence climatique et concertation locale","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Nouvelliste) — Déploiement des parcs éoliens: In-depth analysis conducted by researchers at UQTR emphasizes that the issue of arbitrage entre urgence climatique et concertation locale cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding déploiement des parcs éoliens?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address arbitrage entre urgence climatique et concertation locale","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Nouvelliste) — Renewable Wind Energy Deployment: In-depth analysis by academic researchers at UQTR University underscores that the critical challenge of balancing climate urgency with local community consent cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding renewable wind energy deployment?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve balancing climate urgency with local community consent","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 8,
@@ -3964,9 +3965,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de ia générative dans l'enseignement supérieur ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter déplacement de l'évaluation vers l'analyse critique","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Nouvelliste) — IA générative dans l'enseignement supérieur: In-depth analysis conducted by researchers at UQTR emphasizes that the issue of déplacement de l'évaluation vers l'analyse critique cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding ia générative dans l'enseignement supérieur?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address déplacement de l'évaluation vers l'analyse critique","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Nouvelliste) — Generative AI in Higher Education: In-depth analysis by academic researchers at UQTR University underscores that the critical challenge of shifting assessment toward critical reflexive analysis cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding generative ai in higher education?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve shifting assessment toward critical reflexive analysis","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 8,
@@ -3977,9 +3978,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de densification urbaine et patrimoine bâti ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter réhabilitation écologique des bâtiments historiques","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Nouvelliste) — Densification urbaine et patrimoine bâti: In-depth analysis conducted by researchers at UQTR emphasizes that the issue of réhabilitation écologique des bâtiments historiques cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding densification urbaine et patrimoine bâti?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address réhabilitation écologique des bâtiments historiques","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Nouvelliste) — Urban Densification and Built Heritage: In-depth analysis by academic researchers at UQTR University underscores that the critical challenge of sustainable ecological rehabilitation of historic edifices cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding urban densification and built heritage?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve sustainable ecological rehabilitation of historic edifices","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 8,
@@ -3990,9 +3991,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de préservation de la biodiversité marine ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter contrôle des pollutions terrestres en amont","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Nouvelliste) — Préservation de la biodiversité marine: In-depth analysis conducted by researchers at UQTR emphasizes that the issue of contrôle des pollutions terrestres en amont cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding préservation de la biodiversité marine?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address contrôle des pollutions terrestres en amont","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Nouvelliste) — Marine Biodiversity Conservation: In-depth analysis by academic researchers at UQTR University underscores that the critical challenge of strict control of upstream land-based pollution runoff cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding marine biodiversity conservation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve strict control of upstream land-based pollution runoff","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 8,
@@ -4003,9 +4004,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de éducation à l'esprit critique et désinformation ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter préservation du débat public fondé sur des faits","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Nouvelliste) — Éducation à l'esprit critique et désinformation: In-depth analysis conducted by researchers at UQTR emphasizes that the issue of préservation du débat public fondé sur des faits cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding éducation à l'esprit critique et désinformation?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address préservation du débat public fondé sur des faits","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Nouvelliste) — Critical Thinking and Combating Disinformation: In-depth analysis by academic researchers at UQTR University underscores that the critical challenge of safeguarding fact-based democratic public discourse cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding critical thinking and combating disinformation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve safeguarding fact-based democratic public discourse","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 8,
@@ -4016,9 +4017,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de priorité à la médecine préventive ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter investissement précoce dans le dépistage et l'alimentation","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Nouvelliste) — Priorité à la médecine préventive: In-depth analysis conducted by researchers at UQTR emphasizes that the issue of investissement précoce dans le dépistage et l'alimentation cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding priorité à la médecine préventive?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address investissement précoce dans le dépistage et l'alimentation","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Nouvelliste) — Prioritizing Preventative Healthcare: In-depth analysis by academic researchers at UQTR University underscores that the critical challenge of early investment in disease screening and wholesome nutrition cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding prioritizing preventative healthcare?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve early investment in disease screening and wholesome nutrition","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 8,
@@ -4029,9 +4030,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à érosion de la lenteur nécessaire à la maturation de la pensée","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (UQTR) — Temporalité et culte de l'instantanéité: In this essay written in Trois-Rivières, the author explores the conceptual significance of érosion de la lenteur nécessaire à la maturation de la pensée. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding érosion de la lenteur nécessaire à la maturation de la pensée","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (UQTR University) — Temporality and the Cult of Instantaneity: In this philosophical essay composed in Trois-Rivieres, the author investigates the conceptual implications of erosion of the contemplative stillness essential for thought maturation. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding erosion of the contemplative stillness essential for thought maturation","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 8,
@@ -4042,9 +4043,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à densité poétique et tension métaphorique du récit","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (UQTR) — Esthétique du dépouillement syntaxique: In this essay written in Trois-Rivières, the author explores the conceptual significance of densité poétique et tension métaphorique du récit. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding densité poétique et tension métaphorique du récit","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (UQTR University) — Aesthetics of Syntactic Sobriety: In this philosophical essay composed in Trois-Rivieres, the author investigates the conceptual implications of poetic density and metaphorical tension in prose. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic density and metaphorical tension in prose","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 8,
@@ -4055,9 +4056,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à distinction entre inférence statistique et conscience réflexive","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (UQTR) — Illusion anthropomorphique de l'IA: In this essay written in Trois-Rivières, the author explores the conceptual significance of distinction entre inférence statistique et conscience réflexive. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding distinction entre inférence statistique et conscience réflexive","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (UQTR University) — The Anthropomorphic Illusion of AI: In this philosophical essay composed in Trois-Rivieres, the author investigates the conceptual implications of distinguishing statistical inference from reflexive human consciousness. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding distinguishing statistical inference from reflexive human consciousness","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 8,
@@ -4068,9 +4069,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à vitalité des variétés régionales francophones mondiales","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (UQTR) — Polyphonie pluricentrique de la francophonie: In this essay written in Trois-Rivières, the author explores the conceptual significance of vitalité des variétés régionales francophones mondiales. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding vitalité des variétés régionales francophones mondiales","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (UQTR University) — Pluricentric Polyphony of the Francophonie: In this philosophical essay composed in Trois-Rivieres, the author investigates the conceptual implications of the vitality of global regional Francophone varieties. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding the vitality of global regional Francophone varieties","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 8,
@@ -4081,9 +4082,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à subversion poétique et révélation des tensions politiques","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (UQTR) — L'art contemporain dans l'espace public: In this essay written in Trois-Rivières, the author explores the conceptual significance of subversion poétique et révélation des tensions politiques. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding subversion poétique et révélation des tensions politiques","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (UQTR University) — Contemporary Art in Civic Spaces: In this philosophical essay composed in Trois-Rivieres, the author investigates the conceptual implications of poetic subversion and unmasking political civic tensions. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic subversion and unmasking political civic tensions","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 8,
@@ -4094,9 +4095,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à sélection axiologique et projection communautaire vers l'avenir","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (UQTR) — Symbolique projective de la mémoire collective: In this essay written in Trois-Rivières, the author explores the conceptual significance of sélection axiologique et projection communautaire vers l'avenir. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding sélection axiologique et projection communautaire vers l'avenir","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (UQTR University) — Projective Symbolics of Collective Memory: In this philosophical essay composed in Trois-Rivieres, the author investigates the conceptual implications of axiological selection and community projection toward the future. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding axiological selection and community projection toward the future","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
   ],
   // ==================== 📄 PAPER 9 (39 UNIQUE ITEMS) ====================
@@ -4110,9 +4111,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Halifax ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant fruits et légumes locaux à Halifax","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Halifax) — Horaires de marché: fruits et légumes locaux within the community of Halifax. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Halifax?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding fruits et légumes locaux in Halifax","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Halifax) — Market Opening Hours: local fresh fruits and vegetables within the community of Halifax. Practical details, access guidelines, and opening hours available from municipal administrative offices in Halifax.",
+      qEn: "What is the primary purpose of this public document posted in Halifax?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding local fresh fruits and vegetables in Halifax","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 9,
@@ -4123,9 +4124,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Halifax ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant travaux d'entretien des bassins à Halifax","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Halifax) — Fermeture temporaire de piscine: travaux d'entretien des bassins within the community of Halifax. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Halifax?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding travaux d'entretien des bassins in Halifax","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Halifax) — Temporary Pool Closure: pool basin maintenance and cleaning within the community of Halifax. Practical details, access guidelines, and opening hours available from municipal administrative offices in Halifax.",
+      qEn: "What is the primary purpose of this public document posted in Halifax?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding pool basin maintenance and cleaning in Halifax","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 9,
@@ -4136,9 +4137,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Halifax ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant révision d'examen et prêt de livres à Halifax","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Halifax) — Rendez-vous à la bibliothèque: révision d'examen et prêt de livres within the community of Halifax. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Halifax?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding révision d'examen et prêt de livres in Halifax","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Halifax) — Library Study Meeting: exam revision and book lending within the community of Halifax. Practical details, access guidelines, and opening hours available from municipal administrative offices in Halifax.",
+      qEn: "What is the primary purpose of this public document posted in Halifax?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding exam revision and book lending in Halifax","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 9,
@@ -4149,9 +4150,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Halifax ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant viennoiseries offertes le matin à Halifax","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Halifax) — Boulangerie artisanale: viennoiseries offertes le matin within the community of Halifax. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Halifax?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding viennoiseries offertes le matin in Halifax","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Halifax) — Artisanal Bakery: complimentary morning pastries within the community of Halifax. Practical details, access guidelines, and opening hours available from municipal administrative offices in Halifax.",
+      qEn: "What is the primary purpose of this public document posted in Halifax?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding complimentary morning pastries in Halifax","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 9,
@@ -4162,9 +4163,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Halifax ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant bureau des objets trouvés à Halifax","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Halifax) — Clés trouvées dans le métro: bureau des objets trouvés within the community of Halifax. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Halifax?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding bureau des objets trouvés in Halifax","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Halifax) — Keys Found in Subway: lost and found claims office within the community of Halifax. Practical details, access guidelines, and opening hours available from municipal administrative offices in Halifax.",
+      qEn: "What is the primary purpose of this public document posted in Halifax?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding lost and found claims office in Halifax","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 9,
@@ -4175,9 +4176,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Halifax ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant vêtements et jouets d'occasion au parc à Halifax","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Halifax) — Vente de quartier: vêtements et jouets d'occasion au parc within the community of Halifax. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Halifax?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding vêtements et jouets d'occasion au parc in Halifax","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Halifax) — Neighborhood Garage Sale: second-hand clothing and toys at the park within the community of Halifax. Practical details, access guidelines, and opening hours available from municipal administrative offices in Halifax.",
+      qEn: "What is the primary purpose of this public document posted in Halifax?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding second-hand clothing and toys at the park in Halifax","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 9,
@@ -4188,9 +4189,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Halifax ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant rencontre de début de saison au parc à Halifax","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Halifax) — Pique-nique associatif: rencontre de début de saison au parc within the community of Halifax. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Halifax?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding rencontre de début de saison au parc in Halifax","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Halifax) — Community Picnic: seasonal kickoff gathering at the park within the community of Halifax. Practical details, access guidelines, and opening hours available from municipal administrative offices in Halifax.",
+      qEn: "What is the primary purpose of this public document posted in Halifax?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding seasonal kickoff gathering at the park in Halifax","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 9,
@@ -4201,9 +4202,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Halifax ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant temps partiel et accueil clientèle à Halifax","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Halifax) — Conseiller de vente en librairie: temps partiel et accueil clientèle organized by Institut Océanographique in Halifax. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Halifax?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning temps partiel et accueil clientèle in Halifax","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Halifax) — Bookstore Sales Advisor: part-time employment and customer service organized by Oceanographic Institute in Halifax. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Halifax?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning part-time employment and customer service in Halifax","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 9,
@@ -4214,9 +4215,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Halifax ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant logement rénové proche transports à Halifax","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Halifax) — Location d'appartement: logement rénové proche transports organized by Institut Océanographique in Halifax. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Halifax?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning logement rénové proche transports in Halifax","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Halifax) — Apartment Rental: renovated housing near transit organized by Oceanographic Institute in Halifax. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Halifax?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning renovated housing near transit in Halifax","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 9,
@@ -4227,9 +4228,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Halifax ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant accès par badge magnétique à Halifax","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Halifax) — Règlement du parking d'entreprise: accès par badge magnétique organized by Institut Océanographique in Halifax. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Halifax?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning accès par badge magnétique in Halifax","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Halifax) — Company Parking Lot Policy: magnetic badge access control organized by Oceanographic Institute in Halifax. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Halifax?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning magnetic badge access control in Halifax","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 9,
@@ -4240,9 +4241,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Halifax ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant parcours pédestre avec guide certifié à Halifax","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Halifax) — Visite guidée historique: parcours pédestre avec guide certifié organized by Institut Océanographique in Halifax. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Halifax?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning parcours pédestre avec guide certifié in Halifax","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Halifax) — Historical Guided Tour: walking itinerary with a certified guide organized by Oceanographic Institute in Halifax. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Halifax?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning walking itinerary with a certified guide in Halifax","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 9,
@@ -4253,9 +4254,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Halifax ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant plat du jour et dessert maison à Halifax","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Halifax) — Formule midi du chef: plat du jour et dessert maison organized by Institut Océanographique in Halifax. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Halifax?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning plat du jour et dessert maison in Halifax","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Halifax) — Chef's Lunch Special: daily main course and homemade dessert organized by Oceanographic Institute in Halifax. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Halifax?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning daily main course and homemade dessert in Halifax","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 9,
@@ -4266,9 +4267,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Halifax ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant demande de créneau horaire de livraison à Halifax","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Halifax) — Suivi de livraison de colis: demande de créneau horaire de livraison organized by Institut Océanographique in Halifax. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Halifax?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning demande de créneau horaire de livraison in Halifax","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Halifax) — Parcel Delivery Tracking: request for carrier delivery timeslot organized by Oceanographic Institute in Halifax. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Halifax?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning request for carrier delivery timeslot in Halifax","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 9,
@@ -4279,9 +4280,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Halifax ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant séance du samedi matin à Halifax","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Halifax) — Atelier de yoga pour débutants: séance du samedi matin organized by Institut Océanographique in Halifax. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Halifax?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning séance du samedi matin in Halifax","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Halifax) — Beginner Yoga Workshop: Saturday morning practice session organized by Oceanographic Institute in Halifax. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Halifax?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning Saturday morning practice session in Halifax","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 9,
@@ -4292,9 +4293,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Halifax ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant renouvellement de prêt en ligne à Halifax","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Halifax) — Conditions d'emprunt: renouvellement de prêt en ligne organized by Institut Océanographique in Halifax. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Halifax?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning renouvellement de prêt en ligne in Halifax","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Halifax) — Borrowing Terms: online book loan renewals organized by Oceanographic Institute in Halifax. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Halifax?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning online book loan renewals in Halifax","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 9,
@@ -4305,9 +4306,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Courrier, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant réduction des déchets municipaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Courrier) — Tri sélectif et compostage urbain: In the Halifax region, the initiative focusing on réduction des déchets municipaux is generating growing interest. According to actors at Université Sainte-Anne and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Courrier, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning réduction des déchets municipaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Courrier Newspaper) — Waste Sorting and Urban Composting: In the Halifax region, this public initiative centered on municipal waste reduction targets is attracting widespread interest. According to researchers at Sainte-Anne University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Courrier Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing municipal waste reduction targets despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 9,
@@ -4318,9 +4319,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Courrier, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant équilibre vie professionnelle et personnelle malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Courrier) — Modèle de télétravail hybride: In the Halifax region, the initiative focusing on équilibre vie professionnelle et personnelle is generating growing interest. According to actors at Université Sainte-Anne and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Courrier, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning équilibre vie professionnelle et personnelle despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Courrier Newspaper) — Hybrid Telecommuting Model: In the Halifax region, this public initiative centered on work-life balance and productivity is attracting widespread interest. According to researchers at Sainte-Anne University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Courrier Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing work-life balance and productivity despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 9,
@@ -4331,9 +4332,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Courrier, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant produits frais riches en antioxydants malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Courrier) — Alimentation de saison et immunité: In the Halifax region, the initiative focusing on produits frais riches en antioxydants is generating growing interest. According to actors at Université Sainte-Anne and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Courrier, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning produits frais riches en antioxydants despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Courrier Newspaper) — Seasonal Nutrition and Immunity: In the Halifax region, this public initiative centered on fresh produce rich in antioxidants is attracting widespread interest. According to researchers at Sainte-Anne University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Courrier Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fresh produce rich in antioxidants despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 9,
@@ -4344,9 +4345,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Courrier, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant prolongation de la durée de vie du matériel malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Courrier) — Réparabilité des appareils électroniques: In the Halifax region, the initiative focusing on prolongation de la durée de vie du matériel is generating growing interest. According to actors at Université Sainte-Anne and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Courrier, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning prolongation de la durée de vie du matériel despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Courrier Newspaper) — Electronic Device Repairability: In the Halifax region, this public initiative centered on extending equipment lifespan through repair is attracting widespread interest. According to researchers at Sainte-Anne University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Courrier Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing extending equipment lifespan through repair despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 9,
@@ -4357,9 +4358,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Courrier, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant hausse des déplacements à vélo à l'heure de pointe malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Courrier) — Nouveau réseau cyclable sécurisé: In the Halifax region, the initiative focusing on hausse des déplacements à vélo à l'heure de pointe is generating growing interest. According to actors at Université Sainte-Anne and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Courrier, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning hausse des déplacements à vélo à l'heure de pointe despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Courrier Newspaper) — Protected Express Cycling Network: In the Halifax region, this public initiative centered on growth in rush-hour bicycle commuting is attracting widespread interest. According to researchers at Sainte-Anne University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Courrier Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing growth in rush-hour bicycle commuting despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 9,
@@ -4370,9 +4371,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Courrier, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant justesse de l'interprétation des comédiens malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Courrier) — Nouvelle pièce de théâtre contemporaine: In the Halifax region, the initiative focusing on justesse de l'interprétation des comédiens is generating growing interest. According to actors at Université Sainte-Anne and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Courrier, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning justesse de l'interprétation des comédiens despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Courrier Newspaper) — Contemporary Theatrical Play: In the Halifax region, this public initiative centered on accuracy of actor performances and staging is attracting widespread interest. According to researchers at Sainte-Anne University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Courrier Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing accuracy of actor performances and staging despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 9,
@@ -4383,9 +4384,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Courrier, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant valorisation du travail des éleveurs locaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Courrier) — Coopérative fromagère et vente directe: In the Halifax region, the initiative focusing on valorisation du travail des éleveurs locaux is generating growing interest. According to actors at Université Sainte-Anne and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Courrier, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning valorisation du travail des éleveurs locaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Courrier Newspaper) — Dairy Farming Cooperative and Direct Sales: In the Halifax region, this public initiative centered on fair financial compensation for local farmers is attracting widespread interest. According to researchers at Sainte-Anne University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Courrier Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fair financial compensation for local farmers despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 9,
@@ -4396,9 +4397,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Courrier, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant formation continue pour professionnels en reconversion malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Courrier) — Microprogrammes certifiants en ligne: In the Halifax region, the initiative focusing on formation continue pour professionnels en reconversion is generating growing interest. According to actors at Université Sainte-Anne and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Courrier, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning formation continue pour professionnels en reconversion despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Courrier Newspaper) — Online Certifying Microprograms: In the Halifax region, this public initiative centered on continuing education for working professionals is attracting widespread interest. According to researchers at Sainte-Anne University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Courrier Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing continuing education for working professionals despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 9,
@@ -4409,9 +4410,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Courrier, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant relecture humaine nécessaire des sources malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Courrier) — Intelligence artificielle dans les cabinets juridiques: In the Halifax region, the initiative focusing on relecture humaine nécessaire des sources is generating growing interest. According to actors at Université Sainte-Anne and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Courrier, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning relecture humaine nécessaire des sources despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Courrier Newspaper) — Artificial Intelligence in Legal Practice: In the Halifax region, this public initiative centered on rigorous human verification of cited legal sources is attracting widespread interest. According to researchers at Sainte-Anne University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Courrier Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing rigorous human verification of cited legal sources despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 9,
@@ -4422,9 +4423,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Courrier, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant parrainage entre étudiants et aînés malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Courrier) — Réseau d'entraide intergénérationnel: In the Halifax region, the initiative focusing on parrainage entre étudiants et aînés is generating growing interest. According to actors at Université Sainte-Anne and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Courrier, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning parrainage entre étudiants et aînés despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Courrier Newspaper) — Intergenerational Mentorship Network: In the Halifax region, this public initiative centered on pairing university students with senior citizens is attracting widespread interest. According to researchers at Sainte-Anne University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Courrier Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing pairing university students with senior citizens despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 9,
@@ -4435,9 +4436,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de économie circulaire et éco-conception ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter responsabilité des industriels et réparabilité","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Courrier) — Économie circulaire et éco-conception: In-depth analysis conducted by researchers at Université Sainte-Anne emphasizes that the issue of responsabilité des industriels et réparabilité cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding économie circulaire et éco-conception?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address responsabilité des industriels et réparabilité","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Courrier Newspaper) — Circular Economy and Eco-Design: In-depth analysis by academic researchers at Sainte-Anne University underscores that the critical challenge of corporate manufacturing responsibility and repairability cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding circular economy and eco-design?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve corporate manufacturing responsibility and repairability","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 9,
@@ -4448,9 +4449,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de quête de sens chez les jeunes diplômés ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter impact sociétal et flexibilité professionnelle","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Courrier) — Quête de sens chez les jeunes diplômés: In-depth analysis conducted by researchers at Université Sainte-Anne emphasizes that the issue of impact sociétal et flexibilité professionnelle cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding quête de sens chez les jeunes diplômés?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address impact sociétal et flexibilité professionnelle","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Courrier Newspaper) — Search for Meaning Among Recent Graduates: In-depth analysis by academic researchers at Sainte-Anne University underscores that the critical challenge of societal impact and workplace schedule flexibility cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding search for meaning among recent graduates?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve societal impact and workplace schedule flexibility","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 9,
@@ -4461,9 +4462,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de déploiement des parcs éoliens ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter arbitrage entre urgence climatique et concertation locale","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Courrier) — Déploiement des parcs éoliens: In-depth analysis conducted by researchers at Université Sainte-Anne emphasizes that the issue of arbitrage entre urgence climatique et concertation locale cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding déploiement des parcs éoliens?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address arbitrage entre urgence climatique et concertation locale","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Courrier Newspaper) — Renewable Wind Energy Deployment: In-depth analysis by academic researchers at Sainte-Anne University underscores that the critical challenge of balancing climate urgency with local community consent cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding renewable wind energy deployment?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve balancing climate urgency with local community consent","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 9,
@@ -4474,9 +4475,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de ia générative dans l'enseignement supérieur ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter déplacement de l'évaluation vers l'analyse critique","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Courrier) — IA générative dans l'enseignement supérieur: In-depth analysis conducted by researchers at Université Sainte-Anne emphasizes that the issue of déplacement de l'évaluation vers l'analyse critique cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding ia générative dans l'enseignement supérieur?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address déplacement de l'évaluation vers l'analyse critique","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Courrier Newspaper) — Generative AI in Higher Education: In-depth analysis by academic researchers at Sainte-Anne University underscores that the critical challenge of shifting assessment toward critical reflexive analysis cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding generative ai in higher education?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve shifting assessment toward critical reflexive analysis","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 9,
@@ -4487,9 +4488,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de densification urbaine et patrimoine bâti ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter réhabilitation écologique des bâtiments historiques","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Courrier) — Densification urbaine et patrimoine bâti: In-depth analysis conducted by researchers at Université Sainte-Anne emphasizes that the issue of réhabilitation écologique des bâtiments historiques cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding densification urbaine et patrimoine bâti?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address réhabilitation écologique des bâtiments historiques","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Courrier Newspaper) — Urban Densification and Built Heritage: In-depth analysis by academic researchers at Sainte-Anne University underscores that the critical challenge of sustainable ecological rehabilitation of historic edifices cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding urban densification and built heritage?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve sustainable ecological rehabilitation of historic edifices","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 9,
@@ -4500,9 +4501,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de préservation de la biodiversité marine ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter contrôle des pollutions terrestres en amont","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Courrier) — Préservation de la biodiversité marine: In-depth analysis conducted by researchers at Université Sainte-Anne emphasizes that the issue of contrôle des pollutions terrestres en amont cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding préservation de la biodiversité marine?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address contrôle des pollutions terrestres en amont","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Courrier Newspaper) — Marine Biodiversity Conservation: In-depth analysis by academic researchers at Sainte-Anne University underscores that the critical challenge of strict control of upstream land-based pollution runoff cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding marine biodiversity conservation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve strict control of upstream land-based pollution runoff","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 9,
@@ -4513,9 +4514,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de éducation à l'esprit critique et désinformation ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter préservation du débat public fondé sur des faits","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Courrier) — Éducation à l'esprit critique et désinformation: In-depth analysis conducted by researchers at Université Sainte-Anne emphasizes that the issue of préservation du débat public fondé sur des faits cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding éducation à l'esprit critique et désinformation?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address préservation du débat public fondé sur des faits","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Courrier Newspaper) — Critical Thinking and Combating Disinformation: In-depth analysis by academic researchers at Sainte-Anne University underscores that the critical challenge of safeguarding fact-based democratic public discourse cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding critical thinking and combating disinformation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve safeguarding fact-based democratic public discourse","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 9,
@@ -4526,9 +4527,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de priorité à la médecine préventive ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter investissement précoce dans le dépistage et l'alimentation","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Courrier) — Priorité à la médecine préventive: In-depth analysis conducted by researchers at Université Sainte-Anne emphasizes that the issue of investissement précoce dans le dépistage et l'alimentation cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding priorité à la médecine préventive?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address investissement précoce dans le dépistage et l'alimentation","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Courrier Newspaper) — Prioritizing Preventative Healthcare: In-depth analysis by academic researchers at Sainte-Anne University underscores that the critical challenge of early investment in disease screening and wholesome nutrition cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding prioritizing preventative healthcare?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve early investment in disease screening and wholesome nutrition","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 9,
@@ -4539,9 +4540,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à érosion de la lenteur nécessaire à la maturation de la pensée","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université Sainte-Anne) — Temporalité et culte de l'instantanéité: In this essay written in Halifax, the author explores the conceptual significance of érosion de la lenteur nécessaire à la maturation de la pensée. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding érosion de la lenteur nécessaire à la maturation de la pensée","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Sainte-Anne University) — Temporality and the Cult of Instantaneity: In this philosophical essay composed in Halifax, the author investigates the conceptual implications of erosion of the contemplative stillness essential for thought maturation. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding erosion of the contemplative stillness essential for thought maturation","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 9,
@@ -4552,9 +4553,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à densité poétique et tension métaphorique du récit","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université Sainte-Anne) — Esthétique du dépouillement syntaxique: In this essay written in Halifax, the author explores the conceptual significance of densité poétique et tension métaphorique du récit. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding densité poétique et tension métaphorique du récit","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Sainte-Anne University) — Aesthetics of Syntactic Sobriety: In this philosophical essay composed in Halifax, the author investigates the conceptual implications of poetic density and metaphorical tension in prose. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic density and metaphorical tension in prose","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 9,
@@ -4565,9 +4566,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à distinction entre inférence statistique et conscience réflexive","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université Sainte-Anne) — Illusion anthropomorphique de l'IA: In this essay written in Halifax, the author explores the conceptual significance of distinction entre inférence statistique et conscience réflexive. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding distinction entre inférence statistique et conscience réflexive","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Sainte-Anne University) — The Anthropomorphic Illusion of AI: In this philosophical essay composed in Halifax, the author investigates the conceptual implications of distinguishing statistical inference from reflexive human consciousness. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding distinguishing statistical inference from reflexive human consciousness","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 9,
@@ -4578,9 +4579,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à vitalité des variétés régionales francophones mondiales","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université Sainte-Anne) — Polyphonie pluricentrique de la francophonie: In this essay written in Halifax, the author explores the conceptual significance of vitalité des variétés régionales francophones mondiales. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding vitalité des variétés régionales francophones mondiales","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Sainte-Anne University) — Pluricentric Polyphony of the Francophonie: In this philosophical essay composed in Halifax, the author investigates the conceptual implications of the vitality of global regional Francophone varieties. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding the vitality of global regional Francophone varieties","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 9,
@@ -4591,9 +4592,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à subversion poétique et révélation des tensions politiques","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université Sainte-Anne) — L'art contemporain dans l'espace public: In this essay written in Halifax, the author explores the conceptual significance of subversion poétique et révélation des tensions politiques. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding subversion poétique et révélation des tensions politiques","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Sainte-Anne University) — Contemporary Art in Civic Spaces: In this philosophical essay composed in Halifax, the author investigates the conceptual implications of poetic subversion and unmasking political civic tensions. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic subversion and unmasking political civic tensions","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 9,
@@ -4604,9 +4605,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à sélection axiologique et projection communautaire vers l'avenir","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Université Sainte-Anne) — Symbolique projective de la mémoire collective: In this essay written in Halifax, the author explores the conceptual significance of sélection axiologique et projection communautaire vers l'avenir. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding sélection axiologique et projection communautaire vers l'avenir","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Sainte-Anne University) — Projective Symbolics of Collective Memory: In this philosophical essay composed in Halifax, the author investigates the conceptual implications of axiological selection and community projection toward the future. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding axiological selection and community projection toward the future","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
   ],
   // ==================== 📄 PAPER 10 (39 UNIQUE ITEMS) ====================
@@ -4620,9 +4621,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Calgary-Edmonton ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant fruits et légumes locaux à Calgary-Edmonton","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Calgary-Edmonton) — Horaires de marché: fruits et légumes locaux within the community of Calgary-Edmonton. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Calgary-Edmonton?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding fruits et légumes locaux in Calgary-Edmonton","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Calgary-Edmonton) — Market Opening Hours: local fresh fruits and vegetables within the community of Calgary-Edmonton. Practical details, access guidelines, and opening hours available from municipal administrative offices in Calgary-Edmonton.",
+      qEn: "What is the primary purpose of this public document posted in Calgary-Edmonton?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding local fresh fruits and vegetables in Calgary-Edmonton","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 10,
@@ -4633,9 +4634,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Calgary-Edmonton ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant travaux d'entretien des bassins à Calgary-Edmonton","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Calgary-Edmonton) — Fermeture temporaire de piscine: travaux d'entretien des bassins within the community of Calgary-Edmonton. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Calgary-Edmonton?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding travaux d'entretien des bassins in Calgary-Edmonton","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Calgary-Edmonton) — Temporary Pool Closure: pool basin maintenance and cleaning within the community of Calgary-Edmonton. Practical details, access guidelines, and opening hours available from municipal administrative offices in Calgary-Edmonton.",
+      qEn: "What is the primary purpose of this public document posted in Calgary-Edmonton?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding pool basin maintenance and cleaning in Calgary-Edmonton","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 10,
@@ -4646,9 +4647,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Calgary-Edmonton ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant révision d'examen et prêt de livres à Calgary-Edmonton","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Calgary-Edmonton) — Rendez-vous à la bibliothèque: révision d'examen et prêt de livres within the community of Calgary-Edmonton. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Calgary-Edmonton?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding révision d'examen et prêt de livres in Calgary-Edmonton","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Calgary-Edmonton) — Library Study Meeting: exam revision and book lending within the community of Calgary-Edmonton. Practical details, access guidelines, and opening hours available from municipal administrative offices in Calgary-Edmonton.",
+      qEn: "What is the primary purpose of this public document posted in Calgary-Edmonton?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding exam revision and book lending in Calgary-Edmonton","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 10,
@@ -4659,9 +4660,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Calgary-Edmonton ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant viennoiseries offertes le matin à Calgary-Edmonton","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Calgary-Edmonton) — Boulangerie artisanale: viennoiseries offertes le matin within the community of Calgary-Edmonton. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Calgary-Edmonton?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding viennoiseries offertes le matin in Calgary-Edmonton","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Calgary-Edmonton) — Artisanal Bakery: complimentary morning pastries within the community of Calgary-Edmonton. Practical details, access guidelines, and opening hours available from municipal administrative offices in Calgary-Edmonton.",
+      qEn: "What is the primary purpose of this public document posted in Calgary-Edmonton?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding complimentary morning pastries in Calgary-Edmonton","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 10,
@@ -4672,9 +4673,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Calgary-Edmonton ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant bureau des objets trouvés à Calgary-Edmonton","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Calgary-Edmonton) — Clés trouvées dans le métro: bureau des objets trouvés within the community of Calgary-Edmonton. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Calgary-Edmonton?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding bureau des objets trouvés in Calgary-Edmonton","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Calgary-Edmonton) — Keys Found in Subway: lost and found claims office within the community of Calgary-Edmonton. Practical details, access guidelines, and opening hours available from municipal administrative offices in Calgary-Edmonton.",
+      qEn: "What is the primary purpose of this public document posted in Calgary-Edmonton?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding lost and found claims office in Calgary-Edmonton","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 10,
@@ -4685,9 +4686,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Calgary-Edmonton ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant vêtements et jouets d'occasion au parc à Calgary-Edmonton","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Calgary-Edmonton) — Vente de quartier: vêtements et jouets d'occasion au parc within the community of Calgary-Edmonton. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Calgary-Edmonton?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding vêtements et jouets d'occasion au parc in Calgary-Edmonton","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Calgary-Edmonton) — Neighborhood Garage Sale: second-hand clothing and toys at the park within the community of Calgary-Edmonton. Practical details, access guidelines, and opening hours available from municipal administrative offices in Calgary-Edmonton.",
+      qEn: "What is the primary purpose of this public document posted in Calgary-Edmonton?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding second-hand clothing and toys at the park in Calgary-Edmonton","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 10,
@@ -4698,9 +4699,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quel est l'objet principal de ce document affiché à Calgary-Edmonton ?",
       opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant rencontre de début de saison au parc à Calgary-Edmonton","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
       ans: 1,
-      passEn: "Public Document (Calgary-Edmonton) — Pique-nique associatif: rencontre de début de saison au parc within the community of Calgary-Edmonton. Practical information, access conditions, and schedules available from municipal services.",
-      qEn: "What is the main purpose of this document displayed in Calgary-Edmonton?",
-      optEn: ["The announcement of an exceptional administrative closure","Practical information regarding rencontre de début de saison au parc in Calgary-Edmonton","The grand opening of a new private commercial shopping complex","A modification of downtown public parking rates"]
+      passEn: "Public Document (Calgary-Edmonton) — Community Picnic: seasonal kickoff gathering at the park within the community of Calgary-Edmonton. Practical details, access guidelines, and opening hours available from municipal administrative offices in Calgary-Edmonton.",
+      qEn: "What is the primary purpose of this public document posted in Calgary-Edmonton?",
+      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding seasonal kickoff gathering at the park in Calgary-Edmonton","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
     },
     {
       paperNum: 10,
@@ -4711,9 +4712,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Calgary-Edmonton ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant temps partiel et accueil clientèle à Calgary-Edmonton","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Calgary-Edmonton) — Conseiller de vente en librairie: temps partiel et accueil clientèle organized by Énergie Verte de l'Ouest in Calgary-Edmonton. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Calgary-Edmonton?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning temps partiel et accueil clientèle in Calgary-Edmonton","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Calgary-Edmonton) — Bookstore Sales Advisor: part-time employment and customer service organized by Western Green Energy in Calgary-Edmonton. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Calgary-Edmonton?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning part-time employment and customer service in Calgary-Edmonton","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 10,
@@ -4724,9 +4725,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Calgary-Edmonton ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant logement rénové proche transports à Calgary-Edmonton","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Calgary-Edmonton) — Location d'appartement: logement rénové proche transports organized by Énergie Verte de l'Ouest in Calgary-Edmonton. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Calgary-Edmonton?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning logement rénové proche transports in Calgary-Edmonton","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Calgary-Edmonton) — Apartment Rental: renovated housing near transit organized by Western Green Energy in Calgary-Edmonton. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Calgary-Edmonton?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning renovated housing near transit in Calgary-Edmonton","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 10,
@@ -4737,9 +4738,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Calgary-Edmonton ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant accès par badge magnétique à Calgary-Edmonton","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Calgary-Edmonton) — Règlement du parking d'entreprise: accès par badge magnétique organized by Énergie Verte de l'Ouest in Calgary-Edmonton. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Calgary-Edmonton?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning accès par badge magnétique in Calgary-Edmonton","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Calgary-Edmonton) — Company Parking Lot Policy: magnetic badge access control organized by Western Green Energy in Calgary-Edmonton. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Calgary-Edmonton?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning magnetic badge access control in Calgary-Edmonton","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 10,
@@ -4750,9 +4751,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Calgary-Edmonton ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant parcours pédestre avec guide certifié à Calgary-Edmonton","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Calgary-Edmonton) — Visite guidée historique: parcours pédestre avec guide certifié organized by Énergie Verte de l'Ouest in Calgary-Edmonton. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Calgary-Edmonton?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning parcours pédestre avec guide certifié in Calgary-Edmonton","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Calgary-Edmonton) — Historical Guided Tour: walking itinerary with a certified guide organized by Western Green Energy in Calgary-Edmonton. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Calgary-Edmonton?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning walking itinerary with a certified guide in Calgary-Edmonton","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 10,
@@ -4763,9 +4764,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Calgary-Edmonton ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant plat du jour et dessert maison à Calgary-Edmonton","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Calgary-Edmonton) — Formule midi du chef: plat du jour et dessert maison organized by Énergie Verte de l'Ouest in Calgary-Edmonton. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Calgary-Edmonton?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning plat du jour et dessert maison in Calgary-Edmonton","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Calgary-Edmonton) — Chef's Lunch Special: daily main course and homemade dessert organized by Western Green Energy in Calgary-Edmonton. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Calgary-Edmonton?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning daily main course and homemade dessert in Calgary-Edmonton","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 10,
@@ -4776,9 +4777,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Calgary-Edmonton ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant demande de créneau horaire de livraison à Calgary-Edmonton","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Calgary-Edmonton) — Suivi de livraison de colis: demande de créneau horaire de livraison organized by Énergie Verte de l'Ouest in Calgary-Edmonton. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Calgary-Edmonton?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning demande de créneau horaire de livraison in Calgary-Edmonton","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Calgary-Edmonton) — Parcel Delivery Tracking: request for carrier delivery timeslot organized by Western Green Energy in Calgary-Edmonton. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Calgary-Edmonton?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning request for carrier delivery timeslot in Calgary-Edmonton","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 10,
@@ -4789,9 +4790,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Calgary-Edmonton ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant séance du samedi matin à Calgary-Edmonton","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Calgary-Edmonton) — Atelier de yoga pour débutants: séance du samedi matin organized by Énergie Verte de l'Ouest in Calgary-Edmonton. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Calgary-Edmonton?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning séance du samedi matin in Calgary-Edmonton","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Calgary-Edmonton) — Beginner Yoga Workshop: Saturday morning practice session organized by Western Green Energy in Calgary-Edmonton. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Calgary-Edmonton?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning Saturday morning practice session in Calgary-Edmonton","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 10,
@@ -4802,9 +4803,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle information essentielle est transmise dans cette communication de Calgary-Edmonton ?",
       opt: ["Une suppression des services de transport public","Les modalités et consignes concernant renouvellement de prêt en ligne à Calgary-Edmonton","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
       ans: 1,
-      passEn: "Local Communication (Calgary-Edmonton) — Conditions d'emprunt: renouvellement de prêt en ligne organized by Énergie Verte de l'Ouest in Calgary-Edmonton. Interested candidates and users are invited to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is conveyed in this communication from Calgary-Edmonton?",
-      optEn: ["A cancellation of municipal public transit services","Procedures and instructions concerning renouvellement de prêt en ligne in Calgary-Edmonton","An increase in university academic registration fees","The indefinite postponement of the community event"]
+      passEn: "Local Announcement (Calgary-Edmonton) — Borrowing Terms: online book loan renewals organized by Western Green Energy in Calgary-Edmonton. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
+      qEn: "What essential information is communicated in this announcement from Calgary-Edmonton?",
+      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning online book loan renewals in Calgary-Edmonton","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
     },
     {
       paperNum: 10,
@@ -4815,9 +4816,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Franco, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant réduction des déchets municipaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Franco) — Tri sélectif et compostage urbain: In the Calgary-Edmonton region, the initiative focusing on réduction des déchets municipaux is generating growing interest. According to actors at Campus Saint-Jean and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Franco, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning réduction des déchets municipaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Franco Newspaper) — Waste Sorting and Urban Composting: In the Calgary-Edmonton region, this public initiative centered on municipal waste reduction targets is attracting widespread interest. According to researchers at Saint-Jean University Campus and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Franco Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing municipal waste reduction targets despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 10,
@@ -4828,9 +4829,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Franco, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant équilibre vie professionnelle et personnelle malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Franco) — Modèle de télétravail hybride: In the Calgary-Edmonton region, the initiative focusing on équilibre vie professionnelle et personnelle is generating growing interest. According to actors at Campus Saint-Jean and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Franco, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning équilibre vie professionnelle et personnelle despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Franco Newspaper) — Hybrid Telecommuting Model: In the Calgary-Edmonton region, this public initiative centered on work-life balance and productivity is attracting widespread interest. According to researchers at Saint-Jean University Campus and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Franco Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing work-life balance and productivity despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 10,
@@ -4841,9 +4842,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Franco, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant produits frais riches en antioxydants malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Franco) — Alimentation de saison et immunité: In the Calgary-Edmonton region, the initiative focusing on produits frais riches en antioxydants is generating growing interest. According to actors at Campus Saint-Jean and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Franco, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning produits frais riches en antioxydants despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Franco Newspaper) — Seasonal Nutrition and Immunity: In the Calgary-Edmonton region, this public initiative centered on fresh produce rich in antioxidants is attracting widespread interest. According to researchers at Saint-Jean University Campus and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Franco Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fresh produce rich in antioxidants despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 10,
@@ -4854,9 +4855,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Franco, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant prolongation de la durée de vie du matériel malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Franco) — Réparabilité des appareils électroniques: In the Calgary-Edmonton region, the initiative focusing on prolongation de la durée de vie du matériel is generating growing interest. According to actors at Campus Saint-Jean and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Franco, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning prolongation de la durée de vie du matériel despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Franco Newspaper) — Electronic Device Repairability: In the Calgary-Edmonton region, this public initiative centered on extending equipment lifespan through repair is attracting widespread interest. According to researchers at Saint-Jean University Campus and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Franco Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing extending equipment lifespan through repair despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 10,
@@ -4867,9 +4868,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Franco, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant hausse des déplacements à vélo à l'heure de pointe malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Franco) — Nouveau réseau cyclable sécurisé: In the Calgary-Edmonton region, the initiative focusing on hausse des déplacements à vélo à l'heure de pointe is generating growing interest. According to actors at Campus Saint-Jean and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Franco, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning hausse des déplacements à vélo à l'heure de pointe despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Franco Newspaper) — Protected Express Cycling Network: In the Calgary-Edmonton region, this public initiative centered on growth in rush-hour bicycle commuting is attracting widespread interest. According to researchers at Saint-Jean University Campus and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Franco Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing growth in rush-hour bicycle commuting despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 10,
@@ -4880,9 +4881,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Franco, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant justesse de l'interprétation des comédiens malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Franco) — Nouvelle pièce de théâtre contemporaine: In the Calgary-Edmonton region, the initiative focusing on justesse de l'interprétation des comédiens is generating growing interest. According to actors at Campus Saint-Jean and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Franco, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning justesse de l'interprétation des comédiens despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Franco Newspaper) — Contemporary Theatrical Play: In the Calgary-Edmonton region, this public initiative centered on accuracy of actor performances and staging is attracting widespread interest. According to researchers at Saint-Jean University Campus and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Franco Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing accuracy of actor performances and staging despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 10,
@@ -4893,9 +4894,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Franco, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant valorisation du travail des éleveurs locaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Franco) — Coopérative fromagère et vente directe: In the Calgary-Edmonton region, the initiative focusing on valorisation du travail des éleveurs locaux is generating growing interest. According to actors at Campus Saint-Jean and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Franco, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning valorisation du travail des éleveurs locaux despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Franco Newspaper) — Dairy Farming Cooperative and Direct Sales: In the Calgary-Edmonton region, this public initiative centered on fair financial compensation for local farmers is attracting widespread interest. According to researchers at Saint-Jean University Campus and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Franco Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fair financial compensation for local farmers despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 10,
@@ -4906,9 +4907,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Franco, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant formation continue pour professionnels en reconversion malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Franco) — Microprogrammes certifiants en ligne: In the Calgary-Edmonton region, the initiative focusing on formation continue pour professionnels en reconversion is generating growing interest. According to actors at Campus Saint-Jean and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Franco, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning formation continue pour professionnels en reconversion despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Franco Newspaper) — Online Certifying Microprograms: In the Calgary-Edmonton region, this public initiative centered on continuing education for working professionals is attracting widespread interest. According to researchers at Saint-Jean University Campus and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Franco Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing continuing education for working professionals despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 10,
@@ -4919,9 +4920,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Franco, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant relecture humaine nécessaire des sources malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Franco) — Intelligence artificielle dans les cabinets juridiques: In the Calgary-Edmonton region, the initiative focusing on relecture humaine nécessaire des sources is generating growing interest. According to actors at Campus Saint-Jean and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Franco, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning relecture humaine nécessaire des sources despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Franco Newspaper) — Artificial Intelligence in Legal Practice: In the Calgary-Edmonton region, this public initiative centered on rigorous human verification of cited legal sources is attracting widespread interest. According to researchers at Saint-Jean University Campus and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Franco Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing rigorous human verification of cited legal sources despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 10,
@@ -4932,9 +4933,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "D'après cet article du journal Le Franco, que retiennent principalement les observateurs ?",
       opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant parrainage entre étudiants et aînés malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
       ans: 1,
-      passEn: "News Article (Le Franco) — Réseau d'entraide intergénérationnel: In the Calgary-Edmonton region, the initiative focusing on parrainage entre étudiants et aînés is generating growing interest. According to actors at Campus Saint-Jean and mobilized citizens, positive outcomes confirm the effectiveness of concerted measures, even though operational adjustments remain necessary for long-term sustainability.",
-      qEn: "According to this article in Le Franco, what is the main takeaway noted by observers?",
-      optEn: ["The total failure of the regional initiative","The effectiveness of measures concerning parrainage entre étudiants et aînés despite necessary adjustments","The refusal of citizens to participate in local projects","The cancellation of funding granted by institutions"]
+      passEn: "News Chronicle (Le Franco Newspaper) — Intergenerational Mentorship Network: In the Calgary-Edmonton region, this public initiative centered on pairing university students with senior citizens is attracting widespread interest. According to researchers at Saint-Jean University Campus and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
+      qEn: "According to this article in Le Franco Newspaper, what is the primary takeaway highlighted by observers?",
+      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing pairing university students with senior citizens despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
     },
     {
       paperNum: 10,
@@ -4945,9 +4946,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de économie circulaire et éco-conception ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter responsabilité des industriels et réparabilité","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Franco) — Économie circulaire et éco-conception: In-depth analysis conducted by researchers at Campus Saint-Jean emphasizes that the issue of responsabilité des industriels et réparabilité cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding économie circulaire et éco-conception?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address responsabilité des industriels et réparabilité","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Franco Newspaper) — Circular Economy and Eco-Design: In-depth analysis by academic researchers at Saint-Jean University Campus underscores that the critical challenge of corporate manufacturing responsibility and repairability cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding circular economy and eco-design?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve corporate manufacturing responsibility and repairability","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 10,
@@ -4958,9 +4959,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de quête de sens chez les jeunes diplômés ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter impact sociétal et flexibilité professionnelle","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Franco) — Quête de sens chez les jeunes diplômés: In-depth analysis conducted by researchers at Campus Saint-Jean emphasizes that the issue of impact sociétal et flexibilité professionnelle cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding quête de sens chez les jeunes diplômés?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address impact sociétal et flexibilité professionnelle","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Franco Newspaper) — Search for Meaning Among Recent Graduates: In-depth analysis by academic researchers at Saint-Jean University Campus underscores that the critical challenge of societal impact and workplace schedule flexibility cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding search for meaning among recent graduates?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve societal impact and workplace schedule flexibility","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 10,
@@ -4971,9 +4972,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de déploiement des parcs éoliens ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter arbitrage entre urgence climatique et concertation locale","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Franco) — Déploiement des parcs éoliens: In-depth analysis conducted by researchers at Campus Saint-Jean emphasizes that the issue of arbitrage entre urgence climatique et concertation locale cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding déploiement des parcs éoliens?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address arbitrage entre urgence climatique et concertation locale","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Franco Newspaper) — Renewable Wind Energy Deployment: In-depth analysis by academic researchers at Saint-Jean University Campus underscores that the critical challenge of balancing climate urgency with local community consent cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding renewable wind energy deployment?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve balancing climate urgency with local community consent","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 10,
@@ -4984,9 +4985,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de ia générative dans l'enseignement supérieur ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter déplacement de l'évaluation vers l'analyse critique","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Franco) — IA générative dans l'enseignement supérieur: In-depth analysis conducted by researchers at Campus Saint-Jean emphasizes that the issue of déplacement de l'évaluation vers l'analyse critique cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding ia générative dans l'enseignement supérieur?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address déplacement de l'évaluation vers l'analyse critique","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Franco Newspaper) — Generative AI in Higher Education: In-depth analysis by academic researchers at Saint-Jean University Campus underscores that the critical challenge of shifting assessment toward critical reflexive analysis cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding generative ai in higher education?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve shifting assessment toward critical reflexive analysis","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 10,
@@ -4997,9 +4998,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de densification urbaine et patrimoine bâti ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter réhabilitation écologique des bâtiments historiques","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Franco) — Densification urbaine et patrimoine bâti: In-depth analysis conducted by researchers at Campus Saint-Jean emphasizes that the issue of réhabilitation écologique des bâtiments historiques cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding densification urbaine et patrimoine bâti?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address réhabilitation écologique des bâtiments historiques","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Franco Newspaper) — Urban Densification and Built Heritage: In-depth analysis by academic researchers at Saint-Jean University Campus underscores that the critical challenge of sustainable ecological rehabilitation of historic edifices cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding urban densification and built heritage?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve sustainable ecological rehabilitation of historic edifices","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 10,
@@ -5010,9 +5011,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de préservation de la biodiversité marine ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter contrôle des pollutions terrestres en amont","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Franco) — Préservation de la biodiversité marine: In-depth analysis conducted by researchers at Campus Saint-Jean emphasizes that the issue of contrôle des pollutions terrestres en amont cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding préservation de la biodiversité marine?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address contrôle des pollutions terrestres en amont","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Franco Newspaper) — Marine Biodiversity Conservation: In-depth analysis by academic researchers at Saint-Jean University Campus underscores that the critical challenge of strict control of upstream land-based pollution runoff cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding marine biodiversity conservation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve strict control of upstream land-based pollution runoff","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 10,
@@ -5023,9 +5024,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de éducation à l'esprit critique et désinformation ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter préservation du débat public fondé sur des faits","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Franco) — Éducation à l'esprit critique et désinformation: In-depth analysis conducted by researchers at Campus Saint-Jean emphasizes that the issue of préservation du débat public fondé sur des faits cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding éducation à l'esprit critique et désinformation?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address préservation du débat public fondé sur des faits","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Franco Newspaper) — Critical Thinking and Combating Disinformation: In-depth analysis by academic researchers at Saint-Jean University Campus underscores that the critical challenge of safeguarding fact-based democratic public discourse cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding critical thinking and combating disinformation?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve safeguarding fact-based democratic public discourse","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 10,
@@ -5036,9 +5037,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle thèse centrale l'auteur défend-il à propos de priorité à la médecine préventive ?",
       opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter investissement précoce dans le dépistage et l'alimentation","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
       ans: 1,
-      passEn: "Analytical Essay (Le Franco) — Priorité à la médecine préventive: In-depth analysis conducted by researchers at Campus Saint-Jean emphasizes that the issue of investissement précoce dans le dépistage et l'alimentation cannot be resolved through mere palliative measures. Sustainable transformation demands a structural revision of decision-making paradigms, reconciling analytical rigor, ethical imperatives, and civic responsibility.",
-      qEn: "What central thesis does the author defend regarding priorité à la médecine préventive?",
-      optEn: ["The status quo remains the optimal choice for policy makers","A profound structural revision is necessary to address investissement précoce dans le dépistage et l'alimentation","Digital technologies alone are sufficient to resolve all imbalances","Public administration should be delegated exclusively to private entities"]
+      passEn: "Analytical Editorial (Le Franco Newspaper) — Prioritizing Preventative Healthcare: In-depth analysis by academic researchers at Saint-Jean University Campus underscores that the critical challenge of early investment in disease screening and wholesome nutrition cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
+      qEn: "What central thesis does the author defend regarding prioritizing preventative healthcare?",
+      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve early investment in disease screening and wholesome nutrition","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
     },
     {
       paperNum: 10,
@@ -5049,9 +5050,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à érosion de la lenteur nécessaire à la maturation de la pensée","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Campus Saint-Jean) — Temporalité et culte de l'instantanéité: In this essay written in Calgary-Edmonton, the author explores the conceptual significance of érosion de la lenteur nécessaire à la maturation de la pensée. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding érosion de la lenteur nécessaire à la maturation de la pensée","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Saint-Jean University Campus) — Temporality and the Cult of Instantaneity: In this philosophical essay composed in Calgary-Edmonton, the author investigates the conceptual implications of erosion of the contemplative stillness essential for thought maturation. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding erosion of the contemplative stillness essential for thought maturation","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 10,
@@ -5062,9 +5063,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à densité poétique et tension métaphorique du récit","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Campus Saint-Jean) — Esthétique du dépouillement syntaxique: In this essay written in Calgary-Edmonton, the author explores the conceptual significance of densité poétique et tension métaphorique du récit. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding densité poétique et tension métaphorique du récit","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Saint-Jean University Campus) — Aesthetics of Syntactic Sobriety: In this philosophical essay composed in Calgary-Edmonton, the author investigates the conceptual implications of poetic density and metaphorical tension in prose. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic density and metaphorical tension in prose","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 10,
@@ -5075,9 +5076,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à distinction entre inférence statistique et conscience réflexive","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Campus Saint-Jean) — Illusion anthropomorphique de l'IA: In this essay written in Calgary-Edmonton, the author explores the conceptual significance of distinction entre inférence statistique et conscience réflexive. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding distinction entre inférence statistique et conscience réflexive","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Saint-Jean University Campus) — The Anthropomorphic Illusion of AI: In this philosophical essay composed in Calgary-Edmonton, the author investigates the conceptual implications of distinguishing statistical inference from reflexive human consciousness. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding distinguishing statistical inference from reflexive human consciousness","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 10,
@@ -5088,9 +5089,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à vitalité des variétés régionales francophones mondiales","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Campus Saint-Jean) — Polyphonie pluricentrique de la francophonie: In this essay written in Calgary-Edmonton, the author explores the conceptual significance of vitalité des variétés régionales francophones mondiales. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding vitalité des variétés régionales francophones mondiales","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Saint-Jean University Campus) — Pluricentric Polyphony of the Francophonie: In this philosophical essay composed in Calgary-Edmonton, the author investigates the conceptual implications of the vitality of global regional Francophone varieties. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding the vitality of global regional Francophone varieties","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 10,
@@ -5101,9 +5102,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à subversion poétique et révélation des tensions politiques","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Campus Saint-Jean) — L'art contemporain dans l'espace public: In this essay written in Calgary-Edmonton, the author explores the conceptual significance of subversion poétique et révélation des tensions politiques. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding subversion poétique et révélation des tensions politiques","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Saint-Jean University Campus) — Contemporary Art in Civic Spaces: In this philosophical essay composed in Calgary-Edmonton, the author investigates the conceptual implications of poetic subversion and unmasking political civic tensions. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic subversion and unmasking political civic tensions","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
     {
       paperNum: 10,
@@ -5114,9 +5115,9 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
       opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à sélection axiologique et projection communautaire vers l'avenir","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
       ans: 1,
-      passEn: "Critical Essay (Campus Saint-Jean) — Symbolique projective de la mémoire collective: In this essay written in Calgary-Edmonton, the author explores the conceptual significance of sélection axiologique et projection communautaire vers l'avenir. By articulating a rigorous dialectic between philosophical heritage and contemporary mutations, the text demonstrates that the reflexive autonomy of thought remains the ultimate safeguard against the reification of human experience.",
-      qEn: "What major philosophical orientation is expressed in this reflection?",
-      optEn: ["The unconditional submission of thought to material determinisms","The primacy of reflexive autonomy of thought regarding sélection axiologique et projection communautaire vers l'avenir","The total abandonment of philosophical tradition in favor of empirical immediacy","The negation of all hermeneutic value in textual critique"]
+      passEn: "Critical Essay (Saint-Jean University Campus) — Projective Symbolics of Collective Memory: In this philosophical essay composed in Calgary-Edmonton, the author investigates the conceptual implications of axiological selection and community projection toward the future. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
+      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
+      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding axiological selection and community projection toward the future","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
     },
   ],
 ];
