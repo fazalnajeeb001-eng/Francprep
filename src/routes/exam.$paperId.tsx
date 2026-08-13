@@ -802,7 +802,10 @@ export function AuthenticCBTExamPage() {
     }
   };
 
+  const playAudioSessionRef = useRef(0);
+
   const handleStopAudio = () => {
+    playAudioSessionRef.current++;
     ttsStop();
     setIsAudioPaused(false);
   };
@@ -837,9 +840,13 @@ export function AuthenticCBTExamPage() {
       if (mode === "EXAM" && !isSubmitted) {
         const rate = (currentQ as any).speakingRate || 1.0;
         const fullText = currentQ.transcript || currentQ.text;
+        const currentSession = playAudioSessionRef.current;
         const timer = setTimeout(() => {
+          if (playAudioSessionRef.current !== currentSession) return;
           ttsSpeakListening(fullText, qNum, "fr-FR", rate, undefined, () => {
-            setIsAudioFinished(true);
+            if (playAudioSessionRef.current === currentSession) {
+              setIsAudioFinished(true);
+            }
           });
         }, 300);
         return () => clearTimeout(timer);
@@ -848,13 +855,20 @@ export function AuthenticCBTExamPage() {
   }, [currentQuestionIdx, activeSectionIdx]);
 
   const handlePlayAudio = async (text: string, lang = "fr-FR", rate = 1.0) => {
-    handleStopAudio();
+    const sessionId = ++playAudioSessionRef.current;
+    ttsStop();
     setIsAudioPaused(false);
     const qNum = (currentQ as any)?.questionNumber || 1;
     await triggerAcousticSoundForQuestion(qNum);
+    
+    // If student pressed pause/stop while chime was playing, cancel audio playback!
+    if (playAudioSessionRef.current !== sessionId) return;
+
     const fullTextToPlay = currentQ?.transcript || text;
     ttsSpeakListening(fullTextToPlay, qNum, lang, rate, undefined, () => {
-      setIsAudioFinished(true);
+      if (playAudioSessionRef.current === sessionId) {
+        setIsAudioFinished(true);
+      }
     });
   };
 
@@ -862,11 +876,10 @@ export function AuthenticCBTExamPage() {
     if (isAudioPaused) {
       ttsResume();
       setIsAudioPaused(false);
-    } else if (isSpeaking) {
+    } else {
+      playAudioSessionRef.current++;
       ttsPause();
       setIsAudioPaused(true);
-    } else {
-      handlePlayAudio(currentQ.transcript || currentQ.text);
     }
   };
 
@@ -3176,23 +3189,28 @@ export function AuthenticCBTExamPage() {
               const isAnswered = selectedAnswers[q.id] !== undefined;
               const isFlagged = flaggedQuestions[q.id];
               const isCurrent = currentQuestionIdx === idx;
-              const isPastExamListeningItem = mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE" && idx < currentQuestionIdx;
+              const isExamListening = mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE";
+              const isLockedExamItem = isExamListening && !isCurrent;
 
               return (
                 <button
                   key={q.id}
                   onClick={() => {
-                    if (!isPastExamListeningItem) setCurrentQuestionIdx(idx);
+                    if (!isExamListening) setCurrentQuestionIdx(idx);
                   }}
-                  disabled={isPastExamListeningItem}
-                  title={isPastExamListeningItem ? "Écoute terminée — Impossible de revenir en arrière dans l'examen officiel." : `Item N°${q.questionNumber}`}
+                  disabled={isExamListening}
+                  title={
+                    isExamListening
+                      ? "Navigation manuelle verrouillée en examen officiel FEI CBT (Avancement automatique par audio)."
+                      : `Item N°${q.questionNumber}`
+                  }
                   className={`w-7 h-7 sm:w-8 sm:h-8 rounded text-xs font-bold transition-all relative shrink-0 ${
                     isCurrent
                       ? "ring-2 ring-blue-600 bg-blue-600 text-white"
                       : isAnswered
                       ? "bg-blue-800 text-white"
-                      : isPastExamListeningItem
-                      ? "opacity-40 cursor-not-allowed bg-slate-300 dark:bg-slate-800 text-slate-500 line-through"
+                      : isLockedExamItem
+                      ? "opacity-50 cursor-not-allowed bg-slate-300 dark:bg-slate-800 text-slate-500"
                       : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
                   }`}
                 >
