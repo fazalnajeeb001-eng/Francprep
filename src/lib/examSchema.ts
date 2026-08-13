@@ -1206,7 +1206,7 @@ export function getB1Propositions(sceneIdx: number): {
     return {
       level: "B1",
       title: `Reportage Écologie Urbaine B1 P${p}Q16`,
-      text: `Selon un récent sondage réalisé à ${city}, l'aménagement de nouvelles pistes cyclables sécurisées et l'extension des voies réservées aux bus rencontrent l'adhésion de ${65 + p * 2}% des citoyens soucieux de réduire les émissions de carbone.`,
+      text: `Selon un récent sondage réalisé à ${city}, l'aménagement de nouvelles pistes cyclables sécurisées et l'extension des voies réservées aux bus rencontrent l'adhésion de ${65 + p * 2}% des citoyens soucieux de réduire les émissions de carbone. Les autorités municipales envisagent d'accélérer le calendrier des travaux dès le prochain trimestre afin d'encourager les mobilités douces et de fluidifier durablement la circulation dans l'hypercentre.`,
       opt: [
         `Approbation par ${65 + p * 2}% des citoyens de ${city} des nouvelles pistes cyclables et bus`,
         `Refus massif des habitants de ${city} face aux récents travaux d'aménagement routier`,
@@ -1222,7 +1222,7 @@ export function getB1Propositions(sceneIdx: number): {
     return {
       level: "B1",
       title: `Chronique Travail & Société B1 P${p}Q17`,
-      text: `Une étude menée auprès d'entreprises de ${city} révèle que l'expérimentation de la semaine de 4 jours a permis de réduire le niveau d'épuisement professionnel de ${30 + p}% tout en maintenant la productivité globale.`,
+      text: `Une étude approfondie menée auprès d'entreprises de la région de ${city} révèle que l'expérimentation de la semaine de 4 jours a permis de réduire le niveau d'épuisement professionnel de ${30 + p}% tout en maintenant la productivité globale. La majorité des dirigeants interrogés confirment une baisse significative de l'absentéisme et un engagement accru des salariés.`,
       opt: [
         `Réduction de l'épuisement professionnel de ${30 + p}% et maintien de la productivité à ${city}`,
         `Effondrement dramatique de la productivité globale des employés de bureau`,
@@ -1238,7 +1238,7 @@ export function getB1Propositions(sceneIdx: number): {
     return {
       level: "B1",
       title: `Chronique Culture B1 P${p}Q18`,
-      text: `Le festival annuel de musique émergente de ${city} mettra à l'honneur cette année ${10 + p * 3} groupes régionaux, afin de promouvoir la diversité culturelle et le dynamisme artistique local.`,
+      text: `Le festival annuel de musique émergente de la métropole de ${city} mettra à l'honneur cette année ${10 + p * 3} groupes régionaux d'une grande diversité stylistique. Les organisateurs souhaitent ainsi promouvoir le dynamisme artistique local et offrir une vitrine professionnelle aux jeunes talents émergents de la région.`,
       opt: [
         `Valorisation de ${10 + p * 3} groupes régionaux et de la scène musicale locale à ${city}`,
         `Annulation des spectacles en raison de restrictions budgétaires municipales`,
@@ -1254,7 +1254,7 @@ export function getB1Propositions(sceneIdx: number): {
     return {
       level: "B1",
       title: `Reportage Consommation B1 P${p}Q19`,
-      text: `De plus en plus de foyers de ${city} adoptent l'achat en vrac dans les épiceries écoresponsables. Cette pratique permet de réduire les dépenses alimentaires de ${15 + p}% tout en éliminant les emballages plastiques.`,
+      text: `De plus en plus de foyers de ${city} adoptent l'achat en vrac dans les épiceries écoresponsables du quartier. Cette pratique solidaire permet non seulement de réduire les dépenses alimentaires annuelles de ${15 + p}%, mais contribue également de manière concrète à éliminer les déchets plastiques à usage unique.`,
       opt: [
         `Économies de ${15 + p}% sur le budget alimentaire et élimination des emballages plastiques à ${city}`,
         `Augmentation significative des dépenses mensuelles consacrées à l'alimentation`,
@@ -3923,7 +3923,8 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       const b2 = getB2Propositions(b2Idx);
       topicOpt = b2.opt;
       topicAns = b2.ans;
-      t = { ...t, title: b2.title, text: b2.text, q: b2.q, tr: b2.tr, en: b2.en, hint: b2.hint, level: b2.level };
+      const b2PassageText = (b2.tr || "").replace(/^Locut(?:eur|rice)\s*\d*:\s*/gm, "");
+      t = { ...t, title: b2.title, text: b2PassageText, q: b2.text, tr: b2.tr, en: b2.en, hint: b2.hint, level: b2.level };
     } else if (i >= 34 && i <= 39) {
       const paperNumMatch = prefix.match(/\d+/);
       const paperIdx = paperNumMatch ? (parseInt(paperNumMatch[0], 10) - 1) % 10 : (seedOffset % 10);
@@ -3931,7 +3932,8 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       const c1c2 = getC1C2Propositions(c1c2Idx);
       topicOpt = c1c2.opt;
       topicAns = c1c2.ans;
-      t = { ...t, title: c1c2.title, text: c1c2.text, q: c1c2.q, tr: c1c2.tr, en: c1c2.en, hint: c1c2.hint, level: c1c2.level };
+      const c1c2PassageText = (c1c2.tr || "").replace(/^Locut(?:eur|rice)\s*\d*:\s*/gm, "") || c1c2.text;
+      t = { ...t, title: c1c2.title, text: c1c2PassageText, q: c1c2.text || "Selon le conférencier, quelle est la thèse centrale ?", tr: c1c2.tr || c1c2.text, en: c1c2.en, hint: c1c2.hint, level: c1c2.level };
     }
 
     const seed = seedOffset * 100 + i;
@@ -3948,11 +3950,13 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
 
     const isSpokenOptionQuestion = (i >= 5 && i <= 8);
 
+    const passageBodyText = t.text || t.tr;
+
     let fullSpokenTranscript = isQuestionInAudio
       ? (isSpokenOptionQuestion
-        ? `${passageSpeakerLabel}: ${t.tr}\n${announcerLabel}: Écoutez la question et les 4 réponses. Question N°${i} : ${questionTextPrompt}\n... A : ${options[0]}.\n... B : ${options[1]}.\n... C : ${options[2]}.\n... D : ${options[3]}.`
-        : `${passageSpeakerLabel}: ${t.tr}\n${announcerLabel}: Écoutez la question. Question N°${i} : ${questionTextPrompt}`)
-      : t.tr;
+        ? `${passageSpeakerLabel}: ${passageBodyText}\n${announcerLabel}: Écoutez la question et les 4 réponses. Question N°${i} : ${questionTextPrompt}\n... A : ${options[0]}.\n... B : ${options[1]}.\n... C : ${options[2]}.\n... D : ${options[3]}.`
+        : `${passageSpeakerLabel}: ${passageBodyText}\n${announcerLabel}: Écoutez la question. Question N°${i} : ${questionTextPrompt}`)
+      : passageBodyText;
 
     if (i <= 4) {
       fullSpokenTranscript = `${announcerLabel}: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : ${options[0]}.\n... Proposition B : ${options[1]}.\n... Proposition C : ${options[2]}.\n... Proposition D : ${options[3]}.`;
@@ -3973,13 +3977,13 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       fullSpokenTranscript = `${announcerLabel}: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : ${options[0]}.\n... Proposition B : ${options[1]}.\n... Proposition C : ${options[2]}.\n... Proposition D : ${options[3]}.`;
       spokenEnglishTranslation = `${announcerLabelEn}: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: ${optionsEn0}.\n... Option B: ${optionsEn1}.\n... Option C: ${optionsEn2}.\n... Option D: ${optionsEn3}.`;
     } else if (isSpokenOptionQuestion) {
-      fullSpokenTranscript = `${passageSpeakerLabel}: ${t.tr}\n${announcerLabel}: Écoutez la question et les 4 réponses. Question N°${i} : ${questionTextPrompt}\n... A : ${options[0]}.\n... B : ${options[1]}.\n... C : ${options[2]}.\n... D : ${options[3]}.`;
+      fullSpokenTranscript = `${passageSpeakerLabel}: ${passageBodyText}\n${announcerLabel}: Écoutez la question et les 4 réponses. Question N°${i} : ${questionTextPrompt}\n... A : ${options[0]}.\n... B : ${options[1]}.\n... C : ${options[2]}.\n... D : ${options[3]}.`;
       spokenEnglishTranslation = `${passageSpeakerLabelEn}: ${t.en}\n${announcerLabelEn}: Listen to the question and the 4 options. Question N°${i}: ${questionTextPrompt}\n... A: ${optionsEn0}.\n... B: ${optionsEn1}.\n... C: ${optionsEn2}.\n... D: ${optionsEn3}.`;
     } else if (isQuestionInAudio) {
-      fullSpokenTranscript = `${passageSpeakerLabel}: ${t.tr}\n${announcerLabel}: Écoutez la question. Question N°${i} : ${questionTextPrompt}`;
+      fullSpokenTranscript = `${passageSpeakerLabel}: ${passageBodyText}\n${announcerLabel}: Écoutez la question. Question N°${i} : ${questionTextPrompt}`;
       spokenEnglishTranslation = `${passageSpeakerLabelEn}: ${t.en}\n${announcerLabelEn}: Listen to the question. Question N°${i}: ${questionTextPrompt}`;
     } else {
-      fullSpokenTranscript = t.tr;
+      fullSpokenTranscript = passageBodyText;
       spokenEnglishTranslation = t.en;
     }
 
