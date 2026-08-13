@@ -7269,17 +7269,11 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
 
     const isSpokenOptionQuestion = (i >= 5 && i <= 8);
 
-    const passageBodyText = t.text || t.tr;
+    const passageBodyText = (t.text || t.tr || "").trim();
+    const hasExplicitSpeakerTag = /^(Locuteur|Locutrice|Homme|Femme|Intervenant|Journaliste)\b/i.test(passageBodyText);
+    const cleanPassageWithSpeaker = hasExplicitSpeakerTag ? passageBodyText : `${passageSpeakerLabel}: ${passageBodyText}`;
 
-    let fullSpokenTranscript = isQuestionInAudio
-      ? (isSpokenOptionQuestion
-        ? `${passageSpeakerLabel}: ${passageBodyText}\n${announcerLabel}: Écoutez la question et les 4 réponses. Question N°${i} : ${questionTextPrompt}\n... A : ${options[0]}.\n... B : ${options[1]}.\n... C : ${options[2]}.\n... D : ${options[3]}.`
-        : `${passageSpeakerLabel}: ${passageBodyText}\n${announcerLabel}: Écoutez la question. Question N°${i} : ${questionTextPrompt}`)
-      : passageBodyText;
-
-    if (i <= 4) {
-      fullSpokenTranscript = `${announcerLabel}: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : ${options[0]}.\n... Proposition B : ${options[1]}.\n... Proposition C : ${options[2]}.\n... Proposition D : ${options[3]}.`;
-    }
+    let fullSpokenTranscript = "";
 
     const questionId = `${prefix}-lis-${i}`;
     const practiceTr = getPracticeQuestionTranslation(questionId);
@@ -7305,14 +7299,14 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       fullSpokenTranscript = `${announcerLabel}: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : ${options[0]}.\n... Proposition B : ${options[1]}.\n... Proposition C : ${options[2]}.\n... Proposition D : ${options[3]}.`;
       spokenEnglishTranslation = `${announcerLabelEn}: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: ${optionsEn0}.\n... Option B: ${optionsEn1}.\n... Option C: ${optionsEn2}.\n... Option D: ${optionsEn3}.`;
     } else if (isSpokenOptionQuestion) {
-      fullSpokenTranscript = `${passageSpeakerLabel}: ${passageBodyText}\n${announcerLabel}: Écoutez la question et les 4 réponses. Question N°${i} : ${questionTextPrompt}\n... A : ${options[0]}.\n... B : ${options[1]}.\n... C : ${options[2]}.\n... D : ${options[3]}.`;
+      fullSpokenTranscript = `${cleanPassageWithSpeaker}\n${announcerLabel}: Écoutez la question et les 4 réponses. Question N°${i} : ${questionTextPrompt}\n... A : ${options[0]}.\n... B : ${options[1]}.\n... C : ${options[2]}.\n... D : ${options[3]}.`;
       spokenEnglishTranslation = `${passageSpeakerLabelEn}: ${passageTextEn}\n${announcerLabelEn}: Listen to the question and the 4 options. Question N°${i}: ${questionPromptEn}\n... A: ${optionsEn0}.\n... B: ${optionsEn1}.\n... C: ${optionsEn2}.\n... D: ${optionsEn3}.`;
     } else if (isQuestionInAudio) {
-      fullSpokenTranscript = `${passageSpeakerLabel}: ${passageBodyText}\n${announcerLabel}: Écoutez la question. Question N°${i} : ${questionTextPrompt}`;
+      fullSpokenTranscript = `${cleanPassageWithSpeaker}\n${announcerLabel}: Écoutez la question. Question N°${i} : ${questionTextPrompt}`;
       spokenEnglishTranslation = `${passageSpeakerLabelEn}: ${passageTextEn}\n${announcerLabelEn}: Listen to the question. Question N°${i}: ${questionPromptEn}`;
     } else {
-      // Q30-Q39
-      fullSpokenTranscript = passageBodyText;
+      // Q30-Q39 (Advanced B2, C1, C2)
+      fullSpokenTranscript = cleanPassageWithSpeaker;
       spokenEnglishTranslation = (i >= 26 && i <= 33) ? t.en : (t.en.startsWith("Speaker:") ? t.en : `Speaker: ${passageTextEn}`);
     }
 
