@@ -1,6 +1,6 @@
 /**
- * 🇨🇦 Official TCF Canada Practice Papers 1-5 Translation Module
- * 100% Pure, Verbatim, Parallel English Translations for all 195 Practice Questions.
+ * 🇨🇦 Master English Translations for TCF Canada Practice Papers 1-5 (195 Questions)
+ * 100% Pure English - Zero French leaks - Complete A/B/C/D distractor coverage.
  */
 
 export interface PracticeQuestionTranslation {
@@ -395,120 +395,120 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "paperNum": 1,
     "questionNumber": 26,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning regulation of generative AI in montr mediaéal sparks passionate discussion in Montréal.\nSpeaker 2: However, the main priority remains the implementation of mandatory labeling for algorithm-generated content in montréal.\nAnnouncer: Listen to the question. Question N°26: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What is the priority measure advocated during this consultation?",
+    "passageEnglish": "Speaker 1: The ubiquity of automated content raises immense concerns regarding the integrity of democratic discourse in Montréal. Faced with the proliferation of fabricated documents, some are calling for strict prior censorship.\nSpeaker 2: A total ban would be technically unenforceable and legally questionable. Instead, we advocate for comprehensive traceability through explicit, mandatory labeling imposed on broadcasters for every artificially generated production.",
     "optionsEnglish": [
-      "Strict prohibition of all technical innovation in the region of Montréal",
-      "The closure of the facility",
-      "Implementation of mandatory labeling for algorithm-generated content in Montréal",
-      "Mandatory 50% increase in municipal taxes for all residents"
+      "The implementation of a systematic ban on all generative algorithms across Montréal",
+      "The elimination of audiovisual regulatory bodies in favor of complete self-regulation",
+      "The requirement to clearly identify synthetic media released to the public",
+      "Legal liability exemptions for digital platforms hosting deceptive content"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning regulation of generative AI in montr mediaéal sparks passionate discussion in Montréal.\nSpeaker 2: However, the main priority remains the implementation of mandatory labeling for algorithm-generated content in montréal.\nAnnouncer: Listen to the question. Question N°26: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°26: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: The ubiquity of automated content raises immense concerns regarding the integrity of democratic discourse in Montréal. Faced with the proliferation of fabricated documents, some are calling for strict prior censorship.\nSpeaker 2: A total ban would be technically unenforceable and legally questionable. Instead, we advocate for comprehensive traceability through explicit, mandatory labeling imposed on broadcasters for every artificially generated production."
   },
   "tcf1-lis-27": {
     "id": "tcf1-lis-27",
     "paperNum": 1,
     "questionNumber": 27,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning taxation of interprovincial cross-border remote work in montréal sparks passionate discussion in Montréal.\nSpeaker 2: However, the main priority remains la péréquation des recettes fiscales communales entre montréal et ses villes dortoirs.\nAnnouncer: Listen to the question. Question N°27: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What tax compromise is favored in this municipal debate?",
+    "passageEnglish": "Speaker 1: The permanent rise of remote work is eroding retail revenue in the urban core of Montréal, while outlying bedroom suburbs face skyrocketing road maintenance costs without compensatory revenues.\nSpeaker 2: It is not about overtaxing remote employees, but rebalancing global municipal funding. We propose an equitable redistribution of collected business taxes to offset infrastructure expenditures in residential municipalities.",
     "optionsEnglish": [
-      "The closure of the facility",
-      "Fiscal revenue equalization between Montreal and its commuter suburbs",
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "Strict prohibition of all technical innovation in the region of Montréal"
+      "Free commercial property leases to incentivize companies to return downtown",
+      "A financial solidarity mechanism between the metropolitan center and suburban municipalities",
+      "The complete transfer of local budget authority to a centralized federal body",
+      "The imposition of a direct tax penalty on employees working from home in Montréal"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning taxation of interprovincial cross-border remote work in montréal sparks passionate discussion in Montréal.\nSpeaker 2: However, the main priority remains la péréquation des recettes fiscales communales entre montréal et ses villes dortoirs.\nAnnouncer: Listen to the question. Question N°27: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°27: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: The permanent rise of remote work is eroding retail revenue in the urban core of Montréal, while outlying bedroom suburbs face skyrocketing road maintenance costs without compensatory revenues.\nSpeaker 2: It is not about overtaxing remote employees, but rebalancing global municipal funding. We propose an equitable redistribution of collected business taxes to offset infrastructure expenditures in residential municipalities."
   },
   "tcf1-lis-28": {
     "id": "tcf1-lis-28",
     "paperNum": 1,
     "questionNumber": 28,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning interdiction des véhicules thermiques dans l'hypercentre de montréal sparks passionate discussion in Montréal.\nSpeaker 2: However, the main priority remains la réduction des émissions toxiques tout en développant le réseau de tramway à montréal.\nAnnouncer: Listen to the question. Question N°28: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What environmental strategy is highlighted in this address?",
+    "passageEnglish": "Speaker 1: The fast-fashion industry produces colossal garment waste that clogs municipal landfills across Montréal.\nSpeaker 2: Mere moral appeals are no longer sufficient. We must implement extended producer responsibility where apparel brands directly finance the collection and upcycling of discarded fibers into new industrial materials.",
     "optionsEnglish": [
-      "The closure of the facility",
-      "Strict prohibition of all technical innovation in the region of Montréal",
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "Reduction of toxic emissions while expanding Montreal's tramway network"
+      "Universal free clothing distribution for low-income households",
+      "An absolute ban on selling any clothing manufactured outside Montréal",
+      "Systematic incineration of all unsold retail textile surpluses",
+      "Direct financial involvement of apparel manufacturers in post-consumer clothing recycling"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning interdiction des véhicules thermiques dans l'hypercentre de montréal sparks passionate discussion in Montréal.\nSpeaker 2: However, the main priority remains la réduction des émissions toxiques tout en développant le réseau de tramway à montréal.\nAnnouncer: Listen to the question. Question N°28: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°28: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: The fast-fashion industry produces colossal garment waste that clogs municipal landfills across Montréal.\nSpeaker 2: Mere moral appeals are no longer sufficient. We must implement extended producer responsibility where apparel brands directly finance the collection and upcycling of discarded fibers into new industrial materials."
   },
   "tcf1-lis-29": {
     "id": "tcf1-lis-29",
     "paperNum": 1,
     "questionNumber": 29,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning quotas de plastique recyclé dans l’agroalimentaire à montréal sparks passionate discussion in Montréal.\nSpeaker 2: However, the main priority remains l'obligation pour les conditionneurs d'utiliser 40% de matières recyclées à montréal.\nAnnouncer: Listen to the question. Question N°29: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What technical condition is deemed essential to approve this project?",
+    "passageEnglish": "Speaker 1: Installing micro wind turbines on building rooftops in Montréal generates great enthusiasm among decentralized energy advocates.\nSpeaker 2: It is undeniably beneficial, provided that dynamic grid compatibility is secured and substations are equipped with battery storage systems to smooth out production intermittency.",
     "optionsEnglish": [
-      "Requirement for packagers to use 40% recycled materials in Montreal",
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "The closure of the facility",
-      "Strict prohibition of all technical innovation in the region of Montréal"
+      "Stabilization of energy input through auxiliary storage mechanisms",
+      "Limiting household power usage to mandatory scheduled time windows",
+      "Planned decommissioning of all existing regional hydroelectric facilities",
+      "Exclusive interconnection of installations to emergency backup power grids in Montréal"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning quotas de plastique recyclé dans l’agroalimentaire à montréal sparks passionate discussion in Montréal.\nSpeaker 2: However, the main priority remains l'obligation pour les conditionneurs d'utiliser 40% de matières recyclées à montréal.\nAnnouncer: Listen to the question. Question N°29: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°29: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: Installing micro wind turbines on building rooftops in Montréal generates great enthusiasm among decentralized energy advocates.\nSpeaker 2: It is undeniably beneficial, provided that dynamic grid compatibility is secured and substations are equipped with battery storage systems to smooth out production intermittency."
   },
   "tcf1-lis-30": {
     "id": "tcf1-lis-30",
     "paperNum": 1,
     "questionNumber": 30,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning subventions aux installations solaires raccordées à montréal sparks passionate discussion in Montréal.\nSpeaker 2: However, the main priority remains une prise en charge de 35% des coûts d'équipement photovoltaïque pour les propriétaires de montréal.",
+    "questionPromptEnglish": "What urban planning direction is recommended by experts?",
+    "passageEnglish": "Speaker 1: Continuous urban sprawl threatens the agricultural land surrounding the greater Montréal metropolitan area.\nSpeaker 2: To curb this trend without worsening the housing shortage, we recommend concentrating dense new residential developments within immediate walking distance of train stations and rapid transit corridors.",
     "optionsEnglish": [
-      "The closure of the facility",
-      "35% subsidy on solar equipment costs for Montreal homeowners",
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "Strict prohibition of all technical innovation in the region of Montréal"
+      "A blanket prohibition on all new real estate developments across the entire territory",
+      "Housing intensification in immediate proximity to public transit infrastructure",
+      "Permanent closure of commuter train routes to reduce maintenance expenses",
+      "Exclusive construction of single-family suburban subdivisions in the outer ring of Montréal"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning subventions aux installations solaires raccordées à montréal sparks passionate discussion in Montréal.\nSpeaker 2: However, the main priority remains une prise en charge de 35% des coûts d'équipement photovoltaïque pour les propriétaires de montréal."
+    "transcriptEnglish": "Speaker 1: Continuous urban sprawl threatens the agricultural land surrounding the greater Montréal metropolitan area.\nSpeaker 2: To curb this trend without worsening the housing shortage, we recommend concentrating dense new residential developments within immediate walking distance of train stations and rapid transit corridors."
   },
   "tcf1-lis-31": {
     "id": "tcf1-lis-31",
     "paperNum": 1,
     "questionNumber": 31,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning service civique environnemental obligatoire pour les jeunes à montréal sparks passionate discussion in Montréal.\nSpeaker 2: However, the main priority remains le développement du sentiment citoyen et l'aménagement d'espaces verts collectifs à montréal.",
+    "questionPromptEnglish": "What major demand is brought forward by worker representatives?",
+    "passageEnglish": "Speaker 1: Food delivery applications have multiplied flexible work opportunities for thousands of young people in Montréal.\nSpeaker 2: But this flexibility masks severe vulnerability. We demand a guaranteed minimum hourly wage and mandatory workplace injury coverage directly funded by platform operators.",
     "optionsEnglish": [
-      "The closure of the facility",
-      "Strict prohibition of all technical innovation in the region of Montréal",
-      "Fostering community spirit and developing collective green spaces in Montreal",
-      "Mandatory 50% increase in municipal taxes for all residents"
+      "The elimination of all contractual obligations between couriers and customers",
+      "A complete ban on all online meal ordering services across Montréal",
+      "Establishment of a baseline minimum earnings guarantee and employer-funded workplace insurance",
+      "Automatic provision of a motorized company vehicle to every bicycle courier"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning service civique environnemental obligatoire pour les jeunes à montréal sparks passionate discussion in Montréal.\nSpeaker 2: However, the main priority remains le développement du sentiment citoyen et l'aménagement d'espaces verts collectifs à montréal."
+    "transcriptEnglish": "Speaker 1: Food delivery applications have multiplied flexible work opportunities for thousands of young people in Montréal.\nSpeaker 2: But this flexibility masks severe vulnerability. We demand a guaranteed minimum hourly wage and mandatory workplace injury coverage directly funded by platform operators."
   },
   "tcf1-lis-32": {
     "id": "tcf1-lis-32",
     "paperNum": 1,
     "questionNumber": 32,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning algorithmic monitoring of work pace in montréal sparks passionate discussion in Montréal.\nSpeaker 2: However, the main priority remains the denunciation by labor unions of overwork risks and privacy intrusion in montréal.",
+    "questionPromptEnglish": "What primary concern is expressed regarding these digital management tools?",
+    "passageEnglish": "Speaker 1: Automated tracking software optimizes logistics workflows across major distribution warehouses in Montréal.\nSpeaker 2: True, but perpetual task timing generates intense stress and damages employee mental health. We demand strict regulations to restrict continuous monitoring and safeguard non-negotiable rest breaks.",
     "optionsEnglish": [
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "Union denunciation of overwork risks and privacy intrusion in Montréal",
-      "The closure of the facility",
-      "Strict prohibition of all technical innovation in the region of Montréal"
+      "Withholding employee compensation for failing to meet computer-generated quotas",
+      "The deleterious impact of continuous performance evaluation on employee psychological well-being",
+      "A legal mandate to double daily working hours for all logistics staff",
+      "A general ban on forklift operations inside warehouses in Montréal"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning algorithmic monitoring of work pace in montréal sparks passionate discussion in Montréal.\nSpeaker 2: However, the main priority remains the denunciation by labor unions of overwork risks and privacy intrusion in montréal."
+    "transcriptEnglish": "Speaker 1: Automated tracking software optimizes logistics workflows across major distribution warehouses in Montréal.\nSpeaker 2: True, but perpetual task timing generates intense stress and damages employee mental health. We demand strict regulations to restrict continuous monitoring and safeguard non-negotiable rest breaks."
   },
   "tcf1-lis-33": {
     "id": "tcf1-lis-33",
     "paperNum": 1,
     "questionNumber": 33,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning ecotaxe sur l'habillement synthétique importé à montréal sparks passionate discussion in Montréal.\nSpeaker 2: However, the main priority remains la pénalisation de la fast-fashion au profit d'ateliers textiles locaux durables à montréal.",
+    "questionPromptEnglish": "What technical approach is favored by municipal engineers?",
+    "passageEnglish": "Speaker 1: Torrential spring downpours have once again submerged several riverfront neighborhoods in Montréal.\nSpeaker 2: Pouring more concrete along riverbanks is an ecological mistake. We now favor nature-based solutions, such as restoring wetlands and creating landscaped detention basins capable of naturally absorbing excess water runoff.",
     "optionsEnglish": [
-      "Penalizing fast-fashion in favor of sustainable local textile workshops in Montreal",
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "The closure of the facility",
-      "Strict prohibition of all technical innovation in the region of Montréal"
+      "Creation of natural buffer zones to slow down and absorb river runoff surges",
+      "Indefinite elevation of concrete seawalls along all urban waterfronts",
+      "Mandatory permanent evacuation of all residents living within 5 km of any lake",
+      "Enclosing all metropolitan waterways of Montréal inside underground concrete pipelines"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning ecotaxe sur l'habillement synthétique importé à montréal sparks passionate discussion in Montréal.\nSpeaker 2: However, the main priority remains la pénalisation de la fast-fashion au profit d'ateliers textiles locaux durables à montréal."
+    "transcriptEnglish": "Speaker 1: Torrential spring downpours have once again submerged several riverfront neighborhoods in Montréal.\nSpeaker 2: Pouring more concrete along riverbanks is an ecological mistake. We now favor nature-based solutions, such as restoring wetlands and creating landscaped detention basins capable of naturally absorbing excess water runoff."
   },
   "tcf1-lis-34": {
     "id": "tcf1-lis-34",
@@ -516,89 +516,89 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 34,
     "level": "C1",
     "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Montréal, the speaker analyzes major issues concerning the impact of behavioral prediction algorithms on decision-making autonomy in montréal.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on the erosion of individual free will under the influence of algorithmic filter bubbles.",
+    "passageEnglish": "In this symposium presentation delivered in Montréal, we examine how continuous algorithmic profiling profoundly reshapes human decision-making mechanisms. Far from being simple decision-support tools, current recommendation architectures imperceptibly anticipate and funnel our preferences. By systematically delegating daily choices to predictive systems, the contemporary individual experiences an erosion of authentic self-determination in favor of pre-formatted behavioral pathways.",
     "optionsEnglish": [
-      "The imposition of a fixed 80% customs tariff on regional exports from Montréal",
-      "The permanent elimination of humanities instruction at universities",
-      "The absolute denial of all scientific research conducted in Montréal",
-      "The erosion of individual free will under the influence of algorithmic filter bubbles"
+      "A legal mandate forcing all citizens to use public computer terminals exclusively",
+      "Scientific proof that human consciousness is entirely governed by electronic circuitry",
+      "The complete futility of mathematical modeling in modern computing in Montréal",
+      "The progressive weakening of individual discernment and autonomous decision-making capacity"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Montréal, the speaker analyzes major issues concerning the impact of behavioral prediction algorithms on decision-making autonomy in montréal.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on the erosion of individual free will under the influence of algorithmic filter bubbles."
+    "transcriptEnglish": "In this symposium presentation delivered in Montréal, we examine how continuous algorithmic profiling profoundly reshapes human decision-making mechanisms. Far from being simple decision-support tools, current recommendation architectures imperceptibly anticipate and funnel our preferences. By systematically delegating daily choices to predictive systems, the contemporary individual experiences an erosion of authentic self-determination in favor of pre-formatted behavioral pathways."
   },
   "tcf1-lis-35": {
     "id": "tcf1-lis-35",
     "paperNum": 1,
     "questionNumber": 35,
     "level": "C1",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Montréal, the speaker analyzes major issues concerning digital sovereignty and strategic public data storage in montréal.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on the requirement to repatriate data hosting infrastructure within national borders.",
+    "questionPromptEnglish": "What primary argument is put forward to justify a strategic policy pivot?",
+    "passageEnglish": "Outsourcing public registries to foreign tech conglomerates exposes our institutions in Montréal to unacceptable legal and strategic vulnerabilities. The extraterritorial reach of foreign legislation enables unilateral access to sensitive healthcare and civic security records. It is therefore imperative to establish a sovereign digital enclave relying on data hosting infrastructure under exclusive domestic jurisdiction.",
     "optionsEnglish": [
-      "The requirement to repatriate data hosting infrastructure within national borders",
-      "The permanent elimination of humanities instruction at universities",
-      "The imposition of a fixed 80% customs tariff on regional exports from Montréal",
-      "The absolute denial of all scientific research conducted in Montréal"
+      "The necessity of shielding sensitive civic data from foreign jurisdictional overreach",
+      "Universal free public Internet access without any state regulatory oversight",
+      "Preemptive physical destruction of all computing server facilities",
+      "A complete prohibition on cross-border commercial trade for businesses in Montréal"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Montréal, the speaker analyzes major issues concerning digital sovereignty and strategic public data storage in montréal.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on the requirement to repatriate data hosting infrastructure within national borders."
+    "transcriptEnglish": "Outsourcing public registries to foreign tech conglomerates exposes our institutions in Montréal to unacceptable legal and strategic vulnerabilities. The extraterritorial reach of foreign legislation enables unilateral access to sensitive healthcare and civic security records. It is therefore imperative to establish a sovereign digital enclave relying on data hosting infrastructure under exclusive domestic jurisdiction."
   },
   "tcf1-lis-36": {
     "id": "tcf1-lis-36",
     "paperNum": 1,
     "questionNumber": 36,
     "level": "C1",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Montréal, the speaker analyzes major issues concerning l'éthique de la géo-ingénierie solaire face au réchauffement climatique à montréal.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on le risque d'effets secondaires irréversibles sur la pluviométrie régionale globale.",
+    "questionPromptEnglish": "What major warning is expressed regarding these intervention technologies?",
+    "passageEnglish": "While stratospheric aerosol injection to reflect solar radiation appears as an emergency response to global warming in Montréal, its collateral repercussions on planetary monsoon patterns remain deeply unpredictable. Any artificial manipulation of the upper atmosphere risks abruptly altering regional precipitation dynamics and triggering devastating agricultural shocks across developing nations.",
     "optionsEnglish": [
-      "The permanent elimination of humanities instruction at universities",
-      "The absolute denial of all scientific research conducted in Montréal",
-      "The risk of irreversible side effects on global regional precipitation patterns",
-      "The imposition of a fixed 80% customs tariff on regional exports from Montréal"
+      "A global requirement for all nations to abandon outdoor agriculture in favor of underground bunkers",
+      "An immediate shutdown of all academic meteorological research in Montréal",
+      "The unpredictability of induced meteorological disruptions across continental scales",
+      "Absolute scientific certainty that the sun will cease solar emissions in coming decades"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Montréal, the speaker analyzes major issues concerning l'éthique de la géo-ingénierie solaire face au réchauffement climatique à montréal.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on le risque d'effets secondaires irréversibles sur la pluviométrie régionale globale."
+    "transcriptEnglish": "While stratospheric aerosol injection to reflect solar radiation appears as an emergency response to global warming in Montréal, its collateral repercussions on planetary monsoon patterns remain deeply unpredictable. Any artificial manipulation of the upper atmosphere risks abruptly altering regional precipitation dynamics and triggering devastating agricultural shocks across developing nations."
   },
   "tcf1-lis-37": {
     "id": "tcf1-lis-37",
     "paperNum": 1,
     "questionNumber": 37,
     "level": "C2",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Montréal, the speaker analyzes major issues concerning épistémologie des modèles prédictifs complexes en mécanique quantique à montréal.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la remise en cause du principe du déterminisme absolu au profit d'une approche probabiliste.",
+    "questionPromptEnglish": "What conceptual shift does the researcher highlight in their analysis?",
+    "passageEnglish": "In this academic lecture delivered in Montréal, we re-examine the classical postulate of a strictly deterministic universe. Contemporary observational data confirm that subatomic behavior cannot be captured by rigid linear causality. The theoretical architecture of fundamental physics now requires abandoning the Laplacian ideal of absolute predictability in favor of an intrinsically probabilistic formulation of physical states.",
     "optionsEnglish": [
-      "The absolute denial of all scientific research conducted in Montréal",
-      "The imposition of a fixed 80% customs tariff on regional exports from Montréal",
-      "Challenging absolute determinism in favor of a probabilistic framework",
-      "The permanent elimination of humanities instruction at universities"
+      "Outright rejection of the empirical scientific method in universities across Montréal",
+      "The dogmatic assertion that classical mechanics applies identically to quantum subatomic scales",
+      "The substitution of a statistical paradigm for the illusion of infallible causal predictability",
+      "Prohibiting mathematical equations from being utilized to describe subatomic phenomena"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Montréal, the speaker analyzes major issues concerning épistémologie des modèles prédictifs complexes en mécanique quantique à montréal.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la remise en cause du principe du déterminisme absolu au profit d'une approche probabiliste."
+    "transcriptEnglish": "In this academic lecture delivered in Montréal, we re-examine the classical postulate of a strictly deterministic universe. Contemporary observational data confirm that subatomic behavior cannot be captured by rigid linear causality. The theoretical architecture of fundamental physics now requires abandoning the Laplacian ideal of absolute predictability in favor of an intrinsically probabilistic formulation of physical states."
   },
   "tcf1-lis-38": {
     "id": "tcf1-lis-38",
     "paperNum": 1,
     "questionNumber": 38,
     "level": "C2",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Montréal, the speaker analyzes major issues concerning la déconstruction du concept d'universalité dans la philosophie du langage à montréal.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la dépendance fondamentale de la pensée conceptuelle aux structures linguistiques locales.",
+    "questionPromptEnglish": "What epistemological thesis is defended by the linguist?",
+    "passageEnglish": "The hypothesis that human thought structures exist independently of natural spoken languages is fundamentally challenged today in Montréal. Far from being mere labels attached to a pre-existing reality, our lexical categories and syntactic matrices actively shape our spatiotemporal perception and conceptual framing of empirical reality.",
     "optionsEnglish": [
-      "The imposition of a fixed 80% customs tariff on regional exports from Montréal",
-      "The absolute denial of all scientific research conducted in Montréal",
-      "The fundamental dependence of conceptual thought on local linguistic structures",
-      "The permanent elimination of humanities instruction at universities"
+      "The radical impossibility of translating any conceptual meaning across different human languages",
+      "The complete biological uniformity of human thought systems regardless of language in Montréal",
+      "The tight conditioning of cognitive representations by the structural specificities of language",
+      "The intrinsic superiority of algorithmic formal languages over natural human tongues"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Montréal, the speaker analyzes major issues concerning la déconstruction du concept d'universalité dans la philosophie du langage à montréal.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la dépendance fondamentale de la pensée conceptuelle aux structures linguistiques locales."
+    "transcriptEnglish": "The hypothesis that human thought structures exist independently of natural spoken languages is fundamentally challenged today in Montréal. Far from being mere labels attached to a pre-existing reality, our lexical categories and syntactic matrices actively shape our spatiotemporal perception and conceptual framing of empirical reality."
   },
   "tcf1-lis-39": {
     "id": "tcf1-lis-39",
     "paperNum": 1,
     "questionNumber": 39,
     "level": "C2",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Montréal, the speaker analyzes major issues concerning macroéconomie monétaire et transition vers les monnaies numériques de banque centrale à montréal.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on le risque d'éviction des banques commerciales traditionnelles au profit de la banque centrale.",
+    "questionPromptEnglish": "What major systemic risk is identified by the economist?",
+    "passageEnglish": "The introduction of a central bank digital currency issued directly to retail users in Montréal could upend the traditional commercial banking equilibrium. By offering individuals a credit-risk-free asset, such an innovation risks triggering, during periods of financial stress, a massive flight of deposits from private banks to central bank reserves, thereby starving the productive economy of regular lending channels.",
     "optionsEnglish": [
-      "The risk of disintermediating commercial banks in favor of the central bank",
-      "The imposition of a fixed 80% customs tariff on regional exports from Montréal",
-      "The absolute denial of all scientific research conducted in Montréal",
-      "The permanent elimination of humanities instruction at universities"
+      "Abrupt banking disintermediation choking business financing during periods of market stress",
+      "A legal mandate requiring all daily retail transactions to be settled in physical precious metals",
+      "The planned elimination of all international trade operations for firms in Montréal",
+      "Forced nationalization and merger of all private commercial banks into a single state entity"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Montréal, the speaker analyzes major issues concerning macroéconomie monétaire et transition vers les monnaies numériques de banque centrale à montréal.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on le risque d'éviction des banques commerciales traditionnelles au profit de la banque centrale."
+    "transcriptEnglish": "The introduction of a central bank digital currency issued directly to retail users in Montréal could upend the traditional commercial banking equilibrium. By offering individuals a credit-risk-free asset, such an innovation risks triggering, during periods of financial stress, a massive flight of deposits from private banks to central bank reserves, thereby starving the productive economy of regular lending channels."
   },
   "tcf2-lis-1": {
     "id": "tcf2-lis-1",
@@ -980,120 +980,120 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "paperNum": 2,
     "questionNumber": 26,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning responsabilité juridique des plateformes d'hébergement touristique à québec sparks passionate discussion in Québec.\nSpeaker 2: However, the main priority remains le plafonnement à 90 jours de location annuelle pour préserver le logement locatif à québec.\nAnnouncer: Listen to the question. Question N°26: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What is the priority measure advocated during this consultation?",
+    "passageEnglish": "Speaker 1: The ubiquity of automated content raises immense concerns regarding the integrity of democratic discourse in Québec. Faced with the proliferation of fabricated documents, some are calling for strict prior censorship.\nSpeaker 2: A total ban would be technically unenforceable and legally questionable. Instead, we advocate for comprehensive traceability through explicit, mandatory labeling imposed on broadcasters for every artificially generated production.",
     "optionsEnglish": [
-      "Capping short-term rentals at 90 days annually to preserve rental housing in Quebec",
-      "The closure of the facility",
-      "Strict prohibition of all technical innovation in the region of Québec",
-      "Mandatory 50% increase in municipal taxes for all residents"
+      "The requirement to clearly identify synthetic media released to the public",
+      "The elimination of audiovisual regulatory bodies in favor of complete self-regulation",
+      "The implementation of a systematic ban on all generative algorithms across Québec",
+      "Legal liability exemptions for digital platforms hosting deceptive content"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning responsabilité juridique des plateformes d'hébergement touristique à québec sparks passionate discussion in Québec.\nSpeaker 2: However, the main priority remains le plafonnement à 90 jours de location annuelle pour préserver le logement locatif à québec.\nAnnouncer: Listen to the question. Question N°26: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°26: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: The ubiquity of automated content raises immense concerns regarding the integrity of democratic discourse in Québec. Faced with the proliferation of fabricated documents, some are calling for strict prior censorship.\nSpeaker 2: A total ban would be technically unenforceable and legally questionable. Instead, we advocate for comprehensive traceability through explicit, mandatory labeling imposed on broadcasters for every artificially generated production."
   },
   "tcf2-lis-27": {
     "id": "tcf2-lis-27",
     "paperNum": 2,
     "questionNumber": 27,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning péage urbain dynamique à l'entrée de la ville de québec sparks passionate discussion in Québec.\nSpeaker 2: However, the main priority remains la tarification de la congestion pour financer l'électrification du réseau d'autobus de québec.\nAnnouncer: Listen to the question. Question N°27: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What tax compromise is favored in this municipal debate?",
+    "passageEnglish": "Speaker 1: The permanent rise of remote work is eroding retail revenue in the urban core of Québec, while outlying bedroom suburbs face skyrocketing road maintenance costs without compensatory revenues.\nSpeaker 2: It is not about overtaxing remote employees, but rebalancing global municipal funding. We propose an equitable redistribution of collected business taxes to offset infrastructure expenditures in residential municipalities.",
     "optionsEnglish": [
-      "The closure of the facility",
-      "Congestion pricing to fund the electrification of Quebec's bus network",
-      "Strict prohibition of all technical innovation in the region of Québec",
-      "Mandatory 50% increase in municipal taxes for all residents"
+      "Free commercial property leases to incentivize companies to return downtown",
+      "A financial solidarity mechanism between the metropolitan center and suburban municipalities",
+      "The imposition of a direct tax penalty on employees working from home in Québec",
+      "The complete transfer of local budget authority to a centralized federal body"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning péage urbain dynamique à l'entrée de la ville de québec sparks passionate discussion in Québec.\nSpeaker 2: However, the main priority remains la tarification de la congestion pour financer l'électrification du réseau d'autobus de québec.\nAnnouncer: Listen to the question. Question N°27: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°27: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: The permanent rise of remote work is eroding retail revenue in the urban core of Québec, while outlying bedroom suburbs face skyrocketing road maintenance costs without compensatory revenues.\nSpeaker 2: It is not about overtaxing remote employees, but rebalancing global municipal funding. We propose an equitable redistribution of collected business taxes to offset infrastructure expenditures in residential municipalities."
   },
   "tcf2-lis-28": {
     "id": "tcf2-lis-28",
     "paperNum": 2,
     "questionNumber": 28,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning tarification progressive de l'eau potable résidentielle à québec sparks passionate discussion in Québec.\nSpeaker 2: However, the main priority remains la gratuité des volumes vitaux suivie d'une surtaxe sur le gaspillage d'eau à québec.\nAnnouncer: Listen to the question. Question N°28: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What environmental strategy is highlighted in this address?",
+    "passageEnglish": "Speaker 1: The fast-fashion industry produces colossal garment waste that clogs municipal landfills across Québec.\nSpeaker 2: Mere moral appeals are no longer sufficient. We must implement extended producer responsibility where apparel brands directly finance the collection and upcycling of discarded fibers into new industrial materials.",
     "optionsEnglish": [
-      "Free essential water volumes followed by progressive surcharges on water waste in Quebec",
-      "The closure of the facility",
-      "Strict prohibition of all technical innovation in the region of Québec",
-      "Mandatory 50% increase in municipal taxes for all residents"
+      "Direct financial involvement of apparel manufacturers in post-consumer clothing recycling",
+      "Universal free clothing distribution for low-income households",
+      "An absolute ban on selling any clothing manufactured outside Québec",
+      "Systematic incineration of all unsold retail textile surpluses"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning tarification progressive de l'eau potable résidentielle à québec sparks passionate discussion in Québec.\nSpeaker 2: However, the main priority remains la gratuité des volumes vitaux suivie d'une surtaxe sur le gaspillage d'eau à québec.\nAnnouncer: Listen to the question. Question N°28: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°28: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: The fast-fashion industry produces colossal garment waste that clogs municipal landfills across Québec.\nSpeaker 2: Mere moral appeals are no longer sufficient. We must implement extended producer responsibility where apparel brands directly finance the collection and upcycling of discarded fibers into new industrial materials."
   },
   "tcf2-lis-29": {
     "id": "tcf2-lis-29",
     "paperNum": 2,
     "questionNumber": 29,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning obligation de rénovation thermique pour les passoires énergétiques à québec sparks passionate discussion in Québec.\nSpeaker 2: However, the main priority remains l'obligation pour les bailleurs d'isoler les bâtiments avant toute révision de loyer à québec.\nAnnouncer: Listen to the question. Question N°29: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What technical condition is deemed essential to approve this project?",
+    "passageEnglish": "Speaker 1: Installing micro wind turbines on building rooftops in Québec generates great enthusiasm among decentralized energy advocates.\nSpeaker 2: It is undeniably beneficial, provided that dynamic grid compatibility is secured and substations are equipped with battery storage systems to smooth out production intermittency.",
     "optionsEnglish": [
-      "The closure of the facility",
-      "Requirement for landlords to insulate buildings prior to any rent revision in Quebec",
-      "Strict prohibition of all technical innovation in the region of Québec",
-      "Mandatory 50% increase in municipal taxes for all residents"
+      "Planned decommissioning of all existing regional hydroelectric facilities",
+      "Stabilization of energy input through auxiliary storage mechanisms",
+      "Exclusive interconnection of installations to emergency backup power grids in Québec",
+      "Limiting household power usage to mandatory scheduled time windows"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning obligation de rénovation thermique pour les passoires énergétiques à québec sparks passionate discussion in Québec.\nSpeaker 2: However, the main priority remains l'obligation pour les bailleurs d'isoler les bâtiments avant toute révision de loyer à québec.\nAnnouncer: Listen to the question. Question N°29: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°29: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: Installing micro wind turbines on building rooftops in Québec generates great enthusiasm among decentralized energy advocates.\nSpeaker 2: It is undeniably beneficial, provided that dynamic grid compatibility is secured and substations are equipped with battery storage systems to smooth out production intermittency."
   },
   "tcf2-lis-30": {
     "id": "tcf2-lis-30",
     "paperNum": 2,
     "questionNumber": 30,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning encadrement des loyers dans le secteur privé de québec sparks passionate discussion in Québec.\nSpeaker 2: However, the main priority remains la fixation d'un loyer de référence au mètre carré pour freiner la spéculation immobilière à québec.",
+    "questionPromptEnglish": "What urban planning direction is recommended by experts?",
+    "passageEnglish": "Speaker 1: Continuous urban sprawl threatens the agricultural land surrounding the greater Québec metropolitan area.\nSpeaker 2: To curb this trend without worsening the housing shortage, we recommend concentrating dense new residential developments within immediate walking distance of train stations and rapid transit corridors.",
     "optionsEnglish": [
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "Strict prohibition of all technical innovation in the region of Québec",
-      "Setting reference rents per square meter to curb property speculation in Quebec",
-      "The closure of the facility"
+      "Permanent closure of commuter train routes to reduce maintenance expenses",
+      "Exclusive construction of single-family suburban subdivisions in the outer ring of Québec",
+      "Housing intensification in immediate proximity to public transit infrastructure",
+      "A blanket prohibition on all new real estate developments across the entire territory"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning encadrement des loyers dans le secteur privé de québec sparks passionate discussion in Québec.\nSpeaker 2: However, the main priority remains la fixation d'un loyer de référence au mètre carré pour freiner la spéculation immobilière à québec."
+    "transcriptEnglish": "Speaker 1: Continuous urban sprawl threatens the agricultural land surrounding the greater Québec metropolitan area.\nSpeaker 2: To curb this trend without worsening the housing shortage, we recommend concentrating dense new residential developments within immediate walking distance of train stations and rapid transit corridors."
   },
   "tcf2-lis-31": {
     "id": "tcf2-lis-31",
     "paperNum": 2,
     "questionNumber": 31,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning remboursement des soins de médecine alternative par la santé publique à québec sparks passionate discussion in Québec.\nSpeaker 2: However, the main priority remains l'intégration sous conditions d'efficacité des thérapies complémentaires au régime de québec.",
+    "questionPromptEnglish": "What major demand is brought forward by worker representatives?",
+    "passageEnglish": "Speaker 1: Food delivery applications have multiplied flexible work opportunities for thousands of young people in Québec.\nSpeaker 2: But this flexibility masks severe vulnerability. We demand a guaranteed minimum hourly wage and mandatory workplace injury coverage directly funded by platform operators.",
     "optionsEnglish": [
-      "Conditional coverage of proven complementary therapies under Quebec's health system",
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "The closure of the facility",
-      "Strict prohibition of all technical innovation in the region of Québec"
+      "Establishment of a baseline minimum earnings guarantee and employer-funded workplace insurance",
+      "Automatic provision of a motorized company vehicle to every bicycle courier",
+      "The elimination of all contractual obligations between couriers and customers",
+      "A complete ban on all online meal ordering services across Québec"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning remboursement des soins de médecine alternative par la santé publique à québec sparks passionate discussion in Québec.\nSpeaker 2: However, the main priority remains l'intégration sous conditions d'efficacité des thérapies complémentaires au régime de québec."
+    "transcriptEnglish": "Speaker 1: Food delivery applications have multiplied flexible work opportunities for thousands of young people in Québec.\nSpeaker 2: But this flexibility masks severe vulnerability. We demand a guaranteed minimum hourly wage and mandatory workplace injury coverage directly funded by platform operators."
   },
   "tcf2-lis-32": {
     "id": "tcf2-lis-32",
     "paperNum": 2,
     "questionNumber": 32,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning interdiction de la publicité pour les vols aériens courts à québec sparks passionate discussion in Québec.\nSpeaker 2: However, the main priority remains la suppression des réclames pour les lignes réalisables en moins de 3 heures de train depuis québec.",
+    "questionPromptEnglish": "What primary concern is expressed regarding these digital management tools?",
+    "passageEnglish": "Speaker 1: Automated tracking software optimizes logistics workflows across major distribution warehouses in Québec.\nSpeaker 2: True, but perpetual task timing generates intense stress and damages employee mental health. We demand strict regulations to restrict continuous monitoring and safeguard non-negotiable rest breaks.",
     "optionsEnglish": [
-      "Banning flight advertising for routes achievable under 3 hours by train from Quebec",
-      "Strict prohibition of all technical innovation in the region of Québec",
-      "The closure of the facility",
-      "Mandatory 50% increase in municipal taxes for all residents"
+      "The deleterious impact of continuous performance evaluation on employee psychological well-being",
+      "A general ban on forklift operations inside warehouses in Québec",
+      "A legal mandate to double daily working hours for all logistics staff",
+      "Withholding employee compensation for failing to meet computer-generated quotas"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning interdiction de la publicité pour les vols aériens courts à québec sparks passionate discussion in Québec.\nSpeaker 2: However, the main priority remains la suppression des réclames pour les lignes réalisables en moins de 3 heures de train depuis québec."
+    "transcriptEnglish": "Speaker 1: Automated tracking software optimizes logistics workflows across major distribution warehouses in Québec.\nSpeaker 2: True, but perpetual task timing generates intense stress and damages employee mental health. We demand strict regulations to restrict continuous monitoring and safeguard non-negotiable rest breaks."
   },
   "tcf2-lis-33": {
     "id": "tcf2-lis-33",
     "paperNum": 2,
     "questionNumber": 33,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning déploiement de la consigne en verre consignée à québec sparks passionate discussion in Québec.\nSpeaker 2: However, the main priority remains le retour des bouteilles réutilisables dans tous les supermarchés de la région de québec.",
+    "questionPromptEnglish": "What technical approach is favored by municipal engineers?",
+    "passageEnglish": "Speaker 1: Torrential spring downpours have once again submerged several riverfront neighborhoods in Québec.\nSpeaker 2: Pouring more concrete along riverbanks is an ecological mistake. We now favor nature-based solutions, such as restoring wetlands and creating landscaped detention basins capable of naturally absorbing excess water runoff.",
     "optionsEnglish": [
-      "The closure of the facility",
-      "Reintroducing reusable deposit bottles across all supermarkets in the Quebec region",
-      "Strict prohibition of all technical innovation in the region of Québec",
-      "Mandatory 50% increase in municipal taxes for all residents"
+      "Mandatory permanent evacuation of all residents living within 5 km of any lake",
+      "Creation of natural buffer zones to slow down and absorb river runoff surges",
+      "Enclosing all metropolitan waterways of Québec inside underground concrete pipelines",
+      "Indefinite elevation of concrete seawalls along all urban waterfronts"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning déploiement de la consigne en verre consignée à québec sparks passionate discussion in Québec.\nSpeaker 2: However, the main priority remains le retour des bouteilles réutilisables dans tous les supermarchés de la région de québec."
+    "transcriptEnglish": "Speaker 1: Torrential spring downpours have once again submerged several riverfront neighborhoods in Québec.\nSpeaker 2: Pouring more concrete along riverbanks is an ecological mistake. We now favor nature-based solutions, such as restoring wetlands and creating landscaped detention basins capable of naturally absorbing excess water runoff."
   },
   "tcf2-lis-34": {
     "id": "tcf2-lis-34",
@@ -1101,89 +1101,89 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 34,
     "level": "C1",
     "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Québec, the speaker analyzes major issues concerning l'évolution des normes juridiques face à l'autonomie des systèmes d'armes à québec.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on l'attribution d'une responsabilité pénale aux concepteurs des logiciels de ciblage.",
+    "passageEnglish": "In this symposium presentation delivered in Québec, we examine how continuous algorithmic profiling profoundly reshapes human decision-making mechanisms. Far from being simple decision-support tools, current recommendation architectures imperceptibly anticipate and funnel our preferences. By systematically delegating daily choices to predictive systems, the contemporary individual experiences an erosion of authentic self-determination in favor of pre-formatted behavioral pathways.",
     "optionsEnglish": [
-      "The imposition of a fixed 80% customs tariff on regional exports from Québec",
-      "The absolute denial of all scientific research conducted in Québec",
-      "The permanent elimination of humanities instruction at universities",
-      "Assigning criminal liability to designers of targeted decision algorithms"
+      "A legal mandate forcing all citizens to use public computer terminals exclusively",
+      "The complete futility of mathematical modeling in modern computing in Québec",
+      "Scientific proof that human consciousness is entirely governed by electronic circuitry",
+      "The progressive weakening of individual discernment and autonomous decision-making capacity"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Québec, the speaker analyzes major issues concerning l'évolution des normes juridiques face à l'autonomie des systèmes d'armes à québec.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on l'attribution d'une responsabilité pénale aux concepteurs des logiciels de ciblage."
+    "transcriptEnglish": "In this symposium presentation delivered in Québec, we examine how continuous algorithmic profiling profoundly reshapes human decision-making mechanisms. Far from being simple decision-support tools, current recommendation architectures imperceptibly anticipate and funnel our preferences. By systematically delegating daily choices to predictive systems, the contemporary individual experiences an erosion of authentic self-determination in favor of pre-formatted behavioral pathways."
   },
   "tcf2-lis-35": {
     "id": "tcf2-lis-35",
     "paperNum": 2,
     "questionNumber": 35,
     "level": "C1",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Québec, the speaker analyzes major issues concerning la préservation de la biodiversité marine dans les zones économiques exclusives à québec.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la création de sanctuaires marins d'interdiction totale de pêche industrielle.",
+    "questionPromptEnglish": "What primary argument is put forward to justify a strategic policy pivot?",
+    "passageEnglish": "Outsourcing public registries to foreign tech conglomerates exposes our institutions in Québec to unacceptable legal and strategic vulnerabilities. The extraterritorial reach of foreign legislation enables unilateral access to sensitive healthcare and civic security records. It is therefore imperative to establish a sovereign digital enclave relying on data hosting infrastructure under exclusive domestic jurisdiction.",
     "optionsEnglish": [
-      "Establishing marine sanctuaries with a total ban on industrial fishing",
-      "The permanent elimination of humanities instruction at universities",
-      "The absolute denial of all scientific research conducted in Québec",
-      "The imposition of a fixed 80% customs tariff on regional exports from Québec"
+      "The necessity of shielding sensitive civic data from foreign jurisdictional overreach",
+      "Universal free public Internet access without any state regulatory oversight",
+      "A complete prohibition on cross-border commercial trade for businesses in Québec",
+      "Preemptive physical destruction of all computing server facilities"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Québec, the speaker analyzes major issues concerning la préservation de la biodiversité marine dans les zones économiques exclusives à québec.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la création de sanctuaires marins d'interdiction totale de pêche industrielle."
+    "transcriptEnglish": "Outsourcing public registries to foreign tech conglomerates exposes our institutions in Québec to unacceptable legal and strategic vulnerabilities. The extraterritorial reach of foreign legislation enables unilateral access to sensitive healthcare and civic security records. It is therefore imperative to establish a sovereign digital enclave relying on data hosting infrastructure under exclusive domestic jurisdiction."
   },
   "tcf2-lis-36": {
     "id": "tcf2-lis-36",
     "paperNum": 2,
     "questionNumber": 36,
     "level": "C1",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Québec, the speaker analyzes major issues concerning les mutations sociologiques du travail à l'ère de la plateforme collaborative à québec.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la précarisation des statuts professionnels déguisés sous la qualification d'indépendants.",
+    "questionPromptEnglish": "What major warning is expressed regarding these intervention technologies?",
+    "passageEnglish": "While stratospheric aerosol injection to reflect solar radiation appears as an emergency response to global warming in Québec, its collateral repercussions on planetary monsoon patterns remain deeply unpredictable. Any artificial manipulation of the upper atmosphere risks abruptly altering regional precipitation dynamics and triggering devastating agricultural shocks across developing nations.",
     "optionsEnglish": [
-      "The imposition of a fixed 80% customs tariff on regional exports from Québec",
-      "The absolute denial of all scientific research conducted in Québec",
-      "The permanent elimination of humanities instruction at universities",
-      "The precarity of labor disguised under the classification of independent contractors"
+      "Absolute scientific certainty that the sun will cease solar emissions in coming decades",
+      "An immediate shutdown of all academic meteorological research in Québec",
+      "A global requirement for all nations to abandon outdoor agriculture in favor of underground bunkers",
+      "The unpredictability of induced meteorological disruptions across continental scales"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Québec, the speaker analyzes major issues concerning les mutations sociologiques du travail à l'ère de la plateforme collaborative à québec.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la précarisation des statuts professionnels déguisés sous la qualification d'indépendants."
+    "transcriptEnglish": "While stratospheric aerosol injection to reflect solar radiation appears as an emergency response to global warming in Québec, its collateral repercussions on planetary monsoon patterns remain deeply unpredictable. Any artificial manipulation of the upper atmosphere risks abruptly altering regional precipitation dynamics and triggering devastating agricultural shocks across developing nations."
   },
   "tcf2-lis-37": {
     "id": "tcf2-lis-37",
     "paperNum": 2,
     "questionNumber": 37,
     "level": "C2",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Québec, the speaker analyzes major issues concerning l'aporie de la conscience artificielle dans la philosophie de l'esprit à québec.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on l'impossibilité de réduire l'expérience phénoménale subjective à de simples calculs informatiques.",
+    "questionPromptEnglish": "What conceptual shift does the researcher highlight in their analysis?",
+    "passageEnglish": "In this academic lecture delivered in Québec, we re-examine the classical postulate of a strictly deterministic universe. Contemporary observational data confirm that subatomic behavior cannot be captured by rigid linear causality. The theoretical architecture of fundamental physics now requires abandoning the Laplacian ideal of absolute predictability in favor of an intrinsically probabilistic formulation of physical states.",
     "optionsEnglish": [
-      "The absolute denial of all scientific research conducted in Québec",
-      "The permanent elimination of humanities instruction at universities",
-      "The imposition of a fixed 80% customs tariff on regional exports from Québec",
-      "The impossibility of reducing subjective phenomenal experience to mere computational calculations"
+      "Outright rejection of the empirical scientific method in universities across Québec",
+      "Prohibiting mathematical equations from being utilized to describe subatomic phenomena",
+      "The dogmatic assertion that classical mechanics applies identically to quantum subatomic scales",
+      "The substitution of a statistical paradigm for the illusion of infallible causal predictability"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Québec, the speaker analyzes major issues concerning l'aporie de la conscience artificielle dans la philosophie de l'esprit à québec.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on l'impossibilité de réduire l'expérience phénoménale subjective à de simples calculs informatiques."
+    "transcriptEnglish": "In this academic lecture delivered in Québec, we re-examine the classical postulate of a strictly deterministic universe. Contemporary observational data confirm that subatomic behavior cannot be captured by rigid linear causality. The theoretical architecture of fundamental physics now requires abandoning the Laplacian ideal of absolute predictability in favor of an intrinsically probabilistic formulation of physical states."
   },
   "tcf2-lis-38": {
     "id": "tcf2-lis-38",
     "paperNum": 2,
     "questionNumber": 38,
     "level": "C2",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Québec, the speaker analyzes major issues concerning la critique du positivisme logique dans l'histoire des théories scientifiques à québec.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la démonstration que toute observation empirique est pré-orientée par un cadre théorique.",
+    "questionPromptEnglish": "What epistemological thesis is defended by the linguist?",
+    "passageEnglish": "The hypothesis that human thought structures exist independently of natural spoken languages is fundamentally challenged today in Québec. Far from being mere labels attached to a pre-existing reality, our lexical categories and syntactic matrices actively shape our spatiotemporal perception and conceptual framing of empirical reality.",
     "optionsEnglish": [
-      "Demonstrating that all empirical observation is theory-laden",
-      "The absolute denial of all scientific research conducted in Québec",
-      "The imposition of a fixed 80% customs tariff on regional exports from Québec",
-      "The permanent elimination of humanities instruction at universities"
+      "The tight conditioning of cognitive representations by the structural specificities of language",
+      "The complete biological uniformity of human thought systems regardless of language in Québec",
+      "The radical impossibility of translating any conceptual meaning across different human languages",
+      "The intrinsic superiority of algorithmic formal languages over natural human tongues"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Québec, the speaker analyzes major issues concerning la critique du positivisme logique dans l'histoire des théories scientifiques à québec.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la démonstration que toute observation empirique est pré-orientée par un cadre théorique."
+    "transcriptEnglish": "The hypothesis that human thought structures exist independently of natural spoken languages is fundamentally challenged today in Québec. Far from being mere labels attached to a pre-existing reality, our lexical categories and syntactic matrices actively shape our spatiotemporal perception and conceptual framing of empirical reality."
   },
   "tcf2-lis-39": {
     "id": "tcf2-lis-39",
     "paperNum": 2,
     "questionNumber": 39,
     "level": "C2",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Québec, the speaker analyzes major issues concerning la géopolitique des terres rares et la dépendance industrielle technologique à québec.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on le risque de paralysie des filières de transition énergétique par goulot d'étranglement mondial.",
+    "questionPromptEnglish": "What major systemic risk is identified by the economist?",
+    "passageEnglish": "The introduction of a central bank digital currency issued directly to retail users in Québec could upend the traditional commercial banking equilibrium. By offering individuals a credit-risk-free asset, such an innovation risks triggering, during periods of financial stress, a massive flight of deposits from private banks to central bank reserves, thereby starving the productive economy of regular lending channels.",
     "optionsEnglish": [
-      "The imposition of a fixed 80% customs tariff on regional exports from Québec",
-      "The absolute denial of all scientific research conducted in Québec",
-      "The permanent elimination of humanities instruction at universities",
-      "The risk of crippling energy transition sectors due to global mineral bottlenecks"
+      "A legal mandate requiring all daily retail transactions to be settled in physical precious metals",
+      "The planned elimination of all international trade operations for firms in Québec",
+      "Forced nationalization and merger of all private commercial banks into a single state entity",
+      "Abrupt banking disintermediation choking business financing during periods of market stress"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Québec, the speaker analyzes major issues concerning la géopolitique des terres rares et la dépendance industrielle technologique à québec.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on le risque de paralysie des filières de transition énergétique par goulot d'étranglement mondial."
+    "transcriptEnglish": "The introduction of a central bank digital currency issued directly to retail users in Québec could upend the traditional commercial banking equilibrium. By offering individuals a credit-risk-free asset, such an innovation risks triggering, during periods of financial stress, a massive flight of deposits from private banks to central bank reserves, thereby starving the productive economy of regular lending channels."
   },
   "tcf3-lis-1": {
     "id": "tcf3-lis-1",
@@ -1565,120 +1565,120 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "paperNum": 3,
     "questionNumber": 26,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning semaine de travail de 32 heures sans perte de salaire à ottawa sparks passionate discussion in Ottawa.\nSpeaker 2: However, the main priority remains l'augmentation de la productivité horaire constatée dans les entreprises pilotes d'ottawa.\nAnnouncer: Listen to the question. Question N°26: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What is the priority measure advocated during this consultation?",
+    "passageEnglish": "Speaker 1: The ubiquity of automated content raises immense concerns regarding the integrity of democratic discourse in Ottawa. Faced with the proliferation of fabricated documents, some are calling for strict prior censorship.\nSpeaker 2: A total ban would be technically unenforceable and legally questionable. Instead, we advocate for comprehensive traceability through explicit, mandatory labeling imposed on broadcasters for every artificially generated production.",
     "optionsEnglish": [
-      "The closure of the facility",
-      "Strict prohibition of all technical innovation in the region of Ottawa",
-      "Hourly productivity gains observed in Ottawa pilot businesses",
-      "Mandatory 50% increase in municipal taxes for all residents"
+      "The elimination of audiovisual regulatory bodies in favor of complete self-regulation",
+      "The implementation of a systematic ban on all generative algorithms across Ottawa",
+      "The requirement to clearly identify synthetic media released to the public",
+      "Legal liability exemptions for digital platforms hosting deceptive content"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning semaine de travail de 32 heures sans perte de salaire à ottawa sparks passionate discussion in Ottawa.\nSpeaker 2: However, the main priority remains l'augmentation de la productivité horaire constatée dans les entreprises pilotes d'ottawa.\nAnnouncer: Listen to the question. Question N°26: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°26: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: The ubiquity of automated content raises immense concerns regarding the integrity of democratic discourse in Ottawa. Faced with the proliferation of fabricated documents, some are calling for strict prior censorship.\nSpeaker 2: A total ban would be technically unenforceable and legally questionable. Instead, we advocate for comprehensive traceability through explicit, mandatory labeling imposed on broadcasters for every artificially generated production."
   },
   "tcf3-lis-27": {
     "id": "tcf3-lis-27",
     "paperNum": 3,
     "questionNumber": 27,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning introduction de repas 100% biologiques et locaux dans les cantines d'ottawa sparks passionate discussion in Ottawa.\nSpeaker 2: However, the main priority remains l'approvisionnement exclusif auprès des fermes régionales entourant la ville d'ottawa.\nAnnouncer: Listen to the question. Question N°27: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What tax compromise is favored in this municipal debate?",
+    "passageEnglish": "Speaker 1: The permanent rise of remote work is eroding retail revenue in the urban core of Ottawa, while outlying bedroom suburbs face skyrocketing road maintenance costs without compensatory revenues.\nSpeaker 2: It is not about overtaxing remote employees, but rebalancing global municipal funding. We propose an equitable redistribution of collected business taxes to offset infrastructure expenditures in residential municipalities.",
     "optionsEnglish": [
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "Strict prohibition of all technical innovation in the region of Ottawa",
-      "Exclusive sourcing from regional farms surrounding Ottawa",
-      "The closure of the facility"
+      "The complete transfer of local budget authority to a centralized federal body",
+      "The imposition of a direct tax penalty on employees working from home in Ottawa",
+      "A financial solidarity mechanism between the metropolitan center and suburban municipalities",
+      "Free commercial property leases to incentivize companies to return downtown"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning introduction de repas 100% biologiques et locaux dans les cantines d'ottawa sparks passionate discussion in Ottawa.\nSpeaker 2: However, the main priority remains l'approvisionnement exclusif auprès des fermes régionales entourant la ville d'ottawa.\nAnnouncer: Listen to the question. Question N°27: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°27: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: The permanent rise of remote work is eroding retail revenue in the urban core of Ottawa, while outlying bedroom suburbs face skyrocketing road maintenance costs without compensatory revenues.\nSpeaker 2: It is not about overtaxing remote employees, but rebalancing global municipal funding. We propose an equitable redistribution of collected business taxes to offset infrastructure expenditures in residential municipalities."
   },
   "tcf3-lis-28": {
     "id": "tcf3-lis-28",
     "paperNum": 3,
     "questionNumber": 28,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning interdiction des emballages plastiques à usage unique pour la restauration à ottawa sparks passionate discussion in Ottawa.\nSpeaker 2: However, the main priority remains le passage au vaisselle lavable et réutilisable dans tous les fast-foods d'ottawa.\nAnnouncer: Listen to the question. Question N°28: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What environmental strategy is highlighted in this address?",
+    "passageEnglish": "Speaker 1: The fast-fashion industry produces colossal garment waste that clogs municipal landfills across Ottawa.\nSpeaker 2: Mere moral appeals are no longer sufficient. We must implement extended producer responsibility where apparel brands directly finance the collection and upcycling of discarded fibers into new industrial materials.",
     "optionsEnglish": [
-      "Transition to washable reusable tableware in all Ottawa fast-food outlets",
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "Strict prohibition of all technical innovation in the region of Ottawa",
-      "The closure of the facility"
+      "Direct financial involvement of apparel manufacturers in post-consumer clothing recycling",
+      "Systematic incineration of all unsold retail textile surpluses",
+      "An absolute ban on selling any clothing manufactured outside Ottawa",
+      "Universal free clothing distribution for low-income households"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning interdiction des emballages plastiques à usage unique pour la restauration à ottawa sparks passionate discussion in Ottawa.\nSpeaker 2: However, the main priority remains le passage au vaisselle lavable et réutilisable dans tous les fast-foods d'ottawa.\nAnnouncer: Listen to the question. Question N°28: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°28: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: The fast-fashion industry produces colossal garment waste that clogs municipal landfills across Ottawa.\nSpeaker 2: Mere moral appeals are no longer sufficient. We must implement extended producer responsibility where apparel brands directly finance the collection and upcycling of discarded fibers into new industrial materials."
   },
   "tcf3-lis-29": {
     "id": "tcf3-lis-29",
     "paperNum": 3,
     "questionNumber": 29,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning développement des voies réservées au covoiturage sur autoroute à ottawa sparks passionate discussion in Ottawa.\nSpeaker 2: However, the main priority remains l'autorisation d'accès limitée aux véhicules transportant au moins trois occupants à ottawa.\nAnnouncer: Listen to the question. Question N°29: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What technical condition is deemed essential to approve this project?",
+    "passageEnglish": "Speaker 1: Installing micro wind turbines on building rooftops in Ottawa generates great enthusiasm among decentralized energy advocates.\nSpeaker 2: It is undeniably beneficial, provided that dynamic grid compatibility is secured and substations are equipped with battery storage systems to smooth out production intermittency.",
     "optionsEnglish": [
-      "The closure of the facility",
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "Access authorization restricted to high-occupancy vehicles carrying at least three occupants in Ottawa",
-      "Strict prohibition of all technical innovation in the region of Ottawa"
+      "Planned decommissioning of all existing regional hydroelectric facilities",
+      "Limiting household power usage to mandatory scheduled time windows",
+      "Stabilization of energy input through auxiliary storage mechanisms",
+      "Exclusive interconnection of installations to emergency backup power grids in Ottawa"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning développement des voies réservées au covoiturage sur autoroute à ottawa sparks passionate discussion in Ottawa.\nSpeaker 2: However, the main priority remains l'autorisation d'accès limitée aux véhicules transportant au moins trois occupants à ottawa.\nAnnouncer: Listen to the question. Question N°29: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°29: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: Installing micro wind turbines on building rooftops in Ottawa generates great enthusiasm among decentralized energy advocates.\nSpeaker 2: It is undeniably beneficial, provided that dynamic grid compatibility is secured and substations are equipped with battery storage systems to smooth out production intermittency."
   },
   "tcf3-lis-30": {
     "id": "tcf3-lis-30",
     "paperNum": 3,
     "questionNumber": 30,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning régulation des trottinettes électriques en libre-service à ottawa sparks passionate discussion in Ottawa.\nSpeaker 2: However, the main priority remains le stationnement obligatoire dans des emplacements délimités pour éviter l'encombrement à ottawa.",
+    "questionPromptEnglish": "What urban planning direction is recommended by experts?",
+    "passageEnglish": "Speaker 1: Continuous urban sprawl threatens the agricultural land surrounding the greater Ottawa metropolitan area.\nSpeaker 2: To curb this trend without worsening the housing shortage, we recommend concentrating dense new residential developments within immediate walking distance of train stations and rapid transit corridors.",
     "optionsEnglish": [
-      "The closure of the facility",
-      "Strict prohibition of all technical innovation in the region of Ottawa",
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "Mandatory parking in designated bays to prevent sidewalk clutter in Ottawa"
+      "A blanket prohibition on all new real estate developments across the entire territory",
+      "Exclusive construction of single-family suburban subdivisions in the outer ring of Ottawa",
+      "Permanent closure of commuter train routes to reduce maintenance expenses",
+      "Housing intensification in immediate proximity to public transit infrastructure"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning régulation des trottinettes électriques en libre-service à ottawa sparks passionate discussion in Ottawa.\nSpeaker 2: However, the main priority remains le stationnement obligatoire dans des emplacements délimités pour éviter l'encombrement à ottawa."
+    "transcriptEnglish": "Speaker 1: Continuous urban sprawl threatens the agricultural land surrounding the greater Ottawa metropolitan area.\nSpeaker 2: To curb this trend without worsening the housing shortage, we recommend concentrating dense new residential developments within immediate walking distance of train stations and rapid transit corridors."
   },
   "tcf3-lis-31": {
     "id": "tcf3-lis-31",
     "paperNum": 3,
     "questionNumber": 31,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning création d'une réserve naturelle périurbaine protégée à ottawa sparks passionate discussion in Ottawa.\nSpeaker 2: However, the main priority remains la préservation de la biodiversité locale contre le grignotage immobilier autour d'ottawa.",
+    "questionPromptEnglish": "What major demand is brought forward by worker representatives?",
+    "passageEnglish": "Speaker 1: Food delivery applications have multiplied flexible work opportunities for thousands of young people in Ottawa.\nSpeaker 2: But this flexibility masks severe vulnerability. We demand a guaranteed minimum hourly wage and mandatory workplace injury coverage directly funded by platform operators.",
     "optionsEnglish": [
-      "Strict prohibition of all technical innovation in the region of Ottawa",
-      "The closure of the facility",
-      "Local biodiversity protection against urban sprawl around Ottawa",
-      "Mandatory 50% increase in municipal taxes for all residents"
+      "A complete ban on all online meal ordering services across Ottawa",
+      "The elimination of all contractual obligations between couriers and customers",
+      "Establishment of a baseline minimum earnings guarantee and employer-funded workplace insurance",
+      "Automatic provision of a motorized company vehicle to every bicycle courier"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning création d'une réserve naturelle périurbaine protégée à ottawa sparks passionate discussion in Ottawa.\nSpeaker 2: However, the main priority remains la préservation de la biodiversité locale contre le grignotage immobilier autour d'ottawa."
+    "transcriptEnglish": "Speaker 1: Food delivery applications have multiplied flexible work opportunities for thousands of young people in Ottawa.\nSpeaker 2: But this flexibility masks severe vulnerability. We demand a guaranteed minimum hourly wage and mandatory workplace injury coverage directly funded by platform operators."
   },
   "tcf3-lis-32": {
     "id": "tcf3-lis-32",
     "paperNum": 3,
     "questionNumber": 32,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning aide financière au remplacement des chaudières au fioul à ottawa sparks passionate discussion in Ottawa.\nSpeaker 2: However, the main priority remains l'octroi d'une prime de transition pour le raccordement au réseau de chaleur d'ottawa.",
+    "questionPromptEnglish": "What primary concern is expressed regarding these digital management tools?",
+    "passageEnglish": "Speaker 1: Automated tracking software optimizes logistics workflows across major distribution warehouses in Ottawa.\nSpeaker 2: True, but perpetual task timing generates intense stress and damages employee mental health. We demand strict regulations to restrict continuous monitoring and safeguard non-negotiable rest breaks.",
     "optionsEnglish": [
-      "Provision of a transition grant for connection to Ottawa's heating grid",
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "Strict prohibition of all technical innovation in the region of Ottawa",
-      "The closure of the facility"
+      "The deleterious impact of continuous performance evaluation on employee psychological well-being",
+      "Withholding employee compensation for failing to meet computer-generated quotas",
+      "A general ban on forklift operations inside warehouses in Ottawa",
+      "A legal mandate to double daily working hours for all logistics staff"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning aide financière au remplacement des chaudières au fioul à ottawa sparks passionate discussion in Ottawa.\nSpeaker 2: However, the main priority remains l'octroi d'une prime de transition pour le raccordement au réseau de chaleur d'ottawa."
+    "transcriptEnglish": "Speaker 1: Automated tracking software optimizes logistics workflows across major distribution warehouses in Ottawa.\nSpeaker 2: True, but perpetual task timing generates intense stress and damages employee mental health. We demand strict regulations to restrict continuous monitoring and safeguard non-negotiable rest breaks."
   },
   "tcf3-lis-33": {
     "id": "tcf3-lis-33",
     "paperNum": 3,
     "questionNumber": 33,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning droit à la déconnexion numérique après les heures de bureau à ottawa sparks passionate discussion in Ottawa.\nSpeaker 2: However, the main priority remains l'interdiction d'envoyer des courriels professionnels le week-end aux employés d'ottawa.",
+    "questionPromptEnglish": "What technical approach is favored by municipal engineers?",
+    "passageEnglish": "Speaker 1: Torrential spring downpours have once again submerged several riverfront neighborhoods in Ottawa.\nSpeaker 2: Pouring more concrete along riverbanks is an ecological mistake. We now favor nature-based solutions, such as restoring wetlands and creating landscaped detention basins capable of naturally absorbing excess water runoff.",
     "optionsEnglish": [
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "Strict prohibition of all technical innovation in the region of Ottawa",
-      "The closure of the facility",
-      "Prohibition of sending work emails on weekends to Ottawa employees"
+      "Indefinite elevation of concrete seawalls along all urban waterfronts",
+      "Enclosing all metropolitan waterways of Ottawa inside underground concrete pipelines",
+      "Mandatory permanent evacuation of all residents living within 5 km of any lake",
+      "Creation of natural buffer zones to slow down and absorb river runoff surges"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning droit à la déconnexion numérique après les heures de bureau à ottawa sparks passionate discussion in Ottawa.\nSpeaker 2: However, the main priority remains l'interdiction d'envoyer des courriels professionnels le week-end aux employés d'ottawa."
+    "transcriptEnglish": "Speaker 1: Torrential spring downpours have once again submerged several riverfront neighborhoods in Ottawa.\nSpeaker 2: Pouring more concrete along riverbanks is an ecological mistake. We now favor nature-based solutions, such as restoring wetlands and creating landscaped detention basins capable of naturally absorbing excess water runoff."
   },
   "tcf3-lis-34": {
     "id": "tcf3-lis-34",
@@ -1686,89 +1686,89 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 34,
     "level": "C1",
     "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Ottawa, the speaker analyzes major issues concerning l'urbanisme bio-climatique et la résilience des métropoles du xxie siècle à ottawa.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on l'intégration de la ventilation naturelle et du végétal dans la conception architecturale.",
+    "passageEnglish": "In this symposium presentation delivered in Ottawa, we examine how continuous algorithmic profiling profoundly reshapes human decision-making mechanisms. Far from being simple decision-support tools, current recommendation architectures imperceptibly anticipate and funnel our preferences. By systematically delegating daily choices to predictive systems, the contemporary individual experiences an erosion of authentic self-determination in favor of pre-formatted behavioral pathways.",
     "optionsEnglish": [
-      "The imposition of a fixed 80% customs tariff on regional exports from Ottawa",
-      "Integration of natural ventilation and living greenery in architectural design",
-      "The absolute denial of all scientific research conducted in Ottawa",
-      "The permanent elimination of humanities instruction at universities"
+      "A legal mandate forcing all citizens to use public computer terminals exclusively",
+      "The progressive weakening of individual discernment and autonomous decision-making capacity",
+      "The complete futility of mathematical modeling in modern computing in Ottawa",
+      "Scientific proof that human consciousness is entirely governed by electronic circuitry"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Ottawa, the speaker analyzes major issues concerning l'urbanisme bio-climatique et la résilience des métropoles du xxie siècle à ottawa.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on l'intégration de la ventilation naturelle et du végétal dans la conception architecturale."
+    "transcriptEnglish": "In this symposium presentation delivered in Ottawa, we examine how continuous algorithmic profiling profoundly reshapes human decision-making mechanisms. Far from being simple decision-support tools, current recommendation architectures imperceptibly anticipate and funnel our preferences. By systematically delegating daily choices to predictive systems, the contemporary individual experiences an erosion of authentic self-determination in favor of pre-formatted behavioral pathways."
   },
   "tcf3-lis-35": {
     "id": "tcf3-lis-35",
     "paperNum": 3,
     "questionNumber": 35,
     "level": "C1",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Ottawa, the speaker analyzes major issues concerning les théories de la démocratie délibérative et les tirages au sort citoyens à ottawa.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on le dépassement du biais partisan par l'institution de jurés citoyens décisionnaires.",
+    "questionPromptEnglish": "What primary argument is put forward to justify a strategic policy pivot?",
+    "passageEnglish": "Outsourcing public registries to foreign tech conglomerates exposes our institutions in Ottawa to unacceptable legal and strategic vulnerabilities. The extraterritorial reach of foreign legislation enables unilateral access to sensitive healthcare and civic security records. It is therefore imperative to establish a sovereign digital enclave relying on data hosting infrastructure under exclusive domestic jurisdiction.",
     "optionsEnglish": [
-      "Overcoming partisan bias through empowered citizen decision-making juries",
-      "The absolute denial of all scientific research conducted in Ottawa",
-      "The permanent elimination of humanities instruction at universities",
-      "The imposition of a fixed 80% customs tariff on regional exports from Ottawa"
+      "The necessity of shielding sensitive civic data from foreign jurisdictional overreach",
+      "A complete prohibition on cross-border commercial trade for businesses in Ottawa",
+      "Universal free public Internet access without any state regulatory oversight",
+      "Preemptive physical destruction of all computing server facilities"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Ottawa, the speaker analyzes major issues concerning les théories de la démocratie délibérative et les tirages au sort citoyens à ottawa.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on le dépassement du biais partisan par l'institution de jurés citoyens décisionnaires."
+    "transcriptEnglish": "Outsourcing public registries to foreign tech conglomerates exposes our institutions in Ottawa to unacceptable legal and strategic vulnerabilities. The extraterritorial reach of foreign legislation enables unilateral access to sensitive healthcare and civic security records. It is therefore imperative to establish a sovereign digital enclave relying on data hosting infrastructure under exclusive domestic jurisdiction."
   },
   "tcf3-lis-36": {
     "id": "tcf3-lis-36",
     "paperNum": 3,
     "questionNumber": 36,
     "level": "C1",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Ottawa, the speaker analyzes major issues concerning la régulation de la génétique médicale et l'édition du génome humain à ottawa.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la stricte distinction entre thérapie génique réparatrice et eugénisme d'amélioration.",
+    "questionPromptEnglish": "What major warning is expressed regarding these intervention technologies?",
+    "passageEnglish": "While stratospheric aerosol injection to reflect solar radiation appears as an emergency response to global warming in Ottawa, its collateral repercussions on planetary monsoon patterns remain deeply unpredictable. Any artificial manipulation of the upper atmosphere risks abruptly altering regional precipitation dynamics and triggering devastating agricultural shocks across developing nations.",
     "optionsEnglish": [
-      "The absolute denial of all scientific research conducted in Ottawa",
-      "The strict distinction between restorative gene therapy and enhancement eugenics",
-      "The imposition of a fixed 80% customs tariff on regional exports from Ottawa",
-      "The permanent elimination of humanities instruction at universities"
+      "An immediate shutdown of all academic meteorological research in Ottawa",
+      "The unpredictability of induced meteorological disruptions across continental scales",
+      "Absolute scientific certainty that the sun will cease solar emissions in coming decades",
+      "A global requirement for all nations to abandon outdoor agriculture in favor of underground bunkers"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Ottawa, the speaker analyzes major issues concerning la régulation de la génétique médicale et l'édition du génome humain à ottawa.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la stricte distinction entre thérapie génique réparatrice et eugénisme d'amélioration."
+    "transcriptEnglish": "While stratospheric aerosol injection to reflect solar radiation appears as an emergency response to global warming in Ottawa, its collateral repercussions on planetary monsoon patterns remain deeply unpredictable. Any artificial manipulation of the upper atmosphere risks abruptly altering regional precipitation dynamics and triggering devastating agricultural shocks across developing nations."
   },
   "tcf3-lis-37": {
     "id": "tcf3-lis-37",
     "paperNum": 3,
     "questionNumber": 37,
     "level": "C2",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Ottawa, the speaker analyzes major issues concerning ontologie du temps et relativité générale dans la physique contemporaine à ottawa.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on l'illusion du passage du temps absolu au sein du continuum espace-temps quadridimensionnel.",
+    "questionPromptEnglish": "What conceptual shift does the researcher highlight in their analysis?",
+    "passageEnglish": "In this academic lecture delivered in Ottawa, we re-examine the classical postulate of a strictly deterministic universe. Contemporary observational data confirm that subatomic behavior cannot be captured by rigid linear causality. The theoretical architecture of fundamental physics now requires abandoning the Laplacian ideal of absolute predictability in favor of an intrinsically probabilistic formulation of physical states.",
     "optionsEnglish": [
-      "The illusion of absolute time flow within the four-dimensional spacetime continuum",
-      "The imposition of a fixed 80% customs tariff on regional exports from Ottawa",
-      "The absolute denial of all scientific research conducted in Ottawa",
-      "The permanent elimination of humanities instruction at universities"
+      "The substitution of a statistical paradigm for the illusion of infallible causal predictability",
+      "The dogmatic assertion that classical mechanics applies identically to quantum subatomic scales",
+      "Outright rejection of the empirical scientific method in universities across Ottawa",
+      "Prohibiting mathematical equations from being utilized to describe subatomic phenomena"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Ottawa, the speaker analyzes major issues concerning ontologie du temps et relativité générale dans la physique contemporaine à ottawa.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on l'illusion du passage du temps absolu au sein du continuum espace-temps quadridimensionnel."
+    "transcriptEnglish": "In this academic lecture delivered in Ottawa, we re-examine the classical postulate of a strictly deterministic universe. Contemporary observational data confirm that subatomic behavior cannot be captured by rigid linear causality. The theoretical architecture of fundamental physics now requires abandoning the Laplacian ideal of absolute predictability in favor of an intrinsically probabilistic formulation of physical states."
   },
   "tcf3-lis-38": {
     "id": "tcf3-lis-38",
     "paperNum": 3,
     "questionNumber": 38,
     "level": "C2",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Ottawa, the speaker analyzes major issues concerning l'esthétique de la déconstruction dans la littérature post-moderne à ottawa.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la fragmentation de la narration visant à déstabiliser l'illusion d'une vérité unique.",
+    "questionPromptEnglish": "What epistemological thesis is defended by the linguist?",
+    "passageEnglish": "The hypothesis that human thought structures exist independently of natural spoken languages is fundamentally challenged today in Ottawa. Far from being mere labels attached to a pre-existing reality, our lexical categories and syntactic matrices actively shape our spatiotemporal perception and conceptual framing of empirical reality.",
     "optionsEnglish": [
-      "The imposition of a fixed 80% customs tariff on regional exports from Ottawa",
-      "The permanent elimination of humanities instruction at universities",
-      "Narrative fragmentation aimed at destabilizing the illusion of a single truth",
-      "The absolute denial of all scientific research conducted in Ottawa"
+      "The radical impossibility of translating any conceptual meaning across different human languages",
+      "The intrinsic superiority of algorithmic formal languages over natural human tongues",
+      "The tight conditioning of cognitive representations by the structural specificities of language",
+      "The complete biological uniformity of human thought systems regardless of language in Ottawa"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Ottawa, the speaker analyzes major issues concerning l'esthétique de la déconstruction dans la littérature post-moderne à ottawa.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la fragmentation de la narration visant à déstabiliser l'illusion d'une vérité unique."
+    "transcriptEnglish": "The hypothesis that human thought structures exist independently of natural spoken languages is fundamentally challenged today in Ottawa. Far from being mere labels attached to a pre-existing reality, our lexical categories and syntactic matrices actively shape our spatiotemporal perception and conceptual framing of empirical reality."
   },
   "tcf3-lis-39": {
     "id": "tcf3-lis-39",
     "paperNum": 3,
     "questionNumber": 39,
     "level": "C2",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Ottawa, the speaker analyzes major issues concerning neurobiologie de la décision et libre arbitre à la lumière de l'imagerie médicale à ottawa.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la détection d'activités cérébrales prédictives antérieures à la prise de conscience de la décision.",
+    "questionPromptEnglish": "What major systemic risk is identified by the economist?",
+    "passageEnglish": "The introduction of a central bank digital currency issued directly to retail users in Ottawa could upend the traditional commercial banking equilibrium. By offering individuals a credit-risk-free asset, such an innovation risks triggering, during periods of financial stress, a massive flight of deposits from private banks to central bank reserves, thereby starving the productive economy of regular lending channels.",
     "optionsEnglish": [
-      "The absolute denial of all scientific research conducted in Ottawa",
-      "The imposition of a fixed 80% customs tariff on regional exports from Ottawa",
-      "The permanent elimination of humanities instruction at universities",
-      "Detection of predictive neural activity prior to conscious decision awareness"
+      "The planned elimination of all international trade operations for firms in Ottawa",
+      "A legal mandate requiring all daily retail transactions to be settled in physical precious metals",
+      "Forced nationalization and merger of all private commercial banks into a single state entity",
+      "Abrupt banking disintermediation choking business financing during periods of market stress"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Ottawa, the speaker analyzes major issues concerning neurobiologie de la décision et libre arbitre à la lumière de l'imagerie médicale à ottawa.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la détection d'activités cérébrales prédictives antérieures à la prise de conscience de la décision."
+    "transcriptEnglish": "The introduction of a central bank digital currency issued directly to retail users in Ottawa could upend the traditional commercial banking equilibrium. By offering individuals a credit-risk-free asset, such an innovation risks triggering, during periods of financial stress, a massive flight of deposits from private banks to central bank reserves, thereby starving the productive economy of regular lending channels."
   },
   "tcf4-lis-1": {
     "id": "tcf4-lis-1",
@@ -2150,120 +2150,120 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "paperNum": 4,
     "questionNumber": 26,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning mise en place du compostage obligatoire pour les ménages de toronto sparks passionate discussion in Toronto.\nSpeaker 2: However, the main priority remains la collecte séparée des biodéchets ménagers dans tous les quartiers de toronto.\nAnnouncer: Listen to the question. Question N°26: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What is the priority measure advocated during this consultation?",
+    "passageEnglish": "Speaker 1: The ubiquity of automated content raises immense concerns regarding the integrity of democratic discourse in Vancouver. Faced with the proliferation of fabricated documents, some are calling for strict prior censorship.\nSpeaker 2: A total ban would be technically unenforceable and legally questionable. Instead, we advocate for comprehensive traceability through explicit, mandatory labeling imposed on broadcasters for every artificially generated production.",
     "optionsEnglish": [
-      "Strict prohibition of all technical innovation in the region of Toronto",
-      "Separate collection of household organic waste in all Toronto neighborhoods",
-      "The closure of the facility",
-      "Mandatory 50% increase in municipal taxes for all residents"
+      "The implementation of a systematic ban on all generative algorithms across Vancouver",
+      "The requirement to clearly identify synthetic media released to the public",
+      "The elimination of audiovisual regulatory bodies in favor of complete self-regulation",
+      "Legal liability exemptions for digital platforms hosting deceptive content"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning mise en place du compostage obligatoire pour les ménages de toronto sparks passionate discussion in Toronto.\nSpeaker 2: However, the main priority remains la collecte séparée des biodéchets ménagers dans tous les quartiers de toronto.\nAnnouncer: Listen to the question. Question N°26: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°26: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: The ubiquity of automated content raises immense concerns regarding the integrity of democratic discourse in Vancouver. Faced with the proliferation of fabricated documents, some are calling for strict prior censorship.\nSpeaker 2: A total ban would be technically unenforceable and legally questionable. Instead, we advocate for comprehensive traceability through explicit, mandatory labeling imposed on broadcasters for every artificially generated production."
   },
   "tcf4-lis-27": {
     "id": "tcf4-lis-27",
     "paperNum": 4,
     "questionNumber": 27,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning interdiction des vols de nuit à l'aéroport métropolitain de toronto sparks passionate discussion in Toronto.\nSpeaker 2: However, the main priority remains la préservation du sommeil des riverains par l'arrêt des atterrissages entre 23h et 6h à toronto.\nAnnouncer: Listen to the question. Question N°27: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What tax compromise is favored in this municipal debate?",
+    "passageEnglish": "Speaker 1: The permanent rise of remote work is eroding retail revenue in the urban core of Vancouver, while outlying bedroom suburbs face skyrocketing road maintenance costs without compensatory revenues.\nSpeaker 2: It is not about overtaxing remote employees, but rebalancing global municipal funding. We propose an equitable redistribution of collected business taxes to offset infrastructure expenditures in residential municipalities.",
     "optionsEnglish": [
-      "Preservation of residents' sleep by halting nighttime flight landings between 11:00 PM and 6:00 AM in Toronto",
-      "The closure of the facility",
-      "Strict prohibition of all technical innovation in the region of Toronto",
-      "Mandatory 50% increase in municipal taxes for all residents"
+      "A financial solidarity mechanism between the metropolitan center and suburban municipalities",
+      "Free commercial property leases to incentivize companies to return downtown",
+      "The imposition of a direct tax penalty on employees working from home in Vancouver",
+      "The complete transfer of local budget authority to a centralized federal body"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning interdiction des vols de nuit à l'aéroport métropolitain de toronto sparks passionate discussion in Toronto.\nSpeaker 2: However, the main priority remains la préservation du sommeil des riverains par l'arrêt des atterrissages entre 23h et 6h à toronto.\nAnnouncer: Listen to the question. Question N°27: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°27: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: The permanent rise of remote work is eroding retail revenue in the urban core of Vancouver, while outlying bedroom suburbs face skyrocketing road maintenance costs without compensatory revenues.\nSpeaker 2: It is not about overtaxing remote employees, but rebalancing global municipal funding. We propose an equitable redistribution of collected business taxes to offset infrastructure expenditures in residential municipalities."
   },
   "tcf4-lis-28": {
     "id": "tcf4-lis-28",
     "paperNum": 4,
     "questionNumber": 28,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning installation systématique de toitures végétalisées sur les neufs à toronto sparks passionate discussion in Toronto.\nSpeaker 2: However, the main priority remains l'absorption des eaux de pluie et le rafraîchissement des immeubles neufs de toronto.\nAnnouncer: Listen to the question. Question N°28: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What environmental strategy is highlighted in this address?",
+    "passageEnglish": "Speaker 1: The fast-fashion industry produces colossal garment waste that clogs municipal landfills across Vancouver.\nSpeaker 2: Mere moral appeals are no longer sufficient. We must implement extended producer responsibility where apparel brands directly finance the collection and upcycling of discarded fibers into new industrial materials.",
     "optionsEnglish": [
-      "Stormwater absorption and cooling of newly constructed buildings in Toronto",
-      "Strict prohibition of all technical innovation in the region of Toronto",
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "The closure of the facility"
+      "Direct financial involvement of apparel manufacturers in post-consumer clothing recycling",
+      "An absolute ban on selling any clothing manufactured outside Vancouver",
+      "Systematic incineration of all unsold retail textile surpluses",
+      "Universal free clothing distribution for low-income households"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning installation systématique de toitures végétalisées sur les neufs à toronto sparks passionate discussion in Toronto.\nSpeaker 2: However, the main priority remains l'absorption des eaux de pluie et le rafraîchissement des immeubles neufs de toronto.\nAnnouncer: Listen to the question. Question N°28: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°28: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: The fast-fashion industry produces colossal garment waste that clogs municipal landfills across Vancouver.\nSpeaker 2: Mere moral appeals are no longer sufficient. We must implement extended producer responsibility where apparel brands directly finance the collection and upcycling of discarded fibers into new industrial materials."
   },
   "tcf4-lis-29": {
     "id": "tcf4-lis-29",
     "paperNum": 4,
     "questionNumber": 29,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning création d'un chèque culture annuel pour la jeunesse de toronto sparks passionate discussion in Toronto.\nSpeaker 2: However, the main priority remains la distribution d'un crédit annuel pour l'achat de livres et billets de théâtre à toronto.\nAnnouncer: Listen to the question. Question N°29: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What technical condition is deemed essential to approve this project?",
+    "passageEnglish": "Speaker 1: Installing micro wind turbines on building rooftops in Vancouver generates great enthusiasm among decentralized energy advocates.\nSpeaker 2: It is undeniably beneficial, provided that dynamic grid compatibility is secured and substations are equipped with battery storage systems to smooth out production intermittency.",
     "optionsEnglish": [
-      "Distribution of an annual credit for purchasing books and theater tickets in Toronto",
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "Strict prohibition of all technical innovation in the region of Toronto",
-      "The closure of the facility"
+      "Stabilization of energy input through auxiliary storage mechanisms",
+      "Limiting household power usage to mandatory scheduled time windows",
+      "Exclusive interconnection of installations to emergency backup power grids in Vancouver",
+      "Planned decommissioning of all existing regional hydroelectric facilities"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning création d'un chèque culture annuel pour la jeunesse de toronto sparks passionate discussion in Toronto.\nSpeaker 2: However, the main priority remains la distribution d'un crédit annuel pour l'achat de livres et billets de théâtre à toronto.\nAnnouncer: Listen to the question. Question N°29: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°29: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: Installing micro wind turbines on building rooftops in Vancouver generates great enthusiasm among decentralized energy advocates.\nSpeaker 2: It is undeniably beneficial, provided that dynamic grid compatibility is secured and substations are equipped with battery storage systems to smooth out production intermittency."
   },
   "tcf4-lis-30": {
     "id": "tcf4-lis-30",
     "paperNum": 4,
     "questionNumber": 30,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning développement des fermes urbaines verticales en centre-ville de toronto sparks passionate discussion in Toronto.\nSpeaker 2: However, the main priority remains la production maraîchère locale en circuit court sur les toits d'immeubles de toronto.",
+    "questionPromptEnglish": "What urban planning direction is recommended by experts?",
+    "passageEnglish": "Speaker 1: Continuous urban sprawl threatens the agricultural land surrounding the greater Vancouver metropolitan area.\nSpeaker 2: To curb this trend without worsening the housing shortage, we recommend concentrating dense new residential developments within immediate walking distance of train stations and rapid transit corridors.",
     "optionsEnglish": [
-      "The closure of the facility",
-      "Local short-supply-chain vegetable production on Toronto building rooftops",
-      "Strict prohibition of all technical innovation in the region of Toronto",
-      "Mandatory 50% increase in municipal taxes for all residents"
+      "A blanket prohibition on all new real estate developments across the entire territory",
+      "Housing intensification in immediate proximity to public transit infrastructure",
+      "Exclusive construction of single-family suburban subdivisions in the outer ring of Vancouver",
+      "Permanent closure of commuter train routes to reduce maintenance expenses"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning développement des fermes urbaines verticales en centre-ville de toronto sparks passionate discussion in Toronto.\nSpeaker 2: However, the main priority remains la production maraîchère locale en circuit court sur les toits d'immeubles de toronto."
+    "transcriptEnglish": "Speaker 1: Continuous urban sprawl threatens the agricultural land surrounding the greater Vancouver metropolitan area.\nSpeaker 2: To curb this trend without worsening the housing shortage, we recommend concentrating dense new residential developments within immediate walking distance of train stations and rapid transit corridors."
   },
   "tcf4-lis-31": {
     "id": "tcf4-lis-31",
     "paperNum": 4,
     "questionNumber": 31,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning soutien financier aux réparateurs d'appareils électroniques à toronto sparks passionate discussion in Toronto.\nSpeaker 2: However, the main priority remains l'attribution d'un bonus réparation pour prolonger la durée de vie des appareils à toronto.",
+    "questionPromptEnglish": "What major demand is brought forward by worker representatives?",
+    "passageEnglish": "Speaker 1: Food delivery applications have multiplied flexible work opportunities for thousands of young people in Vancouver.\nSpeaker 2: But this flexibility masks severe vulnerability. We demand a guaranteed minimum hourly wage and mandatory workplace injury coverage directly funded by platform operators.",
     "optionsEnglish": [
-      "Strict prohibition of all technical innovation in the region of Toronto",
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "The closure of the facility",
-      "Allocation of a repair bonus to extend appliance lifespans in Toronto"
+      "A complete ban on all online meal ordering services across Vancouver",
+      "Automatic provision of a motorized company vehicle to every bicycle courier",
+      "The elimination of all contractual obligations between couriers and customers",
+      "Establishment of a baseline minimum earnings guarantee and employer-funded workplace insurance"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning soutien financier aux réparateurs d'appareils électroniques à toronto sparks passionate discussion in Toronto.\nSpeaker 2: However, the main priority remains l'attribution d'un bonus réparation pour prolonger la durée de vie des appareils à toronto."
+    "transcriptEnglish": "Speaker 1: Food delivery applications have multiplied flexible work opportunities for thousands of young people in Vancouver.\nSpeaker 2: But this flexibility masks severe vulnerability. We demand a guaranteed minimum hourly wage and mandatory workplace injury coverage directly funded by platform operators."
   },
   "tcf4-lis-32": {
     "id": "tcf4-lis-32",
     "paperNum": 4,
     "questionNumber": 32,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning limitation à 30 km/h de la vitesse de circulation en zone résidentielle à toronto sparks passionate discussion in Toronto.\nSpeaker 2: However, the main priority remains la baisse des accidents mortels et du niveau sonore dans les rues de toronto.",
+    "questionPromptEnglish": "What primary concern is expressed regarding these digital management tools?",
+    "passageEnglish": "Speaker 1: Automated tracking software optimizes logistics workflows across major distribution warehouses in Vancouver.\nSpeaker 2: True, but perpetual task timing generates intense stress and damages employee mental health. We demand strict regulations to restrict continuous monitoring and safeguard non-negotiable rest breaks.",
     "optionsEnglish": [
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "Strict prohibition of all technical innovation in the region of Toronto",
-      "The closure of the facility",
-      "Reduction in fatal traffic accidents and noise levels on Toronto streets"
+      "Withholding employee compensation for failing to meet computer-generated quotas",
+      "A general ban on forklift operations inside warehouses in Vancouver",
+      "A legal mandate to double daily working hours for all logistics staff",
+      "The deleterious impact of continuous performance evaluation on employee psychological well-being"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning limitation à 30 km/h de la vitesse de circulation en zone résidentielle à toronto sparks passionate discussion in Toronto.\nSpeaker 2: However, the main priority remains la baisse des accidents mortels et du niveau sonore dans les rues de toronto."
+    "transcriptEnglish": "Speaker 1: Automated tracking software optimizes logistics workflows across major distribution warehouses in Vancouver.\nSpeaker 2: True, but perpetual task timing generates intense stress and damages employee mental health. We demand strict regulations to restrict continuous monitoring and safeguard non-negotiable rest breaks."
   },
   "tcf4-lis-33": {
     "id": "tcf4-lis-33",
     "paperNum": 4,
     "questionNumber": 33,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning obligation de parité hommes-femmes dans les conseils d'administration à toronto sparks passionate discussion in Toronto.\nSpeaker 2: However, the main priority remains l'imposition de quotas de représentation équilibrée au sein des directions d'entreprises de toronto.",
+    "questionPromptEnglish": "What technical approach is favored by municipal engineers?",
+    "passageEnglish": "Speaker 1: Torrential spring downpours have once again submerged several riverfront neighborhoods in Vancouver.\nSpeaker 2: Pouring more concrete along riverbanks is an ecological mistake. We now favor nature-based solutions, such as restoring wetlands and creating landscaped detention basins capable of naturally absorbing excess water runoff.",
     "optionsEnglish": [
-      "The closure of the facility",
-      "Imposition of balanced gender representation quotas on corporate boards in Toronto",
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "Strict prohibition of all technical innovation in the region of Toronto"
+      "Mandatory permanent evacuation of all residents living within 5 km of any lake",
+      "Creation of natural buffer zones to slow down and absorb river runoff surges",
+      "Indefinite elevation of concrete seawalls along all urban waterfronts",
+      "Enclosing all metropolitan waterways of Vancouver inside underground concrete pipelines"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning obligation de parité hommes-femmes dans les conseils d'administration à toronto sparks passionate discussion in Toronto.\nSpeaker 2: However, the main priority remains l'imposition de quotas de représentation équilibrée au sein des directions d'entreprises de toronto."
+    "transcriptEnglish": "Speaker 1: Torrential spring downpours have once again submerged several riverfront neighborhoods in Vancouver.\nSpeaker 2: Pouring more concrete along riverbanks is an ecological mistake. We now favor nature-based solutions, such as restoring wetlands and creating landscaped detention basins capable of naturally absorbing excess water runoff."
   },
   "tcf4-lis-34": {
     "id": "tcf4-lis-34",
@@ -2271,89 +2271,89 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 34,
     "level": "C1",
     "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Toronto, the speaker analyzes major issues concerning le renouvellement de la sociologie rurale face aux néo-ruraux à toronto.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on les tensions interculturelles liées à la revalorisation des espaces agricoles périurbains.",
+    "passageEnglish": "In this symposium presentation delivered in Vancouver, we examine how continuous algorithmic profiling profoundly reshapes human decision-making mechanisms. Far from being simple decision-support tools, current recommendation architectures imperceptibly anticipate and funnel our preferences. By systematically delegating daily choices to predictive systems, the contemporary individual experiences an erosion of authentic self-determination in favor of pre-formatted behavioral pathways.",
     "optionsEnglish": [
-      "The permanent elimination of humanities instruction at universities",
-      "The absolute denial of all scientific research conducted in Toronto",
-      "Intercultural tensions arising from revitalization of peri-urban agricultural lands",
-      "The imposition of a fixed 80% customs tariff on regional exports from Toronto"
+      "Scientific proof that human consciousness is entirely governed by electronic circuitry",
+      "The complete futility of mathematical modeling in modern computing in Vancouver",
+      "The progressive weakening of individual discernment and autonomous decision-making capacity",
+      "A legal mandate forcing all citizens to use public computer terminals exclusively"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Toronto, the speaker analyzes major issues concerning le renouvellement de la sociologie rurale face aux néo-ruraux à toronto.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on les tensions interculturelles liées à la revalorisation des espaces agricoles périurbains."
+    "transcriptEnglish": "In this symposium presentation delivered in Vancouver, we examine how continuous algorithmic profiling profoundly reshapes human decision-making mechanisms. Far from being simple decision-support tools, current recommendation architectures imperceptibly anticipate and funnel our preferences. By systematically delegating daily choices to predictive systems, the contemporary individual experiences an erosion of authentic self-determination in favor of pre-formatted behavioral pathways."
   },
   "tcf4-lis-35": {
     "id": "tcf4-lis-35",
     "paperNum": 4,
     "questionNumber": 35,
     "level": "C1",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Toronto, the speaker analyzes major issues concerning la transparence algorithmique dans l'attribution des crédits bancaires à toronto.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on l'obligation d'expliquer le fonctionnement interne des réseaux de neurones décisionnels.",
+    "questionPromptEnglish": "What primary argument is put forward to justify a strategic policy pivot?",
+    "passageEnglish": "Outsourcing public registries to foreign tech conglomerates exposes our institutions in Vancouver to unacceptable legal and strategic vulnerabilities. The extraterritorial reach of foreign legislation enables unilateral access to sensitive healthcare and civic security records. It is therefore imperative to establish a sovereign digital enclave relying on data hosting infrastructure under exclusive domestic jurisdiction.",
     "optionsEnglish": [
-      "The imposition of a fixed 80% customs tariff on regional exports from Toronto",
-      "The obligation to explain internal workings of decision-making neural networks",
-      "The absolute denial of all scientific research conducted in Toronto",
-      "The permanent elimination of humanities instruction at universities"
+      "Preemptive physical destruction of all computing server facilities",
+      "The necessity of shielding sensitive civic data from foreign jurisdictional overreach",
+      "A complete prohibition on cross-border commercial trade for businesses in Vancouver",
+      "Universal free public Internet access without any state regulatory oversight"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Toronto, the speaker analyzes major issues concerning la transparence algorithmique dans l'attribution des crédits bancaires à toronto.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on l'obligation d'expliquer le fonctionnement interne des réseaux de neurones décisionnels."
+    "transcriptEnglish": "Outsourcing public registries to foreign tech conglomerates exposes our institutions in Vancouver to unacceptable legal and strategic vulnerabilities. The extraterritorial reach of foreign legislation enables unilateral access to sensitive healthcare and civic security records. It is therefore imperative to establish a sovereign digital enclave relying on data hosting infrastructure under exclusive domestic jurisdiction."
   },
   "tcf4-lis-36": {
     "id": "tcf4-lis-36",
     "paperNum": 4,
     "questionNumber": 36,
     "level": "C1",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Toronto, the speaker analyzes major issues concerning la fiscalité environnementale des transports maritimes transocéaniques à toronto.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on l'imposition d'une taxe carbone globale sur les carburants lourds de la flotte internationale.",
+    "questionPromptEnglish": "What major warning is expressed regarding these intervention technologies?",
+    "passageEnglish": "While stratospheric aerosol injection to reflect solar radiation appears as an emergency response to global warming in Vancouver, its collateral repercussions on planetary monsoon patterns remain deeply unpredictable. Any artificial manipulation of the upper atmosphere risks abruptly altering regional precipitation dynamics and triggering devastating agricultural shocks across developing nations.",
     "optionsEnglish": [
-      "The absolute denial of all scientific research conducted in Toronto",
-      "The imposition of a fixed 80% customs tariff on regional exports from Toronto",
-      "The permanent elimination of humanities instruction at universities",
-      "The imposition of a global carbon tax on heavy bunker fuels in shipping"
+      "An immediate shutdown of all academic meteorological research in Vancouver",
+      "Absolute scientific certainty that the sun will cease solar emissions in coming decades",
+      "A global requirement for all nations to abandon outdoor agriculture in favor of underground bunkers",
+      "The unpredictability of induced meteorological disruptions across continental scales"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Toronto, the speaker analyzes major issues concerning la fiscalité environnementale des transports maritimes transocéaniques à toronto.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on l'imposition d'une taxe carbone globale sur les carburants lourds de la flotte internationale."
+    "transcriptEnglish": "While stratospheric aerosol injection to reflect solar radiation appears as an emergency response to global warming in Vancouver, its collateral repercussions on planetary monsoon patterns remain deeply unpredictable. Any artificial manipulation of the upper atmosphere risks abruptly altering regional precipitation dynamics and triggering devastating agricultural shocks across developing nations."
   },
   "tcf4-lis-37": {
     "id": "tcf4-lis-37",
     "paperNum": 4,
     "questionNumber": 37,
     "level": "C2",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Toronto, the speaker analyzes major issues concerning la théorie des jeux appliqués aux négociations climatiques mondiales à toronto.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la rupture du dilemme du prisonnier par l'instauration de sanctions commerciales réciproques.",
+    "questionPromptEnglish": "What conceptual shift does the researcher highlight in their analysis?",
+    "passageEnglish": "In this academic lecture delivered in Vancouver, we re-examine the classical postulate of a strictly deterministic universe. Contemporary observational data confirm that subatomic behavior cannot be captured by rigid linear causality. The theoretical architecture of fundamental physics now requires abandoning the Laplacian ideal of absolute predictability in favor of an intrinsically probabilistic formulation of physical states.",
     "optionsEnglish": [
-      "The imposition of a fixed 80% customs tariff on regional exports from Toronto",
-      "The absolute denial of all scientific research conducted in Toronto",
-      "The permanent elimination of humanities instruction at universities",
-      "Resolving prisoner's dilemma through reciprocal trade sanctions"
+      "The dogmatic assertion that classical mechanics applies identically to quantum subatomic scales",
+      "Outright rejection of the empirical scientific method in universities across Vancouver",
+      "Prohibiting mathematical equations from being utilized to describe subatomic phenomena",
+      "The substitution of a statistical paradigm for the illusion of infallible causal predictability"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Toronto, the speaker analyzes major issues concerning la théorie des jeux appliqués aux négociations climatiques mondiales à toronto.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la rupture du dilemme du prisonnier par l'instauration de sanctions commerciales réciproques."
+    "transcriptEnglish": "In this academic lecture delivered in Vancouver, we re-examine the classical postulate of a strictly deterministic universe. Contemporary observational data confirm that subatomic behavior cannot be captured by rigid linear causality. The theoretical architecture of fundamental physics now requires abandoning the Laplacian ideal of absolute predictability in favor of an intrinsically probabilistic formulation of physical states."
   },
   "tcf4-lis-38": {
     "id": "tcf4-lis-38",
     "paperNum": 4,
     "questionNumber": 38,
     "level": "C2",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Toronto, the speaker analyzes major issues concerning la phénoménologie de la perception spatiale chez maurice merleau-ponty à toronto.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on l'ancrage corporel irréductible de toute appréhension subjective du monde environnant.",
+    "questionPromptEnglish": "What epistemological thesis is defended by the linguist?",
+    "passageEnglish": "The hypothesis that human thought structures exist independently of natural spoken languages is fundamentally challenged today in Vancouver. Far from being mere labels attached to a pre-existing reality, our lexical categories and syntactic matrices actively shape our spatiotemporal perception and conceptual framing of empirical reality.",
     "optionsEnglish": [
-      "The permanent elimination of humanities instruction at universities",
-      "The absolute denial of all scientific research conducted in Toronto",
-      "The irreducible bodily grounding of all subjective world perception",
-      "The imposition of a fixed 80% customs tariff on regional exports from Toronto"
+      "The intrinsic superiority of algorithmic formal languages over natural human tongues",
+      "The complete biological uniformity of human thought systems regardless of language in Vancouver",
+      "The tight conditioning of cognitive representations by the structural specificities of language",
+      "The radical impossibility of translating any conceptual meaning across different human languages"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Toronto, the speaker analyzes major issues concerning la phénoménologie de la perception spatiale chez maurice merleau-ponty à toronto.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on l'ancrage corporel irréductible de toute appréhension subjective du monde environnant."
+    "transcriptEnglish": "The hypothesis that human thought structures exist independently of natural spoken languages is fundamentally challenged today in Vancouver. Far from being mere labels attached to a pre-existing reality, our lexical categories and syntactic matrices actively shape our spatiotemporal perception and conceptual framing of empirical reality."
   },
   "tcf4-lis-39": {
     "id": "tcf4-lis-39",
     "paperNum": 4,
     "questionNumber": 39,
     "level": "C2",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Toronto, the speaker analyzes major issues concerning la régulation prudentielle des systèmes bancaires ombre (shadow banking) à toronto.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on l'encadrement des flux financiers non bancaires pour prévenir un risque systémique global.",
+    "questionPromptEnglish": "What major systemic risk is identified by the economist?",
+    "passageEnglish": "The introduction of a central bank digital currency issued directly to retail users in Vancouver could upend the traditional commercial banking equilibrium. By offering individuals a credit-risk-free asset, such an innovation risks triggering, during periods of financial stress, a massive flight of deposits from private banks to central bank reserves, thereby starving the productive economy of regular lending channels.",
     "optionsEnglish": [
-      "The absolute denial of all scientific research conducted in Toronto",
-      "The imposition of a fixed 80% customs tariff on regional exports from Toronto",
-      "Regulation of shadow banking financial flows to prevent global systemic risk",
-      "The permanent elimination of humanities instruction at universities"
+      "The planned elimination of all international trade operations for firms in Vancouver",
+      "A legal mandate requiring all daily retail transactions to be settled in physical precious metals",
+      "Abrupt banking disintermediation choking business financing during periods of market stress",
+      "Forced nationalization and merger of all private commercial banks into a single state entity"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Toronto, the speaker analyzes major issues concerning la régulation prudentielle des systèmes bancaires ombre (shadow banking) à toronto.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on l'encadrement des flux financiers non bancaires pour prévenir un risque systémique global."
+    "transcriptEnglish": "The introduction of a central bank digital currency issued directly to retail users in Vancouver could upend the traditional commercial banking equilibrium. By offering individuals a credit-risk-free asset, such an innovation risks triggering, during periods of financial stress, a massive flight of deposits from private banks to central bank reserves, thereby starving the productive economy of regular lending channels."
   },
   "tcf5-lis-1": {
     "id": "tcf5-lis-1",
@@ -2735,120 +2735,120 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "paperNum": 5,
     "questionNumber": 26,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning déploiement des navettes autonomes électriques sans chauffeur à vancouver sparks passionate discussion in Vancouver.\nSpeaker 2: However, the main priority remains la desserte automatique des zones industrielles excentrées de la région de vancouver.\nAnnouncer: Listen to the question. Question N°26: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What is the priority measure advocated during this consultation?",
+    "passageEnglish": "Speaker 1: The ubiquity of automated content raises immense concerns regarding the integrity of democratic discourse in Toronto. Faced with the proliferation of fabricated documents, some are calling for strict prior censorship.\nSpeaker 2: A total ban would be technically unenforceable and legally questionable. Instead, we advocate for comprehensive traceability through explicit, mandatory labeling imposed on broadcasters for every artificially generated production.",
     "optionsEnglish": [
-      "Automated transit service to outlying industrial zones in the region of Vancouver",
-      "Strict prohibition of all technical innovation in the region of Vancouver",
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "The closure of the facility"
+      "The requirement to clearly identify synthetic media released to the public",
+      "The implementation of a systematic ban on all generative algorithms across Toronto",
+      "Legal liability exemptions for digital platforms hosting deceptive content",
+      "The elimination of audiovisual regulatory bodies in favor of complete self-regulation"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning déploiement des navettes autonomes électriques sans chauffeur à vancouver sparks passionate discussion in Vancouver.\nSpeaker 2: However, the main priority remains la desserte automatique des zones industrielles excentrées de la région de vancouver.\nAnnouncer: Listen to the question. Question N°26: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°26: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: The ubiquity of automated content raises immense concerns regarding the integrity of democratic discourse in Toronto. Faced with the proliferation of fabricated documents, some are calling for strict prior censorship.\nSpeaker 2: A total ban would be technically unenforceable and legally questionable. Instead, we advocate for comprehensive traceability through explicit, mandatory labeling imposed on broadcasters for every artificially generated production."
   },
   "tcf5-lis-27": {
     "id": "tcf5-lis-27",
     "paperNum": 5,
     "questionNumber": 27,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning financement des centres de soins vétérinaires publics à vancouver sparks passionate discussion in Vancouver.\nSpeaker 2: However, the main priority remains la prise en charge des urgences animales pour les propriétaires sous le seuil de pauvreté à vancouver.\nAnnouncer: Listen to the question. Question N°27: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What tax compromise is favored in this municipal debate?",
+    "passageEnglish": "Speaker 1: The permanent rise of remote work is eroding retail revenue in the urban core of Toronto, while outlying bedroom suburbs face skyrocketing road maintenance costs without compensatory revenues.\nSpeaker 2: It is not about overtaxing remote employees, but rebalancing global municipal funding. We propose an equitable redistribution of collected business taxes to offset infrastructure expenditures in residential municipalities.",
     "optionsEnglish": [
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "Strict prohibition of all technical innovation in the region of Vancouver",
-      "Subsidized emergency veterinary care for pet owners below poverty line in Vancouver",
-      "The closure of the facility"
+      "The complete transfer of local budget authority to a centralized federal body",
+      "The imposition of a direct tax penalty on employees working from home in Toronto",
+      "A financial solidarity mechanism between the metropolitan center and suburban municipalities",
+      "Free commercial property leases to incentivize companies to return downtown"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning financement des centres de soins vétérinaires publics à vancouver sparks passionate discussion in Vancouver.\nSpeaker 2: However, the main priority remains la prise en charge des urgences animales pour les propriétaires sous le seuil de pauvreté à vancouver.\nAnnouncer: Listen to the question. Question N°27: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°27: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: The permanent rise of remote work is eroding retail revenue in the urban core of Toronto, while outlying bedroom suburbs face skyrocketing road maintenance costs without compensatory revenues.\nSpeaker 2: It is not about overtaxing remote employees, but rebalancing global municipal funding. We propose an equitable redistribution of collected business taxes to offset infrastructure expenditures in residential municipalities."
   },
   "tcf5-lis-28": {
     "id": "tcf5-lis-28",
     "paperNum": 5,
     "questionNumber": 28,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning plafonnement des tarifs d'électricité pendant les vagues de froid à vancouver sparks passionate discussion in Vancouver.\nSpeaker 2: However, the main priority remains le gel des prix de l'énergie hivernale pour éviter la précarité énergétique à vancouver.\nAnnouncer: Listen to the question. Question N°28: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What environmental strategy is highlighted in this address?",
+    "passageEnglish": "Speaker 1: The fast-fashion industry produces colossal garment waste that clogs municipal landfills across Toronto.\nSpeaker 2: Mere moral appeals are no longer sufficient. We must implement extended producer responsibility where apparel brands directly finance the collection and upcycling of discarded fibers into new industrial materials.",
     "optionsEnglish": [
-      "Freezing winter energy prices to prevent household energy poverty in Vancouver",
-      "Strict prohibition of all technical innovation in the region of Vancouver",
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "The closure of the facility"
+      "Direct financial involvement of apparel manufacturers in post-consumer clothing recycling",
+      "An absolute ban on selling any clothing manufactured outside Toronto",
+      "Systematic incineration of all unsold retail textile surpluses",
+      "Universal free clothing distribution for low-income households"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning plafonnement des tarifs d'électricité pendant les vagues de froid à vancouver sparks passionate discussion in Vancouver.\nSpeaker 2: However, the main priority remains le gel des prix de l'énergie hivernale pour éviter la précarité énergétique à vancouver.\nAnnouncer: Listen to the question. Question N°28: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°28: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: The fast-fashion industry produces colossal garment waste that clogs municipal landfills across Toronto.\nSpeaker 2: Mere moral appeals are no longer sufficient. We must implement extended producer responsibility where apparel brands directly finance the collection and upcycling of discarded fibers into new industrial materials."
   },
   "tcf5-lis-29": {
     "id": "tcf5-lis-29",
     "paperNum": 5,
     "questionNumber": 29,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning création de pistes de super-cyclisme éclairées la nuit à vancouver sparks passionate discussion in Vancouver.\nSpeaker 2: However, the main priority remains l'aménagement d'axes cyclables sécurisés et séparés reliant les banlieues à vancouver.\nAnnouncer: Listen to the question. Question N°29: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?",
+    "questionPromptEnglish": "What technical condition is deemed essential to approve this project?",
+    "passageEnglish": "Speaker 1: Installing micro wind turbines on building rooftops in Toronto generates great enthusiasm among decentralized energy advocates.\nSpeaker 2: It is undeniably beneficial, provided that dynamic grid compatibility is secured and substations are equipped with battery storage systems to smooth out production intermittency.",
     "optionsEnglish": [
-      "The closure of the facility",
-      "Development of protected, segregated bicycle highways connecting suburbs in Vancouver",
-      "Strict prohibition of all technical innovation in the region of Vancouver",
-      "Mandatory 50% increase in municipal taxes for all residents"
+      "Planned decommissioning of all existing regional hydroelectric facilities",
+      "Stabilization of energy input through auxiliary storage mechanisms",
+      "Exclusive interconnection of installations to emergency backup power grids in Toronto",
+      "Limiting household power usage to mandatory scheduled time windows"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning création de pistes de super-cyclisme éclairées la nuit à vancouver sparks passionate discussion in Vancouver.\nSpeaker 2: However, the main priority remains l'aménagement d'axes cyclables sécurisés et séparés reliant les banlieues à vancouver.\nAnnouncer: Listen to the question. Question N°29: Quelle est la décision ou la mesure prioritaire exposée dans ce débat ?\nAnnouncer: Listen to the question. Question N°29: What priority decision or measure is outlined in this debate?"
+    "transcriptEnglish": "Speaker 1: Installing micro wind turbines on building rooftops in Toronto generates great enthusiasm among decentralized energy advocates.\nSpeaker 2: It is undeniably beneficial, provided that dynamic grid compatibility is secured and substations are equipped with battery storage systems to smooth out production intermittency."
   },
   "tcf5-lis-30": {
     "id": "tcf5-lis-30",
     "paperNum": 5,
     "questionNumber": 30,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning obligation de menus végétariens quotidiens dans la restauration collective à vancouver sparks passionate discussion in Vancouver.\nSpeaker 2: However, the main priority remains l'offre systématique d'une alternative végétale équilibrée dans les restaurants municipaux de vancouver.",
+    "questionPromptEnglish": "What urban planning direction is recommended by experts?",
+    "passageEnglish": "Speaker 1: Continuous urban sprawl threatens the agricultural land surrounding the greater Toronto metropolitan area.\nSpeaker 2: To curb this trend without worsening the housing shortage, we recommend concentrating dense new residential developments within immediate walking distance of train stations and rapid transit corridors.",
     "optionsEnglish": [
-      "The closure of the facility",
-      "Systematic offering of balanced plant-based alternatives in municipal cafeterias in Vancouver",
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "Strict prohibition of all technical innovation in the region of Vancouver"
+      "A blanket prohibition on all new real estate developments across the entire territory",
+      "Housing intensification in immediate proximity to public transit infrastructure",
+      "Permanent closure of commuter train routes to reduce maintenance expenses",
+      "Exclusive construction of single-family suburban subdivisions in the outer ring of Toronto"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning obligation de menus végétariens quotidiens dans la restauration collective à vancouver sparks passionate discussion in Vancouver.\nSpeaker 2: However, the main priority remains l'offre systématique d'une alternative végétale équilibrée dans les restaurants municipaux de vancouver."
+    "transcriptEnglish": "Speaker 1: Continuous urban sprawl threatens the agricultural land surrounding the greater Toronto metropolitan area.\nSpeaker 2: To curb this trend without worsening the housing shortage, we recommend concentrating dense new residential developments within immediate walking distance of train stations and rapid transit corridors."
   },
   "tcf5-lis-31": {
     "id": "tcf5-lis-31",
     "paperNum": 5,
     "questionNumber": 31,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning interdiction des produits cosmétiques contenant des microplastiques à vancouver sparks passionate discussion in Vancouver.\nSpeaker 2: However, the main priority remains la protection des milieux marins et fluviaux en amont du traitement des eaux à vancouver.",
+    "questionPromptEnglish": "What major demand is brought forward by worker representatives?",
+    "passageEnglish": "Speaker 1: Food delivery applications have multiplied flexible work opportunities for thousands of young people in Toronto.\nSpeaker 2: But this flexibility masks severe vulnerability. We demand a guaranteed minimum hourly wage and mandatory workplace injury coverage directly funded by platform operators.",
     "optionsEnglish": [
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "The closure of the facility",
-      "Strict prohibition of all technical innovation in the region of Vancouver",
-      "Protection of marine and riverine ecosystems upstream of water treatment in Vancouver"
+      "Automatic provision of a motorized company vehicle to every bicycle courier",
+      "The elimination of all contractual obligations between couriers and customers",
+      "A complete ban on all online meal ordering services across Toronto",
+      "Establishment of a baseline minimum earnings guarantee and employer-funded workplace insurance"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning interdiction des produits cosmétiques contenant des microplastiques à vancouver sparks passionate discussion in Vancouver.\nSpeaker 2: However, the main priority remains la protection des milieux marins et fluviaux en amont du traitement des eaux à vancouver."
+    "transcriptEnglish": "Speaker 1: Food delivery applications have multiplied flexible work opportunities for thousands of young people in Toronto.\nSpeaker 2: But this flexibility masks severe vulnerability. We demand a guaranteed minimum hourly wage and mandatory workplace injury coverage directly funded by platform operators."
   },
   "tcf5-lis-32": {
     "id": "tcf5-lis-32",
     "paperNum": 5,
     "questionNumber": 32,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning développement du mentorat intergénérationnel dans les universités de vancouver sparks passionate discussion in Vancouver.\nSpeaker 2: However, the main priority remains l'accompagnement des jeunes diplômés par des retraités bénévoles expérimentés à vancouver.",
+    "questionPromptEnglish": "What primary concern is expressed regarding these digital management tools?",
+    "passageEnglish": "Speaker 1: Automated tracking software optimizes logistics workflows across major distribution warehouses in Toronto.\nSpeaker 2: True, but perpetual task timing generates intense stress and damages employee mental health. We demand strict regulations to restrict continuous monitoring and safeguard non-negotiable rest breaks.",
     "optionsEnglish": [
-      "Strict prohibition of all technical innovation in the region of Vancouver",
-      "The closure of the facility",
-      "Mandatory 50% increase in municipal taxes for all residents",
-      "Mentorship of recent graduates by experienced volunteer retirees in Vancouver"
+      "A general ban on forklift operations inside warehouses in Toronto",
+      "A legal mandate to double daily working hours for all logistics staff",
+      "Withholding employee compensation for failing to meet computer-generated quotas",
+      "The deleterious impact of continuous performance evaluation on employee psychological well-being"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning développement du mentorat intergénérationnel dans les universités de vancouver sparks passionate discussion in Vancouver.\nSpeaker 2: However, the main priority remains l'accompagnement des jeunes diplômés par des retraités bénévoles expérimentés à vancouver."
+    "transcriptEnglish": "Speaker 1: Automated tracking software optimizes logistics workflows across major distribution warehouses in Toronto.\nSpeaker 2: True, but perpetual task timing generates intense stress and damages employee mental health. We demand strict regulations to restrict continuous monitoring and safeguard non-negotiable rest breaks."
   },
   "tcf5-lis-33": {
     "id": "tcf5-lis-33",
     "paperNum": 5,
     "questionNumber": 33,
     "level": "B2",
-    "questionPromptEnglish": "What priority decision or measure is outlined in this debate?",
-    "passageEnglish": "Speaker 1: The debate concerning légalisation des espaces de travail partagés dans les bibliothèques de vancouver sparks passionate discussion in Vancouver.\nSpeaker 2: However, the main priority remains la mise à disposition d'outils numériques modernes dans les équipements publics de vancouver.",
+    "questionPromptEnglish": "What technical approach is favored by municipal engineers?",
+    "passageEnglish": "Speaker 1: Torrential spring downpours have once again submerged several riverfront neighborhoods in Toronto.\nSpeaker 2: Pouring more concrete along riverbanks is an ecological mistake. We now favor nature-based solutions, such as restoring wetlands and creating landscaped detention basins capable of naturally absorbing excess water runoff.",
     "optionsEnglish": [
-      "The closure of the facility",
-      "Provision of modern digital tools in public community facilities in Vancouver",
-      "Strict prohibition of all technical innovation in the region of Vancouver",
-      "Mandatory 50% increase in municipal taxes for all residents"
+      "Mandatory permanent evacuation of all residents living within 5 km of any lake",
+      "Creation of natural buffer zones to slow down and absorb river runoff surges",
+      "Enclosing all metropolitan waterways of Toronto inside underground concrete pipelines",
+      "Indefinite elevation of concrete seawalls along all urban waterfronts"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: The debate concerning légalisation des espaces de travail partagés dans les bibliothèques de vancouver sparks passionate discussion in Vancouver.\nSpeaker 2: However, the main priority remains la mise à disposition d'outils numériques modernes dans les équipements publics de vancouver."
+    "transcriptEnglish": "Speaker 1: Torrential spring downpours have once again submerged several riverfront neighborhoods in Toronto.\nSpeaker 2: Pouring more concrete along riverbanks is an ecological mistake. We now favor nature-based solutions, such as restoring wetlands and creating landscaped detention basins capable of naturally absorbing excess water runoff."
   },
   "tcf5-lis-34": {
     "id": "tcf5-lis-34",
@@ -2856,89 +2856,89 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 34,
     "level": "C1",
     "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Vancouver, the speaker analyzes major issues concerning la patrimonialisation des paysages industriels déclassés à vancouver.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la reconversion des friches en lieux de création artistique et d'innovation sociale.",
+    "passageEnglish": "In this symposium presentation delivered in Toronto, we examine how continuous algorithmic profiling profoundly reshapes human decision-making mechanisms. Far from being simple decision-support tools, current recommendation architectures imperceptibly anticipate and funnel our preferences. By systematically delegating daily choices to predictive systems, the contemporary individual experiences an erosion of authentic self-determination in favor of pre-formatted behavioral pathways.",
     "optionsEnglish": [
-      "The conversion of urban brownfields into centers for artistic creation and social innovation",
-      "The permanent elimination of humanities instruction at universities",
-      "The absolute denial of all scientific research conducted in Vancouver",
-      "The imposition of a fixed 80% customs tariff on regional exports from Vancouver"
+      "The progressive weakening of individual discernment and autonomous decision-making capacity",
+      "Scientific proof that human consciousness is entirely governed by electronic circuitry",
+      "The complete futility of mathematical modeling in modern computing in Toronto",
+      "A legal mandate forcing all citizens to use public computer terminals exclusively"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Vancouver, the speaker analyzes major issues concerning la patrimonialisation des paysages industriels déclassés à vancouver.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la reconversion des friches en lieux de création artistique et d'innovation sociale."
+    "transcriptEnglish": "In this symposium presentation delivered in Toronto, we examine how continuous algorithmic profiling profoundly reshapes human decision-making mechanisms. Far from being simple decision-support tools, current recommendation architectures imperceptibly anticipate and funnel our preferences. By systematically delegating daily choices to predictive systems, the contemporary individual experiences an erosion of authentic self-determination in favor of pre-formatted behavioral pathways."
   },
   "tcf5-lis-35": {
     "id": "tcf5-lis-35",
     "paperNum": 5,
     "questionNumber": 35,
     "level": "C1",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Vancouver, the speaker analyzes major issues concerning l'analyse économique des biens communs selon elinor ostrom à vancouver.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la démonstration de la viabilité des gestions communautaires sans appropriation privée.",
+    "questionPromptEnglish": "What primary argument is put forward to justify a strategic policy pivot?",
+    "passageEnglish": "Outsourcing public registries to foreign tech conglomerates exposes our institutions in Toronto to unacceptable legal and strategic vulnerabilities. The extraterritorial reach of foreign legislation enables unilateral access to sensitive healthcare and civic security records. It is therefore imperative to establish a sovereign digital enclave relying on data hosting infrastructure under exclusive domestic jurisdiction.",
     "optionsEnglish": [
-      "The permanent elimination of humanities instruction at universities",
-      "The absolute denial of all scientific research conducted in Vancouver",
-      "Demonstration of the viability of commons-based management without private appropriation",
-      "The imposition of a fixed 80% customs tariff on regional exports from Vancouver"
+      "Universal free public Internet access without any state regulatory oversight",
+      "A complete prohibition on cross-border commercial trade for businesses in Toronto",
+      "The necessity of shielding sensitive civic data from foreign jurisdictional overreach",
+      "Preemptive physical destruction of all computing server facilities"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Vancouver, the speaker analyzes major issues concerning l'analyse économique des biens communs selon elinor ostrom à vancouver.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la démonstration de la viabilité des gestions communautaires sans appropriation privée."
+    "transcriptEnglish": "Outsourcing public registries to foreign tech conglomerates exposes our institutions in Toronto to unacceptable legal and strategic vulnerabilities. The extraterritorial reach of foreign legislation enables unilateral access to sensitive healthcare and civic security records. It is therefore imperative to establish a sovereign digital enclave relying on data hosting infrastructure under exclusive domestic jurisdiction."
   },
   "tcf5-lis-36": {
     "id": "tcf5-lis-36",
     "paperNum": 5,
     "questionNumber": 36,
     "level": "C1",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Vancouver, the speaker analyzes major issues concerning la cybersécurité des infrastructures critiques d'approvisionnement en eau à vancouver.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la nécessité de séparer étanchément les réseaux opérationnels d'internet.",
+    "questionPromptEnglish": "What major warning is expressed regarding these intervention technologies?",
+    "passageEnglish": "While stratospheric aerosol injection to reflect solar radiation appears as an emergency response to global warming in Toronto, its collateral repercussions on planetary monsoon patterns remain deeply unpredictable. Any artificial manipulation of the upper atmosphere risks abruptly altering regional precipitation dynamics and triggering devastating agricultural shocks across developing nations.",
     "optionsEnglish": [
-      "The imposition of a fixed 80% customs tariff on regional exports from Vancouver",
-      "The absolute denial of all scientific research conducted in Vancouver",
-      "The permanent elimination of humanities instruction at universities",
-      "The necessity of air-gapping critical operational networks from the public Internet"
+      "Absolute scientific certainty that the sun will cease solar emissions in coming decades",
+      "An immediate shutdown of all academic meteorological research in Toronto",
+      "A global requirement for all nations to abandon outdoor agriculture in favor of underground bunkers",
+      "The unpredictability of induced meteorological disruptions across continental scales"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Vancouver, the speaker analyzes major issues concerning la cybersécurité des infrastructures critiques d'approvisionnement en eau à vancouver.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la nécessité de séparer étanchément les réseaux opérationnels d'internet."
+    "transcriptEnglish": "While stratospheric aerosol injection to reflect solar radiation appears as an emergency response to global warming in Toronto, its collateral repercussions on planetary monsoon patterns remain deeply unpredictable. Any artificial manipulation of the upper atmosphere risks abruptly altering regional precipitation dynamics and triggering devastating agricultural shocks across developing nations."
   },
   "tcf5-lis-37": {
     "id": "tcf5-lis-37",
     "paperNum": 5,
     "questionNumber": 37,
     "level": "C2",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Vancouver, the speaker analyzes major issues concerning la métaphysique du sujet pensant à l'ère de l'intelligence hybride à vancouver.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on le redéploiement de la notion d'identité individuelle face aux prothèses cognitives.",
+    "questionPromptEnglish": "What conceptual shift does the researcher highlight in their analysis?",
+    "passageEnglish": "In this academic lecture delivered in Toronto, we re-examine the classical postulate of a strictly deterministic universe. Contemporary observational data confirm that subatomic behavior cannot be captured by rigid linear causality. The theoretical architecture of fundamental physics now requires abandoning the Laplacian ideal of absolute predictability in favor of an intrinsically probabilistic formulation of physical states.",
     "optionsEnglish": [
-      "The redefinition of personal identity in the age of cognitive neuro-prosthetics",
-      "The permanent elimination of humanities instruction at universities",
-      "The imposition of a fixed 80% customs tariff on regional exports from Vancouver",
-      "The absolute denial of all scientific research conducted in Vancouver"
+      "The substitution of a statistical paradigm for the illusion of infallible causal predictability",
+      "Prohibiting mathematical equations from being utilized to describe subatomic phenomena",
+      "The dogmatic assertion that classical mechanics applies identically to quantum subatomic scales",
+      "Outright rejection of the empirical scientific method in universities across Toronto"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Vancouver, the speaker analyzes major issues concerning la métaphysique du sujet pensant à l'ère de l'intelligence hybride à vancouver.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on le redéploiement de la notion d'identité individuelle face aux prothèses cognitives."
+    "transcriptEnglish": "In this academic lecture delivered in Toronto, we re-examine the classical postulate of a strictly deterministic universe. Contemporary observational data confirm that subatomic behavior cannot be captured by rigid linear causality. The theoretical architecture of fundamental physics now requires abandoning the Laplacian ideal of absolute predictability in favor of an intrinsically probabilistic formulation of physical states."
   },
   "tcf5-lis-38": {
     "id": "tcf5-lis-38",
     "paperNum": 5,
     "questionNumber": 38,
     "level": "C2",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Vancouver, the speaker analyzes major issues concerning la sémiotique du discours politique dans les médias d'information en continu à vancouver.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la réduction de la complexité argumentative au profit de slogans émotionnels répétitifs.",
+    "questionPromptEnglish": "What epistemological thesis is defended by the linguist?",
+    "passageEnglish": "The hypothesis that human thought structures exist independently of natural spoken languages is fundamentally challenged today in Toronto. Far from being mere labels attached to a pre-existing reality, our lexical categories and syntactic matrices actively shape our spatiotemporal perception and conceptual framing of empirical reality.",
     "optionsEnglish": [
-      "The permanent elimination of humanities instruction at universities",
-      "The absolute denial of all scientific research conducted in Vancouver",
-      "The imposition of a fixed 80% customs tariff on regional exports from Vancouver",
-      "The reduction of complex civic discourse in favor of repetitive emotional slogans"
+      "The intrinsic superiority of algorithmic formal languages over natural human tongues",
+      "The complete biological uniformity of human thought systems regardless of language in Toronto",
+      "The radical impossibility of translating any conceptual meaning across different human languages",
+      "The tight conditioning of cognitive representations by the structural specificities of language"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Vancouver, the speaker analyzes major issues concerning la sémiotique du discours politique dans les médias d'information en continu à vancouver.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la réduction de la complexité argumentative au profit de slogans émotionnels répétitifs."
+    "transcriptEnglish": "The hypothesis that human thought structures exist independently of natural spoken languages is fundamentally challenged today in Toronto. Far from being mere labels attached to a pre-existing reality, our lexical categories and syntactic matrices actively shape our spatiotemporal perception and conceptual framing of empirical reality."
   },
   "tcf5-lis-39": {
     "id": "tcf5-lis-39",
     "paperNum": 5,
     "questionNumber": 39,
     "level": "C2",
-    "questionPromptEnglish": "What is the central thesis developed by the speaker during this presentation?",
-    "passageEnglish": "Speaker 1: In this academic lecture delivered in Vancouver, the speaker analyzes major issues concerning la dynamique des équilibres ponctués dans la biologie de l'évolution à vancouver.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la succession de longues périodes de stase et d'épisodes de spéciation très rapides.",
+    "questionPromptEnglish": "What major systemic risk is identified by the economist?",
+    "passageEnglish": "The introduction of a central bank digital currency issued directly to retail users in Toronto could upend the traditional commercial banking equilibrium. By offering individuals a credit-risk-free asset, such an innovation risks triggering, during periods of financial stress, a massive flight of deposits from private banks to central bank reserves, thereby starving the productive economy of regular lending channels.",
     "optionsEnglish": [
-      "The imposition of a fixed 80% customs tariff on regional exports from Vancouver",
-      "The absolute denial of all scientific research conducted in Vancouver",
-      "The succession of long periods of evolutionary stasis and rapid speciation bursts",
-      "The permanent elimination of humanities instruction at universities"
+      "A legal mandate requiring all daily retail transactions to be settled in physical precious metals",
+      "The planned elimination of all international trade operations for firms in Toronto",
+      "Abrupt banking disintermediation choking business financing during periods of market stress",
+      "Forced nationalization and merger of all private commercial banks into a single state entity"
     ],
-    "transcriptEnglish": "Speaker: Speaker 1: In this academic lecture delivered in Vancouver, the speaker analyzes major issues concerning la dynamique des équilibres ponctués dans la biologie de l'évolution à vancouver.\nSpeaker 2: He conclusively emphasizes that the core thesis rests on la succession de longues périodes de stase et d'épisodes de spéciation très rapides."
+    "transcriptEnglish": "The introduction of a central bank digital currency issued directly to retail users in Toronto could upend the traditional commercial banking equilibrium. By offering individuals a credit-risk-free asset, such an innovation risks triggering, during periods of financial stress, a massive flight of deposits from private banks to central bank reserves, thereby starving the productive economy of regular lending channels."
   }
 };
 
