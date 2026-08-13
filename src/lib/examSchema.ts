@@ -7076,7 +7076,7 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
     const questionId = `${prefix}-lis-${i}`;
     const practiceTr = getPracticeQuestionTranslation(questionId);
 
-    const speakingRate = i <= 7 ? 0.85 : i <= 15 ? 0.92 : i <= 25 ? 1.00 : i <= 33 ? 1.15 : 1.30;
+    const speakingRate = i <= 7 ? 0.85 : i <= 15 ? 0.92 : i <= 25 ? 1.00 : i <= 33 ? 1.15 : i <= 36 ? 1.25 : 1.30;
 
     const optionsEn0 = (t as any).optionsEnglish?.[0] || translateOptionToEnglish(options[0]);
     const optionsEn1 = (t as any).optionsEnglish?.[1] || translateOptionToEnglish(options[1]);
