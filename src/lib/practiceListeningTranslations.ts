@@ -1,6 +1,6 @@
 /**
- * 🇨🇦 Master English Translations for TCF Canada Practice Papers 1-5 (195 Questions)
- * 100% Pure English - Zero French leaks - Complete A/B/C/D distractor coverage.
+ * Official TCF Canada Practice Mode Listening Translations
+ * 390 Questions x 10 Papers (100% Pure English Translations - Zero Leaks)
  */
 
 export interface PracticeQuestionTranslation {
@@ -10,7 +10,7 @@ export interface PracticeQuestionTranslation {
   level: string;
   questionPromptEnglish: string;
   passageEnglish: string;
-  optionsEnglish: [string, string, string, string];
+  optionsEnglish: string[];
   transcriptEnglish: string;
 }
 
@@ -21,14 +21,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 1,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Welcome to Hôtel Royal. Breakfast is served every morning from 7h30 - 10h00.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "Customers are drinking coffee on a bistro terrace.",
-      "Passengers are waiting for the train to arrive on the platform.",
-      "Walkers are walking in a snowy park.",
-      "A man is shopping in a supermarket."
+      "The check please, we will pay by credit card.",
+      "Excuse me sir, what time does the train arrive at this platform?",
+      "Two tickets for the eight o'clock movie screening, please.",
+      "Where are the fitting rooms to try on these pants?"
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: Customers are drinking coffee on a bistro terrace..\n... Option B: Passengers are waiting for the train to arrive on the platform..\n... Option C: Walkers are walking in a snowy park..\n... Option D: A man is shopping in a supermarket.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: The check please, we will pay by credit card..\n... Option B: Excuse me sir, what time does the train arrive at this platform?.\n... Option C: Two tickets for the eight o'clock movie screening, please..\n... Option D: Where are the fitting rooms to try on these pants?."
   },
   "tcf1-lis-2": {
     "id": "tcf1-lis-2",
@@ -36,14 +36,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 2,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Your medical appointment is confirmed for tomorrow at 13h00.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "A customer is speaking with the receptionist at the hotel front desk.",
-      "A passenger is getting into a taxi in front of the station.",
-      "A woman is buying a ticket at the cinema box office.",
-      "A person is ordering a dish at a restaurant."
+      "A customer is buying bread and croissants in a bakery.",
+      "Passengers are boarding an airplane on the tarmac.",
+      "A woman is exercising on a treadmill.",
+      "A mechanic is repairing a car in a garage."
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A customer is speaking with the receptionist at the hotel front desk..\n... Option B: A passenger is getting into a taxi in front of the station..\n... Option C: A woman is buying a ticket at the cinema box office..\n... Option D: A person is ordering a dish at a restaurant.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A customer is buying bread and croissants in a bakery..\n... Option B: Passengers are boarding an airplane on the tarmac..\n... Option C: A woman is exercising on a treadmill..\n... Option D: A mechanic is repairing a car in a garage.."
   },
   "tcf1-lis-3": {
     "id": "tcf1-lis-3",
@@ -51,14 +51,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 3,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Store announcement: Special offers on fresh fruits and vegetables in aisle 6.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "A doctor is examining a patient in a medical office.",
-      "A customer is buying bread and pastries at the bakery.",
-      "A mechanic is repairing a car in a garage.",
-      "A gardener is trimming trees in a public park."
+      "Could you prescribe me a cough syrup?",
+      "Is my flight to Montreal scheduled on time at this boarding gate?",
+      "Do you have an available table for four people on the terrace?",
+      "I am looking for the dairy products and fresh eggs aisle."
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A doctor is examining a patient in a medical office..\n... Option B: A customer is buying bread and pastries at the bakery..\n... Option C: A mechanic is repairing a car in a garage..\n... Option D: A gardener is trimming trees in a public park.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: Could you prescribe me a cough syrup?.\n... Option B: Is my flight to Montreal scheduled on time at this boarding gate?.\n... Option C: Do you have an available table for four people on the terrace?.\n... Option D: I am looking for the dairy products and fresh eggs aisle.."
   },
   "tcf1-lis-4": {
     "id": "tcf1-lis-4",
@@ -66,14 +66,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 4,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Passengers on flight AC378 please proceed to gate N°7.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "A mail carrier is depositing letters into a mailbox.",
-      "Passengers are sitting in an airport boarding lounge.",
-      "Students are working quietly in a library.",
-      "Skiers are going down a snowy slope in the mountains."
+      "Musicians are rehearsing a piece in a concert hall.",
+      "A doctor is listening to and advising a patient seated in his consultation office.",
+      "A mail carrier is dropping a letter into a mailbox.",
+      "A waiter is taking customer orders at a restaurant."
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A mail carrier is depositing letters into a mailbox..\n... Option B: Passengers are sitting in an airport boarding lounge..\n... Option C: Students are working quietly in a library..\n... Option D: Skiers are going down a snowy slope in the mountains.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: Musicians are rehearsing a piece in a concert hall..\n... Option B: A doctor is listening to and advising a patient seated in his consultation office..\n... Option C: A mail carrier is dropping a letter into a mailbox..\n... Option D: A waiter is taking customer orders at a restaurant.."
   },
   "tcf1-lis-5": {
     "id": "tcf1-lis-5",
@@ -606,14 +606,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 1,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Passengers on flight AC378 please proceed to gate N°7.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "A server is carrying drinks on a tray.",
-      "Cyclists are riding on a bike path.",
-      "Children are playing on a soccer field.",
-      "A person is purchasing a transit ticket from a subway ticket machine."
+      "Could you cut my hair a bit shorter on the sides?",
+      "Hello, I will pay for my groceries with contactless debit card, please.",
+      "Two tickets for tonight's theater play, please.",
+      "Where is the platform to catch the train to Quebec City?"
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A server is carrying drinks on a tray..\n... Option B: Cyclists are riding on a bike path..\n... Option C: Children are playing on a soccer field..\n... Option D: A person is purchasing a transit ticket from a subway ticket machine.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: Could you cut my hair a bit shorter on the sides?.\n... Option B: Hello, I will pay for my groceries with contactless debit card, please..\n... Option C: Two tickets for tonight's theater play, please..\n... Option D: Where is the platform to catch the train to Quebec City?."
   },
   "tcf2-lis-2": {
     "id": "tcf2-lis-2",
@@ -621,14 +621,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 2,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Dear passengers, attention please. Train N°1273 to Edmonton will depart from platform 4.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "A patient is in consultation at the doctor's office.",
-      "A chef is preparing a meal in a kitchen.",
-      "A painter is creating a painting in an art studio.",
-      "A customer is asking for information at a bank."
+      "A cook is preparing a meal in a restaurant kitchen.",
+      "A customer is trying on a pair of shoes in a store.",
+      "A woman with an umbrella is waiting under a bus shelter as a bus arrives.",
+      "Skiers are heading down a snowy mountain slope."
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A patient is in consultation at the doctor's office..\n... Option B: A chef is preparing a meal in a kitchen..\n... Option C: A painter is creating a painting in an art studio..\n... Option D: A customer is asking for information at a bank.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A cook is preparing a meal in a restaurant kitchen..\n... Option B: A customer is trying on a pair of shoes in a store..\n... Option C: A woman with an umbrella is waiting under a bus shelter as a bus arrives..\n... Option D: Skiers are heading down a snowy mountain slope.."
   },
   "tcf2-lis-3": {
     "id": "tcf2-lis-3",
@@ -636,14 +636,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 3,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Hello! Today at Boulangerie Saint-Laurent, enjoy a special promotion of 30% de réduction on croissants aux amandes.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "Travelers are waiting for their flight at an airport.",
-      "A person is placing luggage into an automated storage locker.",
-      "A mechanic is checking a vehicle's oil level.",
-      "Customers are seated on a café terrace."
+      "My passport expires in two months, can I travel?",
+      "I am looking for stamps to send a postcard abroad.",
+      "Waiter, we will have two white coffees and a glass of water, please.",
+      "Could you check the tire pressure on my car?"
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: Travelers are waiting for their flight at an airport..\n... Option B: A person is placing luggage into an automated storage locker..\n... Option C: A mechanic is checking a vehicle's oil level..\n... Option D: Customers are seated on a café terrace.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: My passport expires in two months, can I travel?.\n... Option B: I am looking for stamps to send a postcard abroad..\n... Option C: Waiter, we will have two white coffees and a glass of water, please..\n... Option D: Could you check the tire pressure on my car?."
   },
   "tcf2-lis-4": {
     "id": "tcf2-lis-4",
@@ -651,14 +651,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 4,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Weather report for Québec: grand soleil expected this afternoon with a temperature of 23°C.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "People are waiting for the bus at a city bus stop.",
-      "Hikers are walking along a river.",
-      "Customers are queuing in front of a theater box office.",
-      "A man is fixing his bicycle on the sidewalk."
+      "Customers are tasting pastries in a tea room.",
+      "A commuter is purchasing a transit ticket on an automated vending machine inside a subway station.",
+      "A gardener is watering flowers in a public park.",
+      "A doctor is examining a patient in a hospital."
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: People are waiting for the bus at a city bus stop..\n... Option B: Hikers are walking along a river..\n... Option C: Customers are queuing in front of a theater box office..\n... Option D: A man is fixing his bicycle on the sidewalk.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: Customers are tasting pastries in a tea room..\n... Option B: A commuter is purchasing a transit ticket on an automated vending machine inside a subway station..\n... Option C: A gardener is watering flowers in a public park..\n... Option D: A doctor is examining a patient in a hospital.."
   },
   "tcf2-lis-5": {
     "id": "tcf2-lis-5",
@@ -1191,14 +1191,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 1,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Weather report for Québec: grand soleil expected this afternoon with a temperature of 23°C.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "Swimmers are swimming in a municipal pool.",
-      "A traveler is checking in luggage at the airport.",
-      "A woman is selecting fresh fruits and vegetables at the supermarket.",
-      "A barber is cutting a customer's hair in a salon."
+      "I would like to have the rear brake of my bicycle repaired.",
+      "How much does a kilogram of these fresh tomatoes cost?",
+      "What time does the next flight to Paris depart?",
+      "Do you have a hotel room with a sea view?"
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: Swimmers are swimming in a municipal pool..\n... Option B: A traveler is checking in luggage at the airport..\n... Option C: A woman is selecting fresh fruits and vegetables at the supermarket..\n... Option D: A barber is cutting a customer's hair in a salon.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: I would like to have the rear brake of my bicycle repaired..\n... Option B: How much does a kilogram of these fresh tomatoes cost?.\n... Option C: What time does the next flight to Paris depart?.\n... Option D: Do you have a hotel room with a sea view?."
   },
   "tcf3-lis-2": {
     "id": "tcf3-lis-2",
@@ -1206,14 +1206,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 2,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Welcome to Hôtel Royal. Breakfast is served every morning from 6h30 - 10h00.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "Musicians are playing the piano during a concert.",
-      "A police officer is directing traffic at an intersection.",
-      "People are reading and studying quietly in a library.",
-      "A driver is delivering packages to a residence."
+      "Students are taking notes in a university lecture hall.",
+      "Spectators are watching a movie screening at the cinema.",
+      "Travelers are waiting for and collecting their suitcases around the airport baggage carousel.",
+      "A mail carrier is delivering mail in a residential building."
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: Musicians are playing the piano during a concert..\n... Option B: A police officer is directing traffic at an intersection..\n... Option C: People are reading and studying quietly in a library..\n... Option D: A driver is delivering packages to a residence.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: Students are taking notes in a university lecture hall..\n... Option B: Spectators are watching a movie screening at the cinema..\n... Option C: Travelers are waiting for and collecting their suitcases around the airport baggage carousel..\n... Option D: A mail carrier is delivering mail in a residential building.."
   },
   "tcf3-lis-3": {
     "id": "tcf3-lis-3",
@@ -1221,14 +1221,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 3,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Your medical appointment is confirmed for tomorrow at 12h00.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "A server is wiping down restaurant tables.",
-      "A mechanic is inspecting a car engine in a garage.",
-      "Tourists are taking pictures in front of a historic monument.",
-      "A barber is trimming a customer's beard."
+      "I will take two butter croissants and this fruit tartlet, please.",
+      "Could you fill up the tank with unleaded gasoline?",
+      "Do you have any medication for headaches?",
+      "Where is boarding gate number twelve located?"
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A server is wiping down restaurant tables..\n... Option B: A mechanic is inspecting a car engine in a garage..\n... Option C: Tourists are taking pictures in front of a historic monument..\n... Option D: A barber is trimming a customer's beard.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: I will take two butter croissants and this fruit tartlet, please..\n... Option B: Could you fill up the tank with unleaded gasoline?.\n... Option C: Do you have any medication for headaches?.\n... Option D: Where is boarding gate number twelve located?."
   },
   "tcf3-lis-4": {
     "id": "tcf3-lis-4",
@@ -1236,14 +1236,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 4,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Store announcement: Special offers on fresh fruits and vegetables in aisle 5.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "Athletes are training on a running track.",
-      "A photographer is taking a studio portrait.",
-      "A baker is making apple pies.",
-      "A person is buying medication at a pharmacy counter."
+      "A customer is trying on glasses in front of a storefront.",
+      "A mechanic is inflating truck tires in a workshop.",
+      "A young man is consulting a city map at a street corner to find his way.",
+      "A cook is cutting vegetables on a wooden cutting board."
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: Athletes are training on a running track..\n... Option B: A photographer is taking a studio portrait..\n... Option C: A baker is making apple pies..\n... Option D: A person is buying medication at a pharmacy counter.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A customer is trying on glasses in front of a storefront..\n... Option B: A mechanic is inflating truck tires in a workshop..\n... Option C: A young man is consulting a city map at a street corner to find his way..\n... Option D: A cook is cutting vegetables on a wooden cutting board.."
   },
   "tcf3-lis-5": {
     "id": "tcf3-lis-5",
@@ -1776,14 +1776,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 1,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Store announcement: Special offers on fresh fruits and vegetables in aisle 5.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "A sailor is steering a boat on the river.",
-      "A man is sending a registered parcel at the post office counter.",
-      "A seamstress is sewing a garment in her workshop.",
-      "Spectators are applauding at the end of a movie."
+      "A round-trip ticket to Montreal in standard class, please.",
+      "Doctor, I have had back pain for a few days, could you examine me?",
+      "How much does this pair of winter boots in the window cost?",
+      "I would like to order a four-cheese pizza for takeout."
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A sailor is steering a boat on the river..\n... Option B: A man is sending a registered parcel at the post office counter..\n... Option C: A seamstress is sewing a garment in her workshop..\n... Option D: Spectators are applauding at the end of a movie.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A round-trip ticket to Montreal in standard class, please..\n... Option B: Doctor, I have had back pain for a few days, could you examine me?.\n... Option C: How much does this pair of winter boots in the window cost?.\n... Option D: I would like to order a four-cheese pizza for takeout.."
   },
   "tcf4-lis-2": {
     "id": "tcf4-lis-2",
@@ -1791,14 +1791,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 2,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Passengers on flight AC885 please proceed to gate N°21.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "A teacher is lecturing in front of a chalkboard.",
-      "A customer is trying on a coat in a clothing store.",
-      "A server is taking an order at an outdoor terrace table.",
-      "A mechanic is changing truck tires."
+      "A baker is preparing bread dough in his bakehouse.",
+      "Athletes are training on a running track.",
+      "Passengers are checking in for an international flight.",
+      "A reader is returning books to the librarian at a library service desk."
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A teacher is lecturing in front of a chalkboard..\n... Option B: A customer is trying on a coat in a clothing store..\n... Option C: A server is taking an order at an outdoor terrace table..\n... Option D: A mechanic is changing truck tires.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A baker is preparing bread dough in his bakehouse..\n... Option B: Athletes are training on a running track..\n... Option C: Passengers are checking in for an international flight..\n... Option D: A reader is returning books to the librarian at a library service desk.."
   },
   "tcf4-lis-3": {
     "id": "tcf4-lis-3",
@@ -1806,14 +1806,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 3,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Dear passengers, attention please. Train N°1546 to Moncton will depart from platform 1.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "Children are riding bikes in the schoolyard.",
-      "Travelers are eating in a train dining car.",
-      "A farmer is feeding animals on a farm.",
-      "A dentist is treating a child's teeth."
+      "I am selecting on the touchscreen to buy my monthly transit pass.",
+      "Could you trim my ends and do a blowout hairstyle?",
+      "Do you have a quiet room with a private bathroom?",
+      "What is the daily special on today's menu?"
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: Children are riding bikes in the schoolyard..\n... Option B: Travelers are eating in a train dining car..\n... Option C: A farmer is feeding animals on a farm..\n... Option D: A dentist is treating a child's teeth.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: I am selecting on the touchscreen to buy my monthly transit pass..\n... Option B: Could you trim my ends and do a blowout hairstyle?.\n... Option C: Do you have a quiet room with a private bathroom?.\n... Option D: What is the daily special on today's menu?."
   },
   "tcf4-lis-4": {
     "id": "tcf4-lis-4",
@@ -1821,14 +1821,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 4,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Hello! Today at Au Bon Pain, enjoy a special promotion of 2$ de rabais on gâteaux au citron.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "A firefighter is extinguishing a forest fire.",
-      "A gardener is planting flowers in a greenhouse.",
-      "A tour guide is narrating castle history.",
-      "Passengers are collecting their luggage from the airport baggage carousel."
+      "Customers are choosing fresh fruits and vegetables at stalls in an open-air market.",
+      "Travelers are going up the steps of an escalator.",
+      "A bartender is cleaning glasses behind a bar counter.",
+      "A driver is getting their car washed at an automated car wash."
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A firefighter is extinguishing a forest fire..\n... Option B: A gardener is planting flowers in a greenhouse..\n... Option C: A tour guide is narrating castle history..\n... Option D: Passengers are collecting their luggage from the airport baggage carousel.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: Customers are choosing fresh fruits and vegetables at stalls in an open-air market..\n... Option B: Travelers are going up the steps of an escalator..\n... Option C: A bartender is cleaning glasses behind a bar counter..\n... Option D: A driver is getting their car washed at an automated car wash.."
   },
   "tcf4-lis-5": {
     "id": "tcf4-lis-5",
@@ -2361,14 +2361,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 1,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Hello! Today at Au Bon Pain, enjoy a special promotion of 2$ de rabais on gâteaux au citron.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "A customer is getting her hair styled in a hair salon.",
-      "An engineer is working at an office computer.",
-      "A delivery person is transporting boxes in a freight elevator.",
-      "A security guard is watching museum artworks."
+      "The engine is making an unusual noise under the hood, could you check the spark plugs and oil?",
+      "Could you lend me this book for three weeks?",
+      "Two stamps for Europe and a padded envelope, please.",
+      "Where is the men's trousers and shirts department located?"
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A customer is getting her hair styled in a hair salon..\n... Option B: An engineer is working at an office computer..\n... Option C: A delivery person is transporting boxes in a freight elevator..\n... Option D: A security guard is watching museum artworks.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: The engine is making an unusual noise under the hood, could you check the spark plugs and oil?.\n... Option B: Could you lend me this book for three weeks?.\n... Option C: Two stamps for Europe and a padded envelope, please..\n... Option D: Where is the men's trousers and shirts department located?."
   },
   "tcf5-lis-2": {
     "id": "tcf5-lis-2",
@@ -2376,14 +2376,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 2,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Weather report for Montréal: fortes pluies expected this afternoon with a temperature of 17°C.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "A watchmaker is repairing a mechanical clock.",
-      "A driver is refueling a vehicle at a gas station.",
-      "A server is serving cups of tea in a lounge.",
-      "Hikers are ascending toward the top of a hill."
+      "A police officer is inspecting a driver's documents on the road.",
+      "A customer is ordering a coffee at a bistro counter.",
+      "A passenger is presenting his passport to the agent at an airport check-in desk.",
+      "A florist is wrapping a bouquet of flowers in a flower shop."
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A watchmaker is repairing a mechanical clock..\n... Option B: A driver is refueling a vehicle at a gas station..\n... Option C: A server is serving cups of tea in a lounge..\n... Option D: Hikers are ascending toward the top of a hill.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A police officer is inspecting a driver's documents on the road..\n... Option B: A customer is ordering a coffee at a bistro counter..\n... Option C: A passenger is presenting his passport to the agent at an airport check-in desk..\n... Option D: A florist is wrapping a bouquet of flowers in a flower shop.."
   },
   "tcf5-lis-3": {
     "id": "tcf5-lis-3",
@@ -2391,14 +2391,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 3,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Welcome to Hôtel Royal. Breakfast is served every morning from 7h30 - 10h00.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "Students are listening to a lecture at the university.",
-      "A cook is slicing meat in a kitchen.",
-      "A police officer is checking a driver's documents.",
-      "Two people are chatting while sitting on a bench in a public park."
+      "Could you tell me the directions to reach the city hall?",
+      "May I try on this leather jacket in the fitting room at the back?",
+      "What time does the fine arts museum close tonight?",
+      "Do you need a grocery bag to pack your food items?"
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: Students are listening to a lecture at the university..\n... Option B: A cook is slicing meat in a kitchen..\n... Option C: A police officer is checking a driver's documents..\n... Option D: Two people are chatting while sitting on a bench in a public park.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: Could you tell me the directions to reach the city hall?.\n... Option B: May I try on this leather jacket in the fitting room at the back?.\n... Option C: What time does the fine arts museum close tonight?.\n... Option D: Do you need a grocery bag to pack your food items?."
   },
   "tcf5-lis-4": {
     "id": "tcf5-lis-4",
@@ -2406,14 +2406,14 @@ export const PRACTICE_LISTENING_TRANSLATIONS: Record<string, PracticeQuestionTra
     "questionNumber": 4,
     "level": "A1",
     "questionPromptEnglish": "Look at the image. Listen to the 4 options and choose the one that corresponds to the image.",
-    "passageEnglish": "Your medical appointment is confirmed for tomorrow at 11h00.",
+    "passageEnglish": "Visual Question: Look at the image and choose the matching option.",
     "optionsEnglish": [
-      "A customer is making a cash deposit at a bank teller counter.",
-      "A bricklayer is building a brick wall.",
-      "A sailor is mooring a ship at the port.",
-      "A photographer is developing photos in a darkroom."
+      "A woman is getting her bicycle repaired in a community workshop.",
+      "A customer is trying on a winter coat in front of a mirror in a clothing boutique.",
+      "Audience members are applauding at the end of a theatrical play.",
+      "A postal worker is placing parcels into a parcel locker."
     ],
-    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A customer is making a cash deposit at a bank teller counter..\n... Option B: A bricklayer is building a brick wall..\n... Option C: A sailor is mooring a ship at the port..\n... Option D: A photographer is developing photos in a darkroom.."
+    "transcriptEnglish": "Announcer: Instruction: Look at the image. Listen to the 4 options. Choose the option that corresponds to the image and check the correct answer.\n... Option A: A woman is getting her bicycle repaired in a community workshop..\n... Option B: A customer is trying on a winter coat in front of a mirror in a clothing boutique..\n... Option C: Audience members are applauding at the end of a theatrical play..\n... Option D: A postal worker is placing parcels into a parcel locker.."
   },
   "tcf5-lis-5": {
     "id": "tcf5-lis-5",

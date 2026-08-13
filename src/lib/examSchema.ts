@@ -99,9 +99,13 @@ function getRichListeningTopics(): ListeningTopicItem[] {
   const topics: ListeningTopicItem[] = [];
   const cities = ["Montréal", "Québec", "Ottawa", "Vancouver", "Toronto", "Halifax", "Calgary", "Winnipeg", "Moncton", "Edmonton"];
   const bakeries = ["Boulangerie Saint-Laurent", "Pâtisserie Royale", "Boulangerie du Marché", "Les Douceurs du Village", "Au Bon Pain"];
+  const bakeriesEn = ["Saint-Laurent Bakery", "Royal Pastry Shop", "Market Bakery", "Village Sweets Bakery", "Good Bread Bakery"];
   const bakeryItems = ["croissants aux amandes", "baguettes tradition", "tartes aux pommes", "pains au chocolat", "gâteaux au citron"];
+  const bakeryItemsEn = ["almond croissants", "traditional baguettes", "apple tarts", "chocolate croissants", "lemon cakes"];
   const discounts = ["30% de réduction", "une réduction de 50%", "un produit offert", "2$ de rabais"];
+  const discountsEn = ["30% discount", "50% discount", "one free item", "$2 off discount"];
   const weatherTypes = ["fortes pluies", "grand soleil", "chutes de neige", "vent violent", "orages isolés"];
+  const weatherTypesEn = ["heavy rain", "bright sunshine", "snowfall", "strong winds", "isolated thunderstorms"];
   const doctors = ["Dr Tremblay", "Dr Roy", "Dr Gagnon", "Dr Bouchard", "Dr Gauthier"];
   const mechanics = ["Auto Expert", "Garage Gagnon", "Mécanique du Boulevard", "Service Auto Laval"];
   const repairs = ["freinage et vidange", "changement des pneus d'hiver", "remplacement de la batterie", "contrôle technique annuel"];
@@ -145,7 +149,7 @@ function getRichListeningTopics(): ListeningTopicItem[] {
           ],
           ans: 0,
           tr: `Bonjour! Aujourd'hui à la ${bakery}, profitez d'une promotion spéciale de ${disc} sur les ${item}.`,
-          en: `Hello! Today at ${bakery}, enjoy a special promotion of ${disc} on ${item}.`,
+          en: `Hello! Today at ${bakeriesEn[i % bakeriesEn.length]}, enjoy a special promotion of ${discountsEn[i % discountsEn.length]} on ${bakeryItemsEn[i % bakeryItemsEn.length]}.`,
           hint: `⚠️ Trap Alert: Identify the discounted item (${item}) and reduction (${disc}).`
         });
       } else if (qNum === 3) {
@@ -163,7 +167,7 @@ function getRichListeningTopics(): ListeningTopicItem[] {
           ],
           ans: 0,
           tr: `Bulletin météo pour ${city}: ${wType} prévues cet après-midi avec une température de ${temp}.`,
-          en: `Weather report for ${city}: ${wType} expected this afternoon with a temperature of ${temp}.`,
+          en: `Weather report for ${city}: ${weatherTypesEn[i % weatherTypesEn.length]} expected this afternoon with a temperature of ${temp}.`,
           hint: `⚠️ Trap Alert: Identify weather condition (${wType}) and temperature (${temp}).`
         });
       } else if (qNum === 4) {
