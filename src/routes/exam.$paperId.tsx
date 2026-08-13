@@ -219,13 +219,8 @@ export function AuthenticCBTExamPage() {
       return;
     }
 
-    // Do NOT count down while audio is actively playing or while student has audio paused!
-    if (isSpeaking || isAudioPaused) {
-      return;
-    }
-
-    // In Exam Mode, wait until audio finishes playing before starting the countdown timer!
-    if (mode === "EXAM" && !isAudioFinished) {
+    // Do NOT count down while audio is playing, while student has audio paused, OR before audio has finished playing!
+    if (isSpeaking || isAudioPaused || !isAudioFinished) {
       return;
     }
 
@@ -801,6 +796,10 @@ export function AuthenticCBTExamPage() {
     setSelectedAnswers((prev) => ({ ...prev, [qId]: optionIdx }));
     // FEI CBT Rule (Both Exam & Practice Modes): Selecting choice A, B, C, D automatically reveals the question prompt!
     setShowQuestionPrompt(true);
+    // In Practice Mode, if audio is not actively playing, selecting a choice also unlocks the response timer countdown!
+    if (mode === "PRACTICE" && !isSpeaking && !isAudioPaused) {
+      setIsAudioFinished(true);
+    }
   };
 
   const handleStopAudio = () => {
