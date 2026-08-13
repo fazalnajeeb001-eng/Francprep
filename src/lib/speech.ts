@@ -5,6 +5,8 @@ import { triggerAcousticSoundForQuestion } from "./soundEffects";
 let currentAudioPlayer: HTMLAudioElement | null = null;
 let onPlaybackStateChange: ((playing: boolean) => void) | null = null;
 let currentDialogueId = 0;
+let isAudioPausedState = false;
+let lineTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
 // Stop audio automatically when user navigates away, closes tab, or switches pages!
 if (typeof window !== "undefined") {
@@ -236,6 +238,11 @@ function speakWebSpeech(text: string, langCode: string, rate: number, gender: "f
 }
 
 export function stopAudio(): void {
+  isAudioPausedState = false;
+  if (lineTimeoutId) {
+    clearTimeout(lineTimeoutId);
+    lineTimeoutId = null;
+  }
   currentDialogueId++;
   if (currentAudioPlayer) {
     currentAudioPlayer.pause();
@@ -299,16 +306,32 @@ export function ttsSpeakListening(
 }
 
 export function pauseAudio(): void {
+  isAudioPausedState = true;
+  if (lineTimeoutId) {
+    clearTimeout(lineTimeoutId);
+    lineTimeoutId = null;
+  }
   if (currentAudioPlayer && !currentAudioPlayer.paused) {
     currentAudioPlayer.pause();
-    if (onPlaybackStateChange) onPlaybackStateChange(false);
   }
+  if (typeof window !== "undefined" && window.speechSynthesis) {
+    try {
+      window.speechSynthesis.pause();
+    } catch {}
+  }
+  if (onPlaybackStateChange) onPlaybackStateChange(false);
 }
 
 export function resumeAudio(): void {
+  isAudioPausedState = false;
   if (currentAudioPlayer && currentAudioPlayer.paused) {
     currentAudioPlayer.play().catch(() => {});
     if (onPlaybackStateChange) onPlaybackStateChange(true);
+  }
+  if (typeof window !== "undefined" && window.speechSynthesis) {
+    try {
+      window.speechSynthesis.resume();
+    } catch {}
   }
 }
 
@@ -403,6 +426,8 @@ export function speakDialogue(
 
   function playNextLine() {
     if (myDialogueId !== currentDialogueId) return; // Terminate if dialogue was stopped or replaced
+    if (isAudioPausedState) return; // Abort immediately if audio engine is paused!
+
     if (currentIndex >= parsedDialogue.length) {
       if (onPlaybackStateChange) onPlaybackStateChange(false);
       if (onEnded) onEnded();
@@ -417,7 +442,7 @@ export function speakDialogue(
     if (onPlaybackStateChange) onPlaybackStateChange(true);
 
     audio.onended = () => {
-      if (myDialogueId === currentDialogueId) {
+      if (myDialogueId === currentDialogueId && !isAudioPausedState) {
         // Real TCF CBT Sound Design Pacing rules:
         // 1. Passage -> Announcer ("Écoutez la question..."): 1500ms silent break
         // 2. Between Spoken Options A, B, C, D (Q1-Q8): 1000ms silent break
@@ -439,12 +464,24 @@ export function speakDialogue(
             delayMs = 1000;
           }
         }
-        setTimeout(playNextLine, delayMs);
+        if (lineTimeoutId) clearTimeout(lineTimeoutId);
+        lineTimeoutId = setTimeout(() => {
+          lineTimeoutId = null;
+          if (myDialogueId === currentDialogueId && !isAudioPausedState) {
+            playNextLine();
+          }
+        }, delayMs);
       }
     };
     audio.onerror = () => {
-      if (myDialogueId === currentDialogueId) {
-        setTimeout(playNextLine, 400);
+      if (myDialogueId === currentDialogueId && !isAudioPausedState) {
+        if (lineTimeoutId) clearTimeout(lineTimeoutId);
+        lineTimeoutId = setTimeout(() => {
+          lineTimeoutId = null;
+          if (myDialogueId === currentDialogueId && !isAudioPausedState) {
+            playNextLine();
+          }
+        }, 400);
       }
     };
 
