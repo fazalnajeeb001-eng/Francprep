@@ -272,7 +272,37 @@ const translationDictionary = {
   "Un mécanicien contrôle la pression des pneus d'une berline.": "A mechanic is checking sedan tire pressure.",
   "Un marin nettoie le pont d'un navire de pêche.": "A sailor is cleaning the deck of a fishing vessel.",
   "Un cuisinier fait revenir des légumes dans une poêle.": "A cook is sautéing vegetables in a skillet.",
-  "Un serveur débarrasse les assiettes d'une table.": "A server is clearing plates from a table."
+  "Un serveur débarrasse les assiettes d'une table.": "A server is clearing plates from a table.",
+
+  // Remaining visual distractors across Papers 5-10
+  "Un maçon construit un mur de briques.": "A bricklayer is building a brick wall.",
+  "Un marin amarre son navire au port.": "A sailor is mooring his ship at the port.",
+  "Un photographe développe des clichés dans une chambre noire.": "A photographer is developing photos in a darkroom.",
+  "Un steward sert des repas aux passagers d'un avion.": "A flight attendant is serving meals to airplane passengers.",
+  "Un cordonnier répare une botte en cuir.": "A shoemaker is repairing a leather boot.",
+  "Un vétérinaire examine un chien sur une table.": "A veterinarian is examining a dog on an exam table.",
+  "Un infirmier prend la tension d'un patient.": "A nurse is taking a patient's blood pressure.",
+  "Un peintre applique de la peinture sur une façade.": "A painter is applying paint to a building facade.",
+  "Un coiffeur applique une coloration capillaire.": "A hairdresser is applying hair dye.",
+  "Un fermier ramasse des légumes dans son potager.": "A farmer is harvesting vegetables in a garden.",
+  "Un comptable vérifie des factures sur un ordinateur.": "An accountant is checking invoices on a computer.",
+  "Un pompier inspecte un extincteur de sécurité.": "A firefighter is inspecting a safety fire extinguisher.",
+  "Un serrurier remplace la serrure d'une porte d'entrée.": "A locksmith is replacing the lock on an entrance door.",
+  "Un réparateur ajuste la chaîne d'une bicyclette.": "A repairer is adjusting a bicycle chain.",
+  "Un hôte d'accueil accueille des visiteurs dans une exposition.": "A receptionist is welcoming visitors to an exhibition.",
+  "Un plongeur explore les fonds marins.": "A scuba diver is exploring the seabed.",
+  "Un plombier répare une fuite sous un évier.": "A plumber is repairing a leak under a sink.",
+  "Un steward ferme les coffres à bagages d'un avion.": "A flight attendant is closing airplane overhead bins.",
+  "Un agriculteur conduit un tracteur dans un champ.": "A farmer is driving a tractor in a field.",
+  "Un déménageur transporte un meuble lourd dans les escaliers.": "A mover is carrying heavy furniture up the stairs.",
+  "Un botaniste étudie des plantes sous une serre.": "A botanist is studying plants in a greenhouse.",
+  "Un maître d'hôtel accueille les clients à l'entrée du restaurant.": "A head waiter is welcoming guests at the restaurant entrance.",
+  "Un masseur prodigue un soin dans un spa.": "A massage therapist is providing a treatment at a spa.",
+  "Un marin dresse la voile d'un voilier.": "A sailor is raising the sail of a sailboat.",
+  "Un peintre dessine un modèle dans son atelier.": "A painter is sketching a model in an art studio.",
+  "Un jardinier tond la pelouse d'une grande propriété.": "A gardener is mowing the lawn of a large estate.",
+  "Un boulanger prépare des croissants au beurre.": "A baker is preparing butter croissants.",
+  "Un bagagiste transporte des valises sur un chariot.": "A baggage handler is transporting suitcases on a cart."
 };
 
 const schemaPath = path.join(process.cwd(), 'src', 'lib', 'examSchema.ts');
