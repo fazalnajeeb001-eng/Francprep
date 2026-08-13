@@ -3,6 +3,7 @@ import { apiFetch } from "~/lib/apiFetch";
 import { triggerAcousticSoundForQuestion } from "./soundEffects";
 
 let currentAudioPlayer: HTMLAudioElement | null = null;
+let activeAudioPlayers = new Set<HTMLAudioElement>();
 let onPlaybackStateChange: ((playing: boolean) => void) | null = null;
 let currentDialogueId = 0;
 let isAudioPausedState = false;
@@ -47,11 +48,8 @@ export function speak(
   const cleanText = text.trim();
   if (!cleanText) return false;
 
-  // Stop any currently playing audio track
-  if (currentAudioPlayer) {
-    currentAudioPlayer.pause();
-    currentAudioPlayer = null;
-  }
+  stopAudio();
+  const myDialogueId = ++currentDialogueId;
 
   // Respect explicit gender parameter or auto-detect speaker labels in dialogue text
   let finalGender = gender;
@@ -67,15 +65,18 @@ export function speak(
 
   // Pre-create HTMLAudioElement to retain mobile browser autoplay permissions
   const audio = new Audio();
+  activeAudioPlayers.add(audio);
   currentAudioPlayer = audio;
   if (onPlaybackStateChange) onPlaybackStateChange(true);
 
   audio.onended = () => {
+    activeAudioPlayers.delete(audio);
     if (currentAudioPlayer === audio) currentAudioPlayer = null;
     if (onPlaybackStateChange) onPlaybackStateChange(false);
     if (onEnded) onEnded();
   };
   audio.onerror = () => {
+    activeAudioPlayers.delete(audio);
     if (currentAudioPlayer === audio) currentAudioPlayer = null;
     if (onPlaybackStateChange) onPlaybackStateChange(false);
     if (onEnded) onEnded();
@@ -239,15 +240,25 @@ function speakWebSpeech(text: string, langCode: string, rate: number, gender: "f
 
 export function stopAudio(): void {
   isAudioPausedState = false;
+  currentDialogueId++;
   if (lineTimeoutId) {
     clearTimeout(lineTimeoutId);
     lineTimeoutId = null;
   }
-  currentDialogueId++;
+  activeAudioPlayers.forEach((player) => {
+    try {
+      player.pause();
+      player.src = "";
+      player.currentTime = 0;
+    } catch {}
+  });
+  activeAudioPlayers.clear();
   if (currentAudioPlayer) {
-    currentAudioPlayer.pause();
-    currentAudioPlayer.src = "";
-    currentAudioPlayer.currentTime = 0;
+    try {
+      currentAudioPlayer.pause();
+      currentAudioPlayer.src = "";
+      currentAudioPlayer.currentTime = 0;
+    } catch {}
     currentAudioPlayer = null;
   }
   if (typeof window !== "undefined" && window.speechSynthesis) {
@@ -438,10 +449,12 @@ export function speakDialogue(
     currentIndex++;
 
     const audio = new Audio();
+    activeAudioPlayers.add(audio);
     currentAudioPlayer = audio;
     if (onPlaybackStateChange) onPlaybackStateChange(true);
 
     audio.onended = () => {
+      activeAudioPlayers.delete(audio);
       if (myDialogueId === currentDialogueId && !isAudioPausedState) {
         // Real TCF CBT Sound Design Pacing rules:
         // 1. Passage -> Announcer ("Écoutez la question..."): 1500ms silent break
@@ -559,23 +572,15 @@ export function speakDialogue(
   playNextLine();
 }
 
-export async function speakListeningQuestion(
+export function speakListeningQuestion(
   text: string,
   questionNumber: number,
   lang = "fr-FR",
   rate = 0.85,
   extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string },
   onEnded?: () => void
-): Promise<void> {
+): void {
   stopAudio();
-  if (questionNumber >= 1 && questionNumber <= 33) {
-    try {
-      await Promise.race([
-        triggerAcousticSoundForQuestion(questionNumber),
-        new Promise((resolve) => setTimeout(resolve, 400))
-      ]);
-    } catch {}
-  }
   speakDialogue(text, lang, rate, extraKeys, onEnded);
 }
 
