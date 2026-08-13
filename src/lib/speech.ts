@@ -168,33 +168,40 @@ export function speak(
 }
 
 /**
- * Direct HD MP3 Audio Stream Fallback (Pure Neural Fallback - Zero Browser WebSpeech / Zero Parallel Voices)
+ * Direct HD MP3 Audio Stream Fallback (Server-Side Proxy Fallback - Zero Browser CORS Errors / Zero Skipped Audio Lines)
  */
 function playDirectHDFallback(text: string, langCode: string, rate: number, audio: HTMLAudioElement, gender: "female" | "male" = "female") {
-  try {
-    const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text.slice(0, 200))}&tl=${langCode}&client=tw-ob`;
-    audio.src = audioUrl;
-    audio.preservesPitch = true;
-    (audio as any).webkitPreservesPitch = true;
-    (audio as any).mozPreservesPitch = true;
-    audio.onplay = () => {
-      audio.playbackRate = rate;
-      audio.preservesPitch = true;
-    };
-    audio.oncanplay = () => {
-      audio.playbackRate = rate;
-      audio.preservesPitch = true;
-    };
-    audio.playbackRate = rate;
-    audio.play().then(() => {
-      audio.playbackRate = rate;
-      audio.preservesPitch = true;
-    }).catch(() => {
-      // Clean silent handle - zero parallel OS voices allowed
-    });
-  } catch {
-    // Clean silent handle - zero parallel OS voices allowed
-  }
+  apiFetch("/tts/speak", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      text,
+      gender,
+      lang: langCode,
+      provider: "google",
+      speakingRate: rate,
+    }),
+  })
+    .then(async (res) => {
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data?.audioUrl) {
+          let src = json.data.audioUrl;
+          if (src.startsWith("data:audio/")) {
+            const parts = src.split(";base64,");
+            if (parts.length === 2) {
+              const mimeType = parts[0].replace("data:", "");
+              const blob = base64ToBlob(parts[1], mimeType);
+              src = URL.createObjectURL(blob);
+            }
+          }
+          audio.src = src;
+          audio.playbackRate = rate;
+          audio.play().catch(() => {});
+        }
+      }
+    })
+    .catch(() => {});
 }
 
 function speakWebSpeech(text: string, langCode: string, rate: number, gender: "female" | "male" = "female") {
