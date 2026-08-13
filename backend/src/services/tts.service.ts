@@ -260,27 +260,57 @@ export async function generateNeuralAudio(
     return null;
   };
 
-  // --- PROVIDER 4: GOOGLE AUDIO FALLBACK ---
+  // --- PROVIDER 4: GOOGLE AUDIO FALLBACK (CHUNKING & MP3 CONCATENATION FOR LONG PASSAGES) ---
   const tryGoogle = async () => {
     try {
-      const encodedText = encodeURIComponent(cleanText);
       const targetLang = lang ? lang.toLowerCase().slice(0, 2) : 'fr';
-      const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=${targetLang}&client=tw-ob`;
 
-      const response = await axios.get(googleTtsUrl, {
-        responseType: 'arraybuffer',
-        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
-        timeout: 6000,
-      });
+      // Split text into chunks under 160 chars so Google TTS never rejects with HTTP 404/400
+      const splitIntoChunks = (str: string, maxLen = 160): string[] => {
+        if (str.length <= maxLen) return [str];
+        const words = str.split(' ');
+        const chunks: string[] = [];
+        let currentChunk = '';
 
-      if (response.status === 200 && response.data) {
-        const audioBuffer = Buffer.from(response.data);
-        const audioBase64 = audioBuffer.toString('base64');
+        for (const word of words) {
+          if ((currentChunk + ' ' + word).trim().length <= maxLen) {
+            currentChunk = (currentChunk + ' ' + word).trim();
+          } else {
+            if (currentChunk) chunks.push(currentChunk);
+            currentChunk = word;
+          }
+        }
+        if (currentChunk) chunks.push(currentChunk);
+        return chunks;
+      };
+
+      const chunks = splitIntoChunks(cleanText, 160);
+      const audioBuffers: Buffer[] = [];
+
+      for (const chunk of chunks) {
+        const encoded = encodeURIComponent(chunk);
+        const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encoded}&tl=${targetLang}&client=tw-ob`;
+        const response = await axios.get(googleTtsUrl, {
+          responseType: 'arraybuffer',
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
+          timeout: 8000,
+        });
+
+        if (response.status === 200 && response.data) {
+          audioBuffers.push(Buffer.from(response.data));
+        }
+      }
+
+      if (audioBuffers.length > 0) {
+        const fullAudioBuffer = Buffer.concat(audioBuffers);
+        const audioBase64 = fullAudioBuffer.toString('base64');
         const contentType = 'audio/mp3';
 
         return { audioBase64, contentType, provider: 'google' };
       }
-    } catch (err) {}
+    } catch (err: any) {
+      console.warn('[TTS Service] Google fallback error:', err?.message);
+    }
     return null;
   };
 
