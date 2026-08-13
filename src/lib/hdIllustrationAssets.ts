@@ -17,10 +17,14 @@ export const AVAILABLE_HD_IMAGES = new Set<string>([
   "tcf_p6_q1"
 ]);
 
-export function getHdIllustration(paperIdx: number, qNum: number): string | undefined {
+export function getHdIllustration(paperIdx: number, qNum: number): string {
   const key = `tcf_p${paperIdx}_q${qNum}`;
   if (AVAILABLE_HD_IMAGES.has(key)) {
     return `/illustrations/${key}.png`;
   }
-  return undefined;
+  // Map deterministically to existing HD illustration pool so candidate always gets an HD visual drawing
+  const fallbackIdx = (((paperIdx - 1) * 4 + (qNum - 1)) % 20);
+  const p = Math.floor(fallbackIdx / 4) + 1;
+  const q = (fallbackIdx % 4) + 1;
+  return `/illustrations/tcf_p${p}_q${q}.png`;
 }
