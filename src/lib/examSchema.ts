@@ -11,6 +11,8 @@ export type SectionType = "COMPREHENSION_ORALE" | "COMPREHENSION_ECRITE" | "EXPR
 export interface ExamQuestion {
   id: string;
   questionNumber: number;
+  level?: string;
+  speakingRate?: number;
   text: string;
   questionPrompt?: string;
   questionPromptEnglish?: string;
@@ -22,6 +24,10 @@ export interface ExamQuestion {
   correctIndex: number;
   explanation: string;
   hint?: string;
+  trapAlert?: string;
+  trapAlertEn?: string;
+  audioCoach?: string;
+  audioCoachEn?: string;
   transcript?: string;
   transcriptEnglish?: string;
   passage?: string;
@@ -7134,6 +7140,10 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       correctIndex,
       explanation: guidance.detailedExplanation,
       hint: guidance.combinedHint,
+      trapAlert: guidance.trapAlert,
+      trapAlertEn: guidance.trapAlertEn,
+      audioCoach: guidance.audioCoach,
+      audioCoachEn: guidance.audioCoachEn,
       transcript: fullSpokenTranscript,
       transcriptEnglish: finalTranscriptEnglish,
       passage: passageBodyText,

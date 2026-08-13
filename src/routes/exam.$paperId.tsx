@@ -2331,8 +2331,8 @@ export function AuthenticCBTExamPage() {
               </div>
 
               {/* Practice Hint Bar */}
-              {mode === "PRACTICE" && showHints && currentQ.hint && (
-                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-slate-900 dark:text-slate-100 text-xs space-y-2.5 shadow-sm">
+              {mode === "PRACTICE" && showHints && (
+                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-slate-900 dark:text-slate-100 text-xs space-y-3 shadow-sm">
                   <div className="flex items-center justify-between border-b border-amber-500/20 pb-2">
                     <span className="font-extrabold flex items-center gap-1.5 text-amber-700 dark:text-amber-400 text-xs sm:text-sm">
                       <Sparkles className="w-4 h-4" />
@@ -2342,9 +2342,43 @@ export function AuthenticCBTExamPage() {
                       Méthodologie TCF
                     </span>
                   </div>
-                  <div className="whitespace-pre-line leading-relaxed text-xs space-y-2 font-sans font-medium">
-                    {currentQ.hint}
-                  </div>
+
+                  {/* Trap Alert Section */}
+                  {(currentQ as any).trapAlert ? (
+                    <div className="space-y-1.5">
+                      <p className="font-semibold text-slate-900 dark:text-slate-100 leading-relaxed text-xs">
+                        {(currentQ as any).trapAlert}
+                      </p>
+                      {(currentQ as any).trapAlertEn && (
+                        <div className="p-2.5 rounded-lg bg-amber-100/70 dark:bg-amber-950/40 border border-amber-300/80 dark:border-amber-800/60 text-[11px] text-amber-950 dark:text-amber-200 leading-relaxed font-sans">
+                          <span className="font-bold text-amber-800 dark:text-amber-300 mr-1.5">🇬🇧 Translation:</span>
+                          {(currentQ as any).trapAlertEn}
+                        </div>
+                      )}
+                    </div>
+                  ) : null}
+
+                  {/* Audio Coach Strategy Section */}
+                  {(currentQ as any).audioCoach ? (
+                    <div className="space-y-1.5 pt-2.5 border-t border-amber-500/20">
+                      <p className="font-semibold text-slate-900 dark:text-slate-100 leading-relaxed text-xs">
+                        {(currentQ as any).audioCoach}
+                      </p>
+                      {(currentQ as any).audioCoachEn && (
+                        <div className="p-2.5 rounded-lg bg-blue-100/70 dark:bg-blue-950/40 border border-blue-300/80 dark:border-blue-800/60 text-[11px] text-blue-950 dark:text-blue-200 leading-relaxed font-sans">
+                          <span className="font-bold text-blue-800 dark:text-blue-300 mr-1.5">🇬🇧 Translation:</span>
+                          {(currentQ as any).audioCoachEn}
+                        </div>
+                      )}
+                    </div>
+                  ) : null}
+
+                  {/* Fallback for other sections (e.g. Reading/Writing) */}
+                  {!(currentQ as any).trapAlert && currentQ.hint && (
+                    <div className="whitespace-pre-line leading-relaxed text-xs font-medium">
+                      {currentQ.hint}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
