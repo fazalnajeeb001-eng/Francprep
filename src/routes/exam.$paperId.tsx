@@ -2388,21 +2388,33 @@ export function AuthenticCBTExamPage() {
               <div className="space-y-4">
                 <div className="space-y-1">
                   <h3 className="text-sm sm:text-base font-bold leading-snug text-slate-950 dark:text-slate-100">
-                    {currentSection.type === "COMPREHENSION_ORALE" && (currentQ.questionNumber || 0) < 30
-                      ? (mode === "PRACTICE" && showQuestionPrompt)
-                        ? currentQ.text
-                        : `Question Audio N°${currentQ.questionNumber}`
-                      : currentQ.text}
+                    {currentSection.type === "COMPREHENSION_ORALE" && (currentQ.questionNumber || 0) <= 4
+                      ? `Question N°${currentQ.questionNumber}`
+                      : currentSection.type === "COMPREHENSION_ORALE" && (currentQ.questionNumber || 0) < 30
+                        ? (mode === "PRACTICE" && showQuestionPrompt)
+                          ? currentQ.text
+                          : `Question Audio N°${currentQ.questionNumber}`
+                        : currentQ.text}
                   </h3>
-                  {currentSection.type === "COMPREHENSION_ORALE" && (currentQ.questionNumber || 0) < 30 && (mode === "EXAM" || !showQuestionPrompt) && (
+                  {currentSection.type === "COMPREHENSION_ORALE" && (currentQ.questionNumber || 0) <= 4 ? (
+                    <p className="text-xs text-purple-700 dark:text-purple-400 font-medium italic">
+                      Regardez l'illustration. Écoutez les 4 propositions (A, B, C, D) et choisissez celle qui correspond à l'image.
+                    </p>
+                  ) : currentSection.type === "COMPREHENSION_ORALE" && (currentQ.questionNumber || 0) < 30 && (mode === "EXAM" || !showQuestionPrompt) ? (
                     <p className="text-xs text-purple-700 dark:text-purple-400 font-medium italic">
                       Écoutez la question posée à la fin du document audio et choisissez l'option (A, B, C, D) ci-dessous.
                     </p>
-                  )}
+                  ) : null}
                   {showTranslation && (
                     <p className="text-xs font-semibold text-indigo-700 dark:text-indigo-300 italic pt-1 flex items-center gap-1">
                       <Globe className="w-3 h-3 shrink-0" />
-                      <span>Question (EN): "{(currentQ as any).questionPromptEnglish || currentQ.text}"</span>
+                      <span>
+                        Question (EN): "
+                        {currentQ.questionNumber <= 4
+                          ? "Look at the illustration. Listen to the 4 options (A, B, C, D) and choose the one that corresponds to the image."
+                          : ((currentQ as any).questionPromptEnglish || currentQ.text)}
+                        "
+                      </span>
                     </p>
                   )}
                 </div>
