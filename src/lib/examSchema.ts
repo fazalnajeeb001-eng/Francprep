@@ -7511,7 +7511,7 @@ export function getExamRegistry(): ExamPaper[] {
       recommendedMode: isPractice ? "PRACTICE" : "EXAM",
       description: isPractice
         ? `Guided practice paper with step-by-step hints, audio transcripts, and 2-attempt answer validation (84 Items / 119 Mins).`
-        : `Strict official FEI test-center exam paper with unpausable timers, zero hints, and authentic candidate scoring (84 Items / 119 Mins).`,
+        : `Full-length standardized TCF test simulator paper with unpausable timers, zero hints, and authentic candidate scoring (84 Items / 119 Mins).`,
       totalDurationMins: 119,
       isSamplePaper: isPractice,
       published: true,
@@ -7713,7 +7713,7 @@ export function calculateNCLCScore(pctScore: number, _examType: ExamType, sectio
     expressEntryPoints = 0;
     isNCLC7TargetReached = false;
   } else if (sectionType === "EXPRESSION_ECRITE" || sectionType === "EXPRESSION_ORALE") {
-    // Official 20-Point Scale Cutoffs for Writing & Speaking (FEI / Paris Standards)
+    // Standardized 20-Point Scale Cutoffs for Writing & Speaking (CEFR Rubric)
     if (pct >= 90.0) { // 18-20 / 20 (C2 Mastery)
       nclcLevel = 10;
       cefrEquivalent = "C2";

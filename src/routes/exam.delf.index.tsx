@@ -39,7 +39,7 @@ export function DELFExamHubPage() {
               DELF / DALF Official Milestone Diagnostic Exams
             </h1>
             <p className={`text-xs ${dark ? "text-gray-400" : "text-slate-600"} mt-1 max-w-2xl`}>
-              Authentic France Éducation International (FEI) style diploma diagnostic exams for DELF A1–B2 and DALF C1–C2 with AI examiner rubric grading.
+              Comprehensive diploma diagnostic exams for DELF A1–B2 and DALF C1–C2 with AI examiner rubric grading.
             </p>
           </div>
         </div>
@@ -51,7 +51,7 @@ export function DELFExamHubPage() {
             <span>100% Official DELF / DALF Format Alignment & Module Gate Evaluation</span>
           </div>
           <p className="text-amber-200/90 text-[11px] leading-relaxed">
-            All papers strictly follow the 4 official FEI skill sections (Listening, Reading, Writing & Speaking). 
+            All papers strictly follow the 4 standard CEFR skill sections (Listening, Reading, Writing & Speaking). 
             <em> Disclaimer: FrancPrep provides official format diagnostic evaluations to unlock module progression. Official DELF/DALF diplomas are awarded by France Éducation International.</em>
           </p>
         </div>

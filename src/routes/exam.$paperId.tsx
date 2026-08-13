@@ -550,7 +550,7 @@ export function AuthenticCBTExamPage() {
             grammarScore: data.grammarScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
             nclcGrade,
             expressEntryPoints,
-            feedback: data.feedback || `Official FEI Oral Evaluation: Total ${totalScoreOutOf20}/20 Marks.`,
+            feedback: data.feedback || `Diagnostic Oral Evaluation (TCF Format): Total ${totalScoreOutOf20}/20 Marks.`,
             corrections: data.corrections || [],
             tips: data.tips || []
           }
@@ -713,7 +713,7 @@ export function AuthenticCBTExamPage() {
                       grammarScore: data.grammarScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
                       nclcGrade,
                       expressEntryPoints,
-                      feedback: data.feedback || `Official FEI Oral Evaluation: Total ${totalScoreOutOf20}/20 Marks.`,
+                      feedback: data.feedback || `Diagnostic Oral Evaluation (TCF Format): Total ${totalScoreOutOf20}/20 Marks.`,
                       corrections: data.corrections || [],
                       tips: data.tips || [],
                     },
@@ -963,7 +963,7 @@ export function AuthenticCBTExamPage() {
             coherenceScore: 0,
             lexicalScore: 0,
             grammarScore: 0,
-            feedback: `⚠️ PLAGIARISM WARNING (${similarityPct}% Similarity with Exemplar): Your submitted response matches ${similarityPct}% of the official sample model answer. Under official FEI CBT rules, copied sample responses receive 0 marks. Please write your own authentic response in your own words!`
+            feedback: `⚠️ PLAGIARISM WARNING (${similarityPct}% Similarity with Exemplar): Your submitted response matches ${similarityPct}% of the official sample model answer. Under standardized CBT exam rules, copied sample responses receive 0 marks. Please write your own authentic response in your own words!`
           }
         }));
         setEvaluatingWriting((prev) => ({ ...prev, [taskId]: false }));
@@ -1045,7 +1045,7 @@ export function AuthenticCBTExamPage() {
             coherenceScore: data.coherenceScore || data.cohesionScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
             lexicalScore: data.lexicalScore || data.vocabularyScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
             grammarScore: data.grammarScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
-            feedback: data.feedback || `Official FEI Evaluation: Total ${totalScoreOutOf20}/20.`
+            feedback: data.feedback || `Diagnostic Evaluation (TCF Format): Total ${totalScoreOutOf20}/20.`
           }
         }));
         setEvaluatingWriting((prev) => ({ ...prev, [taskId]: false }));
@@ -1311,7 +1311,7 @@ export function AuthenticCBTExamPage() {
         coherenceScore,
         lexicalScore,
         grammarScore,
-        feedback: `Official FEI Evaluation: Total ${totalScoreOutOf20}/20 • Task Fulfillment: ${taskFulfillmentScore}/5, Coherence & Connectors: ${coherenceScore}/5, Lexical Range: ${lexicalScore}/5, Morphosyntax & Grammar: ${grammarScore}/5.`
+        feedback: `Diagnostic Evaluation (TCF Format): Total ${totalScoreOutOf20}/20 • Task Fulfillment: ${taskFulfillmentScore}/5, Coherence & Connectors: ${coherenceScore}/5, Lexical Range: ${lexicalScore}/5, Morphosyntax & Grammar: ${grammarScore}/5.`
       }
     }));
 
@@ -1992,7 +1992,7 @@ export function AuthenticCBTExamPage() {
               <div>
                 <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
                   <span>📖 {currentSection.title} Official Strategy & Prep Guide</span>
-                  <span className="px-2 py-0.5 rounded bg-purple-500/40 text-purple-200 text-[10px] font-mono uppercase">FEI / CCI Standards</span>
+                  <span className="px-2 py-0.5 rounded bg-purple-500/40 text-purple-200 text-[10px] font-mono uppercase">TCF / TEF Standards</span>
                 </h4>
                 <p className="text-xs text-purple-200 leading-snug">
                   Review time management, distractor avoidance, and official examiner scoring criteria before answering.
@@ -2099,7 +2099,7 @@ export function AuthenticCBTExamPage() {
                                 <Volume2 className="w-4 h-4 text-blue-300 animate-pulse" />
                                 <span>🎧 Document Sonore TCF N°{currentQ.questionNumber} — Lecture unique en cours...</span>
                               </div>
-                              <span className="text-[10px] px-2 py-0.5 rounded bg-blue-800 text-blue-200 border border-blue-600 hidden sm:inline">Examen Officiel FEI</span>
+                              <span className="text-[10px] px-2 py-0.5 rounded bg-blue-800 text-blue-200 border border-blue-600 hidden sm:inline">Format Conforme TCF</span>
                             </div>
                           ) : (
                             <div className="px-3.5 py-2.5 rounded-lg bg-emerald-900 text-white border border-emerald-700 text-xs font-mono font-bold flex items-center justify-between shadow-md">
@@ -2212,7 +2212,7 @@ export function AuthenticCBTExamPage() {
                           <div className="p-3.5 rounded-xl bg-white border border-slate-300 text-slate-900 space-y-2 shadow-md">
                             <div className="flex items-center justify-between text-xs font-bold text-slate-800 border-b pb-1.5 border-slate-200">
                               <span className="flex items-center gap-1.5">🖼️ <strong>Sur le livret / l'écran, vous voyez :</strong></span>
-                              <span className="text-[10px] text-slate-500 font-mono">Illustration Officielle FEI (HD)</span>
+                              <span className="text-[10px] text-slate-500 font-mono">Illustration Format TCF (HD)</span>
                             </div>
                             <div className="relative aspect-[16/10] w-full rounded-lg overflow-hidden border border-slate-300 bg-white flex items-center justify-center">
                               <img
@@ -2669,14 +2669,14 @@ export function AuthenticCBTExamPage() {
                       ? "opacity-40 cursor-not-allowed bg-slate-200 text-slate-500 border-slate-300"
                       : "bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-300 cursor-pointer"
                   }`}
-                  title={mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE" ? "Navigation désactivée en examen officiel (FEI CBT Rules)" : ""}
+                  title={mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE" ? "Navigation verrouillée en mode examen (Règles CBT)" : ""}
                 >
                   ← Previous Question
                 </button>
 
                 {mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE" ? (
                   <div className="px-3 py-1.5 rounded-lg bg-blue-950/80 text-blue-300 border border-blue-800 text-[11px] font-mono font-bold flex items-center gap-1.5 shadow">
-                    <span>🔒 Navigation automatique FEI CBT</span>
+                    <span>🔒 Navigation Standard CBT</span>
                   </div>
                 ) : (
                   <button
@@ -2774,7 +2774,7 @@ export function AuthenticCBTExamPage() {
                     <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800 text-xs text-amber-950 dark:text-amber-200 space-y-2 shadow-sm font-sans">
                       <div className="flex items-center gap-1.5 font-extrabold text-amber-900 dark:text-amber-300 text-[11px] uppercase tracking-wide">
                         <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                        <span>✍️ Writing Strategy & Trap Alert (FEI Certified Scoring Criteria)</span>
+                        <span>✍️ Writing Strategy & Trap Alert (Official TCF Scoring Criteria (CEFR Grid))</span>
                       </div>
                       <div className="leading-relaxed font-medium whitespace-pre-line text-xs space-y-1.5">
                         {activeWritingTaskIdx === 0 || task.title?.includes("Tâche 1") || task.wordCountMin === 60 || task.min === 60 ? (
@@ -2846,7 +2846,7 @@ export function AuthenticCBTExamPage() {
                           <span>Exemplar NCLC 7+ (B2 Vantage) Sample Response</span>
                         </span>
                         <span className="px-2 py-0.5 rounded bg-blue-600 text-white font-mono font-bold text-[10px]">
-                          OFFICIAL FEI BENCHMARK
+                          TCF CANADA BENCHMARK
                         </span>
                       </div>
                       <p className="whitespace-pre-line font-serif italic text-slate-900 dark:text-slate-100 leading-relaxed p-3 rounded bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-900">
@@ -2868,7 +2868,7 @@ export function AuthenticCBTExamPage() {
                       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-pink-200 dark:border-pink-800 pb-2">
                         <span className="font-extrabold text-sm text-pink-700 dark:text-pink-400 flex items-center gap-1.5">
                           <Trophy className="w-4 h-4 text-pink-600" />
-                          <span>Official FEI CBT Writing Diagnostic & Grade</span>
+                          <span>TCF CBT Writing Diagnostic & AI Grade</span>
                         </span>
                         <div className="flex items-center gap-2">
                           <span className="px-2.5 py-1 rounded-full bg-pink-600 text-white font-mono font-extrabold text-[11px]">
@@ -3050,7 +3050,7 @@ export function AuthenticCBTExamPage() {
                             Mme Élodie Martin
                           </h4>
                           <span className="px-2 py-0.5 rounded bg-purple-600 text-white font-mono font-bold text-[10px] uppercase">
-                            Senior FEI Certified Interlocutor
+                            Senior French Examiner Interlocutor (TCF Format)
                           </span>
                         </div>
                         <p className="text-xs text-purple-700 dark:text-purple-300 font-medium">
@@ -3209,7 +3209,7 @@ export function AuthenticCBTExamPage() {
                         className="flex-1 py-2.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2 disabled:opacity-40 transition-all cursor-pointer"
                       >
                         <Sparkles className="w-3.5 h-3.5" />
-                        <span>{isEvaluating ? "Evaluating with FEI Neural AI..." : "🤖 Complete Oral Task & Get Official FEI Grade"}</span>
+                        <span>{isEvaluating ? "Evaluating with TCF Diagnostic AI..." : "🤖 Complete Oral Task & Get Diagnostic Score"}</span>
                       </button>
                     </div>
                   </div>
@@ -3220,7 +3220,7 @@ export function AuthenticCBTExamPage() {
                       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-purple-200 dark:border-purple-800 pb-2">
                         <span className="font-extrabold text-sm text-purple-700 dark:text-purple-300 flex items-center gap-1.5">
                           <Trophy className="w-4 h-4 text-purple-600" />
-                          <span>Official FEI CBT Oral Production Diagnostic & Grade</span>
+                          <span>TCF CBT Oral Diagnostic & AI Grade</span>
                         </span>
                         <div className="flex items-center gap-2">
                           <span className="px-2.5 py-1 rounded-full bg-purple-600 text-white font-mono font-extrabold text-[11px]">
@@ -3252,7 +3252,7 @@ export function AuthenticCBTExamPage() {
                       </div>
 
                       <p className="leading-relaxed font-medium p-3 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 text-slate-900 dark:text-slate-100">
-                        {aiEval.feedback || `Official FEI Oral Evaluation: Total ${aiEval.scoreOutOf20 || 15}/20 Marks.`}
+                        {aiEval.feedback || `Diagnostic Oral Evaluation (TCF Format): Total ${aiEval.scoreOutOf20 || 15}/20 Marks.`}
                       </p>
                     </div>
                   )}
@@ -3288,7 +3288,7 @@ export function AuthenticCBTExamPage() {
                   disabled={isExamListening}
                   title={
                     isExamListening
-                      ? "Navigation manuelle verrouillée en examen officiel FEI CBT (Avancement automatique par audio)."
+                      ? "Navigation manuelle verrouillée en mode examen CBT (Avancement automatique par audio)."
                       : `Item N°${q.questionNumber}`
                   }
                   className={`w-7 h-7 sm:w-8 sm:h-8 rounded text-xs font-bold transition-all relative shrink-0 ${
@@ -3345,7 +3345,7 @@ export function AuthenticCBTExamPage() {
                   Épreuve d'Expression Orale (Speaking Section)
                 </h2>
                 <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed pt-1">
-                  This test simulates the real France Éducation International (FEI) Computer-Based Testing environment:
+                  This test simulates the TCF Canada Computer-Based Testing environment:
                 </p>
               </div>
 
@@ -3426,7 +3426,7 @@ export function AuthenticCBTExamPage() {
                   🇨🇦 Evaluating Official Exam Submission
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-                  Official France Éducation International (FEI) AI Engine is scoring your Writing Tasks (1, 2, 3) and Oral Production across the 4-Criteria Analytic Grid...
+                  FrancPrep AI Diagnostic Engine is scoring your Writing Tasks (1, 2, 3) and Oral Production across the 4-Criteria Analytic Grid...
                 </p>
               </div>
               <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
@@ -3814,7 +3814,7 @@ export function AuthenticCBTExamPage() {
                   <div className="p-3.5 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 space-y-1">
                     <h4 className="font-bold text-purple-900 dark:text-purple-300 text-sm">⚡ 2. Single-Play Audio & Locked Backward Navigation</h4>
                     <p>
-                      Audio clips play exactly <strong>ONCE</strong>. Backward navigation is locked on audio questions to mirror real FEI CBT regulations. Make your selection promptly after the clip finishes.
+                      Audio clips play exactly <strong>ONCE</strong>. Backward navigation is locked on audio questions to mirror standardized CBT test regulations. Make your selection promptly after the clip finishes.
                     </p>
                   </div>
 
@@ -3869,7 +3869,7 @@ export function AuthenticCBTExamPage() {
               {currentSection.type === "EXPRESSION_ORALE" && (
                 <div className="space-y-4 text-xs leading-relaxed text-slate-800 dark:text-slate-200">
                   <div className="p-3.5 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 space-y-1">
-                    <h4 className="font-bold text-purple-900 dark:text-purple-300 text-sm">🎙️ 1. FEI Official Examiner Interaction Persona</h4>
+                    <h4 className="font-bold text-purple-900 dark:text-purple-300 text-sm">🎙️ 1. Virtual Examiner Interaction Persona (TCF Format)</h4>
                     <p>
                       • <strong>Tâche 1 (2 min):</strong> Self-introduction (no prep). Speak clearly about work and Canadian goals.<br />
                       • <strong>Tâche 2 (3.5 min):</strong> Information gathering. Formulate ~10 formal questions using inversion (<em>Pourriez-vous m'indiquer...</em>).<br />
