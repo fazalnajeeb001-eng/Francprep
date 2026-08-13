@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, useParams, useSearch, Navigate } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Volume2,
