@@ -3,6 +3,8 @@ import { getPracticeQuestionTranslation } from "./practiceListeningTranslations"
 import { translateOptionMaster } from "./masterOptionsDictionary";
 import { getAuthenticB2Item, getAuthenticC1C2Item } from "./authenticListeningAdvancedBank";
 import { getQuestionGuidance } from "./practiceGuidanceBank";
+import { getReadingPaperItems } from "./authenticReadingMasterBank";
+import { getReadingGuidance } from "./readingGuidanceBank";
 
 export type ExamType = "TCF_CANADA" | "TEF_CANADA";
 export type ExamMode = "PRACTICE" | "EXAM";
@@ -28,6 +30,8 @@ export interface ExamQuestion {
   trapAlertEn?: string;
   audioCoach?: string;
   audioCoachEn?: string;
+  readingCoach?: string;
+  readingCoachEn?: string;
   transcript?: string;
   transcriptEnglish?: string;
   passage?: string;
@@ -7356,49 +7360,44 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
 
 export function generateReadingQuestions(count: number, prefix: string, seedOffset: number = 0): ExamQuestion[] {
   const qList: ExamQuestion[] = [];
-  const usedIndices = new Set<number>();
+
+  const paperNumMatch = prefix.match(/\d+/);
+  const paperNum = paperNumMatch ? parseInt(paperNumMatch[0], 10) : ((seedOffset % 10) + 1);
+
+  const paperItems = getReadingPaperItems(paperNum);
 
   for (let i = 1; i <= count; i++) {
-    const targetLevel = getTargetLevel(i);
-    const matchingIndices: number[] = [];
+    const item = paperItems[i - 1] || paperItems[(i - 1) % paperItems.length];
+    const seed = seedOffset * 100 + i;
 
-    READING_TOPICS.forEach((t, idx) => {
-      if (t.level === targetLevel || (targetLevel === "C2" && t.level === "C1")) {
-        matchingIndices.push(idx);
-      }
-    });
+    const { options, correctIndex, correctText, optionsEnglish: shuffledOptionsEn } = shuffleOptions(
+      item.opt,
+      item.ans,
+      seed,
+      undefined,
+      item.optEn
+    );
 
-    const pool = matchingIndices.length > 0
-      ? matchingIndices
-      : READING_TOPICS.map((_, idx) => idx);
-
-    let chosenIdx = pool[(i - 1 + seedOffset) % pool.length];
-    if (usedIndices.has(chosenIdx)) {
-      const unused = pool.find((idx) => !usedIndices.has(idx));
-      if (unused !== undefined) {
-        chosenIdx = unused;
-      } else {
-        const globalUnused = READING_TOPICS.findIndex((_, idx) => !usedIndices.has(idx));
-        if (globalUnused !== -1) chosenIdx = globalUnused;
-      }
-    }
-    usedIndices.add(chosenIdx);
-    const t = READING_TOPICS[chosenIdx];
-
-    const { options, correctIndex, correctText } = shuffleOptions(t.opt, t.ans);
-
-    const specificHint = (t as any).hint || `Level ${t.level} Reading Guidance: Scan paragraph 1 and 2 for synonyms and key thematic terms. Eliminate distractor options containing extreme words like "toujours" or "jamais" unless explicitly in the passage.`;
+    const guidance = getReadingGuidance(paperNum, i);
 
     qList.push({
       id: `${prefix}-read-${i}`,
       questionNumber: i,
-      passage: `[Document ${i} - Niveau ${t.level}] ${t.text}`,
-      passageEnglish: t.passEn,
-      text: `Question ${i} : ${t.q}`,
+      level: item.level,
+      passage: item.text,
+      passageEnglish: item.passEn,
+      questionPrompt: item.q,
+      questionPromptEnglish: item.qEn,
+      text: `Question ${i} : ${item.q}`,
       options,
+      optionsEnglish: shuffledOptionsEn || item.optEn,
       correctIndex,
-      explanation: `Pedagogical Explanation [Level ${t.level}]: The text states "${correctText}".`,
-      hint: specificHint
+      explanation: guidance.detailedExplanation,
+      hint: guidance.readingCoach,
+      trapAlert: guidance.trapAlert,
+      trapAlertEn: guidance.trapAlertEn,
+      readingCoach: guidance.readingCoach,
+      readingCoachEn: guidance.readingCoachEn
     });
   }
   return qList;

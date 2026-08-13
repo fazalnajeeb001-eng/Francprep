@@ -2336,7 +2336,11 @@ export function AuthenticCBTExamPage() {
                   <div className="flex items-center justify-between border-b border-amber-500/20 pb-2">
                     <span className="font-extrabold flex items-center gap-1.5 text-amber-700 dark:text-amber-400 text-xs sm:text-sm">
                       <Sparkles className="w-4 h-4" />
-                      <span>🎧 Audio Coach & Trap Alert — Niveau {(currentQ as any).level || 'A1-C2'}</span>
+                      <span>
+                        {currentSection.type === "COMPREHENSION_ECRITE"
+                          ? "📖 Reading Strategy Coach & Trap Alert"
+                          : "🎧 Audio Coach & Trap Alert"} — Niveau {(currentQ as any).level || 'A1-C2'}
+                      </span>
                     </span>
                     <span className="text-[10px] px-2 py-0.5 rounded bg-amber-600/20 text-amber-700 dark:text-amber-300 font-mono font-bold">
                       Méthodologie TCF
@@ -2358,16 +2362,16 @@ export function AuthenticCBTExamPage() {
                     </div>
                   ) : null}
 
-                  {/* Audio Coach Strategy Section */}
-                  {(currentQ as any).audioCoach ? (
+                  {/* Strategy Coach Section (Audio or Reading) */}
+                  {((currentQ as any).readingCoach || (currentQ as any).audioCoach) ? (
                     <div className="space-y-1.5 pt-2.5 border-t border-amber-500/20">
                       <p className="font-semibold text-slate-900 dark:text-slate-100 leading-relaxed text-xs">
-                        {(currentQ as any).audioCoach}
+                        {(currentQ as any).readingCoach || (currentQ as any).audioCoach}
                       </p>
-                      {(currentQ as any).audioCoachEn && (
+                      {((currentQ as any).readingCoachEn || (currentQ as any).audioCoachEn) && (
                         <div className="p-2.5 rounded-lg bg-blue-100/70 dark:bg-blue-950/40 border border-blue-300/80 dark:border-blue-800/60 text-[11px] text-blue-950 dark:text-blue-200 leading-relaxed font-sans">
                           <span className="font-bold text-blue-800 dark:text-blue-300 mr-1.5">🇬🇧 Translation:</span>
-                          {(currentQ as any).audioCoachEn}
+                          {(currentQ as any).readingCoachEn || (currentQ as any).audioCoachEn}
                         </div>
                       )}
                     </div>
