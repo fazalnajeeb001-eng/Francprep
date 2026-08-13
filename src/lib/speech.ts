@@ -8,6 +8,7 @@ let onPlaybackStateChange: ((playing: boolean) => void) | null = null;
 let currentDialogueId = 0;
 let isAudioPausedState = false;
 let lineTimeoutId: ReturnType<typeof setTimeout> | null = null;
+let resumeDialogueCallback: (() => void) | null = null;
 
 // Stop audio automatically when user navigates away, closes tab, or switches pages!
 if (typeof window !== "undefined") {
@@ -137,29 +138,31 @@ export function speak(
             audio.playbackRate = rate;
             audio.preservesPitch = true;
           };
-          audio.playbackRate = rate;
+          if (isAudioPausedState) {
+            return;
+          }
           audio.play().then(() => {
-            if (myDialogueId !== currentDialogueId) {
+            if (myDialogueId !== currentDialogueId || isAudioPausedState) {
               audio.pause();
-              audio.src = "";
+              if (myDialogueId !== currentDialogueId) audio.src = "";
               return;
             }
             audio.playbackRate = rate;
             audio.preservesPitch = true;
           }).catch(() => {
-            if (myDialogueId === currentDialogueId) {
+            if (myDialogueId === currentDialogueId && !isAudioPausedState) {
               playDirectHDFallback(cleanText, langCode, rate, audio, finalGender);
             }
           });
           return;
         }
       }
-      if (myDialogueId === currentDialogueId) {
+      if (myDialogueId === currentDialogueId && !isAudioPausedState) {
         playDirectHDFallback(cleanText, langCode, rate, audio, finalGender);
       }
     })
     .catch(() => {
-      if (myDialogueId === currentDialogueId) {
+      if (myDialogueId === currentDialogueId && !isAudioPausedState) {
         playDirectHDFallback(cleanText, langCode, rate, audio, finalGender);
       }
     });
@@ -220,6 +223,7 @@ function speakWebSpeech(text: string, langCode: string, rate: number, gender: "f
 
 export function stopAudio(): void {
   isAudioPausedState = false;
+  resumeDialogueCallback = null;
   currentDialogueId++;
   if (lineTimeoutId) {
     clearTimeout(lineTimeoutId);
@@ -302,8 +306,15 @@ export function pauseAudio(): void {
     clearTimeout(lineTimeoutId);
     lineTimeoutId = null;
   }
+  activeAudioPlayers.forEach((player) => {
+    try {
+      if (!player.paused) player.pause();
+    } catch {}
+  });
   if (currentAudioPlayer && !currentAudioPlayer.paused) {
-    currentAudioPlayer.pause();
+    try {
+      currentAudioPlayer.pause();
+    } catch {}
   }
   if (typeof window !== "undefined" && window.speechSynthesis) {
     try {
@@ -315,15 +326,32 @@ export function pauseAudio(): void {
 
 export function resumeAudio(): void {
   isAudioPausedState = false;
-  if (currentAudioPlayer && currentAudioPlayer.paused) {
+
+  activeAudioPlayers.forEach((player) => {
+    try {
+      if (player.paused && !player.ended && player.src) {
+        player.play().catch(() => {});
+      }
+    } catch {}
+  });
+
+  if (currentAudioPlayer && currentAudioPlayer.paused && !currentAudioPlayer.ended && currentAudioPlayer.src) {
     currentAudioPlayer.play().catch(() => {});
-    if (onPlaybackStateChange) onPlaybackStateChange(true);
   }
-  if (typeof window !== "undefined" && window.speechSynthesis) {
+
+  if (typeof window !== "undefined" && window.speechSynthesis && window.speechSynthesis.paused) {
     try {
       window.speechSynthesis.resume();
     } catch {}
   }
+
+  if (resumeDialogueCallback) {
+    const cb = resumeDialogueCallback;
+    resumeDialogueCallback = null;
+    cb();
+  }
+
+  if (onPlaybackStateChange) onPlaybackStateChange(true);
 }
 
 export function toggleAudio(
@@ -521,29 +549,31 @@ export function speakDialogue(
               audio.playbackRate = rate;
               audio.preservesPitch = true;
             };
-            audio.playbackRate = rate;
+            if (isAudioPausedState) {
+              return;
+            }
             audio.play().then(() => {
-              if (myDialogueId !== currentDialogueId) {
+              if (myDialogueId !== currentDialogueId || isAudioPausedState) {
                 audio.pause();
-                audio.src = "";
+                if (myDialogueId !== currentDialogueId) audio.src = "";
                 return;
               }
               audio.playbackRate = rate;
               audio.preservesPitch = true;
             }).catch(() => {
-              if (myDialogueId === currentDialogueId) {
+              if (myDialogueId === currentDialogueId && !isAudioPausedState) {
                 playDirectHDFallback(current.text, langCode, rate, audio);
               }
             });
             return;
           }
         }
-        if (myDialogueId === currentDialogueId) {
+        if (myDialogueId === currentDialogueId && !isAudioPausedState) {
           playDirectHDFallback(current.text, langCode, rate, audio);
         }
       })
       .catch(() => {
-        if (myDialogueId === currentDialogueId) {
+        if (myDialogueId === currentDialogueId && !isAudioPausedState) {
           playDirectHDFallback(current.text, langCode, rate, audio);
         }
       });

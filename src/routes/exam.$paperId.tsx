@@ -219,8 +219,8 @@ export function AuthenticCBTExamPage() {
       return;
     }
 
-    // Do NOT count down while audio is playing, while student has audio paused, OR before audio has finished playing!
-    if (isSpeaking || isAudioPaused || !isAudioFinished) {
+    // Do NOT count down while audio is playing, while student has paused the timer/audio, OR before audio has finished playing!
+    if (isSpeaking || isAudioPaused || isTimerPaused || !isAudioFinished) {
       return;
     }
 
@@ -245,7 +245,7 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, isSpeaking, isAudioPaused, isAudioFinished, currentQuestions.length, paper.sections.length]);
+  }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, isSpeaking, isAudioPaused, isTimerPaused, isAudioFinished, currentQuestions.length, paper.sections.length]);
 
   const handleStartPrepTimer = (taskId: string, prepMins = 1) => {
     setOralPrepTimeRemaining((prev) => ({ ...prev, [taskId]: prepMins * 60 }));
@@ -855,6 +855,7 @@ export function AuthenticCBTExamPage() {
     const sessionId = ++playAudioSessionRef.current;
     ttsStop();
     setIsAudioPaused(false);
+    setIsTimerPaused(false);
     const qNum = (currentQ as any)?.questionNumber || 1;
     await triggerAcousticSoundForQuestion(qNum);
     
@@ -869,14 +870,29 @@ export function AuthenticCBTExamPage() {
     });
   };
 
+  const handleToggleMainPause = () => {
+    if (isTimerPaused || isAudioPaused) {
+      // Resume EVERYTHING
+      setIsTimerPaused(false);
+      setIsAudioPaused(false);
+      ttsResume();
+    } else {
+      // Pause EVERYTHING
+      setIsTimerPaused(true);
+      setIsAudioPaused(true);
+      ttsPause();
+    }
+  };
+
   const handlePauseResumeAudio = () => {
-    if (isAudioPaused) {
+    if (isAudioPaused || isTimerPaused) {
       ttsResume();
       setIsAudioPaused(false);
+      setIsTimerPaused(false);
     } else {
-      playAudioSessionRef.current++;
       ttsPause();
       setIsAudioPaused(true);
+      setIsTimerPaused(true);
     }
   };
 
@@ -1819,11 +1835,11 @@ export function AuthenticCBTExamPage() {
             <span>{formatTime(timeLeft)}</span>
             {mode === "PRACTICE" && (
               <button
-                onClick={() => setIsTimerPaused(!isTimerPaused)}
+                onClick={handleToggleMainPause}
                 className="ml-0.5 p-0.5 hover:text-white cursor-pointer"
-                title={isTimerPaused ? "Resume Timer" : "Pause Timer"}
+                title={isTimerPaused || isAudioPaused ? "Resume Exam & Audio" : "Pause Exam & Audio"}
               >
-                {isTimerPaused ? <Play className="w-3 h-3 fill-emerald-400" /> : <Pause className="w-3 h-3" />}
+                {isTimerPaused || isAudioPaused ? <Play className="w-3 h-3 fill-emerald-400" /> : <Pause className="w-3 h-3" />}
               </button>
             )}
           </div>
@@ -2057,7 +2073,7 @@ export function AuthenticCBTExamPage() {
 
                       {mode === "PRACTICE" && (
                         <div className="flex items-center gap-2">
-                          {isAudioPaused ? (
+                          {(isAudioPaused || isTimerPaused) ? (
                             <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-amber-900 text-amber-100 border border-amber-700 shadow-sm flex items-center gap-1.5 animate-pulse">
                               <span>⏸️ ⏱️ {qTimeLeft !== null ? `${qTimeLeft}s (En pause)` : "En pause"}</span>
                             </span>
@@ -2145,7 +2161,7 @@ export function AuthenticCBTExamPage() {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => {
-                                if (isSpeaking || isAudioPaused) {
+                                if (isSpeaking || isAudioPaused || isTimerPaused) {
                                   handlePauseResumeAudio();
                                 } else {
                                   handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || 1.0);
@@ -2153,12 +2169,12 @@ export function AuthenticCBTExamPage() {
                               }}
                               className="px-3.5 sm:px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold flex items-center gap-1.5 shadow cursor-pointer active:scale-95 transition-all"
                             >
-                              {isSpeaking ? (
+                              {isSpeaking && !isAudioPaused && !isTimerPaused ? (
                                 <>
                                   <Pause className="w-4 h-4" />
                                   <span>Pause Audio ⏸️</span>
                                 </>
-                              ) : isAudioPaused ? (
+                              ) : (isAudioPaused || isTimerPaused) ? (
                                 <>
                                   <Play className="w-4 h-4" />
                                   <span>Resume Audio ▶️</span>
@@ -2171,7 +2187,7 @@ export function AuthenticCBTExamPage() {
                               )}
                             </button>
 
-                            {(isSpeaking || isAudioPaused) && (
+                            {(isSpeaking || isAudioPaused || isTimerPaused) && (
                               <button
                                 onClick={handleStopAudio}
                                 className="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold flex items-center gap-1 shadow cursor-pointer"
