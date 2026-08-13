@@ -229,7 +229,18 @@ export function stopAudio(): void {
     currentAudioPlayer.currentTime = 0;
     currentAudioPlayer = null;
   }
+  if (typeof window !== "undefined" && window.speechSynthesis) {
+    try {
+      window.speechSynthesis.cancel();
+    } catch {}
+  }
   if (onPlaybackStateChange) onPlaybackStateChange(false);
+}
+
+if (typeof window !== "undefined") {
+  window.addEventListener("beforeunload", () => stopAudio());
+  window.addEventListener("pagehide", () => stopAudio());
+  window.addEventListener("popstate", () => stopAudio());
 }
 
 /**

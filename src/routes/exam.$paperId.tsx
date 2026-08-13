@@ -807,6 +807,14 @@ export function AuthenticCBTExamPage() {
     setIsAudioPaused(false);
   };
 
+  // Clean up audio playback when component unmounts (e.g. user leaves page or changes route)
+  useEffect(() => {
+    return () => {
+      handleStopAudio();
+      ttsStop();
+    };
+  }, []);
+
   // Automatically kill audio and manage audio completion state / auto-play when switching questions!
   useEffect(() => {
     handleStopAudio();
