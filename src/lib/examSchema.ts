@@ -6325,88 +6325,288 @@ function customizeListeningTopicForPaper(topic: ListeningTopicItem, _qNum: numbe
   return { ...topic };
 }
 
-function getDrawingPropositions(sceneIdx: number): { opt: string[]; ans: number } {
+function getDrawingPropositions(sceneIdx: number): { opt: string[]; optEn: string[]; ans: number; type: string } {
   const optionsList = [
-    // 0: Train Station Platform
-    { opt: ["Des voyageurs attendent l'arrivée du train sur le quai.", "Des clients boivent un café à la terrasse d'un bistrot.", "Un homme fait des achats dans un supermarché.", "Des promeneurs marchent dans un parc enneigé."], ans: 0 },
-    // 1: Hotel Reception Desk
-    { opt: ["Une personne commande un plat au restaurant.", "Un client s'adresse au réceptionniste à l'accueil de l'hôtel.", "Un passager monte dans un taxi devant la gare.", "Une femme achète un billet au guichet du cinéma."], ans: 1 },
-    // 2: Bakery Storefront
-    { opt: ["Un mécanicien répare une voiture au garage.", "Un médecin examine un patient dans son cabinet.", "Une cliente achète du pain et des viennoiseries à la boulangerie.", "Un jardinier taille des arbres dans un jardin public."], ans: 2 },
-    // 3: Airport Gate & Plane
-    { opt: ["Les passagers s'installent dans une salle d'embarquement à l'aéroport.", "Des skieurs descendent une piste enneigée en montagne.", "Des étudiants travaillent au calme dans une bibliothèque.", "Un facteur dépose des lettres dans une boîte aux lettres."], ans: 0 },
-    // 4: Metro Ticket Machine
-    { opt: ["Des cyclistes roulent sur une piste cyclable.", "Une personne achète un titre de transport à un distributeur automatique du métro.", "Un serveur apporte des boissons sur un plateau.", "Des enfants jouent sur un terrain de football."], ans: 1 },
-    // 5: Doctor Office
-    { opt: ["Un client demande un renseignement dans une banque.", "Un peintre réalise un tableau dans un atelier.", "Un patient est en consultation chez le médecin.", "Un cuisinier prépare un repas dans une cuisine."], ans: 2 },
-    // 6: Outdoor Terrace Cafe
-    { opt: ["Des clients sont installés à la terrasse d'un café.", "Des voyageurs attendent leur vol dans un aéroport.", "Un mécanicien vérifie le niveau d'huile d'un véhicule.", "Une personne dépose son sac à la consigne automatique."], ans: 0 },
-    // 7: Bus Stop & Street
-    { opt: ["Des randonneurs marchent le long d'une rivière.", "Des personnes attendent l'arrivée du bus à un arrêt en ville.", "Un homme répare son vélo sur le trottoir.", "Des clients font la queue devant un guichet de théâtre."], ans: 1 },
-    // 8: Supermarket Grocery Aisle
-    { opt: ["Un voyageur enregistre ses bagages à l'aéroport.", "Une femme choisit des fruits et légumes au supermarché.", "Un coiffeur coupe les cheveux d'un client dans un salon.", "Des nageurs se baignent dans une piscine municipale."], ans: 1 },
-    // 9: Library Reading Room
-    { opt: ["Un policier dirige la circulation à un carrefour.", "Des personnes lisent et étudient silencieusement dans une bibliothèque.", "Un chauffeur livre des colis à un domicile.", "Des musiciens jouent du piano lors d'un concert."], ans: 1 },
-    // 10: Car Repair Garage
-    { opt: ["Un mécanicien inspecte le moteur d'une voiture dans un garage.", "Un serveur essuie les tables d'un restaurant.", "Des touristes prennent des photos devant un monument historique.", "Un barbier taille la barbe d'un client."], ans: 0 },
-    // 11: Pharmacy Counter
-    { opt: ["Un boulanger prépare des tartes aux pommes.", "Une personne achète des médicaments au comptoir d'une pharmacie.", "Un photographe prend un portrait en studio.", "Des athlètes s'entraînent sur une piste de course."], ans: 1 },
-    // 12: Post Office Counter
-    { opt: ["Un homme envoie un colis recommandé au guichet de la poste.", "Un marin pilote un bateau sur le fleuve.", "Une couturière coud un vêtement dans son atelier.", "Des spectateurs applaudissent à la fin d'un film."], ans: 0 },
-    // 13: Clothing Store
-    { opt: ["Un serveur prend la commande d'une table en terrasse.", "Un mécanicien change les pneus d'un camion.", "Une cliente essaie un manteau dans un magasin de vêtements.", "Un professeur donne un cours devant un tableau vert."], ans: 2 },
-    // 14: Train Dining Car
-    { opt: ["Des voyageurs mangent dans le wagon-restaurant d'un train.", "Des enfants font du vélo dans la cour de récréation.", "Un fermier nourrit des animaux dans une ferme.", "Un dentiste soigne les dents d'un enfant."], ans: 0 },
-    // 15: Airport Baggage Claim
-    { opt: ["Un pompier éteint un feu de forêt.", "Des passagers récupèrent leurs bagages sur le tapis roulant à l'aéroport.", "Un jardinier plante des fleurs dans une serre.", "Un guide explique l'histoire d'un château."], ans: 1 },
-    // 16: Hair Salon
-    { opt: ["Une cliente se fait coiffer dans un salon de coiffure.", "Un livreur transporte des cartons dans un monte-charge.", "Un garde surveille les œuvres d'un musée.", "Un ingénieur travaille devant son ordinateur de bureau."], ans: 0 },
-    // 17: Gas Station
-    { opt: ["Un conducteur fait le plein de carburant à une station-service.", "Un serveur sert des tasses de thé dans un salon.", "Des randonneurs montent vers le sommet d'une colline.", "Un horloger répare un réveil mécanique."], ans: 0 },
-    // 18: Public Park Bench
-    { opt: ["Un policier vérifie les papiers d'un chauffeur.", "Deux personnes discutent assises sur un banc dans un parc public.", "Un cuisinier découpe de la viande en cuisine.", "Des étudiants écoutent une conférence à l'université."], ans: 1 },
-    // 19: Bank Teller Counter
-    { opt: ["Un maçon construit un mur de briques.", "Un client effectue un dépôt d'argent au guichet d'une banque.", "Un marin amarre son navire au port.", "Un photographe développe des clichés dans une chambre noire."], ans: 1 },
-    // 20: Florist Shop
-    { opt: ["Une fleuriste compose un bouquet de fleurs fraîches dans sa boutique.", "Un mécanicien nettoie le pare-brise d'une automobile.", "Un chauffeur de bus valide les tickets des voyageurs.", "Un violoniste répète son morceau de musique."], ans: 0 },
-    // 21: Shoe Store
-    { opt: ["Un serveur verse du vin dans des verres.", "Un client essaie une paire de chaussures dans un magasin.", "Un électricien répare un tableau électrique.", "Un pêcheur attrape un poisson sur un lac."], ans: 1 },
-    // 22: Gym Sports Center
-    { opt: ["Des personnes font du sport et s'entraînent dans une salle de gym.", "Un steward sert des repas aux passagers d'un avion.", "Un cordonnier répare une botte en cuir.", "Un vétérinaire examine un chien sur une table."], ans: 0 },
-    // 23: Cinema Ticket Booth
-    { opt: ["Un serveur prépare des cafés au comptoir.", "Des spectateurs achètent leurs billets au guichet d'un cinéma.", "Un facteur livre un paquet dans un immeuble.", "Un boulanger périt la pâte à pain."], ans: 1 },
-    // 24: Taxi Stand
-    { opt: ["Des passagers montent à bord d'un taxi à une station en ville.", "Des jardiniers arrosent les fleurs d'un jardin public.", "Un infirmier prend la tension d'un patient.", "Un peintre applique de la peinture sur une façade."], ans: 0 },
-    // 25: Bookstore
-    { opt: ["Un client parcourt des ouvrages sur les étagères d'une librairie.", "Un mécanicien vérifie les freins d'une motocyclette.", "Un maître-nageur surveille une plage surveillée.", "Un chauffeur charge du fret dans une camionnette."], ans: 0 },
-    // 26: Optician Shop
-    { opt: ["Un charpentier fabrique un meuble en bois.", "Un client choisit une monture de lunettes chez un opticien.", "Un arbitre siffle une faute pendant un match.", "Un contrôleur vérifie les billets dans le train."], ans: 1 },
-    // 27: Museum Art Gallery
-    { opt: ["Des visiteurs admirent des tableaux accrochés dans une galerie de musée.", "Un cuisinier dresse des assiettes pour le service du soir.", "Un fermier ramasse des légumes dans son potager.", "Un coiffeur applique une coloration capillaire."], ans: 0 },
-    // 28: Ice Cream Parlor Stand
-    { opt: ["Des clients achètent des glaces auprès d'un marchand ambulant.", "Un serrurier remplace la serrure d'une porte d'entrée.", "Un pompier inspecte un extincteur de sécurité.", "Un comptable vérifie des factures sur un ordinateur."], ans: 0 },
-    // 29: Outdoor Fruit Market
-    { opt: ["Un plongeur explore les fonds marins.", "Des consommateurs achètent des fruits frais sur un marché en plein air.", "Un réparateur ajuste la chaîne d'une bicyclette.", "Un hôte d'accueil accueille des visiteurs dans une exposition."], ans: 1 },
-    // 30: Train Ticket Counter
-    { opt: ["Un usager demande un itinéraire au guichet d'information de la gare.", "Un couturier dessine le patron d'une robe.", "Un ouvrier manœuvre une grue sur un chantier.", "Un serveur sert des desserts dans un salon de thé."], ans: 0 },
-    // 31: Laundromat Dry Cleaner
-    { opt: ["Un mécanicien fait la vidange d'un moteur.", "Une personne lave son linge dans une laverie automatique.", "Un journaliste interviewe un passant dans la rue.", "Un boulanger enfourne des tartes aux cerises."], ans: 1 },
-    // 32: Jewelry Store
-    { opt: ["Un client regarde des bijoux exposés dans la vitrine d'une bijouterie.", "Un steward ferme les coffres à bagages d'un avion.", "Un agriculteur conduit un tracteur dans un champ.", "Un plombier répare une fuite sous un évier."], ans: 0 },
-    // 33: Fast Food Cafeteria Counter
-    { opt: ["Un serveur prépare un sandwich derrière le comptoir d'une cafétéria.", "Un déménageur transporte un meuble lourd dans les escaliers.", "Un maître d'hôtel accueille les clients à l'entrée du restaurant.", "Un botaniste étudie des plantes sous une serre."], ans: 0 },
-    // 34: Hardware Store Tools
-    { opt: ["Un peintre dessine un modèle dans son atelier.", "Un bricoleur choisit des outils dans un magasin de bricolage.", "Un marin dresse la voile d'un voilier.", "Un masseur prodigue un soin dans un spa."], ans: 1 },
-    // 35: Ski Resort Snow Street
-    { opt: ["Des skieurs s'équipent au pied des pistes enneigées d'une station.", "Un serveur apporte l'addition aux clients en salle.", "Un guichetier vend des billets de loterie dans un kiosque.", "Un technicien répare une ligne téléphonique."], ans: 0 },
-    // 36: University Lecture Hall
-    { opt: ["Un photographe ajuste son objectif d'appareil photo.", "Des étudiants écoutent attentivement un cours dans un grand amphithéâtre.", "Un serveur essuie le comptoir en fin de journée.", "Un facteur distribue le courrier dans les boîtes."], ans: 1 },
-    // 37: Pet Clinic Vet Office
-    { opt: ["Un mécanicien contrôle la pression des pneus d'une berline.", "Un vétérinaire osculte un chat sur une table d'examen.", "Un barbier rase le visage d'un client au rasoir.", "Un conducteur paie au péage d'une autoroute."], ans: 1 },
-    // 38: Music Store Guitars
-    { opt: ["Un musicien essaie une guitare dans un magasin d'instruments.", "Un boulanger prépare des croissants au beurre.", "Un jardinier tond la pelouse d'une grande propriété.", "Un bagagiste transporte des valises sur un chariot."], ans: 0 },
-    // 39: Parking Meter Street
-    { opt: ["Un automobiliste paie son stationnement à un horodateur dans la rue.", "Un cuisinier fait revenir des légumes dans une poêle.", "Un serveur débarrasse les assiettes d'une table.", "Un marin nettoie le pont d'un navire de pêche."], ans: 0 }
+    // Scene 0: P1Q1 (SPEECH_ACT - Gare ferroviaire (Quai))
+    {
+      opt: ["Pardon monsieur, à quelle heure arrive le train sur ce quai ?","L'addition s'il vous plaît, nous allons régler par carte bancaire.","Où se trouvent les cabines d'essayage pour essayer ce pantalon ?","Deux places pour la séance de vingt heures, s'il vous plaît."],
+      optEn: ["Excuse me sir, what time does the train arrive at this platform?","The check please, we will pay by credit card.","Where are the fitting rooms to try on these pants?","Two tickets for the eight o'clock movie screening, please."],
+      ans: 0,
+      type: "SPEECH_ACT"
+    },
+    // Scene 1: P1Q2 (SCENE_DESCRIPTION - Réception d'hôtel)
+    {
+      opt: ["Une personne commande un plat au restaurant.","Un client s'adresse au réceptionniste à l'accueil de l'hôtel.","Un passager monte dans un taxi devant la gare.","Une femme achète un billet au guichet du cinéma."],
+      optEn: ["A person is ordering a dish at a restaurant.","A guest is speaking with the receptionist at the hotel front desk.","A passenger is getting into a taxi in front of the train station.","A woman is buying a ticket at the cinema box office."],
+      ans: 1,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 2: P1Q3 (SPEECH_ACT - Boulangerie)
+    {
+      opt: ["Faites le plein de carburant sans-plomb, s'il vous plaît.","Ouvrez grand la bouche et respirez profondément.","Bonjour, je voudrais une baguette tradition et deux croissants, s'il vous plaît.","Pourriez-vous vérifier la pression des quatre pneus ?"],
+      optEn: ["Fill up the tank with unleaded fuel, please.","Open your mouth wide and breathe deeply.","Hello, I would like a traditional baguette and two croissants, please.","Could you check the pressure in all four tires?"],
+      ans: 2,
+      type: "SPEECH_ACT"
+    },
+    // Scene 3: P1Q4 (SCENE_DESCRIPTION - Salle d'embarquement aéroport)
+    {
+      opt: ["Les passagers s'installent dans une salle d'embarquement à l'aéroport.","Des skieurs descendent une piste enneigée en montagne.","Des étudiants travaillent au calme dans une bibliothèque.","Un facteur dépose des lettres dans une boîte postale."],
+      optEn: ["Passengers are sitting in an airport departure boarding lounge.","Skiers are heading down a snowy mountain ski slope.","Students are working quietly inside a library.","A mail carrier is placing letters into a mailbox."],
+      ans: 0,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 4: P2Q1 (SPEECH_ACT - Distributeur automatique métro)
+    {
+      opt: ["Une table pour deux personnes en terrasse, s'il vous plaît.","Pour acheter un carnet de dix tickets, je sélectionne cette touche sur l'écran.","Pourriez-vous me couper les cheveux un peu plus court sur les côtés ?","Avez-vous ce modèle de veste en taille quarante ?"],
+      optEn: ["A table for two on the outdoor terrace, please.","To buy a booklet of ten tickets, I select this button on the screen.","Could you cut my hair a bit shorter on the sides?","Do you have this jacket model in size forty?"],
+      ans: 1,
+      type: "SPEECH_ACT"
+    },
+    // Scene 5: P2Q2 (SCENE_DESCRIPTION - Cabinet médical)
+    {
+      opt: ["Un client demande un renseignement dans une agence bancaire.","Un peintre réalise une toile dans son atelier.","Un patient est en consultation médicale chez le médecin.","Un cuisinier prépare un repas dans une cuisine de restaurant."],
+      optEn: ["A customer is asking for information at a bank branch.","A painter is creating a canvas in an art studio.","A patient is in a medical consultation with the doctor.","A chef is preparing a meal inside a restaurant kitchen."],
+      ans: 2,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 6: P2Q3 (SPEECH_ACT - Terrasse de café)
+    {
+      opt: ["Garçon, nous prendrons deux cafés crème et un verre d'eau, s'il vous plaît.","À quelle porte d'embarquement part le vol vers Montréal ?","Je souhaite envoyer ce colis volumineux en recommandé.","Pourriez-vous faire la vidange d'huile de mon moteur ?"],
+      optEn: ["Waiter, we will have two white coffees and a glass of water, please.","Which boarding gate does the flight to Montreal depart from?","I would like to send this large parcel by registered mail.","Could you perform an oil change on my engine?"],
+      ans: 0,
+      type: "SPEECH_ACT"
+    },
+    // Scene 7: P2Q4 (SCENE_DESCRIPTION - Arrêt de bus urbain)
+    {
+      opt: ["Des randonneurs marchent le long d'un sentier forestier.","Des usagers attendent l'arrivée du bus à un arrêt en ville.","Un homme répare la roue de son vélo sur le trottoir.","Des clients font la queue devant l'entrée d'un théâtre."],
+      optEn: ["Hikers are walking along a forest nature trail.","Commuters are waiting for the bus arrival at an urban bus stop.","A man is repairing his bicycle wheel on the sidewalk.","Customers are standing in line in front of a theater entrance."],
+      ans: 1,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 8: P3Q1 (SPEECH_ACT - Rayon fruits et légumes supermarché)
+    {
+      opt: ["Votre passeport et carte d'embarquement, s'il vous plaît.","Combien coûte le kilo de ces pommes rouges bio ?","Votre chambre se trouve au troisième étage avec ascenseur.","Prenez ce médicament trois fois par jour avant chaque repas."],
+      optEn: ["Your passport and boarding pass, please.","How much does a kilogram of these organic red apples cost?","Your room is on the third floor with elevator access.","Take this medication three times a day before each meal."],
+      ans: 1,
+      type: "SPEECH_ACT"
+    },
+    // Scene 9: P3Q2 (SCENE_DESCRIPTION - Bibliothèque)
+    {
+      opt: ["Un agent de police régule la circulation à un carrefour.","Des personnes lisent et étudient silencieusement dans une bibliothèque.","Un livreur dépose des cartons volumineux à un domicile.","Des musiciens jouent d'un instrument lors d'un concert."],
+      optEn: ["A police officer is directing traffic at an intersection.","People are quietly reading and studying in a library.","A delivery driver is dropping off large boxes at a residence.","Musicians are playing instruments during a concert."],
+      ans: 1,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 10: P3Q3 (SPEECH_ACT - Garage automobile)
+    {
+      opt: ["Il y a un bruit anormal sous le capot, pouvez-vous inspecter le moteur ?","Je voudrais réserver une table près de la fenêtre pour ce soir.","Avez-vous une boîte de pansements et du désinfectant ?","Ce livre est emprunté pour une durée de trois semaines."],
+      optEn: ["There is an unusual noise under the hood, can you inspect the engine?","I would like to reserve a table near the window for this evening.","Do you have a box of bandages and antiseptic disinfectant?","This book is borrowed for a period of three weeks."],
+      ans: 0,
+      type: "SPEECH_ACT"
+    },
+    // Scene 11: P3Q4 (SCENE_DESCRIPTION - Pharmacie)
+    {
+      opt: ["Un boulanger enfourne des baguettes dans le four.","Une cliente achète des médicaments au comptoir d'une pharmacie.","Un photographe réalise un portrait dans son studio.","Des athlètes courent sur une piste d'athlétisme."],
+      optEn: ["A baker is putting baguettes into the bread oven.","A customer is buying medicine at a pharmacy counter.","A photographer is taking a portrait in an art studio.","Athletes are running on an athletic track."],
+      ans: 1,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 12: P4Q1 (SPEECH_ACT - Bureau de poste)
+    {
+      opt: ["Je voudrais peser ce paquet et l'envoyer en courrier recommandé international.","Pourriez-vous nous apporter la carte des desserts ?","Je viens pour ma consultation médicale de quatorze heures.","Un aller simple pour Marseille en seconde classe, s'il vous plaît."],
+      optEn: ["I would like to weigh this parcel and send it by international registered mail.","Could you bring us the dessert menu?","I am here for my two o'clock medical appointment.","A one-way second-class ticket to Marseille, please."],
+      ans: 0,
+      type: "SPEECH_ACT"
+    },
+    // Scene 13: P4Q2 (SCENE_DESCRIPTION - Magasin de vêtements)
+    {
+      opt: ["Un serveur prend la commande d'une table en terrasse.","Un mécanicien change les pneus d'un véhicule.","Une cliente essaie un manteau devant un miroir dans un magasin de vêtements.","Un enseignant donne un cours magistral devant un tableau."],
+      optEn: ["A waiter is taking an order from an outdoor terrace table.","A mechanic is changing tires on a vehicle.","A customer is trying on a coat in front of a mirror in a clothing store.","A teacher is giving a lecture in front of a board."],
+      ans: 2,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 14: P4Q3 (SPEECH_ACT - Wagon-restaurant TGV)
+    {
+      opt: ["Bonjour, un sandwich au fromage et une bouteille d'eau gazeuse, s'il vous plaît.","Vos bagages dépassent la limite de vingt-trois kilos autorisée.","Veuillez présenter votre carte d'identité pour retirer ce colis.","Je cherche le rayon des ustensiles de cuisine."],
+      optEn: ["Hello, a cheese sandwich and a bottle of sparkling water, please.","Your luggage exceeds the twenty-three kilogram baggage allowance.","Please present your identity card to collect this parcel.","I am looking for the kitchenware department."],
+      ans: 0,
+      type: "SPEECH_ACT"
+    },
+    // Scene 15: P4Q4 (SCENE_DESCRIPTION - Tapis à bagages aéroport)
+    {
+      opt: ["Des pompiers interviennent sur un lieu d'accident.","Des voyageurs récupèrent leurs valises sur le tapis roulant de l'aéroport.","Un jardinier plante des arbustes dans un parc.","Un guide touristique présente l'histoire d'un monument."],
+      optEn: ["Firefighters are responding to an accident scene.","Travelers are picking up their suitcases from the airport baggage carousel.","A gardener is planting shrubs in a park.","A tour guide is presenting the history of a monument."],
+      ans: 1,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 16: P5Q1 (SPEECH_ACT - Salon de coiffure)
+    {
+      opt: ["Je voudrais juste rafraîchir la coupe et désépaissir les pointes.","Le plein de carburant et vérification du niveau d'huile, s'il vous plaît.","À quelle heure ferme le guichet de retrait des billets ?","Avez-vous des comprimés contre le mal de tête ?"],
+      optEn: ["I would just like a trim and to thin out the ends.","A full tank of fuel and oil level check, please.","What time does the ticket pickup counter close?","Do you have tablets for a headache?"],
+      ans: 0,
+      type: "SPEECH_ACT"
+    },
+    // Scene 17: P5Q2 (SCENE_DESCRIPTION - Station-service)
+    {
+      opt: ["Un automobiliste fait le plein de carburant à une station-service.","Un serveur apporte des consommations dans un salon de thé.","Des randonneurs grimpent le long d'un sentier escarpé.","Un horloger répare le mécanisme d'une pendule ancienne."],
+      optEn: ["A driver is refueling their car at a gas service station.","A waiter is serving beverages inside a tea salon.","Hikers are climbing along a steep mountain path.","A watchmaker is repairing the mechanism of an antique clock."],
+      ans: 0,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 18: P5Q3 (SPEECH_ACT - Banc de parc public)
+    {
+      opt: ["Vos billets de train et pièces d'identité, s'il vous plaît.","Il fait un temps magnifique aujourd'hui, asseyons-nous quelques minutes au soleil.","Voici l'ordonnance pour vos médicaments à prendre matin et soir.","Le tarif est de quinze euros de l'heure pour cette prestation."],
+      optEn: ["Your train tickets and identity documents, please.","The weather is beautiful today, let's sit for a few minutes in the sunshine.","Here is the medical prescription for your medication to take morning and evening.","The rate is fifteen euros per hour for this service."],
+      ans: 1,
+      type: "SPEECH_ACT"
+    },
+    // Scene 19: P5Q4 (SCENE_DESCRIPTION - Guichet bancaire)
+    {
+      opt: ["Un maçon bâtit un mur avec des briques.","Un client effectue une opération bancaire au guichet d'une banque.","Un marin arrime son navire au quai d'un port.","Un photographe effectue des retouches d'images dans son studio."],
+      optEn: ["A bricklayer is building a wall with bricks.","A customer is completing a banking transaction at a bank counter.","A sailor is securing a ship to a port dock.","A photographer is retouching photos in a studio."],
+      ans: 1,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 20: P6Q1 (SPEECH_ACT - Fleuriste)
+    {
+      opt: ["Pourriez-vous me composer un beau bouquet de roses et de lys pour un anniversaire ?","Je cherche une paire de baskets de course en pointure quarante-deux.","Pouvez-vous me réparer cette serrure de porte d'entrée ?","Deux billets aller-retour pour la gare centrale, s'il vous plaît."],
+      optEn: ["Could you arrange a beautiful bouquet of roses and lilies for a birthday?","I am looking for a pair of running sneakers in size forty-two.","Can you repair this front door lock for me?","Two round-trip tickets to the central station, please."],
+      ans: 0,
+      type: "SPEECH_ACT"
+    },
+    // Scene 21: P6Q2 (SCENE_DESCRIPTION - Magasin de chaussures)
+    {
+      opt: ["Un serveur verse une boisson dans un verre.","Un client essaie une paire de chaussures assis dans un magasin.","Un électricien installe des câbles dans un logement.","Un pêcheur prépare ses filets sur une barque."],
+      optEn: ["A server is pouring a drink into a glass.","A customer is trying on a pair of shoes while seated in a store.","An electrician is installing cables inside a home.","A fisherman is preparing nets on a small boat."],
+      ans: 1,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 22: P6Q3 (SPEECH_ACT - Salle de sport)
+    {
+      opt: ["Je termine ma série d'exercices sur ce tapis de course et je vous laisse la place.","Deux menus du jour avec entrée et plat principal, s'il vous plaît.","Votre compte bancaire présente un solde créditeur positif.","Veuillez composter votre titre de transport avant de monter à bord."],
+      optEn: ["I am finishing my workout set on this treadmill and will let you have the spot.","Two daily set menus with appetizer and main course, please.","Your bank account shows a positive credit balance.","Please validate your transit ticket before boarding."],
+      ans: 0,
+      type: "SPEECH_ACT"
+    },
+    // Scene 23: P6Q4 (SCENE_DESCRIPTION - Guichet de cinéma)
+    {
+      opt: ["Un livreur transporte un paquet dans les escaliers.","Un serveur prépare des boissons derrière un bar.","Des spectateurs achètent leurs places au guichet d'un cinéma.","Un artisan pétrit de la pâte dans son atelier."],
+      optEn: ["A delivery worker is carrying a parcel up the stairs.","A server is making drinks behind a bar counter.","Spectators are purchasing movie tickets at a cinema box office.","A craftsman is kneading dough in a workshop."],
+      ans: 2,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 24: P7Q1 (SPEECH_ACT - Station de taxi urbaine)
+    {
+      opt: ["Bonjour chauffeur, pouvez-vous m'emmener à l'aéroport international, s'il vous plaît ?","Je prends rendez-vous pour un contrôle dentaire mardi matin.","Pourriez-vous me montrer les montures de lunettes en vitrine ?","Je souhaite réserver une table pour quatre personnes ce soir."],
+      optEn: ["Hello driver, could you take me to the international airport, please?","I am making an appointment for a dental check-up on Tuesday morning.","Could you show me the spectacle frames in the display window?","I would like to book a table for four people tonight."],
+      ans: 0,
+      type: "SPEECH_ACT"
+    },
+    // Scene 25: P7Q2 (SCENE_DESCRIPTION - Librairie)
+    {
+      opt: ["Un sauveteur surveille l'océan depuis son poste de garde.","Un client feuillette des livres devant les étagères d'une librairie.","Un garagiste vérifie le système de freinage d'un scooter.","Un chauffeur charge des bagages dans le coffre d'un véhicule."],
+      optEn: ["A lifeguard is watching the ocean from a lifeguard station.","A customer is browsing books in front of bookstore shelves.","A mechanic is checking the braking system of a scooter.","A driver is loading luggage into the trunk of a vehicle."],
+      ans: 1,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 26: P7Q3 (SPEECH_ACT - Magasin d'optique)
+    {
+      opt: ["Puis-je essayer cette monture noire devant le miroir pour voir si elle me va bien ?","Deux boules de glace chocolat et pistache dans un cornet, s'il vous plaît.","Pouvez-vous peser ce paquet et y coller un timbre prioritaire ?","Quel est le prix au kilo de ces bananes mûres ?"],
+      optEn: ["May I try on these black frames in front of the mirror to see if they suit me?","Two scoops of chocolate and pistachio ice cream in a cone, please.","Can you weigh this package and affix a priority stamp?","What is the price per kilogram for these ripe bananas?"],
+      ans: 0,
+      type: "SPEECH_ACT"
+    },
+    // Scene 27: P7Q4 (SCENE_DESCRIPTION - Galerie de musée d'art)
+    {
+      opt: ["Un cuisinier prépare des entrées froides en cuisine.","Un agriculteur récolte des légumes dans un champ.","Un coiffeur applique un soin capillaire sur cheveux mouillés.","Des visiteurs contemplent des tableaux exposés sur les murs d'un musée."],
+      optEn: ["A chef is preparing cold appetizers in the kitchen.","A farmer is harvesting vegetables in a field.","A hairdresser is applying a hair treatment to wet hair.","Visitors are admiring paintings displayed on museum gallery walls."],
+      ans: 3,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 28: P8Q1 (SPEECH_ACT - Kiosque marchand de glaces)
+    {
+      opt: ["Une glace deux boules vanille et fraise avec un peu de chantilly, s'il vous plaît.","À quelle voie part le train rapide pour Strasbourg ?","Combien de temps dure le cycle de lavage à soixante degrés ?","Je voudrais acheter une boîte d'outils de bricolage."],
+      optEn: ["A two-scoop vanilla and strawberry ice cream with whipped cream, please.","Which track does the high-speed train to Strasbourg leave from?","How long does the sixty-degree laundry wash cycle take?","I would like to buy a DIY home tool box."],
+      ans: 0,
+      type: "SPEECH_ACT"
+    },
+    // Scene 29: P8Q2 (SCENE_DESCRIPTION - Marché de primeurs en plein air)
+    {
+      opt: ["Un plongeur explore la faune marine sous l'eau.","Des passants achètent des fruits et légumes frais sur un marché de rue.","Un réparateur ajuste les freins d'une bicyclette.","Un réceptionniste accueille des congressistes dans un hall d'hôtel."],
+      optEn: ["A scuba diver is exploring underwater marine life.","Passersby are buying fresh fruits and vegetables at an open-air street market.","A bicycle repair technician is adjusting bicycle brakes.","A hotel receptionist is welcoming conference attendees in a hotel lobby."],
+      ans: 1,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 30: P8Q3 (SPEECH_ACT - Comptoir information gare)
+    {
+      opt: ["Bonjour madame, pouvez-vous m'indiquer le quai de correspondance pour le prochain train ?","Apportez-moi un café serré et l'addition, s'il vous plaît.","Je voudrais essayer ce collier en or exposé dans la vitrine.","À quelle heure commence la séance de cinéma ?"],
+      optEn: ["Hello madam, could you tell me the connecting platform for the next train?","Please bring me a strong espresso coffee and the bill.","I would like to try on this gold necklace displayed in the glass cabinet.","What time does the movie screening begin?"],
+      ans: 0,
+      type: "SPEECH_ACT"
+    },
+    // Scene 31: P8Q4 (SCENE_DESCRIPTION - Laverie automatique)
+    {
+      opt: ["Un journaliste pose des questions à un passant dans la rue.","Une cliente charge du linge dans une machine à laver automatique.","Un mécanicien vérifie le niveau d'huile d'une voiture.","Un pâtissier étale de la pâte sur un plan de travail."],
+      optEn: ["A journalist is asking questions to a pedestrian on the street.","A customer is loading laundry into an automatic washing machine.","A mechanic is checking engine oil level in a car.","A pastry chef is rolling out dough on a work counter."],
+      ans: 1,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 32: P9Q1 (SPEECH_ACT - Bijouterie)
+    {
+      opt: ["Pourriez-vous me montrer cette montre argentée exposée dans la vitrine ?","Un sandwich baguette au thon et crudités, s'il vous plaît.","Combien coûte ce marteau et ce jeu de tournevis ?","Quelle est la météo sur les pistes de ski ce matin ?"],
+      optEn: ["Could you show me this silver watch displayed inside the glass case?","A tuna and vegetable baguette sandwich, please.","How much does this claw hammer and screwdriver set cost?","What is the weather forecast on the ski slopes this morning?"],
+      ans: 0,
+      type: "SPEECH_ACT"
+    },
+    // Scene 33: P9Q2 (SCENE_DESCRIPTION - Comptoir cafétéria)
+    {
+      opt: ["Un déménageur monte un canapé lourd dans les escaliers.","Un jardinier arrose des plantes dans une serre tropicale.","Un employé prépare un sandwich frais derrière le comptoir d'une cafétéria.","Un maître d'hôtel guide des convives vers leur table réservée."],
+      optEn: ["A mover is carrying a heavy sofa up the staircase.","A gardener is watering plants inside a tropical greenhouse.","An employee is preparing a fresh sandwich behind a cafeteria counter.","A head waiter is guiding dinner guests to their reserved table."],
+      ans: 2,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 34: P9Q3 (SPEECH_ACT - Magasin de bricolage)
+    {
+      opt: ["Je cherche une boîte de vis et des chevilles adaptées pour fixer une étagère au mur.","Je voudrais prendre un forfait de ski pour la journée.","Combien de temps faut-il pour faire vacciner mon chat ?","Puis-je essayer cette guitare classique dans la cabine insonorisée ?"],
+      optEn: ["I am looking for a box of screws and wall anchors to mount a shelf on the wall.","I would like to buy a one-day ski lift pass.","How long does it take to get my cat vaccinated?","May I try this classical guitar in the soundproof testing room?"],
+      ans: 0,
+      type: "SPEECH_ACT"
+    },
+    // Scene 35: P9Q4 (SCENE_DESCRIPTION - Station de ski alpine)
+    {
+      opt: ["Un vendeur de journaux sert des clients dans un kiosque de presse.","Un agent technique répare un réverbère dans la rue.","Des skieurs en tenue d'hiver ajustent leur matériel au bas des pistes.","Un serveur apporte un plateau de boissons chaudes dans un refuge."],
+      optEn: ["A newsagent is serving customers at a press kiosk.","A maintenance technician is repairing a street lamppost.","Skiers in winter gear are adjusting their equipment at the base of the slopes.","A waiter is carrying a tray of hot drinks inside a mountain chalet."],
+      ans: 2,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 36: P10Q1 (SPEECH_ACT - Amphithéâtre universitaire)
+    {
+      opt: ["Excusez-moi professeur, pourriez-vous réexpliquer la formule écrite au tableau ?","Mon chat ne mange plus depuis deux jours, pouvez-vous l'examiner ?","Je voudrais acheter un jeu de cordes pour guitare acoustique.","Il me faut de la monnaie pour payer l'horodateur de stationnement."],
+      optEn: ["Excuse me professor, could you please re-explain the formula written on the board?","My cat hasn't eaten for two days, can you examine him?","I would like to buy a set of acoustic guitar strings.","I need some coins to pay for the parking meter."],
+      ans: 0,
+      type: "SPEECH_ACT"
+    },
+    // Scene 37: P10Q2 (SCENE_DESCRIPTION - Clinique vétérinaire)
+    {
+      opt: ["Un vétérinaire en blouse ausculte un chat posé sur une table de consultation.","Un coiffeur rase la barbe d'un client au coupe-choux.","Un automobiliste règle son péage à une barrière d'autoroute.","Un mécanicien remplace une roue crevée sur un utilitaire."],
+      optEn: ["A veterinarian in a white coat is examining a cat on an examination table.","A barber is shaving a customer's beard with a straight razor.","A driver is paying toll at a highway toll booth.","A mechanic is replacing a flat tire on a van."],
+      ans: 0,
+      type: "SCENE_DESCRIPTION"
+    },
+    // Scene 38: P10Q3 (SPEECH_ACT - Magasin de musique)
+    {
+      opt: ["Puis-je accorder cette guitare acoustique et la tester quelques minutes ?","Un ticket de stationnement pour deux heures dans cette zone, s'il vous plaît.","Avez-vous des manuels d'histoire pour les cours universitaires ?","Ce médicament pour animal est-il délivré sans ordonnance ?"],
+      optEn: ["May I tune this acoustic guitar and test it out for a few minutes?","A two-hour parking ticket for this street zone, please.","Do you have history textbooks for university courses?","Is this pet medication available without a prescription?"],
+      ans: 0,
+      type: "SPEECH_ACT"
+    },
+    // Scene 39: P10Q4 (SCENE_DESCRIPTION - Horodateur de rue)
+    {
+      opt: ["Un cuisinier fait griller des aliments sur une plaque chauffante.","Un automobiliste insère de la monnaie dans un horodateur sur le trottoir.","Un marin décharge des caisses de poissons d'un chalutier.","Un serveur nettoie les verres au bar d'un bistrot."],
+      optEn: ["A cook is grilling food on a hot griddle plate.","A motorist is inserting coins into a sidewalk parking meter.","A fisherman is unloading crates of fish from a trawler.","A server is wiping glasses at a bistro bar."],
+      ans: 1,
+      type: "SCENE_DESCRIPTION"
+    },
   ];
   return optionsList[sceneIdx % optionsList.length];
 }
@@ -7055,7 +7255,7 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
     }
 
     const seed = seedOffset * 100 + i;
-    const { options, correctIndex, correctText, optionImages } = shuffleOptions(topicOpt, topicAns, seed, rawImages);
+    const { options, correctIndex, correctText, optionImages, optionsEnglish: shuffledOptionsEn } = shuffleOptions(topicOpt, topicAns, seed, rawImages, (t as any).optionsEnglish);
 
     const itemLevel = t.level || "A1";
     const specificHint = (t as any).hint || `Level ${itemLevel} Listening Guidance: Focus on the speaker's main intent and tone. Pay attention to key transition words (e.g. "cependant", "en revanche") to identify the correct message without guessing.`;
@@ -7085,10 +7285,10 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
 
     const speakingRate = i <= 7 ? 0.85 : i <= 15 ? 0.92 : i <= 25 ? 1.00 : i <= 33 ? 1.15 : i <= 36 ? 1.25 : 1.30;
 
-    const optionsEn0 = (t as any).optionsEnglish?.[0] || translateOptionToEnglish(options[0]);
-    const optionsEn1 = (t as any).optionsEnglish?.[1] || translateOptionToEnglish(options[1]);
-    const optionsEn2 = (t as any).optionsEnglish?.[2] || translateOptionToEnglish(options[2]);
-    const optionsEn3 = (t as any).optionsEnglish?.[3] || translateOptionToEnglish(options[3]);
+    const optionsEn0 = shuffledOptionsEn?.[0] || (t as any).optionsEnglish?.[0] || translateOptionToEnglish(options[0]);
+    const optionsEn1 = shuffledOptionsEn?.[1] || (t as any).optionsEnglish?.[1] || translateOptionToEnglish(options[1]);
+    const optionsEn2 = shuffledOptionsEn?.[2] || (t as any).optionsEnglish?.[2] || translateOptionToEnglish(options[2]);
+    const optionsEn3 = shuffledOptionsEn?.[3] || (t as any).optionsEnglish?.[3] || translateOptionToEnglish(options[3]);
 
     let questionPromptEn = QUESTION_PROMPT_ENGLISH_MAP[questionTextPrompt] || (t as any).questionPromptEnglish;
     if (!questionPromptEn) {
