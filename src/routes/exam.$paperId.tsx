@@ -794,8 +794,6 @@ export function AuthenticCBTExamPage() {
   const handleSelectOption = (qId: string, optionIdx: number) => {
     if (isSubmitted || (mode === "PRACTICE" && checkedMap[qId])) return;
     setSelectedAnswers((prev) => ({ ...prev, [qId]: optionIdx }));
-    // FEI CBT Rule (Both Exam & Practice Modes): Selecting choice A, B, C, D automatically reveals the question prompt!
-    setShowQuestionPrompt(true);
     // In Practice Mode, if audio is not actively playing, selecting a choice also unlocks the response timer countdown!
     if (mode === "PRACTICE" && !isSpeaking && !isAudioPaused) {
       setIsAudioFinished(true);
@@ -828,9 +826,8 @@ export function AuthenticCBTExamPage() {
       const initialTimer = (currentQ as any).perQuestionTimerSeconds || (qNum <= 10 ? 15 : qNum <= 26 ? 20 : 25);
       setQTimeLeft(initialTimer);
 
-      // Q30-Q39 are always printed on screen per FEI rules, or if student already selected an answer
-      const hasAnswer = currentQ?.id ? selectedAnswers?.[currentQ.id] !== undefined : false;
-      if (qNum >= 30 || hasAnswer) {
+      // Q30-Q39 prompt text is printed on screen per FEI rules. Q1-Q29 prompt text stays strictly hidden by default.
+      if (qNum >= 30) {
         setShowQuestionPrompt(true);
       } else {
         setShowQuestionPrompt(false);
@@ -2334,11 +2331,13 @@ export function AuthenticCBTExamPage() {
               <div className="space-y-4">
                 <div className="space-y-1">
                   <h3 className="text-sm sm:text-base font-bold leading-snug text-slate-950 dark:text-slate-100">
-                    {currentQ.questionInAudio && !showTranscript && (currentQ.questionNumber || 0) < 34
-                      ? `Question Audio N°${currentQ.questionNumber}`
+                    {currentSection.type === "COMPREHENSION_ORALE" && (currentQ.questionNumber || 0) < 30
+                      ? (mode === "PRACTICE" && showQuestionPrompt)
+                        ? currentQ.text
+                        : `Question Audio N°${currentQ.questionNumber}`
                       : currentQ.text}
                   </h3>
-                  {currentQ.questionInAudio && !showTranscript && (currentQ.questionNumber || 0) < 34 && (
+                  {currentSection.type === "COMPREHENSION_ORALE" && (currentQ.questionNumber || 0) < 30 && (mode === "EXAM" || !showQuestionPrompt) && (
                     <p className="text-xs text-purple-700 dark:text-purple-400 font-medium italic">
                       Écoutez la question posée à la fin du document audio et choisissez l'option (A, B, C, D) ci-dessous.
                     </p>
