@@ -173,7 +173,14 @@ export function speak(
 /**
  * Direct HD MP3 Audio Stream Fallback (Server-Side Proxy Fallback - Zero Browser CORS Errors / Zero Skipped Audio Lines)
  */
-function playDirectHDFallback(text: string, langCode: string, rate: number, audio: HTMLAudioElement, gender: "female" | "male" = "female") {
+function playDirectHDFallback(
+  text: string,
+  langCode: string,
+  rate: number,
+  audio: HTMLAudioElement,
+  gender: "female" | "male" = "female",
+  onEnded?: () => void
+) {
   apiFetch("/tts/speak", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -201,24 +208,84 @@ function playDirectHDFallback(text: string, langCode: string, rate: number, audi
           audio.src = src;
           audio.playbackRate = rate;
           audio.play().catch(() => {
-            // Trigger onended manually if autoplay was blocked so next lines continue
-            if (audio.onended) (audio.onended as any)(new Event("ended"));
+            speakWebSpeech(text, langCode, rate, gender, onEnded || (() => {
+              if (audio.onended) (audio.onended as any)(new Event("ended"));
+            }));
           });
-        } else {
-          if (audio.onended) (audio.onended as any)(new Event("ended"));
+          return;
         }
-      } else {
-        if (audio.onended) (audio.onended as any)(new Event("ended"));
       }
+      speakWebSpeech(text, langCode, rate, gender, onEnded || (() => {
+        if (audio.onended) (audio.onended as any)(new Event("ended"));
+      }));
     })
     .catch(() => {
-      if (audio.onended) (audio.onended as any)(new Event("ended"));
+      speakWebSpeech(text, langCode, rate, gender, onEnded || (() => {
+        if (audio.onended) (audio.onended as any)(new Event("ended"));
+      }));
     });
 }
 
-function speakWebSpeech(text: string, langCode: string, rate: number, gender: "female" | "male" = "female") {
-  // WebSpeech API is 100% disabled to prevent robotic OS voices from playing over Neural TTS
-  return;
+function speakWebSpeech(
+  text: string,
+  langCode: string,
+  rate: number,
+  gender: "female" | "male" = "female",
+  onEnded?: () => void
+) {
+  if (typeof window === "undefined" || !window.speechSynthesis) {
+    if (onEnded) onEnded();
+    return;
+  }
+  try {
+    window.speechSynthesis.cancel();
+    const clean = text.replace(/^[A-Za-z0-9\s]+:\s*/, "").trim();
+    const utterance = new SpeechSynthesisUtterance(clean);
+    const effectiveLang = langCode === "fr" ? "fr-FR" : langCode;
+    utterance.lang = effectiveLang;
+    utterance.rate = Math.min(2.0, Math.max(0.5, rate));
+
+    const voices = window.speechSynthesis.getVoices();
+    const langVoices = voices.filter(v => v.lang.toLowerCase().startsWith(langCode));
+
+    if (langVoices.length > 0) {
+      if (gender === "male") {
+        const maleVoice = langVoices.find(v => /male|paul|henri|thomas|nicolas|jean|guy|antoine|bruno|david|claude/i.test(v.name));
+        if (maleVoice) {
+          utterance.voice = maleVoice;
+        } else {
+          utterance.voice = langVoices[0];
+          utterance.pitch = 0.82;
+        }
+      } else {
+        const femaleVoice = langVoices.find(v => /female|julie|hortense|amelie|chloe|celine|virginie|florence|denise/i.test(v.name));
+        if (femaleVoice) {
+          utterance.voice = femaleVoice;
+        } else {
+          utterance.voice = langVoices[langVoices.length - 1];
+          utterance.pitch = 1.18;
+        }
+      }
+    } else {
+      utterance.pitch = gender === "male" ? 0.82 : 1.18;
+    }
+
+    if (onPlaybackStateChange) onPlaybackStateChange(true);
+
+    utterance.onend = () => {
+      if (onPlaybackStateChange) onPlaybackStateChange(false);
+      if (onEnded) onEnded();
+    };
+    utterance.onerror = () => {
+      if (onPlaybackStateChange) onPlaybackStateChange(false);
+      if (onEnded) onEnded();
+    };
+
+    window.speechSynthesis.speak(utterance);
+  } catch {
+    if (onPlaybackStateChange) onPlaybackStateChange(false);
+    if (onEnded) onEnded();
+  }
 }
 
 export function stopAudio(): void {

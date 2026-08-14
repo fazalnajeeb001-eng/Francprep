@@ -857,10 +857,11 @@ export function AuthenticCBTExamPage() {
     setIsAudioPaused(false);
     setIsTimerPaused(false);
     const qNum = (currentQ as any)?.questionNumber || 1;
-    await triggerAcousticSoundForQuestion(qNum);
     
-    // If student pressed pause/stop while chime was playing, cancel audio playback!
-    if (playAudioSessionRef.current !== sessionId) return;
+    // Trigger acoustic chime in parallel without blocking user audio gesture
+    try {
+      triggerAcousticSoundForQuestion(qNum);
+    } catch {}
 
     const fullTextToPlay = currentQ?.transcript || text;
     ttsSpeakListening(fullTextToPlay, lang, rate, "female", () => {
