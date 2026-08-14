@@ -1072,7 +1072,11 @@ export function AuthenticCBTExamPage() {
             coherenceScore: typeof data.coherenceScore === 'number' ? data.coherenceScore : (typeof data.cohesionScore === 'number' ? data.cohesionScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4))),
             lexicalScore: typeof data.lexicalScore === 'number' ? data.lexicalScore : (typeof data.vocabularyScore === 'number' ? data.vocabularyScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4))),
             grammarScore: typeof data.grammarScore === 'number' ? data.grammarScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
-            feedback: data.feedback || `Diagnostic Evaluation (TCF Format): Total ${totalScoreOutOf20}/20.`
+            feedback: data.feedback || `Diagnostic Evaluation (TCF Format): Total ${totalScoreOutOf20}/20.`,
+            criterionFeedback: data.criterionFeedback,
+            levelUpAdvice: data.levelUpAdvice,
+            corrections: Array.isArray(data.corrections) ? data.corrections : [],
+            tips: Array.isArray(data.tips) ? data.tips : []
           }
         }));
         setEvaluatingWriting((prev) => ({ ...prev, [taskId]: false }));
@@ -3139,29 +3143,87 @@ export function AuthenticCBTExamPage() {
                           {aiEval.feedback}
                         </div>
                       ) : (
-                        <div className="space-y-3">
+                        <div className="space-y-3.5">
+                          {/* 4 Criteria Scores */}
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
-                            <div className="p-2 rounded bg-white dark:bg-slate-900 border border-pink-200 dark:border-pink-900 font-medium">
-                              <span className="text-slate-500 text-[10px] block font-bold">Task Fulfillment</span>
-                              <span className="text-pink-600 font-extrabold text-xs">{aiEval.taskFulfillmentScore} / 5</span>
+                            <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-pink-200 dark:border-pink-900 font-medium shadow-xs">
+                              <span className="text-slate-500 text-[10px] block font-bold uppercase tracking-wide">1. Adéquation</span>
+                              <span className="text-pink-600 font-extrabold text-sm">{aiEval.taskFulfillmentScore} / 5</span>
+                              {aiEval.criterionFeedback?.taskFulfillment && (
+                                <p className="text-[10px] text-slate-600 dark:text-slate-400 mt-1 leading-snug">{aiEval.criterionFeedback.taskFulfillment}</p>
+                              )}
                             </div>
-                            <div className="p-2 rounded bg-white dark:bg-slate-900 border border-pink-200 dark:border-pink-900 font-medium">
-                              <span className="text-slate-500 text-[10px] block font-bold">Coherence & Connectors</span>
-                              <span className="text-purple-600 font-extrabold text-xs">{aiEval.coherenceScore} / 5</span>
+                            <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 font-medium shadow-xs">
+                              <span className="text-slate-500 text-[10px] block font-bold uppercase tracking-wide">2. Cohérence</span>
+                              <span className="text-purple-600 font-extrabold text-sm">{aiEval.coherenceScore} / 5</span>
+                              {aiEval.criterionFeedback?.coherence && (
+                                <p className="text-[10px] text-slate-600 dark:text-slate-400 mt-1 leading-snug">{aiEval.criterionFeedback.coherence}</p>
+                              )}
                             </div>
-                            <div className="p-2 rounded bg-white dark:bg-slate-900 border border-pink-200 dark:border-pink-900 font-medium">
-                              <span className="text-slate-500 text-[10px] block font-bold">Lexical Variety</span>
-                              <span className="text-indigo-600 font-extrabold text-xs">{aiEval.lexicalScore} / 5</span>
+                            <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-indigo-200 dark:border-indigo-900 font-medium shadow-xs">
+                              <span className="text-slate-500 text-[10px] block font-bold uppercase tracking-wide">3. Lexique</span>
+                              <span className="text-indigo-600 font-extrabold text-sm">{aiEval.lexicalScore} / 5</span>
+                              {aiEval.criterionFeedback?.lexical && (
+                                <p className="text-[10px] text-slate-600 dark:text-slate-400 mt-1 leading-snug">{aiEval.criterionFeedback.lexical}</p>
+                              )}
                             </div>
-                            <div className="p-2 rounded bg-white dark:bg-slate-900 border border-pink-200 dark:border-pink-900 font-medium">
-                              <span className="text-slate-500 text-[10px] block font-bold">Morphosyntax</span>
-                              <span className="text-blue-600 font-extrabold text-xs">{aiEval.grammarScore} / 5</span>
+                            <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-900 font-medium shadow-xs">
+                              <span className="text-slate-500 text-[10px] block font-bold uppercase tracking-wide">4. Morphosyntaxe</span>
+                              <span className="text-blue-600 font-extrabold text-sm">{aiEval.grammarScore} / 5</span>
+                              {aiEval.criterionFeedback?.morphosyntax && (
+                                <p className="text-[10px] text-slate-600 dark:text-slate-400 mt-1 leading-snug">{aiEval.criterionFeedback.morphosyntax}</p>
+                              )}
                             </div>
                           </div>
 
-                          <p className="leading-relaxed font-medium p-3 rounded bg-white dark:bg-slate-900 border border-pink-200 dark:border-pink-900">
+                          {/* Diagnostic Summary */}
+                          <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-pink-200 dark:border-pink-900 leading-relaxed font-medium text-slate-800 dark:text-slate-200 text-xs">
+                            <span className="font-bold text-pink-700 dark:text-pink-400 block mb-1">📋 Diagnostic Examiner Summary:</span>
                             {aiEval.feedback}
-                          </p>
+                          </div>
+
+                          {/* Level-Up Strategy Blueprint */}
+                          {aiEval.levelUpAdvice && (
+                            <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800 leading-relaxed font-medium text-emerald-950 dark:text-emerald-200 text-xs">
+                              <span className="font-extrabold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5 mb-1 text-xs">
+                                <span>🚀 Level-Up Strategy (How to reach the next NCLC Band):</span>
+                              </span>
+                              <p className="text-[11px] leading-relaxed">{aiEval.levelUpAdvice}</p>
+                            </div>
+                          )}
+
+                          {/* Sentence-by-Sentence Corrections */}
+                          {aiEval.corrections && aiEval.corrections.length > 0 && (
+                            <div className="p-3.5 rounded-xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 space-y-2 text-xs">
+                              <div className="flex items-center gap-1.5 font-extrabold text-amber-900 dark:text-amber-300 text-xs uppercase tracking-wide">
+                                <span>🔍 Sentence-by-Sentence Pedagogical Corrections ({aiEval.corrections.length})</span>
+                              </div>
+                              <div className="space-y-2 mt-2">
+                                {aiEval.corrections.map((c: any, cIdx: number) => (
+                                  <div key={cIdx} className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-amber-200 dark:border-amber-900/60 text-[11px] space-y-1">
+                                    <div className="flex items-center gap-2 font-mono text-[11px]">
+                                      <span className="line-through text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 px-1.5 py-0.5 rounded">{c.original}</span>
+                                      <span className="text-slate-400">➔</span>
+                                      <span className="text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded">{c.corrected}</span>
+                                    </div>
+                                    <p className="text-slate-600 dark:text-slate-300 text-[10px] leading-relaxed font-sans">{c.explanation}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Actionable Tips */}
+                          {aiEval.tips && aiEval.tips.length > 0 && (
+                            <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900 text-indigo-950 dark:text-indigo-200 text-xs space-y-1">
+                              <span className="font-bold text-indigo-800 dark:text-indigo-300 block mb-0.5">💡 Key Examiner Tips:</span>
+                              <ul className="list-disc list-inside space-y-0.5 text-[11px] text-slate-700 dark:text-slate-300">
+                                {aiEval.tips.map((tip: string, tIdx: number) => (
+                                  <li key={tIdx}>{tip}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>

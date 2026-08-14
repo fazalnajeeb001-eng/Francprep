@@ -14,6 +14,13 @@ export interface ComprehensiveWritingFeedback {
   lexicalScore: number;
   grammarScore: number;
   feedback: string;
+  criterionFeedback?: {
+    taskFulfillment: string;
+    coherence: string;
+    lexical: string;
+    morphosyntax: string;
+  };
+  levelUpAdvice?: string;
   corrections: Array<{ original: string; corrected: string; explanation: string }>;
   tips: string[];
 }
@@ -151,6 +158,58 @@ export class WritingService {
 
     const ratio = matchedCount / words.length;
     return ratio >= 0.22;
+  }
+
+  public checkThematicRelevance(text: string, promptText?: string, titleText?: string, expectedText?: string): { isRelevant: boolean; keywordMatches: number; matchedKeywords: string[] } {
+    if (!text || text.trim().length < 20) {
+      return { isRelevant: true, keywordMatches: 0, matchedKeywords: [] };
+    }
+
+    const fullPromptContext = `${titleText || ''} ${promptText || ''} ${expectedText || ''}`.toLowerCase();
+    if (fullPromptContext.trim().length < 10) {
+      return { isRelevant: true, keywordMatches: 0, matchedKeywords: [] };
+    }
+
+    // Stop words to exclude
+    const stopWords = new Set([
+      'dans', 'pour', 'avec', 'sans', 'sous', 'sur', 'chez', 'vers', 'par',
+      'votre', 'vous', 'nous', 'leur', 'leurs', 'notre', 'mon', 'mes', 'tes', 'ton', 'son', 'ses',
+      'cette', 'cet', 'ces', 'ceci', 'cela', 'quel', 'quels', 'quelle', 'quelles',
+      'sont', 'être', 'avoir', 'faire', 'dire', 'pouvoir', 'vouloir', 'devoir', 'savoir',
+      'plus', 'moins', 'très', 'bien', 'tout', 'tous', 'toute', 'toutes', 'aussi', 'comme',
+      'tcf', 'canada', 'tâche', 'tache', 'épreuve', 'consigne', 'texte', 'mots', 'words', 'sample', 'exemplar', 'response',
+      'rédigez', 'écrivez', 'donnez', 'expliquez', 'décrivez', 'présentez', 'posez', 'questions', 'message', 'courriel',
+      'numéro', 'papier', 'sujet', 'épreuve', 'partie'
+    ]);
+
+    // Extract core keywords from prompt (length >= 4 and not stop word)
+    const promptKeywords = fullPromptContext
+      .replace(/[^\w\sàâäéèêëîïôöùûüçœæ]/g, ' ')
+      .split(/\s+/)
+      .filter(w => w.length >= 4 && !stopWords.has(w));
+
+    const uniquePromptKeywords = Array.from(new Set(promptKeywords));
+    if (uniquePromptKeywords.length === 0) {
+      return { isRelevant: true, keywordMatches: 0, matchedKeywords: [] };
+    }
+
+    const textLower = text.toLowerCase().replace(/[^\w\sàâäéèêëîïôöùûüçœæ]/g, ' ');
+    const matchedKeywords: string[] = [];
+
+    for (const kw of uniquePromptKeywords) {
+      const stem = kw.slice(0, Math.min(kw.length, 5));
+      const regex = new RegExp(`\\b${stem}\\w*\\b`, 'i');
+      if (regex.test(textLower)) {
+        matchedKeywords.push(kw);
+      }
+    }
+
+    const words = text.trim().split(/\s+/);
+    if (words.length >= 30 && uniquePromptKeywords.length >= 3 && matchedKeywords.length === 0) {
+      return { isRelevant: false, keywordMatches: 0, matchedKeywords: [] };
+    }
+
+    return { isRelevant: true, keywordMatches: matchedKeywords.length, matchedKeywords };
   }
 
   public detectFrenchAccentAndGrammarIssues(text: string): Array<{ original: string; corrected: string; explanation: string }> {
@@ -391,6 +450,37 @@ export class WritingService {
       }
     }
 
+    // 3. CRITICAL OFF-TOPIC / HORS-SUJET CHECK: If student submits an unrelated essay or random text
+    const relevance = this.checkThematicRelevance(text, taskPrompt, lessonTitle, expectedAnswer);
+    if (!relevance.isRelevant) {
+      return {
+        score: 0,
+        scoreOutOf20: 0,
+        nclcGrade: 'NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet)',
+        cefrLevel: 'N/A',
+        expressEntryPoints: 0,
+        taskFulfillmentScore: 0,
+        coherenceScore: 0,
+        lexicalScore: 0,
+        grammarScore: 0,
+        feedback: '🚨 ZERO GRADE (Score: 0/20 — Hors-Sujet / Off-Topic): The submitted text is completely unrelated to the assigned prompt scenario. In official France Éducation International (FEI) examinations, any response that fails to answer the required prompt scenario receives an automatic zero mark, regardless of French grammatical or stylistic complexity.',
+        criterionFeedback: {
+          taskFulfillment: 'Task Fulfillment: 0/5 (Hors-Sujet). The submission does not address the required topic scenario.',
+          coherence: 'Coherence & Cohesion: 0/5. Discourse is off-topic.',
+          lexical: 'Lexical Variety: 0/5. Unrelated vocabulary.',
+          morphosyntax: 'Morphosyntax: 0/5. Zero grade awarded due to off-topic submission.'
+        },
+        levelUpAdvice: 'To receive marks, you MUST strictly answer the prompt scenario. Read the task instructions carefully before drafting.',
+        corrections: [
+          { original: text.slice(0, 80) + '...', corrected: 'Rédigez un texte répondant directement à la consigne demandée.', explanation: 'Off-topic (hors-sujet) submissions receive an automatic zero grade in official TCF Canada grading.' }
+        ],
+        tips: [
+          'Lisez attentivement la consigne et le scénario avant de commencer à rédiger.',
+          'Assurez-vous que chaque paragraphe répond directement aux questions posées.'
+        ]
+      };
+    }
+
     // Task Type & Official FEI Target CEFR Bounds
     const isTache1 = taskNumber === 1 || Boolean(lessonTitle?.includes('Tâche 1') || lessonTitle?.includes('-w1') || (wordCountMin === 60 && (wordCountMax ?? 120) <= 120) || (expectedAnswer && expectedAnswer.includes('60') && !expectedAnswer.includes('140')));
     const isTache2 = taskNumber === 2 || Boolean(lessonTitle?.includes('Tâche 2') || lessonTitle?.includes('-w2') || (wordCountMin === 120 && (wordCountMax ?? 150) <= 150) || (expectedAnswer && expectedAnswer.includes('120') && !expectedAnswer.includes('140')));
@@ -448,13 +538,20 @@ Respond STRICTLY with a valid JSON object matching this schema:
   "coherenceScore": 4, 
   "lexicalScore": 4, 
   "grammarScore": 3, 
-  "feedback": "2-3 sentence precise official examiner diagnostic summary analyzing communicative effectiveness, structural coherence, vocabulary, and morphosyntax.",
+  "feedback": "2-3 sentence precise official examiner diagnostic summary in English analyzing communicative effectiveness, structural coherence, vocabulary, and morphosyntax.",
+  "criterionFeedback": {
+    "taskFulfillment": "1-2 sentences in English explaining the task fulfillment score, word count respect, and register suitability.",
+    "coherence": "1-2 sentences in English analyzing discourse connectors, paragraph organization, and transitions.",
+    "lexical": "1-2 sentences in English evaluating vocabulary richness, precision, and spelling accuracy.",
+    "morphosyntax": "1-2 sentences in English reviewing grammatical accuracy, verb tense agreements, conditional/subjunctive mood, and accents."
+  },
+  "levelUpAdvice": "1-2 actionable pedagogical sentences in English detailing the exact formulas and structures needed to jump to the next CEFR/NCLC band.",
   "corrections": [
-    { "original": "error phrase (if any)", "corrected": "corrected phrase", "explanation": "Grammatical or lexical explanation in English." }
+    { "original": "error phrase in student text", "corrected": "corrected French phrase", "explanation": "Grammatical or lexical rule explanation in pure English." }
   ],
   "tips": [
-    "Actionable examiner tip 1",
-    "Actionable examiner tip 2"
+    "Actionable examiner strategy 1",
+    "Actionable examiner strategy 2"
   ]
 }`;
 
@@ -708,6 +805,26 @@ Respond STRICTLY with a valid JSON object matching this schema:
           expressEntryPoints = 0;
         }
 
+        const criterionFeedback = parsed.criterionFeedback && typeof parsed.criterionFeedback === 'object' ? {
+          taskFulfillment: parsed.criterionFeedback.taskFulfillment || `Task Fulfillment: ${t}/5 points. Evaluated based on prompt adherence, scenario context, and word count bounds (${targetMin}–${targetMax} words).`,
+          coherence: parsed.criterionFeedback.coherence || `Coherence & Cohesion: ${c}/5 points. Evaluated based on paragraph structuring, logical progression, and French discourse connectors.`,
+          lexical: parsed.criterionFeedback.lexical || `Lexical Variety: ${l}/5 points. Evaluated based on thematic vocabulary range, precision, and spelling accuracy.`,
+          morphosyntax: parsed.criterionFeedback.morphosyntax || `Morphosyntax: ${g}/5 points. Evaluated based on grammatical accuracy, verb tense agreements, mood, and correct diacritics/accents.`
+        } : {
+          taskFulfillment: `Task Fulfillment: ${t}/5 points. Evaluated based on prompt adherence, scenario context, and word count bounds (${targetMin}–${targetMax} words).`,
+          coherence: `Coherence & Cohesion: ${c}/5 points. Evaluated based on logical transitions and paragraphing.`,
+          lexical: `Lexical Variety: ${l}/5 points. Evaluated based on range and register suitability.`,
+          morphosyntax: `Morphosyntax: ${g}/5 points. Evaluated based on verb agreements, syntax, and diacritics.`
+        };
+
+        const levelUpAdvice = parsed.levelUpAdvice || (
+          scoreOutOf20 < 8
+            ? "To jump to B1 (NCLC 5-6), replace spoken conversational phrasing with polite request structures ('Je souhaiterais vous demander...'), use basic linking words ('donc', 'car', 'alors'), and expand your text to at least 50-60 words."
+            : scoreOutOf20 < 12
+            ? "To reach B2 (NCLC 7-8), use polite conditional formulas ('Pourriez-vous m'indiquer...', 'Je vous saurais gré...'), add 2-3 formal connectors ('afin de', 'en outre', 'par ailleurs'), and use a complete formal closing ('Je vous prie d'agréer mes salutations distinguées')."
+            : "To target C1 (NCLC 9+), integrate high administrative/academic register ('par la présente', 'défaillance critique', 'salubrité publique'), use subjunctive clauses, and construct nuanced complex arguments."
+        );
+
         return {
           score: scorePct,
           scoreOutOf20,
@@ -718,9 +835,15 @@ Respond STRICTLY with a valid JSON object matching this schema:
           coherenceScore: c,
           lexicalScore: l,
           grammarScore: g,
-          feedback: parsed.feedback || 'Good effort on this writing task.',
+          feedback: parsed.feedback || `Official FEI Diagnostic Evaluation: Score ${scoreOutOf20}/20 marks (${nclcGrade}).`,
+          criterionFeedback,
+          levelUpAdvice,
           corrections: mergedCorrections,
-          tips: Array.isArray(parsed.tips) ? parsed.tips : [],
+          tips: Array.isArray(parsed.tips) && parsed.tips.length > 0 ? parsed.tips : [
+            isTache1 ? "Ensure complete formal email structure: greeting, polite conditional request, and formal closing." :
+            isTache2 ? "Alternate between passé composé for key events and imparfait for background descriptions." :
+            "Structure your essay into 4 dialectic paragraphs (Intro, Thesis, Antithesis, Nuanced Synthesis)."
+          ],
         };
       }
 
@@ -751,8 +874,36 @@ Respond STRICTLY with a valid JSON object matching this schema:
     const isTache2 = taskNumber === 2 || Boolean(lessonTitle?.includes('Tâche 2') || lessonTitle?.includes('-w2') || (targetMin === 120 && (targetMax ?? 150) <= 150) || (expectedAnswer && expectedAnswer.includes('120') && !expectedAnswer.includes('140')));
     const isTache3 = taskNumber === 3 || Boolean(lessonTitle?.includes('Tâche 3') || lessonTitle?.includes('-w3') || (targetMin !== undefined && targetMin >= 140) || (expectedAnswer && expectedAnswer.includes('140')));
 
-    let minWords = targetMin ?? (isTache2 ? 120 : isTache3 ? 140 : 60);
-    let maxWords = targetMax ?? (isTache2 ? 150 : isTache3 ? 180 : 120);
+    const relevance = this.checkThematicRelevance(text, taskPrompt, lessonTitle, expectedAnswer);
+    if (!relevance.isRelevant) {
+      return {
+        score: 0,
+        scoreOutOf20: 0,
+        nclcGrade: 'NCLC 0 (Zero Grade — Off-Topic / Hors-Sujet)',
+        cefrLevel: 'N/A',
+        expressEntryPoints: 0,
+        taskFulfillmentScore: 0,
+        coherenceScore: 0,
+        lexicalScore: 0,
+        grammarScore: 0,
+        feedback: '🚨 ZERO GRADE (Score: 0/20 — Hors-Sujet / Off-Topic): The submitted text is completely unrelated to the assigned prompt scenario. In official France Éducation International (FEI) examinations, any response that fails to answer the required prompt scenario receives an automatic zero mark, regardless of French grammatical or stylistic complexity.',
+        criterionFeedback: {
+          taskFulfillment: 'Task Fulfillment: 0/5 (Hors-Sujet). The submission does not address the required topic scenario.',
+          coherence: 'Coherence & Cohesion: 0/5. Discourse is off-topic.',
+          lexical: 'Lexical Variety: 0/5. Unrelated vocabulary.',
+          morphosyntax: 'Morphosyntax: 0/5. Zero grade awarded due to off-topic submission.'
+        },
+        levelUpAdvice: 'To receive marks, you MUST strictly answer the prompt scenario. Read the task instructions carefully before drafting.',
+        corrections: [],
+        tips: [
+          'Lisez attentivement la consigne et le scénario avant de commencer à rédiger.',
+          'Assurez-vous que chaque paragraphe répond directement aux questions posées.'
+        ]
+      };
+    }
+
+    const minWords = targetMin ?? (isTache2 ? 120 : isTache3 ? 140 : 60);
+    const maxWords = targetMax ?? (isTache2 ? 150 : isTache3 ? 180 : 120);
 
     // Code-switching & English word check
     const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|travel|city|park|food|good|experience)\b/i.test(textLower);
@@ -1060,6 +1211,17 @@ Respond STRICTLY with a valid JSON object matching this schema:
       lexicalScore,
       grammarScore: localAccentIssues.length >= 6 ? Math.max(1, grammarScore - 2) : localAccentIssues.length >= 3 ? Math.max(2, grammarScore - 1) : grammarScore,
       feedback: `Official FEI Calibrated Evaluation: Total ${scoreOutOf20}/20 Marks • Task Fulfillment: ${taskFulfillmentScore}/5, Coherence & Connectors: ${coherenceScore}/5, Lexical Range: ${lexicalScore}/5, Morphosyntax & Grammar: ${grammarScore}/5.`,
+      criterionFeedback: {
+        taskFulfillment: `Task Fulfillment: ${taskFulfillmentScore}/5 points. Candidate submission analyzed against prompt objectives and word count target (${targetMin ?? 60}–${targetMax ?? 180} words).`,
+        coherence: `Coherence & Cohesion: ${coherenceScore}/5 points. Logical paragraph transitions and French connectors evaluated.`,
+        lexical: `Lexical Variety: ${lexicalScore}/5 points. Thematic vocabulary richness and precision evaluated.`,
+        morphosyntax: `Morphosyntax: ${grammarScore}/5 points. Verb tense accuracy, sentence structures, and accents evaluated (${localAccentIssues.length} accent issue${localAccentIssues.length === 1 ? '' : 's'} detected).`
+      },
+      levelUpAdvice: scoreOutOf20 < 8
+        ? "To jump to B1 (NCLC 5-6), replace spoken conversational phrasing with polite request structures ('Je souhaiterais vous demander...'), use basic linking words ('donc', 'car', 'alors'), and expand your text to at least 50-60 words."
+        : scoreOutOf20 < 12
+        ? "To reach B2 (NCLC 7-8), use polite conditional formulas ('Pourriez-vous m'indiquer...', 'Je vous saurais gré...'), add 2-3 formal connectors ('afin de', 'en outre', 'par ailleurs'), and use a complete formal closing ('Je vous prie d'agréer mes salutations distinguées')."
+        : "To target C1 (NCLC 9+), integrate high administrative/academic register ('par la présente', 'défaillance critique', 'salubrité publique'), use subjunctive clauses, and construct nuanced complex arguments.",
       corrections: localAccentIssues,
       tips: [
         isTache1 ? "Respectez la structure formelle : salutation, demande polie au conditionnel, et formule de politesse complète." :
