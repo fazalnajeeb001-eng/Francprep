@@ -25,6 +25,9 @@ import {
   Home,
   Search,
   AlertTriangle,
+  Lock,
+  FastForward,
+  ShieldAlert,
   X
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
@@ -101,6 +104,9 @@ export function AuthenticCBTExamPage() {
   // Test-Center High-Contrast Toggle (Default light CBT canvas for authentic exam day feel)
   const [cbtDark, setCbtDark] = useState(false);
 
+  // Admin Account Free-Roam Detection
+  const isAdmin = Boolean(user && (user.role === 'admin' || (user as any).isAdmin || user.email?.includes('admin')));
+
   const registry = getExamRegistry() || [];
   const paper: ExamPaper = registry.find((p) => p.id === paperId) || registry[0] || {
     id: paperId || "tcf1",
@@ -108,6 +114,15 @@ export function AuthenticCBTExamPage() {
     type: "TCF_CANADA",
     code: "P1",
     sections: []
+  };
+
+  // Official Real Exam Duration Helper (France Éducation International CBT Standards)
+  const getSectionDurationSeconds = (secType?: string, customDurationMins?: number) => {
+    if (secType === "COMPREHENSION_ECRITE") return 60 * 60; // Strict 60 mins (3600s)
+    if (secType === "EXPRESSION_ECRITE") return 60 * 60;    // Strict 60 mins (3600s)
+    if (secType === "COMPREHENSION_ORALE") return 35 * 60;   // ~35 mins (2100s)
+    if (secType === "EXPRESSION_ORALE") return 12 * 60;      // ~12 mins (720s)
+    return (customDurationMins || 35) * 60;
   };
 
   // Active Section Index
@@ -124,10 +139,36 @@ export function AuthenticCBTExamPage() {
   const currentQuestions = currentSection?.questions || [];
   const currentQ = currentQuestions[currentQuestionIdx] || currentQuestions[0];
 
-  // Timer State
-  const [timeLeft, setTimeLeft] = useState((currentSection?.durationMins || 35) * 60);
+  // Session Key
+  const sessionKey = `fp_exam_session_${paper?.id || "default"}_${mode}`;
+
+  // Completed Section Indices (Enforces Linear Exam Flow in Real Exam Mode)
+  const [completedSectionIndices, setCompletedSectionIndices] = useState<number[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) return JSON.parse(saved).completedSectionIndices || [];
+    } catch {}
+    return [];
+  });
+
+  // Track Remaining Time per Section (Persisted in localStorage)
+  const [sectionTimeRemaining, setSectionTimeRemaining] = useState<Record<number, number>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) return JSON.parse(saved).sectionTimeRemaining || {};
+    } catch {}
+    return {};
+  });
+
+  // Active Section Countdown Timer State
+  const [timeLeft, setTimeLeft] = useState(() => {
+    return getSectionDurationSeconds(currentSection?.type, currentSection?.durationMins);
+  });
   const [isTimerPaused, setIsTimerPaused] = useState(false);
   const [qTimeLeft, setQTimeLeft] = useState<number | null>(null);
+  const [sectionTransitionModal, setSectionTransitionModal] = useState<{ show: boolean; targetIdx: number; targetTitle: string } | null>(null);
 
   // Audio Speech Hook (Declared at top of component to prevent TDZ ReferenceError)
   const { speak: ttsSpeak, speakDialogue: ttsSpeakDialogue, speakListening: ttsSpeakListening, isSpeaking, stop: ttsStop, pause: ttsPause, resume: ttsResume } = useSpeak();
@@ -137,9 +178,6 @@ export function AuthenticCBTExamPage() {
   const [showTranscripts, setShowTranscripts] = useState(false);
   const [showQuestionPrompt, setShowQuestionPrompt] = useState(false);
   const [showPassageTranslation, setShowPassageTranslation] = useState(false);
-
-  // Session Key
-  const sessionKey = `fp_exam_session_${paper?.id || "default"}_${mode}`;
 
   // User Responses State (with localStorage Session Restoration)
   const [selectedAnswers, setSelectedAnswers] = useState<{ [qId: string]: number }>(() => {
@@ -254,6 +292,52 @@ export function AuthenticCBTExamPage() {
 
     return () => clearInterval(interval);
   }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, isSpeaking, isAudioPaused, isTimerPaused, isAudioFinished, currentQuestions.length, paper.sections.length]);
+
+  // Load / initialize section timer when active section changes
+  useEffect(() => {
+    const sec = paper?.sections?.[activeSectionIdx];
+    const defaultSecDuration = getSectionDurationSeconds(sec?.type, sec?.durationMins);
+    const savedTime = sectionTimeRemaining[activeSectionIdx];
+    setTimeLeft(typeof savedTime === "number" && savedTime > 0 ? savedTime : defaultSecDuration);
+  }, [activeSectionIdx]);
+
+  // Active Section-Level CBT Countdown Timer (60 Mins for Reading, 60 Mins for Writing, 35 Mins for Listening, 12 Mins for Speaking)
+  useEffect(() => {
+    if (isSubmitted) return;
+
+    // In practice mode or for admin, allow pausing the main timer
+    if (isTimerPaused && (mode === "PRACTICE" || isAdmin)) return;
+
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => {
+        const nextTime = Math.max(0, prev - 1);
+
+        // Continuously persist remaining time for this section
+        setSectionTimeRemaining((p) => ({ ...p, [activeSectionIdx]: nextTime }));
+
+        if (nextTime <= 0) {
+          clearInterval(interval);
+          // Handle Section Timeout in Real Exam Mode
+          if (mode === "EXAM") {
+            if (activeSectionIdx < paper.sections.length - 1) {
+              const nextIdx = activeSectionIdx + 1;
+              setCompletedSectionIndices((prevCompleted) => Array.from(new Set([...prevCompleted, activeSectionIdx])));
+              setActiveSectionIdx(nextIdx);
+              setCurrentQuestionIdx(0);
+              const nextSec = paper.sections[nextIdx];
+              return getSectionDurationSeconds(nextSec?.type, nextSec?.durationMins);
+            } else {
+              handleFinishTest();
+              return 0;
+            }
+          }
+        }
+        return nextTime;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [activeSectionIdx, mode, isSubmitted, isTimerPaused, isAdmin, paper.sections.length]);
 
   const handleStartPrepTimer = (taskId: string, prepMins = 1) => {
     setOralPrepTimeRemaining((prev) => ({ ...prev, [taskId]: prepMins * 60 }));
@@ -410,13 +494,15 @@ export function AuthenticCBTExamPage() {
         flaggedQuestions,
         writingResponses,
         speakingTranscripts,
+        completedSectionIndices,
+        sectionTimeRemaining,
         activeSectionIdx,
         currentQuestionIdx,
         timestamp: Date.now()
       };
       localStorage.setItem(sessionKey, JSON.stringify(payload));
     } catch {}
-  }, [selectedAnswers, flaggedQuestions, writingResponses, speakingTranscripts, activeSectionIdx, currentQuestionIdx, isSubmitted, sessionKey]);
+  }, [selectedAnswers, flaggedQuestions, writingResponses, speakingTranscripts, completedSectionIndices, sectionTimeRemaining, activeSectionIdx, currentQuestionIdx, isSubmitted, sessionKey]);
 
   useEffect(() => {
     handleStopAudio();
@@ -1897,6 +1983,51 @@ export function AuthenticCBTExamPage() {
         </div>
       </header>
 
+      {/* ─── ADMIN FREE-ROAM CONTROLLER BAR (Visible strictly for Admin Accounts) ─── */}
+      {isAdmin && (
+        <div className="bg-amber-500/15 dark:bg-amber-950/50 border-b border-amber-500/40 px-3 sm:px-4 py-1.5 flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-amber-950 dark:text-amber-200 shrink-0 shadow-inner">
+          <div className="flex items-center gap-2">
+            <span className="font-extrabold flex items-center gap-1.5 text-amber-800 dark:text-amber-300">
+              <ShieldAlert className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+              <span>👑 Mode Admin : Navigation Libre & Contrôles Sans Restriction</span>
+            </span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-bold hidden sm:inline">
+              UNRESTRICTED
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <button
+              onClick={() => setTimeLeft(5)}
+              className="px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-500 text-white text-[11px] font-bold shadow-xs cursor-pointer flex items-center gap-1"
+              title="Régler le compte à rebours sur 5 secondes pour tester la fin automatique de l'épreuve"
+            >
+              <FastForward className="w-3 h-3" />
+              <span>⏩ Timer 5s (Test Timeout)</span>
+            </button>
+            <button
+              onClick={() => {
+                const sec = paper?.sections?.[activeSectionIdx];
+                const fullDuration = getSectionDurationSeconds(sec?.type, sec?.durationMins);
+                setTimeLeft(fullDuration);
+              }}
+              className="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold shadow-xs cursor-pointer flex items-center gap-1"
+              title="Réinitialiser le temps de la section actuelle"
+            >
+              <RotateCcw className="w-3 h-3" />
+              <span>🔄 Reset Timer</span>
+            </button>
+            <button
+              onClick={() => setIsTimerPaused(prev => !prev)}
+              className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-white text-[11px] font-bold shadow-xs cursor-pointer flex items-center gap-1"
+            >
+              {isTimerPaused ? <Play className="w-3 h-3" /> : <Pause className="w-3 h-3" />}
+              <span>{isTimerPaused ? "Resume" : "Pause"}</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* ─── PRACTICE MODE TOOLBAR (OPTIONAL HELPER TOGGLES & STRATEGY) - Desktop Only ─── */}
       {mode === "PRACTICE" && (
         <div className={`hidden lg:flex ${cbtDark ? "bg-emerald-950/40 border-emerald-800/60" : "bg-emerald-50 border-emerald-300"} border-b px-4 py-2 text-xs items-center gap-3 overflow-x-auto shrink-0`}>
@@ -1985,27 +2116,56 @@ export function AuthenticCBTExamPage() {
         </div>
       )}
 
-      {/* ─── SECTION NAVIGATION TABS ─── */}
+      {/* ─── SECTION NAVIGATION TABS (Strict Linear Locks in Exam Mode for Students | Unrestricted for Admins) ─── */}
       <div className={`${cbtDark ? "bg-slate-900 border-slate-800" : "bg-slate-200 border-slate-300"} border-b px-2 sm:px-4 py-1 flex items-center gap-1.5 overflow-x-auto shrink-0 text-[11px] sm:text-xs font-bold scrollbar-none`}>
         {paper.sections.map((sec, idx) => {
           const isSelected = activeSectionIdx === idx;
+          const isCompleted = completedSectionIndices.includes(idx);
+          const isLocked = mode === "EXAM" && !isAdmin && idx > activeSectionIdx;
+
           return (
             <button
               key={sec.type}
-              onClick={() => setActiveSectionIdx(idx)}
+              disabled={isLocked || (mode === "EXAM" && !isAdmin && isCompleted && idx !== activeSectionIdx)}
+              onClick={() => {
+                if (!isLocked || isAdmin) {
+                  setActiveSectionIdx(idx);
+                  setCurrentQuestionIdx(0);
+                }
+              }}
               className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded transition-all shrink-0 flex items-center gap-1 sm:gap-1.5 ${
                 isSelected
-                  ? "bg-blue-600 text-white shadow"
+                  ? "bg-blue-600 text-white shadow ring-2 ring-blue-400"
+                  : isLocked
+                  ? "opacity-50 cursor-not-allowed bg-slate-300 dark:bg-slate-800 text-slate-500 border border-slate-400/30"
+                  : isCompleted && mode === "EXAM" && !isAdmin
+                  ? "opacity-75 cursor-not-allowed bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300"
                   : cbtDark
-                  ? "bg-slate-800 text-slate-300 hover:bg-slate-700"
-                  : "bg-slate-100 text-slate-900 hover:bg-slate-300 font-bold border border-slate-300"
+                  ? "bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer"
+                  : "bg-slate-100 text-slate-900 hover:bg-slate-300 font-bold border border-slate-300 cursor-pointer"
               }`}
+              title={isLocked ? "🔒 Section verrouillée en mode examen (Progression séquentielle)" : isCompleted ? "✓ Épreuve terminée" : ""}
             >
-              {sec.type === "COMPREHENSION_ORALE" && <Volume2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
-              {sec.type === "COMPREHENSION_ECRITE" && <BookOpen className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
-              {sec.type === "EXPRESSION_ECRITE" && <PenTool className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
-              {sec.type === "EXPRESSION_ORALE" && <Mic className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
+              {isLocked ? (
+                <Lock className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400" />
+              ) : isCompleted ? (
+                <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-500" />
+              ) : sec.type === "COMPREHENSION_ORALE" ? (
+                <Volume2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              ) : sec.type === "COMPREHENSION_ECRITE" ? (
+                <BookOpen className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              ) : sec.type === "EXPRESSION_ECRITE" ? (
+                <PenTool className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              ) : (
+                <Mic className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              )}
               <span className="truncate max-w-[120px] sm:max-w-none">{sec.title}</span>
+              {sec.type === "COMPREHENSION_ECRITE" && (
+                <span className="text-[9px] px-1 py-0.2 rounded bg-blue-900 text-blue-200 font-mono hidden md:inline">60m</span>
+              )}
+              {sec.type === "EXPRESSION_ECRITE" && (
+                <span className="text-[9px] px-1 py-0.2 rounded bg-pink-900 text-pink-200 font-mono hidden md:inline">60m</span>
+              )}
             </button>
           );
         })}
@@ -2869,13 +3029,35 @@ export function AuthenticCBTExamPage() {
                   <div className="px-3 py-1.5 rounded-lg bg-blue-950/80 text-blue-300 border border-blue-800 text-[11px] font-mono font-bold flex items-center gap-1.5 shadow">
                     <span>🔒 Navigation Standard CBT</span>
                   </div>
-                ) : (
+                ) : currentQuestionIdx < currentQuestions.length - 1 ? (
                   <button
-                    disabled={currentQuestionIdx === currentQuestions.length - 1}
                     onClick={() => setCurrentQuestionIdx((prev) => Math.min(currentQuestions.length - 1, prev + 1))}
-                    className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold disabled:opacity-40 cursor-pointer"
+                    className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-xs cursor-pointer"
                   >
                     Next Question →
+                  </button>
+                ) : activeSectionIdx < paper.sections.length - 1 ? (
+                  <button
+                    onClick={() => {
+                      const nextIdx = activeSectionIdx + 1;
+                      const nextSecTitle = paper.sections[nextIdx]?.title || "Section suivante";
+                      if (mode === "EXAM" && !isAdmin) {
+                        setSectionTransitionModal({ show: true, targetIdx: nextIdx, targetTitle: nextSecTitle });
+                      } else {
+                        setActiveSectionIdx(nextIdx);
+                        setCurrentQuestionIdx(0);
+                      }
+                    }}
+                    className="px-4 py-2 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow flex items-center gap-1.5 cursor-pointer animate-pulse"
+                  >
+                    <span>Passer à l'épreuve suivante ({paper.sections[activeSectionIdx + 1]?.title}) →</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleFinishTest}
+                    className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-xs cursor-pointer"
+                  >
+                    Terminer le test →
                   </button>
                 )}
               </div>
@@ -3233,6 +3415,46 @@ export function AuthenticCBTExamPage() {
                 </div>
               );
             })()}
+
+            {/* Writing Section Navigation Footer */}
+            <div className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
+              <div className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                <span>Tâche active : <strong>{activeWritingTaskIdx + 1}</strong> / {currentSection.writingTasks.length}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                {activeWritingTaskIdx < currentSection.writingTasks.length - 1 ? (
+                  <button
+                    onClick={() => setActiveWritingTaskIdx(prev => prev + 1)}
+                    className="px-4 py-2 rounded-lg bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold shadow-xs cursor-pointer"
+                  >
+                    Tâche suivante →
+                  </button>
+                ) : activeSectionIdx < paper.sections.length - 1 ? (
+                  <button
+                    onClick={() => {
+                      const nextIdx = activeSectionIdx + 1;
+                      const nextSecTitle = paper.sections[nextIdx]?.title || "Section suivante";
+                      if (mode === "EXAM" && !isAdmin) {
+                        setSectionTransitionModal({ show: true, targetIdx: nextIdx, targetTitle: nextSecTitle });
+                      } else {
+                        setActiveSectionIdx(nextIdx);
+                        setCurrentQuestionIdx(0);
+                      }
+                    }}
+                    className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow flex items-center gap-1.5 cursor-pointer animate-pulse"
+                  >
+                    <span>Passer à l'épreuve suivante ({paper.sections[activeSectionIdx + 1]?.title}) →</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleFinishTest}
+                    className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-xs cursor-pointer"
+                  >
+                    Terminer l'examen →
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
@@ -4358,6 +4580,54 @@ export function AuthenticCBTExamPage() {
                 </button>
               </div>
             </motion.div>
+          </motion.div>
+        )}
+        {/* ─── SECTION TRANSITION CONFIRMATION MODAL (Strict Exam Mode) ─── */}
+        {sectionTransitionModal && sectionTransitionModal.show && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm"
+          >
+            <div className="w-full max-w-md p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 shadow-2xl space-y-4 text-slate-950 dark:text-slate-100 animate-in zoom-in-95 duration-150">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-xl bg-amber-100 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base">Clôturer l'épreuve en cours ?</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">TCF Canada CBT Official Procedure</p>
+                </div>
+              </div>
+
+              <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-950/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                En mode examen officiel, une fois que vous passez à l'épreuve de <strong>{sectionTransitionModal.targetTitle}</strong>, la section actuelle sera définitivement <strong>verrouillée</strong> et vous ne pourrez plus revenir en arrière pour modifier vos réponses.
+              </p>
+
+              <div className="flex items-center justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setSectionTransitionModal(null)}
+                  className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 font-bold text-xs cursor-pointer"
+                >
+                  Continuer à réviser
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const target = sectionTransitionModal.targetIdx;
+                    setCompletedSectionIndices((prev) => Array.from(new Set([...prev, activeSectionIdx])));
+                    setActiveSectionIdx(target);
+                    setCurrentQuestionIdx(0);
+                    setSectionTransitionModal(null);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs shadow-md cursor-pointer flex items-center gap-1.5"
+                >
+                  <span>Confirmer & Passer à la suite →</span>
+                </button>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
