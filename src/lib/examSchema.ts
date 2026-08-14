@@ -6,6 +6,7 @@ import { getQuestionGuidance } from "./practiceGuidanceBank";
 import { getReadingPaperItems } from "./authenticReadingMasterBank";
 import { getReadingGuidance } from "./readingGuidanceBank";
 import { getWritingPaperTasks } from "./authenticWritingMasterBank";
+import { getWritingGuidance } from "./writingGuidanceBank";
 
 export type ExamType = "TCF_CANADA" | "TEF_CANADA";
 export type ExamMode = "PRACTICE" | "EXAM";
@@ -51,6 +52,12 @@ export interface WritingTask {
   timeLimitMins: number;
   guidedTips?: string[];
   sampleResponse?: string;
+  trapAlert?: string;
+  trapAlertEn?: string;
+  writingCoach?: string;
+  writingCoachEn?: string;
+  modelBreakdown?: string;
+  modelBreakdownEn?: string;
 }
 
 export interface SpeakingTask {
@@ -7750,17 +7757,26 @@ export function getExamRegistry(): ExamPaper[] {
           description: "Compose short messages, social articles, and argumentative essays (3 Tasks / 60 Mins).",
           durationMins: 60,
           totalQuestions: 3,
-          writingTasks: getWritingPaperTasks(i).map((wt) => ({
-            id: `tcf${i}-w${wt.taskNumber}`,
-            taskNumber: wt.taskNumber,
-            title: wt.title,
-            prompt: wt.prompt,
-            wordCountMin: wt.wordCountMin,
-            wordCountMax: wt.wordCountMax,
-            timeLimitMins: wt.timeLimitMins,
-            guidedTips: wt.guidedTips,
-            sampleResponse: wt.sampleResponse
-          }))
+          writingTasks: getWritingPaperTasks(i).map((wt) => {
+            const guidance = getWritingGuidance(i, wt.taskNumber);
+            return {
+              id: `tcf${i}-w${wt.taskNumber}`,
+              taskNumber: wt.taskNumber,
+              title: wt.title,
+              prompt: wt.prompt,
+              wordCountMin: wt.wordCountMin,
+              wordCountMax: wt.wordCountMax,
+              timeLimitMins: wt.timeLimitMins,
+              guidedTips: wt.guidedTips,
+              sampleResponse: wt.sampleResponse,
+              trapAlert: guidance.trapAlert,
+              trapAlertEn: guidance.trapAlertEn,
+              writingCoach: guidance.writingCoach,
+              writingCoachEn: guidance.writingCoachEn,
+              modelBreakdown: guidance.modelBreakdown,
+              modelBreakdownEn: guidance.modelBreakdownEn
+            };
+          })
         },
         {
           type: "EXPRESSION_ORALE",

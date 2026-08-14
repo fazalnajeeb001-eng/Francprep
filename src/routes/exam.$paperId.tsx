@@ -24,6 +24,7 @@ import {
   RotateCcw,
   Home,
   Search,
+  AlertTriangle,
   X
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
@@ -2939,30 +2940,46 @@ export function AuthenticCBTExamPage() {
 
                   {/* Writing Strategy & Trap Alert Display */}
                   {mode === "PRACTICE" && showHints && (
-                    <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800 text-xs text-amber-950 dark:text-amber-200 space-y-2 shadow-sm font-sans">
-                      <div className="flex items-center gap-1.5 font-extrabold text-amber-900 dark:text-amber-300 text-[11px] uppercase tracking-wide">
-                        <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                        <span>✍️ Writing Strategy & Trap Alert (Official TCF Scoring Criteria (CEFR Grid))</span>
+                    <div className="space-y-2.5">
+                      {/* Trap Alert Card */}
+                      <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/80 text-xs text-amber-950 dark:text-amber-200 space-y-2 shadow-sm font-sans">
+                        <div className="flex items-center gap-1.5 font-extrabold text-amber-900 dark:text-amber-300 text-[11px] uppercase tracking-wide">
+                          <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                          <span>⚠️ Alerte Pièges & Critères FEI (Trap Alert)</span>
+                        </div>
+                        <div className="leading-relaxed font-medium whitespace-pre-line text-xs">
+                          {task.trapAlert || (
+                            activeWritingTaskIdx === 0 ? "• N'utilisez pas le tutoiement avec une autorité.\n• Ne copiez pas les phrases de la consigne.\n• Respectez scrupuleusement la fourchette de mots."
+                            : activeWritingTaskIdx === 1 ? "• Évitez de tout rédiger au présent : alternez passé composé et imparfait.\n• Exprimez vos sentiments et recommandations personnelles."
+                            : "• Ne commencez jamais par une formule de lettre.\n• Structurez en 4 paragraphes (Intro → Thèse → Antithèse → Synthèse)."
+                          )}
+                        </div>
+                        {task.trapAlertEn && (
+                          <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-950/60 border border-amber-200 dark:border-amber-900/60 text-[11px] text-amber-950 dark:text-amber-200 whitespace-pre-line leading-relaxed">
+                            <span className="font-bold text-amber-800 dark:text-amber-300 block mb-0.5">🇬🇧 English Trap Alert:</span>
+                            {task.trapAlertEn}
+                          </div>
+                        )}
                       </div>
-                      <div className="leading-relaxed font-medium whitespace-pre-line text-xs space-y-1.5">
-                        {activeWritingTaskIdx === 0 || task.title?.includes("Tâche 1") || task.wordCountMin === 60 || task.min === 60 ? (
-                          <>
-                            <p><strong>⚠️ Trap Alert:</strong> Do NOT omit formal salutations (<em>Monsieur le Propriétaire, Madame la Directrice,</em>) or formal closings (<em>Je vous prie d'agréer mes salutations distinguées</em>). Words copied directly from the prompt instructions are deducted from your word count and earn zero credit!</p>
-                            <p><strong>🔄 Connectors & Syntax Key:</strong> Use conditional polite requests (<em>Pourriez-vous m'indiquer..., J'aimerais savoir si...</em>) and formal connectors (<em>de plus, par ailleurs, en conséquence</em>) to secure NCLC 7+ (B2).</p>
-                            <p><strong>🎯 Word Count Target:</strong> Stay strictly within {task.wordCountMin} to {task.wordCountMax} words. Responses below {task.wordCountMin} words suffer an automatic Task Fulfillment penalty.</p>
-                          </>
-                        ) : activeWritingTaskIdx === 1 || task.title?.includes("Tâche 2") || task.wordCountMin === 120 || task.min === 120 ? (
-                          <>
-                            <p><strong>⚠️ Trap Alert:</strong> Do NOT write a basic list of actions. Official FEI examiners evaluate your capacity to narrate personal experiences with emotions, sensations, and recommendations using past tenses (<em>passé composé</em> for events, <em>imparfait</em> for descriptions).</p>
-                            <p><strong>🔄 Connectors & Lexical Key:</strong> Enrich your narrative with vivid adjectives (<em>féerique, inoubliable, chaleureux</em>) and transitional temporal markers (<em>Dès mon arrivée, pendant mon séjour, en outre, en conclusion</em>).</p>
-                            <p><strong>🎯 Word Count Target:</strong> Must reach {task.wordCountMin} to {task.wordCountMax} words. Never insert English words (causes automatic grammar score cap at 1/5).</p>
-                          </>
-                        ) : (
-                          <>
-                            <p><strong>⚠️ Trap Alert:</strong> Do NOT write a personal letter (<em>"Bonjour, je vous écris..."</em>) — format mismatch receives an automatic 0 grade! Structure as a 4-paragraph argumentative essay (Introduction → Thesis/Pros → Antithesis/Cons → Synthesis Conclusion).</p>
-                            <p><strong>🔄 Connectors & Subjunctive Key:</strong> Mandatory B2/C1 connectors (<em>D'une part / d'autre part, de surcroît, cependant, néanmoins, en somme</em>) and subjunctive structures (<em>bien que + subjonctif, afin que nous puissions</em>) to unlock 14–20/20.</p>
-                            <p><strong>🎯 Word Count Target:</strong> Strictly {task.wordCountMin} to {task.wordCountMax} words. Balanced synthesis addressing both sides of the societal debate.</p>
-                          </>
+
+                      {/* Writing Coach & Connectors Card */}
+                      <div className="p-3.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/80 text-xs text-indigo-950 dark:text-indigo-200 space-y-2 shadow-sm font-sans">
+                        <div className="flex items-center gap-1.5 font-extrabold text-indigo-900 dark:text-indigo-300 text-[11px] uppercase tracking-wide">
+                          <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                          <span>✍️ Coach Rédaction & Connecteurs B2/C1</span>
+                        </div>
+                        <div className="leading-relaxed font-medium whitespace-pre-line text-xs">
+                          {task.writingCoach || (
+                            activeWritingTaskIdx === 0 ? "Structurez : 1. Salutation 2. Problème 3. Demande au conditionnel 4. Formule finale."
+                            : activeWritingTaskIdx === 1 ? "Structurez : 1. Cadre spatio-temporel 2. Événements et émotions 3. Bilan et recommandation."
+                            : "Structurez : 1. Introduction 2. Arguments favorables 3. Contre-arguments 4. Prise de position nuancée."
+                          )}
+                        </div>
+                        {task.writingCoachEn && (
+                          <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-950/60 border border-indigo-200 dark:border-indigo-900/60 text-[11px] text-indigo-950 dark:text-indigo-200 whitespace-pre-line leading-relaxed">
+                            <span className="font-bold text-indigo-800 dark:text-indigo-300 block mb-0.5">🇬🇧 English Writing Coach Strategy:</span>
+                            {task.writingCoachEn}
+                          </div>
                         )}
                       </div>
                     </div>
