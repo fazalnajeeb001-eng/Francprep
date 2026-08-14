@@ -7322,8 +7322,17 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
     const finalOptionsEnglish = (t as any).optionsEnglish || [optionsEn0, optionsEn1, optionsEn2, optionsEn3];
     const finalTranscriptEnglish = spokenEnglishTranslation;
     const finalPassageEnglish = passageTextEn;
-
-    const guidance = getQuestionGuidance(i, itemLevel, questionTextPrompt, correctText, passageBodyText);
+    const correctTextEn = (finalOptionsEnglish && finalOptionsEnglish[correctIndex]) ? finalOptionsEnglish[correctIndex] : "";
+    const guidance = getQuestionGuidance(
+      i,
+      itemLevel,
+      questionTextPrompt,
+      correctText,
+      passageBodyText,
+      correctTextEn,
+      finalPassageEnglish,
+      finalQuestionPromptEnglish
+    );
 
     qList.push({
       id: questionId,
@@ -7342,6 +7351,8 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       mainImage,
       correctIndex,
       explanation: guidance.detailedExplanation,
+      detailedExplanationEn: guidance.detailedExplanationEn,
+      explanationEnglish: guidance.detailedExplanationEn,
       hint: guidance.combinedHint,
       trapAlert: guidance.trapAlert,
       trapAlertEn: guidance.trapAlertEn,
