@@ -5,7 +5,126 @@ import Settings from '../models/Settings';
 import { generateKokoroAudio } from './kokoro.service';
 
 function getHash(text: string, gender: string, lang: string, provider: string, voiceId: string = '', rate: number = 1.0): string {
-  return crypto.createHash('md5').update(`${text.trim().toLowerCase()}_${gender}_${lang}_${provider}_${voiceId}_${rate}_v9_speed`).digest('hex');
+  return crypto.createHash('md5').update(`${text.trim().toLowerCase()}_${gender}_${lang}_${provider}_${voiceId}_${rate}_v10_multispeaker_frame_stitched`).digest('hex');
+}
+
+/**
+ * Strips ID3v2 header metadata to isolate pure MPEG Audio Layer III frames.
+ */
+function extractMpegPayload(buf: Buffer): Buffer {
+  if (!buf || buf.length < 10) return buf;
+  if (buf.slice(0, 3).toString() === 'ID3') {
+    const b0 = buf[6], b1 = buf[7], b2 = buf[8], b3 = buf[9];
+    const tagSize = ((b0 & 0x7F) << 21) | ((b1 & 0x7F) << 14) | ((b2 & 0x7F) << 7) | (b3 & 0x7F);
+    const audioStart = 10 + tagSize;
+    if (audioStart < buf.length) {
+      return buf.slice(audioStart);
+    }
+  }
+  return buf;
+}
+
+/**
+ * Stitches multiple MP3 audio buffers into a single 100% browser-compliant stream.
+ * Retains the primary ID3 header and ensures all subsequent segments contain only continuous MPEG frames.
+ */
+function stitchMp3Buffers(buffers: Buffer[]): Buffer {
+  if (!buffers || buffers.length === 0) return Buffer.alloc(0);
+  if (buffers.length === 1) return buffers[0];
+
+  const firstBuf = buffers[0];
+  let id3Header = Buffer.alloc(0);
+
+  if (firstBuf.slice(0, 3).toString() === 'ID3') {
+    const b0 = firstBuf[6], b1 = firstBuf[7], b2 = firstBuf[8], b3 = firstBuf[9];
+    const tagSize = ((b0 & 0x7F) << 21) | ((b1 & 0x7F) << 14) | ((b2 & 0x7F) << 7) | (b3 & 0x7F);
+    id3Header = firstBuf.slice(0, 10 + tagSize);
+  }
+
+  const rawPayloads = buffers.map(b => extractMpegPayload(b));
+  return Buffer.concat([id3Header, ...rawPayloads]);
+}
+
+/**
+ * Parses transcript into sequential speaker turns and extracts clean spoken text.
+ */
+interface DialogueSegment {
+  speakerTag: string;
+  voiceId: string;
+  text: string;
+  isAnnouncer: boolean;
+}
+
+function parseDialogueSegments(
+  text: string,
+  defaultMaleVoice: string,
+  defaultFemaleVoice: string,
+  defaultGender: 'female' | 'male' = 'female'
+): DialogueSegment[] {
+  const clean = text.trim();
+  const segments: DialogueSegment[] = [];
+
+  // Match all standard French TCF speaker prefixes
+  const speakerRegex = /(?:^|\n)\s*(Locuteur\s*\d*|Locutrice\s*\d*|Homme\s*\d*|Femme\s*\d*|Annonceur|Annonceuse|Journaliste|Intervenant(?:e)?)\s*:\s*/gi;
+  const matches = [...clean.matchAll(speakerRegex)];
+
+  const getVoiceForTag = (tag: string): { voiceId: string; isAnnouncer: boolean } => {
+    const lower = tag.toLowerCase();
+    if (lower.includes('annonceuse')) {
+      return { voiceId: 'EXAVITQu4vr4xnSDxMaL', isAnnouncer: true }; // Official French Female Announcer
+    }
+    if (lower.includes('annonceur') || lower.includes('journaliste')) {
+      return { voiceId: 'ErXwobaYiN019PkySvjV', isAnnouncer: true }; // Official French Male Announcer
+    }
+    if (lower.includes('locuteur 2') || lower.includes('homme 2')) {
+      return { voiceId: 'VR6AewLTigWG4xSOukaG', isAnnouncer: false }; // Leo (Interlocutor Male 2)
+    }
+    if (lower.includes('locutrice 2') || lower.includes('femme 2')) {
+      return { voiceId: '21m00Tcm4TlvDq8ikWAM', isAnnouncer: false }; // Rachel (Interlocutor Female 2)
+    }
+    if (lower.includes('locutrice') || lower.includes('femme')) {
+      return { voiceId: defaultFemaleVoice, isAnnouncer: false }; // Charlotte (Female 1)
+    }
+    return { voiceId: defaultMaleVoice, isAnnouncer: false }; // Henri (Male 1)
+  };
+
+  if (matches.length === 0) {
+    const isFemale = defaultGender === 'female' || /\b(locutrice|femme)\b/i.test(clean);
+    return [{
+      speakerTag: isFemale ? 'Locutrice' : 'Locuteur',
+      voiceId: isFemale ? defaultFemaleVoice : defaultMaleVoice,
+      text: clean,
+      isAnnouncer: false
+    }];
+  }
+
+  for (let i = 0; i < matches.length; i++) {
+    const currentMatch = matches[i];
+    const rawTag = currentMatch[1].trim();
+    const startIndex = currentMatch.index + currentMatch[0].length;
+    const endIndex = (i + 1 < matches.length) ? matches[i + 1].index : clean.length;
+
+    let segmentText = clean.slice(startIndex, endIndex).trim();
+
+    // Format pause spacing between options A, B, C, D
+    if (/Annonceur|Annonceuse/i.test(rawTag)) {
+      segmentText = segmentText
+        .replace(/\n\.\.\.\s*/g, ' ... ')
+        .replace(/\.\.\.\s*/g, ' ... ');
+    }
+
+    if (segmentText.length > 0) {
+      const { voiceId, isAnnouncer } = getVoiceForTag(rawTag);
+      segments.push({
+        speakerTag: rawTag,
+        voiceId,
+        text: segmentText,
+        isAnnouncer
+      });
+    }
+  }
+
+  return segments;
 }
 
 export async function generateNeuralAudio(
@@ -59,7 +178,7 @@ export async function generateNeuralAudio(
 
   const textHash = getHash(cleanText, gender, lang, activeProvider, targetVoiceId, speakingRate);
 
-  // 1. Check MongoDB Cache first — bypass if testing forced voice/provider to guarantee distinct live voice test playback
+  // 1. Check MongoDB Cache first — bypass if testing forced voice/provider
   if (!forcedVoiceId && !forcedProvider) {
     try {
       const cached = await TTSCache.findOne({ textHash }).maxTimeMS(1500);
@@ -84,47 +203,62 @@ export async function generateNeuralAudio(
     }
 
     const elevenLabsKey = rawKey.trim().replace(/^["']|["']$/g, '');
+    const defaultFemale = settings?.selectedElevenLabsFemaleVoice || 'XB0fDUnXU5powctDhC70';
+    const defaultMale = settings?.selectedElevenLabsMaleVoice || 'ONwBz21w4p8b7X1s5kL0';
 
-    // Multi-Speaker Passage vs Announcer Voice Contrast Engine
-    const announcerMatch = cleanText.match(/\b(Annonceur|Annonceuse)\s*:\s*/i);
-    if (announcerMatch && announcerMatch.index !== undefined && announcerMatch.index > 0) {
-      const passagePart = cleanText.slice(0, announcerMatch.index).trim();
-      const announcerPart = cleanText.slice(announcerMatch.index).trim();
+    // Parse multi-speaker dialogues and announcer sections
+    const segments = parseDialogueSegments(cleanText, defaultMale, defaultFemale, gender);
 
-      const isPassageFemale = /\b(Locutrice|Annonceuse)\b/i.test(passagePart);
-      const passageVoiceId = isPassageFemale ? 'XB0fDUnXU5powctDhC70' : 'ONwBz21w4p8b7X1s5kL0'; // Charlotte (Female) or Henri (Male)
-      const announcerVoiceId = 'EXAVITQu4vr4xnSDxMaL'; // Official French Announcer Voice
-
-      const cleanPassage = passagePart.replace(/^(Locuteur|Locutrice)\s*:\s*/i, '').trim();
-      let cleanAnnouncer = announcerPart.replace(/^(Annonceur|Annonceuse)\s*:\s*/i, '').trim();
-
-      // Ensure clean 1.0s pause spacing between spoken options A, B, C, D
-      cleanAnnouncer = cleanAnnouncer
-        .replace(/\n\.\.\.\s*/g, ' ... ')
-        .replace(/\.\.\.\s*/g, ' ... ');
-
+    if (segments.length > 1) {
       try {
-        console.log(`[ElevenLabs Multi-Voice] Synthesizing Passage Voice (${passageVoiceId}) + Announcer Voice (${announcerVoiceId})...`);
-        const [resPassage, resAnnouncer] = await Promise.all([
-          axios.post(
-            `https://api.elevenlabs.io/v1/text-to-speech/${passageVoiceId}`,
-            { text: cleanPassage + ' ... ', model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.50, similarity_boost: 0.80, style: 0.15, use_speaker_boost: true, speed: speakingRate } },
-            { headers: { 'xi-api-key': elevenLabsKey, 'Content-Type': 'application/json', Accept: 'audio/mpeg' }, responseType: 'arraybuffer', timeout: 30000 }
-          ),
-          axios.post(
-            `https://api.elevenlabs.io/v1/text-to-speech/${announcerVoiceId}`,
-            { text: cleanAnnouncer, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.50, similarity_boost: 0.80, style: 0.15, use_speaker_boost: true, speed: speakingRate } },
-            { headers: { 'xi-api-key': elevenLabsKey, 'Content-Type': 'application/json', Accept: 'audio/mpeg' }, responseType: 'arraybuffer', timeout: 30000 }
-          )
-        ]);
+        console.log(`[ElevenLabs Multi-Voice] Synthesizing ${segments.length} distinct dialogue turns...`);
+        const segmentPromises = segments.map((seg, idx) => {
+          const pauseSuffix = (idx < segments.length - 1) ? ' ... ' : '';
+          return axios.post(
+            `https://api.elevenlabs.io/v1/text-to-speech/${seg.voiceId}`,
+            {
+              text: seg.text + pauseSuffix,
+              model_id: 'eleven_multilingual_v2',
+              voice_settings: {
+                stability: 0.50,
+                similarity_boost: 0.80,
+                style: 0.15,
+                use_speaker_boost: true,
+                speed: speakingRate
+              }
+            },
+            {
+              headers: {
+                'xi-api-key': elevenLabsKey,
+                'Content-Type': 'application/json',
+                Accept: 'audio/mpeg'
+              },
+              responseType: 'arraybuffer',
+              timeout: 35000
+            }
+          );
+        });
 
-        if (resPassage.status === 200 && resAnnouncer.status === 200) {
-          const combinedBuffer = Buffer.concat([Buffer.from(resPassage.data), Buffer.from(resAnnouncer.data)]);
-          const audioBase64 = combinedBuffer.toString('base64');
+        const responses = await Promise.all(segmentPromises);
+        const allOk = responses.every(r => r.status === 200);
+
+        if (allOk) {
+          const rawBuffers = responses.map(r => Buffer.from(r.data));
+          const stitchedBuffer = stitchMp3Buffers(rawBuffers);
+          const audioBase64 = stitchedBuffer.toString('base64');
           const contentType = 'audio/mp3';
+
           if (!forcedVoiceId) {
-            TTSCache.create({ textHash, text: cleanText, voice: 'elevenlabs-multi-voice', gender, audioBase64, contentType }).catch(() => {});
+            TTSCache.create({
+              textHash,
+              text: cleanText,
+              voice: 'elevenlabs-multi-voice',
+              gender,
+              audioBase64,
+              contentType
+            }).catch(() => {});
           }
+
           return { audioBase64, contentType, provider: 'elevenlabs-multi-voice' };
         }
       } catch (err: any) {
@@ -132,8 +266,6 @@ export async function generateNeuralAudio(
       }
     }
 
-    const defaultFemale = settings?.selectedElevenLabsFemaleVoice || 'XB0fDUnXU5powctDhC70';
-    const defaultMale = settings?.selectedElevenLabsMaleVoice || 'ONwBz21w4p8b7X1s5kL0';
     const primaryVoiceId = forcedVoiceId || (gender === 'male' ? defaultMale : defaultFemale);
 
     const langNativeVoiceMap: Record<string, { female: string; male: string }> = {
