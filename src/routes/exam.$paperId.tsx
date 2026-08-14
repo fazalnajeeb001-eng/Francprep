@@ -2420,8 +2420,21 @@ export function AuthenticCBTExamPage() {
                     </div>
                   ) : null}
 
+                  {/* Detailed Pedagogical Analysis Section */}
+                  {currentQ.explanation ? (
+                    <div className="space-y-1.5 pt-2.5 border-t border-amber-500/20">
+                      <div className="flex items-center gap-1.5 font-bold text-purple-900 dark:text-purple-300">
+                        <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+                        <span>Analyse Pédagogique Détaillée</span>
+                      </div>
+                      <div className="p-3 rounded-xl bg-purple-50/80 dark:bg-purple-950/40 border border-purple-200/80 dark:border-purple-800/60 whitespace-pre-line leading-relaxed text-xs font-medium text-slate-900 dark:text-slate-100">
+                        {currentQ.explanation}
+                      </div>
+                    </div>
+                  ) : null}
+
                   {/* Fallback for other sections (e.g. Reading/Writing) */}
-                  {!(currentQ as any).trapAlert && currentQ.hint && (
+                  {!(currentQ as any).trapAlert && !currentQ.explanation && currentQ.hint && (
                     <div className="whitespace-pre-line leading-relaxed text-xs font-medium">
                       {currentQ.hint}
                     </div>
