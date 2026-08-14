@@ -71,28 +71,28 @@ function parseDialogueSegments(
   const getVoiceForTag = (tag: string): { voiceId: string; isAnnouncer: boolean } => {
     const lower = tag.toLowerCase();
     if (lower.includes('annonceuse')) {
-      return { voiceId: 'EXAVITQu4vr4xnSDxMaL', isAnnouncer: true }; // Official French Female Announcer
+      return { voiceId: 'EXAVITQu4vr4xnSDxMaL', isAnnouncer: true }; // Official French Female Announcer (Sarah)
     }
-    if (lower.includes('annonceur') || lower.includes('journaliste')) {
-      return { voiceId: 'ErXwobaYiN019PkySvjV', isAnnouncer: true }; // Official French Male Announcer
+    if (lower.includes('annonceur') || lower.includes('journaliste') || lower.includes('examinateur')) {
+      return { voiceId: 'onwK4e9ZLuTAKqWW03F9', isAnnouncer: true }; // Official French Male Announcer (Daniel)
     }
     if (lower.includes('locuteur 2') || lower.includes('homme 2')) {
-      return { voiceId: 'VR6AewLTigWG4xSOukaG', isAnnouncer: false }; // Leo (Interlocutor Male 2)
+      return { voiceId: 'cjVigY5qzO86Huf0OWal', isAnnouncer: false }; // Eric (Male 2)
     }
     if (lower.includes('locutrice 2') || lower.includes('femme 2')) {
-      return { voiceId: '21m00Tcm4TlvDq8ikWAM', isAnnouncer: false }; // Rachel (Interlocutor Female 2)
+      return { voiceId: 'cgSgspJ2msm6clMCkdW9', isAnnouncer: false }; // Jessica (Female 2)
     }
     if (lower.includes('locutrice') || lower.includes('femme')) {
-      return { voiceId: defaultFemaleVoice, isAnnouncer: false }; // Charlotte (Female 1)
+      return { voiceId: defaultFemaleVoice || 'Xb7hH8MSUJpSbSDYk0k2', isAnnouncer: false }; // Alice (Female 1)
     }
-    return { voiceId: defaultMaleVoice, isAnnouncer: false }; // Henri (Male 1)
+    return { voiceId: defaultMaleVoice || 'JBFqnCBsd6RMkjVDRZzb', isAnnouncer: false }; // George (Male 1)
   };
 
   if (matches.length === 0) {
     const isFemale = defaultGender === 'female' || /\b(locutrice|femme)\b/i.test(clean);
     return [{
       speakerTag: isFemale ? 'Locutrice' : 'Locuteur',
-      voiceId: isFemale ? defaultFemaleVoice : defaultMaleVoice,
+      voiceId: isFemale ? (defaultFemaleVoice || 'Xb7hH8MSUJpSbSDYk0k2') : (defaultMaleVoice || 'JBFqnCBsd6RMkjVDRZzb'),
       text: clean,
       isAnnouncer: false
     }];
@@ -153,17 +153,17 @@ export async function generateNeuralAudio(
   if (!targetVoiceId) {
     if (activeProvider === 'elevenlabs' || activeProvider === 'auto') {
       if (lowerSpeaker.includes('annonceuse')) {
-        targetVoiceId = 'EXAVITQu4vr4xnSDxMaL'; // Official French Female Announcer
+        targetVoiceId = 'EXAVITQu4vr4xnSDxMaL'; // Official French Female Announcer (Sarah)
       } else if (lowerSpeaker.includes('annonceur') || lowerSpeaker.includes('examinateur')) {
-        targetVoiceId = 'ErXwobaYiN019PkySvjV'; // Official French Male Announcer
+        targetVoiceId = 'onwK4e9ZLuTAKqWW03F9'; // Official French Male Announcer (Daniel)
       } else if (lowerSpeaker.includes('locuteur 2') || lowerSpeaker.includes('homme 2')) {
-        targetVoiceId = 'VR6AewLTigWG4xSOukaG'; // Leo (Interlocutor Male 2)
+        targetVoiceId = 'cjVigY5qzO86Huf0OWal'; // Eric (Interlocutor Male 2)
       } else if (lowerSpeaker.includes('locutrice 2') || lowerSpeaker.includes('femme 2')) {
-        targetVoiceId = '21m00Tcm4TlvDq8ikWAM'; // Rachel (Interlocutor Female 2)
+        targetVoiceId = 'cgSgspJ2msm6clMCkdW9'; // Jessica (Interlocutor Female 2)
       } else if (gender === 'male' || lowerSpeaker.includes('locuteur') || lowerSpeaker.includes('homme')) {
-        targetVoiceId = settings?.selectedElevenLabsMaleVoice || 'ONwBz21w4p8b7X1s5kL0'; // Henri (Native French Male 1)
+        targetVoiceId = settings?.selectedElevenLabsMaleVoice || 'JBFqnCBsd6RMkjVDRZzb'; // George (Native French Male 1)
       } else {
-        targetVoiceId = settings?.selectedElevenLabsFemaleVoice || 'XB0fDUnXU5powctDhC70'; // Charlotte (Native French Female 1)
+        targetVoiceId = settings?.selectedElevenLabsFemaleVoice || 'Xb7hH8MSUJpSbSDYk0k2'; // Alice (Native French Female 1)
       }
     } else if (activeProvider === 'openai') {
       targetVoiceId = gender === 'male'
