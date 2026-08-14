@@ -163,7 +163,7 @@ export async function generateNeuralAudio(
       } else if (gender === 'male' || lowerSpeaker.includes('locuteur') || lowerSpeaker.includes('homme')) {
         targetVoiceId = settings?.selectedElevenLabsMaleVoice || 'JBFqnCBsd6RMkjVDRZzb'; // George (Native French Male 1)
       } else {
-        targetVoiceId = settings?.selectedElevenLabsFemaleVoice || 'Xb7hH8MSUJpSbSDYk0k2'; // Alice (Native French Female 1)
+        targetVoiceId = settings?.selectedElevenLabsFemaleVoice || 'EXAVITQu4vr4xnSDxMaL'; // Sarah (Native French Female 1)
       }
     } else if (activeProvider === 'openai') {
       targetVoiceId = gender === 'male'
@@ -178,10 +178,10 @@ export async function generateNeuralAudio(
 
   const textHash = getHash(cleanText, gender, lang, activeProvider, targetVoiceId, speakingRate);
 
-  // 1. Check MongoDB Cache first — bypass only if testing a forced unique voice
+  // 1. Check MongoDB Cache first — instant hit by textHash or exact text
   if (!forcedVoiceId) {
     try {
-      const cached = await TTSCache.findOne({ textHash }).maxTimeMS(2500);
+      const cached = await TTSCache.findOne({ $or: [{ textHash }, { text: cleanText }] }).maxTimeMS(2500);
       if (cached && cached.audioBase64) {
         return { audioBase64: cached.audioBase64, contentType: cached.contentType || 'audio/mp3', provider: `cache-${cached.voice}` };
       }
