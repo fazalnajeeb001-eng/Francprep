@@ -178,10 +178,10 @@ export async function generateNeuralAudio(
 
   const textHash = getHash(cleanText, gender, lang, activeProvider, targetVoiceId, speakingRate);
 
-  // 1. Check MongoDB Cache first — bypass if testing forced voice/provider
-  if (!forcedVoiceId && !forcedProvider) {
+  // 1. Check MongoDB Cache first — bypass only if testing a forced unique voice
+  if (!forcedVoiceId) {
     try {
-      const cached = await TTSCache.findOne({ textHash }).maxTimeMS(1500);
+      const cached = await TTSCache.findOne({ textHash }).maxTimeMS(2500);
       if (cached && cached.audioBase64) {
         return { audioBase64: cached.audioBase64, contentType: cached.contentType || 'audio/mp3', provider: `cache-${cached.voice}` };
       }
@@ -227,7 +227,7 @@ export async function generateNeuralAudio(
                 similarity_boost: 0.80,
                 style: 0.15,
                 use_speaker_boost: true,
-                speed: speakingRate
+                speed: Math.min(1.2, Math.max(0.7, speakingRate || 1.0))
               }
             },
             {
@@ -256,14 +256,11 @@ export async function generateNeuralAudio(
           const contentType = 'audio/mp3';
 
           if (!forcedVoiceId) {
-            TTSCache.create({
-              textHash,
-              text: cleanText,
-              voice: 'elevenlabs-multi-voice',
-              gender,
-              audioBase64,
-              contentType
-            }).catch(() => {});
+            await TTSCache.findOneAndUpdate(
+              { textHash },
+              { textHash, text: cleanText, voice: 'elevenlabs-multi-voice', gender, audioBase64, contentType },
+              { upsert: true, new: true }
+            ).catch((e: any) => console.warn('[TTSCache] Multi-voice save error:', e.message));
           }
 
           return { audioBase64, contentType, provider: 'elevenlabs-multi-voice' };
@@ -310,7 +307,7 @@ export async function generateNeuralAudio(
           {
             text: cleanText,
             model_id: 'eleven_multilingual_v2',
-            voice_settings: { ...voiceSettings, speed: speakingRate },
+            voice_settings: { ...voiceSettings, speed: Math.min(1.2, Math.max(0.7, speakingRate || 1.0)) },
           },
           {
             headers: { 'xi-api-key': elevenLabsKey, 'Content-Type': 'application/json', Accept: 'audio/mpeg' },
@@ -325,7 +322,11 @@ export async function generateNeuralAudio(
           const contentType = 'audio/mp3';
 
           if (!forcedVoiceId) {
-            TTSCache.create({ textHash, text: cleanText, voice: `elevenlabs-${voiceId}`, gender, audioBase64, contentType }).catch(() => {});
+            await TTSCache.findOneAndUpdate(
+              { textHash },
+              { textHash, text: cleanText, voice: `elevenlabs-${voiceId}`, gender, audioBase64, contentType },
+              { upsert: true, new: true }
+            ).catch((e: any) => console.warn('[TTSCache] Save error:', e.message));
           }
           return { audioBase64, contentType, provider: `elevenlabs-${voiceId}` };
         }
