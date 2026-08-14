@@ -2466,39 +2466,24 @@ export function AuthenticCBTExamPage() {
                   )}
                 </div>
 
-                {/* Mobile Strategy & Trap Alert In-Flow Box (Visible ONLY on Mobile screens < 1024px in Practice Mode) */}
+                {/* Mobile Strategy & Trap Alert Toggle Pill (Visible ONLY on Mobile screens < 1024px in Practice Mode) */}
                 {mode === "PRACTICE" && ((currentQ as any).trapAlert || (currentQ as any).readingCoach || (currentQ as any).audioCoach || currentQ.hint) && (
-                  <div className="lg:hidden p-3 rounded-xl bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-purple-500/15 border border-amber-500/40 text-slate-900 dark:text-slate-100 text-xs space-y-2 shadow-sm">
-                    <div className="flex items-center justify-between">
-                      <span className="font-extrabold flex items-center gap-1.5 text-amber-800 dark:text-amber-300 text-xs">
-                        <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
-                        <span>
-                          {currentSection.type === "COMPREHENSION_ECRITE" ? "📖 Reading Trap Alert & Coach" : "🎧 Audio Trap Alert & Coach"}
-                        </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowMobileStrategyDrawer(true)}
+                    className="lg:hidden w-full py-2 px-3 rounded-lg bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-purple-500/15 border border-amber-500/30 text-slate-900 dark:text-slate-100 text-xs font-bold flex items-center justify-between shadow-sm active:scale-[0.98] transition-all cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2 text-amber-800 dark:text-amber-300 truncate">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-pulse shrink-0" />
+                      <span className="truncate">
+                        {currentSection.type === "COMPREHENSION_ECRITE" ? "📖 Reading Strategy & Trap Alert" : "🎧 Audio Coach & Trap Alert"}
                       </span>
-                      <button
-                        type="button"
-                        onClick={() => setShowMobileStrategyDrawer(true)}
-                        className="px-2.5 py-1 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-bold text-[10px] shadow-sm flex items-center gap-1 cursor-pointer active:scale-95 transition-all"
-                      >
-                        <span>Full Guide 📖</span>
-                      </button>
-                    </div>
-
-                    {(currentQ as any).trapAlert ? (
-                      <div className="text-[11px] leading-relaxed text-slate-800 dark:text-slate-200">
-                        <span className="font-bold text-amber-800 dark:text-amber-300 mr-1">⚠️ Piège :</span>
-                        {(currentQ as any).trapAlert}
-                      </div>
-                    ) : null}
-
-                    {((currentQ as any).readingCoach || (currentQ as any).audioCoach) ? (
-                      <div className="text-[11px] leading-relaxed text-slate-800 dark:text-slate-200 pt-1 border-t border-amber-500/20">
-                        <span className="font-bold text-blue-800 dark:text-blue-300 mr-1">💡 Coach :</span>
-                        {(currentQ as any).readingCoach || (currentQ as any).audioCoach}
-                      </div>
-                    ) : null}
-                  </div>
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-800 dark:text-amber-200 font-mono font-bold flex items-center gap-1 border border-amber-500/30 shrink-0 ml-2">
+                      <span>Tap to view</span>
+                      <span>→</span>
+                    </span>
+                  </button>
                 )}
 
                 {/* Multiple Choice Options (Official FEI Radio Buttons for Spoken Option Items vs Standard Text Options) */}
