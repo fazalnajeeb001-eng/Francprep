@@ -1068,10 +1068,10 @@ export function AuthenticCBTExamPage() {
             nclcGrade,
             expressEntryPoints,
             scoreOutOf20: totalScoreOutOf20,
-            taskFulfillmentScore: data.taskFulfillmentScore || data.taskCompletionScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
-            coherenceScore: data.coherenceScore || data.cohesionScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
-            lexicalScore: data.lexicalScore || data.vocabularyScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
-            grammarScore: data.grammarScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+            taskFulfillmentScore: typeof data.taskFulfillmentScore === 'number' ? data.taskFulfillmentScore : (typeof data.taskCompletionScore === 'number' ? data.taskCompletionScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4))),
+            coherenceScore: typeof data.coherenceScore === 'number' ? data.coherenceScore : (typeof data.cohesionScore === 'number' ? data.cohesionScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4))),
+            lexicalScore: typeof data.lexicalScore === 'number' ? data.lexicalScore : (typeof data.vocabularyScore === 'number' ? data.vocabularyScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4))),
+            grammarScore: typeof data.grammarScore === 'number' ? data.grammarScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
             feedback: data.feedback || `Diagnostic Evaluation (TCF Format): Total ${totalScoreOutOf20}/20.`
           }
         }));

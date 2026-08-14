@@ -532,64 +532,99 @@ Respond STRICTLY with a valid JSON object matching this schema:
 
         // ─── DETERMINISTIC CEFR LINGUISTIC FEATURE ANCHORING ENGINE ───
 
-        // 1. TÂCHE 1 Deterministic Anchoring
+        // ─── COMPREHENSIVE CEFR LINGUISTIC FEATURE SCORING ENGINE ───
+
+        // Check key linguistic markers
+        const hasFormalGreeting = /^\s*(monsieur le|madame la|madame, monsieur|monsieur,|madame,)/i.test(textClean);
+        const hasConversationalGreeting = /^\s*(bonjour|salut|coucou)/i.test(textClean);
+        const hasFormalSignOff = /(je vous prie d'agréer|veuillez agréer|salutations distinguées|haute considération|respectueusement|bien cordialement)/i.test(textClean);
+        const hasBasicSignOff = /(cordialement|merci|merci beaucoup|bonne journée|au revoir|à bientôt)/i.test(textClean);
+
+        const hasFormalPoliteConditional = /(pourriez-vous|auriez-vous l'amabilité|serait-il possible|je souhaiterais|nous souhaiterions|je vous saurais gré|j'aimerais savoir si|je me permets de vous demander)/i.test(textClean);
+        const hasDirectSpokenRequest = /(pouvez-vous|vous pouvez|venez|il faut|aidez-moi|je veux savoir|dites-moi)/i.test(textClean);
+
+        const hasC1C2FormalLex = /(par la présente|eu égard à|dépêchement immédiat|remise en état|à défaut d'une|sans délai|dispositifs? de chauffage|diligente de ce sinistre|dysfonctionnement|salubrité|urgence manifeste|dans les plus brefs délais|s'avère absolument indispensable|comptant sur votre réactivité|défaillance totale|désagrément majeur)/i.test(textClean);
+        const hasB2FormalLex = /(panne majeure|intervenir|technicien qualifié|solution temporaire|inconfortable|température glaciale|situation se dégrade|solliciter votre intervention)/i.test(textClean);
+        const hasConversationalA2Lex = /(ne marche pas|très froid|cassé|pas bon|problème de chauffage|vite|aide|dormir)/i.test(textClean);
+
+        const hasC1C2Connectors = /(de surcroît|par conséquent|en conséquence|dès lors|eu égard à|nonobstant|sans conteste|dans cette optique)/i.test(textClean);
+        const hasB2Connectors = /(en outre|par ailleurs|cependant|néanmoins|ainsi|afin de|en vue de|en conclusion|en somme|d'une part|d'autre part)/i.test(textClean);
+        const hasB1Connectors = /(donc|car|alors|puis|comme|quand|si|d'abord|ensuite|enfin|à mon avis|selon moi)/i.test(textClean);
+
+        // ─── TASK 1 STRICT CALIBRATION ───
         if (isTache1) {
-          const hasC2Register = /\b(par la présente|eu égard à|dépêchement immédiat|remise en état|à défaut d'une|sans délai|dispositifs? de chauffage d'appoint adéquats|diligente de ce sinistre|l'expression de mes salutations distinguées)\b/i.test(textClean);
-          const hasC1Register = /\b(porter à votre connaissance|dysfonctionnement critique|refroidissement brutal|salubrité|urgence manifeste|dans les plus brefs délais|s'avère absolument indispensable|comptant sur votre réactivité|défaillance totale|refroidissement|désagrément majeur|salutations distinguées)\b/i.test(textClean);
-          const hasB2PlusRegister = /\b(solliciter votre intervention|défaillance complète|grand froid hivernal|totalement à l'arrêt|situation se dégrade|je vous prie de bien vouloir|je vous serais reconnaissant|solution de chauffage d'appoint|respectueusement)\b/i.test(textClean);
-          const hasB2Register = /\b(panne majeure|particulièrement rigoureuses|inconfortable|je vous saurais gré|mandater un technicien|chauffage d'appoint temporaire)\b/i.test(textClean);
-          const hasB1PlusRegister = /\b(afin de vous informer|tombé en panne|situation devient|invivable|c'est pourquoi|pourriez-vous également|prêter un chauffage d'appoint)\b/i.test(textClean);
-          const hasB1Register = /\b(pour vous signaler|température.*a beaucoup chuté|serait-il possible de|radiateur électrique de secours|cela m'aiderait)\b/i.test(textClean);
-          const hasA2PlusRegister = /\b(extrêmement froid dehors|baisse vite|vous demande de venir|envoyer un technicien)\b/i.test(textClean);
-          const hasA2Register = /\b(pour le chauffage|ne fonctionne pas depuis|difficile de dormir|habiter ici|pouvez-vous venir|c'est très urgent)\b/i.test(textClean);
-          const hasA1PlusRegister = /\b(parce que le chauffage|ne marche pas aujourd'hui|je suis malade|venez réparer vite|pouvez venir aujourd'hui)\b/i.test(textClean);
-          const hasA1Telegraphic = /\b(pas marcher|beaucoup froid|venir vite|maison|dans la chambre)\b/i.test(textClean) && !/\b(pourquoi|parce que|fonctionne|signalement|urgence|cordialement)\b/i.test(textClean);
-
-          if (hasC2Register) { t = 5; c = 5; l = 5; g = 5; }
-          else if (hasC1Register) { t = 5; c = 4; l = 4; g = 4; }
-          else if (hasB2PlusRegister) { t = 4; c = 4; l = 4; g = 3; }
-          else if (hasB2Register) { t = 4; c = 3; l = 3; g = 3; }
-          else if (hasB1PlusRegister) { t = 3; c = 3; l = 3; g = 2; }
-          else if (hasB1Register) { t = 3; c = 2; l = 2; g = 2; }
-          else if (hasA2PlusRegister) { t = 2; c = 2; l = 1; g = 1; }
-          else if (hasA2Register) { t = 1; c = 1; l = 1; g = 1; }
-          else if (hasA1PlusRegister) { t = 1; c = 1; l = 1; g = 0; }
-          else if (hasA1Telegraphic) { t = 1; c = 0; l = 1; g = 0; }
-        }
-
-        // 2. TÂCHE 2 Deterministic Anchoring (Narrative past tenses & sensory lexicon)
-        if (isTache2) {
-          const hasPastTenses = /\b(j'ai\s+(visité|eu|pu|découvert|adoré|assisté|vécu|participé|décidé|passé|aimé|effectué|rencontré)|nous\s+avons\s+(visité|passé|fait|découvert|aimé|assisté)|je\s+suis\s+(allé|resté|parti|arrivé))\b/i.test(textClean);
-          const hasImparfait = /\b(était|faisait|avaient|offrait|semblait|permettait|rendait|régnait|étaient)\b/i.test(textClean);
-          const hasSensoryRichness = /\b(féerique|spectaculaire|chaleureuse?|émerveill[ée]|inoubliable|grandiose|plénitude|apaisant|convivial|riche en émotions|souvenir impérissable)\b/i.test(textClean);
-          const hasTemporalConnectors = /\b(lors de|dès mon arrivée|pendant mon séjour|au cours de|en définitive|après avoir|en outre)\b/i.test(textClean);
-
-          if (hasPastTenses && hasImparfait && hasSensoryRichness && hasTemporalConnectors && wordCount >= 110) {
-            t = Math.max(4, t);
-            c = Math.max(4, c);
-            l = Math.max(4, l);
-            g = Math.max(4, g);
-          } else if (!hasPastTenses && !hasImparfait) {
-            // Flat present tense narrative penalty
-            g = Math.min(2, g);
+          if (hasC1C2FormalLex && hasFormalSignOff && hasFormalPoliteConditional && wordCount >= 55) {
+            // C1 / C2 Advanced (16–18/20 | NCLC 9–10)
+            t = 5; c = Math.max(4, c); l = 5; g = Math.max(4, g);
+          } else if (hasB2FormalLex && (hasFormalGreeting || hasFormalSignOff) && (hasFormalPoliteConditional || hasB2Connectors) && wordCount >= 50) {
+            // B2 Solid (12–15/20 | NCLC 7–8)
+            t = Math.max(3, Math.min(4, t));
+            c = Math.max(3, Math.min(4, c));
+            l = Math.max(3, Math.min(4, l));
+            g = Math.max(3, Math.min(4, g));
+          } else if ((hasFormalPoliteConditional || hasB1Connectors || hasFormalSignOff) && wordCount >= 40) {
+            // B1 Intermediate (8–11/20 | NCLC 5–6)
+            t = Math.min(3, t);
+            c = Math.min(3, c);
+            l = Math.min(3, l);
+            g = Math.min(3, g);
+          } else {
+            // A2 Conversational / Elementary (5–7/20 | NCLC 4)
+            t = Math.min(2, Math.max(1, t));
+            c = Math.min(2, Math.max(1, c));
+            l = Math.min(2, Math.max(1, l));
+            g = Math.min(2, Math.max(1, g));
           }
         }
 
-        // 3. TÂCHE 3 Deterministic Anchoring (Dialectic argumentative structure)
+        // ─── TASK 2 STRICT CALIBRATION ───
+        if (isTache2) {
+          const hasPastTenses = /\b(j'ai\s+(visité|eu|pu|découvert|adoré|assisté|vécu|participé|décidé|passé|aimé|effectué|rencontré)|nous\s+avons\s+(visité|passé|fait|découvert|aimé|assisté)|je\s+suis\s+(allé|resté|parti|arrivé))\b/i.test(textClean);
+          const hasImparfait = /\b(était|faisait|avaient|offrait|semblait|permettait|rendait|régnait|étaient)\b/i.test(textClean);
+          const hasSensoryRichness = /\b(féerique|spectaculaire|chaleureuse?|émerveill[ée]|inoubliable|grandiose|plénitude|apaisant|convivial|riche en émotions|souvenir impérissable|je vous recommande vivement)\b/i.test(textClean);
+          const hasTemporalConnectors = /\b(lors de|dès mon arrivée|pendant mon séjour|au cours de|en définitive|après avoir|en outre)\b/i.test(textClean);
+
+          if (hasPastTenses && hasImparfait && hasSensoryRichness && hasTemporalConnectors && wordCount >= 100) {
+            // B2/C1 Narrative (14–16/20 | NCLC 8–9)
+            t = Math.max(4, t); c = Math.max(4, c); l = Math.max(4, l); g = Math.max(4, g);
+          } else if (hasPastTenses && wordCount >= 80) {
+            // B1 Narrative (9–11/20 | NCLC 5–6)
+            t = Math.min(3, Math.max(2, t));
+            c = Math.min(3, Math.max(2, c));
+            l = Math.min(3, Math.max(2, l));
+            g = Math.min(3, Math.max(2, g));
+          } else {
+            // A2 Present Tense Narrative (5–7/20 | NCLC 4)
+            t = Math.min(2, Math.max(1, t));
+            c = Math.min(2, Math.max(1, c));
+            l = Math.min(2, Math.max(1, l));
+            g = Math.min(2, Math.max(1, g));
+          }
+        }
+
+        // ─── TASK 3 STRICT CALIBRATION ───
         if (isTache3 && !isLetterFormat) {
           const hasThesisSide = /\b(d'un\s+côté|d'une\s+part|les\s+partisans|certains\s+(soutiennent|soulignent|affirment)|en\s+premier\s+lieu)\b/i.test(textClean);
           const hasAntithesisSide = /\b(d'un\s+autre\s+côté|d'autre\s+part|néanmoins|toutefois|en\s+revanche|les\s+détracteurs|certains\s+(opposent|s'inquiètent|rappellent)|cependant)\b/i.test(textClean);
           const hasSynthesisConclusion = /\b(en\s+conclusion|en\s+somme|bien\s+que|pour\s+conclure|il\s+me\s+semble\s+(préférable|judicieux|essentiel))\b/i.test(textClean);
           const hasSubjunctiveMood = /\b(bien\s+que|afin\s+que|quoique)\s+[\w\s']*\b(soit|puisse|fassent|puissions|ayons|soient)\b/i.test(textClean);
 
-          if (hasThesisSide && hasAntithesisSide && hasSynthesisConclusion && wordCount >= 120) {
-            t = Math.max(4, t);
-            c = Math.max(4, c);
-            l = Math.max(4, l);
-            if (hasSubjunctiveMood) g = Math.max(4, g);
-          } else if (!hasThesisSide || !hasAntithesisSide) {
-            // One-sided bias penalty
-            c = Math.min(3, c);
+          if (hasThesisSide && hasAntithesisSide && hasSynthesisConclusion && wordCount >= 110) {
+            // B2/C1 Dialectic Essay (14–17/20 | NCLC 8–9)
+            t = Math.max(4, t); c = Math.max(4, c); l = Math.max(4, l);
+            if (hasSubjunctiveMood || hasC1C2Connectors) g = Math.max(4, g);
+          } else if ((hasThesisSide || hasAntithesisSide) && wordCount >= 80) {
+            // B1 One-Sided Essay (8–11/20 | NCLC 5–6)
+            t = Math.min(3, Math.max(2, t));
+            c = Math.min(3, Math.max(2, c));
+            l = Math.min(3, Math.max(2, l));
+            g = Math.min(3, Math.max(2, g));
+          } else {
+            // A2 Elementary Opinion (5–7/20 | NCLC 4)
+            t = Math.min(2, Math.max(1, t));
+            c = Math.min(2, Math.max(1, c));
+            l = Math.min(2, Math.max(1, l));
+            g = Math.min(2, Math.max(1, g));
           }
         }
 
