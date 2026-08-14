@@ -5,6 +5,7 @@ import { getAuthenticB2Item, getAuthenticC1C2Item } from "./authenticListeningAd
 import { getQuestionGuidance } from "./practiceGuidanceBank";
 import { getReadingPaperItems } from "./authenticReadingMasterBank";
 import { getReadingGuidance } from "./readingGuidanceBank";
+import { getWritingPaperTasks } from "./authenticWritingMasterBank";
 
 export type ExamType = "TCF_CANADA" | "TEF_CANADA";
 export type ExamMode = "PRACTICE" | "EXAM";
@@ -7749,15 +7750,15 @@ export function getExamRegistry(): ExamPaper[] {
           description: "Compose short messages, social articles, and argumentative essays (3 Tasks / 60 Mins).",
           durationMins: 60,
           totalQuestions: 3,
-          writingTasks: writingSet.map((wt, idx) => ({
-            id: `tcf${i}-w${idx + 1}`,
-            taskNumber: idx + 1,
+          writingTasks: getWritingPaperTasks(i).map((wt) => ({
+            id: `tcf${i}-w${wt.taskNumber}`,
+            taskNumber: wt.taskNumber,
             title: wt.title,
             prompt: wt.prompt,
-            wordCountMin: wt.min,
-            wordCountMax: wt.max,
-            timeLimitMins: wt.time,
-            guidedTips: ["Introduction claire", "Présenter 2 arguments développés", "Conclusion synthétique avec prise de position"],
+            wordCountMin: wt.wordCountMin,
+            wordCountMax: wt.wordCountMax,
+            timeLimitMins: wt.timeLimitMins,
+            guidedTips: wt.guidedTips,
             sampleResponse: wt.sampleResponse
           }))
         },
