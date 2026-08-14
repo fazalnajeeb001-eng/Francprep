@@ -22,7 +22,9 @@ import {
   Moon,
   Square,
   RotateCcw,
-  Home
+  Home,
+  Search,
+  X
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
 import { useSpeak } from "~/lib/speech";
