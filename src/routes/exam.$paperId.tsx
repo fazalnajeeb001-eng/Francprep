@@ -212,6 +212,11 @@ export function AuthenticCBTExamPage() {
   const [showStrategyModal, setShowStrategyModal] = useState(false);
   const [openModelAnswerTaskId, setOpenModelAnswerTaskId] = useState<string | null>(null);
 
+  // Mobile Ergonomic Viewport States
+  const [showMobileStrategyDrawer, setShowMobileStrategyDrawer] = useState(false);
+  const [zoomedImageSrc, setZoomedImageSrc] = useState<string | null>(null);
+  const [readingFontSize, setReadingFontSize] = useState<"sm" | "base" | "lg">("base");
+
   // Per-Question CBT Countdown Timer & Auto-Advance (Runs in BOTH Practice & Exam Modes for Comprehension Orale)
   useEffect(() => {
     if (currentSection.type !== "COMPREHENSION_ORALE" || !currentQ || isSubmitted) {
@@ -2210,20 +2215,27 @@ export function AuthenticCBTExamPage() {
 
                       if (mainImgSrc && !isImgFailed) {
                         return (
-                          <div className="p-3.5 rounded-xl bg-white border border-slate-300 text-slate-900 space-y-2 shadow-md">
+                          <div className="p-3 sm:p-3.5 rounded-xl bg-white border border-slate-300 text-slate-900 space-y-2 shadow-md">
                             <div className="flex items-center justify-between text-xs font-bold text-slate-800 border-b pb-1.5 border-slate-200">
                               <span className="flex items-center gap-1.5">🖼️ <strong>Sur le livret / l'écran, vous voyez :</strong></span>
-                              <span className="text-[10px] text-slate-500 font-mono">Illustration Format TCF (HD)</span>
+                              <span className="text-[10px] text-blue-600 font-mono font-bold">🔍 Tap to expand</span>
                             </div>
-                            <div className="relative aspect-[16/10] w-full rounded-lg overflow-hidden border border-slate-300 bg-white flex items-center justify-center">
+                            <div
+                              onClick={() => setZoomedImageSrc(mainImgSrc)}
+                              className="relative aspect-[16/10] w-full rounded-lg overflow-hidden border border-slate-300 bg-white flex items-center justify-center cursor-zoom-in group"
+                            >
                               <img
                                 src={mainImgSrc}
                                 alt={`Illustration N°${currentQ.questionNumber}`}
-                                className="w-full h-full object-contain p-1 bg-white"
+                                className="w-full h-full object-contain p-1 bg-white transition-transform duration-200 group-hover:scale-105"
                                 onError={() => {
                                   setFailedImagesMap((prev) => ({ ...prev, [imgKey]: true }));
                                 }}
                               />
+                              <div className="absolute bottom-2 right-2 px-2 py-1 rounded-md bg-slate-900/80 backdrop-blur text-white text-[10px] font-bold flex items-center gap-1 opacity-90 group-hover:opacity-100 shadow">
+                                <Search className="w-3 h-3" />
+                                <span>Plein écran 🔍</span>
+                              </div>
                             </div>
                           </div>
                         );
@@ -2296,33 +2308,61 @@ export function AuthenticCBTExamPage() {
                   <div className={`p-3.5 sm:p-4 rounded-xl border space-y-3 ${
                     cbtDark ? "bg-blue-950/40 border-blue-800/60 text-slate-100" : "bg-blue-50 border-blue-300 text-slate-950"
                   }`}>
-                    <div className="flex items-center justify-between border-b border-blue-200 dark:border-blue-800 pb-2">
+                    <div className="flex items-center justify-between border-b border-blue-200 dark:border-blue-800 pb-2 gap-2 flex-wrap">
                       <span className="text-xs font-bold text-blue-900 dark:text-blue-300 flex items-center gap-1.5">
                         <BookOpen className="w-4 h-4 text-blue-600" />
-                        <span>Document d'épreuve (Reading Passage):</span>
+                        <span>Document d'épreuve :</span>
                       </span>
 
-                      {mode === "PRACTICE" && (
-                        <div className="flex items-center gap-1.5">
-                          {currentQ.passageEnglish && (
-                            <button
-                              onClick={() => setShowPassageTranslation(!showPassageTranslation)}
-                              className="px-2 py-1 rounded bg-blue-600 text-white font-bold text-[10px] hover:bg-blue-500 transition-all flex items-center gap-1 cursor-pointer"
-                            >
-                              <Globe className="w-3 h-3" />
-                              <span>{showPassageTranslation ? "Hide EN" : "🌐 Show EN Translation"}</span>
-                            </button>
-                          )}
+                      <div className="flex items-center gap-1.5">
+                        {/* Font size scaler for reading comfort */}
+                        <div className="flex items-center border border-blue-300 dark:border-blue-700 rounded-md overflow-hidden bg-white dark:bg-slate-900">
+                          <button
+                            type="button"
+                            onClick={() => setReadingFontSize((prev) => prev === "lg" ? "base" : "sm")}
+                            className={`px-2 py-0.5 text-[10px] font-bold ${readingFontSize === "sm" ? "bg-blue-600 text-white" : "text-blue-900 dark:text-blue-200 hover:bg-blue-100"}`}
+                            title="Smaller text"
+                          >
+                            A-
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setReadingFontSize("base")}
+                            className={`px-2 py-0.5 text-[10px] font-bold border-x border-blue-300 dark:border-blue-700 ${readingFontSize === "base" ? "bg-blue-600 text-white" : "text-blue-900 dark:text-blue-200 hover:bg-blue-100"}`}
+                            title="Default text"
+                          >
+                            A
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setReadingFontSize((prev) => prev === "sm" ? "base" : "lg")}
+                            className={`px-2 py-0.5 text-[10px] font-bold ${readingFontSize === "lg" ? "bg-blue-600 text-white" : "text-blue-900 dark:text-blue-200 hover:bg-blue-100"}`}
+                            title="Larger text"
+                          >
+                            A+
+                          </button>
                         </div>
-                      )}
+
+                        {mode === "PRACTICE" && currentQ.passageEnglish && (
+                          <button
+                            onClick={() => setShowPassageTranslation(!showPassageTranslation)}
+                            className="px-2 py-1 rounded bg-blue-600 text-white font-bold text-[10px] hover:bg-blue-500 transition-all flex items-center gap-1 cursor-pointer"
+                          >
+                            <Globe className="w-3 h-3" />
+                            <span className="hidden xs:inline">{showPassageTranslation ? "Hide EN" : "🌐 Show EN"}</span>
+                          </button>
+                        )}
+                      </div>
                     </div>
 
-                    <p className="font-serif text-xs sm:text-sm leading-relaxed font-medium text-slate-950 dark:text-slate-100 whitespace-pre-line p-3 rounded-lg bg-white dark:bg-slate-950 border border-blue-200 dark:border-blue-900 max-h-[300px] overflow-y-auto">
+                    <p className={`font-serif leading-relaxed font-medium text-slate-950 dark:text-slate-100 whitespace-pre-line p-3 sm:p-3.5 rounded-lg bg-white dark:bg-slate-950 border border-blue-200 dark:border-blue-900 max-h-[35vh] lg:max-h-[300px] overflow-y-auto ${
+                      readingFontSize === "sm" ? "text-xs leading-normal" : readingFontSize === "lg" ? "text-sm sm:text-base leading-relaxed" : "text-xs sm:text-sm"
+                    }`}>
                       "{currentQ.passage}"
                     </p>
 
                     {showPassageTranslation && currentQ.passageEnglish && (
-                      <div className="pt-2 border-t border-blue-300 dark:border-blue-800 text-xs text-blue-900 dark:border-blue-800">
+                      <div className="pt-2 border-t border-blue-300 dark:border-blue-800 text-xs text-blue-900 dark:text-blue-200">
                         <p className="font-bold uppercase text-[10px] mb-1">English Passage Translation:</p>
                         <p className="italic text-slate-700 dark:text-slate-300">{currentQ.passageEnglish}</p>
                       </div>
@@ -2331,9 +2371,9 @@ export function AuthenticCBTExamPage() {
                 )}
               </div>
 
-              {/* Practice Hint Bar */}
+              {/* Practice Hint Bar - Desktop Only (Hidden on mobile < 1024px to prevent vertical pushing) */}
               {mode === "PRACTICE" && showHints && (
-                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-slate-900 dark:text-slate-100 text-xs space-y-3 shadow-sm">
+                <div className="hidden lg:block p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-slate-900 dark:text-slate-100 text-xs space-y-3 shadow-sm">
                   <div className="flex items-center justify-between border-b border-amber-500/20 pb-2">
                     <span className="font-extrabold flex items-center gap-1.5 text-amber-700 dark:text-amber-400 text-xs sm:text-sm">
                       <Sparkles className="w-4 h-4" />
@@ -2389,8 +2429,8 @@ export function AuthenticCBTExamPage() {
             </div>
 
             {/* RIGHT PANEL: QUESTION & OPTIONS SELECTOR (5 COLS) */}
-            <div className={`lg:col-span-5 p-4 sm:p-5 rounded-xl border ${cbtCard} shadow-sm space-y-5 flex flex-col justify-between`}>
-              <div className="space-y-4">
+            <div className={`lg:col-span-5 p-3.5 sm:p-4 lg:p-5 rounded-xl border ${cbtCard} shadow-sm space-y-4 sm:space-y-5 flex flex-col justify-between`}>
+              <div className="space-y-3 sm:space-y-4">
                 <div className="space-y-1">
                   <h3 className="text-sm sm:text-base font-bold leading-snug text-slate-950 dark:text-slate-100">
                     {currentSection.type === "COMPREHENSION_ORALE" && (currentQ.questionNumber || 0) <= 4
@@ -2423,6 +2463,23 @@ export function AuthenticCBTExamPage() {
                     </p>
                   )}
                 </div>
+
+                {/* Mobile Strategy Pill (Visible ONLY on Mobile screens < 1024px) */}
+                {mode === "PRACTICE" && showHints && ((currentQ as any).trapAlert || (currentQ as any).readingCoach || (currentQ as any).audioCoach || currentQ.hint) && (
+                  <button
+                    type="button"
+                    onClick={() => setShowMobileStrategyDrawer(true)}
+                    className="lg:hidden w-full py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-blue-500/15 border border-amber-500/40 text-amber-950 dark:text-amber-200 text-xs font-bold flex items-center justify-between shadow-sm active:scale-[0.99] transition-all cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2 font-bold">
+                      <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
+                      <span>💡 Trap Alert & Strategy Coach</span>
+                    </span>
+                    <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-amber-500/25 text-amber-900 dark:text-amber-200 font-mono font-extrabold border border-amber-500/40">
+                      View Guide →
+                    </span>
+                  </button>
+                )}
 
                 {/* Multiple Choice Options (Official FEI Radio Buttons for Spoken Option Items vs Standard Text Options) */}
                 <div className="space-y-2.5">
@@ -3902,6 +3959,145 @@ export function AuthenticCBTExamPage() {
               >
                 Understood! Start {currentSection.title} Practice
               </button>
+            </motion.div>
+          </motion.div>
+        )}
+        {/* Fullscreen Image Zoom Lightbox for Visual Items (Q1-Q4) */}
+        {zoomedImageSrc && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setZoomedImageSrc(null)}
+            className="fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-4xl w-full bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-700 flex flex-col max-h-[90vh]"
+            >
+              <div className="p-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-100 dark:bg-slate-950">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5 font-mono">
+                  <span>🖼️ Visual Document Q{currentQ?.questionNumber} (High Resolution)</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setZoomedImageSrc(null)}
+                  className="p-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="p-4 overflow-auto flex items-center justify-center bg-white">
+                <img
+                  src={zoomedImageSrc}
+                  alt="Zoomed Illustration"
+                  className="max-h-[75vh] w-auto object-contain rounded-lg"
+                />
+              </div>
+              <div className="p-3 text-center text-xs text-slate-500 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
+                Pinch or scroll to inspect details • Tap outside to close
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Mobile Slide-Up Strategy Drawer for Practice Mode */}
+        {showMobileStrategyDrawer && currentQ && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowMobileStrategyDrawer(false)}
+            className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm flex items-end justify-center lg:hidden"
+          >
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-h-[85vh] bg-white dark:bg-slate-900 rounded-t-3xl border-t border-amber-500/40 shadow-2xl flex flex-col overflow-hidden"
+            >
+              {/* Drawer Grab Handle & Header */}
+              <div className="pt-3 pb-2 px-4 border-b border-slate-200 dark:border-slate-800 flex flex-col items-center gap-1.5 bg-gradient-to-b from-amber-500/10 to-transparent">
+                <div className="w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700" />
+                <div className="w-full flex items-center justify-between pt-1">
+                  <span className="font-extrabold text-xs sm:text-sm text-amber-800 dark:text-amber-300 flex items-center gap-1.5 font-mono">
+                    <Sparkles className="w-4 h-4 text-amber-500" />
+                    <span>{currentSection.type === "COMPREHENSION_ECRITE" ? "📖 Reading Strategy & Traps" : "🎧 Audio Coach & Traps"}</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowMobileStrategyDrawer(false)}
+                    className="p-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Drawer Scrollable Content */}
+              <div className="p-4 overflow-y-auto space-y-3.5 text-xs">
+                {/* Trap Alert */}
+                {(currentQ as any).trapAlert && (
+                  <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/60 space-y-2">
+                    <div className="flex items-center gap-1.5 font-bold text-amber-900 dark:text-amber-300">
+                      <span>⚠️ Piège à éviter (Trap Alert)</span>
+                    </div>
+                    <p className="font-semibold text-slate-900 dark:text-slate-100 leading-relaxed">
+                      {(currentQ as any).trapAlert}
+                    </p>
+                    {(currentQ as any).trapAlertEn && (
+                      <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-950/60 border border-amber-200 dark:border-amber-900 text-[11px] text-amber-950 dark:text-amber-200 italic">
+                        <span className="font-bold mr-1">🇬🇧 Translation:</span>
+                        {(currentQ as any).trapAlertEn}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Strategy Coach */}
+                {((currentQ as any).readingCoach || (currentQ as any).audioCoach) && (
+                  <div className="p-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-300 dark:border-blue-800/60 space-y-2">
+                    <div className="flex items-center gap-1.5 font-bold text-blue-900 dark:text-blue-300">
+                      <span>💡 Stratégie recommandée (Coach)</span>
+                    </div>
+                    <p className="font-semibold text-slate-900 dark:text-slate-100 leading-relaxed">
+                      {(currentQ as any).readingCoach || (currentQ as any).audioCoach}
+                    </p>
+                    {((currentQ as any).readingCoachEn || (currentQ as any).audioCoachEn) && (
+                      <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-950/60 border border-blue-200 dark:border-blue-900 text-[11px] text-blue-950 dark:text-blue-200 italic">
+                        <span className="font-bold mr-1">🇬🇧 Translation:</span>
+                        {(currentQ as any).readingCoachEn || (currentQ as any).audioCoachEn}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Detailed Explanation */}
+                {currentQ.explanation && (
+                  <div className="p-3.5 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-300 dark:border-purple-800/60 space-y-1.5">
+                    <div className="flex items-center gap-1.5 font-bold text-purple-900 dark:text-purple-300">
+                      <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+                      <span>Analyse Pédagogique Détaillée</span>
+                    </div>
+                    <div className="whitespace-pre-line leading-relaxed font-medium text-slate-900 dark:text-slate-100">
+                      {currentQ.explanation}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Drawer Action Bar */}
+              <div className="p-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+                <button
+                  type="button"
+                  onClick={() => setShowMobileStrategyDrawer(false)}
+                  className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md active:scale-[0.98] transition-all cursor-pointer"
+                >
+                  Got it! Return to Question 🚀
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}
