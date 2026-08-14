@@ -153,6 +153,152 @@ export class WritingService {
     return ratio >= 0.22;
   }
 
+  public detectFrenchAccentAndGrammarIssues(text: string): Array<{ original: string; corrected: string; explanation: string }> {
+    const corrections: Array<{ original: string; corrected: string; explanation: string }> = [];
+    if (!text || text.trim().length < 5) return corrections;
+
+    const accentChecks: Array<{ pattern: RegExp; correctedWord: string; explanation: string }> = [
+      {
+        pattern: /\b(a)\s+(montr[eé]al|qu[eé]bec|sherbrooke|toronto|ottawa|paris|la|le|les|l'|cette|mon|notre|votre|leurs?|bient[oô]t|demain|partir|ce|cause|travers|c[oô]t[eé]|propos|titre|port[eé]e|d[eé]faut)\b/gi,
+        correctedWord: 'à $2',
+        explanation: "Preposition 'à' requires a grave accent (accent grave) to differentiate it from the verb 'a' (avoir)."
+      },
+      {
+        pattern: /\b(la\s+ville|le\s+quartier|le\s+pays|le\s+parc|le\s+moment|le\s+jour|l'endroit|la\s+région|l'année|le\s+siècle)\s+(ou)\b/gi,
+        correctedWord: '$1 où',
+        explanation: "Relative pronoun/adverb 'où' (where/when) requires a grave accent to distinguish it from the coordinating conjunction 'ou' (or)."
+      },
+      {
+        pattern: /\b(deja)\b/gi,
+        correctedWord: 'déjà',
+        explanation: "Adverb 'déjà' requires an acute accent on 'e' and a grave accent on 'a'."
+      },
+      {
+        pattern: /\b(tres)\b/gi,
+        correctedWord: 'très',
+        explanation: "Adverb 'très' requires a grave accent (accent grave)."
+      },
+      {
+        pattern: /\b(ete)\b/gi,
+        correctedWord: 'été',
+        explanation: "Past participle or noun 'été' requires acute accents on both 'e's."
+      },
+      {
+        pattern: /\b(evenement|evenements)\b/gi,
+        correctedWord: 'événement',
+        explanation: "Noun 'événement' requires acute accents."
+      },
+      {
+        pattern: /\b(francais)\b/gi,
+        correctedWord: 'français',
+        explanation: "Requires cedilla 'ç' to produce the soft /s/ sound."
+      },
+      {
+        pattern: /\b(francaise|francaises)\b/gi,
+        correctedWord: 'française',
+        explanation: "Requires cedilla 'ç' to produce the soft /s/ sound."
+      },
+      {
+        pattern: /\b(egalement)\b/gi,
+        correctedWord: 'également',
+        explanation: "Adverb 'également' requires an acute accent on the initial 'e'."
+      },
+      {
+        pattern: /\b(apres)\b/gi,
+        correctedWord: 'après',
+        explanation: "Preposition/adverb 'après' requires a grave accent."
+      },
+      {
+        pattern: /\b(premiere)\b/gi,
+        correctedWord: 'première',
+        explanation: "Feminine adjective 'première' requires a grave accent."
+      },
+      {
+        pattern: /\b(derniere)\b/gi,
+        correctedWord: 'dernière',
+        explanation: "Feminine adjective 'dernière' requires a grave accent."
+      },
+      {
+        pattern: /\b(activite|activites)\b/gi,
+        correctedWord: 'activité',
+        explanation: "Noun 'activité' requires an acute accent."
+      },
+      {
+        pattern: /\b(securite)\b/gi,
+        correctedWord: 'sécurité',
+        explanation: "Noun 'sécurité' requires acute accents."
+      },
+      {
+        pattern: /\b(societe|societes)\b/gi,
+        correctedWord: 'société',
+        explanation: "Noun 'société' requires an acute accent."
+      },
+      {
+        pattern: /\b(probleme|problemes)\b/gi,
+        correctedWord: 'problème',
+        explanation: "Noun 'problème' requires a grave accent."
+      },
+      {
+        pattern: /\b(fete|fetes)\b/gi,
+        correctedWord: 'fête',
+        explanation: "Noun 'fête' requires a circumflex accent."
+      },
+      {
+        pattern: /\b(experience|experiences)\b/gi,
+        correctedWord: 'expérience',
+        explanation: "Noun 'expérience' requires an acute accent."
+      },
+      {
+        pattern: /\b(reponse|reponses)\b/gi,
+        correctedWord: 'réponse',
+        explanation: "Noun 'réponse' requires an acute accent."
+      },
+      {
+        pattern: /\b(ecologique|ecologiques)\b/gi,
+        correctedWord: 'écologique',
+        explanation: "Adjective 'écologique' requires an acute accent."
+      },
+      {
+        pattern: /\b(benevole|benevoles|benevolat)\b/gi,
+        correctedWord: 'bénévole',
+        explanation: "Requires acute accents (bénévole / bénévolat)."
+      },
+      {
+        pattern: /\b(generale|general|generaux)\b/gi,
+        correctedWord: 'général',
+        explanation: "Requires an acute accent."
+      },
+      {
+        pattern: /\b(interet|interets)\b/gi,
+        correctedWord: 'intérêt',
+        explanation: "Noun 'intérêt' requires an acute accent and circumflex."
+      },
+      {
+        pattern: /\b(cout|couts)\b/gi,
+        correctedWord: 'coût',
+        explanation: "Noun 'coût' requires a circumflex accent on 'u'."
+      }
+    ];
+
+    for (const check of accentChecks) {
+      let match: RegExpExecArray | null;
+      const regex = new RegExp(check.pattern.source, 'gi');
+      while ((match = regex.exec(text)) !== null) {
+        const originalMatched = match[0];
+        const replacement = originalMatched.replace(check.pattern, check.correctedWord);
+        if (originalMatched.toLowerCase() !== replacement.toLowerCase()) {
+          corrections.push({
+            original: originalMatched,
+            corrected: replacement,
+            explanation: check.explanation
+          });
+        }
+      }
+    }
+
+    return corrections;
+  }
+
   async getFeedback(
     text: string,
     lessonTitle?: string,
@@ -329,16 +475,47 @@ Respond STRICTLY with a valid JSON object matching this schema:
         let l = Math.max(0, Math.min(5, typeof parsed.lexicalScore === 'number' ? parsed.lexicalScore : (typeof parsed.vocabularyScore === 'number' ? parsed.vocabularyScore : 0)));
         let g = Math.max(0, Math.min(5, typeof parsed.grammarScore === 'number' ? parsed.grammarScore : 0));
 
-        const correctionsList = Array.isArray(parsed.corrections) ? parsed.corrections : [];
-        if (correctionsList.length === 0) {
+        // Run French Accent & Grammar Rule Engine
+        const accentIssues = this.detectFrenchAccentAndGrammarIssues(text);
+        const existingCorrections = Array.isArray(parsed.corrections) ? parsed.corrections : [];
+        const mergedCorrections = [...existingCorrections];
+
+        // Merge accent corrections if not already present
+        for (const ai of accentIssues) {
+          if (!mergedCorrections.some(c => (c.original || '').toLowerCase() === ai.original.toLowerCase())) {
+            mergedCorrections.push(ai);
+          }
+        }
+
+        if (mergedCorrections.length === 0) {
           g = 5;
+        } else if (accentIssues.length >= 6) {
+          g = Math.max(1, g - 2);
+        } else if (accentIssues.length >= 3) {
+          g = Math.max(2, g - 1);
         }
 
         const textLower = (text || '').toLowerCase();
-        const words = (text || '').trim().replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
+        const textClean = (text || '').trim();
+        const words = textClean.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
+        const wordCount = words.length;
+
+        // Word count penalty rules according to official FEI bounds
+        if (wordCount < targetMin) {
+          const deficitRatio = wordCount / targetMin;
+          if (deficitRatio < 0.5) {
+            t = Math.min(1, t);
+          } else if (deficitRatio < 0.8) {
+            t = Math.min(3, t);
+          } else {
+            t = Math.min(4, t);
+          }
+        } else if (wordCount > targetMax + 30) {
+          t = Math.min(4, t); // Minor over-length penalty
+        }
 
         // Detect Tâche 1 Personal Email format pasted in Tâche 3 (Argumentative Essay)
-        const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test((text || '').trim()) && /(cordialement|bien à vous|salutations|haute considération|respectueusement)/i.test((text || '').trim());
+        const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test(textClean) && /(cordialement|bien à vous|salutations|haute considération|respectueusement)/i.test(textClean);
         if (isTache3 && isLetterFormat) {
           t = 0;
         }
@@ -354,76 +531,69 @@ Respond STRICTLY with a valid JSON object matching this schema:
         const hasTelegraphicGrammar = /\b(je\s+allé|je\s+faire|nous\s+manger|je\s+aimé|je\s+très|lieu\s+est|parce\s+que\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances|prendre\s+photo)\b/i.test(textLower);
 
         // ─── DETERMINISTIC CEFR LINGUISTIC FEATURE ANCHORING ENGINE ───
-        const textClean = (text || '').trim();
 
-        // 1. C2 Mastery / Legal & High Administrative Register
-        const hasC2Register = /\b(par la présente|eu égard à|dépêchement immédiat|remise en état|à défaut d'une|sans délai|dispositifs? de chauffage d'appoint adéquats|diligente de ce sinistre|l'expression de mes salutations distinguées)\b/i.test(textClean);
-
-        // 2. C1 Advanced Administrative Register
-        const hasC1Register = /\b(porter à votre connaissance|dysfonctionnement critique|refroidissement brutal|salubrité|urgence manifeste|dans les plus brefs délais|s'avère absolument indispensable|comptant sur votre réactivité|défaillance totale|refroidissement|désagrément majeur|salutations distinguées)\b/i.test(textClean);
-
-        // 3. B2+ High Formal Correspondence
-        const hasB2PlusRegister = /\b(solliciter votre intervention|défaillance complète|grand froid hivernal|totalement à l'arrêt|situation se dégrade|je vous prie de bien vouloir|je vous serais reconnaissant|solution de chauffage d'appoint|respectueusement)\b/i.test(textClean);
-
-        // 4. B2 Standard Formal Register
-        const hasB2Register = /\b(panne majeure|particulièrement rigoureuses|inconfortable|je vous saurais gré|mandater un technicien|chauffage d'appoint temporaire)\b/i.test(textClean);
-
-        // 5. B1+ Intermediate Formal Register
-        const hasB1PlusRegister = /\b(afin de vous informer|tombé en panne|situation devient|invivable|c'est pourquoi|pourriez-vous également|prêter un chauffage d'appoint)\b/i.test(textClean);
-
-        // 6. B1 Standard Register
-        const hasB1Register = /\b(pour vous signaler|température.*a beaucoup chuté|serait-il possible de|radiateur électrique de secours|cela m'aiderait)\b/i.test(textClean);
-
-        // 7. A2+ Elementary Register
-        const hasA2PlusRegister = /\b(extrêmement froid dehors|baisse vite|vous demande de venir|envoyer un technicien)\b/i.test(textClean);
-
-        // 8. A2 Standard Register
-        const hasA2Register = /\b(pour le chauffage|ne fonctionne pas depuis|difficile de dormir|habiter ici|pouvez-vous venir|c'est très urgent)\b/i.test(textClean);
-
-        // 9. A1+ Sub-elementary Register
-        const hasA1PlusRegister = /\b(parce que le chauffage|ne marche pas aujourd'hui|je suis malade|venez réparer vite|pouvez venir aujourd'hui)\b/i.test(textClean);
-
-        // 10. A1 Sub-elementary / Broken Infinitive Syntax
-        const hasA1Telegraphic = /\b(pas marcher|beaucoup froid|venir vite|maison|dans la chambre)\b/i.test(textClean) && !/\b(pourquoi|parce que|fonctionne|signalement|urgence|cordialement)\b/i.test(textClean);
-
+        // 1. TÂCHE 1 Deterministic Anchoring
         if (isTache1) {
-          if (hasC2Register) {
-            t = 5; c = 5; l = 5; g = 5;
-          } else if (hasC1Register) {
-            t = 5; c = 4; l = 4; g = 4;
-          } else if (hasB2PlusRegister) {
-            t = 4; c = 4; l = 4; g = 3;
-          } else if (hasB2Register) {
-            t = 4; c = 3; l = 3; g = 3;
-          } else if (hasB1PlusRegister) {
-            t = 3; c = 3; l = 3; g = 2;
-          } else if (hasB1Register) {
-            t = 3; c = 2; l = 2; g = 2;
-          } else if (hasA2PlusRegister) {
-            t = 2; c = 2; l = 1; g = 1;
-          } else if (hasA2Register) {
-            t = 1; c = 1; l = 1; g = 1;
-          } else if (hasA1PlusRegister) {
-            t = 1; c = 1; l = 1; g = 0;
-          } else if (hasA1Telegraphic) {
-            t = 1; c = 0; l = 1; g = 0;
+          const hasC2Register = /\b(par la présente|eu égard à|dépêchement immédiat|remise en état|à défaut d'une|sans délai|dispositifs? de chauffage d'appoint adéquats|diligente de ce sinistre|l'expression de mes salutations distinguées)\b/i.test(textClean);
+          const hasC1Register = /\b(porter à votre connaissance|dysfonctionnement critique|refroidissement brutal|salubrité|urgence manifeste|dans les plus brefs délais|s'avère absolument indispensable|comptant sur votre réactivité|défaillance totale|refroidissement|désagrément majeur|salutations distinguées)\b/i.test(textClean);
+          const hasB2PlusRegister = /\b(solliciter votre intervention|défaillance complète|grand froid hivernal|totalement à l'arrêt|situation se dégrade|je vous prie de bien vouloir|je vous serais reconnaissant|solution de chauffage d'appoint|respectueusement)\b/i.test(textClean);
+          const hasB2Register = /\b(panne majeure|particulièrement rigoureuses|inconfortable|je vous saurais gré|mandater un technicien|chauffage d'appoint temporaire)\b/i.test(textClean);
+          const hasB1PlusRegister = /\b(afin de vous informer|tombé en panne|situation devient|invivable|c'est pourquoi|pourriez-vous également|prêter un chauffage d'appoint)\b/i.test(textClean);
+          const hasB1Register = /\b(pour vous signaler|température.*a beaucoup chuté|serait-il possible de|radiateur électrique de secours|cela m'aiderait)\b/i.test(textClean);
+          const hasA2PlusRegister = /\b(extrêmement froid dehors|baisse vite|vous demande de venir|envoyer un technicien)\b/i.test(textClean);
+          const hasA2Register = /\b(pour le chauffage|ne fonctionne pas depuis|difficile de dormir|habiter ici|pouvez-vous venir|c'est très urgent)\b/i.test(textClean);
+          const hasA1PlusRegister = /\b(parce que le chauffage|ne marche pas aujourd'hui|je suis malade|venez réparer vite|pouvez venir aujourd'hui)\b/i.test(textClean);
+          const hasA1Telegraphic = /\b(pas marcher|beaucoup froid|venir vite|maison|dans la chambre)\b/i.test(textClean) && !/\b(pourquoi|parce que|fonctionne|signalement|urgence|cordialement)\b/i.test(textClean);
+
+          if (hasC2Register) { t = 5; c = 5; l = 5; g = 5; }
+          else if (hasC1Register) { t = 5; c = 4; l = 4; g = 4; }
+          else if (hasB2PlusRegister) { t = 4; c = 4; l = 4; g = 3; }
+          else if (hasB2Register) { t = 4; c = 3; l = 3; g = 3; }
+          else if (hasB1PlusRegister) { t = 3; c = 3; l = 3; g = 2; }
+          else if (hasB1Register) { t = 3; c = 2; l = 2; g = 2; }
+          else if (hasA2PlusRegister) { t = 2; c = 2; l = 1; g = 1; }
+          else if (hasA2Register) { t = 1; c = 1; l = 1; g = 1; }
+          else if (hasA1PlusRegister) { t = 1; c = 1; l = 1; g = 0; }
+          else if (hasA1Telegraphic) { t = 1; c = 0; l = 1; g = 0; }
+        }
+
+        // 2. TÂCHE 2 Deterministic Anchoring (Narrative past tenses & sensory lexicon)
+        if (isTache2) {
+          const hasPastTenses = /\b(j'ai\s+(visité|eu|pu|découvert|adoré|assisté|vécu|participé|décidé|passé|aimé|effectué|rencontré)|nous\s+avons\s+(visité|passé|fait|découvert|aimé|assisté)|je\s+suis\s+(allé|resté|parti|arrivé))\b/i.test(textClean);
+          const hasImparfait = /\b(était|faisait|avaient|offrait|semblait|permettait|rendait|régnait|étaient)\b/i.test(textClean);
+          const hasSensoryRichness = /\b(féerique|spectaculaire|chaleureuse?|émerveill[ée]|inoubliable|grandiose|plénitude|apaisant|convivial|riche en émotions|souvenir impérissable)\b/i.test(textClean);
+          const hasTemporalConnectors = /\b(lors de|dès mon arrivée|pendant mon séjour|au cours de|en définitive|après avoir|en outre)\b/i.test(textClean);
+
+          if (hasPastTenses && hasImparfait && hasSensoryRichness && hasTemporalConnectors && wordCount >= 110) {
+            t = Math.max(4, t);
+            c = Math.max(4, c);
+            l = Math.max(4, l);
+            g = Math.max(4, g);
+          } else if (!hasPastTenses && !hasImparfait) {
+            // Flat present tense narrative penalty
+            g = Math.min(2, g);
+          }
+        }
+
+        // 3. TÂCHE 3 Deterministic Anchoring (Dialectic argumentative structure)
+        if (isTache3 && !isLetterFormat) {
+          const hasThesisSide = /\b(d'un\s+côté|d'une\s+part|les\s+partisans|certains\s+(soutiennent|soulignent|affirment)|en\s+premier\s+lieu)\b/i.test(textClean);
+          const hasAntithesisSide = /\b(d'un\s+autre\s+côté|d'autre\s+part|néanmoins|toutefois|en\s+revanche|les\s+détracteurs|certains\s+(opposent|s'inquiètent|rappellent)|cependant)\b/i.test(textClean);
+          const hasSynthesisConclusion = /\b(en\s+conclusion|en\s+somme|bien\s+que|pour\s+conclure|il\s+me\s+semble\s+(préférable|judicieux|essentiel))\b/i.test(textClean);
+          const hasSubjunctiveMood = /\b(bien\s+que|afin\s+que|quoique)\s+[\w\s']*\b(soit|puisse|fassent|puissions|ayons|soient)\b/i.test(textClean);
+
+          if (hasThesisSide && hasAntithesisSide && hasSynthesisConclusion && wordCount >= 120) {
+            t = Math.max(4, t);
+            c = Math.max(4, c);
+            l = Math.max(4, l);
+            if (hasSubjunctiveMood) g = Math.max(4, g);
+          } else if (!hasThesisSide || !hasAntithesisSide) {
+            // One-sided bias penalty
+            c = Math.min(3, c);
           }
         }
 
         let scoreOutOf20 = t + c + l + g;
-
-        if (isTache1) {
-          if (hasC2Register) scoreOutOf20 = 18;
-          else if (hasC1Register) scoreOutOf20 = 16;
-          else if (hasB2PlusRegister) scoreOutOf20 = 14;
-          else if (hasB2Register) scoreOutOf20 = 12;
-          else if (hasB1PlusRegister) scoreOutOf20 = 10;
-          else if (hasB1Register) scoreOutOf20 = 8;
-          else if (hasA2PlusRegister) scoreOutOf20 = 6;
-          else if (hasA2Register) scoreOutOf20 = 4;
-          else if (hasA1PlusRegister) scoreOutOf20 = 3;
-          else if (hasA1Telegraphic) scoreOutOf20 = 2;
-        }
 
         if (t === 0) {
           scoreOutOf20 = 0;
@@ -455,7 +625,7 @@ Respond STRICTLY with a valid JSON object matching this schema:
             lexicalScore: typeof parsed.lexicalScore === 'number' ? Math.min(2, parsed.lexicalScore) : 1,
             grammarScore: typeof parsed.grammarScore === 'number' ? Math.min(2, parsed.grammarScore) : 1,
             feedback: parsed.feedback || "🚨 ZERO GRADE (0/20 Marks): Official FEI rules mandate an automatic zero score for off-topic (hors-sujet) submissions that do not answer the specific prompt scenario.",
-            corrections: Array.isArray(parsed.corrections) ? parsed.corrections : [],
+            corrections: mergedCorrections,
             tips: Array.isArray(parsed.tips) ? parsed.tips : ["Lisez attentivement la consigne et répondez directement au sujet proposé."]
           };
         }
@@ -514,7 +684,7 @@ Respond STRICTLY with a valid JSON object matching this schema:
           lexicalScore: l,
           grammarScore: g,
           feedback: parsed.feedback || 'Good effort on this writing task.',
-          corrections: Array.isArray(parsed.corrections) ? parsed.corrections : [],
+          corrections: mergedCorrections,
           tips: Array.isArray(parsed.tips) ? parsed.tips : [],
         };
       }
@@ -842,6 +1012,8 @@ Respond STRICTLY with a valid JSON object matching this schema:
       expressEntryPoints = 0;
     }
 
+    const localAccentIssues = this.detectFrenchAccentAndGrammarIssues(text);
+
     return {
       score: scorePct,
       scoreOutOf20,
@@ -851,10 +1023,14 @@ Respond STRICTLY with a valid JSON object matching this schema:
       taskFulfillmentScore,
       coherenceScore,
       lexicalScore,
-      grammarScore,
+      grammarScore: localAccentIssues.length >= 6 ? Math.max(1, grammarScore - 2) : localAccentIssues.length >= 3 ? Math.max(2, grammarScore - 1) : grammarScore,
       feedback: `Official FEI Calibrated Evaluation: Total ${scoreOutOf20}/20 Marks • Task Fulfillment: ${taskFulfillmentScore}/5, Coherence & Connectors: ${coherenceScore}/5, Lexical Range: ${lexicalScore}/5, Morphosyntax & Grammar: ${grammarScore}/5.`,
-      corrections: [],
-      tips: ["Consultez la consigne et structurez vos paragraphes."]
+      corrections: localAccentIssues,
+      tips: [
+        isTache1 ? "Respectez la structure formelle : salutation, demande polie au conditionnel, et formule de politesse complète." :
+        isTache2 ? "Enrichissez votre récit avec une alternance équilibrée entre le passé composé et l'imparfait." :
+        "Structurez votre essai en 4 paragraphes dialectiques : Introduction, Thèse, Antithèse et Synthèse nuancée."
+      ]
     };
   }
 
