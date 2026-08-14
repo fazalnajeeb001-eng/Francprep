@@ -548,7 +548,8 @@ export function speakDialogue(
       }
     };
 
-    let langCode = lang ? lang.split("-")[0].toLowerCase() : "fr";
+    let langCode = typeof lang === "string" && lang ? (lang.split("-")[0].toLowerCase() || "fr") : "fr";
+    let effectiveRate = typeof rate === "number" ? rate : (parseFloat(rate as any) || 1.0);
 
     apiFetch("/tts/speak", {
       method: "POST",
@@ -558,7 +559,7 @@ export function speakDialogue(
         gender: current.gender,
         speaker: current.speaker,
         lang: langCode,
-        rate,
+        rate: effectiveRate,
         elevenLabsApiKey: extraKeys?.elevenLabsApiKey,
         openaiApiKey: extraKeys?.openaiApiKey,
         huggingFaceToken: extraKeys?.huggingFaceToken,
@@ -627,14 +628,28 @@ export function speakDialogue(
 
 export function speakListeningQuestion(
   text: string,
-  questionNumber: number,
-  lang = "fr-FR",
-  rate = 0.85,
-  extraKeys?: { elevenLabsApiKey?: string; openaiApiKey?: string; huggingFaceToken?: string },
+  questionNumberOrLang?: number | string,
+  langOrRate?: string | number,
+  rateOrDefaultGender?: number | string,
+  extraKeysOrOnEnded?: any,
   onEnded?: () => void
 ): void {
+  let lang = "fr-FR";
+  let rate = 0.85;
+  let cb = onEnded;
+
+  if (typeof questionNumberOrLang === "string") {
+    lang = questionNumberOrLang;
+    if (typeof langOrRate === "number") rate = langOrRate;
+    if (typeof extraKeysOrOnEnded === "function") cb = extraKeysOrOnEnded;
+  } else {
+    if (typeof langOrRate === "string") lang = langOrRate;
+    if (typeof rateOrDefaultGender === "number") rate = rateOrDefaultGender;
+    if (typeof extraKeysOrOnEnded === "function") cb = extraKeysOrOnEnded;
+  }
+
   stopAudio();
-  speakDialogue(text, lang, rate, extraKeys, onEnded);
+  speakDialogue(text, lang, rate, undefined, cb);
 }
 
 /**
@@ -667,8 +682,8 @@ export function useSpeak() {
   return {
     speak: speakWithState,
     speakDialogue: speakDialogueWithState,
-    speakListening: (text: string, qNum: number, lang = "fr-FR", rate = 0.85, extraKeys?: any, onEnded?: () => void) =>
-      speakListeningQuestion(text, qNum, lang, rate, extraKeys, onEnded),
+    speakListening: (text: string, lang = "fr-FR", rate = 0.85, defaultGender: "female" | "male" = "female", onEnded?: () => void) =>
+      ttsSpeakListening(text, lang, rate, defaultGender, onEnded),
     isSpeaking,
     stop: stopAudio,
     pause: pauseAudio,
