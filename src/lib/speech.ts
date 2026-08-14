@@ -683,7 +683,7 @@ export function useSpeak() {
     speak: speakWithState,
     speakDialogue: speakDialogueWithState,
     speakListening: (text: string, lang = "fr-FR", rate = 0.85, defaultGender: "female" | "male" = "female", onEnded?: () => void) =>
-      ttsSpeakListening(text, lang, rate, defaultGender, onEnded),
+      speakListeningQuestion(text, lang, rate, defaultGender, undefined, onEnded),
     isSpeaking,
     stop: stopAudio,
     pause: pauseAudio,

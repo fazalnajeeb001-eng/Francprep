@@ -203,18 +203,21 @@ export async function generateNeuralAudio(
     }
 
     const elevenLabsKey = rawKey.trim().replace(/^["']|["']$/g, '');
-    const defaultFemale = settings?.selectedElevenLabsFemaleVoice || 'XB0fDUnXU5powctDhC70';
-    const defaultMale = settings?.selectedElevenLabsMaleVoice || 'ONwBz21w4p8b7X1s5kL0';
+    const defaultFemale = settings?.selectedElevenLabsFemaleVoice || 'EXAVITQu4vr4xnSDxMaL';
+    const defaultMale = settings?.selectedElevenLabsMaleVoice || 'JBFqnCBsd6RMkjVDRZzb';
 
     // Parse multi-speaker dialogues and announcer sections
     const segments = parseDialogueSegments(cleanText, defaultMale, defaultFemale, gender);
 
     if (segments.length > 1) {
       try {
-        console.log(`[ElevenLabs Multi-Voice] Synthesizing ${segments.length} distinct dialogue turns...`);
-        const segmentPromises = segments.map((seg, idx) => {
-          const pauseSuffix = (idx < segments.length - 1) ? ' ... ' : '';
-          return axios.post(
+        console.log(`[ElevenLabs Multi-Voice] Synthesizing ${segments.length} distinct dialogue turns sequentially...`);
+        const rawBuffers: Buffer[] = [];
+
+        for (let i = 0; i < segments.length; i++) {
+          const seg = segments[i];
+          const pauseSuffix = (i < segments.length - 1) ? ' ... ' : '';
+          const segRes = await axios.post(
             `https://api.elevenlabs.io/v1/text-to-speech/${seg.voiceId}`,
             {
               text: seg.text + pauseSuffix,
@@ -237,13 +240,17 @@ export async function generateNeuralAudio(
               timeout: 35000
             }
           );
-        });
 
-        const responses = await Promise.all(segmentPromises);
-        const allOk = responses.every(r => r.status === 200);
+          if (segRes.status === 200 && segRes.data) {
+            rawBuffers.push(Buffer.from(segRes.data));
+          }
 
-        if (allOk) {
-          const rawBuffers = responses.map(r => Buffer.from(r.data));
+          if (i < segments.length - 1) {
+            await new Promise((r) => setTimeout(r, 120));
+          }
+        }
+
+        if (rawBuffers.length === segments.length) {
           const stitchedBuffer = stitchMp3Buffers(rawBuffers);
           const audioBase64 = stitchedBuffer.toString('base64');
           const contentType = 'audio/mp3';
@@ -269,17 +276,17 @@ export async function generateNeuralAudio(
     const primaryVoiceId = forcedVoiceId || (gender === 'male' ? defaultMale : defaultFemale);
 
     const langNativeVoiceMap: Record<string, { female: string; male: string }> = {
-      fr: { female: 'XB0fDUnXU5powctDhC70', male: 'ONwBz21w4p8b7X1s5kL0' }, // Charlotte & Henri (Native French)
-      de: { female: 'ThT5KcBeYPX3keUQqHPh', male: 'txWG4y3H7G4B8P2f6a9R' }, // Sarah & Daniel (Native German)
-      es: { female: 'FGY2WhA2Pvf7r5V5EKC4', male: 'N2lLkkCofhh8hG1yGkC3' }, // Laura & Brian (Native Spanish)
-      it: { female: 'Xb7hH8MSwGQjB69G47wE', male: 'ErXwobaYiN019PkySvjV' }, // Alice & Antoni (Native Italian)
-      en: { female: '21m00Tcm4TlvDq8ikWAM', male: 'pNInz6obpgDQGcFmaJgB' }, // Rachel & Adam (Native English)
+      fr: { female: 'EXAVITQu4vr4xnSDxMaL', male: 'JBFqnCBsd6RMkjVDRZzb' }, // Sarah & George (Native French)
+      de: { female: 'EXAVITQu4vr4xnSDxMaL', male: 'JBFqnCBsd6RMkjVDRZzb' },
+      es: { female: 'EXAVITQu4vr4xnSDxMaL', male: 'JBFqnCBsd6RMkjVDRZzb' },
+      it: { female: 'EXAVITQu4vr4xnSDxMaL', male: 'ErXwobaYiN019PkySvjV' },
+      en: { female: '21m00Tcm4TlvDq8ikWAM', male: 'JBFqnCBsd6RMkjVDRZzb' },
     };
 
     const langCode = lang ? lang.toLowerCase().slice(0, 2) : 'fr';
     const langNative = langNativeVoiceMap[langCode];
     const langFallback = langNative ? (gender === 'male' ? langNative.male : langNative.female) : null;
-    const universalFallback = gender === 'male' ? 'ONwBz21w4p8b7X1s5kL0' : 'XB0fDUnXU5powctDhC70';
+    const universalFallback = gender === 'male' ? 'JBFqnCBsd6RMkjVDRZzb' : 'EXAVITQu4vr4xnSDxMaL';
 
     const voices = Array.from(new Set([primaryVoiceId, langFallback, universalFallback].filter(Boolean) as string[]));
 
