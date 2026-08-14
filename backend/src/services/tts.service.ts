@@ -4,8 +4,9 @@ import TTSCache from '../models/TTSCache';
 import Settings from '../models/Settings';
 import { generateKokoroAudio } from './kokoro.service';
 
-function getHash(text: string, gender: string, lang: string, provider: string, voiceId: string = '', rate: number = 1.0): string {
-  return crypto.createHash('md5').update(`${text.trim().toLowerCase()}_${gender}_${lang}_${provider}_${voiceId}_${rate}_v10_multispeaker_frame_stitched`).digest('hex');
+function getHash(text: string, gender: string, lang: string = 'fr', rate: number = 1.0): string {
+  const normLang = (lang || 'fr').toLowerCase().slice(0, 2);
+  return crypto.createHash('md5').update(`${text.trim().toLowerCase()}_${gender}_${normLang}_${rate}`).digest('hex');
 }
 
 /**
@@ -68,55 +69,51 @@ function parseDialogueSegments(
   const speakerRegex = /(?:^|\n)\s*(Locuteur\s*\d*|Locutrice\s*\d*|Homme\s*\d*|Femme\s*\d*|Annonceur|Annonceuse|Journaliste|Intervenant(?:e)?)\s*:\s*/gi;
   const matches = [...clean.matchAll(speakerRegex)];
 
-  const getVoiceForTag = (tag: string): { voiceId: string; isAnnouncer: boolean } => {
-    const lower = tag.toLowerCase();
-    if (lower.includes('annonceuse')) {
-      return { voiceId: 'EXAVITQu4vr4xnSDxMaL', isAnnouncer: true }; // Official French Female Announcer (Sarah)
-    }
-    if (lower.includes('annonceur') || lower.includes('journaliste') || lower.includes('examinateur')) {
-      return { voiceId: 'onwK4e9ZLuTAKqWW03F9', isAnnouncer: true }; // Official French Male Announcer (Daniel)
-    }
-    if (lower.includes('locuteur 2') || lower.includes('homme 2')) {
-      return { voiceId: 'cjVigY5qzO86Huf0OWal', isAnnouncer: false }; // Eric (Male 2)
-    }
-    if (lower.includes('locutrice 2') || lower.includes('femme 2')) {
-      return { voiceId: 'cgSgspJ2msm6clMCkdW9', isAnnouncer: false }; // Jessica (Female 2)
-    }
-    if (lower.includes('locutrice') || lower.includes('femme')) {
-      return { voiceId: defaultFemaleVoice || 'Xb7hH8MSUJpSbSDYk0k2', isAnnouncer: false }; // Alice (Female 1)
-    }
-    return { voiceId: defaultMaleVoice || 'JBFqnCBsd6RMkjVDRZzb', isAnnouncer: false }; // George (Male 1)
-  };
-
   if (matches.length === 0) {
-    const isFemale = defaultGender === 'female' || /\b(locutrice|femme)\b/i.test(clean);
-    return [{
-      speakerTag: isFemale ? 'Locutrice' : 'Locuteur',
-      voiceId: isFemale ? (defaultFemaleVoice || 'Xb7hH8MSUJpSbSDYk0k2') : (defaultMaleVoice || 'JBFqnCBsd6RMkjVDRZzb'),
+    const isMale = defaultGender === 'male';
+    const isAnnouncer = clean.toLowerCase().startsWith('consigne') || clean.toLowerCase().startsWith('question');
+    segments.push({
+      speakerTag: isAnnouncer ? (isMale ? 'Annonceur' : 'Annonceuse') : (isMale ? 'Locuteur' : 'Locutrice'),
+      voiceId: isMale ? defaultMaleVoice : defaultFemaleVoice,
       text: clean,
-      isAnnouncer: false
-    }];
+      isAnnouncer
+    });
+    return segments;
   }
 
   for (let i = 0; i < matches.length; i++) {
     const currentMatch = matches[i];
-    const rawTag = currentMatch[1].trim();
-    const startIndex = currentMatch.index + currentMatch[0].length;
-    const endIndex = (i + 1 < matches.length) ? matches[i + 1].index : clean.length;
+    const speakerTag = currentMatch[1].trim();
+    const startIndex = currentMatch.index! + currentMatch[0].length;
+    const endIndex = (i + 1 < matches.length) ? matches[i + 1].index! : clean.length;
+    const segmentText = clean.slice(startIndex, endIndex).trim();
 
-    let segmentText = clean.slice(startIndex, endIndex).trim();
+    if (segmentText) {
+      const lowerTag = speakerTag.toLowerCase();
+      const isMale = lowerTag.includes('locuteur 1') || lowerTag.includes('homme 1') || lowerTag.includes('homme') || lowerTag === 'locuteur';
+      const isFemale2 = lowerTag.includes('locutrice 2') || lowerTag.includes('femme 2');
+      const isMale2 = lowerTag.includes('locuteur 2') || lowerTag.includes('homme 2');
+      const isAnnouncerFemale = lowerTag.includes('annonceuse');
+      const isAnnouncerMale = lowerTag.includes('annonceur') || lowerTag.includes('journaliste');
+      const isAnnouncer = isAnnouncerFemale || isAnnouncerMale;
 
-    // Format pause spacing between options A, B, C, D
-    if (/Annonceur|Annonceuse/i.test(rawTag)) {
-      segmentText = segmentText
-        .replace(/\n\.\.\.\s*/g, ' ... ')
-        .replace(/\.\.\.\s*/g, ' ... ');
-    }
+      let voiceId = defaultFemaleVoice;
+      if (isAnnouncerFemale) {
+        voiceId = 'EXAVITQu4vr4xnSDxMaL'; // Sarah
+      } else if (isAnnouncerMale) {
+        voiceId = 'JBFqnCBsd6RMkjVDRZzb'; // George
+      } else if (isFemale2) {
+        voiceId = '21m00Tcm4TlvDq8ikWAM'; // Rachel
+      } else if (isMale2) {
+        voiceId = 'ErXwobaYiN019PkySvjV'; // Antoni
+      } else if (isMale) {
+        voiceId = defaultMaleVoice;
+      } else {
+        voiceId = defaultFemaleVoice;
+      }
 
-    if (segmentText.length > 0) {
-      const { voiceId, isAnnouncer } = getVoiceForTag(rawTag);
       segments.push({
-        speakerTag: rawTag,
+        speakerTag,
         voiceId,
         text: segmentText,
         isAnnouncer
@@ -176,12 +173,17 @@ export async function generateNeuralAudio(
     }
   }
 
-  const textHash = getHash(cleanText, gender, lang, activeProvider, targetVoiceId, speakingRate);
+  const textHash = getHash(cleanText, gender, lang, speakingRate);
 
-  // 1. Check MongoDB Cache first — instant hit by textHash or exact text
+  // 1. Check MongoDB Cache first — instant hit by textHash or exact text + gender match
   if (!forcedVoiceId) {
     try {
-      const cached = await TTSCache.findOne({ $or: [{ textHash }, { text: cleanText }] }).maxTimeMS(2500);
+      const cached = await TTSCache.findOne({
+        $or: [
+          { textHash },
+          { text: cleanText, gender }
+        ]
+      }).maxTimeMS(2500);
       if (cached && cached.audioBase64) {
         return { audioBase64: cached.audioBase64, contentType: cached.contentType || 'audio/mp3', provider: `cache-${cached.voice}` };
       }
@@ -363,7 +365,11 @@ export async function generateNeuralAudio(
       const kokoroRes = await generateKokoroAudio(cleanText, gender, lang, hfToken, selectedVoice);
       if (kokoroRes) {
         if (!forcedVoiceId) {
-          TTSCache.create({ textHash, text: cleanText, voice: `kokoro-${selectedVoice}`, gender, audioBase64: kokoroRes.audioBase64, contentType: kokoroRes.contentType }).catch(() => {});
+          await TTSCache.findOneAndUpdate(
+            { textHash },
+            { textHash, text: cleanText, voice: `kokoro-${selectedVoice}`, gender, audioBase64: kokoroRes.audioBase64, contentType: kokoroRes.contentType },
+            { upsert: true, new: true }
+          ).catch(() => {});
         }
         return { audioBase64: kokoroRes.audioBase64, contentType: kokoroRes.contentType, provider: 'huggingface-kokoro' };
       }
@@ -402,7 +408,11 @@ export async function generateNeuralAudio(
         const contentType = 'audio/mp3';
 
         if (!forcedVoiceId) {
-          TTSCache.create({ textHash, text: cleanText, voice: `openai-${voiceName}`, gender, audioBase64, contentType }).catch(() => {});
+          await TTSCache.findOneAndUpdate(
+            { textHash },
+            { textHash, text: cleanText, voice: `openai-${voiceName}`, gender, audioBase64, contentType },
+            { upsert: true, new: true }
+          ).catch(() => {});
         }
         return { audioBase64, contentType, provider: 'openai' };
       }
@@ -457,6 +467,14 @@ export async function generateNeuralAudio(
         const fullAudioBuffer = Buffer.concat(audioBuffers);
         const audioBase64 = fullAudioBuffer.toString('base64');
         const contentType = 'audio/mp3';
+
+        if (!forcedVoiceId) {
+          await TTSCache.findOneAndUpdate(
+            { textHash },
+            { textHash, text: cleanText, voice: `google-${targetLang}-${gender}`, gender, audioBase64, contentType },
+            { upsert: true, new: true }
+          ).catch(() => {});
+        }
 
         return { audioBase64, contentType, provider: 'google' };
       }
