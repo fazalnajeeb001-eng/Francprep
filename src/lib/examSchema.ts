@@ -7393,6 +7393,8 @@ export function generateReadingQuestions(count: number, prefix: string, seedOffs
       optionsEnglish: shuffledOptionsEn || item.optEn,
       correctIndex,
       explanation: guidance.detailedExplanation,
+      detailedExplanationEn: guidance.detailedExplanationEn,
+      explanationEnglish: guidance.detailedExplanationEn,
       hint: guidance.readingCoach,
       trapAlert: guidance.trapAlert,
       trapAlertEn: guidance.trapAlertEn,

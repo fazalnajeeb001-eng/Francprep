@@ -1,0 +1,71 @@
+import * as fs from "fs";
+
+console.log("=== 🛠️ TRANSLATING REMAINING 214 VISUAL OPTIONS ===");
+
+const list: string[] = JSON.parse(fs.readFileSync("scratch/remaining_visual_items.json", "utf-8"));
+
+console.log(`Loaded ${list.length} visual items.`);
+
+export const VISUAL_214_MAP: Record<string, string> = {
+  "Un infirmier prend la tension d'un patient.": "A nurse is measuring a patient's blood pressure.",
+  "Un ingénieur travaille devant son ordinateur de bureau.": "An engineer is working at an office computer.",
+  "Un jardinier plante des fleurs dans une serre.": "A gardener is planting flowers in a greenhouse.",
+  "Un jardinier tond la pelouse d'une grande propriété.": "A gardener is mowing the lawn of a large property.",
+  "Un journaliste interviewe un passant dans la rue.": "A journalist is interviewing a passerby on the street.",
+  "Un livreur transporte des cartons dans un monte-charge.": "A delivery person is transporting boxes in a freight elevator.",
+  "Un marin amarre son navire au port.": "A sailor is mooring a ship at the port.",
+  "Un marin dresse la voile d'un voilier.": "A sailor is hoisting the sail of a sailboat.",
+  "Un marin nettoie le pont d'un navire de pêche.": "A sailor is cleaning the deck of a fishing vessel.",
+  "Un marin pilote un bateau sur le fleuve.": "A sailor is steering a boat on the river.",
+  "Un masseur prodigue un soin dans un spa.": "A massage therapist is giving a treatment at a spa.",
+  "Un maçon construit un mur de briques.": "A bricklayer is building a brick wall.",
+  "Un maître d'hôtel accueille les clients à l'entrée du restaurant.": "A head waiter is welcoming guests at the restaurant entrance.",
+  "Un maître-nageur surveille une plage surveillée.": "A lifeguard is watching over a supervised beach.",
+  "Un mécanicien change les pneus d'un camion.": "A mechanic is changing truck tires.",
+  "Un mécanicien contrôle la pression des pneus d'une berline.": "A mechanic is checking tire pressure on a sedan.",
+  "Un mécanicien inspecte le moteur d'une voiture dans un garage.": "A mechanic is inspecting a car engine in a garage.",
+  "Un mécanicien nettoie le pare-brise d'une automobile.": "A mechanic is cleaning a car windshield.",
+  "Un mécanicien vérifie le niveau d'huile d'un véhicule.": "A mechanic is checking a vehicle's oil level.",
+  "Un patient est en consultation chez le médecin.": "A patient is in consultation at the doctor's office.",
+  "Un peintre applique de la peinture sur une façade.": "A painter is applying paint to an exterior building wall.",
+  "Un peintre dessine un modèle dans son atelier.": "A painter is drawing a model in an art studio.",
+  "Un peintre réalise un tableau dans un atelier.": "A painter is creating a painting in an art studio.",
+  "Un photographe ajuste son objectif d'appareil photo.": "A photographer is adjusting a camera lens.",
+  "Un photographe développe des clichés dans une chambre noire.": "A photographer is developing photos in a darkroom.",
+  "Un photographe prend un portrait en studio.": "A photographer is taking a studio portrait.",
+  "Un plombier répare une fuite sous un évier.": "A plumber is fixing a leak under a sink.",
+  "Un plongeur explore les fonds marins.": "A diver is exploring the seabed.",
+  "Un policier dirige la circulation à un carrefour.": "A police officer is directing traffic at an intersection.",
+  "Un policier vérifie les papiers d'un chauffeur.": "A police officer is checking a driver's documents.",
+  "Un pompier inspecte un extincteur de sécurité.": "A firefighter is inspecting a fire extinguisher.",
+  "Un pompier éteint un feu de forêt.": "A firefighter is extinguishing a forest fire.",
+  "Un professeur donne un cours devant un tableau vert.": "A teacher is lecturing in front of a chalkboard.",
+  "Un réparateur ajuste la chaîne d'une bicyclette.": "A repair technician is adjusting a bicycle chain.",
+  "Un serrurier remplace la serrure d'une porte d'entrée.": "A locksmith is replacing an entrance door lock.",
+  "Un serveur apporte des boissons sur un plateau.": "A server is carrying drinks on a tray.",
+  "Un serveur apporte l'addition aux clients en salle.": "A server is bringing the bill to dining room guests.",
+  "Un serveur débarrasse les assiettes d'une table.": "A server is clearing plates from a table.",
+  "Un serveur essuie le comptoir en fin de journée.": "A server is wiping down the counter at the end of the day.",
+  "Un serveur essuie les tables d'un restaurant.": "A server is wiping down restaurant tables.",
+  "Un serveur prend la commande d'une table en terrasse.": "A server is taking an order at an outdoor terrace table.",
+  "Un serveur prépare un sandwich derrière le comptoir d'une cafétéria.": "A server is making a sandwich behind a cafeteria counter.",
+  "Un serveur sert des tasses de thé dans un salon.": "A server is serving cups of tea in a lounge.",
+  "Un steward ferme les coffres à bagages d'un avion.": "A flight attendant is closing overhead airplane luggage bins.",
+  "Un steward sert des repas aux passagers d'un avion.": "A flight attendant is serving meals to airplane passengers.",
+  "Un technicien répare une ligne téléphonique.": "A technician is repairing a telephone line.",
+  "Un usager demande un itinéraire au guichet d'information de la gare.": "A commuter is asking for directions at the station information desk.",
+  "Un violoniste répète son morceau de musique.": "A violinist is rehearsing a musical piece.",
+  "Un voyageur enregistre ses bagages à l'aéroport.": "A traveler is checking in luggage at the airport.",
+  "Un vétérinaire examine un chien sur une table.": "A veterinarian is examining a dog on a table.",
+  "Une cliente essaie un manteau dans un magasin de vêtements.": "A customer is trying on a coat in a clothing store.",
+  "Une cliente se fait coiffer dans un salon de coiffure.": "A customer is getting her hair styled in a hair salon.",
+  "Une couturière coud un vêtement dans son atelier.": "A seamstress is sewing a garment in her workshop.",
+  "Une femme choisit des fruits et légumes au supermarché.": "A woman is selecting fresh fruits and vegetables at the supermarket.",
+  "Une fleuriste compose un bouquet de fleurs fraîches dans sa boutique.": "A florist is arranging fresh flower bouquet in her shop.",
+  "Une personne achète des médicaments au comptoir d'une pharmacie.": "A person is buying medication at a pharmacy counter.",
+  "Une personne achète un titre de transport à un distributeur automatique du métro.": "A person is purchasing a transit ticket from a subway ticket machine.",
+  "Une personne dépose son sac à la consigne automatique.": "A person is placing luggage into an automated storage locker.",
+  "Une personne lave son linge dans une laverie automatique.": "A person is doing laundry at a self-service laundromat."
+};
+
+console.log("Mapped base visual items.");
