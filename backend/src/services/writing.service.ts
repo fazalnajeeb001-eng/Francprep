@@ -179,7 +179,7 @@ export class WritingService {
       'plus', 'moins', 'très', 'bien', 'tout', 'tous', 'toute', 'toutes', 'aussi', 'comme',
       'tcf', 'canada', 'tâche', 'tache', 'épreuve', 'consigne', 'texte', 'mots', 'words', 'sample', 'exemplar', 'response',
       'rédigez', 'écrivez', 'donnez', 'expliquez', 'décrivez', 'présentez', 'posez', 'questions', 'message', 'courriel',
-      'numéro', 'papier', 'sujet', 'épreuve', 'partie'
+      'numéro', 'papier', 'sujet', 'épreuve', 'partie', 'lors', 'faire', 'avoir', 'racontez'
     ]);
 
     // Extract core keywords from prompt (length >= 4 and not stop word)
@@ -196,11 +196,37 @@ export class WritingService {
     const textLower = text.toLowerCase().replace(/[^\w\sàâäéèêëîïôöùûüçœæ]/g, ' ');
     const matchedKeywords: string[] = [];
 
+    // Semantic clusters for French TCF themes
+    const semanticClusters: Record<string, string[]> = {
+      voyage: ['voyag', 'séjour', 'sejour', 'visit', 'vacan', 'festiv', 'hôtel', 'hotel', 'avion', 'trajet', 'escapad', 'aventur', 'découv', 'souvenir', 'touris', 'pays', 'ville', 'monde', 'lieux', 'séjour'],
+      expérience: ['expéri', 'vécu', 'particip', 'découv', 'marquant', 'souvenir', 'rencontr', 'séjour', 'aventure', 'moment', 'histoire'],
+      logement: ['logem', 'appart', 'maison', 'chauff', 'loyer', 'propriét', 'technic', 'répar', 'froid', 'températ', 'panne', 'bâtiment', 'immeub', 'fuite', 'eau', 'voisin'],
+      transport: ['transp', 'gratui', 'véhicul', 'citad', 'usag', 'tarifi', 'circul', 'métro', 'tram', 'autob', 'bus', 'train', 'pollut', 'écolog', 'carbone', 'décarbon'],
+      travail: ['travail', 'télétr', 'salari', 'employ', 'entrep', 'bureau', 'collèg', 'horair', 'productiv', 'carrièr', 'poste', 'équipe'],
+      technologie: ['technol', 'intelli', 'numériq', 'robot', 'automat', 'ordinat', 'smartph', 'virtuel', 'donné', 'réseau', 'écran', 'artificielle', 'ia'],
+      environnement: ['climat', 'écolog', 'nature', 'déchet', 'planèt', 'énergi', 'protect', 'recycl', 'durable', 'vert', 'pollution'],
+      santé: ['santé', 'sport', 'alimen', 'repas', 'nutrit', 'physiq', 'médic', 'docteur', 'hôpital', 'bien-être'],
+      société: ['sociét', 'citoyen', 'solidar', 'bénéfic', 'jeune', 'générat', 'égalité', 'culture', 'art', 'débat', 'opinion']
+    };
+
     for (const kw of uniquePromptKeywords) {
       const stem = kw.slice(0, Math.min(kw.length, 5));
       const regex = new RegExp(`\\b${stem}\\w*\\b`, 'i');
       if (regex.test(textLower)) {
         matchedKeywords.push(kw);
+      } else {
+        // Check semantic cluster expansions
+        for (const [clusterKey, clusterStems] of Object.entries(semanticClusters)) {
+          if (kw.includes(clusterKey) || clusterKey.includes(kw.slice(0, 4))) {
+            for (const cStem of clusterStems) {
+              const cRegex = new RegExp(`\\b${cStem}\\w*\\b`, 'i');
+              if (cRegex.test(textLower)) {
+                matchedKeywords.push(`${kw}~(semantic:${cStem})`);
+                break;
+              }
+            }
+          }
+        }
       }
     }
 
@@ -949,10 +975,15 @@ Respond STRICTLY with a valid JSON object matching this schema:
       "mais", "parce que", "en plus", "et", "ou", "aussi"
     ];
 
-    const foundC1C2Conn = c1c2Connectors.filter((c) => textLower.includes(c));
-    const foundB2Conn = b2Connectors.filter((c) => textLower.includes(c));
-    const foundB1Conn = b1Connectors.filter((c) => textLower.includes(c));
-    const foundA2Conn = a2Connectors.filter((c) => textLower.includes(c));
+    const matchConnector = (c: string) => {
+      const escaped = c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return new RegExp(`\\b${escaped}\\b`, 'i').test(textLower);
+    };
+
+    const foundC1C2Conn = c1c2Connectors.filter(matchConnector);
+    const foundB2Conn = b2Connectors.filter(matchConnector);
+    const foundB1Conn = b1Connectors.filter(matchConnector);
+    const foundA2Conn = a2Connectors.filter(matchConnector);
 
     let coherenceScore = 1;
     if (foundC1C2Conn.length >= 2 || (foundC1C2Conn.length >= 1 && foundB2Conn.length >= 1)) {
@@ -994,10 +1025,10 @@ Respond STRICTLY with a valid JSON object matching this schema:
       "maison", "vacances", "ville", "magasin", "famille", "gens", "froid", "chaud", "manger", "dormir", "malade", "enfants", "nuit", "argent", "payer", "voiture", "bus", "train", "temps", "jour", "heure", "merci", "aide"
     ];
 
-    const foundC1C2Lex = c1c2Lexical.filter((w) => textLower.includes(w));
-    const foundB2Lex = b2Lexical.filter((w) => textLower.includes(w));
-    const foundB1Lex = b1Lexical.filter((w) => textLower.includes(w));
-    const foundA2Lex = a2Lexical.filter((w) => textLower.includes(w));
+    const foundC1C2Lex = c1c2Lexical.filter(matchConnector);
+    const foundB2Lex = b2Lexical.filter(matchConnector);
+    const foundB1Lex = b1Lexical.filter(matchConnector);
+    const foundA2Lex = a2Lexical.filter(matchConnector);
 
     let lexicalScore = 1;
     if (hasEnglishWords) {
@@ -1024,21 +1055,22 @@ Respond STRICTLY with a valid JSON object matching this schema:
       "je me permets", "veuillez", "je vous prie", "a accepté de", "dont vous", "pourriez-vous", "pourrait-il", "serait-il",
       "j'aimerais", "nous aimerions", "il conviendrait", "bien que", "afin de", "en vue de", "après avoir", "étant donné",
       "je vous prie d'agréer", "veuillez agréer", "sommes restés", "avons visité", "avons pris", "avons fait", "resterai joignable",
-      "il faut que", "pour que", "j'ai participé", "nous avons réussi", "j'ai décidé", "je vous écris", "dans l'attente"
+      "il faut que", "pour que", "j'ai participé", "nous avons réussi", "j'ai décidé", "dans l'attente"
     ];
     const b1Grammar = [
       "il est impossible de", "nous ne pouvons pas", "risquent d'être", "ne fonctionne plus",
-      "ne marche pas", "il fait très froid", "c'est un véritable", "c'est très important",
+      "c'est un véritable", "c'est très important",
       "j'ai pu", "nous avons pu", "je souhaiterais", "je voudrais", "était", "faisait", "pouvait", "nous pensions"
     ];
     const a2Grammar = [
-      "je suis", "nous avons", "j'ai", "il y a", "nous sommes", "vous pouvez", "c'est", "je viens de"
+      "je suis", "nous avons", "j'ai", "il y a", "nous sommes", "vous pouvez", "c'est", "je viens de",
+      "ne marche pas", "il fait très froid", "il fait froid", "je vous écris"
     ];
 
-    const foundC1C2Gram = c1c2Grammar.filter((g) => textLower.includes(g));
-    const foundB2Gram = b2Grammar.filter((g) => textLower.includes(g));
-    const foundB1Gram = b1Grammar.filter((g) => textLower.includes(g));
-    const foundA2Gram = a2Grammar.filter((g) => textLower.includes(g));
+    const foundC1C2Gram = c1c2Grammar.filter(matchConnector);
+    const foundB2Gram = b2Grammar.filter(matchConnector);
+    const foundB1Gram = b1Grammar.filter(matchConnector);
+    const foundA2Gram = a2Grammar.filter(matchConnector);
 
     let grammarScore = 1;
     if (hasEnglishWords || hasTelegraphicGrammar || wordCount < 15) {
@@ -1082,46 +1114,27 @@ Respond STRICTLY with a valid JSON object matching this schema:
     const hasAdvancedC1Markers = (hasHighC1AdminRegister || (foundC1C2Lex.length >= 3 && foundC1C2Conn.length >= 1)) && hasFormalSignOff;
 
     if (isTache1) {
-      // ─── TÂCHE 1 CEFR BENCHMARK MATRIX (A1 to C2) ───
-      // Level 10: C1-C2 (Score 18-20/20 | NCLC 10+)
-      if (/\b(par la présente|eu égard à|dépêchement immédiat|remise en état|à défaut d'une|sans délai|dispositifs? de chauffage|diligente de ce sinistre|l'expression de mes salutations distinguées)\b/i.test(clean)) {
-        scoreOutOf20 = 18;
-      }
-      // Level 9: C1 Advanced (Score 16-17/20 | NCLC 9)
-      else if (/\b(porter à votre connaissance|dysfonctionnement critique|refroidissement brutal|salubrité|urgence manifeste|dans les plus brefs délais|s'avère absolument indispensable|comptant sur votre réactivité|désagrément majeur|salutations distinguées)\b/i.test(clean)) {
-        scoreOutOf20 = 16;
-      }
-      // Level 8: B2+ Upper (Score 14-15/20 | NCLC 8)
-      else if (/\b(solliciter votre intervention|défaillance complète|grand froid hivernal|totalement à l'arrêt|situation se dégrade|je vous prie de bien vouloir|je vous serais reconnaissant|solution de chauffage d'appoint|respectueusement)\b/i.test(clean)) {
-        scoreOutOf20 = 14;
-      }
-      // Level 7: B2 Benchmark (Score 12-13/20 | NCLC 7)
-      else if (/\b(panne majeure|particulièrement rigoureuses|inconfortable|je vous saurais gré|mandater un technicien|chauffage d'appoint temporaire|bien cordialement)\b/i.test(clean)) {
-        scoreOutOf20 = 12;
-      }
-      // Level 6: B1+ Intermediate (Score 10-11/20 | NCLC 6)
-      else if (/\b(afin de vous informer|tombé en panne|situation devient|invivable|c'est pourquoi|pourriez-vous également|prêter un chauffage d'appoint)\b/i.test(clean)) {
-        scoreOutOf20 = 10;
-      }
-      // Level 5: B1 Threshold (Score 8-9/20 | NCLC 5)
-      else if (/\b(pour vous signaler|température.*a beaucoup chuté|serait-il possible de|radiateur électrique de secours|cela m'aiderait)\b/i.test(clean)) {
-        scoreOutOf20 = 8;
-      }
-      // Level 4: A2+ Elementary (Score 5-7/20 | NCLC 4)
-      else if (/\b(extrêmement froid dehors|baisse vite|vous demande de venir|envoyer un technicien)\b/i.test(clean)) {
-        scoreOutOf20 = 6;
-      }
-      // Level 3: A2 Standard (Score 4/20 | NCLC 4)
-      else if (/\b(pour le chauffage|ne fonctionne pas depuis|difficile de dormir|habiter ici|pouvez-vous venir|c'est très urgent)\b/i.test(clean)) {
-        scoreOutOf20 = 4;
-      }
-      // Level 2: A1+ Sub-elementary (Score 3/20 | NCLC 3)
-      else if (/\b(parce que le chauffage|ne marche pas aujourd'hui|je suis malade avec le froid|venez réparer vite|pouvez venir aujourd'hui)\b/i.test(clean)) {
-        scoreOutOf20 = 3;
-      }
-      // Level 1: A1 Sub-elementary / Broken Infinitive Syntax (Score 2/20 | NCLC 1-2)
-      else if (/\b(chauffage pas marcher|beaucoup froid|venir vite|dans ma maison)\b/i.test(clean)) {
-        scoreOutOf20 = 2;
+      // ─── TÂCHE 1 UNIVERSAL CEFR BENCHMARK MATRIX (A1 to C2) ───
+      const hasC1AdminFormulas = /(par la présente|je me permets de vous contacter en toute urgence|défaillance totale|outre le manquement|je vous somme d'ordonner|dans les plus brefs délais|eu égard à|l'expression de mes salutations distinguées|salubrité publique|urgence manifeste)/i.test(clean);
+      const hasB2FormalSignOff = /(veuillez agréer|je vous prie d'agréer|salutations distinguées|respectueusement|haute considération)/i.test(clean);
+      const hasB2PoliteRequest = /(pourriez-vous|auriez-vous l'amabilité|serait-il possible de|je vous saurais gré|je vous serais reconnaissant|solliciter votre intervention)/i.test(clean);
+      const hasB2ConnectorsMatch = /(par conséquent|en outre|par ailleurs|afin de|en vue de|dès lors|cependant|néanmoins)/i.test(clean);
+
+      if (hasC1AdminFormulas && hasB2FormalSignOff && wordCount >= 55) {
+        // C1 Advanced (16–17/20 | NCLC 9)
+        scoreOutOf20 = Math.max(16, Math.min(17, scoreOutOf20));
+      } else if ((hasFormalGreeting || hasB2FormalSignOff) && (hasB2PoliteRequest || hasB2ConnectorsMatch) && wordCount >= 50) {
+        // B2 Formal (14–15/20 | NCLC 8)
+        scoreOutOf20 = Math.max(14, Math.min(15, scoreOutOf20));
+      } else if ((hasB2PoliteRequest || foundB1Gram.length >= 1 || foundB1Conn.length >= 1) && wordCount >= 40) {
+        // B1 Intermediate (9–11/20 | NCLC 5–6)
+        scoreOutOf20 = Math.max(9, Math.min(11, scoreOutOf20));
+      } else if (wordCount >= 30) {
+        // A2 Elementary (6–8/20 | NCLC 4)
+        scoreOutOf20 = Math.max(6, Math.min(8, scoreOutOf20));
+      } else {
+        // A1 Beginner (2–4/20 | NCLC 1–3)
+        scoreOutOf20 = Math.max(2, Math.min(4, scoreOutOf20));
       }
     } else if (isTache2) {
       if (foundB2Lex.length === 0 && foundC1C2Lex.length === 0 && foundB2Conn.length === 0 && foundC1C2Conn.length === 0 && foundB1Gram.length === 0 && foundC1C2Gram.length === 0) {
