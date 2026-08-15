@@ -425,7 +425,7 @@ export function speakDialogue(
       gender = "female";
     }
 
-    parsedDialogue.push({ speaker: speakerName, text: speechText, gender });
+    parsedDialogue.push({ speaker: speakerName, text: line.trim(), gender });
   }
 
   if (parsedDialogue.length === 0) {
@@ -434,12 +434,18 @@ export function speakDialogue(
   }
 
   let currentIndex = 0;
+  const audio = new Audio();
+  activeAudioPlayers.add(audio);
+  currentAudioPlayer = audio;
+  if (onPlaybackStateChange) onPlaybackStateChange(true);
 
   function playNextLine() {
     if (myDialogueId !== currentDialogueId) return; // Terminate if dialogue was stopped or replaced
     if (isAudioPausedState) return; // Abort immediately if audio engine is paused!
 
     if (currentIndex >= parsedDialogue.length) {
+      activeAudioPlayers.delete(audio);
+      if (currentAudioPlayer === audio) currentAudioPlayer = null;
       if (onPlaybackStateChange) onPlaybackStateChange(false);
       if (onEnded) onEnded();
       return;
@@ -448,18 +454,8 @@ export function speakDialogue(
     const current = parsedDialogue[currentIndex];
     currentIndex++;
 
-    const audio = new Audio();
-    activeAudioPlayers.add(audio);
-    currentAudioPlayer = audio;
-    if (onPlaybackStateChange) onPlaybackStateChange(true);
-
     audio.onended = () => {
-      activeAudioPlayers.delete(audio);
       if (myDialogueId === currentDialogueId && !isAudioPausedState) {
-        // Real TCF CBT Sound Design Pacing rules:
-        // 1. Passage -> Announcer ("Écoutez la question..."): 1500ms silent break
-        // 2. Between Spoken Options A, B, C, D (Q1-Q8): 1000ms silent break
-        // 3. Standard dialogue lines: 400ms break
         let delayMs = 400;
         if (currentIndex < parsedDialogue.length) {
           const nextLine = parsedDialogue[currentIndex];
