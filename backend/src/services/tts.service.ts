@@ -4,9 +4,10 @@ import TTSCache from '../models/TTSCache';
 import Settings from '../models/Settings';
 import { generateKokoroAudio } from './kokoro.service';
 
-function getHash(text: string, gender: string, lang: string = 'fr', rate: number = 1.0): string {
-  const normLang = (lang || 'fr').toLowerCase().slice(0, 2);
-  return crypto.createHash('md5').update(`${text.trim().toLowerCase()}_${gender}_${normLang}_${rate}`).digest('hex');
+function getHash(text: string, gender: string = 'female', lang: string = 'fr', rate: number = 1.0): string {
+  const normText = (text || '').trim().toLowerCase().replace(/[.,!?;:\s]+/g, ' ');
+  const normGender = (gender || 'female').toLowerCase();
+  return crypto.createHash('md5').update(`${normText}_${normGender}`).digest('hex');
 }
 
 /**
@@ -190,11 +191,13 @@ export async function generateNeuralAudio(
   // 1. Check MongoDB Cache first — instant hit by textHash or exact text match
   if (!forcedVoiceId) {
     try {
+      const escapedText = cleanText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const cached = await TTSCache.findOne({
         $or: [
           { textHash },
           { text: cleanText, gender },
-          { text: cleanText }
+          { text: cleanText },
+          { text: new RegExp('^' + escapedText + '$', 'i') }
         ]
       }).maxTimeMS(2500);
       if (cached && cached.audioBase64) {
@@ -532,7 +535,7 @@ export async function generateNeuralAudio(
     if (res) return res;
   }
 
-  // AUTO FALLBACK CASCADE (ElevenLabs ➔ OpenAI HD ➔ HuggingFace Kokoro ➔ Google)
+  // AUTO FALLBACK CASCADE (ElevenLabs ➔ OpenAI HD ➔ HuggingFace Kokoro)
   const eleven = await tryElevenLabs();
   if (eleven) return eleven;
 
@@ -549,8 +552,9 @@ export async function generateNeuralAudio(
     }
   }
 
-  const google = await tryGoogle();
-  if (google) return google;
+  // Never fall back to robotic Google Translate TTS
+  console.warn('[TTS Service] ElevenLabs credit exhausted or missing for text:', cleanText.slice(0, 40));
+  return null;
 
   return null;
 }
