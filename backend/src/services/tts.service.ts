@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import crypto from 'crypto';
 import axios from 'axios';
 import TTSCache from '../models/TTSCache';
@@ -192,7 +193,7 @@ export async function generateNeuralAudio(
   if (!forcedVoiceId) {
     try {
       const escapedText = cleanText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const cached = await TTSCache.findOne({
+      let cached = await TTSCache.findOne({
         $or: [
           { textHash },
           { text: cleanText, gender },
@@ -200,6 +201,24 @@ export async function generateNeuralAudio(
           { text: new RegExp('^' + escapedText + '$', 'i') }
         ]
       }).maxTimeMS(2500);
+
+      if (!cached && mongoose.connection?.db) {
+        try {
+          const testDb = mongoose.connection.useDb('test').db;
+          if (testDb) {
+            const doc = await testDb.collection('ttscaches').findOne({
+              $or: [
+                { textHash },
+                { text: cleanText, gender },
+                { text: cleanText },
+                { text: new RegExp('^' + escapedText + '$', 'i') }
+              ]
+            }, { maxTimeMS: 2500 });
+            if (doc) cached = doc as any;
+          }
+        } catch {}
+      }
+
       if (cached && cached.audioBase64) {
         return { audioBase64: cached.audioBase64, contentType: cached.contentType || 'audio/mp3', provider: `cache-${cached.voice}` };
       }
