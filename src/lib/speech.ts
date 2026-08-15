@@ -233,59 +233,9 @@ function speakWebSpeech(
   gender: "female" | "male" = "female",
   onEnded?: () => void
 ) {
-  if (typeof window === "undefined" || !window.speechSynthesis) {
-    if (onEnded) onEnded();
-    return;
-  }
-  try {
-    window.speechSynthesis.cancel();
-    const clean = text.replace(/^[A-Za-z0-9\s]+:\s*/, "").trim();
-    const utterance = new SpeechSynthesisUtterance(clean);
-    const effectiveLang = langCode === "fr" ? "fr-FR" : langCode;
-    utterance.lang = effectiveLang;
-    utterance.rate = Math.min(2.0, Math.max(0.5, rate));
-
-    const voices = window.speechSynthesis.getVoices();
-    const langVoices = voices.filter(v => v.lang.toLowerCase().startsWith(langCode));
-
-    if (langVoices.length > 0) {
-      if (gender === "male") {
-        const maleVoice = langVoices.find(v => /male|paul|henri|thomas|nicolas|jean|guy|antoine|bruno|david|claude/i.test(v.name));
-        if (maleVoice) {
-          utterance.voice = maleVoice;
-        } else {
-          utterance.voice = langVoices[0];
-          utterance.pitch = 0.82;
-        }
-      } else {
-        const femaleVoice = langVoices.find(v => /female|julie|hortense|amelie|chloe|celine|virginie|florence|denise/i.test(v.name));
-        if (femaleVoice) {
-          utterance.voice = femaleVoice;
-        } else {
-          utterance.voice = langVoices[langVoices.length - 1];
-          utterance.pitch = 1.18;
-        }
-      }
-    } else {
-      utterance.pitch = gender === "male" ? 0.82 : 1.18;
-    }
-
-    if (onPlaybackStateChange) onPlaybackStateChange(true);
-
-    utterance.onend = () => {
-      if (onPlaybackStateChange) onPlaybackStateChange(false);
-      if (onEnded) onEnded();
-    };
-    utterance.onerror = () => {
-      if (onPlaybackStateChange) onPlaybackStateChange(false);
-      if (onEnded) onEnded();
-    };
-
-    window.speechSynthesis.speak(utterance);
-  } catch {
-    if (onPlaybackStateChange) onPlaybackStateChange(false);
-    if (onEnded) onEnded();
-  }
+  console.warn("[Speech] Web Speech API disabled to prevent robotic OS voices.");
+  if (onEnded) onEnded();
+  return;
 }
 
 export function stopAudio(): void {
