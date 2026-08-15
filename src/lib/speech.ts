@@ -635,7 +635,8 @@ export function speakListeningQuestion(
   onEnded?: () => void
 ): void {
   let lang = "fr-FR";
-  let rate = 0.85;
+  let rate = 1.0;
+  let gender: "female" | "male" = "female";
   let cb = onEnded;
 
   if (typeof questionNumberOrLang === "string") {
@@ -649,7 +650,7 @@ export function speakListeningQuestion(
   }
 
   stopAudio();
-  speakDialogue(text, lang, rate, undefined, cb);
+  speak(text, lang, rate, gender, undefined, undefined, undefined, cb);
 }
 
 /**
