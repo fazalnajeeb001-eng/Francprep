@@ -7,6 +7,7 @@ import { getReadingPaperItems } from "./authenticReadingMasterBank";
 import { getReadingGuidance } from "./readingGuidanceBank";
 import { getWritingPaperTasks } from "./authenticWritingMasterBank";
 import { getWritingGuidance } from "./writingGuidanceBank";
+import { getMasterSpeakingTasks, type MasterSpeakingTask } from "./speakingMasterBank";
 
 export type ExamType = "TCF_CANADA" | "TEF_CANADA";
 export type ExamMode = "PRACTICE" | "EXAM";
@@ -47,6 +48,8 @@ export interface WritingTask {
   taskNumber: number;
   title: string;
   prompt: string;
+  min?: number;
+  max?: number;
   wordCountMin: number;
   wordCountMax: number;
   timeLimitMins: number;
@@ -64,10 +67,36 @@ export interface SpeakingTask {
   id: string;
   taskNumber: number;
   title: string;
+  titleEn?: string;
+  cefrTarget?: string;
   scenario: string;
+  scenarioEn?: string;
+  stimulusDocument?: {
+    title: string;
+    category: string;
+    organization: string;
+    content: string;
+    details: string[];
+    contactInfo: string;
+  };
+  examinerPersona?: {
+    name: string;
+    role: string;
+    gender: "female" | "male";
+    openingPromptFrench: string;
+    openingPromptEnglish: string;
+    followUpCounterQuestion?: string;
+  };
   prepTimeMins: number;
   speakingTimeMins: number;
   keyPhrases?: string[];
+  recommendedConnectors?: string[];
+  modelAnswerB2C1?: string;
+  modelAnswerEn?: string;
+  trapAlert?: string;
+  trapAlertEn?: string;
+  speakingCoach?: string;
+  speakingCoachEn?: string;
 }
 
 export interface ExamSection {
@@ -7784,35 +7813,7 @@ export function getExamRegistry(): ExamPaper[] {
           description: "Interactive oral interaction with AI examiner feedback (3 Tasks / 12 Mins).",
           durationMins: 12,
           totalQuestions: 3,
-          speakingTasks: [
-            {
-              id: `tcf${i}-spk-1`,
-              taskNumber: 1,
-              title: "Tâche 1 : Entretien dirigé (Personal Presentation)",
-              scenario: "Présentez-vous à l'examinateur. Parlez de votre parcours professionnel, de vos centres d'intérêt et de vos motivations pour vous installer au Canada.",
-              prepTimeMins: 0,
-              speakingTimeMins: 2,
-              keyPhrases: ["Je m'appelle...", "Actuellement, je travaille en tant que...", "Mon objectif principal au Canada est..."]
-            },
-            {
-              id: `tcf${i}-spk-2`,
-              taskNumber: 2,
-              title: "Tâche 2 : Exercice en interaction (Recherche d'informations)",
-              scenario: `Vous souhaitez obtenir des informations sur un service public au Québec (Sujet épreuve ${i}). Posez au moins 5 questions à l'examinateur sur les conditions d'accès, tarifs et démarches.`,
-              prepTimeMins: 1,
-              speakingTimeMins: 3.5,
-              keyPhrases: ["Quels sont les documents requis ?", "Combien coûte l'inscription ?", "Est-il possible de faire les démarches en ligne ?"]
-            },
-            {
-              id: `tcf${i}-spk-3`,
-              taskNumber: 3,
-              title: "Tâche 3 : Expression d'un point de vue (Oral Debate)",
-              scenario: `Exprimez et défendez votre opinion à l'examinateur sur l'impact de la numérisation des services publics dans la société actuelle.`,
-              prepTimeMins: 1,
-              speakingTimeMins: 4.5,
-              keyPhrases: ["Selon moi...", "D'un côté..., mais d'un autre côté...", "Pour conclure, je dirais que..."]
-            }
-          ]
+          speakingTasks: getMasterSpeakingTasks(i)
         }
       ]
     });
