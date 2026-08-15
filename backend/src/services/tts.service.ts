@@ -175,13 +175,14 @@ export async function generateNeuralAudio(
 
   const textHash = getHash(cleanText, gender, lang, speakingRate);
 
-  // 1. Check MongoDB Cache first — instant hit by textHash or exact text + gender match
+  // 1. Check MongoDB Cache first — instant hit by textHash or exact text match
   if (!forcedVoiceId) {
     try {
       const cached = await TTSCache.findOne({
         $or: [
           { textHash },
-          { text: cleanText, gender }
+          { text: cleanText, gender },
+          { text: cleanText }
         ]
       }).maxTimeMS(2500);
       if (cached && cached.audioBase64) {
