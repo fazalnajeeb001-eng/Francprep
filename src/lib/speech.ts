@@ -188,7 +188,7 @@ function playDirectHDFallback(
       text,
       gender,
       lang: langCode,
-      provider: "google",
+      provider: "elevenlabs",
       speakingRate: rate,
     }),
   })

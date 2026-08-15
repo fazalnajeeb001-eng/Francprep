@@ -190,7 +190,7 @@ export async function generateNeuralAudio(
   const textHash = getHash(cleanText, gender, lang, speakingRate);
 
   // 1. Check MongoDB Cache first — instant hit by textHash or exact text match
-  if (!forcedVoiceId) {
+  if (!forcedVoiceId || forcedVoiceId === 'google') {
     try {
       const escapedText = cleanText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       let cached = await TTSCache.findOne({
