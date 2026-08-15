@@ -47,6 +47,18 @@ function stitchMp3Buffers(buffers: Buffer[]): Buffer {
 }
 
 /**
+ * Strips speaker prefixes (e.g. "Locuteur 1:", "Locutrice 2:", "Annonceur:", "Homme:", "Femme:")
+ * so that the synthesized studio voice only speaks the actual dialogue/instructions,
+ * never reading aloud the speaker tag name.
+ */
+export function stripSpeakerLabels(text: string): string {
+  if (!text) return '';
+  return text
+    .replace(/(?:^|\n)\s*(?:Locuteur\s*\d*|Locutrice\s*\d*|Homme\s*\d*|Femme\s*\d*|Annonceur|Annonceuse|Journaliste|Intervenant(?:e)?)\s*:\s*/gi, ' ')
+    .trim();
+}
+
+/**
  * Parses transcript into sequential speaker turns and extracts clean spoken text.
  */
 interface DialogueSegment {
@@ -75,7 +87,7 @@ function parseDialogueSegments(
     segments.push({
       speakerTag: isAnnouncer ? (isMale ? 'Annonceur' : 'Annonceuse') : (isMale ? 'Locuteur' : 'Locutrice'),
       voiceId: isMale ? defaultMaleVoice : defaultFemaleVoice,
-      text: clean,
+      text: stripSpeakerLabels(clean),
       isAnnouncer
     });
     return segments;
@@ -86,7 +98,7 @@ function parseDialogueSegments(
     const speakerTag = currentMatch[1].trim();
     const startIndex = currentMatch.index! + currentMatch[0].length;
     const endIndex = (i + 1 < matches.length) ? matches[i + 1].index! : clean.length;
-    const segmentText = clean.slice(startIndex, endIndex).trim();
+    const segmentText = stripSpeakerLabels(clean.slice(startIndex, endIndex).trim());
 
     if (segmentText) {
       const lowerTag = speakerTag.toLowerCase();
@@ -305,10 +317,11 @@ export async function generateNeuralAudio(
           }
         })(voiceId);
 
+        const spokenText = stripSpeakerLabels(cleanText);
         const response = await axios.post(
           `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
           {
-            text: cleanText,
+            text: spokenText,
             model_id: 'eleven_multilingual_v2',
             voice_settings: { ...voiceSettings, speed: Math.min(1.2, Math.max(0.7, speakingRate || 1.0)) },
           },
@@ -363,7 +376,8 @@ export async function generateNeuralAudio(
           ? (settings?.selectedKokoroMaleVoice || 'bm_george')
           : (settings?.selectedKokoroFemaleVoice || 'ff_siwis'));
 
-      const kokoroRes = await generateKokoroAudio(cleanText, gender, lang, hfToken, selectedVoice);
+      const spokenText = stripSpeakerLabels(cleanText);
+      const kokoroRes = await generateKokoroAudio(spokenText, gender, lang, hfToken, selectedVoice);
       if (kokoroRes) {
         if (!forcedVoiceId) {
           await TTSCache.findOneAndUpdate(
@@ -397,9 +411,10 @@ export async function generateNeuralAudio(
           ? (settings?.selectedOpenAIMaleVoice || 'onyx')
           : (settings?.selectedOpenAIFemaleVoice || 'nova'));
 
+      const spokenText = stripSpeakerLabels(cleanText);
       const response = await axios.post(
         'https://api.openai.com/v1/audio/speech',
-        { model: 'tts-1-hd', input: cleanText, voice: voiceName, speed: Math.min(4.0, Math.max(0.25, speakingRate)) },
+        { model: 'tts-1-hd', input: spokenText, voice: voiceName, speed: Math.min(4.0, Math.max(0.25, speakingRate)) },
         { headers: { Authorization: `Bearer ${openaiKey}`, 'Content-Type': 'application/json' }, responseType: 'arraybuffer', timeout: 30000 }
       );
 
@@ -447,7 +462,8 @@ export async function generateNeuralAudio(
         return chunks;
       };
 
-      const chunks = splitIntoChunks(cleanText, 160);
+      const spokenText = stripSpeakerLabels(cleanText);
+      const chunks = splitIntoChunks(spokenText, 160);
       const audioBuffers: Buffer[] = [];
 
       for (const chunk of chunks) {
