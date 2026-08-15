@@ -104,8 +104,20 @@ export function AuthenticCBTExamPage() {
   // Test-Center High-Contrast Toggle (Default light CBT canvas for authentic exam day feel)
   const [cbtDark, setCbtDark] = useState(false);
 
-  // Admin Account Free-Roam Detection
-  const isAdmin = Boolean(user && (user.role === 'admin' || (user as any).isAdmin || user.email?.includes('admin')));
+  // Admin Account Free-Roam Detection (Supports role === 'admin' | 'ADMIN', isAdmin flag, or stored localStorage admin)
+  const isAdmin = Boolean(
+    (user && (user.role?.toLowerCase() === 'admin' || (user as any).isAdmin || user.email?.toLowerCase().includes('admin'))) ||
+    (typeof window !== "undefined" && (() => {
+      try {
+        const stored = localStorage.getItem("francprep_user");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          return parsed.role?.toLowerCase() === 'admin' || parsed.isAdmin || parsed.email?.toLowerCase().includes('admin');
+        }
+      } catch {}
+      return false;
+    })())
+  );
 
   const registry = getExamRegistry() || [];
   const paper: ExamPaper = registry.find((p) => p.id === paperId) || registry[0] || {
@@ -3013,19 +3025,19 @@ export function AuthenticCBTExamPage() {
               {/* Prev / Next Bottom Navigator */}
               <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-700">
                 <button
-                  disabled={currentQuestionIdx === 0 || (mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE")}
+                  disabled={currentQuestionIdx === 0 || (!isAdmin && mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE")}
                   onClick={() => setCurrentQuestionIdx((prev) => Math.max(0, prev - 1))}
                   className={`px-4 py-2 rounded text-xs font-bold transition-all ${
-                    currentQuestionIdx === 0 || (mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE")
+                    currentQuestionIdx === 0 || (!isAdmin && mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE")
                       ? "opacity-40 cursor-not-allowed bg-slate-200 text-slate-500 border-slate-300"
                       : "bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-300 cursor-pointer"
                   }`}
-                  title={mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE" ? "Navigation verrouillée en mode examen (Règles CBT)" : ""}
+                  title={!isAdmin && mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE" ? "Navigation verrouillée en mode examen (Règles CBT)" : ""}
                 >
                   ← Previous Question
                 </button>
 
-                {mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE" ? (
+                {!isAdmin && mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE" ? (
                   <div className="px-3 py-1.5 rounded-lg bg-blue-950/80 text-blue-300 border border-blue-800 text-[11px] font-mono font-bold flex items-center gap-1.5 shadow">
                     <span>🔒 Navigation Standard CBT</span>
                   </div>
@@ -3814,14 +3826,14 @@ export function AuthenticCBTExamPage() {
               const isAnswered = selectedAnswers[q.id] !== undefined;
               const isFlagged = flaggedQuestions[q.id];
               const isCurrent = currentQuestionIdx === idx;
-              const isExamListening = mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE";
+              const isExamListening = !isAdmin && mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE";
               const isLockedExamItem = isExamListening && !isCurrent;
 
               return (
                 <button
                   key={q.id}
                   onClick={() => {
-                    if (!isExamListening) setCurrentQuestionIdx(idx);
+                    if (!isExamListening || isAdmin) setCurrentQuestionIdx(idx);
                   }}
                   disabled={isExamListening}
                   title={
