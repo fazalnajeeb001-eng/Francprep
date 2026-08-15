@@ -148,7 +148,14 @@ export async function generateNeuralAudio(
   speakingRate: number = 1.0,
   speaker?: string
 ): Promise<{ audioBase64: string; contentType: string; provider: string } | null> {
-  const cleanText = text.trim();
+  const rawCleanText = text.trim();
+  if (!rawCleanText) return null;
+
+  const cleanText = rawCleanText
+    .replace(/^(Locuteur|Locutrice|Annonceur|Annonceuse)\s*:\s*/i, '')
+    .replace(/^\s*\.\.\.\s*[A-D]\s*:\s*/i, '')
+    .replace(/^\s*[A-D]\s*:\s*/i, '')
+    .trim();
   if (!cleanText) return null;
 
   let settings: any = null;
@@ -159,7 +166,7 @@ export async function generateNeuralAudio(
   const activeProvider = forcedProvider || settings?.preferredVoiceEngine || settings?.activeTTSProvider || 'auto';
 
   // Determine active voice ID based on provider, gender, and speaker persona tag
-  const lowerSpeaker = (speaker || '').toLowerCase();
+  const lowerSpeaker = (speaker || text || '').toLowerCase();
   let targetVoiceId = forcedVoiceId || '';
   if (!targetVoiceId) {
     if (activeProvider === 'elevenlabs' || activeProvider === 'auto') {
@@ -188,6 +195,8 @@ export async function generateNeuralAudio(
   }
 
   const textHash = getHash(cleanText, gender, lang, speakingRate);
+  const normGender = (gender || 'female').toLowerCase();
+  const canonicalHash = crypto.createHash('md5').update(`${cleanText.toLowerCase().replace(/[.,!?;:\s]+/g, ' ')}_${normGender}`).digest('hex');
 
   // 1. Check MongoDB Cache first — instant hit by textHash or exact text match
   if (!forcedVoiceId || forcedVoiceId === 'google') {
@@ -196,8 +205,10 @@ export async function generateNeuralAudio(
       let cached = await TTSCache.findOne({
         $or: [
           { textHash },
+          { textHash: canonicalHash },
           { text: cleanText, gender },
           { text: cleanText },
+          { text: rawCleanText },
           { text: new RegExp('^' + escapedText + '$', 'i') }
         ]
       }).maxTimeMS(2500);
