@@ -202,6 +202,7 @@ export async function generateNeuralAudio(
   if (!forcedVoiceId || forcedVoiceId === 'google') {
     try {
       const escapedText = cleanText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const escapedRaw = rawCleanText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       let cached = await TTSCache.findOne({
         $or: [
           { textHash },
@@ -209,7 +210,9 @@ export async function generateNeuralAudio(
           { text: cleanText, gender },
           { text: cleanText },
           { text: rawCleanText },
-          { text: new RegExp('^' + escapedText + '$', 'i') }
+          { text: new RegExp('^' + escapedText + '$', 'i') },
+          { text: new RegExp(escapedText, 'i') },
+          { text: new RegExp(escapedRaw, 'i') }
         ]
       }).maxTimeMS(2500);
 
@@ -220,9 +223,13 @@ export async function generateNeuralAudio(
             const doc = await testDb.collection('ttscaches').findOne({
               $or: [
                 { textHash },
+                { textHash: canonicalHash },
                 { text: cleanText, gender },
                 { text: cleanText },
-                { text: new RegExp('^' + escapedText + '$', 'i') }
+                { text: rawCleanText },
+                { text: new RegExp('^' + escapedText + '$', 'i') },
+                { text: new RegExp(escapedText, 'i') },
+                { text: new RegExp(escapedRaw, 'i') }
               ]
             }, { maxTimeMS: 2500 });
             if (doc) cached = doc as any;
