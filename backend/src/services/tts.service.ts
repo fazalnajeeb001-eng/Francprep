@@ -4,6 +4,7 @@ import axios from 'axios';
 import TTSCache from '../models/TTSCache';
 import Settings from '../models/Settings';
 import { generateKokoroAudio } from './kokoro.service';
+import { generateEdgeNeuralAudio } from './edgeTts.service';
 
 function getHash(text: string, gender: string = 'female', lang: string = 'fr', rate: number = 1.0): string {
   const normText = (text || '').trim().toLowerCase().replace(/[.,!?;:\s]+/g, ' ');
@@ -587,13 +588,38 @@ export async function generateNeuralAudio(
     if (res) return res;
   }
 
-  // AUTO FALLBACK CASCADE (ElevenLabs ➔ OpenAI HD ➔ HuggingFace Kokoro)
+  // 1. PRIMARY STUDIO ENGINE: Microsoft Azure Neural French 8-Voice System
+  try {
+    const edgeRes = await generateEdgeNeuralAudio(rawCleanText, gender, lang, speakingRate);
+    if (edgeRes && edgeRes.audioBase64) {
+      await TTSCache.findOneAndUpdate(
+        { textHash },
+        {
+          textHash,
+          text: rawCleanText,
+          voice: edgeRes.provider,
+          gender,
+          audioBase64: edgeRes.audioBase64,
+          contentType: 'audio/mp3',
+        },
+        { upsert: true, new: true }
+      ).catch(() => {});
+
+      return edgeRes;
+    }
+  } catch (err: any) {
+    console.warn('[TTS Service] Edge Neural synthesis fallback notice:', err?.message);
+  }
+
+  // 2. FALLBACK: ElevenLabs (if key and credits available)
   const eleven = await tryElevenLabs();
   if (eleven) return eleven;
 
+  // 3. FALLBACK: OpenAI HD (if key available)
   const openAiAudio = await tryOpenAI();
   if (openAiAudio) return openAiAudio;
 
+  // 4. FALLBACK: HuggingFace Kokoro
   const kokoro = await tryHuggingFaceKokoro();
   if (kokoro) return kokoro;
 
@@ -603,10 +629,6 @@ export async function generateNeuralAudio(
       return { audioBase64: maleKokoro.audioBase64, contentType: maleKokoro.contentType, provider: 'kokoro-bm_george' };
     }
   }
-
-  // Never fall back to robotic Google Translate TTS
-  console.warn('[TTS Service] ElevenLabs credit exhausted or missing for text:', cleanText.slice(0, 40));
-  return null;
 
   return null;
 }
