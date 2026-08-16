@@ -196,23 +196,34 @@ export async function generateNeuralAudio(
 
   const textHash = getHash(cleanText, gender, lang, speakingRate);
   const normGender = (gender || 'female').toLowerCase();
-  const canonicalHash = crypto.createHash('md5').update(`${cleanText.toLowerCase().replace(/[.,!?;:\s]+/g, ' ')}_${normGender}`).digest('hex');
+  const normTextRaw = cleanText.toLowerCase().replace(/[.,!?;:\s]+/g, ' ');
+  const normTextTrimmed = normTextRaw.trim();
+  const canonicalHash = crypto.createHash('md5').update(`${normTextRaw}_${normGender}`).digest('hex');
+  const canonicalHashTrimmed = crypto.createHash('md5').update(`${normTextTrimmed}_${normGender}`).digest('hex');
+  const canonicalHashWithSpace = crypto.createHash('md5').update(`${normTextTrimmed} _${normGender}`).digest('hex');
 
   // 1. Check MongoDB Cache first — instant hit by textHash or exact text match
   if (!forcedVoiceId || forcedVoiceId === 'google') {
     try {
+      const cleanPrefix = cleanText.replace(/\s*(\.{2,}|\u2026)\s*$/, '').trim();
       const escapedText = cleanText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const escapedRaw = rawCleanText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const escapedPrefix = cleanPrefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
       let cached = await TTSCache.findOne({
         $or: [
           { textHash },
           { textHash: canonicalHash },
+          { textHash: canonicalHashTrimmed },
+          { textHash: canonicalHashWithSpace },
           { text: cleanText, gender },
           { text: cleanText },
           { text: rawCleanText },
           { text: new RegExp('^' + escapedText + '$', 'i') },
           { text: new RegExp(escapedText, 'i') },
-          { text: new RegExp(escapedRaw, 'i') }
+          { text: new RegExp(escapedRaw, 'i') },
+          { text: new RegExp('^' + escapedPrefix, 'i') },
+          { text: new RegExp(escapedPrefix, 'i') }
         ]
       }).maxTimeMS(2500);
 
@@ -224,12 +235,16 @@ export async function generateNeuralAudio(
               $or: [
                 { textHash },
                 { textHash: canonicalHash },
+                { textHash: canonicalHashTrimmed },
+                { textHash: canonicalHashWithSpace },
                 { text: cleanText, gender },
                 { text: cleanText },
                 { text: rawCleanText },
                 { text: new RegExp('^' + escapedText + '$', 'i') },
                 { text: new RegExp(escapedText, 'i') },
-                { text: new RegExp(escapedRaw, 'i') }
+                { text: new RegExp(escapedRaw, 'i') },
+                { text: new RegExp('^' + escapedPrefix, 'i') },
+                { text: new RegExp(escapedPrefix, 'i') }
               ]
             }, { maxTimeMS: 2500 });
             if (doc) cached = doc as any;
