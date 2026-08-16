@@ -7092,29 +7092,54 @@ function shuffleOptions(
   options: string[],
   correctIndex: number,
   seed: number = 0,
-  optionImages?: string[]
-): { options: string[]; correctIndex: number; correctText: string; optionImages?: string[] } {
+  optionImages?: string[],
+  optionsEnglish?: string[]
+): { options: string[]; correctIndex: number; correctText: string; optionImages?: string[]; optionsEnglish?: string[] } {
   const originalCorrectText = options[correctIndex] || options[0] || "";
-  const indexed = options.map((opt, idx) => ({ opt, isCorrect: idx === correctIndex, img: optionImages?.[idx] }));
+  const originalCorrectImg = optionImages?.[correctIndex];
+  const originalCorrectEn = optionsEnglish?.[correctIndex];
 
-  // Deterministic pseudo-random shuffle based on seed
-  for (let i = indexed.length - 1; i > 0; i--) {
-    const pseudoRandom = Math.abs(Math.sin(seed + i * 997) * 10000);
-    const j = Math.floor((pseudoRandom - Math.floor(pseudoRandom)) * (i + 1));
-    const temp = indexed[i];
-    indexed[i] = indexed[j];
-    indexed[j] = temp;
+  // Distractors (the 3 incorrect options)
+  const distractors: { opt: string; img?: string; optEn?: string }[] = [];
+  for (let i = 0; i < options.length; i++) {
+    if (i !== correctIndex) {
+      distractors.push({
+        opt: options[i],
+        img: optionImages?.[i],
+        optEn: optionsEnglish?.[i]
+      });
+    }
   }
 
-  const shuffledOptions = indexed.map((item) => item.opt);
-  const newCorrectIndex = indexed.findIndex((item) => item.isCorrect);
-  const shuffledImages = optionImages ? indexed.map((item) => item.img || "") : undefined;
+  // Uniform balanced slot index (guarantees ~25% balance, max streak = 2)
+  const targetSlot = Math.abs(seed * 3 + Math.floor(seed / 4)) % 4;
+
+  const shuffledOptions: string[] = new Array(4);
+  const shuffledImages: (string | undefined)[] = optionImages ? new Array(4) : [];
+  const shuffledEnglish: (string | undefined)[] = optionsEnglish ? new Array(4) : [];
+
+  shuffledOptions[targetSlot] = originalCorrectText;
+  if (optionImages) shuffledImages[targetSlot] = originalCorrectImg;
+  if (optionsEnglish) shuffledEnglish[targetSlot] = originalCorrectEn;
+
+  let dIdx = 0;
+  for (let slot = 0; slot < 4; slot++) {
+    if (slot !== targetSlot) {
+      const d = distractors[dIdx++];
+      if (d) {
+        shuffledOptions[slot] = d.opt;
+        if (optionImages) shuffledImages[slot] = d.img;
+        if (optionsEnglish) shuffledEnglish[slot] = d.optEn;
+      }
+    }
+  }
 
   return {
     options: shuffledOptions,
-    correctIndex: newCorrectIndex !== -1 ? newCorrectIndex : 0,
+    correctIndex: targetSlot,
     correctText: originalCorrectText,
-    optionImages: shuffledImages
+    optionImages: optionImages ? (shuffledImages as string[]) : undefined,
+    optionsEnglish: optionsEnglish ? (shuffledEnglish as string[]) : undefined
   };
 }
 
