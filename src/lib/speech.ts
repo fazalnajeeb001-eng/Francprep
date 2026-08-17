@@ -188,7 +188,7 @@ function playDirectHDFallback(
       text,
       gender,
       lang: langCode,
-      provider: "elevenlabs",
+      provider: "edge-neural",
       speakingRate: rate,
     }),
   })

@@ -7326,7 +7326,21 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
     }
 
     const seed = seedOffset * 100 + i;
-    const { options, correctIndex, correctText, optionImages, optionsEnglish: shuffledOptionsEn } = shuffleOptions(topicOpt, topicAns, seed, rawImages, (t as any).optionsEnglish);
+    const isSpokenOptionQuestion = (i >= 5 && i <= 8);
+    const isSpokenImageQuestion = (i <= 4);
+
+    // For questions 1 to 8, options are spoken aloud in the pre-recorded studio audio track.
+    // They must maintain exact 1:1 parity with the recorded audio propositions (A, B, C, D) and MongoDB cache.
+    // For questions 9 to 39, options are purely visual and are uniformly balanced across A, B, C, D.
+    const { options, correctIndex, correctText, optionImages, optionsEnglish: shuffledOptionsEn } = (isSpokenImageQuestion || isSpokenOptionQuestion)
+      ? {
+          options: [...topicOpt],
+          correctIndex: topicAns,
+          correctText: topicOpt[topicAns] || topicOpt[0] || "",
+          optionImages: rawImages,
+          optionsEnglish: (t as any).optionsEnglish
+        }
+      : shuffleOptions(topicOpt, topicAns, seed, rawImages, (t as any).optionsEnglish);
 
     const itemLevel = t.level || "A1";
     const specificHint = (t as any).hint || `Level ${itemLevel} Listening Guidance: Focus on the speaker's main intent and tone. Pay attention to key transition words (e.g. "cependant", "en revanche") to identify the correct message without guessing.`;
@@ -7336,9 +7350,6 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
     const isMaleSpeaker = i % 2 === 1;
     const passageSpeakerLabel = isMaleSpeaker ? "Locuteur" : "Locutrice";
     const announcerLabel = isMaleSpeaker ? "Annonceuse" : "Annonceur";
-
-    const isSpokenOptionQuestion = (i >= 5 && i <= 8);
-
     const passageBodyText = (t.text || t.tr || "").trim();
     const hasExplicitSpeakerTag = /^(Locuteur|Locutrice|Homme|Femme|Intervenant|Journaliste)\b/i.test(passageBodyText);
     const cleanPassageWithSpeaker = hasExplicitSpeakerTag ? passageBodyText : `${passageSpeakerLabel}: ${passageBodyText}`;
