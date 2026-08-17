@@ -650,43 +650,50 @@ Respond STRICTLY with a valid JSON object matching this schema:
           t = Math.min(3, t);
         }
 
-        const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|travel|city|park|food|good|experience|like|you|know|actually)\b/i.test(textLower);
+        // Strict English code-switching check (Requires 2+ unambiguous English words, ignoring French cognates like urgent, appartement, taxi, hotel, service, message)
+        const englishMatches = textLower.match(/\b(the|is|are|was|were|with|because|please|thanks|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had|about|into|after|before)\b/gi) || [];
+        const hasEnglishWords = englishMatches.length >= 2;
         const hasTelegraphicGrammar = /\b(je\s+allé|je\s+faire|nous\s+manger|je\s+aimé|je\s+très|lieu\s+est|parce\s+que\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances|prendre\s+photo)\b/i.test(textLower);
 
         // ─── DETERMINISTIC CEFR LINGUISTIC FEATURE ANCHORING ENGINE ───
-
-        // ─── COMPREHENSIVE CEFR LINGUISTIC FEATURE SCORING ENGINE ───
 
         // Check key linguistic markers
         const hasFormalGreeting = /^\s*(monsieur le|madame la|madame, monsieur|monsieur,|madame,)/i.test(textClean);
         const hasConversationalGreeting = /^\s*(bonjour|salut|coucou)/i.test(textClean);
         const hasFormalSignOff = /(je vous prie d'agréer|veuillez agréer|salutations distinguées|haute considération|respectueusement|bien cordialement)/i.test(textClean);
-        const hasBasicSignOff = /(cordialement|merci|merci beaucoup|bonne journée|au revoir|à bientôt)/i.test(textClean);
+        const hasBasicSignOff = /(cordialement|merci d'avance|merci|merci beaucoup|bonne journée|au revoir|à bientôt)/i.test(textClean);
 
-        const hasFormalPoliteConditional = /(pourriez-vous|auriez-vous l'amabilité|serait-il possible|je souhaiterais|nous souhaiterions|je vous saurais gré|j'aimerais savoir si|je me permets de vous demander)/i.test(textClean);
-        const hasDirectSpokenRequest = /(pouvez-vous|vous pouvez|venez|il faut|aidez-moi|je veux savoir|dites-moi)/i.test(textClean);
+        const hasFormalPoliteConditional = /(pourriez-vous|auriez-vous l'amabilité|serait-il possible|je souhaiterais|nous souhaiterions|je vous saurais gré|j'aimerais savoir si|je me permets de vous demander|je vous écris ce message urgent concernant|afin de procéder à la réparation)/i.test(textClean);
+        const hasDirectSpokenRequest = /(envoyez\s+(un|vite)|appelez-moi|pouvez-vous|vous pouvez|venez|il faut|aidez-moi|je veux savoir|dites-moi)/i.test(textClean);
 
-        const hasC1C2FormalLex = /(par la présente|eu égard à|dépêchement immédiat|remise en état|à défaut d'une|sans délai|dispositifs? de chauffage|diligente de ce sinistre|dysfonctionnement|salubrité|urgence manifeste|dans les plus brefs délais|s'avère absolument indispensable|comptant sur votre réactivité|défaillance totale|désagrément majeur)/i.test(textClean);
-        const hasB2FormalLex = /(panne majeure|intervenir|technicien qualifié|solution temporaire|inconfortable|température glaciale|situation se dégrade|solliciter votre intervention)/i.test(textClean);
-        const hasConversationalA2Lex = /(ne marche pas|très froid|cassé|pas bon|problème de chauffage|vite|aide|dormir)/i.test(textClean);
+        const hasC1C2FormalLex = /(par la présente|eu égard à|dépêchement immédiat|remise en état|à défaut d'une|sans délai|dispositifs? de chauffage|diligente de ce sinistre|dysfonctionnement|salubrité|urgence manifeste|dans les plus brefs délais|s'avère absolument indispensable|comptant sur votre réactivité|défaillance totale|désagrément majeur|températures glaciales qui sévissent|menaçant l'intégrité|mandater un chauffagiste|demeurant joignable|prompte diligence)/i.test(textClean);
+        const hasB2FormalLex = /(panne majeure|intervenir|technicien qualifié|solution temporaire|inconfortable|température glaciale|situation se dégrade|solliciter votre intervention|ne fonctionne plus du tout|températures négatives|extrêmement froid|situation devient invivable|procéder à la réparation d'urgence|rester disponible|faciliter l'accès)/i.test(textClean);
+        const hasConversationalA2Lex = /(ne marche pas|très froid|cassé|pas bon|problème de chauffage|vite|aide|dormir|appelez-moi|dans la maison)/i.test(textClean);
 
-        const hasC1C2Connectors = /(de surcroît|par conséquent|en conséquence|dès lors|eu égard à|nonobstant|sans conteste|dans cette optique)/i.test(textClean);
-        const hasB2Connectors = /(en outre|par ailleurs|cependant|néanmoins|ainsi|afin de|en vue de|en conclusion|en somme|d'une part|d'autre part)/i.test(textClean);
+        const hasC1C2Connectors = /(de surcroît|par conséquent|en conséquence|dès lors|eu égard à|nonobstant|sans conteste|dans cette optique|compte tenu de)/i.test(textClean);
+        const hasB2Connectors = /(en outre|par ailleurs|cependant|néanmoins|ainsi|afin de|en vue de|en conclusion|en somme|d'une part|d'autre part|concernant)/i.test(textClean);
         const hasB1Connectors = /(donc|car|alors|puis|comme|quand|si|d'abord|ensuite|enfin|à mon avis|selon moi)/i.test(textClean);
 
-        // ─── TASK 1 STRICT CALIBRATION ───
+        // ─── TASK 1 STRICT CALIBRATION (60–120 words) ───
         if (isTache1) {
-          if (hasC1C2FormalLex && hasFormalSignOff && hasFormalPoliteConditional && wordCount >= 55) {
+          if (wordCount < 60) {
+            // Strict FEI word count deficit penalty: under 60 words cannot exceed A2 (max 7/20)
+            if (wordCount < 45) {
+              t = 1; c = Math.min(2, c); l = Math.min(2, l); g = Math.min(2, g);
+            } else {
+              t = Math.min(2, t); c = Math.min(2, c); l = Math.min(2, l); g = Math.min(2, g);
+            }
+          } else if (hasC1C2FormalLex && hasFormalSignOff && (hasFormalPoliteConditional || hasC1C2Connectors) && wordCount >= 60) {
             // C1 / C2 Advanced (16–18/20 | NCLC 9–10)
             t = 5; c = Math.max(4, c); l = 5; g = Math.max(4, g);
-          } else if (hasB2FormalLex && (hasFormalGreeting || hasFormalSignOff) && (hasFormalPoliteConditional || hasB2Connectors) && wordCount >= 50) {
-            // B2 Solid (12–15/20 | NCLC 7–8)
-            t = Math.max(3, Math.min(4, t));
-            c = Math.max(3, Math.min(4, c));
-            l = Math.max(3, Math.min(4, l));
-            g = Math.max(3, Math.min(4, g));
-          } else if ((hasFormalPoliteConditional || hasB1Connectors || hasFormalSignOff) && wordCount >= 40) {
-            // B1 Intermediate (8–11/20 | NCLC 5–6)
+          } else if ((hasB2FormalLex || hasFormalPoliteConditional) && (hasFormalGreeting || hasFormalSignOff || hasB2Connectors || textClean.includes("Cordialement")) && wordCount >= 60) {
+            // B2 Solid (14–15/20 | NCLC 8)
+            t = Math.max(4, t);
+            c = Math.max(4, c);
+            l = Math.max(4, l);
+            g = Math.max(4, g);
+          } else if ((hasFormalPoliteConditional || hasB1Connectors || hasFormalSignOff) && wordCount >= 60) {
+            // B1 Intermediate (9–11/20 | NCLC 5–6)
             t = Math.min(3, t);
             c = Math.min(3, c);
             l = Math.min(3, l);
@@ -707,10 +714,16 @@ Respond STRICTLY with a valid JSON object matching this schema:
           const hasSensoryRichness = /\b(féerique|spectaculaire|chaleureuse?|émerveill[ée]|inoubliable|grandiose|plénitude|apaisant|convivial|riche en émotions|souvenir impérissable|je vous recommande vivement)\b/i.test(textClean);
           const hasTemporalConnectors = /\b(lors de|dès mon arrivée|pendant mon séjour|au cours de|en définitive|après avoir|en outre)\b/i.test(textClean);
 
-          if (hasPastTenses && hasImparfait && hasSensoryRichness && hasTemporalConnectors && wordCount >= 100) {
+          if (wordCount < 120) {
+            if (wordCount < 90) {
+              t = 1; c = Math.min(2, c); l = Math.min(2, l); g = Math.min(2, g);
+            } else {
+              t = Math.min(2, t); c = Math.min(3, c); l = Math.min(3, l); g = Math.min(3, g);
+            }
+          } else if (hasPastTenses && hasImparfait && hasSensoryRichness && hasTemporalConnectors && wordCount >= 120) {
             // B2/C1 Narrative (14–16/20 | NCLC 8–9)
             t = Math.max(4, t); c = Math.max(4, c); l = Math.max(4, l); g = Math.max(4, g);
-          } else if (hasPastTenses && wordCount >= 80) {
+          } else if (hasPastTenses && wordCount >= 120) {
             // B1 Narrative (9–11/20 | NCLC 5–6)
             t = Math.min(3, Math.max(2, t));
             c = Math.min(3, Math.max(2, c));
@@ -732,11 +745,17 @@ Respond STRICTLY with a valid JSON object matching this schema:
           const hasSynthesisConclusion = /\b(en\s+conclusion|en\s+somme|bien\s+que|pour\s+conclure|il\s+me\s+semble\s+(préférable|judicieux|essentiel))\b/i.test(textClean);
           const hasSubjunctiveMood = /\b(bien\s+que|afin\s+que|quoique)\s+[\w\s']*\b(soit|puisse|fassent|puissions|ayons|soient)\b/i.test(textClean);
 
-          if (hasThesisSide && hasAntithesisSide && hasSynthesisConclusion && wordCount >= 110) {
+          if (wordCount < 140) {
+            if (wordCount < 105) {
+              t = 1; c = Math.min(2, c); l = Math.min(2, l); g = Math.min(2, g);
+            } else {
+              t = Math.min(2, t); c = Math.min(3, c); l = Math.min(3, l); g = Math.min(3, g);
+            }
+          } else if (hasThesisSide && hasAntithesisSide && hasSynthesisConclusion && wordCount >= 140) {
             // B2/C1 Dialectic Essay (14–17/20 | NCLC 8–9)
             t = Math.max(4, t); c = Math.max(4, c); l = Math.max(4, l);
             if (hasSubjunctiveMood || hasC1C2Connectors) g = Math.max(4, g);
-          } else if ((hasThesisSide || hasAntithesisSide) && wordCount >= 80) {
+          } else if ((hasThesisSide || hasAntithesisSide) && wordCount >= 140) {
             // B1 One-Sided Essay (8–11/20 | NCLC 5–6)
             t = Math.min(3, Math.max(2, t));
             c = Math.min(3, Math.max(2, c));
@@ -931,8 +950,9 @@ Respond STRICTLY with a valid JSON object matching this schema:
     const minWords = targetMin ?? (isTache2 ? 120 : isTache3 ? 140 : 60);
     const maxWords = targetMax ?? (isTache2 ? 150 : isTache3 ? 180 : 120);
 
-    // Code-switching & English word check
-    const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|travel|city|park|food|good|experience)\b/i.test(textLower);
+    // Code-switching & English word check (requires 2+ unambiguous English words, ignoring French cognates like urgent, appartement, taxi, hotel, service, message)
+    const englishMatches = textLower.match(/\b(the|is|are|was|were|with|because|please|thanks|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had|about|into|after|before)\b/gi) || [];
+    const hasEnglishWords = englishMatches.length >= 2;
     const hasTelegraphicGrammar = /\b(je\s+maladie|je\s+malade|moi\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances|je\s+allé|je\s+faire|nous\s+manger|prendre\s+photo|je\s+aimé|je\s+très)\b/i.test(textLower);
 
     let taskFulfillmentScore = 1;
@@ -1115,18 +1135,26 @@ Respond STRICTLY with a valid JSON object matching this schema:
 
     if (isTache1) {
       // ─── TÂCHE 1 UNIVERSAL CEFR BENCHMARK MATRIX (A1 to C2) ───
-      const hasC1AdminFormulas = /(par la présente|je me permets de vous contacter en toute urgence|défaillance totale|outre le manquement|je vous somme d'ordonner|dans les plus brefs délais|eu égard à|l'expression de mes salutations distinguées|salubrité publique|urgence manifeste)/i.test(clean);
+      const hasC1AdminFormulas = /(par la présente|je me permets de solliciter|défaillance totale|outre le manquement|je vous somme d'ordonner|dans les plus brefs délais|eu égard à|l'expression de mes salutations distinguées|salubrité publique|urgence manifeste|températures glaciales qui sévissent|menaçant l'intégrité|mandater un chauffagiste|demeurant joignable|prompte diligence)/i.test(clean);
       const hasB2FormalSignOff = /(veuillez agréer|je vous prie d'agréer|salutations distinguées|respectueusement|haute considération)/i.test(clean);
-      const hasB2PoliteRequest = /(pourriez-vous|auriez-vous l'amabilité|serait-il possible de|je vous saurais gré|je vous serais reconnaissant|solliciter votre intervention)/i.test(clean);
-      const hasB2ConnectorsMatch = /(par conséquent|en outre|par ailleurs|afin de|en vue de|dès lors|cependant|néanmoins)/i.test(clean);
+      const hasB2PoliteRequest = /(pourriez-vous|auriez-vous l'amabilité|serait-il possible de|je vous saurais gré|je vous serais reconnaissant|solliciter votre intervention|procéder à la réparation d'urgence)/i.test(clean);
+      const hasB2ConnectorsMatch = /(par conséquent|en outre|par ailleurs|afin de|en vue de|dès lors|cependant|néanmoins|concernant)/i.test(clean);
+      const hasSpokenImperativeA2 = /(envoyez\s+(un|vite)|appelez-moi|venez|vite|dans la maison)/i.test(clean);
 
-      if (hasC1AdminFormulas && hasB2FormalSignOff && wordCount >= 55) {
+      if (wordCount < 60) {
+        // Strict FEI word count deficit penalty: under 60 words cannot exceed A2 (max 7/20)
+        if (wordCount < 45) {
+          scoreOutOf20 = Math.min(4, Math.max(2, scoreOutOf20));
+        } else {
+          scoreOutOf20 = Math.min(6, Math.max(4, scoreOutOf20));
+        }
+      } else if (hasC1AdminFormulas && hasB2FormalSignOff && wordCount >= 60) {
         // C1 Advanced (16–17/20 | NCLC 9)
         scoreOutOf20 = Math.max(16, Math.min(17, scoreOutOf20));
-      } else if ((hasFormalGreeting || hasB2FormalSignOff) && (hasB2PoliteRequest || hasB2ConnectorsMatch) && wordCount >= 50) {
+      } else if ((hasB2PoliteRequest || (hasFormalGreeting && hasB2ConnectorsMatch)) && (hasB2FormalSignOff || clean.includes("Cordialement") || clean.includes("Bien à vous")) && wordCount >= 60) {
         // B2 Formal (14–15/20 | NCLC 8)
         scoreOutOf20 = Math.max(14, Math.min(15, scoreOutOf20));
-      } else if ((hasB2PoliteRequest || foundB1Gram.length >= 1 || foundB1Conn.length >= 1) && wordCount >= 40) {
+      } else if ((hasB2PoliteRequest || foundB1Gram.length >= 1 || foundB1Conn.length >= 1) && !hasSpokenImperativeA2 && wordCount >= 60) {
         // B1 Intermediate (9–11/20 | NCLC 5–6)
         scoreOutOf20 = Math.max(9, Math.min(11, scoreOutOf20));
       } else if (wordCount >= 30) {
