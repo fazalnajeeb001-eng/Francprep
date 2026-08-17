@@ -5,21 +5,24 @@ import { stripSpeakerLabels } from './tts.service';
  * Full 8-Voice Studio Roster for TCF Canada & Official French Exams:
  */
 export const EDGE_FRENCH_VOICE_ROSTER = {
-  // Official Test Announcers
-  femaleAnnouncer: 'fr-FR-DeniseNeural', // Formal Parisian Female
-  maleAnnouncer: 'fr-FR-HenriNeural',    // Formal Parisian Male
+  // Official Test Announcers & Professional Public PA
+  femaleAnnouncer: 'fr-FR-DeniseNeural',                // Formal, mature adult Parisian female
+  maleAnnouncer: 'fr-FR-HenriNeural',                   // Formal, mature adult Parisian male
   
-  // Conversational Interlocutors (Everyday French)
-  femaleInterlocutor1: 'fr-FR-EloiseNeural',               // Natural modern French
-  maleInterlocutor1: 'fr-FR-RemyMultilingualNeural',       // Dynamic modern French male
+  // Conversational Interlocutors (Mature Everyday French Adults)
+  femaleInterlocutor1: 'fr-FR-VivienneMultilingualNeural', // Expressive, natural adult French woman
+  maleInterlocutor1: 'fr-FR-RemyMultilingualNeural',       // Dynamic, natural adult French male
   
-  // Media / Radio / Academic Broadcasters
-  femaleJournalist: 'fr-FR-VivienneMultilingualNeural',   // Expressive reporter
+  // Media / Academic Broadcasters
+  femaleJournalist: 'fr-FR-VivienneMultilingualNeural',   // Expressive adult reporter / host
   maleLecturer: 'fr-BE-GerardNeural',                     // Academic lecturer / Francophone male
   
-  // Authentic Canadian French (Quebec / Montreal)
-  femaleCanadian: 'fr-CA-SylvieNeural',                   // Authentic Montreal resident
-  maleCanadian: 'fr-CA-JeanNeural',                       // Authentic Quebec male speaker
+  // Authentic Canadian French (Quebec / Montreal Adults)
+  femaleCanadian: 'fr-CA-SylvieNeural',                   // Authentic adult Montreal woman
+  maleCanadian: 'fr-CA-JeanNeural',                       // Authentic adult Quebec male speaker
+
+  // Youth / Child (Strictly reserved for explicit child dialogues)
+  femaleChild: 'fr-FR-EloiseNeural',                      // Young girl / teenager
 };
 
 interface EdgeDialogueSegment {
@@ -30,7 +33,7 @@ interface EdgeDialogueSegment {
 }
 
 /**
- * Parses transcript into sequential dialogue turns and assigns distinct 8-voice actors.
+ * Parses transcript into sequential dialogue turns and assigns distinct mature 8-voice actors.
  */
 export function parseEdgeDialogueSegments(
   text: string,
@@ -39,12 +42,12 @@ export function parseEdgeDialogueSegments(
   const clean = text.trim();
   const segments: EdgeDialogueSegment[] = [];
 
-  const speakerRegex = /(?:^|\n)\s*(Locuteur\s*\d*|Locutrice\s*\d*|Homme\s*\d*|Femme\s*\d*|Annonceur|Annonceuse|Journaliste|Intervenant(?:e)?|Professeur)\s*:\s*/gi;
+  const speakerRegex = /(?:^|\n)\s*(Locuteur\s*\d*|Locutrice\s*\d*|Homme\s*\d*|Femme\s*\d*|Annonceur|Annonceuse|Journaliste|Intervenant(?:e)?|Professeur|Enfant|Fillette)\s*:\s*/gi;
   const matches = [...clean.matchAll(speakerRegex)];
 
   if (matches.length === 0) {
     const isMale = defaultGender === 'male';
-    const isAnnouncer = clean.toLowerCase().startsWith('consigne') || clean.toLowerCase().startsWith('question');
+    const isAnnouncer = clean.toLowerCase().startsWith('consigne') || clean.toLowerCase().startsWith('question') || clean.toLowerCase().startsWith('annonce');
     segments.push({
       speakerTag: isAnnouncer ? (isMale ? 'Annonceur' : 'Annonceuse') : (isMale ? 'Locuteur' : 'Locutrice'),
       voiceId: isAnnouncer
@@ -65,34 +68,40 @@ export function parseEdgeDialogueSegments(
 
     if (segmentText) {
       const lowerTag = speakerTag.toLowerCase();
+      const lowerText = segmentText.toLowerCase();
+
+      // Check contextual clues
+      const isCanadianText = /\b(Montréal|Québec|Gatineau|Sherbrooke|Laval|Trois-Rivières|Moncton|Canada|dollar)\b/i.test(segmentText);
+      const isPublicStoreAnnouncement = /\b(annonce supermarché|annonce gare|annonce magasin|annonce aéroport|avis à la clientèle|offre spéciale|bulletin météo)\b/i.test(lowerText);
+      const isExplicitChild = lowerTag.includes('enfant') || lowerTag.includes('fillette') || lowerTag.includes('ado');
+
       let voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleInterlocutor1;
 
-      // Assign voice persona based on speaker tag and Canadian context
-      const isCanadianText = /\b(Montréal|Québec|Gatineau|Sherbrooke|Laval|Trois-Rivières|Moncton|Canada|dollar)\b/i.test(segmentText);
-
-      if (lowerTag.includes('annonceuse')) {
-        voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleAnnouncer;
-      } else if (lowerTag.includes('annonceur')) {
-        voiceId = EDGE_FRENCH_VOICE_ROSTER.maleAnnouncer;
+      if (isExplicitChild) {
+        voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleChild;
+      } else if (lowerTag.includes('annonceuse') || (isPublicStoreAnnouncement && !lowerTag.includes('homme') && !lowerTag.includes('locuteur'))) {
+        voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.femaleCanadian : EDGE_FRENCH_VOICE_ROSTER.femaleAnnouncer;
+      } else if (lowerTag.includes('annonceur') || (isPublicStoreAnnouncement && (lowerTag.includes('homme') || lowerTag.includes('locuteur')))) {
+        voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.maleCanadian : EDGE_FRENCH_VOICE_ROSTER.maleAnnouncer;
       } else if (lowerTag.includes('journaliste') || lowerTag.includes('présentatrice')) {
-        voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleJournalist;
+        voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.femaleCanadian : EDGE_FRENCH_VOICE_ROSTER.femaleJournalist;
       } else if (lowerTag.includes('professeur') || lowerTag.includes('intervenant')) {
         voiceId = EDGE_FRENCH_VOICE_ROSTER.maleLecturer;
       } else if (lowerTag.includes('locutrice 2') || lowerTag.includes('femme 2')) {
-        voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.femaleCanadian : EDGE_FRENCH_VOICE_ROSTER.femaleJournalist;
+        voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.femaleCanadian : EDGE_FRENCH_VOICE_ROSTER.femaleAnnouncer;
       } else if (lowerTag.includes('locuteur 2') || lowerTag.includes('homme 2')) {
         voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.maleCanadian : EDGE_FRENCH_VOICE_ROSTER.maleLecturer;
       } else if (lowerTag.includes('locuteur') || lowerTag.includes('homme')) {
-        voiceId = EDGE_FRENCH_VOICE_ROSTER.maleInterlocutor1;
+        voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.maleCanadian : EDGE_FRENCH_VOICE_ROSTER.maleInterlocutor1;
       } else {
-        voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleInterlocutor1;
+        voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.femaleCanadian : EDGE_FRENCH_VOICE_ROSTER.femaleInterlocutor1;
       }
 
       segments.push({
         speakerTag,
         voiceId,
         text: segmentText,
-        isAnnouncer: lowerTag.includes('annonce')
+        isAnnouncer: lowerTag.includes('annonce') || isPublicStoreAnnouncement
       });
     }
   }

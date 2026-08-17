@@ -54,19 +54,23 @@ async function runMasterSynthesis() {
         const gender: 'female' | 'male' = isMale ? 'male' : 'female';
         const textHash = getHash(cleanSpoken, gender);
 
-        // Check if already in MongoDB with high quality Edge Neural audio
-        const existing = await TTSCache.findOne({
-          $or: [
-            { textHash },
-            { text: text, voice: { $regex: /^edge-neural/ } },
-            { text: cleanSpoken, voice: { $regex: /^edge-neural/ } }
-          ]
-        }).lean();
+        const FORCE_REFRESH = true;
 
-        if (existing && existing.audioBase64 && existing.audioBase64.length > 500) {
-          totalListeningSkipped++;
-          process.stdout.write(`.`);
-          return;
+        if (!FORCE_REFRESH) {
+          // Check if already in MongoDB with high quality Edge Neural audio
+          const existing = await TTSCache.findOne({
+            $or: [
+              { textHash },
+              { text: text, voice: { $regex: /^edge-neural/ } },
+              { text: cleanSpoken, voice: { $regex: /^edge-neural/ } }
+            ]
+          }).lean();
+
+          if (existing && existing.audioBase64 && existing.audioBase64.length > 500) {
+            totalListeningSkipped++;
+            process.stdout.write(`.`);
+            return;
+          }
         }
 
         // Synthesize with 8-Voice Studio Edge Neural Engine

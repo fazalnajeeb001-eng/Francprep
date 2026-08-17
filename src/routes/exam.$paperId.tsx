@@ -2834,9 +2834,31 @@ export function AuthenticCBTExamPage() {
                     </div>
                   ) : (currentQ.hasSpokenOptions || (currentQ.questionNumber >= 5 && currentQ.questionNumber <= 8)) ? (
                     <div className="space-y-3 p-4 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-100 shadow-md">
-                      <p className="text-xs font-black uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
-                        <span>Choisissez la bonne réponse (A, B, C ou D) :</span>
-                      </p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs font-black uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
+                          <Volume2 className="w-4 h-4 text-amber-400" />
+                          <span>Choisissez la bonne réponse (A, B, C ou D) :</span>
+                        </p>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                          Options Orales (Écoute)
+                        </span>
+                      </div>
+
+                      {mode === "PRACTICE" && (
+                        <div className="p-2.5 rounded-lg bg-blue-950/60 border border-blue-500/30 text-blue-200 text-xs flex items-start gap-2.5">
+                          <Volume2 className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                          <div className="space-y-0.5">
+                            <p className="font-semibold text-blue-200 leading-relaxed">
+                              🎧 <strong className="text-blue-300">Format officiel TCF :</strong> Les 4 propositions sont lues oralement dans l'enregistrement. Écoutez attentivement et cochez la lettre entendue.
+                            </p>
+                            {showTranslation && (
+                              <p className="text-[11px] text-blue-300/80 italic">
+                                Official TCF Format: The 4 choices are read aloud in the audio recording. Listen carefully and select the letter (A, B, C, or D).
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      )}
                       <div className="flex flex-col gap-2.5 sm:gap-3">
                         {currentQ.options.map((optText, idx) => {
                           const letter = String.fromCharCode(65 + idx); // A, B, C, D

@@ -2,42 +2,42 @@
   "1": [
     {
       "qNum": 1,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : L'addition s'il vous plaît, nous allons régler par carte bancaire..\n... Proposition B : Pardon monsieur, à quelle heure arrive le train sur ce quai ?.\n... Proposition C : Deux places pour la séance de vingt heures, s'il vous plaît..\n... Proposition D : Où se trouvent les cabines d'essayage pour essayer ce pantalon ?.",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Pardon monsieur, à quelle heure arrive le train sur ce quai ?.\n... Proposition B : L'addition s'il vous plaît, nous allons régler par carte bancaire..\n... Proposition C : Où se trouvent les cabines d'essayage pour essayer ce pantalon ?.\n... Proposition D : Deux places pour la séance de vingt heures, s'il vous plaît..",
       "rate": 0.85
     },
     {
       "qNum": 2,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un client achète du pain et des croissants dans une boulangerie..\n... Proposition B : Des passagers montent à bord d'un avion sur la piste..\n... Proposition C : Une femme fait du sport sur un tapis de course..\n... Proposition D : Un mécanicien répare une voiture dans un garage..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un mécanicien répare une voiture dans un garage..\n... Proposition B : Un client achète du pain et des croissants dans une boulangerie..\n... Proposition C : Des passagers montent à bord d'un avion sur la piste..\n... Proposition D : Une femme fait du sport sur un tapis de course..",
       "rate": 0.85
     },
     {
       "qNum": 3,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Pourriez-vous me prescrire un sirop pour la toux ?.\n... Proposition B : Mon vol pour Montréal est-il bien prévu à l'heure à cette porte d'embarquement ?.\n... Proposition C : Avez-vous une table libre pour quatre personnes en terrasse ?.\n... Proposition D : Je cherche le rayon des produits laitiers et des œufs frais..",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Avez-vous une table libre pour quatre personnes en terrasse ?.\n... Proposition B : Pourriez-vous me prescrire un sirop pour la toux ?.\n... Proposition C : Mon vol pour Montréal est-il bien prévu à l'heure à cette porte d'embarquement ?.\n... Proposition D : Je cherche le rayon des produits laitiers et des œufs frais..",
       "rate": 0.85
     },
     {
       "qNum": 4,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Des musiciens répètent un morceau dans une salle de concert..\n... Proposition B : Un médecin écoute et conseille une patiente assise dans son cabinet de consultation..\n... Proposition C : Un facteur dépose une lettre dans une boîte postale..\n... Proposition D : Un serveur prend la commande de clients au restaurant..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un médecin écoute et conseille une patiente assise dans son cabinet de consultation..\n... Proposition B : Un serveur prend la commande de clients au restaurant..\n... Proposition C : Un facteur dépose une lettre dans une boîte postale..\n... Proposition D : Des musiciens répètent un morceau dans une salle de concert..",
       "rate": 0.85
     },
     {
       "qNum": 5,
-      "text": "Locuteur: Annonce gare de Montréal : Le train express N°412 à destination de la gare centrale partira exceptionnellement de la voie 2 à 11h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Départ du train express pour la gare centrale de Montréal voie 2 à 11h15.\n... B : Fermeture temporaire du guichet de vente des billets de la gare de Montréal.\n... C : Annulation complète du trajet vers Montréal en raison d'un problème technique.\n... D : Changement de destination du train vers la gare du Nord à 11h15.",
+      "text": "Locuteur: Annonce gare de Montréal : Le train express N°412 à destination de la gare centrale partira exceptionnellement de la voie 2 à 11h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Départ du train express pour la gare centrale de Montréal voie 2 à 11h15.\n... B : Annulation complète du trajet vers Montréal en raison d'un problème technique.\n... C : Changement de destination du train vers la gare du Nord à 11h15.\n... D : Fermeture temporaire du guichet de vente des billets de la gare de Montréal.",
       "rate": 0.85
     },
     {
       "qNum": 6,
-      "text": "Locutrice: Annonce supermarché à Montréal : Offre spéciale aujourd'hui au rayon n°1. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Fermeture exceptionnelle du magasin de Montréal en raison de travaux.\n... B : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Montréal.\n... C : Offre promotionnelle au rayon n°1 à Montréal avec le 3e article à demi-prix.\n... D : Arrivée de nouveaux produits d'entretien écologiques au rayon n°1.",
+      "text": "Locutrice: Annonce supermarché à Montréal : Offre spéciale aujourd'hui au rayon n°1. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Offre promotionnelle au rayon n°1 à Montréal avec le 3e article à demi-prix.\n... B : Fermeture exceptionnelle du magasin de Montréal en raison de travaux.\n... C : Arrivée de nouveaux produits d'entretien écologiques au rayon n°1.\n... D : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Montréal.",
       "rate": 0.85
     },
     {
       "qNum": 7,
-      "text": "Locuteur: Bulletin météo pour Montréal : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 13°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Chute de neige abondante à Montréal bloquant la circulation routière.\n... B : Vague de chaleur et soleil radieux toute la journée sur Montréal.\n... C : Prévision de vent fort et pluie à Montréal avec une température de 13°C.\n... D : Aucun changement climatique annoncé pour le week-end à Montréal.",
+      "text": "Locuteur: Bulletin météo pour Montréal : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 13°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Prévision de vent fort et pluie à Montréal avec une température de 13°C.\n... B : Vague de chaleur et soleil radieux toute la journée sur Montréal.\n... C : Chute de neige abondante à Montréal bloquant la circulation routière.\n... D : Aucun changement climatique annoncé pour le week-end à Montréal.",
       "rate": 0.85
     },
     {
       "qNum": 8,
-      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Montréal. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 9h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Changement d'adresse du cabinet médical de quartier à Montréal.\n... B : Annulation définitive de la consultation médicale du docteur Tremblay.\n... C : Rappel du rendez-vous médical de suivi à Montréal fixé à mardi à 9h30.\n... D : Demande d'envoi des résultats d'analyse médicale par courrier.",
+      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Montréal. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 9h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Rappel du rendez-vous médical de suivi à Montréal fixé à mardi à 9h30.\n... B : Annulation définitive de la consultation médicale du docteur Tremblay.\n... C : Changement d'adresse du cabinet médical de quartier à Montréal.\n... D : Demande d'envoi des résultats d'analyse médicale par courrier.",
       "rate": 0.92
     },
     {
@@ -199,42 +199,42 @@
   "2": [
     {
       "qNum": 1,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Pourriez-vous me couper les cheveux un peu plus court sur les côtés ?.\n... Proposition B : Bonjour, je vais régler mes courses par carte bancaire sans contact, s'il vous plaît..\n... Proposition C : Deux billets pour la pièce de théâtre de ce soir, s'il vous plaît..\n... Proposition D : Où se trouve le quai pour prendre le train vers Québec ?.",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Bonjour, je vais régler mes courses par carte bancaire sans contact, s'il vous plaît..\n... Proposition B : Où se trouve le quai pour prendre le train vers Québec ?.\n... Proposition C : Pourriez-vous me couper les cheveux un peu plus court sur les côtés ?.\n... Proposition D : Deux billets pour la pièce de théâtre de ce soir, s'il vous plaît..",
       "rate": 0.85
     },
     {
       "qNum": 2,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un cuisinier prépare un repas dans une cuisine de restaurant..\n... Proposition B : Un client essaie une paire de chaussures dans un magasin..\n... Proposition C : Une femme avec un parapluie attend le bus sous l'abribus pendant qu'un autobus arrive..\n... Proposition D : Des skieurs descendent une piste de montagne enneigée..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Des skieurs descendent une piste de montagne enneigée..\n... Proposition B : Une femme avec un parapluie attend le bus sous l'abribus pendant qu'un autobus arrive..\n... Proposition C : Un cuisinier prépare un repas dans une cuisine de restaurant..\n... Proposition D : Un client essaie une paire de chaussures dans un magasin..",
       "rate": 0.85
     },
     {
       "qNum": 3,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Mon passeport expire dans deux mois, puis-je voyager ?.\n... Proposition B : Je cherche des timbres pour envoyer une carte postale à l'étranger..\n... Proposition C : Garçon, nous prendrons deux cafés crème et un verre d'eau, s'il vous plaît..\n... Proposition D : Pouvez-vous vérifier la pression des pneus de ma voiture ?.",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Pouvez-vous vérifier la pression des pneus de ma voiture ?.\n... Proposition B : Mon passeport expire dans deux mois, puis-je voyager ?.\n... Proposition C : Garçon, nous prendrons deux cafés crème et un verre d'eau, s'il vous plaît..\n... Proposition D : Je cherche des timbres pour envoyer une carte postale à l'étranger..",
       "rate": 0.85
     },
     {
       "qNum": 4,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Des clients dégustent des pâtisseries dans un salon de thé..\n... Proposition B : Un voyageur achète un titre de transport sur un distributeur automatique dans une station de métro..\n... Proposition C : Un jardinier arrose des fleurs dans un parc public..\n... Proposition D : Un médecin examine un patient dans un hôpital..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un voyageur achète un titre de transport sur un distributeur automatique dans une station de métro..\n... Proposition B : Des clients dégustent des pâtisseries dans un salon de thé..\n... Proposition C : Un médecin examine un patient dans un hôpital..\n... Proposition D : Un jardinier arrose des fleurs dans un parc public..",
       "rate": 0.85
     },
     {
       "qNum": 5,
-      "text": "Locuteur: Annonce gare de Québec : Le train express N°424 à destination de la gare centrale partira exceptionnellement de la voie 3 à 12h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Fermeture temporaire du guichet de vente des billets de la gare de Québec.\n... B : Annulation complète du trajet vers Québec en raison d'un problème technique.\n... C : Départ du train express pour la gare centrale de Québec voie 3 à 12h15.\n... D : Changement de destination du train vers la gare du Nord à 12h15.",
+      "text": "Locuteur: Annonce gare de Québec : Le train express N°424 à destination de la gare centrale partira exceptionnellement de la voie 3 à 12h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Départ du train express pour la gare centrale de Québec voie 3 à 12h15.\n... B : Annulation complète du trajet vers Québec en raison d'un problème technique.\n... C : Changement de destination du train vers la gare du Nord à 12h15.\n... D : Fermeture temporaire du guichet de vente des billets de la gare de Québec.",
       "rate": 0.85
     },
     {
       "qNum": 6,
-      "text": "Locutrice: Annonce supermarché à Québec : Offre spéciale aujourd'hui au rayon n°2. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Offre promotionnelle au rayon n°2 à Québec avec le 3e article à demi-prix.\n... B : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Québec.\n... C : Fermeture exceptionnelle du magasin de Québec en raison de travaux.\n... D : Arrivée de nouveaux produits d'entretien écologiques au rayon n°2.",
+      "text": "Locutrice: Annonce supermarché à Québec : Offre spéciale aujourd'hui au rayon n°2. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Offre promotionnelle au rayon n°2 à Québec avec le 3e article à demi-prix.\n... B : Fermeture exceptionnelle du magasin de Québec en raison de travaux.\n... C : Arrivée de nouveaux produits d'entretien écologiques au rayon n°2.\n... D : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Québec.",
       "rate": 0.85
     },
     {
       "qNum": 7,
-      "text": "Locuteur: Bulletin météo pour Québec : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 14°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Prévision de vent fort et pluie à Québec avec une température de 14°C.\n... B : Chute de neige abondante à Québec bloquant la circulation routière.\n... C : Aucun changement climatique annoncé pour le week-end à Québec.\n... D : Vague de chaleur et soleil radieux toute la journée sur Québec.",
+      "text": "Locuteur: Bulletin météo pour Québec : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 14°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Prévision de vent fort et pluie à Québec avec une température de 14°C.\n... B : Vague de chaleur et soleil radieux toute la journée sur Québec.\n... C : Chute de neige abondante à Québec bloquant la circulation routière.\n... D : Aucun changement climatique annoncé pour le week-end à Québec.",
       "rate": 0.85
     },
     {
       "qNum": 8,
-      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Québec. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 10h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Demande d'envoi des résultats d'analyse médicale par courrier.\n... B : Rappel du rendez-vous médical de suivi à Québec fixé à mardi à 10h30.\n... C : Annulation définitive de la consultation médicale du docteur Tremblay.\n... D : Changement d'adresse du cabinet médical de quartier à Québec.",
+      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Québec. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 10h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Rappel du rendez-vous médical de suivi à Québec fixé à mardi à 10h30.\n... B : Annulation définitive de la consultation médicale du docteur Tremblay.\n... C : Changement d'adresse du cabinet médical de quartier à Québec.\n... D : Demande d'envoi des résultats d'analyse médicale par courrier.",
       "rate": 0.92
     },
     {
@@ -396,42 +396,42 @@
   "3": [
     {
       "qNum": 1,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Je souhaite faire réparer le frein arrière de mon vélo..\n... Proposition B : Combien coûte le kilo de ces belles tomates fraîches ?.\n... Proposition C : À quelle heure part le prochain vol pour Paris ?.\n... Proposition D : Avez-vous une chambre d'hôtel avec vue sur la mer ?.",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Combien coûte le kilo de ces belles tomates fraîches ?.\n... Proposition B : À quelle heure part le prochain vol pour Paris ?.\n... Proposition C : Avez-vous une chambre d'hôtel avec vue sur la mer ?.\n... Proposition D : Je souhaite faire réparer le frein arrière de mon vélo..",
       "rate": 0.85
     },
     {
       "qNum": 2,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Des étudiants prennent des notes dans un amphithéâtre universitaire..\n... Proposition B : Des spectateurs assistent à une projection de film au cinéma..\n... Proposition C : Des voyageurs attendent et récupèrent leurs valises autour du tapis roulant de l'aéroport..\n... Proposition D : Un facteur distribue le courrier dans un immeuble résidentiel..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Des spectateurs assistent à une projection de film au cinéma..\n... Proposition B : Des voyageurs attendent et récupèrent leurs valises autour du tapis roulant de l'aéroport..\n... Proposition C : Un facteur distribue le courrier dans un immeuble résidentiel..\n... Proposition D : Des étudiants prennent des notes dans un amphithéâtre universitaire..",
       "rate": 0.85
     },
     {
       "qNum": 3,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Je prendrai deux croissants au beurre et cette tartelette aux fruits, s'il vous plaît..\n... Proposition B : Pourriez-vous me faire le plein d'essence sans plomb ?.\n... Proposition C : Avez-vous des médicaments contre le mal de tête ?.\n... Proposition D : Où se trouve la porte d'embarquement numéro douze ?.",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Pourriez-vous me faire le plein d'essence sans plomb ?.\n... Proposition B : Je prendrai deux croissants au beurre et cette tartelette aux fruits, s'il vous plaît..\n... Proposition C : Avez-vous des médicaments contre le mal de tête ?.\n... Proposition D : Où se trouve la porte d'embarquement numéro douze ?.",
       "rate": 0.85
     },
     {
       "qNum": 4,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Une cliente essaie des lunettes devant une vitrine..\n... Proposition B : Un mécanicien gonfle les pneus d'un camion dans un atelier..\n... Proposition C : Un jeune homme consulte un plan de ville au coin d'une rue pour trouver son chemin..\n... Proposition D : Un cuisinier découpe des légumes sur une planche en bois..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un jeune homme consulte un plan de ville au coin d'une rue pour trouver son chemin..\n... Proposition B : Un cuisinier découpe des légumes sur une planche en bois..\n... Proposition C : Un mécanicien gonfle les pneus d'un camion dans un atelier..\n... Proposition D : Une cliente essaie des lunettes devant une vitrine..",
       "rate": 0.85
     },
     {
       "qNum": 5,
-      "text": "Locuteur: Annonce gare de Ottawa : Le train express N°436 à destination de la gare centrale partira exceptionnellement de la voie 4 à 13h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Fermeture temporaire du guichet de vente des billets de la gare de Ottawa.\n... B : Changement de destination du train vers la gare du Nord à 13h15.\n... C : Annulation complète du trajet vers Ottawa en raison d'un problème technique.\n... D : Départ du train express pour la gare centrale de Ottawa voie 4 à 13h15.",
+      "text": "Locuteur: Annonce gare de Ottawa : Le train express N°436 à destination de la gare centrale partira exceptionnellement de la voie 4 à 13h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Départ du train express pour la gare centrale de Ottawa voie 4 à 13h15.\n... B : Annulation complète du trajet vers Ottawa en raison d'un problème technique.\n... C : Changement de destination du train vers la gare du Nord à 13h15.\n... D : Fermeture temporaire du guichet de vente des billets de la gare de Ottawa.",
       "rate": 0.85
     },
     {
       "qNum": 6,
-      "text": "Locutrice: Annonce supermarché à Ottawa : Offre spéciale aujourd'hui au rayon n°3. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Arrivée de nouveaux produits d'entretien écologiques au rayon n°3.\n... B : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Ottawa.\n... C : Fermeture exceptionnelle du magasin de Ottawa en raison de travaux.\n... D : Offre promotionnelle au rayon n°3 à Ottawa avec le 3e article à demi-prix.",
+      "text": "Locutrice: Annonce supermarché à Ottawa : Offre spéciale aujourd'hui au rayon n°3. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Offre promotionnelle au rayon n°3 à Ottawa avec le 3e article à demi-prix.\n... B : Fermeture exceptionnelle du magasin de Ottawa en raison de travaux.\n... C : Arrivée de nouveaux produits d'entretien écologiques au rayon n°3.\n... D : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Ottawa.",
       "rate": 0.85
     },
     {
       "qNum": 7,
-      "text": "Locuteur: Bulletin météo pour Ottawa : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 15°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Aucun changement climatique annoncé pour le week-end à Ottawa.\n... B : Prévision de vent fort et pluie à Ottawa avec une température de 15°C.\n... C : Chute de neige abondante à Ottawa bloquant la circulation routière.\n... D : Vague de chaleur et soleil radieux toute la journée sur Ottawa.",
+      "text": "Locuteur: Bulletin météo pour Ottawa : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 15°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Prévision de vent fort et pluie à Ottawa avec une température de 15°C.\n... B : Vague de chaleur et soleil radieux toute la journée sur Ottawa.\n... C : Chute de neige abondante à Ottawa bloquant la circulation routière.\n... D : Aucun changement climatique annoncé pour le week-end à Ottawa.",
       "rate": 0.85
     },
     {
       "qNum": 8,
-      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Ottawa. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 11h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Changement d'adresse du cabinet médical de quartier à Ottawa.\n... B : Demande d'envoi des résultats d'analyse médicale par courrier.\n... C : Rappel du rendez-vous médical de suivi à Ottawa fixé à mardi à 11h30.\n... D : Annulation définitive de la consultation médicale du docteur Tremblay.",
+      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Ottawa. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 11h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Rappel du rendez-vous médical de suivi à Ottawa fixé à mardi à 11h30.\n... B : Annulation définitive de la consultation médicale du docteur Tremblay.\n... C : Changement d'adresse du cabinet médical de quartier à Ottawa.\n... D : Demande d'envoi des résultats d'analyse médicale par courrier.",
       "rate": 0.92
     },
     {
@@ -593,42 +593,42 @@
   "4": [
     {
       "qNum": 1,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un billet aller-retour pour Montréal en seconde classe, s'il vous plaît..\n... Proposition B : Docteur, j'ai des douleurs au dos depuis quelques jours, pouvez-vous m'examiner ?.\n... Proposition C : Combien coûte cette paire de bottes d'hiver en vitrine ?.\n... Proposition D : Je voudrais commander une pizza quatre fromages à emporter..",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Docteur, j'ai des douleurs au dos depuis quelques jours, pouvez-vous m'examiner ?.\n... Proposition B : Un billet aller-retour pour Montréal en seconde classe, s'il vous plaît..\n... Proposition C : Combien coûte cette paire de bottes d'hiver en vitrine ?.\n... Proposition D : Je voudrais commander une pizza quatre fromages à emporter..",
       "rate": 0.85
     },
     {
       "qNum": 2,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un boulanger prépare de la pâte à pain dans son fournil..\n... Proposition B : Des athlètes s'entraînent sur une piste d'athlétisme..\n... Proposition C : Des passagers s'enregistrent pour un vol international..\n... Proposition D : Un lecteur rend des livres à la bibliothécaire au comptoir d'une bibliothèque..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Des passagers s'enregistrent pour un vol international..\n... Proposition B : Un lecteur rend des livres à la bibliothécaire au comptoir d'une bibliothèque..\n... Proposition C : Des athlètes s'entraînent sur une piste d'athlétisme..\n... Proposition D : Un boulanger prépare de la pâte à pain dans son fournil..",
       "rate": 0.85
     },
     {
       "qNum": 3,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Je sélectionne sur l'écran tactile pour acheter mon titre de transport mensuel..\n... Proposition B : Pouvez-vous me couper les pointes et faire un brushing ?.\n... Proposition C : Avez-vous une chambre calme avec salle de bain privée ?.\n... Proposition D : Quel est le plat du jour aujourd'hui au menu ?.",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Pouvez-vous me couper les pointes et faire un brushing ?.\n... Proposition B : Je sélectionne sur l'écran tactile pour acheter mon titre de transport mensuel..\n... Proposition C : Avez-vous une chambre calme avec salle de bain privée ?.\n... Proposition D : Quel est le plat du jour aujourd'hui au menu ?.",
       "rate": 0.85
     },
     {
       "qNum": 4,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Des clients choisissent des fruits et légumes frais sur les étals d'un marché en plein air..\n... Proposition B : Des voyageurs montent les marches d'un escalier mécanique..\n... Proposition C : Un serveur nettoie des verres derrière le comptoir d'un bar..\n... Proposition D : Un automobiliste fait laver sa voiture dans une station automatique..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Des clients choisissent des fruits et légumes frais sur les étals d'un marché en plein air..\n... Proposition B : Un automobiliste fait laver sa voiture dans une station automatique..\n... Proposition C : Des voyageurs montent les marches d'un escalier mécanique..\n... Proposition D : Un serveur nettoie des verres derrière le comptoir d'un bar..",
       "rate": 0.85
     },
     {
       "qNum": 5,
-      "text": "Locuteur: Annonce gare de Vancouver : Le train express N°448 à destination de la gare centrale partira exceptionnellement de la voie 5 à 14h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Annulation complète du trajet vers Vancouver en raison d'un problème technique.\n... B : Départ du train express pour la gare centrale de Vancouver voie 5 à 14h15.\n... C : Changement de destination du train vers la gare du Nord à 14h15.\n... D : Fermeture temporaire du guichet de vente des billets de la gare de Vancouver.",
+      "text": "Locuteur: Annonce gare de Vancouver : Le train express N°448 à destination de la gare centrale partira exceptionnellement de la voie 5 à 14h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Départ du train express pour la gare centrale de Vancouver voie 5 à 14h15.\n... B : Annulation complète du trajet vers Vancouver en raison d'un problème technique.\n... C : Changement de destination du train vers la gare du Nord à 14h15.\n... D : Fermeture temporaire du guichet de vente des billets de la gare de Vancouver.",
       "rate": 0.85
     },
     {
       "qNum": 6,
-      "text": "Locutrice: Annonce supermarché à Vancouver : Offre spéciale aujourd'hui au rayon n°4. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Arrivée de nouveaux produits d'entretien écologiques au rayon n°4.\n... B : Offre promotionnelle au rayon n°4 à Vancouver avec le 3e article à demi-prix.\n... C : Fermeture exceptionnelle du magasin de Vancouver en raison de travaux.\n... D : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Vancouver.",
+      "text": "Locutrice: Annonce supermarché à Vancouver : Offre spéciale aujourd'hui au rayon n°4. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Offre promotionnelle au rayon n°4 à Vancouver avec le 3e article à demi-prix.\n... B : Fermeture exceptionnelle du magasin de Vancouver en raison de travaux.\n... C : Arrivée de nouveaux produits d'entretien écologiques au rayon n°4.\n... D : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Vancouver.",
       "rate": 0.85
     },
     {
       "qNum": 7,
-      "text": "Locuteur: Bulletin météo pour Vancouver : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 16°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Chute de neige abondante à Vancouver bloquant la circulation routière.\n... B : Aucun changement climatique annoncé pour le week-end à Vancouver.\n... C : Vague de chaleur et soleil radieux toute la journée sur Vancouver.\n... D : Prévision de vent fort et pluie à Vancouver avec une température de 16°C.",
+      "text": "Locuteur: Bulletin météo pour Vancouver : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 16°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Prévision de vent fort et pluie à Vancouver avec une température de 16°C.\n... B : Vague de chaleur et soleil radieux toute la journée sur Vancouver.\n... C : Chute de neige abondante à Vancouver bloquant la circulation routière.\n... D : Aucun changement climatique annoncé pour le week-end à Vancouver.",
       "rate": 0.85
     },
     {
       "qNum": 8,
-      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Vancouver. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 12h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Annulation définitive de la consultation médicale du docteur Tremblay.\n... B : Demande d'envoi des résultats d'analyse médicale par courrier.\n... C : Changement d'adresse du cabinet médical de quartier à Vancouver.\n... D : Rappel du rendez-vous médical de suivi à Vancouver fixé à mardi à 12h30.",
+      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Vancouver. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 12h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Rappel du rendez-vous médical de suivi à Vancouver fixé à mardi à 12h30.\n... B : Annulation définitive de la consultation médicale du docteur Tremblay.\n... C : Changement d'adresse du cabinet médical de quartier à Vancouver.\n... D : Demande d'envoi des résultats d'analyse médicale par courrier.",
       "rate": 0.92
     },
     {
@@ -790,42 +790,42 @@
   "5": [
     {
       "qNum": 1,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Le moteur fait un bruit anormal sous le capot, pouvez-vous vérifier les bougies et l'huile ?.\n... Proposition B : Pouvez-vous me prêter ce livre pour trois semaines ?.\n... Proposition C : Deux timbres pour l'Europe et une enveloppe matelassée, s'il vous plaît..\n... Proposition D : Où se trouve le rayon des pantalons et des chemises pour hommes ?.",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Le moteur fait un bruit anormal sous le capot, pouvez-vous vérifier les bougies et l'huile ?.\n... Proposition B : Deux timbres pour l'Europe et une enveloppe matelassée, s'il vous plaît..\n... Proposition C : Où se trouve le rayon des pantalons et des chemises pour hommes ?.\n... Proposition D : Pouvez-vous me prêter ce livre pour trois semaines ?.",
       "rate": 0.85
     },
     {
       "qNum": 2,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un policier contrôle les papiers d'un automobiliste sur la route..\n... Proposition B : Un client commande un café au comptoir d'un bistrot..\n... Proposition C : Un passager présente son passeport à l'agente au comptoir d'enregistrement de l'aéroport..\n... Proposition D : Un vendeur emballe un bouquet de fleurs chez le fleuriste..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un client commande un café au comptoir d'un bistrot..\n... Proposition B : Un passager présente son passeport à l'agente au comptoir d'enregistrement de l'aéroport..\n... Proposition C : Un vendeur emballe un bouquet de fleurs chez le fleuriste..\n... Proposition D : Un policier contrôle les papiers d'un automobiliste sur la route..",
       "rate": 0.85
     },
     {
       "qNum": 3,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Pouvez-vous m'indiquer le chemin pour rejoindre la mairie ?.\n... Proposition B : Puis-je essayer cette veste en cuir dans la cabine du fond ?.\n... Proposition C : À quelle heure ferme le musée des beaux-arts ce soir ?.\n... Proposition D : Avez-vous besoin d'un sac pour ranger vos courses alimentaires ?.",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : À quelle heure ferme le musée des beaux-arts ce soir ?.\n... Proposition B : Avez-vous besoin d'un sac pour ranger vos courses alimentaires ?.\n... Proposition C : Puis-je essayer cette veste en cuir dans la cabine du fond ?.\n... Proposition D : Pouvez-vous m'indiquer le chemin pour rejoindre la mairie ?.",
       "rate": 0.85
     },
     {
       "qNum": 4,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Une femme fait réparer sa bicyclette dans un atelier associatif..\n... Proposition B : Une cliente essaie un manteau d'hiver devant un miroir dans une boutique de vêtements..\n... Proposition C : Des spectateurs applaudissent à la fin d'une pièce de théâtre..\n... Proposition D : Un facteur dépose des colis dans un casier postal..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Une cliente essaie un manteau d'hiver devant un miroir dans une boutique de vêtements..\n... Proposition B : Une femme fait réparer sa bicyclette dans un atelier associatif..\n... Proposition C : Des spectateurs applaudissent à la fin d'une pièce de théâtre..\n... Proposition D : Un facteur dépose des colis dans un casier postal..",
       "rate": 0.85
     },
     {
       "qNum": 5,
-      "text": "Locuteur: Annonce gare de Toronto : Le train express N°460 à destination de la gare centrale partira exceptionnellement de la voie 6 à 15h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Fermeture temporaire du guichet de vente des billets de la gare de Toronto.\n... B : Annulation complète du trajet vers Toronto en raison d'un problème technique.\n... C : Départ du train express pour la gare centrale de Toronto voie 6 à 15h15.\n... D : Changement de destination du train vers la gare du Nord à 15h15.",
+      "text": "Locuteur: Annonce gare de Toronto : Le train express N°460 à destination de la gare centrale partira exceptionnellement de la voie 6 à 15h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Départ du train express pour la gare centrale de Toronto voie 6 à 15h15.\n... B : Annulation complète du trajet vers Toronto en raison d'un problème technique.\n... C : Changement de destination du train vers la gare du Nord à 15h15.\n... D : Fermeture temporaire du guichet de vente des billets de la gare de Toronto.",
       "rate": 0.85
     },
     {
       "qNum": 6,
-      "text": "Locutrice: Annonce supermarché à Toronto : Offre spéciale aujourd'hui au rayon n°5. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Arrivée de nouveaux produits d'entretien écologiques au rayon n°5.\n... B : Offre promotionnelle au rayon n°5 à Toronto avec le 3e article à demi-prix.\n... C : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Toronto.\n... D : Fermeture exceptionnelle du magasin de Toronto en raison de travaux.",
+      "text": "Locutrice: Annonce supermarché à Toronto : Offre spéciale aujourd'hui au rayon n°5. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Offre promotionnelle au rayon n°5 à Toronto avec le 3e article à demi-prix.\n... B : Fermeture exceptionnelle du magasin de Toronto en raison de travaux.\n... C : Arrivée de nouveaux produits d'entretien écologiques au rayon n°5.\n... D : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Toronto.",
       "rate": 0.85
     },
     {
       "qNum": 7,
-      "text": "Locuteur: Bulletin météo pour Toronto : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 17°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Aucun changement climatique annoncé pour le week-end à Toronto.\n... B : Chute de neige abondante à Toronto bloquant la circulation routière.\n... C : Vague de chaleur et soleil radieux toute la journée sur Toronto.\n... D : Prévision de vent fort et pluie à Toronto avec une température de 17°C.",
+      "text": "Locuteur: Bulletin météo pour Toronto : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 17°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Prévision de vent fort et pluie à Toronto avec une température de 17°C.\n... B : Vague de chaleur et soleil radieux toute la journée sur Toronto.\n... C : Chute de neige abondante à Toronto bloquant la circulation routière.\n... D : Aucun changement climatique annoncé pour le week-end à Toronto.",
       "rate": 0.85
     },
     {
       "qNum": 8,
-      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Toronto. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 13h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Changement d'adresse du cabinet médical de quartier à Toronto.\n... B : Rappel du rendez-vous médical de suivi à Toronto fixé à mardi à 13h30.\n... C : Demande d'envoi des résultats d'analyse médicale par courrier.\n... D : Annulation définitive de la consultation médicale du docteur Tremblay.",
+      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Toronto. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 13h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Rappel du rendez-vous médical de suivi à Toronto fixé à mardi à 13h30.\n... B : Annulation définitive de la consultation médicale du docteur Tremblay.\n... C : Changement d'adresse du cabinet médical de quartier à Toronto.\n... D : Demande d'envoi des résultats d'analyse médicale par courrier.",
       "rate": 0.92
     },
     {
@@ -987,12 +987,12 @@
   "6": [
     {
       "qNum": 1,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Pourriez-vous me peser ce paquet pour un envoi express ?.\n... Proposition B : Combien coûte le plein d'essence pour cette voiture ?.\n... Proposition C : Avez-vous ce modèle de baskets de sport en pointure 42 ?.\n... Proposition D : Voici vos deux plats chauds, bon appétit à vous deux !.",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Voici vos deux plats chauds, bon appétit à vous deux !.\n... Proposition B : Pourriez-vous me peser ce paquet pour un envoi express ?.\n... Proposition C : Avez-vous ce modèle de baskets de sport en pointure 42 ?.\n... Proposition D : Combien coûte le plein d'essence pour cette voiture ?.",
       "rate": 0.85
     },
     {
       "qNum": 2,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un voyageur composte son billet à l'entrée du train..\n... Proposition B : Un cuisinier dresse des assiettes gastronomiques en cuisine..\n... Proposition C : Un client essaie une paire de chaussures en cuir aidé par une vendeuse dans un magasin..\n... Proposition D : Un étudiant consulte des dictionnaires dans une bibliothèque..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un cuisinier dresse des assiettes gastronomiques en cuisine..\n... Proposition B : Un client essaie une paire de chaussures en cuir aidé par une vendeuse dans un magasin..\n... Proposition C : Un voyageur composte son billet à l'entrée du train..\n... Proposition D : Un étudiant consulte des dictionnaires dans une bibliothèque..",
       "rate": 0.85
     },
     {
@@ -1002,27 +1002,27 @@
     },
     {
       "qNum": 4,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Des randonneurs marchent le long d'un lac en montagne..\n... Proposition B : Une coiffeuse fait un shampoing à une cliente dans un salon..\n... Proposition C : Des clients font la queue au guichet pour acheter des places de cinéma..\n... Proposition D : Un mécanicien change la roue d'un véhicule utilitaire..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Des clients font la queue au guichet pour acheter des places de cinéma..\n... Proposition B : Des randonneurs marchent le long d'un lac en montagne..\n... Proposition C : Un mécanicien change la roue d'un véhicule utilitaire..\n... Proposition D : Une coiffeuse fait un shampoing à une cliente dans un salon..",
       "rate": 0.85
     },
     {
       "qNum": 5,
-      "text": "Locuteur: Annonce gare de Calgary : Le train express N°472 à destination de la gare centrale partira exceptionnellement de la voie 7 à 16h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Changement de destination du train vers la gare du Nord à 16h15.\n... B : Départ du train express pour la gare centrale de Calgary voie 7 à 16h15.\n... C : Annulation complète du trajet vers Calgary en raison d'un problème technique.\n... D : Fermeture temporaire du guichet de vente des billets de la gare de Calgary.",
+      "text": "Locuteur: Annonce gare de Calgary : Le train express N°472 à destination de la gare centrale partira exceptionnellement de la voie 7 à 16h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Départ du train express pour la gare centrale de Calgary voie 7 à 16h15.\n... B : Annulation complète du trajet vers Calgary en raison d'un problème technique.\n... C : Changement de destination du train vers la gare du Nord à 16h15.\n... D : Fermeture temporaire du guichet de vente des billets de la gare de Calgary.",
       "rate": 0.85
     },
     {
       "qNum": 6,
-      "text": "Locutrice: Annonce supermarché à Calgary : Offre spéciale aujourd'hui au rayon n°6. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Arrivée de nouveaux produits d'entretien écologiques au rayon n°6.\n... B : Offre promotionnelle au rayon n°6 à Calgary avec le 3e article à demi-prix.\n... C : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Calgary.\n... D : Fermeture exceptionnelle du magasin de Calgary en raison de travaux.",
+      "text": "Locutrice: Annonce supermarché à Calgary : Offre spéciale aujourd'hui au rayon n°6. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Offre promotionnelle au rayon n°6 à Calgary avec le 3e article à demi-prix.\n... B : Fermeture exceptionnelle du magasin de Calgary en raison de travaux.\n... C : Arrivée de nouveaux produits d'entretien écologiques au rayon n°6.\n... D : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Calgary.",
       "rate": 0.85
     },
     {
       "qNum": 7,
-      "text": "Locuteur: Bulletin météo pour Calgary : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 18°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Aucun changement climatique annoncé pour le week-end à Calgary.\n... B : Chute de neige abondante à Calgary bloquant la circulation routière.\n... C : Prévision de vent fort et pluie à Calgary avec une température de 18°C.\n... D : Vague de chaleur et soleil radieux toute la journée sur Calgary.",
+      "text": "Locuteur: Bulletin météo pour Calgary : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 18°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Prévision de vent fort et pluie à Calgary avec une température de 18°C.\n... B : Vague de chaleur et soleil radieux toute la journée sur Calgary.\n... C : Chute de neige abondante à Calgary bloquant la circulation routière.\n... D : Aucun changement climatique annoncé pour le week-end à Calgary.",
       "rate": 0.85
     },
     {
       "qNum": 8,
-      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Calgary. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 14h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Rappel du rendez-vous médical de suivi à Calgary fixé à mardi à 14h30.\n... B : Demande d'envoi des résultats d'analyse médicale par courrier.\n... C : Annulation définitive de la consultation médicale du docteur Tremblay.\n... D : Changement d'adresse du cabinet médical de quartier à Calgary.",
+      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Calgary. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 14h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Rappel du rendez-vous médical de suivi à Calgary fixé à mardi à 14h30.\n... B : Annulation définitive de la consultation médicale du docteur Tremblay.\n... C : Changement d'adresse du cabinet médical de quartier à Calgary.\n... D : Demande d'envoi des résultats d'analyse médicale par courrier.",
       "rate": 0.92
     },
     {
@@ -1184,42 +1184,42 @@
   "7": [
     {
       "qNum": 1,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Puis-je essayer cette paire de chaussures en taille 41 ?.\n... Proposition B : Une baguette pas trop cuite et deux croissants, s'il vous plaît..\n... Proposition C : Où se trouve la pharmacie de garde la plus proche ?.\n... Proposition D : Bonjour chauffeur, pouvez-vous m'emmener à l'aéroport international, s'il vous plaît ?.",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Bonjour chauffeur, pouvez-vous m'emmener à l'aéroport international, s'il vous plaît ?.\n... Proposition B : Une baguette pas trop cuite et deux croissants, s'il vous plaît..\n... Proposition C : Puis-je essayer cette paire de chaussures en taille 41 ?.\n... Proposition D : Où se trouve la pharmacie de garde la plus proche ?.",
       "rate": 0.85
     },
     {
       "qNum": 2,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Des passagers montent dans un train à la gare..\n... Proposition B : Un médecin ausculte un patient dans son cabinet..\n... Proposition C : Un mécanicien répare une voiture dans un garage..\n... Proposition D : Un client feuillette des livres devant les étagères d'une librairie..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un mécanicien répare une voiture dans un garage..\n... Proposition B : Un client feuillette des livres devant les étagères d'une librairie..\n... Proposition C : Des passagers montent dans un train à la gare..\n... Proposition D : Un médecin ausculte un patient dans son cabinet..",
       "rate": 0.85
     },
     {
       "qNum": 3,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Puis-je essayer cette monture noire devant le miroir pour voir si elle me va bien ?.\n... Proposition B : Quel est le prix du billet de train pour Montréal ?.\n... Proposition C : Une table pour deux personnes en terrasse, s'il vous plaît..\n... Proposition D : Pouvez-vous me couper les cheveux plus court sur les côtés ?.",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Une table pour deux personnes en terrasse, s'il vous plaît..\n... Proposition B : Puis-je essayer cette monture noire devant le miroir pour voir si elle me va bien ?.\n... Proposition C : Quel est le prix du billet de train pour Montréal ?.\n... Proposition D : Pouvez-vous me couper les cheveux plus court sur les côtés ?.",
       "rate": 0.85
     },
     {
       "qNum": 4,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Des voyageurs attendent un bus sous un abribus..\n... Proposition B : Des clients font leurs courses dans un supermarché..\n... Proposition C : Des visiteurs contemplent des tableaux exposés sur les murs d'un musée..\n... Proposition D : Un serveur apporte des boissons à des clients au café..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Des visiteurs contemplent des tableaux exposés sur les murs d'un musée..\n... Proposition B : Des clients font leurs courses dans un supermarché..\n... Proposition C : Un serveur apporte des boissons à des clients au café..\n... Proposition D : Des voyageurs attendent un bus sous un abribus..",
       "rate": 0.85
     },
     {
       "qNum": 5,
-      "text": "Locuteur: Annonce gare de Sherbrooke : Le train express N°484 à destination de la gare centrale partira exceptionnellement de la voie 8 à 17h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Départ du train express pour la gare centrale de Sherbrooke voie 8 à 17h15.\n... B : Fermeture temporaire du guichet de vente des billets de la gare de Sherbrooke.\n... C : Changement de destination du train vers la gare du Nord à 17h15.\n... D : Annulation complète du trajet vers Sherbrooke en raison d'un problème technique.",
+      "text": "Locuteur: Annonce gare de Sherbrooke : Le train express N°484 à destination de la gare centrale partira exceptionnellement de la voie 8 à 17h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Départ du train express pour la gare centrale de Sherbrooke voie 8 à 17h15.\n... B : Annulation complète du trajet vers Sherbrooke en raison d'un problème technique.\n... C : Changement de destination du train vers la gare du Nord à 17h15.\n... D : Fermeture temporaire du guichet de vente des billets de la gare de Sherbrooke.",
       "rate": 0.85
     },
     {
       "qNum": 6,
-      "text": "Locutrice: Annonce supermarché à Sherbrooke : Offre spéciale aujourd'hui au rayon n°7. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Fermeture exceptionnelle du magasin de Sherbrooke en raison de travaux.\n... B : Arrivée de nouveaux produits d'entretien écologiques au rayon n°7.\n... C : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Sherbrooke.\n... D : Offre promotionnelle au rayon n°7 à Sherbrooke avec le 3e article à demi-prix.",
+      "text": "Locutrice: Annonce supermarché à Sherbrooke : Offre spéciale aujourd'hui au rayon n°7. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Offre promotionnelle au rayon n°7 à Sherbrooke avec le 3e article à demi-prix.\n... B : Fermeture exceptionnelle du magasin de Sherbrooke en raison de travaux.\n... C : Arrivée de nouveaux produits d'entretien écologiques au rayon n°7.\n... D : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Sherbrooke.",
       "rate": 0.85
     },
     {
       "qNum": 7,
-      "text": "Locuteur: Bulletin météo pour Sherbrooke : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 19°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Prévision de vent fort et pluie à Sherbrooke avec une température de 19°C.\n... B : Vague de chaleur et soleil radieux toute la journée sur Sherbrooke.\n... C : Aucun changement climatique annoncé pour le week-end à Sherbrooke.\n... D : Chute de neige abondante à Sherbrooke bloquant la circulation routière.",
+      "text": "Locuteur: Bulletin météo pour Sherbrooke : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 19°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Prévision de vent fort et pluie à Sherbrooke avec une température de 19°C.\n... B : Vague de chaleur et soleil radieux toute la journée sur Sherbrooke.\n... C : Chute de neige abondante à Sherbrooke bloquant la circulation routière.\n... D : Aucun changement climatique annoncé pour le week-end à Sherbrooke.",
       "rate": 0.85
     },
     {
       "qNum": 8,
-      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Sherbrooke. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 15h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Demande d'envoi des résultats d'analyse médicale par courrier.\n... B : Annulation définitive de la consultation médicale du docteur Tremblay.\n... C : Rappel du rendez-vous médical de suivi à Sherbrooke fixé à mardi à 15h30.\n... D : Changement d'adresse du cabinet médical de quartier à Sherbrooke.",
+      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Sherbrooke. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 15h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Rappel du rendez-vous médical de suivi à Sherbrooke fixé à mardi à 15h30.\n... B : Annulation définitive de la consultation médicale du docteur Tremblay.\n... C : Changement d'adresse du cabinet médical de quartier à Sherbrooke.\n... D : Demande d'envoi des résultats d'analyse médicale par courrier.",
       "rate": 0.92
     },
     {
@@ -1381,42 +1381,42 @@
   "8": [
     {
       "qNum": 1,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Pourriez-vous vérifier la batterie de mon véhicule ?.\n... Proposition B : Avez-vous une boîte de pansements stériles et de l'alcool ?.\n... Proposition C : Je souhaite renouveler mon abonnement de transport mensuel..\n... Proposition D : Une glace deux boules vanille et fraise avec un peu de chantilly, s'il vous plaît..",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Une glace deux boules vanille et fraise avec un peu de chantilly, s'il vous plaît..\n... Proposition B : Je souhaite renouveler mon abonnement de transport mensuel..\n... Proposition C : Avez-vous une boîte de pansements stériles et de l'alcool ?.\n... Proposition D : Pourriez-vous vérifier la batterie de mon véhicule ?.",
       "rate": 0.85
     },
     {
       "qNum": 2,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Une cliente essaie une robe dans une boutique de mode..\n... Proposition B : Des spectateurs achètent des billets au guichet du théâtre..\n... Proposition C : Des passants achètent des fruits et légumes frais sur un marché de rue..\n... Proposition D : Un automobiliste fait le plein d'essence à la station-service..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un automobiliste fait le plein d'essence à la station-service..\n... Proposition B : Des passants achètent des fruits et légumes frais sur un marché de rue..\n... Proposition C : Une cliente essaie une robe dans une boutique de mode..\n... Proposition D : Des spectateurs achètent des billets au guichet du théâtre..",
       "rate": 0.85
     },
     {
       "qNum": 3,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Puis-je avoir un rendez-vous avec le médecin pour demain matin ?.\n... Proposition B : Bonjour madame, pouvez-vous m'indiquer le quai de correspondance pour le prochain train ?.\n... Proposition C : Je voudrais commander une formule déjeuner avec boisson..\n... Proposition D : Combien coûte cette paire de lunettes de soleil ?.",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Je voudrais commander une formule déjeuner avec boisson..\n... Proposition B : Bonjour madame, pouvez-vous m'indiquer le quai de correspondance pour le prochain train ?.\n... Proposition C : Combien coûte cette paire de lunettes de soleil ?.\n... Proposition D : Puis-je avoir un rendez-vous avec le médecin pour demain matin ?.",
       "rate": 0.85
     },
     {
       "qNum": 4,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Des voyageurs enregistrent leurs valises à l'aéroport..\n... Proposition B : Des enfants jouent au ballon dans la cour d'école..\n... Proposition C : Une cliente charge du linge dans une machine à laver automatique..\n... Proposition D : Un cuisinier fait cuire des steaks sur une grille..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Une cliente charge du linge dans une machine à laver automatique..\n... Proposition B : Des voyageurs enregistrent leurs valises à l'aéroport..\n... Proposition C : Un cuisinier fait cuire des steaks sur une grille..\n... Proposition D : Des enfants jouent au ballon dans la cour d'école..",
       "rate": 0.85
     },
     {
       "qNum": 5,
-      "text": "Locuteur: Annonce gare de Trois-Rivières : Le train express N°496 à destination de la gare centrale partira exceptionnellement de la voie 9 à 18h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Départ du train express pour la gare centrale de Trois-Rivières voie 9 à 18h15.\n... B : Fermeture temporaire du guichet de vente des billets de la gare de Trois-Rivières.\n... C : Annulation complète du trajet vers Trois-Rivières en raison d'un problème technique.\n... D : Changement de destination du train vers la gare du Nord à 18h15.",
+      "text": "Locuteur: Annonce gare de Trois-Rivières : Le train express N°496 à destination de la gare centrale partira exceptionnellement de la voie 9 à 18h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Départ du train express pour la gare centrale de Trois-Rivières voie 9 à 18h15.\n... B : Annulation complète du trajet vers Trois-Rivières en raison d'un problème technique.\n... C : Changement de destination du train vers la gare du Nord à 18h15.\n... D : Fermeture temporaire du guichet de vente des billets de la gare de Trois-Rivières.",
       "rate": 0.85
     },
     {
       "qNum": 6,
-      "text": "Locutrice: Annonce supermarché à Trois-Rivières : Offre spéciale aujourd'hui au rayon n°8. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Arrivée de nouveaux produits d'entretien écologiques au rayon n°8.\n... B : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Trois-Rivières.\n... C : Offre promotionnelle au rayon n°8 à Trois-Rivières avec le 3e article à demi-prix.\n... D : Fermeture exceptionnelle du magasin de Trois-Rivières en raison de travaux.",
+      "text": "Locutrice: Annonce supermarché à Trois-Rivières : Offre spéciale aujourd'hui au rayon n°8. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Offre promotionnelle au rayon n°8 à Trois-Rivières avec le 3e article à demi-prix.\n... B : Fermeture exceptionnelle du magasin de Trois-Rivières en raison de travaux.\n... C : Arrivée de nouveaux produits d'entretien écologiques au rayon n°8.\n... D : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Trois-Rivières.",
       "rate": 0.85
     },
     {
       "qNum": 7,
-      "text": "Locuteur: Bulletin météo pour Trois-Rivières : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 20°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Chute de neige abondante à Trois-Rivières bloquant la circulation routière.\n... B : Prévision de vent fort et pluie à Trois-Rivières avec une température de 20°C.\n... C : Vague de chaleur et soleil radieux toute la journée sur Trois-Rivières.\n... D : Aucun changement climatique annoncé pour le week-end à Trois-Rivières.",
+      "text": "Locuteur: Bulletin météo pour Trois-Rivières : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 20°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Prévision de vent fort et pluie à Trois-Rivières avec une température de 20°C.\n... B : Vague de chaleur et soleil radieux toute la journée sur Trois-Rivières.\n... C : Chute de neige abondante à Trois-Rivières bloquant la circulation routière.\n... D : Aucun changement climatique annoncé pour le week-end à Trois-Rivières.",
       "rate": 0.85
     },
     {
       "qNum": 8,
-      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Trois-Rivières. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 16h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Changement d'adresse du cabinet médical de quartier à Trois-Rivières.\n... B : Rappel du rendez-vous médical de suivi à Trois-Rivières fixé à mardi à 16h30.\n... C : Annulation définitive de la consultation médicale du docteur Tremblay.\n... D : Demande d'envoi des résultats d'analyse médicale par courrier.",
+      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Trois-Rivières. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 16h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Rappel du rendez-vous médical de suivi à Trois-Rivières fixé à mardi à 16h30.\n... B : Annulation définitive de la consultation médicale du docteur Tremblay.\n... C : Changement d'adresse du cabinet médical de quartier à Trois-Rivières.\n... D : Demande d'envoi des résultats d'analyse médicale par courrier.",
       "rate": 0.92
     },
     {
@@ -1578,42 +1578,42 @@
   "9": [
     {
       "qNum": 1,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Où se trouve la cabine d'essayage pour essayer ce manteau ?.\n... Proposition B : Un café noir et un croissant pur beurre, s'il vous plaît..\n... Proposition C : Pourriez-vous me montrer cette montre argentée exposée dans la vitrine ?.\n... Proposition D : À quelle heure arrive le train en provenance de Québec ?.",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Pourriez-vous me montrer cette montre argentée exposée dans la vitrine ?.\n... Proposition B : Un café noir et un croissant pur beurre, s'il vous plaît..\n... Proposition C : À quelle heure arrive le train en provenance de Québec ?.\n... Proposition D : Où se trouve la cabine d'essayage pour essayer ce manteau ?.",
       "rate": 0.85
     },
     {
       "qNum": 2,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un chauffeur de taxi attend des clients devant la gare..\n... Proposition B : Une employée prépare un sandwich frais derrière le comptoir d'une cafétéria..\n... Proposition C : Un facteur distribue des lettres dans des boîtes postales..\n... Proposition D : Un photographe prend des clichés dans un studio photo..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un chauffeur de taxi attend des clients devant la gare..\n... Proposition B : Une employée prépare un sandwich frais derrière le comptoir d'une cafétéria..\n... Proposition C : Un photographe prend des clichés dans un studio photo..\n... Proposition D : Un facteur distribue des lettres dans des boîtes postales..",
       "rate": 0.85
     },
     {
       "qNum": 3,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Mon ordonnance médicale est-elle prête à la pharmacie ?.\n... Proposition B : Je cherche une boîte de vis et des chevilles adaptées pour fixer une étagère au mur..\n... Proposition C : Quel est le montant de l'addition pour la table numéro cinq ?.\n... Proposition D : Deux billets pour la séance de cinéma de vingt heures..",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Deux billets pour la séance de cinéma de vingt heures..\n... Proposition B : Je cherche une boîte de vis et des chevilles adaptées pour fixer une étagère au mur..\n... Proposition C : Quel est le montant de l'addition pour la table numéro cinq ?.\n... Proposition D : Mon ordonnance médicale est-elle prête à la pharmacie ?.",
       "rate": 0.85
     },
     {
       "qNum": 4,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Des baigneurs profitent du soleil sur une plage en été..\n... Proposition B : Un garagiste effectue la vidange d'une voiture..\n... Proposition C : Des skieurs en tenue d'hiver ajustent leur matériel au bas des pistes..\n... Proposition D : Un serveur apporte un plateau de boissons dans un restaurant..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Des skieurs en tenue d'hiver ajustent leur matériel au bas des pistes..\n... Proposition B : Des baigneurs profitent du soleil sur une plage en été..\n... Proposition C : Un serveur apporte un plateau de boissons dans un restaurant..\n... Proposition D : Un garagiste effectue la vidange d'une voiture..",
       "rate": 0.85
     },
     {
       "qNum": 5,
-      "text": "Locuteur: Annonce gare de Gatineau : Le train express N°508 à destination de la gare centrale partira exceptionnellement de la voie 10 à 19h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Fermeture temporaire du guichet de vente des billets de la gare de Gatineau.\n... B : Changement de destination du train vers la gare du Nord à 19h15.\n... C : Départ du train express pour la gare centrale de Gatineau voie 10 à 19h15.\n... D : Annulation complète du trajet vers Gatineau en raison d'un problème technique.",
+      "text": "Locuteur: Annonce gare de Gatineau : Le train express N°508 à destination de la gare centrale partira exceptionnellement de la voie 10 à 19h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Départ du train express pour la gare centrale de Gatineau voie 10 à 19h15.\n... B : Annulation complète du trajet vers Gatineau en raison d'un problème technique.\n... C : Changement de destination du train vers la gare du Nord à 19h15.\n... D : Fermeture temporaire du guichet de vente des billets de la gare de Gatineau.",
       "rate": 0.85
     },
     {
       "qNum": 6,
-      "text": "Locutrice: Annonce supermarché à Gatineau : Offre spéciale aujourd'hui au rayon n°9. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Fermeture exceptionnelle du magasin de Gatineau en raison de travaux.\n... B : Offre promotionnelle au rayon n°9 à Gatineau avec le 3e article à demi-prix.\n... C : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Gatineau.\n... D : Arrivée de nouveaux produits d'entretien écologiques au rayon n°9.",
+      "text": "Locutrice: Annonce supermarché à Gatineau : Offre spéciale aujourd'hui au rayon n°9. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Offre promotionnelle au rayon n°9 à Gatineau avec le 3e article à demi-prix.\n... B : Fermeture exceptionnelle du magasin de Gatineau en raison de travaux.\n... C : Arrivée de nouveaux produits d'entretien écologiques au rayon n°9.\n... D : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Gatineau.",
       "rate": 0.85
     },
     {
       "qNum": 7,
-      "text": "Locuteur: Bulletin météo pour Gatineau : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 21°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Prévision de vent fort et pluie à Gatineau avec une température de 21°C.\n... B : Vague de chaleur et soleil radieux toute la journée sur Gatineau.\n... C : Aucun changement climatique annoncé pour le week-end à Gatineau.\n... D : Chute de neige abondante à Gatineau bloquant la circulation routière.",
+      "text": "Locuteur: Bulletin météo pour Gatineau : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 21°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Prévision de vent fort et pluie à Gatineau avec une température de 21°C.\n... B : Vague de chaleur et soleil radieux toute la journée sur Gatineau.\n... C : Chute de neige abondante à Gatineau bloquant la circulation routière.\n... D : Aucun changement climatique annoncé pour le week-end à Gatineau.",
       "rate": 0.85
     },
     {
       "qNum": 8,
-      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Gatineau. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 17h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Demande d'envoi des résultats d'analyse médicale par courrier.\n... B : Annulation définitive de la consultation médicale du docteur Tremblay.\n... C : Rappel du rendez-vous médical de suivi à Gatineau fixé à mardi à 17h30.\n... D : Changement d'adresse du cabinet médical de quartier à Gatineau.",
+      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Gatineau. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 17h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Rappel du rendez-vous médical de suivi à Gatineau fixé à mardi à 17h30.\n... B : Annulation définitive de la consultation médicale du docteur Tremblay.\n... C : Changement d'adresse du cabinet médical de quartier à Gatineau.\n... D : Demande d'envoi des résultats d'analyse médicale par courrier.",
       "rate": 0.92
     },
     {
@@ -1775,42 +1775,42 @@
   "10": [
     {
       "qNum": 1,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Excusez-moi professeur, pourriez-vous réexpliquer la formule écrite au tableau ?.\n... Proposition B : Il me faut de la monnaie pour payer l'horodateur de stationnement..\n... Proposition C : Je voudrais acheter un jeu de cordes pour guitare acoustique..\n... Proposition D : Mon chat ne mange plus depuis deux jours, pouvez-vous l'examiner ?.",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Excusez-moi professeur, pourriez-vous réexpliquer la formule écrite au tableau ?.\n... Proposition B : Il me faut de la monnaie pour payer l'horodateur de stationnement..\n... Proposition C : Mon chat ne mange plus depuis deux jours, pouvez-vous l'examiner ?.\n... Proposition D : Je voudrais acheter un jeu de cordes pour guitare acoustique..",
       "rate": 0.85
     },
     {
       "qNum": 2,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un mécanicien remplace une roue crevée sur un utilitaire..\n... Proposition B : Un vétérinaire en blouse ausculte un chat posé sur une table de consultation..\n... Proposition C : Un automobiliste règle son péage à une barrière d'autoroute..\n... Proposition D : Un coiffeur rase la barbe d'un client au coupe-choux..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un coiffeur rase la barbe d'un client au coupe-choux..\n... Proposition B : Un automobiliste règle son péage à une barrière d'autoroute..\n... Proposition C : Un mécanicien remplace une roue crevée sur un utilitaire..\n... Proposition D : Un vétérinaire en blouse ausculte un chat posé sur une table de consultation..",
       "rate": 0.85
     },
     {
       "qNum": 3,
-      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un ticket de stationnement pour deux heures dans cette zone, s'il vous plaît..\n... Proposition B : Ce médicament pour animal est-il délivré sans ordonnance ?.\n... Proposition C : Avez-vous des manuels d'histoire pour les cours universitaires ?.\n... Proposition D : Puis-je accorder cette guitare acoustique et la tester quelques minutes ?.",
+      "text": "Annonceuse: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Avez-vous des manuels d'histoire pour les cours universitaires ?.\n... Proposition B : Ce médicament pour animal est-il délivré sans ordonnance ?.\n... Proposition C : Un ticket de stationnement pour deux heures dans cette zone, s'il vous plaît..\n... Proposition D : Puis-je accorder cette guitare acoustique et la tester quelques minutes ?.",
       "rate": 0.85
     },
     {
       "qNum": 4,
-      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un marin décharge des caisses de poissons d'un chalutier..\n... Proposition B : Un automobiliste insère de la monnaie dans un horodateur sur le trottoir..\n... Proposition C : Un cuisinier fait griller des aliments sur une plaque chauffante..\n... Proposition D : Un serveur nettoie les verres au bar d'un bistrot..",
+      "text": "Annonceur: Consigne : Regardez l'image. Écoutez les 4 propositions. Choisissez celle qui correspond à l'image et cochez la bonne réponse.\n... Proposition A : Un automobiliste insère de la monnaie dans un horodateur sur le trottoir..\n... Proposition B : Un cuisinier fait griller des aliments sur une plaque chauffante..\n... Proposition C : Un serveur nettoie les verres au bar d'un bistrot..\n... Proposition D : Un marin décharge des caisses de poissons d'un chalutier..",
       "rate": 0.85
     },
     {
       "qNum": 5,
-      "text": "Locuteur: Annonce gare de Moncton : Le train express N°520 à destination de la gare centrale partira exceptionnellement de la voie 11 à 20h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Départ du train express pour la gare centrale de Moncton voie 11 à 20h15.\n... B : Fermeture temporaire du guichet de vente des billets de la gare de Moncton.\n... C : Changement de destination du train vers la gare du Nord à 20h15.\n... D : Annulation complète du trajet vers Moncton en raison d'un problème technique.",
+      "text": "Locuteur: Annonce gare de Moncton : Le train express N°520 à destination de la gare centrale partira exceptionnellement de la voie 11 à 20h15.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°5 : Quel est le sujet principal de ce message sonore ?\n... A : Départ du train express pour la gare centrale de Moncton voie 11 à 20h15.\n... B : Annulation complète du trajet vers Moncton en raison d'un problème technique.\n... C : Changement de destination du train vers la gare du Nord à 20h15.\n... D : Fermeture temporaire du guichet de vente des billets de la gare de Moncton.",
       "rate": 0.85
     },
     {
       "qNum": 6,
-      "text": "Locutrice: Annonce supermarché à Moncton : Offre spéciale aujourd'hui au rayon n°10. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Fermeture exceptionnelle du magasin de Moncton en raison de travaux.\n... B : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Moncton.\n... C : Arrivée de nouveaux produits d'entretien écologiques au rayon n°10.\n... D : Offre promotionnelle au rayon n°10 à Moncton avec le 3e article à demi-prix.",
+      "text": "Locutrice: Annonce supermarché à Moncton : Offre spéciale aujourd'hui au rayon n°10. Pour deux articles achetés, le troisième est à moitié prix jusqu'à 19h.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°6 : Quelle offre spéciale est proposée aux clients ?\n... A : Offre promotionnelle au rayon n°10 à Moncton avec le 3e article à demi-prix.\n... B : Fermeture exceptionnelle du magasin de Moncton en raison de travaux.\n... C : Arrivée de nouveaux produits d'entretien écologiques au rayon n°10.\n... D : Distribution gratuite de cartes de fidélité à l'accueil du magasin de Moncton.",
       "rate": 0.85
     },
     {
       "qNum": 7,
-      "text": "Locuteur: Bulletin météo pour Moncton : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 22°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Aucun changement climatique annoncé pour le week-end à Moncton.\n... B : Prévision de vent fort et pluie à Moncton avec une température de 22°C.\n... C : Chute de neige abondante à Moncton bloquant la circulation routière.\n... D : Vague de chaleur et soleil radieux toute la journée sur Moncton.",
+      "text": "Locuteur: Bulletin météo pour Moncton : Des rafales de vent accompagnées de fortes pluies sont prévues en fin d'après-midi. La température sera de 22°C.\nAnnonceuse: Écoutez la question et les 4 réponses. Question N°7 : Quelles sont les prévisions météorologiques annoncées ?\n... A : Prévision de vent fort et pluie à Moncton avec une température de 22°C.\n... B : Vague de chaleur et soleil radieux toute la journée sur Moncton.\n... C : Chute de neige abondante à Moncton bloquant la circulation routière.\n... D : Aucun changement climatique annoncé pour le week-end à Moncton.",
       "rate": 0.85
     },
     {
       "qNum": 8,
-      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Moncton. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 18h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Rappel du rendez-vous médical de suivi à Moncton fixé à mardi à 18h30.\n... B : Demande d'envoi des résultats d'analyse médicale par courrier.\n... C : Annulation définitive de la consultation médicale du docteur Tremblay.\n... D : Changement d'adresse du cabinet médical de quartier à Moncton.",
+      "text": "Locutrice: Bonjour, ici le secrétariat médical du docteur Tremblay à Moncton. Nous vous rappellons votre rendez-vous de suivi fixé à mardi prochain à 18h30. Merci d'apporter votre carte de santé.\nAnnonceur: Écoutez la question et les 4 réponses. Question N°8 : Pourquoi la personne laisse-t-elle ce message téléphonique ?\n... A : Rappel du rendez-vous médical de suivi à Moncton fixé à mardi à 18h30.\n... B : Annulation définitive de la consultation médicale du docteur Tremblay.\n... C : Changement d'adresse du cabinet médical de quartier à Moncton.\n... D : Demande d'envoi des résultats d'analyse médicale par courrier.",
       "rate": 0.92
     },
     {

@@ -14,7 +14,8 @@ async function verifyMasterAudioCache() {
   console.log(`Total Documents in MongoDB: ${total}`);
   console.log(`Microsoft Neural Studio Tracks: ${edgeCount}\n`);
 
-  const transcriptsPath = './listening_transcripts.json';
+  const path = require('path');
+  const transcriptsPath = path.join(__dirname, 'listening_transcripts.json');
   if (!fs.existsSync(transcriptsPath)) {
     console.error('❌ listening_transcripts.json not found');
     await mongoose.disconnect();
