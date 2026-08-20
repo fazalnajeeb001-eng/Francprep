@@ -323,8 +323,8 @@ export function AuthenticCBTExamPage() {
   useEffect(() => {
     if (isSubmitted) return;
 
-    // In practice mode or for admin, allow pausing the main timer
-    if (isTimerPaused && (mode === "PRACTICE" || isAdmin)) return;
+    // Pause section timer if explicitly paused, in practice/admin pause mode, OR during examiner speech in Speaking section
+    if (isTimerPaused || (currentSection?.type === "EXPRESSION_ORALE" && isSpeaking)) return;
 
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
@@ -355,7 +355,7 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [activeSectionIdx, mode, isSubmitted, isTimerPaused, isAdmin, paper.sections.length]);
+  }, [activeSectionIdx, mode, isSubmitted, isTimerPaused, isAdmin, isSpeaking, currentSection?.type, paper.sections.length]);
 
   const handleStartPrepTimer = (taskId: string, prepMins = 1) => {
     setOralPrepTimeRemaining((prev) => ({
@@ -491,11 +491,24 @@ export function AuthenticCBTExamPage() {
     setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
   };
 
+  const speakingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const startSpeakingTaskSession = (idx: number) => {
     const tasks = currentSection?.speakingTasks;
     if (!tasks || tasks.length === 0) return;
     const task = tasks[Math.min(idx, tasks.length - 1)];
     if (!task) return;
+
+    // Clean up previous audio & fallback timeouts
+    handleStopAudio();
+    if (speakingTimeoutRef.current) {
+      clearTimeout(speakingTimeoutRef.current);
+      speakingTimeoutRef.current = null;
+    }
+
+    // Clear active flags for other tasks to prevent overlapping intervals
+    setIsOralPrepActive({});
+    setIsOralSpeakingActive({});
 
     const openingText = task.examinerPersona?.openingPromptFrench || (
       idx === 0 || task.title?.includes("Tâche 1")
@@ -519,8 +532,8 @@ export function AuthenticCBTExamPage() {
 
       handlePlayExaminerAudio(openingText, startPrepAfterAudio);
 
-      // Fallback safety (20s) in case browser blocks audio auto-play
-      setTimeout(() => {
+      // Track single fallback timer ref
+      speakingTimeoutRef.current = setTimeout(() => {
         startPrepAfterAudio();
       }, 20000);
     } else {
@@ -535,8 +548,8 @@ export function AuthenticCBTExamPage() {
 
       handlePlayExaminerAudio(openingText, startSpeakingAfterAudio);
 
-      // Fallback safety (20s) in case browser blocks audio auto-play
-      setTimeout(() => {
+      // Track single fallback timer ref
+      speakingTimeoutRef.current = setTimeout(() => {
         startSpeakingAfterAudio();
       }, 20000);
     }
