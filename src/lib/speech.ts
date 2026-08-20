@@ -602,11 +602,7 @@ export function speakListeningQuestion(
   }
 
   stopAudio();
-  if (text.includes(":") || text.includes("\n") || text.includes("—")) {
-    speakDialogue(text, lang, rate, undefined, cb);
-  } else {
-    speak(text, lang, rate, gender, undefined, undefined, undefined, cb);
-  }
+  speak(text, lang, rate, gender, undefined, undefined, undefined, cb);
 }
 
 /**
