@@ -355,18 +355,25 @@ export function AuthenticCBTExamPage() {
   }, [activeSectionIdx, mode, isSubmitted, isTimerPaused, isAdmin, paper.sections.length]);
 
   const handleStartPrepTimer = (taskId: string, prepMins = 1) => {
-    setOralPrepTimeRemaining((prev) => ({ ...prev, [taskId]: prepMins * 60 }));
+    setOralPrepTimeRemaining((prev) => ({
+      ...prev,
+      [taskId]: (prev[taskId] && prev[taskId] > 0) ? prev[taskId] : prepMins * 60
+    }));
     setIsOralPrepActive((prev) => ({ ...prev, [taskId]: true }));
   };
 
   const handleStartSpeakingTimer = (taskId: string, speakingMins = 2) => {
-    setOralSpeakingTimeRemaining((prev) => ({ ...prev, [taskId]: Math.round(speakingMins * 60) }));
+    setOralSpeakingTimeRemaining((prev) => ({
+      ...prev,
+      [taskId]: (prev[taskId] && prev[taskId] > 0) ? prev[taskId] : Math.round(speakingMins * 60)
+    }));
     setIsOralSpeakingActive((prev) => ({ ...prev, [taskId]: true }));
   };
 
   useEffect(() => {
     const activeTasks = Object.keys(isOralPrepActive).filter((k) => isOralPrepActive[k] && (oralPrepTimeRemaining[k] || 0) > 0);
-    if (activeTasks.length === 0) return;
+    // CRITICAL FORENSIC GUARD: Freeze prep timer while examiner audio is playing or simulator is paused
+    if (activeTasks.length === 0 || isSpeaking || isTimerPaused) return;
 
     const interval = setInterval(() => {
       setOralPrepTimeRemaining((prev) => {
@@ -406,11 +413,12 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isOralPrepActive, oralPrepTimeRemaining, currentSection]);
+  }, [isOralPrepActive, oralPrepTimeRemaining, currentSection, isSpeaking, isTimerPaused]);
 
   useEffect(() => {
     const activeTasks = Object.keys(isOralSpeakingActive).filter((k) => isOralSpeakingActive[k] && (oralSpeakingTimeRemaining[k] || 0) > 0);
-    if (activeTasks.length === 0) return;
+    // CRITICAL FORENSIC GUARD: Freeze speaking timer while examiner audio is playing or simulator is paused
+    if (activeTasks.length === 0 || isSpeaking || isTimerPaused) return;
 
     const interval = setInterval(() => {
       setOralSpeakingTimeRemaining((prev) => {
@@ -431,7 +439,7 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isOralSpeakingActive, oralSpeakingTimeRemaining]);
+  }, [isOralSpeakingActive, oralSpeakingTimeRemaining, isSpeaking, isTimerPaused]);
 
   const handlePlayExaminerAudio = (text: string, onEnded?: () => void) => {
     handleStopAudio();
