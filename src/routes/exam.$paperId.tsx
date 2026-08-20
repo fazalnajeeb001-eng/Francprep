@@ -610,7 +610,15 @@ export function AuthenticCBTExamPage() {
 
     try {
       if (typeof window !== "undefined" && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+            channelCount: 1,
+            sampleRate: 44100
+          }
+        });
         acousticAnalyzer.startAnalysis(stream);
       }
     } catch {}
@@ -4027,11 +4035,11 @@ export function AuthenticCBTExamPage() {
 
                   {/* OFFICIAL FEI 4-CRITERIA DIAGNOSTIC EVALUATION RESULT CARD */}
                   {aiEval && (
-                    <div className="p-4 sm:p-5 rounded-2xl border-2 border-purple-300 dark:border-purple-800 bg-purple-50/90 dark:bg-purple-950/50 space-y-3 text-xs font-sans shadow-md">
+                    <div className="p-4 sm:p-5 rounded-2xl border-2 border-purple-300 dark:border-purple-800 bg-purple-50/90 dark:bg-purple-950/50 space-y-4 text-xs font-sans shadow-md">
                       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-purple-200 dark:border-purple-800 pb-2">
                         <span className="font-extrabold text-sm text-purple-700 dark:text-purple-300 flex items-center gap-1.5">
                           <Trophy className="w-4 h-4 text-purple-600" />
-                          <span>Grille Officielle FEI — Diagnostic Oral & Score TCF</span>
+                          <span>Grille Officielle FEI — Diagnostic Oral & Score TCF Canada ({aiEval.scoreOutOf20 || 15} / 20 Marks)</span>
                         </span>
                         <div className="flex items-center gap-2">
                           <span className="px-2.5 py-1 rounded-full bg-purple-600 text-white font-mono font-extrabold text-[11px]">
@@ -4043,27 +4051,92 @@ export function AuthenticCBTExamPage() {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
-                        <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 font-medium text-center">
-                          <span className="text-slate-500 text-[10px] block font-bold">1. Pertinence / Consigne</span>
-                          <span className="text-purple-600 font-extrabold text-sm">{aiEval.taskFulfillmentScore !== undefined ? aiEval.taskFulfillmentScore : 4} / 5</span>
+                      {/* 4 Official FEI Sub-Score Cards with Progress Indicators */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                        <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 space-y-1.5">
+                          <div className="flex items-center justify-between text-[10px] font-bold">
+                            <span className="text-slate-600 dark:text-slate-400">1. Consigne & Respect du Scénario</span>
+                            <span className="text-purple-600 font-extrabold">{aiEval.taskFulfillmentScore !== undefined ? aiEval.taskFulfillmentScore : 4} / 5</span>
+                          </div>
+                          <div className="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                            <div className="h-full bg-purple-600 rounded-full" style={{ width: `${((aiEval.taskFulfillmentScore || 4) / 5) * 100}%` }} />
+                          </div>
+                          <p className="text-[10px] text-slate-500 font-medium leading-tight">
+                            {aiEval.feiSubScores?.taskFulfillment?.feedback || "Traitement approprié du scénario et respect du registre."}
+                          </p>
                         </div>
-                        <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 font-medium text-center">
-                          <span className="text-slate-500 text-[10px] block font-bold">2. Cohérence & Aisance</span>
-                          <span className="text-pink-600 font-extrabold text-sm">{aiEval.coherenceScore !== undefined ? aiEval.coherenceScore : 4} / 5</span>
+
+                        <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 space-y-1.5">
+                          <div className="flex items-center justify-between text-[10px] font-bold">
+                            <span className="text-slate-600 dark:text-slate-400">2. Cohérence, Débit & Fluidité</span>
+                            <span className="text-pink-600 font-extrabold">{aiEval.coherenceScore !== undefined ? aiEval.coherenceScore : 4} / 5</span>
+                          </div>
+                          <div className="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                            <div className="h-full bg-pink-600 rounded-full" style={{ width: `${((aiEval.coherenceScore || 4) / 5) * 100}%` }} />
+                          </div>
+                          <p className="text-[10px] text-slate-500 font-medium leading-tight">
+                            {aiEval.feiSubScores?.fluencyPace?.feedback || "Enchaînement fluide des idées avec connecteurs adaptés."}
+                          </p>
                         </div>
-                        <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 font-medium text-center">
-                          <span className="text-slate-500 text-[10px] block font-bold">3. Richesse Lexicale</span>
-                          <span className="text-indigo-600 font-extrabold text-sm">{aiEval.lexicalScore !== undefined ? aiEval.lexicalScore : 4} / 5</span>
+
+                        <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 space-y-1.5">
+                          <div className="flex items-center justify-between text-[10px] font-bold">
+                            <span className="text-slate-600 dark:text-slate-400">3. Étendue & Précision Lexicale</span>
+                            <span className="text-indigo-600 font-extrabold">{aiEval.lexicalScore !== undefined ? aiEval.lexicalScore : 4} / 5</span>
+                          </div>
+                          <div className="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                            <div className="h-full bg-indigo-600 rounded-full" style={{ width: `${((aiEval.lexicalScore || 4) / 5) * 100}%` }} />
+                          </div>
+                          <p className="text-[10px] text-slate-500 font-medium leading-tight">
+                            {aiEval.feiSubScores?.lexicalPrecision?.feedback || "Vocabulaire varié et adapté au contexte de communication."}
+                          </p>
                         </div>
-                        <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 font-medium text-center">
-                          <span className="text-slate-500 text-[10px] block font-bold">4. Morphosyntaxe</span>
-                          <span className="text-blue-600 font-extrabold text-sm">{aiEval.grammarScore !== undefined ? aiEval.grammarScore : 3} / 5</span>
+
+                        <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 space-y-1.5">
+                          <div className="flex items-center justify-between text-[10px] font-bold">
+                            <span className="text-slate-600 dark:text-slate-400">4. Morphosyntaxe & Prononciation</span>
+                            <span className="text-blue-600 font-extrabold">{aiEval.grammarScore !== undefined ? aiEval.grammarScore : 3} / 5</span>
+                          </div>
+                          <div className="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                            <div className="h-full bg-blue-600 rounded-full" style={{ width: `${((aiEval.grammarScore || 3) / 5) * 100}%` }} />
+                          </div>
+                          <p className="text-[10px] text-slate-500 font-medium leading-tight">
+                            {aiEval.feiSubScores?.morphosyntaxPhonetics?.feedback || "Maîtrise des structures grammaticales et règles phonétiques."}
+                          </p>
                         </div>
                       </div>
 
+                      {/* Detailed Line-by-Line Spoken Error Corrections */}
+                      {aiEval.corrections && aiEval.corrections.length > 0 && (
+                        <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 space-y-2">
+                          <p className="font-bold text-purple-900 dark:text-purple-300 uppercase text-[10px] flex items-center gap-1">
+                            <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
+                            <span>Corrections Syntactiques & Phonétiques Citées dans l'Oral :</span>
+                          </p>
+                          <div className="space-y-1.5">
+                            {aiEval.corrections.map((corr: any, idx: number) => (
+                              <div key={idx} className="p-2.5 rounded-lg bg-purple-50/50 dark:bg-purple-950/30 border border-purple-200/60 dark:border-purple-900/60 text-xs space-y-1 font-sans">
+                                <div className="flex items-center gap-2 flex-wrap text-red-600 dark:text-red-400 font-semibold">
+                                  <span>❌ Expression enregistrée :</span>
+                                  <span className="line-through bg-red-100 dark:bg-red-950/80 px-1.5 py-0.5 rounded">"{corr.original}"</span>
+                                </div>
+                                <div className="flex items-center gap-2 flex-wrap text-emerald-600 dark:text-emerald-400 font-bold">
+                                  <span>✅ Formule Recommandée B2/C1 :</span>
+                                  <span className="bg-emerald-100 dark:bg-emerald-950/80 px-1.5 py-0.5 rounded">"{corr.corrected}"</span>
+                                </div>
+                                {corr.explanation && (
+                                  <p className="text-[11px] text-slate-600 dark:text-slate-400 italic">
+                                    💡 {corr.explanation}
+                                  </p>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
                       <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 text-slate-900 dark:text-slate-100 space-y-1.5">
-                        <p className="font-bold text-purple-900 dark:text-purple-300 uppercase text-[10px]">Commentaire de l'examinateur :</p>
+                        <p className="font-bold text-purple-900 dark:text-purple-300 uppercase text-[10px]">Commentaire de Synthèse de l'Examinateur :</p>
                         <p className="leading-relaxed font-medium text-xs">
                           {aiEval.feedback || `Évaluation officielle FEI : Note globale de ${aiEval.scoreOutOf20 || 15}/20.`}
                         </p>

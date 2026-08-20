@@ -1,7 +1,6 @@
 /**
- * 🇨🇦 FrancPrep Web Audio API Acoustic Signal Analyzer
- * Standardized Acoustic Signal Processing for TCF Canada Expression Orale
- * Analyzes candidate microphone stream in real time for Speech Pace (WPM), Hesitation Pauses (>1.5s), & Fluency Index.
+ * 🇨🇦 FrancPrep Web Audio API Acoustic Signal Analyzer with Hardware Noise Suppression
+ * Standardized Acoustic Signal Processing & Dynamic Noise Floor Calibration for TCF Canada Expression Orale.
  */
 
 export interface AcousticAnalysisResult {
@@ -11,6 +10,7 @@ export interface AcousticAnalysisResult {
   totalSpeechDurationSec: number;
   fluencyIndexPct: number;
   averageDecibels: number;
+  ambientNoiseFloorDb: number;
 }
 
 class AcousticSignalAnalyzer {
@@ -26,6 +26,14 @@ class AcousticSignalAnalyzer {
   private hesitationPauseCount: number = 0;
   private decibelSum: number = 0;
   private sampleCount: number = 0;
+
+  // Dynamic Ambient Noise Floor Calibration (first 600ms)
+  private noiseFloorSum: number = 0;
+  private noiseFloorSamples: number = 0;
+  private ambientNoiseFloorDb: number = -55;
+  private speechThresholdDb: number = -42;
+  private isCalibrated: boolean = false;
+
   private isCurrentlySilent: boolean = false;
   private isAnalyzing: boolean = false;
 
@@ -53,6 +61,11 @@ class AcousticSignalAnalyzer {
       this.hesitationPauseCount = 0;
       this.decibelSum = 0;
       this.sampleCount = 0;
+      this.noiseFloorSum = 0;
+      this.noiseFloorSamples = 0;
+      this.ambientNoiseFloorDb = -55;
+      this.speechThresholdDb = -42;
+      this.isCalibrated = false;
       this.isCurrentlySilent = false;
       this.isAnalyzing = true;
 
@@ -77,12 +90,31 @@ class AcousticSignalAnalyzer {
     const averageVolume = sum / dataArray.length;
     const decibels = 20 * Math.log10((averageVolume + 1) / 256);
 
+    const now = Date.now();
+    const elapsedMs = now - this.startTime;
+
+    // Initial 600ms: Dynamic Noise Floor Baseline Calibration
+    if (elapsedMs < 600) {
+      this.noiseFloorSum += decibels;
+      this.noiseFloorSamples += 1;
+      this.animFrameId = requestAnimationFrame(this.processAudioFrame);
+      return;
+    }
+
+    if (!this.isCalibrated) {
+      this.isCalibrated = true;
+      if (this.noiseFloorSamples > 0) {
+        this.ambientNoiseFloorDb = Math.round((this.noiseFloorSum / this.noiseFloorSamples) * 10) / 10;
+        // Speech threshold is dynamically set 10 dB above the calibrated ambient noise floor (min -42 dB)
+        this.speechThresholdDb = Math.max(-42, Math.round(this.ambientNoiseFloorDb + 10));
+      }
+    }
+
     this.decibelSum += decibels;
     this.sampleCount += 1;
 
-    const now = Date.now();
-    // Threshold: -45 dB defines acoustic speech vs. silence gap
-    const isSilentFrame = decibels < -45;
+    // Filter background noise using dynamic threshold
+    const isSilentFrame = decibels < this.speechThresholdDb;
 
     if (isSilentFrame) {
       if (!this.isCurrentlySilent) {
@@ -122,7 +154,7 @@ class AcousticSignalAnalyzer {
     const activeSpeechSec = Math.max(0.5, totalDurationSec - this.totalSilenceSec);
     const activeSpeechMins = activeSpeechSec / 60;
     
-    // Words per Minute (WPM) calculation based on acoustic active speech time
+    // Words per Minute (WPM) calculation based on active speech time
     const speechRateWpm = Math.round(totalWordsSpoken > 0 && activeSpeechMins > 0 ? totalWordsSpoken / activeSpeechMins : 0);
 
     // Fluency Index (%) = ratio of active speech time vs. total recording time
@@ -146,7 +178,8 @@ class AcousticSignalAnalyzer {
       totalSilenceDurationSec: Math.round(this.totalSilenceSec * 10) / 10,
       totalSpeechDurationSec: Math.round(activeSpeechSec * 10) / 10,
       fluencyIndexPct,
-      averageDecibels
+      averageDecibels,
+      ambientNoiseFloorDb: this.ambientNoiseFloorDb
     };
   }
 }

@@ -42,6 +42,14 @@ export interface SpeakingResult {
   coherenceScore: number;
   lexicalScore: number;
   grammarScore: number;
+  feiSubScores?: {
+    taskFulfillment: { score: number; max: number; label: string; feedback: string };
+    fluencyPace: { score: number; max: number; label: string; feedback: string };
+    lexicalPrecision: { score: number; max: number; label: string; feedback: string };
+    morphosyntaxPhonetics: { score: number; max: number; label: string; feedback: string };
+  };
+  phoneticErrors?: Array<{ phrase: string; recommendation: string }>;
+  syntacticErrors?: Array<{ original: string; corrected: string; explanation: string }>;
   nclcGrade: string;
   cefrLevel: string;
   expressEntryPoints: number;
@@ -1621,6 +1629,35 @@ Return JSON only:
           explanation: err.explanation || ''
         }));
 
+        const feiSubScores = {
+          taskFulfillment: {
+            score: t,
+            max: 5,
+            label: "Consigne & Respect du Scénario",
+            feedback: t >= 4 ? "Respect parfait des consignes et du registre de communication." : "Imprécision dans le traitement de la consigne ou du registre."
+          },
+          fluencyPace: {
+            score: c,
+            max: 5,
+            label: "Aisance, Débit & Cohérence Orale",
+            feedback: acousticMetrics?.speechRateWpm
+              ? `Débit mesuré à ${acousticMetrics.speechRateWpm} WPM (${acousticMetrics.hesitationPauseCount || 0} hésitations >1.5s, fluidité ${acousticMetrics.fluencyIndexPct || 100}%).`
+              : (c >= 4 ? "Discours fluide avec enchaînement logique et connecteurs formels." : "Hesitations marquées ou interruptions du rythme oral.")
+          },
+          lexicalPrecision: {
+            score: l,
+            max: 5,
+            label: "Étendue & Précision Lexicale",
+            feedback: l >= 4 ? "Vocabulaire varié, nuancé et adapté au contexte TCF Canada." : "Vocabulaire élémentaire ou répétitions lexicales."
+          },
+          morphosyntaxPhonetics: {
+            score: g,
+            max: 5,
+            label: "Morphosyntaxe & Prononciation",
+            feedback: g >= 4 ? "Maîtrise solide des structures complexes (conditionnel, subjonctif)." : "Fautes de syntaxe ou interférences linguistiques."
+          }
+        };
+
         return {
           transcription: cleanSpeech,
           feedback: parsed.feedback_summary || parsed.feedback || `Official FEI Oral Evaluation: Total ${scoreOutOf20}/20 Marks.`,
@@ -1632,6 +1669,7 @@ Return JSON only:
           coherenceScore: c,
           lexicalScore: l,
           grammarScore: g,
+          feiSubScores,
           nclcGrade,
           cefrLevel,
           expressEntryPoints,
