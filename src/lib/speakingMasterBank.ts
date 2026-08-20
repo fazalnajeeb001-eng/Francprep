@@ -114,7 +114,7 @@ What deeply motivates me to move to Canada is primarily the exceptional dynamism
         openingPromptFrench: "Bonjour ! Institut Linguistique de Montréal, Laurent Dubois au téléphone. Je vous remercie de votre intérêt pour notre programme intensif. Quelles sont vos questions concernant nos formations ?",
         openingPromptEnglish: "Hello! Montreal Language Institute, Laurent Dubois speaking. Thank you for your interest in our intensive program. What questions do you have regarding our courses?"
       },
-      prepTimeMins: 2,
+      prepTimeMins: 1,
       speakingTimeMins: 3.5,
       keyPhrases: [
         "Pourriez-vous me préciser si...",
@@ -259,7 +259,7 @@ At the end of the day, I enjoy jogging along the Rhône riverbanks or exploring 
         openingPromptFrench: "Bonjour ! Thomas Laurent à l'appareil, propriétaire de l'appartement du quartier Saint-Roch. Je vous écoute, quelles sont vos questions ?",
         openingPromptEnglish: "Hello! Thomas Laurent speaking, owner of the Saint-Roch apartment. What questions do you have for me?"
       },
-      prepTimeMins: 2,
+      prepTimeMins: 1,
       speakingTimeMins: 3.5,
       keyPhrases: [
         "Pourriez-vous me confirmer le montant exact des charges ?",
@@ -398,7 +398,7 @@ This experience fostered my open-mindedness and resilience, two essential qualit
         openingPromptFrench: "Bonjour ! Club Plein Air des Collines, Laurent Dubois à votre service. Quelles informations désirez-vous obtenir sur nos activités sportives ?",
         openingPromptEnglish: "Hello! Collines Outdoor Club, Laurent Dubois at your service. What information would you like regarding our sports activities?"
       },
-      prepTimeMins: 2,
+      prepTimeMins: 1,
       speakingTimeMins: 3.5,
       keyPhrases: [
         "Faut-il réserver le matériel à l'avance ?",
@@ -533,7 +533,7 @@ To prepare my integration into Canada, I am actively honing my professional Fren
         openingPromptFrench: "Bonjour ! Entraide Laval, Laurent Dubois. Merci de proposer votre aide. Quelles sont vos questions concernant nos missions de bénévolat ?",
         openingPromptEnglish: "Hello! Entraide Laval, Laurent Dubois speaking. Thank you for offering your help. What questions do you have regarding our volunteer missions?"
       },
-      prepTimeMins: 2,
+      prepTimeMins: 1,
       speakingTimeMins: 3.5,
       keyPhrases: [
         "Quel est l'engagement horaire minimum exigé par semaine ?",
@@ -672,7 +672,7 @@ Once settled in Canada, I look forward to joining local artist collectives and g
         openingPromptFrench: "Bonjour ! Sherb-Éco-Vélo, Thomas Laurent à votre service. Quelles questions avez-vous sur notre service de vélopartage électrique ?",
         openingPromptEnglish: "Hello! Sherb-Éco-Vélo, Thomas Laurent at your service. What questions do you have about our electric bike-share service?"
       },
-      prepTimeMins: 2,
+      prepTimeMins: 1,
       speakingTimeMins: 3.5,
       keyPhrases: [
         "Que se passe-t-il si un trajet dépasse les 30 minutes gratuites ?",
@@ -811,7 +811,7 @@ I am confident that these skills will allow me to integrate swiftly into a Canad
         openingPromptFrench: "Bonjour ! Espace Co-Travail La Mauricie, Laurent Dubois. En quoi puis-je vous renseigner sur nos formules de coworking ?",
         openingPromptEnglish: "Hello! Mauricie Coworking Space, Laurent Dubois speaking. How can I help you regarding our workspace plans?"
       },
-      prepTimeMins: 2,
+      prepTimeMins: 1,
       speakingTimeMins: 3.5,
       keyPhrases: [
         "L'accès sécurisé 24/7 fonctionne-t-il par badge ou code numérique ?",
@@ -950,7 +950,7 @@ I love discovering new cultures through their flavors, and I look forward to tas
         openingPromptFrench: "Bonjour ! École Culinaire du Saguenay, chef Laurent à l'appareil. Quelles sont vos questions concernant nos ateliers de cuisine zéro déchet ?",
         openingPromptEnglish: "Hello! Saguenay Culinary School, Chef Laurent speaking. What questions do you have regarding our zero-waste cooking workshops?"
       },
-      prepTimeMins: 2,
+      prepTimeMins: 1,
       speakingTimeMins: 3.5,
       keyPhrases: [
         "Adaptez-vous les recettes en cas d'allergies ou de régime végétarien ?",
@@ -1089,7 +1089,7 @@ I look forward to discovering Quebec cinema's creativity and attending landmark 
         openingPromptFrench: "Bonjour ! Festival des Arts de Rimouski, Élodie Martin. Merci pour votre enthousiasme. Quelles sont vos questions concernant le bénévolat au festival ?",
         openingPromptEnglish: "Hello! Rimouski Arts Festival, Élodie Martin. Thank you for your enthusiasm. What questions do you have regarding volunteering at the festival?"
       },
-      prepTimeMins: 2,
+      prepTimeMins: 1,
       speakingTimeMins: 3.5,
       keyPhrases: [
         "Faut-il être présent durant l'intégralité des 5 jours du festival ?",
@@ -1228,7 +1228,7 @@ For my settlement in Canada, I seek a similar environment: a vibrant, human-scal
         openingPromptFrench: "Bonjour ! Commun-Auto Longueuil, Laurent Dubois. En quoi puis-je vous aider concernant notre service d'autopartage ?",
         openingPromptEnglish: "Hello! Commun-Auto Longueuil, Laurent Dubois. How can I help you regarding our car-sharing service?"
       },
-      prepTimeMins: 2,
+      prepTimeMins: 1,
       speakingTimeMins: 3.5,
       keyPhrases: [
         "Un permis de conduire étranger ou international est-il accepté ?",
@@ -1367,7 +1367,7 @@ The French language has always been central to my intellectual and professional 
         openingPromptFrench: "Bonjour ! Université de Montréal, Éducation Permanente, Élodie Martin à votre écoute. Quelles questions avez-vous concernant notre certificat professionnel en analyse de données ?",
         openingPromptEnglish: "Hello! University Continuing Education, Élodie Martin speaking. What questions do you have regarding our professional certificate in data analytics?"
       },
-      prepTimeMins: 2,
+      prepTimeMins: 1,
       speakingTimeMins: 3.5,
       keyPhrases: [
         "Quels sont les diplômes préalables requis pour être admissible ?",
