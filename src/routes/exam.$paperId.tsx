@@ -961,6 +961,9 @@ export function AuthenticCBTExamPage() {
         const currentSession = playAudioSessionRef.current;
         const timer = setTimeout(() => {
           if (playAudioSessionRef.current !== currentSession) return;
+          try {
+            triggerAcousticSoundForQuestion(qNum);
+          } catch {}
           ttsSpeakListening(fullText, "fr-FR", rate, "female", () => {
             if (playAudioSessionRef.current === currentSession) {
               setIsAudioFinished(true);
@@ -4432,8 +4435,8 @@ export function AuthenticCBTExamPage() {
                                 <p className="font-bold text-purple-900 dark:text-purple-300 text-[11px]">🎙️ Speaking (EO Focus):</p>
                                 <p className="text-[11px] leading-relaxed">
                                   {res.speakingAvg >= 60
-                                    ? `✓ Strong oral fluency (${res.speakingAvg}% — ${res.speakingNCLC.nclcGrade}).`
-                                    : `⚠️ Oral score is ${res.speakingAvg}% (${res.speakingNCLC.nclcGrade}). Focus on formal question structures and argument organization.`}
+                                    ? `✓ Strong oral fluency (${res.speakingAvg}% — CLB ${res.speakingNCLC.nclcLevel} / ${res.speakingNCLC.cefrEquivalent}).`
+                                    : `⚠️ Oral score is ${res.speakingAvg}% (CLB ${res.speakingNCLC.nclcLevel} / ${res.speakingNCLC.cefrEquivalent}). Focus on formal question structures and argument organization.`}
                                 </p>
                               </div>
                             )}

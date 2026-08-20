@@ -676,7 +676,10 @@ Respond STRICTLY with a valid JSON object matching this schema:
 
         // ─── TASK 1 STRICT CALIBRATION (60–120 words) ───
         if (isTache1) {
-          if (wordCount < 60) {
+          if (hasTelegraphicGrammar || wordCount < 30) {
+            // A1 Severe Deficit (1–3/20 | NCLC 1–3)
+            t = 1; c = 1; l = 1; g = 0;
+          } else if (wordCount < 60) {
             // Strict FEI word count deficit penalty: under 60 words cannot exceed A2 (max 7/20)
             if (wordCount < 45) {
               t = 1; c = Math.min(2, c); l = Math.min(2, l); g = Math.min(2, g);
@@ -686,18 +689,12 @@ Respond STRICTLY with a valid JSON object matching this schema:
           } else if (hasC1C2FormalLex && hasFormalSignOff && (hasFormalPoliteConditional || hasC1C2Connectors) && wordCount >= 60) {
             // C1 / C2 Advanced (16–18/20 | NCLC 9–10)
             t = 5; c = Math.max(4, c); l = 5; g = Math.max(4, g);
-          } else if ((hasB2FormalLex || hasFormalPoliteConditional) && (hasFormalGreeting || hasFormalSignOff || hasB2Connectors || textClean.includes("Cordialement")) && wordCount >= 60) {
-            // B2 Solid (14–15/20 | NCLC 8)
-            t = Math.max(4, t);
-            c = Math.max(4, c);
-            l = Math.max(4, l);
-            g = Math.max(4, g);
-          } else if ((hasFormalPoliteConditional || hasB1Connectors || hasFormalSignOff) && wordCount >= 60) {
-            // B1 Intermediate (9–11/20 | NCLC 5–6)
-            t = Math.min(3, t);
-            c = Math.min(3, c);
-            l = Math.min(3, l);
-            g = Math.min(3, g);
+          } else if (hasB2FormalLex && hasFormalSignOff && hasFormalPoliteConditional && wordCount >= 60) {
+            // B2 Solid Formal Correspondence (14–15/20 | NCLC 8)
+            t = 4; c = 4; l = 4; g = 3;
+          } else if ((hasFormalPoliteConditional || hasB1Connectors || textClean.includes("Cordialement") || hasB2FormalLex || hasB2Connectors) && wordCount >= 60) {
+            // B1 Intermediate Semi-Formal (9–11/20 | NCLC 5–6)
+            t = 3; c = 3; l = 2; g = 2;
           } else {
             // A2 Conversational / Elementary (5–7/20 | NCLC 4)
             t = Math.min(2, Math.max(1, t));
@@ -812,41 +809,37 @@ Respond STRICTLY with a valid JSON object matching this schema:
         let cefrLevel = parsed.cefrLevel || "B2";
         let expressEntryPoints = 17;
 
-        if (scoreOutOf20 >= 18) {
+        if (scoreOutOf20 >= 16) {
           nclcGrade = "NCLC 10 (C2 Mastery)";
           cefrLevel = "C2";
           expressEntryPoints = 34;
-        } else if (scoreOutOf20 >= 16) {
+        } else if (scoreOutOf20 >= 14) {
           nclcGrade = "NCLC 9 (C1 Advanced)";
           cefrLevel = "C1";
           expressEntryPoints = 31;
-        } else if (scoreOutOf20 >= 14) {
+        } else if (scoreOutOf20 >= 12) {
           nclcGrade = "NCLC 8 (B2 Upper)";
           cefrLevel = "B2";
           expressEntryPoints = 23;
-        } else if (scoreOutOf20 >= 12) {
+        } else if (scoreOutOf20 >= 10) {
           nclcGrade = "NCLC 7 (B2 Benchmark Target)";
           cefrLevel = "B2";
           expressEntryPoints = 17;
-        } else if (scoreOutOf20 >= 10) {
+        } else if (scoreOutOf20 >= 7) {
           nclcGrade = "NCLC 6 (B1 Intermediate)";
           cefrLevel = "B1";
           expressEntryPoints = 12;
-        } else if (scoreOutOf20 >= 8) {
+        } else if (scoreOutOf20 >= 6) {
           nclcGrade = "NCLC 5 (B1 Threshold)";
           cefrLevel = "B1";
           expressEntryPoints = 6;
-        } else if (scoreOutOf20 >= 5) {
+        } else if (scoreOutOf20 >= 4) {
           nclcGrade = "NCLC 4 (A2 Elementary)";
           cefrLevel = "A2";
           expressEntryPoints = 0;
-        } else if (scoreOutOf20 >= 3) {
+        } else {
           nclcGrade = "NCLC 3 (A1 Beginner)";
           cefrLevel = "A1";
-          expressEntryPoints = 0;
-        } else {
-          nclcGrade = "NCLC 1-2 (Below A1 / Beginner)";
-          cefrLevel = "Below A1";
           expressEntryPoints = 0;
         }
 

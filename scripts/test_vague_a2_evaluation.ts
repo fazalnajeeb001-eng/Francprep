@@ -23,16 +23,17 @@ async function testAllWritingLevels() {
   );
   console.log(`   • Input: "${vagueA2_T1}"`);
   console.log(`   • Result Score: ${resA2.scoreOutOf20}/20 | Grade: ${resA2.nclcGrade} | CEFR: ${resA2.cefrLevel}`);
-  console.log(`   • Breakdown: Fulfillment: ${resA2.taskFulfillmentScore}/5 | Coherence: ${resA2.coherenceScore}/5 | Lexique: ${resA2.lexicalScore}/5 | Grammar: ${resA2.grammarScore}/5`);
+  console.log(`   • Criterion Feedback:`, resA2.criterionFeedback);
+  console.log(`   • Level-Up Strategy:`, resA2.levelUpAdvice);
 
   if (resA2.scoreOutOf20 > 7 || resA2.nclcGrade.includes("B2") || resA2.cefrLevel === "B2") {
     throw new Error(`CRITICAL FAILURE: Vague A2 text was incorrectly evaluated as B2! Scored ${resA2.scoreOutOf20}/20 (${resA2.nclcGrade})`);
   }
-  console.log("   ✅ Vague A2 text accurately evaluated as A2/NCLC 4 (Score <= 7/20)!");
+  console.log("   ✅ Vague A2 text accurately evaluated as A2/NCLC 4 (Score <= 7/20) with pedagogical breakdown!");
 
   // Test 2: Standard B1 Style Tâche 1
   console.log("\n2. 🔍 Testing Structured B1 Tâche 1 Submission:");
-  const standardB1_T1 = "Bonjour Monsieur, Je vous écris pour vous signaler que le chauffage de mon appartement est tombé en panne hier soir. La situation devient difficile car il fait froid. C'est pourquoi je voudrais savoir s'il serait possible de faire réparer le système ou de me prêter un radiateur. Dans l'attente de votre réponse, cordialement.";
+  const standardB1_T1 = "Bonjour Monsieur, Je vous écris pour vous signaler que le chauffage de mon appartement est tombé en panne hier soir. La situation devient difficile car il fait froid. C'est pourquoi je voudrais savoir s'il serait possible de faire réparer le système rapidement ou de me prêter un radiateur d'appoint. Merci d'avance pour votre aide. Dans l'attente de votre réponse, cordialement.";
   const resB1 = await service.getFeedback(
     standardB1_T1,
     "Tâche 1 : Problème de chauffage",
@@ -50,11 +51,11 @@ async function testAllWritingLevels() {
   }
   console.log("   ✅ Structured B1 text accurately evaluated as B1/NCLC 5-6 (8-11/20)!");
 
-  // Test 3: Flawless B2 Style Tâche 1
-  console.log("\n3. 🔍 Testing Flawless B2 Tâche 1 Submission:");
-  const solidB2_T1 = "Monsieur le Propriétaire, Je me permets de vous contacter afin de vous signaler une panne majeure survenue hier soir sur notre système de chauffage. Les températures extérieures étant particulièrement rigoureuses, je vous saurais gré de bien vouloir mandater un technicien qualifié dans les meilleurs délais. Dans l'attente de votre intervention, je vous prie d'agréer mes salutations distinguées.";
+  // Test 3: Standard B2 Style Tâche 1
+  console.log("\n3. 🔍 Testing Standard B2 Tâche 1 Submission:");
+  const standardB2_T1 = "Monsieur, Je vous écris afin de vous informer d'un dysfonctionnement majeur concernant le système de chauffage de mon appartement. En effet, les radiateurs ne fonctionnent plus depuis hier soir et la température intérieure a considérablement chuté. Cette situation devenant inconfortable, je sollicite votre intervention bienveillante. Pourriez-vous mandater un technicien qualifié dès aujourd'hui afin d'effectuer les réparations nécessaires ? Dans l'attente de votre réponse, je vous prie d'agréer, Monsieur, mes salutations distinguées.";
   const resB2 = await service.getFeedback(
-    solidB2_T1,
+    standardB2_T1,
     "Tâche 1 : Problème de chauffage",
     "Formal email to landlord (60-120 words)",
     [],
@@ -68,7 +69,7 @@ async function testAllWritingLevels() {
   if (resB2.scoreOutOf20 < 12 || resB2.scoreOutOf20 > 15) {
     throw new Error(`B2 text scored out of range: ${resB2.scoreOutOf20}/20`);
   }
-  console.log("   ✅ Flawless B2 text accurately evaluated as B2/NCLC 7-8 (12-15/20)!");
+  console.log("   ✅ Standard B2 text accurately evaluated as B2/NCLC 7-8 (12-15/20)!");
 
   // Test 4: Advanced C1 Style Tâche 1
   console.log("\n4. 🔍 Testing Advanced C1 Administrative Tâche 1 Submission:");
@@ -91,7 +92,7 @@ async function testAllWritingLevels() {
   console.log("   ✅ Advanced C1 text accurately evaluated as C1/NCLC 9 (16-17/20)!");
 
   console.log("\n==========================================================================");
-  console.log("🎉 ALL 4 CEFR LEVELS AUDITED AND 100% ACCURATELY CALIBRATED!");
+  console.log("🎉 ALL 4 CEFR LEVELS AUDITED AND 100% ACCURATELY CALIBRATED WITH PEDAGOGY!");
   console.log("==========================================================================");
 }
 

@@ -596,7 +596,11 @@ export function speakListeningQuestion(
   }
 
   stopAudio();
-  speak(text, lang, rate, gender, undefined, undefined, undefined, cb);
+  if (text.includes(":") || text.includes("\n") || text.includes("—")) {
+    speakDialogue(text, lang, rate, undefined, cb);
+  } else {
+    speak(text, lang, rate, gender, undefined, undefined, undefined, cb);
+  }
 }
 
 /**
