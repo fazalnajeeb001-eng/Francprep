@@ -519,14 +519,10 @@ export function AuthenticCBTExamPage() {
   }, [selectedAnswers, flaggedQuestions, writingResponses, speakingTranscripts, completedSectionIndices, sectionTimeRemaining, activeSectionIdx, currentQuestionIdx, isSubmitted, sessionKey]);
 
   useEffect(() => {
-    handleStopAudio();
     setShowQuestionPrompt(false);
     setShowTranscript(false);
     setShowTranslation(false);
     setShowReadingHint(false);
-    return () => {
-      handleStopAudio();
-    };
   }, [currentQuestionIdx, activeSectionIdx]);
 
   useEffect(() => {
@@ -959,18 +955,31 @@ export function AuthenticCBTExamPage() {
         const rate = (currentQ as any).speakingRate || 1.0;
         const fullText = currentQ.transcript || currentQ.text;
         const currentSession = playAudioSessionRef.current;
+
+        // Safety watchdog: ensure isAudioFinished fires within 45s if audio hangs or browser drops callback
+        const watchdogTimer = setTimeout(() => {
+          if (playAudioSessionRef.current === currentSession) {
+            setIsAudioFinished(true);
+          }
+        }, 45000);
+
         const timer = setTimeout(() => {
           if (playAudioSessionRef.current !== currentSession) return;
           try {
             triggerAcousticSoundForQuestion(qNum);
           } catch {}
           ttsSpeakListening(fullText, "fr-FR", rate, "female", () => {
+            clearTimeout(watchdogTimer);
             if (playAudioSessionRef.current === currentSession) {
               setIsAudioFinished(true);
             }
           });
         }, 300);
-        return () => clearTimeout(timer);
+
+        return () => {
+          clearTimeout(timer);
+          clearTimeout(watchdogTimer);
+        };
       }
     }
   }, [currentQuestionIdx, activeSectionIdx]);

@@ -151,19 +151,19 @@ export function speak(
             audio.preservesPitch = true;
           }).catch(() => {
             if (myDialogueId === currentDialogueId && !isAudioPausedState) {
-              playDirectHDFallback(cleanText, langCode, rate, audio, finalGender);
+              playDirectHDFallback(cleanText, langCode, rate, audio, finalGender, onEnded);
             }
           });
           return;
         }
       }
       if (myDialogueId === currentDialogueId && !isAudioPausedState) {
-        playDirectHDFallback(cleanText, langCode, rate, audio, finalGender);
+        playDirectHDFallback(cleanText, langCode, rate, audio, finalGender, onEnded);
       }
     })
     .catch(() => {
       if (myDialogueId === currentDialogueId && !isAudioPausedState) {
-        playDirectHDFallback(cleanText, langCode, rate, audio, finalGender);
+        playDirectHDFallback(cleanText, langCode, rate, audio, finalGender, onEnded);
       }
     });
 
@@ -552,19 +552,25 @@ export function speakDialogue(
               audio.preservesPitch = true;
             }).catch(() => {
               if (myDialogueId === currentDialogueId && !isAudioPausedState) {
-                playDirectHDFallback(current.text, langCode, rate, audio);
+                playDirectHDFallback(current.text, langCode, rate, audio, undefined, () => {
+                  if (audio.onended) (audio.onended as any)(new Event("ended"));
+                });
               }
             });
             return;
           }
         }
         if (myDialogueId === currentDialogueId && !isAudioPausedState) {
-          playDirectHDFallback(current.text, langCode, rate, audio);
+          playDirectHDFallback(current.text, langCode, rate, audio, undefined, () => {
+            if (audio.onended) (audio.onended as any)(new Event("ended"));
+          });
         }
       })
       .catch(() => {
         if (myDialogueId === currentDialogueId && !isAudioPausedState) {
-          playDirectHDFallback(current.text, langCode, rate, audio);
+          playDirectHDFallback(current.text, langCode, rate, audio, undefined, () => {
+            if (audio.onended) (audio.onended as any)(new Event("ended"));
+          });
         }
       });
   }
