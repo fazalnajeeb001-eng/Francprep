@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Volume2,
+  Headphones,
   BookOpen,
   PenTool,
   Mic,
@@ -1025,6 +1026,11 @@ export function AuthenticCBTExamPage() {
         setShowQuestionPrompt(false);
       }
 
+      // Do NOT auto-play audio while the section launch disclaimer modal is active!
+      if (!acceptedSectionDisclaimers["COMPREHENSION_ORALE"]) {
+        return;
+      }
+
       // Auto-play audio on question load in Exam Mode
       if (mode === "EXAM" && !isSubmitted) {
         const rate = (currentQ as any).speakingRate || 1.0;
@@ -1057,7 +1063,7 @@ export function AuthenticCBTExamPage() {
         };
       }
     }
-  }, [currentQuestionIdx, activeSectionIdx]);
+  }, [currentQuestionIdx, activeSectionIdx, acceptedSectionDisclaimers, mode, isSubmitted]);
 
   const handlePlayAudio = async (text: string, lang = "fr-FR", rate = 1.0) => {
     const sessionId = ++playAudioSessionRef.current;
