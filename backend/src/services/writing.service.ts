@@ -1382,13 +1382,7 @@ Respond STRICTLY with a raw JSON object:
     const isTache2 = taskNumber === 2 || Boolean(lessonTitle?.includes('Tâche 2') || lessonTitle?.includes('spk-2'));
     const taskNum = taskNumber || (isTache1 ? 1 : isTache2 ? 2 : 3);
 
-    const prompt = `You are an official France Éducation International (FEI) TCF Canada Speaking Examiner. Your sole task is to evaluate the candidate's spoken response transcript with 100% fidelity to official TCF Canada assessment criteria.
-
-### DYNAMIC INPUT CONTEXT:
-- Task Number: ${taskNum} (${taskNum === 1 ? 'Tâche 1: Entretien dirigé' : taskNum === 2 ? 'Tâche 2: Exercice en interaction' : 'Tâche 3: Expression d\'un point de vue'})
-- Official Prompt/Scenario: "${expectedText}"
-- Candidate Spoken Transcript: "${cleanSpeech}"
-${acousticMetrics ? `- Real-Time Web Audio Signal Metrics: Speech Pace = ${acousticMetrics.speechRateWpm || 'N/A'} WPM, Long Hesitation Pauses (>1.5s) = ${acousticMetrics.hesitationPauseCount || 0}, Fluency Index = ${acousticMetrics.fluencyIndexPct || 100}%, Silence Duration = ${acousticMetrics.totalSilenceDurationSec || 0}s.` : ''}
+    if (!apiKey) {
       // Local calibrated oral evaluation fallback
       const words = cleanSpeech.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
       const wordCount = words.length;
@@ -1399,21 +1393,22 @@ ${acousticMetrics ? `- Real-Time Web Audio Signal Metrics: Speech Pace = ${acous
       const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part|en somme|selon moi|à mon avis|en effet)\b/i.test(textLower);
       const hasB2Grammar = /\b(pourriez|serait|aimerais|puisse|soit|dont|auquel|bien que|afin de|avons|sommes|ai fait|ai visité)\b/i.test(textLower);
 
-      let t = 2;
-      let f = 2;
-      let l = 2;
-      let g = 2;
+      let t = 1;
+      let f = 1;
+      let l = 1;
+      let g = 1;
 
-      if (wordCount >= 35) { t = 4; f = 4; l = 4; g = 3; }
-      else if (wordCount >= 20) { t = 3; f = 3; l = 3; g = 3; }
+      if (wordCount >= 60) { t = 4; f = 4; l = 4; g = 4; }
+      else if (wordCount >= 35) { t = 3; f = 3; l = 3; g = 3; }
+      else if (wordCount >= 18) { t = 2; f = 2; l = 2; g = 2; }
 
-      if (isQuestion) t = Math.min(5, t + 1);
+      if (isQuestion && taskNum === 2) t = Math.min(5, t + 1);
       if (hasB2Connectors) { f = Math.min(5, f + 1); l = Math.min(5, l + 1); }
       if (hasB2Grammar) g = Math.min(5, g + 1);
       if (hasEnglishWords) { l = 1; g = 1; }
 
       const rawSum = t + f + l + g;
-      const scoreOutOf20 = hasEnglishWords ? Math.min(6, rawSum) : rawSum;
+      const scoreOutOf20 = hasEnglishWords ? Math.min(5, rawSum) : rawSum;
       const scorePct = Math.round((scoreOutOf20 / 20) * 100);
 
       let nclcGrade = "NCLC 7 (B2 Benchmark Target)";
@@ -1454,7 +1449,7 @@ ${acousticMetrics ? `- Real-Time Web Audio Signal Metrics: Speech Pace = ${acous
 ### DYNAMIC INPUT CONTEXT:
 - Task Number: ${taskNum} (${taskNum === 1 ? 'Tâche 1: Entretien dirigé' : taskNum === 2 ? 'Tâche 2: Exercice en interaction' : 'Tâche 3: Expression d\'un point de vue'})
 - Official Prompt/Scenario: "${expectedText}"
-- Candidate Spoken Transcript: "${cleanSpeech}"
+${acousticMetrics ? `- Real-Time Web Audio Signal Metrics: Speech Pace = ${acousticMetrics.speechRateWpm || 'N/A'} WPM, Long Hesitation Pauses (>1.5s) = ${acousticMetrics.hesitationPauseCount || 0}, Fluency Index = ${acousticMetrics.fluencyIndexPct || 100}%, Silence Duration = ${acousticMetrics.totalSilenceDurationSec || 0}s.` : ''}
 
 ---
 
