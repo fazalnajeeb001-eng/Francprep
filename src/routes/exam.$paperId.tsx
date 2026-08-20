@@ -375,11 +375,28 @@ export function AuthenticCBTExamPage() {
           } else {
             next[taskId] = 0;
             setIsOralPrepActive((p) => ({ ...p, [taskId]: false }));
-            // Auto announce end of prep time & start speaking timer
-            handlePlayExaminerAudio("Le temps de préparation est terminé. Vous pouvez maintenant vous exprimer en français.");
+
+            // Auto announce end of prep time & ONLY start speaking timer AFTER announcement audio finishes!
             const currentTask = currentSection?.speakingTasks?.find(t => t.id === taskId);
             const duration = currentTask?.speakingTimeMins || (taskId.includes("spk-1") ? 2 : taskId.includes("spk-2") ? 3.5 : 4.5);
-            handleStartSpeakingTimer(taskId, duration);
+
+            let announceHandled = false;
+            const startSpeakingAfterAnnounce = () => {
+              if (!announceHandled) {
+                announceHandled = true;
+                handleStartSpeakingTimer(taskId, duration);
+              }
+            };
+
+            handlePlayExaminerAudio(
+              "Le temps de préparation est terminé. Vous pouvez maintenant vous exprimer en français.",
+              startSpeakingAfterAnnounce
+            );
+
+            // Fallback safety (10s) in case audio playback is blocked
+            setTimeout(() => {
+              startSpeakingAfterAnnounce();
+            }, 10000);
           }
         });
         return next;
@@ -475,28 +492,40 @@ export function AuthenticCBTExamPage() {
         : "Bonjour ! J'aimerais connaître votre point de vue sur ce sujet de société. Présentez-moi vos arguments et votre position."
     );
 
+    let sessionTimerHandled = false;
+
     if (task.prepTimeMins > 0) {
       // Tâche 2 (Interaction with prep time):
-      // Preparation Timer starts IMMEDIATELY along with the question audio!
-      handleStartPrepTimer(task.id, task.prepTimeMins);
-      handlePlayExaminerAudio(openingText);
+      // Preparation Timer starts ONLY AFTER examiner prompt audio finishes speaking!
+      const startPrepAfterAudio = () => {
+        if (!sessionTimerHandled) {
+          sessionTimerHandled = true;
+          handleStartPrepTimer(task.id, task.prepTimeMins);
+        }
+      };
+
+      handlePlayExaminerAudio(openingText, startPrepAfterAudio);
+
+      // Fallback safety (20s) in case browser blocks audio auto-play
+      setTimeout(() => {
+        startPrepAfterAudio();
+      }, 20000);
     } else {
       // Tâche 1 & Tâche 3 (Direct speaking without prep time):
-      // Speaking Timer starts AFTER the examiner question audio finishes speaking!
-      let timerStarted = false;
-      const startTimer = () => {
-        if (!timerStarted) {
-          timerStarted = true;
+      // Speaking Timer starts ONLY AFTER examiner prompt audio finishes speaking!
+      const startSpeakingAfterAudio = () => {
+        if (!sessionTimerHandled) {
+          sessionTimerHandled = true;
           handleStartSpeakingTimer(task.id, task.speakingTimeMins);
         }
       };
 
-      handlePlayExaminerAudio(openingText, startTimer);
+      handlePlayExaminerAudio(openingText, startSpeakingAfterAudio);
 
-      // Fallback safety timeout (5 seconds) in case audio is blocked or delayed
+      // Fallback safety (20s) in case browser blocks audio auto-play
       setTimeout(() => {
-        startTimer();
-      }, 5000);
+        startSpeakingAfterAudio();
+      }, 20000);
     }
   };
 
