@@ -266,6 +266,7 @@ export function AuthenticCBTExamPage() {
   // Submission & Results & Strategy Modals State
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [isAudioFetching, setIsAudioFetching] = useState(false);
   const [isAudioPaused, setIsAudioPaused] = useState(false);
   const [isAudioFinished, setIsAudioFinished] = useState(false);
   const [showStrategyModal, setShowStrategyModal] = useState(false);
@@ -323,8 +324,8 @@ export function AuthenticCBTExamPage() {
   useEffect(() => {
     if (isSubmitted) return;
 
-    // Pause section timer if explicitly paused, in practice/admin pause mode, OR during examiner speech in Speaking section
-    if (isTimerPaused || (currentSection?.type === "EXPRESSION_ORALE" && isSpeaking)) return;
+    // Pause section timer if explicitly paused, in practice/admin pause mode, OR during examiner speech/fetching in Speaking section
+    if (isTimerPaused || (currentSection?.type === "EXPRESSION_ORALE" && (isSpeaking || isAudioFetching))) return;
 
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
@@ -355,7 +356,7 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [activeSectionIdx, mode, isSubmitted, isTimerPaused, isAdmin, isSpeaking, currentSection?.type, paper.sections.length]);
+  }, [activeSectionIdx, mode, isSubmitted, isTimerPaused, isAdmin, isSpeaking, isAudioFetching, currentSection?.type, paper.sections.length]);
 
   const handleStartPrepTimer = (taskId: string, prepMins = 1) => {
     setOralPrepTimeRemaining((prev) => ({
@@ -375,8 +376,8 @@ export function AuthenticCBTExamPage() {
 
   useEffect(() => {
     const activeTasks = Object.keys(isOralPrepActive).filter((k) => isOralPrepActive[k] && (oralPrepTimeRemaining[k] || 0) > 0);
-    // CRITICAL FORENSIC GUARD: Freeze prep timer while examiner audio is playing or simulator is paused
-    if (activeTasks.length === 0 || isSpeaking || isTimerPaused) return;
+    // CRITICAL FORENSIC GUARD: Freeze prep timer while examiner audio is playing/fetching or simulator is paused
+    if (activeTasks.length === 0 || isSpeaking || isAudioFetching || isTimerPaused) return;
 
     const interval = setInterval(() => {
       setOralPrepTimeRemaining((prev) => {
@@ -416,12 +417,12 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isOralPrepActive, oralPrepTimeRemaining, currentSection, isSpeaking, isTimerPaused]);
+  }, [isOralPrepActive, oralPrepTimeRemaining, currentSection, isSpeaking, isAudioFetching, isTimerPaused]);
 
   useEffect(() => {
     const activeTasks = Object.keys(isOralSpeakingActive).filter((k) => isOralSpeakingActive[k] && (oralSpeakingTimeRemaining[k] || 0) > 0);
-    // CRITICAL FORENSIC GUARD: Freeze speaking timer while examiner audio is playing or simulator is paused
-    if (activeTasks.length === 0 || isSpeaking || isTimerPaused) return;
+    // CRITICAL FORENSIC GUARD: Freeze speaking timer while examiner audio is playing/fetching or simulator is paused
+    if (activeTasks.length === 0 || isSpeaking || isAudioFetching || isTimerPaused) return;
 
     const interval = setInterval(() => {
       setOralSpeakingTimeRemaining((prev) => {
@@ -446,8 +447,15 @@ export function AuthenticCBTExamPage() {
 
   const handlePlayExaminerAudio = (text: string, onEnded?: () => void) => {
     handleStopAudio();
+    setIsAudioFetching(true);
     const isMale = /\b(monsieur|m\.|homme|paul|léo|marc|antoine|pierre|thomas|hugo|louis)\b/i.test(text);
-    ttsSpeak(text, "fr-FR", 0.9, isMale ? "male" : "female", undefined, undefined, undefined, onEnded);
+
+    const handleEnded = () => {
+      setIsAudioFetching(false);
+      if (onEnded) onEnded();
+    };
+
+    ttsSpeak(text, "fr-FR", 0.9, isMale ? "male" : "female", undefined, undefined, undefined, handleEnded);
   };
 
   const handleSendSpeakingQuestionToExaminer = async (taskId: string, userText: string, scenarioText: string) => {
@@ -623,6 +631,12 @@ export function AuthenticCBTExamPage() {
       const wordCount = countFrenchWords(currentText);
       const metrics = acousticAnalyzer.stopAnalysis(wordCount);
       setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
+
+      // Automatically dispatch speech to AI Examiner upon stop recording!
+      if (currentText.trim().length >= 3) {
+        const task = currentSection?.speakingTasks?.find((t) => t.id === taskId);
+        handleSendSpeakingQuestionToExaminer(taskId, currentText, task?.scenario || "TCF Oral Interaction");
+      }
       return;
     }
 
@@ -678,6 +692,12 @@ export function AuthenticCBTExamPage() {
       const wordCount = countFrenchWords(currentText);
       const metrics = acousticAnalyzer.stopAnalysis(wordCount);
       setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
+
+      // Automatically dispatch speech to AI Examiner when recording finishes!
+      if (currentText.trim().length >= 3) {
+        const task = currentSection?.speakingTasks?.find((t) => t.id === taskId);
+        handleSendSpeakingQuestionToExaminer(taskId, currentText, task?.scenario || "TCF Oral Interaction");
+      }
     };
 
     recognition.start();
@@ -1010,6 +1030,7 @@ export function AuthenticCBTExamPage() {
 
   const handleStopAudio = () => {
     playAudioSessionRef.current++;
+    setIsAudioFetching(false);
     ttsStop();
     setIsAudioPaused(false);
   };
