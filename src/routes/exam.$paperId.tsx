@@ -259,6 +259,8 @@ export function AuthenticCBTExamPage() {
   const [activeSpeakingTaskIdx, setActiveSpeakingTaskIdx] = useState(0);
   const [showSpeakingDisclaimer, setShowSpeakingDisclaimer] = useState(false);
   const [hasAcceptedSpeakingDisclaimer, setHasAcceptedSpeakingDisclaimer] = useState(false);
+  const [showSectionDisclaimer, setShowSectionDisclaimer] = useState(false);
+  const [acceptedSectionDisclaimers, setAcceptedSectionDisclaimers] = useState<Record<string, boolean>>({});
 
   // Submission & Results & Strategy Modals State
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -941,12 +943,10 @@ export function AuthenticCBTExamPage() {
     setTimeLeft(currentSection.durationMins * 60);
     setCurrentQuestionIdx(0);
 
-    if (currentSection.type === "EXPRESSION_ORALE") {
-      if (!hasAcceptedSpeakingDisclaimer) {
-        setShowSpeakingDisclaimer(true);
-      } else {
-        startSpeakingTaskSession(activeSpeakingTaskIdx);
-      }
+    if (!acceptedSectionDisclaimers[currentSection.type]) {
+      setShowSectionDisclaimer(true);
+    } else if (currentSection.type === "EXPRESSION_ORALE") {
+      startSpeakingTaskSession(activeSpeakingTaskIdx);
     }
 
     // Auto-popup strategy modal strictly ONCE per section in Practice Mode
@@ -960,7 +960,7 @@ export function AuthenticCBTExamPage() {
         return next;
       });
     }
-  }, [activeSectionIdx, currentSection.durationMins, mode, currentSection.type, paper.id, hasAcceptedSpeakingDisclaimer]);
+  }, [activeSectionIdx, currentSection.durationMins, mode, currentSection.type, paper.id, acceptedSectionDisclaimers]);
 
   // Timer Countdown
   useEffect(() => {
@@ -4215,9 +4215,9 @@ export function AuthenticCBTExamPage() {
         </footer>
       )}
 
-      {/* ─── SPEAKING PRE-TEST DISCLAIMER MODAL ─── */}
+      {/* ─── OFFICIAL UNIVERSAL CBT SECTION LAUNCH / DISCLAIMER MODAL ─── */}
       <AnimatePresence>
-        {showSpeakingDisclaimer && !hasAcceptedSpeakingDisclaimer && (
+        {showSectionDisclaimer && !acceptedSectionDisclaimers[currentSection.type] && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -4230,71 +4230,161 @@ export function AuthenticCBTExamPage() {
               exit={{ scale: 0.95, opacity: 0 }}
               className="w-full max-w-lg p-6 sm:p-8 rounded-2xl border bg-white dark:bg-[#101828] border-purple-300 dark:border-purple-800 shadow-2xl space-y-5 text-center my-auto"
             >
-              <div className="w-16 h-16 rounded-2xl bg-purple-600 text-white flex items-center justify-center mx-auto shadow-xl">
-                <Mic className="w-8 h-8" />
+              <div className={`w-16 h-16 rounded-2xl text-white flex items-center justify-center mx-auto shadow-xl ${
+                currentSection.type === "COMPREHENSION_ORALE" ? "bg-blue-600" :
+                currentSection.type === "COMPREHENSION_ECRITE" ? "bg-emerald-600" :
+                currentSection.type === "EXPRESSION_ECRITE" ? "bg-amber-600" : "bg-purple-600"
+              }`}>
+                {currentSection.type === "COMPREHENSION_ORALE" && <Headphones className="w-8 h-8" />}
+                {currentSection.type === "COMPREHENSION_ECRITE" && <BookOpen className="w-8 h-8" />}
+                {currentSection.type === "EXPRESSION_ECRITE" && <PenTool className="w-8 h-8" />}
+                {currentSection.type === "EXPRESSION_ORALE" && <Mic className="w-8 h-8" />}
               </div>
 
               <div className="space-y-2">
                 <span className="text-[11px] font-extrabold uppercase tracking-wider text-purple-600 dark:text-purple-400">
-                  Official TCF Canada Simulator
+                  Official TCF Canada Computer-Based Simulator
                 </span>
                 <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
-                  Épreuve d'Expression Orale (Speaking Section)
+                  {currentSection.type === "COMPREHENSION_ORALE" && "Épreuve de Compréhension Orale (Listening Section)"}
+                  {currentSection.type === "COMPREHENSION_ECRITE" && "Épreuve de Compréhension Écrite (Reading Section)"}
+                  {currentSection.type === "EXPRESSION_ECRITE" && "Épreuve d'Expression Écrite (Writing Section)"}
+                  {currentSection.type === "EXPRESSION_ORALE" && "Épreuve d'Expression Orale (Speaking Section)"}
                 </h2>
                 <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed pt-1">
-                  This test simulates the TCF Canada Computer-Based Testing environment:
+                  This test section strictly simulates official France Éducation International CBT proctored standards:
                 </p>
               </div>
 
               <div className="p-4 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 text-left text-xs space-y-3">
-                <div className="flex items-start gap-2.5">
-                  <Volume2 className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
-                  <div>
-                    <strong className="text-purple-950 dark:text-purple-200 block">Automatic Examiner Voice Audio:</strong>
-                    <span className="text-slate-600 dark:text-slate-400 font-medium">The certified examiner voice prompt plays automatically when each task launches.</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <Clock className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
-                  <div className="space-y-1 w-full">
-                    <strong className="text-purple-950 dark:text-purple-200 block">Official Prep & Speaking Timers:</strong>
-                    <div className="grid grid-cols-1 gap-1 text-[11px] font-medium text-slate-700 dark:text-slate-300 pt-0.5">
-                      <div className="flex items-center justify-between p-1.5 rounded bg-white dark:bg-slate-900 border border-purple-200/60 dark:border-purple-900/60">
-                        <span><strong>Tâche 1 (Entretien dirigé):</strong> 0m Prep</span>
-                        <span className="font-mono text-purple-600 font-bold">2m Speaking (Timer starts after audio)</span>
-                      </div>
-                      <div className="flex items-center justify-between p-1.5 rounded bg-white dark:bg-slate-900 border border-purple-200/60 dark:border-purple-900/60">
-                        <span><strong>Tâche 2 (Interaction):</strong> 2m Prep (Starts with audio)</span>
-                        <span className="font-mono text-purple-600 font-bold">3.5m Speaking</span>
-                      </div>
-                      <div className="flex items-center justify-between p-1.5 rounded bg-white dark:bg-slate-900 border border-purple-200/60 dark:border-purple-900/60">
-                        <span><strong>Tâche 3 (Point de vue):</strong> 0m Prep</span>
-                        <span className="font-mono text-purple-600 font-bold">4.5m Speaking (Timer starts after audio)</span>
+                {currentSection.type === "COMPREHENSION_ORALE" && (
+                  <>
+                    <div className="flex items-start gap-2.5">
+                      <Volume2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-slate-950 dark:text-slate-200 block">Automatic Audio & Per-Question Pause Guard:</strong>
+                        <span className="text-slate-600 dark:text-slate-400 font-medium">Document audio plays once automatically. The per-question countdown is strictly frozen while audio is playing.</span>
                       </div>
                     </div>
-                  </div>
-                </div>
+                    <div className="flex items-start gap-2.5">
+                      <Clock className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-slate-950 dark:text-slate-200 block">Official Listening Timers:</strong>
+                        <span className="text-slate-600 dark:text-slate-400 font-medium">39 Questions • 35 Minutes Total. Answers are recorded automatically when time expires.</span>
+                      </div>
+                    </div>
+                  </>
+                )}
 
-                <div className="flex items-start gap-2.5">
-                  <Mic className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
-                  <div>
-                    <strong className="text-purple-950 dark:text-purple-200 block">Microphone Setup & Speech Recording:</strong>
-                    <span className="text-slate-600 dark:text-slate-400 font-medium">Ensure your microphone is enabled and speak clearly into your mic in French.</span>
-                  </div>
-                </div>
+                {currentSection.type === "COMPREHENSION_ECRITE" && (
+                  <>
+                    <div className="flex items-start gap-2.5">
+                      <BookOpen className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-slate-950 dark:text-slate-200 block">Reading Passages & Question Navigation:</strong>
+                        <span className="text-slate-600 dark:text-slate-400 font-medium">Read each document carefully. You can navigate freely between all 39 questions during the test.</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2.5">
+                      <Clock className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-slate-950 dark:text-slate-200 block">Official Reading Timers:</strong>
+                        <span className="text-slate-600 dark:text-slate-400 font-medium">39 Questions • 60 Minutes Total (~1.5 minutes recommended per question).</span>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {currentSection.type === "EXPRESSION_ECRITE" && (
+                  <>
+                    <div className="flex items-start gap-2.5">
+                      <PenTool className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                      <div className="w-full space-y-1">
+                        <strong className="text-slate-950 dark:text-slate-200 block">Official 3 Writing Tasks:</strong>
+                        <div className="grid grid-cols-1 gap-1 text-[11px] font-medium text-slate-700 dark:text-slate-300 pt-0.5">
+                          <div className="flex items-center justify-between p-1.5 rounded bg-white dark:bg-slate-900 border border-amber-200/60 dark:border-amber-900/60">
+                            <span><strong>Tâche 1 (Message court):</strong> 60 - 120 words</span>
+                            <span className="font-mono text-amber-600 font-bold">~15m</span>
+                          </div>
+                          <div className="flex items-center justify-between p-1.5 rounded bg-white dark:bg-slate-900 border border-amber-200/60 dark:border-amber-900/60">
+                            <span><strong>Tâche 2 (Article / Compte-rendu):</strong> 120 - 150 words</span>
+                            <span className="font-mono text-amber-600 font-bold">~20m</span>
+                          </div>
+                          <div className="flex items-center justify-between p-1.5 rounded bg-white dark:bg-slate-900 border border-amber-200/60 dark:border-amber-900/60">
+                            <span><strong>Tâche 3 (Texte d'opinion / Essai):</strong> 200 - 280 words</span>
+                            <span className="font-mono text-amber-600 font-bold">~25m</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-2.5">
+                      <Clock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-slate-950 dark:text-slate-200 block">Official Writing Duration:</strong>
+                        <span className="text-slate-600 dark:text-slate-400 font-medium">60 Minutes Total for all 3 tasks with real-time word counter validation.</span>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {currentSection.type === "EXPRESSION_ORALE" && (
+                  <>
+                    <div className="flex items-start gap-2.5">
+                      <Volume2 className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-purple-950 dark:text-purple-200 block">Automatic Examiner Voice Audio:</strong>
+                        <span className="text-slate-600 dark:text-slate-400 font-medium">The certified examiner voice prompt plays automatically when each task launches.</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2.5">
+                      <Clock className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
+                      <div className="space-y-1 w-full">
+                        <strong className="text-purple-950 dark:text-purple-200 block">Official Prep & Speaking Timers:</strong>
+                        <div className="grid grid-cols-1 gap-1 text-[11px] font-medium text-slate-700 dark:text-slate-300 pt-0.5">
+                          <div className="flex items-center justify-between p-1.5 rounded bg-white dark:bg-slate-900 border border-purple-200/60 dark:border-purple-900/60">
+                            <span><strong>Tâche 1 (Entretien dirigé):</strong> 0m Prep</span>
+                            <span className="font-mono text-purple-600 font-bold">2m Speaking (Timer starts after audio)</span>
+                          </div>
+                          <div className="flex items-center justify-between p-1.5 rounded bg-white dark:bg-slate-900 border border-purple-200/60 dark:border-purple-900/60">
+                            <span><strong>Tâche 2 (Interaction):</strong> 2m Prep (Starts with audio)</span>
+                            <span className="font-mono text-purple-600 font-bold">3.5m Speaking</span>
+                          </div>
+                          <div className="flex items-center justify-between p-1.5 rounded bg-white dark:bg-slate-900 border border-purple-200/60 dark:border-purple-900/60">
+                            <span><strong>Tâche 3 (Point de vue):</strong> 0m Prep</span>
+                            <span className="font-mono text-purple-600 font-bold">4.5m Speaking (Timer starts after audio)</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2.5">
+                      <Mic className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-purple-950 dark:text-purple-200 block">Microphone Setup & Speech Recording:</strong>
+                        <span className="text-slate-600 dark:text-slate-400 font-medium">Ensure your microphone is enabled and speak clearly into your mic in French.</span>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
 
               <button
                 onClick={() => {
-                  setHasAcceptedSpeakingDisclaimer(true);
-                  setShowSpeakingDisclaimer(false);
-                  startSpeakingTaskSession(activeSpeakingTaskIdx);
+                  setAcceptedSectionDisclaimers((prev) => ({ ...prev, [currentSection.type]: true }));
+                  setShowSectionDisclaimer(false);
+                  if (currentSection.type === "EXPRESSION_ORALE") {
+                    startSpeakingTaskSession(activeSpeakingTaskIdx);
+                  }
                 }}
-                className="w-full py-3.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-sm shadow-xl flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98"
+                className={`w-full py-3.5 rounded-xl font-extrabold text-sm shadow-xl flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 text-white ${
+                  currentSection.type === "COMPREHENSION_ORALE" ? "bg-blue-600 hover:bg-blue-500" :
+                  currentSection.type === "COMPREHENSION_ECRITE" ? "bg-emerald-600 hover:bg-emerald-500" :
+                  currentSection.type === "EXPRESSION_ECRITE" ? "bg-amber-600 hover:bg-amber-500" : "bg-purple-600 hover:bg-purple-500"
+                }`}
               >
                 <Sparkles className="w-4 h-4" />
-                <span>Begin Speaking Test Now</span>
+                <span>Begin {currentSection.title} Test Now</span>
               </button>
             </motion.div>
           </motion.div>
