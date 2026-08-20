@@ -1332,7 +1332,20 @@ Respond STRICTLY with a raw JSON object:
     }
   }
 
-  async analyzeSpeaking(transcription: string, expectedText: string, lessonTitle?: string, targetLanguage = 'French', taskNumber?: number): Promise<SpeakingResult> {
+  async analyzeSpeaking(
+    transcription: string,
+    expectedText: string,
+    lessonTitle?: string,
+    targetLanguage = 'French',
+    taskNumber?: number,
+    acousticMetrics?: {
+      speechRateWpm?: number;
+      hesitationPauseCount?: number;
+      totalSilenceDurationSec?: number;
+      fluencyIndexPct?: number;
+      averageDecibels?: number;
+    }
+  ): Promise<SpeakingResult> {
     const apiKey = await this.getOpenRouterKey();
     const cleanSpeech = (transcription || '').trim();
 
@@ -1361,7 +1374,13 @@ Respond STRICTLY with a raw JSON object:
     const isTache2 = taskNumber === 2 || Boolean(lessonTitle?.includes('Tâche 2') || lessonTitle?.includes('spk-2'));
     const taskNum = taskNumber || (isTache1 ? 1 : isTache2 ? 2 : 3);
 
-    if (!apiKey) {
+    const prompt = `You are an official France Éducation International (FEI) TCF Canada Speaking Examiner. Your sole task is to evaluate the candidate's spoken response transcript with 100% fidelity to official TCF Canada assessment criteria.
+
+### DYNAMIC INPUT CONTEXT:
+- Task Number: ${taskNum} (${taskNum === 1 ? 'Tâche 1: Entretien dirigé' : taskNum === 2 ? 'Tâche 2: Exercice en interaction' : 'Tâche 3: Expression d\'un point de vue'})
+- Official Prompt/Scenario: "${expectedText}"
+- Candidate Spoken Transcript: "${cleanSpeech}"
+${acousticMetrics ? `- Real-Time Web Audio Signal Metrics: Speech Pace = ${acousticMetrics.speechRateWpm || 'N/A'} WPM, Long Hesitation Pauses (>1.5s) = ${acousticMetrics.hesitationPauseCount || 0}, Fluency Index = ${acousticMetrics.fluencyIndexPct || 100}%, Silence Duration = ${acousticMetrics.totalSilenceDurationSec || 0}s.` : ''}
       // Local calibrated oral evaluation fallback
       const words = cleanSpeech.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
       const wordCount = words.length;

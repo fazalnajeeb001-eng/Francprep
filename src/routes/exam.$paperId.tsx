@@ -37,6 +37,7 @@ import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
 import { SmartAvatar } from "~/components/dashboard/widgets/SmartAvatar";
 import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } from "~/lib/examSchema";
+import { acousticAnalyzer, type AcousticAnalysisResult } from "~/lib/acousticAnalyzer";
 
 function countFrenchWords(str: string): number {
   if (!str || !str.trim()) return 0;
@@ -247,6 +248,7 @@ export function AuthenticCBTExamPage() {
   const [oralSpeakingTimeRemaining, setOralSpeakingTimeRemaining] = useState<Record<string, number>>({});
   const [isOralSpeakingActive, setIsOralSpeakingActive] = useState<Record<string, boolean>>({});
   const [oralScratchNotes, setOralScratchNotes] = useState<Record<string, string>>({});
+  const [speakingAcousticMetrics, setSpeakingAcousticMetrics] = useState<Record<string, AcousticAnalysisResult>>({});
 
   // Practice Helper & Task Tab States
   const [showTranscript, setShowTranscript] = useState(false);
@@ -588,11 +590,15 @@ export function AuthenticCBTExamPage() {
     }
   };
 
-  const handleToggleSpeakingRecording = (taskId: string) => {
+  const handleToggleSpeakingRecording = async (taskId: string) => {
     const isCurrentlyRecording = recordingSpeaking[taskId];
 
     if (isCurrentlyRecording) {
       setRecordingSpeaking((prev) => ({ ...prev, [taskId]: false }));
+      const currentText = speakingTranscripts[taskId] || "";
+      const wordCount = countFrenchWords(currentText);
+      const metrics = acousticAnalyzer.stopAnalysis(wordCount);
+      setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
       return;
     }
 
@@ -601,6 +607,13 @@ export function AuthenticCBTExamPage() {
       alert("Speech recognition requires Chrome or Edge browser.");
       return;
     }
+
+    try {
+      if (typeof window !== "undefined" && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        acousticAnalyzer.startAnalysis(stream);
+      }
+    } catch {}
 
     const recognition = new SpeechRec();
     recognition.lang = "fr-FR";
@@ -621,10 +634,18 @@ export function AuthenticCBTExamPage() {
 
     recognition.onerror = () => {
       setRecordingSpeaking((prev) => ({ ...prev, [taskId]: false }));
+      const currentText = speakingTranscripts[taskId] || "";
+      const wordCount = countFrenchWords(currentText);
+      const metrics = acousticAnalyzer.stopAnalysis(wordCount);
+      setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
     };
 
     recognition.onend = () => {
       setRecordingSpeaking((prev) => ({ ...prev, [taskId]: false }));
+      const currentText = speakingTranscripts[taskId] || "";
+      const wordCount = countFrenchWords(currentText);
+      const metrics = acousticAnalyzer.stopAnalysis(wordCount);
+      setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
     };
 
     recognition.start();
@@ -642,10 +663,18 @@ export function AuthenticCBTExamPage() {
         : taskId?.includes('spk-2') || taskId?.includes('task_1') ? 2
         : taskId?.includes('spk-3') || taskId?.includes('task_2') ? 3 : 1;
 
+      const acousticMetrics = speakingAcousticMetrics[taskId];
+
       const res = await apiFetch("/writing/analyze-speaking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcription: combinedSpeech, expectedText, lessonTitle: `${paper.title} - ${taskId}`, taskNumber })
+        body: JSON.stringify({
+          transcription: combinedSpeech,
+          expectedText,
+          lessonTitle: `${paper.title} - ${taskId}`,
+          taskNumber,
+          acousticMetrics
+        })
       });
       const json = await res.json();
       if (json.success && json.data) {
@@ -3627,77 +3656,8 @@ export function AuthenticCBTExamPage() {
 
                   {/* TÂCHE 2 (STIMULUS DOCUMENT & CANDIDATE SCRATCHPAD) */}
                   {task.stimulusDocument && (
-                    mode === "EXAM" ? (
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        {/* Left: Official Stimulus Document */}
-                        <div className="p-4 sm:p-5 rounded-2xl border-2 border-blue-300 dark:border-blue-800 bg-gradient-to-br from-blue-50/80 via-white to-blue-50/50 dark:from-blue-950/40 dark:via-slate-900 dark:to-blue-950/30 shadow-md space-y-3 font-sans">
-                          <div className="flex items-center justify-between border-b border-blue-200 dark:border-blue-800/80 pb-2">
-                            <div className="flex items-center gap-2">
-                              <span className="px-2 py-0.5 rounded bg-blue-600 text-white font-mono font-bold text-[10px] uppercase">
-                                📄 Document Support Officiel (Tâche 2)
-                              </span>
-                              <span className="text-xs font-bold text-blue-900 dark:text-blue-300">
-                                {task.stimulusDocument.organization}
-                              </span>
-                            </div>
-                            <span className="text-[10px] px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-200 font-semibold">
-                              {task.stimulusDocument.category}
-                            </span>
-                          </div>
-
-                          <div className="space-y-1.5">
-                            <h4 className="text-base font-extrabold text-blue-950 dark:text-blue-100">
-                              {task.stimulusDocument.title}
-                            </h4>
-                            <p className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-medium">
-                              {task.stimulusDocument.content}
-                            </p>
-                          </div>
-
-                          {task.stimulusDocument.details && task.stimulusDocument.details.length > 0 && (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                              {task.stimulusDocument.details.map((detail: string, dIdx: number) => (
-                                <div key={dIdx} className="p-2.5 rounded-lg bg-white dark:bg-slate-950/80 border border-blue-200/80 dark:border-blue-900/70 text-xs font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2 shadow-xs">
-                                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
-                                  <span className="leading-tight">{detail}</span>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-
-                          {task.stimulusDocument.contactInfo && (
-                            <div className="pt-2 border-t border-blue-200 dark:border-blue-800/60 text-[11px] text-blue-900 dark:text-blue-300 font-mono font-medium flex items-center justify-between flex-wrap gap-2">
-                              <span>{task.stimulusDocument.contactInfo}</span>
-                              <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-900 dark:text-amber-300 font-bold">
-                                ⚠️ Posez au moins 8 à 10 questions variées
-                              </span>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Right: Candidate Virtual Scratchpad for Prep Phase */}
-                        <div className="p-4 sm:p-5 rounded-2xl border-2 border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-md space-y-3 font-sans flex flex-col">
-                          <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
-                            <span className="font-bold text-xs text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
-                              <FileText className="w-4 h-4 text-purple-600" />
-                              <span>📝 Bloc-notes de Préparation (Brouillon Candidat)</span>
-                            </span>
-                            <span className="text-[10px] text-slate-500 font-mono">
-                              Non noté • Aide personnelle
-                            </span>
-                          </div>
-                          <textarea
-                            value={oralScratchNotes[task.id] || ""}
-                            onChange={(e) => setOralScratchNotes((prev) => ({ ...prev, [task.id]: e.target.value }))}
-                            placeholder="Notez ici vos mots-clés ou questions pendant la minute de préparation (ex : tarifs, horaires, niveaux requis, facilités de paiement)..."
-                            className="w-full flex-1 min-h-[140px] p-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-600 resize-none font-sans"
-                          />
-                          <p className="text-[10px] text-slate-500 italic">
-                            💡 Utilisez ce bloc-notes pendant les 60 secondes de préparation pour structurer vos 8 à 10 questions.
-                          </p>
-                        </div>
-                      </div>
-                    ) : (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      {/* Left: Official Stimulus Document */}
                       <div className="p-4 sm:p-5 rounded-2xl border-2 border-blue-300 dark:border-blue-800 bg-gradient-to-br from-blue-50/80 via-white to-blue-50/50 dark:from-blue-950/40 dark:via-slate-900 dark:to-blue-950/30 shadow-md space-y-3 font-sans">
                         <div className="flex items-center justify-between border-b border-blue-200 dark:border-blue-800/80 pb-2">
                           <div className="flex items-center gap-2">
@@ -3742,217 +3702,137 @@ export function AuthenticCBTExamPage() {
                           </div>
                         )}
                       </div>
-                    )
+
+                      {/* Right: Candidate Virtual Scratchpad for Prep Phase */}
+                      <div className="p-4 sm:p-5 rounded-2xl border-2 border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-md space-y-3 font-sans flex flex-col">
+                        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+                          <span className="font-bold text-xs text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                            <FileText className="w-4 h-4 text-purple-600" />
+                            <span>📝 Bloc-notes de Préparation (Brouillon Candidat)</span>
+                          </span>
+                          <span className="text-[10px] text-slate-500 font-mono">
+                            Non noté • Aide personnelle
+                          </span>
+                        </div>
+                        <textarea
+                          value={oralScratchNotes[task.id] || ""}
+                          onChange={(e) => setOralScratchNotes((prev) => ({ ...prev, [task.id]: e.target.value }))}
+                          placeholder="Notez ici vos mots-clés ou questions pendant la minute de préparation (ex : tarifs, horaires, niveaux requis, facilités de paiement)..."
+                          className="w-full flex-1 min-h-[140px] p-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-600 resize-none font-sans"
+                        />
+                        <p className="text-[10px] text-slate-500 italic">
+                          💡 Utilisez ce bloc-notes pendant les 60 secondes de préparation pour structurer vos 8 à 10 questions.
+                        </p>
+                      </div>
+                    </div>
                   )}
 
-                  {/* PROCTORED CBT STUDIO STATION vs PRACTICE SMART AVATAR */}
-                  {mode === "EXAM" ? (
-                    <div className="p-5 sm:p-6 rounded-2xl border-2 border-purple-500/40 bg-slate-900 text-white shadow-xl space-y-4">
-                      {/* Proctored Exam Header & Live Acoustic State Indicator */}
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                            <span className="font-mono font-extrabold text-xs text-purple-400 uppercase tracking-wider">
-                              🎙️ Station d'Examen CBT — Épreuve d'Expression Orale
-                            </span>
-                          </div>
-                          <p className="text-xs text-slate-300 font-medium">
-                            Interlocuteur Officiel : <strong className="text-white">{examinerName}</strong> ({examinerRole})
-                          </p>
-                        </div>
-
-                        {/* Real-time Dynamic Acoustic Equalizer */}
+                  {/* UNIFIED PROCTORED CBT STUDIO STATION */}
+                  <div className="p-5 sm:p-6 rounded-2xl border-2 border-purple-500/40 bg-slate-900 text-white shadow-xl space-y-4 font-sans">
+                    {/* Proctored Exam Header & Live Acoustic State Indicator */}
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                      <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          {isPlayingAudio ? (
-                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 text-xs font-mono font-bold">
-                              <Volume2 className="w-4 h-4 animate-pulse text-emerald-400" />
-                              <span>Audio Interlocuteur en cours...</span>
-                              <span className="w-1 h-3 bg-emerald-400 rounded animate-bounce" style={{ animationDelay: '0ms' }} />
-                              <span className="w-1 h-4 bg-emerald-400 rounded animate-bounce" style={{ animationDelay: '150ms' }} />
-                              <span className="w-1 h-2 bg-emerald-400 rounded animate-bounce" style={{ animationDelay: '300ms' }} />
-                            </div>
-                          ) : isRecording ? (
-                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-950/80 border border-red-500/60 text-red-300 text-xs font-mono font-bold animate-pulse">
-                              <Mic className="w-4 h-4 text-red-400" />
-                              <span>Microphone Candidat Actif — Enregistrement en cours...</span>
-                              <span className="w-1 h-3 bg-red-400 rounded animate-bounce" style={{ animationDelay: '0ms' }} />
-                              <span className="w-1 h-4 bg-red-400 rounded animate-bounce" style={{ animationDelay: '150ms' }} />
-                            </div>
-                          ) : isChatLoading ? (
-                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-950/80 border border-amber-500/60 text-amber-300 text-xs font-mono font-bold">
-                              <Sparkles className="w-4 h-4 animate-spin text-amber-400" />
-                              <span>Traitement de votre intervention orale...</span>
-                            </div>
-                          ) : (
-                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 text-xs font-mono">
-                              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                              <span>Station prête pour l'échange</span>
-                            </div>
-                          )}
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                          <span className="font-mono font-extrabold text-xs text-purple-400 uppercase tracking-wider">
+                            🎙️ Station d'Examen CBT — Épreuve d'Expression Orale ({paper.type === "TEF_CANADA" ? "TEF Canada" : "TCF Canada"})
+                          </span>
                         </div>
+                        <p className="text-xs text-slate-300 font-medium">
+                          Interlocuteur Officiel : <strong className="text-white">{examinerName}</strong> ({examinerRole})
+                        </p>
                       </div>
 
-                      {/* Official Exam Timers Banner */}
-                      <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-xs font-mono">
-                        <div className="flex items-center gap-3">
-                          <span className="text-slate-400">Temps alloué :</span>
-                          <span className="px-2.5 py-1 rounded bg-purple-900/60 text-purple-200 font-bold">
-                            {task.prepTimeMins > 0 ? `Préparation : ${task.prepTimeMins} min` : "Sans préparation"}
-                          </span>
-                          <span className="px-2.5 py-1 rounded bg-indigo-900/60 text-indigo-200 font-bold">
-                            Expression : {task.speakingTimeMins} min
-                          </span>
-                        </div>
+                      {/* Real-time Dynamic Acoustic Equalizer */}
+                      <div className="flex items-center gap-2">
+                        {isPlayingAudio ? (
+                          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 text-xs font-mono font-bold">
+                            <Volume2 className="w-4 h-4 animate-pulse text-emerald-400" />
+                            <span>Audio Interlocuteur en cours...</span>
+                            <span className="w-1 h-3 bg-emerald-400 rounded animate-bounce" style={{ animationDelay: '0ms' }} />
+                            <span className="w-1 h-4 bg-emerald-400 rounded animate-bounce" style={{ animationDelay: '150ms' }} />
+                            <span className="w-1 h-2 bg-emerald-400 rounded animate-bounce" style={{ animationDelay: '300ms' }} />
+                          </div>
+                        ) : isRecording ? (
+                          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-950/80 border border-red-500/60 text-red-300 text-xs font-mono font-bold animate-pulse">
+                            <Mic className="w-4 h-4 text-red-400" />
+                            <span>Microphone Candidat Actif — Enregistrement en cours...</span>
+                            <span className="w-1 h-3 bg-red-400 rounded animate-bounce" style={{ animationDelay: '0ms' }} />
+                            <span className="w-1 h-4 bg-red-400 rounded animate-bounce" style={{ animationDelay: '150ms' }} />
+                          </div>
+                        ) : isChatLoading ? (
+                          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-950/80 border border-amber-500/60 text-amber-300 text-xs font-mono font-bold">
+                            <Sparkles className="w-4 h-4 animate-spin text-amber-400" />
+                            <span>Traitement de votre intervention orale...</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 text-xs font-mono">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                            <span>Station prête pour l'échange</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
 
-                        <div className="flex items-center gap-2">
-                          {task.prepTimeMins > 0 && (
-                            <span className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 ${
-                              isOralPrepActive[task.id]
-                                ? "bg-amber-600 text-white animate-pulse"
-                                : "bg-slate-800 text-slate-300"
-                            }`}>
-                              <Clock className="w-3.5 h-3.5" />
-                              <span>
-                                {isOralPrepActive[task.id]
-                                  ? `⏱️ Prep : ${Math.floor((oralPrepTimeRemaining[task.id] || 0) / 60)}:${((oralPrepTimeRemaining[task.id] || 0) % 60).toString().padStart(2, '0')}`
-                                  : `Prep : ${task.prepTimeMins}m`}
-                              </span>
-                            </span>
-                          )}
+                    {/* Web Audio API Acoustic Signal Metrics Badge */}
+                    {speakingAcousticMetrics[task.id] && (
+                      <div className="flex flex-wrap items-center gap-2.5 p-3 rounded-xl bg-slate-950 border border-purple-900/60 text-xs font-mono">
+                        <span className="text-slate-400 font-bold uppercase text-[10px]">📊 Analyse Acoustique en temps réel :</span>
+                        <span className="px-2.5 py-1 rounded bg-purple-950/80 border border-purple-800/80 text-purple-300 font-bold">
+                          Débit : <strong className="text-white">{speakingAcousticMetrics[task.id].speechRateWpm} WPM</strong> (Cible : 100-140)
+                        </span>
+                        <span className="px-2.5 py-1 rounded bg-amber-950/80 border border-amber-800/80 text-amber-300 font-bold">
+                          Hésitations ({'>'}1.5s) : <strong className="text-white">{speakingAcousticMetrics[task.id].hesitationPauseCount}</strong>
+                        </span>
+                        <span className="px-2.5 py-1 rounded bg-emerald-950/80 border border-emerald-800/80 text-emerald-300 font-bold">
+                          Indice de Fluidité : <strong className="text-white">{speakingAcousticMetrics[task.id].fluencyIndexPct}%</strong>
+                        </span>
+                      </div>
+                    )}
 
+                    {/* Official Exam Timers Banner */}
+                    <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-xs font-mono">
+                      <div className="flex items-center gap-3">
+                        <span className="text-slate-400">Temps alloué :</span>
+                        <span className="px-2.5 py-1 rounded bg-purple-900/60 text-purple-200 font-bold">
+                          {task.prepTimeMins > 0 ? `Préparation : ${task.prepTimeMins} min` : "Sans préparation"}
+                        </span>
+                        <span className="px-2.5 py-1 rounded bg-indigo-900/60 text-indigo-200 font-bold">
+                          Expression : {task.speakingTimeMins} min
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {task.prepTimeMins > 0 && (
                           <span className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 ${
-                            isOralSpeakingActive[task.id]
-                              ? "bg-emerald-600 text-white animate-pulse"
+                            isOralPrepActive[task.id]
+                              ? "bg-amber-600 text-white animate-pulse"
                               : "bg-slate-800 text-slate-300"
                           }`}>
-                            <Mic className="w-3.5 h-3.5 text-emerald-400" />
-                            <span>
-                              {isOralSpeakingActive[task.id]
-                                ? `🎙️ Oral : ${Math.floor((oralSpeakingTimeRemaining[task.id] || 0) / 60)}:${((oralSpeakingTimeRemaining[task.id] || 0) % 60).toString().padStart(2, '0')}`
-                                : `Oral : ${task.speakingTimeMins}m`}
-                            </span>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    /* PRACTICE MODE SMART AVATAR ARENA */
-                    <div className="p-4 sm:p-6 rounded-2xl border-2 border-purple-300 dark:border-purple-800 bg-gradient-to-r from-purple-900/10 via-indigo-900/10 to-slate-900/10 dark:from-purple-950/80 dark:via-indigo-950/70 dark:to-slate-950/80 flex flex-col md:flex-row items-center justify-between gap-5 shadow-lg relative overflow-hidden">
-                      {/* Left: Avatar Face & Identity */}
-                      <div className="flex items-center gap-4 w-full md:w-auto">
-                        <div className="relative shrink-0">
-                          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-purple-600 text-white flex items-center justify-center shadow-xl border-2 border-purple-400/60 overflow-hidden">
-                            <SmartAvatar
-                              gender={examinerGender}
-                              size={76}
-                              animate={avatarAnimState}
-                              showThoughts={false}
-                            />
-                          </div>
-                          <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white dark:border-slate-900 ${
-                            isPlayingAudio ? "bg-emerald-500 animate-ping" : isRecording ? "bg-red-500 animate-pulse" : isChatLoading ? "bg-amber-400 animate-bounce" : "bg-emerald-500"
-                          }`} />
-                        </div>
-
-                        <div className="space-y-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <h4 className="font-extrabold text-base sm:text-lg text-slate-950 dark:text-slate-100">
-                              {examinerName}
-                            </h4>
-                            <span className="px-2 py-0.5 rounded bg-purple-600 text-white font-mono font-bold text-[10px] uppercase">
-                              FEI Certified Interlocutor
-                            </span>
-                          </div>
-                          <p className="text-xs text-purple-700 dark:text-purple-300 font-medium">
-                            {examinerRole}
-                          </p>
-
-                          {/* Real-time Status Equalizer */}
-                          <div className="flex items-center gap-2 pt-1">
-                            {isPlayingAudio ? (
-                              <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 font-mono">
-                                <Volume2 className="w-4 h-4 animate-pulse" />
-                                <span>Examinateur s'exprime...</span>
-                                <span className="w-1 h-3 bg-emerald-500 rounded animate-bounce" style={{ animationDelay: '0ms' }} />
-                                <span className="w-1 h-4 bg-emerald-500 rounded animate-bounce" style={{ animationDelay: '150ms' }} />
-                                <span className="w-1 h-2 bg-emerald-500 rounded animate-bounce" style={{ animationDelay: '300ms' }} />
-                              </div>
-                            ) : isRecording ? (
-                              <div className="flex items-center gap-1.5 text-xs font-bold text-red-600 dark:text-red-400 font-mono animate-pulse">
-                                <Mic className="w-4 h-4" />
-                                <span>Enregistrement candidat en cours...</span>
-                                <span className="w-1 h-3 bg-red-500 rounded animate-bounce" style={{ animationDelay: '0ms' }} />
-                                <span className="w-1 h-4 bg-red-500 rounded animate-bounce" style={{ animationDelay: '150ms' }} />
-                              </div>
-                            ) : isChatLoading ? (
-                              <div className="flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-amber-400 font-mono">
-                                <Sparkles className="w-4 h-4 animate-spin" />
-                                <span>Examinateur analyse votre réponse...</span>
-                              </div>
-                            ) : (
-                              <div className="flex items-center gap-1 text-xs text-slate-500 font-medium font-mono">
-                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                                <span>Prêt pour l'échange oral</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Right: Audio Trigger & Timer Controls */}
-                      <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
-                        <button
-                          onClick={() => {
-                            const openingText = task.examinerPersona?.openingPromptFrench || (
-                              activeSpeakingTaskIdx === 0 ? "Bonjour ! Bienvenue à votre épreuve d'expression orale. Pouvez-vous vous présenter, me parler de votre parcours professionnel et de vos motivations pour le Canada ?"
-                              : activeSpeakingTaskIdx === 1 ? "Bonjour ! Je suis le responsable de l'annonce. Je vous écoute, quelles sont vos questions concernant les horaires, tarifs et modalités ?"
-                              : "Bonjour ! J'aimerais connaître votre point de vue sur ce sujet de société. Présentez-moi vos arguments et votre position."
-                            );
-                            handlePlayExaminerAudio(openingText);
-                          }}
-                          className="px-3.5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 shrink-0"
-                        >
-                          <Volume2 className="w-4 h-4" />
-                          <span>🔊 Play Examiner Voice Prompt</span>
-                        </button>
-
-                        {task.prepTimeMins > 0 && (
-                          <button
-                            onClick={() => handleStartPrepTimer(task.id, task.prepTimeMins)}
-                            className={`px-3.5 py-2.5 rounded-xl font-bold text-xs shadow flex items-center gap-1.5 transition-all cursor-pointer shrink-0 ${
-                              isOralPrepActive[task.id]
-                                ? "bg-amber-600 text-white animate-pulse"
-                                : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-slate-200"
-                            }`}
-                          >
-                            <Clock className="w-4 h-4" />
+                            <Clock className="w-3.5 h-3.5" />
                             <span>
                               {isOralPrepActive[task.id]
-                                ? `⏱️ Prep: ${Math.floor((oralPrepTimeRemaining[task.id] || 0) / 60)}:${((oralPrepTimeRemaining[task.id] || 0) % 60).toString().padStart(2, '0')}`
-                                : `⏱️ ${task.prepTimeMins}-Min Prep Timer`}
+                                ? `⏱️ Prep : ${Math.floor((oralPrepTimeRemaining[task.id] || 0) / 60)}:${((oralPrepTimeRemaining[task.id] || 0) % 60).toString().padStart(2, '0')}`
+                                : `Prep : ${task.prepTimeMins}m`}
                             </span>
-                          </button>
+                          </span>
                         )}
 
-                        <button
-                          onClick={() => handleStartSpeakingTimer(task.id, task.speakingTimeMins)}
-                          className={`px-3.5 py-2.5 rounded-xl font-bold text-xs shadow flex items-center gap-1.5 transition-all cursor-pointer shrink-0 ${
-                            isOralSpeakingActive[task.id]
-                              ? "bg-emerald-600 text-white animate-pulse"
-                              : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-slate-200"
-                          }`}
-                        >
-                          <Mic className="w-4 h-4 text-emerald-500" />
+                        <span className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 ${
+                          isOralSpeakingActive[task.id]
+                            ? "bg-emerald-600 text-white animate-pulse"
+                            : "bg-slate-800 text-slate-300"
+                        }`}>
+                          <Mic className="w-3.5 h-3.5 text-emerald-400" />
                           <span>
                             {isOralSpeakingActive[task.id]
-                              ? `🎙️ Speaking: ${Math.floor((oralSpeakingTimeRemaining[task.id] || 0) / 60)}:${((oralSpeakingTimeRemaining[task.id] || 0) % 60).toString().padStart(2, '0')}`
-                              : `🎙️ ${task.speakingTimeMins}-Min Speaking Timer`}
+                              ? `🎙️ Oral : ${Math.floor((oralSpeakingTimeRemaining[task.id] || 0) / 60)}:${((oralSpeakingTimeRemaining[task.id] || 0) % 60).toString().padStart(2, '0')}`
+                              : `Oral : ${task.speakingTimeMins}m`}
                           </span>
-                        </button>
+                        </span>
                       </div>
                     </div>
-                  )}
+                  </div>
 
                   {/* Key Phrases & Connectors Badges (Practice Mode Only) */}
                   {mode === "PRACTICE" && task.keyPhrases && task.keyPhrases.length > 0 && (
