@@ -32,7 +32,7 @@ import {
   X
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
-import { useSpeak } from "~/lib/speech";
+import { useSpeak, unlockAudioEngine } from "~/lib/speech";
 import { triggerAcousticSoundForQuestion } from "~/lib/soundEffects";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
@@ -4420,8 +4420,7 @@ export function AuthenticCBTExamPage() {
                   setShowSectionDisclaimer(false);
                   if (currentSection.type === "COMPREHENSION_ORALE") {
                     try {
-                      const silentAudio = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA");
-                      silentAudio.play().catch(() => {});
+                      unlockAudioEngine();
                     } catch {}
                   }
                   if (currentSection.type === "EXPRESSION_ORALE") {

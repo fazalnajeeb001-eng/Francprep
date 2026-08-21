@@ -3,12 +3,26 @@ import { apiFetch } from "~/lib/apiFetch";
 import { triggerAcousticSoundForQuestion } from "./soundEffects";
 
 let currentAudioPlayer: HTMLAudioElement | null = null;
+let masterAudioPlayer: HTMLAudioElement | null = null;
 let activeAudioPlayers = new Set<HTMLAudioElement>();
 let onPlaybackStateChange: ((playing: boolean) => void) | null = null;
 let currentDialogueId = 0;
 let isAudioPausedState = false;
 let lineTimeoutId: ReturnType<typeof setTimeout> | null = null;
 let resumeDialogueCallback: (() => void) | null = null;
+
+export function unlockAudioEngine(): void {
+  if (typeof window === "undefined") return;
+  try {
+    if (!masterAudioPlayer) {
+      masterAudioPlayer = new Audio();
+    }
+    masterAudioPlayer.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+    masterAudioPlayer.play().then(() => {
+      masterAudioPlayer?.pause();
+    }).catch(() => {});
+  } catch {}
+}
 
 // Stop audio automatically when user navigates away, closes tab, or switches pages!
 if (typeof window !== "undefined") {
@@ -64,8 +78,8 @@ export function speak(
   let langCode = lang ? lang.split('-')[0].toLowerCase() : 'fr';
   if (langCode === 'en-us' || langCode === 'en-gb') langCode = 'en';
 
-  // Pre-create HTMLAudioElement to retain mobile browser autoplay permissions
-  const audio = new Audio();
+  // Pre-create or reuse pre-unlocked HTMLAudioElement to retain browser autoplay permissions
+  const audio = masterAudioPlayer || new Audio();
   activeAudioPlayers.add(audio);
   currentAudioPlayer = audio;
   if (onPlaybackStateChange) onPlaybackStateChange(true);
@@ -467,7 +481,7 @@ export function speakDialogue(
   }
 
   let currentIndex = 0;
-  const audio = new Audio();
+  const audio = masterAudioPlayer || new Audio();
   activeAudioPlayers.add(audio);
   currentAudioPlayer = audio;
   if (onPlaybackStateChange) onPlaybackStateChange(true);
@@ -622,20 +636,27 @@ export function speakListeningQuestion(
   let lang = "fr-FR";
   let rate = 1.0;
   let gender: "female" | "male" = "female";
-  let cb = onEnded;
+  let cb: (() => void) | undefined = undefined;
+
+  if (typeof extraKeysOrOnEnded === "function") {
+    cb = extraKeysOrOnEnded;
+  } else if (typeof onEnded === "function") {
+    cb = onEnded;
+  }
 
   if (typeof questionNumberOrLang === "string") {
     lang = questionNumberOrLang;
     if (typeof langOrRate === "number") rate = langOrRate;
-    if (typeof extraKeysOrOnEnded === "function") cb = extraKeysOrOnEnded;
-  } else {
+    if (typeof rateOrDefaultGender === "string" && (rateOrDefaultGender === "female" || rateOrDefaultGender === "male")) {
+      gender = rateOrDefaultGender as any;
+    }
+  } else if (typeof questionNumberOrLang === "number") {
     if (typeof langOrRate === "string") lang = langOrRate;
     if (typeof rateOrDefaultGender === "number") rate = rateOrDefaultGender;
-    if (typeof extraKeysOrOnEnded === "function") cb = extraKeysOrOnEnded;
   }
 
   stopAudio();
-  speak(text, lang, rate, gender, undefined, undefined, undefined, cb);
+  speakDialogue(text, lang, rate, undefined, cb);
 }
 
 /**
@@ -670,6 +691,7 @@ export function useSpeak() {
     speakDialogue: speakDialogueWithState,
     speakListening: (text: string, lang = "fr-FR", rate = 0.85, defaultGender: "female" | "male" = "female", onEnded?: () => void) =>
       speakListeningQuestion(text, lang, rate, defaultGender, undefined, onEnded),
+    unlockAudio: unlockAudioEngine,
     isSpeaking,
     stop: stopAudio,
     pause: pauseAudio,
