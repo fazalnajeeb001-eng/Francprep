@@ -301,8 +301,11 @@ export function AuthenticCBTExamPage() {
           if (currentQuestionIdx < currentQuestions.length - 1) {
             setCurrentQuestionIdx((idx) => idx + 1);
           } else if (activeSectionIdx < paper.sections.length - 1) {
+            handleStopAudio();
+            setCompletedSectionIndices((prev) => Array.from(new Set([...prev, activeSectionIdx])));
             setActiveSectionIdx((sIdx) => sIdx + 1);
             setCurrentQuestionIdx(0);
+            setShowSectionDisclaimer(true);
           }
           return 0;
         }
@@ -4415,6 +4418,12 @@ export function AuthenticCBTExamPage() {
                 onClick={() => {
                   setAcceptedSectionDisclaimers((prev) => ({ ...prev, [currentSection.type]: true }));
                   setShowSectionDisclaimer(false);
+                  if (currentSection.type === "COMPREHENSION_ORALE") {
+                    try {
+                      const silentAudio = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA");
+                      silentAudio.play().catch(() => {});
+                    } catch {}
+                  }
                   if (currentSection.type === "EXPRESSION_ORALE") {
                     startSpeakingTaskSession(activeSpeakingTaskIdx);
                   }
