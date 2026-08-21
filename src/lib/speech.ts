@@ -101,10 +101,20 @@ export function speak(
     }),
   })
     .then(async (res) => {
-      if (myDialogueId !== currentDialogueId) return;
+      if (myDialogueId !== currentDialogueId) {
+        activeAudioPlayers.delete(audio);
+        if (currentAudioPlayer === audio) currentAudioPlayer = null;
+        if (onPlaybackStateChange) onPlaybackStateChange(false);
+        return;
+      }
       if (res.ok) {
         const json = await res.json();
-        if (myDialogueId !== currentDialogueId) return;
+        if (myDialogueId !== currentDialogueId) {
+          activeAudioPlayers.delete(audio);
+          if (currentAudioPlayer === audio) currentAudioPlayer = null;
+          if (onPlaybackStateChange) onPlaybackStateChange(false);
+          return;
+        }
         if (json.success && json.data?.audioUrl) {
           if (json.data.fallbackActive && typeof window !== "undefined") {
             window.dispatchEvent(
@@ -125,7 +135,12 @@ export function speak(
               src = URL.createObjectURL(blob);
             }
           }
-          if (myDialogueId !== currentDialogueId) return;
+          if (myDialogueId !== currentDialogueId) {
+            activeAudioPlayers.delete(audio);
+            if (currentAudioPlayer === audio) currentAudioPlayer = null;
+            if (onPlaybackStateChange) onPlaybackStateChange(false);
+            return;
+          }
           audio.src = src;
           audio.preservesPitch = true;
           (audio as any).webkitPreservesPitch = true;
@@ -145,6 +160,9 @@ export function speak(
             if (myDialogueId !== currentDialogueId || isAudioPausedState) {
               audio.pause();
               if (myDialogueId !== currentDialogueId) audio.src = "";
+              activeAudioPlayers.delete(audio);
+              if (currentAudioPlayer === audio) currentAudioPlayer = null;
+              if (onPlaybackStateChange) onPlaybackStateChange(false);
               return;
             }
             audio.playbackRate = rate;
@@ -152,6 +170,11 @@ export function speak(
           }).catch(() => {
             if (myDialogueId === currentDialogueId && !isAudioPausedState) {
               playDirectHDFallback(cleanText, langCode, rate, audio, finalGender, onEnded);
+            } else {
+              activeAudioPlayers.delete(audio);
+              if (currentAudioPlayer === audio) currentAudioPlayer = null;
+              if (onPlaybackStateChange) onPlaybackStateChange(false);
+              if (onEnded) onEnded();
             }
           });
           return;
@@ -159,11 +182,21 @@ export function speak(
       }
       if (myDialogueId === currentDialogueId && !isAudioPausedState) {
         playDirectHDFallback(cleanText, langCode, rate, audio, finalGender, onEnded);
+      } else {
+        activeAudioPlayers.delete(audio);
+        if (currentAudioPlayer === audio) currentAudioPlayer = null;
+        if (onPlaybackStateChange) onPlaybackStateChange(false);
+        if (onEnded) onEnded();
       }
     })
     .catch(() => {
       if (myDialogueId === currentDialogueId && !isAudioPausedState) {
         playDirectHDFallback(cleanText, langCode, rate, audio, finalGender, onEnded);
+      } else {
+        activeAudioPlayers.delete(audio);
+        if (currentAudioPlayer === audio) currentAudioPlayer = null;
+        if (onPlaybackStateChange) onPlaybackStateChange(false);
+        if (onEnded) onEnded();
       }
     });
 

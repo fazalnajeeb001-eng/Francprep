@@ -153,8 +153,9 @@ export function AuthenticCBTExamPage() {
   const currentQuestions = currentSection?.questions || [];
   const currentQ = currentQuestions[currentQuestionIdx] || currentQuestions[0];
 
-  // Session Key
-  const sessionKey = `fp_exam_session_${paper?.id || "default"}_${mode}`;
+  // Session Key (User-Scoped for 100% Account Isolation)
+  const userIdentifier = user?.id || (user as any)?._id || user?.email || "guest";
+  const sessionKey = `fp_exam_session_${userIdentifier}_${paper?.id || "default"}_${mode}`;
 
   // Completed Section Indices (Enforces Linear Exam Flow in Real Exam Mode)
   const [completedSectionIndices, setCompletedSectionIndices] = useState<number[]>(() => {
