@@ -4,31 +4,12 @@ import { triggerAcousticSoundForQuestion } from "./soundEffects";
 
 let currentAudioPlayer: HTMLAudioElement | null = null;
 let masterAudioPlayer: HTMLAudioElement | null = null;
-let webAudioCtx: AudioContext | null = null;
-let currentAudioSource: AudioBufferSourceNode | null = null;
 let activeAudioPlayers = new Set<HTMLAudioElement>();
 let onPlaybackStateChange: ((playing: boolean) => void) | null = null;
 let currentDialogueId = 0;
 let isAudioPausedState = false;
 let lineTimeoutId: ReturnType<typeof setTimeout> | null = null;
 let resumeDialogueCallback: (() => void) | null = null;
-
-export function getWebAudioContext(): AudioContext | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-    if (!AudioCtx) return null;
-    if (!webAudioCtx) {
-      webAudioCtx = new AudioCtx();
-    }
-    if (webAudioCtx.state === "suspended") {
-      webAudioCtx.resume().catch(() => {});
-    }
-    return webAudioCtx;
-  } catch {
-    return null;
-  }
-}
 
 export function unlockAudioEngine(): void {
   if (typeof window === "undefined") return;
@@ -40,77 +21,7 @@ export function unlockAudioEngine(): void {
     masterAudioPlayer.play().then(() => {
       masterAudioPlayer?.pause();
     }).catch(() => {});
-
-    getWebAudioContext();
   } catch {}
-}
-
-function playWebAudioData(
-  src: string,
-  rate: number,
-  myDialogueId: number,
-  onEnded?: () => void
-): boolean {
-  const ctx = getWebAudioContext();
-  if (!ctx) return false;
-
-  try {
-    let base64 = "";
-    if (src.startsWith("data:audio/")) {
-      const parts = src.split(";base64,");
-      if (parts.length === 2) {
-        base64 = parts[1];
-      }
-    }
-    if (!base64) return false;
-
-    const binaryString = atob(base64);
-    const len = binaryString.length;
-    const bytes = new Uint8Array(len);
-    for (let i = 0; i < len; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-
-    if (currentAudioSource) {
-      try {
-        currentAudioSource.stop();
-        currentAudioSource.disconnect();
-      } catch {}
-      currentAudioSource = null;
-    }
-
-    if (onPlaybackStateChange) onPlaybackStateChange(true);
-
-    ctx.decodeAudioData(
-      bytes.buffer,
-      (buffer) => {
-        if (myDialogueId !== currentDialogueId) {
-          if (onPlaybackStateChange) onPlaybackStateChange(false);
-          return;
-        }
-        const source = ctx.createBufferSource();
-        source.buffer = buffer;
-        source.playbackRate.value = rate;
-        source.connect(ctx.destination);
-        currentAudioSource = source;
-
-        source.onended = () => {
-          if (currentAudioSource === source) currentAudioSource = null;
-          if (onPlaybackStateChange) onPlaybackStateChange(false);
-          if (onEnded) onEnded();
-        };
-
-        source.start(0);
-      },
-      () => {
-        if (onPlaybackStateChange) onPlaybackStateChange(false);
-        if (onEnded) onEnded();
-      }
-    );
-    return true;
-  } catch {
-    return false;
-  }
 }
 
 // Stop audio automatically when user navigates away, closes tab, or switches pages!
@@ -228,10 +139,6 @@ export function speak(
                 },
               })
             );
-          }
-          const rawUrl = json.data.audioUrl;
-          if (playWebAudioData(rawUrl, rate, myDialogueId, onEnded)) {
-            return;
           }
           let src = json.data.audioUrl;
           if (src.startsWith("data:audio/")) {
@@ -385,13 +292,6 @@ export function stopAudio(): void {
   if (lineTimeoutId) {
     clearTimeout(lineTimeoutId);
     lineTimeoutId = null;
-  }
-  if (currentAudioSource) {
-    try {
-      currentAudioSource.stop();
-      currentAudioSource.disconnect();
-    } catch {}
-    currentAudioSource = null;
   }
   activeAudioPlayers.forEach((player) => {
     try {
@@ -664,12 +564,6 @@ export function speakDialogue(
           const json = await res.json();
           if (myDialogueId !== currentDialogueId) return;
           if (json.success && json.data?.audioUrl) {
-            const rawUrl = json.data.audioUrl;
-            if (playWebAudioData(rawUrl, rate, myDialogueId, () => {
-              if (audio.onended) (audio.onended as any)(new Event("ended"));
-            })) {
-              return;
-            }
             let src = json.data.audioUrl;
             if (src.startsWith("data:audio/")) {
               const parts = src.split(";base64,");
