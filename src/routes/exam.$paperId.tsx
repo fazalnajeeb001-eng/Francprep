@@ -285,8 +285,8 @@ export function AuthenticCBTExamPage() {
       return;
     }
 
-    // Do NOT count down while audio is playing, while student has paused the timer/audio, OR before audio has finished playing!
-    if (isSpeaking || isAudioPaused || isTimerPaused || !isAudioFinished) {
+    // Do NOT count down while audio is playing, while student has paused the timer/audio, before audio has finished playing, OR if qTimeLeft is <= 0!
+    if (isSpeaking || isAudioPaused || isTimerPaused || !isAudioFinished || qTimeLeft === null || qTimeLeft <= 0) {
       return;
     }
 
@@ -298,14 +298,18 @@ export function AuthenticCBTExamPage() {
         }
         if (prev <= 1) {
           clearInterval(interval);
-          if (currentQuestionIdx < currentQuestions.length - 1) {
-            setCurrentQuestionIdx((idx) => idx + 1);
-          } else if (activeSectionIdx < paper.sections.length - 1) {
-            handleStopAudio();
-            setCompletedSectionIndices((prev) => Array.from(new Set([...prev, activeSectionIdx])));
-            setActiveSectionIdx((sIdx) => sIdx + 1);
-            setCurrentQuestionIdx(0);
-            setShowSectionDisclaimer(true);
+          if (!isTransitioningRef.current) {
+            isTransitioningRef.current = true;
+            setIsAudioFinished(false);
+            if (currentQuestionIdx < currentQuestions.length - 1) {
+              setCurrentQuestionIdx((idx) => idx + 1);
+            } else if (activeSectionIdx < paper.sections.length - 1) {
+              handleStopAudio();
+              setCompletedSectionIndices((prev) => Array.from(new Set([...prev, activeSectionIdx])));
+              setActiveSectionIdx((sIdx) => sIdx + 1);
+              setCurrentQuestionIdx(0);
+              setShowSectionDisclaimer(true);
+            }
           }
           return 0;
         }
@@ -314,7 +318,7 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, isSpeaking, isAudioPaused, isTimerPaused, isAudioFinished, currentQuestions.length, paper.sections.length]);
+  }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, isSpeaking, isAudioPaused, isTimerPaused, isAudioFinished, qTimeLeft, currentQuestions.length, paper.sections.length]);
 
   // Load / initialize section timer when active section changes
   useEffect(() => {
@@ -1032,6 +1036,7 @@ export function AuthenticCBTExamPage() {
 
   const playAudioSessionRef = useRef(0);
   const lastPlayedQuestionRef = useRef<string | null>(null);
+  const isTransitioningRef = useRef(false);
 
   const handleStopAudio = () => {
     playAudioSessionRef.current++;
@@ -1052,6 +1057,7 @@ export function AuthenticCBTExamPage() {
   useEffect(() => {
     if (currentSection?.type !== "COMPREHENSION_ORALE" || !currentQ) return;
 
+    isTransitioningRef.current = false;
     const qKey = `${paper.id}_${activeSectionIdx}_${currentQuestionIdx}_${currentQ.id}`;
     const qNum = currentQ.questionNumber;
     const initialTimer = (currentQ as any).perQuestionTimerSeconds || (qNum <= 10 ? 15 : qNum <= 26 ? 20 : 25);
