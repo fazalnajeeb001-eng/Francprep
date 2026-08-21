@@ -1027,6 +1027,7 @@ export function AuthenticCBTExamPage() {
   };
 
   const playAudioSessionRef = useRef(0);
+  const lastPlayedQuestionRef = useRef<string | null>(null);
 
   const handleStopAudio = () => {
     playAudioSessionRef.current++;
@@ -1043,61 +1044,61 @@ export function AuthenticCBTExamPage() {
     };
   }, []);
 
-  // Automatically kill audio and manage audio completion state / auto-play when switching questions!
+  // Automatically manage audio completion state and auto-play when switching questions in Exam Mode!
   useEffect(() => {
-    handleStopAudio();
-    setIsAudioFinished(false);
+    if (currentSection?.type !== "COMPREHENSION_ORALE" || !currentQ) return;
 
-    if (currentSection?.type === "COMPREHENSION_ORALE" && currentQ) {
-      const qNum = currentQ.questionNumber;
-      const initialTimer = (currentQ as any).perQuestionTimerSeconds || (qNum <= 10 ? 15 : qNum <= 26 ? 20 : 25);
-      setQTimeLeft(initialTimer);
+    const qKey = `${paper.id}_${activeSectionIdx}_${currentQuestionIdx}_${currentQ.id}`;
+    const qNum = currentQ.questionNumber;
+    const initialTimer = (currentQ as any).perQuestionTimerSeconds || (qNum <= 10 ? 15 : qNum <= 26 ? 20 : 25);
 
-      // Q30-Q39 prompt text is printed on screen per FEI rules. Q1-Q29 prompt text stays strictly hidden by default.
-      if (qNum >= 30) {
-        setShowQuestionPrompt(true);
-      } else {
-        setShowQuestionPrompt(false);
-      }
-
-      // Do NOT auto-play audio while the section launch disclaimer modal is active!
-      if (!acceptedSectionDisclaimers["COMPREHENSION_ORALE"]) {
-        return;
-      }
-
-      // Auto-play audio on question load in Exam Mode
-      if (mode === "EXAM" && !isSubmitted) {
-        const rate = (currentQ as any).speakingRate || 1.0;
-        const fullText = currentQ.transcript || currentQ.text;
-        const currentSession = playAudioSessionRef.current;
-
-        // Safety watchdog: ensure isAudioFinished fires within 45s if audio hangs or browser drops callback
-        const watchdogTimer = setTimeout(() => {
-          if (playAudioSessionRef.current === currentSession) {
-            setIsAudioFinished(true);
-          }
-        }, 45000);
-
-        const timer = setTimeout(() => {
-          if (playAudioSessionRef.current !== currentSession) return;
-          try {
-            triggerAcousticSoundForQuestion(qNum);
-          } catch {}
-          ttsSpeakListening(fullText, "fr-FR", rate, "female", () => {
-            clearTimeout(watchdogTimer);
-            if (playAudioSessionRef.current === currentSession) {
-              setIsAudioFinished(true);
-            }
-          });
-        }, 300);
-
-        return () => {
-          clearTimeout(timer);
-          clearTimeout(watchdogTimer);
-        };
-      }
+    // Initialize per-question timer & prompt visibility
+    setQTimeLeft(initialTimer);
+    if (qNum >= 30) {
+      setShowQuestionPrompt(true);
+    } else {
+      setShowQuestionPrompt(false);
     }
-  }, [currentQuestionIdx, activeSectionIdx, acceptedSectionDisclaimers, mode, isSubmitted]);
+
+    // Do NOT auto-play while the section launch disclaimer modal is active!
+    if (!acceptedSectionDisclaimers["COMPREHENSION_ORALE"]) {
+      setIsAudioFinished(false);
+      return;
+    }
+
+    // Only launch auto-play ONCE per question load in Exam Mode!
+    if (mode === "EXAM" && !isSubmitted && lastPlayedQuestionRef.current !== qKey) {
+      lastPlayedQuestionRef.current = qKey;
+      handleStopAudio();
+      setIsAudioFinished(false);
+
+      const rate = (currentQ as any).speakingRate || 1.0;
+      const fullText = currentQ.transcript || currentQ.text;
+      const currentSession = playAudioSessionRef.current;
+
+      try {
+        triggerAcousticSoundForQuestion(qNum);
+      } catch {}
+
+      let finishedTriggered = false;
+      const markAudioFinished = () => {
+        if (!finishedTriggered && playAudioSessionRef.current === currentSession) {
+          finishedTriggered = true;
+          setIsAudioFinished(true);
+        }
+      };
+
+      // Watchdog fallback (30s) in case audio callback is dropped or blocked
+      const watchdogTimer = setTimeout(() => {
+        markAudioFinished();
+      }, 30000);
+
+      ttsSpeakListening(fullText, "fr-FR", rate, "female", () => {
+        clearTimeout(watchdogTimer);
+        markAudioFinished();
+      });
+    }
+  }, [currentQuestionIdx, activeSectionIdx, acceptedSectionDisclaimers, mode, isSubmitted, currentQ, paper.id, currentSection?.type]);
 
   const handlePlayAudio = async (text: string, lang = "fr-FR", rate = 1.0) => {
     const sessionId = ++playAudioSessionRef.current;
