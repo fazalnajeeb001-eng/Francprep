@@ -204,61 +204,59 @@ export async function generateNeuralAudio(
   const canonicalHashWithSpace = crypto.createHash('md5').update(`${normTextTrimmed} _${normGender}`).digest('hex');
 
   // 1. Check MongoDB Cache first — instant hit by textHash or exact text match
-  if (!forcedVoiceId || forcedVoiceId === 'google') {
-    try {
-      const cleanPrefix = cleanText.replace(/\s*(\.{2,}|\u2026)\s*$/, '').trim();
-      const escapedText = cleanText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const escapedRaw = rawCleanText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const escapedPrefix = cleanPrefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  try {
+    const cleanPrefix = cleanText.replace(/\s*(\.{2,}|\u2026)\s*$/, '').trim();
+    const escapedText = cleanText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const escapedRaw = rawCleanText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const escapedPrefix = cleanPrefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-      let cached = await TTSCache.findOne({
-        $or: [
-          { textHash },
-          { textHash: canonicalHash },
-          { textHash: canonicalHashTrimmed },
-          { textHash: canonicalHashWithSpace },
-          { text: cleanText, gender },
-          { text: cleanText },
-          { text: rawCleanText },
-          { text: new RegExp('^' + escapedText + '$', 'i') },
-          { text: new RegExp(escapedText, 'i') },
-          { text: new RegExp(escapedRaw, 'i') },
-          { text: new RegExp('^' + escapedPrefix, 'i') },
-          { text: new RegExp(escapedPrefix, 'i') }
-        ]
-      }).maxTimeMS(2500);
+    let cached = await TTSCache.findOne({
+      $or: [
+        { textHash },
+        { textHash: canonicalHash },
+        { textHash: canonicalHashTrimmed },
+        { textHash: canonicalHashWithSpace },
+        { text: cleanText, gender },
+        { text: cleanText },
+        { text: rawCleanText },
+        { text: new RegExp('^' + escapedText + '$', 'i') },
+        { text: new RegExp(escapedText, 'i') },
+        { text: new RegExp(escapedRaw, 'i') },
+        { text: new RegExp('^' + escapedPrefix, 'i') },
+        { text: new RegExp(escapedPrefix, 'i') }
+      ]
+    }).maxTimeMS(2500);
 
-      if (!cached && mongoose.connection?.db) {
-        try {
-          const testDb = mongoose.connection.useDb('test').db;
-          if (testDb) {
-            const doc = await testDb.collection('ttscaches').findOne({
-              $or: [
-                { textHash },
-                { textHash: canonicalHash },
-                { textHash: canonicalHashTrimmed },
-                { textHash: canonicalHashWithSpace },
-                { text: cleanText, gender },
-                { text: cleanText },
-                { text: rawCleanText },
-                { text: new RegExp('^' + escapedText + '$', 'i') },
-                { text: new RegExp(escapedText, 'i') },
-                { text: new RegExp(escapedRaw, 'i') },
-                { text: new RegExp('^' + escapedPrefix, 'i') },
-                { text: new RegExp(escapedPrefix, 'i') }
-              ]
-            }, { maxTimeMS: 2500 });
-            if (doc) cached = doc as any;
-          }
-        } catch {}
-      }
-
-      if (cached && cached.audioBase64) {
-        return { audioBase64: cached.audioBase64, contentType: cached.contentType || 'audio/mp3', provider: `cache-${cached.voice}` };
-      }
-    } catch (err) {
-      console.warn('[TTSCache] Error reading cache:', err);
+    if (!cached && mongoose.connection?.db) {
+      try {
+        const testDb = mongoose.connection.useDb('test').db;
+        if (testDb) {
+          const doc = await testDb.collection('ttscaches').findOne({
+            $or: [
+              { textHash },
+              { textHash: canonicalHash },
+              { textHash: canonicalHashTrimmed },
+              { textHash: canonicalHashWithSpace },
+              { text: cleanText, gender },
+              { text: cleanText },
+              { text: rawCleanText },
+              { text: new RegExp('^' + escapedText + '$', 'i') },
+              { text: new RegExp(escapedText, 'i') },
+              { text: new RegExp(escapedRaw, 'i') },
+              { text: new RegExp('^' + escapedPrefix, 'i') },
+              { text: new RegExp(escapedPrefix, 'i') }
+            ]
+          }, { maxTimeMS: 2500 });
+          if (doc) cached = doc as any;
+        }
+      } catch {}
     }
+
+    if (cached && cached.audioBase64) {
+      return { audioBase64: cached.audioBase64, contentType: cached.contentType || 'audio/mp3', provider: `cache-${cached.voice}` };
+    }
+  } catch (err) {
+    console.warn('[TTSCache] Error reading cache:', err);
   }
 
   const tryElevenLabs = async () => {
