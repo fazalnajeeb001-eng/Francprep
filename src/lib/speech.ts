@@ -67,6 +67,17 @@ function base64ToBlob(base64: string, contentType = "audio/mp3"): Blob {
   return new Blob([byteArray], { type: contentType });
 }
 
+function base64ToArrayBuffer(base64: string): ArrayBuffer {
+  const clean = base64.includes(";base64,") ? base64.split(";base64,")[1] : base64;
+  const binaryString = atob(clean);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+
 /**
  * Text-to-speech helper. Strictly uses Neural AI Engine (/api/tts/speak)
  * configured in Admin Panel (Kokoro-82M, ElevenLabs, or OpenAI).
@@ -164,12 +175,18 @@ export function speak(
           }
           if (myDialogueId !== currentDialogueId) return;
 
-          // Mobile Web Audio API AudioBufferSourceNode engine (0ms mobile autoplay blocks)
+          // Mobile Web Audio API Direct RAM AudioBufferSourceNode engine (0 CORS errors, 0 iOS WebKit blocks)
           const isMobileDevice = typeof navigator !== "undefined" && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
           if (isMobileDevice && mobileAudioContext && mobileAudioContext.state !== "closed") {
             try {
-              const audioRes = await fetch(src);
-              const arrayBuffer = await audioRes.arrayBuffer();
+              const rawDataUrl = json.data.audioUrl;
+              let arrayBuffer: ArrayBuffer;
+              if (rawDataUrl.startsWith("data:audio/")) {
+                arrayBuffer = base64ToArrayBuffer(rawDataUrl);
+              } else {
+                const audioRes = await fetch(rawDataUrl);
+                arrayBuffer = await audioRes.arrayBuffer();
+              }
               const audioBuffer = await mobileAudioContext.decodeAudioData(arrayBuffer);
               if (myDialogueId !== currentDialogueId) return;
 
@@ -189,7 +206,7 @@ export function speak(
               sourceNode.start(0);
               return;
             } catch (e) {
-              console.warn("Mobile WebAudio decode fallback, attempting standard HTMLAudioElement...", e);
+              console.warn("Mobile WebAudio direct RAM decode fallback, attempting standard HTMLAudioElement...", e);
             }
           }
 
