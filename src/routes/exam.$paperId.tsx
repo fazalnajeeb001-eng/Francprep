@@ -182,6 +182,7 @@ export function AuthenticCBTExamPage() {
   });
   const [isTimerPaused, setIsTimerPaused] = useState(false);
   const [qTimeLeft, setQTimeLeft] = useState<number | null>(null);
+  const [isAudioFetching, setIsAudioFetching] = useState(false);
   const [sectionTransitionModal, setSectionTransitionModal] = useState<{ show: boolean; targetIdx: number; targetTitle: string } | null>(null);
 
   // Audio Speech Hook (Declared at top of component to prevent TDZ ReferenceError)
