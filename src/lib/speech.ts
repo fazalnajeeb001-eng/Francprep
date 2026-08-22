@@ -21,9 +21,7 @@ export function unlockAudioEngine(): void {
       masterAudioPlayer = new Audio();
     }
     masterAudioPlayer.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
-    masterAudioPlayer.play().then(() => {
-      masterAudioPlayer?.pause();
-    }).catch(() => {});
+    masterAudioPlayer.play().catch(() => {});
 
     // Initialize silent Web Audio Context keep-alive stream for mobile browsers (iOS Safari / Mobile Chrome)
     const isMobileDevice = typeof navigator !== "undefined" && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);

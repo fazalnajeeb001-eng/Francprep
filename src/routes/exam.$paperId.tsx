@@ -1082,7 +1082,7 @@ export function AuthenticCBTExamPage() {
 
   // Timer Countdown
   useEffect(() => {
-    if (isSubmitted || isTimerPaused) return;
+    if (isSubmitted || isTimerPaused || isSpeaking || isAudioFetching) return;
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -1093,7 +1093,7 @@ export function AuthenticCBTExamPage() {
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [isSubmitted, isTimerPaused]);
+  }, [isSubmitted, isTimerPaused, isSpeaking, isAudioFetching]);
 
   const formatTime = (secs: number) => {
     const m = Math.floor(secs / 60);
