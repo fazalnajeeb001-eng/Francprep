@@ -1037,12 +1037,12 @@ export function AuthenticCBTExamPage() {
         const fullText = currentQ.transcript || currentQ.text;
         const currentSession = playAudioSessionRef.current;
 
-        // Safety watchdog: ensure isAudioFinished fires within 45s if audio hangs or browser drops callback
+        // Fast 1.8s Recovery Watchdog: Ensures isAudioFinished fires after 1.8s if mobile OS/browser security blocks audio autoplay
         const watchdogTimer = setTimeout(() => {
           if (playAudioSessionRef.current === currentSession) {
             setIsAudioFinished(true);
           }
-        }, 45000);
+        }, 1800);
 
         const timer = setTimeout(() => {
           if (playAudioSessionRef.current !== currentSession) return;
