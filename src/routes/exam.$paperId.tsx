@@ -185,6 +185,22 @@ export function AuthenticCBTExamPage() {
   const [isAudioFetching, setIsAudioFetching] = useState(false);
   const [sectionTransitionModal, setSectionTransitionModal] = useState<{ show: boolean; targetIdx: number; targetTitle: string } | null>(null);
 
+  // Existing Session Prompt Modal State (Triggers when student reopens an exam with saved progress)
+  const [showSessionPromptModal, setShowSessionPromptModal] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const hasAnswers = Object.keys(parsed.selectedAnswers || {}).length > 0;
+        const hasWriting = Object.keys(parsed.writingResponses || {}).some((k: string) => Boolean(parsed.writingResponses[k]));
+        const hasSpeaking = Object.keys(parsed.speakingDialogueMap || {}).some((k: string) => (parsed.speakingDialogueMap[k] || []).length > 0);
+        return hasAnswers || hasWriting || hasSpeaking;
+      }
+    } catch {}
+    return false;
+  });
+
   // Audio Speech Hook (Declared at top of component to prevent TDZ ReferenceError)
   const { speak: ttsSpeak, speakDialogue: ttsSpeakDialogue, speakListening: ttsSpeakListening, isSpeaking, stop: ttsStop, pause: ttsPause, resume: ttsResume } = useSpeak();
 
@@ -247,6 +263,23 @@ export function AuthenticCBTExamPage() {
   const [speakingChatLoading, setSpeakingChatLoading] = useState<Record<string, boolean>>({});
   const [oralPrepTimeRemaining, setOralPrepTimeRemaining] = useState<Record<string, number>>({});
   const [isOralPrepActive, setIsOralPrepActive] = useState<Record<string, boolean>>({});
+
+  const handleRestartSessionClean = () => {
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.removeItem(sessionKey);
+      } catch {}
+    }
+    setSelectedAnswers({});
+    setFlaggedQuestions({});
+    setWritingResponses({});
+    setSpeakingTranscripts({});
+    setSpeakingDialogueMap({});
+    setWritingAiResults({});
+    setSpeakingAiResults({});
+    setSectionTimeRemaining({});
+    setShowSessionPromptModal(false);
+  };
   const [oralSpeakingTimeRemaining, setOralSpeakingTimeRemaining] = useState<Record<string, number>>({});
   const [isOralSpeakingActive, setIsOralSpeakingActive] = useState<Record<string, boolean>>({});
   const [oralScratchNotes, setOralScratchNotes] = useState<Record<string, string>>({});
@@ -464,6 +497,10 @@ export function AuthenticCBTExamPage() {
     const clean = (userText || '').trim();
     if (!clean) return;
 
+    try {
+      unlockAudioEngine();
+    } catch {}
+
     const existingChat = speakingDialogueMap[taskId] || [];
     const updatedMessages = [...existingChat, { sender: 'candidate' as const, text: clean }];
     setSpeakingDialogueMap((prev) => ({ ...prev, [taskId]: updatedMessages }));
@@ -493,7 +530,10 @@ export function AuthenticCBTExamPage() {
           ...prev,
           [taskId]: [...updatedMessages, { sender: 'examiner' as const, text: replyText }],
         }));
-        handlePlayExaminerAudio(replyText);
+        handlePlayExaminerAudio(replyText, () => {
+          setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
+        });
+        return;
       }
     } catch (e) {
       console.error("Examiner chat error:", e);
@@ -502,6 +542,9 @@ export function AuthenticCBTExamPage() {
   };
 
   const startSpeakingTaskSession = (idx: number) => {
+    try {
+      unlockAudioEngine();
+    } catch {}
     const tasks = currentSection?.speakingTasks;
     if (!tasks || tasks.length === 0) return;
     const task = tasks[Math.min(idx, tasks.length - 1)];
@@ -4407,6 +4450,61 @@ export function AuthenticCBTExamPage() {
                 <Sparkles className="w-4 h-4" />
                 <span>Begin {currentSection.title} Test Now</span>
               </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ─── EXISTING SESSION PROMPT MODAL ─── */}
+      <AnimatePresence>
+        {showSessionPromptModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 15 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 15 }}
+              className="w-full max-w-md p-6 rounded-2xl border bg-white dark:bg-[#0f172a] border-slate-200 dark:border-slate-800 shadow-2xl space-y-5 text-left"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-xl bg-blue-100 dark:bg-blue-950/70 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                  <RotateCcw className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+                    Session en cours détectée
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                    Existing exam session found for {paper.title}
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                Des réponses précédemment enregistrées ont été trouvées pour cette épreuve. Souhaitez-vous continuer votre session ou recommencer un nouveau test ?
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
+                <button
+                  onClick={handleRestartSessionClean}
+                  className="w-full py-3 px-4 rounded-xl font-bold text-xs border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900/60 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Recommencer à zéro</span>
+                </button>
+
+                <button
+                  onClick={() => setShowSessionPromptModal(false)}
+                  className="w-full py-3 px-4 rounded-xl font-extrabold text-xs bg-blue-600 hover:bg-blue-500 text-white transition-all shadow-lg flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Continuer la session</span>
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}
