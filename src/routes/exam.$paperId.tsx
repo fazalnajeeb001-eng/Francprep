@@ -1090,12 +1090,12 @@ export function AuthenticCBTExamPage() {
         const fullText = currentQ.transcript || currentQ.text;
         const currentSession = playAudioSessionRef.current;
 
-        // Fast 1.8s Recovery Watchdog: Ensures isAudioFinished fires after 1.8s if mobile OS/browser security blocks audio autoplay
+        // 12.0s Fail-Safe Watchdog: Ensures isAudioFinished fires after 12.0s if network drops completely
         const watchdogTimer = setTimeout(() => {
           if (playAudioSessionRef.current === currentSession) {
             setIsAudioFinished(true);
           }
-        }, 1800);
+        }, 12000);
 
         const timer = setTimeout(() => {
           if (playAudioSessionRef.current !== currentSession) return;
@@ -1117,6 +1117,31 @@ export function AuthenticCBTExamPage() {
       }
     }
   }, [currentQuestionIdx, activeSectionIdx, acceptedSectionDisclaimers, mode, isSubmitted]);
+
+  // Silent Background Pre-Fetcher for Next Question Audio in Exam Mode (Guarantees 0ms latency on Q1 -> Q39 transitions)
+  useEffect(() => {
+    if (mode === "EXAM" && currentSection?.type === "COMPREHENSION_ORALE" && acceptedSectionDisclaimers["COMPREHENSION_ORALE"]) {
+      const questions = currentSection.questions || [];
+      const nextQ = questions[currentQuestionIdx + 1];
+      if (nextQ) {
+        const nextText = nextQ.transcript || nextQ.text;
+        if (nextText) {
+          try {
+            apiFetch("/tts/speak", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                text: nextText.trim(),
+                gender: "female",
+                lang: "fr",
+                speakingRate: (nextQ as any).speakingRate || 1.0,
+              }),
+            }).catch(() => {});
+          } catch {}
+        }
+      }
+    }
+  }, [currentQuestionIdx, activeSectionIdx, currentSection, mode, acceptedSectionDisclaimers]);
 
   const handlePlayAudio = async (text: string, lang = "fr-FR", rate = 1.0) => {
     const sessionId = ++playAudioSessionRef.current;
