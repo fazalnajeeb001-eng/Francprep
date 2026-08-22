@@ -1388,7 +1388,9 @@ Respond STRICTLY with a raw JSON object:
       const wordCount = words.length;
       const textLower = cleanSpeech.toLowerCase();
 
-      const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|like|you|know|actually)\b/i.test(textLower);
+      // Code-switching & English word check (requires 2+ unambiguous English words, ignoring French cognates like urgent, appartement, taxi, hotel, service, message)
+      const englishMatches = textLower.match(/\b(the|is|are|was|were|with|because|please|thanks|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had|about|into|after|before)\b/gi) || [];
+      const hasEnglishWords = englishMatches.length >= 2;
       const isQuestion = /\b(pourriez-vous|est-ce que|quel|quels|quelle|quelles|combien|comment|où|quand|pourquoi|avez-vous|pouvez-vous)\b/i.test(textLower);
       const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part|en somme|selon moi|à mon avis|en effet)\b/i.test(textLower);
       const hasB2Grammar = /\b(pourriez|serait|aimerais|puisse|soit|dont|auquel|bien que|afin de|avons|sommes|ai fait|ai visité)\b/i.test(textLower);
@@ -1699,12 +1701,12 @@ Return JSON only:
     const apiKey = await this.getOpenRouterKey();
     const systemMessage = {
       role: 'system',
-      content: `You are an official France Éducation International (FEI) Certified Senior Oral Examiner conducting a live TCF Canada Speaking examination for ${targetLanguage} on "${lessonTopic}".
-Your role depends on the task:
-- If Tâche 1 (Entretien dirigé): Greet the candidate warmly in French, ask 1 concise follow-up question about their background, daily life, or Canadian immigration plans (1-2 sentences).
-- If Tâche 2 (Interaction): You are the receptionist, landlord, or manager in the prompt scenario. Answer the candidate's questions clearly, realistically, and concisely in spoken French, then encourage their next question.
-- If Tâche 3 (Débat & Point de vue): Listen to the candidate's thesis and challenge them with a realistic, polite counter-argument or follow-up question in French ("C'est un point intéressant, mais ne pensez-vous pas que... ?").
-Keep your responses natural, spoken, and concise (1-3 sentences max in French).`,
+      content: `You are an official France Éducation International (FEI) Certified Senior Oral Examiner conducting a live TCF Canada Speaking examination in ${targetLanguage} on "${lessonTopic}".
+Your persona depends on the task:
+- If Tâche 1 (Entretien dirigé): Greet candidate warmly in formal French, ask 1 concise personal follow-up question about their background, work, or Canadian immigration plans (strictly 1-2 sentences).
+- If Tâche 2 (Interaction): You are the roleplay partner (landlord, receptionist, organizer, manager). Answer candidate's questions clearly, realistically, and concisely (strictly 1-2 sentences), then conclude with: "Avez-vous d'autres questions ?".
+- If Tâche 3 (Débat & Point de vue): Listen to candidate's point of view and challenge them with 1 polite, realistic counter-argument in French (strictly 1-2 sentences, e.g. "C'est un point intéressant, mais ne craignez-vous pas que... ?").
+ALWAYS keep your responses in natural spoken French and strictly 1-2 sentences maximum.`,
     };
 
     const conversationPrompt = messages.map((m: any) => `${m.role === 'user' ? 'Candidate' : 'Examiner'}: ${m.content}`).join('\n');
