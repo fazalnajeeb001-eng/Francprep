@@ -1731,6 +1731,117 @@ ALWAYS keep your responses in natural spoken French and strictly 1-2 sentences m
       model: 'fallback',
     };
   }
+
+  public async evaluateWritingSection(
+    writingResponses: Record<string, string>,
+    paperTitle = 'TCF Canada Practice Exam',
+    targetLanguage = 'French'
+  ) {
+    const taskIds = Object.keys(writingResponses || {});
+    const taskResults: Record<string, ComprehensiveWritingFeedback> = {};
+
+    let t1Score = 0;
+    let t2Score = 0;
+    let t3Score = 0;
+    let hasT1 = false;
+    let hasT2 = false;
+    let hasT3 = false;
+
+    for (let i = 0; i < taskIds.length; i++) {
+      const taskId = taskIds[i];
+      const text = writingResponses[taskId] || '';
+      const taskNumber = taskId.includes('task_0') || taskId.includes('w1') || taskId.includes('spk-1') ? 1
+        : taskId.includes('task_1') || taskId.includes('w2') || taskId.includes('spk-2') ? 2
+        : taskId.includes('task_2') || taskId.includes('w3') || taskId.includes('spk-3') ? 3 : (i + 1);
+
+      const wordCountMin = taskNumber === 1 ? 60 : taskNumber === 2 ? 120 : 140;
+      const wordCountMax = taskNumber === 1 ? 120 : taskNumber === 2 ? 150 : 180;
+
+      const evalResult = await this.getFeedback(
+        text,
+        `${paperTitle} - Tâche ${taskNumber}`,
+        undefined,
+        undefined,
+        targetLanguage,
+        'TCF Canada',
+        taskNumber,
+        wordCountMin,
+        wordCountMax
+      );
+
+      taskResults[taskId] = evalResult;
+
+      if (taskNumber === 1) {
+        t1Score = evalResult.scoreOutOf20;
+        hasT1 = true;
+      } else if (taskNumber === 2) {
+        t2Score = evalResult.scoreOutOf20;
+        hasT2 = true;
+      } else {
+        t3Score = evalResult.scoreOutOf20;
+        hasT3 = true;
+      }
+    }
+
+    // Official FEI Composite Weighting: 20% Tâche 1 + 30% Tâche 2 + 50% Tâche 3
+    let compositeScoreOutOf20 = 0;
+    if (hasT1 && hasT2 && hasT3) {
+      compositeScoreOutOf20 = (0.20 * t1Score) + (0.30 * t2Score) + (0.50 * t3Score);
+    } else {
+      const scores = Object.values(taskResults).map(r => r.scoreOutOf20);
+      compositeScoreOutOf20 = scores.length > 0 ? (scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+    }
+
+    compositeScoreOutOf20 = Math.round(compositeScoreOutOf20 * 10) / 10;
+    const compositePct = Math.round((compositeScoreOutOf20 / 20) * 100);
+
+    let nclcGrade = "NCLC 7 (B2 Benchmark Target)";
+    let cefrLevel = "B2";
+    let expressEntryPoints = 17;
+
+    if (compositeScoreOutOf20 >= 18) {
+      nclcGrade = "NCLC 10+ (C2 Mastery)";
+      cefrLevel = "C2";
+      expressEntryPoints = 34;
+    } else if (compositeScoreOutOf20 >= 16) {
+      nclcGrade = "NCLC 9 (C1 Advanced)";
+      cefrLevel = "C1";
+      expressEntryPoints = 31;
+    } else if (compositeScoreOutOf20 >= 14) {
+      nclcGrade = "NCLC 8 (B2 Upper)";
+      cefrLevel = "B2";
+      expressEntryPoints = 23;
+    } else if (compositeScoreOutOf20 >= 12) {
+      nclcGrade = "NCLC 7 (B2 Benchmark Target)";
+      cefrLevel = "B2";
+      expressEntryPoints = 17;
+    } else if (compositeScoreOutOf20 >= 9.5) {
+      nclcGrade = "NCLC 6 (B1 Intermediate)";
+      cefrLevel = "B1";
+      expressEntryPoints = 12;
+    } else if (compositeScoreOutOf20 >= 7) {
+      nclcGrade = "NCLC 5 (B1 Threshold)";
+      cefrLevel = "B1";
+      expressEntryPoints = 6;
+    } else if (compositeScoreOutOf20 >= 4) {
+      nclcGrade = "NCLC 4 (A2 Elementary)";
+      cefrLevel = "A2";
+      expressEntryPoints = 0;
+    } else {
+      nclcGrade = "NCLC 3 (A1 Beginner)";
+      cefrLevel = "A1";
+      expressEntryPoints = 0;
+    }
+
+    return {
+      compositeScoreOutOf20,
+      compositePct,
+      nclcGrade,
+      cefrLevel,
+      expressEntryPoints,
+      taskResults
+    };
+  }
 }
 
 export const writingService = new WritingService();

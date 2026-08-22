@@ -127,6 +127,26 @@ export class WritingController {
       next(error);
     }
   }
+
+  async evaluateWritingSection(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const { writingResponses, paperTitle, targetLanguage } = req.body || {};
+      if (!writingResponses || typeof writingResponses !== 'object') {
+        res.status(400).json({ success: false, error: 'writingResponses object is required.' });
+        return;
+      }
+
+      const { targetLanguage: lang } = getLanguageAndExamInfo(req, targetLanguage);
+      const result = await writingService.evaluateWritingSection(writingResponses, paperTitle, lang);
+
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const writingController = new WritingController();

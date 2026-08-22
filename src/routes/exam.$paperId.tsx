@@ -921,47 +921,41 @@ export function AuthenticCBTExamPage() {
         });
 
         if (pendingWriting.length > 0) {
-          await Promise.all(
-            pendingWriting.map(async (t) => {
-              const text = writingResponses[t.id];
-              const taskNumber = t.taskNumber || (t.id?.includes('w1') ? 1 : t.id?.includes('w2') ? 2 : t.id?.includes('w3') ? 3 : 1);
-              try {
-                const res = await apiFetch("/writing/feedback", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    text,
-                    studentText: text,
-                    lessonTitle: `${paper.title} - ${t.id}`,
-                    paperTitle: paper.title,
-                    taskNumber,
-                    expectedAnswer: t.prompt + (t.sampleResponse ? `\nSample Exemplar Response:\n${t.sampleResponse}` : ""),
-                    taskPrompt: t.prompt,
-                    sampleResponse: t.sampleResponse,
-                    wordCountMin: t.wordCountMin,
-                    wordCountMax: t.wordCountMax,
-                    targetLanguage: "French",
-                  }),
-                });
-                const json = await res.json();
-                if (json.success && json.data) {
-                  const data = json.data;
-                  const totalScoreOutOf20 = typeof data.scoreOutOf20 === 'number'
-                    ? data.scoreOutOf20
-                    : (typeof data.score === 'number' ? Math.round((data.score / 100) * 20) : 15);
-                  setWritingAiResults((prev) => ({
-                    ...prev,
-                    [t.id]: {
-                      ...data,
-                      scoreOutOf20: totalScoreOutOf20,
-                    },
-                  }));
-                }
-              } catch (e) {
-                console.error("Batch writing eval error:", e);
+          try {
+            const writingPayload: Record<string, string> = {};
+            pendingWriting.forEach((t) => {
+              writingPayload[t.id] = writingResponses[t.id] || "";
+            });
+
+            const res = await apiFetch("/writing/evaluate-writing-section", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                writingResponses: writingPayload,
+                paperTitle: paper.title,
+                targetLanguage: "French",
+              }),
+            });
+
+            const json = await res.json();
+            if (json.success && json.data) {
+              const { taskResults, compositeScoreOutOf20, nclcGrade, cefrLevel, expressEntryPoints } = json.data;
+              if (taskResults) {
+                setWritingAiResults((prev) => ({
+                  ...prev,
+                  ...taskResults,
+                  _sectionSummary: {
+                    compositeScoreOutOf20,
+                    nclcGrade,
+                    cefrLevel,
+                    expressEntryPoints,
+                  },
+                }));
               }
-            })
-          );
+            }
+          } catch (e) {
+            console.error("Batch writing section eval error:", e);
+          }
         }
       }
 
