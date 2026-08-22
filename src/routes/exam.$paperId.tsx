@@ -375,8 +375,9 @@ export function AuthenticCBTExamPage() {
 
   useEffect(() => {
     const activeTasks = Object.keys(isOralPrepActive).filter((k) => isOralPrepActive[k] && (oralPrepTimeRemaining[k] || 0) > 0);
-    // CRITICAL FORENSIC GUARD: Freeze prep timer while examiner audio is playing or simulator is paused
-    if (activeTasks.length === 0 || isSpeaking || isTimerPaused) return;
+    const isChatLoading = Object.values(speakingChatLoading).some(Boolean);
+    // CRITICAL FORENSIC GUARD: Freeze prep timer while examiner audio is playing, fetching, or simulator is paused
+    if (activeTasks.length === 0 || isSpeaking || isAudioFetching || isChatLoading || isTimerPaused) return;
 
     const interval = setInterval(() => {
       setOralPrepTimeRemaining((prev) => {
@@ -416,12 +417,13 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isOralPrepActive, oralPrepTimeRemaining, currentSection, isSpeaking, isTimerPaused]);
+  }, [isOralPrepActive, oralPrepTimeRemaining, currentSection, isSpeaking, isAudioFetching, speakingChatLoading, isTimerPaused]);
 
   useEffect(() => {
     const activeTasks = Object.keys(isOralSpeakingActive).filter((k) => isOralSpeakingActive[k] && (oralSpeakingTimeRemaining[k] || 0) > 0);
-    // CRITICAL FORENSIC GUARD: Freeze speaking timer while examiner audio is playing or simulator is paused
-    if (activeTasks.length === 0 || isSpeaking || isTimerPaused) return;
+    const isChatLoading = Object.values(speakingChatLoading).some(Boolean);
+    // CRITICAL FORENSIC GUARD: Freeze speaking timer while examiner audio is playing, fetching, or simulator is paused
+    if (activeTasks.length === 0 || isSpeaking || isAudioFetching || isChatLoading || isTimerPaused) return;
 
     const interval = setInterval(() => {
       setOralSpeakingTimeRemaining((prev) => {
@@ -442,12 +444,19 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isOralSpeakingActive, oralSpeakingTimeRemaining, isSpeaking, isTimerPaused]);
+  }, [isOralSpeakingActive, oralSpeakingTimeRemaining, isSpeaking, isAudioFetching, speakingChatLoading, isTimerPaused]);
 
   const handlePlayExaminerAudio = (text: string, onEnded?: () => void) => {
     handleStopAudio();
+    setIsAudioFetching(true);
     const isMale = /\b(monsieur|m\.|homme|paul|léo|marc|antoine|pierre|thomas|hugo|louis)\b/i.test(text);
-    ttsSpeak(text, "fr-FR", 0.9, isMale ? "male" : "female", undefined, undefined, undefined, onEnded);
+
+    const handleEnded = () => {
+      setIsAudioFetching(false);
+      if (onEnded) onEnded();
+    };
+
+    ttsSpeak(text, "fr-FR", 0.9, isMale ? "male" : "female", undefined, undefined, undefined, handleEnded);
   };
 
   const handleSendSpeakingQuestionToExaminer = async (taskId: string, userText: string, scenarioText: string) => {
