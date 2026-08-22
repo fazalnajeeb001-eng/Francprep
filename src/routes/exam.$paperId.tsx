@@ -582,10 +582,17 @@ export function AuthenticCBTExamPage() {
     try {
       unlockAudioEngine();
     } catch {}
+    setIsAudioFetching(true);
     const tasks = currentSection?.speakingTasks;
-    if (!tasks || tasks.length === 0) return;
+    if (!tasks || tasks.length === 0) {
+      setIsAudioFetching(false);
+      return;
+    }
     const task = tasks[Math.min(idx, tasks.length - 1)];
-    if (!task) return;
+    if (!task) {
+      setIsAudioFetching(false);
+      return;
+    }
 
     const openingText = task.examinerPersona?.openingPromptFrench || (
       idx === 0 || task.title?.includes("Tâche 1")
@@ -4514,7 +4521,7 @@ export function AuthenticCBTExamPage() {
                 onClick={() => {
                   setAcceptedSectionDisclaimers((prev) => ({ ...prev, [currentSection.type]: true }));
                   setShowSectionDisclaimer(false);
-                  if (currentSection.type === "COMPREHENSION_ORALE") {
+                  if (currentSection.type === "COMPREHENSION_ORALE" || currentSection.type === "EXPRESSION_ORALE") {
                     try {
                       unlockAudioEngine();
                     } catch {}
