@@ -163,6 +163,36 @@ export function speak(
             }
           }
           if (myDialogueId !== currentDialogueId) return;
+
+          // Mobile Web Audio API AudioBufferSourceNode engine (0ms mobile autoplay blocks)
+          const isMobileDevice = typeof navigator !== "undefined" && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+          if (isMobileDevice && mobileAudioContext && mobileAudioContext.state !== "closed") {
+            try {
+              const audioRes = await fetch(src);
+              const arrayBuffer = await audioRes.arrayBuffer();
+              const audioBuffer = await mobileAudioContext.decodeAudioData(arrayBuffer);
+              if (myDialogueId !== currentDialogueId) return;
+
+              const sourceNode = mobileAudioContext.createBufferSource();
+              sourceNode.buffer = audioBuffer;
+              sourceNode.playbackRate.value = rate;
+              sourceNode.connect(mobileAudioContext.destination);
+
+              sourceNode.onended = () => {
+                activeAudioPlayers.delete(audio);
+                if (currentAudioPlayer === audio) currentAudioPlayer = null;
+                if (onPlaybackStateChange) onPlaybackStateChange(false);
+                if (onEnded) onEnded();
+              };
+
+              if (onPlaybackStateChange) onPlaybackStateChange(true);
+              sourceNode.start(0);
+              return;
+            } catch (e) {
+              console.warn("Mobile WebAudio decode fallback, attempting standard HTMLAudioElement...", e);
+            }
+          }
+
           audio.src = src;
           audio.preservesPitch = true;
           (audio as any).webkitPreservesPitch = true;
