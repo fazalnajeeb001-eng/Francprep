@@ -22,6 +22,11 @@ router.post('/analyze-speaking', authenticate, (req, res, next) =>
   writingController.analyzeSpeaking(req, res, next)
 );
 
+// POST /api/writing/speaking-chat - Interactive dialogue with examiner persona
+router.post('/speaking-chat', authenticate, (req, res, next) =>
+  writingController.speakingChat(req, res, next)
+);
+
 // POST /api/writing/evaluate-writing-section & /api/writing/analyze-full-writing
 router.post('/evaluate-writing-section', authenticate, (req, res, next) =>
   writingController.evaluateWritingSection(req, res, next)

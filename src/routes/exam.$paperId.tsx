@@ -442,6 +442,12 @@ export function AuthenticCBTExamPage() {
       [taskId]: (prev[taskId] && prev[taskId] > 0) ? prev[taskId] : Math.round(speakingMins * 60)
     }));
     setIsOralSpeakingActive((prev) => ({ ...prev, [taskId]: true }));
+    // Auto-launch Web Audio Speech Recognition microphone recording when speaking timer begins
+    if (!recordingSpeaking[taskId]) {
+      try {
+        handleToggleSpeakingRecording(taskId);
+      } catch {}
+    }
   };
 
   useEffect(() => {
@@ -505,6 +511,13 @@ export function AuthenticCBTExamPage() {
           } else {
             next[taskId] = 0;
             setIsOralSpeakingActive((p) => ({ ...p, [taskId]: false }));
+            if (recordingSpeaking[taskId]) {
+              setRecordingSpeaking((prev) => ({ ...prev, [taskId]: false }));
+              const currentText = speakingTranscripts[taskId] || "";
+              const wordCount = countFrenchWords(currentText);
+              const metrics = acousticAnalyzer.stopAnalysis(wordCount);
+              setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
+            }
             // Auto announce completion of task speaking time & auto-advance task tab
             handlePlayExaminerAudio("Le temps d'expression orale pour cette tâche est écoulé. Passons à la tâche suivante.");
             setActiveSpeakingTaskIdx((prevIdx) => Math.min(2, prevIdx + 1));
@@ -515,7 +528,7 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isOralSpeakingActive, oralSpeakingTimeRemaining, isSpeaking, isAudioFetching, speakingChatLoading, isTimerPaused]);
+  }, [isOralSpeakingActive, oralSpeakingTimeRemaining, isSpeaking, isAudioFetching, speakingChatLoading, isTimerPaused, recordingSpeaking]);
 
   const handlePlayExaminerAudio = (text: string, onEnded?: () => void) => {
     handleStopAudio();
