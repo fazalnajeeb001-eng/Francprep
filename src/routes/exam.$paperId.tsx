@@ -448,7 +448,7 @@ export function AuthenticCBTExamPage() {
     const activeTasks = Object.keys(isOralPrepActive).filter((k) => isOralPrepActive[k] && (oralPrepTimeRemaining[k] || 0) > 0);
     const isChatLoading = Object.values(speakingChatLoading).some(Boolean);
     // CRITICAL FORENSIC GUARD: Freeze prep timer while examiner audio is playing, fetching, or simulator is paused
-    if (activeTasks.length === 0 || isSpeaking || isAudioFetching || isChatLoading || isTimerPaused) return;
+    if (activeTasks.length === 0 || isSpeaking || isAudioFetching || isPlayingAudio || isChatLoading || isTimerPaused) return;
 
     const interval = setInterval(() => {
       setOralPrepTimeRemaining((prev) => {
@@ -493,13 +493,13 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isOralPrepActive, oralPrepTimeRemaining, currentSection, isSpeaking, isAudioFetching, speakingChatLoading, isTimerPaused]);
+  }, [isOralPrepActive, oralPrepTimeRemaining, currentSection, isSpeaking, isAudioFetching, isPlayingAudio, speakingChatLoading, isTimerPaused]);
 
   useEffect(() => {
     const activeTasks = Object.keys(isOralSpeakingActive).filter((k) => isOralSpeakingActive[k] && (oralSpeakingTimeRemaining[k] || 0) > 0);
     const isChatLoading = Object.values(speakingChatLoading).some(Boolean);
     // CRITICAL FORENSIC GUARD: Freeze speaking timer while examiner audio is playing, fetching, or simulator is paused
-    if (activeTasks.length === 0 || isSpeaking || isAudioFetching || isChatLoading || isTimerPaused) return;
+    if (activeTasks.length === 0 || isSpeaking || isAudioFetching || isPlayingAudio || isChatLoading || isTimerPaused) return;
 
     const interval = setInterval(() => {
       setOralSpeakingTimeRemaining((prev) => {
@@ -527,17 +527,17 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isOralSpeakingActive, oralSpeakingTimeRemaining, isSpeaking, isAudioFetching, speakingChatLoading, isTimerPaused, recordingSpeaking]);
+  }, [isOralSpeakingActive, oralSpeakingTimeRemaining, isSpeaking, isAudioFetching, isPlayingAudio, speakingChatLoading, isTimerPaused, recordingSpeaking]);
 
   const handlePlayExaminerAudio = (text: string, onEnded?: () => void) => {
     handleStopAudio();
     setIsAudioFetching(true);
-    setIsSpeaking(true);
+    setIsPlayingAudio(true);
     const isMale = /\b(monsieur|m\.|homme|paul|léo|marc|antoine|pierre|thomas|hugo|louis)\b/i.test(text);
 
     const handleEnded = () => {
       setIsAudioFetching(false);
-      setIsSpeaking(false);
+      setIsPlayingAudio(false);
       if (onEnded) onEnded();
     };
 
@@ -597,14 +597,17 @@ export function AuthenticCBTExamPage() {
       unlockAudioEngine();
     } catch {}
     setIsAudioFetching(true);
+    setIsPlayingAudio(true);
     const tasks = currentSection?.speakingTasks;
     if (!tasks || tasks.length === 0) {
       setIsAudioFetching(false);
+      setIsPlayingAudio(false);
       return;
     }
     const task = tasks[Math.min(idx, tasks.length - 1)];
     if (!task) {
       setIsAudioFetching(false);
+      setIsPlayingAudio(false);
       return;
     }
 
@@ -1101,7 +1104,7 @@ export function AuthenticCBTExamPage() {
 
   // Timer Countdown
   useEffect(() => {
-    if (isSubmitted || isTimerPaused || isSpeaking || isAudioFetching) return;
+    if (isSubmitted || isTimerPaused || isSpeaking || isAudioFetching || isPlayingAudio) return;
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -1112,7 +1115,7 @@ export function AuthenticCBTExamPage() {
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [isSubmitted, isTimerPaused, isSpeaking, isAudioFetching]);
+  }, [isSubmitted, isTimerPaused, isSpeaking, isAudioFetching, isPlayingAudio]);
 
   const formatTime = (secs: number) => {
     const m = Math.floor(secs / 60);
