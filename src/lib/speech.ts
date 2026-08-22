@@ -79,6 +79,56 @@ function base64ToArrayBuffer(base64: string): ArrayBuffer {
   return bytes.buffer;
 }
 
+const audioBufferCacheMap = new Map<string, ArrayBuffer>();
+
+export async function preloadAudioBuffer(
+  text: string,
+  lang = "fr-FR",
+  rate = 0.85,
+  gender: "female" | "male" = "female"
+): Promise<boolean> {
+  if (typeof window === "undefined" || !text || !text.trim()) return false;
+  const cleanText = text.trim();
+  let langCode = lang ? lang.split("-")[0].toLowerCase() : "fr";
+  if (langCode === "en-us" || langCode === "en-gb") langCode = "en";
+  const cacheKey = `${cleanText}_${langCode}_${rate}_${gender}`;
+  if (audioBufferCacheMap.has(cacheKey)) return true;
+
+  try {
+    const res = await apiFetch("/tts/speak", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text: cleanText,
+        gender,
+        lang: langCode,
+        speakingRate: rate,
+        rate,
+      }),
+    });
+
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && json.data?.audioUrl) {
+        const rawDataUrl = json.data.audioUrl;
+        let arrayBuffer: ArrayBuffer;
+        if (rawDataUrl.startsWith("data:audio/")) {
+          arrayBuffer = base64ToArrayBuffer(rawDataUrl);
+        } else {
+          const audioRes = await fetch(rawDataUrl);
+          arrayBuffer = await audioRes.arrayBuffer();
+        }
+        audioBufferCacheMap.set(cacheKey, arrayBuffer);
+        return true;
+      }
+    }
+  } catch (e) {
+    console.warn("[preloadAudioBuffer] Cache prefetch error:", e);
+  }
+  return false;
+}
+
+
 /**
  * Text-to-speech helper. Strictly uses Neural AI Engine (/api/tts/speak)
  * configured in Admin Panel (Kokoro-82M, ElevenLabs, or OpenAI).

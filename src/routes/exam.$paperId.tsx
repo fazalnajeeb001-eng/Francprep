@@ -32,7 +32,7 @@ import {
   X
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
-import { useSpeak } from "~/lib/speech";
+import { useSpeak, preloadAudioBuffer, unlockAudioEngine } from "~/lib/speech";
 import { triggerAcousticSoundForQuestion } from "~/lib/soundEffects";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
@@ -183,7 +183,7 @@ export function AuthenticCBTExamPage() {
   const [isTimerPaused, setIsTimerPaused] = useState(false);
   const [qTimeLeft, setQTimeLeft] = useState<number | null>(null);
   const [isAudioFetching, setIsAudioFetching] = useState(false);
-  const [sectionTransitionModal, setSectionTransitionModal] = useState<{ show: boolean; targetIdx: number; targetTitle: string } | null>(null);
+  const [sectionTransitionModal, setSectionTransitionModal] = useState<{ show: boolean; targetIdx: number; targetTitle: string; autoAdvanceSeconds?: number } | null>(null);
 
   // Existing Session Prompt Modal State (Triggers when student reopens an exam with saved progress)
   const [showSessionPromptModal, setShowSessionPromptModal] = useState<boolean>(() => {
@@ -333,8 +333,15 @@ export function AuthenticCBTExamPage() {
           if (currentQuestionIdx < currentQuestions.length - 1) {
             setCurrentQuestionIdx((idx) => idx + 1);
           } else if (activeSectionIdx < paper.sections.length - 1) {
-            setActiveSectionIdx((sIdx) => sIdx + 1);
-            setCurrentQuestionIdx(0);
+            const nextIdx = activeSectionIdx + 1;
+            const nextTitle = paper.sections[nextIdx]?.title || "Section suivante";
+            setCompletedSectionIndices((p) => Array.from(new Set([...p, activeSectionIdx])));
+            setSectionTransitionModal({
+              show: true,
+              targetIdx: nextIdx,
+              targetTitle: nextTitle,
+              autoAdvanceSeconds: 10,
+            });
           }
           return 0;
         }
@@ -344,6 +351,31 @@ export function AuthenticCBTExamPage() {
 
     return () => clearInterval(interval);
   }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, isSpeaking, isAudioPaused, isTimerPaused, isAudioFinished, currentQuestions.length, paper.sections.length]);
+
+  // Hands-Free 10s Countdown Timer for CBT Section Transitions
+  useEffect(() => {
+    if (!sectionTransitionModal || !sectionTransitionModal.show || typeof sectionTransitionModal.autoAdvanceSeconds !== "number") return;
+    if (sectionTransitionModal.autoAdvanceSeconds <= 0) {
+      const target = sectionTransitionModal.targetIdx;
+      setCompletedSectionIndices((prev) => Array.from(new Set([...prev, activeSectionIdx])));
+      setActiveSectionIdx(target);
+      setCurrentQuestionIdx(0);
+      setSectionTransitionModal(null);
+      try {
+        unlockAudioEngine();
+      } catch {}
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setSectionTransitionModal((prev) => {
+        if (!prev || typeof prev.autoAdvanceSeconds !== "number") return prev;
+        return { ...prev, autoAdvanceSeconds: prev.autoAdvanceSeconds - 1 };
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [sectionTransitionModal, activeSectionIdx]);
 
   // Load / initialize section timer when active section changes
   useEffect(() => {
@@ -373,9 +405,14 @@ export function AuthenticCBTExamPage() {
           if (mode === "EXAM") {
             if (activeSectionIdx < paper.sections.length - 1) {
               const nextIdx = activeSectionIdx + 1;
+              const nextTitle = paper.sections[nextIdx]?.title || "Section suivante";
               setCompletedSectionIndices((prevCompleted) => Array.from(new Set([...prevCompleted, activeSectionIdx])));
-              setActiveSectionIdx(nextIdx);
-              setCurrentQuestionIdx(0);
+              setSectionTransitionModal({
+                show: true,
+                targetIdx: nextIdx,
+                targetTitle: nextTitle,
+                autoAdvanceSeconds: 10,
+              });
               const nextSec = paper.sections[nextIdx];
               return getSectionDurationSeconds(nextSec?.type, nextSec?.durationMins);
             } else {
@@ -630,6 +667,32 @@ export function AuthenticCBTExamPage() {
       }
     };
   }, []);
+
+  // Mobile Screen Lock Prevention (Wake Lock API) for Exam Mode
+  useEffect(() => {
+    if (mode !== "EXAM" || typeof window === "undefined" || typeof navigator === "undefined" || !("wakeLock" in navigator)) return;
+    let wakeLockSentinel: any = null;
+    const requestLock = async () => {
+      try {
+        wakeLockSentinel = await (navigator as any).wakeLock.request("screen");
+      } catch {}
+    };
+    requestLock();
+
+    const handleVisChange = () => {
+      if (document.visibilityState === "visible") {
+        requestLock();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisChange);
+      if (wakeLockSentinel) {
+        try { wakeLockSentinel.release(); } catch {}
+      }
+    };
+  }, [mode]);
 
   const toggleFlag = (qId: string) => {
     setFlaggedQuestions((prev) => {
@@ -1127,16 +1190,7 @@ export function AuthenticCBTExamPage() {
         const nextText = nextQ.transcript || nextQ.text;
         if (nextText) {
           try {
-            apiFetch("/tts/speak", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                text: nextText.trim(),
-                gender: "female",
-                lang: "fr",
-                speakingRate: (nextQ as any).speakingRate || 1.0,
-              }),
-            }).catch(() => {});
+            preloadAudioBuffer(nextText.trim(), "fr-FR", (nextQ as any).speakingRate || 1.0, "female");
           } catch {}
         }
       }
@@ -5189,23 +5243,37 @@ export function AuthenticCBTExamPage() {
                   <AlertTriangle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-base">Clôturer l'épreuve en cours ?</h3>
+                  <h3 className="font-extrabold text-base">Transition vers la section suivante</h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">TCF Canada CBT Official Procedure</p>
                 </div>
               </div>
 
+              {typeof sectionTransitionModal.autoAdvanceSeconds === "number" && (
+                <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800 flex items-center justify-between text-xs font-bold text-blue-900 dark:text-blue-200">
+                  <span className="flex items-center gap-1.5 font-mono">
+                    <Clock className="w-4 h-4 text-blue-600 dark:text-blue-400 animate-pulse" />
+                    <span>Passage automatique dans:</span>
+                  </span>
+                  <span className="px-2.5 py-1 rounded-lg bg-blue-600 text-white font-mono text-sm font-extrabold">
+                    {sectionTransitionModal.autoAdvanceSeconds}s
+                  </span>
+                </div>
+              )}
+
               <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-950/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
-                En mode examen officiel, une fois que vous passez à l'épreuve de <strong>{sectionTransitionModal.targetTitle}</strong>, la section actuelle sera définitivement <strong>verrouillée</strong> et vous ne pourrez plus revenir en arrière pour modifier vos réponses.
+                Une fois que vous accédez à l'épreuve de <strong>{sectionTransitionModal.targetTitle}</strong>, la section précédente est définitivement <strong>verrouillée</strong> et archivée pour évaluation.
               </p>
 
               <div className="flex items-center justify-end gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setSectionTransitionModal(null)}
-                  className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 font-bold text-xs cursor-pointer"
-                >
-                  Continuer à réviser
-                </button>
+                {typeof sectionTransitionModal.autoAdvanceSeconds !== "number" && (
+                  <button
+                    type="button"
+                    onClick={() => setSectionTransitionModal(null)}
+                    className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 font-bold text-xs cursor-pointer"
+                  >
+                    Continuer à réviser
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => {
@@ -5214,10 +5282,13 @@ export function AuthenticCBTExamPage() {
                     setActiveSectionIdx(target);
                     setCurrentQuestionIdx(0);
                     setSectionTransitionModal(null);
+                    try {
+                      unlockAudioEngine();
+                    } catch {}
                   }}
                   className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs shadow-md cursor-pointer flex items-center gap-1.5"
                 >
-                  <span>Confirmer & Passer à la suite →</span>
+                  <span>Lancer l'épreuve {sectionTransitionModal.targetTitle} →</span>
                 </button>
               </div>
             </div>
