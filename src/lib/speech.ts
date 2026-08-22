@@ -12,6 +12,7 @@ let lineTimeoutId: ReturnType<typeof setTimeout> | null = null;
 let resumeDialogueCallback: (() => void) | null = null;
 
 let mobileAudioContext: AudioContext | null = null;
+let activeSourceNode: AudioBufferSourceNode | null = null;
 
 export function unlockAudioEngine(): void {
   if (typeof window === "undefined") return;
@@ -190,16 +191,29 @@ export function speak(
               const audioBuffer = await mobileAudioContext.decodeAudioData(arrayBuffer);
               if (myDialogueId !== currentDialogueId) return;
 
+              if (activeSourceNode) {
+                try {
+                  activeSourceNode.onended = null;
+                  activeSourceNode.stop();
+                  activeSourceNode.disconnect();
+                } catch {}
+                activeSourceNode = null;
+              }
+
               const sourceNode = mobileAudioContext.createBufferSource();
               sourceNode.buffer = audioBuffer;
               sourceNode.playbackRate.value = rate;
               sourceNode.connect(mobileAudioContext.destination);
+              activeSourceNode = sourceNode;
 
               sourceNode.onended = () => {
-                activeAudioPlayers.delete(audio);
-                if (currentAudioPlayer === audio) currentAudioPlayer = null;
-                if (onPlaybackStateChange) onPlaybackStateChange(false);
-                if (onEnded) onEnded();
+                if (activeSourceNode === sourceNode) {
+                  activeSourceNode = null;
+                  activeAudioPlayers.delete(audio);
+                  if (currentAudioPlayer === audio) currentAudioPlayer = null;
+                  if (onPlaybackStateChange) onPlaybackStateChange(false);
+                  if (onEnded) onEnded();
+                }
               };
 
               if (mobileAudioContext.state === "suspended") {
@@ -356,6 +370,14 @@ export function stopAudio(): void {
     try {
       window.speechSynthesis.cancel();
     } catch {}
+  }
+  if (activeSourceNode) {
+    try {
+      activeSourceNode.onended = null;
+      activeSourceNode.stop();
+      activeSourceNode.disconnect();
+    } catch {}
+    activeSourceNode = null;
   }
   if (onPlaybackStateChange) onPlaybackStateChange(false);
 }
