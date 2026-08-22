@@ -202,6 +202,12 @@ export function speak(
                 if (onEnded) onEnded();
               };
 
+              if (mobileAudioContext.state === "suspended") {
+                try {
+                  await mobileAudioContext.resume();
+                } catch {}
+              }
+
               if (onPlaybackStateChange) onPlaybackStateChange(true);
               sourceNode.start(0);
               return;
