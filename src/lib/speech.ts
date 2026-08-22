@@ -11,6 +11,8 @@ let isAudioPausedState = false;
 let lineTimeoutId: ReturnType<typeof setTimeout> | null = null;
 let resumeDialogueCallback: (() => void) | null = null;
 
+let mobileAudioContext: AudioContext | null = null;
+
 export function unlockAudioEngine(): void {
   if (typeof window === "undefined") return;
   try {
@@ -21,6 +23,27 @@ export function unlockAudioEngine(): void {
     masterAudioPlayer.play().then(() => {
       masterAudioPlayer?.pause();
     }).catch(() => {});
+
+    // Initialize silent Web Audio Context keep-alive stream for mobile browsers (iOS Safari / Mobile Chrome)
+    const isMobileDevice = typeof navigator !== "undefined" && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobileDevice) {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (AudioCtx) {
+        if (!mobileAudioContext || mobileAudioContext.state === "closed") {
+          mobileAudioContext = new AudioCtx();
+        }
+        if (mobileAudioContext.state === "suspended") {
+          mobileAudioContext.resume();
+        }
+        // Create continuous silent oscillator loop to keep WebKit audio session active across Q1 -> Q39
+        const osc = mobileAudioContext.createOscillator();
+        const gain = mobileAudioContext.createGain();
+        gain.gain.value = 0.0001; // Silent gain
+        osc.connect(gain);
+        gain.connect(mobileAudioContext.destination);
+        osc.start();
+      }
+    }
   } catch {}
 }
 
