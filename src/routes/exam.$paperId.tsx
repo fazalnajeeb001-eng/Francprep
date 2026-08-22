@@ -442,12 +442,6 @@ export function AuthenticCBTExamPage() {
       [taskId]: (prev[taskId] && prev[taskId] > 0) ? prev[taskId] : Math.round(speakingMins * 60)
     }));
     setIsOralSpeakingActive((prev) => ({ ...prev, [taskId]: true }));
-    // Auto-launch Web Audio Speech Recognition microphone recording when speaking timer begins
-    if (!recordingSpeaking[taskId]) {
-      try {
-        handleToggleSpeakingRecording(taskId);
-      } catch {}
-    }
   };
 
   useEffect(() => {
@@ -475,6 +469,11 @@ export function AuthenticCBTExamPage() {
               if (!announceHandled) {
                 announceHandled = true;
                 handleStartSpeakingTimer(taskId, duration);
+                try {
+                  if (!recordingSpeaking[taskId]) {
+                    handleToggleSpeakingRecording(taskId);
+                  }
+                } catch {}
               }
             };
 
@@ -533,10 +532,12 @@ export function AuthenticCBTExamPage() {
   const handlePlayExaminerAudio = (text: string, onEnded?: () => void) => {
     handleStopAudio();
     setIsAudioFetching(true);
+    setIsSpeaking(true);
     const isMale = /\b(monsieur|m\.|homme|paul|léo|marc|antoine|pierre|thomas|hugo|louis)\b/i.test(text);
 
     const handleEnded = () => {
       setIsAudioFetching(false);
+      setIsSpeaking(false);
       if (onEnded) onEnded();
     };
 
@@ -635,11 +636,16 @@ export function AuthenticCBTExamPage() {
       }, 20000);
     } else {
       // Tâche 1 & Tâche 3 (Direct speaking without prep time):
-      // Speaking Timer starts ONLY AFTER examiner prompt audio finishes speaking!
+      // Speaking Timer & Microphone Recording start ONLY AFTER examiner prompt audio finishes speaking!
       const startSpeakingAfterAudio = () => {
         if (!sessionTimerHandled) {
           sessionTimerHandled = true;
           handleStartSpeakingTimer(task.id, task.speakingTimeMins);
+          try {
+            if (!recordingSpeaking[task.id]) {
+              handleToggleSpeakingRecording(task.id);
+            }
+          } catch {}
         }
       };
 
@@ -4540,7 +4546,9 @@ export function AuthenticCBTExamPage() {
                     } catch {}
                   }
                   if (currentSection.type === "EXPRESSION_ORALE") {
-                    startSpeakingTaskSession(activeSpeakingTaskIdx);
+                    setTimeout(() => {
+                      startSpeakingTaskSession(activeSpeakingTaskIdx);
+                    }, 1000);
                   }
                 }}
                 className={`w-full py-3.5 rounded-xl font-extrabold text-sm shadow-xl flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 text-white ${
