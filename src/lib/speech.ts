@@ -300,6 +300,59 @@ function playDirectHDFallback(
       if (res.ok) {
         const json = await res.json();
         if (json.success && json.data?.audioUrl) {
+          // Mobile Web Audio API Direct RAM AudioBufferSourceNode engine (0 CORS errors, 0 iOS WebKit blocks)
+          const isMobileDevice = typeof navigator !== "undefined" && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+          if (isMobileDevice && mobileAudioContext && mobileAudioContext.state !== "closed") {
+            try {
+              const rawDataUrl = json.data.audioUrl;
+              let arrayBuffer: ArrayBuffer;
+              if (rawDataUrl.startsWith("data:audio/")) {
+                arrayBuffer = base64ToArrayBuffer(rawDataUrl);
+              } else {
+                const audioRes = await fetch(rawDataUrl);
+                arrayBuffer = await audioRes.arrayBuffer();
+              }
+              const audioBuffer = await mobileAudioContext.decodeAudioData(arrayBuffer);
+
+              if (activeSourceNode) {
+                try {
+                  activeSourceNode.onended = null;
+                  activeSourceNode.stop();
+                  activeSourceNode.disconnect();
+                } catch {}
+                activeSourceNode = null;
+              }
+
+              const sourceNode = mobileAudioContext.createBufferSource();
+              sourceNode.buffer = audioBuffer;
+              sourceNode.playbackRate.value = rate;
+              sourceNode.connect(mobileAudioContext.destination);
+              activeSourceNode = sourceNode;
+
+              sourceNode.onended = () => {
+                if (activeSourceNode === sourceNode) {
+                  activeSourceNode = null;
+                  activeAudioPlayers.delete(audio);
+                  if (currentAudioPlayer === audio) currentAudioPlayer = null;
+                  if (onPlaybackStateChange) onPlaybackStateChange(false);
+                  if (onEnded) onEnded();
+                }
+              };
+
+              if (mobileAudioContext.state === "suspended") {
+                try {
+                  await mobileAudioContext.resume();
+                } catch {}
+              }
+
+              if (onPlaybackStateChange) onPlaybackStateChange(true);
+              sourceNode.start(0);
+              return;
+            } catch (e) {
+              console.warn("playDirectHDFallback WebAudio decode fallback, attempting HTMLAudioElement...", e);
+            }
+          }
+
           let src = json.data.audioUrl;
           if (src.startsWith("data:audio/")) {
             const parts = src.split(";base64,");
