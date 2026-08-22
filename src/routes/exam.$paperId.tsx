@@ -32,7 +32,7 @@ import {
   X
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
-import { useSpeak, preloadAudioBuffer, unlockAudioEngine } from "~/lib/speech";
+import { useSpeak, unlockAudioEngine } from "~/lib/speech";
 import { triggerAcousticSoundForQuestion } from "~/lib/soundEffects";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
@@ -1190,7 +1190,16 @@ export function AuthenticCBTExamPage() {
         const nextText = nextQ.transcript || nextQ.text;
         if (nextText) {
           try {
-            preloadAudioBuffer(nextText.trim(), "fr-FR", (nextQ as any).speakingRate || 1.0, "female");
+            apiFetch("/tts/speak", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                text: nextText.trim(),
+                gender: "female",
+                lang: "fr",
+                speakingRate: (nextQ as any).speakingRate || 1.0,
+              }),
+            }).catch(() => {});
           } catch {}
         }
       }
