@@ -32,7 +32,7 @@ import {
   X
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
-import { useSpeak, unlockAudioEngine } from "~/lib/speech";
+import { useSpeak } from "~/lib/speech";
 import { triggerAcousticSoundForQuestion } from "~/lib/soundEffects";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
@@ -153,9 +153,8 @@ export function AuthenticCBTExamPage() {
   const currentQuestions = currentSection?.questions || [];
   const currentQ = currentQuestions[currentQuestionIdx] || currentQuestions[0];
 
-  // Session Key (User-Scoped for 100% Account Isolation)
-  const userIdentifier = user?.id || (user as any)?._id || user?.email || "guest";
-  const sessionKey = `fp_exam_session_${userIdentifier}_${paper?.id || "default"}_${mode}`;
+  // Session Key
+  const sessionKey = `fp_exam_session_${paper?.id || "default"}_${mode}`;
 
   // Completed Section Indices (Enforces Linear Exam Flow in Real Exam Mode)
   const [completedSectionIndices, setCompletedSectionIndices] = useState<number[]>(() => {
@@ -267,7 +266,6 @@ export function AuthenticCBTExamPage() {
   // Submission & Results & Strategy Modals State
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  const [isAudioFetching, setIsAudioFetching] = useState(false);
   const [isAudioPaused, setIsAudioPaused] = useState(false);
   const [isAudioFinished, setIsAudioFinished] = useState(false);
   const [showStrategyModal, setShowStrategyModal] = useState(false);
@@ -285,8 +283,8 @@ export function AuthenticCBTExamPage() {
       return;
     }
 
-    // Do NOT count down while audio is playing, while student has paused the timer/audio, before audio has finished playing, OR if qTimeLeft is <= 0!
-    if (isSpeaking || isAudioPaused || isTimerPaused || !isAudioFinished || qTimeLeft === null || qTimeLeft <= 0) {
+    // Do NOT count down while audio is playing, while student has paused the timer/audio, OR before audio has finished playing!
+    if (isSpeaking || isAudioPaused || isTimerPaused || !isAudioFinished) {
       return;
     }
 
@@ -298,18 +296,11 @@ export function AuthenticCBTExamPage() {
         }
         if (prev <= 1) {
           clearInterval(interval);
-          if (!isTransitioningRef.current) {
-            isTransitioningRef.current = true;
-            setIsAudioFinished(false);
-            if (currentQuestionIdx < currentQuestions.length - 1) {
-              setCurrentQuestionIdx((idx) => idx + 1);
-            } else if (activeSectionIdx < paper.sections.length - 1) {
-              handleStopAudio();
-              setCompletedSectionIndices((prev) => Array.from(new Set([...prev, activeSectionIdx])));
-              setActiveSectionIdx((sIdx) => sIdx + 1);
-              setCurrentQuestionIdx(0);
-              setShowSectionDisclaimer(true);
-            }
+          if (currentQuestionIdx < currentQuestions.length - 1) {
+            setCurrentQuestionIdx((idx) => idx + 1);
+          } else if (activeSectionIdx < paper.sections.length - 1) {
+            setActiveSectionIdx((sIdx) => sIdx + 1);
+            setCurrentQuestionIdx(0);
           }
           return 0;
         }
@@ -318,7 +309,7 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, isSpeaking, isAudioPaused, isTimerPaused, isAudioFinished, qTimeLeft, currentQuestions.length, paper.sections.length]);
+  }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, isSpeaking, isAudioPaused, isTimerPaused, isAudioFinished, currentQuestions.length, paper.sections.length]);
 
   // Load / initialize section timer when active section changes
   useEffect(() => {
@@ -332,8 +323,8 @@ export function AuthenticCBTExamPage() {
   useEffect(() => {
     if (isSubmitted) return;
 
-    // Pause section timer if explicitly paused, in practice/admin pause mode, OR during examiner speech/fetching in Speaking section
-    if (isTimerPaused || (currentSection?.type === "EXPRESSION_ORALE" && (isSpeaking || isAudioFetching))) return;
+    // In practice mode or for admin, allow pausing the main timer
+    if (isTimerPaused && (mode === "PRACTICE" || isAdmin)) return;
 
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
@@ -364,7 +355,7 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [activeSectionIdx, mode, isSubmitted, isTimerPaused, isAdmin, isSpeaking, isAudioFetching, currentSection?.type, paper.sections.length]);
+  }, [activeSectionIdx, mode, isSubmitted, isTimerPaused, isAdmin, paper.sections.length]);
 
   const handleStartPrepTimer = (taskId: string, prepMins = 1) => {
     setOralPrepTimeRemaining((prev) => ({
@@ -384,8 +375,8 @@ export function AuthenticCBTExamPage() {
 
   useEffect(() => {
     const activeTasks = Object.keys(isOralPrepActive).filter((k) => isOralPrepActive[k] && (oralPrepTimeRemaining[k] || 0) > 0);
-    // CRITICAL FORENSIC GUARD: Freeze prep timer while examiner audio is playing/fetching or simulator is paused
-    if (activeTasks.length === 0 || isSpeaking || isAudioFetching || isTimerPaused) return;
+    // CRITICAL FORENSIC GUARD: Freeze prep timer while examiner audio is playing or simulator is paused
+    if (activeTasks.length === 0 || isSpeaking || isTimerPaused) return;
 
     const interval = setInterval(() => {
       setOralPrepTimeRemaining((prev) => {
@@ -425,12 +416,12 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isOralPrepActive, oralPrepTimeRemaining, currentSection, isSpeaking, isAudioFetching, isTimerPaused]);
+  }, [isOralPrepActive, oralPrepTimeRemaining, currentSection, isSpeaking, isTimerPaused]);
 
   useEffect(() => {
     const activeTasks = Object.keys(isOralSpeakingActive).filter((k) => isOralSpeakingActive[k] && (oralSpeakingTimeRemaining[k] || 0) > 0);
-    // CRITICAL FORENSIC GUARD: Freeze speaking timer while examiner audio is playing/fetching or simulator is paused
-    if (activeTasks.length === 0 || isSpeaking || isAudioFetching || isTimerPaused) return;
+    // CRITICAL FORENSIC GUARD: Freeze speaking timer while examiner audio is playing or simulator is paused
+    if (activeTasks.length === 0 || isSpeaking || isTimerPaused) return;
 
     const interval = setInterval(() => {
       setOralSpeakingTimeRemaining((prev) => {
@@ -455,15 +446,8 @@ export function AuthenticCBTExamPage() {
 
   const handlePlayExaminerAudio = (text: string, onEnded?: () => void) => {
     handleStopAudio();
-    setIsAudioFetching(true);
     const isMale = /\b(monsieur|m\.|homme|paul|léo|marc|antoine|pierre|thomas|hugo|louis)\b/i.test(text);
-
-    const handleEnded = () => {
-      setIsAudioFetching(false);
-      if (onEnded) onEnded();
-    };
-
-    ttsSpeak(text, "fr-FR", 0.9, isMale ? "male" : "female", undefined, undefined, undefined, handleEnded);
+    ttsSpeak(text, "fr-FR", 0.9, isMale ? "male" : "female", undefined, undefined, undefined, onEnded);
   };
 
   const handleSendSpeakingQuestionToExaminer = async (taskId: string, userText: string, scenarioText: string) => {
@@ -507,24 +491,11 @@ export function AuthenticCBTExamPage() {
     setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
   };
 
-  const speakingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   const startSpeakingTaskSession = (idx: number) => {
     const tasks = currentSection?.speakingTasks;
     if (!tasks || tasks.length === 0) return;
     const task = tasks[Math.min(idx, tasks.length - 1)];
     if (!task) return;
-
-    // Clean up previous audio & fallback timeouts
-    handleStopAudio();
-    if (speakingTimeoutRef.current) {
-      clearTimeout(speakingTimeoutRef.current);
-      speakingTimeoutRef.current = null;
-    }
-
-    // Clear active flags for other tasks to prevent overlapping intervals
-    setIsOralPrepActive({});
-    setIsOralSpeakingActive({});
 
     const openingText = task.examinerPersona?.openingPromptFrench || (
       idx === 0 || task.title?.includes("Tâche 1")
@@ -548,8 +519,8 @@ export function AuthenticCBTExamPage() {
 
       handlePlayExaminerAudio(openingText, startPrepAfterAudio);
 
-      // Track single fallback timer ref
-      speakingTimeoutRef.current = setTimeout(() => {
+      // Fallback safety (20s) in case browser blocks audio auto-play
+      setTimeout(() => {
         startPrepAfterAudio();
       }, 20000);
     } else {
@@ -564,8 +535,8 @@ export function AuthenticCBTExamPage() {
 
       handlePlayExaminerAudio(openingText, startSpeakingAfterAudio);
 
-      // Track single fallback timer ref
-      speakingTimeoutRef.current = setTimeout(() => {
+      // Fallback safety (20s) in case browser blocks audio auto-play
+      setTimeout(() => {
         startSpeakingAfterAudio();
       }, 20000);
     }
@@ -639,12 +610,6 @@ export function AuthenticCBTExamPage() {
       const wordCount = countFrenchWords(currentText);
       const metrics = acousticAnalyzer.stopAnalysis(wordCount);
       setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
-
-      // Automatically dispatch speech to AI Examiner upon stop recording!
-      if (currentText.trim().length >= 3) {
-        const task = currentSection?.speakingTasks?.find((t) => t.id === taskId);
-        handleSendSpeakingQuestionToExaminer(taskId, currentText, task?.scenario || "TCF Oral Interaction");
-      }
       return;
     }
 
@@ -700,12 +665,6 @@ export function AuthenticCBTExamPage() {
       const wordCount = countFrenchWords(currentText);
       const metrics = acousticAnalyzer.stopAnalysis(wordCount);
       setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
-
-      // Automatically dispatch speech to AI Examiner when recording finishes!
-      if (currentText.trim().length >= 3) {
-        const task = currentSection?.speakingTasks?.find((t) => t.id === taskId);
-        handleSendSpeakingQuestionToExaminer(taskId, currentText, task?.scenario || "TCF Oral Interaction");
-      }
     };
 
     recognition.start();
@@ -1035,12 +994,9 @@ export function AuthenticCBTExamPage() {
   };
 
   const playAudioSessionRef = useRef(0);
-  const lastPlayedQuestionRef = useRef<string | null>(null);
-  const isTransitioningRef = useRef(false);
 
   const handleStopAudio = () => {
     playAudioSessionRef.current++;
-    setIsAudioFetching(false);
     ttsStop();
     setIsAudioPaused(false);
   };
@@ -1053,62 +1009,61 @@ export function AuthenticCBTExamPage() {
     };
   }, []);
 
-  // Automatically manage audio completion state and auto-play when switching questions in Exam Mode!
+  // Automatically kill audio and manage audio completion state / auto-play when switching questions!
   useEffect(() => {
-    if (currentSection?.type !== "COMPREHENSION_ORALE" || !currentQ) return;
+    handleStopAudio();
+    setIsAudioFinished(false);
 
-    isTransitioningRef.current = false;
-    const qKey = `${paper.id}_${activeSectionIdx}_${currentQuestionIdx}_${currentQ.id}`;
-    const qNum = currentQ.questionNumber;
-    const initialTimer = (currentQ as any).perQuestionTimerSeconds || (qNum <= 10 ? 15 : qNum <= 26 ? 20 : 25);
+    if (currentSection?.type === "COMPREHENSION_ORALE" && currentQ) {
+      const qNum = currentQ.questionNumber;
+      const initialTimer = (currentQ as any).perQuestionTimerSeconds || (qNum <= 10 ? 15 : qNum <= 26 ? 20 : 25);
+      setQTimeLeft(initialTimer);
 
-    // Initialize per-question timer & prompt visibility
-    setQTimeLeft(initialTimer);
-    if (qNum >= 30) {
-      setShowQuestionPrompt(true);
-    } else {
-      setShowQuestionPrompt(false);
+      // Q30-Q39 prompt text is printed on screen per FEI rules. Q1-Q29 prompt text stays strictly hidden by default.
+      if (qNum >= 30) {
+        setShowQuestionPrompt(true);
+      } else {
+        setShowQuestionPrompt(false);
+      }
+
+      // Do NOT auto-play audio while the section launch disclaimer modal is active!
+      if (!acceptedSectionDisclaimers["COMPREHENSION_ORALE"]) {
+        return;
+      }
+
+      // Auto-play audio on question load in Exam Mode
+      if (mode === "EXAM" && !isSubmitted) {
+        const rate = (currentQ as any).speakingRate || 1.0;
+        const fullText = currentQ.transcript || currentQ.text;
+        const currentSession = playAudioSessionRef.current;
+
+        // Safety watchdog: ensure isAudioFinished fires within 45s if audio hangs or browser drops callback
+        const watchdogTimer = setTimeout(() => {
+          if (playAudioSessionRef.current === currentSession) {
+            setIsAudioFinished(true);
+          }
+        }, 45000);
+
+        const timer = setTimeout(() => {
+          if (playAudioSessionRef.current !== currentSession) return;
+          try {
+            triggerAcousticSoundForQuestion(qNum);
+          } catch {}
+          ttsSpeakListening(fullText, "fr-FR", rate, "female", () => {
+            clearTimeout(watchdogTimer);
+            if (playAudioSessionRef.current === currentSession) {
+              setIsAudioFinished(true);
+            }
+          });
+        }, 300);
+
+        return () => {
+          clearTimeout(timer);
+          clearTimeout(watchdogTimer);
+        };
+      }
     }
-
-    // Do NOT auto-play while the section launch disclaimer modal is active!
-    if (!acceptedSectionDisclaimers["COMPREHENSION_ORALE"]) {
-      setIsAudioFinished(false);
-      return;
-    }
-
-    // Only launch auto-play ONCE per question load in Exam Mode!
-    if (mode === "EXAM" && !isSubmitted && lastPlayedQuestionRef.current !== qKey) {
-      lastPlayedQuestionRef.current = qKey;
-      handleStopAudio();
-      setIsAudioFinished(false);
-
-      const rate = (currentQ as any).speakingRate || 1.0;
-      const fullText = currentQ.transcript || currentQ.text;
-      const currentSession = playAudioSessionRef.current;
-
-      try {
-        triggerAcousticSoundForQuestion(qNum);
-      } catch {}
-
-      let finishedTriggered = false;
-      const markAudioFinished = () => {
-        if (!finishedTriggered && playAudioSessionRef.current === currentSession) {
-          finishedTriggered = true;
-          setIsAudioFinished(true);
-        }
-      };
-
-      // Watchdog fallback (30s) in case audio callback is dropped or blocked
-      const watchdogTimer = setTimeout(() => {
-        markAudioFinished();
-      }, 30000);
-
-      ttsSpeakListening(fullText, "fr-FR", rate, "female", () => {
-        clearTimeout(watchdogTimer);
-        markAudioFinished();
-      });
-    }
-  }, [currentQuestionIdx, activeSectionIdx, acceptedSectionDisclaimers, mode, isSubmitted, currentQ, paper.id, currentSection?.type]);
+  }, [currentQuestionIdx, activeSectionIdx, acceptedSectionDisclaimers, mode, isSubmitted]);
 
   const handlePlayAudio = async (text: string, lang = "fr-FR", rate = 1.0) => {
     const sessionId = ++playAudioSessionRef.current;
