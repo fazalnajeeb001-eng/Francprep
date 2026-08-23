@@ -387,7 +387,7 @@ export function AuthenticCBTExamPage() {
 
   // Active Section-Level CBT Countdown Timer (60 Mins for Reading, 60 Mins for Writing, 35 Mins for Listening, 12 Mins for Speaking)
   useEffect(() => {
-    if (isSubmitted) return;
+    if (isSubmitted || showSectionDisclaimer) return;
 
     // In practice mode or for admin, allow pausing the main timer
     if (isTimerPaused && (mode === "PRACTICE" || isAdmin)) return;
@@ -431,7 +431,7 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [activeSectionIdx, mode, isSubmitted, isTimerPaused, isAdmin, paper.sections.length, isPlayingAudio, isAudioFetching, isSpeaking, speakingChatLoading, currentSection]);
+  }, [activeSectionIdx, mode, isSubmitted, showSectionDisclaimer, isTimerPaused, isAdmin, paper.sections.length, isPlayingAudio, isAudioFetching, isSpeaking, speakingChatLoading, currentSection]);
 
   const handleStartPrepTimer = (taskId: string, prepMins = 1) => {
     setOralPrepTimeRemaining((prev) => ({
@@ -4554,9 +4554,11 @@ export function AuthenticCBTExamPage() {
                     } catch {}
                   }
                   if (currentSection.type === "EXPRESSION_ORALE") {
+                    setIsAudioFetching(true);
+                    setIsPlayingAudio(true);
                     setTimeout(() => {
                       startSpeakingTaskSession(activeSpeakingTaskIdx);
-                    }, 1000);
+                    }, 500);
                   }
                 }}
                 className={`w-full py-3.5 rounded-xl font-extrabold text-sm shadow-xl flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 text-white ${
