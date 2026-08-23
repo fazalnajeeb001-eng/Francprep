@@ -392,6 +392,11 @@ export function AuthenticCBTExamPage() {
     // In practice mode or for admin, allow pausing the main timer
     if (isTimerPaused && (mode === "PRACTICE" || isAdmin)) return;
 
+    // Freeze main timer during examiner speech/fetching/chat in Speaking section
+    const isChatLoading = Object.values(speakingChatLoading).some(Boolean);
+    const isSpeakingSectionAudioActive = currentSection?.type === "EXPRESSION_ORALE" && (isPlayingAudio || isAudioFetching || isSpeaking || isChatLoading);
+    if (isSpeakingSectionAudioActive) return;
+
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
         const nextTime = Math.max(0, prev - 1);
@@ -426,7 +431,7 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [activeSectionIdx, mode, isSubmitted, isTimerPaused, isAdmin, paper.sections.length]);
+  }, [activeSectionIdx, mode, isSubmitted, isTimerPaused, isAdmin, paper.sections.length, isPlayingAudio, isAudioFetching, isSpeaking, speakingChatLoading, currentSection]);
 
   const handleStartPrepTimer = (taskId: string, prepMins = 1) => {
     setOralPrepTimeRemaining((prev) => ({
