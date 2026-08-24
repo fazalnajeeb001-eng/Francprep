@@ -1,8 +1,17 @@
 /**
- * 🇨🇦 FrancPrep Master Authentic Speaking Bank (Phase 1 Calibrated)
+ * 🇨🇦 FrancPrep Master Authentic Speaking Bank (Phase 1 Calibrated with Stimulus Documents)
  * Official France Éducation International (FEI) TCF Canada Standard
  * 30 Authentic Tasks across Papers 1 to 10 with Single Examiner Voice Personas per Paper
  */
+
+export interface StimulusDocument {
+  title: string;
+  category: string;
+  organization: string;
+  content: string;
+  details: string[];
+  contactInfo: string;
+}
 
 export interface MasterSpeakingTask {
   id: string;
@@ -13,6 +22,7 @@ export interface MasterSpeakingTask {
   cefrTarget: "A1-B1" | "B1-C1" | "B2-C2";
   scenario: string;
   scenarioEn: string;
+  stimulusDocument?: StimulusDocument;
   examinerPersona: {
     name: string;
     role: string;
@@ -104,7 +114,21 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "trapAlert": "Utilisez le vouvoiement formel ('Vous').\nVariez les structures de questions (Est-ce que... ?, Pourriez-vous... ?, Combien... ?).\nDemandez des précisions sur le loyer, la caution, le Wi-Fi et les transports.",
       "trapAlertEn": "Utilisez le vouvoiement formel ('Vous').\nVariez les structures de questions (Est-ce que... ?, Pourriez-vous... ?, Combien... ?).\nDemandez des précisions sur le loyer, la caution, le Wi-Fi et les transports.",
       "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Réservation de logement de vacances) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Réservation de logement de vacances): Maintain a natural tone and respect the formal register."
+      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Réservation de logement de vacances): Maintain a natural tone and respect the formal register.",
+      "stimulusDocument": {
+        "title": "INSTITUT LINGUISTIQUE INTERNATIONAL DE MONTRÉAL",
+        "category": "Formation Professionnelle & Perfectionnement",
+        "organization": "Institut Linguistique Montréal (Agréé FEI & Ministère de l'Immigration)",
+        "content": "Sessions intensives de français professionnel et préparation aux examens officiels. Groupes réduits (max 10 apprenants). Cours en présentiel au centre-ville ou formule hybride interactive.",
+        "details": [
+          "📅 Sessions : Début chaque lundi, sessions de 4 à 12 semaines",
+          "⏰ Horaires : Du lundi au vendredi (9h00 - 13h00 ou 18h00 - 21h00)",
+          "💰 Tarifs : 380 $ CAD / semaine (Matériel pédagogique inclus)",
+          "💻 Options : Ateliers de rédaction professionnelle et simulations d'entretien",
+          "🎓 Attestation officielle remise en fin de cursus"
+        ],
+        "contactInfo": "📍 1250 Boulevard René-Lévesque Ouest, Montréal • 📞 514-555-0192 • ✉️ admission@institut-montreal.qc.ca"
+      }
     },
     {
       "id": "spk-p1-t3",
@@ -213,7 +237,21 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "trapAlert": "Demandez la durée de la session et la taille des groupes.\nInformez-vous sur la délivrance d'une attestation officielle.\nGardez un registre formel tout au long de l'échange.",
       "trapAlertEn": "Demandez la durée de la session et la taille des groupes.\nInformez-vous sur la délivrance d'une attestation officielle.\nGardez un registre formel tout au long de l'échange.",
       "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Inscription à un cours de langue) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Inscription à un cours de langue): Maintain a natural tone and respect the formal register."
+      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Inscription à un cours de langue): Maintain a natural tone and respect the formal register.",
+      "stimulusDocument": {
+        "title": "RÉSIDENCE ÉCO-RESPONSABLE DU VIEUX-QUÉBEC",
+        "category": "Immobilier & Location Saisonnière",
+        "organization": "Gestion Immobilière Québec Panoramique",
+        "content": "Superbes appartements meublés de 2 à 4 pièces situés au cœur du quartier historique. Idéal pour séjours de vacances ou déplacements professionnels.",
+        "details": [
+          "🏢 Logements : T2 et T3 entièrement équipés avec balcon",
+          "🔑 Disponibilité : Location à la semaine ou au mois",
+          "💰 Tarifs : À partir de 750 $ CAD / semaine (charges comprises)",
+          "🌱 Équipements : Wi-Fi haut débit, stationnement privé, lave-linge",
+          "🐾 Animaux : Acceptés sur demande préalable"
+        ],
+        "contactInfo": "📍 45 Rue Saint-Jean, Québec (QC) • 📞 418-555-0144 • ✉️ contact@quebec-loc.ca"
+      }
     },
     {
       "id": "spk-p2-t3",
@@ -322,7 +360,21 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "trapAlert": "Interrogez sur les démarches administratives indispensables.\nProposez une date et demandez si la mairie peut prêter du matériel.\nMaintenez une interaction fluide et structurée.",
       "trapAlertEn": "Interrogez sur les démarches administratives indispensables.\nProposez une date et demandez si la mairie peut prêter du matériel.\nMaintenez une interaction fluide et structurée.",
       "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Organisation d'une activité communautaire) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Organisation d'une activité communautaire): Maintain a natural tone and respect the formal register."
+      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Organisation d'une activité communautaire): Maintain a natural tone and respect the formal register.",
+      "stimulusDocument": {
+        "title": "GRAND NETTOYAGE ÉCOLOGIQUE MUNICIPAL DE RIDEAU",
+        "category": "Vie Communautaire & Environnement",
+        "organization": "Ville d'Ottawa — Direction des Services Citoyens",
+        "content": "Initiative citoyenne de dépollution des berges du canal Rideau. Matériel fourni par la municipalité, inscription requise pour les groupes.",
+        "details": [
+          "📅 Date : Samedi 14 mai de 9h00 à 16h00",
+          "🛠️ Matériel : Gants, sacs recyclables et pinces fournis",
+          "🚌 Accès : Navettes gratuites depuis le centre-ville",
+          "🥪 Restauration : Collation bio offerte à tous les bénévoles",
+          "📜 Attestation : Certificat d'engagement citoyen délivré"
+        ],
+        "contactInfo": "📍 Parc de la Confédération, Ottawa • 📞 613-555-0188 • ✉️ benevolat@ottawa.ca"
+      }
     },
     {
       "id": "spk-p3-t3",
@@ -431,7 +483,21 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "trapAlert": "Présentez votre disponibilité hebdomadaire.\nInformez-vous sur les compétences requises (gestion de la caisse, service).\nConcluez en proposant de laisser votre curriculum vitae.",
       "trapAlertEn": "Présentez votre disponibilité hebdomadaire.\nInformez-vous sur les compétences requises (gestion de la caisse, service).\nConcluez en proposant de laisser votre curriculum vitae.",
       "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Recherche d'un emploi d'été) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Recherche d'un emploi d'été): Maintain a natural tone and respect the formal register."
+      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Recherche d'un emploi d'été): Maintain a natural tone and respect the formal register.",
+      "stimulusDocument": {
+        "title": "LIBRAIRIE-CAFÉ 'LES PAGES DU SAVOIR' — SHERBROOKE",
+        "category": "Offre d'Emploi Étudiant & Temps Partiel",
+        "organization": "Librairie Culturelle Sherbrooke Inc.",
+        "content": "Recherche assistants polyvalents pour la saison estivale. Accueil des clients, gestion du rayon francophone et service au café-lecture.",
+        "details": [
+          "💼 Poste : Assistant(e) librairie et service café",
+          "⏰ Horaire : 15 à 25 heures / semaine (week-ends inclus)",
+          "💵 Rémunération : 16,50 $ CAD / heure + avantages",
+          "🎓 Exigences : Bon niveau de français parlé, sens du contact",
+          "📅 Début : Prise de poste début juin"
+        ],
+        "contactInfo": "📍 88 Rue Wellington Nord, Sherbrooke • 📞 819-555-0122 • ✉️ rh@pages-savoir.qc.ca"
+      }
     },
     {
       "id": "spk-p4-t3",
@@ -540,7 +606,21 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "trapAlert": "Demandez s'il existe des dépliants en plusieurs langues.\nVérifiez l'accès aux personnes à mobilité réduite.\nRemerciez chaleureusement à la fin.",
       "trapAlertEn": "Demandez s'il existe des dépliants en plusieurs langues.\nVérifiez l'accès aux personnes à mobilité réduite.\nRemerciez chaleureusement à la fin.",
       "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Organisation d'un voyage d'études) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Organisation d'un voyage d'études): Maintain a natural tone and respect the formal register."
+      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Organisation d'un voyage d'études): Maintain a natural tone and respect the formal register.",
+      "stimulusDocument": {
+        "title": "MUSÉE NATIONAL DES BEAUX-ARTS DU QUÉBEC",
+        "category": "Sorties Culturelles & Groupes Scolaires",
+        "organization": "Direction de l'Action Culturelle du MNBAQ",
+        "content": "Visites guidées thématiques et ateliers créatifs pour groupes d'étudiants. Tarifs préférentiels et créneaux réservés sur demande.",
+        "details": [
+          "🎨 Visites : Parcours thématiques 'Art et Histoire du Canada'",
+          "👥 Groupes : De 10 à 30 personnes (réservation préalable)",
+          "🎟️ Tarifs : 12 $ CAD par étudiant (gratuit pour accompagnateurs)",
+          "🎧 Outils : Audioguides en français inclus",
+          "☕ Espace : Salle de pique-nique et café disponibles"
+        ],
+        "contactInfo": "📍 Parc des Champs-de-Bataille, Québec • 📞 418-555-0199 • ✉️ groupes@mnbaq.org"
+      }
     },
     {
       "id": "spk-p5-t3",
@@ -649,7 +729,21 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "trapAlert": "Précisez la durée de la location et le nombre de passagers.\nDemandez si le carburant est inclus ou à restituer plein.\nConservez une politesse courtoise.",
       "trapAlertEn": "Précisez la durée de la location et le nombre de passagers.\nDemandez si le carburant est inclus ou à restituer plein.\nConservez une politesse courtoise.",
       "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Location de voiture pour le week-end) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Location de voiture pour le week-end): Maintain a natural tone and respect the formal register."
+      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Location de voiture pour le week-end): Maintain a natural tone and respect the formal register.",
+      "stimulusDocument": {
+        "title": "AUTO-EXPRESS TROIS-RIVIÈRES",
+        "category": "Location de Véhicules Tous Gammes",
+        "organization": "Agence Régionale de Mobilité",
+        "content": "Location de voitures économiques, hybrides et VUS pour vos déplacements en Mauricie. Formules week-end avec kilométrage illimité.",
+        "details": [
+          "🚗 Modèles : Citadines, berlines et VUS 100% électriques",
+          "⛽ Formules : Kilométrage illimité ou forfait 500 km",
+          "🛡️ Assurance : Protection tous risques et assistance 24/7",
+          "💳 Conditions : Permis valide depuis 1 an, dépôt de garantie",
+          "👶 Options : Sièges enfants et GPS disponibles"
+        ],
+        "contactInfo": "📍 1500 Boulevard des Forges, Trois-Rivières • 📞 819-555-0155 • ✉️ info@auto-express-tr.ca"
+      }
     },
     {
       "id": "spk-p6-t3",
@@ -758,7 +852,21 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "trapAlert": "Informez-vous sur les tarifs pour étudiants ou familles.\nDemandez si la réservation préalable des cours est obligatoire.\nMontrez votre enthousiasme durant l'échange.",
       "trapAlertEn": "Informez-vous sur les tarifs pour étudiants ou familles.\nDemandez si la réservation préalable des cours est obligatoire.\nMontrez votre enthousiasme durant l'échange.",
       "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Inauguration d'un centre sportif) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Inauguration d'un centre sportif): Maintain a natural tone and respect the formal register."
+      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Inauguration d'un centre sportif): Maintain a natural tone and respect the formal register.",
+      "stimulusDocument": {
+        "title": "COMPLEXE AQUATIQUE ET SPORTIF MUNICIPAL DE GATINEAU",
+        "category": "Loisirs, Santé & Sports",
+        "organization": "Ville de Gatineau — Direction des Sports",
+        "content": "Inauguration des nouvelles infrastructures : piscine olympique, salles de musculation, terrains de badminton et cours collectifs animés.",
+        "details": [
+          "🏊 Infrastructures : Bassin 50m, sauna et salle de fitness",
+          "📅 Ouverture : Portes ouvertes avec séances d'essai gratuites",
+          "💳 Abonnements : Tarifs dégressifs résidents / non-résidents",
+          "🏋️ Cours : Yoga, aquagym, spinning et zumba",
+          "👨‍👩‍👧 Formules : Pass famille et réductions étudiants"
+        ],
+        "contactInfo": "📍 850 Boulevard de la Gappe, Gatineau • 📞 819-555-0177 • ✉️ sports@gatineau.ca"
+      }
     },
     {
       "id": "spk-p7-t3",
@@ -867,7 +975,21 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "trapAlert": "Précisez vos compétences utiles (logistique, contact humain).\nDemandez si une attestation d'engagement peut être délivrée.\nTerminez sur une note d'enthousiasme citoyen.",
       "trapAlertEn": "Précisez vos compétences utiles (logistique, contact humain).\nDemandez si une attestation d'engagement peut être délivrée.\nTerminez sur une note d'enthousiasme citoyen.",
       "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Inscriptions à une association caritative) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Inscriptions à une association caritative): Maintain a natural tone and respect the formal register."
+      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Inscriptions à une association caritative): Maintain a natural tone and respect the formal register.",
+      "stimulusDocument": {
+        "title": "RÉSEAU SOLIDAIREMENT ALIMENTAIRE DE RIMOUSKI",
+        "category": "Bénévolat & Action Sociale",
+        "organization": "Association Caritative Bas-Saint-Laurent",
+        "content": "Appel à bénévoles pour le tri, l'emballage et la distribution de denrées alimentaires aux familles défavorisées de la région.",
+        "details": [
+          "🤝 Missions : Tri de denrées, préparation de colis, accueil",
+          "⏰ Disponibilités : 3 à 6 heures par semaine (flexible)",
+          "🚌 Transport : Remboursement des frais de déplacement",
+          "🎓 Formation : Sensibilisation à la sécurité alimentaire offerte",
+          "📜 Attestation : Certificat de bénévolat communautaire"
+        ],
+        "contactInfo": "📍 210 Avenue de la Cathédrale, Rimouski • 📞 418-555-0133 • ✉️ benevoles@solidarite-rimouski.ca"
+      }
     },
     {
       "id": "spk-p8-t3",
@@ -976,7 +1098,21 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "trapAlert": "Vérifiez l'ouverture 24h/24 et 7j/7 avec badge sécurisé.\nDemandez si les boissons chaudes sont incluses dans le forfait.\nGardez un ton professionnel et dynamique.",
       "trapAlertEn": "Vérifiez l'ouverture 24h/24 et 7j/7 avec badge sécurisé.\nDemandez si les boissons chaudes sont incluses dans le forfait.\nGardez un ton professionnel et dynamique.",
       "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Réservation d'un espace de coworking) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Réservation d'un espace de coworking): Maintain a natural tone and respect the formal register."
+      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Réservation d'un espace de coworking): Maintain a natural tone and respect the formal register.",
+      "stimulusDocument": {
+        "title": "ESPACE COWORKING 'INNOVA-WORK' LAVAL",
+        "category": "Bureaux Partagés & Flex-Office",
+        "organization": "Innova-Work Québec Inc.",
+        "content": "Espaces de travail modernes pour travailleurs autonomes, startups et professionnels nomades. Postes flexibles ou bureaux fermés.",
+        "details": [
+          "🖥️ Postes : Formule nomade (open-space) ou bureau dédié",
+          "☕ Services : Café bio à volonté, imprimante laser, Wi-Fi 1Gb/s",
+          "📅 Accès : Accès sécurisé 24/7 par badge électronique",
+          "🤝 Salles : 4 salles de réunion équipées en visioconférence",
+          "💰 Tarifs : Forfaits journée (35$) ou mensuel (290$)"
+        ],
+        "contactInfo": "📍 3050 Boulevard Saint-Martin Ouest, Laval • 📞 450-555-0166 • ✉️ contact@innova-work.ca"
+      }
     },
     {
       "id": "spk-p9-t3",
@@ -1085,7 +1221,21 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "trapAlert": "Demandez si les ouvrages sont prêtés gratuitement par la bibliothèque.\nInterrogez-vous sur les débats d'auteurs invités.\nMontrez votre passion pour la langue française.",
       "trapAlertEn": "Demandez si les ouvrages sont prêtés gratuitement par la bibliothèque.\nInterrogez-vous sur les débats d'auteurs invités.\nMontrez votre passion pour la langue française.",
       "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Adhésion à un club de lecture) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Adhésion à un club de lecture): Maintain a natural tone and respect the formal register."
+      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Adhésion à un club de lecture): Maintain a natural tone and respect the formal register.",
+      "stimulusDocument": {
+        "title": "CLUB DE LECTURE FRANC-PARLER DE MONTRÉAL",
+        "category": "Culture, Littérature & Échanges",
+        "organization": "Réseau des Bibliothèques Municipales de Montréal",
+        "content": "Rencontres mensuelles conviviales autour de romans, essais et œuvres théâtrales francophones. Débats passionnants et rencontres d'auteurs.",
+        "details": [
+          "📚 Rencontres : Le 1er mardi de chaque mois (18h30 - 20h30)",
+          "📖 Prêt : Emprunt gratuit des ouvrages sélectionnés",
+          "☕ Ambiance : Échanges informels avec thé et rafraîchissements",
+          "🎟️ Cotisation : Adhésion annuelle 25 $ CAD (gratuite pour abonnés)",
+          "🎭 Événements : Conférences privées avec des écrivains invités"
+        ],
+        "contactInfo": "📍 Bibliothèque Grande Bibliothèque, Montréal • 📞 514-555-0111 • ✉️ club-lecture@banq.qc.ca"
+      }
     },
     {
       "id": "spk-p10-t3",
