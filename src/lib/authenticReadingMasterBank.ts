@@ -22,1024 +22,1804 @@ export interface ReadingItem {
 export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
   // ==================== 📄 PAPER 1 (39 UNIQUE ITEMS) ====================
   [
-    {
-      paperNum: 1,
-      qNum: 1,
-      level: "A1",
-      docType: "Panneau d'information",
-      text: "DOCUMENT PUBLIC (MONTRÉAL) — HORAIRES DE MARCHÉ : fruits et légumes locaux au sein de la collectivité de Montréal. Informations pratiques, conditions d'accès et horaires consultables auprès des services municipaux de Montréal.",
-      q: "Quel est l'objet principal de ce document affiché à Montréal ?",
-      opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant fruits et légumes locaux à Montréal","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
-      ans: 1,
-      passEn: "Public Document (Montreal) — Market Opening Hours: local fresh fruits and vegetables within the community of Montreal. Practical details, access guidelines, and opening hours available from municipal administrative offices in Montreal.",
-      qEn: "What is the primary purpose of this public document posted in Montreal?",
-      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding local fresh fruits and vegetables in Montreal","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
-    },
-    {
-      paperNum: 1,
-      qNum: 2,
-      level: "A1",
-      docType: "Avis municipal",
-      text: "DOCUMENT PUBLIC (MONTRÉAL) — FERMETURE TEMPORAIRE DE PISCINE : travaux d'entretien des bassins au sein de la collectivité de Montréal. Informations pratiques, conditions d'accès et horaires consultables auprès des services municipaux de Montréal.",
-      q: "Quel est l'objet principal de ce document affiché à Montréal ?",
-      opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant travaux d'entretien des bassins à Montréal","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
-      ans: 1,
-      passEn: "Public Document (Montreal) — Temporary Pool Closure: pool basin maintenance and cleaning within the community of Montreal. Practical details, access guidelines, and opening hours available from municipal administrative offices in Montreal.",
-      qEn: "What is the primary purpose of this public document posted in Montreal?",
-      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding pool basin maintenance and cleaning in Montreal","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
-    },
-    {
-      paperNum: 1,
-      qNum: 3,
-      level: "A1",
-      docType: "Message court (SMS)",
-      text: "DOCUMENT PUBLIC (MONTRÉAL) — RENDEZ-VOUS À LA BIBLIOTHÈQUE : révision d'examen et prêt de livres au sein de la collectivité de Montréal. Informations pratiques, conditions d'accès et horaires consultables auprès des services municipaux de Montréal.",
-      q: "Quel est l'objet principal de ce document affiché à Montréal ?",
-      opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant révision d'examen et prêt de livres à Montréal","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
-      ans: 1,
-      passEn: "Public Document (Montreal) — Library Study Meeting: exam revision and book lending within the community of Montreal. Practical details, access guidelines, and opening hours available from municipal administrative offices in Montreal.",
-      qEn: "What is the primary purpose of this public document posted in Montreal?",
-      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding exam revision and book lending in Montreal","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
-    },
-    {
-      paperNum: 1,
-      qNum: 4,
-      level: "A1",
-      docType: "Affiche promotionnelle",
-      text: "DOCUMENT PUBLIC (MONTRÉAL) — BOULANGERIE ARTISANALE : viennoiseries offertes le matin au sein de la collectivité de Montréal. Informations pratiques, conditions d'accès et horaires consultables auprès des services municipaux de Montréal.",
-      q: "Quel est l'objet principal de ce document affiché à Montréal ?",
-      opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant viennoiseries offertes le matin à Montréal","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
-      ans: 1,
-      passEn: "Public Document (Montreal) — Artisanal Bakery: complimentary morning pastries within the community of Montreal. Practical details, access guidelines, and opening hours available from municipal administrative offices in Montreal.",
-      qEn: "What is the primary purpose of this public document posted in Montreal?",
-      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding complimentary morning pastries in Montreal","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
-    },
-    {
-      paperNum: 1,
-      qNum: 5,
-      level: "A1",
-      docType: "Avis d'objet trouvé",
-      text: "DOCUMENT PUBLIC (MONTRÉAL) — CLÉS TROUVÉES DANS LE MÉTRO : bureau des objets trouvés au sein de la collectivité de Montréal. Informations pratiques, conditions d'accès et horaires consultables auprès des services municipaux de Montréal.",
-      q: "Quel est l'objet principal de ce document affiché à Montréal ?",
-      opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant bureau des objets trouvés à Montréal","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
-      ans: 1,
-      passEn: "Public Document (Montreal) — Keys Found in Subway: lost and found claims office within the community of Montreal. Practical details, access guidelines, and opening hours available from municipal administrative offices in Montreal.",
-      qEn: "What is the primary purpose of this public document posted in Montreal?",
-      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding lost and found claims office in Montreal","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
-    },
-    {
-      paperNum: 1,
-      qNum: 6,
-      level: "A1",
-      docType: "Annonce de vente de garage",
-      text: "DOCUMENT PUBLIC (MONTRÉAL) — VENTE DE QUARTIER : vêtements et jouets d'occasion au parc au sein de la collectivité de Montréal. Informations pratiques, conditions d'accès et horaires consultables auprès des services municipaux de Montréal.",
-      q: "Quel est l'objet principal de ce document affiché à Montréal ?",
-      opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant vêtements et jouets d'occasion au parc à Montréal","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
-      ans: 1,
-      passEn: "Public Document (Montreal) — Neighborhood Garage Sale: second-hand clothing and toys at the park within the community of Montreal. Practical details, access guidelines, and opening hours available from municipal administrative offices in Montreal.",
-      qEn: "What is the primary purpose of this public document posted in Montreal?",
-      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding second-hand clothing and toys at the park in Montreal","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
-    },
-    {
-      paperNum: 1,
-      qNum: 7,
-      level: "A1",
-      docType: "Invitation amicale",
-      text: "DOCUMENT PUBLIC (MONTRÉAL) — PIQUE-NIQUE ASSOCIATIF : rencontre de début de saison au parc au sein de la collectivité de Montréal. Informations pratiques, conditions d'accès et horaires consultables auprès des services municipaux de Montréal.",
-      q: "Quel est l'objet principal de ce document affiché à Montréal ?",
-      opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant rencontre de début de saison au parc à Montréal","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
-      ans: 1,
-      passEn: "Public Document (Montreal) — Community Picnic: seasonal kickoff gathering at the park within the community of Montreal. Practical details, access guidelines, and opening hours available from municipal administrative offices in Montreal.",
-      qEn: "What is the primary purpose of this public document posted in Montreal?",
-      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding seasonal kickoff gathering at the park in Montreal","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
-    },
-    {
-      paperNum: 1,
-      qNum: 8,
-      level: "A2",
-      docType: "Offre d'emploi",
-      text: "COMMUNICATION LOCALE (MONTRÉAL) — CONSEILLER DE VENTE EN LIBRAIRIE : temps partiel et accueil clientèle organisé par Hydro-Québec à Montréal. Les candidats et usagers intéressés sont invités à respecter les consignes officielles avant la date limite indiquée.",
-      q: "Quelle information essentielle est transmise dans cette communication de Montréal ?",
-      opt: ["Une suppression des services de transport public","Les modalités et consignes concernant temps partiel et accueil clientèle à Montréal","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
-      ans: 1,
-      passEn: "Local Announcement (Montreal) — Bookstore Sales Advisor: part-time employment and customer service organized by Hydro-Quebec in Montreal. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is communicated in this announcement from Montreal?",
-      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning part-time employment and customer service in Montreal","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
-    },
-    {
-      paperNum: 1,
-      qNum: 9,
-      level: "A2",
-      docType: "Petite annonce immobilière",
-      text: "COMMUNICATION LOCALE (MONTRÉAL) — LOCATION D'APPARTEMENT : logement rénové proche transports organisé par Hydro-Québec à Montréal. Les candidats et usagers intéressés sont invités à respecter les consignes officielles avant la date limite indiquée.",
-      q: "Quelle information essentielle est transmise dans cette communication de Montréal ?",
-      opt: ["Une suppression des services de transport public","Les modalités et consignes concernant logement rénové proche transports à Montréal","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
-      ans: 1,
-      passEn: "Local Announcement (Montreal) — Apartment Rental: renovated housing near transit organized by Hydro-Quebec in Montreal. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is communicated in this announcement from Montreal?",
-      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning renovated housing near transit in Montreal","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
-    },
-    {
-      paperNum: 1,
-      qNum: 10,
-      level: "A2",
-      docType: "Note de service interne",
-      text: "COMMUNICATION LOCALE (MONTRÉAL) — RÈGLEMENT DU PARKING D'ENTREPRISE : accès par badge magnétique organisé par Hydro-Québec à Montréal. Les candidats et usagers intéressés sont invités à respecter les consignes officielles avant la date limite indiquée.",
-      q: "Quelle information essentielle est transmise dans cette communication de Montréal ?",
-      opt: ["Une suppression des services de transport public","Les modalités et consignes concernant accès par badge magnétique à Montréal","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
-      ans: 1,
-      passEn: "Local Announcement (Montreal) — Company Parking Lot Policy: magnetic badge access control organized by Hydro-Quebec in Montreal. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is communicated in this announcement from Montreal?",
-      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning magnetic badge access control in Montreal","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
-    },
-    {
-      paperNum: 1,
-      qNum: 11,
-      level: "A2",
-      docType: "Dépliant touristique",
-      text: "COMMUNICATION LOCALE (MONTRÉAL) — VISITE GUIDÉE HISTORIQUE : parcours pédestre avec guide certifié organisé par Hydro-Québec à Montréal. Les candidats et usagers intéressés sont invités à respecter les consignes officielles avant la date limite indiquée.",
-      q: "Quelle information essentielle est transmise dans cette communication de Montréal ?",
-      opt: ["Une suppression des services de transport public","Les modalités et consignes concernant parcours pédestre avec guide certifié à Montréal","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
-      ans: 1,
-      passEn: "Local Announcement (Montreal) — Historical Guided Tour: walking itinerary with a certified guide organized by Hydro-Quebec in Montreal. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is communicated in this announcement from Montreal?",
-      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning walking itinerary with a certified guide in Montreal","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
-    },
-    {
-      paperNum: 1,
-      qNum: 12,
-      level: "A2",
-      docType: "Menu de restaurant",
-      text: "COMMUNICATION LOCALE (MONTRÉAL) — FORMULE MIDI DU CHEF : plat du jour et dessert maison organisé par Hydro-Québec à Montréal. Les candidats et usagers intéressés sont invités à respecter les consignes officielles avant la date limite indiquée.",
-      q: "Quelle information essentielle est transmise dans cette communication de Montréal ?",
-      opt: ["Une suppression des services de transport public","Les modalités et consignes concernant plat du jour et dessert maison à Montréal","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
-      ans: 1,
-      passEn: "Local Announcement (Montreal) — Chef's Lunch Special: daily main course and homemade dessert organized by Hydro-Quebec in Montreal. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is communicated in this announcement from Montreal?",
-      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning daily main course and homemade dessert in Montreal","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
-    },
-    {
-      paperNum: 1,
-      qNum: 13,
-      level: "A2",
-      docType: "Courriel client",
-      text: "COMMUNICATION LOCALE (MONTRÉAL) — SUIVI DE LIVRAISON DE COLIS : demande de créneau horaire de livraison organisé par Hydro-Québec à Montréal. Les candidats et usagers intéressés sont invités à respecter les consignes officielles avant la date limite indiquée.",
-      q: "Quelle information essentielle est transmise dans cette communication de Montréal ?",
-      opt: ["Une suppression des services de transport public","Les modalités et consignes concernant demande de créneau horaire de livraison à Montréal","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
-      ans: 1,
-      passEn: "Local Announcement (Montreal) — Parcel Delivery Tracking: request for carrier delivery timeslot organized by Hydro-Quebec in Montreal. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is communicated in this announcement from Montreal?",
-      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning request for carrier delivery timeslot in Montreal","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
-    },
-    {
-      paperNum: 1,
-      qNum: 14,
-      level: "A2",
-      docType: "Avis de club sportif",
-      text: "COMMUNICATION LOCALE (MONTRÉAL) — ATELIER DE YOGA POUR DÉBUTANTS : séance du samedi matin organisé par Hydro-Québec à Montréal. Les candidats et usagers intéressés sont invités à respecter les consignes officielles avant la date limite indiquée.",
-      q: "Quelle information essentielle est transmise dans cette communication de Montréal ?",
-      opt: ["Une suppression des services de transport public","Les modalités et consignes concernant séance du samedi matin à Montréal","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
-      ans: 1,
-      passEn: "Local Announcement (Montreal) — Beginner Yoga Workshop: Saturday morning practice session organized by Hydro-Quebec in Montreal. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is communicated in this announcement from Montreal?",
-      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning Saturday morning practice session in Montreal","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
-    },
-    {
-      paperNum: 1,
-      qNum: 15,
-      level: "A2",
-      docType: "Règlement de médiathèque",
-      text: "COMMUNICATION LOCALE (MONTRÉAL) — CONDITIONS D'EMPRUNT : renouvellement de prêt en ligne organisé par Hydro-Québec à Montréal. Les candidats et usagers intéressés sont invités à respecter les consignes officielles avant la date limite indiquée.",
-      q: "Quelle information essentielle est transmise dans cette communication de Montréal ?",
-      opt: ["Une suppression des services de transport public","Les modalités et consignes concernant renouvellement de prêt en ligne à Montréal","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
-      ans: 1,
-      passEn: "Local Announcement (Montreal) — Borrowing Terms: online book loan renewals organized by Hydro-Quebec in Montreal. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is communicated in this announcement from Montreal?",
-      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning online book loan renewals in Montreal","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
-    },
-    {
-      paperNum: 1,
-      qNum: 16,
-      level: "B1",
-      docType: "Article d'information",
-      text: "ARTICLE D'ACTUALITÉ (LE DEVOIR) — TRI SÉLECTIF ET COMPOSTAGE URBAIN : Dans la région de Montréal, l'initiative portant sur réduction des déchets municipaux suscite un intérêt croissant. Selon les acteurs de Université de Montréal et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant réduction des déchets municipaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Devoir Newspaper) — Waste Sorting and Urban Composting: In the Montreal region, this public initiative centered on municipal waste reduction targets is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing municipal waste reduction targets despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 1,
-      qNum: 17,
-      level: "B1",
-      docType: "Enquête sociologique",
-      text: "ARTICLE D'ACTUALITÉ (LE DEVOIR) — MODÈLE DE TÉLÉTRAVAIL HYBRIDE : Dans la région de Montréal, l'initiative portant sur équilibre vie professionnelle et personnelle suscite un intérêt croissant. Selon les acteurs de Université de Montréal et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant équilibre vie professionnelle et personnelle malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Devoir Newspaper) — Hybrid Telecommuting Model: In the Montreal region, this public initiative centered on work-life balance and productivity is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing work-life balance and productivity despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 1,
-      qNum: 18,
-      level: "B1",
-      docType: "Article santé",
-      text: "ARTICLE D'ACTUALITÉ (LE DEVOIR) — ALIMENTATION DE SAISON ET IMMUNITÉ : Dans la région de Montréal, l'initiative portant sur produits frais riches en antioxydants suscite un intérêt croissant. Selon les acteurs de Université de Montréal et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant produits frais riches en antioxydants malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Devoir Newspaper) — Seasonal Nutrition and Immunity: In the Montreal region, this public initiative centered on fresh produce rich in antioxidants is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fresh produce rich in antioxidants despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 1,
-      qNum: 19,
-      level: "B1",
-      docType: "Guide consommateur",
-      text: "ARTICLE D'ACTUALITÉ (LE DEVOIR) — RÉPARABILITÉ DES APPAREILS ÉLECTRONIQUES : Dans la région de Montréal, l'initiative portant sur prolongation de la durée de vie du matériel suscite un intérêt croissant. Selon les acteurs de Université de Montréal et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant prolongation de la durée de vie du matériel malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Devoir Newspaper) — Electronic Device Repairability: In the Montreal region, this public initiative centered on extending equipment lifespan through repair is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing extending equipment lifespan through repair despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 1,
-      qNum: 20,
-      level: "B1",
-      docType: "Article d'urbanisme",
-      text: "ARTICLE D'ACTUALITÉ (LE DEVOIR) — NOUVEAU RÉSEAU CYCLABLE SÉCURISÉ : Dans la région de Montréal, l'initiative portant sur hausse des déplacements à vélo à l'heure de pointe suscite un intérêt croissant. Selon les acteurs de Université de Montréal et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant hausse des déplacements à vélo à l'heure de pointe malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Devoir Newspaper) — Protected Express Cycling Network: In the Montreal region, this public initiative centered on growth in rush-hour bicycle commuting is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing growth in rush-hour bicycle commuting despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 1,
-      qNum: 21,
-      level: "B1",
-      docType: "Critique culturelle",
-      text: "ARTICLE D'ACTUALITÉ (LE DEVOIR) — NOUVELLE PIÈCE DE THÉÂTRE CONTEMPORAINE : Dans la région de Montréal, l'initiative portant sur justesse de l'interprétation des comédiens suscite un intérêt croissant. Selon les acteurs de Université de Montréal et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant justesse de l'interprétation des comédiens malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Devoir Newspaper) — Contemporary Theatrical Play: In the Montreal region, this public initiative centered on accuracy of actor performances and staging is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing accuracy of actor performances and staging despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 1,
-      qNum: 22,
-      level: "B1",
-      docType: "Reportage économique",
-      text: "ARTICLE D'ACTUALITÉ (LE DEVOIR) — COOPÉRATIVE FROMAGÈRE ET VENTE DIRECTE : Dans la région de Montréal, l'initiative portant sur valorisation du travail des éleveurs locaux suscite un intérêt croissant. Selon les acteurs de Université de Montréal et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant valorisation du travail des éleveurs locaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Devoir Newspaper) — Dairy Farming Cooperative and Direct Sales: In the Montreal region, this public initiative centered on fair financial compensation for local farmers is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fair financial compensation for local farmers despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 1,
-      qNum: 23,
-      level: "B1",
-      docType: "Article éducation",
-      text: "ARTICLE D'ACTUALITÉ (LE DEVOIR) — MICROPROGRAMMES CERTIFIANTS EN LIGNE : Dans la région de Montréal, l'initiative portant sur formation continue pour professionnels en reconversion suscite un intérêt croissant. Selon les acteurs de Université de Montréal et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant formation continue pour professionnels en reconversion malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Devoir Newspaper) — Online Certifying Microprograms: In the Montreal region, this public initiative centered on continuing education for working professionals is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing continuing education for working professionals despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 1,
-      qNum: 24,
-      level: "B1",
-      docType: "Article technologique",
-      text: "ARTICLE D'ACTUALITÉ (LE DEVOIR) — INTELLIGENCE ARTIFICIELLE DANS LES CABINETS JURIDIQUES : Dans la région de Montréal, l'initiative portant sur relecture humaine nécessaire des sources suscite un intérêt croissant. Selon les acteurs de Université de Montréal et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant relecture humaine nécessaire des sources malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Devoir Newspaper) — Artificial Intelligence in Legal Practice: In the Montreal region, this public initiative centered on rigorous human verification of cited legal sources is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing rigorous human verification of cited legal sources despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 1,
-      qNum: 25,
-      level: "B1",
-      docType: "Article de société",
-      text: "ARTICLE D'ACTUALITÉ (LE DEVOIR) — RÉSEAU D'ENTRAIDE INTERGÉNÉRATIONNEL : Dans la région de Montréal, l'initiative portant sur parrainage entre étudiants et aînés suscite un intérêt croissant. Selon les acteurs de Université de Montréal et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Devoir, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant parrainage entre étudiants et aînés malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Devoir Newspaper) — Intergenerational Mentorship Network: In the Montreal region, this public initiative centered on pairing university students with senior citizens is attracting widespread interest. According to researchers at University of Montreal and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Devoir Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing pairing university students with senior citizens despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 1,
-      qNum: 26,
-      level: "B2",
-      docType: "Éditorial économique",
-      text: "TRIBUNE ANALYTIQUE (LE DEVOIR) — ÉCONOMIE CIRCULAIRE ET ÉCO-CONCEPTION : L'analyse approfondie menée par les chercheurs de Université de Montréal souligne que la question de responsabilité des industriels et réparabilité ne peut être résolue par de simples mesures palliatives. Une transformation pérenne exige une révision structurelle des paradigmes décisionnels, conciliant rigueur analytique, impératifs éthiques et responsabilité citoyenne face aux défis contemporains.",
-      q: "Quelle thèse centrale l'auteur défend-il à propos de économie circulaire et éco-conception ?",
-      opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter responsabilité des industriels et réparabilité","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
-      ans: 1,
-      passEn: "Analytical Editorial (Le Devoir Newspaper) — Circular Economy and Eco-Design: In-depth analysis by academic researchers at University of Montreal underscores that the critical challenge of corporate manufacturing responsibility and repairability cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
-      qEn: "What central thesis does the author defend regarding circular economy and eco-design?",
-      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve corporate manufacturing responsibility and repairability","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
-    },
-    {
-      paperNum: 1,
-      qNum: 27,
-      level: "B2",
-      docType: "Analyse sociologique",
-      text: "TRIBUNE ANALYTIQUE (LE DEVOIR) — QUÊTE DE SENS CHEZ LES JEUNES DIPLÔMÉS : L'analyse approfondie menée par les chercheurs de Université de Montréal souligne que la question de impact sociétal et flexibilité professionnelle ne peut être résolue par de simples mesures palliatives. Une transformation pérenne exige une révision structurelle des paradigmes décisionnels, conciliant rigueur analytique, impératifs éthiques et responsabilité citoyenne face aux défis contemporains.",
-      q: "Quelle thèse centrale l'auteur défend-il à propos de quête de sens chez les jeunes diplômés ?",
-      opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter impact sociétal et flexibilité professionnelle","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
-      ans: 1,
-      passEn: "Analytical Editorial (Le Devoir Newspaper) — Search for Meaning Among Recent Graduates: In-depth analysis by academic researchers at University of Montreal underscores that the critical challenge of societal impact and workplace schedule flexibility cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
-      qEn: "What central thesis does the author defend regarding search for meaning among recent graduates?",
-      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve societal impact and workplace schedule flexibility","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
-    },
-    {
-      paperNum: 1,
-      qNum: 28,
-      level: "B2",
-      docType: "Débat environnemental",
-      text: "TRIBUNE ANALYTIQUE (LE DEVOIR) — DÉPLOIEMENT DES PARCS ÉOLIENS : L'analyse approfondie menée par les chercheurs de Université de Montréal souligne que la question de arbitrage entre urgence climatique et concertation locale ne peut être résolue par de simples mesures palliatives. Une transformation pérenne exige une révision structurelle des paradigmes décisionnels, conciliant rigueur analytique, impératifs éthiques et responsabilité citoyenne face aux défis contemporains.",
-      q: "Quelle thèse centrale l'auteur défend-il à propos de déploiement des parcs éoliens ?",
-      opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter arbitrage entre urgence climatique et concertation locale","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
-      ans: 1,
-      passEn: "Analytical Editorial (Le Devoir Newspaper) — Renewable Wind Energy Deployment: In-depth analysis by academic researchers at University of Montreal underscores that the critical challenge of balancing climate urgency with local community consent cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
-      qEn: "What central thesis does the author defend regarding renewable wind energy deployment?",
-      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve balancing climate urgency with local community consent","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
-    },
-    {
-      paperNum: 1,
-      qNum: 29,
-      level: "B2",
-      docType: "Tribune universitaire",
-      text: "TRIBUNE ANALYTIQUE (LE DEVOIR) — IA GÉNÉRATIVE DANS L'ENSEIGNEMENT SUPÉRIEUR : L'analyse approfondie menée par les chercheurs de Université de Montréal souligne que la question de déplacement de l'évaluation vers l'analyse critique ne peut être résolue par de simples mesures palliatives. Une transformation pérenne exige une révision structurelle des paradigmes décisionnels, conciliant rigueur analytique, impératifs éthiques et responsabilité citoyenne face aux défis contemporains.",
-      q: "Quelle thèse centrale l'auteur défend-il à propos de ia générative dans l'enseignement supérieur ?",
-      opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter déplacement de l'évaluation vers l'analyse critique","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
-      ans: 1,
-      passEn: "Analytical Editorial (Le Devoir Newspaper) — Generative AI in Higher Education: In-depth analysis by academic researchers at University of Montreal underscores that the critical challenge of shifting assessment toward critical reflexive analysis cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
-      qEn: "What central thesis does the author defend regarding generative ai in higher education?",
-      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve shifting assessment toward critical reflexive analysis","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
-    },
-    {
-      paperNum: 1,
-      qNum: 30,
-      level: "B2",
-      docType: "Chronique d'architecture",
-      text: "TRIBUNE ANALYTIQUE (LE DEVOIR) — DENSIFICATION URBAINE ET PATRIMOINE BÂTI : L'analyse approfondie menée par les chercheurs de Université de Montréal souligne que la question de réhabilitation écologique des bâtiments historiques ne peut être résolue par de simples mesures palliatives. Une transformation pérenne exige une révision structurelle des paradigmes décisionnels, conciliant rigueur analytique, impératifs éthiques et responsabilité citoyenne face aux défis contemporains.",
-      q: "Quelle thèse centrale l'auteur défend-il à propos de densification urbaine et patrimoine bâti ?",
-      opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter réhabilitation écologique des bâtiments historiques","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
-      ans: 1,
-      passEn: "Analytical Editorial (Le Devoir Newspaper) — Urban Densification and Built Heritage: In-depth analysis by academic researchers at University of Montreal underscores that the critical challenge of sustainable ecological rehabilitation of historic edifices cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
-      qEn: "What central thesis does the author defend regarding urban densification and built heritage?",
-      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve sustainable ecological rehabilitation of historic edifices","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
-    },
-    {
-      paperNum: 1,
-      qNum: 31,
-      level: "B2",
-      docType: "Rapport scientifique",
-      text: "TRIBUNE ANALYTIQUE (LE DEVOIR) — PRÉSERVATION DE LA BIODIVERSITÉ MARINE : L'analyse approfondie menée par les chercheurs de Université de Montréal souligne que la question de contrôle des pollutions terrestres en amont ne peut être résolue par de simples mesures palliatives. Une transformation pérenne exige une révision structurelle des paradigmes décisionnels, conciliant rigueur analytique, impératifs éthiques et responsabilité citoyenne face aux défis contemporains.",
-      q: "Quelle thèse centrale l'auteur défend-il à propos de préservation de la biodiversité marine ?",
-      opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter contrôle des pollutions terrestres en amont","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
-      ans: 1,
-      passEn: "Analytical Editorial (Le Devoir Newspaper) — Marine Biodiversity Conservation: In-depth analysis by academic researchers at University of Montreal underscores that the critical challenge of strict control of upstream land-based pollution runoff cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
-      qEn: "What central thesis does the author defend regarding marine biodiversity conservation?",
-      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve strict control of upstream land-based pollution runoff","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
-    },
-    {
-      paperNum: 1,
-      qNum: 32,
-      level: "B2",
-      docType: "Analyse médiatique",
-      text: "TRIBUNE ANALYTIQUE (LE DEVOIR) — ÉDUCATION À L'ESPRIT CRITIQUE ET DÉSINFORMATION : L'analyse approfondie menée par les chercheurs de Université de Montréal souligne que la question de préservation du débat public fondé sur des faits ne peut être résolue par de simples mesures palliatives. Une transformation pérenne exige une révision structurelle des paradigmes décisionnels, conciliant rigueur analytique, impératifs éthiques et responsabilité citoyenne face aux défis contemporains.",
-      q: "Quelle thèse centrale l'auteur défend-il à propos de éducation à l'esprit critique et désinformation ?",
-      opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter préservation du débat public fondé sur des faits","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
-      ans: 1,
-      passEn: "Analytical Editorial (Le Devoir Newspaper) — Critical Thinking and Combating Disinformation: In-depth analysis by academic researchers at University of Montreal underscores that the critical challenge of safeguarding fact-based democratic public discourse cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
-      qEn: "What central thesis does the author defend regarding critical thinking and combating disinformation?",
-      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve safeguarding fact-based democratic public discourse","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
-    },
-    {
-      paperNum: 1,
-      qNum: 33,
-      level: "B2",
-      docType: "Article de santé publique",
-      text: "TRIBUNE ANALYTIQUE (LE DEVOIR) — PRIORITÉ À LA MÉDECINE PRÉVENTIVE : L'analyse approfondie menée par les chercheurs de Université de Montréal souligne que la question de investissement précoce dans le dépistage et l'alimentation ne peut être résolue par de simples mesures palliatives. Une transformation pérenne exige une révision structurelle des paradigmes décisionnels, conciliant rigueur analytique, impératifs éthiques et responsabilité citoyenne face aux défis contemporains.",
-      q: "Quelle thèse centrale l'auteur défend-il à propos de priorité à la médecine préventive ?",
-      opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter investissement précoce dans le dépistage et l'alimentation","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
-      ans: 1,
-      passEn: "Analytical Editorial (Le Devoir Newspaper) — Prioritizing Preventative Healthcare: In-depth analysis by academic researchers at University of Montreal underscores that the critical challenge of early investment in disease screening and wholesome nutrition cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
-      qEn: "What central thesis does the author defend regarding prioritizing preventative healthcare?",
-      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve early investment in disease screening and wholesome nutrition","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
-    },
-    {
-      paperNum: 1,
-      qNum: 34,
-      level: "C1",
-      docType: "Essai philosophique",
-      text: "ESSAI CRITIQUE (UNIVERSITÉ DE MONTRÉAL) — TEMPORALITÉ ET CULTE DE L'INSTANTANÉITÉ : Dans cet essai rédigé à Montréal, l'auteur explore la portée conceptuelle de érosion de la lenteur nécessaire à la maturation de la pensée. En articulant une dialectique rigoureuse entre héritage philosophique et mutations contemporaines, le texte démontre que l'autonomie réflexive de l'esprit demeure l'ultime rempart contre la réification de l'expérience humaine.",
-      q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
-      opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à érosion de la lenteur nécessaire à la maturation de la pensée","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
-      ans: 1,
-      passEn: "Critical Essay (University of Montreal) — Temporality and the Cult of Instantaneity: In this philosophical essay composed in Montreal, the author investigates the conceptual implications of erosion of the contemplative stillness essential for thought maturation. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
-      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
-      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding erosion of the contemplative stillness essential for thought maturation","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
-    },
-    {
-      paperNum: 1,
-      qNum: 35,
-      level: "C1",
-      docType: "Critique littéraire",
-      text: "ESSAI CRITIQUE (UNIVERSITÉ DE MONTRÉAL) — ESTHÉTIQUE DU DÉPOUILLEMENT SYNTAXIQUE : Dans cet essai rédigé à Montréal, l'auteur explore la portée conceptuelle de densité poétique et tension métaphorique du récit. En articulant une dialectique rigoureuse entre héritage philosophique et mutations contemporaines, le texte démontre que l'autonomie réflexive de l'esprit demeure l'ultime rempart contre la réification de l'expérience humaine.",
-      q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
-      opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à densité poétique et tension métaphorique du récit","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
-      ans: 1,
-      passEn: "Critical Essay (University of Montreal) — Aesthetics of Syntactic Sobriety: In this philosophical essay composed in Montreal, the author investigates the conceptual implications of poetic density and metaphorical tension in prose. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
-      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
-      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic density and metaphorical tension in prose","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
-    },
-    {
-      paperNum: 1,
-      qNum: 36,
-      level: "C1",
-      docType: "Essai épistémologique",
-      text: "ESSAI CRITIQUE (UNIVERSITÉ DE MONTRÉAL) — ILLUSION ANTHROPOMORPHIQUE DE L'IA : Dans cet essai rédigé à Montréal, l'auteur explore la portée conceptuelle de distinction entre inférence statistique et conscience réflexive. En articulant une dialectique rigoureuse entre héritage philosophique et mutations contemporaines, le texte démontre que l'autonomie réflexive de l'esprit demeure l'ultime rempart contre la réification de l'expérience humaine.",
-      q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
-      opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à distinction entre inférence statistique et conscience réflexive","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
-      ans: 1,
-      passEn: "Critical Essay (University of Montreal) — The Anthropomorphic Illusion of AI: In this philosophical essay composed in Montreal, the author investigates the conceptual implications of distinguishing statistical inference from reflexive human consciousness. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
-      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
-      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding distinguishing statistical inference from reflexive human consciousness","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
-    },
-    {
-      paperNum: 1,
-      qNum: 37,
-      level: "C2",
-      docType: "Analyse sociolinguistique",
-      text: "ESSAI CRITIQUE (UNIVERSITÉ DE MONTRÉAL) — POLYPHONIE PLURICENTRIQUE DE LA FRANCOPHONIE : Dans cet essai rédigé à Montréal, l'auteur explore la portée conceptuelle de vitalité des variétés régionales francophones mondiales. En articulant une dialectique rigoureuse entre héritage philosophique et mutations contemporaines, le texte démontre que l'autonomie réflexive de l'esprit demeure l'ultime rempart contre la réification de l'expérience humaine.",
-      q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
-      opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à vitalité des variétés régionales francophones mondiales","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
-      ans: 1,
-      passEn: "Critical Essay (University of Montreal) — Pluricentric Polyphony of the Francophonie: In this philosophical essay composed in Montreal, the author investigates the conceptual implications of the vitality of global regional Francophone varieties. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
-      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
-      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding the vitality of global regional Francophone varieties","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
-    },
-    {
-      paperNum: 1,
-      qNum: 38,
-      level: "C2",
-      docType: "Essai esthétique",
-      text: "ESSAI CRITIQUE (UNIVERSITÉ DE MONTRÉAL) — L'ART CONTEMPORAIN DANS L'ESPACE PUBLIC : Dans cet essai rédigé à Montréal, l'auteur explore la portée conceptuelle de subversion poétique et révélation des tensions politiques. En articulant une dialectique rigoureuse entre héritage philosophique et mutations contemporaines, le texte démontre que l'autonomie réflexive de l'esprit demeure l'ultime rempart contre la réification de l'expérience humaine.",
-      q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
-      opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à subversion poétique et révélation des tensions politiques","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
-      ans: 1,
-      passEn: "Critical Essay (University of Montreal) — Contemporary Art in Civic Spaces: In this philosophical essay composed in Montreal, the author investigates the conceptual implications of poetic subversion and unmasking political civic tensions. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
-      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
-      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic subversion and unmasking political civic tensions","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
-    },
-    {
-      paperNum: 1,
-      qNum: 39,
-      level: "C2",
-      docType: "Anthropologie philosophique",
-      text: "ESSAI CRITIQUE (UNIVERSITÉ DE MONTRÉAL) — SYMBOLIQUE PROJECTIVE DE LA MÉMOIRE COLLECTIVE : Dans cet essai rédigé à Montréal, l'auteur explore la portée conceptuelle de sélection axiologique et projection communautaire vers l'avenir. En articulant une dialectique rigoureuse entre héritage philosophique et mutations contemporaines, le texte démontre que l'autonomie réflexive de l'esprit demeure l'ultime rempart contre la réification de l'expérience humaine.",
-      q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
-      opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à sélection axiologique et projection communautaire vers l'avenir","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
-      ans: 1,
-      passEn: "Critical Essay (University of Montreal) — Projective Symbolics of Collective Memory: In this philosophical essay composed in Montreal, the author investigates the conceptual implications of axiological selection and community projection toward the future. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
-      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
-      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding axiological selection and community projection toward the future","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
-    },
-  ],
+  {
+    "paperNum": 1,
+    "qNum": 1,
+    "level": "A1",
+    "docType": "Panneau d'information",
+    "text": "BIBLIOTHÈQUE MUNICIPALE : Ouvert du mardi au samedi de 9h à 18h. Fermeture exceptionnelle les jours fériés. Entrée gratuite sur présentation de la carte de résident.",
+    "q": "À quelle heure la bibliothèque ferme-t-elle le samedi ?",
+    "opt": [
+      "À 17h00",
+      "À 18h00",
+      "À 19h00",
+      "À 20h00"
+    ],
+    "ans": 1,
+    "passEn": "MUNICIPAL LIBRARY: Open Tuesday to Saturday from 9:00 AM to 6:00 PM. Exceptional closure on public holidays. Free admission upon presenting resident card.",
+    "qEn": "At what time does the library close on Saturday?",
+    "optEn": [
+      "At 5:00 PM",
+      "At 6:00 PM",
+      "At 7:00 PM",
+      "At 8:00 PM"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 2,
+    "level": "A1",
+    "docType": "Avis municipal",
+    "text": "PISCINE CENTRE-VILLE : Fermeture temporaire du grand bassin du 12 au 15 juin pour travaux de nettoyage annuel. Le petit bassin reste accessible aux familles.",
+    "q": "Pourquoi le grand bassin est-il fermé ?",
+    "opt": [
+      "Pour des compétitions régionales",
+      "Pour des travaux d'entretien annuel",
+      "À cause d'une panne d'électricité",
+      "Pour un cours de natation privé"
+    ],
+    "ans": 1,
+    "passEn": "DOWNTOWN SWIMMING POOL: Temporary closure of the main pool from June 12 to 15 for annual cleaning works. The small pool remains accessible to families.",
+    "qEn": "Why is the main swimming pool closed?",
+    "optEn": [
+      "For regional competitions",
+      "For annual maintenance work",
+      "Because of a power outage",
+      "For a private swimming lesson"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 3,
+    "level": "A1",
+    "docType": "Message court (SMS)",
+    "text": "Salut Marc ! N'oublie pas notre rendez-vous à 14h30 devant la gare centrale. Apporte ton passeport et les billets de train. À tout à l'heure, Sophie.",
+    "q": "Où Sophie et Marc se retrouvent-ils ?",
+    "opt": [
+      "À l'aéroport international",
+      "Devant la gare centrale",
+      "Dans un café du centre",
+      "À l'arrêt de bus"
+    ],
+    "ans": 1,
+    "passEn": "Hi Marc! Don't forget our meeting at 2:30 PM in front of the central station. Bring your passport and train tickets. See you soon, Sophie.",
+    "qEn": "Where are Sophie and Marc meeting?",
+    "optEn": [
+      "At the international airport",
+      "In front of the central station",
+      "In a downtown cafe",
+      "At the bus stop"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 4,
+    "level": "A1",
+    "docType": "Affiche promotionnelle",
+    "text": "BOULANGERIE DU PARC : Pour l'inauguration de notre nouvelle boutique, un croissant vous est offert pour tout achat supérieur à 10 € ce samedi matin !",
+    "q": "Que faut-il faire pour recevoir un croissant gratuit ?",
+    "opt": [
+      "Acheter deux pains au chocolat",
+      "Dépenser plus de 10 € le samedi matin",
+      "Présenter une carte d'étudiant",
+      "S'inscrire à la newsletter du magasin"
+    ],
+    "ans": 1,
+    "passEn": "PARK BAKERY: To celebrate the grand opening of our new store, a free croissant is offered with any purchase over €10 this Saturday morning!",
+    "qEn": "What must you do to receive a free croissant?",
+    "optEn": [
+      "Buy two chocolate pastries",
+      "Spend over €10 on Saturday morning",
+      "Show a student ID card",
+      "Subscribe to the store newsletter"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 5,
+    "level": "A2",
+    "docType": "Avis d'objet trouvé",
+    "text": "OBJET PERDU : Sac à dos noir oublié sur le banc du parc Mont-Royal hier vers 16h. Il contient des clés de maison et un carnet de notes bleu. Merci de contacter Thomas au 06 12 34 56 78.",
+    "q": "Que contient le sac à dos perdu ?",
+    "opt": [
+      "Des clés et un carnet de notes",
+      "Un téléphone et un ordinateur portable",
+      "Un portefeuille et des lunettes de soleil",
+      "Des livres de cours et une trousse"
+    ],
+    "ans": 0,
+    "passEn": "LOST ITEM: Black backpack forgotten on the Mont-Royal park bench yesterday around 4:00 PM. Contains house keys and a blue notebook. Please contact Thomas at 06 12 34 56 78.",
+    "qEn": "What does the lost backpack contain?",
+    "optEn": [
+      "Keys and a notebook",
+      "A phone and a laptop",
+      "A wallet and sunglasses",
+      "Textbooks and a pencil case"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 6,
+    "level": "A2",
+    "docType": "Annonce de vide-grenier",
+    "text": "GRANDE VENTE DE QUARTIER : Dimanche prochain de 8h à 17h sur la Place du Marché. Plus de 50 exposants ! Vêtements, jouets et meubles anciens à petits prix. Buvette sur place.",
+    "q": "Quel événement est annoncé sur la Place du Marché ?",
+    "opt": [
+      "Un festival de musique en plein air",
+      "Une exposition de peinture moderne",
+      "Une vente de garage de quartier",
+      "Un marathon sportif solidaire"
+    ],
+    "ans": 2,
+    "passEn": "BIG NEIGHBORHOOD GARAGE SALE: Next Sunday from 8:00 AM to 5:00 PM at Market Square. Over 50 vendors! Clothes, toys, and antique furniture at low prices. Refreshments available on site.",
+    "qEn": "What event is announced at Market Square?",
+    "optEn": [
+      "An outdoor music festival",
+      "A modern painting exhibition",
+      "A neighborhood garage sale",
+      "A charity marathon race"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 7,
+    "level": "A2",
+    "docType": "Invitation amicale",
+    "text": "Chers amis, pour fêter mon installation dans mon nouvel appartement, je vous invite à un pique-nique participatif ce dimanche à 12h au parc des Laurentides. Chacun apporte un plat à partager !",
+    "q": "Que demande l'hôte à ses invités ?",
+    "opt": [
+      "D'apporter des cadeaux de crémaillère",
+      "De réserver leurs billets à l'avance",
+      "D'arriver après 15 heures",
+      "D'apporter de la nourriture à partager"
+    ],
+    "ans": 3,
+    "passEn": "Dear friends, to celebrate moving into my new apartment, I invite you to a potluck picnic this Sunday at 12:00 PM at Laurentides Park. Everyone brings a dish to share!",
+    "qEn": "What does the host ask guests to do?",
+    "optEn": [
+      "Bring housewarming gifts",
+      "Book their tickets in advance",
+      "Arrive after 3:00 PM",
+      "Bring food to share"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 8,
+    "level": "A2",
+    "docType": "Offre d'emploi",
+    "text": "RECRUTEMENT : Librairie du Centre recherche un conseiller de vente dynamique à temps partiel (20h/semaine). Expérience en commerce souhaitée. Envoyez votre CV avant le 30 mai.",
+    "q": "Quel profil de poste est proposé dans cette annonce ?",
+    "opt": [
+      "Un poste de conseiller de vente à temps partiel",
+      "Un poste de comptable à temps plein",
+      "Un stage non rémunéré de gestion",
+      "Un poste de responsable informatique"
+    ],
+    "ans": 0,
+    "passEn": "JOB OFFER: Downtown Bookstore is hiring a dynamic part-time sales advisor (20h/week). Retail experience preferred. Send your CV before May 30.",
+    "qEn": "What job position is offered in this announcement?",
+    "optEn": [
+      "A part-time sales advisor position",
+      "A full-time accountant position",
+      "An unpaid management internship",
+      "An IT manager position"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 9,
+    "level": "A2",
+    "docType": "Petite annonce immobilière",
+    "text": "À LOUER : Bel appartement 2 pièces meublé de 45 m², lumineux et entièrement rénové, situé à 5 minutes à pied du métro. Loyer : 850 €/mois charges comprises. Disponible immédiatement.",
+    "q": "Quel est l'avantage principal de cet appartement mentionné dans l'annonce ?",
+    "opt": [
+      "Il comprend un grand garage fermé",
+      "Le loyer inclut les repas quotidiens",
+      "Il est meublé, rénové et proche du métro",
+      "Il se situe au dernier étage d'une tour"
+    ],
+    "ans": 2,
+    "passEn": "FOR RENT: Beautiful furnished 2-room apartment of 45 sqm, bright and fully renovated, located 5 minutes walk from the metro. Rent: €850/month utilities included. Available immediately.",
+    "qEn": "What main advantage of this apartment is mentioned in the ad?",
+    "optEn": [
+      "It includes a large closed garage",
+      "The rent includes daily meals",
+      "It is furnished, renovated, and near the metro",
+      "It is located on the top floor of a tower"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 10,
+    "level": "A2",
+    "docType": "Note de service interne",
+    "text": "NOTE DU PERSONNEL : À partir du 1er juillet, l'accès au parking souterrain de l'entreprise se fera exclusivement par badge magnétique individualisé. Merci de retirer votre badge à l'accueil.",
+    "q": "Quelle nouvelle règle entre en vigueur au parking d'entreprise ?",
+    "opt": [
+      "Le parking devient payant pour tous",
+      "Les places sont désormais attribuées au hasard",
+      "Le parking sera fermé pendant tout le mois de juillet",
+      "L'accès se fera uniquement par badge magnétique"
+    ],
+    "ans": 3,
+    "passEn": "STAFF NOTICE: Starting July 1st, access to the company underground parking lot will strictly require an individual magnetic badge. Please pick up your badge at reception.",
+    "qEn": "What new rule takes effect in the company parking lot?",
+    "optEn": [
+      "Parking will become paid for everyone",
+      "Spaces are now assigned randomly",
+      "The parking lot will be closed for the entire month of July",
+      "Access will strictly require a magnetic badge"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 11,
+    "level": "B1",
+    "docType": "Dépliant touristique",
+    "text": "CIRCUIT HISTORIQUE : Découvrez le vieux quartier lors d'une visite guidée de 2 heures animée par un historien passionné. Réservation obligatoire en ligne 24h avant le départ. Tarif adulte : 15 €.",
+    "q": "Quelle condition est indispensable pour participer à la visite guidée ?",
+    "opt": [
+      "Réserver sa place en ligne 24 heures à l'avance",
+      "Être membre d'une association locale",
+      "Venir équipé de chaussures de randonnée pro",
+      "Acheter un livre d'histoire sur place"
+    ],
+    "ans": 0,
+    "passEn": "HISTORICAL TOUR: Discover the old district during a 2-hour guided walking tour led by a passionate historian. Online booking mandatory 24h before departure. Adult fare: €15.",
+    "qEn": "What condition is mandatory to participate in the guided tour?",
+    "optEn": [
+      "Book your spot online 24 hours in advance",
+      "Be a member of a local association",
+      "Wear professional hiking boots",
+      "Purchase a history book on site"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 12,
+    "level": "B1",
+    "docType": "Menu de restaurant",
+    "text": "RESTAURANT L'ARDOISE : Notre chef propose chaque jour une formule du midi préparée avec des produits locaux issus de l'agriculture biologique. Menu entrée + plat + dessert à 22 €, du lundi au vendredi.",
+    "q": "Qu'est-ce qui caractérise la formule du midi de ce restaurant ?",
+    "opt": [
+      "Elle est servie uniquement le week-end",
+      "Elle comprend une boisson alcoolisée gratuite",
+      "Elle est élaborée avec des produits locaux biologiques",
+      "Elle nécessite une réservation deux semaines plus tôt"
+    ],
+    "ans": 2,
+    "passEn": "L'ARDOISE RESTAURANT: Every day our chef offers a lunch set menu prepared with local organic products. Starter + Main + Dessert for €22, Monday to Friday.",
+    "qEn": "What characterizes the lunch set menu at this restaurant?",
+    "optEn": [
+      "It is served only on weekends",
+      "It includes a complimentary alcoholic drink",
+      "It is prepared with local organic products",
+      "It requires reservations two weeks in advance"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 13,
+    "level": "B1",
+    "docType": "Courriel client",
+    "text": "Madame, Monsieur, nous accusons réception de votre commande N° 8492. En raison d'un réapprovisionnement de nos stocks, la livraison prévue initialement mardi aura un retard de 48 heures. Veuillez nous excuser.",
+    "q": "Quel est le motif de l'envoi de ce courriel ?",
+    "opt": [
+      "Une demande de règlement d'une facture impayée",
+      "La confirmation d'un remboursement d'article",
+      "L'invitation à donner son avis sur un achat",
+      "L'annonce d'un retard de livraison de 48 heures"
+    ],
+    "ans": 3,
+    "passEn": "Dear Customer, we acknowledge receipt of your order #8492. Due to stock replenishment, the delivery originally scheduled for Tuesday will be delayed by 48 hours. We apologize for the inconvenience.",
+    "qEn": "What is the reason for sending this email?",
+    "optEn": [
+      "A request to settle an unpaid invoice",
+      "Confirmation of an item refund",
+      "An invitation to review a recent purchase",
+      "An announcement of a 48-hour delivery delay"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 14,
+    "level": "B1",
+    "docType": "Avis de club sportif",
+    "text": "CLUB NAUTIQUE : En raison de conditions météorologiques très défavorables annoncées ce samedi (rafales de vent et fortes pluies), toutes les régates d'aviron sont reportées au weekend suivant.",
+    "q": "Pour quelle raison les régates sont-elles reportées ?",
+    "opt": [
+      "Des conditions météo défavorables",
+      "Un manque de participants inscrits",
+      "Des travaux de réfection du ponton",
+      "Une panne d'équipement du club"
+    ],
+    "ans": 0,
+    "passEn": "NAUTICAL CLUB: Due to severe weather forecasts announced for this Saturday (wind gusts and heavy rain), all rowing regattas are postponed to the following weekend.",
+    "qEn": "For what reason are the regattas postponed?",
+    "optEn": [
+      "Unfavorable weather conditions",
+      "A lack of registered participants",
+      "Dock renovation work",
+      "A club equipment failure"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 15,
+    "level": "B1",
+    "docType": "Programme d'excursion",
+    "text": "EXCURSION ÉCO-TOURISTIQUE : Journée d'observation de la faune marine au large de Saint-Malo. Le bateau quitte le port à 8h30 précises. Merci de prévoir un coupe-vent et des vêtements chauds.",
+    "q": "Recommandation donnée aux excursionnistes :",
+    "opt": [
+      "Emporter un maillot de bain et une serviette",
+      "Prévoir des vêtements chauds et un coupe-vent",
+      "Acheter du matériel de plongée sous-marine",
+      "Apporter son propre matériel de pêche"
+    ],
+    "ans": 1,
+    "passEn": "ECO-TOURISM EXCURSION: Day trip for marine wildlife observation off the coast of Saint-Malo. The boat leaves the harbor at 8:30 AM sharp. Please pack a windbreaker and warm clothing.",
+    "qEn": "Recommendation given to excursion participants:",
+    "optEn": [
+      "Bring a swimsuit and a towel",
+      "Pack warm clothing and a windbreaker",
+      "Buy scuba diving gear",
+      "Bring personal fishing tackle"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 16,
+    "level": "B1",
+    "docType": "Règlement intérieur médiathèque",
+    "text": "MÉDIATHÈQUE MUNICIPALE : Le silence doit être respecté dans les espaces de travail individuel. Les appels téléphoniques sont strictement interdits en dehors du hall d'accueil principal.",
+    "q": "Où les usagers sont-ils autorisés à utiliser leur téléphone portable ?",
+    "opt": [
+      "Dans toutes les salles de lecture",
+      "Au sein de l'espace de travail individuel",
+      "Uniquement dans le hall d'accueil principal",
+      "Dans la zone des archives réservée au personnel"
+    ],
+    "ans": 2,
+    "passEn": "MUNICIPAL MEDIA LIBRARY: Silence must be observed in individual study areas. Phone calls are strictly prohibited outside the main reception lobby.",
+    "qEn": "Where are users allowed to use their mobile phones?",
+    "optEn": [
+      "In all reading rooms",
+      "Inside the individual study area",
+      "Only in the main reception lobby",
+      "In the staff-only archive zone"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 17,
+    "level": "B1",
+    "docType": "Article de presse régionale",
+    "text": "MOBILITÉ DOUCE : La ville de Nantes inaugure 15 kilomètres de nouvelles pistes cyclables sécurisées reliant le centre-ville aux zones résidentielles de la périphérie afin de favoriser les déplacements écologiques.",
+    "q": "Quel est l'objectif principal de ce projet d'aménagement à Nantes ?",
+    "opt": [
+      "Augmenter le nombre de places de stationnement automobile",
+      "Créer une nouvelle ligne de bus express payante",
+      "Limiter la circulation des piétons dans le centre-ville",
+      "Encourager les déplacements écologiques à vélo"
+    ],
+    "ans": 3,
+    "passEn": "SUSTAINABLE MOBILITY: The city of Nantes inaugurates 15 kilometers of new protected bike lanes connecting downtown to suburban residential areas to encourage eco-friendly travel.",
+    "qEn": "What is the main goal of this urban development project in Nantes?",
+    "optEn": [
+      "Increase the number of car parking spaces",
+      "Create a new toll express bus route",
+      "Restrict pedestrian traffic in the city center",
+      "Encourage eco-friendly bicycle travel"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 18,
+    "level": "B1",
+    "docType": "Bulletin d'information associative",
+    "text": "ASSOCIATION SOLIDARITÉ LOGEMENT : Notre collecte annuelle de vêtements d'hiver se déroulera du 10 au 20 novembre. Les dons peuvent être déposés au local associatif chaque après-midi entre 14h et 18h.",
+    "q": "Comment les citoyens peuvent-ils contribuer à cette action solidaire ?",
+    "opt": [
+      "En déposant des vêtements d'hiver au local associatif",
+      "En effectuant un virement bancaire mensuel",
+      "En devenant bénévole à plein temps durant l'été",
+      "En organisant une braderie commerciale privée"
+    ],
+    "ans": 0,
+    "passEn": "HOUSING SOLIDARITY ASSOCIATION: Our annual winter clothing drive will take place from November 10 to 20. Donations can be dropped off at the community center every afternoon between 2:00 PM and 6:00 PM.",
+    "qEn": "How can citizens contribute to this solidarity drive?",
+    "optEn": [
+      "By dropping off winter clothes at the community center",
+      "By making a monthly bank transfer",
+      "By becoming a full-time summer volunteer",
+      "By organizing a private commercial sale"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 19,
+    "level": "B1",
+    "docType": "Avis de perturbation des transports",
+    "text": "RÉSEAU EXPRESS RÉGIONAL : En raison de travaux de modernisation des voies ferrées, la ligne B sera interrompue entre Gare du Nord et Aéroport ce samedi toute la journée. Des bus de substitution sont mis en place.",
+    "q": "Quelle solution alternative est offerte aux voyageurs ce samedi ?",
+    "opt": [
+      "Des billets de train gratuits pour le dimanche",
+      "Des bus de substitution mis en service",
+      "Des réductions sur les tarifs de taxi",
+      "Le remboursement automatique de tous les abonnements"
+    ],
+    "ans": 1,
+    "passEn": "REGIONAL EXPRESS NETWORK: Due to railway line modernization works, Line B will be suspended between Gare du Nord and Airport all day this Saturday. Replacement bus services are established.",
+    "qEn": "What alternative solution is provided to travelers this Saturday?",
+    "optEn": [
+      "Free train tickets for Sunday",
+      "Replacement bus services put into operation",
+      "Discounts on taxi fares",
+      "Automatic refunds on all transit passes"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 20,
+    "level": "B2",
+    "docType": "Article sur le développement durable",
+    "text": "ÉCONOMIE CIRCULAIRE ET INDUSTRIE : La transition vers un modèle de production circulaire ne relève plus du simple engagement environnemental volontaire, mais s'impose désormais comme une nécessité stratégique majeure. En réintégrant les déchets de production dans les cycles industriels, les entreprises réduisent leur dépendance aux matières premières importées tout en maîtrisant leurs coûts opérationnels à long terme.",
+    "q": "Selon l'auteur, quel avantage stratégique l'économie circulaire offre-t-elle aux entreprises ?",
+    "opt": [
+      "Une diminution drastique des impôts sur le revenu des salariés",
+      "La suppression totale de toute réglementation environnementale",
+      "Une réduction de la dépendance aux matières premières importées",
+      "L'accès immédiat à des marchés d'exportation sans concurrence"
+    ],
+    "ans": 2,
+    "passEn": "CIRCULAR ECONOMY AND INDUSTRY: The shift toward a circular production model is no longer merely a matter of voluntary environmental commitment, but now stands as a major strategic necessity. By reintroducing manufacturing waste back into industrial cycles, companies reduce their dependency on imported raw materials while controlling their long-term operating costs.",
+    "qEn": "According to the author, what strategic advantage does the circular economy offer to companies?",
+    "optEn": [
+      "A drastic reduction in employee income taxes",
+      "The complete elimination of environmental regulations",
+      "A reduced dependency on imported raw materials",
+      "Immediate access to export markets without competition"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 21,
+    "level": "B2",
+    "docType": "Synthèse sur le télétravail",
+    "text": "MUTATIONS DE L'ORGANISATION DU TRAVAIL : L'adoption généralisée du travail hybride a profondément redéfini les rapports entre employeurs et salariés. Si la flexibilité horaire favorise indiscutablement l'équilibre entre vie professionnelle et vie personnelle, des sociologues soulignent le risque d'isolement social et l'estompement des frontières temporelles entre travail et repos.",
+    "q": "Quelle réserve importante est exprimée quant à la généralisation du travail hybride ?",
+    "opt": [
+      "Une baisse systématique des salaires des télétravailleurs",
+      "L'incapacité technique d'utiliser les outils informatiques",
+      "L'obligation légale de déménager en zone rurale",
+      "Le risque d'isolement social et le flou des frontières temporelles"
+    ],
+    "ans": 3,
+    "passEn": "TRANSFORMATIONS IN WORK ORGANIZATION: The widespread adoption of hybrid work has deeply redefined relationships between employers and staff. While flexible hours undeniably support work-life balance, sociologists highlight the risk of social isolation and the blurring of temporal boundaries between work and rest.",
+    "qEn": "What major reservation is expressed regarding the widespread use of hybrid work?",
+    "optEn": [
+      "A systematic reduction in telecommuters' salaries",
+      "A technical inability to use digital software tools",
+      "A legal obligation to relocate to rural areas",
+      "The risk of social isolation and blurred temporal boundaries"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 22,
+    "level": "B2",
+    "docType": "Tribune sur le système éducatif",
+    "text": "PÉDAGOGIE NUMÉRIQUE : L'intégration des outils technologiques en classe suscite d'intenses débats au sein du corps enseignant. Loin de remplacer l'accompagnement humain de l'enseignant, le numérique doit être appréhendé comme un vecteur d'individualisation des apprentissages capable de soutenir les élèves en difficulté.",
+    "q": "Comment le numérique éducatif doit-il être perçu selon cette tribune ?",
+    "opt": [
+      "Comme un moyen d'individualiser l'apprentissage sans remplacer l'humain",
+      "Comme un substitut définitif au rôle de l'enseignant",
+      "Comme une source inévitable d'échec scolaire généralisé",
+      "Comme un gadget coûteux réservé aux écoles privées"
+    ],
+    "ans": 0,
+    "passEn": "DIGITAL PEDAGOGY: Integrating tech tools in classrooms generates intense debate among educators. Far from replacing human teacher guidance, digital tools should be viewed as a medium for personalizing learning capable of supporting struggling students.",
+    "qEn": "How should educational technology be perceived according to this op-ed?",
+    "optEn": [
+      "As a means to personalize learning without replacing humans",
+      "As a permanent substitute for the teacher's role",
+      "As an inevitable source of widespread academic failure",
+      "As an expensive gimmick reserved exclusively for private schools"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 23,
+    "level": "B2",
+    "docType": "Article sur le patrimoine culturel",
+    "text": "PRÉSERVATION PATRIMONIALE : La numérisation en trois dimensions des monuments historiques ne constitue pas seulement une prouesse technologique, elle garantit également la sauvegarde virtuelle d'édifices menacés par l'usure du temps et le changement climatique, tout en rendant le patrimoine accessible aux chercheurs du monde entier.",
+    "q": "Quel double bénéfice la numérisation 3D apporte-t-elle au patrimoine ?",
+    "opt": [
+      "La baisse des tarifs d'entrée et l'augmentation des ventes en boutique",
+      "La sauvegarde virtuelle d'édifices menacés et l'accès mondial pour les chercheurs",
+      "La reconstruction physique immédiate de tous les châteaux détruits",
+      "L'interdiction des visites touristiques réelles dans les monuments"
+    ],
+    "ans": 1,
+    "passEn": "HERITAGE PRESERVATION: 3D digitization of historical monuments is not merely a technological feat; it also guarantees the virtual preservation of structures threatened by time and climate change, while making heritage accessible to researchers worldwide.",
+    "qEn": "What dual benefit does 3D digitization bring to historical heritage?",
+    "optEn": [
+      "Lower admission fees and increased souvenir shop sales",
+      "Virtual preservation of threatened buildings and global research access",
+      "Immediate physical reconstruction of all destroyed castles",
+      "A total ban on physical tourist visits to historical sites"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 24,
+    "level": "B2",
+    "docType": "Chronique sur l'intelligence artificielle",
+    "text": "ÉTHIQUE ET ALGORITHMES : L'automatisation des décisions managériales par des algorithmes d'apprentissage profond soulève de délicates questions de responsabilité juridique. Faute de transparence dans le fonctionnement des réseaux de neurones, il devient complexe de détecter et de corriger les biais discriminatoires involontairement reproduits par les machines.",
+    "q": "Quel problème majeur découle du manque de transparence algorithmique ?",
+    "opt": [
+      "La hausse immédiate des coûts d'énergie informatique",
+      "La difficulté de détecter et corriger les biais discriminatoires",
+      "L'interdiction légale d'employer des ingénieurs informaticiens",
+      "La perte définitive de toutes les données d'entreprise"
+    ],
+    "ans": 1,
+    "passEn": "ETHICS AND ALGORITHMS: Automating managerial decisions using deep learning algorithms raises delicate legal accountability questions. Without transparency in neural network operations, detecting and correcting discriminatory biases accidentally reproduced by machines becomes complex.",
+    "qEn": "What major problem arises from the lack of algorithmic transparency?",
+    "optEn": [
+      "An immediate surge in computing energy costs",
+      "Difficulty in detecting and correcting discriminatory biases",
+      "A legal ban on employing software engineers",
+      "Permanent loss of all corporate business data"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 25,
+    "level": "B2",
+    "docType": "Étude sur l'urbanisme écocitoyen",
+    "text": "AMÉNAGEMENT URBAIN ET BIODIVERSITÉ : La réintroduction de trames vertes au cœur des métropoles contribue directement à la réduction des îlots de chaleur urbains. Au-delà de l'amélioration de la qualité de l'air, cette végétalisation raisonnée recrée des corridors biologiques indispensables au maintien de la faune locale.",
+    "q": "Quel impact positif la végétalisation urbaine a-t-elle sur les villes ?",
+    "opt": [
+      "L'interdiction totale de la circulation des véhicules à moteur",
+      "L'obligation pour les citoyens de cultiver leurs propres légumes",
+      "La réduction des îlots de chaleur et le maintien de la faune locale",
+      "La suppression des taxes d'habitation dans les zones vertes"
+    ],
+    "ans": 2,
+    "passEn": "URBAN PLANNING AND BIODIVERSITY: Reintroducing green corridors in city centers directly contributes to reducing urban heat island effects. Beyond improving air quality, reasoned urban greening recreates biological corridors essential for sustaining local wildlife.",
+    "qEn": "What positive impact does urban greening have on cities?",
+    "optEn": [
+      "A total ban on motorized vehicle traffic",
+      "An obligation for citizens to grow their own vegetables",
+      "Reducing heat island effects and supporting local wildlife",
+      "The elimination of residential property taxes in green zones"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 26,
+    "level": "B2",
+    "docType": "Analyse de la mobilité professionnelle",
+    "text": "RECONVERSION PROFESSIONNELLE : L'évolution rapide des besoins du marché du travail incite un nombre croissant d'actifs à s'engager dans des parcours de formation continue tout au long de leur carrière. Cette dynamique exige toutefois des dispositifs d'accompagnement financier plus souples pour sécuriser ces transitions.",
+    "q": "Selon l'étude, que nécessite la réussite des reconversions professionnelles ?",
+    "opt": [
+      "Une baisse systématique des critères de qualification",
+      "L'obligation de changer d'entreprise tous les trois ans",
+      "Le blocage des départs en retraite anticipée",
+      "Des dispositifs d'accompagnement financier plus souples"
+    ],
+    "ans": 3,
+    "passEn": "CAREER TRANSITION: Rapid shifts in labor market needs encourage an increasing number of workers to engage in lifelong continuing education. However, this dynamic requires more flexible financial support mechanisms to secure these career transitions.",
+    "qEn": "According to the study, what is required for successful career transitions?",
+    "optEn": [
+      "A systematic lowering of qualification standards",
+      "A mandatory requirement to change companies every three years",
+      "A freeze on early retirement options",
+      "More flexible financial support mechanisms"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 27,
+    "level": "B2",
+    "docType": "Article sur l'engagement citoyen",
+    "text": "ENGAGEMENT ASSOCIATIF DE LA JEUNESSE : Les jeunes générations ne se détournent pas de la vie citoyenne, mais privilégient désormais des formes d'action plus ponctuelles et thématiques au détriment des structures militantes traditionnelles aux engagements d'une vie.",
+    "q": "Comment l'engagement citoyen des jeunes a-t-il évolué ?",
+    "opt": [
+      "Il s'oriente vers des actions thématiques plus ponctuelles",
+      "Il s'est traduit par un désintérêt total pour toute cause sociale",
+      "Il s'exprime exclusivement par le vote aux élections municipales",
+      "Il exige l'adhésion obligatoire à des partis politiques classiques"
+    ],
+    "ans": 0,
+    "passEn": "YOUTH CIVIC ENGAGEMENT: Younger generations are not turning away from civic life; instead, they favor more targeted, project-based actions over traditional lifelong political membership structures.",
+    "qEn": "How has youth civic engagement evolved?",
+    "optEn": [
+      "It favors more targeted, project-based actions",
+      "It has resulted in complete apathy toward social causes",
+      "It is expressed exclusively through voting in municipal elections",
+      "It requires mandatory membership in traditional political parties"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 28,
+    "level": "B2",
+    "docType": "Bilan sur la transition énergétique",
+    "text": "ÉNERGIES RENOUVELABLES ET ENJEUX : Si le développement des énergies solaire et éolienne a progressé de manière spectaculaire, la question du stockage massif de l'électricité intermittente demeure le verrou technologique essentiel à lever pour assurer la stabilité des réseaux nationaux.",
+    "q": "Quel est l'obstacle principal au déploiement complet des énergies renouvelables ?",
+    "opt": [
+      "Le refus généralisé des consommateurs d'utiliser l'électricité",
+      "Le problème du stockage massif de l'électricité intermittente",
+      "L'épuisement définitif des ressources en silicium mondial",
+      "L'interdiction gouvernementale d'installer des panneaux solaires"
+    ],
+    "ans": 1,
+    "passEn": "RENEWABLE ENERGY OVERVIEW: While solar and wind energy expansion has progressed spectacularly, the challenge of mass energy storage for intermittent power remains the essential technological bottleneck to solve for grid stability.",
+    "qEn": "What is the main obstacle to the full deployment of renewable energy?",
+    "optEn": [
+      "Widespread consumer refusal to use electricity",
+      "Mass energy storage for intermittent power",
+      "The total global exhaustion of silicon raw materials",
+      "Government bans on residential solar panel installations"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 29,
+    "level": "B2",
+    "docType": "Lettre de réclamation administrative",
+    "text": "RECOURS ADMINISTRATIF : À la suite de la modification unilatérale des horaires de desserte ferroviaire de notre commune sans concertation préalable, l'association des usagers exige le rétablissement immédiat des trains du matin afin d'éviter d'impacter l'activité économique locale.",
+    "q": "Quelle est la revendication principale exprimée dans ce recours ?",
+    "opt": [
+      "La fermeture définitive de la gare ferroviaire locale",
+      "La gratuité totale des transports pour tous les habitants",
+      "Le rétablissement immédiat des trains du matin supprimés",
+      "La privatisation immédiate de la compagnie de chemin de fer"
+    ],
+    "ans": 2,
+    "passEn": "ADMINISTRATIVE APPEAL: Following the unilateral modification of local train schedules without prior consultation, the commuters' association demands the immediate restoration of morning trains to avoid disrupting the local economy.",
+    "qEn": "What is the primary demand expressed in this administrative appeal?",
+    "optEn": [
+      "The permanent closure of the local train station",
+      "Free public transport for all local residents",
+      "The immediate restoration of cancelled morning train services",
+      "The immediate privatization of the national rail company"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 30,
+    "level": "C1",
+    "docType": "Éditorial socio-économique",
+    "text": "CRITIQUE DE LA CONSOMMATION OSTENTATOIRE : L'avènement des plateformes de seconde main, en apparence vertueux, dissimule une dérive perverse : loin d'enrayer l'hyperconsommation, la revente facilitée alimente un renouvellement frénétique des garde-robes en déculpabilisant l'acheteur et en occultant l'empreinte carbone globale du transport d'objets d'occasion.",
+    "q": "Quelle analyse paradoxale l'auteur dresse-t-il des plateformes de seconde main ?",
+    "opt": [
+      "Elles ruinent définitivement les enseignes du luxe traditionnel",
+      "Elles éliminent totalement la pollution liée aux transports internationaux",
+      "Elles obligent les consommateurs à fabriquer leurs propres vêtements",
+      "Elles encouragent l'hyperconsommation en déculpabilisant les acheteurs"
+    ],
+    "ans": 3,
+    "passEn": "CRITIQUE OF CONSPICUOUS CONSUMPTION: The rise of second-hand retail platforms, seemingly virtuous, conceals a paradoxical flaw: far from curbing hyper-consumption, easy reselling encourages rapid wardrobe turnover by alleviating consumer guilt while obscuring the global carbon footprint of shipping pre-owned goods.",
+    "qEn": "What paradoxical analysis does the author present regarding second-hand platforms?",
+    "optEn": [
+      "They permanently bankrupt traditional luxury brands",
+      "They completely eliminate pollution caused by international shipping",
+      "They force consumers to manufacture their own clothing",
+      "They encourage hyper-consumption by alleviating consumer guilt"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 31,
+    "level": "C1",
+    "docType": "Essai sur la diversité linguistique",
+    "text": "PLURICENTRISME LINGUISTIQUE : Envisager la francophonie à travers le prisme d'une norme unique et centralisée constitue un anachronisme conceptuel. La vitalité du français réside précisément dans la diversité de ses expressions régionales et de ses créations néologiques issues des Amériques, d'Afrique et d'Europe, qui enrichissent la langue sans entamer son intelligibilité.",
+    "q": "Quelle conception de la langue française l'auteur défend-il ?",
+    "opt": [
+      "Une langue pluricentrique enrichie par ses variétés régionales",
+      "Une norme rigide et exclusivement fixée par les académies traditionnelles",
+      "L'abandon complet de toute règle grammaticale au profit du dialecte",
+      "L'adoption immédiate de l'anglais comme langue administrative unique"
+    ],
+    "ans": 0,
+    "passEn": "LINGUISTIC PLURICENTRISM: Viewing the Francophonie through the lens of a single centralized norm is a conceptual anachronism. The vitality of French resides precisely in the diversity of its regional expressions and neologisms from the Americas, Africa, and Europe, which enrich the language without diminishing mutual intelligibility.",
+    "qEn": "What view of the French language does the author champion?",
+    "optEn": [
+      "A pluricentric language enriched by its diverse regional varieties",
+      "A rigid norm strictly dictated by classical traditional academies",
+      "A complete abandonment of grammar rules in favor of local dialects",
+      "Immediate adoption of English as the sole administrative language"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 32,
+    "level": "C1",
+    "docType": "Analyse critique sur la vulgarisation",
+    "text": "VULGARISATION SCIENTIFIQUE ET MÉDIAS : Simplifier le discours scientifique sans le dénaturer relève d'un équilibre précaire. À vouloir bannir tout jargon technique pour séduire un large public, certains médias sombrent dans un sensationnalisme réducteur qui déforme la démarche empirique et suscite une méfiance injustifiée envers la recherche.",
+    "q": "Quel écueil majeur la vulgarisation médiatique excessive risque-t-elle de provoquer ?",
+    "opt": [
+      "Un désintérêt total des étudiants pour les diplômes universitaires",
+      "Une déformation sensationnaliste qui altère la compréhension de la science",
+      "Une hausse incontrôlée des coûts des équipements de laboratoire",
+      "L'interdiction absolue d'effectuer des recherches expérimentales"
+    ],
+    "ans": 1,
+    "passEn": "SCIENTIFIC POPULARIZATION AND MEDIA: Simplifying scientific discourse without diluting it is a delicate balance. In striving to eliminate all technical jargon to appeal to broad audiences, certain media outlets fall into reductive sensationalism that distorts empirical methodology and breeds unwarranted distrust in research.",
+    "qEn": "What major pitfall does excessive media popularization risk creating?",
+    "optEn": [
+      "Total student apathy toward pursuing university degrees",
+      "Reductive sensationalism that distorts scientific understanding",
+      "An uncontrolled surge in laboratory equipment costs",
+      "An absolute prohibition on performing experimental research"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 33,
+    "level": "C1",
+    "docType": "Étude patrimoniale et architecturale",
+    "text": "RECONVERSIONS ARCHITECTURALES : Réhabiliter des friches industrielles en centres culturels représente une démarche urbaine audacieuse. En préservant les structures métalliques historiques tout en y insérant des volumes contemporains, les architectes réussissent le pari de maintenir la mémoire ouvrière des lieux tout en inscrivant le quartier dans la modernité.",
+    "q": "Comment la réhabilitation des friches industrielles concilie-t-elle passé et présent ?",
+    "opt": [
+      "En détruisant entièrement les bâtiments anciens pour construire du neuf",
+      "En transformant tous les espaces industriels en parcs d'attractions",
+      "En préservant la mémoire ouvrière tout en intégrant des volumes modernes",
+      "En réservant l'accès de ces quartiers aux seuls historiens diplômés"
+    ],
+    "ans": 2,
+    "passEn": "ARCHITECTURAL REPURPOSING: Reclaiming brownfield industrial sites into cultural centers is a bold urban strategy. By preserving historical steel frameworks while introducing contemporary architectural elements, architects successfully maintain the working-class heritage while embedding the neighborhood in modernity.",
+    "qEn": "How does industrial site rehabilitation reconcile past and present?",
+    "optEn": [
+      "By completely demolishing historic structures to build new ones",
+      "By converting all industrial sites into commercial amusement parks",
+      "By preserving working-class memory while integrating modern architectural volumes",
+      "By restricting neighborhood access exclusively to certified historians"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 34,
+    "level": "C1",
+    "docType": "Réflexion prospective sur le numérique",
+    "text": "SOUVERAINETÉ NUMÉRIQUE ET LIBERTÉS : La dépendance technologique des États envers des monopoles logiciels étrangers pose une menace directe pour leur autonomie stratégique. Sans la maîtrise nationale des infrastructures d'hébergement de données massives, la protection de la vie privée des citoyens et le secret des délibérations publiques deviennent hautement vulnérables.",
+    "q": "Pourquoi l'autonomie stratégique des États est-elle menacée selon l'auteur ?",
+    "opt": [
+      "En raison du manque d'intérêt des citoyens pour les outils informatiques",
+      "À cause de la fermeture définitive des frontières commerciales",
+      "Parce que le stockage de données est devenu techniquement impossible",
+      "Du fait de la dépendance envers des monopoles informatiques étrangers"
+    ],
+    "ans": 3,
+    "passEn": "DIGITAL SOVEREIGNTY AND FREEDOMS: State technological dependency on foreign software monopolies poses a direct threat to strategic autonomy. Without national control over data hosting infrastructure, protecting citizen privacy and confidentiality of public governance becomes highly vulnerable.",
+    "qEn": "Why is state strategic autonomy threatened according to the author?",
+    "optEn": [
+      "Due to citizen disinterest in using digital software tools",
+      "Owing to the permanent closure of international trade borders",
+      "Because data storage has become technically impossible",
+      "Because of reliance on foreign software monopolies"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 35,
+    "level": "C1",
+    "docType": "Essai critique sur la littérature",
+    "text": "L'HERMÉNEUTIQUE DU ROMAN MODERNISTE : L'émergence des narrateurs peu fiables dans la fiction contemporaine contraint le lecteur à abandonner sa posture de récepteur passif. En le confrontant à des récits fragmentés et à des vérités contradictoires, l'auteur moderne transforme la lecture en un acte d'investigation critique exigeant et créateur de sens.",
+    "q": "Quel rôle le roman moderniste assigne-t-il au lecteur ?",
+    "opt": [
+      "Celui d'un enquêteur critique participant activement à la création de sens",
+      "Celui d'un observateur passif devant accepter le récit sans contester",
+      "Celui d'un correcteur orthographique chargé d'annoter le manuscrit",
+      "Celui d'un censeur moral évaluant la conduite des personnages"
+    ],
+    "ans": 0,
+    "passEn": "HERMENEUTICS OF THE MODERNIST NOVEL: The rise of unreliable narrators in contemporary fiction forces readers to abandon passive consumption. By confronting them with fragmented narratives and contradictory truths, modern authors transform reading into an active, demanding act of critical investigation that constructs meaning.",
+    "qEn": "What role does the modernist novel assign to the reader?",
+    "optEn": [
+      "A critical investigator actively participating in constructing meaning",
+      "A passive consumer required to accept the story uncritically",
+      "A proofreader tasked with annotating manuscript grammar errors",
+      "A moral censor evaluating the ethical conduct of fictional characters"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 36,
+    "level": "C2",
+    "docType": "Chronique philosophique sur le temps",
+    "text": "TEMPORALITÉ ET MÉMOIRE COLLECTIVE : La commodification du temps dans nos sociétés post-industrielles a érodé la capacité communautaire à s'inscrire dans une mémoire sédimentée. Réduits à une succession d'instants fugaces et immédiatement consommables, les événements historiques perdent leur profondeur symbolique pour s'abîmer dans le spectacle éphémère de l'actualité continue.",
+    "q": "Quelle thèse centrale l'auteur soutient-il sur la perception moderne du temps ?",
+    "opt": [
+      "La mémoire collective s'est renforcée grâce à la vitesse des moyens de communication",
+      "La commodification du temps érode la profondeur symbolique de la mémoire collective",
+      "L'histoire est désormais enseignée avec une précision scientifique inégalée",
+      "La succession d'instants permet de supprimer toutes les crises politiques"
+    ],
+    "ans": 1,
+    "passEn": "TEMPORALITY AND COLLECTIVE MEMORY: The commodification of time in post-industrial societies has eroded community capacity to ground itself in cumulative memory. Reduced to a sequence of fleeting, instantly consumable moments, historical events lose their symbolic depth, dissolving into the ephemeral spectacle of 24-hour news.",
+    "qEn": "What central thesis does the author maintain regarding the modern perception of time?",
+    "optEn": [
+      "Collective memory has strengthened thanks to fast communication tools",
+      "The commodification of time erodes the symbolic depth of collective memory",
+      "History is now taught with unprecedented scientific precision",
+      "The sequence of instant moments permanently eliminates political crises"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 37,
+    "level": "C2",
+    "docType": "Essai épistémologique sur la modernité",
+    "text": "DIALECTIQUE DE LA RATIONALITÉ INSTRUMENTALE : En érigeant la seule efficacité technologique en critère suprême de vérité, la rationalité moderne a progressivement occulté la question fondamentale des fins éthiques. Ce primat de la mesure et du rendement menace de transformer l'être humain de sujet conscient en simple variable d'ajustement des systèmes complexes.",
+    "q": "Quel danger consubstantiel à la rationalité instrumentale est dénoncé ?",
+    "opt": [
+      "La hausse incontrôlée du coût de la recherche fondamentale",
+      "La disparition irréversible de toute forme de production industrielle",
+      "La réduction de l'être humain à une simple variable d'ajustement du système",
+      "L'impossibilité de calculer scientifiquement les rendements énergétiques"
+    ],
+    "ans": 2,
+    "passEn": "DIALECTICS OF INSTRUMENTAL RATIONALITY: By raising technological efficiency as the sole criterion of truth, modern rationality has progressively obscured the fundamental question of ethical purpose. This primacy of metrics and yield risks reducing human beings from conscious agents to mere adjustment variables in complex systems.",
+    "qEn": "What inherent danger of instrumental rationality is denounced?",
+    "optEn": [
+      "An uncontrolled surge in fundamental academic research costs",
+      "The irreversible collapse of all industrial manufacturing",
+      "Reducing human beings to mere adjustment variables within the system",
+      "The technical impossibility of scientifically measuring energy yields"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 38,
+    "level": "C2",
+    "docType": "Réflexion philosophique sur l'esthétique",
+    "text": "AUTONOMIE ARTISTIQUE ET MARCHÉ : La marchandisation de l'art contemporain sous l'égide de la spéculation financière mondiale opère une véritable métamorphose ontologique de l'œuvre. Extraite de sa sphère de contemplation poétique et de subversion critique, la création se trouve réifiée en actif financier négociable, vidé de son potentiel de négativité emancipatrice.",
+    "q": "Comment la spéculation financière altère-t-elle le statut de l'œuvre d'art ?",
+    "opt": [
+      "En la rendant accessible gratuitement à l'ensemble du corps social",
+      "En exigeant que chaque artiste possède un diplôme de gestion bancaire",
+      "En interdisant l'exposition des peintures dans les galeries privées",
+      "En la réifiant en actif financier vidé de sa portée critique emancipatrice"
+    ],
+    "ans": 3,
+    "passEn": "ARTISTIC AUTONOMY AND MARKETS: The commercialization of contemporary art under global financial speculation performs an ontological metamorphosis on artwork. Extracted from its sphere of poetic contemplation and critical subversion, artistic creation is reified into a negotiable financial asset, stripped of its emancipatory potential.",
+    "qEn": "How does financial speculation alter the status of artwork?",
+    "optEn": [
+      "By making it freely available to the entire public",
+      "By requiring every artist to hold a formal degree in banking management",
+      "By banning the display of paintings in private art galleries",
+      "By reifying it into a financial asset stripped of critical emancipatory power"
+    ]
+  },
+  {
+    "paperNum": 1,
+    "qNum": 39,
+    "level": "C2",
+    "docType": "Extrait d'anthropologie philosophique",
+    "text": "SYMBOLISME ET CONDITION HUMAINE : L'aptitude humaine à sécréter du sens au moyen de formes symboliques ne constitue pas un luxe superflu de la culture, mais l'armature même de notre présence au monde. C'est à travers l'armature du langage et du mythe que l'homme parvient à conjurer l'angoisse du néant et à structurer un univers d'intersubjectivité éthique.",
+    "q": "Quelle fonction essentielle l'auteur attribue-t-il à l'activité symbolique humaine ?",
+    "opt": [
+      "L'armature fondamentale structurant notre présence et conjurant le néant",
+      "Une activité secondaire réservée aux périodes de loisirs créatifs",
+      "Une contrainte linguistique empêchant toute découverte scientifique",
+      "Un mécanisme biologique automatique visant la survie physique de l'espèce"
+    ],
+    "ans": 0,
+    "passEn": "SYMBOLISM AND THE HUMAN CONDITION: The human capacity to generate meaning through symbolic forms is not a superfluous cultural luxury, but the very framework of our presence in the world. It is through the scaffolding of language and myth that humans manage to ward off existential dread and structure a shared ethical universe.",
+    "qEn": "What essential function does the author attribute to human symbolic activity?",
+    "optEn": [
+      "The fundamental framework structuring existence and warding off dread",
+      "A secondary activity reserved strictly for leisure time",
+      "A linguistic barrier preventing scientific discovery",
+      "An automatic biological mechanism aimed purely at physical species survival"
+    ]
+  }
+],
   // ==================== 📄 PAPER 2 (39 UNIQUE ITEMS) ====================
   [
-    {
-      paperNum: 2,
-      qNum: 1,
-      level: "A1",
-      docType: "Panneau d'information",
-      text: "DOCUMENT PUBLIC (QUÉBEC) — HORAIRES DE MARCHÉ : fruits et légumes locaux au sein de la collectivité de Québec. Informations pratiques, conditions d'accès et horaires consultables auprès des services municipaux de Québec.",
-      q: "Quel est l'objet principal de ce document affiché à Québec ?",
-      opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant fruits et légumes locaux à Québec","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
-      ans: 1,
-      passEn: "Public Document (Quebec City) — Market Opening Hours: local fresh fruits and vegetables within the community of Quebec City. Practical details, access guidelines, and opening hours available from municipal administrative offices in Quebec City.",
-      qEn: "What is the primary purpose of this public document posted in Quebec City?",
-      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding local fresh fruits and vegetables in Quebec City","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
-    },
-    {
-      paperNum: 2,
-      qNum: 2,
-      level: "A1",
-      docType: "Avis municipal",
-      text: "DOCUMENT PUBLIC (QUÉBEC) — FERMETURE TEMPORAIRE DE PISCINE : travaux d'entretien des bassins au sein de la collectivité de Québec. Informations pratiques, conditions d'accès et horaires consultables auprès des services municipaux de Québec.",
-      q: "Quel est l'objet principal de ce document affiché à Québec ?",
-      opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant travaux d'entretien des bassins à Québec","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
-      ans: 1,
-      passEn: "Public Document (Quebec City) — Temporary Pool Closure: pool basin maintenance and cleaning within the community of Quebec City. Practical details, access guidelines, and opening hours available from municipal administrative offices in Quebec City.",
-      qEn: "What is the primary purpose of this public document posted in Quebec City?",
-      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding pool basin maintenance and cleaning in Quebec City","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
-    },
-    {
-      paperNum: 2,
-      qNum: 3,
-      level: "A1",
-      docType: "Message court (SMS)",
-      text: "DOCUMENT PUBLIC (QUÉBEC) — RENDEZ-VOUS À LA BIBLIOTHÈQUE : révision d'examen et prêt de livres au sein de la collectivité de Québec. Informations pratiques, conditions d'accès et horaires consultables auprès des services municipaux de Québec.",
-      q: "Quel est l'objet principal de ce document affiché à Québec ?",
-      opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant révision d'examen et prêt de livres à Québec","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
-      ans: 1,
-      passEn: "Public Document (Quebec City) — Library Study Meeting: exam revision and book lending within the community of Quebec City. Practical details, access guidelines, and opening hours available from municipal administrative offices in Quebec City.",
-      qEn: "What is the primary purpose of this public document posted in Quebec City?",
-      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding exam revision and book lending in Quebec City","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
-    },
-    {
-      paperNum: 2,
-      qNum: 4,
-      level: "A1",
-      docType: "Affiche promotionnelle",
-      text: "DOCUMENT PUBLIC (QUÉBEC) — BOULANGERIE ARTISANALE : viennoiseries offertes le matin au sein de la collectivité de Québec. Informations pratiques, conditions d'accès et horaires consultables auprès des services municipaux de Québec.",
-      q: "Quel est l'objet principal de ce document affiché à Québec ?",
-      opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant viennoiseries offertes le matin à Québec","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
-      ans: 1,
-      passEn: "Public Document (Quebec City) — Artisanal Bakery: complimentary morning pastries within the community of Quebec City. Practical details, access guidelines, and opening hours available from municipal administrative offices in Quebec City.",
-      qEn: "What is the primary purpose of this public document posted in Quebec City?",
-      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding complimentary morning pastries in Quebec City","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
-    },
-    {
-      paperNum: 2,
-      qNum: 5,
-      level: "A1",
-      docType: "Avis d'objet trouvé",
-      text: "DOCUMENT PUBLIC (QUÉBEC) — CLÉS TROUVÉES DANS LE MÉTRO : bureau des objets trouvés au sein de la collectivité de Québec. Informations pratiques, conditions d'accès et horaires consultables auprès des services municipaux de Québec.",
-      q: "Quel est l'objet principal de ce document affiché à Québec ?",
-      opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant bureau des objets trouvés à Québec","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
-      ans: 1,
-      passEn: "Public Document (Quebec City) — Keys Found in Subway: lost and found claims office within the community of Quebec City. Practical details, access guidelines, and opening hours available from municipal administrative offices in Quebec City.",
-      qEn: "What is the primary purpose of this public document posted in Quebec City?",
-      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding lost and found claims office in Quebec City","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
-    },
-    {
-      paperNum: 2,
-      qNum: 6,
-      level: "A1",
-      docType: "Annonce de vente de garage",
-      text: "DOCUMENT PUBLIC (QUÉBEC) — VENTE DE QUARTIER : vêtements et jouets d'occasion au parc au sein de la collectivité de Québec. Informations pratiques, conditions d'accès et horaires consultables auprès des services municipaux de Québec.",
-      q: "Quel est l'objet principal de ce document affiché à Québec ?",
-      opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant vêtements et jouets d'occasion au parc à Québec","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
-      ans: 1,
-      passEn: "Public Document (Quebec City) — Neighborhood Garage Sale: second-hand clothing and toys at the park within the community of Quebec City. Practical details, access guidelines, and opening hours available from municipal administrative offices in Quebec City.",
-      qEn: "What is the primary purpose of this public document posted in Quebec City?",
-      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding second-hand clothing and toys at the park in Quebec City","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
-    },
-    {
-      paperNum: 2,
-      qNum: 7,
-      level: "A1",
-      docType: "Invitation amicale",
-      text: "DOCUMENT PUBLIC (QUÉBEC) — PIQUE-NIQUE ASSOCIATIF : rencontre de début de saison au parc au sein de la collectivité de Québec. Informations pratiques, conditions d'accès et horaires consultables auprès des services municipaux de Québec.",
-      q: "Quel est l'objet principal de ce document affiché à Québec ?",
-      opt: ["L'annonce d'une fermeture administrative exceptionnelle","Des informations pratiques concernant rencontre de début de saison au parc à Québec","L'ouverture d'un nouveau complexe commercial privé","Une modification des tarifs de stationnement en centre-ville"],
-      ans: 1,
-      passEn: "Public Document (Quebec City) — Community Picnic: seasonal kickoff gathering at the park within the community of Quebec City. Practical details, access guidelines, and opening hours available from municipal administrative offices in Quebec City.",
-      qEn: "What is the primary purpose of this public document posted in Quebec City?",
-      optEn: ["An announcement of an exceptional administrative facility closure","Practical information regarding seasonal kickoff gathering at the park in Quebec City","The grand opening of a newly constructed private shopping mall","A modification of downtown parking meter payment rates"]
-    },
-    {
-      paperNum: 2,
-      qNum: 8,
-      level: "A2",
-      docType: "Offre d'emploi",
-      text: "COMMUNICATION LOCALE (QUÉBEC) — CONSEILLER DE VENTE EN LIBRAIRIE : temps partiel et accueil clientèle organisé par Desjardins à Québec. Les candidats et usagers intéressés sont invités à respecter les consignes officielles avant la date limite indiquée.",
-      q: "Quelle information essentielle est transmise dans cette communication de Québec ?",
-      opt: ["Une suppression des services de transport public","Les modalités et consignes concernant temps partiel et accueil clientèle à Québec","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
-      ans: 1,
-      passEn: "Local Announcement (Quebec City) — Bookstore Sales Advisor: part-time employment and customer service organized by Desjardins Group in Quebec City. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is communicated in this announcement from Quebec City?",
-      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning part-time employment and customer service in Quebec City","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
-    },
-    {
-      paperNum: 2,
-      qNum: 9,
-      level: "A2",
-      docType: "Petite annonce immobilière",
-      text: "COMMUNICATION LOCALE (QUÉBEC) — LOCATION D'APPARTEMENT : logement rénové proche transports organisé par Desjardins à Québec. Les candidats et usagers intéressés sont invités à respecter les consignes officielles avant la date limite indiquée.",
-      q: "Quelle information essentielle est transmise dans cette communication de Québec ?",
-      opt: ["Une suppression des services de transport public","Les modalités et consignes concernant logement rénové proche transports à Québec","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
-      ans: 1,
-      passEn: "Local Announcement (Quebec City) — Apartment Rental: renovated housing near transit organized by Desjardins Group in Quebec City. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is communicated in this announcement from Quebec City?",
-      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning renovated housing near transit in Quebec City","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
-    },
-    {
-      paperNum: 2,
-      qNum: 10,
-      level: "A2",
-      docType: "Note de service interne",
-      text: "COMMUNICATION LOCALE (QUÉBEC) — RÈGLEMENT DU PARKING D'ENTREPRISE : accès par badge magnétique organisé par Desjardins à Québec. Les candidats et usagers intéressés sont invités à respecter les consignes officielles avant la date limite indiquée.",
-      q: "Quelle information essentielle est transmise dans cette communication de Québec ?",
-      opt: ["Une suppression des services de transport public","Les modalités et consignes concernant accès par badge magnétique à Québec","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
-      ans: 1,
-      passEn: "Local Announcement (Quebec City) — Company Parking Lot Policy: magnetic badge access control organized by Desjardins Group in Quebec City. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is communicated in this announcement from Quebec City?",
-      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning magnetic badge access control in Quebec City","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
-    },
-    {
-      paperNum: 2,
-      qNum: 11,
-      level: "A2",
-      docType: "Dépliant touristique",
-      text: "COMMUNICATION LOCALE (QUÉBEC) — VISITE GUIDÉE HISTORIQUE : parcours pédestre avec guide certifié organisé par Desjardins à Québec. Les candidats et usagers intéressés sont invités à respecter les consignes officielles avant la date limite indiquée.",
-      q: "Quelle information essentielle est transmise dans cette communication de Québec ?",
-      opt: ["Une suppression des services de transport public","Les modalités et consignes concernant parcours pédestre avec guide certifié à Québec","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
-      ans: 1,
-      passEn: "Local Announcement (Quebec City) — Historical Guided Tour: walking itinerary with a certified guide organized by Desjardins Group in Quebec City. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is communicated in this announcement from Quebec City?",
-      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning walking itinerary with a certified guide in Quebec City","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
-    },
-    {
-      paperNum: 2,
-      qNum: 12,
-      level: "A2",
-      docType: "Menu de restaurant",
-      text: "COMMUNICATION LOCALE (QUÉBEC) — FORMULE MIDI DU CHEF : plat du jour et dessert maison organisé par Desjardins à Québec. Les candidats et usagers intéressés sont invités à respecter les consignes officielles avant la date limite indiquée.",
-      q: "Quelle information essentielle est transmise dans cette communication de Québec ?",
-      opt: ["Une suppression des services de transport public","Les modalités et consignes concernant plat du jour et dessert maison à Québec","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
-      ans: 1,
-      passEn: "Local Announcement (Quebec City) — Chef's Lunch Special: daily main course and homemade dessert organized by Desjardins Group in Quebec City. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is communicated in this announcement from Quebec City?",
-      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning daily main course and homemade dessert in Quebec City","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
-    },
-    {
-      paperNum: 2,
-      qNum: 13,
-      level: "A2",
-      docType: "Courriel client",
-      text: "COMMUNICATION LOCALE (QUÉBEC) — SUIVI DE LIVRAISON DE COLIS : demande de créneau horaire de livraison organisé par Desjardins à Québec. Les candidats et usagers intéressés sont invités à respecter les consignes officielles avant la date limite indiquée.",
-      q: "Quelle information essentielle est transmise dans cette communication de Québec ?",
-      opt: ["Une suppression des services de transport public","Les modalités et consignes concernant demande de créneau horaire de livraison à Québec","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
-      ans: 1,
-      passEn: "Local Announcement (Quebec City) — Parcel Delivery Tracking: request for carrier delivery timeslot organized by Desjardins Group in Quebec City. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is communicated in this announcement from Quebec City?",
-      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning request for carrier delivery timeslot in Quebec City","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
-    },
-    {
-      paperNum: 2,
-      qNum: 14,
-      level: "A2",
-      docType: "Avis de club sportif",
-      text: "COMMUNICATION LOCALE (QUÉBEC) — ATELIER DE YOGA POUR DÉBUTANTS : séance du samedi matin organisé par Desjardins à Québec. Les candidats et usagers intéressés sont invités à respecter les consignes officielles avant la date limite indiquée.",
-      q: "Quelle information essentielle est transmise dans cette communication de Québec ?",
-      opt: ["Une suppression des services de transport public","Les modalités et consignes concernant séance du samedi matin à Québec","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
-      ans: 1,
-      passEn: "Local Announcement (Quebec City) — Beginner Yoga Workshop: Saturday morning practice session organized by Desjardins Group in Quebec City. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is communicated in this announcement from Quebec City?",
-      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning Saturday morning practice session in Quebec City","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
-    },
-    {
-      paperNum: 2,
-      qNum: 15,
-      level: "A2",
-      docType: "Règlement de médiathèque",
-      text: "COMMUNICATION LOCALE (QUÉBEC) — CONDITIONS D'EMPRUNT : renouvellement de prêt en ligne organisé par Desjardins à Québec. Les candidats et usagers intéressés sont invités à respecter les consignes officielles avant la date limite indiquée.",
-      q: "Quelle information essentielle est transmise dans cette communication de Québec ?",
-      opt: ["Une suppression des services de transport public","Les modalités et consignes concernant renouvellement de prêt en ligne à Québec","Une augmentation des frais d'inscription universitaire","Le report sine die de l'événement communautaire"],
-      ans: 1,
-      passEn: "Local Announcement (Quebec City) — Borrowing Terms: online book loan renewals organized by Desjardins Group in Quebec City. Interested candidates and community users are requested to follow official guidelines before the stated deadline.",
-      qEn: "What essential information is communicated in this announcement from Quebec City?",
-      optEn: ["A permanent cancellation of regional public transportation services","Official procedures and guidelines concerning online book loan renewals in Quebec City","An unexpected increase in university academic registration tuition","The indefinite postponement of the scheduled community gathering"]
-    },
-    {
-      paperNum: 2,
-      qNum: 16,
-      level: "B1",
-      docType: "Article d'information",
-      text: "ARTICLE D'ACTUALITÉ (LE SOLEIL) — TRI SÉLECTIF ET COMPOSTAGE URBAIN : Dans la région de Québec, l'initiative portant sur réduction des déchets municipaux suscite un intérêt croissant. Selon les acteurs de Université Laval et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant réduction des déchets municipaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Soleil Newspaper) — Waste Sorting and Urban Composting: In the Quebec City region, this public initiative centered on municipal waste reduction targets is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing municipal waste reduction targets despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 2,
-      qNum: 17,
-      level: "B1",
-      docType: "Enquête sociologique",
-      text: "ARTICLE D'ACTUALITÉ (LE SOLEIL) — MODÈLE DE TÉLÉTRAVAIL HYBRIDE : Dans la région de Québec, l'initiative portant sur équilibre vie professionnelle et personnelle suscite un intérêt croissant. Selon les acteurs de Université Laval et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant équilibre vie professionnelle et personnelle malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Soleil Newspaper) — Hybrid Telecommuting Model: In the Quebec City region, this public initiative centered on work-life balance and productivity is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing work-life balance and productivity despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 2,
-      qNum: 18,
-      level: "B1",
-      docType: "Article santé",
-      text: "ARTICLE D'ACTUALITÉ (LE SOLEIL) — ALIMENTATION DE SAISON ET IMMUNITÉ : Dans la région de Québec, l'initiative portant sur produits frais riches en antioxydants suscite un intérêt croissant. Selon les acteurs de Université Laval et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant produits frais riches en antioxydants malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Soleil Newspaper) — Seasonal Nutrition and Immunity: In the Quebec City region, this public initiative centered on fresh produce rich in antioxidants is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fresh produce rich in antioxidants despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 2,
-      qNum: 19,
-      level: "B1",
-      docType: "Guide consommateur",
-      text: "ARTICLE D'ACTUALITÉ (LE SOLEIL) — RÉPARABILITÉ DES APPAREILS ÉLECTRONIQUES : Dans la région de Québec, l'initiative portant sur prolongation de la durée de vie du matériel suscite un intérêt croissant. Selon les acteurs de Université Laval et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant prolongation de la durée de vie du matériel malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Soleil Newspaper) — Electronic Device Repairability: In the Quebec City region, this public initiative centered on extending equipment lifespan through repair is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing extending equipment lifespan through repair despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 2,
-      qNum: 20,
-      level: "B1",
-      docType: "Article d'urbanisme",
-      text: "ARTICLE D'ACTUALITÉ (LE SOLEIL) — NOUVEAU RÉSEAU CYCLABLE SÉCURISÉ : Dans la région de Québec, l'initiative portant sur hausse des déplacements à vélo à l'heure de pointe suscite un intérêt croissant. Selon les acteurs de Université Laval et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant hausse des déplacements à vélo à l'heure de pointe malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Soleil Newspaper) — Protected Express Cycling Network: In the Quebec City region, this public initiative centered on growth in rush-hour bicycle commuting is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing growth in rush-hour bicycle commuting despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 2,
-      qNum: 21,
-      level: "B1",
-      docType: "Critique culturelle",
-      text: "ARTICLE D'ACTUALITÉ (LE SOLEIL) — NOUVELLE PIÈCE DE THÉÂTRE CONTEMPORAINE : Dans la région de Québec, l'initiative portant sur justesse de l'interprétation des comédiens suscite un intérêt croissant. Selon les acteurs de Université Laval et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant justesse de l'interprétation des comédiens malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Soleil Newspaper) — Contemporary Theatrical Play: In the Quebec City region, this public initiative centered on accuracy of actor performances and staging is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing accuracy of actor performances and staging despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 2,
-      qNum: 22,
-      level: "B1",
-      docType: "Reportage économique",
-      text: "ARTICLE D'ACTUALITÉ (LE SOLEIL) — COOPÉRATIVE FROMAGÈRE ET VENTE DIRECTE : Dans la région de Québec, l'initiative portant sur valorisation du travail des éleveurs locaux suscite un intérêt croissant. Selon les acteurs de Université Laval et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant valorisation du travail des éleveurs locaux malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Soleil Newspaper) — Dairy Farming Cooperative and Direct Sales: In the Quebec City region, this public initiative centered on fair financial compensation for local farmers is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing fair financial compensation for local farmers despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 2,
-      qNum: 23,
-      level: "B1",
-      docType: "Article éducation",
-      text: "ARTICLE D'ACTUALITÉ (LE SOLEIL) — MICROPROGRAMMES CERTIFIANTS EN LIGNE : Dans la région de Québec, l'initiative portant sur formation continue pour professionnels en reconversion suscite un intérêt croissant. Selon les acteurs de Université Laval et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant formation continue pour professionnels en reconversion malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Soleil Newspaper) — Online Certifying Microprograms: In the Quebec City region, this public initiative centered on continuing education for working professionals is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing continuing education for working professionals despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 2,
-      qNum: 24,
-      level: "B1",
-      docType: "Article technologique",
-      text: "ARTICLE D'ACTUALITÉ (LE SOLEIL) — INTELLIGENCE ARTIFICIELLE DANS LES CABINETS JURIDIQUES : Dans la région de Québec, l'initiative portant sur relecture humaine nécessaire des sources suscite un intérêt croissant. Selon les acteurs de Université Laval et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant relecture humaine nécessaire des sources malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Soleil Newspaper) — Artificial Intelligence in Legal Practice: In the Quebec City region, this public initiative centered on rigorous human verification of cited legal sources is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing rigorous human verification of cited legal sources despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 2,
-      qNum: 25,
-      level: "B1",
-      docType: "Article de société",
-      text: "ARTICLE D'ACTUALITÉ (LE SOLEIL) — RÉSEAU D'ENTRAIDE INTERGÉNÉRATIONNEL : Dans la région de Québec, l'initiative portant sur parrainage entre étudiants et aînés suscite un intérêt croissant. Selon les acteurs de Université Laval et les citoyens mobilisés, les retombées positives confirment l'efficacité des mesures concertées, même si des ajustements opérationnels demeurent nécessaires pour pérenniser les résultats à long terme.",
-      q: "D'après cet article du journal Le Soleil, que retiennent principalement les observateurs ?",
-      opt: ["L'échec complet de l'initiative menée dans la région","L'efficacité des mesures concernant parrainage entre étudiants et aînés malgré des ajustements requis","Le refus des citoyens de participer aux projets locaux","L'annulation du financement accordé par les institutions"],
-      ans: 1,
-      passEn: "News Chronicle (Le Soleil Newspaper) — Intergenerational Mentorship Network: In the Quebec City region, this public initiative centered on pairing university students with senior citizens is attracting widespread interest. According to researchers at Laval University and participating citizens, positive findings validate the effectiveness of coordinated policies, even though ongoing operational refinements remain necessary for long-term durability.",
-      qEn: "According to this article in Le Soleil Newspaper, what is the primary takeaway highlighted by observers?",
-      optEn: ["The complete operational failure of the regional community program","The effectiveness of measures addressing pairing university students with senior citizens despite necessary adjustments","The widespread refusal of local citizens to take part in civic projects","The immediate cancellation of government funding previously granted"]
-    },
-    {
-      paperNum: 2,
-      qNum: 26,
-      level: "B2",
-      docType: "Éditorial économique",
-      text: "TRIBUNE ANALYTIQUE (LE SOLEIL) — ÉCONOMIE CIRCULAIRE ET ÉCO-CONCEPTION : L'analyse approfondie menée par les chercheurs de Université Laval souligne que la question de responsabilité des industriels et réparabilité ne peut être résolue par de simples mesures palliatives. Une transformation pérenne exige une révision structurelle des paradigmes décisionnels, conciliant rigueur analytique, impératifs éthiques et responsabilité citoyenne face aux défis contemporains.",
-      q: "Quelle thèse centrale l'auteur défend-il à propos de économie circulaire et éco-conception ?",
-      opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter responsabilité des industriels et réparabilité","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
-      ans: 1,
-      passEn: "Analytical Editorial (Le Soleil Newspaper) — Circular Economy and Eco-Design: In-depth analysis by academic researchers at Laval University underscores that the critical challenge of corporate manufacturing responsibility and repairability cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
-      qEn: "What central thesis does the author defend regarding circular economy and eco-design?",
-      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve corporate manufacturing responsibility and repairability","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
-    },
-    {
-      paperNum: 2,
-      qNum: 27,
-      level: "B2",
-      docType: "Analyse sociologique",
-      text: "TRIBUNE ANALYTIQUE (LE SOLEIL) — QUÊTE DE SENS CHEZ LES JEUNES DIPLÔMÉS : L'analyse approfondie menée par les chercheurs de Université Laval souligne que la question de impact sociétal et flexibilité professionnelle ne peut être résolue par de simples mesures palliatives. Une transformation pérenne exige une révision structurelle des paradigmes décisionnels, conciliant rigueur analytique, impératifs éthiques et responsabilité citoyenne face aux défis contemporains.",
-      q: "Quelle thèse centrale l'auteur défend-il à propos de quête de sens chez les jeunes diplômés ?",
-      opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter impact sociétal et flexibilité professionnelle","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
-      ans: 1,
-      passEn: "Analytical Editorial (Le Soleil Newspaper) — Search for Meaning Among Recent Graduates: In-depth analysis by academic researchers at Laval University underscores that the critical challenge of societal impact and workplace schedule flexibility cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
-      qEn: "What central thesis does the author defend regarding search for meaning among recent graduates?",
-      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve societal impact and workplace schedule flexibility","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
-    },
-    {
-      paperNum: 2,
-      qNum: 28,
-      level: "B2",
-      docType: "Débat environnemental",
-      text: "TRIBUNE ANALYTIQUE (LE SOLEIL) — DÉPLOIEMENT DES PARCS ÉOLIENS : L'analyse approfondie menée par les chercheurs de Université Laval souligne que la question de arbitrage entre urgence climatique et concertation locale ne peut être résolue par de simples mesures palliatives. Une transformation pérenne exige une révision structurelle des paradigmes décisionnels, conciliant rigueur analytique, impératifs éthiques et responsabilité citoyenne face aux défis contemporains.",
-      q: "Quelle thèse centrale l'auteur défend-il à propos de déploiement des parcs éoliens ?",
-      opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter arbitrage entre urgence climatique et concertation locale","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
-      ans: 1,
-      passEn: "Analytical Editorial (Le Soleil Newspaper) — Renewable Wind Energy Deployment: In-depth analysis by academic researchers at Laval University underscores that the critical challenge of balancing climate urgency with local community consent cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
-      qEn: "What central thesis does the author defend regarding renewable wind energy deployment?",
-      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve balancing climate urgency with local community consent","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
-    },
-    {
-      paperNum: 2,
-      qNum: 29,
-      level: "B2",
-      docType: "Tribune universitaire",
-      text: "TRIBUNE ANALYTIQUE (LE SOLEIL) — IA GÉNÉRATIVE DANS L'ENSEIGNEMENT SUPÉRIEUR : L'analyse approfondie menée par les chercheurs de Université Laval souligne que la question de déplacement de l'évaluation vers l'analyse critique ne peut être résolue par de simples mesures palliatives. Une transformation pérenne exige une révision structurelle des paradigmes décisionnels, conciliant rigueur analytique, impératifs éthiques et responsabilité citoyenne face aux défis contemporains.",
-      q: "Quelle thèse centrale l'auteur défend-il à propos de ia générative dans l'enseignement supérieur ?",
-      opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter déplacement de l'évaluation vers l'analyse critique","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
-      ans: 1,
-      passEn: "Analytical Editorial (Le Soleil Newspaper) — Generative AI in Higher Education: In-depth analysis by academic researchers at Laval University underscores that the critical challenge of shifting assessment toward critical reflexive analysis cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
-      qEn: "What central thesis does the author defend regarding generative ai in higher education?",
-      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve shifting assessment toward critical reflexive analysis","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
-    },
-    {
-      paperNum: 2,
-      qNum: 30,
-      level: "B2",
-      docType: "Chronique d'architecture",
-      text: "TRIBUNE ANALYTIQUE (LE SOLEIL) — DENSIFICATION URBAINE ET PATRIMOINE BÂTI : L'analyse approfondie menée par les chercheurs de Université Laval souligne que la question de réhabilitation écologique des bâtiments historiques ne peut être résolue par de simples mesures palliatives. Une transformation pérenne exige une révision structurelle des paradigmes décisionnels, conciliant rigueur analytique, impératifs éthiques et responsabilité citoyenne face aux défis contemporains.",
-      q: "Quelle thèse centrale l'auteur défend-il à propos de densification urbaine et patrimoine bâti ?",
-      opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter réhabilitation écologique des bâtiments historiques","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
-      ans: 1,
-      passEn: "Analytical Editorial (Le Soleil Newspaper) — Urban Densification and Built Heritage: In-depth analysis by academic researchers at Laval University underscores that the critical challenge of sustainable ecological rehabilitation of historic edifices cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
-      qEn: "What central thesis does the author defend regarding urban densification and built heritage?",
-      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve sustainable ecological rehabilitation of historic edifices","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
-    },
-    {
-      paperNum: 2,
-      qNum: 31,
-      level: "B2",
-      docType: "Rapport scientifique",
-      text: "TRIBUNE ANALYTIQUE (LE SOLEIL) — PRÉSERVATION DE LA BIODIVERSITÉ MARINE : L'analyse approfondie menée par les chercheurs de Université Laval souligne que la question de contrôle des pollutions terrestres en amont ne peut être résolue par de simples mesures palliatives. Une transformation pérenne exige une révision structurelle des paradigmes décisionnels, conciliant rigueur analytique, impératifs éthiques et responsabilité citoyenne face aux défis contemporains.",
-      q: "Quelle thèse centrale l'auteur défend-il à propos de préservation de la biodiversité marine ?",
-      opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter contrôle des pollutions terrestres en amont","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
-      ans: 1,
-      passEn: "Analytical Editorial (Le Soleil Newspaper) — Marine Biodiversity Conservation: In-depth analysis by academic researchers at Laval University underscores that the critical challenge of strict control of upstream land-based pollution runoff cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
-      qEn: "What central thesis does the author defend regarding marine biodiversity conservation?",
-      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve strict control of upstream land-based pollution runoff","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
-    },
-    {
-      paperNum: 2,
-      qNum: 32,
-      level: "B2",
-      docType: "Analyse médiatique",
-      text: "TRIBUNE ANALYTIQUE (LE SOLEIL) — ÉDUCATION À L'ESPRIT CRITIQUE ET DÉSINFORMATION : L'analyse approfondie menée par les chercheurs de Université Laval souligne que la question de préservation du débat public fondé sur des faits ne peut être résolue par de simples mesures palliatives. Une transformation pérenne exige une révision structurelle des paradigmes décisionnels, conciliant rigueur analytique, impératifs éthiques et responsabilité citoyenne face aux défis contemporains.",
-      q: "Quelle thèse centrale l'auteur défend-il à propos de éducation à l'esprit critique et désinformation ?",
-      opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter préservation du débat public fondé sur des faits","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
-      ans: 1,
-      passEn: "Analytical Editorial (Le Soleil Newspaper) — Critical Thinking and Combating Disinformation: In-depth analysis by academic researchers at Laval University underscores that the critical challenge of safeguarding fact-based democratic public discourse cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
-      qEn: "What central thesis does the author defend regarding critical thinking and combating disinformation?",
-      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve safeguarding fact-based democratic public discourse","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
-    },
-    {
-      paperNum: 2,
-      qNum: 33,
-      level: "B2",
-      docType: "Article de santé publique",
-      text: "TRIBUNE ANALYTIQUE (LE SOLEIL) — PRIORITÉ À LA MÉDECINE PRÉVENTIVE : L'analyse approfondie menée par les chercheurs de Université Laval souligne que la question de investissement précoce dans le dépistage et l'alimentation ne peut être résolue par de simples mesures palliatives. Une transformation pérenne exige une révision structurelle des paradigmes décisionnels, conciliant rigueur analytique, impératifs éthiques et responsabilité citoyenne face aux défis contemporains.",
-      q: "Quelle thèse centrale l'auteur défend-il à propos de priorité à la médecine préventive ?",
-      opt: ["Le statu quo demeure la meilleure option pour les décideurs","Une révision structurelle profonde est nécessaire pour traiter investissement précoce dans le dépistage et l'alimentation","Les technologies numériques suffisent à résoudre tous les déséquilibres","Il convient de déléguer la gestion publique à des entités privées exclusives"],
-      ans: 1,
-      passEn: "Analytical Editorial (Le Soleil Newspaper) — Prioritizing Preventative Healthcare: In-depth analysis by academic researchers at Laval University underscores that the critical challenge of early investment in disease screening and wholesome nutrition cannot be addressed through superficial palliative measures. Sustainable transformation demands a structural overhaul of governance paradigms, reconciling analytical rigor, ethical imperatives, and civic accountability.",
-      qEn: "What central thesis does the author defend regarding prioritizing preventative healthcare?",
-      optEn: ["Maintaining the existing status quo remains the most prudent option for policy makers","A profound structural overhaul is required to effectively resolve early investment in disease screening and wholesome nutrition","Emerging digital automation alone is capable of rectifying all systemic imbalances","Public administration should be completely delegated to private corporate enterprises"]
-    },
-    {
-      paperNum: 2,
-      qNum: 34,
-      level: "C1",
-      docType: "Essai philosophique",
-      text: "ESSAI CRITIQUE (UNIVERSITÉ LAVAL) — TEMPORALITÉ ET CULTE DE L'INSTANTANÉITÉ : Dans cet essai rédigé à Québec, l'auteur explore la portée conceptuelle de érosion de la lenteur nécessaire à la maturation de la pensée. En articulant une dialectique rigoureuse entre héritage philosophique et mutations contemporaines, le texte démontre que l'autonomie réflexive de l'esprit demeure l'ultime rempart contre la réification de l'expérience humaine.",
-      q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
-      opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à érosion de la lenteur nécessaire à la maturation de la pensée","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
-      ans: 1,
-      passEn: "Critical Essay (Laval University) — Temporality and the Cult of Instantaneity: In this philosophical essay composed in Quebec City, the author investigates the conceptual implications of erosion of the contemplative stillness essential for thought maturation. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
-      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
-      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding erosion of the contemplative stillness essential for thought maturation","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
-    },
-    {
-      paperNum: 2,
-      qNum: 35,
-      level: "C1",
-      docType: "Critique littéraire",
-      text: "ESSAI CRITIQUE (UNIVERSITÉ LAVAL) — ESTHÉTIQUE DU DÉPOUILLEMENT SYNTAXIQUE : Dans cet essai rédigé à Québec, l'auteur explore la portée conceptuelle de densité poétique et tension métaphorique du récit. En articulant une dialectique rigoureuse entre héritage philosophique et mutations contemporaines, le texte démontre que l'autonomie réflexive de l'esprit demeure l'ultime rempart contre la réification de l'expérience humaine.",
-      q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
-      opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à densité poétique et tension métaphorique du récit","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
-      ans: 1,
-      passEn: "Critical Essay (Laval University) — Aesthetics of Syntactic Sobriety: In this philosophical essay composed in Quebec City, the author investigates the conceptual implications of poetic density and metaphorical tension in prose. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
-      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
-      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic density and metaphorical tension in prose","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
-    },
-    {
-      paperNum: 2,
-      qNum: 36,
-      level: "C1",
-      docType: "Essai épistémologique",
-      text: "ESSAI CRITIQUE (UNIVERSITÉ LAVAL) — ILLUSION ANTHROPOMORPHIQUE DE L'IA : Dans cet essai rédigé à Québec, l'auteur explore la portée conceptuelle de distinction entre inférence statistique et conscience réflexive. En articulant une dialectique rigoureuse entre héritage philosophique et mutations contemporaines, le texte démontre que l'autonomie réflexive de l'esprit demeure l'ultime rempart contre la réification de l'expérience humaine.",
-      q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
-      opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à distinction entre inférence statistique et conscience réflexive","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
-      ans: 1,
-      passEn: "Critical Essay (Laval University) — The Anthropomorphic Illusion of AI: In this philosophical essay composed in Quebec City, the author investigates the conceptual implications of distinguishing statistical inference from reflexive human consciousness. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
-      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
-      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding distinguishing statistical inference from reflexive human consciousness","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
-    },
-    {
-      paperNum: 2,
-      qNum: 37,
-      level: "C2",
-      docType: "Analyse sociolinguistique",
-      text: "ESSAI CRITIQUE (UNIVERSITÉ LAVAL) — POLYPHONIE PLURICENTRIQUE DE LA FRANCOPHONIE : Dans cet essai rédigé à Québec, l'auteur explore la portée conceptuelle de vitalité des variétés régionales francophones mondiales. En articulant une dialectique rigoureuse entre héritage philosophique et mutations contemporaines, le texte démontre que l'autonomie réflexive de l'esprit demeure l'ultime rempart contre la réification de l'expérience humaine.",
-      q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
-      opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à vitalité des variétés régionales francophones mondiales","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
-      ans: 1,
-      passEn: "Critical Essay (Laval University) — Pluricentric Polyphony of the Francophonie: In this philosophical essay composed in Quebec City, the author investigates the conceptual implications of the vitality of global regional Francophone varieties. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
-      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
-      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding the vitality of global regional Francophone varieties","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
-    },
-    {
-      paperNum: 2,
-      qNum: 38,
-      level: "C2",
-      docType: "Essai esthétique",
-      text: "ESSAI CRITIQUE (UNIVERSITÉ LAVAL) — L'ART CONTEMPORAIN DANS L'ESPACE PUBLIC : Dans cet essai rédigé à Québec, l'auteur explore la portée conceptuelle de subversion poétique et révélation des tensions politiques. En articulant une dialectique rigoureuse entre héritage philosophique et mutations contemporaines, le texte démontre que l'autonomie réflexive de l'esprit demeure l'ultime rempart contre la réification de l'expérience humaine.",
-      q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
-      opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à subversion poétique et révélation des tensions politiques","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
-      ans: 1,
-      passEn: "Critical Essay (Laval University) — Contemporary Art in Civic Spaces: In this philosophical essay composed in Quebec City, the author investigates the conceptual implications of poetic subversion and unmasking political civic tensions. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
-      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
-      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding poetic subversion and unmasking political civic tensions","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
-    },
-    {
-      paperNum: 2,
-      qNum: 39,
-      level: "C2",
-      docType: "Anthropologie philosophique",
-      text: "ESSAI CRITIQUE (UNIVERSITÉ LAVAL) — SYMBOLIQUE PROJECTIVE DE LA MÉMOIRE COLLECTIVE : Dans cet essai rédigé à Québec, l'auteur explore la portée conceptuelle de sélection axiologique et projection communautaire vers l'avenir. En articulant une dialectique rigoureuse entre héritage philosophique et mutations contemporaines, le texte démontre que l'autonomie réflexive de l'esprit demeure l'ultime rempart contre la réification de l'expérience humaine.",
-      q: "Quelle est l'orientation philosophique majeure exprimée dans cette réflexion ?",
-      opt: ["La soumission inconditionnelle de la pensée aux déterminismes matériels","La primauté de l'autonomie réflexive de l'esprit face à sélection axiologique et projection communautaire vers l'avenir","L'abandon de toute tradition philosophique au profit de l'immédiateté empirique","La négation de toute valeur herméneutique dans la critique textuelle"],
-      ans: 1,
-      passEn: "Critical Essay (Laval University) — Projective Symbolics of Collective Memory: In this philosophical essay composed in Quebec City, the author investigates the conceptual implications of axiological selection and community projection toward the future. By articulating a rigorous dialectic between classical philosophical heritage and modern societal shifts, the treatise proves that the reflexive autonomy of the human mind remains the essential barrier against the reification of lived experience.",
-      qEn: "What major philosophical thesis is affirmed in this scholarly critique?",
-      optEn: ["The unconditional subordination of intellectual thought to material determinisms","The absolute primacy of reflexive autonomy of thought regarding axiological selection and community projection toward the future","The complete rejection of philosophical traditions in favor of superficial empirical immediacy","The total denial of any interpretative hermeneutic value in textual literary analysis"]
-    },
-  ],
+  {
+    "paperNum": 2,
+    "qNum": 1,
+    "level": "A1",
+    "docType": "Panneau d'information",
+    "text": "CENTRE SPORTIF MUNICIPAL : Horaires d'été. Ouverture du lundi au vendredi de 8h à 21h, samedi et dimanche de 9h à 17h. Fermeture des caisses 30 minutes avant la fin des cours.",
+    "q": "À quelle heure le centre sportif ferme-t-il le dimanche ?",
+    "opt": [
+      "À 17h00",
+      "À 18h00",
+      "À 20h00",
+      "À 21h00"
+    ],
+    "ans": 0,
+    "passEn": "MUNICIPAL SPORTS CENTER: Summer hours. Open Monday to Friday 8:00 AM to 9:00 PM, Saturday and Sunday 9:00 AM to 5:00 PM. Ticket counters close 30 minutes before end of classes.",
+    "qEn": "At what time does the sports center close on Sunday?",
+    "optEn": [
+      "At 5:00 PM",
+      "At 6:00 PM",
+      "At 8:00 PM",
+      "At 9:00 PM"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 2,
+    "level": "A1",
+    "docType": "Avis municipal",
+    "text": "TRAVAUX DE VOIRIE : La rue Saint-Denis sera fermée à la circulation automobile du 5 au 8 août en raison de la réfection du bitume. Déviation balisée par l'avenue des Pins.",
+    "q": "Quel est l'impact des travaux prévus rue Saint-Denis ?",
+    "opt": [
+      "Une hausse des prix des tickets de bus",
+      "La fermeture de la rue à la circulation automobile",
+      "La suppression de l'éclairage nocturne",
+      "L'interdiction absolue du passage des piétons"
+    ],
+    "ans": 1,
+    "passEn": "ROADWORKS: Saint-Denis Street will be closed to car traffic from August 5 to 8 due to road resurfacing. Marked detour via Pins Avenue.",
+    "qEn": "What is the impact of the planned roadworks on Saint-Denis Street?",
+    "optEn": [
+      "An increase in bus ticket prices",
+      "Closure of the street to car traffic",
+      "Shutdown of night streetlights",
+      "An absolute ban on pedestrian traffic"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 3,
+    "level": "A1",
+    "docType": "Message court (SMS)",
+    "text": "Coucou Élodie ! N'oublie pas le cours de soutien de mathématiques cet après-midi à 16h au bureau 204. N'hésite pas à me rappeler si besoin, Antoine.",
+    "q": "Où se déroule le cours de soutien ?",
+    "opt": [
+      "À la grande bibliothèque centrale",
+      "Dans le jardin de l'université",
+      "Au bureau 204",
+      "Dans la salle de réunion du rez-de-chaussée"
+    ],
+    "ans": 2,
+    "passEn": "Hi Elodie! Don't forget the math tutoring session this afternoon at 4:00 PM in office 204. Call me back if needed, Antoine.",
+    "qEn": "Where does the tutoring session take place?",
+    "optEn": [
+      "At the main central library",
+      "In the university garden",
+      "In office 204",
+      "In the ground floor meeting room"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 4,
+    "level": "A1",
+    "docType": "Affiche promotionnelle",
+    "text": "CINÉMA QUARTIER : Tarif réduit exceptionnel à 5 € pour toutes les séances du mercredi avant 15h ! Venez découvrir les derniers films à l'affiche en famille.",
+    "q": "Quelle promotion est proposée par le cinéma ?",
+    "opt": [
+      "Le pop-corn offert avec chaque boisson",
+      "Des entrées gratuites pour les abonnés",
+      "Un abonnement annuel à moitié prix",
+      "Des billets à 5 € le mercredi avant 15h"
+    ],
+    "ans": 3,
+    "passEn": "NEIGHBORHOOD CINEMA: Special discount rate of €5 for all Wednesday screenings before 3:00 PM! Come discover the latest movies with your family.",
+    "qEn": "What promotion is offered by the cinema?",
+    "optEn": [
+      "Free popcorn with every drink",
+      "Free entry for subscribers",
+      "A half-price annual subscription",
+      "Tickets at €5 on Wednesday before 3:00 PM"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 5,
+    "level": "A2",
+    "docType": "Avis d'objet trouvé",
+    "text": "OBJET TROUVÉ : Lunettes de vue à monture rouge trouvées sur la table n°4 de la cafétéria du campus universitaire mardi vers 12h30. Déposées au poste de sécurité du bâtiment A.",
+    "q": "Où peut-on récupérer les lunettes perdues ?",
+    "opt": [
+      "Au poste de sécurité du bâtiment A",
+      "Au secrétariat de la faculté des lettres",
+      "À la bibliothèque universitaire",
+      "Au bureau du directeur du campus"
+    ],
+    "ans": 0,
+    "passEn": "FOUND ITEM: Red-framed eyeglasses found on table #4 at the campus cafeteria on Tuesday around 12:30 PM. Handed in to Building A security desk.",
+    "qEn": "Where can the lost eyeglasses be retrieved?",
+    "optEn": [
+      "At the Building A security desk",
+      "At the humanities faculty office",
+      "At the university library",
+      "At the campus director's office"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 6,
+    "level": "A2",
+    "docType": "Annonce d'événement local",
+    "text": "FÊTE DE LA MUSIQUE LOCALE : Concerts gratuits en plein air ce vendredi dès 18h dans les jardins de l'Hôtel de Ville. Venez écouter de la chanson française, du jazz et de la pop !",
+    "q": "Où auront lieu les concerts gratuits de vendredi ?",
+    "opt": [
+      "Dans la grande salle de spectacle municipale",
+      "Dans les jardins de l'Hôtel de Ville",
+      "Sur la plage publique de la commune",
+      "Dans la cour d'honneur du château"
+    ],
+    "ans": 1,
+    "passEn": "LOCAL MUSIC FESTIVAL: Free outdoor concerts this Friday starting at 6:00 PM in the City Hall gardens. Come listen to French songs, jazz, and pop music!",
+    "qEn": "Where will Friday's free concerts take place?",
+    "optEn": [
+      "In the municipal indoor performance hall",
+      "In the City Hall gardens",
+      "On the town public beach",
+      "In the castle main courtyard"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 7,
+    "level": "A2",
+    "docType": "Invitation amicale",
+    "text": "Chère Sarah, nous organisons une randonnée en montagne le samedi 14 septembre dans le massif des Vosges. Départ à 8h précise du parking du lac. N'oublie pas tes chaussures d'escalade !",
+    "q": "Quelle activité Sarah et ses amis vont-ils faire ?",
+    "opt": [
+      "Une compétition de natation en eau libre",
+      "Une visite guidée d'un musée d'art contemporain",
+      "Une randonnée en montagne dans les Vosges",
+      "Un stage de conduite automobile sur circuit"
+    ],
+    "ans": 2,
+    "passEn": "Dear Sarah, we are organizing a mountain hike on Saturday September 14 in the Vosges region. Departure at 8:00 AM sharp from the lake parking lot. Don't forget your hiking boots!",
+    "qEn": "What activity are Sarah and her friends doing?",
+    "optEn": [
+      "An open water swimming race",
+      "A guided tour of a contemporary art museum",
+      "A mountain hike in the Vosges",
+      "A racetrack driving course"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 8,
+    "level": "A2",
+    "docType": "Offre d'emploi",
+    "text": "RECRUTEMENT SAISONNIER : L'Office du Tourisme recherche deux hôtes d'accueil bilingues (français/anglais) pour la période de juillet à août. Bon relationnel exigé. Postulez en ligne avant le 15 juin.",
+    "q": "Quelle compétence linguistique est exigée pour ces postes ?",
+    "opt": [
+      "Maîtriser l'espagnol et l'italien à l'écrit",
+      "Parler couramment le mandarin et l'allemand",
+      "Avoir une certification en langue des signes",
+      "Être bilingue français et anglais"
+    ],
+    "ans": 3,
+    "passEn": "SEASONAL RECRUITMENT: The Tourist Office is hiring two bilingual receptionists (French/English) for July and August. Good interpersonal skills required. Apply online before June 15.",
+    "qEn": "What language skill is required for these positions?",
+    "optEn": [
+      "Fluent written Spanish and Italian",
+      "Fluent spoken Mandarin and German",
+      "A certification in sign language",
+      "Bilingual in French and English"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 9,
+    "level": "A2",
+    "docType": "Petite annonce immobilière",
+    "text": "PROPRIÉTÉ À VENDRE : Charmante maison de village 4 pièces avec jardin clôturé et terrasse ensoleillée. Proche des écoles et des commerces de proximité. DPE classe B. Prix : 210 000 €.",
+    "q": "Quelles sont les caractéristiques extérieures principales de cette maison ?",
+    "opt": [
+      "Un jardin clôturé et une terrasse ensoleillée",
+      "Une piscine olympique et un court de tennis",
+      "Un grand parking sous-sol pour dix voitures",
+      "Un vaste terrain agricole avec grange"
+    ],
+    "ans": 0,
+    "passEn": "PROPERTY FOR SALE: Charming 4-room village house with fenced garden and sunny terrace. Close to schools and local neighborhood shops. Energy rating Class B. Price: €210,000.",
+    "qEn": "What are the main outdoor features of this house?",
+    "optEn": [
+      "A fenced garden and a sunny terrace",
+      "An Olympic pool and a tennis court",
+      "A large underground garage for ten cars",
+      "Vast agricultural land with a barn"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 10,
+    "level": "A2",
+    "docType": "Note de service interne",
+    "text": "CONSIGNES DE SÉCURITÉ : La fermeture des portes d'accès aux bureaux s'effectuera désormais automatiquement à 19h00. Les employés travaillant en soirée doivent obligatoirement activer leur code d'alarme personnel.",
+    "q": "Que doivent faire les salariés travaillant après 19h00 ?",
+    "opt": [
+      "Débrancher les serveurs informatiques principaux",
+      "Activer leur code d'alarme personnel",
+      "Attendre l'arrivée de l'équipe de nettoyage du matin",
+      "Laisser les fenêtres des bureaux ouvertes"
+    ],
+    "ans": 1,
+    "passEn": "SAFETY DIRECTIVE: Office entrance doors will now lock automatically at 7:00 PM. Employees working late must activate their personal alarm security code.",
+    "qEn": "What must employees working after 7:00 PM do?",
+    "optEn": [
+      "Unplug the main computer servers",
+      "Activate their personal alarm security code",
+      "Wait for the morning cleaning crew",
+      "Leave office windows open"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 11,
+    "level": "B1",
+    "docType": "Dépliant touristique",
+    "text": "CROISIÈRE SUR LE FLEUVE : Embarquez à bord du bateau panoramique pour une croisière commentée d'une heure et demi à la découverte des ponts historiques. Départs toutes les heures de 10h à 18h.",
+    "q": "Quelle est la durée de la croisière touristique ?",
+    "opt": [
+      "Trente minutes seulement",
+      "Deux heures et demie",
+      "Une heure et demie",
+      "Une journée entière de navigation"
+    ],
+    "ans": 2,
+    "passEn": "RIVER CRUISE: Board the panoramic vessel for a 1.5-hour guided cruise exploring historical bridges. Departures every hour from 10:00 AM to 6:00 PM.",
+    "qEn": "How long is the guided river cruise?",
+    "optEn": [
+      "Thirty minutes only",
+      "Two hours and a half",
+      "One hour and a half",
+      "A full day of sailing"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 12,
+    "level": "B1",
+    "docType": "Menu de restaurant",
+    "text": "BISTROT DU PORT : Spécialités de poissons frais issus de la pêche locale durable. Plat signature : bouillabaisse traditionnelle servie le vendredi sur réservation au moins 24h à l'avance.",
+    "q": "Quelle condition est fixée pour déguster la bouillabaisse du vendredi ?",
+    "opt": [
+      "Venir obligatoirement accompagné de trois personnes",
+      "Être détenteur de la carte de fidélité du port",
+      "Payer l'intégralité du repas une semaine avant",
+      "Réserver sa table au moins 24 heures à l'avance"
+    ],
+    "ans": 3,
+    "passEn": "PORT BISTRO: Fresh seafood specialties sourced from sustainable local fisheries. Signature dish: traditional bouillabaisse served on Fridays by reservation at least 24 hours in advance.",
+    "qEn": "What condition is required to enjoy the Friday bouillabaisse?",
+    "optEn": [
+      "Bring at least three dining companions",
+      "Hold a port loyalty membership card",
+      "Pay for the entire meal one week prior",
+      "Reserve your table at least 24 hours in advance"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 13,
+    "level": "B1",
+    "docType": "Courriel client",
+    "text": "Cher client, suite à votre demande de changement de vol pour la destination de Nice, nous vous confirmons l'émission de votre nouveau billet électronique pour le vol AF 7412 du 18 juillet à 09h15.",
+    "q": "Quel est l'objet principal de cette communication de la compagnie aérienne ?",
+    "opt": [
+      "La confirmation d'émission d'un nouveau billet suite à modification",
+      "L'annulation définitive d'une réservation de vol",
+      "Une demande de complément d'information bagages",
+      "L'offre d'un surclassement gratuit en première classe"
+    ],
+    "ans": 0,
+    "passEn": "Dear Customer, following your flight change request for Nice, we confirm the issuance of your new electronic ticket for flight AF 7412 on July 18 at 09:15 AM.",
+    "qEn": "What is the primary purpose of this airline communication?",
+    "optEn": [
+      "Confirmation of a new e-ticket issuance after flight change",
+      "Permanent cancellation of a flight booking",
+      "A request for additional luggage information",
+      "An offer for a free first-class upgrade"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 14,
+    "level": "B1",
+    "docType": "Avis de club sportif",
+    "text": "COMPLEXE AQUATIQUE : En raison du déroulement des championnats régionaux de natation synchro, le bassin olympique sera réservé aux athlètes compétiteurs le samedi 22 mai de 08h00 à 18h00.",
+    "q": "Pour quelle raison le bassin olympique sera-t-il inaccessible au grand public ?",
+    "opt": [
+      "Une vidange sanitaire complète du bassin",
+      "L'organisation des championnats régionaux de natation",
+      "Le tournage d'une série télévisée locale",
+      "Des travaux de réfection du carrelage des douches"
+    ],
+    "ans": 1,
+    "passEn": "AQUATIC COMPLEX: Due to the regional synchronized swimming championships, the Olympic pool will be reserved for competing athletes on Saturday May 22 from 8:00 AM to 6:00 PM.",
+    "qEn": "Why will the Olympic pool be closed to the general public?",
+    "optEn": [
+      "A complete sanitary draining of the pool",
+      "Organization of the regional swimming championships",
+      "Filming of a local television series",
+      "Tile repair work in the shower facilities"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 15,
+    "level": "B1",
+    "docType": "Programme d'excursion",
+    "text": "DÉCOUVERTE DES VIGNOBLES : Journée guidée en autocar au cœur de la Route des Vins. Dégustation chez trois viticulteurs et déjeuner traditionnel inclus. Départ à 9h de la Place du Capitole.",
+    "q": "Quelles prestations sont incluses dans cette excursion ?",
+    "opt": [
+      "Les vols aller-retour et l'hébergement en hôtel 4 étoiles",
+      "Uniquement la mise à disposition de vélos électriques",
+      "Le transport en autocar, les dégustations et le déjeuner",
+      "L'achat de deux caisses de vin par participant"
+    ],
+    "ans": 2,
+    "passEn": "VINEYARD EXPLORATION: Guided day trip by coach along the Wine Route. Wine tasting at three vineyards and traditional lunch included. Departure at 9:00 AM from Place du Capitole.",
+    "qEn": "What services are included in this excursion?",
+    "optEn": [
+      "Round-trip flights and 4-star hotel accommodation",
+      "Only electric bicycle rentals",
+      "Coach transport, tastings, and traditional lunch",
+      "The purchase of two cases of wine per participant"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 16,
+    "level": "B1",
+    "docType": "Règlement intérieur médiathèque",
+    "text": "SERVICES NUMÉRIQUES : La consultation des ordinateurs de la médiathèque est limitée à 2 heures par jour et par abonné. La réservation d'un poste de travail peut s'effectuer sur place ou à distance.",
+    "q": "Quelle est la durée maximale d'utilisation quotidienne d'un poste informatique ?",
+    "opt": [
+      "Une heure par jour et par usager",
+      "Quatre heures d'affilée sans interruption",
+      "Illimitée pour tous les visiteurs",
+      "Deux heures par jour et par abonné"
+    ],
+    "ans": 3,
+    "passEn": "DIGITAL SERVICES: Media library computer usage is limited to 2 hours per day per subscriber. Computer workstation reservations can be made on site or remotely.",
+    "qEn": "What is the maximum daily usage limit for a computer workstation?",
+    "optEn": [
+      "One hour per day per user",
+      "Four continuous hours without interruption",
+      "Unlimited for all visitors",
+      "Two hours per day per subscriber"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 17,
+    "level": "B1",
+    "docType": "Article de presse régionale",
+    "text": "INNOVATION COMMUNALE : La municipalité de Bordeaux installe des bacs de compostage collectif dans vingt parcs publics afin de réduire le volume des déchets ménagers non recyclés.",
+    "q": "Quel est l'objectif de l'installation des bacs de compostage collectif ?",
+    "opt": [
+      "Réduire le volume des déchets ménagers non recyclés",
+      "Produire de l'électricité renouvelable pour les lampadaires",
+      "Vendre du terreau aux entreprises horticoles privées",
+      "Créer un concours de jardinage entre les habitants"
+    ],
+    "ans": 0,
+    "passEn": "MUNICIPAL INNOVATION: The city of Bordeaux is installing shared community composting bins in twenty public parks to reduce the volume of unrecovered household waste.",
+    "qEn": "What is the goal of installing shared community composting bins?",
+    "optEn": [
+      "Reduce the volume of unrecovered household waste",
+      "Produce renewable power for streetlights",
+      "Sell fertilizer to private horticultural companies",
+      "Create a gardening competition among residents"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 18,
+    "level": "B1",
+    "docType": "Bulletin d'information associative",
+    "text": "ASSOCIATION DE PROTECTION ANIMALERAISONS : Notre refuge organise sa grande journée d'adoption annuelle le samedi 5 juin de 10h à 17h. Venez rencontrer nos animaux recueillis en attente d'une famille responsable.",
+    "q": "Quel est le but de la journée portes ouvertes du refuge ?",
+    "opt": [
+      "Vendre des aliments industriels pour animaux",
+      "Favoriser l'adoption d'animaux recueillis par des familles",
+      "Recruter des vétérinaires diplômés d'État",
+      "Organiser un spectacle de dressage canin"
+    ],
+    "ans": 1,
+    "passEn": "ANIMAL PROTECTION ASSOCIATION: Our shelter is hosting its annual adoption open house on Saturday June 5 from 10:00 AM to 5:00 PM. Come meet rescued animals waiting for a responsible family.",
+    "qEn": "What is the goal of the shelter open house day?",
+    "optEn": [
+      "Sell commercial pet food products",
+      "Promote animal adoption by responsible families",
+      "Recruit state-certified veterinarians",
+      "Organize a dog training performance"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 19,
+    "level": "B1",
+    "docType": "Avis de perturbation des transports",
+    "text": "RÉSEAU DE TRAMWAY : En raison de travaux de maintenance sur la ligne 3 entre la station Gare et la station Université, les rames circuleront avec un intervalle allongé de 15 minutes tout au long du weekend.",
+    "q": "Comment le service de tramway sera-t-il affecté durant le weekend ?",
+    "opt": [
+      "Le tramway sera totalement supprimé sans remplacement",
+      "Les rames circuleront avec un intervalle rallongé de 15 minutes",
+      "Le tarif du ticket sera doublé sur l'ensemble du réseau",
+      "Seuls les étudiants munis d'une carte pourront monter"
+    ],
+    "ans": 1,
+    "passEn": "TRAMWAY NETWORK: Due to maintenance work on Line 3 between Station Gare and Station University, trams will run with an increased 15-minute interval throughout the weekend.",
+    "qEn": "How will tramway service be affected during the weekend?",
+    "optEn": [
+      "Tramways will be completely cancelled without replacement",
+      "Trams will run with an increased 15-minute interval",
+      "Ticket fares will double across the entire network",
+      "Only students with valid ID cards may board"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 20,
+    "level": "B2",
+    "docType": "Article sur le développement durable",
+    "text": "SOBRIÉTÉ NUMÉRIQUE ET ENTREPRISES : La prolifération des infrastructures de stockage de données massives (data centers) suscite des inquiétudes croissantes quant à leur empreinte énergétique. Pour contenir cette hausse, des experts préconisent l'adoption de politiques de sobriété numérique, axées sur l'optimisation des requêtes informatiques et le prolongement de la durée de vie des équipements informatiques.",
+    "q": "Quelles mesures de sobriété numérique sont préconisées par les experts ?",
+    "opt": [
+      "L'interdiction totale de l'utilisation des ordinateurs au travail",
+      "L'optimisation des requêtes et le rallongement de la durée de vie des équipements",
+      "Le remplacement annuel obligatoire de tous les serveurs informatiques",
+      "La taxation massive des envois de courriels électroniques"
+    ],
+    "ans": 1,
+    "passEn": "DIGITAL SOBRIETY AND ENTERPRISES: The proliferation of massive data center storage facilities raises growing concerns over their energy footprint. To curb this rise, experts advocate adopting digital sobriety policies focused on optimizing data queries and extending hardware lifespans.",
+    "qEn": "What digital sobriety measures are recommended by experts?",
+    "optEn": [
+      "A total ban on workplace computer usage",
+      "Optimizing data queries and extending hardware lifespans",
+      "Mandatory annual replacement of all computing servers",
+      "Heavy taxation on sending personal electronic emails"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 21,
+    "level": "B2",
+    "docType": "Synthèse sur le télétravail",
+    "text": "MANAGEMENT ET ESPACES FLEXIBLES : Le déploiement du bureau d'expérience flexible (flex-office), où aucun salarié ne possède de poste de travail attribué, suscite des réactions contrastées. Si la mesure réduit substantiellement les coûts immobiliers des entreprises, elle est parfois perçue par les employés comme une déstabilisation identitaire et un frein au sentiment d'appartenance.",
+    "q": "Quel impact négatif potentiel du flex-office est souligné dans cette synthèse ?",
+    "opt": [
+      "Une augmentation incontrôlée des loyers de bureau",
+      "L'obligation de travailler exclusivement le dimanche",
+      "Une déstabilisation identitaire et l'affaiblissement du sentiment d'appartenance",
+      "La suppression de toutes les congés payés annuels"
+    ],
+    "ans": 2,
+    "passEn": "MANAGEMENT AND FLEXIBLE SPACES: Implementing flex-office spaces, where no employee has a permanent designated desk, generates mixed reactions. While it substantially reduces corporate real estate costs, employees sometimes perceive it as identity destabilization and a barrier to company belonging.",
+    "qEn": "What potential negative impact of flex-office spaces is highlighted in this synthesis?",
+    "optEn": [
+      "An uncontrolled surge in corporate office rent costs",
+      "An obligation to work exclusively on Sundays",
+      "Identity destabilization and a weakened sense of company belonging",
+      "The complete elimination of annual paid leave"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 22,
+    "level": "B2",
+    "docType": "Tribune sur le système éducatif",
+    "text": "ORIENTATION SCOLAIRE ET ÉQUITÉ : Les algorithmes nationaux d'affectation universitaire prétendent garantir une impartialité totale dans le traitement des candidatures. Néanmoins, des sociologues démontrent que l'absence de lisibilité des critères de sélection favorise involontairement les familles initiées aux rouages du système, au détriment des élèves issus de milieux modestes.",
+    "q": "Selon la tribune, pourquoi l'impartialité algorithmique est-elle remise en question ?",
+    "opt": [
+      "Parce que les ordinateurs refusent systématiquement les candidats masculins",
+      "Parce que le coût d'inscription sur la plateforme est devenu exorbitant",
+      "Parce que les universités n'ont plus de places physiques disponibles",
+      "Parce que le manque de clarté des critères avantage les familles connaissant les rouages"
+    ],
+    "ans": 3,
+    "passEn": "ACADEMIC ORIENTATION AND EQUITY: National university assignment algorithms claim to guarantee total impartiality in processing candidate applications. However, sociologists demonstrate that unclear selection criteria unintentionally favor families familiar with system mechanics over disadvantaged students.",
+    "qEn": "According to the op-ed, why is algorithmic impartiality questioned?",
+    "optEn": [
+      "Because computers systematically reject all male applicants",
+      "Because application platform fees have become exorbitant",
+      "Because universities no longer have physical classroom seats",
+      "Because unclear criteria favor families familiar with system mechanics"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 23,
+    "level": "B2",
+    "docType": "Article sur le patrimoine culturel",
+    "text": "RESTITUTION DES BIENS CULTURELS : La question du rapatriement des objets d'art conservés dans les musées occidentaux vers leurs pays d'origine s'impose au cœur de la diplomatie culturelle internationale. Au-delà des enjeux juridiques complexes, cette démarche participe à la réappropriation mémorielle et à la reconstruction identitaire des peuples spoliés.",
+    "q": "Quelle portée fondamentale la restitution des objets d'art revêt-elle pour les pays d'origine ?",
+    "opt": [
+      "La réappropriation mémorielle et la reconstruction identitaire des peuples",
+      "Une opportunité d'enrichir rapidement le budget de l'État par la revente",
+      "L'obligation d'interdire l'entrée des musées aux visiteurs étrangers",
+      "La fin de toute collaboration scientifique internationale"
+    ],
+    "ans": 0,
+    "passEn": "RESTITUTION OF CULTURAL ASSETS: The repatriation of art objects housed in Western museums to their countries of origin has become central to international cultural diplomacy. Beyond complex legal issues, this process supports memory reclamation and identity reconstruction for looted nations.",
+    "qEn": "What fundamental significance does cultural asset restitution hold for countries of origin?",
+    "optEn": [
+      "Memory reclamation and identity reconstruction for looted nations",
+      "An opportunity to quickly enrich state budgets through resale",
+      "A mandate to ban foreign tourists from museum entry",
+      "The complete termination of international scientific collaboration"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 24,
+    "level": "B2",
+    "docType": "Chronique sur l'intelligence artificielle",
+    "text": "CRÉATIVITÉ ARTIFICIELLE ET DROIT D'AUTEUR : La capacité des algorithmes génératifs à composer des œuvres musicales ou littéraires soulève un imbroglio juridique inédit. L'absence de statut légal clair pour les créations nées du traitement de milliards d'données pose la question de la rémunération équitable des artistes dont les travaux ont servi à entraîner ces modèles.",
+    "q": "Quel problème de rémunération est soulevé par l'émergence des IA génératives ?",
+    "opt": [
+      "Les artistes doivent désormais payer les éditeurs de logiciels",
+      "La juste indemnisation des artistes dont les travaux ont entraîné l'IA",
+      "La suppression de tous les droits d'auteur pour la musique classique",
+      "L'interdiction de vendre des instruments de musique traditionnels"
+    ],
+    "ans": 1,
+    "passEn": "ARTIFICIAL CREATIVITY AND COPYRIGHT: The ability of generative algorithms to compose musical or literary works generates an unprecedented legal entanglement. The lack of clear legal status for works derived from processing billions of data points raises questions regarding fair compensation for artists whose work trained these models.",
+    "qEn": "What compensation issue is raised by the rise of generative AI?",
+    "optEn": [
+      "Artists must now pay subscription fees to software developers",
+      "Fair compensation for artists whose works were used to train AI models",
+      "The total abolishment of copyright laws for classical music",
+      "A ban on selling traditional physical musical instruments"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 25,
+    "level": "B2",
+    "docType": "Étude sur l'urbanisme écocitoyen",
+    "text": "DESALTELLISATION DE LA VILLE : Le concept de la 'ville du quart d'heure', visant à garantir à chaque citadin l'accès aux services essentiels (santé, éducation, commerce) à moins de 15 minutes à pied ou à vélo, vise à décentrer les métropoles. Ce modèle réduit l'empreinte carbone urbaine tout en dynamisant la vie sociale des quartiers périphériques.",
+    "q": "Quel est l'objectif fondamental du concept de la 'ville du quart d'heure' ?",
+    "opt": [
+      "Fermer tous les commerces de proximité le week-end",
+      "Obliger les habitants à déménager chaque année",
+      "Garantir l'accès aux services essentiels à moins de 15 minutes à pied ou à vélo",
+      "Supprimer les écoles publiques au profit des cours à distance"
+    ],
+    "ans": 2,
+    "passEn": "15-MINUTE CITY URBAN PLANNING: The '15-minute city' concept, designed to ensure every resident has access to essential services (health, education, commerce) within a 15-minute walk or bike ride, decentralizes major cities. This model reduces urban carbon footprints while boosting neighborhood social vitality.",
+    "qEn": "What is the primary objective of the '15-minute city' urban planning concept?",
+    "optEn": [
+      "Close all local neighborhood shops on weekends",
+      "Mandate that residents relocate their homes annually",
+      "Guarantee access to essential services within a 15-minute walk or bike ride",
+      "Eliminate public schools in favor of online learning"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 26,
+    "level": "B2",
+    "docType": "Analyse de la mobilité professionnelle",
+    "text": "COMPÉTENCES TRANSVERSALES ET EMPLOYABILITÉ : Dans un paysage économique en mutation rapide, les compétences techniques spécifiques (hard skills) s'obsolétisent plus rapidement que par le passé. Les recruteurs privilégient désormais les compétences transversales (soft skills), telles que la pensée critique, l'adaptabilité et la capacité d'apprentissage continu.",
+    "q": "Pourquoi les compétences transversales sont-elles devenues prioritaires pour les recruteurs ?",
+    "opt": [
+      "Parce qu'elles permettent d'économiser sur les budgets de formation",
+      "Parce qu'elles sont exigées par les conventions collectives internationales",
+      "Parce qu'elles remplacent l'obligation de posséder un diplôme universitaire",
+      "Parce que les compétences techniques s'obsolétisent plus rapidement qu me par le passé"
+    ],
+    "ans": 3,
+    "passEn": "TRANSVERSAL SKILLS AND EMPLOYABILITY: In a rapidly shifting economic landscape, specific technical skills become obsolete faster than in the past. Recruiters now prioritize soft skills—such as critical thinking, adaptability, and continuous learning capacity.",
+    "qEn": "Why have soft skills become a top priority for recruiters?",
+    "optEn": [
+      "Because they allow companies to cut corporate training budgets",
+      "Because they are mandated by international labor treaties",
+      "Because they eliminate the requirement to hold a university degree",
+      "Because specific technical skills become obsolete faster than in the past"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 27,
+    "level": "B2",
+    "docType": "Article sur l'engagement citoyen",
+    "text": "BUDGETS PARTICIPATIFS MUNICIPAUX : En allouant une fraction du budget d'investissement aux projets directement votés par les habitants, les municipalités cherchent à renouer la confiance démocratique. L'expérience montre toutefois que la réussite du dispositif dépend d'un effort constant de médiation pour inclure les populations éloignées des instances décisionnelles.",
+    "q": "Selon l'article, quelle condition garantit le succès des budgets participatifs ?",
+    "opt": [
+      "Un effort constant de médiation pour inclure les populations éloignées",
+      "L'obligation de voter sous peine d'amende financière",
+      "La réservation exclusive du vote aux seuls propriétaires immobiliers",
+      "La suppression de toutes les assemblées citoyennes de quartier"
+    ],
+    "ans": 0,
+    "passEn": "MUNICIPAL PARTICIPATORY BUDGETING: By allocating a portion of capital budgets to projects voted on directly by residents, municipalities aim to rebuild democratic trust. However, experience shows success depends on sustained community outreach to include underrepresented populations.",
+    "qEn": "According to the article, what condition guarantees the success of participatory budgeting?",
+    "optEn": [
+      "Sustained community outreach to include underrepresented populations",
+      "Mandatory voting enforced by financial fines",
+      "Restricting voting rights exclusively to property owners",
+      "Disbanding all local neighborhood citizen councils"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 28,
+    "level": "B2",
+    "docType": "Bilan sur la transition énergétique",
+    "text": "RÉNOVATION THERMIQUE DU BÂTI : L'isolation thermique des logements constitue le levier le plus efficace pour lutter contre la précarité énergétique et réduire les émissions de gaz à effet de serre. Cependant, la complexité des démarches administratives et le reste à charge financier découragent encore de nombreux propriétaires d'entreprendre ces travaux.",
+    "q": "Quels freins ralentissent l'engagement des propriétaires dans la rénovation thermique ?",
+    "opt": [
+      "L'absence totale de matériaux isolants sur le marché international",
+      "La complexité administrative et le coût financier restant à charge",
+      "L'interdiction légale de rénover les bâtiments construits avant 1990",
+      "La certitude que l'énergie deviendra entièrement gratuite"
+    ],
+    "ans": 1,
+    "passEn": "BUILDING THERMAL RETROFITTING: Residential thermal insulation represents the most effective lever to fight energy poverty and curb greenhouse gas emissions. However, administrative complexity and out-of-pocket costs still discourage many homeowners from launching renovation works.",
+    "qEn": "What obstacles slow down homeowners' commitment to thermal retrofitting?",
+    "optEn": [
+      "A total lack of insulation materials on international markets",
+      "Administrative complexity and remaining out-of-pocket costs",
+      "A legal ban on renovating buildings constructed prior to 1990",
+      "The certainty that utility energy will soon become free"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 29,
+    "level": "B2",
+    "docType": "Lettre de réclamation administrative",
+    "text": "SIGNALEMENT ENVIRONNEMENTAL : Le collectif de riverains saisit la préfecture à la suite des rejets d'effluents non traités constatés dans la rivière locale. L'association exige le déclenchement immédiat d'une inspection sanitaire indépendante et la mise en conformité sous astreinte de l'usine incriminée.",
+    "q": "Que demande le collectif de riverains aux autorités préfectorales ?",
+    "opt": [
+      "La fermeture définitive de tous les commerces de la vallée",
+      "Une inspection sanitaire indépendante et la mise en conformité de l'usine",
+      "Le remboursement des taxes d'eau de l'année précédente",
+      "L'autorisation d'implanter une nouvelle décharge publique"
+    ],
+    "ans": 1,
+    "passEn": "ENVIRONMENTAL COMPLAINT: A neighborhood collective files an administrative complaint regarding untreated industrial effluent discharges into the local river. The association demands an immediate independent health inspection and court-ordered compliance for the factory.",
+    "qEn": "What does the neighborhood collective ask of prefectural authorities?",
+    "optEn": [
+      "Permanent closure of all local valley businesses",
+      "An independent health inspection and mandatory factory compliance",
+      "Refunds on the previous year's residential water bills",
+      "Authorization to build a new public waste landfill"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 30,
+    "level": "C1",
+    "docType": "Éditorial socio-économique",
+    "text": "LE MYTHE DE LA DÉCROISSANCE HEUREUSE : Préconiser la décroissance sélective sans anticiper ses répercussions sur les systèmes de protection sociale relève d'une illusion théorique. Faute d'une refonte structurelle de la fiscalité et de la répartition de la valeur, le ralentissement délibéré de l'activité économique risque de frapper en premier lieu les classes populaires déjà fragilisées.",
+    "q": "Quelle mise en garde l'auteur formule-t-il contre la décroissance non planifiée ?",
+    "opt": [
+      "Elle entraînerait une baisse des bénéfices des grands groupes du secteur bancaire",
+      "Elle risquerait d'impacter prioritairement les classes populaires sans refonte sociale",
+      "Elle supprimerait l'obligation d'exercer une activité professionnelle",
+      "Elle provoquerait l'arrêt immédiat des exportations agricoles mondialisées"
+    ],
+    "ans": 1,
+    "passEn": "THE MYTH OF HAPPY DEGROWTH: Advocating selective degrowth without anticipating its fallout on social welfare systems is a theoretical illusion. Without a structural overhaul of taxation and wealth distribution, deliberately slowing economic activity risks hitting disadvantaged populations first.",
+    "qEn": "What warning does the author issue against unplanned economic degrowth?",
+    "optEn": [
+      "It would reduce profitability for major international banking groups",
+      "It risks impacting disadvantaged populations first without social reform",
+      "It would eliminate the obligation to hold gainful employment",
+      "It would cause an immediate halt to global agricultural exports"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 31,
+    "level": "C1",
+    "docType": "Essai sur la diversité linguistique",
+    "text": "ÉCOLOGIE DES LANGUES MENACÉES : L'extinction accélérée des langues minoritaires ne constitue pas seulement une perte linguistique, mais une érosion irréparable de la diversité cognitive humaine. Chaque langue véhiculant une cosmogonie singulière et une taxonomie originale du vivant, la mort d'un idiome équivaut à la disparition d'une bibliothèque de savoirs écologiques.",
+    "q": "Pourquoi la disparition d'une langue minoritaire est-elle comparée à la perte d'une bibliothèque ?",
+    "opt": [
+      "Parce que les livres écrits dans cette langue doivent être détruits",
+      "Parce que chaque langue renferme une cosmogonie et des savoirs écologiques uniques",
+      "Parce que l'enseignement des langues coûte de plus en plus cher",
+      "Parce que les étudiants refusent d'apprendre des alphabets anciens"
+    ],
+    "ans": 1,
+    "passEn": "ECOLOGY OF ENDANGERED LANGUAGES: The accelerated extinction of minority languages represents not merely a linguistic loss, but an irreparable erosion of human cognitive diversity. Because every language embodies a unique cosmogony and taxonomy of life, language death equates to destroying a library of ecological knowledge.",
+    "qEn": "Why is the loss of a minority language compared to losing a library?",
+    "optEn": [
+      "Because physical books written in that language must be destroyed",
+      "Because every language embodies a unique cosmogony and ecological knowledge",
+      "Because teaching minority languages has become increasingly expensive",
+      "Because students refuse to learn ancient writing systems"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 32,
+    "level": "C1",
+    "docType": "Analyse critique sur la vulgarisation",
+    "text": "DEVOIR D'INCERTITUDE DANS LE DISCOURS SCIENTIFIQUE : Dans leur quête de légitimité face à l'opinion publique, certains experts enclins au dogmatisme masquent les incertitudes méthodologiques inhérentes à la recherche. Or, reconnaître la part de doute et la révisabilité des hypothèses scientifiques constitue l'essence même de l'esprit critique et le gage ultime de la confiance du public.",
+    "q": "Selon l'auteur, qu'est-ce qui garantit véritablement la confiance du public envers la science ?",
+    "opt": [
+      "L'affirmation dogmatique de vérités absolues et définitives",
+      "La reconnaissance transparente du doute et de la révisabilité des hypothèses",
+      "L'interdiction faite aux journalistes de poser des questions techniques",
+      "La publication exclusive des résultats de recherche positifs"
+    ],
+    "ans": 1,
+    "passEn": "DUTY OF UNCERTAINTY IN SCIENTIFIC DISCOURSE: Seeking public legitimacy, certain experts prone to dogmatism conceal methodological uncertainties inherent in research. Yet, acknowledging doubt and hypothesis revisability forms the essence of critical thinking and the ultimate pledge of public trust.",
+    "qEn": "According to the author, what truly guarantees public trust in science?",
+    "optEn": [
+      "Dogmatic assertion of absolute, permanent truths",
+      "Transparent acknowledgment of doubt and hypothesis revisability",
+      "Prohibiting journalists from asking technical questions",
+      "Publishing exclusively positive research trial findings"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 33,
+    "level": "C1",
+    "docType": "Étude patrimoniale et architecturale",
+    "text": "ESTHÉTIQUE DU BRUTALISME ARCHITECTURAL : Longtemps décrié pour son austérité de béton brut, le courant brutaliste fait l'objet d'une réévaluation esthétique et patrimoniale majeure. Les historiens de l'art soulignent aujourd'hui la dimension sociale utopique de ces structures, conçues à l'origine pour offrir des logements démocratiques et des équipements collectifs monumentaux.",
+    "q": "Comment le jugement porté sur l'architecture brutaliste a-t-il évolué ?",
+    "opt": [
+      "Elle est désormais unanimement condamnée et destinée à la démolition",
+      "Elle fait l'objet d'une réévaluation mettant en avant son utopie sociale",
+      "Elle est considérée comme une simple copie du style néoclassique",
+      "Elle est réservée à la construction de bâtiments administratifs secrets"
+    ],
+    "ans": 1,
+    "passEn": "AESTHETICS OF BRUTALIST ARCHITECTURE: Long decried for raw concrete austerity, brutalism undergoes major aesthetic reassessment. Art historians now highlight the utopian social vision of these structures, originally designed to provide democratic housing and monumental public amenities.",
+    "qEn": "How has evaluation of brutalist architecture evolved?",
+    "optEn": [
+      "It is now universally condemned and marked for complete demolition",
+      "It undergoes reassessment highlighting its utopian social vision",
+      "It is considered a simple copy of classical neoclassical styles",
+      "It is reserved exclusively for constructing classified government buildings"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 34,
+    "level": "C1",
+    "docType": "Réflexion prospective sur le numérique",
+    "text": "BIOMÉTRIE ET SURVEILLANCE DE MASSE : Le déploiement généralisé de la reconnaissance faciale dans l'espace public instaure une surveillance panoptique continue qui modifie la nature même de la liberté de réunion. Face au risque d'autocensure des citoyens lors des manifestations, des juristes plaident pour un moratoire strict sur ces technologies intrusives.",
+    "q": "Quel risque la reconnaissance faciale fait-elle peser sur la vie démocratique ?",
+    "opt": [
+      "La hausse des coûts de maintenance du matériel informatique",
+      "L'autocensure des citoyens et l'entrave à la liberté de réunion",
+      "La fermeture définitive des tribunaux de grande instance",
+      "L'obligation de porter un masque uniforme dans les rues"
+    ],
+    "ans": 1,
+    "passEn": "BIOMETRICS AND MASS SURVEILLANCE: Widespread facial recognition in public spaces establishes continuous panoptic surveillance altering the nature of assembly freedom. Facing risks of citizen self-censorship during demonstrations, legal scholars argue for strict moratoria on intrusive technologies.",
+    "qEn": "What risk does facial recognition pose to democratic life?",
+    "optEn": [
+      "Rising hardware maintenance computing costs",
+      "Citizen self-censorship and infringement on assembly freedom",
+      "Permanent closure of regional high courts of justice",
+      "Mandatory requirement to wear uniform facial masks outdoors"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 35,
+    "level": "C1",
+    "docType": "Essai critique sur la littérature",
+    "text": "POÉTIQUE DU FRAGMENT DANS L'ESSAI MODERNISTE : En répudiant la linéarité du traité philosophique classique au profit de la forme fragmentaire, les essayistes du XXe siècle traduisent la dislocation du sujet moderne. Le fragment n'est pas une pensée incomplète, mais le refus délibéré du système clos, offrant au lecteur des alvéoles de méditation ouverte.",
+    "q": "Quelle est la signification de l'écriture fragmentaire selon l'auteur ?",
+    "opt": [
+      "Une incapacité de l'auteur à achever son ouvrage par manque d'inspiration",
+      "Le refus délibéré du système clos traduisant la dislocation du sujet",
+      "Une technique commerciale destinée à réduire le nombre de pages",
+      "Une obligation d'imiter les textes anciens traduits du latin"
+    ],
+    "ans": 1,
+    "passEn": "POETICS OF THE FRAGMENT IN MODERNIST ESSAYS: Repudiating classical philosophical linearity for fragmentary forms, 20th-century essayists express the dislocation of the modern subject. The fragment is not incomplete thought, but deliberate refusal of closed systems, offering open meditative cells.",
+    "qEn": "What is the significance of fragmentary writing according to the author?",
+    "optEn": [
+      "An author's inability to complete work due to lack of inspiration",
+      "Deliberate rejection of closed systems reflecting subject dislocation",
+      "A publisher's marketing trick designed to reduce physical book length",
+      "An obligation to mimic ancient texts translated from Latin"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 36,
+    "level": "C2",
+    "docType": "Chronique philosophique sur le temps",
+    "text": "L'ILLUSION DE L'ACCÉLÉRATION HISTORIQUE : La rhétorique contemporaine sur l'accélération exponentielle du temps masque en réalité une stase structurelle profonde. Sous le vernis de l'agitation technologique et du renouvellement frénétique des gadgets, les structures fondamentales du capitalisme tardif et de l'organisation politique demeurent singulièrement figées et incapables d'engendrer une véritable alternative métaphysique.",
+    "q": "Quel paradoxe l'auteur met-il en évidence sous l'apparence de l'accélération moderne ?",
+    "opt": [
+      "L'agitation technologique masque en réalité une stase structurelle profonde",
+      "L'accélération technologique a permis de résoudre toutes les inégalités sociales",
+      "Les gouvernements ont réussi à ralentir le cours du temps biologique",
+      "Le renouvellement des objets empêche définitivement les guerres internationales"
+    ],
+    "ans": 0,
+    "passEn": "THE ILLUSION OF HISTORICAL ACCELERATION: Contemporary rhetoric on exponential time acceleration masks profound structural stasis. Beneath technological turmoil and rapid gadget turnover, fundamental structures of late capitalism and political organization remain frozen, incapable of generating genuine metaphysical alternatives.",
+    "qEn": "What paradox does the author highlight beneath the appearance of modern acceleration?",
+    "optEn": [
+      "Technological turmoil actually masks profound structural stasis",
+      "Technological acceleration has solved all social inequalities",
+      "Governments have succeeded in slowing biological time",
+      "Product turnover permanently prevents international wars"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 37,
+    "level": "C2",
+    "docType": "Essai épistémologique sur la modernité",
+    "text": "RÉIFICATION DU VIVANT ET DÉSENCHANTEMENT : L'arraisonnement de la nature par la techno-science moderniste a transformé le monde d'un cosmos habité par le mystère en un simple réservoir d'énergie et de ressources exploitables. Ce désenchantement méthodique dépossède l'humanité de son ancrage écosystémique, réduisant la relation au monde à un rapport unilatéral de domination utilitariste.",
+    "q": "Quelles conséquences le désenchantement de la nature entraîne-t-il pour l'humanité ?",
+    "opt": [
+      "L'élévation spirituelle de l'humanité vers des savoirs ancestraux",
+      "La dépossession de l'ancrage écosystémique au profit d'un utilitarisme réifié",
+      "La garantie de la gratuité universelle de toutes les ressources énergétiques",
+      "L'éradication définitive des maladies génétiques humaines"
+    ],
+    "ans": 1,
+    "passEn": "REIFICATION OF THE LIVING AND DISENCHANTMENT: The subjugation of nature by modernist techno-science transformed the world from a mystery-laden cosmos into a mere reservoir of exploitable energy. This methodical disenchantment strips humanity of ecosystemic grounding, reducing world relations to unilateral utilitarian domination.",
+    "qEn": "What consequences does the disenchantment of nature entail for humanity?",
+    "optEn": [
+      "Humanity's spiritual elevation toward ancestral wisdom",
+      "Stripping ecosystemic grounding in favor of reified utilitarianism",
+      "Guaranteeing universal free energy resources for all",
+      "Permanent eradication of human genetic diseases"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 38,
+    "level": "C2",
+    "docType": "Réflexion philosophique sur l'esthétique",
+    "text": "GÉNÉALOGIE DU KITSCH ET MASS-MÉDIAS : Le kitsch ne se définit pas par une absence de goût, mais par une esthétique du sentiment facile et du confort émotionnel immédiat. En éliminant toute tension dialectique et tout conflit tragique au profit d'une harmonie frelatée, le kitsch contemporain agit comme un narcotique culturel assurant la pacification idéologique des masses.",
+    "q": "Quelle fonction idéologique le kitsch remplit-il selon cette réflexion ?",
+    "opt": [
+      "Il stimule la pensée subversive et la révolte politique des citoyens",
+      "Il agit comme un narcotique culturel assurant la pacification idéologique",
+      "Il contraint les musées à fermer leurs portes par manque d'œuvres",
+      "Il impose un apprentissage rigoureux des beaux-arts aux jeunes"
+    ],
+    "ans": 1,
+    "passEn": "GENEALOGY OF KITSCH AND MASS MEDIA: Kitsch is defined not by bad taste, but by aesthetics of cheap sentiment and immediate emotional comfort. Eliminating dialectical tension and tragic conflict for counterfeit harmony, contemporary kitsch acts as cultural narcotic ensuring ideological pacification.",
+    "qEn": "What ideological function does kitsch serve according to this reflection?",
+    "optEn": [
+      "It stimulates subversive thought and citizen political revolt",
+      "It acts as a cultural narcotic ensuring ideological pacification",
+      "It forces museums to close due to a lack of genuine artwork",
+      "It mandates rigorous fine arts training for young students"
+    ]
+  },
+  {
+    "paperNum": 2,
+    "qNum": 39,
+    "level": "C2",
+    "docType": "Extrait d'anthropologie philosophique",
+    "text": "L'ALTÉRITÉ COMME FONDEMENT ÉTHIQUE : L'éthique ne découle pas d'un contrat de réciprocité intéressée entre individus rationnels, mais de la responsabilité inconditionnelle et asymétrique envers le visage d'autrui. C'est dans l'épreuve de l'altérité irréductible, qui fait effraction dans le solipsisme du Moi, que s'enracine la possibilité même de la justice et de l'humanité.",
+    "q": "Selon l'auteur, quelle est l'origine fondamentale de la responsabilité éthique ?",
+    "opt": [
+      "Un calcul économique de réciprocité d'intérêts financiers",
+      "La responsabilité inconditionnelle et asymétrique envers autrui",
+      "L'obéissance aveugle aux lois écrites rédigées par l'État",
+      "La recherche permanente du plaisir personnel et du bien-être"
+    ],
+    "ans": 1,
+    "passEn": "OTHERNESS AS AN ETHICAL FOUNDATION: Ethics stems not from a reciprocal self-interested contract between rational agents, but from unconditional, asymmetric responsibility before the face of the Other. It is in confronting irreducible alterity, breaking into individual solipsism, that justice and humanity take root.",
+    "qEn": "According to the author, what is the fundamental origin of ethical responsibility?",
+    "optEn": [
+      "An economic calculation of reciprocal financial self-interest",
+      "Unconditional, asymmetric responsibility before the face of the Other",
+      "Blind obedience to written state legal codes",
+      "Constant pursuit of personal pleasure and individual well-being"
+    ]
+  }
+],
   // ==================== 📄 PAPER 3 (39 UNIQUE ITEMS) ====================
   [
     {
