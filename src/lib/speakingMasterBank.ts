@@ -1,7 +1,7 @@
 /**
- * 🇨🇦 FrancPrep Master Authentic Speaking Bank (Phase 1 Calibrated with Stimulus Documents)
+ * 🇨🇦 FrancPrep Master Authentic Speaking Bank (Phase 2 Voice-Fixed)
  * Official France Éducation International (FEI) TCF Canada Standard
- * 30 Authentic Tasks across Papers 1 to 10 with Single Examiner Voice Personas per Paper
+ * 30 Authentic Tasks across Papers 1 to 10 with Valid Neural Voice Personas
  */
 
 export interface StimulusDocument {
@@ -90,7 +90,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "scenario": "Vous souhaitez louer un appartement de vacances à Québec pour deux semaines. Vous appelez le propriétaire (l'examinateur). Posez-lui une dizaine de questions sur le logement, les tarifs et les équipements.",
       "scenarioEn": "You want to rent a vacation apartment in Quebec City for two weeks. You call the landlord (the examiner). Ask about 10 questions regarding the accommodation, prices, and amenities.",
       "examinerPersona": {
-        "name": "Examiner Henri (Propriétaire)",
+        "name": "Examiner Henri",
         "role": "Propriétaire d'un appartement meublé à Québec.",
         "gender": "male",
         "voiceId": "fr-FR-HenriNeural",
@@ -213,7 +213,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "scenario": "Vous souhaitez vous inscrire à un cours de français intensif à Montréal. Vous contactez la responsable du centre (l'examinatrice). Posez-lui des questions sur les horaires, les niveaux, les tests de placement et les frais.",
       "scenarioEn": "You want to enroll in an intensive French course in Montreal. You contact the center director (the examiner). Ask questions about schedules, levels, placement tests, and fees.",
       "examinerPersona": {
-        "name": "Examiner Denise (Directrice du centre)",
+        "name": "Examiner Denise",
         "role": "Directrice pédagogique d'une école de langues à Montréal.",
         "gender": "female",
         "voiceId": "fr-FR-DeniseNeural",
@@ -336,7 +336,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "scenario": "Vous souhaitez organiser une journée de nettoyage écologique dans votre quartier à Ottawa. Vous contactez le responsable des services municipaux (l'examinateur). Posez-lui des questions sur les autorisations, le matériel et la communication.",
       "scenarioEn": "You want to organize a neighborhood eco-cleanup day in Ottawa. You contact the municipal services officer (the examiner). Ask questions about permits, supplies, and publicity.",
       "examinerPersona": {
-        "name": "Examiner Jean (Agent municipal)",
+        "name": "Examiner Jean",
         "role": "Agent des services communautaires de la Ville d'Ottawa.",
         "gender": "male",
         "voiceId": "fr-CA-JeanNeural",
@@ -459,7 +459,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "scenario": "Vous cherchez un emploi à temps partiel dans une librairie-café à Sherbrooke. Vous rencontrez la gérante (l'examinatrice). Posez-lui des questions sur les tâches, les horaires, le salaire et le profil recherché.",
       "scenarioEn": "You are looking for a part-time job at a bookstore café in Sherbrooke. You meet the manager (the examiner). Ask questions about duties, hours, pay, and candidate requirements.",
       "examinerPersona": {
-        "name": "Examiner Sylvie (Gérante de librairie)",
+        "name": "Examiner Sylvie",
         "role": "Propriétaire engagée d'une librairie culturelle à Sherbrooke.",
         "gender": "female",
         "voiceId": "fr-CA-SylvieNeural",
@@ -547,10 +547,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "scenario": "Présentez-vous à l'examinateur : parlez des pays ou régions que vous avez visités et de vos destinations de rêve.",
       "scenarioEn": "Introduce yourself to the examiner: talk about countries or regions you have visited and your dream destinations.",
       "examinerPersona": {
-        "name": "Examiner Marc",
+        "name": "Examiner Rémy",
         "role": "Examinateur calme et encourageant.",
         "gender": "male",
-        "voiceId": "fr-FR-ClaudeNeural",
+        "voiceId": "fr-FR-RemyMultilingualNeural",
         "openingPromptFrench": "Bonjour et bienvenue. Je suis Marc. Racontez-moi un souvenir de voyage marquant ou l'endroit que vous aimeriez visiter prochainement.",
         "openingPromptEnglish": "Hello and welcome. I am Marc. Tell me about a memorable travel memory or a place you would like to visit soon."
       },
@@ -582,10 +582,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "scenario": "Vous organisez une sortie culturelle pour votre groupe de camarades. Vous contactez le responsable d'un musée (l'examinateur). Posez des questions sur les visites guidées, les tarifs de groupe et les réservations.",
       "scenarioEn": "You are organizing a cultural field trip for your study group. You contact a museum officer (the examiner). Ask about guided tours, group discounts, and booking requirements.",
       "examinerPersona": {
-        "name": "Examiner Marc (Responsable du musée)",
+        "name": "Examiner Rémy",
         "role": "Responsable de la billetterie et des groupes culturels.",
         "gender": "male",
-        "voiceId": "fr-FR-ClaudeNeural",
+        "voiceId": "fr-FR-RemyMultilingualNeural",
         "openingPromptFrench": "Bonjour, service des réservations du musée, Marc à votre service. Comment puis-je vous aider à planifier votre visite ?",
         "openingPromptEnglish": "Hello, museum booking department, Marc at your service. How can I help you plan your visit?",
         "roleplayPrompt": "Expliquez la gratuité pour les accompagnateurs et demandez si le candidat souhaite réserver un créneau horaire précis."
@@ -632,10 +632,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "scenario": "Faut-il instaurer des quotas stricts d'accès aux sites naturels et historiques pour contrer les dégradations dues au surtourisme ?",
       "scenarioEn": "Should strict access quotas be introduced for natural and historical sites to combat damage caused by overtourism?",
       "examinerPersona": {
-        "name": "Examiner Marc",
+        "name": "Examiner Rémy",
         "role": "Examinateur poussant à l'argumentation socio-économique.",
         "gender": "male",
-        "voiceId": "fr-FR-ClaudeNeural",
+        "voiceId": "fr-FR-RemyMultilingualNeural",
         "openingPromptFrench": "Passons au sujet d'actualité. Le surtourisme menace de nombreux espaces naturels et monuments. Soutenez-vous la régulation par des quotas d'entrée ?",
         "openingPromptEnglish": "Let's move to the topical subject. Overtourism threatens many natural spaces and monuments. Do you support regulation through entry quotas?",
         "followUpCounterQuestion": "Soulignez l'impact économique négatif sur les commerçants locaux dépendants des visiteurs."
@@ -670,10 +670,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "scenario": "Présentez-vous à l'examinatrice : décrivez une journée habituelle dans votre vie (matin, travail, repas, soirée).",
       "scenarioEn": "Introduce yourself to the examiner: describe a typical day in your life (morning, work, meals, evening).",
       "examinerPersona": {
-        "name": "Examiner Claire",
+        "name": "Examiner Vivienne",
         "role": "Examinatrice attentive et bienveillante.",
         "gender": "female",
-        "voiceId": "fr-FR-BrigitteNeural",
+        "voiceId": "fr-FR-VivienneMultilingualNeural",
         "openingPromptFrench": "Bonjour ! Je m'appelle Claire. Soyez le bienvenu. Racontez-moi comment se déroule généralement votre journée de la semaine.",
         "openingPromptEnglish": "Hello! My name is Claire. Welcome. Tell me how your typical weekday usually unfolds."
       },
@@ -705,10 +705,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "scenario": "Vous souhaitez louer un véhicule pour visiter la région ce week-end. Vous vous adressez à l'agent de l'agence de location (l'examinatrice). Posez des questions sur les modèles disponibles, l'assurance, le kilométrage et le dépôt de garantie.",
       "scenarioEn": "You want to rent a car to visit the region this weekend. You speak to the rental agent (the examiner). Ask questions about available models, insurance, mileage, and security deposit.",
       "examinerPersona": {
-        "name": "Examiner Claire (Agent de location)",
+        "name": "Examiner Vivienne",
         "role": "Conseillère chez Auto-Location Express.",
         "gender": "female",
-        "voiceId": "fr-FR-BrigitteNeural",
+        "voiceId": "fr-FR-VivienneMultilingualNeural",
         "openingPromptFrench": "Bonjour ! Bienvenue chez Auto-Express, je suis Claire. Quel type de véhicule recherchez-vous pour votre séjour ?",
         "openingPromptEnglish": "Hello! Welcome to Auto-Express, I am Claire. What type of vehicle are you looking for during your trip?",
         "roleplayPrompt": "Répondez aux questions sur les formules tout compris puis demandez si le candidat souhaite ajouter un conducteur secondaire."
@@ -755,10 +755,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "scenario": "Les applications mobiles et l'intelligence artificielle remplaceront-elles à terme les enseignants de langues en classe ?",
       "scenarioEn": "Will mobile apps and artificial intelligence eventually replace human language teachers in the classroom?",
       "examinerPersona": {
-        "name": "Examiner Claire",
+        "name": "Examiner Vivienne",
         "role": "Examinatrice interrogeant l'humain face à la technologie.",
         "gender": "female",
-        "voiceId": "fr-FR-BrigitteNeural",
+        "voiceId": "fr-FR-VivienneMultilingualNeural",
         "openingPromptFrench": "Abordons notre troisième sujet. Pensez-vous que les outils numériques éducatifs puissent rendre l'enseignant de langue obsolète ?",
         "openingPromptEnglish": "Let's address our third topic. Do you think digital educational tools can make human language teachers obsolete?",
         "followUpCounterQuestion": "Insistez sur la disponibilité 24/7 et la personnalisation instantanée offertes par les algorithmes."
@@ -796,7 +796,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "name": "Examiner Antoine",
         "role": "Examinateur canadien chaleureux et direct.",
         "gender": "male",
-        "voiceId": "fr-CA-AntoineNeural",
+        "voiceId": "fr-CA-JeanNeural",
         "openingPromptFrench": "Bonjour ! Je suis Antoine. Bienvenue. Dites-moi dans quel secteur vous travaillez et quel est votre projet d'avenir au Canada.",
         "openingPromptEnglish": "Hello! I am Antoine. Welcome. Tell me what sector you work in and what your future project is in Canada."
       },
@@ -828,10 +828,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "scenario": "Un nouveau complexe sportif ouvre dans votre municipalité à Gatineau. Vous vous renseignez auprès du responsable (l'examinateur). Posez des questions sur les abonnements, les cours collectifs, les équipements et les horaires d'ouverture.",
       "scenarioEn": "A new sports complex is opening in your municipality in Gatineau. You inquire with the manager (the examiner). Ask questions about memberships, group classes, equipment, and opening hours.",
       "examinerPersona": {
-        "name": "Examiner Antoine (Directeur du centre)",
+        "name": "Examiner Antoine",
         "role": "Directeur du complexe aquatique et sportif de Gatineau.",
         "gender": "male",
-        "voiceId": "fr-CA-AntoineNeural",
+        "voiceId": "fr-CA-JeanNeural",
         "openingPromptFrench": "Allo ! Bienvenue au Complexe Sportif de Gatineau, je suis Antoine. Vous souhaitez des infos sur nos installations ?",
         "openingPromptEnglish": "Hello! Welcome to Gatineau Sports Complex, I am Antoine. Would you like information about our facilities?",
         "roleplayPrompt": "Présentez la piscine olympique et la salle d'entraînement puis demandez si le candidat désire une séance d'essai."
@@ -881,7 +881,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "name": "Examiner Antoine",
         "role": "Examinateur stimulant le débat environnemental.",
         "gender": "male",
-        "voiceId": "fr-CA-AntoineNeural",
+        "voiceId": "fr-CA-JeanNeural",
         "openingPromptFrench": "Pour la troisième tâche, pensez-vous que l'État doive bannir totalement les plastiques et emballages éphémères pour forcer la transition écologique ?",
         "openingPromptEnglish": "For the third task, do you think the State should totally ban plastics and disposable packaging to force ecological transition?",
         "followUpCounterQuestion": "Relancez sur le coût supplémentaire répercuté sur le pouvoir d'achat des consommateurs modestes."
@@ -916,10 +916,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "scenario": "Présentez-vous à l'examinatrice : parlez de vos goûts musicaux, de vos films préférés et de vos dernières activités culturelles.",
       "scenarioEn": "Introduce yourself to the examiner: talk about your musical tastes, favorite movies, and recent cultural activities.",
       "examinerPersona": {
-        "name": "Examiner Isabelle",
+        "name": "Examiner Brigitte",
         "role": "Examinatrice souriante et très expressive.",
         "gender": "female",
-        "voiceId": "fr-FR-CelesteNeural",
+        "voiceId": "fr-FR-DeniseNeural",
         "openingPromptFrench": "Bonjour ! Bienvenue à votre épreuve d'oral. Je m'appelle Isabelle. Racontez-moi ce que vous aimez regarder ou écouter pour vous détendre.",
         "openingPromptEnglish": "Hello! Welcome to your oral exam. My name is Isabelle. Tell me what you like to watch or listen to in order to relax."
       },
@@ -951,10 +951,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "scenario": "Vous souhaitez vous engager comme bénévole dans une banque alimentaire locale. Vous rencontrez la responsable (l'examinatrice). Posez-lui des questions sur les missions, le temps requis, les horaires et les formations fournies.",
       "scenarioEn": "You want to volunteer at a local food bank. You meet the coordinator (the examiner). Ask questions about duties, time commitments, schedules, and training provided.",
       "examinerPersona": {
-        "name": "Examiner Isabelle (Coordonnatrice)",
+        "name": "Examiner Brigitte",
         "role": "Coordonnatrice du réseau de solidarité alimentaire.",
         "gender": "female",
-        "voiceId": "fr-FR-CelesteNeural",
+        "voiceId": "fr-FR-DeniseNeural",
         "openingPromptFrench": "Bonjour ! Merci d'être venu me voir pour le bénévolat. Je suis Isabelle. Quelles sont les interrogations que vous avez sur nos actions ?",
         "openingPromptEnglish": "Hello! Thanks for coming to see me about volunteering. I am Isabelle. What questions do you have about our actions?",
         "roleplayPrompt": "Expliquez l'importance du travail en équipe le samedi matin et demandez si le candidat est disponible."
@@ -1001,10 +1001,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "scenario": "Le port de l'uniforme obligatoire à l'école est-il une mesure efficace pour réduire les inégalités sociales et favoriser l'égalité ?",
       "scenarioEn": "Is mandatory school uniforms an effective measure to reduce social inequality and promote equality?",
       "examinerPersona": {
-        "name": "Examiner Isabelle",
+        "name": "Examiner Brigitte",
         "role": "Examinatrice attentive au débat éducatif.",
         "gender": "female",
-        "voiceId": "fr-FR-CelesteNeural",
+        "voiceId": "fr-FR-DeniseNeural",
         "openingPromptFrench": "Passons au sujet éducatif. Que pensez-vous du retour du port de l'uniforme dans les établissements scolaires ?",
         "openingPromptEnglish": "Moving to the educational topic. What do you think about bringing back school uniforms in educational institutions?",
         "followUpCounterQuestion": "Opposez le risque d'étouffer l'individualité et l'expression personnelle des élèves."
@@ -1042,7 +1042,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "name": "Examiner Pierre",
         "role": "Examinateur expérimenté au ton posé.",
         "gender": "male",
-        "voiceId": "fr-FR-AlainNeural",
+        "voiceId": "fr-FR-HenriNeural",
         "openingPromptFrench": "Bonjour. Je m'appelle Pierre. Soyez le bienvenu. Expliquez-moi quelles habitudes vous adoptez pour rester en bonne santé.",
         "openingPromptEnglish": "Hello. My name is Pierre. Welcome. Explain to me what habits you adopt to stay in good health."
       },
@@ -1074,10 +1074,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "scenario": "Vous recherchez un bureau partagé pour votre activité d'entrepreneur. Vous contactez le gestionnaire du centre (l'examinateur). Posez-lui des questions sur les tarifs mensuels, l'accès aux salles de réunion, la connexion haut débit et les services de secrétariat.",
       "scenarioEn": "You are looking for a shared office for your entrepreneurial business. You contact the center manager (the examiner). Ask about monthly rates, meeting room access, high-speed internet, and secretarial services.",
       "examinerPersona": {
-        "name": "Examiner Pierre (Gestionnaire)",
+        "name": "Examiner Pierre",
         "role": "Gestionnaire d'un espace de travail partagé innovant.",
         "gender": "male",
-        "voiceId": "fr-FR-AlainNeural",
+        "voiceId": "fr-FR-HenriNeural",
         "openingPromptFrench": "Bonjour ! Pierre à l'appareil, responsable de l'espace de coworking. Comment puis-je vous présenter nos offres de bureaux ?",
         "openingPromptEnglish": "Hello! Pierre speaking, coworking space manager. How can I introduce our office packages to you?",
         "roleplayPrompt": "Présentez la formule nomade et la formule bureau dédié puis demandez si le candidat désire faire une visite."
@@ -1127,7 +1127,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "name": "Examiner Pierre",
         "role": "Examinateur évaluant l'analyse socio-économique approfondie.",
         "gender": "male",
-        "voiceId": "fr-FR-AlainNeural",
+        "voiceId": "fr-FR-HenriNeural",
         "openingPromptFrench": "Passons au troisième sujet. Pensez-vous qu'un revenu de base garanti pour chacun soit une solution viable face aux mutations de l'emploi ?",
         "openingPromptEnglish": "Moving to the third topic. Do you think a guaranteed basic income for everyone is a viable solution facing employment shifts?",
         "followUpCounterQuestion": "Invoquez le risque d'une hausse massive des prélèvements fiscaux et de la démotivation au travail."
@@ -1165,7 +1165,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "name": "Examiner Sophie",
         "role": "Examinatrice dynamique et très à l'écoute.",
         "gender": "female",
-        "voiceId": "fr-FR-VivienneNeural",
+        "voiceId": "fr-FR-VivienneMultilingualNeural",
         "openingPromptFrench": "Bonjour et bienvenue à votre épreuve d'oral. Je m'appelle Sophie. Racontez-moi quelle place occupe la technologie dans votre vie de tous les jours.",
         "openingPromptEnglish": "Hello and welcome to your oral exam. My name is Sophie. Tell me what role technology plays in your everyday life."
       },
@@ -1197,10 +1197,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "scenario": "Vous souhaitez rejoindre un club de lecture francophone dans votre municipalité. Vous contactez la responsable (l'examinatrice). Posez des questions sur le rythme des réunions, la sélection des livres, le lieu de rencontre et les événements spéciaux.",
       "scenarioEn": "You want to join a Francophone book club in your municipality. You contact the leader (the examiner). Ask questions about meeting frequency, book selection, meeting location, and special events.",
       "examinerPersona": {
-        "name": "Examiner Sophie (Animatrice du club)",
+        "name": "Examiner Sophie",
         "role": "Animatrice passionnée du club de lecture municipal.",
         "gender": "female",
-        "voiceId": "fr-FR-VivienneNeural",
+        "voiceId": "fr-FR-VivienneMultilingualNeural",
         "openingPromptFrench": "Bonjour ! Bienvenue au club de lecture, je m'appelle Sophie. Vous êtes intéressé par nos rencontres littéraires ? Dites-moi tout !",
         "openingPromptEnglish": "Hello! Welcome to the book club, my name is Sophie. Are you interested in our literary meetings? Tell me everything!",
         "roleplayPrompt": "Expliquez que le groupe se réunit le premier mardi de chaque mois et demandez si le candidat lit des romans ou des essais."
@@ -1250,7 +1250,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "name": "Examiner Sophie",
         "role": "Examinatrice sollicitant une réflexion sociolinguistique poussée.",
         "gender": "female",
-        "voiceId": "fr-FR-VivienneNeural",
+        "voiceId": "fr-FR-VivienneMultilingualNeural",
         "openingPromptFrench": "Pour conclure cette épreuve, estimez-vous que la défense du patrimoine linguistique minoritaire doive être financée par des fonds publics prioritaires ?",
         "openingPromptEnglish": "To conclude this exam, do you believe defending minority linguistic heritage should be funded by priority public money?",
         "followUpCounterQuestion": "Relancez sur l'urgence d'investir plutôt dans la santé et la transition énergétique globale."
