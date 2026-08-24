@@ -534,11 +534,14 @@ export function AuthenticCBTExamPage() {
     return () => clearInterval(interval);
   }, [isOralSpeakingActive, oralSpeakingTimeRemaining, isSpeaking, isAudioFetching, isPlayingAudio, speakingChatLoading, isTimerPaused, recordingSpeaking]);
 
-  const handlePlayExaminerAudio = (text: string, onEnded?: () => void) => {
+  const handlePlayExaminerAudio = (text: string, onEnded?: () => void, targetVoiceId?: string) => {
     handleStopAudio();
     setIsAudioFetching(true);
     setIsPlayingAudio(true);
-    const isMale = /\b(monsieur|m\.|homme|paul|léo|marc|antoine|pierre|thomas|hugo|louis)\b/i.test(text);
+
+    const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
+    const voiceId = targetVoiceId || activeTask?.examinerPersona?.voiceId;
+    const isMale = activeTask?.examinerPersona?.gender === "male" || /\b(monsieur|m\.|homme|paul|léo|marc|antoine|pierre|thomas|hugo|louis|henri|jean)\b/i.test(text);
 
     const handleEnded = () => {
       setIsAudioFetching(false);
@@ -546,7 +549,7 @@ export function AuthenticCBTExamPage() {
       if (onEnded) onEnded();
     };
 
-    ttsSpeak(text, "fr-FR", 0.9, isMale ? "male" : "female", undefined, undefined, undefined, handleEnded);
+    ttsSpeak(text, "fr-FR", 0.9, isMale ? "male" : "female", voiceId, undefined, undefined, handleEnded);
   };
 
   const handleSendSpeakingQuestionToExaminer = async (taskId: string, userText: string, scenarioText: string) => {
@@ -588,6 +591,14 @@ export function AuthenticCBTExamPage() {
         }));
         handlePlayExaminerAudio(replyText, () => {
           setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
+          // Auto re-arm candidate mic for next turn if speaking timer is active
+          if ((oralSpeakingTimeRemaining[taskId] || 0) > 0) {
+            try {
+              if (!recordingSpeaking[taskId]) {
+                handleToggleSpeakingRecording(taskId);
+              }
+            } catch {}
+          }
         });
         return;
       }
