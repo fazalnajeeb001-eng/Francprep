@@ -20,14 +20,14 @@ export interface ReadingItem {
 }
 
 export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
-  // ==================== 📄 PAPER 1 (39 UNIQUE ITEMS) ====================
-  [
+  // ==================== 📄 PAPER 1 (39 GOLD-STANDARD ITEMS) ====================
+[
   {
     "paperNum": 1,
     "qNum": 1,
     "level": "A1",
     "docType": "Panneau d'information",
-    "text": "BIBLIOTHÈQUE MUNICIPALE : Ouvert du mardi au samedi de 9h à 18h. Fermeture exceptionnelle les jours fériés. Entrée gratuite sur présentation de la carte de résident.",
+    "text": "COMMUNAUTÉ MUNICIPALE — BIBLIOTHÈQUE DU CENTRE : Les espaces de lecture sont ouverts au public du mardi au samedi de 09h00 à 18h00 sans interruption. Fermeture exceptionnelle les jours fériés. L'accès est gratuit pour les habitants de la commune sur présentation d'un justificatif de domicile.",
     "q": "À quelle heure la bibliothèque ferme-t-elle le samedi ?",
     "opt": [
       "À 17h00",
@@ -36,7 +36,7 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       "À 20h00"
     ],
     "ans": 1,
-    "passEn": "MUNICIPAL LIBRARY: Open Tuesday to Saturday from 9:00 AM to 6:00 PM. Exceptional closure on public holidays. Free admission upon presenting resident card.",
+    "passEn": "MUNICIPAL COMMUNITY — DOWNTOWN LIBRARY: Reading areas are open to the public Tuesday through Saturday from 9:00 AM to 6:00 PM without interruption. Exceptional closure on public holidays. Admission is free for local residents upon presentation of proof of residence.",
     "qEn": "At what time does the library close on Saturday?",
     "optEn": [
       "At 5:00 PM",
@@ -50,22 +50,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 2,
     "level": "A1",
     "docType": "Avis municipal",
-    "text": "PISCINE CENTRE-VILLE : Fermeture temporaire du grand bassin du 12 au 15 juin pour travaux de nettoyage annuel. Le petit bassin reste accessible aux familles.",
-    "q": "Pourquoi le grand bassin est-il fermé ?",
+    "text": "COMMUNICATION MUNICIPALE — PISCINE DE LA MAIRIE : Le grand bassin olympique sera temporairement fermé du 12 au 15 juin pour des travaux de vidange et de nettoyage annuel. Le petit bassin d'apprentissage reste ouvert aux familles aux horaires habituels.",
+    "q": "Pourquoi le grand bassin est-il inaccessible aux nageurs ?",
     "opt": [
-      "Pour des compétitions régionales",
-      "Pour des travaux d'entretien annuel",
-      "À cause d'une panne d'électricité",
-      "Pour un cours de natation privé"
+      "Pour des compétitions régionales de natation",
+      "Pour des travaux d'entretien annuel obligatoires",
+      "À cause d'une panne du système de chauffage",
+      "Pour l'organisation d'un cours privé d'aquagym"
     ],
     "ans": 1,
-    "passEn": "DOWNTOWN SWIMMING POOL: Temporary closure of the main pool from June 12 to 15 for annual cleaning works. The small pool remains accessible to families.",
-    "qEn": "Why is the main swimming pool closed?",
+    "passEn": "MUNICIPAL NOTICE — CITY HALL SWIMMING POOL: The main Olympic pool will be temporarily closed from June 12 to 15 for annual draining and cleaning works. The small learning pool remains open to families during usual opening hours.",
+    "qEn": "Why is the main pool inaccessible to swimmers?",
     "optEn": [
-      "For regional competitions",
-      "For annual maintenance work",
-      "Because of a power outage",
-      "For a private swimming lesson"
+      "For regional swimming competitions",
+      "For mandatory annual maintenance work",
+      "Because of a heating system breakdown",
+      "For organizing a private aquagym class"
     ]
   },
   {
@@ -73,16 +73,16 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 3,
     "level": "A1",
     "docType": "Message court (SMS)",
-    "text": "Salut Marc ! N'oublie pas notre rendez-vous à 14h30 devant la gare centrale. Apporte ton passeport et les billets de train. À tout à l'heure, Sophie.",
-    "q": "Où Sophie et Marc se retrouvent-ils ?",
+    "text": "MESSAGE PERSONNEL — Salut Marc ! N'oublie pas notre rendez-vous à 14h30 précises devant l'entrée principale de la gare centrale. Pense à prendre ton passeport et les billets de train imprimés. À tout à l'heure, Sophie.",
+    "q": "Où Sophie et Marc se donnent-ils rendez-vous ?",
     "opt": [
       "À l'aéroport international",
       "Devant la gare centrale",
-      "Dans un café du centre",
-      "À l'arrêt de bus"
+      "Dans un café du centre-ville",
+      "À la station de métro"
     ],
     "ans": 1,
-    "passEn": "Hi Marc! Don't forget our meeting at 2:30 PM in front of the central station. Bring your passport and train tickets. See you soon, Sophie.",
+    "passEn": "PERSONAL MESSAGE — Hi Marc! Don't forget our appointment at 2:30 PM sharp in front of the main entrance of the central station. Remember to bring your passport and printed train tickets. See you soon, Sophie.",
     "qEn": "Where are Sophie and Marc meeting?",
     "optEn": [
       "At the international airport",
@@ -96,22 +96,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 4,
     "level": "A1",
     "docType": "Affiche promotionnelle",
-    "text": "BOULANGERIE DU PARC : Pour l'inauguration de notre nouvelle boutique, un croissant vous est offert pour tout achat supérieur à 10 € ce samedi matin !",
-    "q": "Que faut-il faire pour recevoir un croissant gratuit ?",
+    "text": "COMMERCE LOCAL — BOULANGERIE DU PARC : Pour célébrer l'inauguration de notre nouvel établissement, un croissant beurre vous est offert pour tout achat supérieur à 10 euros effectué ce samedi matin avant 12h00 !",
+    "q": "Quelle est la condition pour obtenir un croissant gratuit ?",
     "opt": [
-      "Acheter deux pains au chocolat",
-      "Dépenser plus de 10 € le samedi matin",
-      "Présenter une carte d'étudiant",
-      "S'inscrire à la newsletter du magasin"
+      "Acheter au moins trois baguettes fraîches",
+      "Effectuer un achat de plus de 10 euros le samedi matin",
+      "Présenter une carte de fidélité de la boulangerie",
+      "Partager l'affiche sur les réseaux sociaux"
     ],
     "ans": 1,
-    "passEn": "PARK BAKERY: To celebrate the grand opening of our new store, a free croissant is offered with any purchase over €10 this Saturday morning!",
-    "qEn": "What must you do to receive a free croissant?",
+    "passEn": "LOCAL COMMERCE — PARK BAKERY: To celebrate the opening of our new store, a butter croissant is offered for free with any purchase over 10 euros made this Saturday morning before 12:00 PM!",
+    "qEn": "What is the requirement to obtain a free croissant?",
     "optEn": [
-      "Buy two chocolate pastries",
-      "Spend over €10 on Saturday morning",
-      "Show a student ID card",
-      "Subscribe to the store newsletter"
+      "Buy at least three fresh baguettes",
+      "Make a purchase over 10 euros on Saturday morning",
+      "Show a bakery loyalty card",
+      "Share the poster on social media"
     ]
   },
   {
@@ -119,22 +119,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 5,
     "level": "A2",
     "docType": "Avis d'objet trouvé",
-    "text": "OBJET PERDU : Sac à dos noir oublié sur le banc du parc Mont-Royal hier vers 16h. Il contient des clés de maison et un carnet de notes bleu. Merci de contacter Thomas au 06 12 34 56 78.",
-    "q": "Que contient le sac à dos perdu ?",
+    "text": "PETITE ANNONCE — OBJET PERDU : Sac à dos noir de marque sportive oublié sur un banc du parc Mont-Royal hier après-midi vers 16h00. Il contient un trousseau de clés de maison et un carnet de notes bleu. Merci de contacter Thomas d'urgence au 06 12 34 56 78 pour le récupérer.",
+    "q": "Que contient le sac à dos égaré dans le parc ?",
     "opt": [
-      "Des clés et un carnet de notes",
-      "Un téléphone et un ordinateur portable",
-      "Un portefeuille et des lunettes de soleil",
-      "Des livres de cours et une trousse"
+      "Des clés de maison et un carnet de notes",
+      "Un ordinateur portable et son chargeur",
+      "Un portefeuille avec des pièces d'identité",
+      "Des vêtements de sport et une gourde"
     ],
     "ans": 0,
-    "passEn": "LOST ITEM: Black backpack forgotten on the Mont-Royal park bench yesterday around 4:00 PM. Contains house keys and a blue notebook. Please contact Thomas at 06 12 34 56 78.",
-    "qEn": "What does the lost backpack contain?",
+    "passEn": "CLASSIFIED AD — LOST ITEM: Black sports backpack forgotten on a bench at Mont-Royal Park yesterday afternoon around 4:00 PM. Contains house keys and a blue notebook. Please contact Thomas urgently at 06 12 34 56 78 to retrieve it.",
+    "qEn": "What does the backpack misplaced in the park contain?",
     "optEn": [
-      "Keys and a notebook",
-      "A phone and a laptop",
-      "A wallet and sunglasses",
-      "Textbooks and a pencil case"
+      "House keys and a notebook",
+      "A laptop and its charger",
+      "A wallet with ID cards",
+      "Sports clothes and a water bottle"
     ]
   },
   {
@@ -142,22 +142,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 6,
     "level": "A2",
     "docType": "Annonce de vide-grenier",
-    "text": "GRANDE VENTE DE QUARTIER : Dimanche prochain de 8h à 17h sur la Place du Marché. Plus de 50 exposants ! Vêtements, jouets et meubles anciens à petits prix. Buvette sur place.",
-    "q": "Quel événement est annoncé sur la Place du Marché ?",
+    "text": "VIE DE QUARTIER — GRAND VIDE-GRENIER : L'association des habitants organise sa grande braderie annuelle dimanche prochain de 08h00 à 17h00 sur la Place du Marché. Plus de 60 exposants proposeront vêtements, jouets d'enfants et meubles anciens à petits prix. Buvette et petite restauration sur place.",
+    "q": "Quel événement communautaire est planifié sur la Place du Marché ?",
     "opt": [
-      "Un festival de musique en plein air",
-      "Une exposition de peinture moderne",
+      "Un concert de musique pop en plein air",
+      "Une exposition temporaire de peinture",
       "Une vente de garage de quartier",
-      "Un marathon sportif solidaire"
+      "Une course à pied caritative"
     ],
     "ans": 2,
-    "passEn": "BIG NEIGHBORHOOD GARAGE SALE: Next Sunday from 8:00 AM to 5:00 PM at Market Square. Over 50 vendors! Clothes, toys, and antique furniture at low prices. Refreshments available on site.",
-    "qEn": "What event is announced at Market Square?",
+    "passEn": "NEIGHBORHOOD LIFE — BIG GARAGE SALE: The residents' association is organizing its big annual flea market next Sunday from 8:00 AM to 5:00 PM at Market Square. Over 60 vendors will offer clothes, children's toys, and antique furniture at low prices. Refreshments and food available on site.",
+    "qEn": "What community event is scheduled at Market Square?",
     "optEn": [
-      "An outdoor music festival",
-      "A modern painting exhibition",
+      "An outdoor pop music concert",
+      "A temporary painting exhibition",
       "A neighborhood garage sale",
-      "A charity marathon race"
+      "A charity running race"
     ]
   },
   {
@@ -165,21 +165,21 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 7,
     "level": "A2",
     "docType": "Invitation amicale",
-    "text": "Chers amis, pour fêter mon installation dans mon nouvel appartement, je vous invite à un pique-nique participatif ce dimanche à 12h au parc des Laurentides. Chacun apporte un plat à partager !",
-    "q": "Que demande l'hôte à ses invités ?",
+    "text": "INVITATION PRIVÉE — Chers amis, pour fêter mon emménagement dans mon nouvel appartement, je vous convie à un pique-nique amical ce dimanche à partir de 12h00 au parc des Laurentides. Afin de varier le repas, chacun est invité à apporter une salade ou un dessert à partager avec le groupe !",
+    "q": "Que demande l'organisateur à ses invités ?",
     "opt": [
-      "D'apporter des cadeaux de crémaillère",
-      "De réserver leurs billets à l'avance",
-      "D'arriver après 15 heures",
+      "D'offrir des cadeaux de crémaillère",
+      "De participer aux frais de réservation",
+      "D'arriver uniquement après 15 heures",
       "D'apporter de la nourriture à partager"
     ],
     "ans": 3,
-    "passEn": "Dear friends, to celebrate moving into my new apartment, I invite you to a potluck picnic this Sunday at 12:00 PM at Laurentides Park. Everyone brings a dish to share!",
+    "passEn": "PRIVATE INVITATION — Dear friends, to celebrate moving into my new apartment, I invite you to a friendly picnic this Sunday starting at 12:00 PM at Laurentides Park. To vary the meal, everyone is asked to bring a salad or a dessert to share with the group!",
     "qEn": "What does the host ask guests to do?",
     "optEn": [
-      "Bring housewarming gifts",
-      "Book their tickets in advance",
-      "Arrive after 3:00 PM",
+      "Give housewarming gifts",
+      "Contribute to reservation costs",
+      "Arrive only after 3:00 PM",
       "Bring food to share"
     ]
   },
@@ -188,22 +188,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 8,
     "level": "A2",
     "docType": "Offre d'emploi",
-    "text": "RECRUTEMENT : Librairie du Centre recherche un conseiller de vente dynamique à temps partiel (20h/semaine). Expérience en commerce souhaitée. Envoyez votre CV avant le 30 mai.",
-    "q": "Quel profil de poste est proposé dans cette annonce ?",
+    "text": "RECRUTEMENT — LIBRAIRIE DU CENTRE : Nous recherchons un conseiller de vente dynamique et passionné pour un poste à temps partiel (20 heures par semaine). Vous serez chargé de l'accueil de la clientèle et du rangement des rayons. Une première expérience en commerce est souhaitée. Envoyez votre CV avant le 30 mai.",
+    "q": "Quel poste fait l'objet de cette offre d'emploi ?",
     "opt": [
-      "Un poste de conseiller de vente à temps partiel",
-      "Un poste de comptable à temps plein",
-      "Un stage non rémunéré de gestion",
-      "Un poste de responsable informatique"
+      "Conseiller de vente à temps partiel",
+      "Comptable principal à plein temps",
+      "Responsable informatique de gestion",
+      "Stagiaire non rémunéré en communication"
     ],
     "ans": 0,
-    "passEn": "JOB OFFER: Downtown Bookstore is hiring a dynamic part-time sales advisor (20h/week). Retail experience preferred. Send your CV before May 30.",
-    "qEn": "What job position is offered in this announcement?",
+    "passEn": "RECRUITMENT — DOWNTOWN BOOKSTORE: We are looking for a dynamic and passionate sales advisor for a part-time position (20 hours per week). You will be responsible for customer reception and shelf organization. Previous retail experience preferred. Send your CV before May 30.",
+    "qEn": "What position is featured in this job posting?",
     "optEn": [
-      "A part-time sales advisor position",
-      "A full-time accountant position",
-      "An unpaid management internship",
-      "An IT manager position"
+      "Part-time sales advisor",
+      "Full-time head accountant",
+      "IT management supervisor",
+      "Unpaid communication intern"
     ]
   },
   {
@@ -211,22 +211,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 9,
     "level": "A2",
     "docType": "Petite annonce immobilière",
-    "text": "À LOUER : Bel appartement 2 pièces meublé de 45 m², lumineux et entièrement rénové, situé à 5 minutes à pied du métro. Loyer : 850 €/mois charges comprises. Disponible immédiatement.",
-    "q": "Quel est l'avantage principal de cet appartement mentionné dans l'annonce ?",
+    "text": "IMMOBILIER — À LOUER : Superbe appartement deux pièces meublé de 45 m², très lumineux et récemment rénové avec goût. Situé au 3e étage d'un immeuble calme, à seulement 5 minutes à pied de la station de métro. Loyer mensuel : 850 euros charges comprises. Disponible immédiatement pour bail longue durée.",
+    "q": "Quels atouts principaux sont mis en avant dans l'annonce immobilière ?",
     "opt": [
-      "Il comprend un grand garage fermé",
+      "Le logement comprend un garage privé",
       "Le loyer inclut les repas quotidiens",
-      "Il est meublé, rénové et proche du métro",
-      "Il se situe au dernier étage d'une tour"
+      "L'appartement est meublé, rénové et proche du métro",
+      "L'immeuble dispose d'une piscine sur le toit"
     ],
     "ans": 2,
-    "passEn": "FOR RENT: Beautiful furnished 2-room apartment of 45 sqm, bright and fully renovated, located 5 minutes walk from the metro. Rent: €850/month utilities included. Available immediately.",
-    "qEn": "What main advantage of this apartment is mentioned in the ad?",
+    "passEn": "REAL ESTATE — FOR RENT: Superb furnished two-room apartment of 45 sqm, very bright and tastefully renovated recently. Located on the 3rd floor of a quiet building, just a 5-minute walk from the subway station. Monthly rent: 850 euros utilities included. Available immediately for long-term lease.",
+    "qEn": "What main assets are highlighted in the real estate advertisement?",
     "optEn": [
-      "It includes a large closed garage",
-      "The rent includes daily meals",
-      "It is furnished, renovated, and near the metro",
-      "It is located on the top floor of a tower"
+      "The housing includes a private garage",
+      "Rent includes daily meals",
+      "The apartment is furnished, renovated, and near the subway",
+      "The building features a rooftop pool"
     ]
   },
   {
@@ -234,68 +234,68 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 10,
     "level": "A2",
     "docType": "Note de service interne",
-    "text": "NOTE DU PERSONNEL : À partir du 1er juillet, l'accès au parking souterrain de l'entreprise se fera exclusivement par badge magnétique individualisé. Merci de retirer votre badge à l'accueil.",
-    "q": "Quelle nouvelle règle entre en vigueur au parking d'entreprise ?",
+    "text": "NOTE D'ENTREPRISE — SÉCURITÉ DU PERSONNEL : À compter du 1er juillet prochain, les modalités d'accès au parking souterrain du siège social évoluent. L'ouverture des barrières s'effectuera désormais au moyen d'un badge magnétique personnel distribué à l'accueil sur présentation de la carte d'employé.",
+    "q": "Quelle instruction concerne l'accès au parking souterrain ?",
     "opt": [
-      "Le parking devient payant pour tous",
-      "Les places sont désormais attribuées au hasard",
-      "Le parking sera fermé pendant tout le mois de juillet",
-      "L'accès se fera uniquement par badge magnétique"
+      "Le stationnement devient payant pour les salariés",
+      "Les places seront désormais attribuées au hasard",
+      "Le parking sera totalement fermé pendant l'été",
+      "L'accès exige désormais un badge magnétique"
     ],
     "ans": 3,
-    "passEn": "STAFF NOTICE: Starting July 1st, access to the company underground parking lot will strictly require an individual magnetic badge. Please pick up your badge at reception.",
-    "qEn": "What new rule takes effect in the company parking lot?",
+    "passEn": "COMPANY NOTICE — STAFF SAFETY: Starting July 1st, entrance rules for the headquarters' underground parking lot are changing. Barrier gates will now open using a personal magnetic badge issued at reception upon presentation of employee ID.",
+    "qEn": "What instruction applies to accessing the underground parking lot?",
     "optEn": [
-      "Parking will become paid for everyone",
-      "Spaces are now assigned randomly",
-      "The parking lot will be closed for the entire month of July",
-      "Access will strictly require a magnetic badge"
+      "Parking becomes paid for employees",
+      "Spaces will now be assigned randomly",
+      "The parking lot will be completely closed during summer",
+      "Access now requires a magnetic badge"
     ]
   },
   {
     "paperNum": 1,
     "qNum": 11,
-    "level": "B1",
+    "level": "A2",
     "docType": "Dépliant touristique",
-    "text": "CIRCUIT HISTORIQUE : Découvrez le vieux quartier lors d'une visite guidée de 2 heures animée par un historien passionné. Réservation obligatoire en ligne 24h avant le départ. Tarif adulte : 15 €.",
-    "q": "Quelle condition est indispensable pour participer à la visite guidée ?",
+    "text": "PATRIMOINE LOCAL — VISITE GUIDÉE HISTORIQUE : Partez à la découverte du centre historique à travers un parcours pédestre commenté de 2 heures par un guide conférencier diplômé. Départ chaque samedi à 10h00 devant l'Office du Tourisme. La réservation préalable sur notre site web est obligatoire au moins 24 heures à l'avance. Tarif unique : 15 euros.",
+    "q": "Que doivent obligatoirement faire les touristes avant de participer ?",
     "opt": [
-      "Réserver sa place en ligne 24 heures à l'avance",
-      "Être membre d'une association locale",
-      "Venir équipé de chaussures de randonnée pro",
-      "Acheter un livre d'histoire sur place"
+      "Réserver leur place sur Internet 24h à l'avance",
+      "S'inscrire auprès d'une association locale",
+      "Acheter un livre d'histoire régionale",
+      "Fournir un certificat médical d'aptitude"
     ],
     "ans": 0,
-    "passEn": "HISTORICAL TOUR: Discover the old district during a 2-hour guided walking tour led by a passionate historian. Online booking mandatory 24h before departure. Adult fare: €15.",
-    "qEn": "What condition is mandatory to participate in the guided tour?",
+    "passEn": "LOCAL HERITAGE — HISTORICAL GUIDED TOUR: Discover the historic center through a 2-hour walking tour led by a certified tour guide. Departure every Saturday at 10:00 AM in front of the Tourist Office. Prior online booking on our website is mandatory at least 24 hours in advance. Standard price: 15 euros.",
+    "qEn": "What must tourists do before participating?",
     "optEn": [
-      "Book your spot online 24 hours in advance",
-      "Be a member of a local association",
-      "Wear professional hiking boots",
-      "Purchase a history book on site"
+      "Book their spot online 24h in advance",
+      "Register with a local association",
+      "Buy a regional history book",
+      "Provide a medical fitness certificate"
     ]
   },
   {
     "paperNum": 1,
     "qNum": 12,
-    "level": "B1",
+    "level": "A2",
     "docType": "Menu de restaurant",
-    "text": "RESTAURANT L'ARDOISE : Notre chef propose chaque jour une formule du midi préparée avec des produits locaux issus de l'agriculture biologique. Menu entrée + plat + dessert à 22 €, du lundi au vendredi.",
-    "q": "Qu'est-ce qui caractérise la formule du midi de ce restaurant ?",
+    "text": "GASTRONOMIE — BISTROT DE LA PLACE : Notre chef cuisinier vous propose du lundi au vendredi un menu du midi composé exclusivement de produits régionaux issus de la culture biologique locale. Formule complète (entrée, plat et dessert) à 22 euros. Pensez à réserver votre table aux heures de pointe !",
+    "q": "Quelle particularité caractérise la formule repas de ce bistro ?",
     "opt": [
-      "Elle est servie uniquement le week-end",
-      "Elle comprend une boisson alcoolisée gratuite",
-      "Elle est élaborée avec des produits locaux biologiques",
-      "Elle nécessite une réservation deux semaines plus tôt"
+      "Elle est uniquement servie durant le week-end",
+      "Elle inclut une boisson alcoolisée gratuite",
+      "Elle privilégie les produits locaux et biologiques",
+      "Elle impose une réservation deux semaines plus tôt"
     ],
     "ans": 2,
-    "passEn": "L'ARDOISE RESTAURANT: Every day our chef offers a lunch set menu prepared with local organic products. Starter + Main + Dessert for €22, Monday to Friday.",
-    "qEn": "What characterizes the lunch set menu at this restaurant?",
+    "passEn": "GASTRONOMY — BISTROT DE LA PLACE: Our chef offers a lunch set menu Monday through Friday composed exclusively of regional products from local organic farming. Complete set (starter, main, and dessert) for 22 euros. Remember to reserve your table during peak hours!",
+    "qEn": "What feature characterizes this bistro's set meal?",
     "optEn": [
       "It is served only on weekends",
       "It includes a complimentary alcoholic drink",
-      "It is prepared with local organic products",
-      "It requires reservations two weeks in advance"
+      "It favors local and organic products",
+      "It requires a reservation two weeks prior"
     ]
   },
   {
@@ -303,22 +303,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 13,
     "level": "B1",
     "docType": "Courriel client",
-    "text": "Madame, Monsieur, nous accusons réception de votre commande N° 8492. En raison d'un réapprovisionnement de nos stocks, la livraison prévue initialement mardi aura un retard de 48 heures. Veuillez nous excuser.",
-    "q": "Quel est le motif de l'envoi de ce courriel ?",
+    "text": "COURRIER SERVICE CLIENT — Société de Vente à Distance d'Équipements.\n\nChère cliente, cher client,\n\nNous accusons réception de votre commande numéro 8492 concernant le matériel informatique commandé le 10 mai dernier. Nous tenons à vous informer que, par suite d'un retard de réapprovisionnement auprès de nos fournisseurs européens, l'expédition de votre colis subira un décalage imprévu de 48 heures par rapport à la date de livraison initialement confirmée.\n\nNos équipes logistiques mettent tout en œuvre pour accélérer l'envoi de vos articles dès réception dans notre entrepôt central. Un numéro de suivi personnalisé vous sera transmis automatiquement dès l'expédier. Nous vous prions d'accepter nos plus sincères excuses pour ce désagrément temporaire et restons à votre entière disposition pour tout renseignement complémentaire.",
+    "q": "Quel est l'objectif principal de ce courriel d'information ?",
     "opt": [
-      "Une demande de règlement d'une facture impayée",
-      "La confirmation d'un remboursement d'article",
-      "L'invitation à donner son avis sur un achat",
-      "L'annonce d'un retard de livraison de 48 heures"
+      "Réclamer le paiement immédiat d'une facture",
+      "Proposer une offre promotionnelle de remboursement",
+      "Annuler définitivement la commande en cours",
+      "Informer le client d'un décalage dans la livraison"
     ],
     "ans": 3,
-    "passEn": "Dear Customer, we acknowledge receipt of your order #8492. Due to stock replenishment, the delivery originally scheduled for Tuesday will be delayed by 48 hours. We apologize for the inconvenience.",
-    "qEn": "What is the reason for sending this email?",
+    "passEn": "CUSTOMER SERVICE EMAIL — Distance Sales Equipment Corporation.\n\nDear Customer,\n\nWe acknowledge receipt of your order number 8492 regarding IT hardware ordered on May 10th. We wish to inform you that, due to a delay in restocking from our European suppliers, the shipment of your parcel will experience an unexpected 48-hour delay relative to the originally confirmed delivery date.\n\nOur logistics teams are making every effort to expedite shipment of your items upon arrival at our central warehouse. A tracking number will be automatically sent once dispatched. We apologize for this inconvenience.",
+    "qEn": "What is the main objective of this informational email?",
     "optEn": [
-      "A request to settle an unpaid invoice",
-      "Confirmation of an item refund",
-      "An invitation to review a recent purchase",
-      "An announcement of a 48-hour delivery delay"
+      "Demand immediate payment of an invoice",
+      "Offer a promotional refund deal",
+      "Permanently cancel the pending order",
+      "Inform the customer of a delivery delay"
     ]
   },
   {
@@ -326,22 +326,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 14,
     "level": "B1",
     "docType": "Avis de club sportif",
-    "text": "CLUB NAUTIQUE : En raison de conditions météorologiques très défavorables annoncées ce samedi (rafales de vent et fortes pluies), toutes les régates d'aviron sont reportées au weekend suivant.",
-    "q": "Pour quelle raison les régates sont-elles reportées ?",
+    "text": "COMMUNICATION OFFICIELLE — CLUB NAUTIQUE ET SPORTIF DE LA CÔTE.\n\nChers adhérents et passionnés d'aviron,\n\nEn raison des bulletins météorologiques très défavorables transmis par Météo France pour la journée de ce samedi — annonçant de fortes rafales de vent dépassant 80 km/h et d'importantes précipitations —, le comité d'organisation a pris la décision d'interrompre l'ensemble des régates régionales initialement prévues sur le bassin nautique.\n\nAfin de garantir la sécurité des rameurs et du public, toutes les compétitions nautiques de la journée sont reportées au week-end suivant aux mêmes horaires. Les séances d'entraînement en salle resteront quant à elles accessibles aux sportifs inscrits.",
+    "q": "Quelle raison justifie le report des compétitions nautiques ?",
     "opt": [
-      "Des conditions météo défavorables",
-      "Un manque de participants inscrits",
-      "Des travaux de réfection du ponton",
-      "Une panne d'équipement du club"
+      "Des conditions météorologiques très défavorables",
+      "L'insuffisance du nombre de rameurs inscrits",
+      "Des travaux de rénovation des installations du ponton",
+      "Une défaillance technique du système de chronométrage"
     ],
     "ans": 0,
-    "passEn": "NAUTICAL CLUB: Due to severe weather forecasts announced for this Saturday (wind gusts and heavy rain), all rowing regattas are postponed to the following weekend.",
-    "qEn": "For what reason are the regattas postponed?",
+    "passEn": "OFFICIAL NOTICE — COASTAL NAUTICAL SPORTS CLUB.\n\nDear members and rowing enthusiasts,\n\nDue to severe weather alerts issued by the weather service for Saturday—forecasting wind gusts exceeding 80 km/h and heavy rainfall—the organizing committee decided to suspend all regional regattas originally scheduled on the water basin.\n\nTo ensure the safety of rowers and spectators, all water competitions for the day are postponed to the following weekend at the same times. Indoor training sessions remain accessible to registered athletes.",
+    "qEn": "What reason justifies postponing the water competitions?",
     "optEn": [
       "Unfavorable weather conditions",
-      "A lack of registered participants",
-      "Dock renovation work",
-      "A club equipment failure"
+      "Insufficient number of registered rowers",
+      "Renovation work on dock facilities",
+      "Technical failure of the timing system"
     ]
   },
   {
@@ -349,22 +349,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 15,
     "level": "B1",
     "docType": "Programme d'excursion",
-    "text": "EXCURSION ÉCO-TOURISTIQUE : Journée d'observation de la faune marine au large de Saint-Malo. Le bateau quitte le port à 8h30 précises. Merci de prévoir un coupe-vent et des vêtements chauds.",
-    "q": "Recommandation donnée aux excursionnistes :",
+    "text": "PROGRAMME ÉCO-TOURISTIQUE — EXCURSION MARITIME SAINT-MALO.\n\nEmbarquez pour une journée exceptionnelle dédiée à l'observation de la faune et de la flore marines au large des côtes bretonnes. Notre navire écologique quittera le port de Saint-Malo à 08h30 précises. Au cours de la traversée, des biologistes marins commenteront les comportements des mammifères marins et des oiseaux marins aperçus.\n\nEn raison de la baisse de température en mer et de l'humidité ambiante, il est fortement conseillé à tous les excursionnistes de prévoir des vêtements chauds, un manteau coupe-vent étanche ainsi que des chaussures antidérapantes adaptés aux déplacements sur le pont du bateau.",
+    "q": "Quelle consigne vestimentaire est recommandée aux visiteurs ?",
     "opt": [
-      "Emporter un maillot de bain et une serviette",
+      "Porter un maillot de bain sous la tenue",
       "Prévoir des vêtements chauds et un coupe-vent",
-      "Acheter du matériel de plongée sous-marine",
-      "Apporter son propre matériel de pêche"
+      "Acheter une tenue de plongée spécifique",
+      "Emporter des équipements de pêche sportive"
     ],
     "ans": 1,
-    "passEn": "ECO-TOURISM EXCURSION: Day trip for marine wildlife observation off the coast of Saint-Malo. The boat leaves the harbor at 8:30 AM sharp. Please pack a windbreaker and warm clothing.",
-    "qEn": "Recommendation given to excursion participants:",
+    "passEn": "ECO-TOURISM PROGRAM — SAINT-MALO SEA EXCURSION.\n\nEmbark on an exceptional day dedicated to observing marine wildlife off the coast of Brittany. Our eco-friendly vessel will depart Saint-Malo harbor at 8:30 AM sharp. During the crossing, marine biologists will comment on marine mammals and birds spotted.\n\nDue to cooler sea temperatures and humidity, all excursionists are strongly advised to bring warm clothing, a windproof waterproof coat, and non-slip footwear suitable for walking on deck.",
+    "qEn": "What clothing recommendation is given to visitors?",
     "optEn": [
-      "Bring a swimsuit and a towel",
-      "Pack warm clothing and a windbreaker",
-      "Buy scuba diving gear",
-      "Bring personal fishing tackle"
+      "Wear a swimsuit under street clothes",
+      "Bring warm clothing and a windbreaker",
+      "Buy specialized scuba diving gear",
+      "Bring sport fishing tackle equipment"
     ]
   },
   {
@@ -372,22 +372,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 16,
     "level": "B1",
     "docType": "Règlement intérieur médiathèque",
-    "text": "MÉDIATHÈQUE MUNICIPALE : Le silence doit être respecté dans les espaces de travail individuel. Les appels téléphoniques sont strictement interdits en dehors du hall d'accueil principal.",
-    "q": "Où les usagers sont-ils autorisés à utiliser leur téléphone portable ?",
+    "text": "RÈGLEMENT DE SERVICE — MÉDIATHÈQUE MUNICIPALE ET ESPACE NUMÉRIQUE.\n\nAfin de préserver la tranquillité et la qualité d'étude indispensables au travail intellectuel, les usagers de la médiathèque sont tenus de respecter scrupuleusement le calme au sein des espaces de lecture et des postes d'étude individuels.\n\nPar mesure de courtoisie collective, l'émission et la réception d'appels téléphoniques sur mobile sont strictly interdites dans l'ensemble des salles de travail. Les usagers souhaitant téléphoner sont invités à se rendre exclusivement dans le hall d'accueil principal situé à l'entrée du bâtiment.",
+    "q": "Où l'usage du téléphone portable est-il toléré dans la médiathèque ?",
     "opt": [
       "Dans toutes les salles de lecture",
-      "Au sein de l'espace de travail individuel",
+      "Au sein des espaces d'étude individuels",
       "Uniquement dans le hall d'accueil principal",
-      "Dans la zone des archives réservée au personnel"
+      "Dans les zones d'archivage du personnel"
     ],
     "ans": 2,
-    "passEn": "MUNICIPAL MEDIA LIBRARY: Silence must be observed in individual study areas. Phone calls are strictly prohibited outside the main reception lobby.",
-    "qEn": "Where are users allowed to use their mobile phones?",
+    "passEn": "SERVICE REGULATIONS — MUNICIPAL MEDIA LIBRARY AND DIGITAL CENTER.\n\nTo preserve tranquility essential for study, media library users are required to strictly observe silence within reading areas and individual study desks.\n\nAs a measure of courtesy, making or receiving mobile phone calls is strictly prohibited in all study rooms. Users wishing to phone are requested to step into the main reception lobby located at the building entrance.",
+    "qEn": "Where is mobile phone usage permitted in the media library?",
     "optEn": [
       "In all reading rooms",
-      "Inside the individual study area",
+      "Inside individual study spaces",
       "Only in the main reception lobby",
-      "In the staff-only archive zone"
+      "In staff archive areas"
     ]
   },
   {
@@ -395,22 +395,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 17,
     "level": "B1",
     "docType": "Article de presse régionale",
-    "text": "MOBILITÉ DOUCE : La ville de Nantes inaugure 15 kilomètres de nouvelles pistes cyclables sécurisées reliant le centre-ville aux zones résidentielles de la périphérie afin de favoriser les déplacements écologiques.",
-    "q": "Quel est l'objectif principal de ce projet d'aménagement à Nantes ?",
+    "text": "ACTUALITÉ RÉGIONALE — VILLE DE NANTES : DÉVELOPPEMENT DE LA MOBILITÉ DOUCE.\n\nDans le cadre de son plan de transition écologique, la municipalité de Nantes vient d'inaugurer 15 kilomètres de nouvelles voies cyclables entièrement sécurisées et séparées de la voie automobile. Ce réseau s'étend désormais du centre-ville historique jusqu'aux zones résidentielles périphériques.\n\nL'objectif de cet aménagement urbain ambitieux est de réduire l'empreinte carbone communale en incitant les habitants à privilégier le vélo pour leurs trajets quotidiens. Des bornes de réparation en libre-accès et des parkings à vélo sécurisés ont également été implantés aux abords des stations de tramway.",
+    "q": "Quel est le but recherché par la création de ces nouvelles pistes cyclables ?",
     "opt": [
-      "Augmenter le nombre de places de stationnement automobile",
-      "Créer une nouvelle ligne de bus express payante",
-      "Limiter la circulation des piétons dans le centre-ville",
-      "Encourager les déplacements écologiques à vélo"
+      "Augmenter le nombre de places de stationnement",
+      "Créer une voie réservée aux transports payants",
+      "Limiter les déplacements des piétons au centre",
+      "Encourager la mobilité écologique à vélo"
     ],
     "ans": 3,
-    "passEn": "SUSTAINABLE MOBILITY: The city of Nantes inaugurates 15 kilometers of new protected bike lanes connecting downtown to suburban residential areas to encourage eco-friendly travel.",
-    "qEn": "What is the main goal of this urban development project in Nantes?",
+    "passEn": "REGIONAL NEWS — CITY OF NANTES: DEVELOPING SUSTAINABLE MOBILITY.\n\nAs part of its ecological transition plan, Nantes has inaugurated 15 kilometers of new protected bike lanes separated from car traffic. This network extends from the historical city center to suburban residential zones.\n\nThe goal of this ambitious urban development is to reduce municipal carbon emissions by encouraging residents to use bicycles for daily commutes. Free repair stations and bike parking lots were also installed near tram stations.",
+    "qEn": "What is the goal of creating these new bike lanes?",
     "optEn": [
-      "Increase the number of car parking spaces",
-      "Create a new toll express bus route",
-      "Restrict pedestrian traffic in the city center",
-      "Encourage eco-friendly bicycle travel"
+      "Increase parking space availability",
+      "Create a lane reserved for paid transit",
+      "Restrict pedestrian travel downtown",
+      "Encourage eco-friendly bicycle mobility"
     ]
   },
   {
@@ -418,22 +418,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 18,
     "level": "B1",
     "docType": "Bulletin d'information associative",
-    "text": "ASSOCIATION SOLIDARITÉ LOGEMENT : Notre collecte annuelle de vêtements d'hiver se déroulera du 10 au 20 novembre. Les dons peuvent être déposés au local associatif chaque après-midi entre 14h et 18h.",
-    "q": "Comment les citoyens peuvent-ils contribuer à cette action solidaire ?",
+    "text": "BULLETIN D'INFORMATION — ASSOCIATION SOLIDARITÉ ET LOGEMENT POUR TOUS.\n\nFace à l'arrivée de la saison hivernale et à la baisse des températures, notre association caritative organise sa grande collecte annuelle de vêtements chauds et de couvertures du 10 au 20 novembre prochain. Cette initiative solidaire vise à venir en aide aux personnes vulnérables et aux familles en situation de précarité de notre agglomération.\n\nLes citoyens souhaitant apporter leur soutien peuvent déposer leurs dons directement au local associatif chaque après-midi entre 14h00 et 18h00. Les vêtements propres et en bon état (manteaux, gants, bonnets) seront triés et redistribués dès la fin de la collecte.",
+    "q": "De quelle manière la population peut-elle soutenir cette initiative solidaire ?",
     "opt": [
-      "En déposant des vêtements d'hiver au local associatif",
-      "En effectuant un virement bancaire mensuel",
-      "En devenant bénévole à plein temps durant l'été",
-      "En organisant une braderie commerciale privée"
+      "En faisant don de vêtements chauds au local",
+      "En souscrivant un abonnement financier mensuel",
+      "En devenant bénévole permanent à plein temps",
+      "En organisant une braderie commerciale payante"
     ],
     "ans": 0,
-    "passEn": "HOUSING SOLIDARITY ASSOCIATION: Our annual winter clothing drive will take place from November 10 to 20. Donations can be dropped off at the community center every afternoon between 2:00 PM and 6:00 PM.",
-    "qEn": "How can citizens contribute to this solidarity drive?",
+    "passEn": "COMMUNITY NEWSLETTER — HOUSING SOLIDARITY ASSOCIATION FOR ALL.\n\nFacing winter and colder weather, our charity organization is holding its annual warm clothing drive from November 10 to 20. This drive aims to assist vulnerable individuals and struggling families across our metro area.\n\nCitizens wishing to support can drop off donations at the community center every afternoon between 2:00 PM and 6:00 PM. Clean clothes in good condition (coats, gloves, hats) will be sorted and redistributed immediately after the drive.",
+    "qEn": "How can the public support this solidarity initiative?",
     "optEn": [
-      "By dropping off winter clothes at the community center",
-      "By making a monthly bank transfer",
-      "By becoming a full-time summer volunteer",
-      "By organizing a private commercial sale"
+      "By donating warm clothes at the center",
+      "By taking out a monthly financial subscription",
+      "By becoming a full-time permanent volunteer",
+      "By organizing a paid commercial sale"
     ]
   },
   {
@@ -441,22 +441,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 19,
     "level": "B1",
     "docType": "Avis de perturbation des transports",
-    "text": "RÉSEAU EXPRESS RÉGIONAL : En raison de travaux de modernisation des voies ferrées, la ligne B sera interrompue entre Gare du Nord et Aéroport ce samedi toute la journée. Des bus de substitution sont mis en place.",
-    "q": "Quelle solution alternative est offerte aux voyageurs ce samedi ?",
+    "text": "INFORMATION VOYAGEURS — RÉSEAU FERROVIAIRE REGIONAL (RER).\n\nEn raison d'importants travaux de modernisation des infrastructures et de remplacement des rails menés par la compagnie ferroviaire, la circulation des trains sur la ligne B sera interrompue entre la station Gare du Nord et la station Aéroport pendant toute la journée de ce samedi.\n\nAfin de maintenir la desserte des usagers et de limiter les perturbations, un service spécial de bus de substitution à fréquence régulière sera mis en place tout au long de la journée. Les voyageurs sont invités à anticiper leurs déplacements et à consulter les horaires mis à jour sur l'application mobile.",
+    "q": "Quelle alternative de transport est déployée pendant les travaux ferroviaires ?",
     "opt": [
-      "Des billets de train gratuits pour le dimanche",
-      "Des bus de substitution mis en service",
-      "Des réductions sur les tarifs de taxi",
-      "Le remboursement automatique de tous les abonnements"
+      "Des billets de train valables le lendemain",
+      "Des bus de remplacement assurant la desserte",
+      "Des réductions sur les tarifs de taxi urbain",
+      "Le remboursement automatique des billets d'avion"
     ],
     "ans": 1,
-    "passEn": "REGIONAL EXPRESS NETWORK: Due to railway line modernization works, Line B will be suspended between Gare du Nord and Airport all day this Saturday. Replacement bus services are established.",
-    "qEn": "What alternative solution is provided to travelers this Saturday?",
+    "passEn": "PASSENGER NOTICE — REGIONAL EXPRESS RAILWAY NETWORK.\n\nDue to major track modernization works carried out by the railway company, train traffic on Line B will be suspended between Gare du Nord and Airport stations all day Saturday.\n\nTo maintain passenger service and limit disruptions, a special regular replacement bus service will run throughout the day. Travelers are asked to plan ahead and check updated timetables on the mobile app.",
+    "qEn": "What transit alternative is deployed during railway work?",
     "optEn": [
-      "Free train tickets for Sunday",
-      "Replacement bus services put into operation",
-      "Discounts on taxi fares",
-      "Automatic refunds on all transit passes"
+      "Train tickets valid the following day",
+      "Replacement bus services covering the route",
+      "Discounts on urban taxi fares",
+      "Automatic refunds on airline tickets"
     ]
   },
   {
@@ -464,22 +464,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 20,
     "level": "B2",
     "docType": "Article sur le développement durable",
-    "text": "ÉCONOMIE CIRCULAIRE ET INDUSTRIE : La transition vers un modèle de production circulaire ne relève plus du simple engagement environnemental volontaire, mais s'impose désormais comme une nécessité stratégique majeure. En réintégrant les déchets de production dans les cycles industriels, les entreprises réduisent leur dépendance aux matières premières importées tout en maîtrisant leurs coûts opérationnels à long terme.",
-    "q": "Selon l'auteur, quel avantage stratégique l'économie circulaire offre-t-elle aux entreprises ?",
+    "text": "DOSSIER ÉCONOMIE — TRIBUNE PARUE DANS LE MONDE ÉCONOMIQUE : LA TRANSITION VERS L'ÉCONOMIE CIRCULAIRE EN MILIEU INDUSTRIEL.\n\nLa transition vers un modèle d'économie circulaire ne relève plus aujourd'hui d'un simple engagement écoresponsable volontaire de la part des entreprises, mais constitue désormais une exigence stratégique majeure dans le contexte industriel mondial. En réintégrant systématiquement les matières secondaires et les déchets de fabrication dans les cycles de production, les entreprises réduisent durablement leur dépendance à l'égard de l'approvisionnement en matières premières vierges importées.\n\nOutre la réduction manifeste des impacts écologiques globaux, cette démarche sobre permet de prévenir les risques d'interruption des chaînes logistiques et de maîtriser les coûts de revient opérationnels sur le long terme face aux fluctuations volatiles des marchés internationaux.",
+    "q": "Selon la tribune, quel intérêt stratégique majeur l'économie circulaire apporte-t-elle aux industries ?",
     "opt": [
-      "Une diminution drastique des impôts sur le revenu des salariés",
-      "La suppression totale de toute réglementation environnementale",
-      "Une réduction de la dépendance aux matières premières importées",
-      "L'accès immédiat à des marchés d'exportation sans concurrence"
+      "Elle garantit une réduction des charges fiscales salariales",
+      "Elle supprime l'ensemble des contraintes réglementaires environnementales",
+      "Elle limite l'assujettissement aux importations de ressources fondamentales",
+      "Elle assure un monopole commercial immédiat sur les marchés étrangers"
     ],
     "ans": 2,
-    "passEn": "CIRCULAR ECONOMY AND INDUSTRY: The shift toward a circular production model is no longer merely a matter of voluntary environmental commitment, but now stands as a major strategic necessity. By reintroducing manufacturing waste back into industrial cycles, companies reduce their dependency on imported raw materials while controlling their long-term operating costs.",
-    "qEn": "According to the author, what strategic advantage does the circular economy offer to companies?",
+    "passEn": "ECONOMY FEATURE — OP-ED IN LE MONDE ECONOMIQUE: TRANSITIONING TO A CIRCULAR ECONOMY IN INDUSTRIAL SECTORS.\n\nTransitioning to a circular economic model is no longer merely a voluntary eco-friendly commitment by companies; it now represents a major strategic imperative in global manufacturing. By systematically reintroducing secondary materials and manufacturing waste into production cycles, companies sustainably reduce their reliance on imported virgin raw materials.\n\nBeyond clear environmental benefits, this lean approach prevents supply chain disruption risks and controls long-term operating costs amid volatile international markets.",
+    "qEn": "According to the op-ed, what major strategic benefit does circular economy bring to industries?",
     "optEn": [
-      "A drastic reduction in employee income taxes",
-      "The complete elimination of environmental regulations",
-      "A reduced dependency on imported raw materials",
-      "Immediate access to export markets without competition"
+      "Guarantees lower employee tax burdens",
+      "Eliminates all environmental regulatory compliance requirements",
+      "Limits reliance on imported primary resources",
+      "Ensures immediate commercial monopoly on foreign markets"
     ]
   },
   {
@@ -487,22 +487,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 21,
     "level": "B2",
     "docType": "Synthèse sur le télétravail",
-    "text": "MUTATIONS DE L'ORGANISATION DU TRAVAIL : L'adoption généralisée du travail hybride a profondément redéfini les rapports entre employeurs et salariés. Si la flexibilité horaire favorise indiscutablement l'équilibre entre vie professionnelle et vie personnelle, des sociologues soulignent le risque d'isolement social et l'estompement des frontières temporelles entre travail et repos.",
-    "q": "Quelle réserve importante est exprimée quant à la généralisation du travail hybride ?",
+    "text": "MANAGEMENT — ANNALES DE SOCIOLOGIE DU TRAVAIL : L'IMPACT DU TRAVAIL HYBRIDE SUR LES ORGANISATIONS.\n\nL'institutionnalisation généralisée du travail hybride a profondément bouleversé la dynamique traditionnelle au sein des équipes de travail. Si l'assouplissement des contraintes horaires offre indéniablement aux salariés un meilleur équilibre entre sphère professionnelle et vie personnelle, plusieurs chercheurs en sociologie du travail mettent en garde contre des effets pervers insidieux.\n\nEn effet, l'absence prolongée d'interactions physiques informelles risque de fragiliser le sentiment d'appartenance collective et d'accentuer l'isolement individuel. De surcroît, la porosité grandissante des frontières temporelles entre plages de travail et temps de repos domiciliaire favorise l'apparition d'un stress cognitif chronique.",
+    "q": "Quel écueil lié à la généralisation du travail hybride est souligné dans ce texte ?",
     "opt": [
-      "Une baisse systématique des salaires des télétravailleurs",
-      "L'incapacité technique d'utiliser les outils informatiques",
-      "L'obligation légale de déménager en zone rurale",
-      "Le risque d'isolement social et le flou des frontières temporelles"
+      "Une diminution drastique du niveau des rémunérations salariales",
+      "L'incapacité globale à manier les technologies informatiques",
+      "L'obligation légale de résider exclusivement en zone rurale",
+      "La dégradation des frontières temporelles et le risque de solitude"
     ],
     "ans": 3,
-    "passEn": "TRANSFORMATIONS IN WORK ORGANIZATION: The widespread adoption of hybrid work has deeply redefined relationships between employers and staff. While flexible hours undeniably support work-life balance, sociologists highlight the risk of social isolation and the blurring of temporal boundaries between work and rest.",
-    "qEn": "What major reservation is expressed regarding the widespread use of hybrid work?",
+    "passEn": "MANAGEMENT — OCCUPATIONAL SOCIOLOGY REVIEWS: THE IMPACT OF HYBRID WORK ON ORGANIZATIONS.\n\nThe institutionalization of hybrid work has deeply transformed traditional team dynamics. While flexible scheduling undeniably offers employees better work-life balance, sociology researchers warn against subtle negative side effects.\n\nIndeed, prolonged absence of physical interactions risks weakening collective belonging and heightening individual isolation. Furthermore, blurred boundaries between working hours and home rest encourage chronic cognitive stress.",
+    "qEn": "What pitfall linked to widespread hybrid work is highlighted in this text?",
     "optEn": [
-      "A systematic reduction in telecommuters' salaries",
-      "A technical inability to use digital software tools",
-      "A legal obligation to relocate to rural areas",
-      "The risk of social isolation and blurred temporal boundaries"
+      "A drastic drop in employee salary levels",
+      "A global inability to use digital computing software",
+      "A legal mandate to reside exclusively in rural areas",
+      "Blurring time boundaries and isolation risks"
     ]
   },
   {
@@ -510,22 +510,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 22,
     "level": "B2",
     "docType": "Tribune sur le système éducatif",
-    "text": "PÉDAGOGIE NUMÉRIQUE : L'intégration des outils technologiques en classe suscite d'intenses débats au sein du corps enseignant. Loin de remplacer l'accompagnement humain de l'enseignant, le numérique doit être appréhendé comme un vecteur d'individualisation des apprentissages capable de soutenir les élèves en difficulté.",
-    "q": "Comment le numérique éducatif doit-il être perçu selon cette tribune ?",
+    "text": "ÉDUCATION — TRIBUNE DES ENSEIGNANTS : LE NUMÉRIQUE AU SERVICE DE LA PÉDAGOGIE DE LA RÉUSSITE.\n\nL'introduction grandissante des outils numériques au sein des établissements scolaires suscite des débats passionnés quant à leur pertinence éducative réelle. Loin d'être appréhendé comme une alternative vouée à substituer la présence humaine indispensable de l'enseignant, le numérique éducatif doit être envisagé comme un instrument au service de la personnalisation des apprentissages.\n\nGrâce aux logiciels d'apprentissage adaptatif, l'enseignant peut ajuster les parcours pédagogiques au rythme propre de chaque élève, permettant ainsi d'offrir un soutien ciblé aux étudiants en difficulté tout en stimulant les compétences individuelles sans dégrader la cohésion de la classe.",
+    "q": "Selon cette tribune, quelle doit être la fonction essentielle des outils numériques à l'école ?",
     "opt": [
-      "Comme un moyen d'individualiser l'apprentissage sans remplacer l'humain",
-      "Comme un substitut définitif au rôle de l'enseignant",
-      "Comme une source inévitable d'échec scolaire généralisé",
-      "Comme un gadget coûteux réservé aux écoles privées"
+      "Offrir des parcours d'apprentissage personnalisés sans évincer l'enseignant",
+      "Remplacer progressivement la présence des professeurs dans les classes",
+      "Constater l'échec inévitable du système d'enseignement traditionnel",
+      "Réduire les dépenses publiques en supprimant les manuels imprimés"
     ],
     "ans": 0,
-    "passEn": "DIGITAL PEDAGOGY: Integrating tech tools in classrooms generates intense debate among educators. Far from replacing human teacher guidance, digital tools should be viewed as a medium for personalizing learning capable of supporting struggling students.",
-    "qEn": "How should educational technology be perceived according to this op-ed?",
+    "passEn": "EDUCATION — TEACHERS' OP-ED: DIGITAL TOOLS SERVING PEDAGOGY FOR SUCCESS.\n\nThe growing introduction of digital tools in schools sparks passionate debate regarding true educational value. Far from being viewed as a substitute for human teacher presence, educational tech must be seen as a tool for personalizing learning.\n\nUsing adaptive learning software, teachers can tailor educational paths to each student's pace, offering targeted support to struggling students while stimulating individual skills without disrupting classroom cohesion.",
+    "qEn": "According to this op-ed, what should be the main function of digital tools in schools?",
     "optEn": [
-      "As a means to personalize learning without replacing humans",
-      "As a permanent substitute for the teacher's role",
-      "As an inevitable source of widespread academic failure",
-      "As an expensive gimmick reserved exclusively for private schools"
+      "Provide personalized learning paths without replacing teachers",
+      "Progressively replace physical teachers in classrooms",
+      "Confirm the inevitable failure of traditional education",
+      "Cut public spending by eliminating printed textbooks"
     ]
   },
   {
@@ -533,22 +533,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 23,
     "level": "B2",
     "docType": "Article sur le patrimoine culturel",
-    "text": "PRÉSERVATION PATRIMONIALE : La numérisation en trois dimensions des monuments historiques ne constitue pas seulement une prouesse technologique, elle garantit également la sauvegarde virtuelle d'édifices menacés par l'usure du temps et le changement climatique, tout en rendant le patrimoine accessible aux chercheurs du monde entier.",
-    "q": "Quel double bénéfice la numérisation 3D apporte-t-elle au patrimoine ?",
+    "text": "PATRIMOINE — REVUE DU PATRIMOINE ET DES ARTS : LA NUMÉRISATION 3D DES ÉDIFICES HISTORIQUES.\n\nLa modélisation tridimensionnelle de haute précision appliquée aux monuments historiques ne représente pas uniquement une innovation technologique spectaculaire, elle constitue désormais un levier fondamental de préservation patrimoniale. En créant un jumeau numérique ultra-détaillé, les conservateurs garantissent la mémoire architecturale complète d'édifices soumis à l'érosion climatique ou aux dégradations du temps.\n\nDe surcroît, cette technologie novatrice démocratise l'accès aux chefs-d'œuvre architecturaux en permettant aux chercheurs et au grand public international de mener des analyses scientifiques approfondies à distance sans altérer la matière physique des édifices originaux.",
+    "q": "Quels avantages majeurs la numérisation tridimensionnelle offre-t-elle au patrimoine ?",
     "opt": [
-      "La baisse des tarifs d'entrée et l'augmentation des ventes en boutique",
-      "La sauvegarde virtuelle d'édifices menacés et l'accès mondial pour les chercheurs",
-      "La reconstruction physique immédiate de tous les châteaux détruits",
-      "L'interdiction des visites touristiques réelles dans les monuments"
+      "La baisse des tarifs de visite et la hausse des ventes commerciales",
+      "La conservation numérique des structures fragiles et l'accès scientifique à distance",
+      "La reconstruction physique instantanée de tous les monuments détruits",
+      "La fermeture definitiva des monuments aux visites touristiques réelles"
     ],
     "ans": 1,
-    "passEn": "HERITAGE PRESERVATION: 3D digitization of historical monuments is not merely a technological feat; it also guarantees the virtual preservation of structures threatened by time and climate change, while making heritage accessible to researchers worldwide.",
-    "qEn": "What dual benefit does 3D digitization bring to historical heritage?",
+    "passEn": "HERITAGE — HERITAGE AND ARTS MAGAZINE: 3D DIGITIZATION OF HISTORICAL BUILDINGS.\n\nHigh-precision 3D modeling applied to historical monuments represents not merely a spectacular tech feat; it now constitutes a fundamental lever for heritage preservation. By creating a detailed digital twin, conservators guarantee complete architectural memory of structures subject to weathering and climate erosion.\n\nFurthermore, this technology democratizes access to architectural masterpieces by allowing international researchers and the public to conduct detailed scientific analysis remotely without altering physical original structures.",
+    "qEn": "What major advantages does 3D digitization offer to historical heritage?",
     "optEn": [
-      "Lower admission fees and increased souvenir shop sales",
-      "Virtual preservation of threatened buildings and global research access",
-      "Immediate physical reconstruction of all destroyed castles",
-      "A total ban on physical tourist visits to historical sites"
+      "Lower admission fees and higher commercial shop sales",
+      "Digital preservation of fragile structures and remote scientific research access",
+      "Instant physical reconstruction of all destroyed historic monuments",
+      "Permanent closure of physical monuments to real tourist visits"
     ]
   },
   {
@@ -556,22 +556,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 24,
     "level": "B2",
     "docType": "Chronique sur l'intelligence artificielle",
-    "text": "ÉTHIQUE ET ALGORITHMES : L'automatisation des décisions managériales par des algorithmes d'apprentissage profond soulève de délicates questions de responsabilité juridique. Faute de transparence dans le fonctionnement des réseaux de neurones, il devient complexe de détecter et de corriger les biais discriminatoires involontairement reproduits par les machines.",
-    "q": "Quel problème majeur découle du manque de transparence algorithmique ?",
+    "text": "DÉBAT TECHNOLOGIQUE — CHRONIQUE INFORMATIQUE : OPACITÉ ALGORITHMIQUE ET RESPONSABILITÉ.\n\nL'automatisation croissante des prises de décision managériales par des algorithmes d'apprentissage profond soulève de complexes inquiétudes d'ordre éthique et juridique. En raison de la complexité interne des réseaux de neurones artificiels — souvent qualifiés de 'boîtes noires' —, les développeurs eux-mêmes peinent à retracer la logique exacte ayant produit un résultat donné.\n\nCette absence de transparence opérationnelle complique sévèrement l'identification et la correction des biais discriminatoires involontairement reproduits par les modèles. Dès lors, déterminer la responsabilité juridique en cas de préjudice subi par un utilisateur devient un véritable défi législatif.",
+    "q": "Selon la chronique, quelle difficulté découle directement du manque de transparence algorithmique ?",
     "opt": [
-      "La hausse immédiate des coûts d'énergie informatique",
-      "La difficulté de détecter et corriger les biais discriminatoires",
-      "L'interdiction légale d'employer des ingénieurs informaticiens",
-      "La perte définitive de toutes les données d'entreprise"
+      "L'augmentation incontrôlable de la consommation d'électricité informatique",
+      "La complexité à déceler et rectifier les dérives discriminatoires",
+      "L'interdiction d'embaucher des informaticiens spécialisés dans le secteur privé",
+      "La perte irréversible de l'ensemble des bases de données administratives"
     ],
     "ans": 1,
-    "passEn": "ETHICS AND ALGORITHMS: Automating managerial decisions using deep learning algorithms raises delicate legal accountability questions. Without transparency in neural network operations, detecting and correcting discriminatory biases accidentally reproduced by machines becomes complex.",
-    "qEn": "What major problem arises from the lack of algorithmic transparency?",
+    "passEn": "TECH DEBATE — COMPUTER CHRONICLE: ALGORITHMIC OPACITY AND ACCOUNTABILITY.\n\nGrowing automation of managerial decision-making using deep learning algorithms sparks complex ethical and legal concerns. Due to the internal complexity of neural networks—often called 'black boxes'—developers themselves struggle to trace the exact logic yielding a given result.\n\nThis lack of operational transparency severely complicates identifying and correcting discriminatory biases unintentionally reproduced by models. Consequently, establishing legal liability in case of user detriment becomes a true legislative hurdle.",
+    "qEn": "According to the column, what difficulty stems directly from the lack of algorithmic transparency?",
     "optEn": [
-      "An immediate surge in computing energy costs",
-      "Difficulty in detecting and correcting discriminatory biases",
-      "A legal ban on employing software engineers",
-      "Permanent loss of all corporate business data"
+      "Uncontrolled surge in computing electricity consumption",
+      "Complexity in detecting and rectifying discriminatory biases",
+      "Prohibition on hiring specialized software engineers in private firms",
+      "Irreversible loss of all administrative database records"
     ]
   },
   {
@@ -579,22 +579,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 25,
     "level": "B2",
     "docType": "Étude sur l'urbanisme écocitoyen",
-    "text": "AMÉNAGEMENT URBAIN ET BIODIVERSITÉ : La réintroduction de trames vertes au cœur des métropoles contribue directement à la réduction des îlots de chaleur urbains. Au-delà de l'amélioration de la qualité de l'air, cette végétalisation raisonnée recrée des corridors biologiques indispensables au maintien de la faune locale.",
-    "q": "Quel impact positif la végétalisation urbaine a-t-elle sur les villes ?",
+    "text": "URBANISME — REVUE D'AMÉNAGEMENT DURABLE : LA VÉGÉTALISATION DES ESPACES MÉTROPOLITAINS.\n\nLa réintroduction ciblée de trames vertes au cœur des tissus urbains très densifiés répond directement aux défis posés par le réchauffement climatique local. En remplaçant les surfaces minérales par des espaces végétalisés, les municipalités parviennent à atténuer significativement l'effet d'îlot de chaleur urbain durant les périodes de canicule.\n\nOutre l'amélioration mesurable de la qualité de l'air environnant, cette stratégie d'aménagement favorise la création de corridors écologiques essentiels à la préservation de la biodiversité animale locale, contribuant ainsi à réconcilier cadre de vie métropolitain et équilibre environnemental.",
+    "q": "Quel bénéfice environnemental l'implantation d'espaces verts apporte-t-elle aux villes ?",
     "opt": [
       "L'interdiction totale de la circulation des véhicules à moteur",
-      "L'obligation pour les citoyens de cultiver leurs propres légumes",
-      "La réduction des îlots de chaleur et le maintien de la faune locale",
-      "La suppression des taxes d'habitation dans les zones vertes"
+      "La baisse des températures locales et le soutien à la faune urbaine",
+      "L'obligation pour chaque habitant de faire du jardinage potager",
+      "La suppression des taxes d'habitation dans les quartiers verts"
     ],
-    "ans": 2,
-    "passEn": "URBAN PLANNING AND BIODIVERSITY: Reintroducing green corridors in city centers directly contributes to reducing urban heat island effects. Beyond improving air quality, reasoned urban greening recreates biological corridors essential for sustaining local wildlife.",
-    "qEn": "What positive impact does urban greening have on cities?",
+    "ans": 1,
+    "passEn": "URBAN PLANNING — SUSTAINABLE DEVELOPMENT REVIEW: GREENING METROPOLITAN AREAS.\n\nTargeted reintroduction of green corridors into dense urban areas directly addresses local climate warming challenges. By replacing paved surfaces with green spaces, municipalities significantly mitigate urban heat island effects during heatwaves.\n\nBeyond measurable air quality improvements, this planning strategy fosters ecological corridors essential for preserving local wildlife, reconciling metropolitan living with environmental balance.",
+    "qEn": "What environmental benefit does implementing green spaces bring to cities?",
     "optEn": [
-      "A total ban on motorized vehicle traffic",
-      "An obligation for citizens to grow their own vegetables",
-      "Reducing heat island effects and supporting local wildlife",
-      "The elimination of residential property taxes in green zones"
+      "Total ban on motorized vehicle traffic",
+      "Lowering local temperatures and supporting urban wildlife",
+      "Mandate for every resident to cultivate vegetable gardens",
+      "Abolishing housing taxes in designated green neighborhoods"
     ]
   },
   {
@@ -602,22 +602,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 26,
     "level": "B2",
     "docType": "Analyse de la mobilité professionnelle",
-    "text": "RECONVERSION PROFESSIONNELLE : L'évolution rapide des besoins du marché du travail incite un nombre croissant d'actifs à s'engager dans des parcours de formation continue tout au long de leur carrière. Cette dynamique exige toutefois des dispositifs d'accompagnement financier plus souples pour sécuriser ces transitions.",
-    "q": "Selon l'étude, que nécessite la réussite des reconversions professionnelles ?",
+    "text": "TRAVAIL ET EMPLOI — OBSERVATOIRE DE LA MOBILITÉ PROFESSIONNELLE : LA RECONVERSION À L'ÈRE DU NUMÉRIQUE.\n\nFace aux mutations technologiques accélérées du marché du travail, l'obsolescence rapide des compétences techniques spécifiques contraint un nombre croissant d'actifs à s'engager dans des parcours de formation continue tout au long de leur vie professionnelle. La capacité d'adaptation et le réapprentissage permanent deviennent dès lors des impératifs d'employabilité.\n\nToutefois, la réussite de ces transitions de carrière exige la mise en place de dispositifs de financement plus souples et personnalisés, indispensables pour sécuriser la trajectoire des travailleurs et maintenir leur revenu durant les périodes d'apprentissage.",
+    "q": "Selon l'étude, quelle condition est nécessaire pour accompagner efficacement les reconversions ?",
     "opt": [
-      "Une baisse systématique des critères de qualification",
-      "L'obligation de changer d'entreprise tous les trois ans",
-      "Le blocage des départs en retraite anticipée",
-      "Des dispositifs d'accompagnement financier plus souples"
+      "La baisse généralisée du niveau d'exigence des diplômes nationaux",
+      "Des mécanismes de soutien financier flexibles adaptés aux individus",
+      "L'obligation légale de changer de secteur d'activité tous les trois ans",
+      "Le blocage strict des départs volontaires à la retraite anticipée"
     ],
-    "ans": 3,
-    "passEn": "CAREER TRANSITION: Rapid shifts in labor market needs encourage an increasing number of workers to engage in lifelong continuing education. However, this dynamic requires more flexible financial support mechanisms to secure these career transitions.",
-    "qEn": "According to the study, what is required for successful career transitions?",
+    "ans": 1,
+    "passEn": "LABOR AND EMPLOYMENT — CAREER MOBILITY OBSERVATORY: CAREER CHANGE IN THE DIGITAL ERA.\n\nFacing accelerated tech shifts in the job market, rapid obsolescence of technical skills forces workers to pursue lifelong continuing education. Adaptability and continuous relearning become employability imperatives.\n\nHowever, successful career shifts require flexible, personalized funding mechanisms essential for securing workers' paths and maintaining income during retraining periods.",
+    "qEn": "According to the study, what condition is necessary to support career shifts effectively?",
     "optEn": [
-      "A systematic lowering of qualification standards",
-      "A mandatory requirement to change companies every three years",
-      "A freeze on early retirement options",
-      "More flexible financial support mechanisms"
+      "Widespread lowering of national qualification standards",
+      "Flexible financial support mechanisms tailored to individuals",
+      "Legal obligation to change economic sectors every three years",
+      "Strict freeze on voluntary early retirement options"
     ]
   },
   {
@@ -625,22 +625,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 27,
     "level": "B2",
     "docType": "Article sur l'engagement citoyen",
-    "text": "ENGAGEMENT ASSOCIATIF DE LA JEUNESSE : Les jeunes générations ne se détournent pas de la vie citoyenne, mais privilégient désormais des formes d'action plus ponctuelles et thématiques au détriment des structures militantes traditionnelles aux engagements d'une vie.",
-    "q": "Comment l'engagement citoyen des jeunes a-t-il évolué ?",
+    "text": "SOCIÉTÉ — CAHIERS DE LA DÉMOCRATIE CITOYENNE : LES NOUVELLES FORMES D'ENGAGEMENT DES JEUNES.\n\nContrairement aux idées reçues déplorant une apathie politique supposée des jeunes générations, les enquêtes sociologiques récentes révèlent que la jeunesse ne se détourne aucunement de la sphère citoyenne. En réalité, ses modes d'action se sont profondément transformés au détriment des structures militantes traditionnelles aux adhésions de long terme.\n\nLes jeunes privilégiant désormais des mobilisations ponctuelles, thématiques et fortement axées sur des causes concrètes (justice climatique, égalité sociale), privilégiant les réseaux informels et les actions de terrain ciblées sur des objectifs immédiatement évaluables.",
+    "q": "De quelle manière les modalités de mobilisation des jeunes ont-elles évolué ?",
     "opt": [
-      "Il s'oriente vers des actions thématiques plus ponctuelles",
-      "Il s'est traduit par un désintérêt total pour toute cause sociale",
-      "Il s'exprime exclusivement par le vote aux élections municipales",
-      "Il exige l'adhésion obligatoire à des partis politiques classiques"
+      "Elles privilégient des actions thématiques et ciblées sur du court terme",
+      "Elles traduisent une démission totale vis-à-vis des problèmes collectifs",
+      "Elles s'expriment exclusivement par la participation aux élections locales",
+      "Elles imposent une adhésion formelle à des partis politiques classiques"
     ],
     "ans": 0,
-    "passEn": "YOUTH CIVIC ENGAGEMENT: Younger generations are not turning away from civic life; instead, they favor more targeted, project-based actions over traditional lifelong political membership structures.",
-    "qEn": "How has youth civic engagement evolved?",
+    "passEn": "SOCIETY — CITIZEN DEMOCRACY PAPERS: NEW FORMS OF YOUTH CIVIC ENGAGEMENT.\n\nContrary to misconceptions lamenting youth political apathy, recent sociological surveys reveal that youth are not turning away from civic life. In reality, engagement modes transformed away from traditional long-term party memberships.\n\nYounger citizens now favor targeted, project-based actions focused on concrete causes (climate justice, social equity), choosing informal networks and field actions with immediate measurable outcomes.",
+    "qEn": "In what way have youth engagement modes evolved?",
     "optEn": [
-      "It favors more targeted, project-based actions",
-      "It has resulted in complete apathy toward social causes",
-      "It is expressed exclusively through voting in municipal elections",
-      "It requires mandatory membership in traditional political parties"
+      "They favor targeted, project-based short-term actions",
+      "They reflect total apathy toward collective social issues",
+      "They are expressed exclusively through local election voting",
+      "They require formal membership in traditional political parties"
     ]
   },
   {
@@ -648,22 +648,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 28,
     "level": "B2",
     "docType": "Bilan sur la transition énergétique",
-    "text": "ÉNERGIES RENOUVELABLES ET ENJEUX : Si le développement des énergies solaire et éolienne a progressé de manière spectaculaire, la question du stockage massif de l'électricité intermittente demeure le verrou technologique essentiel à lever pour assurer la stabilité des réseaux nationaux.",
-    "q": "Quel est l'obstacle principal au déploiement complet des énergies renouvelables ?",
+    "text": "ÉNERGIE — REVUE DE LA TRANSITION ÉNERGÉTIQUE : LE DÉFI DU STOCKAGE DES ÉNERGIES RENOUVELABLES.\n\nBien que le développement des filières solaire et éolienne ait connu un essor spectaculaire au cours de la dernière décennie, la variabilité inhérente aux conditions météorologiques pose des difficultés majeures de gestion de l'équilibre tensionnel sur les réseaux électriques nationaux.\n\nEn effet, la question du stockage industriel massif de l'électricité intermittente représente aujourd'hui le verrou technologique décisif à franchir. Sans solutions techniques performantes capables d'emmagasiner l'énergie lors des pics de production pour la restituer lors des pics de consommation, la généralisation des renouvelables reste contrainte.",
+    "q": "Selon le bilan, quelle difficulté technique freine encore le développement complet des énergies renouvelables ?",
     "opt": [
-      "Le refus généralisé des consommateurs d'utiliser l'électricité",
-      "Le problème du stockage massif de l'électricité intermittente",
-      "L'épuisement définitif des ressources en silicium mondial",
-      "L'interdiction gouvernementale d'installer des panneaux solaires"
+      "Le rejet massif des consommateurs quant à l'usage de l'électricité",
+      "La contrainte majeure liée aux fluctuations d'approvisionnement",
+      "L'épuisement mondial imminent des ressources en métaux précieux",
+      "L'interdiction gouvernementale d'implanter des infrastructures éoliennes"
     ],
     "ans": 1,
-    "passEn": "RENEWABLE ENERGY OVERVIEW: While solar and wind energy expansion has progressed spectacularly, the challenge of mass energy storage for intermittent power remains the essential technological bottleneck to solve for grid stability.",
-    "qEn": "What is the main obstacle to the full deployment of renewable energy?",
+    "passEn": "ENERGY — ENERGY TRANSITION REVIEW: THE CHALLENGE OF RENEWABLE ENERGY STORAGE.\n\nAlthough solar and wind sectors experienced spectacular growth over the last decade, weather variability poses major challenges for electrical grid stability.\n\nIndeed, industrial-scale storage of intermittent electricity represents the key technological bottleneck to overcome. Without high-performance storage solutions to hold energy during peak production for release during peak demand, widespread renewable adoption remains constrained.",
+    "qEn": "According to the review, what technical hurdle delays full renewable energy expansion?",
     "optEn": [
-      "Widespread consumer refusal to use electricity",
-      "Mass energy storage for intermittent power",
-      "The total global exhaustion of silicon raw materials",
-      "Government bans on residential solar panel installations"
+      "Widespread consumer rejection of electricity usage",
+      "Major constraints linked to supply fluctuations",
+      "Imminent global depletion of precious metal resources",
+      "Government bans on installing wind power infrastructure"
     ]
   },
   {
@@ -671,22 +671,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 29,
     "level": "B2",
     "docType": "Lettre de réclamation administrative",
-    "text": "RECOURS ADMINISTRATIF : À la suite de la modification unilatérale des horaires de desserte ferroviaire de notre commune sans concertation préalable, l'association des usagers exige le rétablissement immédiat des trains du matin afin d'éviter d'impacter l'activité économique locale.",
-    "q": "Quelle est la revendication principale exprimée dans ce recours ?",
+    "text": "RECOURS CITOYEN — COLLECTIF DES USAGERS DE LA LIGNE FERROVIAIRE NORD.\n\nÀ l'attention de Monsieur le Directeur Régional des Transports,\n\nPar la présente, notre collectif d'usagers souhaite exprimer sa plus vive protestation consécutive à la réorganisation unilatérale des grilles horaires de desserte ferroviaire de notre bassin de vie, décidée sans concertation préalable avec les élus locaux et les associations d'usagers.\n\nLa suppression inopinée de deux liaisons du matin handicape lourdement les trajets quotidiens des salariés et des étudiants de notre commune. En conséquence, nous exigeons le rétablissement immédiat de la grille horaire antérieure afin de préserver la vitalité économique de notre territoire.",
+    "q": "Quelle demande formulée par le collectif fait l'objet de ce recours ?",
     "opt": [
-      "La fermeture définitive de la gare ferroviaire locale",
-      "La gratuité totale des transports pour tous les habitants",
-      "Le rétablissement immédiat des trains du matin supprimés",
-      "La privatisation immédiate de la compagnie de chemin de fer"
+      "La suppression définitive de la gare de la commune",
+      "Le rétablissement des horaires de trains du matin supprimés",
+      "La gratuité intégrale du transport pour l'ensemble des résidents",
+      "La privatisation immédiate de la gestion du réseau ferroviaire"
     ],
-    "ans": 2,
-    "passEn": "ADMINISTRATIVE APPEAL: Following the unilateral modification of local train schedules without prior consultation, the commuters' association demands the immediate restoration of morning trains to avoid disrupting the local economy.",
-    "qEn": "What is the primary demand expressed in this administrative appeal?",
+    "ans": 1,
+    "passEn": "CITIZEN APPEAL — NORTHERN RAILWAY LINE COMMUTERS' COLLECTIVE.\n\nTo the Regional Transit Director,\n\nOur commuters' collective wishes to express strong protest following the unilateral restructuring of train schedules in our area without prior consultation with local officials and commuter groups.\n\nThe unexpected cancellation of two morning trains heavily burdens daily commutes for workers and students. Consequently, we demand the immediate restoration of former schedules to preserve local economic vitality.",
+    "qEn": "What demand made by the collective forms the subject of this appeal?",
     "optEn": [
-      "The permanent closure of the local train station",
-      "Free public transport for all local residents",
-      "The immediate restoration of cancelled morning train services",
-      "The immediate privatization of the national rail company"
+      "Permanent closure of the local town railway station",
+      "Restoration of cancelled morning train schedules",
+      "Full free public transit for all local residents",
+      "Immediate privatization of railway network management"
     ]
   },
   {
@@ -694,22 +694,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 30,
     "level": "C1",
     "docType": "Éditorial socio-économique",
-    "text": "CRITIQUE DE LA CONSOMMATION OSTENTATOIRE : L'avènement des plateformes de seconde main, en apparence vertueux, dissimule une dérive perverse : loin d'enrayer l'hyperconsommation, la revente facilitée alimente un renouvellement frénétique des garde-robes en déculpabilisant l'acheteur et en occultant l'empreinte carbone globale du transport d'objets d'occasion.",
-    "q": "Quelle analyse paradoxale l'auteur dresse-t-il des plateformes de seconde main ?",
+    "text": "DOSSIER CRITIQUE — TRIBUNE DE SOCIOLOGIE ÉCONOMIQUE : LES PARADOXES DU MARCHÉ DE LA SECONDE MAIN ET DE LA CONSOMMATION VERTUEUSE.\n\nL'émergence spectaculaire des plateformes numériques dédiées au commerce d'objets d'occasion est abondamment célébrée par le discours marchand contemporain comme le symbole triomphant d'une consommation écoresponsable et sobre. Pourtant, une analyse sociologique approfondie des comportements d'achat révèle des effets pervers insidieux qui démentent cette rhétorique lénifiante. Farouche stimulant du renouvellement frénétique des garde-robes et des équipements domestiques, la revente facilitée alimente en réalité une dynamique d'hyperconsommation sous-jacente.\n\nEn effet, la possibilité constante de liquider rapidement ses achats antérieurs déculpabilise l'acheteur, persuadé que ses acquisitions impulsives demeurent neutres sur le plan écologique. De surcroît, cette fluidité marchande occulte totalement le coût carbone global généré par l'emballage individualisé, le traitement logistique et l'acheminement routier ou aérien international de millions de colis d'occasion. Ainsi, sous couvert d'éthique et d'économie circulaire, le marché de la seconde main reproduit fidèlement la logique d'accumulation de la société de consommation.",
+    "q": "Quelle contradiction fondamentale l'auteur met-il en évidence concernant l'essor des plateformes de seconde main ?",
     "opt": [
-      "Elles ruinent définitivement les enseignes du luxe traditionnel",
-      "Elles éliminent totalement la pollution liée aux transports internationaux",
-      "Elles obligent les consommateurs à fabriquer leurs propres vêtements",
-      "Elles encouragent l'hyperconsommation en déculpabilisant les acheteurs"
+      "Le marché de l'occasion engendre la faillite inévitable des enseignes de distribution traditionnelle",
+      "L'accès fluidifié à la revente alimente l'accumulation marchande en atténuant le sentiment de culpabilité",
+      "La seconde main éradique l'intégralité des nuisances écologiques générées par les transports mondiaux",
+      "Les consommateurs sont désormais contraints d'abandonner définitivement l'achat d'équipements neufs"
     ],
-    "ans": 3,
-    "passEn": "CRITIQUE OF CONSPICUOUS CONSUMPTION: The rise of second-hand retail platforms, seemingly virtuous, conceals a paradoxical flaw: far from curbing hyper-consumption, easy reselling encourages rapid wardrobe turnover by alleviating consumer guilt while obscuring the global carbon footprint of shipping pre-owned goods.",
-    "qEn": "What paradoxical analysis does the author present regarding second-hand platforms?",
+    "ans": 1,
+    "passEn": "CRITICAL ESSAY — ECONOMIC SOCIOLOGY REVIEW: PARADOXES OF SECOND-HAND MARKETS AND VIRTUOUS CONSUMPTION.\n\nThe spectacular rise of digital resale platforms is celebrated as the hallmark of virtuous eco-friendly consumption. Yet rigorous sociological analysis reveals insidious side effects. Far from curbing consumption, easy reselling encourages rapid turnover by alleviating buyer guilt, creating the illusion that impulsive purchases carry no environmental cost.\n\nFurthermore, this market fluidity obscures the global carbon footprint of individual packaging and international shipping of millions of pre-owned parcels. Thus, beneath eco-conscious rhetoric, the resale market reproduces hyper-consumerism logic.",
+    "qEn": "What fundamental contradiction does the author highlight regarding second-hand resale platforms?",
     "optEn": [
-      "They permanently bankrupt traditional luxury brands",
-      "They completely eliminate pollution caused by international shipping",
-      "They force consumers to manufacture their own clothing",
-      "They encourage hyper-consumption by alleviating consumer guilt"
+      "The second-hand market causes bankruptcy for traditional retail brands",
+      "Fluid resale access fosters overconsumption by dampening buyer guilt",
+      "Second-hand trading completely eliminates shipping transport pollution",
+      "Consumers are forced to abandon purchasing new manufactured goods"
     ]
   },
   {
@@ -717,22 +717,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 31,
     "level": "C1",
     "docType": "Essai sur la diversité linguistique",
-    "text": "PLURICENTRISME LINGUISTIQUE : Envisager la francophonie à travers le prisme d'une norme unique et centralisée constitue un anachronisme conceptuel. La vitalité du français réside précisément dans la diversité de ses expressions régionales et de ses créations néologiques issues des Amériques, d'Afrique et d'Europe, qui enrichissent la langue sans entamer son intelligibilité.",
-    "q": "Quelle conception de la langue française l'auteur défend-il ?",
+    "text": "LINGUISTIQUE ET DIVERSIFICATION — CAHIERS DE LA FRANCOPHONIE : PLURICENTRISME ET VITALITÉ DE LA LANGUE FRANÇAISE DANS LE MONDE.\n\nAppréhender l'espace francophone mondial à travers le prisme exclusif d'une norme linguistique centralisée et unifiée constitue un anachronisme conceptuel majeur au XXIe siècle. La réelle dynamique contemporaine du français réside précisément dans le pluricentrisme de ses expressions régionales et dans la foisonnante créativité néologique issue des Amériques, d'Afrique et d'Europe. Cette diversité d'usages témoigne d'une appropriation vivante de la langue par des communautés culturelles variées qui façonnent quotidiennement son évolution.\n\nLoin de dégrader l'intégrité de la langue française, ces variations lexicales et syntaxiques enrichissent le patrimoine linguistique commun sans nuire à l'intercompréhension internationale. En acceptant d'inscrire le français dans une pluralité de normes légitimes et équivalentes, les institutions francophones consolident son statut de langue internationale vivante et adaptable aux mutations du monde contemporain.",
+    "q": "Quelle conception de la langue française l'auteur défend-il dans cet essai ?",
     "opt": [
-      "Une langue pluricentrique enrichie par ses variétés régionales",
-      "Une norme rigide et exclusivement fixée par les académies traditionnelles",
-      "L'abandon complet de toute règle grammaticale au profit du dialecte",
-      "L'adoption immédiate de l'anglais comme langue administrative unique"
+      "Une norme centralisée rigide et exclusive fixée par des institutions académiques traditionnelles",
+      "L'abandon complet de toute règle de grammaire au profit de patois régionaux déconnectés",
+      "Une approche pluricentrique valorisant la légitimité des variations régionales vivantes",
+      "L'adoption progressive de l'anglais comme langue administrative universelle de la francophonie"
     ],
-    "ans": 0,
-    "passEn": "LINGUISTIC PLURICENTRISM: Viewing the Francophonie through the lens of a single centralized norm is a conceptual anachronism. The vitality of French resides precisely in the diversity of its regional expressions and neologisms from the Americas, Africa, and Europe, which enrich the language without diminishing mutual intelligibility.",
-    "qEn": "What view of the French language does the author champion?",
+    "ans": 2,
+    "passEn": "LINGUISTICS — FRANCOPHONIE PAPERS: PLURICENTRISM AND VITALITY OF THE FRENCH LANGUAGE IN THE WORLD.\n\nViewing the global Francophone space through the exclusive lens of a single centralized linguistic norm constitutes a conceptual anachronism in the 21st century. The true contemporary vitality of French resides precisely in the pluricentrism of its regional expressions and rich neologisms from the Americas, Africa, and Europe.\n\nFar from eroding linguistic integrity, these lexical variations enrich shared heritage without impairing mutual intelligibility. By embracing legitimate plural norms, Francophone communities solidify French as a living, adaptable international language.",
+    "qEn": "What conception of the French language does the author defend in this essay?",
     "optEn": [
-      "A pluricentric language enriched by its diverse regional varieties",
-      "A rigid norm strictly dictated by classical traditional academies",
-      "A complete abandonment of grammar rules in favor of local dialects",
-      "Immediate adoption of English as the sole administrative language"
+      "A rigid centralized norm set exclusively by traditional academies",
+      "Complete abandonment of grammar rules in favor of disconnected regional dialects",
+      "A pluricentric approach valuing the legitimacy of living regional variations",
+      "Progressive adoption of English as a universal administrative language"
     ]
   },
   {
@@ -740,22 +740,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 32,
     "level": "C1",
     "docType": "Analyse critique sur la vulgarisation",
-    "text": "VULGARISATION SCIENTIFIQUE ET MÉDIAS : Simplifier le discours scientifique sans le dénaturer relève d'un équilibre précaire. À vouloir bannir tout jargon technique pour séduire un large public, certains médias sombrent dans un sensationnalisme réducteur qui déforme la démarche empirique et suscite une méfiance injustifiée envers la recherche.",
-    "q": "Quel écueil majeur la vulgarisation médiatique excessive risque-t-elle de provoquer ?",
+    "text": "MÉDIAS ET SCIENCES — REVUE DE LA RECHERCHE SCIENTIFIQUE : LES DÉRIVES DE LA VULGARISATION MÉDIATIQUE SENSATIONNALISTE.\n\nLe travail de médiation scientifique destiné au grand public exige un arbitrage d'une extrême délicatesse entre la lisibilité du propos et le maintien de la rigueur conceptuelle. Or, cédant aux exigences du sensationnalisme médiatique et à la quête frénétique d'audience immédiate, certains canaux d'information cèdent à une simplification démesurée du discours scientifique. Dans cette quête de clarté artificielle, ils éliminent toute nuance méthodologique et tout vocabulaire spécialisé.\n\nCette dénaturation réductrice altère profondément la perception publique de la recherche empirique. En faisant passer des spéculations préliminaires pour des certitudes scientifiques immuables, ces dérives médiatiques entretiennent une méfiance déplorable envers le doute méthodique. Pourtant, cette capacité de remise en question constante constitue l'essence même de l'esprit scientifique et le moteur du progrès de la connaissance.",
+    "q": "Quel risque majeur la simplification excessive du discours scientifique fait-elle courir ?",
     "opt": [
-      "Un désintérêt total des étudiants pour les diplômes universitaires",
-      "Une déformation sensationnaliste qui altère la compréhension de la science",
-      "Une hausse incontrôlée des coûts des équipements de laboratoire",
-      "L'interdiction absolue d'effectuer des recherches expérimentales"
+      "Une hausse incontrôlée du coût d'acquisition des équipements de laboratoire",
+      "L'interdiction légale pour les scientifiques d'exprimer des doutes méthodologiques",
+      "Un désintérêt généralisé des étudiants pour la poursuite d'études supérieures",
+      "Une altération de la démarche empirique générant de la méfiance envers la méthode scientifique"
     ],
-    "ans": 1,
-    "passEn": "SCIENTIFIC POPULARIZATION AND MEDIA: Simplifying scientific discourse without diluting it is a delicate balance. In striving to eliminate all technical jargon to appeal to broad audiences, certain media outlets fall into reductive sensationalism that distorts empirical methodology and breeds unwarranted distrust in research.",
-    "qEn": "What major pitfall does excessive media popularization risk creating?",
+    "ans": 3,
+    "passEn": "MEDIA AND SCIENCE — SCIENTIFIC RESEARCH REVIEW: DRIFTS IN SENSATIONNALIST MEDIA POPULARIZATION.\n\nScientific outreach aimed at the general public requires a delicate balance between readability and conceptual rigor. Yielding to media sensationalism and immediate rating demands, certain outlets resort to excessive simplification, eliminating methodological nuances and specialized vocabulary.\n\nThis reductive distortion alters public perception of empirical research. By presenting preliminary speculations as absolute certainty, media oversimplification fosters distrust toward methodical doubt—the very essence of scientific progress.",
+    "qEn": "What major risk does excessive simplification of scientific discourse pose?",
     "optEn": [
-      "Total student apathy toward pursuing university degrees",
-      "Reductive sensationalism that distorts scientific understanding",
-      "An uncontrolled surge in laboratory equipment costs",
-      "An absolute prohibition on performing experimental research"
+      "Uncontrolled surge in laboratory equipment acquisition costs",
+      "Legal ban preventing scientists from expressing methodological doubts",
+      "Widespread student apathy toward pursuing higher university degrees",
+      "Distortion of empirical methodology fostering public distrust in scientific inquiry"
     ]
   },
   {
@@ -763,22 +763,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 33,
     "level": "C1",
     "docType": "Étude patrimoniale et architecturale",
-    "text": "RECONVERSIONS ARCHITECTURALES : Réhabiliter des friches industrielles en centres culturels représente une démarche urbaine audacieuse. En préservant les structures métalliques historiques tout en y insérant des volumes contemporains, les architectes réussissent le pari de maintenir la mémoire ouvrière des lieux tout en inscrivant le quartier dans la modernité.",
-    "q": "Comment la réhabilitation des friches industrielles concilie-t-elle passé et présent ?",
+    "text": "URBANISME ET ARCHITECTURE — CAHIERS D'URBANISME CONTEMPORAIN : LA RECONVERSION DES FRICHES INDUSTRIELLES EN ESPACES CULTURELS VIVANTS DANS LES MÉTROPOLES.\n\nLa reconversion des friches industrielles désaffectées en centres culturels et espaces de création contemporaine représente une stratégie d'aménagement urbain particulièrement audacieuse, ambitieuse et novatrice. En faisant le choix de préserver scrupuleusement les façades en briques et les charpentes métalliques d'origine tout en y insérant des volumes architecturaux épurés, les concepteurs réussissent une synthèse harmonieuse entre la mémoire ouvrière des lieux et les exigences de la modernité contemporaine.\n\nLoin de céder à une nostalgie muséale figeant le passé dans le marbre de manière stérile, ces réhabilitations redynamisent en profondeur le tissu social et économique de quartiers autrefois marginalisés. Elles démontrent avec éclat que la préservation intelligente du patrimoine industriel peut devenir le catalyseur d'une régénération urbaine durable, inclusive et créatrice d'emplois locaux pérennes et non délocalisables.",
+    "q": "Comment la reconversion des friches industrielles concilie-t-elle mémoire et modernité ?",
     "opt": [
-      "En détruisant entièrement les bâtiments anciens pour construire du neuf",
-      "En transformant tous les espaces industriels en parcs d'attractions",
-      "En préservant la mémoire ouvrière tout en intégrant des volumes modernes",
-      "En réservant l'accès de ces quartiers aux seuls historiens diplômés"
+      "En conservant l'héritage bâti ouvrier tout en intégrant des structures épurées",
+      "En détruisant entièrement les structures métalliques pour construire du neuf",
+      "En réservant l'accès de ces espaces aux seuls historiens de l'art diplomés",
+      "En convertissant les anciens sites industriels en zones de stockage automatisé"
     ],
-    "ans": 2,
-    "passEn": "ARCHITECTURAL REPURPOSING: Reclaiming brownfield industrial sites into cultural centers is a bold urban strategy. By preserving historical steel frameworks while introducing contemporary architectural elements, architects successfully maintain the working-class heritage while embedding the neighborhood in modernity.",
-    "qEn": "How does industrial site rehabilitation reconcile past and present?",
+    "ans": 0,
+    "passEn": "ARCHITECTURAL STUDIES — CONTEMPORARY URBANISM PAPERS: RECONVERTING INDUSTRIAL BROWNFIELDS INTO CULTURAL SPACES.\n\nConverting disused industrial brownfields into cultural centers represents a bold urban strategy. By choosing to preserve original brick facades and steel frameworks while introducing sleek contemporary structures, architects achieve a synthesis between working-class memory and modern functionality.\n\nFar from museum nostalgia freezing the past, these rehabilitations revitalize marginalized neighborhoods, demonstrating that preserving industrial heritage can serve as a catalyst for sustainable urban regeneration.",
+    "qEn": "How does converting industrial brownfields reconcile memory and modernity?",
     "optEn": [
-      "By completely demolishing historic structures to build new ones",
-      "By converting all industrial sites into commercial amusement parks",
-      "By preserving working-class memory while integrating modern architectural volumes",
-      "By restricting neighborhood access exclusively to certified historians"
+      "By preserving working-class built heritage while integrating sleek structures",
+      "By completely demolishing metal frameworks to build new constructions",
+      "By restricting site access exclusively to certified art historians",
+      "By converting former industrial sites into automated storage zones"
     ]
   },
   {
@@ -786,22 +786,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 34,
     "level": "C1",
     "docType": "Réflexion prospective sur le numérique",
-    "text": "SOUVERAINETÉ NUMÉRIQUE ET LIBERTÉS : La dépendance technologique des États envers des monopoles logiciels étrangers pose une menace directe pour leur autonomie stratégique. Sans la maîtrise nationale des infrastructures d'hébergement de données massives, la protection de la vie privée des citoyens et le secret des délibérations publiques deviennent hautement vulnérables.",
-    "q": "Pourquoi l'autonomie stratégique des États est-elle menacée selon l'auteur ?",
+    "text": "POLITIQUE NUMÉRIQUE ET SOUVERAINETÉ — REVUE DE DROIT ET TECHNOLOGIE : SOUVERAINETÉ NUMÉRIQUE ET AUTONOMIE STRATÉGIQUE DES ÉTATS EN EUROPE.\n\nLa dépendance systémique des institutions publiques et des entreprises nationales envers des monopoles logiciels et des services de stockage cloud d'origine étrangère fait peser une menace directe sur la souveraineté des États. En confiant l'hébergement de données massives stratégiques à des infrastructures extra-territoriales soumises à des législations étrangères d'exception, les gouvernements s'exposent à des risques majeurs d'ingérence économique et d'espionnage industriel ciblé.\n\nSans la maîtrise nationale d'infrastructures informatiques d'hébergement et le développement de logiciels libres souverains, la protection de la vie privée des citoyens et la confidentialité des délibérations étatiques deviennent extrêmement fragiles. La reconquête de cette autonomie numérique s'impose ainsi comme un impératif de sécurité nationale prioritaire pour préserver la liberté de décision des nations face aux géants technologiques mondiaux.",
+    "q": "Selon le texte, quelle vulnérabilité menace la souveraineté numérique des États ?",
     "opt": [
-      "En raison du manque d'intérêt des citoyens pour les outils informatiques",
-      "À cause de la fermeture définitive des frontières commerciales",
-      "Parce que le stockage de données est devenu techniquement impossible",
-      "Du fait de la dépendance envers des monopoles informatiques étrangers"
+      "L'absence totale d'intérêt des citoyens pour l'utilisation des outils informatiques",
+      "L'assujettissement structurel à l'égard de systèmes informatiques externes",
+      "Le coût excessif du matériel informatique produit sur le territoire national",
+      "La baisse globale du volume des données massives générées par les entreprises"
     ],
-    "ans": 3,
-    "passEn": "DIGITAL SOVEREIGNTY AND FREEDOMS: State technological dependency on foreign software monopolies poses a direct threat to strategic autonomy. Without national control over data hosting infrastructure, protecting citizen privacy and confidentiality of public governance becomes highly vulnerable.",
-    "qEn": "Why is state strategic autonomy threatened according to the author?",
+    "ans": 1,
+    "passEn": "DIGITAL POLICY — LAW AND TECHNOLOGY REVIEW: DIGITAL SOVEREIGNTY AND STATE AUTONOMY.\n\nSystemic dependency of public institutions and national firms on foreign software and cloud monopolies poses a direct threat to state sovereignty. Entrusting strategic mass data hosting to extraterritorial infrastructures subjects governments to major economic interference and industrial espionage risks.\n\nWithout national control over data infrastructure and sovereign software development, protecting citizen privacy and state deliberation confidentiality becomes extremely fragile. Regaining digital autonomy is a national security priority to preserve sovereign decision-making.",
+    "qEn": "According to the text, what vulnerability threatens state digital sovereignty?",
     "optEn": [
-      "Due to citizen disinterest in using digital software tools",
-      "Owing to the permanent closure of international trade borders",
-      "Because data storage has become technically impossible",
-      "Because of reliance on foreign software monopolies"
+      "Total lack of citizen interest in using digital software tools",
+      "Structural subordination to external computing systems",
+      "Excessive cost of computing hardware produced nationally",
+      "Global drop in the volume of mass data generated by corporations"
     ]
   },
   {
@@ -809,22 +809,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 35,
     "level": "C1",
     "docType": "Essai critique sur la littérature",
-    "text": "L'HERMÉNEUTIQUE DU ROMAN MODERNISTE : L'émergence des narrateurs peu fiables dans la fiction contemporaine contraint le lecteur à abandonner sa posture de récepteur passif. En le confrontant à des récits fragmentés et à des vérités contradictoires, l'auteur moderne transforme la lecture en un acte d'investigation critique exigeant et créateur de sens.",
-    "q": "Quel rôle le roman moderniste assigne-t-il au lecteur ?",
+    "text": "CRITIQUE LITTÉRAIRE — REVUE D'ESTHÉTIQUE DU ROMAN : L'HERMÉNEUTIQUE ET LA FIGURE DU NARRATEUR DANS LE ROMAN MODERNISTE CONTEMPORAIN.\n\nL'émergence de la figure du narrateur peu fiable dans la création romanesque contemporaine contraint le lecteur à rompre définitivement avec la posture rassurante du récepteur passif. Confronté à un récit décentré, marqué par des omissions volontaires, des distorsions temporelles et des perspectives contradictoires, le lecteur est invité à mener une véritable investigation critique au fil des pages pour reconstituer la trame des événements réels.\n\nEn refusant d'imposer une vérité univoque ou une morale toute faite, l'auteur moderniste transforme l'acte de lecture en une quête herméneutique exigeante et stimulante. Dans ce cadre novateur, le sens ultime de l'œuvre n'est plus une donnée préexistante à consommer passivement, mais une construction dynamique exigeant l'implication active, l'interprétation méthodique et l'imagination créatrice du lecteur au sein même de l'univers textuel.",
+    "q": "Quel rôle le roman moderniste confère-t-il au lecteur selon l'auteur ?",
     "opt": [
-      "Celui d'un enquêteur critique participant activement à la création de sens",
-      "Celui d'un observateur passif devant accepter le récit sans contester",
-      "Celui d'un correcteur orthographique chargé d'annoter le manuscrit",
-      "Celui d'un censeur moral évaluant la conduite des personnages"
+      "Celui d'un récepteur passif devant admettre le récit sans remettre en question",
+      "Celui d'un censeur évaluant la valeur morale des actes des personnages",
+      "Celui d'un interprète exigeant participant activement à la genèse du sens",
+      "Celui d'un analyste chargé de corriger les imperfections syntaxiques"
     ],
-    "ans": 0,
-    "passEn": "HERMENEUTICS OF THE MODERNIST NOVEL: The rise of unreliable narrators in contemporary fiction forces readers to abandon passive consumption. By confronting them with fragmented narratives and contradictory truths, modern authors transform reading into an active, demanding act of critical investigation that constructs meaning.",
-    "qEn": "What role does the modernist novel assign to the reader?",
+    "ans": 2,
+    "passEn": "LITERARY CRITICISM — NOVEL AESTHETICS REVIEW: HERMENEUTICS AND THE NARRATOR IN THE MODERNIST NOVEL.\n\nThe rise of the unreliable narrator in contemporary fiction forces readers to abandon passive consumption. Confronted with a fragmented narrative marked by deliberate omissions and contradictory views, the reader is invited to conduct a critical investigation throughout the text.\n\nBy refusing to dictate a single truth, modernist authors transform reading into a demanding hermeneutic quest, where meaning is no longer a pre-packaged product to consume, but a dynamic construction requiring active, creative reader involvement.",
+    "qEn": "What role does the modernist novel assign to the reader according to the author?",
     "optEn": [
-      "A critical investigator actively participating in constructing meaning",
-      "A passive consumer required to accept the story uncritically",
-      "A proofreader tasked with annotating manuscript grammar errors",
-      "A moral censor evaluating the ethical conduct of fictional characters"
+      "A passive receiver expected to accept the narrative uncritically",
+      "A censor evaluating the moral conduct of fictional characters",
+      "A demanding interpreter actively participating in creating meaning",
+      "An analyst tasked with correcting syntactic writing flaws"
     ]
   },
   {
@@ -832,22 +832,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 36,
     "level": "C2",
     "docType": "Chronique philosophique sur le temps",
-    "text": "TEMPORALITÉ ET MÉMOIRE COLLECTIVE : La commodification du temps dans nos sociétés post-industrielles a érodé la capacité communautaire à s'inscrire dans une mémoire sédimentée. Réduits à une succession d'instants fugaces et immédiatement consommables, les événements historiques perdent leur profondeur symbolique pour s'abîmer dans le spectacle éphémère de l'actualité continue.",
-    "q": "Quelle thèse centrale l'auteur soutient-il sur la perception moderne du temps ?",
+    "text": "ESSAI PHILOSOPHIQUE — TRIBUNE PARUE DANS LES ANNALES DE PHILOSOPHIE CONTEMPORAINE : LA COMMODIFICATION DU TEMPS ET L'ÉROSION DE LA MÉMOIRE COLLECTIVE DANS LES SOCIÉTÉS MODERNES.\n\nLa commodification systématique de la temporalité au sein de nos sociétés post-industrielles a progressivement altéré la faculté des communautés humaines à s'inscrire dans une mémoire historique sédimentée. Soumis aux exigences de l'immédiateté numérique et du rendement économique permanent, le temps vécu se trouve fragmenté en une succession de séquences éphémères, privées de leur profondeur symbolique originelle. L'individu moderne consomme l'instant sans parvenir à l'articuler à une durée significative.\n\nCette désarticulation de la durée historique transforme les événements fondateurs de la mémoire collective en simples produits d'actualité consommables et rapidement jetables. En occultant la continuité organique entre le passé et l'avenir au profit d'un présent perpétuellement agité, le modèle marchand prive l'expérience humaine de son ancrage herméneutique. Cette amnésie temporelle fragilise la transmission de la conscience citoyenne et asphyxie toute capacité de projection politique à long terme.",
+    "q": "Quelle thèse centrale l'auteur développe-t-il quant à l'impact de la commodification du temps ?",
     "opt": [
-      "La mémoire collective s'est renforcée grâce à la vitesse des moyens de communication",
-      "La commodification du temps érode la profondeur symbolique de la mémoire collective",
-      "L'histoire est désormais enseignée avec une précision scientifique inégalée",
-      "La succession d'instants permet de supprimer toutes les crises politiques"
+      "Elle renforce la cohésion sociale en accélérant les échanges d'informations",
+      "Elle corrode la densité mémorielle et entrave la continuité historique",
+      "Elle garantit une conservation scientifique parfaite des archives historiques",
+      "Elle permet de supprimer définitivement les conflits politiques contemporains"
     ],
     "ans": 1,
-    "passEn": "TEMPORALITY AND COLLECTIVE MEMORY: The commodification of time in post-industrial societies has eroded community capacity to ground itself in cumulative memory. Reduced to a sequence of fleeting, instantly consumable moments, historical events lose their symbolic depth, dissolving into the ephemeral spectacle of 24-hour news.",
-    "qEn": "What central thesis does the author maintain regarding the modern perception of time?",
+    "passEn": "PHILOSOPHICAL ESSAY — CONTEMPORARY PHILOSOPHY ANNALS: COMMODIFICATION OF TIME AND EROSION OF COLLECTIVE MEMORY IN MODERN SOCIETIES.\n\nThe systematic commodification of time within post-industrial societies has altered human communities' capacity to ground themselves in cumulative historical memory. Subject to immediate digital demands and economic yield, lived time becomes fragmented into fleeting sequences, stripped of symbolic depth.\n\nThis disarticulation of historical duration turns foundational memory events into consumable news products. By obscuring continuity between past and future in favor of a frantic present, the market model deprives human experience of hermeneutic grounding, threatening civic consciousness transmission.",
+    "qEn": "What central thesis does the author develop regarding the impact of time commodification?",
     "optEn": [
-      "Collective memory has strengthened thanks to fast communication tools",
-      "The commodification of time erodes the symbolic depth of collective memory",
-      "History is now taught with unprecedented scientific precision",
-      "The sequence of instant moments permanently eliminates political crises"
+      "It strengthens social cohesion by accelerating information exchanges",
+      "It corrodes memory density and impedes historical continuity",
+      "It guarantees perfect scientific preservation of historical archives",
+      "It permanently eliminates contemporary political conflicts"
     ]
   },
   {
@@ -855,22 +855,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 37,
     "level": "C2",
     "docType": "Essai épistémologique sur la modernité",
-    "text": "DIALECTIQUE DE LA RATIONALITÉ INSTRUMENTALE : En érigeant la seule efficacité technologique en critère suprême de vérité, la rationalité moderne a progressivement occulté la question fondamentale des fins éthiques. Ce primat de la mesure et du rendement menace de transformer l'être humain de sujet conscient en simple variable d'ajustement des systèmes complexes.",
-    "q": "Quel danger consubstantiel à la rationalité instrumentale est dénoncé ?",
+    "text": "ÉPISTÉMOLOGIE — REVUE INTERNATIONALE DE PHILOSOPHIE DES SCIENCES : LA DIALECTIQUE ET LES DÉRIVES DE LA RATIONALITÉ INSTRUMENTALE.\n\nEn érigeant l'efficacité technologique et la performance quantitative au rang de critères suprêmes de vérité, la rationalité moderne a progressivement occulté la réflexion fondamentale portant sur les finalités éthiques de l'existence. Ce primat incontesté du rendement comptable risque d'opérer une réification pernicieuse de l'expérience humaine, ravalant le sujet conscient au rang d'ajustement opérationnel au sein de systèmes décisionnels automatisés.\n\nLorsque la raison se réduit à une simple ingénierie des moyens en s'interdisant toute interrogation axiologique sur les fins, la technique cesse d'être un instrument d'émancipation pour devenir une contrainte systémique auto-justifiée. Réenchanter la pensée exige ainsi de réinsérer l'exigence éthique au cœur du processus de production des connaissances scientifiques afin de restituer à l'homme son autonomie critique face aux exigences du système technologique.",
+    "q": "Quel risque majeur consubstantiel à la rationalité instrumentale est dénoncé par l'auteur ?",
     "opt": [
-      "La hausse incontrôlée du coût de la recherche fondamentale",
-      "La disparition irréversible de toute forme de production industrielle",
-      "La réduction de l'être humain à une simple variable d'ajustement du système",
-      "L'impossibilité de calculer scientifiquement les rendements énergétiques"
+      "La hausse incontrôlable des coûts de la recherche fondamentale",
+      "La rétrogradation du sujet à un simple rôle d'adaptation fonctionnelle",
+      "La disparition irréversible de la production industrielle automatisée",
+      "L'impossibilité technique d'évaluer scientifiquement les rendements"
     ],
-    "ans": 2,
-    "passEn": "DIALECTICS OF INSTRUMENTAL RATIONALITY: By raising technological efficiency as the sole criterion of truth, modern rationality has progressively obscured the fundamental question of ethical purpose. This primacy of metrics and yield risks reducing human beings from conscious agents to mere adjustment variables in complex systems.",
-    "qEn": "What inherent danger of instrumental rationality is denounced?",
+    "ans": 1,
+    "passEn": "EPISTEMOLOGY — INTERNATIONAL JOURNAL OF SCIENCE PHILOSOPHY: DIALECTICS AND DRIFTS OF INSTRUMENTAL RATIONALITY.\n\nBy elevating technological efficiency and quantitative metrics to supreme criteria of truth, modern rationality obscured reflection on ethical existence. This primacy of metrics risks a pernicious reification of human experience, reducing conscious subjects to operational variables within automated decision systems.\n\nWhen reason shrinks to mere engineering of means while avoiding ethical questions on ends, technology ceases to be an emancipatory tool and becomes self-justifying systemic constraint. Re-enchanting thought requires reinserting ethics into scientific knowledge production to restore critical autonomy.",
+    "qEn": "What major risk inherent to instrumental rationality is denounced by the author?",
     "optEn": [
-      "An uncontrolled surge in fundamental academic research costs",
-      "The irreversible collapse of all industrial manufacturing",
-      "Reducing human beings to mere adjustment variables within the system",
-      "The technical impossibility of scientifically measuring energy yields"
+      "Uncontrolled surge in fundamental research costs",
+      "Demotion of the subject to a mere functional adaptation role",
+      "Irreversible disappearance of automated industrial manufacturing",
+      "Technical impossibility of scientifically measuring yields"
     ]
   },
   {
@@ -878,22 +878,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 38,
     "level": "C2",
     "docType": "Réflexion philosophique sur l'esthétique",
-    "text": "AUTONOMIE ARTISTIQUE ET MARCHÉ : La marchandisation de l'art contemporain sous l'égide de la spéculation financière mondiale opère une véritable métamorphose ontologique de l'œuvre. Extraite de sa sphère de contemplation poétique et de subversion critique, la création se trouve réifiée en actif financier négociable, vidé de son potentiel de négativité emancipatrice.",
-    "q": "Comment la spéculation financière altère-t-elle le statut de l'œuvre d'art ?",
+    "text": "ESTHÉTIQUE — CAHIERS DE CRITIQUE D'ART CONTEMPORAIN : MARCHANDISATION DE L'ART ET ONTOLOGIE DE L'ŒUVRE D'ART CONTEMPORAINE DANS LE MONDE MONDIALISÉ.\n\nLa soumission progressive de la création artistique contemporaine aux règles de la spéculation financière internationale s'accompagne d'une métamorphose ontologique profonde de l'œuvre d'art. Arrachée à sa sphère de contemplation poétique et de subversion critique, la création se trouve réifiée en actif financier négociable, principalement évaluée selon sa liquidité et son potentiel de plus-value sur le marché de l'art mondialisé.\n\nCette marchandisation généralisée neutralise la portée contestataire de l'art en intégrant ses formes les plus rudes dans le circuit de l'industrie culturelle de luxe. Réduite à un symbole de distinction sociale pour investisseurs fortunés, l'œuvre perd sa capacité d'émancipation réflexive, s'abîmant dans une esthétique du fétichisme spéculatif qui asphyxie la création authentique et dénature la relation esthétique entre l'homme et l'art dans la société contemporaine.",
+    "q": "Comment la spéculation financière altère-t-elle le statut fondamental de la création artistique ?",
     "opt": [
-      "En la rendant accessible gratuitement à l'ensemble du corps social",
-      "En exigeant que chaque artiste possède un diplôme de gestion bancaire",
-      "En interdisant l'exposition des peintures dans les galeries privées",
-      "En la réifiant en actif financier vidé de sa portée critique emancipatrice"
+      "En permettant au grand public d'accéder gratuitement aux œuvres d'art",
+      "En exigeant des artistes l'obtention d'un diplôme universitaire en gestion",
+      "En interdisant toute forme d'exposition dans des galeries privées",
+      "En dénaturant l'expression créatrice en marchandise financière dénuée de critique"
     ],
     "ans": 3,
-    "passEn": "ARTISTIC AUTONOMY AND MARKETS: The commercialization of contemporary art under global financial speculation performs an ontological metamorphosis on artwork. Extracted from its sphere of poetic contemplation and critical subversion, artistic creation is reified into a negotiable financial asset, stripped of its emancipatory potential.",
-    "qEn": "How does financial speculation alter the status of artwork?",
+    "passEn": "AESTHETICS — CONTEMPORARY ART CRITICISM PAPERS: ART COMMERCIALIZATION AND WORK ONTOLOGY.\n\nSubmersion of contemporary creation under international financial speculation performs a profound ontological metamorphosis on artworks. Ripped from poetic contemplation and critical subversion, creation is reified into negotiable financial assets, evaluated primarily on liquidity and yield on the art market.\n\nThis widespread commercialization neutralizes art's rebellious power by integrating even radical forms into luxury cultural industries. Reduced to social distinction status symbols for wealthy investors, artworks lose emancipatory reflection, dissolving into speculative fetishism.",
+    "qEn": "How does financial speculation alter the fundamental status of artistic creation?",
     "optEn": [
-      "By making it freely available to the entire public",
-      "By requiring every artist to hold a formal degree in banking management",
-      "By banning the display of paintings in private art galleries",
-      "By reifying it into a financial asset stripped of critical emancipatory power"
+      "By allowing the general public free access to artworks",
+      "By requiring artists to hold university business management degrees",
+      "By banning any display of paintings in private galleries",
+      "By distorting creative expression into financial merchandise void of critique"
     ]
   },
   {
@@ -901,34 +901,35 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 39,
     "level": "C2",
     "docType": "Extrait d'anthropologie philosophique",
-    "text": "SYMBOLISME ET CONDITION HUMAINE : L'aptitude humaine à sécréter du sens au moyen de formes symboliques ne constitue pas un luxe superflu de la culture, mais l'armature même de notre présence au monde. C'est à travers l'armature du langage et du mythe que l'homme parvient à conjurer l'angoisse du néant et à structurer un univers d'intersubjectivité éthique.",
-    "q": "Quelle fonction essentielle l'auteur attribue-t-il à l'activité symbolique humaine ?",
+    "text": "ANTHROPOLOGIE PHILOSOPHIQUE — REVUE D'ÉTUDES HUMANISTES : LE SYMBOLISME COMME CONDITION FONDAMENTALE DE L'HUMANITÉ.\n\nLa capacité spécifique de l'être humain à sécréter du sens au moyen de formes symboliques complexes ne saurait être réduite à un luxe superfétatoire de la culture ou à un divertissement esthétique secondaire. Elle constitue au contraire l'armature ontologique même de notre présence au monde, à travers laquelle l'homme parvient à structurer le réel et à conjurer l'angoisse fondamentale du néant. Sans cette médiation symbolique, l'existence humaine basculerait dans le chaos et le non-sens.\n\nC'est par le médiat du langage, du mythe et du rituel que l'individu s'arrache à l'immédiateté biologique pour édifier un univers d'intersubjectivité éthique et de valeurs partagées. Occulter cette dimension symbolique au profit d'un matérialisme réducteur revient à déposséder l'humanité de la structure narrative qui fonde sa dignité et sa responsabilité morale.",
+    "q": "Selon l'auteur, quelle fonction ontologique essentielle remplit la faculté symbolique ?",
     "opt": [
-      "L'armature fondamentale structurant notre présence et conjurant le néant",
-      "Une activité secondaire réservée aux périodes de loisirs créatifs",
-      "Une contrainte linguistique empêchant toute découverte scientifique",
-      "Un mécanisme biologique automatique visant la survie physique de l'espèce"
+      "La structure fondamentale organisant le réel et apaisant l'angoisse existentielle",
+      "Un simple mécanisme biologique d'adaptation pour la survie physique",
+      "Une contrainte linguistique arbitraire empêchant la pensée logique",
+      "Une activité récréative secondaire réservée aux moments de loisir"
     ],
     "ans": 0,
-    "passEn": "SYMBOLISM AND THE HUMAN CONDITION: The human capacity to generate meaning through symbolic forms is not a superfluous cultural luxury, but the very framework of our presence in the world. It is through the scaffolding of language and myth that humans manage to ward off existential dread and structure a shared ethical universe.",
-    "qEn": "What essential function does the author attribute to human symbolic activity?",
+    "passEn": "PHILOSOPHICAL ANTHROPOLOGY — HUMANIST STUDIES JOURNAL: SYMBOLISM AS THE FUNDAMENTAL HUMAN CONDITION.\n\nHuman capacity to secrete meaning through complex symbolic forms cannot be reduced to a superfluous cultural luxury or secondary aesthetic entertainment. It constitutes the ontological framework of our presence in the world, through which humans structure reality and ward off existential dread.\n\nThrough language, myth, and ritual, individuals transcend biological immediacy to build an ethical intersubjective universe of shared values. Obscuring this symbolic dimension in favor of reductive materialism strips humanity of the narrative framework founding moral dignity.",
+    "qEn": "According to the author, what essential ontological function does the symbolic capacity fulfill?",
     "optEn": [
-      "The fundamental framework structuring existence and warding off dread",
-      "A secondary activity reserved strictly for leisure time",
-      "A linguistic barrier preventing scientific discovery",
-      "An automatic biological mechanism aimed purely at physical species survival"
+      "The fundamental structure organizing reality and soothing existential dread",
+      "A simple biological adaptation mechanism for physical survival",
+      "An arbitrary linguistic constraint impeding logical thinking",
+      "A secondary recreational activity reserved strictly for leisure time"
     ]
   }
 ],
-  // ==================== 📄 PAPER 2 (39 UNIQUE ITEMS) ====================
-  [
+
+  // ==================== 📄 PAPER 2 (39 GOLD-STANDARD ITEMS) ====================
+[
   {
     "paperNum": 2,
     "qNum": 1,
     "level": "A1",
     "docType": "Panneau d'information",
-    "text": "CENTRE SPORTIF MUNICIPAL : Horaires d'été. Ouverture du lundi au vendredi de 8h à 21h, samedi et dimanche de 9h à 17h. Fermeture des caisses 30 minutes avant la fin des cours.",
-    "q": "À quelle heure le centre sportif ferme-t-il le dimanche ?",
+    "text": "INFRASTRUCTURE MUNICIPALE — CENTRE SPORTIF DU PARC : Horaires d'été applicables jusqu'au 31 août. Ouverture du bassin et des salles du lundi au vendredi de 08h00 à 21h00, et le weekend de 09h00 à 17h00. La fermeture de la billetterie s'effectue 30 minutes avant la fermeture des portes.",
+    "q": "À quelle heure le complexe sportif ferme-t-il ses portes le dimanche ?",
     "opt": [
       "À 17h00",
       "À 18h00",
@@ -936,8 +937,8 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       "À 21h00"
     ],
     "ans": 0,
-    "passEn": "MUNICIPAL SPORTS CENTER: Summer hours. Open Monday to Friday 8:00 AM to 9:00 PM, Saturday and Sunday 9:00 AM to 5:00 PM. Ticket counters close 30 minutes before end of classes.",
-    "qEn": "At what time does the sports center close on Sunday?",
+    "passEn": "MUNICIPAL INFRASTRUCTURE — PARK SPORTS CENTER: Summer schedule applicable through August 31st. Pool and gym open Monday to Friday 8:00 AM to 9:00 PM, weekend 9:00 AM to 5:00 PM. Ticket counter closes 30 minutes before facility closure.",
+    "qEn": "At what time does the sports complex close on Sunday?",
     "optEn": [
       "At 5:00 PM",
       "At 6:00 PM",
@@ -950,8 +951,8 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 2,
     "level": "A1",
     "docType": "Avis municipal",
-    "text": "TRAVAUX DE VOIRIE : La rue Saint-Denis sera fermée à la circulation automobile du 5 au 8 août en raison de la réfection du bitume. Déviation balisée par l'avenue des Pins.",
-    "q": "Quel est l'impact des travaux prévus rue Saint-Denis ?",
+    "text": "VOIRIE URBAINE — INFRASTRUCTURES ROUTIÈRES : En raison de travaux urgents de réfection du bitume et d'assainissement, la rue Saint-Denis sera totalement fermée à la circulation des véhicules du 5 au 8 août inclus. Une déviation obligatoire est balisée par l'avenue des Pins.",
+    "q": "Quelle conséquence les travaux entraînent-ils sur la rue Saint-Denis ?",
     "opt": [
       "Une hausse des prix des tickets de bus",
       "La fermeture de la rue à la circulation automobile",
@@ -959,8 +960,8 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       "L'interdiction absolue du passage des piétons"
     ],
     "ans": 1,
-    "passEn": "ROADWORKS: Saint-Denis Street will be closed to car traffic from August 5 to 8 due to road resurfacing. Marked detour via Pins Avenue.",
-    "qEn": "What is the impact of the planned roadworks on Saint-Denis Street?",
+    "passEn": "URBAN ROADWAYS — INFRASTRUCTURE NOTICE: Due to urgent road resurfacing, Saint-Denis Street will be completely closed to vehicle traffic from August 5 to 8 inclusive. A mandatory detour is signed via Pins Avenue.",
+    "qEn": "What consequence do the roadworks have on Saint-Denis Street?",
     "optEn": [
       "An increase in bus ticket prices",
       "Closure of the street to car traffic",
@@ -973,22 +974,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 3,
     "level": "A1",
     "docType": "Message court (SMS)",
-    "text": "Coucou Élodie ! N'oublie pas le cours de soutien de mathématiques cet après-midi à 16h au bureau 204. N'hésite pas à me rappeler si besoin, Antoine.",
-    "q": "Où se déroule le cours de soutien ?",
+    "text": "MESSAGE PERSONNEL — Coucou Élodie ! N'oublie pas la séance de soutien en mathématiques organisée cet après-midi à 16h00 dans la salle 204 du bâtiment B. N'hésite pas à me passer un coup de fil si tu ne trouves pas la salle, Antoine.",
+    "q": "Dans quelle salle se tient le cours de soutien de mathématiques ?",
     "opt": [
       "À la grande bibliothèque centrale",
       "Dans le jardin de l'université",
-      "Au bureau 204",
-      "Dans la salle de réunion du rez-de-chaussée"
+      "Dans la salle 204 du bâtiment B",
+      "Au secrétariat du rez-de-chaussée"
     ],
     "ans": 2,
-    "passEn": "Hi Elodie! Don't forget the math tutoring session this afternoon at 4:00 PM in office 204. Call me back if needed, Antoine.",
-    "qEn": "Where does the tutoring session take place?",
+    "passEn": "PERSONAL MESSAGE — Hi Elodie! Don't forget the math tutoring session this afternoon at 4:00 PM in room 204 of Building B. Call me if you can't find the room, Antoine.",
+    "qEn": "In which room is the math tutoring session held?",
     "optEn": [
       "At the main central library",
       "In the university garden",
-      "In office 204",
-      "In the ground floor meeting room"
+      "In room 204 of Building B",
+      "At the ground floor reception"
     ]
   },
   {
@@ -996,22 +997,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 4,
     "level": "A1",
     "docType": "Affiche promotionnelle",
-    "text": "CINÉMA QUARTIER : Tarif réduit exceptionnel à 5 € pour toutes les séances du mercredi avant 15h ! Venez découvrir les derniers films à l'affiche en famille.",
-    "q": "Quelle promotion est proposée par le cinéma ?",
+    "text": "LOISIRS CULTURELS — CINÉMA DU QUARTIER : Profitez de notre tarif réduit exceptionnel à 5 euros pour l'ensemble des séances de cinéma projetées le mercredi avant 15h00 ! Venez découvrir les derniers films d'animation en famille.",
+    "q": "Quelle offre promotionnelle est proposée par le cinéma ?",
     "opt": [
       "Le pop-corn offert avec chaque boisson",
       "Des entrées gratuites pour les abonnés",
       "Un abonnement annuel à moitié prix",
-      "Des billets à 5 € le mercredi avant 15h"
+      "Des billets à 5 euros le mercredi avant 15h"
     ],
     "ans": 3,
-    "passEn": "NEIGHBORHOOD CINEMA: Special discount rate of €5 for all Wednesday screenings before 3:00 PM! Come discover the latest movies with your family.",
-    "qEn": "What promotion is offered by the cinema?",
+    "passEn": "CULTURAL LEISURE — NEIGHBORHOOD CINEMA: Enjoy our special discount rate of 5 euros for all movie screenings on Wednesday before 3:00 PM! Come discover the latest animated films with your family.",
+    "qEn": "What promotional offer is featured by the cinema?",
     "optEn": [
       "Free popcorn with every drink",
       "Free entry for subscribers",
-      "A half-price annual subscription",
-      "Tickets at €5 on Wednesday before 3:00 PM"
+      "Half-price annual subscription",
+      "Tickets at 5 euros on Wednesday before 3:00 PM"
     ]
   },
   {
@@ -1019,8 +1020,8 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 5,
     "level": "A2",
     "docType": "Avis d'objet trouvé",
-    "text": "OBJET TROUVÉ : Lunettes de vue à monture rouge trouvées sur la table n°4 de la cafétéria du campus universitaire mardi vers 12h30. Déposées au poste de sécurité du bâtiment A.",
-    "q": "Où peut-on récupérer les lunettes perdues ?",
+    "text": "CAMPUS UNIVERSITAIRE — OBJET TROUVÉ : Une paire de lunettes de vue à monture rouge a été oubliée sur la table n°4 de la cafétéria centrale mardi vers 12h30. L'objet a été remis au poste de sécurité du bâtiment A. Son propriétaire peut venir le récupérer sur présentation d'une pièce d'identité.",
+    "q": "Où le propriétaire peut-il récupérer ses lunettes de vue ?",
     "opt": [
       "Au poste de sécurité du bâtiment A",
       "Au secrétariat de la faculté des lettres",
@@ -1028,10 +1029,10 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       "Au bureau du directeur du campus"
     ],
     "ans": 0,
-    "passEn": "FOUND ITEM: Red-framed eyeglasses found on table #4 at the campus cafeteria on Tuesday around 12:30 PM. Handed in to Building A security desk.",
-    "qEn": "Where can the lost eyeglasses be retrieved?",
+    "passEn": "UNIVERSITY CAMPUS — FOUND ITEM: A pair of red-framed eyeglasses was forgotten on table #4 at the central cafeteria on Tuesday around 12:30 PM. Handed in to Building A security desk. Owner may claim it presenting valid ID.",
+    "qEn": "Where can the owner claim their lost eyeglasses?",
     "optEn": [
-      "At the Building A security desk",
+      "At Building A security desk",
       "At the humanities faculty office",
       "At the university library",
       "At the campus director's office"
@@ -1042,8 +1043,8 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 6,
     "level": "A2",
     "docType": "Annonce d'événement local",
-    "text": "FÊTE DE LA MUSIQUE LOCALE : Concerts gratuits en plein air ce vendredi dès 18h dans les jardins de l'Hôtel de Ville. Venez écouter de la chanson française, du jazz et de la pop !",
-    "q": "Où auront lieu les concerts gratuits de vendredi ?",
+    "text": "VIE DE LA CITÉ — FÊTE DE LA MUSIQUE LOCALE : La municipalité vous invite à des concerts gratuits en plein air ce vendredi à partir de 18h00 dans les jardins de l'Hôtel de Ville. Venez écouter des artistes locaux interpréter des chansons françaises, du jazz et de la pop. Buvette et restauration sur place.",
+    "q": "Où se déroulent les concerts gratuits du vendredi soir ?",
     "opt": [
       "Dans la grande salle de spectacle municipale",
       "Dans les jardins de l'Hôtel de Ville",
@@ -1051,13 +1052,13 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       "Dans la cour d'honneur du château"
     ],
     "ans": 1,
-    "passEn": "LOCAL MUSIC FESTIVAL: Free outdoor concerts this Friday starting at 6:00 PM in the City Hall gardens. Come listen to French songs, jazz, and pop music!",
-    "qEn": "Where will Friday's free concerts take place?",
+    "passEn": "CITY LIFE — LOCAL MUSIC FESTIVAL: The municipality invites you to free outdoor concerts this Friday starting at 6:00 PM in City Hall gardens. Listen to local artists performing French songs, jazz, and pop music. Food and drinks available.",
+    "qEn": "Where do Friday evening's free concerts take place?",
     "optEn": [
-      "In the municipal indoor performance hall",
-      "In the City Hall gardens",
-      "On the town public beach",
-      "In the castle main courtyard"
+      "In municipal indoor performance hall",
+      "In City Hall gardens",
+      "On town public beach",
+      "In castle main courtyard"
     ]
   },
   {
@@ -1065,22 +1066,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 7,
     "level": "A2",
     "docType": "Invitation amicale",
-    "text": "Chère Sarah, nous organisons une randonnée en montagne le samedi 14 septembre dans le massif des Vosges. Départ à 8h précise du parking du lac. N'oublie pas tes chaussures d'escalade !",
-    "q": "Quelle activité Sarah et ses amis vont-ils faire ?",
+    "text": "MESSAGE AMICAL — Chère Sarah, nous organisons une grande randonnée en montagne le samedi 14 septembre dans le massif des Vosges. Le départ s'effectuera à 08h00 précise du parking du lac. Prévois de bonnes chaussures de marche et un pique-nique pour la pause de midi !",
+    "q": "Quelle activité Sarah et ses amis vont-ils pratiquer ?",
     "opt": [
       "Une compétition de natation en eau libre",
-      "Une visite guidée d'un musée d'art contemporain",
+      "Une visite guidée d'un musée d'art",
       "Une randonnée en montagne dans les Vosges",
       "Un stage de conduite automobile sur circuit"
     ],
     "ans": 2,
-    "passEn": "Dear Sarah, we are organizing a mountain hike on Saturday September 14 in the Vosges region. Departure at 8:00 AM sharp from the lake parking lot. Don't forget your hiking boots!",
+    "passEn": "FRIENDLY MESSAGE — Dear Sarah, we are organizing a mountain hike on Saturday September 14 in the Vosges region. Departure at 8:00 AM sharp from the lake parking lot. Bring good hiking boots and a packed lunch!",
     "qEn": "What activity are Sarah and her friends doing?",
     "optEn": [
-      "An open water swimming race",
-      "A guided tour of a contemporary art museum",
-      "A mountain hike in the Vosges",
-      "A racetrack driving course"
+      "Open water swimming race",
+      "Guided art museum tour",
+      "Mountain hike in the Vosges",
+      "Racetrack driving course"
     ]
   },
   {
@@ -1088,21 +1089,21 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 8,
     "level": "A2",
     "docType": "Offre d'emploi",
-    "text": "RECRUTEMENT SAISONNIER : L'Office du Tourisme recherche deux hôtes d'accueil bilingues (français/anglais) pour la période de juillet à août. Bon relationnel exigé. Postulez en ligne avant le 15 juin.",
-    "q": "Quelle compétence linguistique est exigée pour ces postes ?",
+    "text": "RECRUTEMENT SAISONNIER — OFFICE DU TOURISME : Nous recrutons deux hôtes d'accueil bilingues (français et anglais) pour la saison estivale de juillet et août. Vous serez chargé de renseigner les visiteurs internationaux et de distribuer les cartes de la ville. Bon relationnel indispensable. Postulez avant le 15 juin.",
+    "q": "Exigence linguistique indispensable pour candidater :",
     "opt": [
       "Maîtriser l'espagnol et l'italien à l'écrit",
       "Parler couramment le mandarin et l'allemand",
-      "Avoir une certification en langue des signes",
-      "Être bilingue français et anglais"
+      "Avoir une certification officielle en langue des signes",
+      "Être bilingue en français et en anglais"
     ],
     "ans": 3,
-    "passEn": "SEASONAL RECRUITMENT: The Tourist Office is hiring two bilingual receptionists (French/English) for July and August. Good interpersonal skills required. Apply online before June 15.",
-    "qEn": "What language skill is required for these positions?",
+    "passEn": "SEASONAL RECRUITMENT — TOURIST OFFICE: We are hiring two bilingual receptionists (French and English) for July and August. You will inform international visitors and distribute maps. Good interpersonal skills required. Apply before June 15.",
+    "qEn": "Mandatory language requirement to apply:",
     "optEn": [
       "Fluent written Spanish and Italian",
       "Fluent spoken Mandarin and German",
-      "A certification in sign language",
+      "Official sign language certification",
       "Bilingual in French and English"
     ]
   },
@@ -1111,22 +1112,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 9,
     "level": "A2",
     "docType": "Petite annonce immobilière",
-    "text": "PROPRIÉTÉ À VENDRE : Charmante maison de village 4 pièces avec jardin clôturé et terrasse ensoleillée. Proche des écoles et des commerces de proximité. DPE classe B. Prix : 210 000 €.",
-    "q": "Quelles sont les caractéristiques extérieures principales de cette maison ?",
+    "text": "IMMOBILIER — VENTE DE PARTICULIER : Charmante maison de village de 4 pièces avec un beau jardin arboré et clôturé ainsi qu'une grande terrasse ensoleillée. Proche des écoles primaires et des commerces de proximité. Diagnostic énergétique de classe B. Prix de vente : 210 000 euros.",
+    "q": "Quelles caractéristiques extérieures distinguent cette propriété ?",
     "opt": [
       "Un jardin clôturé et une terrasse ensoleillée",
       "Une piscine olympique et un court de tennis",
-      "Un grand parking sous-sol pour dix voitures",
+      "Un grand parking sous-sol pour dix véhicules",
       "Un vaste terrain agricole avec grange"
     ],
     "ans": 0,
-    "passEn": "PROPERTY FOR SALE: Charming 4-room village house with fenced garden and sunny terrace. Close to schools and local neighborhood shops. Energy rating Class B. Price: €210,000.",
-    "qEn": "What are the main outdoor features of this house?",
+    "passEn": "REAL ESTATE — PRIVATE SALE: Charming 4-room village house with a beautiful fenced wooded garden and a large sunny terrace. Close to primary schools and neighborhood shops. Energy Class B. Price: 210,000 euros.",
+    "qEn": "What outdoor features distinguish this property?",
     "optEn": [
-      "A fenced garden and a sunny terrace",
-      "An Olympic pool and a tennis court",
-      "A large underground garage for ten cars",
-      "Vast agricultural land with a barn"
+      "Fenced garden and sunny terrace",
+      "Olympic pool and tennis court",
+      "Underground garage for ten cars",
+      "Agricultural land with barn"
     ]
   },
   {
@@ -1134,31 +1135,31 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 10,
     "level": "A2",
     "docType": "Note de service interne",
-    "text": "CONSIGNES DE SÉCURITÉ : La fermeture des portes d'accès aux bureaux s'effectuera désormais automatiquement à 19h00. Les employés travaillant en soirée doivent obligatoirement activer leur code d'alarme personnel.",
-    "q": "Que doivent faire les salariés travaillant après 19h00 ?",
+    "text": "NOTE INTERNE — SÉCURITÉ DES BÂTIMENTS : La fermeture automatique des portes d'accès aux bureaux de l'entreprise s'effectuera désormais chaque soir à 19h00 précises. Les employés travaillant en soirée doivent impérativement composer leur code d'alarme personnel lors de leur départ.",
+    "q": "Que doivent obligatoirement faire les salariés présents après 19h00 ?",
     "opt": [
-      "Débrancher les serveurs informatiques principaux",
-      "Activer leur code d'alarme personnel",
+      "Débrancher tous les serveurs informatiques",
+      "Activer leur code d'alarme personnel en partant",
       "Attendre l'arrivée de l'équipe de nettoyage du matin",
       "Laisser les fenêtres des bureaux ouvertes"
     ],
     "ans": 1,
-    "passEn": "SAFETY DIRECTIVE: Office entrance doors will now lock automatically at 7:00 PM. Employees working late must activate their personal alarm security code.",
-    "qEn": "What must employees working after 7:00 PM do?",
+    "passEn": "INTERNAL NOTICE — BUILDING SECURITY: Automatic locking of company office doors will take place every evening at 7:00 PM sharp. Employees working late must enter their personal alarm code upon departure.",
+    "qEn": "What must employees present after 7:00 PM do?",
     "optEn": [
-      "Unplug the main computer servers",
-      "Activate their personal alarm security code",
-      "Wait for the morning cleaning crew",
+      "Unplug all computing servers",
+      "Activate their personal alarm code upon leaving",
+      "Wait for morning cleaning crew arrival",
       "Leave office windows open"
     ]
   },
   {
     "paperNum": 2,
     "qNum": 11,
-    "level": "B1",
+    "level": "A2",
     "docType": "Dépliant touristique",
-    "text": "CROISIÈRE SUR LE FLEUVE : Embarquez à bord du bateau panoramique pour une croisière commentée d'une heure et demi à la découverte des ponts historiques. Départs toutes les heures de 10h à 18h.",
-    "q": "Quelle est la durée de la croisière touristique ?",
+    "text": "LOISIRS ET NATION — CROISIÈRE SUR LE FLEUVE : Embarquez à bord de notre bateau panoramique pour une croisière commentée d'une heure et demie à la découverte des ponts historiques de la cité. Départs réguliers toutes les heures de 10h00 à 18h00 depuis l'embarcadère central.",
+    "q": "Quelle est la durée exacte de la croisière guidée ?",
     "opt": [
       "Trente minutes seulement",
       "Deux heures et demie",
@@ -1166,36 +1167,36 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       "Une journée entière de navigation"
     ],
     "ans": 2,
-    "passEn": "RIVER CRUISE: Board the panoramic vessel for a 1.5-hour guided cruise exploring historical bridges. Departures every hour from 10:00 AM to 6:00 PM.",
-    "qEn": "How long is the guided river cruise?",
+    "passEn": "LEISURE — RIVER CRUISE: Board our panoramic vessel for a 1.5-hour guided cruise discovering historic city bridges. Regular departures every hour from 10:00 AM to 6:00 PM from central dock.",
+    "qEn": "What is the exact duration of the guided river cruise?",
     "optEn": [
       "Thirty minutes only",
       "Two hours and a half",
       "One hour and a half",
-      "A full day of sailing"
+      "Full day sailing trip"
     ]
   },
   {
     "paperNum": 2,
     "qNum": 12,
-    "level": "B1",
+    "level": "A2",
     "docType": "Menu de restaurant",
-    "text": "BISTROT DU PORT : Spécialités de poissons frais issus de la pêche locale durable. Plat signature : bouillabaisse traditionnelle servie le vendredi sur réservation au moins 24h à l'avance.",
-    "q": "Quelle condition est fixée pour déguster la bouillabaisse du vendredi ?",
+    "text": "RESTAURATION — BISTROT DU PORT : Spécialités culinaires de poissons frais et fruits de mer issus de la pêche locale durable. Notre plat signature, la bouillabaisse traditionnelle, est servie le vendredi uniquement sur réservation préalable effectuée au moins 24 heures à l'avance.",
+    "q": "Condition requise pour commander la bouillabaisse le vendredi :",
     "opt": [
-      "Venir obligatoirement accompagné de trois personnes",
-      "Être détenteur de la carte de fidélité du port",
+      "Venir accompagné d'au moins trois personnes",
+      "Posséder une carte de fidélité du restaurant",
       "Payer l'intégralité du repas une semaine avant",
-      "Réserver sa table au moins 24 heures à l'avance"
+      "Réserver sa table au moins 24h à l'avance"
     ],
     "ans": 3,
-    "passEn": "PORT BISTRO: Fresh seafood specialties sourced from sustainable local fisheries. Signature dish: traditional bouillabaisse served on Fridays by reservation at least 24 hours in advance.",
-    "qEn": "What condition is required to enjoy the Friday bouillabaisse?",
+    "passEn": "DINING — PORT BISTRO: Seafood specialties sourced from sustainable local fishing. Our signature dish, traditional bouillabaisse, is served on Friday only by reservation at least 24 hours in advance.",
+    "qEn": "Requirement to order bouillabaisse on Friday:",
     "optEn": [
-      "Bring at least three dining companions",
-      "Hold a port loyalty membership card",
-      "Pay for the entire meal one week prior",
-      "Reserve your table at least 24 hours in advance"
+      "Bring at least three companions",
+      "Hold a restaurant loyalty card",
+      "Pay for meal one week prior",
+      "Reserve table at least 24h in advance"
     ]
   },
   {
@@ -1203,22 +1204,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 13,
     "level": "B1",
     "docType": "Courriel client",
-    "text": "Cher client, suite à votre demande de changement de vol pour la destination de Nice, nous vous confirmons l'émission de votre nouveau billet électronique pour le vol AF 7412 du 18 juillet à 09h15.",
-    "q": "Quel est l'objet principal de cette communication de la compagnie aérienne ?",
+    "text": "INFORMATIONS VOYAGEURS — COMPAGNIE AÉRIENNE RÉGIONALE.\n\nCher client,\n\nFaisant suite à votre demande de modification de réservation transmise hier concernant votre vol à destination de Nice, nous avons le plaisir de vous confirmer l'émission de votre nouveau billet électronique. Vos modifications ont été prises en compte pour le vol AF 7412 du 18 juillet prochain, dont le départ est fixé à 09h15 depuis le terminal 2.\n\nNous vous invitons à télécharger votre carte d'embarquement mise à jour directement depuis notre application mobile. Nous vous remercions pour votre confiance et vous souhaitons un agréable voyage sur nos lignes.",
+    "q": "Motif principal de ce courriel envoyé par la compagnie aérienne :",
     "opt": [
-      "La confirmation d'émission d'un nouveau billet suite à modification",
-      "L'annulation définitive d'une réservation de vol",
-      "Une demande de complément d'information bagages",
-      "L'offre d'un surclassement gratuit en première classe"
+      "Confirmer l'émission du nouveau billet après modification",
+      "Notifier l'annulation définitive du vol réservé",
+      "Demander des pièces justificatives de bagages",
+      "Proposer un surclassement payant en première classe"
     ],
     "ans": 0,
-    "passEn": "Dear Customer, following your flight change request for Nice, we confirm the issuance of your new electronic ticket for flight AF 7412 on July 18 at 09:15 AM.",
-    "qEn": "What is the primary purpose of this airline communication?",
+    "passEn": "PASSENGER INFO — REGIONAL AIRLINE CORPORATION.\n\nDear Customer,\n\nFollowing your flight change request for Nice sent yesterday, we confirm issuance of your new electronic ticket. Your changes apply to flight AF 7412 on July 18th, departing at 9:15 AM from Terminal 2.\n\nPlease download your updated boarding pass from our mobile app. Thank you for choosing our airline and have a pleasant trip.",
+    "qEn": "Primary reason for this email sent by the airline:",
     "optEn": [
-      "Confirmation of a new e-ticket issuance after flight change",
-      "Permanent cancellation of a flight booking",
-      "A request for additional luggage information",
-      "An offer for a free first-class upgrade"
+      "Confirming new ticket issuance after change",
+      "Notifying final flight cancellation",
+      "Requesting additional luggage proof documents",
+      "Offering paid first-class upgrade"
     ]
   },
   {
@@ -1226,22 +1227,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 14,
     "level": "B1",
     "docType": "Avis de club sportif",
-    "text": "COMPLEXE AQUATIQUE : En raison du déroulement des championnats régionaux de natation synchro, le bassin olympique sera réservé aux athlètes compétiteurs le samedi 22 mai de 08h00 à 18h00.",
-    "q": "Pour quelle raison le bassin olympique sera-t-il inaccessible au grand public ?",
+    "text": "COMMUNICATION OFFICIELLE — COMPLEXE AQUATIQUE MUNICIPAL.\n\nChers usagers,\n\nNous vous informons qu'en raison de l'organisation des championnats régionaux de natation synchronisée, le grand bassin olympique sera entièrement réservé à la compétition officielle et aux athlètes participants le samedi 22 mai de 08h00 à 18h00.\n\nEn conséquence, l'accès au grand bassin sera inaccessible au grand public durant toute cette plage horaire. Le petit bassin de détente ainsi que l'espace bien-être resteront néanmoins ouverts aux usagers aux tarifs habituels. Nous vous remercions pour votre compréhension.",
+    "q": "Pourquoi le grand bassin olympique sera-t-il fermé au public ?",
     "opt": [
-      "Une vidange sanitaire complète du bassin",
-      "L'organisation des championnats régionaux de natation",
-      "Le tournage d'une série télévisée locale",
-      "Des travaux de réfection du carrelage des douches"
+      "Pour des travaux de réfection du carrelage des douches",
+      "Pour l'organisation des championnats régionaux de natation",
+      "Pour le tournage d'une série télévisée locale",
+      "Pour une vidange sanitaire annuelle complète"
     ],
     "ans": 1,
-    "passEn": "AQUATIC COMPLEX: Due to the regional synchronized swimming championships, the Olympic pool will be reserved for competing athletes on Saturday May 22 from 8:00 AM to 6:00 PM.",
-    "qEn": "Why will the Olympic pool be closed to the general public?",
+    "passEn": "OFFICIAL NOTICE — MUNICIPAL AQUATIC CENTER.\n\nDear users,\n\nDue to regional synchronized swimming championships, the main Olympic pool will be reserved for official competition and athletes on Saturday May 22 from 8:00 AM to 6:00 PM.\n\nConsequently, the main pool will be closed to the general public during this timeslot. The small leisure pool and wellness area remain open at usual rates. Thank you for your understanding.",
+    "qEn": "Why will the main Olympic pool be closed to the public?",
     "optEn": [
-      "A complete sanitary draining of the pool",
-      "Organization of the regional swimming championships",
-      "Filming of a local television series",
-      "Tile repair work in the shower facilities"
+      "For shower tile repair work",
+      "For regional swimming championships",
+      "For filming a local TV show",
+      "For complete annual sanitary draining"
     ]
   },
   {
@@ -1249,22 +1250,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 15,
     "level": "B1",
     "docType": "Programme d'excursion",
-    "text": "DÉCOUVERTE DES VIGNOBLES : Journée guidée en autocar au cœur de la Route des Vins. Dégustation chez trois viticulteurs et déjeuner traditionnel inclus. Départ à 9h de la Place du Capitole.",
-    "q": "Quelles prestations sont incluses dans cette excursion ?",
+    "text": "TOURISME RÉGIONAL — EXCURSION GUIDÉE SUR LA ROUTE DES VINS.\n\nPartez pour une journée d'excursion guidée en autocar au cœur des célèbres vignobles régionaux. Le circuit comprend la visite commentée de trois domaines viticoles familiaux, des dégustations de crus d'exception ainsi qu'un déjeuner traditionnel servi dans une auberge de terroir.\n\nLe départ s'effectuera à 09h00 précises depuis la Place du Capitole. Le tarif global de la journée prend en charge l'ensemble des transports, les dégustations commentées et le repas complet du midi. Pensez à réserver votre place sur notre site web.",
+    "q": "Quels services sont compris dans le prix de cette excursion ?",
     "opt": [
-      "Les vols aller-retour et l'hébergement en hôtel 4 étoiles",
-      "Uniquement la mise à disposition de vélos électriques",
-      "Le transport en autocar, les dégustations et le déjeuner",
-      "L'achat de deux caisses de vin par participant"
+      "Les billets d'avion et l'hébergement en hôtel 4 étoiles",
+      "Uniquement la mise à disposition d'un vélo électrique",
+      "Le transport en car, les dégustations et le déjeuner",
+      "L'achat obligatoire de deux caisses de vin"
     ],
     "ans": 2,
-    "passEn": "VINEYARD EXPLORATION: Guided day trip by coach along the Wine Route. Wine tasting at three vineyards and traditional lunch included. Departure at 9:00 AM from Place du Capitole.",
-    "qEn": "What services are included in this excursion?",
+    "passEn": "REGIONAL TOURISM — GUIDED WINE ROUTE EXCURSION.\n\nSet off on a guided day trip by coach along famous regional vineyards. The itinerary includes guided tours of three family wineries, tastings, and traditional lunch in a local inn.\n\nDeparture at 9:00 AM sharp from Place du Capitole. Total price covers all transport, guided tastings, and full lunch. Remember to book online.",
+    "qEn": "What services are included in this excursion's price?",
     "optEn": [
-      "Round-trip flights and 4-star hotel accommodation",
-      "Only electric bicycle rentals",
-      "Coach transport, tastings, and traditional lunch",
-      "The purchase of two cases of wine per participant"
+      "Plane tickets and 4-star hotel stay",
+      "Only electric bike rental service",
+      "Coach transport, tastings, and lunch",
+      "Mandatory purchase of two wine cases"
     ]
   },
   {
@@ -1272,21 +1273,21 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 16,
     "level": "B1",
     "docType": "Règlement intérieur médiathèque",
-    "text": "SERVICES NUMÉRIQUES : La consultation des ordinateurs de la médiathèque est limitée à 2 heures par jour et par abonné. La réservation d'un poste de travail peut s'effectuer sur place ou à distance.",
-    "q": "Quelle est la durée maximale d'utilisation quotidienne d'un poste informatique ?",
+    "text": "CHARTE USAGERS — ESPACES NUMÉRIQUES DE LA MÉDIATHÈQUE.\n\nAfin de permettre un accès équitable à tous les abonnés, l'utilisation des ordinateurs de l'espace numérique est limitée à une durée maximale de 2 heures par jour et par personne. Les usagers peuvent réserver leur poste de travail à l'avance sur le portail en ligne ou directement auprès des bibliothécaires.\n\nToute session de travail informatique sera automatiquement fermée à l'échéance des deux heures réservées. Les abonnés sont invités à enregistrer leurs documents sur clé USB personnelle avant la fin du temps attribué.",
+    "q": "Quelle est la limite quotidienne d'utilisation d'un ordinateur pour un abonné ?",
     "opt": [
       "Une heure par jour et par usager",
       "Quatre heures d'affilée sans interruption",
-      "Illimitée pour tous les visiteurs",
+      "Nombre d'heures illimité pour tous",
       "Deux heures par jour et par abonné"
     ],
     "ans": 3,
-    "passEn": "DIGITAL SERVICES: Media library computer usage is limited to 2 hours per day per subscriber. Computer workstation reservations can be made on site or remotely.",
-    "qEn": "What is the maximum daily usage limit for a computer workstation?",
+    "passEn": "USER CHARTER — MEDIA LIBRARY DIGITAL SPACES.\n\nTo ensure fair access for all subscribers, computer usage is limited to a maximum of 2 hours per day per person. Users can reserve workstations online or directly with librarians.\n\nAny computer session will automatically close after 2 hours. Subscribers are advised to save files to personal USB drives before time expires.",
+    "qEn": "What is the daily computer usage limit for a subscriber?",
     "optEn": [
       "One hour per day per user",
-      "Four continuous hours without interruption",
-      "Unlimited for all visitors",
+      "Four continuous hours uninterrupted",
+      "Unlimited hours for all visitors",
       "Two hours per day per subscriber"
     ]
   },
@@ -1295,22 +1296,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 17,
     "level": "B1",
     "docType": "Article de presse régionale",
-    "text": "INNOVATION COMMUNALE : La municipalité de Bordeaux installe des bacs de compostage collectif dans vingt parcs publics afin de réduire le volume des déchets ménagers non recyclés.",
-    "q": "Quel est l'objectif de l'installation des bacs de compostage collectif ?",
+    "text": "INNOVATION VERTE — MUNICIPALITÉ DE BORDEAUX.\n\nDans le cadre de son plan de réduction des déchets municipaux, la ville de Bordeaux installe des bacs de compostage collectif dans vingt parcs publics de la métropole. Cette initiative vise à inciter les habitants résidant en appartement sans jardin à trier leurs déchets organiques afin de réduire la quantité d'ordures ménagères non recyclées.\n\nLes citoyens inscrits au programme reçoivent gratuitement un bioseau et un guide pratique. Le compost produit sera ensuite redistribué aux espaces verts municipaux et aux jardins partagés du quartier.",
+    "q": "Objectif visé par l'installation de ces bacs de compostage collectif :",
     "opt": [
-      "Réduire le volume des déchets ménagers non recyclés",
-      "Produire de l'électricité renouvelable pour les lampadaires",
-      "Vendre du terreau aux entreprises horticoles privées",
+      "Diminuer le volume des ordures ménagères non recyclées",
+      "Produire de l'électricité pour l'éclairage public",
+      "Vendre de l'engrais à des entreprises horticoles privées",
       "Créer un concours de jardinage entre les habitants"
     ],
     "ans": 0,
-    "passEn": "MUNICIPAL INNOVATION: The city of Bordeaux is installing shared community composting bins in twenty public parks to reduce the volume of unrecovered household waste.",
-    "qEn": "What is the goal of installing shared community composting bins?",
+    "passEn": "GREEN INNOVATION — CITY OF BORDEAUX.\n\nAs part of its municipal waste reduction plan, Bordeaux is installing shared composting bins in twenty public parks. This initiative encourages apartment residents without gardens to sort organic waste, reducing unrecovered household trash.\n\nRegistered citizens receive a free bio-bucket and practical guide. Produced compost will be redistributed to municipal parks and community gardens.",
+    "qEn": "Targeted goal of installing these shared composting bins:",
     "optEn": [
-      "Reduce the volume of unrecovered household waste",
-      "Produce renewable power for streetlights",
-      "Sell fertilizer to private horticultural companies",
-      "Create a gardening competition among residents"
+      "Reduce volume of unrecovered household trash",
+      "Produce electricity for public streetlights",
+      "Sell fertilizer to private horticulture firms",
+      "Create a gardening contest among residents"
     ]
   },
   {
@@ -1318,22 +1319,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 18,
     "level": "B1",
     "docType": "Bulletin d'information associative",
-    "text": "ASSOCIATION DE PROTECTION ANIMALERAISONS : Notre refuge organise sa grande journée d'adoption annuelle le samedi 5 juin de 10h à 17h. Venez rencontrer nos animaux recueillis en attente d'une famille responsable.",
-    "q": "Quel est le but de la journée portes ouvertes du refuge ?",
+    "text": "PROTECTION ANIMALE — REFUGE ANIMALIER REGIONAL.\n\nNotre refuge animalier organise sa grande journée d'adoption annuelle le samedi 5 juin prochain de 10h00 à 17h00. Cet événement incontournable est l'occasion pour les familles responsables de venir rencontrer nos nombreux animaux recueillis (chiens, chats, lapins) en attente d'un foyer chaleureux.\n\nDes éducateurs canins et des vétérinaires bénévoles seront présents tout au long de la journée pour prodiguer des conseils précieux sur le bien-être animal et guider les futurs adoptants dans leur choix. Venez nombreux soutenir notre cause !",
+    "q": "Quel est l'objectif principal de la journée portes ouvertes du refuge ?",
     "opt": [
-      "Vendre des aliments industriels pour animaux",
+      "Vendre de la nourriture pour animaux domestiques",
       "Favoriser l'adoption d'animaux recueillis par des familles",
-      "Recruter des vétérinaires diplômés d'État",
-      "Organiser un spectacle de dressage canin"
+      "Recruter des vétérinaires diplômés pour le refuge",
+      "Organiser un spectacle payant de dressage canin"
     ],
     "ans": 1,
-    "passEn": "ANIMAL PROTECTION ASSOCIATION: Our shelter is hosting its annual adoption open house on Saturday June 5 from 10:00 AM to 5:00 PM. Come meet rescued animals waiting for a responsible family.",
-    "qEn": "What is the goal of the shelter open house day?",
+    "passEn": "ANIMAL PROTECTION — REGIONAL ANIMAL SHELTER.\n\nOur shelter is holding its annual adoption open house on Saturday June 5th from 10:00 AM to 5:00 PM. This event gives responsible families a chance to meet rescued animals (dogs, cats, rabbits) awaiting loving homes.\n\nVolunteer trainers and vets will be present to offer guidance on animal welfare and guide adopters. Come support our cause!",
+    "qEn": "What is the main objective of the shelter's open house?",
     "optEn": [
-      "Sell commercial pet food products",
+      "Sell commercial domestic pet food",
       "Promote animal adoption by responsible families",
-      "Recruit state-certified veterinarians",
-      "Organize a dog training performance"
+      "Recruit certified veterinarians for the shelter",
+      "Organize a paid dog training performance"
     ]
   },
   {
@@ -1341,22 +1342,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 19,
     "level": "B1",
     "docType": "Avis de perturbation des transports",
-    "text": "RÉSEAU DE TRAMWAY : En raison de travaux de maintenance sur la ligne 3 entre la station Gare et la station Université, les rames circuleront avec un intervalle allongé de 15 minutes tout au long du weekend.",
-    "q": "Comment le service de tramway sera-t-il affecté durant le weekend ?",
+    "text": "INFO TRAFIC — RÉSEAU DE TRAMWAY MUNICIPAL.\n\nEn raison de travaux de rénovation des rails et d'entretien électrique menés sur la ligne 3 entre les stations Gare Centrale et Université, la fréquence de passage des rames de tramway subira un allongement d'intervalle de 15 minutes pendant tout le week-end.\n\nDes panneaux d'affichage dynamique informeront les voyageurs en temps réel sur les quais. La compagnie de transport invite les usagers à prévoir un temps de trajet supplémentaire pour leurs déplacements durant cette période de travaux.",
+    "q": "De quelle façon le fonctionnement du tramway sera-t-il modifié le week-end ?",
     "opt": [
-      "Le tramway sera totalement supprimé sans remplacement",
-      "Les rames circuleront avec un intervalle rallongé de 15 minutes",
-      "Le tarif du ticket sera doublé sur l'ensemble du réseau",
-      "Seuls les étudiants munis d'une carte pourront monter"
+      "Les tramways seront complètement arrêtés",
+      "Les rames circuleront avec des passages espacés de 15 minutes",
+      "Les tarifs des tickets doubleront sur le réseau",
+      "L'accès sera réservé aux seuls usagers étudiants"
     ],
     "ans": 1,
-    "passEn": "TRAMWAY NETWORK: Due to maintenance work on Line 3 between Station Gare and Station University, trams will run with an increased 15-minute interval throughout the weekend.",
-    "qEn": "How will tramway service be affected during the weekend?",
+    "passEn": "TRAFFIC INFO — MUNICIPAL TRAMWAY NETWORK.\n\nDue to rail renovation and electrical maintenance on Line 3 between Central Station and University, tram frequencies will experience a 15-minute interval extension all weekend.\n\nDynamic displays will inform passengers in real time on platforms. The transit authority advises commuters to allow extra travel time during maintenance.",
+    "qEn": "How will tramway operations be altered over the weekend?",
     "optEn": [
-      "Tramways will be completely cancelled without replacement",
-      "Trams will run with an increased 15-minute interval",
-      "Ticket fares will double across the entire network",
-      "Only students with valid ID cards may board"
+      "Trams will be completely shut down",
+      "Trams will run with 15-minute extended intervals",
+      "Ticket prices will double across network",
+      "Access will be restricted to students only"
     ]
   },
   {
@@ -1364,22 +1365,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 20,
     "level": "B2",
     "docType": "Article sur le développement durable",
-    "text": "SOBRIÉTÉ NUMÉRIQUE ET ENTREPRISES : La prolifération des infrastructures de stockage de données massives (data centers) suscite des inquiétudes croissantes quant à leur empreinte énergétique. Pour contenir cette hausse, des experts préconisent l'adoption de politiques de sobriété numérique, axées sur l'optimisation des requêtes informatiques et le prolongement de la durée de vie des équipements informatiques.",
-    "q": "Quelles mesures de sobriété numérique sont préconisées par les experts ?",
+    "text": "TECHNOLOGIE ET ÉCOLOGIE — DOSSIER SUR LA SOBRIÉTÉ NUMÉRIQUE EN ENTREPRISE.\n\nLa multiplication exponentielle des infrastructures de stockage de données massives (data centers) suscite des préoccupations environnementales grandissantes en raison de leur empreinte énergétique colossale. Pour ralentir cette consommation électrique galopante, des experts préconisent l'adoption urgente de politiques de sobriété numérique dans le monde professionnel.\n\nCes mesures s'articulent autour de deux axes prioritaires : l'optimisation des requêtes informatiques pour limiter les traitements superflus et le prolongement systématique de la durée de vie du matériel informatique afin de freiner le renouvellement prématuré des équipements.",
+    "q": "Quelles préconisations sont mises en avant par les experts pour réduire l'empreinte numérique ?",
     "opt": [
-      "L'interdiction totale de l'utilisation des ordinateurs au travail",
-      "L'optimisation des requêtes et le rallongement de la durée de vie des équipements",
-      "Le remplacement annuel obligatoire de tous les serveurs informatiques",
-      "La taxation massive des envois de courriels électroniques"
+      "L'interdiction absolue de se servir d'ordinateurs au travail",
+      "L'optimisation du traitement de données et l'extension de la durée d'usage du matériel",
+      "Le remplacement annuel obligatoire des serveurs d'entreprise",
+      "La création d'une taxe sur l'envoi de courriels professionnels"
     ],
     "ans": 1,
-    "passEn": "DIGITAL SOBRIETY AND ENTERPRISES: The proliferation of massive data center storage facilities raises growing concerns over their energy footprint. To curb this rise, experts advocate adopting digital sobriety policies focused on optimizing data queries and extending hardware lifespans.",
-    "qEn": "What digital sobriety measures are recommended by experts?",
+    "passEn": "TECH AND ECOLOGY — CORPORATE DIGITAL SOBRIETY FEATURE.\n\nExponential growth of mass data centers triggers environmental concerns due to their colossal energy footprint. To curb electric consumption, experts urge adopting digital sobriety policies in business environments.\n\nThese measures center on two priorities: optimizing computing queries to limit superfluous processing and systematically extending hardware lifespans to slow premature equipment replacement.",
+    "qEn": "What recommendations are put forward by experts to reduce digital footprints?",
     "optEn": [
-      "A total ban on workplace computer usage",
-      "Optimizing data queries and extending hardware lifespans",
-      "Mandatory annual replacement of all computing servers",
-      "Heavy taxation on sending personal electronic emails"
+      "Absolute ban on using computers at work",
+      "Optimizing data processing and extending hardware usage lifespan",
+      "Mandatory annual replacement of corporate servers",
+      "Taxing professional business emails"
     ]
   },
   {
@@ -1387,22 +1388,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 21,
     "level": "B2",
     "docType": "Synthèse sur le télétravail",
-    "text": "MANAGEMENT ET ESPACES FLEXIBLES : Le déploiement du bureau d'expérience flexible (flex-office), où aucun salarié ne possède de poste de travail attribué, suscite des réactions contrastées. Si la mesure réduit substantiellement les coûts immobiliers des entreprises, elle est parfois perçue par les employés comme une déstabilisation identitaire et un frein au sentiment d'appartenance.",
-    "q": "Quel impact négatif potentiel du flex-office est souligné dans cette synthèse ?",
+    "text": "ORGANISATION DU TRAVAIL — ANNALES DE MANAGEMENT CONTEMPORAIN : LE BUREAU FLEXIBLE (FLEX-OFFICE).\n\nLe passage au modèle du bureau flexible (flex-office), caractérisé par l'absence de poste de travail fixe réattribué quotidiennement aux salariés, génère des appréciations très divergentes au sein des entreprises. Si cette réorganisation spatiale permet une réduction significative des coûts immobiliers pour l'employeur, elle suscite des retombées psychologiques mitigées chez le personnel.\n\nEn effet, de nombreux employés expriment une perte de repères personnels au quotidien et un affaiblissement du sentiment d'appartenance à la communauté d'entreprise, percevant le bureau flexible comme un symbole d'interchangeabilité de la main-d'œuvre.",
+    "q": "Quel effet indésirable lié au modèle du flex-office est relevé dans cette synthèse ?",
     "opt": [
-      "Une augmentation incontrôlée des loyers de bureau",
-      "L'obligation de travailler exclusivement le dimanche",
-      "Une déstabilisation identitaire et l'affaiblissement du sentiment d'appartenance",
-      "La suppression de toutes les congés payés annuels"
+      "Une hausse incontrôlée du montant des loyers commerciaux",
+      "L'obligation de travailler exclusivement durant le week-end",
+      "Une perte d'ancrage personnel et une érosion de l'appartenance",
+      "La suppression de l'ensemble des congés payés statutaires"
     ],
     "ans": 2,
-    "passEn": "MANAGEMENT AND FLEXIBLE SPACES: Implementing flex-office spaces, where no employee has a permanent designated desk, generates mixed reactions. While it substantially reduces corporate real estate costs, employees sometimes perceive it as identity destabilization and a barrier to company belonging.",
-    "qEn": "What potential negative impact of flex-office spaces is highlighted in this synthesis?",
+    "passEn": "WORKPLACE ORGANIZATION — CONTEMPORARY MANAGEMENT REVIEWS: FLEXIBLE OFFICE DESKING.\n\nTransitioning to flex-office desking—where no employee has a permanent designated desk—generates mixed reviews in companies. While spatial restructuring cuts corporate real estate costs, psychological impacts on staff are mixed.\n\nIndeed, many employees express loss of personal grounding and weakened sense of company belonging, viewing desk sharing as a symbol of staff interchangeability.",
+    "qEn": "What unwanted side effect of flex-office desking is noted in this review?",
     "optEn": [
-      "An uncontrolled surge in corporate office rent costs",
-      "An obligation to work exclusively on Sundays",
-      "Identity destabilization and a weakened sense of company belonging",
-      "The complete elimination of annual paid leave"
+      "Uncontrolled rise in commercial office rents",
+      "Mandate to work exclusively on weekends",
+      "Loss of personal grounding and eroded company belonging",
+      "Elimination of statutory paid leave"
     ]
   },
   {
@@ -1410,22 +1411,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 22,
     "level": "B2",
     "docType": "Tribune sur le système éducatif",
-    "text": "ORIENTATION SCOLAIRE ET ÉQUITÉ : Les algorithmes nationaux d'affectation universitaire prétendent garantir une impartialité totale dans le traitement des candidatures. Néanmoins, des sociologues démontrent que l'absence de lisibilité des critères de sélection favorise involontairement les familles initiées aux rouages du système, au détriment des élèves issus de milieux modestes.",
-    "q": "Selon la tribune, pourquoi l'impartialité algorithmique est-elle remise en question ?",
+    "text": "ÉDUCATION ET ÉQUITÉ — TRIBUNE DE SOCIOLOGIE DE L'ÉDUCATION : ALGORITHMES ET ORIENTATION SCOLAIRE.\n\nLes dispositifs numériques nationaux régissant l'affectation universitaire prétendent garantir une impartialité absolue dans le traitement automatisé des dossiers de candidature. Toutefois, des études sociologiques approfondies mettent en lumière les limites de cette prétendue neutralité technologique.\n\nEn réalité, l'opacité et la complexité des critères d'évaluation intégrés aux algorithmes favorisent indirectement les candidats issus de milieux socio-culturels favorisés, dont les familles possèdent les codes pour optimiser les dossiers, au détriment des élèves de milieux modestes démunis face au système.",
+    "q": "Pourquoi l'équité des systèmes d'affectation automatisés est-elle contestée selon la tribune ?",
     "opt": [
-      "Parce que les ordinateurs refusent systématiquement les candidats masculins",
-      "Parce que le coût d'inscription sur la plateforme est devenu exorbitant",
-      "Parce que les universités n'ont plus de places physiques disponibles",
-      "Parce que le manque de clarté des critères avantage les familles connaissant les rouages"
+      "Parce que les ordinateurs rejettent systématiquement les hommes",
+      "Parce que le coût d'inscription en ligne est devenu trop cher",
+      "Parce que les universités manquent de places physiques réelles",
+      "Parce que le manque de lisibilité avantage les familles averties"
     ],
     "ans": 3,
-    "passEn": "ACADEMIC ORIENTATION AND EQUITY: National university assignment algorithms claim to guarantee total impartiality in processing candidate applications. However, sociologists demonstrate that unclear selection criteria unintentionally favor families familiar with system mechanics over disadvantaged students.",
-    "qEn": "According to the op-ed, why is algorithmic impartiality questioned?",
+    "passEn": "EDUCATION AND EQUITY — SOCIOLOGY OF EDUCATION OP-ED: ALGORITHMS AND SCHOOL PLACEMENT.\n\nNational digital platforms governing university assignments claim absolute impartiality in processing applications automatically. However, sociological studies reveal limits to tech neutrality.\n\nIn reality, opacity and complexity in algorithmic scoring criteria indirectly favor candidates from privileged socio-cultural backgrounds whose families know how to optimize applications, penalizing disadvantaged students.",
+    "qEn": "Why is the fairness of automated assignment systems contested according to the op-ed?",
     "optEn": [
-      "Because computers systematically reject all male applicants",
-      "Because application platform fees have become exorbitant",
-      "Because universities no longer have physical classroom seats",
-      "Because unclear criteria favor families familiar with system mechanics"
+      "Because computers systematically reject male applicants",
+      "Because online application fees became too expensive",
+      "Because universities lack real physical classroom seats",
+      "Because lack of clarity favors informed families"
     ]
   },
   {
@@ -1433,22 +1434,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 23,
     "level": "B2",
     "docType": "Article sur le patrimoine culturel",
-    "text": "RESTITUTION DES BIENS CULTURELS : La question du rapatriement des objets d'art conservés dans les musées occidentaux vers leurs pays d'origine s'impose au cœur de la diplomatie culturelle internationale. Au-delà des enjeux juridiques complexes, cette démarche participe à la réappropriation mémorielle et à la reconstruction identitaire des peuples spoliés.",
-    "q": "Quelle portée fondamentale la restitution des objets d'art revêt-elle pour les pays d'origine ?",
+    "text": "PATRIMOINE MONDIAL — CAHIERS DE DIPLOMATIE CULTURELLE : LA RESTITUTION DES BIENS CULTURELS.\n\nLa question de la restitution des œuvres d'art et objets patrimoniaux conservés dans les musées occidentaux vers leurs pays d'origine est devenue un enjeu central des relations internationales contemporaines. Au-delà des négociations juridiques ardues entourant la propriété des collections, cette démarche revêt une dimension symbolique profonde.\n\nPour les nations spoliées durant la période coloniale, le rapatriement de leur patrimoine historique participe directement à la réappropriation de leur mémoire collective et à la consolidation de leur identité culturelle face à l'Histoire.",
+    "q": "Quelle portée fondamentale la démarche de restitution artistique présente-t-elle pour les pays d'origine ?",
     "opt": [
-      "La réappropriation mémorielle et la reconstruction identitaire des peuples",
-      "Une opportunité d'enrichir rapidement le budget de l'État par la revente",
-      "L'obligation d'interdire l'entrée des musées aux visiteurs étrangers",
-      "La fin de toute collaboration scientifique internationale"
+      "La réappropriation mémorielle et la consolidation identitaire des peuples",
+      "L'opportunité de revendre les œuvres pour financer le budget de l'État",
+      "L'obligation de fermer leurs musées nationaux aux visiteurs étrangers",
+      "L'interruption définitive de toute coopération culturelle internationale"
     ],
     "ans": 0,
-    "passEn": "RESTITUTION OF CULTURAL ASSETS: The repatriation of art objects housed in Western museums to their countries of origin has become central to international cultural diplomacy. Beyond complex legal issues, this process supports memory reclamation and identity reconstruction for looted nations.",
-    "qEn": "What fundamental significance does cultural asset restitution hold for countries of origin?",
+    "passEn": "WORLD HERITAGE — CULTURAL DIPLOMACY PAPERS: RESTITUTION OF CULTURAL ASSETS.\n\nRestitution of artworks and cultural heritage housed in Western museums to their origin countries has become central to international relations. Beyond legal debates over collection ownership, this process carries deep symbolic weight.\n\nFor nations looted during colonial periods, repatriating historical heritage aids memory reclamation and solidifies cultural identity before history.",
+    "qEn": "What fundamental significance does art restitution hold for origin countries?",
     "optEn": [
-      "Memory reclamation and identity reconstruction for looted nations",
-      "An opportunity to quickly enrich state budgets through resale",
-      "A mandate to ban foreign tourists from museum entry",
-      "The complete termination of international scientific collaboration"
+      "Memory reclamation and cultural identity consolidation",
+      "Opportunity to resell artworks to fund state budgets",
+      "Obligation to close national museums to foreign tourists",
+      "Definitive termination of international cultural cooperation"
     ]
   },
   {
@@ -1456,22 +1457,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 24,
     "level": "B2",
     "docType": "Chronique sur l'intelligence artificielle",
-    "text": "CRÉATIVITÉ ARTIFICIELLE ET DROIT D'AUTEUR : La capacité des algorithmes génératifs à composer des œuvres musicales ou littéraires soulève un imbroglio juridique inédit. L'absence de statut légal clair pour les créations nées du traitement de milliards d'données pose la question de la rémunération équitable des artistes dont les travaux ont servi à entraîner ces modèles.",
-    "q": "Quel problème de rémunération est soulevé par l'émergence des IA génératives ?",
+    "text": "PROPRIÉTÉ INTELLECTUELLE — CHRONIQUE JURIDIQUE : L'IA GÉNÉRATIVE ET LE DROIT D'AUTEUR.\n\nLa capacité des modèles d'intelligence artificielle générative à produire des textes, des images ou des compositions musicales à partir de requêtes simples crée une vive insécurité juridique dans le secteur culturel. L'absence de cadre réglementaire explicite concernant l'utilisation d'œuvres protégées pour l'entraînement des algorithmes suscite une vive contestation chez les créateurs.\n\nLes associations d'artistes exigent l'instauration d'un mécanisme de rémunération équitable compensant l'exploitation non consentie de leurs travaux par les géants technologiques développant ces outils informatiques.",
+    "q": "Revendication principale des artistes face aux technologies d'IA générative :",
     "opt": [
-      "Les artistes doivent désormais payer les éditeurs de logiciels",
-      "La juste indemnisation des artistes dont les travaux ont entraîné l'IA",
-      "La suppression de tous les droits d'auteur pour la musique classique",
-      "L'interdiction de vendre des instruments de musique traditionnels"
+      "L'obligation pour les créateurs d'acheter les logiciels d'IA",
+      "Une indemnisation financière équitable pour l'usage de leurs travaux",
+      "L'interdiction de diffuser toute musique classique sur Internet",
+      "La suppression définitive de l'ensemble des droits d'auteur"
     ],
     "ans": 1,
-    "passEn": "ARTIFICIAL CREATIVITY AND COPYRIGHT: The ability of generative algorithms to compose musical or literary works generates an unprecedented legal entanglement. The lack of clear legal status for works derived from processing billions of data points raises questions regarding fair compensation for artists whose work trained these models.",
-    "qEn": "What compensation issue is raised by the rise of generative AI?",
+    "passEn": "INTELLECTUAL PROPERTY — LEGAL CHRONICLE: GENERATIVE AI AND COPYRIGHT.\n\nThe ability of generative AI models to produce text, images, or music from simple prompts creates legal uncertainty in cultural sectors. The lack of explicit regulation regarding the use of copyrighted works for model training sparks protest among creators.\n\nArtists' associations demand fair compensation mechanisms to offset unauthorized exploitation of their work by tech giants developing these tools.",
+    "qEn": "Primary demand by artists regarding generative AI tech:",
     "optEn": [
-      "Artists must now pay subscription fees to software developers",
-      "Fair compensation for artists whose works were used to train AI models",
-      "The total abolishment of copyright laws for classical music",
-      "A ban on selling traditional physical musical instruments"
+      "Mandate for creators to purchase AI software",
+      "Fair financial compensation for use of their works",
+      "Ban on broadcasting classical music online",
+      "Permanent abolishment of all copyright laws"
     ]
   },
   {
@@ -1479,21 +1480,21 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 25,
     "level": "B2",
     "docType": "Étude sur l'urbanisme écocitoyen",
-    "text": "DESALTELLISATION DE LA VILLE : Le concept de la 'ville du quart d'heure', visant à garantir à chaque citadin l'accès aux services essentiels (santé, éducation, commerce) à moins de 15 minutes à pied ou à vélo, vise à décentrer les métropoles. Ce modèle réduit l'empreinte carbone urbaine tout en dynamisant la vie sociale des quartiers périphériques.",
-    "q": "Quel est l'objectif fondamental du concept de la 'ville du quart d'heure' ?",
+    "text": "AMÉNAGEMENT MÉTROPOLITAIN — REVUE D'URBANISME CONTEMPORAIN : LE CONCEPT DE LA VILLE DU QUART D'HEURE.\n\nLe modèle d'aménagement urbain dit 'de la ville du quart d'heure', visant à offrir à chaque citadin l'accès à ses besoins essentiels (santé, travail, éducation, commerces) à moins de 15 minutes à pied ou à vélo, vise à décentrer les grandes métropoles. Cette réorganisation spatiale réduit considérablement la dépendance aux transports motorisés.\n\nOutre l'allègement significatif des émissions carbonées urbaines, ce modèle favorise le développement d'une vie de quartier vivante et renforce le lien social entre les habitants d'une même communauté.",
+    "q": "Objectif prioritaire poursuivi par le modèle d'aménagement de la 'ville du quart d'heure' :",
     "opt": [
-      "Fermer tous les commerces de proximité le week-end",
-      "Obliger les habitants à déménager chaque année",
-      "Garantir l'accès aux services essentiels à moins de 15 minutes à pied ou à vélo",
-      "Supprimer les écoles publiques au profit des cours à distance"
+      "Fermer l'ensemble des commerces de proximité les jours fériés",
+      "Obliger les citadins à changer de logement de manière annuelle",
+      "Assurer l'accès aux services essentiels dans un rayon de 15 minutes à pied ou vélo",
+      "Supprimer les écoles publiques au profit de l'enseignement virtuel"
     ],
     "ans": 2,
-    "passEn": "15-MINUTE CITY URBAN PLANNING: The '15-minute city' concept, designed to ensure every resident has access to essential services (health, education, commerce) within a 15-minute walk or bike ride, decentralizes major cities. This model reduces urban carbon footprints while boosting neighborhood social vitality.",
-    "qEn": "What is the primary objective of the '15-minute city' urban planning concept?",
+    "passEn": "METROPOLITAN PLANNING — CONTEMPORARY URBANISM REVIEW: THE 15-MINUTE CITY CONCEPT.\n\nThe '15-minute city' urban planning model aims to give every resident access to essential needs (health, work, education, shops) within a 15-minute walk or bike ride, decentralizing major cities. This spatial restructuring cuts motorized transit dependency.\n\nBeyond significant urban carbon emission cuts, this model fosters vibrant neighborhood life and strengthens social ties among community residents.",
+    "qEn": "Primary goal pursued by the '15-minute city' planning model:",
     "optEn": [
-      "Close all local neighborhood shops on weekends",
+      "Close all local neighborhood shops on holidays",
       "Mandate that residents relocate their homes annually",
-      "Guarantee access to essential services within a 15-minute walk or bike ride",
+      "Ensure access to essential services within 15-min walk or bike ride",
       "Eliminate public schools in favor of online learning"
     ]
   },
@@ -1502,22 +1503,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 26,
     "level": "B2",
     "docType": "Analyse de la mobilité professionnelle",
-    "text": "COMPÉTENCES TRANSVERSALES ET EMPLOYABILITÉ : Dans un paysage économique en mutation rapide, les compétences techniques spécifiques (hard skills) s'obsolétisent plus rapidement que par le passé. Les recruteurs privilégient désormais les compétences transversales (soft skills), telles que la pensée critique, l'adaptabilité et la capacité d'apprentissage continu.",
-    "q": "Pourquoi les compétences transversales sont-elles devenues prioritaires pour les recruteurs ?",
+    "text": "GESTION DES RESSOURCES HUMAINES — REVUE DU MANAGEMENT ET DU TRAVAIL : LA PRIMAUTÉ DES COMPÉTENCES TRANSVERSALES.\n\nDans un paysage économique caractérisé par l'obsolescence accélérée des savoir-faire techniques (hard skills), les recruteurs accordent une importance croissante aux compétences transversales comportementales (soft skills). La capacité d'adaptation, la pensée critique, la créativité et l'esprit d'équipe deviennent des critères de sélection primordiaux.\n\nCette évolution s'explique par la nécessité pour les organisations de disposer de collaborateurs capables d'évoluer rapidement au gré des mutations technologiques et d'apprendre continuellement dans un environnement professionnel instable.",
+    "q": "Pourquoi les soft skills priment-elles désormais dans les processus de recrutement ?",
     "opt": [
-      "Parce qu'elles permettent d'économiser sur les budgets de formation",
-      "Parce qu'elles sont exigées par les conventions collectives internationales",
-      "Parce qu'elles remplacent l'obligation de posséder un diplôme universitaire",
-      "Parce que les compétences techniques s'obsolétisent plus rapidement qu me par le passé"
+      "Parce qu'elles permettent de réduire les budgets consacrés à la formation",
+      "Parce qu'elles sont exigées par les traités de travail internationaux",
+      "Parce qu'elles remplacent l'exigence de diplômes universitaires",
+      "Parce que les compétences techniques perdent leur pertinence plus vite qu'autrefois"
     ],
     "ans": 3,
-    "passEn": "TRANSVERSAL SKILLS AND EMPLOYABILITY: In a rapidly shifting economic landscape, specific technical skills become obsolete faster than in the past. Recruiters now prioritize soft skills—such as critical thinking, adaptability, and continuous learning capacity.",
-    "qEn": "Why have soft skills become a top priority for recruiters?",
+    "passEn": "HUMAN RESOURCES MANAGEMENT — MANAGEMENT AND WORK REVIEW: PRIMACY OF TRANSVERSAL SKILLS.\n\nIn an economy marked by accelerated technical skill obsolescence (hard skills), recruiters place growing weight on transversal behavioral skills (soft skills). Adaptability, critical thinking, creativity, and teamwork become top selection criteria.\n\nThis shift stems from corporate needs for staff capable of evolving rapidly alongside tech shifts and learning continuously in unstable workplace settings.",
+    "qEn": "Why do soft skills now prevail in hiring recruitment processes?",
     "optEn": [
-      "Because they allow companies to cut corporate training budgets",
+      "Because they allow cutting corporate training budgets",
       "Because they are mandated by international labor treaties",
-      "Because they eliminate the requirement to hold a university degree",
-      "Because specific technical skills become obsolete faster than in the past"
+      "Because they replace university degree requirements",
+      "Because technical skills lose relevance faster than before"
     ]
   },
   {
@@ -1525,22 +1526,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 27,
     "level": "B2",
     "docType": "Article sur l'engagement citoyen",
-    "text": "BUDGETS PARTICIPATIFS MUNICIPAUX : En allouant une fraction du budget d'investissement aux projets directement votés par les habitants, les municipalités cherchent à renouer la confiance démocratique. L'expérience montre toutefois que la réussite du dispositif dépend d'un effort constant de médiation pour inclure les populations éloignées des instances décisionnelles.",
-    "q": "Selon l'article, quelle condition garantit le succès des budgets participatifs ?",
+    "text": "POLITIQUE MUNICIPALE — CAHIERS DE LA GOUVERNANCE LOCALE : LES BUDGETS PARTICIPATIFS CITOYENS.\n\nEn confiant aux habitants le pouvoir de décider directement de l'affectation d'une fraction du budget d'investissement municipal, les collectivités locales s'efforcent de revitaliser la démocratie de proximité. Cependant, les synthèses de terrain révèlent que le succès de ces dispositifs dépend largement d'un effort continu d'accompagnement et de médiation culturelle.\n\nSans cette sensibilisation active, le budget participatif risque de capter uniquement l'attention de citoyens déjà insérés et avertis, accentuant les inégalités de représentation au détriment des populations défavorisées.",
+    "q": "Condition clé garantissant l'efficacité démocratique des budgets participatifs :",
     "opt": [
-      "Un effort constant de médiation pour inclure les populations éloignées",
-      "L'obligation de voter sous peine d'amende financière",
-      "La réservation exclusive du vote aux seuls propriétaires immobiliers",
-      "La suppression de toutes les assemblées citoyennes de quartier"
+      "Un travail permanent de médiation pour mobiliser l'ensemble des citoyens",
+      "L'instauration d'un vote obligatoire sous peine de sanction financière",
+      "La restriction du droit de vote aux seuls propriétaires immobiliers",
+      "La dissolution de toutes les assemblées citoyennes de quartier"
     ],
     "ans": 0,
-    "passEn": "MUNICIPAL PARTICIPATORY BUDGETING: By allocating a portion of capital budgets to projects voted on directly by residents, municipalities aim to rebuild democratic trust. However, experience shows success depends on sustained community outreach to include underrepresented populations.",
-    "qEn": "According to the article, what condition guarantees the success of participatory budgeting?",
+    "passEn": "MUNICIPAL POLICY — LOCAL GOVERNANCE PAPERS: CITIZEN PARTICIPATORY BUDGETING.\n\nBy empowering residents to decide directly on allocating a fraction of municipal capital budgets, local governments seek to revitalize local democracy. However, field studies reveal success depends heavily on ongoing cultural outreach and support.\n\nWithout active outreach, participatory budgeting risks capturing attention only from informed citizens, widening representation gaps at the expense of disadvantaged groups.",
+    "qEn": "Key condition guaranteeing democratic effectiveness of participatory budgeting:",
     "optEn": [
-      "Sustained community outreach to include underrepresented populations",
-      "Mandatory voting enforced by financial fines",
+      "Ongoing outreach work to engage all citizens",
+      "Mandatory voting enforced by financial penalties",
       "Restricting voting rights exclusively to property owners",
-      "Disbanding all local neighborhood citizen councils"
+      "Disbanding all local neighborhood citizen assemblies"
     ]
   },
   {
@@ -1548,22 +1549,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 28,
     "level": "B2",
     "docType": "Bilan sur la transition énergétique",
-    "text": "RÉNOVATION THERMIQUE DU BÂTI : L'isolation thermique des logements constitue le levier le plus efficace pour lutter contre la précarité énergétique et réduire les émissions de gaz à effet de serre. Cependant, la complexité des démarches administratives et le reste à charge financier découragent encore de nombreux propriétaires d'entreprendre ces travaux.",
-    "q": "Quels freins ralentissent l'engagement des propriétaires dans la rénovation thermique ?",
+    "text": "LOGEMENT ET ÉCOLOGIE — DOSSIER SUR LA RÉNOVATION THÉRMIQUE DU BÂTI.\n\nL'isolation thermique performante des bâtiments résidentiels constitue l'un des leviers les plus puissants pour réduire simultanément la précarité énergétique des ménages et limiter les émissions territoriales de gaz à effet de serre. Néanmoins, l'atteinte des objectifs nationaux de rénovation se heurte à d'importantes contraintes d'application.\n\nLa complexité des démarches administratives d'obtention des aides ainsi que le montant élevé du reste à charge financier découragent encore de nombreux propriétaires d'engager ces travaux de rénovation énergétique indispensables.",
+    "q": "Facteurs ralentissant l'implication des propriétaires dans la rénovation thermique :",
     "opt": [
-      "L'absence totale de matériaux isolants sur le marché international",
-      "La complexité administrative et le coût financier restant à charge",
-      "L'interdiction légale de rénover les bâtiments construits avant 1990",
+      "L'indisponibilité totale des matériaux d'isolation thermique",
+      "La lourdeur administrative et l'effort financier personnel requis",
+      "L'interdiction de rénover les bâtiments construits avant 1990",
       "La certitude que l'énergie deviendra entièrement gratuite"
     ],
     "ans": 1,
-    "passEn": "BUILDING THERMAL RETROFITTING: Residential thermal insulation represents the most effective lever to fight energy poverty and curb greenhouse gas emissions. However, administrative complexity and out-of-pocket costs still discourage many homeowners from launching renovation works.",
-    "qEn": "What obstacles slow down homeowners' commitment to thermal retrofitting?",
+    "passEn": "HOUSING AND ECOLOGY — RESIDENTIAL THERMAL RETROFITTING FEATURE.\n\nHigh-performance thermal insulation of residential buildings represents a powerful lever for curbing energy poverty while reducing greenhouse gas emissions. However, national retrofitting goals face implementation barriers.\n\nAdministrative complexity in obtaining aid grants and high out-of-pocket financial costs still discourage many property owners from launching essential energy renovations.",
+    "qEn": "Factors slowing homeowner involvement in thermal retrofitting:",
     "optEn": [
-      "A total lack of insulation materials on international markets",
-      "Administrative complexity and remaining out-of-pocket costs",
-      "A legal ban on renovating buildings constructed prior to 1990",
-      "The certainty that utility energy will soon become free"
+      "Total unavailability of thermal insulation materials",
+      "Administrative burden and required personal financial effort",
+      "Ban on renovating buildings constructed prior to 1990",
+      "Certainty that energy will become completely free"
     ]
   },
   {
@@ -1571,22 +1572,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 29,
     "level": "B2",
     "docType": "Lettre de réclamation administrative",
-    "text": "SIGNALEMENT ENVIRONNEMENTAL : Le collectif de riverains saisit la préfecture à la suite des rejets d'effluents non traités constatés dans la rivière locale. L'association exige le déclenchement immédiat d'une inspection sanitaire indépendante et la mise en conformité sous astreinte de l'usine incriminée.",
-    "q": "Que demande le collectif de riverains aux autorités préfectorales ?",
+    "text": "ENVIRONNEMENT ET SANTÉ — RECOURS DU COLLECTIF DES RIVERAINES DU BASSIN INDUSTRIEL.\n\nÀ l'attention de Monsieur le Préfet du Département,\n\nNotre collectif citoyen saisit vos services à la suite des rejets d'effluents industriels non traités constatés dans le cours d'eau traversant nos communes. Ces pollutions répétées menacent la biodiversité aquatique et suscitent de vives inquiétudes sanitaires chez les habitants.\n\nPar conséquent, nous exigeons le déclenchement immédiat d'une inspection sanitaire indépendante ainsi que l'obligation sous astreinte pour l'entreprise polluante de mettre ses installations aux normes environnementales en vigueur.",
+    "q": "Quelle exigence principale fait l'objet du recours déposé par les riverains ?",
     "opt": [
-      "La fermeture définitive de tous les commerces de la vallée",
-      "Une inspection sanitaire indépendante et la mise en conformité de l'usine",
-      "Le remboursement des taxes d'eau de l'année précédente",
-      "L'autorisation d'implanter une nouvelle décharge publique"
+      "La fermeture définitive de l'ensemble des usines du département",
+      "Une inspection indépendante et la mise aux normes de l'usine",
+      "Le remboursement intégral des factures d'eau des cinq dernières années",
+      "L'autorisation d'implanter un nouveau site de décharge publique"
     ],
     "ans": 1,
-    "passEn": "ENVIRONMENTAL COMPLAINT: A neighborhood collective files an administrative complaint regarding untreated industrial effluent discharges into the local river. The association demands an immediate independent health inspection and court-ordered compliance for the factory.",
-    "qEn": "What does the neighborhood collective ask of prefectural authorities?",
+    "passEn": "ENVIRONMENT AND HEALTH — INDUSTRIAL BASIN RESIDENTS' COLLECTIVE APPEAL.\n\nTo the Departmental Prefect,\n\nOur citizen collective contacts your department following untreated industrial effluent discharges into the local river. Repeated pollution threatens aquatic life and causes health concerns among residents.\n\nConsequently, we demand an immediate independent health inspection and court-ordered environmental compliance for the polluting firm.",
+    "qEn": "What main requirement forms the subject of the appeal filed by residents?",
     "optEn": [
-      "Permanent closure of all local valley businesses",
-      "An independent health inspection and mandatory factory compliance",
-      "Refunds on the previous year's residential water bills",
-      "Authorization to build a new public waste landfill"
+      "Permanent closure of all factories in the department",
+      "Independent inspection and mandatory factory compliance",
+      "Full refund on water bills over the last five years",
+      "Authorization to build a new public landfill site"
     ]
   },
   {
@@ -1594,22 +1595,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 30,
     "level": "C1",
     "docType": "Éditorial socio-économique",
-    "text": "LE MYTHE DE LA DÉCROISSANCE HEUREUSE : Préconiser la décroissance sélective sans anticiper ses répercussions sur les systèmes de protection sociale relève d'une illusion théorique. Faute d'une refonte structurelle de la fiscalité et de la répartition de la valeur, le ralentissement délibéré de l'activité économique risque de frapper en premier lieu les classes populaires déjà fragilisées.",
-    "q": "Quelle mise en garde l'auteur formule-t-il contre la décroissance non planifiée ?",
+    "text": "ÉCONOMIE POLITIQUE — TRIBUNE PARUE DANS LA REVUE DE MACROÉCONOMIE CONTEMPORAINE : LA DÉCROISSANCE SÉLECTIVE EN QUESTION ET LE MAINTIEN DU PROGRÈS SOCIAL.\n\nPromouvoir la thématique de la décroissance sélective comme solution miracle unique aux crises écologiques mondiales sans modéliser préalablement ses retombées sur les systèmes de protection sociale relève d'une posture théorique déconnectée des réalités économiques et sociales. Faute d'une révision structurelle préalable de la fiscalité et des modes de redistribution de la valeur ajoutée, tout ralentissement délibéré et non régulé de l'activité productive frapperait en premier lieu les populations les plus vulnérables.\n\nSans filet de sécurité sanitaire et financier renforcé, la baisse d'activité risquerait de détruire massivement des emplois peu qualifiés et d'éroder gravement les recettes publiques consacrées au financement de la santé et des retraites. Ainsi, sans régulation redistributive préalable, une aspiration écologique légitime basculerait inévitablement en crise sociale dévastatrice pour les catégories modestes.",
+    "q": "Quelle mise en garde l'auteur formule-t-il à l'encontre d'une décroissance non régulée ?",
     "opt": [
-      "Elle entraînerait une baisse des bénéfices des grands groupes du secteur bancaire",
-      "Elle risquerait d'impacter prioritairement les classes populaires sans refonte sociale",
-      "Elle supprimerait l'obligation d'exercer une activité professionnelle",
-      "Elle provoquerait l'arrêt immédiat des exportations agricoles mondialisées"
+      "Elle diminuerait les profits des grands établissements bancaires",
+      "Elle impacterait prioritairement les ménages modestes sans réforme sociale",
+      "Elle supprimerait l'obligation d'exercer un emploi rémunéré",
+      "Elle provoquerait l'arrêt immédiat du commerce international"
     ],
     "ans": 1,
-    "passEn": "THE MYTH OF HAPPY DEGROWTH: Advocating selective degrowth without anticipating its fallout on social welfare systems is a theoretical illusion. Without a structural overhaul of taxation and wealth distribution, deliberately slowing economic activity risks hitting disadvantaged populations first.",
-    "qEn": "What warning does the author issue against unplanned economic degrowth?",
+    "passEn": "POLITICAL ECONOMY — CONTEMPORARY MACROECONOMICS REVIEW: SELECTIVE DEGROWTH IN QUESTION.\n\nPromoting selective degrowth as a cure-all for climate crises without modeling fallout on social safety nets is a theoretical posture disconnected from economic realities. Without prior structural tax reform and wealth redistribution, deliberate economic slowdowns hit vulnerable populations first.\n\nWithout reinforced safety nets, lower production risks destroying low-skilled jobs and eroding health and pension budgets, turning legitimate eco-aspirations into devastating social crises.",
+    "qEn": "What warning does the author issue against unregulated economic degrowth?",
     "optEn": [
-      "It would reduce profitability for major international banking groups",
-      "It risks impacting disadvantaged populations first without social reform",
-      "It would eliminate the obligation to hold gainful employment",
-      "It would cause an immediate halt to global agricultural exports"
+      "It would reduce profitability for major banking institutions",
+      "It would impact modest households first without social reform",
+      "It would eliminate the obligation to hold paid employment",
+      "It would cause an immediate halt to global international trade"
     ]
   },
   {
@@ -1617,22 +1618,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 31,
     "level": "C1",
     "docType": "Essai sur la diversité linguistique",
-    "text": "ÉCOLOGIE DES LANGUES MENACÉES : L'extinction accélérée des langues minoritaires ne constitue pas seulement une perte linguistique, mais une érosion irréparable de la diversité cognitive humaine. Chaque langue véhiculant une cosmogonie singulière et une taxonomie originale du vivant, la mort d'un idiome équivaut à la disparition d'une bibliothèque de savoirs écologiques.",
-    "q": "Pourquoi la disparition d'une langue minoritaire est-elle comparée à la perte d'une bibliothèque ?",
+    "text": "SOCIOLINGUISTIQUE ET CULTURES — CAHIERS DE LA DIVERSITÉ CULTURELLE : L'ÉCOLOGIE DES LANGUES MENACÉES ET LA DIVERSITÉ COGNITIVE EN DANGER.\n\nLa disparition accélérée des idiomes minoritaires ne constitue pas seulement une perte patrimoniale linguistique tragique, mais représente une érosion irréparable de la diversité cognitive de l'humanité entière. Chaque langue structurant une cosmogonie singulière, une vision du monde unique et une classification originale du vivant, la mort d'un système linguistique équivaut à l'anéantissement définitif d'une véritable bibliothèque de savoirs écologiques et philosophiques accumulés sur des siècles de présence au monde.\n\nEn négligeant la sauvegarde active des langues en danger, les sociétés modernes se privent délibérément d'outils conceptuels irremplaçables élaborés par des cultures locales pour interagir en harmonie avec leurs écosystèmes. Cet appauvrissement linguistique réduit la capacité globale de l'humanité à conceptualiser des réponses novatrices face aux défis écologiques complexes du monde contemporain.",
+    "q": "Pourquoi la disparition d'une langue minoritaire est-elle assimilée à la destruction d'une bibliothèque ?",
     "opt": [
-      "Parce que les livres écrits dans cette langue doivent être détruits",
+      "Parce que les ouvrages rédigés dans cette langue sont détruits",
       "Parce que chaque langue renferme une cosmogonie et des savoirs écologiques uniques",
-      "Parce que l'enseignement des langues coûte de plus en plus cher",
-      "Parce que les étudiants refusent d'apprendre des alphabets anciens"
+      "Parce que l'enseignement des langues devient trop coûteux pour les États",
+      "Parce que les jeunes étudiants refusent d'apprendre la grammaire"
     ],
     "ans": 1,
-    "passEn": "ECOLOGY OF ENDANGERED LANGUAGES: The accelerated extinction of minority languages represents not merely a linguistic loss, but an irreparable erosion of human cognitive diversity. Because every language embodies a unique cosmogony and taxonomy of life, language death equates to destroying a library of ecological knowledge.",
-    "qEn": "Why is the loss of a minority language compared to losing a library?",
+    "passEn": "SOCIOLINGUISTICS — CULTURAL DIVERSITY PAPERS: ECOLOGY OF ENDANGERED LANGUAGES.\n\nAccelerated disappearance of minority tongues is not merely a linguistic heritage loss; it represents an irreparable erosion of human cognitive diversity. Because every language structures a unique cosmogony and classification of life, language death equals destroying a library of ecological knowledge.\n\nBy neglecting endangered language preservation, modern societies deprive themselves of unique conceptual tools developed by local cultures to interact with ecosystems, impoverishing humanity's capacity to shape its future.",
+    "qEn": "Why is the disappearance of a minority language compared to destroying a library?",
     "optEn": [
-      "Because physical books written in that language must be destroyed",
-      "Because every language embodies a unique cosmogony and ecological knowledge",
-      "Because teaching minority languages has become increasingly expensive",
-      "Because students refuse to learn ancient writing systems"
+      "Because physical books written in that language are destroyed",
+      "Because every language embodies unique ecological knowledge",
+      "Because teaching languages becomes too expensive for states",
+      "Because young students refuse to learn grammar rules"
     ]
   },
   {
@@ -1640,22 +1641,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 32,
     "level": "C1",
     "docType": "Analyse critique sur la vulgarisation",
-    "text": "DEVOIR D'INCERTITUDE DANS LE DISCOURS SCIENTIFIQUE : Dans leur quête de légitimité face à l'opinion publique, certains experts enclins au dogmatisme masquent les incertitudes méthodologiques inhérentes à la recherche. Or, reconnaître la part de doute et la révisabilité des hypothèses scientifiques constitue l'essence même de l'esprit critique et le gage ultime de la confiance du public.",
-    "q": "Selon l'auteur, qu'est-ce qui garantit véritablement la confiance du public envers la science ?",
+    "text": "PHILOSOPHIE DES SCIENCES — REVUE D'ÉPISTÉMOLOGIE APPLIQUÉE : LE DEVOIR D'INCERTITUDE ET DE RIGUEUR DU CHERCHEUR SCIENTIFIQUE DANS LA CITÉ MORDERNISÉE.\n\nDans leur quête de légitimité auprès de l'opinion publique et des médias d'information friands de récits simplifiés, certains experts scientifiques masquent parfois les incertitudes méthodologiques inhérentes à toute démarche de recherche sous des affirmations dogmatiques, catégoriques et péremptoires. Or, présenter des résultats provisoires ou des hypothèses en cours de validation comme des vérités scientifiques immuables constitue une dérive éthique préjudiciable à la science elle-même et au débat public citoyen.\n\nReconnaître en toute transparence la part d'incertitude et la révisabilité permanente des hypothèses scientifiques fonde la vraie démarche critique. C'est précisément cette honnêteté intellectuelle sans concession qui garantit à long terme la confiance durable du public envers les institutions de recherche et préserve l'intégrité de la quête scientifique face aux pressions politiques ou économiques extérieures.",
+    "q": "Selon le texte, quel comportement garantit véritablement la confiance du public envers la science ?",
     "opt": [
-      "L'affirmation dogmatique de vérités absolues et définitives",
+      "L'affirmation dogmatique de certitudes catégoriques absolues",
       "La reconnaissance transparente du doute et de la révisabilité des hypothèses",
-      "L'interdiction faite aux journalistes de poser des questions techniques",
-      "La publication exclusive des résultats de recherche positifs"
+      "L'interdiction de poser des questions techniques aux chercheurs",
+      "La diffusion exclusive des résultats de recherche positifs"
     ],
     "ans": 1,
-    "passEn": "DUTY OF UNCERTAINTY IN SCIENTIFIC DISCOURSE: Seeking public legitimacy, certain experts prone to dogmatism conceal methodological uncertainties inherent in research. Yet, acknowledging doubt and hypothesis revisability forms the essence of critical thinking and the ultimate pledge of public trust.",
-    "qEn": "According to the author, what truly guarantees public trust in science?",
+    "passEn": "SCIENCE PHILOSOPHY — APPLIED EPISTEMOLOGY REVIEW: THE RESEARCHER'S DUTY OF UNCERTAINTY.\n\nSeeking public and media legitimacy, some scientific experts conceal methodological uncertainties under dogmatic claims. Yet presenting provisional findings as immutable truth is detrimental to science itself.\n\nTransparently acknowledging uncertainty and hypothesis revisability forms true critical inquiry. It is precisely this intellectual honesty that secures long-term public trust in research institutions.",
+    "qEn": "According to the text, what behavior truly guarantees public trust in science?",
     "optEn": [
-      "Dogmatic assertion of absolute, permanent truths",
-      "Transparent acknowledgment of doubt and hypothesis revisability",
+      "Dogmatic assertion of absolute categorical certainty",
+      "Transparent recognition of doubt and hypothesis revisability",
       "Prohibiting journalists from asking technical questions",
-      "Publishing exclusively positive research trial findings"
+      "Broadcasting exclusively positive trial research results"
     ]
   },
   {
@@ -1663,22 +1664,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 33,
     "level": "C1",
     "docType": "Étude patrimoniale et architecturale",
-    "text": "ESTHÉTIQUE DU BRUTALISME ARCHITECTURAL : Longtemps décrié pour son austérité de béton brut, le courant brutaliste fait l'objet d'une réévaluation esthétique et patrimoniale majeure. Les historiens de l'art soulignent aujourd'hui la dimension sociale utopique de ces structures, conçues à l'origine pour offrir des logements démocratiques et des équipements collectifs monumentaux.",
-    "q": "Comment le jugement porté sur l'architecture brutaliste a-t-il évolué ?",
+    "text": "HISTOIRE DE L'ART ET PATRIMOINE — CAHIERS D'ARCHITECTURE CONTEMPORAINE : LA RE-ÉVALUATION CRITIQUE ET HISTORIQUE DU BRUTALISME ET DES ESPACES PUBLICS MUNICIPAUX EN EUROPE ET DANS LE MONDE ENTIER.\n\nLongtemps décrié pour la rudesse apparente de ses structures imposantes en béton brut et son austérité esthétique assumée, le courant architectural brutaliste fait aujourd'hui l'objet d'une profonde réévaluation esthétique, historique et patrimoniale au sein des cercles spécialisés d'urbanisme. Les historiens de l'art et les urbanistes soulignent désormais la dimension sociale utopique qui animait les architectes de ce mouvement visionnaire de l'après-guerre.\n\nConçus à l'origine pour offrir des logements sociaux démocratiques et de grands équipements publics monumentaux accessibles à l'ensemble du corps social sans distinction de classe, ces bâtiments incarnent une vision généreuse et égalitaire de la cité que la critique contemporaine redécouvre avec un intérêt renouvelé et un respect scientifique incontestable face aux défis urbains contemporains.",
+    "q": "Comment la perception de l'architecture brutaliste a-t-elle évolué chez les spécialistes internationaux du domaine ?",
     "opt": [
-      "Elle est désormais unanimement condamnée et destinée à la démolition",
-      "Elle fait l'objet d'une réévaluation mettant en avant son utopie sociale",
-      "Elle est considérée comme une simple copie du style néoclassique",
-      "Elle est réservée à la construction de bâtiments administratifs secrets"
+      "Elle est désormais unanimement condamnée à la démolition",
+      "Elle fait l'objet d'une réévaluation soulignant son utopie sociale",
+      "Elle est considérée comme une réplique mineure du style classique",
+      "Elle est réservée à la construction de bâtiments militaires secrets"
     ],
     "ans": 1,
-    "passEn": "AESTHETICS OF BRUTALIST ARCHITECTURE: Long decried for raw concrete austerity, brutalism undergoes major aesthetic reassessment. Art historians now highlight the utopian social vision of these structures, originally designed to provide democratic housing and monumental public amenities.",
-    "qEn": "How has evaluation of brutalist architecture evolved?",
+    "passEn": "ART HISTORY — CONTEMPORARY ARCHITECTURE PAPERS: RE-EVALUATING BRUTALISM.\n\nLong decried for raw concrete austerity, brutalist architecture undergoes deep aesthetic reassessment. Art historians now highlight the utopian social vision inspiring post-war movement architects.\n\nDesigned to provide democratic public housing and monumental amenities accessible to all, these structures embody a generous urban vision contemporary critics rediscover with renewed interest.",
+    "qEn": "How has perception of brutalist architecture evolved among specialists throughout the world?",
     "optEn": [
-      "It is now universally condemned and marked for complete demolition",
+      "It is now universally condemned to demolition",
       "It undergoes reassessment highlighting its utopian social vision",
-      "It is considered a simple copy of classical neoclassical styles",
-      "It is reserved exclusively for constructing classified government buildings"
+      "It is considered a minor replica of classical styles",
+      "It is reserved exclusively for building classified military sites"
     ]
   },
   {
@@ -1686,22 +1687,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 34,
     "level": "C1",
     "docType": "Réflexion prospective sur le numérique",
-    "text": "BIOMÉTRIE ET SURVEILLANCE DE MASSE : Le déploiement généralisé de la reconnaissance faciale dans l'espace public instaure une surveillance panoptique continue qui modifie la nature même de la liberté de réunion. Face au risque d'autocensure des citoyens lors des manifestations, des juristes plaident pour un moratoire strict sur ces technologies intrusives.",
-    "q": "Quel risque la reconnaissance faciale fait-elle peser sur la vie démocratique ?",
+    "text": "DROITS FONDAMENTAUX ET TECHNOLOGIE — REVUE DE DROIT ET LIBERTÉS NUMÉRIQUES : RECONNAISSANCE FACIALE ET ESPACE PUBLIC EN DÉBAT ÉTHIQUE ET JURIDIQUE CONTEMPORAIN ET INTERNATIONAL.\n\nLe déploiement accéléré des technologies de reconnaissance faciale automatisée dans les espaces publics instaure une surveillance panoptique continue qui modifie la nature même des libertés démocratiques fondamentales. Confrontés au risque permanent d'identification biométrique lors de leurs déplacements quotidiens dans la cité, les citoyens manifestent des comportements d'autocensure qui altèrent gravement la liberté de réunion et de manifestation pacifique dans l'espace urbain commun.\n\nFace à cette dérive sécuritaire incontrôlée, de nombreux juristes et défenseurs des libertés publiques plaident pour l'instauration d'un moratoire strict interdisant la surveillance biométrique de masse. Cette protection juridique est indispensable pour préserver l'anonymat nécessaire à l'exercice sans contrainte de la vie citoyenne démocratique et participative dans une société ouverte, pluraliste et libre.",
+    "q": "Quel risque principal le déploiement de la reconnaissance faciale fait-il peser sur la citoyenneté démocratique globale ?",
     "opt": [
-      "La hausse des coûts de maintenance du matériel informatique",
-      "L'autocensure des citoyens et l'entrave à la liberté de réunion",
-      "La fermeture définitive des tribunaux de grande instance",
-      "L'obligation de porter un masque uniforme dans les rues"
+      "L'augmentation des dépenses d'entretien des équipements",
+      "L'autocensure des citoyens et l'atteinte à la liberté de réunion",
+      "La fermeture définitive des tribunaux de justice départementaux",
+      "L'obligation d'arborer une tenue uniforme dans les rues"
     ],
     "ans": 1,
-    "passEn": "BIOMETRICS AND MASS SURVEILLANCE: Widespread facial recognition in public spaces establishes continuous panoptic surveillance altering the nature of assembly freedom. Facing risks of citizen self-censorship during demonstrations, legal scholars argue for strict moratoria on intrusive technologies.",
-    "qEn": "What risk does facial recognition pose to democratic life?",
+    "passEn": "FUNDAMENTAL RIGHTS — DIGITAL LAW AND FREEDOMS REVIEW: FACIAL RECOGNITION IN PUBLIC SPACES.\n\nAccelerated deployment of automated facial recognition in public spaces creates panoptic surveillance altering fundamental democratic freedoms. Facing permanent biometric identification risks, citizens exhibit self-censorship altering freedom of assembly.\n\nFacing this security drift, legal scholars urge strict moratoria banning mass biometric surveillance to preserve anonymity necessary for civic life.",
+    "qEn": "What main risk does facial recognition deployment pose to global democratic citizenship?",
     "optEn": [
-      "Rising hardware maintenance computing costs",
+      "Increased equipment maintenance expenses",
       "Citizen self-censorship and infringement on assembly freedom",
-      "Permanent closure of regional high courts of justice",
-      "Mandatory requirement to wear uniform facial masks outdoors"
+      "Permanent closure of departmental justice courts",
+      "Mandate to wear uniform attire outdoors in streets"
     ]
   },
   {
@@ -1709,22 +1710,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 35,
     "level": "C1",
     "docType": "Essai critique sur la littérature",
-    "text": "POÉTIQUE DU FRAGMENT DANS L'ESSAI MODERNISTE : En répudiant la linéarité du traité philosophique classique au profit de la forme fragmentaire, les essayistes du XXe siècle traduisent la dislocation du sujet moderne. Le fragment n'est pas une pensée incomplète, mais le refus délibéré du système clos, offrant au lecteur des alvéoles de méditation ouverte.",
-    "q": "Quelle est la signification de l'écriture fragmentaire selon l'auteur ?",
+    "text": "THÉORIE LITTÉRAIRE ET POÉTIQUE — REVUE DE POÉTIQUE CONTEMPORAINE : LA FORME FRAGMENTAIRE DANS L'ESSAI MODERNISTE DU XXE SIÈCLE ET L'ÉMANCIPATION DU LECTEUR CONTEMPORAIN.\n\nEn répudiant la continuité explicative et la linéarité du traité philosophique classique au profit de la forme fragmentaire, les essayistes du XXe siècle traduisent la dislocation du sujet moderne. Le fragment ne doit nullement être interprété comme une pensée inachevée ou une défaillance de la logique narrative, mais comme un refus délibéré du système dogmatique clos et de la synthèse autoritaire imposée de l'extérieur.\n\nEn offrant au lecteur des alvéoles de méditation ouverte débarrassées de toute conclusion péremptoire, la poétique du fragment exige une participation intellectuelle active. Dans ce cadre novateur, chaque discontinu devient l'espace privilégié d'une relecture réflexive et d'une co-création autonome du sens du texte par le lecteur émancipé, souverain et engagé dans la lecture.",
+    "q": "Quelle portée l'écriture fragmentaire revêt-elle selon l'analyse littéraire ?",
     "opt": [
-      "Une incapacité de l'auteur à achever son ouvrage par manque d'inspiration",
-      "Le refus délibéré du système clos traduisant la dislocation du sujet",
-      "Une technique commerciale destinée à réduire le nombre de pages",
-      "Une obligation d'imiter les textes anciens traduits du latin"
+      "L'impossibilité pour l'auteur de terminer son travail par manque d'idées",
+      "Le refus délibéré du système clos exprimant la dislocation du sujet",
+      "Une astuce éditoriale visant à diminuer la taille physique des livres",
+      "L'obligation d'imiter les manuscrits anciens traduits du latin"
     ],
     "ans": 1,
-    "passEn": "POETICS OF THE FRAGMENT IN MODERNIST ESSAYS: Repudiating classical philosophical linearity for fragmentary forms, 20th-century essayists express the dislocation of the modern subject. The fragment is not incomplete thought, but deliberate refusal of closed systems, offering open meditative cells.",
-    "qEn": "What is the significance of fragmentary writing according to the author?",
+    "passEn": "LITERARY THEORY — CONTEMPORARY POETICS REVIEW: FRAGMENTARY FORM IN ESSAYS.\n\nRepudiating classical philosophical continuity for fragmentary forms, 20th-century essayists express modern subject dislocation. Fragments are not incomplete thought, but deliberate rejection of closed dogmatic systems.\n\nBy offering open meditative cells freed from authoritarian conclusions, fragment poetics require active participation where discontinuity becomes a space for reinterpreting and co-creating meaning.",
+    "qEn": "What significance does fragmentary writing hold according to literary analysis?",
     "optEn": [
-      "An author's inability to complete work due to lack of inspiration",
-      "Deliberate rejection of closed systems reflecting subject dislocation",
-      "A publisher's marketing trick designed to reduce physical book length",
-      "An obligation to mimic ancient texts translated from Latin"
+      "Author's inability to complete work due to lack of ideas",
+      "Deliberate rejection of closed systems expressing subject dislocation",
+      "Publisher trick aimed at cutting physical book sizes",
+      "Obligation to imitate ancient manuscripts translated from Latin"
     ]
   },
   {
@@ -1732,22 +1733,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 36,
     "level": "C2",
     "docType": "Chronique philosophique sur le temps",
-    "text": "L'ILLUSION DE L'ACCÉLÉRATION HISTORIQUE : La rhétorique contemporaine sur l'accélération exponentielle du temps masque en réalité une stase structurelle profonde. Sous le vernis de l'agitation technologique et du renouvellement frénétique des gadgets, les structures fondamentales du capitalisme tardif et de l'organisation politique demeurent singulièrement figées et incapables d'engendrer une véritable alternative métaphysique.",
-    "q": "Quel paradoxe l'auteur met-il en évidence sous l'apparence de l'accélération moderne ?",
+    "text": "CRITIQUE SOCIO-PHILOSOPHIQUE — TRIBUNE PARUE DANS LES CAHIERS DE CRITIQUE MÉTAPHYSIQUE : L'ILLUSION DE L'ACCÉLÉRATION HISTORIQUE ET LA STASE STRUCTURELLE DU CAPITALISME TARDIF EN QUESTION.\n\nLa rhétorique contemporaine saturée par le thème de l'accélération exponentielle du temps et du progrès technique masque en réalité une stase structurelle profonde. Sous le vernis de l'agitation technologique permanente et du renouvellement frénétique des gadgets marchands, les structures fondamentales du capitalisme tardif et des institutions politiques demeurent singulièrement figées et incapables d'innover réellement. L'innovation constante se borne à remodeler la surface des marchandises sans altérer la logique du système.\n\nCette immobilité sous-jacente prive notre époque de la capacité d'engendrer une véritable alternative métaphysique ou sociale. Réduite à une hyper-activité superficielle et répétitive, la société contemporaine simule le mouvement perpétuel pour mieux pérenniser un ordre figé incapable de concevoir sa propre transformation historique et politique.",
+    "q": "Quel paradoxe l'auteur met-il en exergue sous l'apparence du mouvement moderne ?",
     "opt": [
-      "L'agitation technologique masque en réalité une stase structurelle profonde",
-      "L'accélération technologique a permis de résoudre toutes les inégalités sociales",
+      "L'effervescence apparente dissimule un blocage sociétal profond",
+      "L'accélération numérique a permis d'éliminer les inégalités sociales",
       "Les gouvernements ont réussi à ralentir le cours du temps biologique",
-      "Le renouvellement des objets empêche définitivement les guerres internationales"
+      "Le renouvellement des objets empêche les conflits entre nations"
     ],
     "ans": 0,
-    "passEn": "THE ILLUSION OF HISTORICAL ACCELERATION: Contemporary rhetoric on exponential time acceleration masks profound structural stasis. Beneath technological turmoil and rapid gadget turnover, fundamental structures of late capitalism and political organization remain frozen, incapable of generating genuine metaphysical alternatives.",
-    "qEn": "What paradox does the author highlight beneath the appearance of modern acceleration?",
+    "passEn": "SOCIO-PHILOSOPHICAL CRITIQUE — METAPHYSICAL CRITICISM PAPERS: THE ILLUSION OF HISTORICAL ACCELERATION.\n\nContemporary rhetoric on exponential time acceleration masks profound structural stasis. Beneath technological turmoil and gadget turnover, fundamental structures of late capitalism and political institutions remain frozen.\n\nThis underlying immobility deprives our era of capacity to generate genuine metaphysical alternatives. Reduced to superficial hyperactivity, contemporary society simulates movement to perpetuate a frozen order incapable of thinking its own transformation.",
+    "qEn": "What paradox does the author highlight beneath modern movement appearances?",
     "optEn": [
-      "Technological turmoil actually masks profound structural stasis",
-      "Technological acceleration has solved all social inequalities",
-      "Governments have succeeded in slowing biological time",
-      "Product turnover permanently prevents international wars"
+      "Apparent effervescence dissimulates deep societal blockage",
+      "Digital acceleration eliminated social inequalities",
+      "Governments succeeded in slowing biological time",
+      "Product turnover prevents conflicts between nations"
     ]
   },
   {
@@ -1755,22 +1756,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 37,
     "level": "C2",
     "docType": "Essai épistémologique sur la modernité",
-    "text": "RÉIFICATION DU VIVANT ET DÉSENCHANTEMENT : L'arraisonnement de la nature par la techno-science moderniste a transformé le monde d'un cosmos habité par le mystère en un simple réservoir d'énergie et de ressources exploitables. Ce désenchantement méthodique dépossède l'humanité de son ancrage écosystémique, réduisant la relation au monde à un rapport unilatéral de domination utilitariste.",
-    "q": "Quelles conséquences le désenchantement de la nature entraîne-t-il pour l'humanité ?",
+    "text": "PHILOSOPHIE DE LA NATURE — ANNALES D'ÉPISTÉMOLOGIE CONTEMPORAINE : RÉIFICATION DU VIVANT ET DÉSENCHANTEMENT DU MONDE MATÉRIEL DANS LA TECHNO-SCIENCE CONTEMPORAINE.\n\nL'arraisonnement de la nature par la techno-science moderniste a métamorphosé le monde d'un cosmos habité par le mystère en un simple réservoir d'énergie et de ressources exploitables à merci. Ce désenchantement méthodique dépossède l'humanité de son ancrage écosystémique originel, réduisant la relation à la Terre à un rapport unilatéral de domination utilitariste et comptable. Tout élément naturel vivant se trouve ainsi réifié et transformé en ressource monétisable sur les marchés mondiaux.\n\nEn effaçant la sacralité du vivant au profit d'un matérialisme comptable étroit, la modernité a brisé le dialogue symbolique entre l'homme et son milieu environnant. Restaurer une présence éthique exige de rompre de manière radicale avec cette logique d'exploitation pour réédifier une écologie de l'interdépendance respectueuse du vivant sous toutes ses formes.",
+    "q": "Quelles conséquences le désenchantement méthodique de la nature entraîne-t-il ?",
     "opt": [
       "L'élévation spirituelle de l'humanité vers des savoirs ancestraux",
       "La dépossession de l'ancrage écosystémique au profit d'un utilitarisme réifié",
-      "La garantie de la gratuité universelle de toutes les ressources énergétiques",
-      "L'éradication définitive des maladies génétiques humaines"
+      "La garantie de la gratuité universelle de l'ensemble des énergies",
+      "L'éradication définitive de toutes les maladies génétiques"
     ],
     "ans": 1,
-    "passEn": "REIFICATION OF THE LIVING AND DISENCHANTMENT: The subjugation of nature by modernist techno-science transformed the world from a mystery-laden cosmos into a mere reservoir of exploitable energy. This methodical disenchantment strips humanity of ecosystemic grounding, reducing world relations to unilateral utilitarian domination.",
-    "qEn": "What consequences does the disenchantment of nature entail for humanity?",
+    "passEn": "PHILOSOPHY OF NATURE — CONTEMPORARY EPISTEMOLOGY ANNALS: REIFICATION OF THE LIVING AND DISENCHANTMENT.\n\nSubjugation of nature by modernist techno-science transformed the world from a mystery-laden cosmos into a reservoir of exploitable resources. Methodical disenchantment strips humanity of ecosystemic grounding, reducing Earth relations to unilateral utilitarian domination.\n\nBy erasing living sacrality for accounting materialism, modernity broke symbolic human-environment dialogue. Restoring ethical presence requires breaking exploitation logic to rebuild interdependency ecology.",
+    "qEn": "What consequences does methodical disenchantment of nature entail?",
     "optEn": [
       "Humanity's spiritual elevation toward ancestral wisdom",
       "Stripping ecosystemic grounding in favor of reified utilitarianism",
       "Guaranteeing universal free energy resources for all",
-      "Permanent eradication of human genetic diseases"
+      "Permanent eradication of all genetic diseases"
     ]
   },
   {
@@ -1778,22 +1779,22 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 38,
     "level": "C2",
     "docType": "Réflexion philosophique sur l'esthétique",
-    "text": "GÉNÉALOGIE DU KITSCH ET MASS-MÉDIAS : Le kitsch ne se définit pas par une absence de goût, mais par une esthétique du sentiment facile et du confort émotionnel immédiat. En éliminant toute tension dialectique et tout conflit tragique au profit d'une harmonie frelatée, le kitsch contemporain agit comme un narcotique culturel assurant la pacification idéologique des masses.",
-    "q": "Quelle fonction idéologique le kitsch remplit-il selon cette réflexion ?",
+    "text": "CRITIQUE CULTURELLE — REVUE D'ESTHÉTIQUE D'AVANT-GARDE : GÉNÉALOGIE DU KITSCH ET DÉSTRUCTURATION DANS LES MASS-MÉDIAS CONTEMPORAINS DU MONDE ENTIER.\n\nLe kitsch ne se caractérise pas par une simple absence de goût individuel ou un défaut d'éducation artistique, mais constitue une esthétique structurée du sentiment facile et du confort émotionnel immédiat. En éliminant toute tension dialectique et tout conflit tragique au profit d'une harmonie frelatée, le kitsch contemporain agit comme un narcotique culturel puissant assurant la pacification idéologique des masses à l'échelle globale. La complexité exigeante de l'art authentique se trouve ainsi balayée.\n\nEn offrant des émotions pré-formatées et immédiatement consommables, l'industrie du kitsch neutralise la pensée critique en satisfaisant le désir individuel de certitude et d'illusion rassurante. L'art authentique s'oppose ainsi radicalement au kitsch en maintenant la blessure du réel et la complexité du doute métaphysique face à l'existence humaine.",
+    "q": "Quelle fonction idéologique majeure le kitsch remplit-il selon cette analyse ?",
     "opt": [
-      "Il stimule la pensée subversive et la révolte politique des citoyens",
-      "Il agit comme un narcotique culturel assurant la pacification idéologique",
-      "Il contraint les musées à fermer leurs portes par manque d'œuvres",
+      "Il stimule la pensée subversive et la révolte citoyenne",
+      "Un anesthésiant culturel favorisant l'alignement idéologique",
+      "Il contraint les musées à fermer par manque d'œuvres réelles",
       "Il impose un apprentissage rigoureux des beaux-arts aux jeunes"
     ],
     "ans": 1,
-    "passEn": "GENEALOGY OF KITSCH AND MASS MEDIA: Kitsch is defined not by bad taste, but by aesthetics of cheap sentiment and immediate emotional comfort. Eliminating dialectical tension and tragic conflict for counterfeit harmony, contemporary kitsch acts as cultural narcotic ensuring ideological pacification.",
-    "qEn": "What ideological function does kitsch serve according to this reflection?",
+    "passEn": "CULTURAL CRITICISM — AVANT-GARDE AESTHETICS REVIEW: KITSCH GENEALOGY AND MASS MEDIA.\n\nKitsch is characterized not by bad individual taste, but constitutes a structured aesthetics of cheap sentiment and immediate emotional comfort. Eliminating dialectical tension for counterfeit harmony, contemporary kitsch acts as cultural narcotic ensuring ideological pacification.\n\nBy offering pre-formatted consumable emotions, kitsch industries neutralize critical thought satisfying desires for certainty. Authentic art opposes kitsch by maintaining reality's complexity.",
+    "qEn": "What major ideological function does kitsch fulfill according to this analysis?",
     "optEn": [
-      "It stimulates subversive thought and citizen political revolt",
-      "It acts as a cultural narcotic ensuring ideological pacification",
-      "It forces museums to close due to a lack of genuine artwork",
-      "It mandates rigorous fine arts training for young students"
+      "Stimulating subversive thought and citizen revolt",
+      "A cultural anesthetic promoting ideological alignment",
+      "Forcing museum closures due to lack of real artwork",
+      "Mandating rigorous fine arts training for youth"
     ]
   },
   {
@@ -1801,25 +1802,26 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "qNum": 39,
     "level": "C2",
     "docType": "Extrait d'anthropologie philosophique",
-    "text": "L'ALTÉRITÉ COMME FONDEMENT ÉTHIQUE : L'éthique ne découle pas d'un contrat de réciprocité intéressée entre individus rationnels, mais de la responsabilité inconditionnelle et asymétrique envers le visage d'autrui. C'est dans l'épreuve de l'altérité irréductible, qui fait effraction dans le solipsisme du Moi, que s'enracine la possibilité même de la justice et de l'humanité.",
+    "text": "ETHIQUE ET ALTÉRITÉ — ANNALES DE PHILOSOPHIE MORALE : L'ALTÉRITÉ IRREDUCTIBLE COMME FONDEMENT ÉTHIQUE DE L'HUMANITÉ CONTEMPORAINE ET LE VISAGE DE L'AUTRE EN QUESTION DANS LES SOCIÉTÉS MODERNES.\n\nL'éthique véritable ne découle aucunement d'un contrat de réciprocité intéressée signé entre individus rationnels cherchant la maximisation de leurs avantages personnels, mais prend sa source originelle dans la responsabilité inconditionnelle et asymétrique envers le visage d'autrui. C'est dans l'épreuve de l'altérité irréductible, qui fait effraction traumatique dans le solipsisme du Moi, que s'enracine la possibilité même de la justice et du devoir moral. L'homme ne devient pleinement humain qu'en répondant véritablement d'autrui.\n\nEn plaçant autrui au centre de la préoccupation philosophique ultime, cette anthropologie éthique rompt radicalement avec le narcissisme moderne. Se reconnaître vulnérable devant l'appel d'autrui fonde l'unique rempart authentique contre la barbarie de l'égoïsme individuel et du repli identitaire désastreux.",
     "q": "Selon l'auteur, quelle est l'origine fondamentale de la responsabilité éthique ?",
     "opt": [
       "Un calcul économique de réciprocité d'intérêts financiers",
       "La responsabilité inconditionnelle et asymétrique envers autrui",
-      "L'obéissance aveugle aux lois écrites rédigées par l'État",
-      "La recherche permanente du plaisir personnel et du bien-être"
+      "L'obéissance aveugle aux lois rédigées par l'État",
+      "La recherche permanente du plaisir personnel immédiat"
     ],
     "ans": 1,
-    "passEn": "OTHERNESS AS AN ETHICAL FOUNDATION: Ethics stems not from a reciprocal self-interested contract between rational agents, but from unconditional, asymmetric responsibility before the face of the Other. It is in confronting irreducible alterity, breaking into individual solipsism, that justice and humanity take root.",
+    "passEn": "ETHICS AND OTHERNESS — MORAL PHILOSOPHY ANNALS: OTHERNESS AS ETHICAL FOUNDATION.\n\nTrue ethics stems not from self-interested reciprocity contracts between rational agents, but originates in unconditional, asymmetric responsibility before the face of the Other. In confronting irreducible alterity breaking into ego solipsism, justice and moral duty take root.\n\nBy placing the Other at the center of philosophical concern, this ethical anthropology breaks with modern narcissism. Recognizing vulnerability before the Other's call forms the sole barrier against individual selfishness.",
     "qEn": "According to the author, what is the fundamental origin of ethical responsibility?",
     "optEn": [
       "An economic calculation of reciprocal financial self-interest",
       "Unconditional, asymmetric responsibility before the face of the Other",
       "Blind obedience to written state legal codes",
-      "Constant pursuit of personal pleasure and individual well-being"
+      "Constant pursuit of immediate personal pleasure"
     ]
   }
 ],
+
   // ==================== 📄 PAPER 3 (39 UNIQUE ITEMS) ====================
   [
     {
