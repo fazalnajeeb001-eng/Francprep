@@ -904,7 +904,7 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "text": "ANTHROPOLOGIE PHILOSOPHIQUE — REVUE D'ÉTUDES HUMANISTES : LE SYMBOLISME COMME CONDITION FONDAMENTALE DE L'HUMANITÉ.\n\nLa capacité spécifique de l'être humain à sécréter du sens au moyen de formes symboliques complexes ne saurait être réduite à un luxe superfétatoire de la culture ou à un divertissement esthétique secondaire. Elle constitue au contraire l'armature ontologique même de notre présence au monde, à travers laquelle l'homme parvient à structurer le réel et à conjurer l'angoisse fondamentale du néant. Sans cette médiation symbolique, l'existence humaine basculerait dans le chaos et le non-sens.\n\nC'est par le médiat du langage, du mythe et du rituel que l'individu s'arrache à l'immédiateté biologique pour édifier un univers d'intersubjectivité éthique et de valeurs partagées. Occulter cette dimension symbolique au profit d'un matérialisme réducteur revient à déposséder l'humanité de la structure narrative qui fonde sa dignité et sa responsabilité morale.",
     "q": "Selon l'auteur, quelle fonction ontologique essentielle remplit la faculté symbolique ?",
     "opt": [
-      "La structure fondamentale organisant le réel et apaisant l'angoisse existentielle",
+      "La structure ontologique organisant le réel et conférant une cohérence intelligible face à la finitude humaine",
       "Un simple mécanisme biologique d'adaptation pour la survie physique",
       "Une contrainte linguistique arbitraire empêchant la pensée logique",
       "Une activité récréative secondaire réservée aux moments de loisir"
@@ -913,7 +913,7 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
     "passEn": "PHILOSOPHICAL ANTHROPOLOGY — HUMANIST STUDIES JOURNAL: SYMBOLISM AS THE FUNDAMENTAL HUMAN CONDITION.\n\nHuman capacity to secrete meaning through complex symbolic forms cannot be reduced to a superfluous cultural luxury or secondary aesthetic entertainment. It constitutes the ontological framework of our presence in the world, through which humans structure reality and ward off existential dread.\n\nThrough language, myth, and ritual, individuals transcend biological immediacy to build an ethical intersubjective universe of shared values. Obscuring this symbolic dimension in favor of reductive materialism strips humanity of the narrative framework founding moral dignity.",
     "qEn": "According to the author, what essential ontological function does the symbolic capacity fulfill?",
     "optEn": [
-      "The fundamental structure organizing reality and soothing existential dread",
+      "The ontological structure organizing reality and conferring intelligible coherence in the face of human finitude",
       "A simple biological adaptation mechanism for physical survival",
       "An arbitrary linguistic constraint impeding logical thinking",
       "A secondary recreational activity reserved strictly for leisure time"

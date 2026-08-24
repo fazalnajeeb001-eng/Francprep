@@ -7442,6 +7442,91 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
   return qList;
 }
 
+function buildDynamicReadingGuidance(
+  item: any,
+  correctLetter: string,
+  correctOptionText: string,
+  correctOptionEn: string,
+  distractors: { letter: string; text: string; enText: string }[]
+): {
+  trapAlert: string;
+  trapAlertEn: string;
+  readingCoach: string;
+  readingCoachEn: string;
+  detailedExplanation: string;
+  detailedExplanationEn: string;
+} {
+  if (item.explanation && item.explanationEn && item.trapAlert) {
+    return {
+      trapAlert: item.trapAlert,
+      trapAlertEn: item.trapAlertEn || item.trapAlert,
+      readingCoach: item.readingCoach || "💡 Stratégie : Analysez attentivement la consigne et le passage.",
+      readingCoachEn: item.readingCoachEn || "💡 Reading Strategy: Carefully analyze the passage instructions.",
+      detailedExplanation: item.explanation,
+      detailedExplanationEn: item.explanationEn,
+    };
+  }
+
+  let trapAlert = "";
+  let trapAlertEn = "";
+  let readingCoach = "";
+  let readingCoachEn = "";
+
+  if (item.level === "A1") {
+    trapAlert = `⚠️ Piège A1 : Ne vous laissez pas induire en erreur par des détails secondaires. Repérez le type de document (${item.docType}) et repérez l'information factuelle directe.`;
+    trapAlertEn = `⚠️ Level A1 Trap Alert: Do not be misled by isolated details. Identify the document format (${item.docType}) and scan for direct factual details.`;
+    readingCoach = `💡 Stratégie A1 : Effectuez une lecture de repérage rapide pour localiser la consigne clé.`;
+    readingCoachEn = `💡 Level A1 Reading Coach: Perform a fast scanning pass to locate key operational keywords.`;
+  } else if (item.level === "A2") {
+    trapAlert = `⚠️ Piège A2 : Attention aux conditions pratiques (dates, horaires, consignes). Les distracteurs modifient souvent une consigne essentielle ou inventent une contrainte.`;
+    trapAlertEn = `⚠️ Level A2 Trap Alert: Pay close attention to operational details (dates, schedules, requirements). Distractors often alter key instructions.`;
+    readingCoach = `💡 Stratégie A2 : Balayez le document pour repérer les mots-clés d'action (inscription, horaire, badge) afin de vérifier l'instruction exacte.`;
+    readingCoachEn = `💡 Level A2 Reading Coach: Scan the notice for key action words to confirm the exact operational requirement.`;
+  } else if (item.level === "B1") {
+    trapAlert = `⚠️ Piège B1 : Méfiez-vous des jugements catégoriques ou des affirmations excessives. Les textes B1 nuancent souvent leur propos.`;
+    trapAlertEn = `⚠️ Level B1 Trap Alert: Beware of overgeneralized claims or extreme statements. B1 articles present balanced arguments.`;
+    readingCoach = `💡 Stratégie B1 : Repérez l'idée principale du texte et vérifiez que l'option choisie reflète fidèlement le sens global sans exagération.`;
+    readingCoachEn = `💡 Level B1 Reading Coach: Identify the main message and ensure the chosen option accurately reflects the overall meaning without distortion.`;
+  } else if (item.level === "B2") {
+    trapAlert = `⚠️ Piège B2 : Ne confondez pas le constat introductif d'un problème avec la thèse centrale ou prospective défendue par l'auteur.`;
+    trapAlertEn = `⚠️ Level B2 Trap Alert: Do not confuse introductory background points with the author's main prospective thesis.`;
+    readingCoach = `💡 Stratégie B2 : Identifiez l'orientation argumentative générale. Éliminez les options simplistes ou contraires au raisonnement.`;
+    readingCoachEn = `💡 Level B2 Reading Coach: Map the author's argument trajectory. Eliminate simplistic options or reversed causality traps.`;
+  } else {
+    trapAlert = `⚠️ Piège ${item.level} : Méfiez-vous des distracteurs reprenant des termes exacts du texte (piège du mot à mot). À ce niveau, la réponse exacte repose sur une reformulation conceptuelle abstraite.`;
+    trapAlertEn = `⚠️ Level ${item.level} Trap Alert: Avoid options repeating verbatim words from the stimulus (literal word trap). Correct C1/C2 answers rely on abstract conceptual paraphrase.`;
+    readingCoach = `💡 Stratégie ${item.level} : Analysez la portée analytique globale de l'auteur et la structure dialectique du texte.`;
+    readingCoachEn = `💡 Level ${item.level} Reading Coach: Synthesize the author's overarching analytical framework rather than focusing on isolated statements.`;
+  }
+
+  let detailedExplanation = `🎯 Réponse exacte : Option ${correctLetter} (« ${correctOptionText} »)\n\n`;
+  detailedExplanation += `• Justification textuelle (${item.docType}) :\n`;
+  detailedExplanation += `  En réponse à la question « ${item.q} », le document énonce : « ${item.text} ».\n`;
+  detailedExplanation += `  L'Option ${correctLetter} (« ${correctOptionText} ») traduit avec une parfaite exactitude le sens du passage sans déformation.\n\n`;
+  detailedExplanation += `• Élimination des pièges :\n`;
+  distractors.forEach((d) => {
+    detailedExplanation += `  - Option ${d.letter} (« ${d.text} ») : Incorrecte. Il s'agit d'une fausse piste ne correspondant pas aux faits énoncés dans le document.\n`;
+  });
+
+  let detailedExplanationEn = `🎯 Correct Answer: Option ${correctLetter} ("${correctOptionEn || correctOptionText}")\n\n`;
+  detailedExplanationEn += `• Textual Proof (${item.docType}) :\n`;
+  detailedExplanationEn += `  In response to "${item.qEn || item.q}", the passage states: "${item.passEn || item.text}".\n`;
+  detailedExplanationEn += `  Option ${correctLetter} ("${correctOptionEn || correctOptionText}") accurately conveys the exact meaning of the passage.\n\n`;
+  detailedExplanationEn += `• Distractor Breakdown :\n`;
+  distractors.forEach((d) => {
+    detailedExplanationEn += `  - Option ${d.letter} ("${d.enText || d.text}"): Incorrect distractor. Does not align with the evidence presented in the text.\n`;
+  });
+
+  return {
+    trapAlert,
+    trapAlertEn,
+    readingCoach,
+    readingCoachEn,
+    detailedExplanation,
+    detailedExplanationEn,
+  };
+}
+
 export function generateReadingQuestions(count: number, prefix: string, seedOffset: number = 0): ExamQuestion[] {
   const qList: ExamQuestion[] = [];
 
@@ -7454,7 +7539,7 @@ export function generateReadingQuestions(count: number, prefix: string, seedOffs
     const item = paperItems[i - 1] || paperItems[(i - 1) % paperItems.length];
     const seed = seedOffset * 100 + i;
 
-    const { options, correctIndex, correctText, optionsEnglish: shuffledOptionsEn } = shuffleOptions(
+    const { options, correctIndex, optionsEnglish: shuffledOptionsEn } = shuffleOptions(
       item.opt,
       item.ans,
       seed,
@@ -7462,7 +7547,25 @@ export function generateReadingQuestions(count: number, prefix: string, seedOffs
       item.optEn
     );
 
-    const guidance = getReadingGuidance(paperNum, i);
+    const correctLetter = String.fromCharCode(65 + correctIndex);
+    const correctOptionText = options[correctIndex];
+    const correctOptionEn = shuffledOptionsEn ? shuffledOptionsEn[correctIndex] : item.optEn[item.ans];
+
+    const distractors = options
+      .map((optText, idx) => ({
+        letter: String.fromCharCode(65 + idx),
+        text: optText,
+        enText: shuffledOptionsEn ? shuffledOptionsEn[idx] : item.optEn[idx],
+      }))
+      .filter((_, idx) => idx !== correctIndex);
+
+    const guidance = buildDynamicReadingGuidance(
+      item,
+      correctLetter,
+      correctOptionText,
+      correctOptionEn,
+      distractors
+    );
 
     qList.push({
       id: `${prefix}-read-${i}`,
