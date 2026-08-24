@@ -2984,7 +2984,7 @@ export function AuthenticCBTExamPage() {
                       <Globe className="w-3 h-3 shrink-0" />
                       <span>
                         Question (EN): "
-                        {currentQ.questionNumber <= 4
+                        {currentSection.type === "COMPREHENSION_ORALE" && currentQ.questionNumber <= 4
                           ? "Look at the illustration. Listen to the 4 options (A, B, C, D) and choose the one that corresponds to the image."
                           : ((currentQ as any).questionPromptEnglish || currentQ.text)}
                         "
@@ -3015,7 +3015,7 @@ export function AuthenticCBTExamPage() {
 
                 {/* Multiple Choice Options (Official FEI Radio Buttons for Spoken Option Items vs Standard Text Options) */}
                 <div className="space-y-2.5">
-                  {((currentQ as any).optionImages && (currentQ as any).optionImages.length === 4) ? (
+                  {(currentSection.type === "COMPREHENSION_ORALE" && (currentQ as any).optionImages && (currentQ as any).optionImages.length === 4) ? (
                     <div className="grid grid-cols-2 gap-3 sm:gap-4">
                       {(() => {
                         const optSvgs = currentQ.questionNumber <= 4 && !(currentQ as any).optionImages
@@ -3094,7 +3094,7 @@ export function AuthenticCBTExamPage() {
                         });
                       })()}
                     </div>
-                  ) : (currentQ.hasSpokenOptions || (currentQ.questionNumber >= 5 && currentQ.questionNumber <= 8)) ? (
+                  ) : (currentSection.type === "COMPREHENSION_ORALE" && (currentQ.hasSpokenOptions || (currentQ.questionNumber >= 5 && currentQ.questionNumber <= 8))) ? (
                     <div className="space-y-3 p-4 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-100 shadow-md">
                       <div className="flex items-center justify-between">
                         <p className="text-xs font-black uppercase text-amber-300 tracking-wider flex items-center gap-1.5">
