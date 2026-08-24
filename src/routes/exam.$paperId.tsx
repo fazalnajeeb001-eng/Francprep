@@ -263,6 +263,7 @@ export function AuthenticCBTExamPage() {
   const [speakingChatLoading, setSpeakingChatLoading] = useState<Record<string, boolean>>({});
   const [oralPrepTimeRemaining, setOralPrepTimeRemaining] = useState<Record<string, number>>({});
   const [isOralPrepActive, setIsOralPrepActive] = useState<Record<string, boolean>>({});
+  const speakingFallbackTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleRestartSessionClean = () => {
     if (typeof window !== "undefined") {
@@ -636,6 +637,10 @@ export function AuthenticCBTExamPage() {
     );
 
     let sessionTimerHandled = false;
+    if (speakingFallbackTimerRef.current) {
+      clearTimeout(speakingFallbackTimerRef.current);
+      speakingFallbackTimerRef.current = null;
+    }
 
     if (task.prepTimeMins > 0) {
       // Tâche 2 (Interaction with prep time):
@@ -643,6 +648,10 @@ export function AuthenticCBTExamPage() {
       const startPrepAfterAudio = () => {
         if (!sessionTimerHandled) {
           sessionTimerHandled = true;
+          if (speakingFallbackTimerRef.current) {
+            clearTimeout(speakingFallbackTimerRef.current);
+            speakingFallbackTimerRef.current = null;
+          }
           handleStartPrepTimer(task.id, task.prepTimeMins);
         }
       };
@@ -650,7 +659,7 @@ export function AuthenticCBTExamPage() {
       handlePlayExaminerAudio(openingText, startPrepAfterAudio);
 
       // Fallback safety (20s) in case browser blocks audio auto-play
-      setTimeout(() => {
+      speakingFallbackTimerRef.current = setTimeout(() => {
         startPrepAfterAudio();
       }, 20000);
     } else {
@@ -659,6 +668,10 @@ export function AuthenticCBTExamPage() {
       const startSpeakingAfterAudio = () => {
         if (!sessionTimerHandled) {
           sessionTimerHandled = true;
+          if (speakingFallbackTimerRef.current) {
+            clearTimeout(speakingFallbackTimerRef.current);
+            speakingFallbackTimerRef.current = null;
+          }
           handleStartSpeakingTimer(task.id, task.speakingTimeMins);
           try {
             if (!recordingSpeaking[task.id]) {
@@ -671,7 +684,7 @@ export function AuthenticCBTExamPage() {
       handlePlayExaminerAudio(openingText, startSpeakingAfterAudio);
 
       // Fallback safety (20s) in case browser blocks audio auto-play
-      setTimeout(() => {
+      speakingFallbackTimerRef.current = setTimeout(() => {
         startSpeakingAfterAudio();
       }, 20000);
     }
@@ -4567,9 +4580,6 @@ export function AuthenticCBTExamPage() {
                   if (currentSection.type === "EXPRESSION_ORALE") {
                     setIsAudioFetching(true);
                     setIsPlayingAudio(true);
-                    setTimeout(() => {
-                      startSpeakingTaskSession(activeSpeakingTaskIdx);
-                    }, 500);
                   }
                 }}
                 className={`w-full py-3.5 rounded-xl font-extrabold text-sm shadow-xl flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 text-white ${

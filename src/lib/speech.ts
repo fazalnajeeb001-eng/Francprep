@@ -406,6 +406,10 @@ export function stopAudio(): void {
   }
   activeAudioPlayers.forEach((player) => {
     try {
+      player.onended = null;
+      player.onerror = null;
+      player.oncanplay = null;
+      player.onplay = null;
       player.pause();
       player.src = "";
       player.currentTime = 0;
@@ -414,6 +418,10 @@ export function stopAudio(): void {
   activeAudioPlayers.clear();
   if (currentAudioPlayer) {
     try {
+      currentAudioPlayer.onended = null;
+      currentAudioPlayer.onerror = null;
+      currentAudioPlayer.oncanplay = null;
+      currentAudioPlayer.onplay = null;
       currentAudioPlayer.pause();
       currentAudioPlayer.src = "";
       currentAudioPlayer.currentTime = 0;
