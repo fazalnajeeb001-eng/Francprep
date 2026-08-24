@@ -7,10 +7,12 @@ function runDynamicSyncAudit() {
   const p2Questions = generateReadingQuestions(39, "test-p2", 1);
   const p3Questions = generateReadingQuestions(39, "test-p3", 2);
   const p4Questions = generateReadingQuestions(39, "test-p4", 3);
+  const p5Questions = generateReadingQuestions(39, "test-p5", 4);
+  const p6Questions = generateReadingQuestions(39, "test-p6", 5);
 
   let errors: string[] = [];
 
-  [...p1Questions, ...p2Questions, ...p3Questions, ...p4Questions].forEach((q) => {
+  [...p1Questions, ...p2Questions, ...p3Questions, ...p4Questions, ...p5Questions, ...p6Questions].forEach((q) => {
     // Check that explanation contains the exact question prompt or passage reference
     const explanation = q.explanation;
     const correctOpt = q.options[q.correctIndex];
@@ -29,7 +31,7 @@ function runDynamicSyncAudit() {
     console.error("❌ DYNAMIC STATE SYNC ERRORS FOUND:", errors);
     process.exit(1);
   } else {
-    console.log("✅ DYNAMIC STATE SYNCHRONIZATION AUDIT PASSED 100%! All 156 explanations are 100% dynamically generated from active question items!");
+    console.log("✅ DYNAMIC STATE SYNCHRONIZATION AUDIT PASSED 100%! All 234 explanations are 100% dynamically generated from active question items!");
   }
 }
 
