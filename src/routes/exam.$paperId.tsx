@@ -3516,50 +3516,68 @@ export function AuthenticCBTExamPage() {
                     </div>
                   )}
 
-                  {/* Writing Strategy & Trap Alert Display (ALWAYS VISIBLE IN PRACTICE MODE ON ALL DEVICES) */}
+                  {/* Writing Strategy & Trap Alert Display (CLEAN INTERACTIVE ACCORDION TOGGLE) */}
                   {mode === "PRACTICE" && (
-                    <div className="space-y-2.5">
-                      {/* Trap Alert Card */}
-                      <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/80 text-xs text-amber-950 dark:text-amber-200 space-y-2 shadow-sm font-sans">
-                        <div className="flex items-center gap-1.5 font-extrabold text-amber-900 dark:text-amber-300 text-[11px] uppercase tracking-wide">
-                          <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                          <span>⚠️ Alerte Pièges & Critères FEI (Trap Alert)</span>
-                        </div>
-                        <div className="leading-relaxed font-medium whitespace-pre-line text-xs">
-                          {task.trapAlert || (
-                            activeWritingTaskIdx === 0 ? "• N'utilisez pas le tutoiement avec une autorité.\n• Ne copiez pas les phrases de la consigne.\n• Respectez scrupuleusement la fourchette de mots."
-                              : activeWritingTaskIdx === 1 ? "• Évitez de tout rédiger au présent : alternez passé composé et imparfait.\n• Exprimez vos sentiments et recommandations personnelles."
-                                : "• Ne commencez jamais par une formule de lettre.\n• Structurez en 4 paragraphes (Intro → Thèse → Antithèse → Synthèse)."
-                          )}
-                        </div>
-                        {task.trapAlertEn && (
-                          <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-950/60 border border-amber-200 dark:border-amber-900/60 text-[11px] text-amber-950 dark:text-amber-200 whitespace-pre-line leading-relaxed">
-                            <span className="font-bold text-amber-800 dark:text-amber-300 block mb-0.5">🇬🇧 English Trap Alert:</span>
-                            {task.trapAlertEn}
-                          </div>
-                        )}
-                      </div>
+                    <div className="rounded-xl border border-indigo-200 dark:border-indigo-800/80 bg-white dark:bg-slate-900 overflow-hidden shadow-xs">
+                      <button
+                        type="button"
+                        onClick={() => setShowHints((prev) => !prev)}
+                        className="w-full p-3 px-4 bg-indigo-50/80 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 flex items-center justify-between transition-all cursor-pointer font-sans"
+                      >
+                        <span className="font-extrabold text-xs text-indigo-900 dark:text-indigo-200 flex items-center gap-2">
+                          <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                          <span>💡 Stratégie, Pièges FEI & Coach Rédaction (Strategy & Traps Guide)</span>
+                        </span>
+                        <span className="text-xs font-bold text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5 font-mono">
+                          {showHints ? "Masquer ▲" : "Afficher ▼"}
+                        </span>
+                      </button>
 
-                      {/* Writing Coach & Connectors Card */}
-                      <div className="p-3.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/80 text-xs text-indigo-950 dark:text-indigo-200 space-y-2 shadow-sm font-sans">
-                        <div className="flex items-center gap-1.5 font-extrabold text-indigo-900 dark:text-indigo-300 text-[11px] uppercase tracking-wide">
-                          <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-                          <span>✍️ Coach Rédaction & Connecteurs B2/C1</span>
-                        </div>
-                        <div className="leading-relaxed font-medium whitespace-pre-line text-xs">
-                          {task.writingCoach || (
-                            activeWritingTaskIdx === 0 ? "Structurez : 1. Salutation 2. Problème 3. Demande au conditionnel 4. Formule finale."
-                              : activeWritingTaskIdx === 1 ? "Structurez : 1. Cadre spatio-temporel 2. Événements et émotions 3. Bilan et recommandation."
-                                : "Structurez : 1. Introduction 2. Arguments favorables 3. Contre-arguments 4. Prise de position nuancée."
-                          )}
-                        </div>
-                        {task.writingCoachEn && (
-                          <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-950/60 border border-indigo-200 dark:border-indigo-900/60 text-[11px] text-indigo-950 dark:text-indigo-200 whitespace-pre-line leading-relaxed">
-                            <span className="font-bold text-indigo-800 dark:text-indigo-300 block mb-0.5">🇬🇧 English Writing Coach Strategy:</span>
-                            {task.writingCoachEn}
+                      {showHints && (
+                        <div className="p-3.5 sm:p-4 space-y-3 border-t border-indigo-100 dark:border-indigo-900/60">
+                          {/* Trap Alert Card */}
+                          <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/80 text-xs text-amber-950 dark:text-amber-200 space-y-2 shadow-sm font-sans">
+                            <div className="flex items-center gap-1.5 font-extrabold text-amber-900 dark:text-amber-300 text-[11px] uppercase tracking-wide">
+                              <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                              <span>⚠️ Alerte Pièges & Critères FEI (Trap Alert)</span>
+                            </div>
+                            <div className="leading-relaxed font-medium whitespace-pre-line text-xs">
+                              {task.trapAlert || (
+                                activeWritingTaskIdx === 0 ? "• N'utilisez pas le tutoiement avec une autorité.\n• Ne copiez pas les phrases de la consigne.\n• Respectez scrupuleusement la fourchette de mots."
+                                  : activeWritingTaskIdx === 1 ? "• Évitez de tout rédiger au présent : alternez passé composé et imparfait.\n• Exprimez vos sentiments et recommandations personnelles."
+                                    : "• Ne commencez jamais par une formule de lettre.\n• Structurez en 4 paragraphes (Intro → Thèse → Antithèse → Synthèse)."
+                              )}
+                            </div>
+                            {task.trapAlertEn && (
+                              <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-950/60 border border-amber-200 dark:border-amber-900/60 text-[11px] text-amber-950 dark:text-amber-200 whitespace-pre-line leading-relaxed">
+                                <span className="font-bold text-amber-800 dark:text-amber-300 block mb-0.5">🇬🇧 English Trap Alert:</span>
+                                {task.trapAlertEn}
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
+
+                          {/* Writing Coach & Connectors Card */}
+                          <div className="p-3.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/80 text-xs text-indigo-950 dark:text-indigo-200 space-y-2 shadow-sm font-sans">
+                            <div className="flex items-center gap-1.5 font-extrabold text-indigo-900 dark:text-indigo-300 text-[11px] uppercase tracking-wide">
+                              <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                              <span>✍️ Coach Rédaction & Connecteurs B2/C1</span>
+                            </div>
+                            <div className="leading-relaxed font-medium whitespace-pre-line text-xs">
+                              {task.writingCoach || (
+                                activeWritingTaskIdx === 0 ? "Structurez : 1. Salutation 2. Problème 3. Demande au conditionnel 4. Formule finale."
+                                  : activeWritingTaskIdx === 1 ? "Structurez : 1. Cadre spatio-temporel 2. Événements et émotions 3. Bilan et recommandation."
+                                    : "Structurez : 1. Introduction 2. Arguments favorables 3. Contre-arguments 4. Prise de position nuancée."
+                              )}
+                            </div>
+                            {task.writingCoachEn && (
+                              <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-950/60 border border-indigo-200 dark:border-indigo-900/60 text-[11px] text-indigo-950 dark:text-indigo-200 whitespace-pre-line leading-relaxed">
+                                <span className="font-bold text-indigo-800 dark:text-indigo-300 block mb-0.5">🇬🇧 English Writing Coach Strategy:</span>
+                                {task.writingCoachEn}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
 
@@ -4094,77 +4112,95 @@ export function AuthenticCBTExamPage() {
                     </div>
                   )}
 
-                  {/* PRACTICE MODE: STRATEGY, TRAP ALERTS & B2/C1 MODEL ANSWERS (ALWAYS VISIBLE IN PRACTICE MODE ON ALL DEVICES) */}
+                  {/* PRACTICE MODE: STRATEGY, TRAP ALERTS & B2/C1 MODEL ANSWERS (CLEAN INTERACTIVE ACCORDION TOGGLE) */}
                   {mode === "PRACTICE" && (
-                    <div className="space-y-3">
-                      {/* Trap Alert & Official FEI Rules Card */}
-                      <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800 text-xs text-amber-950 dark:text-amber-200 space-y-2 shadow-sm font-sans">
-                        <div className="flex items-center justify-between gap-2 flex-wrap border-b border-amber-200 dark:border-amber-800/60 pb-1.5 font-extrabold text-amber-900 dark:text-amber-300 text-[11px] uppercase tracking-wide">
-                          <span className="flex items-center gap-1.5">
-                            <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                            <span>⚠️ Alerte Pièges & Critères FEI (Trap Alert)</span>
-                          </span>
-                          <span className="px-2 py-0.5 rounded bg-amber-200 dark:bg-amber-900/60 font-mono text-[10px]">
-                            Niveau {task.cefrTarget || "A1-C2"}
-                          </span>
-                        </div>
-                        <p className="leading-relaxed font-medium whitespace-pre-line text-xs">
-                          {task.trapAlert || (
-                            activeSpeakingTaskIdx === 0 ? "• Évitez les réponses monosyllabiques : développez vos phrases.\n• Ne récitez pas un texte appris par cœur."
-                              : activeSpeakingTaskIdx === 1 ? "• Vous devez poser au minimum 8 à 10 questions variées.\n• Variez vos structures (inversion, conditionnel, interrogation indirecte)."
-                                : "• Adoptez un plan dialectique rigoureux (Thèse / Antithèse / Synthèse).\n• Utilisez un registre soutenu."
-                          )}
-                        </p>
-                        {task.trapAlertEn && (
-                          <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-950/60 border border-amber-200 dark:border-amber-900/60 text-[11px] text-amber-950 dark:text-amber-200 whitespace-pre-line leading-relaxed">
-                            <span className="font-bold text-amber-800 dark:text-amber-300 block mb-0.5">🇬🇧 English Trap Alert:</span>
-                            {task.trapAlertEn}
-                          </div>
-                        )}
-                      </div>
+                    <div className="rounded-xl border border-indigo-200 dark:border-indigo-800/80 bg-white dark:bg-slate-900 overflow-hidden shadow-xs">
+                      <button
+                        type="button"
+                        onClick={() => setShowHints((prev) => !prev)}
+                        className="w-full p-3 px-4 bg-indigo-50/80 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 flex items-center justify-between transition-all cursor-pointer font-sans"
+                      >
+                        <span className="font-extrabold text-xs text-indigo-900 dark:text-indigo-200 flex items-center gap-2">
+                          <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                          <span>💡 Stratégie, Pièges FEI & Coach Oral (Strategy & Traps Guide)</span>
+                        </span>
+                        <span className="text-xs font-bold text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5 font-mono">
+                          {showHints ? "Masquer ▲" : "Afficher ▼"}
+                        </span>
+                      </button>
 
-                      {/* Coach Strategy Card */}
-                      {(task.speakingCoach || task.speakingCoachEn) && (
-                        <div className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/80 text-xs text-indigo-950 dark:text-indigo-200 space-y-2 shadow-sm font-sans">
-                          <div className="flex items-center gap-1.5 font-extrabold text-indigo-900 dark:text-indigo-300 text-[11px] uppercase tracking-wide border-b border-indigo-200 dark:border-indigo-800/60 pb-1.5">
-                            <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-                            <span>🎙️ Coach Méthodologie & Stratégie Orale</span>
-                          </div>
-                          {task.speakingCoach && (
+                      {showHints && (
+                        <div className="p-3.5 sm:p-4 space-y-3 border-t border-indigo-100 dark:border-indigo-900/60">
+                          {/* Trap Alert & Official FEI Rules Card */}
+                          <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800 text-xs text-amber-950 dark:text-amber-200 space-y-2 shadow-sm font-sans">
+                            <div className="flex items-center justify-between gap-2 flex-wrap border-b border-amber-200 dark:border-amber-800/60 pb-1.5 font-extrabold text-amber-900 dark:text-amber-300 text-[11px] uppercase tracking-wide">
+                              <span className="flex items-center gap-1.5">
+                                <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                                <span>⚠️ Alerte Pièges & Critères FEI (Trap Alert)</span>
+                              </span>
+                              <span className="px-2 py-0.5 rounded bg-amber-200 dark:bg-amber-900/60 font-mono text-[10px]">
+                                Niveau {task.cefrTarget || "A1-C2"}
+                              </span>
+                            </div>
                             <p className="leading-relaxed font-medium whitespace-pre-line text-xs">
-                              {task.speakingCoach}
+                              {task.trapAlert || (
+                                activeSpeakingTaskIdx === 0 ? "• Évitez les réponses monosyllabiques : développez vos phrases.\n• Ne récitez pas un texte appris par cœur."
+                                  : activeSpeakingTaskIdx === 1 ? "• Vous devez poser au minimum 8 à 10 questions variées.\n• Variez vos structures (inversion, conditionnel, interrogation indirecte)."
+                                    : "• Adoptez un plan dialectique rigoureux (Thèse / Antithèse / Synthèse).\n• Utilisez un registre soutenu."
+                              )}
                             </p>
-                          )}
-                          {task.speakingCoachEn && (
-                            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-950/60 border border-indigo-200 dark:border-indigo-900/60 text-[11px] text-indigo-950 dark:text-indigo-200 whitespace-pre-line leading-relaxed">
-                              <span className="font-bold text-indigo-800 dark:text-indigo-300 block mb-0.5">🇬🇧 English Strategy:</span>
-                              {task.speakingCoachEn}
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Model High-Scoring Response (B2/C1/C2) */}
-                      {(task.modelAnswerB2C1 || task.modelAnswerEn) && (
-                        <div className="p-4 sm:p-5 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 space-y-3 font-sans shadow-sm">
-                          <div className="flex items-center justify-between border-b border-emerald-200 dark:border-emerald-800/60 pb-2">
-                            <span className="font-extrabold text-xs sm:text-sm text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5">
-                              <Trophy className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                              <span>Exemplaire de Réponse Modèle (Niveau B2 / C1 / C2)</span>
-                            </span>
-                            <span className="px-2 py-0.5 rounded bg-emerald-600 text-white font-mono font-bold text-[10px]">
-                              FEI Standard Benchmark
-                            </span>
+                            {task.trapAlertEn && (
+                              <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-950/60 border border-amber-200 dark:border-amber-900/60 text-[11px] text-amber-950 dark:text-amber-200 whitespace-pre-line leading-relaxed">
+                                <span className="font-bold text-amber-800 dark:text-amber-300 block mb-0.5">🇬🇧 English Trap Alert:</span>
+                                {task.trapAlertEn}
+                              </div>
+                            )}
                           </div>
-                          {task.modelAnswerB2C1 && (
-                            <div className="p-3.5 rounded-lg bg-white dark:bg-slate-950 border border-emerald-200/80 dark:border-emerald-900/60 text-xs font-medium text-slate-900 dark:text-slate-100 whitespace-pre-line leading-relaxed font-serif">
-                              {task.modelAnswerB2C1}
+
+                          {/* Coach Strategy Card */}
+                          {(task.speakingCoach || task.speakingCoachEn) && (
+                            <div className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/80 text-xs text-indigo-950 dark:text-indigo-200 space-y-2 shadow-sm font-sans">
+                              <div className="flex items-center gap-1.5 font-extrabold text-indigo-900 dark:text-indigo-300 text-[11px] uppercase tracking-wide border-b border-indigo-200 dark:border-indigo-800/60 pb-1.5">
+                                <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                                <span>🎙️ Coach Méthodologie & Stratégie Orale</span>
+                              </div>
+                              {task.speakingCoach && (
+                                <p className="leading-relaxed font-medium whitespace-pre-line text-xs">
+                                  {task.speakingCoach}
+                                </p>
+                              )}
+                              {task.speakingCoachEn && (
+                                <div className="p-2.5 rounded-lg bg-white/80 dark:bg-slate-950/60 border border-indigo-200 dark:border-indigo-900/60 text-[11px] text-indigo-950 dark:text-indigo-200 whitespace-pre-line leading-relaxed">
+                                  <span className="font-bold text-indigo-800 dark:text-indigo-300 block mb-0.5">🇬🇧 English Strategy:</span>
+                                  {task.speakingCoachEn}
+                                </div>
+                              )}
                             </div>
                           )}
-                          {task.modelAnswerEn && (
-                            <div className="p-3 rounded-lg bg-emerald-100/60 dark:bg-emerald-950/60 border border-emerald-300/80 dark:border-emerald-800/60 text-[11px] text-emerald-950 dark:text-emerald-200 whitespace-pre-line leading-relaxed">
-                              <span className="font-bold text-emerald-800 dark:text-emerald-300 block mb-1">🇬🇧 English Translation:</span>
-                              {task.modelAnswerEn}
+
+                          {/* Model High-Scoring Response (B2/C1/C2) */}
+                          {(task.modelAnswerB2C1 || task.modelAnswerEn) && (
+                            <div className="p-4 sm:p-5 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 space-y-3 font-sans shadow-sm">
+                              <div className="flex items-center justify-between border-b border-emerald-200 dark:border-emerald-800/60 pb-2">
+                                <span className="font-extrabold text-xs sm:text-sm text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5">
+                                  <Trophy className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                                  <span>Exemplaire de Réponse Modèle (Niveau B2 / C1 / C2)</span>
+                                </span>
+                                <span className="px-2 py-0.5 rounded bg-emerald-600 text-white font-mono font-bold text-[10px]">
+                                  FEI Standard Benchmark
+                                </span>
+                              </div>
+                              {task.modelAnswerB2C1 && (
+                                <div className="p-3.5 rounded-lg bg-white dark:bg-slate-950 border border-emerald-200/80 dark:border-emerald-900/60 text-xs font-medium text-slate-900 dark:text-slate-100 whitespace-pre-line leading-relaxed font-serif">
+                                  {task.modelAnswerB2C1}
+                                </div>
+                              )}
+                              {task.modelAnswerEn && (
+                                <div className="p-3 rounded-lg bg-emerald-100/60 dark:bg-emerald-950/60 border border-emerald-300/80 dark:border-emerald-800/60 text-[11px] text-emerald-950 dark:text-emerald-200 whitespace-pre-line leading-relaxed">
+                                  <span className="font-bold text-emerald-800 dark:text-emerald-300 block mb-1">🇬🇧 English Translation:</span>
+                                  {task.modelAnswerEn}
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
