@@ -59,7 +59,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinateur senior courtois et bienveillant.",
         "gender": "male",
         "voiceId": "fr-FR-HenriNeural",
-        "openingPromptFrench": "Bonjour et bienvenue à l'épreuve d'expression orale. Je m'appelle Henri. Pouvez-vous vous présenter brièvement et me parler de vos projets ?",
+        "openingPromptFrench": "Bonjour ! Bienvenue à votre épreuve d'expression orale. Pouvez-vous vous présenter ?",
         "openingPromptEnglish": "Hello and welcome to the speaking examination. My name is Henri. Could you briefly introduce yourself and tell me about your plans?"
       },
       "prepTimeMins": 0,
@@ -94,7 +94,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Propriétaire d'un appartement meublé à Québec.",
         "gender": "male",
         "voiceId": "fr-FR-HenriNeural",
-        "openingPromptFrench": "Bonjour, M. Henri à l'appareil, propriétaire du logement du Vieux-Québec. Je vous écoute, quelles sont vos questions ?",
+        "openingPromptFrench": "Bonjour ! Thomas Laurent à l'appareil, propriétaire de l'appartement du quartier Saint-Roch. Je vous écoute, quelles sont vos questions ?",
         "openingPromptEnglish": "Hello, Mr. Henri speaking, owner of the Old Quebec apartment. I'm listening, what questions do you have?",
         "roleplayPrompt": "Vous êtes le propriétaire. Répondez de manière réaliste et concise aux questions du candidat. Terminez par 'Avez-vous d'autres questions ?'."
       },
@@ -144,7 +144,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinateur stimulant proposant une contre-argumentation polie.",
         "gender": "male",
         "voiceId": "fr-FR-HenriNeural",
-        "openingPromptFrench": "Merci. Pour cette troisième tâche, que pensez-vous de l'impact du télétravail sur les relations professionnelles et la culture d'entreprise ?",
+        "openingPromptFrench": "Voici votre sujet : 'Le télétravail à 100 % représente-t-il l'avenir du travail ou une menace pour la cohésion d'équipe et la productivité ?' Présentez votre argumentation.",
         "openingPromptEnglish": "Thank you. For this third task, what do you think about the impact of remote work on professional relationships and corporate culture?",
         "followUpCounterQuestion": "Écoutez l'argument du candidat puis posez une contre-question délicate (ex: 'C'est vrai, mais ne craignez-vous pas l'isolement des nouveaux employés ?')."
       },
@@ -182,7 +182,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice accueillante et dynamique.",
         "gender": "female",
         "voiceId": "fr-FR-DeniseNeural",
-        "openingPromptFrench": "Bonjour et bienvenue. Je m'appelle Denise. Racontez-moi un peu votre parcours professionnel et ce que vous aimez faire pendant votre temps libre.",
+        "openingPromptFrench": "Bonjour ! Pour cette première partie, présentez-vous et racontez-moi une expérience de voyage marquante qui a enrichi votre vision du monde.",
         "openingPromptEnglish": "Hello and welcome. My name is Denise. Tell me a bit about your professional background and what you like to do in your free time."
       },
       "prepTimeMins": 0,
@@ -217,7 +217,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Directrice pédagogique d'une école de langues à Montréal.",
         "gender": "female",
         "voiceId": "fr-FR-DeniseNeural",
-        "openingPromptFrench": "Bonjour, école de langues de Montréal, Denise à l'appareil. Comment puis-je vous renseigner sur nos formations ?",
+        "openingPromptFrench": "Bonjour ! Club Plein Air des Collines, Laurent Dubois à votre service. Quelles informations désirez-vous obtenir sur nos activités sportives ?",
         "openingPromptEnglish": "Hello, Montreal language school, Denise speaking. How can I help you with our training programs?",
         "roleplayPrompt": "Répondez aux questions sur les horaires et les tarifs puis demandez si le candidat a d'autres interrogations."
       },
@@ -267,7 +267,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice perspicace testant la capacité de nuance du candidat.",
         "gender": "female",
         "voiceId": "fr-FR-DeniseNeural",
-        "openingPromptFrench": "Passons à la troisième partie. Selon vous, les pouvoirs publics doivent-ils limiter le temps d'écran et l'accès aux réseaux sociaux pour les adolescents ?",
+        "openingPromptFrench": "Voici votre sujet : 'La gratuité des transports publics est-elle une mesure écologique efficace ou une utopie financière irréaliste ?' Exposez votre analyse.",
         "openingPromptEnglish": "Moving to the third part. In your view, should public authorities limit screen time and social media access for teenagers?",
         "followUpCounterQuestion": "Posez une contre-question sur l'autonomie des familles et l'éducation numérique."
       },
@@ -305,7 +305,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinateur canadien chaleureux et à l'écoute.",
         "gender": "male",
         "voiceId": "fr-CA-JeanNeural",
-        "openingPromptFrench": "Bonjour ! Je m'appelle Jean. Bienvenue à l'épreuve d'expression orale. Parlez-moi un peu de l'endroit où vous habitez et de votre quotidien.",
+        "openingPromptFrench": "Bonjour ! Présentez-vous, décrivez-moi votre ville d'origine et expliquez-moi comment vous préparez votre installation au Canada.",
         "openingPromptEnglish": "Hello! My name is Jean. Welcome to the oral examination. Tell me a bit about where you live and your daily routine."
       },
       "prepTimeMins": 0,
@@ -340,7 +340,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Agent des services communautaires de la Ville d'Ottawa.",
         "gender": "male",
         "voiceId": "fr-CA-JeanNeural",
-        "openingPromptFrench": "Bonjour, services citoyens de la Ville d'Ottawa, Jean à l'appareil. Je vous écoute pour votre projet de journée verte.",
+        "openingPromptFrench": "Bonjour ! Entraide Laval, Laurent Dubois. Merci de proposer votre aide. Quelles sont vos questions concernant nos missions de bénévolat ?",
         "openingPromptEnglish": "Hello, City of Ottawa citizen services, Jean speaking. I'm listening regarding your green day project.",
         "roleplayPrompt": "Répondez clairement sur la fourniture de sacs et de gants puis demandez si le candidat souhaite d'autres détails."
       },
@@ -390,7 +390,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinateur rigoureux sollicitant des exemples économiques et sociaux.",
         "gender": "male",
         "voiceId": "fr-CA-JeanNeural",
-        "openingPromptFrench": "Pour la dernière tâche, pensez-vous que rendre les autobus et métros entièrement gratuits soit une mesure efficace et financièrement viable ?",
+        "openingPromptFrench": "Voici votre thème de débat : 'L'interdiction des téléphones portables dans les établissements scolaires est-elle indispensable pour protéger l'attention des élèves ?' Présentez votre point de vue.",
         "openingPromptEnglish": "For the final task, do you think making buses and subways completely free is an effective and financially viable measure?",
         "followUpCounterQuestion": "Relancez sur le coût d'entretien des infrastructures et l'impact sur les impôts locaux."
       },
@@ -428,7 +428,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice canadienne bienveillante et communicative.",
         "gender": "female",
         "voiceId": "fr-CA-SylvieNeural",
-        "openingPromptFrench": "Bonjour ! Bienvenue à votre épreuve d'expression orale. Je suis Sylvie. Parlez-moi de votre cuisine préférée et de ce que vous aimez partager en famille.",
+        "openingPromptFrench": "Bonjour ! Présentez-vous, parlez-moi de vos activités de loisirs préférées et des projets associatifs qui vous tiennent à cœur.",
         "openingPromptEnglish": "Hello! Welcome to your oral exam. I am Sylvie. Tell me about your favorite food and meals shared with family."
       },
       "prepTimeMins": 0,
@@ -463,7 +463,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Propriétaire engagée d'une librairie culturelle à Sherbrooke.",
         "gender": "female",
         "voiceId": "fr-CA-SylvieNeural",
-        "openingPromptFrench": "Bonjour ! Je suis Sylvie, la gérante de la librairie. Vous veniez vous informer pour le poste d'assistant ? Je vous écoute.",
+        "openingPromptFrench": "Bonjour ! Sherb-Éco-Vélo, Thomas Laurent à votre service. Quelles questions avez-vous sur notre service de vélopartage électrique ?",
         "openingPromptEnglish": "Hello! I am Sylvie, the bookstore manager. You came to inquire about the assistant position? I'm listening.",
         "roleplayPrompt": "Donnez des réponses précises sur le travail du samedi et le taux horaire puis demandez si tout est clair."
       },
@@ -513,7 +513,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice analytique évaluant la structuration logique du discours.",
         "gender": "female",
         "voiceId": "fr-CA-SylvieNeural",
-        "openingPromptFrench": "Abordons le troisième sujet. Quel est votre regard sur le développement de l'intelligence artificielle dans le monde professionnel ?",
+        "openingPromptFrench": "Voici votre sujet : 'Le revenu universel de base est-il une solution d'avenir pour éliminer la précarité ou un frein à la valeur travail ?' Je vous écoute.",
         "openingPromptEnglish": "Let's approach the third topic. What is your perspective on the development of artificial intelligence in the professional world?",
         "followUpCounterQuestion": "Faites remarquer le risque d'automations destructrices de métiers créatifs et intellectuels."
       },
@@ -551,7 +551,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinateur calme et encourageant.",
         "gender": "male",
         "voiceId": "fr-FR-RemyMultilingualNeural",
-        "openingPromptFrench": "Bonjour et bienvenue. Je suis Marc. Racontez-moi un souvenir de voyage marquant ou l'endroit que vous aimeriez visiter prochainement.",
+        "openingPromptFrench": "Bonjour ! Présentez-vous à moi en me parlant de votre formation universitaire et de vos compétences professionnelles clés.",
         "openingPromptEnglish": "Hello and welcome. I am Marc. Tell me about a memorable travel memory or a place you would like to visit soon."
       },
       "prepTimeMins": 0,
@@ -586,7 +586,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Responsable de la billetterie et des groupes culturels.",
         "gender": "male",
         "voiceId": "fr-FR-RemyMultilingualNeural",
-        "openingPromptFrench": "Bonjour, service des réservations du musée, Marc à votre service. Comment puis-je vous aider à planifier votre visite ?",
+        "openingPromptFrench": "Bonjour ! Espace Co-Travail La Mauricie, Laurent Dubois. En quoi puis-je vous renseigner sur nos formules de coworking ?",
         "openingPromptEnglish": "Hello, museum booking department, Marc at your service. How can I help you plan your visit?",
         "roleplayPrompt": "Expliquez la gratuité pour les accompagnateurs et demandez si le candidat souhaite réserver un créneau horaire précis."
       },
@@ -636,7 +636,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinateur poussant à l'argumentation socio-économique.",
         "gender": "male",
         "voiceId": "fr-FR-RemyMultilingualNeural",
-        "openingPromptFrench": "Passons au sujet d'actualité. Le surtourisme menace de nombreux espaces naturels et monuments. Soutenez-vous la régulation par des quotas d'entrée ?",
+        "openingPromptFrench": "Voici votre sujet : 'La taxe carbone est-elle un levier indispensable pour inciter à la transition écologique ou une charge fiscale injuste pour les ménages ?' Présentez votre argumentation.",
         "openingPromptEnglish": "Let's move to the topical subject. Overtourism threatens many natural spaces and monuments. Do you support regulation through entry quotas?",
         "followUpCounterQuestion": "Soulignez l'impact économique négatif sur les commerçants locaux dépendants des visiteurs."
       },
@@ -674,7 +674,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice attentive et bienveillante.",
         "gender": "female",
         "voiceId": "fr-FR-VivienneMultilingualNeural",
-        "openingPromptFrench": "Bonjour ! Je m'appelle Claire. Soyez le bienvenu. Racontez-moi comment se déroule généralement votre journée de la semaine.",
+        "openingPromptFrench": "Bonjour ! Présentez-vous et parlez-moi de votre cuisine préférée ainsi que des traditions culinaires de votre pays.",
         "openingPromptEnglish": "Hello! My name is Claire. Welcome. Tell me how your typical weekday usually unfolds."
       },
       "prepTimeMins": 0,
@@ -709,7 +709,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Conseillère chez Auto-Location Express.",
         "gender": "female",
         "voiceId": "fr-FR-VivienneMultilingualNeural",
-        "openingPromptFrench": "Bonjour ! Bienvenue chez Auto-Express, je suis Claire. Quel type de véhicule recherchez-vous pour votre séjour ?",
+        "openingPromptFrench": "Bonjour ! École Culinaire du Saguenay, chef Laurent à l'appareil. Quelles sont vos questions concernant nos ateliers de cuisine zéro déchet ?",
         "openingPromptEnglish": "Hello! Welcome to Auto-Express, I am Claire. What type of vehicle are you looking for during your trip?",
         "roleplayPrompt": "Répondez aux questions sur les formules tout compris puis demandez si le candidat souhaite ajouter un conducteur secondaire."
       },
@@ -759,7 +759,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice interrogeant l'humain face à la technologie.",
         "gender": "female",
         "voiceId": "fr-FR-VivienneMultilingualNeural",
-        "openingPromptFrench": "Abordons notre troisième sujet. Pensez-vous que les outils numériques éducatifs puissent rendre l'enseignant de langue obsolète ?",
+        "openingPromptFrench": "Voici votre sujet : 'Les réseaux sociaux représentent-ils un vecteur d'ouverture pour la jeunesse ou une menace pour leur santé mentale ?' Exposez votre point de vue.",
         "openingPromptEnglish": "Let's address our third topic. Do you think digital educational tools can make human language teachers obsolete?",
         "followUpCounterQuestion": "Insistez sur la disponibilité 24/7 et la personnalisation instantanée offertes par les algorithmes."
       },
@@ -797,7 +797,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinateur canadien chaleureux et direct.",
         "gender": "male",
         "voiceId": "fr-CA-JeanNeural",
-        "openingPromptFrench": "Bonjour ! Je suis Antoine. Bienvenue. Dites-moi dans quel secteur vous travaillez et quel est votre projet d'avenir au Canada.",
+        "openingPromptFrench": "Bonjour ! Présentez-vous, décrivez-moi votre genre de film ou de spectacle préféré et parlez-moi d'un événement culturel marquant.",
         "openingPromptEnglish": "Hello! I am Antoine. Welcome. Tell me what sector you work in and what your future project is in Canada."
       },
       "prepTimeMins": 0,
@@ -832,7 +832,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Directeur du complexe aquatique et sportif de Gatineau.",
         "gender": "male",
         "voiceId": "fr-CA-JeanNeural",
-        "openingPromptFrench": "Allo ! Bienvenue au Complexe Sportif de Gatineau, je suis Antoine. Vous souhaitez des infos sur nos installations ?",
+        "openingPromptFrench": "Bonjour ! Festival des Arts de Rimouski, Élodie Martin. Merci pour votre enthousiasme. Quelles sont vos questions concernant le bénévolat au festival ?",
         "openingPromptEnglish": "Hello! Welcome to Gatineau Sports Complex, I am Antoine. Would you like information about our facilities?",
         "roleplayPrompt": "Présentez la piscine olympique et la salle d'entraînement puis demandez si le candidat désire une séance d'essai."
       },
@@ -882,7 +882,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinateur stimulant le débat environnemental.",
         "gender": "male",
         "voiceId": "fr-CA-JeanNeural",
-        "openingPromptFrench": "Pour la troisième tâche, pensez-vous que l'État doive bannir totalement les plastiques et emballages éphémères pour forcer la transition écologique ?",
+        "openingPromptFrench": "Voici votre sujet : 'La semaine de travail de 4 jours représente-t-elle un modèle gagnant-gagnant pour les salariés et les entreprises ou un frein économique ?' Exposez votre point de vue.",
         "openingPromptEnglish": "For the third task, do you think the State should totally ban plastics and disposable packaging to force ecological transition?",
         "followUpCounterQuestion": "Relancez sur le coût supplémentaire répercuté sur le pouvoir d'achat des consommateurs modestes."
       },
@@ -920,7 +920,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice souriante et très expressive.",
         "gender": "female",
         "voiceId": "fr-FR-DeniseNeural",
-        "openingPromptFrench": "Bonjour ! Bienvenue à votre épreuve d'oral. Je m'appelle Isabelle. Racontez-moi ce que vous aimez regarder ou écouter pour vous détendre.",
+        "openingPromptFrench": "Bonjour ! Présentez-vous, décrivez-moi votre logement et votre quartier, et dites-moi dans quel type d'environnement vous aimeriez vivre au Canada.",
         "openingPromptEnglish": "Hello! Welcome to your oral exam. My name is Isabelle. Tell me what you like to watch or listen to in order to relax."
       },
       "prepTimeMins": 0,
@@ -955,7 +955,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Coordonnatrice du réseau de solidarité alimentaire.",
         "gender": "female",
         "voiceId": "fr-FR-DeniseNeural",
-        "openingPromptFrench": "Bonjour ! Merci d'être venu me voir pour le bénévolat. Je suis Isabelle. Quelles sont les interrogations que vous avez sur nos actions ?",
+        "openingPromptFrench": "Bonjour ! Commun-Auto Longueuil, Laurent Dubois. En quoi puis-je vous aider concernant notre service d'autopartage ?",
         "openingPromptEnglish": "Hello! Thanks for coming to see me about volunteering. I am Isabelle. What questions do you have about our actions?",
         "roleplayPrompt": "Expliquez l'importance du travail en équipe le samedi matin et demandez si le candidat est disponible."
       },
@@ -1005,7 +1005,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice attentive au débat éducatif.",
         "gender": "female",
         "voiceId": "fr-FR-DeniseNeural",
-        "openingPromptFrench": "Passons au sujet éducatif. Que pensez-vous du retour du port de l'uniforme dans les établissements scolaires ?",
+        "openingPromptFrench": "Voici votre sujet : 'Faut-il supprimer tout âge limite obligatoire pour la retraite et laisser chacun décider de la fin de sa carrière ?' Présentez votre argumentation.",
         "openingPromptEnglish": "Moving to the educational topic. What do you think about bringing back school uniforms in educational institutions?",
         "followUpCounterQuestion": "Opposez le risque d'étouffer l'individualité et l'expression personnelle des élèves."
       },
@@ -1043,7 +1043,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinateur expérimenté au ton posé.",
         "gender": "male",
         "voiceId": "fr-FR-HenriNeural",
-        "openingPromptFrench": "Bonjour. Je m'appelle Pierre. Soyez le bienvenu. Expliquez-moi quelles habitudes vous adoptez pour rester en bonne santé.",
+        "openingPromptFrench": "Bonjour et bienvenue à cette dernière session d'expression orale. Pouvez-vous vous présenter, me détailler votre projet professionnel au Canada et m'expliquer la place de la langue française dans votre vie ?",
         "openingPromptEnglish": "Hello. My name is Pierre. Welcome. Explain to me what habits you adopt to stay in good health."
       },
       "prepTimeMins": 0,
@@ -1078,7 +1078,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Gestionnaire d'un espace de travail partagé innovant.",
         "gender": "male",
         "voiceId": "fr-FR-HenriNeural",
-        "openingPromptFrench": "Bonjour ! Pierre à l'appareil, responsable de l'espace de coworking. Comment puis-je vous présenter nos offres de bureaux ?",
+        "openingPromptFrench": "Bonjour ! Université de Montréal, Éducation Permanente, Élodie Martin à votre écoute. Quelles questions avez-vous concernant notre certificat professionnel en analyse de données ?",
         "openingPromptEnglish": "Hello! Pierre speaking, coworking space manager. How can I introduce our office packages to you?",
         "roleplayPrompt": "Présentez la formule nomade et la formule bureau dédié puis demandez si le candidat désire faire une visite."
       },
@@ -1128,7 +1128,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinateur évaluant l'analyse socio-économique approfondie.",
         "gender": "male",
         "voiceId": "fr-FR-HenriNeural",
-        "openingPromptFrench": "Passons au troisième sujet. Pensez-vous qu'un revenu de base garanti pour chacun soit une solution viable face aux mutations de l'emploi ?",
+        "openingPromptFrench": "Voici votre sujet de clôture : 'Le bilinguisme officiel constitue-t-il une force économique et culturelle majeure pour le Canada ou un défi complexe au quotidien ?' Développez votre analyse.",
         "openingPromptEnglish": "Moving to the third topic. Do you think a guaranteed basic income for everyone is a viable solution facing employment shifts?",
         "followUpCounterQuestion": "Invoquez le risque d'une hausse massive des prélèvements fiscaux et de la démotivation au travail."
       },
@@ -1166,7 +1166,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice dynamique et très à l'écoute.",
         "gender": "female",
         "voiceId": "fr-FR-VivienneMultilingualNeural",
-        "openingPromptFrench": "Bonjour et bienvenue à votre épreuve d'oral. Je m'appelle Sophie. Racontez-moi quelle place occupe la technologie dans votre vie de tous les jours.",
+        "openingPromptFrench": "Bonjour ! Bienvenue à votre épreuve d'expression orale du TCF Canada. Pour commencer cette première tâche, pouvez-vous vous présenter ?",
         "openingPromptEnglish": "Hello and welcome to your oral exam. My name is Sophie. Tell me what role technology plays in your everyday life."
       },
       "prepTimeMins": 0,
@@ -1201,7 +1201,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Animatrice passionnée du club de lecture municipal.",
         "gender": "female",
         "voiceId": "fr-FR-VivienneMultilingualNeural",
-        "openingPromptFrench": "Bonjour ! Bienvenue au club de lecture, je m'appelle Sophie. Vous êtes intéressé par nos rencontres littéraires ? Dites-moi tout !",
+        "openingPromptFrench": "Bonjour ! Institut Linguistique de Montréal, Laurent Dubois au téléphone. Je vous écoute, quelles sont vos questions ?",
         "openingPromptEnglish": "Hello! Welcome to the book club, my name is Sophie. Are you interested in our literary meetings? Tell me everything!",
         "roleplayPrompt": "Expliquez que le groupe se réunit le premier mardi de chaque mois et demandez si le candidat lit des romans ou des essais."
       },
@@ -1251,7 +1251,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice sollicitant une réflexion sociolinguistique poussée.",
         "gender": "female",
         "voiceId": "fr-FR-VivienneMultilingualNeural",
-        "openingPromptFrench": "Pour conclure cette épreuve, estimez-vous que la défense du patrimoine linguistique minoritaire doive être financée par des fonds publics prioritaires ?",
+        "openingPromptFrench": "Voici votre sujet de société pour cette troisième tâche : 'L'intelligence artificielle représente-t-elle une opportunité majeure ou une menace pour l'emploi qualifié ?'",
         "openingPromptEnglish": "To conclude this exam, do you believe defending minority linguistic heritage should be funded by priority public money?",
         "followUpCounterQuestion": "Relancez sur l'urgence d'investir plutôt dans la santé et la transition énergétique globale."
       },
