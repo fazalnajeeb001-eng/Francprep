@@ -21,6 +21,10 @@ export function unlockAudioEngine(): void {
     if (!masterAudioPlayer) {
       masterAudioPlayer = new Audio();
     }
+    // Safety guard: NEVER overwrite masterAudioPlayer.src if audio is actively playing!
+    if (masterAudioPlayer.src && !masterAudioPlayer.paused && masterAudioPlayer.currentTime > 0) {
+      return;
+    }
     masterAudioPlayer.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
     masterAudioPlayer.play().catch(() => {});
 
@@ -33,28 +37,12 @@ export function unlockAudioEngine(): void {
       if (mobileAudioContext.state === "suspended") {
         mobileAudioContext.resume().catch(() => {});
       }
-      // Create continuous silent oscillator loop to keep WebKit audio session active
-      try {
-        const osc = mobileAudioContext.createOscillator();
-        const gain = mobileAudioContext.createGain();
-        gain.gain.value = 0.0001; // Silent gain
-        osc.connect(gain);
-        gain.connect(mobileAudioContext.destination);
-        osc.start();
-      } catch {}
     }
   } catch {}
 }
 
 // Stop audio automatically when user navigates away, closes tab, or switches pages!
-// Also attach sitewide user gesture listener to automatically unlock audio permissions!
 if (typeof window !== "undefined") {
-  const handleUserGestureUnlock = () => {
-    unlockAudioEngine();
-  };
-  window.addEventListener("click", handleUserGestureUnlock, { capture: true });
-  window.addEventListener("touchstart", handleUserGestureUnlock, { capture: true });
-  window.addEventListener("pointerdown", handleUserGestureUnlock, { capture: true });
   window.addEventListener("pagehide", () => stopAudio());
   window.addEventListener("beforeunload", () => stopAudio());
   window.addEventListener("popstate", () => stopAudio());

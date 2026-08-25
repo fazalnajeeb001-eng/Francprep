@@ -116,7 +116,7 @@ export function AuthenticCBTExamPage() {
           const parsed = JSON.parse(stored);
           return parsed.role?.toLowerCase() === 'admin' || parsed.isAdmin || parsed.email?.toLowerCase().includes('admin');
         }
-      } catch {}
+      } catch { }
       return false;
     })())
   );
@@ -162,7 +162,7 @@ export function AuthenticCBTExamPage() {
     try {
       const saved = localStorage.getItem(sessionKey);
       if (saved) return JSON.parse(saved).completedSectionIndices || [];
-    } catch {}
+    } catch { }
     return [];
   });
 
@@ -172,7 +172,7 @@ export function AuthenticCBTExamPage() {
     try {
       const saved = localStorage.getItem(sessionKey);
       if (saved) return JSON.parse(saved).sectionTimeRemaining || {};
-    } catch {}
+    } catch { }
     return {};
   });
 
@@ -197,7 +197,7 @@ export function AuthenticCBTExamPage() {
         const hasSpeaking = Object.keys(parsed.speakingDialogueMap || {}).some((k: string) => (parsed.speakingDialogueMap[k] || []).length > 0);
         return hasAnswers || hasWriting || hasSpeaking;
       }
-    } catch {}
+    } catch { }
     return false;
   });
 
@@ -216,7 +216,7 @@ export function AuthenticCBTExamPage() {
     try {
       const saved = localStorage.getItem(sessionKey);
       if (saved) return JSON.parse(saved).selectedAnswers || {};
-    } catch {}
+    } catch { }
     return {};
   });
 
@@ -225,7 +225,7 @@ export function AuthenticCBTExamPage() {
     try {
       const saved = localStorage.getItem(sessionKey);
       if (saved) return JSON.parse(saved).flaggedQuestions || {};
-    } catch {}
+    } catch { }
     return {};
   });
 
@@ -234,7 +234,7 @@ export function AuthenticCBTExamPage() {
     try {
       const saved = localStorage.getItem(sessionKey);
       if (saved) return JSON.parse(saved).writingResponses || {};
-    } catch {}
+    } catch { }
     return {};
   });
 
@@ -243,7 +243,7 @@ export function AuthenticCBTExamPage() {
     try {
       const saved = localStorage.getItem(sessionKey);
       if (saved) return JSON.parse(saved).speakingTranscripts || {};
-    } catch {}
+    } catch { }
     return {};
   });
 
@@ -269,7 +269,7 @@ export function AuthenticCBTExamPage() {
     if (typeof window !== "undefined") {
       try {
         localStorage.removeItem(sessionKey);
-      } catch {}
+      } catch { }
     }
     setSelectedAnswers({});
     setFlaggedQuestions({});
@@ -364,7 +364,7 @@ export function AuthenticCBTExamPage() {
       setSectionTransitionModal(null);
       try {
         unlockAudioEngine();
-      } catch {}
+      } catch { }
       return;
     }
 
@@ -479,7 +479,7 @@ export function AuthenticCBTExamPage() {
                   if (!recordingSpeaking[taskId]) {
                     handleToggleSpeakingRecording(taskId);
                   }
-                } catch {}
+                } catch { }
               }
             };
 
@@ -559,7 +559,7 @@ export function AuthenticCBTExamPage() {
 
     try {
       unlockAudioEngine();
-    } catch {}
+    } catch { }
 
     const existingChat = speakingDialogueMap[taskId] || [];
     const updatedMessages = [...existingChat, { sender: 'candidate' as const, text: clean }];
@@ -598,7 +598,7 @@ export function AuthenticCBTExamPage() {
               if (!recordingSpeaking[taskId]) {
                 handleToggleSpeakingRecording(taskId);
               }
-            } catch {}
+            } catch { }
           }
         });
         return;
@@ -612,7 +612,7 @@ export function AuthenticCBTExamPage() {
   const startSpeakingTaskSession = (idx: number) => {
     try {
       unlockAudioEngine();
-    } catch {}
+    } catch { }
     setIsAudioFetching(true);
     setIsPlayingAudio(true);
     const tasks = currentSection?.speakingTasks;
@@ -632,8 +632,8 @@ export function AuthenticCBTExamPage() {
       idx === 0 || task.title?.includes("Tâche 1")
         ? "Bonjour ! Bienvenue à l'épreuve d'expression orale du TCF Canada. Je suis votre examinateur. Pour cette première tâche sans préparation, nous allons faire un entretien dirigé de 2 minutes. Pouvez-vous vous présenter, me parler de votre parcours professionnel et de vos motivations pour le Canada ?"
         : idx === 1 || task.title?.includes("Tâche 2")
-        ? "Bonjour ! Bienvenue dans la deuxième tâche. Vous disposez de 2 minutes de préparation pour prendre connaissance du document support et préparer vos questions. Ensuite, nous échangerons pendant 3 minutes et demie. Je vous écoute, quelles sont vos questions ?"
-        : "Bonjour ! Bienvenue dans la troisième tâche. Vous allez exprimer votre point de vue de manière fluide et argumentée sur ce sujet de société pendant environ 3 minutes, puis nous en débattrons ensemble. Présentez-moi vos arguments et votre position."
+          ? "Bonjour ! Bienvenue dans la deuxième tâche. Vous disposez de 2 minutes de préparation pour prendre connaissance du document support et préparer vos questions. Ensuite, nous échangerons pendant 3 minutes et demie. Je vous écoute, quelles sont vos questions ?"
+          : "Bonjour ! Bienvenue dans la troisième tâche. Vous allez exprimer votre point de vue de manière fluide et argumentée sur ce sujet de société pendant environ 3 minutes, puis nous en débattrons ensemble. Présentez-moi vos arguments et votre position."
     );
 
     let sessionTimerHandled = false;
@@ -677,7 +677,7 @@ export function AuthenticCBTExamPage() {
             if (!recordingSpeaking[task.id]) {
               handleToggleSpeakingRecording(task.id);
             }
-          } catch {}
+          } catch { }
         }
       };
 
@@ -706,7 +706,7 @@ export function AuthenticCBTExamPage() {
         timestamp: Date.now()
       };
       localStorage.setItem(sessionKey, JSON.stringify(payload));
-    } catch {}
+    } catch { }
   }, [selectedAnswers, flaggedQuestions, writingResponses, speakingTranscripts, completedSectionIndices, sectionTimeRemaining, activeSectionIdx, currentQuestionIdx, isSubmitted, sessionKey]);
 
   useEffect(() => {
@@ -733,7 +733,7 @@ export function AuthenticCBTExamPage() {
     const requestLock = async () => {
       try {
         wakeLockSentinel = await (navigator as any).wakeLock.request("screen");
-      } catch {}
+      } catch { }
     };
     requestLock();
 
@@ -747,7 +747,7 @@ export function AuthenticCBTExamPage() {
     return () => {
       document.removeEventListener("visibilitychange", handleVisChange);
       if (wakeLockSentinel) {
-        try { wakeLockSentinel.release(); } catch {}
+        try { wakeLockSentinel.release(); } catch { }
       }
     };
   }, [mode]);
@@ -806,7 +806,7 @@ export function AuthenticCBTExamPage() {
         });
         acousticAnalyzer.startAnalysis(stream);
       }
-    } catch {}
+    } catch { }
 
     const recognition = new SpeechRec();
     recognition.lang = "fr-FR";
@@ -854,7 +854,7 @@ export function AuthenticCBTExamPage() {
 
       const taskNumber = taskId?.includes('spk-1') || taskId?.includes('task_0') ? 1
         : taskId?.includes('spk-2') || taskId?.includes('task_1') ? 2
-        : taskId?.includes('spk-3') || taskId?.includes('task_2') ? 3 : 1;
+          : taskId?.includes('spk-3') || taskId?.includes('task_2') ? 3 : 1;
 
       const acousticMetrics = speakingAcousticMetrics[taskId];
 
@@ -1093,7 +1093,7 @@ export function AuthenticCBTExamPage() {
       console.error("Submission evaluation error:", e);
     } finally {
       setIsSubmittingExam(false);
-      try { localStorage.removeItem(sessionKey); } catch {}
+      try { localStorage.removeItem(sessionKey); } catch { }
       setIsSubmitted(true);
     }
   };
@@ -1206,7 +1206,7 @@ export function AuthenticCBTExamPage() {
           if (playAudioSessionRef.current !== currentSession) return;
           try {
             triggerAcousticSoundForQuestion(qNum);
-          } catch {}
+          } catch { }
           ttsSpeakListening(fullText, "fr-FR", rate, "female", () => {
             clearTimeout(watchdogTimer);
             if (playAudioSessionRef.current === currentSession) {
@@ -1241,8 +1241,8 @@ export function AuthenticCBTExamPage() {
                 lang: "fr",
                 speakingRate: (nextQ as any).speakingRate || 1.0,
               }),
-            }).catch(() => {});
-          } catch {}
+            }).catch(() => { });
+          } catch { }
         }
       }
     }
@@ -1254,11 +1254,11 @@ export function AuthenticCBTExamPage() {
     setIsAudioPaused(false);
     setIsTimerPaused(false);
     const qNum = (currentQ as any)?.questionNumber || 1;
-    
+
     // Trigger acoustic chime in parallel without blocking user audio gesture
     try {
       triggerAcousticSoundForQuestion(qNum);
-    } catch {}
+    } catch { }
 
     const fullTextToPlay = currentQ?.transcript || text;
     ttsSpeakListening(fullTextToPlay, lang, rate, "female", () => {
@@ -1389,7 +1389,7 @@ export function AuthenticCBTExamPage() {
 
     const taskNumber = taskId?.includes('w1') || taskId?.includes('task_0') || minWords === 60 ? 1
       : taskId?.includes('w2') || taskId?.includes('task_1') || minWords === 120 ? 2
-      : taskId?.includes('w3') || taskId?.includes('task_2') || minWords >= 140 ? 3 : 1;
+        : taskId?.includes('w3') || taskId?.includes('task_2') || minWords >= 140 ? 3 : 1;
 
     try {
       // Call backend AI writing evaluation API endpoint
@@ -1471,7 +1471,7 @@ export function AuthenticCBTExamPage() {
         setEvaluatingWriting((prev) => ({ ...prev, [taskId]: false }));
         return;
       }
-    } catch {}
+    } catch { }
 
     // 2. Calibrated Local Rule Engine Fallback (Full-Spectrum CEFR Calibration)
     const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|travel|city|park|food|good|experience|like|you|know|actually)\b/i.test(clean);
@@ -1555,7 +1555,7 @@ export function AuthenticCBTExamPage() {
       "problème", "réparer", "système", "temps", "travail", "voyage", "visite", "ville", "aide", "merci",
       "question", "besoin", "semaine", "jour", "heure", "prix", "service"
     ];
-    
+
     const foundC1C2Lex = c1c2Lexical.filter((w) => textLower.includes(w));
     const foundB2Lex = b2Lexical.filter((w) => textLower.includes(w));
     const foundB1Lex = b1Lexical.filter((w) => textLower.includes(w));
@@ -1585,7 +1585,7 @@ export function AuthenticCBTExamPage() {
       "ne marche pas", "il fait très froid", "c'est un véritable", "c'est très important", "je suis", "nous avons",
       "j'ai", "il y a", "nous sommes", "je viens de"
     ];
-    
+
     const foundC1C2Gram = c1c2Grammar.filter((g) => textLower.includes(g));
     const foundB2Gram = b2Grammar.filter((g) => textLower.includes(g));
     const foundB1Gram = b1Grammar.filter((g) => textLower.includes(g));
@@ -1784,10 +1784,10 @@ export function AuthenticCBTExamPage() {
     const getTaskScore = (task: any, idx: number) => {
       const key = task.id || task.title || `task_${idx}`;
       const aiRes = writingAiResults[key] ||
-                    (task.id && writingAiResults[task.id]) ||
-                    (task.title && writingAiResults[task.title]) ||
-                    writingAiResults[`task_${idx}`] ||
-                    writingAiResults[idx];
+        (task.id && writingAiResults[task.id]) ||
+        (task.title && writingAiResults[task.title]) ||
+        writingAiResults[`task_${idx}`] ||
+        writingAiResults[idx];
 
       if (aiRes?.scoreOutOf20 !== undefined) {
         return aiRes.scoreOutOf20;
@@ -1967,7 +1967,7 @@ export function AuthenticCBTExamPage() {
         const hasFormalSignOff = /(je vous prie d'agréer|veuillez agréer|salutations distinguées|haute considération|respectueusement)/i.test(clean);
         const hasFormalConditional = /(pourriez-vous|auriez-vous|serait-il possible|je souhaiterais|nous souhaiterions|je vous saurais gré)/i.test(clean);
         const hasHighC1AdminRegister = /(en toute urgence|défaillance totale|manquement évident|je vous somme|sanitaires inacceptables|préjudice|règlement immédiat|dans cette optique)/i.test(clean);
-    const hasAdvancedC1Markers = (hasHighC1AdminRegister || (foundC1C2Lex.length >= 3 && foundC1C2Conn.length >= 1)) && hasFormalSignOff;
+        const hasAdvancedC1Markers = (hasHighC1AdminRegister || (foundC1C2Lex.length >= 3 && foundC1C2Conn.length >= 1)) && hasFormalSignOff;
 
         if (isTache1) {
           if (!hasFormalGreeting && !hasFormalSignOff && !hasFormalConditional) {
@@ -2349,23 +2349,22 @@ export function AuthenticCBTExamPage() {
 
           <button
             onClick={() => setShowHints(!showHints)}
-            className={`px-2.5 py-1 rounded border text-[11px] font-semibold transition-all shrink-0 flex items-center gap-1 ${
-              showHints
+            className={`px-2.5 py-1 rounded border text-[11px] font-semibold transition-all shrink-0 flex items-center gap-1 ${showHints
                 ? "bg-amber-600 text-white border-amber-600"
                 : cbtDark
-                ? "bg-[#1E293B] text-slate-200 border-slate-700"
-                : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
-            }`}
+                  ? "bg-[#1E293B] text-slate-200 border-slate-700"
+                  : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
+              }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>
               {currentSection.type === "COMPREHENSION_ORALE"
                 ? showHints ? "Hide Audio Coach 🎧" : "🎧 Audio Coach & Trap Alert"
                 : currentSection.type === "COMPREHENSION_ECRITE"
-                ? showHints ? "Hide Reading Coach 📖" : "📖 Reading Strategy & Trap Alert"
-                : currentSection.type === "EXPRESSION_ECRITE"
-                ? showHints ? "Hide Writing Coach ✍️" : "✍️ Writing Strategy & Trap Alert"
-                : showHints ? "Hide Speaking Coach 🎙️" : "🎙️ Speaking Strategy & Trap Alert"}
+                  ? showHints ? "Hide Reading Coach 📖" : "📖 Reading Strategy & Trap Alert"
+                  : currentSection.type === "EXPRESSION_ECRITE"
+                    ? showHints ? "Hide Writing Coach ✍️" : "✍️ Writing Strategy & Trap Alert"
+                    : showHints ? "Hide Speaking Coach 🎙️" : "🎙️ Speaking Strategy & Trap Alert"}
             </span>
           </button>
 
@@ -2373,13 +2372,12 @@ export function AuthenticCBTExamPage() {
             <>
               <button
                 onClick={() => setShowTranscript(!showTranscript)}
-                className={`px-2.5 py-1 rounded border text-[11px] font-semibold transition-all shrink-0 flex items-center gap-1 ${
-                  showTranscript
+                className={`px-2.5 py-1 rounded border text-[11px] font-semibold transition-all shrink-0 flex items-center gap-1 ${showTranscript
                     ? "bg-purple-600 text-white border-purple-600"
                     : cbtDark
-                    ? "bg-[#1E293B] text-slate-200 border-slate-700"
-                    : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
-                }`}
+                      ? "bg-[#1E293B] text-slate-200 border-slate-700"
+                      : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
+                  }`}
               >
                 <FileText className="w-3.5 h-3.5" />
                 <span>{showTranscript ? "Hide French Transcript 📄" : "📄 Show French Audio Transcript"}</span>
@@ -2387,13 +2385,12 @@ export function AuthenticCBTExamPage() {
 
               <button
                 onClick={() => setShowTranslation(!showTranslation)}
-                className={`px-2.5 py-1 rounded border text-[11px] font-semibold transition-all shrink-0 flex items-center gap-1 ${
-                  showTranslation
+                className={`px-2.5 py-1 rounded border text-[11px] font-semibold transition-all shrink-0 flex items-center gap-1 ${showTranslation
                     ? "bg-indigo-600 text-white border-indigo-600"
                     : cbtDark
-                    ? "bg-[#1E293B] text-slate-200 border-slate-700"
-                    : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
-                }`}
+                      ? "bg-[#1E293B] text-slate-200 border-slate-700"
+                      : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
+                  }`}
               >
                 <Globe className="w-3.5 h-3.5" />
                 <span>{showTranslation ? "Hide English Translation 🌐" : "🌐 Show English Translation"}</span>
@@ -2404,13 +2401,12 @@ export function AuthenticCBTExamPage() {
           {currentSection.type === "COMPREHENSION_ECRITE" && (
             <button
               onClick={() => setShowPassageTranslation(!showPassageTranslation)}
-              className={`px-2.5 py-1 rounded border text-[11px] font-semibold transition-all shrink-0 flex items-center gap-1 ${
-                showPassageTranslation
+              className={`px-2.5 py-1 rounded border text-[11px] font-semibold transition-all shrink-0 flex items-center gap-1 ${showPassageTranslation
                   ? "bg-blue-600 text-white border-blue-600"
                   : cbtDark
-                  ? "bg-[#1E293B] text-slate-200 border-slate-700"
-                  : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
-              }`}
+                    ? "bg-[#1E293B] text-slate-200 border-slate-700"
+                    : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
+                }`}
             >
               <Globe className="w-3.5 h-3.5" />
               <span>{showPassageTranslation ? "Hide Reading EN Translation" : "Side-by-Side English Translation"}</span>
@@ -2436,17 +2432,16 @@ export function AuthenticCBTExamPage() {
                   setCurrentQuestionIdx(0);
                 }
               }}
-              className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded transition-all shrink-0 flex items-center gap-1 sm:gap-1.5 ${
-                isSelected
+              className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded transition-all shrink-0 flex items-center gap-1 sm:gap-1.5 ${isSelected
                   ? "bg-blue-600 text-white shadow ring-2 ring-blue-400"
                   : isLocked
-                  ? "opacity-50 cursor-not-allowed bg-slate-300 dark:bg-slate-800 text-slate-500 border border-slate-400/30"
-                  : isCompleted && mode === "EXAM" && !isAdmin
-                  ? "opacity-75 cursor-not-allowed bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300"
-                  : cbtDark
-                  ? "bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer"
-                  : "bg-slate-100 text-slate-900 hover:bg-slate-300 font-bold border border-slate-300 cursor-pointer"
-              }`}
+                    ? "opacity-50 cursor-not-allowed bg-slate-300 dark:bg-slate-800 text-slate-500 border border-slate-400/30"
+                    : isCompleted && mode === "EXAM" && !isAdmin
+                      ? "opacity-75 cursor-not-allowed bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300"
+                      : cbtDark
+                        ? "bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer"
+                        : "bg-slate-100 text-slate-900 hover:bg-slate-300 font-bold border border-slate-300 cursor-pointer"
+                }`}
               title={isLocked ? "🔒 Section verrouillée en mode examen (Progression séquentielle)" : isCompleted ? "✓ Épreuve terminée" : ""}
             >
               {isLocked ? (
@@ -2525,11 +2520,10 @@ export function AuthenticCBTExamPage() {
                     <button
                       type="button"
                       onClick={() => toggleFlag(currentQ.id)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold border flex items-center gap-1.5 shrink-0 cursor-pointer transition-all shadow-xs active:scale-95 ${
-                        flaggedQuestions[currentQ.id]
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold border flex items-center gap-1.5 shrink-0 cursor-pointer transition-all shadow-xs active:scale-95 ${flaggedQuestions[currentQ.id]
                           ? "bg-amber-500 hover:bg-amber-600 text-white border-amber-600 ring-2 ring-amber-400/40"
                           : "bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300"
-                      }`}
+                        }`}
                     >
                       <Flag className={`w-3.5 h-3.5 ${flaggedQuestions[currentQ.id] ? "fill-white text-white" : "text-amber-500"}`} />
                       <span>{flaggedQuestions[currentQ.id] ? "🚩 Marqué / Flagged" : "Marquer / Flag"}</span>
@@ -2614,11 +2608,10 @@ export function AuthenticCBTExamPage() {
                             <button
                               type="button"
                               onClick={() => setShowQuestionPrompt(!showQuestionPrompt)}
-                              className={`px-2.5 sm:px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border cursor-pointer ${
-                                showQuestionPrompt
+                              className={`px-2.5 sm:px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border cursor-pointer ${showQuestionPrompt
                                   ? "bg-amber-600 text-white border-amber-700"
                                   : "bg-amber-100 text-amber-950 border-amber-300 hover:bg-amber-200"
-                              }`}
+                                }`}
                             >
                               <FileText className="w-3.5 h-3.5" />
                               <span>{showQuestionPrompt ? "Hide Question Text 📝" : "📝 Show Question Text"}</span>
@@ -2627,11 +2620,10 @@ export function AuthenticCBTExamPage() {
                             <button
                               type="button"
                               onClick={() => setShowTranscript(!showTranscript)}
-                              className={`px-2.5 sm:px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border cursor-pointer ${
-                                showTranscript
+                              className={`px-2.5 sm:px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border cursor-pointer ${showTranscript
                                   ? "bg-purple-700 text-white border-purple-800"
                                   : "bg-purple-100 text-purple-950 border-purple-300 hover:bg-purple-200"
-                              }`}
+                                }`}
                             >
                               <FileText className="w-3.5 h-3.5" />
                               <span>{showTranscript ? "Hide Transcript 📄" : "📄 French Transcript"}</span>
@@ -2641,11 +2633,10 @@ export function AuthenticCBTExamPage() {
                               <button
                                 type="button"
                                 onClick={() => setShowTranslation(!showTranslation)}
-                                className={`px-2.5 sm:px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border cursor-pointer ${
-                                  showTranslation
+                                className={`px-2.5 sm:px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border cursor-pointer ${showTranslation
                                     ? "bg-indigo-700 text-white border-indigo-800"
                                     : "bg-indigo-100 text-indigo-950 border-indigo-300 hover:bg-indigo-200"
-                                }`}
+                                  }`}
                               >
                                 <Globe className="w-3.5 h-3.5" />
                                 <span>{showTranslation ? "Hide Translation 🌐" : "🌐 English Translation"}</span>
@@ -2794,9 +2785,8 @@ export function AuthenticCBTExamPage() {
 
                 {/* Official Reading Passage Component */}
                 {currentSection.type === "COMPREHENSION_ECRITE" && currentQ.passage && (
-                  <div className={`p-3.5 sm:p-4 rounded-xl border space-y-3 ${
-                    cbtDark ? "bg-blue-950/40 border-blue-800/60 text-slate-100" : "bg-blue-50 border-blue-300 text-slate-950"
-                  }`}>
+                  <div className={`p-3.5 sm:p-4 rounded-xl border space-y-3 ${cbtDark ? "bg-blue-950/40 border-blue-800/60 text-slate-100" : "bg-blue-50 border-blue-300 text-slate-950"
+                    }`}>
                     <div className="flex items-center justify-between border-b border-blue-200 dark:border-blue-800 pb-2 gap-2 flex-wrap">
                       <span className="text-xs font-bold text-blue-900 dark:text-blue-300 flex items-center gap-1.5">
                         <BookOpen className="w-4 h-4 text-blue-600" />
@@ -2844,9 +2834,8 @@ export function AuthenticCBTExamPage() {
                       </div>
                     </div>
 
-                    <p className={`font-serif leading-relaxed font-medium text-slate-950 dark:text-slate-100 whitespace-pre-line p-3 sm:p-3.5 rounded-lg bg-white dark:bg-slate-950 border border-blue-200 dark:border-blue-900 max-h-[35vh] lg:max-h-[300px] overflow-y-auto ${
-                      readingFontSize === "sm" ? "text-xs leading-normal" : readingFontSize === "lg" ? "text-sm sm:text-base leading-relaxed" : "text-xs sm:text-sm"
-                    }`}>
+                    <p className={`font-serif leading-relaxed font-medium text-slate-950 dark:text-slate-100 whitespace-pre-line p-3 sm:p-3.5 rounded-lg bg-white dark:bg-slate-950 border border-blue-200 dark:border-blue-900 max-h-[35vh] lg:max-h-[300px] overflow-y-auto ${readingFontSize === "sm" ? "text-xs leading-normal" : readingFontSize === "lg" ? "text-sm sm:text-base leading-relaxed" : "text-xs sm:text-sm"
+                      }`}>
                       "{currentQ.passage}"
                     </p>
 
@@ -3049,26 +3038,23 @@ export function AuthenticCBTExamPage() {
                               onClick={() => {
                                 if (!isLocked) handleSelectOption(currentQ.id, idx);
                               }}
-                              className={`group relative rounded-xl border-2 overflow-hidden cursor-pointer transition-all duration-200 shadow-sm flex flex-col justify-between active:scale-[0.98] ${
-                                isChosen
+                              className={`group relative rounded-xl border-2 overflow-hidden cursor-pointer transition-all duration-200 shadow-sm flex flex-col justify-between active:scale-[0.98] ${isChosen
                                   ? "border-blue-600 ring-2 ring-blue-500/50 bg-blue-50/20 dark:bg-blue-950/30 shadow-md"
                                   : cbtDark
-                                  ? "bg-slate-800/80 border-slate-700 hover:border-blue-400"
-                                  : "bg-white border-slate-300 hover:border-blue-500 hover:shadow-md"
-                              } ${isLocked ? "cursor-not-allowed opacity-90" : ""}`}
+                                    ? "bg-slate-800/80 border-slate-700 hover:border-blue-400"
+                                    : "bg-white border-slate-300 hover:border-blue-500 hover:shadow-md"
+                                } ${isLocked ? "cursor-not-allowed opacity-90" : ""}`}
                             >
                               {/* Card Top Letter Header */}
-                              <div className={`px-3 py-2 flex items-center justify-between font-extrabold text-xs border-b ${
-                                isChosen
+                              <div className={`px-3 py-2 flex items-center justify-between font-extrabold text-xs border-b ${isChosen
                                   ? "bg-blue-600 text-white border-blue-600"
                                   : cbtDark
-                                  ? "bg-slate-700/80 text-slate-200 border-slate-700"
-                                  : "bg-slate-100 text-slate-900 border-slate-200"
-                              }`}>
+                                    ? "bg-slate-700/80 text-slate-200 border-slate-700"
+                                    : "bg-slate-100 text-slate-900 border-slate-200"
+                                }`}>
                                 <span className="flex items-center gap-1.5 font-mono">
-                                  <span className={`w-5 h-5 rounded-md flex items-center justify-center font-black ${
-                                    isChosen ? "bg-white text-blue-600" : "bg-slate-200 dark:bg-slate-600 text-slate-900 dark:text-slate-100"
-                                  }`}>
+                                  <span className={`w-5 h-5 rounded-md flex items-center justify-center font-black ${isChosen ? "bg-white text-blue-600" : "bg-slate-200 dark:bg-slate-600 text-slate-900 dark:text-slate-100"
+                                    }`}>
                                     {letter}
                                   </span>
                                   <span>Image {letter}</span>
@@ -3149,26 +3135,22 @@ export function AuthenticCBTExamPage() {
                               onClick={() => {
                                 if (!isLocked) handleSelectOption(currentQ.id, idx);
                               }}
-                              className={`w-full p-3 sm:p-3.5 rounded-xl border-2 font-bold text-sm sm:text-base flex flex-col justify-center transition-all duration-200 shadow-sm ${
-                                isLocked ? "opacity-60 cursor-not-allowed" : "cursor-pointer active:scale-[0.99]"
-                              } ${
-                                isChosen
+                              className={`w-full p-3 sm:p-3.5 rounded-xl border-2 font-bold text-sm sm:text-base flex flex-col justify-center transition-all duration-200 shadow-sm ${isLocked ? "opacity-60 cursor-not-allowed" : "cursor-pointer active:scale-[0.99]"
+                                } ${isChosen
                                   ? "bg-blue-600 border-blue-500 text-white ring-2 ring-blue-400/50 shadow-blue-900/50"
                                   : "bg-slate-800 border-slate-700 text-slate-200 hover:border-blue-400 hover:bg-slate-700/80"
-                              }`}
+                                }`}
                             >
                               <div className="flex items-center justify-between w-full">
                                 <div className="flex items-center gap-3">
-                                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-mono font-black shrink-0 ${
-                                    isChosen ? "border-white bg-white text-blue-600" : "border-slate-400 text-slate-300"
-                                  }`}>
+                                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-mono font-black shrink-0 ${isChosen ? "border-white bg-white text-blue-600" : "border-slate-400 text-slate-300"
+                                    }`}>
                                     {letter}
                                   </div>
                                   <span className="font-mono tracking-wide text-base font-black">{letter}.</span>
                                 </div>
-                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                                  isChosen ? "border-white bg-white" : "border-slate-500"
-                                }`}>
+                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${isChosen ? "border-white bg-white" : "border-slate-500"
+                                  }`}>
                                   {isChosen && <div className="w-2.5 h-2.5 rounded-full bg-blue-600" />}
                                 </div>
                               </div>
@@ -3199,22 +3181,20 @@ export function AuthenticCBTExamPage() {
                           onClick={() => {
                             if (!isLocked) handleSelectOption(currentQ.id, idx);
                           }}
-                          className={`p-3.5 sm:p-4 rounded-xl border text-xs sm:text-sm font-semibold cursor-pointer transition-all flex items-center justify-between min-h-[48px] touch-manipulation active:scale-[0.99] ${
-                            isChosen
+                          className={`p-3.5 sm:p-4 rounded-xl border text-xs sm:text-sm font-semibold cursor-pointer transition-all flex items-center justify-between min-h-[48px] touch-manipulation active:scale-[0.99] ${isChosen
                               ? "bg-blue-600 text-white border-blue-600 shadow-md font-bold"
                               : cbtDark
-                              ? "bg-slate-800/80 text-slate-200 border-slate-700 hover:border-blue-400"
-                              : "bg-slate-50 text-slate-950 border-slate-300 hover:border-blue-500 hover:bg-blue-50/50"
-                          } ${isLocked ? "cursor-not-allowed opacity-90" : ""}`}
+                                ? "bg-slate-800/80 text-slate-200 border-slate-700 hover:border-blue-400"
+                                : "bg-slate-50 text-slate-950 border-slate-300 hover:border-blue-500 hover:bg-blue-50/50"
+                            } ${isLocked ? "cursor-not-allowed opacity-90" : ""}`}
                         >
                           <div className="flex items-center gap-3 min-w-0">
-                            <span className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ${
-                              isChosen
+                            <span className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ${isChosen
                                 ? "bg-white text-blue-600"
                                 : cbtDark
-                                ? "bg-slate-700 text-slate-200"
-                                : "bg-slate-200 text-slate-900 font-extrabold"
-                            }`}>
+                                  ? "bg-slate-700 text-slate-200"
+                                  : "bg-slate-200 text-slate-900 font-extrabold"
+                              }`}>
                               {letter}
                             </span>
                             <div className="flex flex-col min-w-0 text-left">
@@ -3258,11 +3238,10 @@ export function AuthenticCBTExamPage() {
                       const correctOptionText = currentQ.options[currentQ.correctIndex];
 
                       return (
-                        <div className={`p-4 rounded-xl border space-y-2 text-xs font-sans ${
-                          isCorrect
+                        <div className={`p-4 rounded-xl border space-y-2 text-xs font-sans ${isCorrect
                             ? cbtDark ? "bg-emerald-950/40 border-emerald-800 text-emerald-200" : "bg-emerald-50 border-emerald-300 text-emerald-950"
                             : cbtDark ? "bg-rose-950/40 border-rose-800 text-rose-200" : "bg-rose-50 border-rose-300 text-rose-950"
-                        }`}>
+                          }`}>
                           <div className="flex items-center gap-2 font-extrabold text-sm">
                             {isCorrect ? (
                               <>
@@ -3341,11 +3320,10 @@ export function AuthenticCBTExamPage() {
                 <button
                   disabled={currentQuestionIdx === 0 || (!isAdmin && mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE")}
                   onClick={() => setCurrentQuestionIdx((prev) => Math.max(0, prev - 1))}
-                  className={`px-4 py-2 rounded text-xs font-bold transition-all ${
-                    currentQuestionIdx === 0 || (!isAdmin && mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE")
+                  className={`px-4 py-2 rounded text-xs font-bold transition-all ${currentQuestionIdx === 0 || (!isAdmin && mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE")
                       ? "opacity-40 cursor-not-allowed bg-slate-200 text-slate-500 border-slate-300"
                       : "bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-300 cursor-pointer"
-                  }`}
+                    }`}
                   title={!isAdmin && mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE" ? "Navigation verrouillée en mode examen (Règles CBT)" : ""}
                 >
                   ← Previous Question
@@ -3405,21 +3383,19 @@ export function AuthenticCBTExamPage() {
                   <button
                     key={t.id}
                     onClick={() => setActiveWritingTaskIdx(idx)}
-                    className={`px-3.5 py-2 rounded-t-lg text-xs font-bold transition-all flex items-center gap-2 shrink-0 border-b-2 ${
-                      activeWritingTaskIdx === idx
+                    className={`px-3.5 py-2 rounded-t-lg text-xs font-bold transition-all flex items-center gap-2 shrink-0 border-b-2 ${activeWritingTaskIdx === idx
                         ? "bg-pink-600 text-white border-pink-600 shadow"
                         : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-transparent hover:bg-slate-200"
-                    }`}
+                      }`}
                   >
                     <PenTool className="w-3.5 h-3.5" />
                     <span>{t.title}</span>
-                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-extrabold ${
-                      tValid
+                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-extrabold ${tValid
                         ? activeWritingTaskIdx === idx ? "bg-emerald-500 text-white" : "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
                         : tWords > 0
-                        ? activeWritingTaskIdx === idx ? "bg-amber-400 text-slate-900" : "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
-                        : "bg-black/10 dark:bg-white/10 text-slate-400"
-                    }`}>
+                          ? activeWritingTaskIdx === idx ? "bg-amber-400 text-slate-900" : "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+                          : "bg-black/10 dark:bg-white/10 text-slate-400"
+                      }`}>
                       {tWords > 0 ? `${tWords}w ${tValid ? "✓" : ""}` : "0w"}
                     </span>
                   </button>
@@ -3495,8 +3471,8 @@ export function AuthenticCBTExamPage() {
                         <div className="leading-relaxed font-medium whitespace-pre-line text-xs">
                           {task.trapAlert || (
                             activeWritingTaskIdx === 0 ? "• N'utilisez pas le tutoiement avec une autorité.\n• Ne copiez pas les phrases de la consigne.\n• Respectez scrupuleusement la fourchette de mots."
-                            : activeWritingTaskIdx === 1 ? "• Évitez de tout rédiger au présent : alternez passé composé et imparfait.\n• Exprimez vos sentiments et recommandations personnelles."
-                            : "• Ne commencez jamais par une formule de lettre.\n• Structurez en 4 paragraphes (Intro → Thèse → Antithèse → Synthèse)."
+                              : activeWritingTaskIdx === 1 ? "• Évitez de tout rédiger au présent : alternez passé composé et imparfait.\n• Exprimez vos sentiments et recommandations personnelles."
+                                : "• Ne commencez jamais par une formule de lettre.\n• Structurez en 4 paragraphes (Intro → Thèse → Antithèse → Synthèse)."
                           )}
                         </div>
                         {task.trapAlertEn && (
@@ -3516,8 +3492,8 @@ export function AuthenticCBTExamPage() {
                         <div className="leading-relaxed font-medium whitespace-pre-line text-xs">
                           {task.writingCoach || (
                             activeWritingTaskIdx === 0 ? "Structurez : 1. Salutation 2. Problème 3. Demande au conditionnel 4. Formule finale."
-                            : activeWritingTaskIdx === 1 ? "Structurez : 1. Cadre spatio-temporel 2. Événements et émotions 3. Bilan et recommandation."
-                            : "Structurez : 1. Introduction 2. Arguments favorables 3. Contre-arguments 4. Prise de position nuancée."
+                              : activeWritingTaskIdx === 1 ? "Structurez : 1. Cadre spatio-temporel 2. Événements et émotions 3. Bilan et recommandation."
+                                : "Structurez : 1. Introduction 2. Arguments favorables 3. Contre-arguments 4. Prise de position nuancée."
                           )}
                         </div>
                         {task.writingCoachEn && (
@@ -3561,19 +3537,17 @@ export function AuthenticCBTExamPage() {
                     value={textVal}
                     onChange={(e) => setWritingResponses((prev) => ({ ...prev, [task.id]: e.target.value }))}
                     placeholder="Saisissez votre texte officiel ici..."
-                    className={`w-full p-3.5 sm:p-4 rounded-xl border text-sm font-sans leading-relaxed ${
-                      cbtDark ? "bg-[#090D16] border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-950"
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    className={`w-full p-3.5 sm:p-4 rounded-xl border text-sm font-sans leading-relaxed ${cbtDark ? "bg-[#090D16] border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-950"
+                      } focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   />
 
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-semibold">
-                    <span className={`px-2.5 py-1 rounded-md font-mono font-bold ${
-                      isValid
+                    <span className={`px-2.5 py-1 rounded-md font-mono font-bold ${isValid
                         ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
                         : isOverMax
-                        ? "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
-                        : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
-                    }`}>
+                          ? "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+                          : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                      }`}>
                       Mots : <strong>{wordCount}</strong> / {task.wordCountMin}–{task.wordCountMax} {
                         isValid ? "✓ (Cible atteinte)" : isOverMax ? "⚠️ (Dépassement de la longueur maximale)" : isUnderMin && wordCount > 0 ? "⚠️ (Sous le seuil minimum requis)" : ""
                       }
@@ -3626,11 +3600,10 @@ export function AuthenticCBTExamPage() {
 
                   {/* AI Writing Evaluation Result Card */}
                   {aiEval && (
-                    <div className={`p-4 rounded-xl border space-y-3 text-xs font-sans shadow-sm ${
-                      aiEval.isPlagiarized
+                    <div className={`p-4 rounded-xl border space-y-3 text-xs font-sans shadow-sm ${aiEval.isPlagiarized
                         ? "bg-amber-50 dark:bg-amber-950/50 border-amber-400 dark:border-amber-700 text-amber-950 dark:text-amber-200"
                         : "bg-pink-50 dark:bg-pink-950/40 border-pink-300 dark:border-pink-800 text-slate-950 dark:text-slate-100"
-                    }`}>
+                      }`}>
                       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-pink-200 dark:border-pink-800 pb-2">
                         <span className="font-extrabold text-sm text-pink-700 dark:text-pink-400 flex items-center gap-1.5">
                           <Trophy className="w-4 h-4 text-pink-600" />
@@ -3797,11 +3770,10 @@ export function AuthenticCBTExamPage() {
                     setActiveSpeakingTaskIdx(idx);
                     startSpeakingTaskSession(idx);
                   }}
-                  className={`px-4 py-2 rounded-t-lg text-xs font-bold transition-all flex items-center gap-2 shrink-0 border-b-2 ${
-                    activeSpeakingTaskIdx === idx
+                  className={`px-4 py-2 rounded-t-lg text-xs font-bold transition-all flex items-center gap-2 shrink-0 border-b-2 ${activeSpeakingTaskIdx === idx
                       ? "bg-purple-600 text-white border-purple-600 shadow"
                       : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-transparent hover:bg-slate-200"
-                  }`}
+                    }`}
                 >
                   <Mic className="w-3.5 h-3.5" />
                   <span>{t.title}</span>
@@ -3827,7 +3799,7 @@ export function AuthenticCBTExamPage() {
 
               return (
                 <div key={task.id} className={`p-4 sm:p-6 rounded-xl border ${cbtCard} shadow-sm space-y-5`}>
-                  
+
                   {/* Task Header Bar */}
                   <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
                     <div className="space-y-0.5">
@@ -4009,11 +3981,10 @@ export function AuthenticCBTExamPage() {
 
                       <div className="flex items-center gap-2">
                         {task.prepTimeMins > 0 && (
-                          <span className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 ${
-                            isOralPrepActive[task.id]
+                          <span className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 ${isOralPrepActive[task.id]
                               ? "bg-amber-600 text-white animate-pulse"
                               : "bg-slate-800 text-slate-300"
-                          }`}>
+                            }`}>
                             <Clock className="w-3.5 h-3.5" />
                             <span>
                               {isOralPrepActive[task.id]
@@ -4023,11 +3994,10 @@ export function AuthenticCBTExamPage() {
                           </span>
                         )}
 
-                        <span className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 ${
-                          isOralSpeakingActive[task.id]
+                        <span className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 ${isOralSpeakingActive[task.id]
                             ? "bg-emerald-600 text-white animate-pulse"
                             : "bg-slate-800 text-slate-300"
-                        }`}>
+                          }`}>
                           <Mic className="w-3.5 h-3.5 text-emerald-400" />
                           <span>
                             {isOralSpeakingActive[task.id]
@@ -4073,8 +4043,8 @@ export function AuthenticCBTExamPage() {
                         <p className="leading-relaxed font-medium whitespace-pre-line text-xs">
                           {task.trapAlert || (
                             activeSpeakingTaskIdx === 0 ? "• Évitez les réponses monosyllabiques : développez vos phrases.\n• Ne récitez pas un texte appris par cœur."
-                            : activeSpeakingTaskIdx === 1 ? "• Vous devez poser au minimum 8 à 10 questions variées.\n• Variez vos structures (inversion, conditionnel, interrogation indirecte)."
-                            : "• Adoptez un plan dialectique rigoureux (Thèse / Antithèse / Synthèse).\n• Utilisez un registre soutenu."
+                              : activeSpeakingTaskIdx === 1 ? "• Vous devez poser au minimum 8 à 10 questions variées.\n• Variez vos structures (inversion, conditionnel, interrogation indirecte)."
+                                : "• Adoptez un plan dialectique rigoureux (Thèse / Antithèse / Synthèse).\n• Utilisez un registre soutenu."
                           )}
                         </p>
                         {task.trapAlertEn && (
@@ -4151,11 +4121,10 @@ export function AuthenticCBTExamPage() {
                         {speakingDialogueMap[task.id].map((msg, mIdx) => (
                           <div
                             key={mIdx}
-                            className={`p-3.5 rounded-2xl max-w-[90%] sm:max-w-[80%] text-xs font-sans leading-relaxed shadow-sm ${
-                              msg.sender === "examiner"
+                            className={`p-3.5 rounded-2xl max-w-[90%] sm:max-w-[80%] text-xs font-sans leading-relaxed shadow-sm ${msg.sender === "examiner"
                                 ? "bg-purple-100 dark:bg-purple-950/80 border border-purple-200 dark:border-purple-800 text-purple-950 dark:text-purple-100 mr-auto"
                                 : "bg-blue-600 text-white ml-auto"
-                            }`}
+                              }`}
                           >
                             <div className="flex items-center justify-between gap-2 mb-1.5 font-bold text-[10px] uppercase opacity-85">
                               <span>{msg.sender === "examiner" ? `🎙️ ${examinerName}` : "👤 Candidat (Vous)"}</span>
@@ -4193,9 +4162,8 @@ export function AuthenticCBTExamPage() {
 
                       <button
                         onClick={() => handleToggleSpeakingRecording(task.id)}
-                        className={`px-4 py-2 rounded-xl font-bold text-xs shadow flex items-center gap-1.5 transition-all cursor-pointer ${
-                          isRecording ? "bg-red-600 hover:bg-red-500 text-white animate-pulse" : "bg-purple-600 hover:bg-purple-500 text-white"
-                        }`}
+                        className={`px-4 py-2 rounded-xl font-bold text-xs shadow flex items-center gap-1.5 transition-all cursor-pointer ${isRecording ? "bg-red-600 hover:bg-red-500 text-white animate-pulse" : "bg-purple-600 hover:bg-purple-500 text-white"
+                          }`}
                       >
                         <Mic className="w-3.5 h-3.5" />
                         <span>{isRecording ? "⏹️ Arrêter l'enregistrement" : "🎙️ Parler au micro (Start)"}</span>
@@ -4375,15 +4343,14 @@ export function AuthenticCBTExamPage() {
                       ? "Navigation manuelle verrouillée en mode examen CBT (Avancement automatique par audio)."
                       : `Item N°${q.questionNumber}`
                   }
-                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded text-xs font-bold transition-all relative shrink-0 ${
-                    isCurrent
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded text-xs font-bold transition-all relative shrink-0 ${isCurrent
                       ? "ring-2 ring-blue-600 bg-blue-600 text-white"
                       : isAnswered
-                      ? "bg-blue-800 text-white"
-                      : isLockedExamItem
-                      ? "opacity-50 cursor-not-allowed bg-slate-300 dark:bg-slate-800 text-slate-500"
-                      : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
-                  }`}
+                        ? "bg-blue-800 text-white"
+                        : isLockedExamItem
+                          ? "opacity-50 cursor-not-allowed bg-slate-300 dark:bg-slate-800 text-slate-500"
+                          : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
+                    }`}
                 >
                   {q.questionNumber}
                   {isFlagged && (
@@ -4419,11 +4386,10 @@ export function AuthenticCBTExamPage() {
               exit={{ scale: 0.95, opacity: 0 }}
               className="w-full max-w-lg p-6 sm:p-8 rounded-2xl border bg-white dark:bg-[#101828] border-purple-300 dark:border-purple-800 shadow-2xl space-y-5 text-center my-auto"
             >
-              <div className={`w-16 h-16 rounded-2xl text-white flex items-center justify-center mx-auto shadow-xl ${
-                currentSection.type === "COMPREHENSION_ORALE" ? "bg-blue-600" :
-                currentSection.type === "COMPREHENSION_ECRITE" ? "bg-emerald-600" :
-                currentSection.type === "EXPRESSION_ECRITE" ? "bg-amber-600" : "bg-purple-600"
-              }`}>
+              <div className={`w-16 h-16 rounded-2xl text-white flex items-center justify-center mx-auto shadow-xl ${currentSection.type === "COMPREHENSION_ORALE" ? "bg-blue-600" :
+                  currentSection.type === "COMPREHENSION_ECRITE" ? "bg-emerald-600" :
+                    currentSection.type === "EXPRESSION_ECRITE" ? "bg-amber-600" : "bg-purple-600"
+                }`}>
                 {currentSection.type === "COMPREHENSION_ORALE" && <Headphones className="w-8 h-8" />}
                 {currentSection.type === "COMPREHENSION_ECRITE" && <BookOpen className="w-8 h-8" />}
                 {currentSection.type === "EXPRESSION_ECRITE" && <PenTool className="w-8 h-8" />}
@@ -4565,18 +4531,17 @@ export function AuthenticCBTExamPage() {
                   if (currentSection.type === "COMPREHENSION_ORALE" || currentSection.type === "EXPRESSION_ORALE") {
                     try {
                       unlockAudioEngine();
-                    } catch {}
+                    } catch { }
                   }
                   if (currentSection.type === "EXPRESSION_ORALE") {
                     setIsAudioFetching(true);
                     setIsPlayingAudio(true);
                   }
                 }}
-                className={`w-full py-3.5 rounded-xl font-extrabold text-sm shadow-xl flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 text-white ${
-                  currentSection.type === "COMPREHENSION_ORALE" ? "bg-blue-600 hover:bg-blue-500" :
-                  currentSection.type === "COMPREHENSION_ECRITE" ? "bg-emerald-600 hover:bg-emerald-500" :
-                  currentSection.type === "EXPRESSION_ECRITE" ? "bg-amber-600 hover:bg-amber-500" : "bg-purple-600 hover:bg-purple-500"
-                }`}
+                className={`w-full py-3.5 rounded-xl font-extrabold text-sm shadow-xl flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 text-white ${currentSection.type === "COMPREHENSION_ORALE" ? "bg-blue-600 hover:bg-blue-500" :
+                    currentSection.type === "COMPREHENSION_ECRITE" ? "bg-emerald-600 hover:bg-emerald-500" :
+                      currentSection.type === "EXPRESSION_ECRITE" ? "bg-amber-600 hover:bg-amber-500" : "bg-purple-600 hover:bg-purple-500"
+                  }`}
               >
                 <Sparkles className="w-4 h-4" />
                 <span>Begin {currentSection.title} Test Now</span>
@@ -4854,11 +4819,10 @@ export function AuthenticCBTExamPage() {
                       </div>
                     </div>
 
-                    <div className={`p-4 rounded-xl text-xs text-left space-y-2 border ${
-                      res.isNCLC7TargetReached
+                    <div className={`p-4 rounded-xl text-xs text-left space-y-2 border ${res.isNCLC7TargetReached
                         ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300"
                         : "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-300"
-                    }`}>
+                      }`}>
                       <p className="font-bold flex items-center justify-between">
                         <span>🍁 Official Express Entry CRS Point Contribution:</span>
                         <span className="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white font-mono font-extrabold text-[11px]">
@@ -4869,7 +4833,7 @@ export function AuthenticCBTExamPage() {
                         {res.statusMessage}
                       </p>
                       <p className="pt-1 text-[11px] opacity-80 border-t border-slate-300 dark:border-slate-700">
-                        {res.attemptedCount === 1 
+                        {res.attemptedCount === 1
                           ? `Single module evaluated (${res.attemptedModuleNames[0]}). Complete all 4 modules for maximum +136 CRS points.`
                           : `Calculated from ${res.attemptedCount} attempted skill modules under IRCC Canadian Language Benchmark conversion standards.`
                         }
@@ -4976,7 +4940,7 @@ export function AuthenticCBTExamPage() {
 
                 <button
                   onClick={() => {
-                    try { localStorage.removeItem(sessionKey); } catch {}
+                    try { localStorage.removeItem(sessionKey); } catch { }
                     setSelectedAnswers({});
                     setWritingResponses({});
                     setSpeakingTranscripts({});
@@ -4997,7 +4961,7 @@ export function AuthenticCBTExamPage() {
 
                 <button
                   onClick={() => {
-                    try { localStorage.removeItem(sessionKey); } catch {}
+                    try { localStorage.removeItem(sessionKey); } catch { }
                     navigate({ to: "/exam" });
                   }}
                   className="w-full sm:w-1/3 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2 cursor-pointer transition-all"
@@ -5336,7 +5300,7 @@ export function AuthenticCBTExamPage() {
                     setSectionTransitionModal(null);
                     try {
                       unlockAudioEngine();
-                    } catch {}
+                    } catch { }
                   }}
                   className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs shadow-md cursor-pointer flex items-center gap-1.5"
                 >
