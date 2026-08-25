@@ -39,6 +39,7 @@ import { useAuth } from "~/lib/AuthContext";
 import { SmartAvatar } from "~/components/dashboard/widgets/SmartAvatar";
 import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } from "~/lib/examSchema";
 import { MASTER_SPEAKING_BANK } from "~/lib/speakingMasterBank";
+import { READING_GUIDANCE_BANK } from "~/lib/readingGuidanceBank";
 import { acousticAnalyzer, type AcousticAnalysisResult } from "~/lib/acousticAnalyzer";
 
 function countFrenchWords(str: string): number {
@@ -152,7 +153,10 @@ export function AuthenticCBTExamPage() {
   // Active Question Index
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const currentQuestions = currentSection?.questions || [];
-  const currentQ = currentQuestions[currentQuestionIdx] || currentQuestions[0];
+  const rawCurrentQ = currentQuestions[currentQuestionIdx] || currentQuestions[0];
+  const readingGuidanceKey = `p${paper?.paperNumber || 1}_q${rawCurrentQ?.questionNumber || 1}`;
+  const readingGuidance = (currentSection?.type === "COMPREHENSION_ECRITE" && rawCurrentQ) ? (READING_GUIDANCE_BANK[readingGuidanceKey] || {}) : {};
+  const currentQ = rawCurrentQ ? { ...rawCurrentQ, ...readingGuidance } : rawCurrentQ;
 
   // Session Key
   const sessionKey = `fp_exam_session_${paper?.id || "default"}_${mode}`;
