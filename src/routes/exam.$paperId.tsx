@@ -4381,6 +4381,63 @@ export function AuthenticCBTExamPage() {
                       </div>
                     </div>
                   )}
+
+                  {/* 🏆 CUMULATIVE 3-TASK SCORECARD (OFFICIAL TCF CANADA 450-POINT SCALE) */}
+                  {Object.keys(speakingAiResults).length > 0 && (() => {
+                    const results = Object.values(speakingAiResults);
+                    const evalCount = results.length;
+                    const sum20 = results.reduce((acc, curr) => acc + (curr?.scoreOutOf20 || 0), 0);
+                    const scaled450 = Math.round((sum20 / (evalCount * 20)) * 450);
+
+                    let overallNclc = "NCLC 7 (B2 Benchmark Target)";
+                    let overallCrs = 17;
+                    if (scaled450 >= 371) { overallNclc = "NCLC 10 (C2 Mastery)"; overallCrs = 34; }
+                    else if (scaled450 >= 348) { overallNclc = "NCLC 9 (C1 Advanced)"; overallCrs = 31; }
+                    else if (scaled450 >= 310) { overallNclc = "NCLC 8 (B2 Upper)"; overallCrs = 23; }
+                    else if (scaled450 >= 248) { overallNclc = "NCLC 7 (B2 Benchmark Target)"; overallCrs = 17; }
+                    else if (scaled450 >= 181) { overallNclc = "NCLC 6 (B1 Intermediate)"; overallCrs = 12; }
+                    else if (scaled450 >= 121) { overallNclc = "NCLC 5 (B1 Threshold)"; overallCrs = 6; }
+                    else { overallNclc = "NCLC 4 (A2 Elementary)"; overallCrs = 0; }
+
+                    return (
+                      <div className="p-4 sm:p-5 rounded-2xl border-2 border-emerald-400 dark:border-emerald-700 bg-emerald-50/90 dark:bg-emerald-950/60 space-y-3 shadow-lg font-sans">
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-emerald-200 dark:border-emerald-800 pb-2">
+                          <span className="font-extrabold text-sm text-emerald-900 dark:text-emerald-200 flex items-center gap-2">
+                            <Trophy className="w-5 h-5 text-emerald-600 dark:text-emerald-400 animate-bounce" />
+                            <span>Bilan Global Officiel — Expression Orale TCF Canada ({scaled450} / 450 Points)</span>
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="px-3 py-1 rounded-full bg-emerald-600 text-white font-mono font-extrabold text-xs shadow">
+                              {overallNclc}
+                            </span>
+                            <span className="px-2.5 py-1 rounded bg-purple-700 text-white font-mono font-bold text-xs shadow">
+                              +{overallCrs} Points CRS
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                          <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-emerald-200 dark:border-emerald-900">
+                            <span className="text-[10px] font-bold text-slate-500 block uppercase mb-1">Score Cumulé Escalé :</span>
+                            <span className="text-xl font-extrabold text-emerald-700 dark:text-emerald-300 font-mono">{scaled450} / 450 pts</span>
+                            <p className="text-[10px] text-slate-500 mt-1">Échelle officielle France Éducation International</p>
+                          </div>
+
+                          <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-emerald-200 dark:border-emerald-900">
+                            <span className="text-[10px] font-bold text-slate-500 block uppercase mb-1">Niveau NCLC Identifié :</span>
+                            <span className="text-sm font-bold text-purple-700 dark:text-purple-300 font-mono">{overallNclc}</span>
+                            <p className="text-[10px] text-slate-500 mt-1">Seuil minimal d'immigration : NCLC 7 (B2)</p>
+                          </div>
+
+                          <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-emerald-200 dark:border-emerald-900">
+                            <span className="text-[10px] font-bold text-slate-500 block uppercase mb-1">Points CRS Entrée Express :</span>
+                            <span className="text-xl font-extrabold text-purple-700 dark:text-purple-300 font-mono">+{overallCrs} Points</span>
+                            <p className="text-[10px] text-slate-500 mt-1">Maximum accordé pour l'Oral : 34 points</p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
               );
             })()}

@@ -1596,6 +1596,14 @@ Return JSON only:
           }
         }
 
+        // OFFICIAL FEI REGISTER RULE: Tutoiement (tu/ton/ta/tes/toi/te) is forbidden in formal TCF Canada Tâche 2 & Tâche 3
+        if (taskNum >= 2) {
+          const hasTutoiement = /\b(tu|ton|ta|tes|toi|te)\b/i.test(textLower);
+          if (hasTutoiement) {
+            t = Math.max(1, t - 2);
+          }
+        }
+
         const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|like|you|know|actually)\b/i.test(textLower);
         if (hasEnglishWords) {
           l = Math.min(1, l);
