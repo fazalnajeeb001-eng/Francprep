@@ -2906,9 +2906,9 @@ export function AuthenticCBTExamPage() {
                 )}
               </div>
 
-              {/* Practice Hint Bar - Desktop Only (Hidden on mobile < 1024px to prevent vertical pushing) */}
+              {/* Practice Hint Bar - Visible on Mobile Phones, Tablets & Desktop */}
               {mode === "PRACTICE" && ((currentQ as any).trapAlert || (currentQ as any).readingCoach || (currentQ as any).audioCoach || currentQ.explanation || currentQ.hint) && (
-                <div className="hidden lg:block space-y-2">
+                <div className="space-y-2">
                   {!showReadingHint ? (
                     <button
                       type="button"
