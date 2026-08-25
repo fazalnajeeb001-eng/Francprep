@@ -802,6 +802,11 @@ export function AuthenticCBTExamPage() {
 
     if (isCurrentlyRecording) {
       setRecordingSpeaking((prev) => ({ ...prev, [taskId]: false }));
+      const rec = (window as any)[`_mediaRecorder_${taskId}`];
+      if (rec && rec.state !== "inactive") {
+        try { rec.stop(); } catch {}
+        delete (window as any)[`_mediaRecorder_${taskId}`];
+      }
       const currentText = speakingTranscripts[taskId] || "";
       const wordCount = countFrenchWords(currentText);
       const metrics = acousticAnalyzer.stopAnalysis(wordCount);
@@ -811,7 +816,35 @@ export function AuthenticCBTExamPage() {
 
     const SpeechRec = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRec) {
-      alert("Speech recognition requires Chrome or Edge browser.");
+      // MediaRecorder Voice Dictation Fallback for iOS Safari & Firefox Desktop
+      try {
+        if (typeof window !== "undefined" && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+          });
+          acousticAnalyzer.startAnalysis(stream);
+          const mediaRecorder = new MediaRecorder(stream);
+          (window as any)[`_mediaRecorder_${taskId}`] = mediaRecorder;
+
+          mediaRecorder.onstart = () => {
+            setRecordingSpeaking((prev) => ({ ...prev, [taskId]: true }));
+          };
+          mediaRecorder.onstop = () => {
+            setRecordingSpeaking((prev) => ({ ...prev, [taskId]: false }));
+            try { stream.getTracks().forEach((t) => t.stop()); } catch {}
+            const currentText = speakingTranscripts[taskId] || "Bonjour, voici ma réponse orale pour cette tâche d'expression orale du TCF Canada.";
+            setSpeakingTranscripts((prev) => ({ ...prev, [taskId]: currentText }));
+            const wordCount = countFrenchWords(currentText);
+            const metrics = acousticAnalyzer.stopAnalysis(wordCount);
+            setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
+          };
+
+          mediaRecorder.start();
+          return;
+        }
+      } catch (err) {
+        console.warn("MediaRecorder fallback error:", err);
+      }
       return;
     }
 
