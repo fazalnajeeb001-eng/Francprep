@@ -492,67 +492,6 @@ export async function generateNeuralAudio(
     return null;
   };
 
-  // --- PROVIDER 4: GOOGLE AUDIO FALLBACK (CHUNKING & MP3 CONCATENATION FOR LONG PASSAGES) ---
-  const tryGoogle = async () => {
-    try {
-      const targetLang = lang ? lang.toLowerCase().slice(0, 2) : 'fr';
-
-      // Split text into chunks under 160 chars so Google TTS never rejects with HTTP 404/400
-      const splitIntoChunks = (str: string, maxLen = 160): string[] => {
-        if (str.length <= maxLen) return [str];
-        const words = str.split(' ');
-        const chunks: string[] = [];
-        let currentChunk = '';
-
-        for (const word of words) {
-          if ((currentChunk + ' ' + word).trim().length <= maxLen) {
-            currentChunk = (currentChunk + ' ' + word).trim();
-          } else {
-            if (currentChunk) chunks.push(currentChunk);
-            currentChunk = word;
-          }
-        }
-        if (currentChunk) chunks.push(currentChunk);
-        return chunks;
-      };
-
-      const spokenText = stripSpeakerLabels(cleanText);
-      const chunks = splitIntoChunks(spokenText, 160);
-      const audioBuffers: Buffer[] = [];
-
-      for (const chunk of chunks) {
-        const encoded = encodeURIComponent(chunk);
-        const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encoded}&tl=${targetLang}&client=tw-ob`;
-        const response = await axios.get(googleTtsUrl, {
-          responseType: 'arraybuffer',
-          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
-          timeout: 8000,
-        });
-
-        if (response.status === 200 && response.data) {
-          audioBuffers.push(Buffer.from(response.data));
-        }
-      }
-
-      if (audioBuffers.length > 0) {
-        const fullAudioBuffer = Buffer.concat(audioBuffers);
-        const audioBase64 = fullAudioBuffer.toString('base64');
-        const contentType = 'audio/mp3';
-
-        if (!forcedVoiceId) {
-          await TTSCache.findOneAndUpdate(
-            { textHash },
-            { textHash, text: cleanText, voice: `google-${targetLang}-${gender}`, gender, audioBase64, contentType },
-            { upsert: true, new: true }
-          ).catch(() => {});
-        }
-
-        return { audioBase64, contentType, provider: 'google' };
-      }
-    } catch (err: any) {
-      console.warn('[TTS Service] Google fallback error:', err?.message);
-    }
-    return null;
   };
 
   // EXECUTION ROUTING FOR TEST PREVIEW
@@ -566,12 +505,10 @@ export async function generateNeuralAudio(
     } else if (forcedProvider === 'openai') {
       const res = await tryOpenAI();
       if (res) return res;
-    } else if (forcedProvider === 'google') {
-      const res = await tryGoogle();
-      if (res) return res;
     }
   }
 
+  // 1. TRY ADMIN PANEL PREFERRED ENGINE (IF CONFIGURED)
   if (activeProvider === 'elevenlabs') {
     const res = await tryElevenLabs();
     if (res) return res;
@@ -581,12 +518,9 @@ export async function generateNeuralAudio(
   } else if (activeProvider === 'openai') {
     const res = await tryOpenAI();
     if (res) return res;
-  } else if (activeProvider === 'google') {
-    const res = await tryGoogle();
-    if (res) return res;
   }
 
-  // 1. PRIMARY STUDIO ENGINE: Microsoft Azure Neural French 8-Voice System
+  // 2. PRIMARY & AUTOMATIC FAILSAFE STUDIO ENGINE: Microsoft Azure Neural French 8-Voice System
   try {
     const edgeRes = await generateEdgeNeuralAudio(rawCleanText, gender, lang, speakingRate);
     if (edgeRes && edgeRes.audioBase64) {
@@ -606,18 +540,18 @@ export async function generateNeuralAudio(
       return edgeRes;
     }
   } catch (err: any) {
-    console.warn('[TTS Service] Edge Neural synthesis fallback notice:', err?.message);
+    console.warn('[TTS Service] Edge Neural synthesis notice:', err?.message);
   }
 
-  // 2. FALLBACK: ElevenLabs (if key and credits available)
+  // 3. SECONDARY FALLBACK: ElevenLabs (if key and credits available)
   const eleven = await tryElevenLabs();
   if (eleven) return eleven;
 
-  // 3. FALLBACK: OpenAI HD (if key available)
+  // 4. SECONDARY FALLBACK: OpenAI HD (if key available)
   const openAiAudio = await tryOpenAI();
   if (openAiAudio) return openAiAudio;
 
-  // 4. FALLBACK: HuggingFace Kokoro
+  // 5. SECONDARY FALLBACK: HuggingFace Kokoro
   const kokoro = await tryHuggingFaceKokoro();
   if (kokoro) return kokoro;
 
@@ -627,10 +561,6 @@ export async function generateNeuralAudio(
       return { audioBase64: maleKokoro.audioBase64, contentType: maleKokoro.contentType, provider: 'kokoro-bm_george' };
     }
   }
-
-  // 5. GUARANTEED ZERO-FAIL FALLBACK: Google Neural Audio Stream
-  const googleFallback = await tryGoogle();
-  if (googleFallback) return googleFallback;
 
   return null;
 }
