@@ -75,10 +75,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Dites votre nom, âge et profession clairement.\nExpliquez en 1 à 2 phrases pourquoi vous apprenez le français.\nMaintenez un ton poli et naturel.",
-      "trapAlertEn": "• State your name, age, and current profession clearly.\n• Explain in 1-2 sentences why you are moving to Canada.\n• Maintain a polite, natural, and friendly conversational tone throughout.",
-      "speakingCoach": "Conseil pour Tâche 1 : Entretien dirigé (Présentation personnelle) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "• Tâche 1 Coach Strategy: Spontaneous Directed Interview (2 minutes, No Prep).\n• Do not recite a memorized text word-for-word; speak naturally in complete sentences.\n• Address the examiner using formal French ('vous') and transition smoothly between your background, job, and motivations for Canada."
+      "trapAlert": "• Évitez les réponses trop courtes (1-2 mots) : développez toujours vos idées avec des exemples.\n• Ne récitez pas un texte appris par cœur : l'examinateur évalue la spontanéité.\n• Respectez le vouvoiement ('vous') avec l'examinateur.",
+      "trapAlertEn": "• Avoid single-word answers: always expand your thoughts with concrete examples.\n• Do not recite a memorized text word-for-word: the examiner evaluates natural spontaneity.\n• Use formal register ('vous') when addressing the examiner.",
+      "speakingCoach": "• Structurez votre présentation en 3 phases : 1. Identité & Métier 2. Parcours professionnel 3. Motivations pour le Canada.\n• Utilisez des connecteurs naturels : 'Tout d'abord', 'En effet', 'C'est pourquoi', 'En conclusion'.\n• Parlez clairement avec un débit régulier (100 à 130 mots par minute).",
+      "speakingCoachEn": "• Structure your introduction in 3 steps: 1. Identity & Job 2. Career background 3. Motivations for Canada.\n• Use natural transition connectors: 'First of all', 'Indeed', 'That is why', 'In conclusion'.\n• Speak clearly at a steady pace (100 to 130 words per minute)."
     },
     {
       "id": "spk-p1-t2",
@@ -111,10 +111,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Utilisez le vouvoiement formel ('Vous').\nVariez les structures de questions (Est-ce que... ?, Pourriez-vous... ?, Combien... ?).\nDemandez des précisions sur le loyer, la caution, le Wi-Fi et les transports.",
-      "trapAlertEn": "Utilisez le vouvoiement formel ('Vous').\nVariez les structures de questions (Est-ce que... ?, Pourriez-vous... ?, Combien... ?).\nDemandez des précisions sur le loyer, la caution, le Wi-Fi et les transports.",
-      "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Réservation de logement de vacances) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Réservation de logement de vacances): Maintain a natural tone and respect the formal register.",
+      "trapAlert": "• Ne posez pas moins de 8 questions : vous risquez une pénalité sous le niveau B1.\n• Évitez de répéter la même structure d'interrogation ('Est-ce que...').\n• N'oubliez pas de conclure l'échange poliment en demandant la démarche de réservation.",
+      "trapAlertEn": "• Do not ask fewer than 8 questions: asking fewer leads to a B1 grade cap penalty.\n• Avoid repeating the exact same question form ('Est-ce que...') over and over.\n• Remember to conclude politely by asking for booking/payment next steps.",
+      "speakingCoach": "• Varier vos questions : utilisez l'inversion ('Auriez-vous... ?'), le conditionnel ('Serait-il possible de... ?') et l'interrogation indirecte ('Je souhaiterais savoir si...').\n• Balayez les thèmes clé : tarifs, équipements, localisation, modalités de réservation, conditions d'annulation.\n• Réagissez aux réponses du propriétaire : 'Très bien', 'Parfait', 'D'accord, je comprends'.",
+      "speakingCoachEn": "• Vary your interrogative forms: use inversion ('Would you have...?'), conditional ('Would it be possible to...?'), and indirect forms ('I would like to know if...').\n• Cover key themes: pricing, amenities, location, booking procedure, cancellation policy.\n• Acknowledge landlord replies naturally: 'Very good', 'Perfect', 'Alright, I understand'.",
       "stimulusDocument": {
         "title": "INSTITUT LINGUISTIQUE INTERNATIONAL DE MONTRÉAL",
         "category": "Formation Professionnelle & Perfectionnement",
@@ -161,10 +161,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Structurez avec une introduction, deux arguments et une conclusion.\nUtilisez des connecteurs logiques (Tout d'abord, en revanche, par conséquent).\nNuancez votre réponse face à l'objection de l'examinateur.",
-      "trapAlertEn": "Structurez avec une introduction, deux arguments et une conclusion.\nUtilisez des connecteurs logiques (Tout d'abord, en revanche, par conséquent).\nNuancez votre réponse face à l'objection de l'examinateur.",
-      "speakingCoach": "Conseil pour Tâche 3 : Expression d'un point de vue (Le travail à distance) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 3 : Expression d'un point de vue (Le travail à distance): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Ne donnez pas un avis tranché sans nuance : le niveau B2/C1 exige un débat équilibré.\n• N'ignorez pas les contre-arguments de l'examinateur.\n• Évitez le vocabulaire familier ou les expressions d'opinion vagues ('C'est bien', 'C'est mauvais').",
+      "trapAlertEn": "• Avoid absolute one-sided claims: B2/C1 bands require a balanced, nuanced argument.\n• Do not ignore the examiner's counter-arguments or objections.\n• Avoid informal slang or vague opinion phrases ('It's good', 'It's bad').",
+      "speakingCoach": "• Suivez le plan dialectique TCF : 1. Accroche & Thèse (2 min) 2. Antithèse & Nuances (1 min) 3. Conclusion & Synthèse (1 min).\n• Utilisez des connecteurs argumentatifs riches : 'En premier lieu', 'Certes... mais', 'Néanmoins', 'Il n'en reste pas moins que'.\n• Défendez fermement votre position tout en concédant les objections valides de l'examinateur.",
+      "speakingCoachEn": "• Follow the TCF dialectic framework: 1. Introduction & Thesis (2 min) 2. Antithesis & Nuance (1 min) 3. Conclusion & Synthesis (1 min).\n• Use advanced logical connectors: 'In the first place', 'Admittedly... but', 'Nevertheless', 'The fact remains that'.\n• Firmly defend your position while acknowledging the examiner's valid counter-arguments."
     }
   ],
   "2": [
@@ -198,10 +198,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Décrivez vos passe-temps (sport, lecture, voyages).\nUtilisez le présent de l'indicatif.\nRépondez avec assurance et clarté.",
-      "trapAlertEn": "Décrivez vos passe-temps (sport, lecture, voyages).\nUtilisez le présent de l'indicatif.\nRépondez avec assurance et clarté.",
-      "speakingCoach": "Conseil pour Tâche 1 : Entretien dirigé (Parcours professionnel et loisirs) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 1 : Entretien dirigé (Parcours professionnel et loisirs): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Évitez de lister vos diplômes de manière scolaire : racontez votre parcours comme une histoire.\n• Attention aux temps du passé : maîtrisez le passé composé et l'imparfait.\n• Ne parlez pas trop vite : privilégiez l'articulation et la clarté.",
+      "trapAlertEn": "• Avoid listing qualifications like a resume: frame your career as a natural narrative.\n• Mind your past tenses: combine passé composé (completed actions) and imparfait (background/habits).\n• Do not rush: focus on clear articulation and proper phrasing.",
+      "speakingCoach": "• Structurez votre récit : 1. Poste actuel 2. Expériences marquantes 3. Projets d'avenir au Canada.\n• Intégrez des connecteurs temporels : 'Après avoir obtenu mon diplôme', 'Pendant trois ans', 'Désormais'.\n• Mettez en valeur vos compétences transversales et votre adaptabilité.",
+      "speakingCoachEn": "• Structure your story: 1. Current position 2. Key past experiences 3. Future Canada plans.\n• Integrate temporal connectors: 'After obtaining my degree', 'For three years', 'From now on'.\n• Highlight your transferable skills and intercultural adaptability."
     },
     {
       "id": "spk-p2-t2",
@@ -234,10 +234,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Demandez la durée de la session et la taille des groupes.\nInformez-vous sur la délivrance d'une attestation officielle.\nGardez un registre formel tout au long de l'échange.",
-      "trapAlertEn": "Demandez la durée de la session et la taille des groupes.\nInformez-vous sur la délivrance d'une attestation officielle.\nGardez un registre formel tout au long de l'échange.",
-      "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Inscription à un cours de langue) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Inscription à un cours de langue): Maintain a natural tone and respect the formal register.",
+      "trapAlert": "• Ne vous contentez pas de demander les tarifs : explorez la pédagogie, le nombre d'étudiants et les horaires.\n• N'interrompez pas l'examinateur pendant qu'il répond.\n• Ne manquez pas de vous présenter brièvement au début de l'appel.",
+      "trapAlertEn": "• Do not focus only on prices: inquire about teaching methods, class sizes, and schedules.\n• Do not interrupt the examiner while they are answering your question.\n• Remember to introduce yourself briefly at the start of the call.",
+      "speakingCoach": "• Saluez et présentez le motif : 'Bonjour, je vous appelle suite à votre annonce pour les cours de langue'.\n• Posez 8 à 10 questions précises : test de niveau, horaires du soir, certificats délivrés, méthodes d'apprentissage.\n• Proposez un rendez-vous ou une séance d'essai pour conclure l'échange.",
+      "speakingCoachEn": "• Greet and state your objective: 'Hello, I am calling regarding your language course advertisement'.\n• Ask 8 to 10 targeted questions: placement test, evening schedules, certificates issued, teaching materials.\n• Propose a trial lesson or appointment to conclude the phone conversation.",
       "stimulusDocument": {
         "title": "RÉSIDENCE ÉCO-RESPONSABLE DU VIEUX-QUÉBEC",
         "category": "Immobilier & Location Saisonnière",
@@ -284,10 +284,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Présentez les risques de la surconsommation numérique (santé mentale, sommeil).\nMentionnez l'importance de l'éducation plutôt que la simple interdiction.\nConcluez avec une perspective équilibrée.",
-      "trapAlertEn": "Présentez les risques de la surconsommation numérique (santé mentale, sommeil).\nMentionnez l'importance de l'éducation plutôt que la simple interdiction.\nConcluez avec une perspective équilibrée.",
-      "speakingCoach": "Conseil pour Tâche 3 : Expression d'un point de vue (L'usage des écrans chez les jeunes) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 3 : Expression d'un point de vue (L'usage des écrans chez les jeunes): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Ne dites pas simplement 'Les écrans sont dangereux' : analysez les impacts éducatifs et sociaux.\n• Évitez de généraliser sans données ou exemples concrets.\n• Ne vous laissez pas déstabiliser par la contre-question de l'examinateur.",
+      "trapAlertEn": "• Do not simply state 'Screens are dangerous': analyze educational, health, and social impacts.\n• Avoid broad generalizations without supporting examples or reasoning.\n• Do not get flustered by the examiner's counter-question.",
+      "speakingCoach": "• Présentez les deux facettes : 1. Avantages éducatifs et accès à la connaissance 2. Risques de sédentarité et d'isolement.\n• Formulez des propositions nuancées : 'Il convient d'encadrer l'usage plutôt que de l'interdire'.\n• Concluez sur le rôle d'accompagnement des parents et des enseignants.",
+      "speakingCoachEn": "• Present both sides: 1. Educational benefits and knowledge access 2. Risks of sedentary behavior and isolation.\n• Offer nuanced solutions: 'Usage should be guided rather than strictly banned'.\n• Conclude by stressing the guiding role of parents and educators."
     }
   ],
   "3": [
@@ -321,10 +321,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Décrivez les commerces et transports à proximité de chez vous.\nExprimez vos préférences (calme, verdure, vie culturelle).\nSoyez spontané et souriant.",
-      "trapAlertEn": "Décrivez les commerces et transports à proximité de chez vous.\nExprimez vos préférences (calme, verdure, vie culturelle).\nSoyez spontané et souriant.",
-      "speakingCoach": "Conseil pour Tâche 1 : Entretien dirigé (La vie quotidienne et la ville) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 1 : Entretien dirigé (La vie quotidienne et la ville): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Ne décrivez pas seulement votre logement : abordez votre quartier, les transports et les commerces.\n• Attention au vocabulaire descriptif : variez les adjectifs qualificatifs.\n• Ne parlez pas d'un ton monotone.",
+      "trapAlertEn": "• Do not describe only your apartment: discuss your neighborhood, public transport, and local shops.\n• Watch your descriptive vocabulary: vary your adjectives beyond 'grand' and 'beau'.\n• Avoid a flat, monotone delivery.",
+      "speakingCoach": "• Développez 3 axes : 1. Localisation et transports 2. Ambiance du quartier 3. Ce que vous appréciez le plus.\n• Utilisez des formules de goût : 'Ce qui me plaît particulièrement, c'est...', 'J'apprécie la proximité de...'.\n• Adoptez un rythme dynamique et expressif.",
+      "speakingCoachEn": "• Develop 3 angles: 1. Location and transit 2. Neighborhood atmosphere 3. What you enjoy most.\n• Use preference phrases: 'What I particularly enjoy is...', 'I appreciate the proximity of...'.\n• Maintain an engaging and expressive delivery speed."
     },
     {
       "id": "spk-p3-t2",
@@ -357,10 +357,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Interrogez sur les démarches administratives indispensables.\nProposez une date et demandez si la mairie peut prêter du matériel.\nMaintenez une interaction fluide et structurée.",
-      "trapAlertEn": "Interrogez sur les démarches administratives indispensables.\nProposez une date et demandez si la mairie peut prêter du matériel.\nMaintenez une interaction fluide et structurée.",
-      "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Organisation d'une activité communautaire) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Organisation d'une activité communautaire): Maintain a natural tone and respect the formal register.",
+      "trapAlert": "• Ne faites pas de monologue : laissez l'examinateur répondre à chaque question.\n• N'oubliez pas d'aborder les aspects logistiques (budget, sécurité, lieu).\n• N'utilisez pas le tutoiement ('tu').",
+      "trapAlertEn": "• Do not monologue: let the examiner answer after each question.\n• Remember to cover logistical aspects (budget, safety, venue, permit).\n• Do not use informal register ('tu').",
+      "speakingCoach": "• Structurez votre entretien d'organisation : objectif, date, participants, matériel, autorisation municipale.\n• Posez au moins 8 questions structurées : 'Quel budget devez-vous prévoir ?', 'Où aura lieu l'événement ?'.\n• Montrez votre enthousiasme et proposez votre aide pour l'organisation.",
+      "speakingCoachEn": "• Structure your planning call: goal, date, expected attendees, equipment, city permits.\n• Ask at least 8 structured questions: 'What budget should we allocate?', 'Where will the event be held?'.\n• Show enthusiasm and offer your assistance with planning.",
       "stimulusDocument": {
         "title": "GRAND NETTOYAGE ÉCOLOGIQUE MUNICIPAL DE RIDEAU",
         "category": "Vie Communautaire & Environnement",
@@ -407,10 +407,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Opposez les avantages environnementaux aux défis de financement public.\nUtilisez des verbes d'opinion (Je soutiens que, il me semble incontestable que).\nRépondez avec maturité aux contre-arguments.",
-      "trapAlertEn": "Opposez les avantages environnementaux aux défis de financement public.\nUtilisez des verbes d'opinion (Je soutiens que, il me semble incontestable que).\nRépondez avec maturité aux contre-arguments.",
-      "speakingCoach": "Conseil pour Tâche 3 : Expression d'un point de vue (Gratuité des transports en commun) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 3 : Expression d'un point de vue (Gratuité des transports en commun): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Évitez de vous concentrer uniquement sur le coût : examinez l'environnement et l'équité sociale.\n• Ne rejetez pas brutalement l'opinion contraire.\n• Veillez à la correction grammaticale des phrases complexes.",
+      "trapAlertEn": "• Avoid focusing solely on cost: examine environmental and social equity impacts.\n• Do not bluntly dismiss opposing viewpoints.\n• Ensure grammatical accuracy in complex sentence structures.",
+      "speakingCoach": "• Argumentez avec méthode : 1. Impact écologique (réduction de la pollution) 2. Justice sociale 3. Financement public.\n• Utilisez des structures d'hypothèse : 'Si les transports étaient gratuits, la circulation diminuerait sensiblement'.\n• Rebondissez sur l'objection de l'examinateur concernant les impôts.",
+      "speakingCoachEn": "• Argue methodically: 1. Ecological impact (pollution reduction) 2. Social equity 3. Public funding challenges.\n• Use conditional hypotheses: 'If public transit were free, traffic congestion would decrease significantly'.\n• Address the examiner's tax counter-argument directly and diplomatically."
     }
   ],
   "4": [
@@ -444,10 +444,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Mentionnez des spécialités de votre pays d'origine.\nExpliquez si vous aimez cuisiner vous-même.\nArticulez avec soin.",
-      "trapAlertEn": "Mentionnez des spécialités de votre pays d'origine.\nExpliquez si vous aimez cuisiner vous-même.\nArticulez avec soin.",
-      "speakingCoach": "Conseil pour Tâche 1 : Entretien dirigé (Habitudes alimentaires et sorties) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 1 : Entretien dirigé (Habitudes alimentaires et sorties): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Ne dites pas simplement 'J'aime manger au restaurant' : décrivez vos habitudes et plats préférés.\n• Évitez les erreurs de genre des mots fréquents (un/une restaurant, la/le cuisine).\n• Développez chaque réponse.",
+      "trapAlertEn": "• Do not just say 'I like eating out': describe your habits, favorite dishes, and dining experiences.\n• Avoid gender errors on common words (un restaurant, la cuisine).\n• Elaborate on every point.",
+      "speakingCoach": "• Enchaînez les idées : vos habitudes de repas ➔ vos spécialités culinaires ➔ vos sorties entre amis.\n• Enrichissez votre vocabulaire gastronomique : 'ingrédients régionaux', 'saveurs authentiques', 'convivialité'.\n• Répondez spontanément aux relances de l'examinateur.",
+      "speakingCoachEn": "• Connect your thoughts: dining habits ➔ culinary specialties ➔ social outings with friends.\n• Enrich your culinary vocabulary: 'regional ingredients', 'authentic flavors', 'conviviality'.\n• Reply spontaneously to follow-up questions from the examiner."
     },
     {
       "id": "spk-p4-t2",
@@ -480,10 +480,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Présentez votre disponibilité hebdomadaire.\nInformez-vous sur les compétences requises (gestion de la caisse, service).\nConcluez en proposant de laisser votre curriculum vitae.",
-      "trapAlertEn": "Présentez votre disponibilité hebdomadaire.\nInformez-vous sur les compétences requises (gestion de la caisse, service).\nConcluez en proposant de laisser votre curriculum vitae.",
-      "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Recherche d'un emploi d'été) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Recherche d'un emploi d'été): Maintain a natural tone and respect the formal register.",
+      "trapAlert": "• Ne posez pas de questions vagues ('C'est quel travail ?') : demandez les missions exactes.\n• Ne négligez pas de vous renseigner sur les conditions de travail (horaires, tenue, logement).\n• Gardez un profil professionnel.",
+      "trapAlertEn": "• Avoid vague questions ('What is the job?'): inquire about specific daily responsibilities.\n• Do not forget to ask about working conditions (hours, dress code, accommodation).\n• Maintain a professional candidate posture.",
+      "speakingCoach": "• Conduisez l'entretien de candidature : compétences requises, salaire horaire, date de début, logement fourni.\n• Utilisez des formules de politesse professionnelle : 'Je me permets de vous contacter pour le poste de...'.\n• Concluez en envoyant ou proposant de transmettre votre CV.",
+      "speakingCoachEn": "• Lead your job inquiry call: required skills, hourly pay, start date, provided housing.\n• Use formal job inquiry phrasing: 'I am contacting you regarding the seasonal job posting for...'.\n• Conclude by offering to forward your CV or schedule an interview.",
       "stimulusDocument": {
         "title": "LIBRAIRIE-CAFÉ 'LES PAGES DU SAVOIR' — SHERBROOKE",
         "category": "Offre d'Emploi Étudiant & Temps Partiel",
@@ -530,10 +530,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Distinguez la substitution de tâches répétitives de la création de nouvelles valeurs.\nAbordez la nécessité de formations tout au long de la vie.\nNuancez les craintes catastrophistes avec un pragmatisme éclairé.",
-      "trapAlertEn": "Distinguez la substitution de tâches répétitives de la création de nouvelles valeurs.\nAbordez la nécessité de formations tout au long de la vie.\nNuancez les craintes catastrophistes avec un pragmatisme éclairé.",
-      "speakingCoach": "Conseil pour Tâche 3 : Expression d'un point de vue (L'intelligence artificielle au travail) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 3 : Expression d'un point de vue (L'intelligence artificielle au travail): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Ne diabolisez pas et n'idéalisez pas l'IA : apportez une réflexion équilibrée et prospective.\n• Attention à la prononciation des termes techniques en français.\n• Respectez le temps imparti (4.5 min).",
+      "trapAlertEn": "• Neither demonize nor overly praise AI: offer a balanced, forward-looking reflection.\n• Mind the French pronunciation of technical terms ('intelligence artificielle').\n• Respect the 4.5-minute time limit.",
+      "speakingCoach": "• Construisez une argumentation solide : 1. Gain de productivité 2. Menaces sur certains emplois 3. Nécessité d'une régulation.\n• Employez le subjonctif : 'Bien qu'il soit indéniable que l'IA transforme l'économie...'.\n• Concluez sur la complémentarité entre l'intelligence humaine et artificielle.",
+      "speakingCoachEn": "• Build a solid argument: 1. Productivity gains 2. Job displacement threats 3. Need for ethical regulation.\n• Use the subjunctive mood: 'While it is undeniable that AI transforms the economy...'.\n• Conclude by emphasizing the complementarity of human and artificial intelligence."
     }
   ],
   "5": [
@@ -567,10 +567,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Utilisez le passé composé pour décrire un voyage antérieur.\nExpliquez ce qui vous attire (paysages, monuments, gastronomie).\nAdoptez un débit de parole fluide.",
-      "trapAlertEn": "Utilisez le passé composé pour décrire un voyage antérieur.\nExpliquez ce qui vous attire (paysages, monuments, gastronomie).\nAdoptez un débit de parole fluide.",
-      "speakingCoach": "Conseil pour Tâche 1 : Entretien dirigé (Voyages et découvertes culturelles) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 1 : Entretien dirigé (Voyages et découvertes culturelles): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Ne vous limitez pas à une liste de pays : racontez un souvenir de voyage marquant.\n• Attention à l'accord des adjectifs et au choix des prépositions (en France, au Canada, aux États-Unis).\n• Exprimez des émotions.",
+      "trapAlertEn": "• Do not limit yourself to a list of countries: share a memorable travel story.\n• Mind country prepositions (en France, au Canada, aux États-Unis) and adjective agreement.\n• Express personal feelings and discoveries.",
+      "speakingCoach": "• Racontez avec passion : destination ➔ paysage/culture ➔ rencontre inoubliable.\n• Utilisez des structures d'appréciation : 'Ce qui m'a le plus marqué, c'est...', 'J'ai été fasciné par...'.\n• Liez vos voyages à votre projet d'immigration au Canada.",
+      "speakingCoachEn": "• Tell an engaging story: destination ➔ landscape/culture ➔ unforgettable encounter.\n• Use appreciation structures: 'What struck me most was...', 'I was fascinated by...'.\n• Connect your travel experience to your Canada immigration goals."
     },
     {
       "id": "spk-p5-t2",
@@ -603,10 +603,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Demandez s'il existe des dépliants en plusieurs langues.\nVérifiez l'accès aux personnes à mobilité réduite.\nRemerciez chaleureusement à la fin.",
-      "trapAlertEn": "Demandez s'il existe des dépliants en plusieurs langues.\nVérifiez l'accès aux personnes à mobilité réduite.\nRemerciez chaleureusement à la fin.",
-      "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Organisation d'un voyage d'études) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Organisation d'un voyage d'études): Maintain a natural tone and respect the formal register.",
+      "trapAlert": "• Ne laissez pas l'examinateur mener l'échange : c'est à vous de poser les questions.\n• N'oubliez pas les aspects pratiques (assurances, visa, hébergement, transport).\n• Respectez les 3.5 minutes.",
+      "trapAlertEn": "• Do not let the examiner drive the conversation: you must lead with questions.\n• Do not forget practical aspects (insurance, visa support, accommodation, flights).\n• Manage the 3.5-minute duration effectively.",
+      "speakingCoach": "• Interrogez l'organisme de séjour : programme d'études, familles d'accueil, budget total, accompagnement sur place.\n• Formulez 8 à 10 questions variées au conditionnel de politesse.\n• Concluez en demandant la documentation officielle par courriel.",
+      "speakingCoachEn": "• Question the study agency: curriculum, host families, total budget, local support.\n• Formulate 8 to 10 varied questions using the polite conditional tense.\n• Conclude by requesting official documentation via email.",
       "stimulusDocument": {
         "title": "MUSÉE NATIONAL DES BEAUX-ARTS DU QUÉBEC",
         "category": "Sorties Culturelles & Groupes Scolaires",
@@ -653,10 +653,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Pesez la protection de l'environnement face au développement économique.\nIllustrez avec des exemples connus (Venise, parcs nationaux).\nFormulez des propositions alternatives (étalement de la fréquentation).",
-      "trapAlertEn": "Pesez la protection de l'environnement face au développement économique.\nIllustrez avec des exemples connus (Venise, parcs nationaux).\nFormulez des propositions alternatives (étalement de la fréquentation).",
-      "speakingCoach": "Conseil pour Tâche 3 : Expression d'un point de vue (Le tourisme de masse) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 3 : Expression d'un point de vue (Le tourisme de masse): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Ne dites pas 'Le tourisme est mauvais' : distinguez retombées économiques et dégradations environnementales.\n• Ne vous perdez pas dans des anecdotes personnelles inutiles.\n• Maintenez un niveau de langue soutenu.",
+      "trapAlertEn": "• Avoid saying 'Tourism is bad': balance economic benefits against environmental degradation.\n• Avoid getting lost in irrelevant personal anecdotes.\n• Maintain a formal B2/C1 register throughout.",
+      "speakingCoach": "• Développez une thèse B2/C1 : 1. Apport économique pour les régions 2. Nuisances (pollution, hausse des loyers) 3. Ecotourisme et régulation.\n• Utilisez des formules de concession : 'Certes le tourisme génère des emplois, toutefois...'.\n• Répondez de manière structurée aux objections de l'examinateur.",
+      "speakingCoachEn": "• Develop a B2/C1 thesis: 1. Economic benefits for regions 2. Drawbacks (pollution, rent inflation) 3. Ecotourism & regulation.\n• Use concessive phrasing: 'Admittedly tourism creates jobs, however...'.\n• Respond constructively to counter-arguments from the examiner."
     }
   ],
   "6": [
@@ -690,10 +690,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Utilisez des verbes pronominaux (se lever, se préparer).\nIndiquez les moments de la journée avec précision.\nGardez un ton naturel.",
-      "trapAlertEn": "Utilisez des verbes pronominaux (se lever, se préparer).\nIndiquez les moments de la journée avec précision.\nGardez un ton naturel.",
-      "speakingCoach": "Conseil pour Tâche 1 : Entretien dirigé (Activités quotidiennes et rythme de vie) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 1 : Entretien dirigé (Activités quotidiennes et rythme de vie): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Ne décrivez pas une journée banale sans relief : mettez en valeur votre organisation et vos loisirs.\n• Attention aux connecteurs chronologiques (d'abord, ensuite, enfin).\n• Soignez l'intonation.",
+      "trapAlertEn": "• Avoid describing a dull daily routine: highlight your organization, hobbies, and balance.\n• Use chronological connectors smoothly (first, then, finally).\n• Focus on natural intonation.",
+      "speakingCoach": "• Presentez votre journée type : matinée professionnelle ➔ pauses et loisirs ➔ activités de soirée.\n• Utilisez des adverbes de fréquence : 'habituellement', 'rarement', 'régulièrement'.\n• Montrez votre capacité à concilier vie professionnelle et personnelle.",
+      "speakingCoachEn": "• Present your typical day: work morning ➔ breaks & hobbies ➔ evening activities.\n• Use frequency adverbs: 'usually', 'rarely', 'regularly'.\n• Demonstrate your ability to balance work and personal life."
     },
     {
       "id": "spk-p6-t2",
@@ -726,10 +726,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Précisez la durée de la location et le nombre de passagers.\nDemandez si le carburant est inclus ou à restituer plein.\nConservez une politesse courtoise.",
-      "trapAlertEn": "Précisez la durée de la location et le nombre de passagers.\nDemandez si le carburant est inclus ou à restituer plein.\nConservez une politesse courtoise.",
-      "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Location de voiture pour le week-end) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Location de voiture pour le week-end): Maintain a natural tone and respect the formal register.",
+      "trapAlert": "• Ne vous contentez pas de demander le prix au jour : demandez les assurances, la caution et le kilométrage.\n• Vérifiez les conditions du permis de conduire.\n• Remerciez chaleureusement l'agent.",
+      "trapAlertEn": "• Do not just ask for the daily rate: inquire about insurance, deposit, and mileage limits.\n• Confirm driver's license requirements.\n• Thank the agent warmly at the end.",
+      "speakingCoach": "• Menez la réservation de véhicule : catégorie de voiture, carburant, kilométrage illimité, deuxième conducteur.\n• Alignez 8 à 10 questions précises et professionnelles.\n• Validez les modalités de retrait du véhicule le jour J.",
+      "speakingCoachEn": "• Lead your car rental call: vehicle class, fuel policy, unlimited mileage, second driver fee.\n• Ask 8 to 10 precise, professional questions.\n• Confirm pickup arrangements for the rental date.",
       "stimulusDocument": {
         "title": "AUTO-EXPRESS TROIS-RIVIÈRES",
         "category": "Location de Véhicules Tous Gammes",
@@ -776,10 +776,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Mettez en avant la valeur irremplaçable de l'interaction humaine et de la culture.\nReconnaissez la complémentarité des outils technologiques.\nConcluez par une vision hybride de l'éducation.",
-      "trapAlertEn": "Mettez en avant la valeur irremplaçable de l'interaction humaine et de la culture.\nReconnaissez la complémentarité des outils technologiques.\nConcluez par une vision hybride de l'éducation.",
-      "speakingCoach": "Conseil pour Tâche 3 : Expression d'un point de vue (L'apprentissage des langues par les nouvelles technologies) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 3 : Expression d'un point de vue (L'apprentissage des langues par les nouvelles technologies): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Ne dites pas 'Les applications remplacent les profs' : nuancez l'autonomie et le manque d'interaction humaine.\n• Soignez les structures syntaxiques complexes.\n• Ne dépassez pas les 4.5 minutes.",
+      "trapAlertEn": "• Avoid claiming 'Apps replace teachers': balance self-paced learning against lack of human interaction.\n• Pay attention to complex syntactic structures.\n• Stay within the 4.5-minute allocation.",
+      "speakingCoach": "• Opposez méthodes traditionnelles et numériques : 1. Souplesse et accessibilité des applications 2. Importance de l'immersion et de l'échange humain.\n• Proposez une approche hybride comme solution idéale.\n• Concluez de manière convaincante et fluide.",
+      "speakingCoachEn": "• Contrast traditional and digital methods: 1. Flexibility and accessibility of apps 2. Importance of human interaction & immersion.\n• Propose a blended learning approach as the optimal solution.\n• Conclude fluently and persuasively."
     }
   ],
   "7": [
@@ -813,10 +813,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Décrivez vos responsabilités actuelles.\nExpliquez vos aspirations en matière d'intégration professionnelle.\nMaintenez une prononciation nette.",
-      "trapAlertEn": "Décrivez vos responsabilités actuelles.\nExpliquez vos aspirations en matière d'intégration professionnelle.\nMaintenez une prononciation nette.",
-      "speakingCoach": "Conseil pour Tâche 1 : Entretien dirigé (Vie professionnelle et projets d'avenir) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 1 : Entretien dirigé (Vie professionnelle et projets d'avenir): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Ne parlez pas de vos projets de manière floue : soyez précis sur vos objectifs au Canada.\n• Attention au futur simple et au conditionnel.\n• Articulez chaque phrase avec soin.",
+      "trapAlertEn": "• Do not talk about your goals vaguely: be specific about your career objectives in Canada.\n• Watch your future simple and conditional tenses.\n• Articulate every phrase clearly.",
+      "speakingCoach": "• Articulez votre projet : compétences actuelles ➔ secteur visé au Canada ➔ démarches entreprises.\n• Valorisez votre motivation francophone et votre intégration future.\n• Restez positif et très professionnel.",
+      "speakingCoachEn": "• Articulate your project: current skills ➔ targeted sector in Canada ➔ steps already taken.\n• Highlight your Francophone motivation and future community integration.\n• Remain positive and highly professional throughout."
     },
     {
       "id": "spk-p7-t2",
@@ -849,10 +849,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Informez-vous sur les tarifs pour étudiants ou familles.\nDemandez si la réservation préalable des cours est obligatoire.\nMontrez votre enthousiasme durant l'échange.",
-      "trapAlertEn": "Informez-vous sur les tarifs pour étudiants ou familles.\nDemandez si la réservation préalable des cours est obligatoire.\nMontrez votre enthousiasme durant l'échange.",
-      "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Inauguration d'un centre sportif) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Inauguration d'un centre sportif): Maintain a natural tone and respect the formal register.",
+      "trapAlert": "• Ne manquez pas de vous renseigner sur les équipements sportifs et les abonnements.\n• N'oubliez pas de demander les tarifs préférentiels (famille, étudiant).\n• Posez au moins 8 questions.",
+      "trapAlertEn": "• Do not miss asking about sports facilities and membership packages.\n• Remember to inquire about discount rates (family, student, senior).\n• Ask at least 8 distinct questions.",
+      "speakingCoach": "• Informez-vous sur le nouveau centre sportif : cours collectifs, entraîneurs personnels, horaires d'ouverture, vestiaires.\n• Variez vos structures interrogatives avec élégance.\n• Demandez s'il est possible de faire une journée portes ouvertes.",
+      "speakingCoachEn": "• Inquire about the new sports center: group classes, personal trainers, opening hours, locker rooms.\n• Vary your question structures gracefully.\n• Ask if a free open-house trial pass is available.",
       "stimulusDocument": {
         "title": "COMPLEXE AQUATIQUE ET SPORTIF MUNICIPAL DE GATINEAU",
         "category": "Loisirs, Santé & Sports",
@@ -899,10 +899,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Argumentez en faveur de la réduction des déchets sauvages.\nReconnaissez la nécessité d'une période d'adaptation pour les entreprises.\nNuancez avec des incitations fiscales plutôt que des contraintes punitives.",
-      "trapAlertEn": "Argumentez en faveur de la réduction des déchets sauvages.\nReconnaissez la nécessité d'une période d'adaptation pour les entreprises.\nNuancez avec des incitations fiscales plutôt que des contraintes punitives.",
-      "speakingCoach": "Conseil pour Tâche 3 : Expression d'un point de vue (L'économie circulaire) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 3 : Expression d'un point de vue (L'économie circulaire): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Ne vous perdez pas dans une explication trop technique : privilégiez les enjeux sociétaux et économiques.\n• Ne négligez pas les obstacles au changement (coûts de transition).\n• Exprimez-vous au niveau C1.",
+      "trapAlertEn": "• Do not get lost in overly technical jargon: focus on societal and economic issues.\n• Do not overlook transition barriers for businesses and consumers.\n• Express yourself at a C1 benchmark level.",
+      "speakingCoach": "• Développez la thématique de la sobriété : 1. Réduction des déchets et réutilisation 2. Freins industriels et financiers 3. Évolution des mentalités.\n• Utilisez des connecteurs de haut niveau : 'En somme', 'Conséquemment', 'Nonobstant'.\n• Défendez une vision réaliste et pragmatique.",
+      "speakingCoachEn": "• Develop the circular economy theme: 1. Waste reduction & reuse 2. Industrial & financial hurdles 3. Shift in consumer mindsets.\n• Use advanced discourse markers: 'In short', 'Consequently', 'Notwithstanding'.\n• Defend a realistic and pragmatic economic vision."
     }
   ],
   "8": [
@@ -936,10 +936,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Mentionnez un artiste ou un réalisateur que vous appréciez.\nExprimez vos émotions (J'adore, cela me passionne).\nGardez un bon rythme de réponse.",
-      "trapAlertEn": "Mentionnez un artiste ou un réalisateur que vous appréciez.\nExprimez vos émotions (J'adore, cela me passionne).\nGardez un bon rythme de réponse.",
-      "speakingCoach": "Conseil pour Tâche 1 : Entretien dirigé (La culture et les sorties) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 1 : Entretien dirigé (La culture et les sorties): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Ne dites pas seulement 'J'aime le cinéma' : commentez un film ou une pièce récente.\n• Attention au vocabulaire culturel en français.\n• Répondez avec aisance et sourire.",
+      "trapAlertEn": "• Do not just say 'I like movies': discuss a recent film, book, or cultural event.\n• Watch cultural vocabulary terms in French.\n• Respond with ease and confidence.",
+      "speakingCoach": "• Partagez vos goûts culturels : genres préférés ➔ dernier spectacle/exposition ➔ importance de la culture dans votre vie.\n• Employez des termes variés : 'chef-d'œuvre', 'scénario captive', 'expérience enrichissante'.\n• Entrez naturellement dans la discussion.",
+      "speakingCoachEn": "• Share your cultural interests: preferred genres ➔ last show/exhibition ➔ role of culture in your life.\n• Use varied vocabulary: 'masterpiece', 'captivating plot', 'enriching experience'.\n• Engage naturally in the conversation."
     },
     {
       "id": "spk-p8-t2",
@@ -972,10 +972,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Précisez vos compétences utiles (logistique, contact humain).\nDemandez si une attestation d'engagement peut être délivrée.\nTerminez sur une note d'enthousiasme citoyen.",
-      "trapAlertEn": "Précisez vos compétences utiles (logistique, contact humain).\nDemandez si une attestation d'engagement peut être délivrée.\nTerminez sur une note d'enthousiasme citoyen.",
-      "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Inscriptions à une association caritative) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Inscriptions à une association caritative): Maintain a natural tone and respect the formal register.",
+      "trapAlert": "• Ne demandez pas uniquement 'Comment aider ?' : précisez les missions du bénévole.\n• Renseignez-vous sur le temps d'engagement requis.\n• Restez très chaleureux et engagé.",
+      "trapAlertEn": "• Do not just ask 'How can I help?': inquire about specific volunteer tasks.\n• Inquire about the time commitment expected per week/month.\n• Maintain a warm and dedicated tone.",
+      "speakingCoach": "• Interrogez l'association caritative : publics aidés, actions sur le terrain, formations offertes aux bénévoles.\n• Posez 8 à 10 questions bien construites.\n• Proposez vos compétences spécifiques (informatique, langues, logistique).",
+      "speakingCoachEn": "• Question the charity organization: communities served, field actions, volunteer training offered.\n• Formulate 8 to 10 well-crafted questions.\n• Offer your specific skills (IT, languages, logistics support).",
       "stimulusDocument": {
         "title": "RÉSEAU SOLIDAIREMENT ALIMENTAIRE DE RIMOUSKI",
         "category": "Bénévolat & Action Sociale",
@@ -1022,10 +1022,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Mettez en balance le sentiment d'appartenance et la liberté d'expression.\nCitez l'impact sur le climat scolaire et les taquineries.\nConcluez avec une réflexion nuancée sur la laïcité et l'équité.",
-      "trapAlertEn": "Mettez en balance le sentiment d'appartenance et la liberté d'expression.\nCitez l'impact sur le climat scolaire et les taquineries.\nConcluez avec une réflexion nuancée sur la laïcité et l'équité.",
-      "speakingCoach": "Conseil pour Tâche 3 : Expression d'un point de vue (L'uniforme scolaire) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 3 : Expression d'un point de vue (L'uniforme scolaire): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Ne rejetez pas l'uniforme sans écouter les arguments d'égalité sociale.\n• Évitez les propos simplistes ('C'est pas beau').\n• Construisez un débat équilibré.",
+      "trapAlertEn": "• Do not dismiss school uniforms without considering social equality arguments.\n• Avoid simplistic remarks ('It doesn't look nice').\n• Build a balanced educational debate.",
+      "speakingCoach": "• Évaluez le port de l'uniforme à l'école : 1. Réduction des inégalités visibles et du harcèlement 2. Frein à la liberté d'expression individuelle 3. Compromis possible.\n• Intégrez des structures de comparaison et de nuance.\n• Respondez poliment à l'objection de l'examinateur.",
+      "speakingCoachEn": "• Evaluate school uniforms: 1. Reduction of visible social inequality & bullying 2. Constraint on individual self-expression 3. Possible compromise.\n• Integrate comparative and concessive sentence structures.\n• Respond politely to the examiner's objections."
     }
   ],
   "9": [
@@ -1059,10 +1059,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Décrivez les sports que vous pratiquez (marche, course, natation).\nParlez de votre sommeil et de vos moments de détente.\nGardez des phrases courtes et précises.",
-      "trapAlertEn": "Décrivez les sports que vous pratiquez (marche, course, natation).\nParlez de votre sommeil et de vos moments de détente.\nGardez des phrases courtes et précises.",
-      "speakingCoach": "Conseil pour Tâche 1 : Entretien dirigé (La santé et le bien-être) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 1 : Entretien dirigé (La santé et le bien-être): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Ne donnez pas de détails médicaux intimes : restez sur l'hygiène de vie et le bien-être général.\n• Attention aux faux amis en anglais (ex: 'gym' = salle de sport, 'exercise' = activité physique).\n• Soignez votre diction.",
+      "trapAlertEn": "• Do not share private medical details: focus on healthy lifestyle habits and general wellness.\n• Beware of English false friends (gym = salle de sport, exercise = activité physique).\n• Focus on clear pronunciation.",
+      "speakingCoach": "• Décrivez votre routine de santé : alimentation équilibrée ➔ activité physique régulière ➔ gestion du stress.\n• Utilisez du vocabulaire adapté : 'vitalité', 'équilibre de vie', 'prévention'.\n• Transmettez un message positif et structuré.",
+      "speakingCoachEn": "• Describe your wellness routine: balanced diet ➔ regular physical activity ➔ stress management.\n• Use appropriate vocabulary: 'vitality', 'work-life balance', 'prevention'.\n• Convey a positive, well-structured message."
     },
     {
       "id": "spk-p9-t2",
@@ -1095,10 +1095,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Vérifiez l'ouverture 24h/24 et 7j/7 avec badge sécurisé.\nDemandez si les boissons chaudes sont incluses dans le forfait.\nGardez un ton professionnel et dynamique.",
-      "trapAlertEn": "Vérifiez l'ouverture 24h/24 et 7j/7 avec badge sécurisé.\nDemandez si les boissons chaudes sont incluses dans le forfait.\nGardez un ton professionnel et dynamique.",
-      "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Réservation d'un espace de coworking) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Réservation d'un espace de coworking): Maintain a natural tone and respect the formal register.",
+      "trapAlert": "• Ne demandez pas seulement le tarif au mois : vérifiez la connexion Internet, la salle de réunion et l'accès 24/7.\n• Renseignez-vous sur la réservation de postes individuels.\n• Gardez un ton professionnel.",
+      "trapAlertEn": "• Do not ask only about monthly rent: verify Wi-Fi speed, meeting rooms, and 24/7 access.\n• Inquire about hot-desk vs dedicated desk reservations.\n• Maintain a professional business tone.",
+      "speakingCoach": "• Questionnez le responsable du coworking : équipements informatiques, espace café, contrat de flexibilité, événements de réseau.\n• Formulez 8 à 10 questions précises.\n• Demandez une visite guidée des lieux avant de souscrire.",
+      "speakingCoachEn": "• Question the coworking manager: IT infrastructure, coffee amenities, flexible contracts, networking events.\n• Ask 8 to 10 precise business questions.\n• Request a guided tour of the facility before signing up.",
       "stimulusDocument": {
         "title": "ESPACE COWORKING 'INNOVA-WORK' LAVAL",
         "category": "Bureaux Partagés & Flex-Office",
@@ -1145,10 +1145,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Pesez la réduction de la précarité face au coût budgétaire collectif.\nMentionnez l'émancipation et la possibilité de reprise d'études ou de projets.\nConcluez avec rigueur argumentative.",
-      "trapAlertEn": "Pesez la réduction de la précarité face au coût budgétaire collectif.\nMentionnez l'émancipation et la possibilité de reprise d'études ou de projets.\nConcluez avec rigueur argumentative.",
-      "speakingCoach": "Conseil pour Tâche 3 : Expression d'un point de vue (Le revenu universel de base) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 3 : Expression d'un point de vue (Le revenu universel de base): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Ne considérez pas le revenu de base comme une utopie irréaliste : étudiez les expérimentations réelles.\n• Ne négligez pas la question du financement fiscal.\n• Visez le niveau C1/C2.",
+      "trapAlertEn": "• Do not dismiss universal basic income as an impossible utopia: examine real pilot tests.\n• Do not overlook the key question of tax funding mechanisms.\n• Target a C1/C2 advanced level of discourse.",
+      "speakingCoach": "• Analysez le revenu universel : 1. Éradication de la pauvreté et sécurité financière 2. Risque de démotivation au travail et coût budgétaire 3. Modèle d'avenir avec l'automatisation.\n• Maniez les connecteurs logiques de haut niveau avec aisance.\n• Rebondissez intelligemment sur la contre-argumentation de l'examinateur.",
+      "speakingCoachEn": "• Analyze universal basic income: 1. Poverty eradication & financial security 2. Potential work disincentives & fiscal costs 3. Future model amid automation.\n• Use advanced logical connectors with confidence.\n• Rebound intelligently against the examiner's counter-arguments."
     }
   ],
   "10": [
@@ -1182,10 +1182,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Citez des exemples concrets (GPS, réseaux, messages).\nExpliquez si vous passez beaucoup de temps en ligne.\nExprimez-vous avec clarté.",
-      "trapAlertEn": "Citez des exemples concrets (GPS, réseaux, messages).\nExpliquez si vous passez beaucoup de temps en ligne.\nExprimez-vous avec clarté.",
-      "speakingCoach": "Conseil pour Tâche 1 : Entretien dirigé (La technologie au quotidien) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 1 : Entretien dirigé (La technologie au quotidien): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Ne dites pas simplement 'J'utilise mon téléphone' : expliquez comment la technologie facilite votre travail et vos loisirs.\n• Attention aux erreurs de prononciation des mots numériques.\n• Soyez fluide.",
+      "trapAlertEn": "• Do not just say 'I use my smartphone': explain how technology facilitates your work and daily life.\n• Mind the pronunciation of tech terms in French.\n• Keep your speech smooth and continuous.",
+      "speakingCoach": "• Détaillez votre usage du numérique : outils de travail à distance ➔ applications de vie quotidienne ➔ limites personnelles.\n• Utilisez du vocabulaire technique approprié : 'numérisation', 'efficacité', 'déconnexion'.\n• Exprimez-vous de façon naturelle et structurée.",
+      "speakingCoachEn": "• Detail your digital usage: remote work tools ➔ daily lifestyle apps ➔ personal boundaries.\n• Use appropriate tech terms: 'digitization', 'efficiency', 'disconnecting'.\n• Express your thoughts naturally and clearly."
     },
     {
       "id": "spk-p10-t2",
@@ -1218,10 +1218,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Demandez si les ouvrages sont prêtés gratuitement par la bibliothèque.\nInterrogez-vous sur les débats d'auteurs invités.\nMontrez votre passion pour la langue française.",
-      "trapAlertEn": "Demandez si les ouvrages sont prêtés gratuitement par la bibliothèque.\nInterrogez-vous sur les débats d'auteurs invités.\nMontrez votre passion pour la langue française.",
-      "speakingCoach": "Conseil pour Tâche 2 : Exercice en interaction (Adhésion à un club de lecture) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 2 : Exercice en interaction (Adhésion à un club de lecture): Maintain a natural tone and respect the formal register.",
+      "trapAlert": "• Ne demandez pas uniquement 'C'est quand les réunions ?' : explorez les genres littéraires et les modalités d'échange.\n• Vérifiez la cotisation annuelle.\n• Soyez très chaleureux.",
+      "trapAlertEn": "• Do not ask only about meeting dates: explore literary genres, format of discussions, and book choices.\n• Inquire about annual membership fees.\n• Be warm and engaging throughout.",
+      "speakingCoach": "• Interrogez l'animateur du club de lecture : choix des livres, fréquence des rencontres, débats en ligne ou en présentiel.\n• Posez 8 à 10 questions enthousiastes et variées.\n• Proposez de participer à la prochaine rencontre comme invité.",
+      "speakingCoachEn": "• Question the book club coordinator: book selection process, meeting frequency, online vs in-person format.\n• Ask 8 to 10 enthusiastic, varied questions.\n• Propose attending the upcoming session as a guest.",
       "stimulusDocument": {
         "title": "CLUB DE LECTURE FRANC-PARLER DE MONTRÉAL",
         "category": "Culture, Littérature & Échanges",
@@ -1268,10 +1268,10 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "de surcroît",
         "en conclusion"
       ],
-      "trapAlert": "Soulignez la richesse cognitive et culturelle portée par chaque langue.\nReconnaissez les dilemmes d'arbitrage budgétaire public.\nConcluez avec une thèse synthétique et percutante.",
-      "trapAlertEn": "Soulignez la richesse cognitive et culturelle portée par chaque langue.\nReconnaissez les dilemmes d'arbitrage budgétaire public.\nConcluez avec une thèse synthétique et percutante.",
-      "speakingCoach": "Conseil pour Tâche 3 : Expression d'un point de vue (La préservation des langues régionales) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 3 : Expression d'un point de vue (La préservation des langues régionales): Maintain a natural tone and respect the formal register."
+      "trapAlert": "• Ne qualifiez pas la sauvegarde des langues de 'pauvre tradition' : étudiez le patrimoine culturel et la diversité linguistique.\n• Évitez le manque de nuance économique.\n• Argumentez au niveau C1/C2.",
+      "trapAlertEn": "• Do not dismiss regional language preservation as obsolete: evaluate cultural heritage and linguistic diversity.\n• Avoid lack of economic nuance regarding preservation costs.\n• Structure a C1/C2 level argument.",
+      "speakingCoach": "• Débattez de la préservation linguistique : 1. Richesse du patrimoine culturel et de l'identité 2. Coût de l'enseignement et prédominance des langues mondiales 3. Équilibre et bilinguisme.\n• Employez un vocabulaire académique riche et nuancé.\n• Défendez votre point de vue avec concision et pertinence.",
+      "speakingCoachEn": "• Debate linguistic preservation: 1. Cultural heritage & identity richness 2. Educational costs & dominance of global languages 3. Balanced bilingualism.\n• Use rich, academic vocabulary and complex syntax.\n• Defend your viewpoint concisely and persuasively."
     }
   ]
 };
