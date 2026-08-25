@@ -905,9 +905,8 @@ export function AuthenticCBTExamPage() {
     setEvaluatingSpeaking((prev) => ({ ...prev, [taskId]: true }));
     try {
       const dialogue = speakingDialogueMap[taskId] || [];
-      const combinedSpeech = dialogue.length > 0
-        ? dialogue.map((m) => `${m.sender === 'candidate' ? 'Candidat' : 'Examinateur'}: ${m.text}`).join('\n')
-        : transcription;
+      const dialogueText = dialogue.map((m) => `${m.sender === 'candidate' ? 'Candidat' : 'Examinateur'}: ${m.text}`).join('\n');
+      const combinedSpeech = [dialogueText, (transcription || '').trim() ? `Candidat: ${(transcription || '').trim()}` : ''].filter(Boolean).join('\n');
 
       const taskNumber = taskId?.includes('spk-1') || taskId?.includes('task_0') ? 1
         : taskId?.includes('spk-2') || taskId?.includes('task_1') ? 2
