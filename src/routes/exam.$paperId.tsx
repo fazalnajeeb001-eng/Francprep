@@ -4094,8 +4094,8 @@ export function AuthenticCBTExamPage() {
                     </div>
                   )}
 
-                  {/* PRACTICE MODE: STRATEGY, TRAP ALERTS & B2/C1 MODEL ANSWERS */}
-                  {mode === "PRACTICE" && showHints && (
+                  {/* PRACTICE MODE: STRATEGY, TRAP ALERTS & B2/C1 MODEL ANSWERS (ALWAYS VISIBLE IN PRACTICE MODE ON ALL DEVICES) */}
+                  {mode === "PRACTICE" && (
                     <div className="space-y-3">
                       {/* Trap Alert & Official FEI Rules Card */}
                       <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800 text-xs text-amber-950 dark:text-amber-200 space-y-2 shadow-sm font-sans">

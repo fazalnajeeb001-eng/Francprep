@@ -76,9 +76,9 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "en conclusion"
       ],
       "trapAlert": "Dites votre nom, âge et profession clairement.\nExpliquez en 1 à 2 phrases pourquoi vous apprenez le français.\nMaintenez un ton poli et naturel.",
-      "trapAlertEn": "Dites votre nom, âge et profession clairement.\nExpliquez en 1 à 2 phrases pourquoi vous apprenez le français.\nMaintenez un ton poli et naturel.",
+      "trapAlertEn": "• State your name, age, and current profession clearly.\n• Explain in 1-2 sentences why you are moving to Canada.\n• Maintain a polite, natural, and friendly conversational tone throughout.",
       "speakingCoach": "Conseil pour Tâche 1 : Entretien dirigé (Présentation personnelle) : Maintenez un ton naturel et respectez le registre de langue.",
-      "speakingCoachEn": "Advice for Tâche 1 : Entretien dirigé (Présentation personnelle): Maintain a natural tone and respect the formal register."
+      "speakingCoachEn": "• Tâche 1 Coach Strategy: Spontaneous Directed Interview (2 minutes, No Prep).\n• Do not recite a memorized text word-for-word; speak naturally in complete sentences.\n• Address the examiner using formal French ('vous') and transition smoothly between your background, job, and motivations for Canada."
     },
     {
       "id": "spk-p1-t2",
