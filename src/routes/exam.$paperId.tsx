@@ -1200,7 +1200,6 @@ export function AuthenticCBTExamPage() {
         const watchdogTimer = setTimeout(() => {
           if (playAudioSessionRef.current === currentSession) {
             setIsAudioFinished(true);
-            setFinishedAudioQuestionId(currentQ.id || String(qNum));
           }
         }, dynamicWatchdogMs);
 
