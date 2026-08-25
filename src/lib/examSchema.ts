@@ -7522,8 +7522,24 @@ function buildDynamicReadingGuidance(
     trapAlertEn,
     readingCoach,
     readingCoachEn,
-    detailedExplanation,
-    detailedExplanationEn,
+    };
+}
+
+export function buildDynamicSpeakingGuidance(task: any): {
+  trapAlert: string;
+  trapAlertEn: string;
+  speakingCoach: string;
+  speakingCoachEn: string;
+  keyPhrases: string[];
+  recommendedConnectors: string[];
+} {
+  return {
+    trapAlert: task.trapAlert || `⚠️ Piège : Soignez votre registre de langue et évitez les hésitations prolongées.`,
+    trapAlertEn: task.trapAlertEn || `⚠️ Trap Alert: Maintain formal register and avoid long silence pauses.`,
+    speakingCoach: task.speakingCoach || `💡 Stratégie : Structurez votre discours avec des connecteurs logiques (en effet, par conséquent).`,
+    speakingCoachEn: task.speakingCoachEn || `💡 Speaking Coach: Structure your response using logical connectors.`,
+    keyPhrases: task.keyPhrases || ["Pourriez-vous me préciser...", "Il me semble que...", "En ce qui me concerne..."],
+    recommendedConnectors: task.recommendedConnectors || ["En effet", "Cependant", "Par conséquent", "De plus"],
   };
 }
 
