@@ -33,3 +33,11 @@ If ANY build command fails, you MUST resolve the error locally. **NEVER push bro
 ### Rule 4: Error Boundary & Graceful Degradation
 - All main routes and critical widgets MUST remain wrapped in React `<ErrorBoundary>` containers.
 - In case of network errors or missing third-party keys (e.g. Resend email API or ElevenLabs TTS), the system MUST gracefully fall back (e.g., auto-filling `devOtpCode` or using Web Speech / Kokoro TTS) so no page ever crashes or displays raw error screens to students.
+
+---
+
+### Rule 5: MANDATORY ISOLATION OF COMPLETED MODULES (LISTENING, READING, WRITING)
+- **STRICT LOCK ON SHARED UTILITIES**: `src/lib/speech.ts` and `src/lib/apiFetch.ts` ARE LOCKED AND READ-ONLY. No AI agent is permitted to modify `speech.ts` or `apiFetch.ts`.
+- **STRICT LOCK ON LISTENING, READING & WRITING**: `authenticListeningAdvancedBank.ts`, `authenticReadingMasterBank.ts`, `authenticWritingMasterBank.ts`, and all Listening/Reading/Writing question handlers are 100% COMPLETED and MUST NEVER BE TOUCHED OR MODIFIED IN ANY WAY.
+- **SPEAKING WORK ISOLATION**: All code changes intended to refine Expression Orale (Speaking) MUST BE WRITTEN EXCLUSIVELY inside `src/routes/exam.$paperId.tsx` enclosed in `if (currentSection.type === "EXPRESSION_ORALE")` blocks or in `backend/src/routes/speaking.routes.ts`.
+
