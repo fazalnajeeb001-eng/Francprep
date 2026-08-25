@@ -256,23 +256,66 @@ export function speak(
             audio.preservesPitch = true;
           }).catch(() => {
             if (myDialogueId === currentDialogueId && !isAudioPausedState) {
-              playDirectHDFallback(cleanText, langCode, rate, audio, finalGender, onEnded);
+              playWebSpeechFallback(cleanText, langCode, rate, finalGender, onEnded);
             }
           });
           return;
         }
       }
       if (myDialogueId === currentDialogueId && !isAudioPausedState) {
-        playDirectHDFallback(cleanText, langCode, rate, audio, finalGender, onEnded);
+        playWebSpeechFallback(cleanText, langCode, rate, finalGender, onEnded);
       }
     })
     .catch(() => {
       if (myDialogueId === currentDialogueId && !isAudioPausedState) {
-        playDirectHDFallback(cleanText, langCode, rate, audio, finalGender, onEnded);
+        playWebSpeechFallback(cleanText, langCode, rate, finalGender, onEnded);
       }
     });
 
   return true;
+}
+
+/**
+ * Robust Client-Side Web Speech API Fallback (Guarantees Examiner Voice Never Fails Silently)
+ */
+function playWebSpeechFallback(
+  text: string,
+  langCode: string = "fr",
+  rate: number = 0.9,
+  gender: "female" | "male" = "female",
+  onEnded?: () => void
+) {
+  if (typeof window === "undefined" || !window.speechSynthesis) {
+    if (onEnded) onEnded();
+    return;
+  }
+
+  try {
+    window.speechSynthesis.cancel();
+    const cleanText = text.replace(/[*_#`]/g, '').trim();
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = langCode.startsWith("fr") ? "fr-FR" : langCode;
+    utterance.rate = rate;
+
+    const voices = window.speechSynthesis.getVoices();
+    const frVoice = voices.find(v => v.lang.startsWith("fr") && (gender === "male" ? /male|paul|hugo|thomas|jacques/i.test(v.name) : /female|hortense|amelie|julie|celeste/i.test(v.name))) || voices.find(v => v.lang.startsWith("fr"));
+    if (frVoice) utterance.voice = frVoice;
+
+    utterance.onend = () => {
+      if (onPlaybackStateChange) onPlaybackStateChange(false);
+      if (onEnded) onEnded();
+    };
+
+    utterance.onerror = () => {
+      if (onPlaybackStateChange) onPlaybackStateChange(false);
+      if (onEnded) onEnded();
+    };
+
+    if (onPlaybackStateChange) onPlaybackStateChange(true);
+    window.speechSynthesis.speak(utterance);
+  } catch {
+    if (onEnded) onEnded();
+  }
 }
 
 /**
