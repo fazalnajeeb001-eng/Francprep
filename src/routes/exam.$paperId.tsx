@@ -536,6 +536,24 @@ export function AuthenticCBTExamPage() {
     return () => clearInterval(interval);
   }, [isOralSpeakingActive, oralSpeakingTimeRemaining, isSpeaking, isAudioFetching, isPlayingAudio, speakingChatLoading, isTimerPaused, recordingSpeaking]);
 
+  // Page visibility & phone lock lifecycle control for Speaking: pause audio and stop mic if tab is hidden or screen is locked
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden && currentSection?.type === "EXPRESSION_ORALE") {
+        handleStopAudio();
+        setIsAudioFetching(false);
+        setIsPlayingAudio(false);
+        setIsRecording(false);
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pagehide", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pagehide", handleVisibilityChange);
+    };
+  }, [currentSection?.type]);
+
   const handlePlayExaminerAudio = (text: string, onEnded?: () => void, targetVoiceId?: string) => {
     handleStopAudio();
     setIsAudioFetching(true);
@@ -548,18 +566,19 @@ export function AuthenticCBTExamPage() {
     const voiceId = targetVoiceId || persona?.voiceId;
     const isMale = persona?.gender === "male" || (persona?.gender !== "female" && (activeSpeakingTaskIdx === 1 || /\b(monsieur|m\.|homme|paul|léo|marc|antoine|pierre|thomas|hugo|louis|henri|jean)\b/i.test(text)));
 
+    const dynamicTimeoutMs = Math.max(25000, (text || '').length * 150 + 5000);
     let finished = false;
     let safetyTimer: ReturnType<typeof setTimeout> | null = setTimeout(() => {
       if (!finished) {
         finished = true;
-        console.warn("[Speaking Engine] Examiner audio safety timeout triggered (10s)");
+        console.warn(`[Speaking Engine] Examiner audio safety timeout triggered (${Math.round(dynamicTimeoutMs / 1000)}s)`);
         setIsAudioFetching(false);
         setIsPlayingAudio(false);
         if (onEnded) {
           try { onEnded(); } catch {}
         }
       }
-    }, 10000);
+    }, dynamicTimeoutMs);
 
     const handleEnded = () => {
       if (finished) return;
