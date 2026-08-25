@@ -1118,17 +1118,7 @@ export function AuthenticCBTExamPage() {
       startSpeakingTaskSession(activeSpeakingTaskIdx);
     }
 
-    // Auto-popup strategy modal strictly ONCE per section in Practice Mode
-    if (mode === "PRACTICE" && !seenStrategySections[currentSection.type]) {
-      setShowStrategyModal(true);
-      setSeenStrategySections((prev) => {
-        const next = { ...prev, [currentSection.type]: true };
-        try {
-          sessionStorage.setItem(`fp_seen_strategy_${paper.id}`, JSON.stringify(next));
-        } catch {}
-        return next;
-      });
-    }
+    // Strategy guide remains accessible anytime via header button in Practice Mode
   }, [activeSectionIdx, currentSection.durationMins, mode, currentSection.type, paper.id, acceptedSectionDisclaimers]);
 
   // Timer Countdown
