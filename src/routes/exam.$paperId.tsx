@@ -3516,8 +3516,8 @@ export function AuthenticCBTExamPage() {
                     </div>
                   )}
 
-                  {/* Writing Strategy & Trap Alert Display */}
-                  {mode === "PRACTICE" && showHints && (
+                  {/* Writing Strategy & Trap Alert Display (ALWAYS VISIBLE IN PRACTICE MODE ON ALL DEVICES) */}
+                  {mode === "PRACTICE" && (
                     <div className="space-y-2.5">
                       {/* Trap Alert Card */}
                       <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/80 text-xs text-amber-950 dark:text-amber-200 space-y-2 shadow-sm font-sans">
