@@ -474,6 +474,11 @@ export function pauseAudio(): void {
       currentAudioPlayer.pause();
     } catch {}
   }
+  if (mobileAudioContext && mobileAudioContext.state === "running") {
+    try {
+      mobileAudioContext.suspend();
+    } catch {}
+  }
   if (typeof window !== "undefined" && window.speechSynthesis) {
     try {
       window.speechSynthesis.pause();
@@ -495,6 +500,12 @@ export function resumeAudio(): void {
 
   if (currentAudioPlayer && currentAudioPlayer.paused && !currentAudioPlayer.ended && currentAudioPlayer.src) {
     currentAudioPlayer.play().catch(() => {});
+  }
+
+  if (mobileAudioContext && mobileAudioContext.state === "suspended") {
+    try {
+      mobileAudioContext.resume();
+    } catch {}
   }
 
   if (typeof window !== "undefined" && window.speechSynthesis && window.speechSynthesis.paused) {

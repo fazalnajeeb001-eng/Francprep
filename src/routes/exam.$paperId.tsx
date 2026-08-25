@@ -1213,6 +1213,8 @@ export function AuthenticCBTExamPage() {
     playAudioSessionRef.current++;
     ttsStop();
     setIsAudioPaused(false);
+    setIsTimerPaused(false);
+    setIsAudioFinished(false);
   };
 
   // Clean up audio playback when component unmounts (e.g. user leaves page or changes route)
