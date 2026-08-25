@@ -1740,18 +1740,20 @@ GENERAL EXAMINER RULES:
     const fullPrompt = `${conversationPrompt}\n\nExaminer:`;
 
     try {
-      if (apiKey) {
-        const reply = await generateAICompletion({
-          model: 'gpt-4o-mini',
-          prompt: fullPrompt,
-          systemPrompt: systemPrompt,
-          temperature: 0.6,
-          maxTokens: 250,
-        });
+      const reply = await generateAICompletion({
+        model: 'gpt-4o-mini',
+        prompt: fullPrompt,
+        systemPrompt: systemPrompt,
+        temperature: 0.6,
+        maxTokens: 250,
+      });
 
+      if (reply && reply.trim()) {
         return { reply: reply.trim(), model: 'gpt-4o-mini' };
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error("[Speaking Chat] Error generating AI completion:", e);
+    }
 
     return {
       reply: "Très bien, je vous écoute. Pouvez-vous me poser votre prochaine question ou préciser votre pensée ?",

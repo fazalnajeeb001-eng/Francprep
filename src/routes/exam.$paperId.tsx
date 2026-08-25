@@ -645,17 +645,10 @@ export function AuthenticCBTExamPage() {
           ...prev,
           [taskId]: [...updatedMessages, { sender: 'examiner' as const, text: replyText }],
         }));
-        handlePlayExaminerAudio(replyText, () => {
-          setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
-          // Auto re-arm candidate mic for next turn if speaking timer is active
-          if ((oralSpeakingTimeRemaining[taskId] || 0) > 0) {
-            try {
-              if (!recordingSpeaking[taskId]) {
-                handleToggleSpeakingRecording(taskId);
-              }
-            } catch { }
-          }
-        });
+        setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
+        // Clear input box so student is ready for turn #2
+        setSpeakingTranscripts((prev) => ({ ...prev, [taskId]: "" }));
+        handlePlayExaminerAudio(replyText);
         return;
       }
     } catch (e) {
