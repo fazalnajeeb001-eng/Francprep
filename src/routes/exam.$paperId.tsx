@@ -598,11 +598,23 @@ export function AuthenticCBTExamPage() {
         content: m.text,
       }));
 
-      const res = await apiFetch("/writing/speaking-chat", {
+      const paperNum = paper?.paperNumber || 1;
+      const masterTask = MASTER_SPEAKING_BANK[paperNum]?.[activeSpeakingTaskIdx];
+      const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
+      const persona = activeTask?.examinerPersona || masterTask?.examinerPersona;
+      const examinerName = persona?.name || "Examiner Élodie";
+      const examinerRole = persona?.role || "Examinatrice certifiée FEI — Format TCF Canada";
+      const taskTitle = activeTask?.title || masterTask?.title || "Tâche 1";
+
+      const res = await apiFetch("/speaking/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: messagesPayload,
+          taskTitle,
+          scenarioText: scenarioText || activeTask?.scenario || masterTask?.scenario || "TCF Oral Interaction",
+          examinerName,
+          examinerRole,
           lessonLevel: "B2",
           lessonTopic: scenarioText || "TCF Oral Interaction",
           targetLanguage: "French",

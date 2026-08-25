@@ -1744,7 +1744,7 @@ GENERAL EXAMINER RULES:
         const reply = await generateAICompletion({
           model: 'gpt-4o-mini',
           prompt: fullPrompt,
-          systemPrompt: systemMessage.content,
+          systemPrompt: systemPrompt,
           temperature: 0.6,
           maxTokens: 250,
         });

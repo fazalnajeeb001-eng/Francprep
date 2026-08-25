@@ -492,8 +492,6 @@ export async function generateNeuralAudio(
     return null;
   };
 
-  };
-
   // EXECUTION ROUTING FOR TEST PREVIEW
   if (forcedProvider) {
     if (forcedProvider === 'elevenlabs') {
