@@ -68,7 +68,7 @@ export async function apiFetch(
     // to prevent TanStack Start / Nitro SSR loaders from crashing with unhandled HTTPError!
     if (res.status >= 500 || (isServer && !res.ok)) {
       console.warn(`[apiFetch Proxy Guard] Intercepted HTTP ${res.status} for ${path}. Returning graceful JSON fallback.`);
-      return new Response(JSON.stringify({ success: false, fallback: true, error: `Backend Status ${res.status}` }), {
+      return new Response(JSON.stringify({ success: false, fallback: true, status: res.status, error: `Backend Status ${res.status}` }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
@@ -77,7 +77,7 @@ export async function apiFetch(
     return res;
   } catch (err: any) {
     console.warn("[apiFetch Fallback]", err?.message || err);
-    return new Response(JSON.stringify({ success: false, fallback: true, error: err?.message || "Service unavailable" }), {
+    return new Response(JSON.stringify({ success: false, fallback: true, status: 500, error: err?.message || "Service unavailable" }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });

@@ -24,31 +24,37 @@ export function unlockAudioEngine(): void {
     masterAudioPlayer.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
     masterAudioPlayer.play().catch(() => {});
 
-    // Initialize silent Web Audio Context keep-alive stream for mobile browsers (iOS Safari / Mobile Chrome)
-    const isMobileDevice = typeof navigator !== "undefined" && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    if (isMobileDevice) {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      if (AudioCtx) {
-        if (!mobileAudioContext || mobileAudioContext.state === "closed") {
-          mobileAudioContext = new AudioCtx();
-        }
-        if (mobileAudioContext.state === "suspended") {
-          mobileAudioContext.resume();
-        }
-        // Create continuous silent oscillator loop to keep WebKit audio session active across Q1 -> Q39
+    // Initialize silent Web Audio Context keep-alive stream for mobile and desktop browsers
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (AudioCtx) {
+      if (!mobileAudioContext || mobileAudioContext.state === "closed") {
+        mobileAudioContext = new AudioCtx();
+      }
+      if (mobileAudioContext.state === "suspended") {
+        mobileAudioContext.resume().catch(() => {});
+      }
+      // Create continuous silent oscillator loop to keep WebKit audio session active
+      try {
         const osc = mobileAudioContext.createOscillator();
         const gain = mobileAudioContext.createGain();
         gain.gain.value = 0.0001; // Silent gain
         osc.connect(gain);
         gain.connect(mobileAudioContext.destination);
         osc.start();
-      }
+      } catch {}
     }
   } catch {}
 }
 
 // Stop audio automatically when user navigates away, closes tab, or switches pages!
+// Also attach sitewide user gesture listener to automatically unlock audio permissions!
 if (typeof window !== "undefined") {
+  const handleUserGestureUnlock = () => {
+    unlockAudioEngine();
+  };
+  window.addEventListener("click", handleUserGestureUnlock, { capture: true });
+  window.addEventListener("touchstart", handleUserGestureUnlock, { capture: true });
+  window.addEventListener("pointerdown", handleUserGestureUnlock, { capture: true });
   window.addEventListener("pagehide", () => stopAudio());
   window.addEventListener("beforeunload", () => stopAudio());
   window.addEventListener("popstate", () => stopAudio());
@@ -120,18 +126,33 @@ export function speak(
   currentAudioPlayer = audio;
   if (onPlaybackStateChange) onPlaybackStateChange(true);
 
-  audio.onended = () => {
-    activeAudioPlayers.delete(audio);
-    if (currentAudioPlayer === audio) currentAudioPlayer = null;
-    if (onPlaybackStateChange) onPlaybackStateChange(false);
-    if (onEnded) onEnded();
+  let hasTriggeredEnded = false;
+  const safeOnEnded = () => {
+    if (!hasTriggeredEnded) {
+      hasTriggeredEnded = true;
+      if (lineTimeoutId) {
+        clearTimeout(lineTimeoutId);
+        lineTimeoutId = null;
+      }
+      activeAudioPlayers.delete(audio);
+      if (currentAudioPlayer === audio) currentAudioPlayer = null;
+      if (onPlaybackStateChange) onPlaybackStateChange(false);
+      if (onEnded) onEnded();
+    }
   };
-  audio.onerror = () => {
-    activeAudioPlayers.delete(audio);
-    if (currentAudioPlayer === audio) currentAudioPlayer = null;
-    if (onPlaybackStateChange) onPlaybackStateChange(false);
-    if (onEnded) onEnded();
-  };
+
+  audio.onended = safeOnEnded;
+  audio.onerror = safeOnEnded;
+
+  // Maximum safety timeout (8s min, max 20s) to guarantee UI and timers are never locked indefinitely
+  const maxSafetyTimeout = Math.min(20000, Math.max(8000, cleanText.length * 120));
+  if (lineTimeoutId) clearTimeout(lineTimeoutId);
+  lineTimeoutId = setTimeout(() => {
+    if (myDialogueId === currentDialogueId) {
+      console.warn("[Speech Safety Guard] Force releasing audio state after timeout");
+      safeOnEnded();
+    }
+  }, maxSafetyTimeout);
 
   // Call neural TTS backend service (which routes to Kokoro-82M, ElevenLabs, or OpenAI)
   apiFetch("/tts/speak", {
@@ -210,10 +231,7 @@ export function speak(
               sourceNode.onended = () => {
                 if (activeSourceNode === sourceNode) {
                   activeSourceNode = null;
-                  activeAudioPlayers.delete(audio);
-                  if (currentAudioPlayer === audio) currentAudioPlayer = null;
-                  if (onPlaybackStateChange) onPlaybackStateChange(false);
-                  if (onEnded) onEnded();
+                  safeOnEnded();
                 }
               };
 
@@ -286,6 +304,7 @@ function playWebSpeechFallback(
   onEnded?: () => void
 ) {
   if (typeof window === "undefined" || !window.speechSynthesis) {
+    if (onPlaybackStateChange) onPlaybackStateChange(false);
     if (onEnded) onEnded();
     return;
   }
@@ -293,27 +312,65 @@ function playWebSpeechFallback(
   try {
     window.speechSynthesis.cancel();
     const cleanText = text.replace(/[*_#`]/g, '').trim();
+    if (!cleanText) {
+      if (onPlaybackStateChange) onPlaybackStateChange(false);
+      if (onEnded) onEnded();
+      return;
+    }
+
     const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.lang = langCode.startsWith("fr") ? "fr-FR" : langCode;
+    utterance.lang = langCode.startsWith("fr") ? "fr-FR" : (langCode.startsWith("de") ? "de-DE" : (langCode.startsWith("es") ? "es-ES" : (langCode.startsWith("it") ? "it-IT" : "en-US")));
     utterance.rate = rate;
 
-    const voices = window.speechSynthesis.getVoices();
-    const frVoice = voices.find(v => v.lang.startsWith("fr") && (gender === "male" ? /male|paul|hugo|thomas|jacques/i.test(v.name) : /female|hortense|amelie|julie|celeste/i.test(v.name))) || voices.find(v => v.lang.startsWith("fr"));
-    if (frVoice) utterance.voice = frVoice;
-
-    utterance.onend = () => {
-      if (onPlaybackStateChange) onPlaybackStateChange(false);
-      if (onEnded) onEnded();
+    let hasEnded = false;
+    const safeEnd = () => {
+      if (!hasEnded) {
+        hasEnded = true;
+        if (onPlaybackStateChange) onPlaybackStateChange(false);
+        if (onEnded) onEnded();
+      }
     };
 
-    utterance.onerror = () => {
-      if (onPlaybackStateChange) onPlaybackStateChange(false);
-      if (onEnded) onEnded();
+    utterance.onend = safeEnd;
+    utterance.onerror = safeEnd;
+
+    const executeSpeak = () => {
+      try {
+        const voices = window.speechSynthesis.getVoices();
+        const targetLangPrefix = langCode.split('-')[0].toLowerCase();
+        const matchingVoice = voices.find(v => v.lang.toLowerCase().startsWith(targetLangPrefix) && (gender === "male" ? /male|paul|hugo|thomas|jacques|daniel|henri/i.test(v.name) : /female|hortense|amelie|julie|celeste|denise|sarah/i.test(v.name))) 
+          || voices.find(v => v.lang.toLowerCase().startsWith(targetLangPrefix))
+          || voices[0];
+        if (matchingVoice) utterance.voice = matchingVoice;
+
+        if (onPlaybackStateChange) onPlaybackStateChange(true);
+        window.speechSynthesis.speak(utterance);
+
+        // Fallback safety timeout for Web Speech API in case browser drops onend event
+        const webSpeechTimeout = Math.max(5000, cleanText.length * 100);
+        setTimeout(safeEnd, webSpeechTimeout);
+      } catch {
+        safeEnd();
+      }
     };
 
-    if (onPlaybackStateChange) onPlaybackStateChange(true);
-    window.speechSynthesis.speak(utterance);
+    // Chromium requires a 50ms pause after cancel() before starting a new utterance
+    setTimeout(() => {
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length === 0 && window.speechSynthesis.onvoiceschanged !== undefined) {
+        const originalOnVoices = window.speechSynthesis.onvoiceschanged;
+        window.speechSynthesis.onvoiceschanged = (e) => {
+          if (originalOnVoices) try { (originalOnVoices as any).call(window.speechSynthesis, e); } catch {}
+          window.speechSynthesis.onvoiceschanged = null;
+          executeSpeak();
+        };
+        setTimeout(executeSpeak, 300);
+      } else {
+        executeSpeak();
+      }
+    }, 50);
   } catch {
+    if (onPlaybackStateChange) onPlaybackStateChange(false);
     if (onEnded) onEnded();
   }
 }
