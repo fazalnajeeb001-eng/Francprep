@@ -708,6 +708,15 @@ export function AuthenticCBTExamPage() {
             : "Bonjour ! Bienvenue dans la troisième tâche. Vous allez exprimer votre point de vue de manière fluide et argumentée sur ce sujet de société pendant environ 3 minutes, puis nous en débattrons ensemble. Présentez-moi vos arguments et votre position."
       );
 
+      // Pre-populate chatbox with examiner opening preamble as Message #1
+      setSpeakingDialogueMap((prev) => {
+        if (prev[task.id] && prev[task.id].length > 0) return prev;
+        return {
+          ...prev,
+          [task.id]: [{ sender: "examiner", text: openingText }]
+        };
+      });
+
       handlePlayExaminerAudio(openingText);
     }
   };
