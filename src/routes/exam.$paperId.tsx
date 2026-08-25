@@ -544,13 +544,35 @@ export function AuthenticCBTExamPage() {
     const voiceId = targetVoiceId || activeTask?.examinerPersona?.voiceId;
     const isMale = activeTask?.examinerPersona?.gender === "male" || /\b(monsieur|m\.|homme|paul|léo|marc|antoine|pierre|thomas|hugo|louis|henri|jean)\b/i.test(text);
 
+    let finished = false;
+    let safetyTimer: ReturnType<typeof setTimeout> | null = setTimeout(() => {
+      if (!finished) {
+        finished = true;
+        console.warn("[Speaking Engine] Examiner audio safety timeout triggered (10s)");
+        setIsAudioFetching(false);
+        setIsPlayingAudio(false);
+        if (onEnded) {
+          try { onEnded(); } catch {}
+        }
+      }
+    }, 10000);
+
     const handleEnded = () => {
+      if (finished) return;
+      finished = true;
+      if (safetyTimer) {
+        clearTimeout(safetyTimer);
+        safetyTimer = null;
+      }
       setIsAudioFetching(false);
       setIsPlayingAudio(false);
       if (onEnded) onEnded();
     };
 
-    ttsSpeak(text, "fr-FR", 0.9, isMale ? "male" : "female", voiceId, undefined, undefined, handleEnded);
+    // Option A: 1.2-second natural human breathing delay before examiner voice audio speaks
+    setTimeout(() => {
+      ttsSpeak(text, "fr-FR", 0.9, isMale ? "male" : "female", voiceId, undefined, undefined, handleEnded);
+    }, 1200);
   };
 
   const handleSendSpeakingQuestionToExaminer = async (taskId: string, userText: string, scenarioText: string) => {
