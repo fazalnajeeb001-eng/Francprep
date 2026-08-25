@@ -606,7 +606,7 @@ export function AuthenticCBTExamPage() {
       const examinerRole = persona?.role || "Examinatrice certifiée FEI — Format TCF Canada";
       const taskTitle = activeTask?.title || masterTask?.title || "Tâche 1";
 
-      const res = await apiFetch("/speaking/chat", {
+      const res = await apiFetch("/writing/speaking-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
