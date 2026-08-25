@@ -21,21 +21,27 @@ export function unlockAudioEngine(): void {
     if (!masterAudioPlayer) {
       masterAudioPlayer = new Audio();
     }
-    // Safety guard: NEVER overwrite masterAudioPlayer.src if audio is actively playing!
-    if (masterAudioPlayer.src && !masterAudioPlayer.paused && masterAudioPlayer.currentTime > 0) {
-      return;
-    }
     masterAudioPlayer.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
     masterAudioPlayer.play().catch(() => {});
 
-    // Initialize silent Web Audio Context keep-alive stream for mobile and desktop browsers
-    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-    if (AudioCtx) {
-      if (!mobileAudioContext || mobileAudioContext.state === "closed") {
-        mobileAudioContext = new AudioCtx();
-      }
-      if (mobileAudioContext.state === "suspended") {
-        mobileAudioContext.resume().catch(() => {});
+    // Initialize silent Web Audio Context keep-alive stream for mobile browsers (iOS Safari / Mobile Chrome)
+    const isMobileDevice = typeof navigator !== "undefined" && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobileDevice) {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (AudioCtx) {
+        if (!mobileAudioContext || mobileAudioContext.state === "closed") {
+          mobileAudioContext = new AudioCtx();
+        }
+        if (mobileAudioContext.state === "suspended") {
+          mobileAudioContext.resume();
+        }
+        // Create continuous silent oscillator loop to keep WebKit audio session active across Q1 -> Q39
+        const osc = mobileAudioContext.createOscillator();
+        const gain = mobileAudioContext.createGain();
+        gain.gain.value = 0.0001; // Silent gain
+        osc.connect(gain);
+        gain.connect(mobileAudioContext.destination);
+        osc.start();
       }
     }
   } catch {}
@@ -114,33 +120,18 @@ export function speak(
   currentAudioPlayer = audio;
   if (onPlaybackStateChange) onPlaybackStateChange(true);
 
-  let hasTriggeredEnded = false;
-  const safeOnEnded = () => {
-    if (!hasTriggeredEnded) {
-      hasTriggeredEnded = true;
-      if (lineTimeoutId) {
-        clearTimeout(lineTimeoutId);
-        lineTimeoutId = null;
-      }
-      activeAudioPlayers.delete(audio);
-      if (currentAudioPlayer === audio) currentAudioPlayer = null;
-      if (onPlaybackStateChange) onPlaybackStateChange(false);
-      if (onEnded) onEnded();
-    }
+  audio.onended = () => {
+    activeAudioPlayers.delete(audio);
+    if (currentAudioPlayer === audio) currentAudioPlayer = null;
+    if (onPlaybackStateChange) onPlaybackStateChange(false);
+    if (onEnded) onEnded();
   };
-
-  audio.onended = safeOnEnded;
-  audio.onerror = safeOnEnded;
-
-  // Maximum safety timeout (8s min, max 20s) to guarantee UI and timers are never locked indefinitely
-  const maxSafetyTimeout = Math.min(20000, Math.max(8000, cleanText.length * 120));
-  if (lineTimeoutId) clearTimeout(lineTimeoutId);
-  lineTimeoutId = setTimeout(() => {
-    if (myDialogueId === currentDialogueId) {
-      console.warn("[Speech Safety Guard] Force releasing audio state after timeout");
-      safeOnEnded();
-    }
-  }, maxSafetyTimeout);
+  audio.onerror = () => {
+    activeAudioPlayers.delete(audio);
+    if (currentAudioPlayer === audio) currentAudioPlayer = null;
+    if (onPlaybackStateChange) onPlaybackStateChange(false);
+    if (onEnded) onEnded();
+  };
 
   // Call neural TTS backend service (which routes to Kokoro-82M, ElevenLabs, or OpenAI)
   apiFetch("/tts/speak", {
@@ -219,7 +210,10 @@ export function speak(
               sourceNode.onended = () => {
                 if (activeSourceNode === sourceNode) {
                   activeSourceNode = null;
-                  safeOnEnded();
+                  activeAudioPlayers.delete(audio);
+                  if (currentAudioPlayer === audio) currentAudioPlayer = null;
+                  if (onPlaybackStateChange) onPlaybackStateChange(false);
+                  if (onEnded) onEnded();
                 }
               };
 
@@ -262,105 +256,23 @@ export function speak(
             audio.preservesPitch = true;
           }).catch(() => {
             if (myDialogueId === currentDialogueId && !isAudioPausedState) {
-              playWebSpeechFallback(cleanText, langCode, rate, finalGender, onEnded);
+              playDirectHDFallback(cleanText, langCode, rate, audio, finalGender, onEnded);
             }
           });
           return;
         }
       }
       if (myDialogueId === currentDialogueId && !isAudioPausedState) {
-        playWebSpeechFallback(cleanText, langCode, rate, finalGender, onEnded);
+        playDirectHDFallback(cleanText, langCode, rate, audio, finalGender, onEnded);
       }
     })
     .catch(() => {
       if (myDialogueId === currentDialogueId && !isAudioPausedState) {
-        playWebSpeechFallback(cleanText, langCode, rate, finalGender, onEnded);
+        playDirectHDFallback(cleanText, langCode, rate, audio, finalGender, onEnded);
       }
     });
 
   return true;
-}
-
-/**
- * Robust Client-Side Web Speech API Fallback (Guarantees Examiner Voice Never Fails Silently)
- */
-function playWebSpeechFallback(
-  text: string,
-  langCode: string = "fr",
-  rate: number = 0.9,
-  gender: "female" | "male" = "female",
-  onEnded?: () => void
-) {
-  if (typeof window === "undefined" || !window.speechSynthesis) {
-    if (onPlaybackStateChange) onPlaybackStateChange(false);
-    if (onEnded) onEnded();
-    return;
-  }
-
-  try {
-    window.speechSynthesis.cancel();
-    const cleanText = text.replace(/[*_#`]/g, '').trim();
-    if (!cleanText) {
-      if (onPlaybackStateChange) onPlaybackStateChange(false);
-      if (onEnded) onEnded();
-      return;
-    }
-
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.lang = langCode.startsWith("fr") ? "fr-FR" : (langCode.startsWith("de") ? "de-DE" : (langCode.startsWith("es") ? "es-ES" : (langCode.startsWith("it") ? "it-IT" : "en-US")));
-    utterance.rate = rate;
-
-    let hasEnded = false;
-    const safeEnd = () => {
-      if (!hasEnded) {
-        hasEnded = true;
-        if (onPlaybackStateChange) onPlaybackStateChange(false);
-        if (onEnded) onEnded();
-      }
-    };
-
-    utterance.onend = safeEnd;
-    utterance.onerror = safeEnd;
-
-    const executeSpeak = () => {
-      try {
-        const voices = window.speechSynthesis.getVoices();
-        const targetLangPrefix = langCode.split('-')[0].toLowerCase();
-        const matchingVoice = voices.find(v => v.lang.toLowerCase().startsWith(targetLangPrefix) && (gender === "male" ? /male|paul|hugo|thomas|jacques|daniel|henri/i.test(v.name) : /female|hortense|amelie|julie|celeste|denise|sarah/i.test(v.name))) 
-          || voices.find(v => v.lang.toLowerCase().startsWith(targetLangPrefix))
-          || voices[0];
-        if (matchingVoice) utterance.voice = matchingVoice;
-
-        if (onPlaybackStateChange) onPlaybackStateChange(true);
-        window.speechSynthesis.speak(utterance);
-
-        // Fallback safety timeout for Web Speech API in case browser drops onend event
-        const webSpeechTimeout = Math.max(5000, cleanText.length * 100);
-        setTimeout(safeEnd, webSpeechTimeout);
-      } catch {
-        safeEnd();
-      }
-    };
-
-    // Chromium requires a 50ms pause after cancel() before starting a new utterance
-    setTimeout(() => {
-      const voices = window.speechSynthesis.getVoices();
-      if (voices.length === 0 && window.speechSynthesis.onvoiceschanged !== undefined) {
-        const originalOnVoices = window.speechSynthesis.onvoiceschanged;
-        window.speechSynthesis.onvoiceschanged = (e) => {
-          if (originalOnVoices) try { (originalOnVoices as any).call(window.speechSynthesis, e); } catch {}
-          window.speechSynthesis.onvoiceschanged = null;
-          executeSpeak();
-        };
-        setTimeout(executeSpeak, 300);
-      } else {
-        executeSpeak();
-      }
-    }, 50);
-  } catch {
-    if (onPlaybackStateChange) onPlaybackStateChange(false);
-    if (onEnded) onEnded();
-  }
 }
 
 /**
@@ -494,10 +406,6 @@ export function stopAudio(): void {
   }
   activeAudioPlayers.forEach((player) => {
     try {
-      player.onended = null;
-      player.onerror = null;
-      player.oncanplay = null;
-      player.onplay = null;
       player.pause();
       player.src = "";
       player.currentTime = 0;
@@ -506,10 +414,6 @@ export function stopAudio(): void {
   activeAudioPlayers.clear();
   if (currentAudioPlayer) {
     try {
-      currentAudioPlayer.onended = null;
-      currentAudioPlayer.onerror = null;
-      currentAudioPlayer.oncanplay = null;
-      currentAudioPlayer.onplay = null;
       currentAudioPlayer.pause();
       currentAudioPlayer.src = "";
       currentAudioPlayer.currentTime = 0;
