@@ -524,8 +524,6 @@ export function AuthenticCBTExamPage() {
               const metrics = acousticAnalyzer.stopAnalysis(wordCount);
               setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
             }
-            // Auto announce completion of task speaking time & auto-advance task tab
-            handlePlayExaminerAudio("Le temps d'expression orale pour cette tâche est écoulé. Passons à la tâche suivante.");
             setActiveSpeakingTaskIdx((prevIdx) => Math.min(2, prevIdx + 1));
           }
         });
@@ -666,12 +664,12 @@ export function AuthenticCBTExamPage() {
     setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
   };
 
+  const hasPlayedIntroRef = useRef<Record<string, boolean>>({});
+
   const startSpeakingTaskSession = (idx: number) => {
     try {
       unlockAudioEngine();
     } catch { }
-    setIsAudioFetching(true);
-    setIsPlayingAudio(true);
     const tasks = currentSection?.speakingTasks;
     if (!tasks || tasks.length === 0) {
       setIsAudioFetching(false);
@@ -685,65 +683,32 @@ export function AuthenticCBTExamPage() {
       return;
     }
 
-    const openingText = task.examinerPersona?.openingPromptFrench || (
-      idx === 0 || task.title?.includes("Tâche 1")
-        ? "Bonjour ! Bienvenue à l'épreuve d'expression orale du TCF Canada. Je suis votre examinateur. Pour cette première tâche sans préparation, nous allons faire un entretien dirigé de 2 minutes. Pouvez-vous vous présenter, me parler de votre parcours professionnel et de vos motivations pour le Canada ?"
-        : idx === 1 || task.title?.includes("Tâche 2")
-          ? "Bonjour ! Bienvenue dans la deuxième tâche. Vous disposez de 2 minutes de préparation pour prendre connaissance du document support et préparer vos questions. Ensuite, nous échangerons pendant 3 minutes et demie. Je vous écoute, quelles sont vos questions ?"
-          : "Bonjour ! Bienvenue dans la troisième tâche. Vous allez exprimer votre point de vue de manière fluide et argumentée sur ce sujet de société pendant environ 3 minutes, puis nous en débattrons ensemble. Présentez-moi vos arguments et votre position."
-    );
-
-    let sessionTimerHandled = false;
     if (speakingFallbackTimerRef.current) {
       clearTimeout(speakingFallbackTimerRef.current);
       speakingFallbackTimerRef.current = null;
     }
 
     if (task.prepTimeMins > 0) {
-      // Tâche 2 (Interaction with prep time):
-      // Preparation Timer starts ONLY AFTER examiner prompt audio finishes speaking!
-      const startPrepAfterAudio = () => {
-        if (!sessionTimerHandled) {
-          sessionTimerHandled = true;
-          if (speakingFallbackTimerRef.current) {
-            clearTimeout(speakingFallbackTimerRef.current);
-            speakingFallbackTimerRef.current = null;
-          }
-          handleStartPrepTimer(task.id, task.prepTimeMins);
-        }
-      };
-
-      handlePlayExaminerAudio(openingText, startPrepAfterAudio);
-
-      // Fallback safety (20s) in case browser blocks audio auto-play
-      speakingFallbackTimerRef.current = setTimeout(() => {
-        startPrepAfterAudio();
-      }, 20000);
+      handleStartPrepTimer(task.id, task.prepTimeMins);
     } else {
-      // Tâche 1 & Tâche 3 (Direct speaking without prep time):
-      // Speaking Timer & Microphone Recording start ONLY AFTER examiner prompt audio finishes speaking!
-      const startSpeakingAfterAudio = () => {
-        if (!sessionTimerHandled) {
-          sessionTimerHandled = true;
-          if (speakingFallbackTimerRef.current) {
-            clearTimeout(speakingFallbackTimerRef.current);
-            speakingFallbackTimerRef.current = null;
-          }
-          handleStartSpeakingTimer(task.id, task.speakingTimeMins);
-          try {
-            if (!recordingSpeaking[task.id]) {
-              handleToggleSpeakingRecording(task.id);
-            }
-          } catch { }
-        }
-      };
+      handleStartSpeakingTimer(task.id, task.speakingTimeMins);
+    }
 
-      handlePlayExaminerAudio(openingText, startSpeakingAfterAudio);
+    // Play opening preamble ONLY ONCE per task session
+    if (!hasPlayedIntroRef.current[task.id]) {
+      hasPlayedIntroRef.current[task.id] = true;
+      setIsAudioFetching(true);
+      setIsPlayingAudio(true);
 
-      // Fallback safety (20s) in case browser blocks audio auto-play
-      speakingFallbackTimerRef.current = setTimeout(() => {
-        startSpeakingAfterAudio();
-      }, 20000);
+      const openingText = task.examinerPersona?.openingPromptFrench || (
+        idx === 0 || task.title?.includes("Tâche 1")
+          ? "Bonjour ! Bienvenue à l'épreuve d'expression orale du TCF Canada. Je suis votre examinateur. Pour cette première tâche sans préparation, nous allons faire un entretien dirigé de 2 minutes. Pouvez-vous vous présenter, me parler de votre parcours professionnel et de vos motivations pour le Canada ?"
+          : idx === 1 || task.title?.includes("Tâche 2")
+            ? "Bonjour ! Bienvenue dans la deuxième tâche. Vous disposez de 2 minutes de préparation pour prendre connaissance du document support et préparer vos questions. Ensuite, nous échangerons pendant 3 minutes et demie. Je vous écoute, quelles sont vos questions ?"
+            : "Bonjour ! Bienvenue dans la troisième tâche. Vous allez exprimer votre point de vue de manière fluide et argumentée sur ce sujet de société pendant environ 3 minutes, puis nous en débattrons ensemble. Présentez-moi vos arguments et votre position."
+      );
+
+      handlePlayExaminerAudio(openingText);
     }
   };
 
