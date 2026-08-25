@@ -1195,12 +1195,14 @@ export function AuthenticCBTExamPage() {
         const fullText = currentQ.transcript || currentQ.text;
         const currentSession = playAudioSessionRef.current;
 
-        // 12.0s Fail-Safe Watchdog: Ensures isAudioFinished fires after 12.0s if network drops completely
+        // Dynamic Fail-Safe Watchdog: Ensures isAudioFinished only fires if network drops completely after full text length duration (45s+ for long Q1-Q8 prompts)
+        const dynamicWatchdogMs = Math.max(45000, (fullText?.length || 100) * 150);
         const watchdogTimer = setTimeout(() => {
           if (playAudioSessionRef.current === currentSession) {
             setIsAudioFinished(true);
+            setFinishedAudioQuestionId(currentQ.id || String(qNum));
           }
-        }, 12000);
+        }, dynamicWatchdogMs);
 
         const timer = setTimeout(() => {
           if (playAudioSessionRef.current !== currentSession) return;
