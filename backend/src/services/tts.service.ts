@@ -628,5 +628,9 @@ export async function generateNeuralAudio(
     }
   }
 
+  // 5. GUARANTEED ZERO-FAIL FALLBACK: Google Neural Audio Stream
+  const googleFallback = await tryGoogle();
+  if (googleFallback) return googleFallback;
+
   return null;
 }
