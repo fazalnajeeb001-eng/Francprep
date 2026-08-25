@@ -2528,9 +2528,9 @@ export function AuthenticCBTExamPage() {
 
       {/* ─── MAIN CBT SPLIT-SCREEN CONTENT WORKSPACE ─── */}
       <main className="flex-1 p-2 sm:p-4 md:p-6 max-w-7xl w-full mx-auto overflow-y-auto">
-        {/* PROMINENT PRACTICE STRATEGY BANNER - Desktop Only (Hidden on mobile < 1024px) */}
+        {/* PROMINENT PRACTICE STRATEGY BANNER - Visible on Mobile Phones, Tablets & Desktop */}
         {mode === "PRACTICE" && (
-          <div className="hidden lg:flex mb-4 p-4 rounded-xl border border-purple-300 dark:border-purple-800 bg-gradient-to-r from-purple-900/90 via-indigo-900/90 to-purple-950 text-white shadow-lg flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="flex mb-4 p-3.5 sm:p-4 rounded-xl border border-purple-300 dark:border-purple-800 bg-gradient-to-r from-purple-900/90 via-indigo-900/90 to-purple-950 text-white shadow-lg flex-col md:flex-row md:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center font-bold shrink-0">
                 <BookOpen className="w-5 h-5 text-purple-300" />
