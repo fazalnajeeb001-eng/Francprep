@@ -2913,114 +2913,131 @@ export function AuthenticCBTExamPage() {
               </div>
 
               {/* Practice Hint Bar - Desktop Only (Mobile uses ergonomic bottom pill above options) */}
-              {mode === "PRACTICE" && ((currentQ as any).trapAlert || (currentQ as any).readingCoach || (currentQ as any).audioCoach || currentQ.explanation || currentQ.hint) && (
-                <div className="hidden lg:block space-y-2">
-                  {!showReadingHint ? (
-                    <button
-                      type="button"
-                      onClick={() => setShowReadingHint(true)}
-                      className="w-full p-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-slate-900 dark:text-slate-100 text-xs font-bold flex items-center justify-between shadow-sm transition-all cursor-pointer group"
-                    >
-                      <span className="flex items-center gap-2 text-amber-800 dark:text-amber-300">
-                        <Sparkles className="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform" />
-                        <span>
-                          {currentSection.type === "COMPREHENSION_ECRITE"
-                            ? "📖 Reading Strategy Coach & Trap Alert"
-                            : "🎧 Audio Coach & Trap Alert"} — Niveau {(currentQ as any).level || 'A1-C2'}
-                        </span>
-                      </span>
-                      <span className="text-[11px] px-2.5 py-1 rounded-lg bg-amber-600/20 text-amber-800 dark:text-amber-200 font-mono font-bold flex items-center gap-1 group-hover:bg-amber-600/30 transition-colors">
-                        <span>Afficher les conseils</span>
-                        <span>▼</span>
-                      </span>
-                    </button>
-                  ) : (
-                    <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-slate-900 dark:text-slate-100 text-xs space-y-3 shadow-sm transition-all">
-                      <div className="flex items-center justify-between border-b border-amber-500/20 pb-2">
-                        <span className="font-extrabold flex items-center gap-1.5 text-amber-700 dark:text-amber-400 text-xs sm:text-sm">
-                          <Sparkles className="w-4 h-4" />
+              {(() => {
+                const paperNum = paper?.paperNumber || 1;
+                const guidanceKey = `p${paperNum}_q${currentQ.questionNumber}`;
+                const bankEntry = READING_GUIDANCE_BANK[guidanceKey];
+
+                const activeTrapAlert = bankEntry?.trapAlert || (currentQ as any).trapAlert;
+                const activeTrapAlertEn = bankEntry?.trapAlertEn || (currentQ as any).trapAlertEn;
+                const activeReadingCoach = bankEntry?.readingCoach || (currentQ as any).readingCoach || (currentQ as any).audioCoach;
+                const activeReadingCoachEn = bankEntry?.readingCoachEn || (currentQ as any).readingCoachEn || (currentQ as any).audioCoachEn;
+                const activeExplanation = bankEntry?.detailedExplanation || currentQ.explanation || (currentQ as any).hint;
+                const activeExplanationEn = bankEntry?.detailedExplanationEn || (currentQ as any).detailedExplanationEn || (currentQ as any).explanationEnglish;
+
+                if (mode !== "PRACTICE" || (!activeTrapAlert && !activeReadingCoach && !activeExplanation && !currentQ.hint)) {
+                  return null;
+                }
+
+                return (
+                  <div className="hidden lg:block space-y-2">
+                    {!showReadingHint ? (
+                      <button
+                        type="button"
+                        onClick={() => setShowReadingHint(true)}
+                        className="w-full p-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-slate-900 dark:text-slate-100 text-xs font-bold flex items-center justify-between shadow-sm transition-all cursor-pointer group"
+                      >
+                        <span className="flex items-center gap-2 text-amber-800 dark:text-amber-300">
+                          <Sparkles className="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform" />
                           <span>
                             {currentSection.type === "COMPREHENSION_ECRITE"
                               ? "📖 Reading Strategy Coach & Trap Alert"
                               : "🎧 Audio Coach & Trap Alert"} — Niveau {(currentQ as any).level || 'A1-C2'}
                           </span>
                         </span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] px-2 py-0.5 rounded bg-amber-600/20 text-amber-700 dark:text-amber-300 font-mono font-bold">
-                            Méthodologie TCF
+                        <span className="text-[11px] px-2.5 py-1 rounded-lg bg-amber-600/20 text-amber-800 dark:text-amber-200 font-mono font-bold flex items-center gap-1 group-hover:bg-amber-600/30 transition-colors">
+                          <span>Afficher les conseils</span>
+                          <span>▼</span>
+                        </span>
+                      </button>
+                    ) : (
+                      <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-slate-900 dark:text-slate-100 text-xs space-y-3 shadow-sm transition-all">
+                        <div className="flex items-center justify-between border-b border-amber-500/20 pb-2">
+                          <span className="font-extrabold flex items-center gap-1.5 text-amber-700 dark:text-amber-400 text-xs sm:text-sm">
+                            <Sparkles className="w-4 h-4" />
+                            <span>
+                              {currentSection.type === "COMPREHENSION_ECRITE"
+                                ? "📖 Reading Strategy Coach & Trap Alert"
+                                : "🎧 Audio Coach & Trap Alert"} — Niveau {(currentQ as any).level || 'A1-C2'}
+                            </span>
                           </span>
-                          <button
-                            type="button"
-                            onClick={() => setShowReadingHint(false)}
-                            className="text-[11px] px-2.5 py-1 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 text-amber-800 dark:text-amber-200 font-mono font-bold flex items-center gap-1 cursor-pointer transition-colors"
-                          >
-                            <span>Masquer</span>
-                            <span>▲</span>
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Trap Alert Section */}
-                      {(currentQ as any).trapAlert ? (
-                        <div className="space-y-1.5">
-                          <p className="font-semibold text-slate-900 dark:text-slate-100 leading-relaxed text-xs">
-                            {(currentQ as any).trapAlert}
-                          </p>
-                          {(currentQ as any).trapAlertEn && (
-                            <div className="p-2.5 rounded-lg bg-amber-100/70 dark:bg-amber-950/40 border border-amber-300/80 dark:border-amber-800/60 text-[11px] text-amber-950 dark:text-amber-200 leading-relaxed font-sans">
-                              <span className="font-bold text-amber-800 dark:text-amber-300 mr-1.5">🇬🇧 Translation:</span>
-                              {(currentQ as any).trapAlertEn}
-                            </div>
-                          )}
-                        </div>
-                      ) : null}
-
-                      {/* Strategy Coach Section (Audio or Reading) */}
-                      {((currentQ as any).readingCoach || (currentQ as any).audioCoach) ? (
-                        <div className="space-y-1.5 pt-2.5 border-t border-amber-500/20">
-                          <p className="font-semibold text-slate-900 dark:text-slate-100 leading-relaxed text-xs">
-                            {(currentQ as any).readingCoach || (currentQ as any).audioCoach}
-                          </p>
-                          {((currentQ as any).readingCoachEn || (currentQ as any).audioCoachEn) && (
-                            <div className="p-2.5 rounded-lg bg-blue-100/70 dark:bg-blue-950/40 border border-blue-300/80 dark:border-blue-800/60 text-[11px] text-blue-950 dark:text-blue-200 leading-relaxed font-sans">
-                              <span className="font-bold text-blue-800 dark:text-blue-300 mr-1.5">🇬🇧 Translation:</span>
-                              {(currentQ as any).readingCoachEn || (currentQ as any).audioCoachEn}
-                            </div>
-                          )}
-                        </div>
-                      ) : null}
-
-                      {/* Detailed Pedagogical Analysis Section */}
-                      {currentQ.explanation ? (
-                        <div className="space-y-2 pt-2.5 border-t border-amber-500/20">
-                          <div className="flex items-center gap-1.5 font-bold text-purple-900 dark:text-purple-300">
-                            <Sparkles className="w-3.5 h-3.5 text-purple-600" />
-                            <span>Analyse Pédagogique Détaillée</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] px-2 py-0.5 rounded bg-amber-600/20 text-amber-700 dark:text-amber-300 font-mono font-bold">
+                              Méthodologie TCF
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => setShowReadingHint(false)}
+                              className="text-[11px] px-2.5 py-1 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 text-amber-800 dark:text-amber-200 font-mono font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                            >
+                              <span>Masquer</span>
+                              <span>▲</span>
+                            </button>
                           </div>
-                          <div className="p-3 rounded-xl bg-purple-50/80 dark:bg-purple-950/40 border border-purple-200/80 dark:border-purple-800/60 whitespace-pre-line leading-relaxed text-xs font-medium text-slate-900 dark:text-slate-100">
-                            {currentQ.explanation}
-                          </div>
-                          {((currentQ as any).detailedExplanationEn || (currentQ as any).explanationEnglish || (currentQ as any).explanationEn) && (
-                            <div className="p-3 rounded-xl bg-purple-100/70 dark:bg-purple-950/50 border border-purple-300/80 dark:border-purple-800/70 whitespace-pre-line leading-relaxed text-xs font-sans text-purple-950 dark:text-purple-200">
-                              <div className="font-bold text-purple-800 dark:text-purple-300 mb-1 flex items-center gap-1">
-                                <span>🇬🇧 English Pedagogical Translation:</span>
+                        </div>
+
+                        {/* Trap Alert Section */}
+                        {activeTrapAlert ? (
+                          <div className="space-y-1.5">
+                            <p className="font-semibold text-slate-900 dark:text-slate-100 leading-relaxed text-xs">
+                              {activeTrapAlert}
+                            </p>
+                            {activeTrapAlertEn && (
+                              <div className="p-2.5 rounded-lg bg-amber-100/70 dark:bg-amber-950/40 border border-amber-300/80 dark:border-amber-800/60 text-[11px] text-amber-950 dark:text-amber-200 leading-relaxed font-sans">
+                                <span className="font-bold text-amber-800 dark:text-amber-300 mr-1.5">🇬🇧 Translation:</span>
+                                {activeTrapAlertEn}
                               </div>
-                              {(currentQ as any).detailedExplanationEn || (currentQ as any).explanationEnglish || (currentQ as any).explanationEn}
-                            </div>
-                          )}
-                        </div>
-                      ) : null}
+                            )}
+                          </div>
+                        ) : null}
 
-                      {/* Fallback for other sections (e.g. Reading/Writing) */}
-                      {!(currentQ as any).trapAlert && !currentQ.explanation && currentQ.hint && (
-                        <div className="whitespace-pre-line leading-relaxed text-xs font-medium">
-                          {currentQ.hint}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
+                        {/* Strategy Coach Section (Audio or Reading) */}
+                        {activeReadingCoach ? (
+                          <div className="space-y-1.5 pt-2.5 border-t border-amber-500/20">
+                            <p className="font-semibold text-slate-900 dark:text-slate-100 leading-relaxed text-xs">
+                              {activeReadingCoach}
+                            </p>
+                            {activeReadingCoachEn && (
+                              <div className="p-2.5 rounded-lg bg-blue-100/70 dark:bg-blue-950/40 border border-blue-300/80 dark:border-blue-800/60 text-[11px] text-blue-950 dark:text-blue-200 leading-relaxed font-sans">
+                                <span className="font-bold text-blue-800 dark:text-blue-300 mr-1.5">🇬🇧 Translation:</span>
+                                {activeReadingCoachEn}
+                              </div>
+                            )}
+                          </div>
+                        ) : null}
+
+                        {/* Detailed Pedagogical Analysis Section */}
+                        {activeExplanation ? (
+                          <div className="space-y-2 pt-2.5 border-t border-amber-500/20">
+                            <div className="flex items-center gap-1.5 font-bold text-purple-900 dark:text-purple-300">
+                              <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+                              <span>Analyse Pédagogique Détaillée</span>
+                            </div>
+                            <div className="p-3 rounded-xl bg-purple-50/80 dark:bg-purple-950/40 border border-purple-200/80 dark:border-purple-800/60 whitespace-pre-line leading-relaxed text-xs font-medium text-slate-900 dark:text-slate-100">
+                              {activeExplanation}
+                            </div>
+                            {activeExplanationEn && (
+                              <div className="p-3 rounded-xl bg-purple-100/70 dark:bg-purple-950/50 border border-purple-300/80 dark:border-purple-800/70 whitespace-pre-line leading-relaxed text-xs font-sans text-purple-950 dark:text-purple-200">
+                                <div className="font-bold text-purple-800 dark:text-purple-300 mb-1 flex items-center gap-1">
+                                  <span>🇬🇧 English Pedagogical Translation:</span>
+                                </div>
+                                {activeExplanationEn}
+                              </div>
+                            )}
+                          </div>
+                        ) : null}
+
+                        {/* Fallback for other sections */}
+                        {!activeTrapAlert && !activeExplanation && currentQ.hint && (
+                          <div className="whitespace-pre-line leading-relaxed text-xs font-medium">
+                            {currentQ.hint}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
 
             {/* RIGHT PANEL: QUESTION & OPTIONS SELECTOR (5 COLS) */}
