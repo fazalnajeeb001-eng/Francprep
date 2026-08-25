@@ -3827,6 +3827,9 @@ export function AuthenticCBTExamPage() {
                 <button
                   key={t.id}
                   onClick={() => {
+                    if (currentSection.type === "EXPRESSION_ORALE") {
+                      unlockAudioEngine();
+                    }
                     setActiveSpeakingTaskIdx(idx);
                     startSpeakingTaskSession(idx);
                   }}
@@ -4198,7 +4201,12 @@ export function AuthenticCBTExamPage() {
                               <span>{msg.sender === "examiner" ? `🎙️ ${examinerName}` : "👤 Candidat (Vous)"}</span>
                               {msg.sender === "examiner" && (
                                 <button
-                                  onClick={() => handlePlayExaminerAudio(msg.text)}
+                                  onClick={() => {
+                                    if (currentSection.type === "EXPRESSION_ORALE") {
+                                      unlockAudioEngine();
+                                    }
+                                    handlePlayExaminerAudio(msg.text);
+                                  }}
                                   className="hover:underline flex items-center gap-0.5 cursor-pointer text-purple-800 dark:text-purple-300 font-bold"
                                   title="Réécouter la réponse audio"
                                 >
