@@ -38,6 +38,7 @@ import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
 import { SmartAvatar } from "~/components/dashboard/widgets/SmartAvatar";
 import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } from "~/lib/examSchema";
+import { MASTER_SPEAKING_BANK } from "~/lib/speakingMasterBank";
 import { acousticAnalyzer, type AcousticAnalysisResult } from "~/lib/acousticAnalyzer";
 
 function countFrenchWords(str: string): number {
@@ -540,9 +541,12 @@ export function AuthenticCBTExamPage() {
     setIsAudioFetching(true);
     setIsPlayingAudio(true);
 
+    const paperNum = paper?.paperNumber || 1;
+    const masterTask = MASTER_SPEAKING_BANK[paperNum]?.[activeSpeakingTaskIdx];
     const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
-    const voiceId = targetVoiceId || activeTask?.examinerPersona?.voiceId;
-    const isMale = activeTask?.examinerPersona?.gender === "male" || /\b(monsieur|m\.|homme|paul|léo|marc|antoine|pierre|thomas|hugo|louis|henri|jean)\b/i.test(text);
+    const persona = activeTask?.examinerPersona || masterTask?.examinerPersona;
+    const voiceId = targetVoiceId || persona?.voiceId;
+    const isMale = persona?.gender === "male" || (persona?.gender !== "female" && (activeSpeakingTaskIdx === 1 || /\b(monsieur|m\.|homme|paul|léo|marc|antoine|pierre|thomas|hugo|louis|henri|jean)\b/i.test(text)));
 
     let finished = false;
     let safetyTimer: ReturnType<typeof setTimeout> | null = setTimeout(() => {
@@ -3847,9 +3851,12 @@ export function AuthenticCBTExamPage() {
               const isEvaluating = evaluatingSpeaking[task.id];
               const isChatLoading = speakingChatLoading[task.id];
               const aiEval = speakingAiResults[task.id];
-              const examinerName = task.examinerPersona?.name || (activeSpeakingTaskIdx === 1 ? "M. Laurent Dubois" : "Mme Élodie Martin");
-              const examinerRole = task.examinerPersona?.role || (activeSpeakingTaskIdx === 1 ? "Interlocuteur & Responsable de l'annonce" : "Examinatrice Certifiée FEI — Format TCF Canada");
-              const examinerGender = task.examinerPersona?.gender || (activeSpeakingTaskIdx === 1 ? "male" : "female");
+              const paperNum = paper?.paperNumber || 1;
+              const masterTask = MASTER_SPEAKING_BANK[paperNum]?.[activeSpeakingTaskIdx];
+              const examinerPersona = task.examinerPersona || masterTask?.examinerPersona;
+              const examinerName = examinerPersona?.name || (activeSpeakingTaskIdx === 1 ? "M. Laurent Dubois" : "Mme Élodie Martin");
+              const examinerRole = examinerPersona?.role || (activeSpeakingTaskIdx === 1 ? "Interlocuteur & Responsable de l'annonce" : "Examinatrice Certifiée FEI — Format TCF Canada");
+              const examinerGender = examinerPersona?.gender || (activeSpeakingTaskIdx === 1 ? "male" : "female");
 
               const avatarAnimState = isPlayingAudio ? "speaking" : isRecording ? "speaking" : isChatLoading ? "thinking" : "idle";
 
@@ -3976,32 +3983,37 @@ export function AuthenticCBTExamPage() {
                         </p>
                       </div>
 
-                      {/* Real-time Dynamic Acoustic Equalizer */}
+                      {/* Real-time Dynamic Acoustic Equalizer & Turn Protocol Badges */}
                       <div className="flex items-center gap-2">
-                        {isPlayingAudio ? (
-                          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 text-xs font-mono font-bold">
-                            <Volume2 className="w-4 h-4 animate-pulse text-emerald-400" />
-                            <span>Audio Interlocuteur en cours...</span>
-                            <span className="w-1 h-3 bg-emerald-400 rounded animate-bounce" style={{ animationDelay: '0ms' }} />
-                            <span className="w-1 h-4 bg-emerald-400 rounded animate-bounce" style={{ animationDelay: '150ms' }} />
-                            <span className="w-1 h-2 bg-emerald-400 rounded animate-bounce" style={{ animationDelay: '300ms' }} />
-                          </div>
-                        ) : isRecording ? (
-                          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-950/80 border border-red-500/60 text-red-300 text-xs font-mono font-bold animate-pulse">
-                            <Mic className="w-4 h-4 text-red-400" />
-                            <span>Microphone Candidat Actif — Enregistrement en cours...</span>
-                            <span className="w-1 h-3 bg-red-400 rounded animate-bounce" style={{ animationDelay: '0ms' }} />
-                            <span className="w-1 h-4 bg-red-400 rounded animate-bounce" style={{ animationDelay: '150ms' }} />
+                        {isPlayingAudio || isAudioFetching ? (
+                          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-950/80 border border-blue-500/60 text-blue-300 text-xs font-mono font-bold">
+                            <Volume2 className="w-4 h-4 animate-pulse text-blue-400" />
+                            <span>🔵 L'EXAMINATEUR PARLE... (Chrono suspendu)</span>
+                            <span className="w-1 h-3 bg-blue-400 rounded animate-bounce" style={{ animationDelay: '0ms' }} />
+                            <span className="w-1 h-4 bg-blue-400 rounded animate-bounce" style={{ animationDelay: '150ms' }} />
+                            <span className="w-1 h-2 bg-blue-400 rounded animate-bounce" style={{ animationDelay: '300ms' }} />
                           </div>
                         ) : isChatLoading ? (
                           <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-950/80 border border-amber-500/60 text-amber-300 text-xs font-mono font-bold">
                             <Sparkles className="w-4 h-4 animate-spin text-amber-400" />
-                            <span>Traitement de votre intervention orale...</span>
+                            <span>⚙️ L'EXAMINATEUR RÉFLÉCHIT...</span>
+                          </div>
+                        ) : isOralPrepActive[task.id] ? (
+                          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-950/80 border border-purple-500/60 text-purple-300 text-xs font-mono font-bold animate-pulse">
+                            <Clock className="w-4 h-4 text-purple-400" />
+                            <span>⏳ TEMPS DE PRÉPARATION (Préparez vos questions)</span>
+                          </div>
+                        ) : isRecording ? (
+                          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 text-xs font-mono font-bold animate-pulse">
+                            <Mic className="w-4 h-4 text-emerald-400" />
+                            <span>🟢 VOTRE TOUR DE PARLER — Micro candidat actif...</span>
+                            <span className="w-1 h-3 bg-emerald-400 rounded animate-bounce" style={{ animationDelay: '0ms' }} />
+                            <span className="w-1 h-4 bg-emerald-400 rounded animate-bounce" style={{ animationDelay: '150ms' }} />
                           </div>
                         ) : (
-                          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 text-xs font-mono">
+                          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-900/60 border border-emerald-500/50 text-emerald-300 text-xs font-mono font-bold">
                             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                            <span>Station prête pour l'échange</span>
+                            <span>🟢 VOTRE TOUR DE PARLER</span>
                           </div>
                         )}
                       </div>
