@@ -612,6 +612,7 @@ export function AuthenticCBTExamPage() {
   };
 
   const isChatSendingRef = useRef<Record<string, boolean>>({});
+  const speakingTranscriptsRef = useRef<Record<string, string>>({});
 
   const handleSendSpeakingQuestionToExaminer = async (taskId: string, userText: string, scenarioText: string) => {
     const clean = (userText || '').trim();
@@ -624,7 +625,8 @@ export function AuthenticCBTExamPage() {
       unlockAudioEngine();
     } catch { }
 
-    // Clear transcript state immediately & cancel pending auto-send timers to prevent duplicates
+    // Clear transcript state & ref immediately & cancel pending auto-send timers to prevent duplicates
+    speakingTranscriptsRef.current[taskId] = "";
     setSpeakingTranscripts((prev) => ({ ...prev, [taskId]: "" }));
     if (autoSendTimerRef.current[taskId]) {
       clearTimeout(autoSendTimerRef.current[taskId]);
@@ -960,12 +962,13 @@ export function AuthenticCBTExamPage() {
       for (let i = 0; i < event.results.length; i++) {
         text += event.results[i][0].transcript;
       }
+      speakingTranscriptsRef.current[taskId] = text;
       setSpeakingTranscripts((prev) => ({ ...prev, [taskId]: text }));
     };
 
     recognition.onerror = () => {
       setRecordingSpeaking((prev) => ({ ...prev, [taskId]: false }));
-      const currentText = speakingTranscripts[taskId] || "";
+      const currentText = speakingTranscriptsRef.current[taskId] || speakingTranscripts[taskId] || "";
       const wordCount = countFrenchWords(currentText);
       const metrics = acousticAnalyzer.stopAnalysis(wordCount);
       setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
@@ -973,7 +976,7 @@ export function AuthenticCBTExamPage() {
 
     recognition.onend = () => {
       setRecordingSpeaking((prev) => ({ ...prev, [taskId]: false }));
-      const currentText = speakingTranscripts[taskId] || "";
+      const currentText = speakingTranscriptsRef.current[taskId] || speakingTranscripts[taskId] || "";
       const wordCount = countFrenchWords(currentText);
       const metrics = acousticAnalyzer.stopAnalysis(wordCount);
       setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
@@ -982,7 +985,7 @@ export function AuthenticCBTExamPage() {
       const scenarioText = activeTask?.scenario || "TCF Oral Interaction";
       const clean = currentText.trim();
 
-      if (clean.length >= 5 && !isAudioFetching && !isPlayingAudio && !isChatSendingRef.current[taskId]) {
+      if (clean.length >= 2 && !isAudioFetching && !isPlayingAudio && !isChatSendingRef.current[taskId]) {
         handleSendSpeakingQuestionToExaminer(taskId, clean, scenarioText);
       }
     };
