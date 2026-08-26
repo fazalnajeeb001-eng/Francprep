@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { env } from '../config/env';
-import { authenticate } from '../middleware/auth';
+import { authenticate, optionalAuth } from '../middleware/auth';
 import Settings from '../models/Settings';
 
 const router = Router();
@@ -98,7 +98,7 @@ ${taskRules}
 `;
 }
 
-router.post('/chat', authenticate, async (req: Request, res: Response) => {
+router.post('/chat', optionalAuth, async (req: Request, res: Response) => {
   try {
     const apiKey = await getOpenRouterApiKey();
     if (!apiKey) {

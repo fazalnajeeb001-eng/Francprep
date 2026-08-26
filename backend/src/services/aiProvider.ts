@@ -83,7 +83,7 @@ export async function generateAICompletion({
 
     const modelsToTry = [
       targetModel,
-      'google/gemini-2.0-flash-lite-preview-02-05:free',
+      'google/gemini-2.0-flash-lite:free',
       'meta-llama/llama-3.3-70b-instruct:free',
       'qwen/qwen-2.5-72b-instruct:free',
     ];

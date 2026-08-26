@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { writingController } from '../controllers/writing.controller';
-import { authenticate } from '../middleware/auth';
+import { authenticate, optionalAuth } from '../middleware/auth';
 
 const router = Router();
 
@@ -15,15 +15,15 @@ router.post('/grammar-check', authenticate, (req, res, next) =>
 );
 
 // POST /api/writing/speaking-analysis & /api/writing/analyze-speaking
-router.post('/speaking-analysis', authenticate, (req, res, next) =>
+router.post('/speaking-analysis', optionalAuth, (req, res, next) =>
   writingController.analyzeSpeaking(req, res, next)
 );
-router.post('/analyze-speaking', authenticate, (req, res, next) =>
+router.post('/analyze-speaking', optionalAuth, (req, res, next) =>
   writingController.analyzeSpeaking(req, res, next)
 );
 
 // POST /api/writing/speaking-chat - Interactive dialogue with examiner persona
-router.post('/speaking-chat', authenticate, (req, res, next) =>
+router.post('/speaking-chat', optionalAuth, (req, res, next) =>
   writingController.speakingChat(req, res, next)
 );
 

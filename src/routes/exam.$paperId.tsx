@@ -672,28 +672,55 @@ export function AuthenticCBTExamPage() {
         }),
       });
 
-      const json = await res.json();
-      if (json.success && json.data?.reply) {
-        const replyText = json.data.reply;
-        setSpeakingDialogueMap((prev) => ({
-          ...prev,
-          [taskId]: [...updatedMessages, { sender: 'examiner' as const, text: replyText }],
-        }));
-        setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
-        isChatSendingRef.current[taskId] = false;
+      let replyText = "";
+      try {
+        const json = await res.json();
+        replyText = json?.data?.reply || json?.reply || "";
+      } catch {}
 
-        handlePlayExaminerAudio(replyText, () => {
-          // 1.2s Speaker Echo Decay Buffer before auto-arming candidate mic for Turn #2
-          setTimeout(() => {
-            if (currentSection?.type === "EXPRESSION_ORALE" && !isSubmitted) {
-              handleToggleSpeakingRecording(taskId);
-            }
-          }, 1200);
-        });
-        return;
+      if (!replyText || typeof replyText !== 'string' || !replyText.trim()) {
+        const isTache1 = /tâche\s*1|entretien|dirigé|présentation/i.test(taskTitle);
+        const isTache2 = /tâche\s*2|interaction|questions|document|rôle|roleplay/i.test(taskTitle);
+        if (isTache1) {
+          if (/\b(travail|travaille|emploi|métier|profession|ingénieur|professeur|étudiant|informatique|domaine)\b/i.test(clean)) {
+            replyText = "C'est un parcours très intéressant ! Depuis combien de temps exercez-vous dans ce domaine, et quels sont vos projets professionnels au Canada ?";
+          } else if (/\b(habite|vis|ville|pays|canada|montréal|quebec|toronto|victoria|vancouver)\b/i.test(clean)) {
+            replyText = "Merci pour cette présentation ! Qu'est-ce qui vous plaît le plus dans votre ville actuelle, et pourquoi souhaitez-vous vous installer au Canada ?";
+          } else {
+            replyText = "Merci pour cette réponse ! Pouvez-vous me parler un peu plus de votre parcours et de vos motivations pour vous installer au Canada ?";
+          }
+        } else if (isTache2) {
+          replyText = "Oui absolument, toutes ces modalités sont tout à fait adaptées selon vos besoins. Avez-vous d'autres questions ?";
+        } else {
+          replyText = "Je comprends tout à fait votre point de vue, cependant ne pensez-vous pas que cette situation comporte aussi certains risques ?";
+        }
       }
+
+      setSpeakingDialogueMap((prev) => ({
+        ...prev,
+        [taskId]: [...updatedMessages, { sender: 'examiner' as const, text: replyText }],
+      }));
+      setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
+      isChatSendingRef.current[taskId] = false;
+
+      handlePlayExaminerAudio(replyText, () => {
+        // 1.2s Speaker Echo Decay Buffer before auto-arming candidate mic for Turn #2
+        setTimeout(() => {
+          if (currentSection?.type === "EXPRESSION_ORALE" && !isSubmitted) {
+            handleToggleSpeakingRecording(taskId);
+          }
+        }, 1200);
+      });
+      return;
     } catch (e) {
       console.error("Examiner chat error:", e);
+      // Emergency Client Fallback on Exception
+      const emergencyReply = "Merci pour votre réponse ! Pouvez-vous me préciser votre pensée avec un peu plus de détails en français ?";
+      setSpeakingDialogueMap((prev) => ({
+        ...prev,
+        [taskId]: [...updatedMessages, { sender: 'examiner' as const, text: emergencyReply }],
+      }));
+      handlePlayExaminerAudio(emergencyReply);
     }
     setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
     isChatSendingRef.current[taskId] = false;
