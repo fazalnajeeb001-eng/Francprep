@@ -889,10 +889,21 @@ export function AuthenticCBTExamPage() {
         try { rec.stop(); } catch {}
         delete (window as any)[`_mediaRecorder_${taskId}`];
       }
-      const currentText = speakingTranscripts[taskId] || "";
+      const speechRec = (window as any)[`_speechRec_${taskId}`];
+      if (speechRec) {
+        try { speechRec.stop(); } catch {}
+        delete (window as any)[`_speechRec_${taskId}`];
+      }
+      const currentText = (speakingTranscriptsRef.current[taskId] || speakingTranscripts[taskId] || "").trim();
       const wordCount = countFrenchWords(currentText);
       const metrics = acousticAnalyzer.stopAnalysis(wordCount);
       setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
+
+      const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
+      const scenarioText = activeTask?.scenario || "TCF Oral Interaction";
+      if (currentText.length >= 2 && !isAudioFetching && !isPlayingAudio && !isChatSendingRef.current[taskId]) {
+        handleSendSpeakingQuestionToExaminer(taskId, currentText, scenarioText);
+      }
       return;
     }
 
@@ -995,6 +1006,7 @@ export function AuthenticCBTExamPage() {
       }
     };
 
+    (window as any)[`_speechRec_${taskId}`] = recognition;
     recognition.start();
   };
 
