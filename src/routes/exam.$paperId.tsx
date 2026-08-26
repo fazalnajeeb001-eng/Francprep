@@ -316,10 +316,18 @@ export function AuthenticCBTExamPage() {
   const [zoomedImageSrc, setZoomedImageSrc] = useState<string | null>(null);
   const [readingFontSize, setReadingFontSize] = useState<"sm" | "base" | "lg">("base");
 
-  // Per-Question CBT Countdown Timer & Auto-Advance (Wall-Clock Date.now() Precision)
+  const targetEndTimeRef = useRef<number | null>(null);
+
+  // Reset per-question target end time ref on question or section change
+  useEffect(() => {
+    targetEndTimeRef.current = null;
+  }, [currentQuestionIdx, activeSectionIdx]);
+
+  // Per-Question CBT Countdown Timer & Auto-Advance (Locked Target Ref Timestamp Engine)
   useEffect(() => {
     if (currentSection.type !== "COMPREHENSION_ORALE" || !currentQ || isSubmitted) {
       setQTimeLeft(null);
+      targetEndTimeRef.current = null;
       return;
     }
 
@@ -328,16 +336,20 @@ export function AuthenticCBTExamPage() {
       return;
     }
 
-    const initialSecs = (currentQ as any).perQuestionTimerSeconds || (currentQ.questionNumber <= 10 ? 15 : currentQ.questionNumber <= 26 ? 20 : 25);
-    const startSecs = qTimeLeft !== null ? qTimeLeft : initialSecs;
-    const targetEndTime = Date.now() + (startSecs * 1000);
+    if (targetEndTimeRef.current === null) {
+      const timerSecs = (currentQ as any).perQuestionTimerSeconds || (currentQ.questionNumber <= 10 ? 15 : currentQ.questionNumber <= 26 ? 20 : 25);
+      const startSecs = qTimeLeft !== null && qTimeLeft > 0 ? qTimeLeft : timerSecs;
+      targetEndTimeRef.current = Date.now() + (startSecs * 1000);
+    }
 
     const interval = setInterval(() => {
-      const remainingSecs = Math.max(0, Math.ceil((targetEndTime - Date.now()) / 1000));
+      if (targetEndTimeRef.current === null) return;
+      const remainingSecs = Math.max(0, Math.ceil((targetEndTimeRef.current - Date.now()) / 1000));
       setQTimeLeft(remainingSecs);
 
       if (remainingSecs <= 0) {
         clearInterval(interval);
+        targetEndTimeRef.current = null;
         if (currentQuestionIdx < currentQuestions.length - 1) {
           setCurrentQuestionIdx((idx) => idx + 1);
         } else if (activeSectionIdx < paper.sections.length - 1) {
@@ -352,7 +364,7 @@ export function AuthenticCBTExamPage() {
           });
         }
       }
-    }, 250);
+    }, 200);
 
     return () => clearInterval(interval);
   }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, isSpeaking, isAudioPaused, isTimerPaused, isAudioFinished, currentQuestions.length, paper.sections.length]);
