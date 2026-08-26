@@ -1724,28 +1724,34 @@ Return JSON only:
     const name = examinerName || (isTache2 ? "M. Laurent Dubois" : "Examinateur Élodie");
     const role = examinerRole || (isTache2 ? "Interlocuteur & Responsable du service" : "Examinatrice certifiée FEI — Format TCF Canada");
 
+    const userTurnCount = messages.filter((m: any) => m.role === 'user' || m.sender === 'candidate').length;
+    const isFinalTurn = userTurnCount >= 4;
+    const wrapUpInstruction = isFinalTurn
+      ? `\n- FINAL TURN CONCLUDING RULE: The task time is concluding. Thank the candidate politely and end your turn with: "Merci beaucoup. Nous avons terminé cette épreuve d'expression orale. Nous pouvons passer à la suite."`
+      : "";
+
     let taskInstructions = "";
     if (isTache1) {
       taskInstructions = `TÂCHE 1 (Entretien dirigé - 2 minutes, Niveau ${lessonLevel}) :
 - You are an official France Éducation International (FEI) TCF Canada oral examiner named ${name} (${role}).
 - Listen carefully to the candidate's response, extract key contextual facts (e.g. their profession, city, hobbies, or plans), and ask 1 dynamic, natural follow-up question.
-- Always use formal register ("vous"). Keep your response concise, polite, and encouraging (1-2 sentences maximum).`;
+- Always use formal register ("vous"). Keep your response concise, polite, and encouraging (1-2 sentences maximum).${wrapUpInstruction}`;
     } else if (isTache2) {
       taskInstructions = `TÂCHE 2 (Exercice en interaction / Roleplay - 3.5 minutes, Niveau ${lessonLevel}) :
 - You are the roleplay partner described in the scenario: ${role}. Topic: "${lessonTopic}".
 - Answer the candidate's specific questions concisely (1-2 sentences) in natural, realistic French.
-- STRICT MANDATORY TURN RULE: YOU MUST ALWAYS END EVERY SINGLE RESPONSE WITH THE EXACT QUESTION: "Avez-vous d'autres questions ?"
-- Example: "Oui, nous avons deux disponibilités ce samedi après-midi à 14h et 16h. Avez-vous d'autres questions ?"`;
+- STRICT MANDATORY TURN RULE: ${isFinalTurn ? 'Conclude the roleplay naturally: "Merci beaucoup, nous avons fait le tour de vos questions. L\'épreuve est terminée."' : 'YOU MUST ALWAYS END EVERY SINGLE RESPONSE WITH THE EXACT QUESTION: "Avez-vous d\'autres questions ?"'}
+- Example: "Oui, nous avons deux disponibilités ce samedi après-midi à 14h et 16h. Avez-vous d'autres questions ?"${wrapUpInstruction}`;
     } else if (isTache3) {
       taskInstructions = `TÂCHE 3 (Expression d'un point de vue & Débat - 4.5 minutes, Niveau ${lessonLevel}) :
 - You are an official FEI TCF Canada oral examiner named ${name} (${role}). Topic: "${lessonTopic}".
 - Listen to the candidate's thesis statement and introduce a polite C1/C2 counter-argument or nuance to test their argumentation skills under debate pressure.
 - Start politely with: "Je comprends votre point de vue, cependant ne pensez-vous pas que..." or "C'est un argument intéressant, mais...".
-- Use formal logical connectors ("néanmoins", "en revanche", "or"). Keep your counter-argument concise (2 sentences maximum).`;
+- Use formal logical connectors ("néanmoins", "en revanche", "or"). Keep your counter-argument concise (2 sentences maximum).${wrapUpInstruction}`;
     } else {
       taskInstructions = `EXAMEN ORAL TCF CANADA :
 - You are an official France Éducation International examiner named ${name} (${role}).
-- Respond in natural spoken French, strictly 1-2 sentences maximum.`;
+- Respond in natural spoken French, strictly 1-2 sentences maximum.${wrapUpInstruction}`;
     }
 
     const systemPrompt = `You are an official France Éducation International (FEI) TCF Canada oral examiner named ${name}.
@@ -1758,7 +1764,7 @@ ${taskInstructions}
 GENERAL EXAMINER RULES:
 1. Respond ONLY in natural spoken French. Do NOT output translations, meta-notes, or FR/EN prefixes.
 2. Keep responses STRICTLY 1 to 2 sentences maximum.
-3. If the candidate is silent, gives single-word non-answers, or speaks off-topic, politely redirect them in 1 sentence: "Veuillez répondre en français à la question posée pour cette épreuve."
+3. If the candidate speaks English, gives single-word non-answers ("oui"/"non"), or speaks off-topic, politely redirect them in 1 sentence: "Veuillez répondre en français à la question posée pour cette épreuve d'expression orale."
 4. Maintain a polite, professional, and encouraging test center atmosphere.`;
 
     const conversationPrompt = messages.map((m: any) => `${m.role === 'user' ? 'Candidate' : 'Examiner'}: ${m.content}`).join('\n');
