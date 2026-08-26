@@ -652,7 +652,12 @@ export function AuthenticCBTExamPage() {
         setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
         // Clear input box so student is ready for turn #2
         setSpeakingTranscripts((prev) => ({ ...prev, [taskId]: "" }));
-        handlePlayExaminerAudio(replyText);
+        handlePlayExaminerAudio(replyText, () => {
+          // Automatically re-arm mic recording when examiner finishes speaking
+          if (currentSection?.type === "EXPRESSION_ORALE") {
+            handleToggleSpeakingRecording(taskId);
+          }
+        });
         return;
       }
     } catch (e) {
@@ -662,6 +667,39 @@ export function AuthenticCBTExamPage() {
   };
 
   const hasPlayedIntroRef = useRef<Record<string, boolean>>({});
+  const autoSendTimerRef = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+
+  // Phase 2: Smart Adaptive Silence & Zero-Touch Voice Turn-Taking Effect
+  useEffect(() => {
+    const currentTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
+    if (!currentTask || currentSection?.type !== "EXPRESSION_ORALE") return;
+
+    const taskId = currentTask.id;
+    const currentTranscript = speakingTranscripts[taskId] || "";
+    const isRecording = recordingSpeaking[taskId];
+    const isChatLoading = speakingChatLoading[taskId];
+
+    if (!isRecording || isChatLoading || !currentTranscript.trim()) return;
+
+    if (autoSendTimerRef.current[taskId]) {
+      clearTimeout(autoSendTimerRef.current[taskId]);
+    }
+
+    const cleanText = currentTranscript.trim();
+    const isHesitating = /(?:parce que|je pense que|d'abord|en effet|mais|cependant|euh|donc|car|de plus|par ailleurs|c'est à dire|à mon avis)\s*$/i.test(cleanText);
+    const silenceThresholdMs = isHesitating ? 3500 : 2200;
+
+    autoSendTimerRef.current[taskId] = setTimeout(() => {
+      // Auto finish turn hands-free!
+      handleSendSpeakingQuestionToExaminer(taskId, cleanText, currentTask.scenario);
+    }, silenceThresholdMs);
+
+    return () => {
+      if (autoSendTimerRef.current[taskId]) {
+        clearTimeout(autoSendTimerRef.current[taskId]);
+      }
+    };
+  }, [speakingTranscripts, recordingSpeaking, speakingChatLoading, activeSpeakingTaskIdx, currentSection]);
 
   const startSpeakingTaskSession = (idx: number) => {
     try {
@@ -699,7 +737,7 @@ export function AuthenticCBTExamPage() {
 
       const openingText = task.examinerPersona?.openingPromptFrench || (
         idx === 0 || task.title?.includes("Tâche 1")
-          ? "Bonjour ! Bienvenue à l'épreuve d'expression orale du TCF Canada. Je suis votre examinateur. Pour cette première tâche sans préparation, nous allons faire un entretien dirigé de 2 minutes. Pouvez-vous vous présenter, me parler de votre parcours professionnel et de vos motivations pour le Canada ?"
+          ? "Bonjour ! Bienvenue à l'épreuve d'expression orale du TCF Canada. Je suis votre examinatrice. Pour cette première tâche sans préparation, nous allons faire un entretien dirigé de 2 minutes. Pouvez-vous vous présenter, me parler de votre parcours professionnel et de vos motivations pour le Canada ?"
           : idx === 1 || task.title?.includes("Tâche 2")
             ? "Bonjour ! Bienvenue dans la deuxième tâche. Vous disposez de 2 minutes de préparation pour prendre connaissance du document support et préparer vos questions. Ensuite, nous échangerons pendant 3 minutes et demie. Je vous écoute, quelles sont vos questions ?"
             : "Bonjour ! Bienvenue dans la troisième tâche. Vous allez exprimer votre point de vue de manière fluide et argumentée sur ce sujet de société pendant environ 3 minutes, puis nous en débattrons ensemble. Présentez-moi vos arguments et votre position."
@@ -714,7 +752,12 @@ export function AuthenticCBTExamPage() {
         };
       });
 
-      handlePlayExaminerAudio(openingText);
+      handlePlayExaminerAudio(openingText, () => {
+        // Auto arm mic as soon as opening greeting completes
+        if (currentSection?.type === "EXPRESSION_ORALE") {
+          handleToggleSpeakingRecording(task.id);
+        }
+      });
     }
   };
 
