@@ -108,7 +108,7 @@ export class WritingController {
 
   async speakingChat(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { messages, lessonLevel, lessonTopic, targetLanguage } = req.body;
+      const { messages, taskTitle, scenarioText, examinerName, examinerRole, lessonLevel, lessonTopic, targetLanguage } = req.body;
       
       if (!messages || !Array.isArray(messages) || messages.length === 0) {
         res.status(400).json({ success: false, error: 'Messages array is required.' });
@@ -117,7 +117,15 @@ export class WritingController {
 
       const { targetLanguage: lang } = getLanguageAndExamInfo(req, targetLanguage);
 
-      const result = await writingService.chatWithTutor(messages, lessonLevel, lessonTopic, lang);
+      const result = await writingService.chatWithTutor(
+        messages,
+        lessonLevel,
+        scenarioText || lessonTopic,
+        lang,
+        taskTitle,
+        examinerName,
+        examinerRole
+      );
       
       res.status(200).json({
         success: true,
