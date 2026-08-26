@@ -1780,6 +1780,7 @@ GENERAL EXAMINER RULES:
       });
 
       if (reply && reply.trim()) {
+        console.log(`[AI Examiner Chat Success] model=openai/gpt-4o-mini reply="${reply.trim().slice(0, 60)}..."`);
         return { reply: reply.trim(), model: 'openai/gpt-4o-mini' };
       }
     } catch (e) {
