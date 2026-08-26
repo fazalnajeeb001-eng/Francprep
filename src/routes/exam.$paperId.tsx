@@ -715,10 +715,10 @@ export function AuthenticCBTExamPage() {
 
     const cleanText = currentTranscript.trim();
     const isHesitating = /(?:parce que|je pense que|d'abord|en effet|mais|cependant|euh|donc|car|de plus|par ailleurs|c'est à dire|à mon avis)\s*$/i.test(cleanText);
-    const silenceThresholdMs = isHesitating ? 9500 : 8000;
+    const silenceThresholdMs = isHesitating ? 6500 : 5000;
 
     autoSendTimerRef.current[taskId] = setTimeout(() => {
-      // Auto finish turn hands-free with 8s breathing cushion!
+      // Auto finish turn hands-free with 5s breathing cushion!
       handleSendSpeakingQuestionToExaminer(taskId, cleanText, currentTask.scenario);
     }, silenceThresholdMs);
 
