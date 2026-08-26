@@ -1788,18 +1788,29 @@ GENERAL EXAMINER RULES:
 
     // Dynamic Certified FEI Rule Engine Fallback (Guarantees 100% Response Delivery)
     const lastUserMsg = [...messages].reverse().find((m: any) => m.role === 'user' || m.sender === 'candidate')?.content || '';
-    let dynamicFallbackReply = "Très bien, je vous écoute. Pouvez-vous me préciser votre pensée en français ?";
+    const userTurnsCount = messages.filter((m: any) => m.role === 'user' || m.sender === 'candidate').length;
+    let dynamicFallbackReply = "";
 
     if (isTache1) {
-      if (/\b(travail|travaille|emploi|métier|profession|ingénieur|professeur|étudiant|informatique|domaine)\b/i.test(lastUserMsg)) {
-        dynamicFallbackReply = "C'est un parcours très intéressant ! Depuis combien de temps exercez-vous dans ce domaine, et quels sont vos projets professionnels au Canada ?";
-      } else if (/\b(habite|vis|ville|pays|canada|montréal|quebec|toronto|victoria|vancouver)\b/i.test(lastUserMsg)) {
-        dynamicFallbackReply = "Merci pour cette présentation ! Qu'est-ce qui vous plaît le plus dans votre ville actuelle, et pourquoi souhaitez-vous vous installer au Canada ?";
+      if (userTurnsCount <= 1) {
+        if (/\b(travail|travaille|emploi|métier|profession|ingénieur|professeur|étudiant|informatique|domaine)\b/i.test(lastUserMsg)) {
+          dynamicFallbackReply = "C'est un parcours très intéressant ! Depuis combien de temps exercez-vous dans ce domaine, et dans quelle ville du Canada souhaitez-vous travailler ?";
+        } else if (/\b(habite|vis|ville|pays|canada|montréal|quebec|toronto|victoria|vancouver|inde)\b/i.test(lastUserMsg)) {
+          dynamicFallbackReply = "Merci pour cette présentation ! Qu'est-ce qui vous plaît le plus dans votre ville actuelle, et pourquoi souhaitez-vous vous installer au Canada ?";
+        } else {
+          dynamicFallbackReply = "Bonjour ! C'est un plaisir de faire votre connaissance. Pouvez-vous me décrire votre métier actuel et me parler de vos motivations pour le Canada ?";
+        }
+      } else if (userTurnsCount === 2) {
+        if (/\b(canada|projet|installation|résidence|express|immigration|travail)\b/i.test(lastUserMsg)) {
+          dynamicFallbackReply = "Merci pour ces précisions ! Qu'est-ce qui vous motive le plus dans votre projet d'immigration canadienne ?";
+        } else {
+          dynamicFallbackReply = "C'est très clair, merci ! Quels sont vos loisirs préférés et ce que vous aimez faire durant votre temps libre ?";
+        }
       } else {
-        dynamicFallbackReply = "Très bien ! Pouvez-vous me parler un peu plus de vos loisirs préférés et de ce que vous aimez faire durant votre temps libre ?";
+        dynamicFallbackReply = "Merci beaucoup. Nous avons fait le tour des questions pour cette première tâche. L'entretien est terminé, nous pouvons passer à la suite.";
       }
     } else if (isTache2) {
-      if (isFinalTurn) {
+      if (isFinalTurn || userTurnsCount >= 4) {
         dynamicFallbackReply = "Merci beaucoup, nous avons fait le tour de vos questions. L'épreuve est terminée.";
       } else if (/\b(prix|tarif|coûte|combien|payer|frais)\b/i.test(lastUserMsg)) {
         dynamicFallbackReply = "Nos tarifs sont de 45 dollars par mois avec un abonnement annuel, ou 55 dollars sans engagement. Avez-vous d'autres questions ?";
@@ -1810,6 +1821,8 @@ GENERAL EXAMINER RULES:
       }
     } else if (isTache3) {
       dynamicFallbackReply = "Je comprends votre point de vue, cependant ne pensez-vous pas que cette situation présente aussi des risques pour la société ?";
+    } else {
+      dynamicFallbackReply = "Merci pour votre réponse. Pouvez-vous me préciser votre pensée en français ?";
     }
 
     return {

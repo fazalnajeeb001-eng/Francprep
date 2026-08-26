@@ -399,9 +399,35 @@ function speakWebSpeech(
   gender: "female" | "male" = "female",
   onEnded?: () => void
 ) {
-  console.warn("[Speech] Web Speech API disabled to prevent robotic OS voices.");
-  if (onEnded) onEnded();
-  return;
+  if (typeof window === "undefined" || !window.speechSynthesis) {
+    if (onEnded) onEnded();
+    return;
+  }
+  try {
+    window.speechSynthesis.cancel();
+    const cleanText = stripSpeakerLabels(text);
+    const utt = new SpeechSynthesisUtterance(cleanText);
+    utt.lang = langCode === "fr" ? "fr-FR" : langCode;
+    utt.rate = rate;
+
+    const voices = window.speechSynthesis.getVoices() || [];
+    const frVoice = voices.find(v => v.lang.startsWith("fr") && (gender === "male" ? /male|paul|thomas|henri/i.test(v.name) : /female|denise|chloe|aurelie|amelie/i.test(v.name))) || voices.find(v => v.lang.startsWith("fr"));
+    if (frVoice) utt.voice = frVoice;
+
+    utt.onend = () => {
+      if (onPlaybackStateChange) onPlaybackStateChange(false);
+      if (onEnded) onEnded();
+    };
+    utt.onerror = () => {
+      if (onPlaybackStateChange) onPlaybackStateChange(false);
+      if (onEnded) onEnded();
+    };
+
+    if (onPlaybackStateChange) onPlaybackStateChange(true);
+    window.speechSynthesis.speak(utt);
+  } catch {
+    if (onEnded) onEnded();
+  }
 }
 
 export function stopAudio(): void {
