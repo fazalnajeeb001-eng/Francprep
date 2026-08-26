@@ -676,10 +676,12 @@ export function AuthenticCBTExamPage() {
         isChatSendingRef.current[taskId] = false;
 
         handlePlayExaminerAudio(replyText, () => {
-          // Automatically re-arm mic recording when examiner finishes speaking
-          if (currentSection?.type === "EXPRESSION_ORALE") {
-            handleToggleSpeakingRecording(taskId);
-          }
+          // 1.2s Speaker Echo Decay Buffer before auto-arming candidate mic for Turn #2
+          setTimeout(() => {
+            if (currentSection?.type === "EXPRESSION_ORALE" && !isSubmitted) {
+              handleToggleSpeakingRecording(taskId);
+            }
+          }, 1200);
         });
         return;
       }
@@ -905,11 +907,19 @@ export function AuthenticCBTExamPage() {
           mediaRecorder.onstop = () => {
             setRecordingSpeaking((prev) => ({ ...prev, [taskId]: false }));
             try { stream.getTracks().forEach((t) => t.stop()); } catch {}
-            const currentText = speakingTranscripts[taskId] || "Bonjour, voici ma réponse orale pour cette tâche d'expression orale du TCF Canada.";
+            const currentText = speakingTranscripts[taskId] || "";
             setSpeakingTranscripts((prev) => ({ ...prev, [taskId]: currentText }));
             const wordCount = countFrenchWords(currentText);
             const metrics = acousticAnalyzer.stopAnalysis(wordCount);
             setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
+
+            const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
+            const scenarioText = activeTask?.scenario || "TCF Oral Interaction";
+            const clean = currentText.trim();
+
+            if (clean.length >= 5 && !isAudioFetching && !isPlayingAudio && !isChatSendingRef.current[taskId]) {
+              handleSendSpeakingQuestionToExaminer(taskId, clean, scenarioText);
+            }
           };
 
           mediaRecorder.start();
@@ -967,6 +977,14 @@ export function AuthenticCBTExamPage() {
       const wordCount = countFrenchWords(currentText);
       const metrics = acousticAnalyzer.stopAnalysis(wordCount);
       setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
+
+      const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
+      const scenarioText = activeTask?.scenario || "TCF Oral Interaction";
+      const clean = currentText.trim();
+
+      if (clean.length >= 5 && !isAudioFetching && !isPlayingAudio && !isChatSendingRef.current[taskId]) {
+        handleSendSpeakingQuestionToExaminer(taskId, clean, scenarioText);
+      }
     };
 
     recognition.start();
