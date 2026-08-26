@@ -120,6 +120,14 @@ export function speak(
   currentAudioPlayer = audio;
   if (onPlaybackStateChange) onPlaybackStateChange(true);
 
+  // Pre-authorize audio element synchronously inside call stack for iOS Safari
+  try {
+    if (!audio.src) {
+      audio.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+      audio.play().catch(() => {});
+    }
+  } catch {}
+
   audio.onended = () => {
     activeAudioPlayers.delete(audio);
     if (currentAudioPlayer === audio) currentAudioPlayer = null;

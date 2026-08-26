@@ -684,18 +684,34 @@ export function AuthenticCBTExamPage() {
       } catch {}
 
       if (!replyText || typeof replyText !== 'string' || !replyText.trim()) {
+        const userTurnsCount = updatedMessages.filter(m => m.sender === 'candidate').length;
         const isTache1 = /tâche\s*1|entretien|dirigé|présentation/i.test(taskTitle);
         const isTache2 = /tâche\s*2|interaction|questions|document|rôle|roleplay/i.test(taskTitle);
+
         if (isTache1) {
-          if (/\b(travail|travaille|emploi|métier|profession|ingénieur|professeur|étudiant|informatique|domaine)\b/i.test(clean)) {
-            replyText = "C'est un parcours très intéressant ! Depuis combien de temps exercez-vous dans ce domaine, et quels sont vos projets professionnels au Canada ?";
-          } else if (/\b(habite|vis|ville|pays|canada|montréal|quebec|toronto|victoria|vancouver)\b/i.test(clean)) {
-            replyText = "Merci pour cette présentation ! Qu'est-ce qui vous plaît le plus dans votre ville actuelle, et pourquoi souhaitez-vous vous installer au Canada ?";
+          if (userTurnsCount <= 1) {
+            if (/\b(travail|travaille|emploi|métier|profession|ingénieur|professeur|étudiant|informatique|domaine)\b/i.test(clean)) {
+              replyText = "C'est un parcours très intéressant ! Depuis combien de temps exercez-vous dans ce domaine, et dans quelle ville du Canada souhaitez-vous travailler ?";
+            } else if (/\b(habite|vis|ville|pays|canada|montréal|quebec|toronto|victoria|vancouver)\b/i.test(clean)) {
+              replyText = "Merci pour cette présentation ! Qu'est-ce qui vous plaît le plus dans votre ville actuelle, et pourquoi souhaitez-vous vous installer au Canada ?";
+            } else {
+              replyText = "Bonjour ! C'est un plaisir de faire votre connaissance. Pouvez-vous me décrire votre métier actuel et me parler de vos loisirs préférés ?";
+            }
+          } else if (userTurnsCount === 2) {
+            if (/\b(canada|projet|installation|résidence|express|immigration)\b/i.test(clean)) {
+              replyText = "Merci pour ces précisions ! Qu'est-ce qui vous motive le plus dans votre projet d'immigration canadienne ?";
+            } else {
+              replyText = "C'est très clair, merci ! Quels sont vos loisirs préférés et ce que vous aimez faire durant votre temps libre ?";
+            }
           } else {
-            replyText = "Merci pour cette réponse ! Pouvez-vous me parler un peu plus de votre parcours et de vos motivations pour vous installer au Canada ?";
+            replyText = "Merci beaucoup. Nous avons fait le tour des questions pour cette première tâche. L'entretien est terminé, nous pouvons passer à la suite.";
           }
         } else if (isTache2) {
-          replyText = "Oui absolument, toutes ces modalités sont tout à fait adaptées selon vos besoins. Avez-vous d'autres questions ?";
+          if (userTurnsCount >= 4) {
+            replyText = "Merci beaucoup, nous avons fait le tour de vos questions. L'épreuve est terminée.";
+          } else {
+            replyText = "Oui absolument, toutes ces options sont tout à fait disponibles selon vos besoins. Avez-vous d'autres questions ?";
+          }
         } else {
           replyText = "Je comprends tout à fait votre point de vue, cependant ne pensez-vous pas que cette situation comporte aussi certains risques ?";
         }
@@ -707,6 +723,11 @@ export function AuthenticCBTExamPage() {
       }));
       setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
       isChatSendingRef.current[taskId] = false;
+
+      setTimeout(() => {
+        const box = document.getElementById(`dialogue-container-${taskId}`);
+        if (box) box.scrollTop = box.scrollHeight;
+      }, 100);
 
       handlePlayExaminerAudio(replyText, () => {
         // 1.2s Speaker Echo Decay Buffer before auto-arming candidate mic for Turn #2
@@ -4448,7 +4469,7 @@ export function AuthenticCBTExamPage() {
                           </span>
                         </div>
 
-                        <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">
+                        <div id={`dialogue-container-${task.id}`} className="space-y-3 max-h-[450px] overflow-y-auto overscroll-contain touch-pan-y webkit-overflow-scrolling-touch pr-1">
                           {(speakingDialogueMap[task.id] || []).map((msg, mIdx) => (
                             <div
                               key={mIdx}
