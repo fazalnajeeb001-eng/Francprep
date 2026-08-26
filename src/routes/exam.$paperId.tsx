@@ -626,6 +626,11 @@ export function AuthenticCBTExamPage() {
     } catch { }
 
     // Clear transcript state & ref immediately & cancel pending auto-send timers to prevent duplicates
+    const speechRec = (window as any)[`_speechRec_${taskId}`];
+    if (speechRec) {
+      try { speechRec.stop(); } catch {}
+      delete (window as any)[`_speechRec_${taskId}`];
+    }
     speakingTranscriptsRef.current[taskId] = "";
     setSpeakingTranscripts((prev) => ({ ...prev, [taskId]: "" }));
     if (autoSendTimerRef.current[taskId]) {
@@ -933,6 +938,10 @@ export function AuthenticCBTExamPage() {
       }
       return;
     }
+
+    try {
+      unlockAudioEngine();
+    } catch {}
 
     const SpeechRec = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRec) {
