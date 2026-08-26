@@ -600,13 +600,25 @@ export function AuthenticCBTExamPage() {
     }, 1200);
   };
 
+  const isChatSendingRef = useRef<Record<string, boolean>>({});
+
   const handleSendSpeakingQuestionToExaminer = async (taskId: string, userText: string, scenarioText: string) => {
     const clean = (userText || '').trim();
     if (!clean) return;
 
+    if (isChatSendingRef.current[taskId]) return;
+    isChatSendingRef.current[taskId] = true;
+
     try {
       unlockAudioEngine();
     } catch { }
+
+    // Clear transcript state immediately & cancel pending auto-send timers to prevent duplicates
+    setSpeakingTranscripts((prev) => ({ ...prev, [taskId]: "" }));
+    if (autoSendTimerRef.current[taskId]) {
+      clearTimeout(autoSendTimerRef.current[taskId]);
+      autoSendTimerRef.current[taskId] = null as any;
+    }
 
     const existingChat = speakingDialogueMap[taskId] || [];
     const updatedMessages = [...existingChat, { sender: 'candidate' as const, text: clean }];
@@ -650,8 +662,8 @@ export function AuthenticCBTExamPage() {
           [taskId]: [...updatedMessages, { sender: 'examiner' as const, text: replyText }],
         }));
         setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
-        // Clear input box so student is ready for turn #2
-        setSpeakingTranscripts((prev) => ({ ...prev, [taskId]: "" }));
+        isChatSendingRef.current[taskId] = false;
+
         handlePlayExaminerAudio(replyText, () => {
           // Automatically re-arm mic recording when examiner finishes speaking
           if (currentSection?.type === "EXPRESSION_ORALE") {
@@ -664,12 +676,13 @@ export function AuthenticCBTExamPage() {
       console.error("Examiner chat error:", e);
     }
     setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
+    isChatSendingRef.current[taskId] = false;
   };
 
   const hasPlayedIntroRef = useRef<Record<string, boolean>>({});
   const autoSendTimerRef = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
-  // Phase 2: Smart Adaptive Silence & Zero-Touch Voice Turn-Taking Effect
+  // Phase 2: Smart Adaptive Silence & Zero-Touch Voice Turn-Taking Effect (10-12s Breathing Cushion)
   useEffect(() => {
     const currentTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
     if (!currentTask || currentSection?.type !== "EXPRESSION_ORALE") return;
@@ -687,10 +700,10 @@ export function AuthenticCBTExamPage() {
 
     const cleanText = currentTranscript.trim();
     const isHesitating = /(?:parce que|je pense que|d'abord|en effet|mais|cependant|euh|donc|car|de plus|par ailleurs|c'est à dire|à mon avis)\s*$/i.test(cleanText);
-    const silenceThresholdMs = isHesitating ? 3500 : 2200;
+    const silenceThresholdMs = isHesitating ? 12000 : 10000;
 
     autoSendTimerRef.current[taskId] = setTimeout(() => {
-      // Auto finish turn hands-free!
+      // Auto finish turn hands-free with 10-12s cushion!
       handleSendSpeakingQuestionToExaminer(taskId, cleanText, currentTask.scenario);
     }, silenceThresholdMs);
 
