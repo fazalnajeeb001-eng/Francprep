@@ -1772,7 +1772,7 @@ GENERAL EXAMINER RULES:
 
     try {
       const reply = await generateAICompletion({
-        model: 'gpt-4o-mini',
+        model: 'openai/gpt-4o-mini',
         prompt: fullPrompt,
         systemPrompt: systemPrompt,
         temperature: 0.6,
@@ -1780,7 +1780,7 @@ GENERAL EXAMINER RULES:
       });
 
       if (reply && reply.trim()) {
-        return { reply: reply.trim(), model: 'gpt-4o-mini' };
+        return { reply: reply.trim(), model: 'openai/gpt-4o-mini' };
       }
     } catch (e) {
       console.error("[Speaking Chat] Error generating AI completion:", e);
