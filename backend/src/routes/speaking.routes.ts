@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { env } from '../config/env';
 import { authenticate } from '../middleware/auth';
+import Settings from '../models/Settings';
 
 const router = Router();
 
@@ -22,6 +23,16 @@ interface ChatRequestBody {
   examinerRole?: string;
   lessonLevel?: string;
   lessonTopic?: string;
+}
+
+async function getOpenRouterApiKey(): Promise<string> {
+  try {
+    const settings = await Settings.findOne();
+    if (settings?.openRouterApiKey) return settings.openRouterApiKey;
+  } catch (e) {
+    console.warn('[Speaking Routes] Could not read Settings model:', e);
+  }
+  return env.openRouterKey || process.env.OPENROUTER_API_KEY || '';
 }
 
 function buildExaminerSystemPrompt(
@@ -89,7 +100,7 @@ ${taskRules}
 
 router.post('/chat', authenticate, async (req: Request, res: Response) => {
   try {
-    const apiKey = env.openRouterKey;
+    const apiKey = await getOpenRouterApiKey();
     if (!apiKey) {
       res.status(500).json({
         success: false,
