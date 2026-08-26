@@ -2914,16 +2914,34 @@ export function AuthenticCBTExamPage() {
 
               {/* Practice Hint Bar - Desktop Only (Mobile uses ergonomic bottom pill above options) */}
               {(() => {
+                const isReadingSection = currentSection.type === "COMPREHENSION_ECRITE";
                 const paperNum = paper?.paperNumber || 1;
                 const guidanceKey = `p${paperNum}_q${currentQ.questionNumber}`;
-                const bankEntry = READING_GUIDANCE_BANK[guidanceKey];
+                const bankEntry = isReadingSection ? READING_GUIDANCE_BANK[guidanceKey] : null;
 
-                const activeTrapAlert = bankEntry?.trapAlert || (currentQ as any).trapAlert;
-                const activeTrapAlertEn = bankEntry?.trapAlertEn || (currentQ as any).trapAlertEn;
-                const activeReadingCoach = bankEntry?.readingCoach || (currentQ as any).readingCoach || (currentQ as any).audioCoach;
-                const activeReadingCoachEn = bankEntry?.readingCoachEn || (currentQ as any).readingCoachEn || (currentQ as any).audioCoachEn;
-                const activeExplanation = bankEntry?.detailedExplanation || currentQ.explanation || (currentQ as any).hint;
-                const activeExplanationEn = bankEntry?.detailedExplanationEn || (currentQ as any).detailedExplanationEn || (currentQ as any).explanationEnglish;
+                const activeTrapAlert = isReadingSection
+                  ? (bankEntry?.trapAlert || (currentQ as any).trapAlert)
+                  : ((currentQ as any).audioTrapAlert || (currentQ as any).trapAlert);
+
+                const activeTrapAlertEn = isReadingSection
+                  ? (bankEntry?.trapAlertEn || (currentQ as any).trapAlertEn)
+                  : ((currentQ as any).audioTrapAlertEn || (currentQ as any).trapAlertEn);
+
+                const activeReadingCoach = isReadingSection
+                  ? (bankEntry?.readingCoach || (currentQ as any).readingCoach)
+                  : ((currentQ as any).audioCoach || (currentQ as any).readingCoach);
+
+                const activeReadingCoachEn = isReadingSection
+                  ? (bankEntry?.readingCoachEn || (currentQ as any).readingCoachEn)
+                  : ((currentQ as any).audioCoachEn || (currentQ as any).readingCoachEn);
+
+                const activeExplanation = isReadingSection
+                  ? (bankEntry?.detailedExplanation || currentQ.explanation || (currentQ as any).hint)
+                  : (currentQ.explanation || (currentQ as any).detailedExplanation || (currentQ as any).hint);
+
+                const activeExplanationEn = isReadingSection
+                  ? (bankEntry?.detailedExplanationEn || (currentQ as any).detailedExplanationEn || (currentQ as any).explanationEnglish)
+                  : ((currentQ as any).explanationEnglish || (currentQ as any).detailedExplanationEn || (currentQ as any).explanationEn);
 
                 if (mode !== "PRACTICE" || (!activeTrapAlert && !activeReadingCoach && !activeExplanation && !currentQ.hint)) {
                   return null;
