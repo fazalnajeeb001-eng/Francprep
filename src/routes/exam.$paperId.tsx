@@ -638,6 +638,11 @@ export function AuthenticCBTExamPage() {
     setSpeakingDialogueMap((prev) => ({ ...prev, [taskId]: updatedMessages }));
     setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: true }));
 
+    setTimeout(() => {
+      const el = document.getElementById(`dialogue-box-${taskId}`);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }, 100);
+
     try {
       const messagesPayload = updatedMessages.map((m) => ({
         role: m.sender === 'candidate' ? 'user' : 'assistant',
@@ -4337,61 +4342,8 @@ export function AuthenticCBTExamPage() {
                     </div>
                   )}
 
-                  {/* 2-WAY LIVE INTERLOCUTION DIALOGUE LOG */}
-                  {speakingDialogueMap[task.id] && speakingDialogueMap[task.id].length > 0 && (
-                    <div className="p-4 rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-[#0c1220] space-y-3 text-xs">
-                      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
-                        <span className="font-extrabold text-[11px] uppercase tracking-wide text-purple-700 dark:text-purple-400 flex items-center gap-1.5">
-                          <Mic className="w-3.5 h-3.5" />
-                          <span>Échange en direct avec l'examinateur ({examinerName}) :</span>
-                        </span>
-                        <span className="px-2 py-0.5 rounded bg-purple-600/20 text-purple-700 dark:text-purple-300 font-mono text-[10px] font-bold">
-                          {speakingDialogueMap[task.id].length} tours de parole
-                        </span>
-                      </div>
-
-                      <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1">
-                        {speakingDialogueMap[task.id].map((msg, mIdx) => (
-                          <div
-                            key={mIdx}
-                            className={`p-3.5 rounded-2xl max-w-[90%] sm:max-w-[80%] text-xs font-sans leading-relaxed shadow-sm ${msg.sender === "examiner"
-                                ? "bg-purple-100 dark:bg-purple-950/80 border border-purple-200 dark:border-purple-800 text-purple-950 dark:text-purple-100 mr-auto"
-                                : "bg-blue-600 text-white ml-auto"
-                              }`}
-                          >
-                            <div className="flex items-center justify-between gap-2 mb-1.5 font-bold text-[10px] uppercase opacity-85">
-                              <span>{msg.sender === "examiner" ? `🎙️ ${examinerName}` : "👤 Candidat (Vous)"}</span>
-                              {msg.sender === "examiner" && (
-                                <button
-                                  onClick={() => {
-                                    if (currentSection.type === "EXPRESSION_ORALE") {
-                                      unlockAudioEngine();
-                                    }
-                                    handlePlayExaminerAudio(msg.text);
-                                  }}
-                                  className="hover:underline flex items-center gap-0.5 cursor-pointer text-purple-800 dark:text-purple-300 font-bold"
-                                  title="Réécouter la réponse audio"
-                                >
-                                  <Volume2 className="w-3 h-3" /> Réécouter
-                                </button>
-                              )}
-                            </div>
-                            <p className="font-medium text-xs">{msg.text}</p>
-                          </div>
-                        ))}
-
-                        {isChatLoading && (
-                          <div className="p-3.5 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 text-purple-900 dark:text-purple-300 mr-auto animate-pulse flex items-center gap-2">
-                            <Sparkles className="w-4 h-4 animate-spin text-purple-600" />
-                            <span className="font-semibold text-xs">{examinerName} vous écoute et formule sa réponse en français...</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
                   {/* CBT LIVE SPEECH RECORDER CONTROLS */}
-                  <div className="p-4 sm:p-5 rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 space-y-3">
+                  <div className="p-4 sm:p-5 rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 space-y-4 shadow-sm">
                     <div className="flex items-center justify-between flex-wrap gap-2">
                       <span className="text-xs font-bold text-slate-900 dark:text-slate-200 flex items-center gap-2">
                         <Mic className={`w-4 h-4 ${isRecording ? "text-red-500 animate-pulse" : "text-purple-600"}`} />
@@ -4434,6 +4386,59 @@ export function AuthenticCBTExamPage() {
                         <span>{isEvaluating ? "Évaluation diagnostique FEI en cours..." : "🤖 Terminer cette tâche & Obtenir la note FEI"}</span>
                       </button>
                     </div>
+
+                    {/* 2-WAY LIVE INTERLOCUTION DIALOGUE LOG (PLACED DIRECTLY BELOW MIC CONTROLS FOR INSTANT VISIBILITY) */}
+                    {( (speakingDialogueMap[task.id] && speakingDialogueMap[task.id].length > 0) || isChatLoading ) && (
+                      <div id={`dialogue-box-${task.id}`} className="mt-4 p-4 rounded-xl border-2 border-purple-400/80 dark:border-purple-800 bg-white dark:bg-[#0c1220] space-y-3 text-xs shadow-md animate-fadeIn">
+                        <div className="flex items-center justify-between border-b border-purple-200 dark:border-purple-800/80 pb-2">
+                          <span className="font-extrabold text-[11px] uppercase tracking-wide text-purple-700 dark:text-purple-300 flex items-center gap-1.5">
+                            <Mic className="w-3.5 h-3.5 text-purple-600" />
+                            <span>Échange en direct avec l'examinateur ({examinerName}) :</span>
+                          </span>
+                          <span className="px-2 py-0.5 rounded bg-purple-600/20 text-purple-700 dark:text-purple-300 font-mono text-[10px] font-bold">
+                            {(speakingDialogueMap[task.id] || []).length} tours de parole
+                          </span>
+                        </div>
+
+                        <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">
+                          {(speakingDialogueMap[task.id] || []).map((msg, mIdx) => (
+                            <div
+                              key={mIdx}
+                              className={`p-3.5 rounded-2xl max-w-[90%] sm:max-w-[85%] text-xs font-sans leading-relaxed shadow-sm ${msg.sender === "examiner"
+                                  ? "bg-purple-100 dark:bg-purple-950/90 border border-purple-300 dark:border-purple-800 text-purple-950 dark:text-purple-100 mr-auto"
+                                  : "bg-blue-600 text-white ml-auto"
+                                }`}
+                            >
+                              <div className="flex items-center justify-between gap-2 mb-1.5 font-bold text-[10px] uppercase opacity-85">
+                                <span>{msg.sender === "examiner" ? `🎙️ ${examinerName}` : "👤 Candidat (Vous)"}</span>
+                                {msg.sender === "examiner" && (
+                                  <button
+                                    onClick={() => {
+                                      if (currentSection.type === "EXPRESSION_ORALE") {
+                                        unlockAudioEngine();
+                                      }
+                                      handlePlayExaminerAudio(msg.text);
+                                    }}
+                                    className="hover:underline flex items-center gap-0.5 cursor-pointer text-purple-800 dark:text-purple-300 font-bold"
+                                    title="Réécouter la réponse audio"
+                                  >
+                                    <Volume2 className="w-3 h-3" /> Réécouter
+                                  </button>
+                                )}
+                              </div>
+                              <p className="font-medium text-xs whitespace-pre-line">{msg.text}</p>
+                            </div>
+                          ))}
+
+                          {isChatLoading && (
+                            <div className="p-3.5 rounded-2xl bg-purple-100/90 dark:bg-purple-950/80 border-2 border-purple-400 text-purple-950 dark:text-purple-200 mr-auto animate-pulse flex items-center gap-2 shadow-sm">
+                              <Sparkles className="w-4 h-4 animate-spin text-purple-600" />
+                              <span className="font-bold text-xs">{examinerName} écoute votre réponse et prépare sa réponse orale...</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* OFFICIAL FEI 4-CRITERIA DIAGNOSTIC EVALUATION RESULT CARD */}
