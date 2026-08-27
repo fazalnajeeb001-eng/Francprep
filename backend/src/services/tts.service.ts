@@ -227,29 +227,29 @@ export async function generateNeuralAudio(
       ]
     }).maxTimeMS(2500);
 
-    if (!cached && mongoose.connection?.db) {
+    if (!cached && (mongoose.connection as any)?.client) {
       try {
-        const testDb = mongoose.connection.useDb('test').db;
-        if (testDb) {
-          const doc = await testDb.collection('ttscaches').findOne({
-            $or: [
-              { textHash },
-              { textHash: canonicalHash },
-              { textHash: canonicalHashTrimmed },
-              { textHash: canonicalHashWithSpace },
-              { text: cleanText, gender },
-              { text: cleanText },
-              { text: rawCleanText },
-              { text: new RegExp('^' + escapedText + '$', 'i') },
-              { text: new RegExp(escapedText, 'i') },
-              { text: new RegExp(escapedRaw, 'i') },
-              { text: new RegExp('^' + escapedPrefix, 'i') },
-              { text: new RegExp(escapedPrefix, 'i') }
-            ]
-          }, { maxTimeMS: 2500 });
-          if (doc) cached = doc as any;
+        const client = (mongoose.connection as any).client;
+        const normTarget = cleanText.replace(/^(locuteur|locutrice|annonceur|annonceuse)\s*:\s*/i, '').toLowerCase().replace(/['’`"«».,!?;:\s\-\u2013\u2014]+/g, '').trim();
+
+        for (const dbName of ['francprep', 'test']) {
+          const col = client.db(dbName).collection('ttscaches');
+          const cursor = col.find({}, { projection: { text: 1, audioBase64: 1, voice: 1, contentType: 1 } });
+          while (await cursor.hasNext()) {
+            const doc = await cursor.next();
+            if (doc && doc.text && doc.audioBase64) {
+              const normDoc = doc.text.replace(/^(locuteur|locutrice|annonceur|annonceuse)\s*:\s*/i, '').toLowerCase().replace(/['’`"«».,!?;:\s\-\u2013\u2014]+/g, '').trim();
+              if (normDoc === normTarget) {
+                cached = doc as any;
+                break;
+              }
+            }
+          }
+          if (cached) break;
         }
-      } catch {}
+      } catch (err: any) {
+        console.warn('[TTSCache Normalized Lookup Error]:', err?.message);
+      }
     }
 
     if (cached && cached.audioBase64) {
