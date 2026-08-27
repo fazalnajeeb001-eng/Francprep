@@ -5,17 +5,17 @@ import { stripSpeakerLabels } from './tts.service';
  * Full 8-Voice Studio Roster for TCF Canada & Official French Exams:
  */
 export const EDGE_FRENCH_VOICE_ROSTER = {
-  // Official Test Announcers & Professional Public PA
-  femaleAnnouncer: 'fr-FR-DeniseNeural',                // Formal, mature adult Parisian female
-  maleAnnouncer: 'fr-FR-HenriNeural',                   // Formal, mature adult Parisian male
+  // Official Test Announcers & Certified FEI Examiners
+  femaleAnnouncer: 'fr-FR-DeniseNeural',                // Formal, mature adult Parisian female examiner
+  maleAnnouncer: 'fr-FR-HenriNeural',                   // Formal, mature adult Parisian male examiner
   
-  // Conversational Interlocutors (Mature Everyday French Adults)
-  femaleInterlocutor1: 'fr-FR-VivienneMultilingualNeural', // Expressive, natural adult French woman
-  maleInterlocutor1: 'fr-FR-RemyMultilingualNeural',       // Dynamic, natural adult French male
+  // Conversational Interlocutors (Certified FEI Examiners)
+  femaleInterlocutor1: 'fr-FR-DeniseNeural',             // Warm, natural adult French female examiner
+  maleInterlocutor1: 'fr-FR-HenriNeural',                // Warm, natural adult French male examiner
   
   // Media / Academic Broadcasters
-  femaleJournalist: 'fr-FR-VivienneMultilingualNeural',   // Expressive adult reporter / host
-  maleLecturer: 'fr-BE-GerardNeural',                     // Academic lecturer / Francophone male
+  femaleJournalist: 'fr-FR-DeniseNeural',                // Expressive adult host
+  maleLecturer: 'fr-FR-HenriNeural',                     // Academic lecturer male
   
   // Authentic Canadian French (Quebec / Montreal Adults)
   femaleCanadian: 'fr-CA-SylvieNeural',                   // Authentic adult Montreal woman
