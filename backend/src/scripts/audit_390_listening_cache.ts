@@ -36,7 +36,9 @@ async function audit390() {
 
     for (const q of list) {
       const text = q.text.trim();
-      const hash = getHash(text, 'female', 'fr', q.rate || 1.0);
+      const isFemale = !text.toLowerCase().includes("annonceur:") && q.qNum % 2 !== 0;
+      const gender = isFemale ? "female" : "male";
+      const hash = getHash(text, gender, 'fr', q.rate || 1.0);
       const cached = await TTSCache.findOne({
         $or: [
           { textHash: hash },
