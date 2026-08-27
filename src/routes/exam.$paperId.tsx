@@ -3110,7 +3110,7 @@ export function AuthenticCBTExamPage() {
                 }
 
                 return (
-                  <div className="hidden lg:block space-y-2">
+                  <div className="w-full space-y-2">
                     {!showReadingHint ? (
                       <button
                         type="button"
