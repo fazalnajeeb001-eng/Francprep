@@ -5582,14 +5582,14 @@ export function AuthenticCBTExamPage() {
                 )}
 
                 {/* Detailed Explanation */}
-                {currentQ.explanation && (
+                {((currentQ as any).detailedExplanation || currentQ.explanation) && (
                   <div className="p-3.5 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-300 dark:border-purple-800/60 space-y-2">
                     <div className="flex items-center gap-1.5 font-bold text-purple-900 dark:text-purple-300">
                       <Sparkles className="w-3.5 h-3.5 text-purple-600" />
                       <span>Analyse Pédagogique Détaillée</span>
                     </div>
                     <div className="whitespace-pre-line leading-relaxed font-medium text-slate-900 dark:text-slate-100">
-                      {currentQ.explanation}
+                      {(currentQ as any).detailedExplanation || currentQ.explanation}
                     </div>
                     {((currentQ as any).detailedExplanationEn || (currentQ as any).explanationEnglish || (currentQ as any).explanationEn) && (
                       <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-950/60 border border-purple-200 dark:border-purple-900 text-[11px] text-purple-950 dark:text-purple-200 whitespace-pre-line leading-relaxed">
