@@ -567,7 +567,7 @@ export function AuthenticCBTExamPage() {
     };
   }, [currentSection?.type]);
 
-  const handlePlayExaminerAudio = (text: string, onEnded?: () => void, targetVoiceId?: string) => {
+  const handlePlayExaminerAudio = (text: string, onEnded?: () => void, targetVoiceId?: string, audioBase64?: string) => {
     handleStopAudio();
     setIsAudioFetching(true);
     setIsPlayingAudio(true);
@@ -605,9 +605,12 @@ export function AuthenticCBTExamPage() {
       if (onEnded) onEnded();
     };
 
-    // Option A: 1.2-second natural human breathing delay before examiner voice audio speaks
     setTimeout(() => {
-      ttsSpeak(text, "fr-FR", 0.9, isMale ? "male" : "female", voiceId, undefined, undefined, handleEnded);
+      if (audioBase64) {
+        playBase64Audio(audioBase64, handleEnded);
+      } else {
+        ttsSpeak(text, "fr-FR", 0.9, isMale ? "male" : "female", voiceId, undefined, undefined, handleEnded);
+      }
     }, 1200);
   };
 
@@ -662,7 +665,7 @@ export function AuthenticCBTExamPage() {
       const examinerRole = persona?.role || "Examinatrice certifiée FEI — Format TCF Canada";
       const taskTitle = activeTask?.title || masterTask?.title || "Tâche 1";
 
-      const res = await apiFetch("/writing/speaking-chat", {
+      const res = await apiFetch("/speaking/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -671,6 +674,8 @@ export function AuthenticCBTExamPage() {
           scenarioText: scenarioText || activeTask?.scenario || masterTask?.scenario || "TCF Oral Interaction",
           examinerName,
           examinerRole,
+          examinerVoice: persona?.voiceId || persona?.voice || (persona?.gender === "male" ? "fr-FR-HenriNeural" : "fr-FR-DeniseNeural"),
+          gender: persona?.gender || "female",
           lessonLevel: "B2",
           lessonTopic: scenarioText || "TCF Oral Interaction",
           targetLanguage: "French",
@@ -678,9 +683,11 @@ export function AuthenticCBTExamPage() {
       });
 
       let replyText = "";
+      let audioBase64 = "";
       try {
         const json = await res.json();
         replyText = json?.data?.reply || json?.reply || "";
+        audioBase64 = json?.data?.audioBase64 || json?.audioBase64 || "";
       } catch {}
 
       if (!replyText || typeof replyText !== 'string' || !replyText.trim()) {
@@ -729,14 +736,19 @@ export function AuthenticCBTExamPage() {
         if (box) box.scrollTop = box.scrollHeight;
       }, 100);
 
-      handlePlayExaminerAudio(replyText, () => {
-        // 1.2s Speaker Echo Decay Buffer before auto-arming candidate mic for Turn #2
-        setTimeout(() => {
-          if (currentSection?.type === "EXPRESSION_ORALE" && !isSubmitted) {
-            handleToggleSpeakingRecording(taskId);
-          }
-        }, 1200);
-      });
+      handlePlayExaminerAudio(
+        replyText,
+        () => {
+          // 1.2s Speaker Echo Decay Buffer before auto-arming candidate mic for Turn #2
+          setTimeout(() => {
+            if (currentSection?.type === "EXPRESSION_ORALE" && !isSubmitted) {
+              handleToggleSpeakingRecording(taskId);
+            }
+          }, 1200);
+        },
+        undefined,
+        audioBase64
+      );
       return;
     } catch (e) {
       console.error("Examiner chat error:", e);

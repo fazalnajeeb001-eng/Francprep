@@ -1,13 +1,14 @@
 import { Router, Request, Response } from 'express';
 import { env } from '../config/env';
-import { authenticate, optionalAuth } from '../middleware/auth';
+import { optionalAuth } from '../middleware/auth';
 import Settings from '../models/Settings';
+import { generateNeuralAudio } from '../services/tts.service';
 
 const router = Router();
 
 // Health check for speaking routes
 router.get('/health', (_req: Request, res: Response) => {
-  res.json({ success: true, message: 'Speaking routes loaded' });
+  res.json({ success: true, message: 'Speaking 2-Way AI Examiner routes active' });
 });
 
 interface ChatMessage {
@@ -21,6 +22,8 @@ interface ChatRequestBody {
   scenarioText?: string;
   examinerName?: string;
   examinerRole?: string;
+  examinerVoice?: string;
+  gender?: 'female' | 'male';
   lessonLevel?: string;
   lessonTopic?: string;
 }
@@ -43,8 +46,8 @@ function buildExaminerSystemPrompt(
   lessonLevel?: string,
   lessonTopic?: string
 ): string {
-  const name = examinerName || "Examiner Élodie";
-  const role = examinerRole || "Examinatrice certifiée FEI — Format TCF Canada";
+  const name = examinerName || "Examinateur Henri";
+  const role = examinerRole || "Examinateur certifié FEI — Format TCF Canada";
   const title = taskTitle || "Tâche 1";
   const scenario = scenarioText || lessonTopic || "Épreuve d'expression orale TCF Canada";
   const level = lessonLevel || "B2";
@@ -59,7 +62,7 @@ function buildExaminerSystemPrompt(
 - THIS IS TÂCHE 1 (Entretien dirigé - 2 minutes).
 - You are an official France Éducation International (FEI) TCF Canada oral examiner named ${name} (${role}).
 - Conduct a formal, progressive guided interview (target CEFR level: ${level}).
-- IMPORTANT: Listen carefully to the candidate's response, extract key contextual facts (e.g. their profession, city, hobbies, or plans), and ask 1 dynamic, natural follow-up question.
+- Listen carefully to the candidate's response, extract key contextual details (e.g. their profession, city, hobbies, or plans), and ask 1 dynamic, natural follow-up question.
 - Always use formal register ("vous"). Keep your response concise, polite, and encouraging (1-2 sentences maximum).
 `;
   } else if (isTache2) {
@@ -98,6 +101,14 @@ ${taskRules}
 `;
 }
 
+// Multi-Model Fail-Safe Array (Fastest free models first, paid fallback last)
+const CANDIDATE_LLM_MODELS = [
+  'google/gemini-2.0-flash-exp:free',
+  'meta-llama/llama-3.3-70b-instruct:free',
+  'qwen/qwen-2.5-72b-instruct:free',
+  'openai/gpt-4o-mini'
+];
+
 router.post('/chat', optionalAuth, async (req: Request, res: Response) => {
   try {
     const apiKey = await getOpenRouterApiKey();
@@ -109,7 +120,7 @@ router.post('/chat', optionalAuth, async (req: Request, res: Response) => {
       return;
     }
 
-    const { messages, taskTitle, scenarioText, examinerName, examinerRole, lessonLevel, lessonTopic } = req.body as ChatRequestBody;
+    const { messages, taskTitle, scenarioText, examinerName, examinerRole, examinerVoice, gender, lessonLevel, lessonTopic } = req.body as ChatRequestBody;
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       res.status(400).json({
@@ -133,42 +144,67 @@ router.post('/chat', optionalAuth, async (req: Request, res: Response) => {
       ...messages,
     ];
 
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-        'HTTP-Referer': env.frontendUrl,
-        'X-Title': 'FrancPrep Official TCF Examiner',
-      },
-      body: JSON.stringify({
-        model: 'openai/gpt-4o-mini',
-        messages: apiMessages,
-        temperature: 0.7,
-        max_tokens: 220,
-      }),
-    });
+    let content = '';
+    let usedModel = '';
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('OpenRouter speaking chat error:', response.status, errorText);
-      let msg = 'Unable to get examiner response.';
+    // Try models in multi-model fail-safe sequence
+    for (const model of CANDIDATE_LLM_MODELS) {
       try {
-        const err = JSON.parse(errorText);
-        if (err.error?.message) msg += ' ' + err.error.message;
-      } catch {}
-      res.status(502).json({ success: false, error: msg });
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+            'HTTP-Referer': env.frontendUrl,
+            'X-Title': 'FrancPrep Official TCF Examiner',
+          },
+          body: JSON.stringify({
+            model,
+            messages: apiMessages,
+            temperature: 0.7,
+            max_tokens: 220,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json() as any;
+          content = data.choices?.[0]?.message?.content || '';
+          if (content && content.trim().length > 0) {
+            usedModel = model;
+            break;
+          }
+        }
+      } catch (err: any) {
+        console.warn(`[Speaking LLM Failover] Model ${model} failed:`, err?.message || err);
+      }
+    }
+
+    if (!content) {
+      res.status(502).json({ success: false, error: 'Unable to get examiner response from available AI models.' });
       return;
     }
 
-    const data = await response.json() as any;
-    const content = data.choices?.[0]?.message?.content || '';
+    // Dynamic Edge Neural Speech Synthesis for examiner response
+    const chosenGender = gender || (examinerName && /Henri|Jean|Gérard|Rémy/i.test(examinerName) ? 'male' : 'female');
+    let audioBase64 = '';
+
+    try {
+      const audioRes = await generateNeuralAudio(content, chosenGender, 'fr', undefined, undefined, undefined, 1.0);
+      if (audioRes && audioRes.audioBase64) {
+        audioBase64 = audioRes.audioBase64;
+      }
+    } catch (audioErr: any) {
+      console.warn('[Speaking Audio Synthesis Warning]:', audioErr?.message || audioErr);
+    }
 
     res.json({
       success: true,
       data: {
         reply: content,
-        model: 'openai/gpt-4o-mini',
+        model: usedModel,
+        audioBase64,
+        contentType: 'audio/mp3',
+        voice: examinerVoice || (chosenGender === 'male' ? 'fr-FR-HenriNeural' : 'fr-FR-DeniseNeural')
       },
     });
   } catch (error) {
