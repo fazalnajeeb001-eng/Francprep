@@ -848,7 +848,7 @@ export function AuthenticCBTExamPage() {
         };
       });
 
-      const taskGender = persona?.gender === "male" ? "male" : "female";
+      const taskGender = task.examinerPersona?.gender === "male" ? "male" : "female";
       apiFetch(`/speaking/intro-audio?taskIdx=${idx}&gender=${taskGender}`)
         .then(async (res) => {
           let b64 = "";
