@@ -234,18 +234,11 @@ export async function generateNeuralAudio(
 
         for (const dbName of ['francprep', 'test']) {
           const col = client.db(dbName).collection('ttscaches');
-          const cursor = col.find({}, { projection: { text: 1, audioBase64: 1, voice: 1, contentType: 1 } });
-          while (await cursor.hasNext()) {
-            const doc = await cursor.next();
-            if (doc && doc.text && doc.audioBase64) {
-              const normDoc = doc.text.replace(/^(locuteur|locutrice|annonceur|annonceuse)\s*:\s*/i, '').toLowerCase().replace(/['’`"«».,!?;:\s\-\u2013\u2014]+/g, '').trim();
-              if (normDoc === normTarget) {
-                cached = doc as any;
-                break;
-              }
-            }
+          const doc = await col.findOne({ normalizedText: normTarget });
+          if (doc && doc.audioBase64) {
+            cached = doc as any;
+            break;
           }
-          if (cached) break;
         }
       } catch (err: any) {
         console.warn('[TTSCache Normalized Lookup Error]:', err?.message);
