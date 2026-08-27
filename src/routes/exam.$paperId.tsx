@@ -3098,12 +3098,12 @@ export function AuthenticCBTExamPage() {
                   : ((currentQ as any).audioCoachEn || (currentQ as any).readingCoachEn);
 
                 const activeExplanation = isReadingSection
-                  ? (bankEntry?.detailedExplanation || currentQ.explanation || (currentQ as any).hint)
-                  : (currentQ.explanation || (currentQ as any).detailedExplanation || (currentQ as any).hint);
+                  ? (bankEntry?.detailedExplanation || (currentQ as any).detailedExplanation || currentQ.explanation || (currentQ as any).hint)
+                  : ((currentQ as any).detailedExplanation || currentQ.explanation || (currentQ as any).hint);
 
                 const activeExplanationEn = isReadingSection
                   ? (bankEntry?.detailedExplanationEn || (currentQ as any).detailedExplanationEn || (currentQ as any).explanationEnglish)
-                  : ((currentQ as any).explanationEnglish || (currentQ as any).detailedExplanationEn || (currentQ as any).explanationEn);
+                  : ((currentQ as any).detailedExplanationEn || (currentQ as any).explanationEnglish || (currentQ as any).explanationEn);
 
                 if (mode !== "PRACTICE" || (!activeTrapAlert && !activeReadingCoach && !activeExplanation && !currentQ.hint)) {
                   return null;
