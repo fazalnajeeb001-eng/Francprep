@@ -101,7 +101,7 @@ ${taskRules}
 `;
 }
 
-function generateRuleBasedFallbackReply(
+function generateDynamicFallbackReply(
   taskTitle: string,
   userText: string,
   userTurnCount: number
@@ -127,20 +127,27 @@ function generateRuleBasedFallbackReply(
 
   if (isTache2) {
     if (userTurnCount >= 4) {
-      return "Merci beaucoup, nous avons fait le tour de vos questions. L'épreuve est terminée.";
+      return "Merci beaucoup, nous avons répondu à l'ensemble de vos questions. Cet exercice est terminé.";
     }
-    return "Oui absolument, toutes ces options sont tout à fait disponibles selon vos besoins. Avez-vous d'autres questions ?";
+    if (/\b(prix|tarif|coût|combien|payant|gratuit)\b/i.test(userText)) {
+      return "Les tarifs varient selon la formule choisie, à partir de cinquante dollars par session. Avez-vous d'autres questions ?";
+    }
+    if (/\b(horaire|heure|quand|ouvert|fermé|date|samedi|dimanche)\b/i.test(userText)) {
+      return "Nous sommes ouverts du lundi au samedi, de 9 heures à 18 heures. Avez-vous d'autres questions ?";
+    }
+    return "Tout à fait, nous proposons plusieurs options adaptées à vos disponibilités. Avez-vous d'autres questions ?";
   }
 
-  return "Je comprends tout à fait votre point de vue, cependant ne pensez-vous pas que cette situation comporte aussi certains risques ?";
+  return "Je comprends tout à fait votre point de vue, néanmoins ne pensez-vous pas que cette démarche présente aussi des défis importants à surmonter ?";
 }
 
-// Multi-Model Fail-Safe Array (Fastest free models first, paid fallback last)
+// Multi-Model Fail-Safe Array (Fastest high-intelligence models first)
 const CANDIDATE_LLM_MODELS = [
   'google/gemini-2.0-flash-exp:free',
+  'openai/gpt-4o-mini',
   'meta-llama/llama-3.3-70b-instruct:free',
   'qwen/qwen-2.5-72b-instruct:free',
-  'openai/gpt-4o-mini'
+  'deepseek/deepseek-chat'
 ];
 
 export async function processSpeakingChatRequest(body: ChatRequestBody): Promise<{
@@ -167,7 +174,7 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
   ];
 
   let content = '';
-  let usedModel = 'rule-based-fallback';
+  let usedModel = 'dynamic-context-fallback';
 
   if (apiKey) {
     for (const model of CANDIDATE_LLM_MODELS) {
@@ -206,7 +213,7 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
   const lastUserText = messages && messages.length > 0 ? messages[messages.length - 1].content || '' : '';
 
   if (!content || content.trim().length === 0) {
-    content = generateRuleBasedFallbackReply(taskTitle || '', lastUserText, userTurnCount);
+    content = generateDynamicFallbackReply(taskTitle || '', lastUserText, userTurnCount);
   }
 
   const chosenGender = gender || (examinerName && /Henri|Jean|Gérard|Rémy/i.test(examinerName) ? 'male' : 'female');
@@ -214,7 +221,7 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
   let audioBase64 = '';
 
   try {
-    const audioRes = await generateNeuralAudio(content, chosenGender, 'fr', undefined, undefined, undefined, 1.0);
+    const audioRes = await generateNeuralAudio(content, chosenGender, 'fr', 'edge-neural', undefined, undefined, 1.0);
     if (audioRes && audioRes.audioBase64) {
       audioBase64 = audioRes.audioBase64;
     }

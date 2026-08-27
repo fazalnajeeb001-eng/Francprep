@@ -312,7 +312,7 @@ function SpeakingPage() {
 
       setMessages((prev) => [...prev, coachMsg]);
       setAvatarAnim("speak");
-      speakText(coachReply, targetTtsLocale, 0.85, coachGender);
+      speakText(coachReply, targetTtsLocale, 1.0, coachGender);
       setTimeout(() => setAvatarAnim("idle"), 4000);
     } catch {
       const fallbackReply = `Very good! At ${activeLevel} level, your phrasing is clear. Keep speaking!`;
@@ -322,7 +322,7 @@ function SpeakingPage() {
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       }]);
       setAvatarAnim("speak");
-      speakText(fallbackReply, targetTtsLocale, 0.85, coachGender);
+      speakText(fallbackReply, targetTtsLocale, 1.0, coachGender);
       setTimeout(() => setAvatarAnim("idle"), 3000);
     } finally {
       setIsAiProcessing(false);
