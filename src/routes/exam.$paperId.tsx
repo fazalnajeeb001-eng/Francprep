@@ -333,6 +333,7 @@ export function AuthenticCBTExamPage() {
 
     // Do NOT count down while audio is playing, while student has paused the timer/audio, OR before audio has finished playing!
     if (isSpeaking || isAudioPaused || isTimerPaused || !isAudioFinished) {
+      targetEndTimeRef.current = null;
       return;
     }
 
@@ -1407,8 +1408,10 @@ export function AuthenticCBTExamPage() {
   useEffect(() => {
     handleStopAudio();
     setIsAudioFinished(false);
+    targetEndTimeRef.current = null;
 
     if (currentSection?.type === "COMPREHENSION_ORALE" && currentQ) {
+      const currentSession = ++playAudioSessionRef.current;
       const qNum = currentQ.questionNumber;
       const initialTimer = (currentQ as any).perQuestionTimerSeconds || (qNum <= 10 ? 15 : qNum <= 26 ? 20 : 25);
       setQTimeLeft(initialTimer);
@@ -1427,9 +1430,8 @@ export function AuthenticCBTExamPage() {
 
       // Auto-play audio on question load in Exam Mode
       if (mode === "EXAM" && !isSubmitted) {
-        const rate = (currentQ as any).speakingRate || 1.0;
         const fullText = currentQ.transcript || currentQ.text;
-        const currentSession = playAudioSessionRef.current;
+        const gender = (fullText.toLowerCase().includes("annonceur:") || qNum % 2 === 0) ? "male" : "female";
 
         // Dynamic Fail-Safe Watchdog: Ensures isAudioFinished only fires if network drops completely after full text length duration (45s+ for long Q1-Q8 prompts)
         const dynamicWatchdogMs = Math.max(45000, (fullText?.length || 100) * 150);
@@ -1444,7 +1446,7 @@ export function AuthenticCBTExamPage() {
           try {
             triggerAcousticSoundForQuestion(qNum);
           } catch { }
-          ttsSpeakListening(fullText, "fr-FR", rate, "female", () => {
+          ttsSpeakListening(fullText, "fr-FR", 1.0, gender, () => {
             clearTimeout(watchdogTimer);
             if (playAudioSessionRef.current === currentSession) {
               setIsAudioFinished(true);
@@ -1468,15 +1470,16 @@ export function AuthenticCBTExamPage() {
       if (nextQ) {
         const nextText = nextQ.transcript || nextQ.text;
         if (nextText) {
+          const nextGender = (nextText.toLowerCase().includes("annonceur:") || (nextQ.questionNumber || 0) % 2 === 0) ? "male" : "female";
           try {
             apiFetch("/tts/speak", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 text: nextText.trim(),
-                gender: "female",
+                gender: nextGender,
                 lang: "fr",
-                speakingRate: (nextQ as any).speakingRate || 1.0,
+                speakingRate: 1.0,
               }),
             }).catch(() => { });
           } catch { }
