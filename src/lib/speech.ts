@@ -857,3 +857,100 @@ export function useSpeak() {
       toggleAudio(text, lang, rate, gender, voiceId, provider, extraKeys),
   };
 }
+
+/**
+ * Direct Base64 MP3 Audio Player for Dynamic Speaking Examiner Turns
+ */
+export function playBase64Audio(
+  base64Data: string,
+  onEnded?: () => void,
+  rate = 1.0
+): boolean {
+  if (typeof window === "undefined" || !base64Data) {
+    if (onEnded) onEnded();
+    return false;
+  }
+
+  stopAudio();
+  const audioUrl = base64Data.startsWith("data:audio/")
+    ? base64Data
+    : `data:audio/mp3;base64,${base64Data}`;
+
+  const isMobileDevice = typeof navigator !== "undefined" && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  if (isMobileDevice && mobileAudioContext && mobileAudioContext.state !== "closed") {
+    try {
+      const arrayBuffer = base64ToArrayBuffer(audioUrl);
+      mobileAudioContext.decodeAudioData(arrayBuffer).then((audioBuffer) => {
+        if (activeSourceNode) {
+          try {
+            activeSourceNode.onended = null;
+            activeSourceNode.stop();
+            activeSourceNode.disconnect();
+          } catch {}
+          activeSourceNode = null;
+        }
+
+        const sourceNode = mobileAudioContext.createBufferSource();
+        sourceNode.buffer = audioBuffer;
+        sourceNode.playbackRate.value = rate;
+        sourceNode.connect(mobileAudioContext.destination);
+        activeSourceNode = sourceNode;
+
+        sourceNode.onended = () => {
+          activeSourceNode = null;
+          if (onPlaybackStateChange) onPlaybackStateChange(false);
+          if (onEnded) onEnded();
+        };
+
+        if (mobileAudioContext.state === "suspended") {
+          mobileAudioContext.resume().catch(() => {});
+        }
+
+        if (onPlaybackStateChange) onPlaybackStateChange(true);
+        sourceNode.start(0);
+      }).catch((e) => {
+        console.warn("[playBase64Audio WebAudio decode error, fallback to HTMLAudioElement]:", e);
+        fallbackHTMLAudio(audioUrl, rate, onEnded);
+      });
+      return true;
+    } catch (e) {
+      console.warn("[playBase64Audio WebAudio error, fallback to HTMLAudioElement]:", e);
+    }
+  }
+
+  fallbackHTMLAudio(audioUrl, rate, onEnded);
+  return true;
+}
+
+function fallbackHTMLAudio(src: string, rate: number, onEnded?: () => void) {
+  const audio = masterAudioPlayer || new Audio();
+  activeAudioPlayers.add(audio);
+  currentAudioPlayer = audio;
+
+  audio.src = src;
+  audio.playbackRate = rate;
+  audio.preservesPitch = true;
+  (audio as any).webkitPreservesPitch = true;
+
+  audio.onended = () => {
+    activeAudioPlayers.delete(audio);
+    if (currentAudioPlayer === audio) currentAudioPlayer = null;
+    if (onPlaybackStateChange) onPlaybackStateChange(false);
+    if (onEnded) onEnded();
+  };
+
+  audio.onerror = () => {
+    activeAudioPlayers.delete(audio);
+    if (currentAudioPlayer === audio) currentAudioPlayer = null;
+    if (onPlaybackStateChange) onPlaybackStateChange(false);
+    if (onEnded) onEnded();
+  };
+
+  if (onPlaybackStateChange) onPlaybackStateChange(true);
+  audio.play().catch((err) => {
+    console.warn("[playBase64Audio HTMLAudioElement play error]:", err);
+    if (onEnded) onEnded();
+  });
+}
+
