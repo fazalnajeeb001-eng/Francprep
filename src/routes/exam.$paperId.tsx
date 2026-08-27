@@ -825,12 +825,6 @@ export function AuthenticCBTExamPage() {
       speakingFallbackTimerRef.current = null;
     }
 
-    if (task.prepTimeMins > 0) {
-      handleStartPrepTimer(task.id, task.prepTimeMins);
-    } else {
-      handleStartSpeakingTimer(task.id, task.speakingTimeMins);
-    }
-
     // Play opening preamble ONLY ONCE per task session
     if (!hasPlayedIntroRef.current[task.id]) {
       hasPlayedIntroRef.current[task.id] = true;
@@ -855,11 +849,22 @@ export function AuthenticCBTExamPage() {
       });
 
       handlePlayExaminerAudio(openingText, () => {
-        // Auto arm mic as soon as opening greeting completes
+        // ONLY start the per-tâche prep or speaking timer AFTER examiner intro finishes playing!
+        if (task.prepTimeMins > 0) {
+          handleStartPrepTimer(task.id, task.prepTimeMins);
+        } else {
+          handleStartSpeakingTimer(task.id, task.speakingTimeMins);
+        }
         if (currentSection?.type === "EXPRESSION_ORALE") {
           handleToggleSpeakingRecording(task.id);
         }
       });
+    } else {
+      if (task.prepTimeMins > 0) {
+        handleStartPrepTimer(task.id, task.prepTimeMins);
+      } else {
+        handleStartSpeakingTimer(task.id, task.speakingTimeMins);
+      }
     }
   };
 
