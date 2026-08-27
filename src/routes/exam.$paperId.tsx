@@ -753,8 +753,13 @@ export function AuthenticCBTExamPage() {
       return;
     } catch (e) {
       console.error("Examiner chat error:", e);
-      // Emergency Client Fallback on Exception
-      const emergencyReply = "Merci pour votre réponse ! Pouvez-vous me préciser votre pensée avec un peu plus de détails en français ?";
+      const userTurnsCount = updatedMessages.filter(m => m.sender === 'candidate').length;
+      let emergencyReply = "Merci pour ces précisions ! Pouvez-vous me parler de votre métier actuel et de vos projets pour le Canada ?";
+      if (/\b(habite|vis|ville|victoria|montréal|quebec|toronto)\b/i.test(clean)) {
+        emergencyReply = "C'est une très belle ville ! Qu'est-ce qui vous plaît le plus dans cette région et pourquoi souhaitez-vous vivre au Canada ?";
+      } else if (/\b(travail|emploi|métier|ingénieur|professeur|étudiant)\b/i.test(clean)) {
+        emergencyReply = "C'est un domaine très recherché au Canada ! Depuis combien d'années exercez-vous cette profession ?";
+      }
       setSpeakingDialogueMap((prev) => ({
         ...prev,
         [taskId]: [...updatedMessages, { sender: 'examiner' as const, text: emergencyReply }],

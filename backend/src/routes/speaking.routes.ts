@@ -141,7 +141,7 @@ function generateDynamicFallbackReply(
   return "Je comprends tout à fait votre point de vue, néanmoins ne pensez-vous pas que cette démarche présente aussi des défis importants à surmonter ?";
 }
 
-// Multi-Model Fail-Safe Array (Fastest high-intelligence models first)
+// Multi-Model Fail-Safe Array
 const CANDIDATE_LLM_MODELS = [
   'google/gemini-2.0-flash-exp:free',
   'openai/gpt-4o-mini',
@@ -221,7 +221,8 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
   let audioBase64 = '';
 
   try {
-    const audioRes = await generateNeuralAudio(content, chosenGender, 'fr', 'edge-neural', undefined, undefined, 1.0);
+    // PASS undefined for forcedProvider so it uses the primary engine properly!
+    const audioRes = await generateNeuralAudio(content, chosenGender, 'fr', undefined, undefined, undefined, 1.0);
     if (audioRes && audioRes.audioBase64) {
       audioBase64 = audioRes.audioBase64;
     }
