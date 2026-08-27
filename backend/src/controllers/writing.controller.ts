@@ -1,6 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { writingService } from '../services/writing.service';
 import { AuthRequest } from '../types';
+import { processSpeakingChatRequest } from '../routes/speaking.routes';
 
 function getLanguageAndExamInfo(req: AuthRequest, bodyLang?: string) {
   const langCode = String(bodyLang || (req.user as any)?.activeLanguage || 'fr').toLowerCase().trim();
@@ -108,24 +109,14 @@ export class WritingController {
 
   async speakingChat(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const { messages, taskTitle, scenarioText, examinerName, examinerRole, lessonLevel, lessonTopic, targetLanguage } = req.body;
+      const { messages } = req.body;
       
       if (!messages || !Array.isArray(messages) || messages.length === 0) {
         res.status(400).json({ success: false, error: 'Messages array is required.' });
         return;
       }
 
-      const { targetLanguage: lang } = getLanguageAndExamInfo(req, targetLanguage);
-
-      const result = await writingService.chatWithTutor(
-        messages,
-        lessonLevel,
-        scenarioText || lessonTopic,
-        lang,
-        taskTitle,
-        examinerName,
-        examinerRole
-      );
+      const result = await processSpeakingChatRequest(req.body);
       
       res.status(200).json({
         success: true,

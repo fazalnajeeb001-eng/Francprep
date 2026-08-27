@@ -101,6 +101,40 @@ ${taskRules}
 `;
 }
 
+function generateRuleBasedFallbackReply(
+  taskTitle: string,
+  userText: string,
+  userTurnCount: number
+): string {
+  const isTache1 = /tâche\s*1|entretien|dirigé|présentation/i.test(taskTitle);
+  const isTache2 = /tâche\s*2|interaction|questions|document|rôle|roleplay/i.test(taskTitle);
+
+  if (isTache1) {
+    if (userTurnCount <= 1) {
+      if (/\b(travail|travaille|emploi|métier|profession|ingénieur|professeur|étudiant|informatique|domaine)\b/i.test(userText)) {
+        return "C'est un parcours très intéressant ! Depuis combien de temps exercez-vous dans ce domaine, et dans quelle ville du Canada souhaitez-vous travailler ?";
+      }
+      if (/\b(habite|vis|ville|pays|canada|montréal|quebec|toronto|victoria|vancouver)\b/i.test(userText)) {
+        return "Merci pour cette présentation ! Qu'est-ce qui vous plaît le plus dans votre ville actuelle, et pourquoi souhaitez-vous vous installer au Canada ?";
+      }
+      return "Bonjour ! C'est un plaisir de faire votre connaissance. Pouvez-vous me décrire votre métier actuel et me parler de vos loisirs préférés ?";
+    }
+    if (userTurnCount === 2) {
+      return "Merci pour ces précisions ! Qu'est-ce qui vous motive le plus dans votre projet d'immigration canadienne ?";
+    }
+    return "Merci beaucoup. Nous avons fait le tour des questions pour cette première tâche. L'entretien est terminé, nous pouvons passer à la suite.";
+  }
+
+  if (isTache2) {
+    if (userTurnCount >= 4) {
+      return "Merci beaucoup, nous avons fait le tour de vos questions. L'épreuve est terminée.";
+    }
+    return "Oui absolument, toutes ces options sont tout à fait disponibles selon vos besoins. Avez-vous d'autres questions ?";
+  }
+
+  return "Je comprends tout à fait votre point de vue, cependant ne pensez-vous pas que cette situation comporte aussi certains risques ?";
+}
+
 // Multi-Model Fail-Safe Array (Fastest free models first, paid fallback last)
 const CANDIDATE_LLM_MODELS = [
   'google/gemini-2.0-flash-exp:free',
@@ -109,45 +143,33 @@ const CANDIDATE_LLM_MODELS = [
   'openai/gpt-4o-mini'
 ];
 
-router.post('/chat', optionalAuth, async (req: Request, res: Response) => {
-  try {
-    const apiKey = await getOpenRouterApiKey();
-    if (!apiKey) {
-      res.status(500).json({
-        success: false,
-        error: 'AI service not configured. Please set OPENROUTER_API_KEY.',
-      });
-      return;
-    }
+export async function processSpeakingChatRequest(body: ChatRequestBody): Promise<{
+  reply: string;
+  audioBase64: string;
+  model: string;
+  voice: string;
+}> {
+  const { messages, taskTitle, scenarioText, examinerName, examinerRole, examinerVoice, gender, lessonLevel, lessonTopic } = body;
 
-    const { messages, taskTitle, scenarioText, examinerName, examinerRole, examinerVoice, gender, lessonLevel, lessonTopic } = req.body as ChatRequestBody;
+  const apiKey = await getOpenRouterApiKey();
+  const systemPrompt = buildExaminerSystemPrompt(
+    taskTitle,
+    scenarioText,
+    examinerName,
+    examinerRole,
+    lessonLevel,
+    lessonTopic
+  );
 
-    if (!messages || !Array.isArray(messages) || messages.length === 0) {
-      res.status(400).json({
-        success: false,
-        error: 'Messages array is required.',
-      });
-      return;
-    }
+  const apiMessages: ChatMessage[] = [
+    { role: 'system', content: systemPrompt },
+    ...(messages || []),
+  ];
 
-    const systemPrompt = buildExaminerSystemPrompt(
-      taskTitle,
-      scenarioText,
-      examinerName,
-      examinerRole,
-      lessonLevel,
-      lessonTopic
-    );
+  let content = '';
+  let usedModel = 'rule-based-fallback';
 
-    const apiMessages: ChatMessage[] = [
-      { role: 'system', content: systemPrompt },
-      ...messages,
-    ];
-
-    let content = '';
-    let usedModel = '';
-
-    // Try models in multi-model fail-safe sequence
+  if (apiKey) {
     for (const model of CANDIDATE_LLM_MODELS) {
       try {
         const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -155,7 +177,7 @@ router.post('/chat', optionalAuth, async (req: Request, res: Response) => {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${apiKey}`,
-            'HTTP-Referer': env.frontendUrl,
+            'HTTP-Referer': env.frontendUrl || 'https://francprep.com',
             'X-Title': 'FrancPrep Official TCF Examiner',
           },
           body: JSON.stringify({
@@ -178,33 +200,58 @@ router.post('/chat', optionalAuth, async (req: Request, res: Response) => {
         console.warn(`[Speaking LLM Failover] Model ${model} failed:`, err?.message || err);
       }
     }
+  }
 
-    if (!content) {
-      res.status(502).json({ success: false, error: 'Unable to get examiner response from available AI models.' });
+  const userTurnCount = (messages || []).filter((m) => m.role === 'user' || (m as any).sender === 'candidate').length;
+  const lastUserText = messages && messages.length > 0 ? messages[messages.length - 1].content || '' : '';
+
+  if (!content || content.trim().length === 0) {
+    content = generateRuleBasedFallbackReply(taskTitle || '', lastUserText, userTurnCount);
+  }
+
+  const chosenGender = gender || (examinerName && /Henri|Jean|Gérard|Rémy/i.test(examinerName) ? 'male' : 'female');
+  const chosenVoice = examinerVoice || (chosenGender === 'male' ? 'fr-FR-HenriNeural' : 'fr-FR-DeniseNeural');
+  let audioBase64 = '';
+
+  try {
+    const audioRes = await generateNeuralAudio(content, chosenGender, 'fr', undefined, undefined, undefined, 1.0);
+    if (audioRes && audioRes.audioBase64) {
+      audioBase64 = audioRes.audioBase64;
+    }
+  } catch (audioErr: any) {
+    console.warn('[Speaking Audio Synthesis Warning]:', audioErr?.message || audioErr);
+  }
+
+  return {
+    reply: content,
+    model: usedModel,
+    audioBase64,
+    voice: chosenVoice,
+  };
+}
+
+router.post('/chat', optionalAuth, async (req: Request, res: Response) => {
+  try {
+    const { messages } = req.body as ChatRequestBody;
+
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      res.status(400).json({
+        success: false,
+        error: 'Messages array is required.',
+      });
       return;
     }
 
-    // Dynamic Edge Neural Speech Synthesis for examiner response
-    const chosenGender = gender || (examinerName && /Henri|Jean|Gérard|Rémy/i.test(examinerName) ? 'male' : 'female');
-    let audioBase64 = '';
-
-    try {
-      const audioRes = await generateNeuralAudio(content, chosenGender, 'fr', undefined, undefined, undefined, 1.0);
-      if (audioRes && audioRes.audioBase64) {
-        audioBase64 = audioRes.audioBase64;
-      }
-    } catch (audioErr: any) {
-      console.warn('[Speaking Audio Synthesis Warning]:', audioErr?.message || audioErr);
-    }
+    const result = await processSpeakingChatRequest(req.body as ChatRequestBody);
 
     res.json({
       success: true,
       data: {
-        reply: content,
-        model: usedModel,
-        audioBase64,
+        reply: result.reply,
+        model: result.model,
+        audioBase64: result.audioBase64,
         contentType: 'audio/mp3',
-        voice: examinerVoice || (chosenGender === 'male' ? 'fr-FR-HenriNeural' : 'fr-FR-DeniseNeural')
+        voice: result.voice,
       },
     });
   } catch (error) {
