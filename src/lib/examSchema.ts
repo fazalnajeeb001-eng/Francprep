@@ -7359,7 +7359,7 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
     const questionId = `${prefix}-lis-${i}`;
     const practiceTr = getPracticeQuestionTranslation(questionId);
 
-    const speakingRate = 1.0;
+    const speakingRate = i <= 7 ? 0.90 : i <= 15 ? 0.95 : i <= 25 ? 1.00 : i <= 33 ? 1.08 : i <= 36 ? 1.15 : 1.20;
 
     const optionsEn0 = shuffledOptionsEn?.[0] || (t as any).optionsEnglish?.[0] || translateOptionToEnglish(options[0]);
     const optionsEn1 = shuffledOptionsEn?.[1] || (t as any).optionsEnglish?.[1] || translateOptionToEnglish(options[1]);

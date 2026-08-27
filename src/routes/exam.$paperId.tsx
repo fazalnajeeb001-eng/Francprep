@@ -1404,6 +1404,15 @@ export function AuthenticCBTExamPage() {
     };
   }, []);
 
+  const getListeningSpeakingRate = (qNum: number): number => {
+    if (qNum <= 7) return 0.90;   // A1: Articulated & clear native pace
+    if (qNum <= 15) return 0.95;  // A2: Moderate everyday conversational pace
+    if (qNum <= 25) return 1.00;  // B1: Standard natural native studio rate
+    if (qNum <= 33) return 1.08;  // B2: Fast native studio rate (FEI Benchmark)
+    if (qNum <= 36) return 1.15;  // C1: Rapid native speech (Lectures & news)
+    return 1.20;                  // C2: Elite native speed (Fast argumentation)
+  };
+
   // Automatically kill audio and manage audio completion state / auto-play when switching questions!
   useEffect(() => {
     handleStopAudio();
@@ -1432,6 +1441,7 @@ export function AuthenticCBTExamPage() {
       if (mode === "EXAM" && !isSubmitted) {
         const fullText = currentQ.transcript || currentQ.text;
         const gender = (fullText.toLowerCase().includes("annonceur:") || qNum % 2 === 0) ? "male" : "female";
+        const rate = (currentQ as any).speakingRate || getListeningSpeakingRate(qNum);
 
         // Dynamic Fail-Safe Watchdog: Ensures isAudioFinished only fires if network drops completely after full text length duration (45s+ for long Q1-Q8 prompts)
         const dynamicWatchdogMs = Math.max(45000, (fullText?.length || 100) * 150);
@@ -1446,7 +1456,7 @@ export function AuthenticCBTExamPage() {
           try {
             triggerAcousticSoundForQuestion(qNum);
           } catch { }
-          ttsSpeakListening(fullText, "fr-FR", 1.0, gender, () => {
+          ttsSpeakListening(fullText, "fr-FR", rate, gender, () => {
             clearTimeout(watchdogTimer);
             if (playAudioSessionRef.current === currentSession) {
               setIsAudioFinished(true);
@@ -1470,7 +1480,9 @@ export function AuthenticCBTExamPage() {
       if (nextQ) {
         const nextText = nextQ.transcript || nextQ.text;
         if (nextText) {
-          const nextGender = (nextText.toLowerCase().includes("annonceur:") || (nextQ.questionNumber || 0) % 2 === 0) ? "male" : "female";
+          const nextQNum = nextQ.questionNumber || (currentQuestionIdx + 2);
+          const nextGender = (nextText.toLowerCase().includes("annonceur:") || nextQNum % 2 === 0) ? "male" : "female";
+          const nextRate = (nextQ as any).speakingRate || getListeningSpeakingRate(nextQNum);
           try {
             apiFetch("/tts/speak", {
               method: "POST",
@@ -1479,7 +1491,7 @@ export function AuthenticCBTExamPage() {
                 text: nextText.trim(),
                 gender: nextGender,
                 lang: "fr",
-                speakingRate: 1.0,
+                speakingRate: nextRate,
               }),
             }).catch(() => { });
           } catch { }
