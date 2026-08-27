@@ -24,25 +24,24 @@ export function unlockAudioEngine(): void {
     masterAudioPlayer.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
     masterAudioPlayer.play().catch(() => {});
 
-    // Initialize silent Web Audio Context keep-alive stream for mobile browsers (iOS Safari / Mobile Chrome)
-    const isMobileDevice = typeof navigator !== "undefined" && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    if (isMobileDevice) {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      if (AudioCtx) {
-        if (!mobileAudioContext || mobileAudioContext.state === "closed") {
-          mobileAudioContext = new AudioCtx();
-        }
-        if (mobileAudioContext.state === "suspended") {
-          mobileAudioContext.resume();
-        }
-        // Create continuous silent oscillator loop to keep WebKit audio session active across Q1 -> Q39
+    // Initialize silent Web Audio Context keep-alive stream for mobile/tablet browsers (iOS Safari / iPadOS / Android)
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (AudioCtx) {
+      if (!mobileAudioContext || mobileAudioContext.state === "closed") {
+        mobileAudioContext = new AudioCtx();
+      }
+      if (mobileAudioContext.state === "suspended") {
+        mobileAudioContext.resume().catch(() => {});
+      }
+      try {
         const osc = mobileAudioContext.createOscillator();
         const gain = mobileAudioContext.createGain();
-        gain.gain.value = 0.0001; // Silent gain
+        gain.gain.value = 0.0001;
         osc.connect(gain);
         gain.connect(mobileAudioContext.destination);
         osc.start();
-      }
+        osc.stop(mobileAudioContext.currentTime + 0.05);
+      } catch {}
     }
   } catch {}
 }
@@ -876,9 +875,12 @@ export function playBase64Audio(
     ? base64Data
     : `data:audio/mp3;base64,${base64Data}`;
 
-  const isMobileDevice = typeof navigator !== "undefined" && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  const isTouchDevice = typeof navigator !== "undefined" && (
+    /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ||
+    (navigator.maxTouchPoints && navigator.maxTouchPoints > 0)
+  );
 
-  if (isMobileDevice && mobileAudioContext && mobileAudioContext.state !== "closed") {
+  if (isTouchDevice && mobileAudioContext && mobileAudioContext.state !== "closed") {
     try {
       const arrayBuffer = base64ToArrayBuffer(audioUrl);
       mobileAudioContext.decodeAudioData(arrayBuffer).then((audioBuffer) => {
