@@ -3,12 +3,29 @@ import { env } from '../config/env';
 import { optionalAuth } from '../middleware/auth';
 import Settings from '../models/Settings';
 import { generateNeuralAudio } from '../services/tts.service';
+import { getSpeakingIntroAudioBase64 } from '../data/speakingIntroAudioBank';
 
 const router = Router();
 
 // Health check for speaking routes
 router.get('/health', (_req: Request, res: Response) => {
   res.json({ success: true, message: 'Speaking 2-Way AI Examiner routes active' });
+});
+
+// Direct Base64 intro audio route for instant task preamble playback
+router.get('/intro-audio', async (req: Request, res: Response) => {
+  try {
+    const taskIdx = parseInt(req.query.taskIdx as string || '0', 10) || 0;
+    const gender = (req.query.gender as string || 'female') === 'male' ? 'male' : 'female';
+    const audioBase64 = await getSpeakingIntroAudioBase64(taskIdx, gender);
+    res.json({
+      success: true,
+      audioBase64,
+      contentType: 'audio/mp3',
+    });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err?.message });
+  }
 });
 
 interface ChatMessage {

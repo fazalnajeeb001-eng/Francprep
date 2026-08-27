@@ -848,17 +848,38 @@ export function AuthenticCBTExamPage() {
         };
       });
 
-      handlePlayExaminerAudio(openingText, () => {
-        // ONLY start the per-tâche prep or speaking timer AFTER examiner intro finishes playing!
-        if (task.prepTimeMins > 0) {
-          handleStartPrepTimer(task.id, task.prepTimeMins);
-        } else {
-          handleStartSpeakingTimer(task.id, task.speakingTimeMins);
-        }
-        if (currentSection?.type === "EXPRESSION_ORALE") {
-          handleToggleSpeakingRecording(task.id);
-        }
-      });
+      const taskGender = persona?.gender === "male" ? "male" : "female";
+      apiFetch(`/speaking/intro-audio?taskIdx=${idx}&gender=${taskGender}`)
+        .then(async (res) => {
+          let b64 = "";
+          if (res.ok) {
+            const json = await res.json();
+            b64 = json?.audioBase64 || "";
+          }
+          handlePlayExaminerAudio(openingText, () => {
+            // ONLY start the per-tâche prep or speaking timer AFTER examiner intro finishes playing!
+            if (task.prepTimeMins > 0) {
+              handleStartPrepTimer(task.id, task.prepTimeMins);
+            } else {
+              handleStartSpeakingTimer(task.id, task.speakingTimeMins);
+            }
+            if (currentSection?.type === "EXPRESSION_ORALE") {
+              handleToggleSpeakingRecording(task.id);
+            }
+          }, undefined, b64);
+        })
+        .catch(() => {
+          handlePlayExaminerAudio(openingText, () => {
+            if (task.prepTimeMins > 0) {
+              handleStartPrepTimer(task.id, task.prepTimeMins);
+            } else {
+              handleStartSpeakingTimer(task.id, task.speakingTimeMins);
+            }
+            if (currentSection?.type === "EXPRESSION_ORALE") {
+              handleToggleSpeakingRecording(task.id);
+            }
+          });
+        });
     } else {
       if (task.prepTimeMins > 0) {
         handleStartPrepTimer(task.id, task.prepTimeMins);
