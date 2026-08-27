@@ -606,13 +606,11 @@ export function AuthenticCBTExamPage() {
       if (onEnded) onEnded();
     };
 
-    setTimeout(() => {
-      if (audioBase64) {
-        playBase64Audio(audioBase64, handleEnded);
-      } else {
-        ttsSpeak(text, "fr-FR", 0.9, isMale ? "male" : "female", voiceId, undefined, undefined, handleEnded);
-      }
-    }, 1200);
+    if (audioBase64) {
+      playBase64Audio(audioBase64, handleEnded);
+    } else {
+      ttsSpeak(text, "fr-FR", 1.0, isMale ? "male" : "female", voiceId, undefined, undefined, handleEnded);
+    }
   };
 
   const isChatSendingRef = useRef<Record<string, boolean>>({});
