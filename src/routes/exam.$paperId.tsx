@@ -570,7 +570,6 @@ export function AuthenticCBTExamPage() {
   }, [currentSection?.type]);
 
   const handlePlayExaminerAudio = (text: string, onEnded?: () => void, targetVoiceId?: string, audioBase64?: string) => {
-    handleStopAudio();
     setIsAudioFetching(true);
     setIsPlayingAudio(true);
 
@@ -610,10 +609,27 @@ export function AuthenticCBTExamPage() {
     if (audioBase64) {
       playBase64Audio(audioBase64, handleEnded);
     } else {
-      const baseUrl = getApiBaseUrl();
-      const streamUrl = `${baseUrl}/speaking/stream?text=${encodeURIComponent(text)}&gender=${isMale ? 'male' : 'female'}`;
-      const success = playAudioUrl(streamUrl, handleEnded);
-      if (!success) {
+      try {
+        const baseUrl = getApiBaseUrl();
+        const streamUrl = `${baseUrl}/speaking/stream?text=${encodeURIComponent(text)}&gender=${isMale ? 'male' : 'female'}`;
+        const audio = new Audio(streamUrl);
+        audio.playbackRate = 1.0;
+        audio.preservesPitch = true;
+
+        audio.onended = () => handleEnded();
+        audio.onerror = (err) => {
+          console.warn("[Speaking Audio Stream Error, fallback to ttsSpeak]:", err);
+          ttsSpeak(text, "fr-FR", 1.0, isMale ? "male" : "female", voiceId, undefined, undefined, handleEnded);
+        };
+
+        audio.play().then(() => {
+          setIsAudioFetching(false);
+          setIsPlayingAudio(true);
+        }).catch((err) => {
+          console.warn("[Speaking Audio Stream Play Error, fallback to ttsSpeak]:", err);
+          ttsSpeak(text, "fr-FR", 1.0, isMale ? "male" : "female", voiceId, undefined, undefined, handleEnded);
+        });
+      } catch (err) {
         ttsSpeak(text, "fr-FR", 1.0, isMale ? "male" : "female", voiceId, undefined, undefined, handleEnded);
       }
     }
