@@ -32,7 +32,7 @@ import {
   X
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
-import { useSpeak, unlockAudioEngine, playBase64Audio } from "~/lib/speech";
+import { useSpeak, unlockAudioEngine, playBase64Audio, playAudioUrl } from "~/lib/speech";
 import { triggerAcousticSoundForQuestion } from "~/lib/soundEffects";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
@@ -610,7 +610,11 @@ export function AuthenticCBTExamPage() {
     if (audioBase64) {
       playBase64Audio(audioBase64, handleEnded);
     } else {
-      ttsSpeak(text, "fr-FR", 1.0, isMale ? "male" : "female", voiceId, undefined, undefined, handleEnded);
+      const streamUrl = `/api/speaking/stream?text=${encodeURIComponent(text)}&gender=${isMale ? 'male' : 'female'}`;
+      const success = playAudioUrl(streamUrl, handleEnded);
+      if (!success) {
+        ttsSpeak(text, "fr-FR", 1.0, isMale ? "male" : "female", voiceId, undefined, undefined, handleEnded);
+      }
     }
   };
 
@@ -849,38 +853,17 @@ export function AuthenticCBTExamPage() {
         };
       });
 
-      const taskGender = task.examinerPersona?.gender === "male" ? "male" : "female";
-      apiFetch(`/speaking/intro-audio?taskIdx=${idx}&gender=${taskGender}`)
-        .then(async (res) => {
-          let b64 = "";
-          if (res.ok) {
-            const json = await res.json();
-            b64 = json?.audioBase64 || "";
-          }
-          handlePlayExaminerAudio(openingText, () => {
-            // ONLY start the per-tâche prep or speaking timer AFTER examiner intro finishes playing!
-            if (task.prepTimeMins > 0) {
-              handleStartPrepTimer(task.id, task.prepTimeMins);
-            } else {
-              handleStartSpeakingTimer(task.id, task.speakingTimeMins);
-            }
-            if (currentSection?.type === "EXPRESSION_ORALE") {
-              handleToggleSpeakingRecording(task.id);
-            }
-          }, undefined, b64);
-        })
-        .catch(() => {
-          handlePlayExaminerAudio(openingText, () => {
-            if (task.prepTimeMins > 0) {
-              handleStartPrepTimer(task.id, task.prepTimeMins);
-            } else {
-              handleStartSpeakingTimer(task.id, task.speakingTimeMins);
-            }
-            if (currentSection?.type === "EXPRESSION_ORALE") {
-              handleToggleSpeakingRecording(task.id);
-            }
-          });
-        });
+      handlePlayExaminerAudio(openingText, () => {
+        // ONLY start the per-tâche prep or speaking timer AFTER examiner intro finishes playing!
+        if (task.prepTimeMins > 0) {
+          handleStartPrepTimer(task.id, task.prepTimeMins);
+        } else {
+          handleStartSpeakingTimer(task.id, task.speakingTimeMins);
+        }
+        if (currentSection?.type === "EXPRESSION_ORALE") {
+          handleToggleSpeakingRecording(task.id);
+        }
+      });
     } else {
       if (task.prepTimeMins > 0) {
         handleStartPrepTimer(task.id, task.prepTimeMins);

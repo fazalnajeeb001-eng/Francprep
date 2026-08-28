@@ -28,6 +28,33 @@ router.get('/intro-audio', async (req: Request, res: Response) => {
   }
 });
 
+// Direct MP3 Stream Endpoint for 100% Unified Neural Edge TTS (DeniseNeural / HenriNeural)
+router.get('/stream', async (req: Request, res: Response) => {
+  try {
+    const text = (req.query.text as string || '').trim();
+    const gender = (req.query.gender as string || 'female') === 'male' ? 'male' : 'female';
+
+    if (!text) {
+      res.status(400).send('Text parameter is required.');
+      return;
+    }
+
+    const edgeRes = await generateEdgeNeuralAudio(text, gender, 'fr', 1.0);
+    if (edgeRes && edgeRes.audioBase64) {
+      const buffer = Buffer.from(edgeRes.audioBase64, 'base64');
+      res.setHeader('Content-Type', 'audio/mpeg');
+      res.setHeader('Content-Length', buffer.length.toString());
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+      res.send(buffer);
+      return;
+    }
+
+    res.status(500).send('TTS synthesis returned empty buffer.');
+  } catch (err: any) {
+    res.status(500).send(err?.message || 'Error generating TTS stream.');
+  }
+});
+
 interface ChatMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;

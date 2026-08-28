@@ -858,6 +858,23 @@ export function useSpeak() {
 }
 
 /**
+ * Direct MP3 Stream Audio Player for iPad Safari & Desktop
+ */
+export function playAudioUrl(
+  url: string,
+  onEnded?: () => void,
+  rate = 1.0
+): boolean {
+  if (typeof window === "undefined" || !url) {
+    if (onEnded) onEnded();
+    return false;
+  }
+  stopAudio();
+  fallbackHTMLAudio(url, rate, onEnded);
+  return true;
+}
+
+/**
  * Direct Base64 MP3 Audio Player for Dynamic Speaking Examiner Turns
  */
 export function playBase64Audio(
