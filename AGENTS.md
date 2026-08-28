@@ -6,9 +6,13 @@ To ensure 100% platform stability, zero downtime, and guarantee that work perfor
 
 ## 🛑 MANDATORY RULES FOR ALL AI AGENTS & DEVELOPERS
 
-### Rule 1: Strict Component Isolation & Non-Interference Policy
-- **Scoped Changes Only**: When requested to modify, fix, or enhance a specific component or page (e.g., Settings, Speaking, Writing Engine, Admin Panel), you MUST ONLY touch files directly related to that task.
-- **Do NOT Touch Working Features**: NEVER refactor, delete, or modify working routes, schemas, services, or UI components outside the explicit scope of the user's request.
+### Rule 1: STRICT ZERO-TOUCH SCOPE LOCK DIRECTIVE (LISTENING, READING, WRITING)
+- **FROZEN & IMMUTABLE MODULES**:
+  1. **Compréhension Orale (Listening)** — All audio files, transcripts, question prompts, timers, state hooks, schemas, API routes, and audio caching services are **100% LOCKED AND FROZEN**.
+  2. **Compréhension Écrite (Reading)** — Passages, questions, navigation, timers, and scoring are **100% LOCKED AND FROZEN**.
+  3. **Expression Écrite (Writing)** — Prompts, word counters, timers, and AI evaluation services are **100% LOCKED AND FROZEN**.
+  4. **Core Shared Infrastructure** — `src/lib/speech.ts`, `src/lib/apiFetch.ts`, track branding, and global layout routes are **100% READ-ONLY**.
+- **Scoped Changes Only**: Work on Expression Orale (Speaking) MUST ONLY touch Speaking code inside `src/routes/exam.$paperId.tsx` (enclosed in `if (currentSection.type === "EXPRESSION_ORALE")`) and `backend/src/routes/speaking.routes.ts`.
 
 ---
 
@@ -36,8 +40,6 @@ If ANY build command fails, you MUST resolve the error locally. **NEVER push bro
 
 ---
 
-### Rule 5: MANDATORY ISOLATION OF COMPLETED MODULES (LISTENING, READING, WRITING)
-- **STRICT LOCK ON SHARED UTILITIES**: `src/lib/speech.ts` and `src/lib/apiFetch.ts` ARE LOCKED AND READ-ONLY. No AI agent is permitted to modify `speech.ts` or `apiFetch.ts`.
-- **STRICT LOCK ON LISTENING, READING & WRITING**: `authenticListeningAdvancedBank.ts`, `authenticReadingMasterBank.ts`, `authenticWritingMasterBank.ts`, and all Listening/Reading/Writing question handlers are 100% COMPLETED and MUST NEVER BE TOUCHED OR MODIFIED IN ANY WAY.
-- **SPEAKING WORK ISOLATION**: All code changes intended to refine Expression Orale (Speaking) MUST BE WRITTEN EXCLUSIVELY inside `src/routes/exam.$paperId.tsx` enclosed in `if (currentSection.type === "EXPRESSION_ORALE")` blocks or in `backend/src/routes/speaking.routes.ts`.
+### Rule 5: MANDATORY ISOLATION OF COMPLETED MODULES
+- `authenticListeningAdvancedBank.ts`, `authenticReadingMasterBank.ts`, `authenticWritingMasterBank.ts`, and all Listening/Reading/Writing question handlers are 100% COMPLETED and MUST NEVER BE TOUCHED OR MODIFIED IN ANY WAY.
 
