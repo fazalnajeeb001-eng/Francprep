@@ -36,6 +36,7 @@ import { useSpeak, unlockAudioEngine, playBase64Audio } from "~/lib/speech";
 import { triggerAcousticSoundForQuestion } from "~/lib/soundEffects";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
+import { apiFetch } from "~/lib/apiFetch";
 import { SmartAvatar } from "~/components/dashboard/widgets/SmartAvatar";
 import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } from "~/lib/examSchema";
 import { MASTER_SPEAKING_BANK } from "~/lib/speakingMasterBank";
