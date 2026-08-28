@@ -4969,6 +4969,7 @@ export function AuthenticCBTExamPage() {
                   if (currentSection.type === "EXPRESSION_ORALE") {
                     setIsAudioFetching(true);
                     setIsPlayingAudio(true);
+                    startSpeakingTaskSession(activeSpeakingTaskIdx);
                   }
                 }}
                 className={`w-full py-3.5 rounded-xl font-extrabold text-sm shadow-xl flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 text-white ${currentSection.type === "COMPREHENSION_ORALE" ? "bg-blue-600 hover:bg-blue-500" :
