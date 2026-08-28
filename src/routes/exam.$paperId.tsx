@@ -881,9 +881,9 @@ export function AuthenticCBTExamPage() {
           handleStartPrepTimer(task.id, task.prepTimeMins);
         } else {
           handleStartSpeakingTimer(task.id, task.speakingTimeMins);
-        }
-        if (currentSection?.type === "EXPRESSION_ORALE") {
-          handleToggleSpeakingRecording(task.id);
+          if (currentSection?.type === "EXPRESSION_ORALE") {
+            handleToggleSpeakingRecording(task.id);
+          }
         }
       });
     } else {
