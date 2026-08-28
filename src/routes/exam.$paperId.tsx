@@ -768,7 +768,7 @@ export function AuthenticCBTExamPage() {
           }, 1200);
         },
         undefined,
-        audioBase64
+        undefined
       );
       return;
     } catch (e) {
@@ -990,7 +990,8 @@ export function AuthenticCBTExamPage() {
         try { speechRec.stop(); } catch {}
         delete (window as any)[`_speechRec_${taskId}`];
       }
-      const currentText = (speakingTranscriptsRef.current[taskId] || speakingTranscripts[taskId] || "").trim();
+      const currentText = (speakingTranscriptsRef.current[taskId] || "").trim();
+      speakingTranscriptsRef.current[taskId] = "";
       const wordCount = countFrenchWords(currentText);
       const metrics = acousticAnalyzer.stopAnalysis(wordCount);
       setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
@@ -1092,17 +1093,18 @@ export function AuthenticCBTExamPage() {
 
     recognition.onend = () => {
       setRecordingSpeaking((prev) => ({ ...prev, [taskId]: false }));
-      const currentText = speakingTranscriptsRef.current[taskId] || speakingTranscripts[taskId] || "";
+      const currentText = (speakingTranscriptsRef.current[taskId] || "").trim();
+      speakingTranscriptsRef.current[taskId] = "";
+
       const wordCount = countFrenchWords(currentText);
       const metrics = acousticAnalyzer.stopAnalysis(wordCount);
       setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
 
       const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
       const scenarioText = activeTask?.scenario || "TCF Oral Interaction";
-      const clean = currentText.trim();
 
-      if (clean.length >= 2 && !isAudioFetching && !isPlayingAudio && !isChatSendingRef.current[taskId]) {
-        handleSendSpeakingQuestionToExaminer(taskId, clean, scenarioText);
+      if (currentText.length >= 2 && !isAudioFetching && !isPlayingAudio && !isChatSendingRef.current[taskId]) {
+        handleSendSpeakingQuestionToExaminer(taskId, currentText, scenarioText);
       }
     };
 
