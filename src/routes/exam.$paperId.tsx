@@ -36,7 +36,7 @@ import { useSpeak, unlockAudioEngine, playBase64Audio, playAudioUrl } from "~/li
 import { triggerAcousticSoundForQuestion } from "~/lib/soundEffects";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
-import { apiFetch } from "~/lib/apiFetch";
+import { apiFetch, getApiBaseUrl } from "~/lib/apiFetch";
 import { SmartAvatar } from "~/components/dashboard/widgets/SmartAvatar";
 import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } from "~/lib/examSchema";
 import { MASTER_SPEAKING_BANK } from "~/lib/speakingMasterBank";
@@ -610,7 +610,8 @@ export function AuthenticCBTExamPage() {
     if (audioBase64) {
       playBase64Audio(audioBase64, handleEnded);
     } else {
-      const streamUrl = `/api/speaking/stream?text=${encodeURIComponent(text)}&gender=${isMale ? 'male' : 'female'}`;
+      const baseUrl = getApiBaseUrl();
+      const streamUrl = `${baseUrl}/speaking/stream?text=${encodeURIComponent(text)}&gender=${isMale ? 'male' : 'female'}`;
       const success = playAudioUrl(streamUrl, handleEnded);
       if (!success) {
         ttsSpeak(text, "fr-FR", 1.0, isMale ? "male" : "female", voiceId, undefined, undefined, handleEnded);

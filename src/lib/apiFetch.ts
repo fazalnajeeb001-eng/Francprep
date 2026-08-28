@@ -4,7 +4,7 @@
  */
 const STORAGE_KEY = "francprep_access_token";
 
-function getApiBaseUrl(): string {
+export function getApiBaseUrl(): string {
   if (typeof window !== "undefined") {
     return (import.meta as Record<string, any>).env?.VITE_API_URL || "/api";
   }
