@@ -857,6 +857,14 @@ export function useSpeak() {
   };
 }
 
+export function getMasterAudioPlayer(): HTMLAudioElement {
+  if (typeof window === "undefined") return new Audio();
+  if (!masterAudioPlayer) {
+    masterAudioPlayer = new Audio();
+  }
+  return masterAudioPlayer;
+}
+
 /**
  * Direct MP3 Stream Audio Player for iPad Safari & Desktop
  */

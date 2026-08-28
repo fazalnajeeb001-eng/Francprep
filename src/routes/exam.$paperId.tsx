@@ -32,7 +32,7 @@ import {
   X
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
-import { useSpeak, unlockAudioEngine, playBase64Audio, playAudioUrl } from "~/lib/speech";
+import { useSpeak, unlockAudioEngine, playBase64Audio, playAudioUrl, getMasterAudioPlayer } from "~/lib/speech";
 import { triggerAcousticSoundForQuestion } from "~/lib/soundEffects";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
@@ -612,7 +612,11 @@ export function AuthenticCBTExamPage() {
       try {
         const baseUrl = getApiBaseUrl();
         const streamUrl = `${baseUrl}/speaking/stream?text=${encodeURIComponent(text)}&gender=${isMale ? 'male' : 'female'}`;
-        const audio = new Audio(streamUrl);
+        
+        const audio = getMasterAudioPlayer();
+        try { audio.pause(); } catch {}
+
+        audio.src = streamUrl;
         audio.playbackRate = 1.0;
         audio.preservesPitch = true;
 
@@ -666,6 +670,7 @@ export function AuthenticCBTExamPage() {
     const updatedMessages = [...existingChat, { sender: 'candidate' as const, text: clean }];
     setSpeakingDialogueMap((prev) => ({ ...prev, [taskId]: updatedMessages }));
     setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: true }));
+    setIsAudioFetching(true);
 
     setTimeout(() => {
       const el = document.getElementById(`dialogue-box-${taskId}`);
