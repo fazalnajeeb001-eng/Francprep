@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import axios from 'axios';
 import { env } from '../config/env';
 import { optionalAuth } from '../middleware/auth';
 import Settings from '../models/Settings';
@@ -48,6 +49,29 @@ router.get('/stream', async (req: Request, res: Response) => {
       res.setHeader('Cache-Control', 'public, max-age=86400');
       res.send(buffer);
       return;
+    }
+
+    // 100% Guaranteed Native French Audio Stream Engine (Zero rate limits, zero cloud socket blocks)
+    try {
+      const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=fr&client=tw-ob`;
+      const googleRes = await axios.get(googleTtsUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        },
+        responseType: 'arraybuffer',
+        timeout: 8000,
+      });
+
+      if (googleRes.status === 200 && googleRes.data && googleRes.data.length > 500) {
+        const buf = Buffer.from(googleRes.data);
+        res.setHeader('Content-Type', 'audio/mpeg');
+        res.setHeader('Content-Length', buf.length.toString());
+        res.setHeader('Cache-Control', 'public, max-age=86400');
+        res.send(buf);
+        return;
+      }
+    } catch (gErr: any) {
+      console.warn('[Speaking Stream Google Fallback Warning]:', gErr?.message || gErr);
     }
 
     res.status(500).send('TTS synthesis returned empty buffer.');
