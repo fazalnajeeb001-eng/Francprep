@@ -773,7 +773,7 @@ export function AuthenticCBTExamPage() {
           }, 1200);
         },
         undefined,
-        undefined
+        audioBase64 || undefined
       );
       return;
     } catch (e) {

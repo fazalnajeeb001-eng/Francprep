@@ -3,6 +3,7 @@ import { env } from '../config/env';
 import { optionalAuth } from '../middleware/auth';
 import Settings from '../models/Settings';
 import { generateNeuralAudio } from '../services/tts.service';
+import { generateEdgeNeuralAudio } from '../services/edgeTts.service';
 import { getSpeakingIntroAudioBase64 } from '../data/speakingIntroAudioBank';
 
 const router = Router();
