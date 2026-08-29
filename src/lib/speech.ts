@@ -1078,11 +1078,17 @@ export function speakSpeakingExaminerEdgeTTS(
               merged.set(new Uint8Array(chunk), offset);
               offset += chunk.byteLength;
             }
-            const blob = new Blob([merged.buffer], { type: "audio/mp3" });
-            const audioUrl = URL.createObjectURL(blob);
 
             if (onStart) onStart();
-            playAudioUrl(audioUrl, finishOnce, 1.0);
+
+            // Convert to Base64 to trigger Web Audio RAM engine (playBase64Audio) for 100% iOS Safari & Android support
+            let binaryString = "";
+            const len = merged.byteLength;
+            for (let i = 0; i < len; i++) {
+              binaryString += String.fromCharCode(merged[i]);
+            }
+            const base64Data = "data:audio/mp3;base64," + btoa(binaryString);
+            playBase64Audio(base64Data, finishOnce, 1.0);
           } else {
             fallbackWebSpeech();
           }
