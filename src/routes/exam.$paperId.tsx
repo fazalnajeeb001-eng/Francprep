@@ -32,7 +32,7 @@ import {
   X
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
-import { useSpeak, unlockAudioEngine, playBase64Audio, playAudioUrl, getMasterAudioPlayer } from "~/lib/speech";
+import { useSpeak, unlockAudioEngine, playBase64Audio, playAudioUrl, getMasterAudioPlayer, speakSpeakingExaminerEdgeTTS } from "~/lib/speech";
 import { triggerAcousticSoundForQuestion } from "~/lib/soundEffects";
 import { getTrackBranding, getActiveLanguageCode } from "~/lib/trackBranding";
 import { useAuth } from "~/lib/AuthContext";
@@ -610,33 +610,15 @@ export function AuthenticCBTExamPage() {
     if (audioBase64) {
       playBase64Audio(audioBase64, handleEnded);
     } else {
-      try {
-        const baseUrl = getApiBaseUrl();
-        const streamUrl = `${baseUrl}/speaking/stream?text=${encodeURIComponent(text)}&gender=${isMale ? 'male' : 'female'}`;
-        
-        const audio = getMasterAudioPlayer();
-        try { audio.pause(); } catch {}
-
-        audio.src = streamUrl;
-        audio.playbackRate = 1.0;
-        audio.preservesPitch = true;
-
-        audio.onended = () => handleEnded();
-        audio.onerror = (err) => {
-          console.warn("[Speaking Audio Stream Error]:", err);
-          handleEnded();
-        };
-
-        audio.play().then(() => {
+      speakSpeakingExaminerEdgeTTS(
+        text,
+        isMale ? 'male' : 'female',
+        () => {
           setIsAudioFetching(false);
           setIsPlayingAudio(true);
-        }).catch((err) => {
-          console.warn("[Speaking Audio Stream Play Error]:", err);
-          handleEnded();
-        });
-      } catch (err) {
-        handleEnded();
-      }
+        },
+        handleEnded
+      );
     }
   };
 

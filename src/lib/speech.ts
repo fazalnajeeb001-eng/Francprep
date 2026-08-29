@@ -981,3 +981,123 @@ function fallbackHTMLAudio(src: string, rate: number, onEnded?: () => void) {
   });
 }
 
+/**
+ * Standalone Client-Side Edge Neural TTS Synthesizer for Speaking Module (EXPRESSION_ORALE ONLY).
+ * Synthesizes official French examiner voices (fr-FR-DeniseNeural / fr-FR-HenriNeural) directly in browser RAM.
+ * 100% isolated from Listening, Reading, and Writing.
+ */
+export function speakSpeakingExaminerEdgeTTS(
+  text: string,
+  gender: "female" | "male" = "female",
+  onStart?: () => void,
+  onEnded?: () => void
+): void {
+  if (typeof window === "undefined" || !text.trim()) {
+    if (onEnded) onEnded();
+    return;
+  }
+
+  stopAudio();
+  unlockAudioEngine();
+
+  const clean = text.replace(/^(Locuteur|Locutrice|Examinateur|Examinatrice)\s*:\s*/i, '').trim();
+  const voiceId = gender === 'male' ? 'fr-FR-HenriNeural' : 'fr-FR-DeniseNeural';
+
+  let finished = false;
+  const finishOnce = () => {
+    if (finished) return;
+    finished = true;
+    if (onEnded) onEnded();
+  };
+
+  const fallbackWebSpeech = () => {
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      try {
+        window.speechSynthesis.cancel();
+        const utt = new SpeechSynthesisUtterance(clean);
+        utt.lang = "fr-FR";
+        utt.rate = 1.0;
+        utt.onstart = () => {
+          if (onStart) onStart();
+        };
+        utt.onend = () => finishOnce();
+        utt.onerror = () => finishOnce();
+        window.speechSynthesis.speak(utt);
+        return;
+      } catch {}
+    }
+    finishOnce();
+  };
+
+  try {
+    const wsUrl = "wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=6A5AA1D4EA634949956C97A4F10F233B";
+    const ws = new WebSocket(wsUrl);
+    const chunks: ArrayBuffer[] = [];
+
+    const safetyTimer = setTimeout(() => {
+      if (!finished) {
+        try { ws.close(); } catch {}
+        fallbackWebSpeech();
+      }
+    }, 6000);
+
+    ws.onopen = () => {
+      const reqId = Math.random().toString(36).substring(2, 15);
+      const dateStr = new Date().toString();
+      const configMsg = `X-Timestamp:${dateStr}\r\nContent-Type:application/json; charset=utf-8\r\nPath:speech.config\r\n\r\n{"context":{"synthesis":{"audio":{"metadataoptions":{"sentenceBoundaryEnabled":"false","wordBoundaryEnabled":"false"},"outputFormat":"audio-24khz-48kbitrate-mono-mp3"}}}}`;
+      ws.send(configMsg);
+
+      const ssmlMsg = `X-RequestId:${reqId}\r\nContent-Type:application/ssml+xml\r\nPath:ssml\r\n\r\n<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='fr-FR'><voice name='${voiceId}'><lang xml:lang='fr-FR'>${clean}</lang></voice></speak>`;
+      ws.send(ssmlMsg);
+    };
+
+    ws.onmessage = async (event) => {
+      if (finished) return;
+      if (event.data instanceof Blob) {
+        const arrayBuf = await event.data.arrayBuffer();
+        if (arrayBuf.byteLength > 2) {
+          const view = new DataView(arrayBuf);
+          const headerLen = view.getUint16(0);
+          if (arrayBuf.byteLength > 2 + headerLen) {
+            const payload = arrayBuf.slice(2 + headerLen);
+            if (payload.byteLength > 0) {
+              chunks.push(payload);
+            }
+          }
+        }
+      } else if (typeof event.data === "string") {
+        if (event.data.includes("Path:turn.end")) {
+          clearTimeout(safetyTimer);
+          try { ws.close(); } catch {}
+
+          if (chunks.length > 0) {
+            const totalLen = chunks.reduce((acc, c) => acc + c.byteLength, 0);
+            const merged = new Uint8Array(totalLen);
+            let offset = 0;
+            for (const chunk of chunks) {
+              merged.set(new Uint8Array(chunk), offset);
+              offset += chunk.byteLength;
+            }
+            const blob = new Blob([merged.buffer], { type: "audio/mp3" });
+            const audioUrl = URL.createObjectURL(blob);
+
+            if (onStart) onStart();
+            playAudioUrl(audioUrl, finishOnce, 1.0);
+          } else {
+            fallbackWebSpeech();
+          }
+        }
+      }
+    };
+
+    ws.onerror = () => {
+      clearTimeout(safetyTimer);
+      try { ws.close(); } catch {}
+      fallbackWebSpeech();
+    };
+  } catch (err) {
+    fallbackWebSpeech();
+  }
+}
+
+
