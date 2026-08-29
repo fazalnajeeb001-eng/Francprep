@@ -113,100 +113,6 @@ export function parseEdgeDialogueSegments(
 /**
  * Synthesizes a single segment buffer using Microsoft Azure Edge Neural TTS with retry.
  */
-import WebSocket from 'ws';
-
-/**
- * Direct WebSocket synthesis using official Microsoft Edge TTS headers for 100% cloud reliability on Railway.
- */
-async function synthesizeEdgeDirectWebSocket(text: string, voiceId: string, timeoutMs = 8000): Promise<Buffer | null> {
-  return new Promise((resolve) => {
-    const clean = stripSpeakerLabels(text).trim();
-    if (!clean) return resolve(null);
-
-    let finished = false;
-    const reqId = crypto.randomBytes(16).toString('hex');
-    const wsUrl = 'wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=6A5AA1D4EA634949956C97A4F10F233B';
-
-    let ws: WebSocket;
-    try {
-      ws = new WebSocket(wsUrl, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Edg/130.0.0.0',
-          'Origin': 'chrome-extension://jdiccldimpdaibhpobmlijgahbpljiic',
-        },
-      });
-    } catch {
-      return resolve(null);
-    }
-
-    const timer = setTimeout(() => {
-      if (!finished) {
-        finished = true;
-        try { ws.close(); } catch {}
-        resolve(null);
-      }
-    }, timeoutMs);
-
-    const audioChunks: Buffer[] = [];
-
-    ws.on('open', () => {
-      const configMsg = `Path: speech.config\r\nContent-Type: application/json; charset=utf-8\r\n\r\n{"context":{"synthesis":{"audio":{"metadataoptions":{"sentenceBoundaryEnabled":"false","wordBoundaryEnabled":"false"},"outputFormat":"audio-24khz-48kbitrate-mono-mp3"}}}}`;
-      ws.send(configMsg);
-
-      const ssmlMsg = `Path: ssml\r\nX-RequestId: ${reqId}\r\nContent-Type: application/ssml+xml\r\n\r\n<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='fr-FR'><voice name='${voiceId}'><lang xml:lang='fr-FR'>${clean}</lang></voice></speak>`;
-      ws.send(ssmlMsg);
-    });
-
-    ws.on('message', (data: WebSocket.Data, isBinary: boolean) => {
-      if (finished) return;
-      if (isBinary && Buffer.isBuffer(data)) {
-        if (data.length > 2) {
-          const headerLen = data.readUInt16BE(0);
-          if (data.length > 2 + headerLen) {
-            const payload = data.slice(2 + headerLen);
-            if (payload.length > 0) {
-              audioChunks.push(payload);
-            }
-          }
-        }
-      } else if (typeof data === 'string' || Buffer.isBuffer(data)) {
-        const textStr = data.toString('utf-8');
-        if (textStr.includes('Path:turn.end')) {
-          finished = true;
-          clearTimeout(timer);
-          try { ws.close(); } catch {}
-          if (audioChunks.length > 0) {
-            resolve(Buffer.concat(audioChunks));
-          } else {
-            resolve(null);
-          }
-        }
-      }
-    });
-
-    ws.on('error', () => {
-      if (!finished) {
-        finished = true;
-        clearTimeout(timer);
-        try { ws.close(); } catch {}
-        resolve(null);
-      }
-    });
-
-    ws.on('close', () => {
-      if (!finished) {
-        finished = true;
-        clearTimeout(timer);
-        if (audioChunks.length > 0) {
-          resolve(Buffer.concat(audioChunks));
-        } else {
-          resolve(null);
-        }
-      }
-    });
-  });
-}
-
 /**
  * Synthesizes a single segment buffer using Microsoft Azure Edge Neural TTS with retry.
  */
@@ -214,37 +120,57 @@ async function synthesizeSingleEdgeVoice(text: string, voiceId: string, maxRetri
   const clean = stripSpeakerLabels(text).trim();
   if (!clean) return null;
 
-  // Primary Engine: Direct Edge Neural WebSocket with official browser headers
-  const directBuf = await synthesizeEdgeDirectWebSocket(clean, voiceId);
-  if (directBuf && directBuf.length > 500) {
-    return directBuf;
-  }
-
-  // Fallback Engine: MsEdgeTTS library retry loop
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const res = await new Promise<Buffer | null>((resolve) => {
-        const tts = new MsEdgeTTS();
-        tts.setMetadata(voiceId, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3)
-          .then(() => {
-            const { audioStream } = tts.toStream(clean);
-            const chunks: Buffer[] = [];
-
-            audioStream.on('data', (chunk: Buffer) => chunks.push(chunk));
-            audioStream.on('end', () => resolve(Buffer.concat(chunks)));
-            audioStream.on('error', (err: any) => {
-              if (attempt === maxRetries) {
-                console.warn(`[EdgeTTS Error (${voiceId}) attempt ${attempt}]:`, err?.message || err);
-              }
-              resolve(null);
-            });
-          })
-          .catch((err: any) => {
-            if (attempt === maxRetries) {
-              console.warn(`[EdgeTTS Metadata Error (${voiceId}) attempt ${attempt}]:`, err?.message || err);
-            }
+        let isDone = false;
+        const timer = setTimeout(() => {
+          if (!isDone) {
+            isDone = true;
+            console.warn(`[EdgeTTS Timeout (${voiceId}) attempt ${attempt}]`);
             resolve(null);
-          });
+          }
+        }, 12000);
+
+        try {
+          const tts = new MsEdgeTTS();
+          tts.setMetadata(voiceId, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3)
+            .then(() => {
+              const { audioStream } = tts.toStream(clean);
+              const chunks: Buffer[] = [];
+
+              audioStream.on('data', (chunk: Buffer) => chunks.push(chunk));
+              audioStream.on('end', () => {
+                if (!isDone) {
+                  isDone = true;
+                  clearTimeout(timer);
+                  resolve(Buffer.concat(chunks));
+                }
+              });
+              audioStream.on('error', (err: any) => {
+                if (!isDone) {
+                  isDone = true;
+                  clearTimeout(timer);
+                  console.warn(`[EdgeTTS Stream Error (${voiceId}) attempt ${attempt}]:`, err?.message || err);
+                  resolve(null);
+                }
+              });
+            })
+            .catch((err: any) => {
+              if (!isDone) {
+                isDone = true;
+                clearTimeout(timer);
+                console.warn(`[EdgeTTS Metadata Error (${voiceId}) attempt ${attempt}]:`, err?.message || err);
+                resolve(null);
+              }
+            });
+        } catch (err: any) {
+          if (!isDone) {
+            isDone = true;
+            clearTimeout(timer);
+            resolve(null);
+          }
+        }
       });
 
       if (res && res.length > 500) {
