@@ -291,6 +291,7 @@ export function AuthenticCBTExamPage() {
   const [isOralSpeakingActive, setIsOralSpeakingActive] = useState<Record<string, boolean>>({});
   const [oralScratchNotes, setOralScratchNotes] = useState<Record<string, string>>({});
   const [speakingAcousticMetrics, setSpeakingAcousticMetrics] = useState<Record<string, AcousticAnalysisResult>>({});
+  const [hasStartedTaskSession, setHasStartedTaskSession] = useState<Record<string, boolean>>({});
 
   // Practice Helper & Task Tab States
   const [showTranscript, setShowTranscript] = useState(false);
@@ -622,19 +623,19 @@ export function AuthenticCBTExamPage() {
 
         audio.onended = () => handleEnded();
         audio.onerror = (err) => {
-          console.warn("[Speaking Audio Stream Error, fallback to ttsSpeak]:", err);
-          ttsSpeak(text, "fr-FR", 1.0, isMale ? "male" : "female", voiceId, undefined, undefined, handleEnded);
+          console.warn("[Speaking Audio Stream Error]:", err);
+          handleEnded();
         };
 
         audio.play().then(() => {
           setIsAudioFetching(false);
           setIsPlayingAudio(true);
         }).catch((err) => {
-          console.warn("[Speaking Audio Stream Play Error, fallback to ttsSpeak]:", err);
-          ttsSpeak(text, "fr-FR", 1.0, isMale ? "male" : "female", voiceId, undefined, undefined, handleEnded);
+          console.warn("[Speaking Audio Stream Play Error]:", err);
+          handleEnded();
         });
       } catch (err) {
-        ttsSpeak(text, "fr-FR", 1.0, isMale ? "male" : "female", voiceId, undefined, undefined, handleEnded);
+        handleEnded();
       }
     }
   };
@@ -1386,8 +1387,6 @@ export function AuthenticCBTExamPage() {
 
     if (!acceptedSectionDisclaimers[currentSection.type]) {
       setShowSectionDisclaimer(true);
-    } else if (currentSection.type === "EXPRESSION_ORALE") {
-      startSpeakingTaskSession(activeSpeakingTaskIdx);
     }
 
     // Strategy guide remains accessible anytime via header button in Practice Mode
@@ -1395,7 +1394,9 @@ export function AuthenticCBTExamPage() {
 
   // Timer Countdown
   useEffect(() => {
-    if (isSubmitted || isTimerPaused || isSpeaking || isAudioFetching || isPlayingAudio) return;
+    const activeSpeakingTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
+    const isSpeakingPendingStart = currentSection?.type === "EXPRESSION_ORALE" && activeSpeakingTask && !hasStartedTaskSession[activeSpeakingTask.id];
+    if (isSubmitted || isTimerPaused || isSpeaking || isAudioFetching || isPlayingAudio || isSpeakingPendingStart) return;
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -4303,6 +4304,34 @@ export function AuthenticCBTExamPage() {
                         )}
                       </div>
                     </div>
+
+                    {/* Prominent Task Start Button Banner (Satisfies browser autoplay policy & prevents early mic pop) */}
+                    {!hasStartedTaskSession[task.id] && (
+                      <div className="p-4 rounded-xl bg-gradient-to-r from-blue-950/90 to-purple-950/90 border border-blue-500/60 text-white flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg my-2 font-sans">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-blue-600/60 flex items-center justify-center border border-blue-400/60 shrink-0">
+                            <Volume2 className="w-5 h-5 text-blue-200 animate-pulse" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-sm text-white flex items-center gap-2">
+                              <span>Épreuve d'Expression Orale — {task.title}</span>
+                            </h4>
+                            <p className="text-xs text-blue-200">
+                              Cliquez ci-dessous pour débloquer l'audio, écouter l'examinateur et démarrer l'épreuve.
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => {
+                            setHasStartedTaskSession((prev) => ({ ...prev, [task.id]: true }));
+                            startSpeakingTaskSession(activeSpeakingTaskIdx);
+                          }}
+                          className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-extrabold text-xs shadow-xl transition-all active:scale-95 flex items-center gap-2 cursor-pointer border border-emerald-300/40 shrink-0"
+                        >
+                          <span>▶️ Commencer la Tâche (Écouter l'examinateur)</span>
+                        </button>
+                      </div>
+                    )}
 
                     {/* Web Audio API Acoustic Signal Metrics Badge */}
                     {speakingAcousticMetrics[task.id] && (
