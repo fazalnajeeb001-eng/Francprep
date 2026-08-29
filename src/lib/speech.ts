@@ -982,6 +982,82 @@ function fallbackHTMLAudio(src: string, rate: number, onEnded?: () => void) {
 }
 
 /**
+ * Direct ArrayBuffer RAM Audio Player for 100% Universal iOS Safari (iPad/iPhone) & Android Web Audio.
+ */
+export function playDirectArrayBuffer(
+  arrayBuffer: ArrayBuffer,
+  onStart?: () => void,
+  onEnded?: () => void,
+  rate = 1.0
+): void {
+  if (typeof window === "undefined" || !arrayBuffer || arrayBuffer.byteLength === 0) {
+    if (onEnded) onEnded();
+    return;
+  }
+
+  stopAudio();
+
+  const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+  if (AudioCtx) {
+    if (!mobileAudioContext || mobileAudioContext.state === "closed") {
+      mobileAudioContext = new AudioCtx();
+    }
+    if (mobileAudioContext.state === "suspended") {
+      mobileAudioContext.resume().catch(() => {});
+    }
+
+    try {
+      // Direct Web Audio API ArrayBuffer decoding in RAM — 0 EncodingErrors on iOS Safari!
+      mobileAudioContext.decodeAudioData(
+        arrayBuffer.slice(0),
+        (audioBuffer) => {
+          if (activeSourceNode) {
+            try {
+              activeSourceNode.onended = null;
+              activeSourceNode.stop();
+              activeSourceNode.disconnect();
+            } catch {}
+            activeSourceNode = null;
+          }
+
+          const source = mobileAudioContext!.createBufferSource();
+          source.buffer = audioBuffer;
+          source.playbackRate.value = rate;
+          source.connect(mobileAudioContext!.destination);
+          activeSourceNode = source;
+
+          source.onended = () => {
+            if (activeSourceNode === source) activeSourceNode = null;
+            if (onPlaybackStateChange) onPlaybackStateChange(false);
+            if (onEnded) onEnded();
+          };
+
+          if (onPlaybackStateChange) onPlaybackStateChange(true);
+          if (onStart) onStart();
+          source.start(0);
+        },
+        (err) => {
+          console.warn("[playDirectArrayBuffer WebAudio decode error]:", err);
+          const blob = new Blob([arrayBuffer], { type: "audio/mp3" });
+          const audioUrl = URL.createObjectURL(blob);
+          if (onStart) onStart();
+          playAudioUrl(audioUrl, onEnded, rate);
+        }
+      );
+      return;
+    } catch (e) {
+      console.warn("[playDirectArrayBuffer WebAudio exception]:", e);
+    }
+  }
+
+  // HTMLAudioElement Fallback
+  const blob = new Blob([arrayBuffer], { type: "audio/mp3" });
+  const audioUrl = URL.createObjectURL(blob);
+  if (onStart) onStart();
+  playAudioUrl(audioUrl, onEnded, rate);
+}
+
+/**
  * Standalone Client-Side Edge Neural TTS Synthesizer for Speaking Module (EXPRESSION_ORALE ONLY).
  * Synthesizes official French examiner voices (fr-FR-DeniseNeural / fr-FR-HenriNeural) directly in browser RAM.
  * 100% isolated from Listening, Reading, and Writing.
@@ -1079,16 +1155,8 @@ export function speakSpeakingExaminerEdgeTTS(
               offset += chunk.byteLength;
             }
 
-            if (onStart) onStart();
-
-            // Convert to Base64 to trigger Web Audio RAM engine (playBase64Audio) for 100% iOS Safari & Android support
-            let binaryString = "";
-            const len = merged.byteLength;
-            for (let i = 0; i < len; i++) {
-              binaryString += String.fromCharCode(merged[i]);
-            }
-            const base64Data = "data:audio/mp3;base64," + btoa(binaryString);
-            playBase64Audio(base64Data, finishOnce, 1.0);
+            // Direct Web Audio RAM ArrayBuffer engine for universal iOS Safari (iPhone/iPad) & Android
+            playDirectArrayBuffer(merged.buffer, onStart, finishOnce, 1.0);
           } else {
             fallbackWebSpeech();
           }
