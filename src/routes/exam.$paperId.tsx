@@ -4305,34 +4305,6 @@ export function AuthenticCBTExamPage() {
                       </div>
                     </div>
 
-                    {/* Prominent Task Start Button Banner (Satisfies browser autoplay policy & prevents early mic pop) */}
-                    {!hasStartedTaskSession[task.id] && (
-                      <div className="p-4 rounded-xl bg-gradient-to-r from-blue-950/90 to-purple-950/90 border border-blue-500/60 text-white flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg my-2 font-sans">
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-blue-600/60 flex items-center justify-center border border-blue-400/60 shrink-0">
-                            <Volume2 className="w-5 h-5 text-blue-200 animate-pulse" />
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-sm text-white flex items-center gap-2">
-                              <span>Épreuve d'Expression Orale — {task.title}</span>
-                            </h4>
-                            <p className="text-xs text-blue-200">
-                              Cliquez ci-dessous pour débloquer l'audio, écouter l'examinateur et démarrer l'épreuve.
-                            </p>
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => {
-                            setHasStartedTaskSession((prev) => ({ ...prev, [task.id]: true }));
-                            startSpeakingTaskSession(activeSpeakingTaskIdx);
-                          }}
-                          className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-extrabold text-xs shadow-xl transition-all active:scale-95 flex items-center gap-2 cursor-pointer border border-emerald-300/40 shrink-0"
-                        >
-                          <span>▶️ Commencer la Tâche (Écouter l'examinateur)</span>
-                        </button>
-                      </div>
-                    )}
-
                     {/* Web Audio API Acoustic Signal Metrics Badge */}
                     {speakingAcousticMetrics[task.id] && (
                       <div className="flex flex-wrap items-center gap-2.5 p-3 rounded-xl bg-slate-950 border border-purple-900/60 text-xs font-mono">
