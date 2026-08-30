@@ -4464,23 +4464,71 @@ export function AuthenticCBTExamPage() {
                     </div>
                   )}
 
-                  {/* CBT LIVE SPEECH RECORDER CONTROLS */}
-                  <div className="p-4 sm:p-5 rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 space-y-4 shadow-sm">
-                    <div className="flex items-center justify-between flex-wrap gap-2">
-                      <span className="text-xs font-bold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-                        <Mic className={`w-4 h-4 ${isRecording ? "text-red-500 animate-pulse" : "text-purple-600"}`} />
-                        <span>{isRecording ? "🔴 Enregistrement vocal en cours (Parlez dans votre micro)..." : "🎙️ Microphone CBT Interactif"}</span>
-                      </span>
+                  {/* CBT LIVE SPEECH RECORDER CONTROLS & STATE MACHINE BADGES */}
+                  {(() => {
+                    const isPrepActive = isOralPrepActive[task.id];
+                    const prepSecs = oralPrepTimeRemaining[task.id] || 0;
+                    const prepMinsStr = Math.floor(prepSecs / 60).toString().padStart(2, '0');
+                    const prepSecsStr = (prepSecs % 60).toString().padStart(2, '0');
+                    const isExaminerSpeaking = isAudioFetching || isPlayingAudio;
+                    const isMicLocked = isExaminerSpeaking || (isPrepActive && prepSecs > 0);
 
-                      <button
-                        onClick={() => handleToggleSpeakingRecording(task.id)}
-                        className={`px-4 py-2 rounded-xl font-bold text-xs shadow flex items-center gap-1.5 transition-all cursor-pointer ${isRecording ? "bg-red-600 hover:bg-red-500 text-white animate-pulse" : "bg-purple-600 hover:bg-purple-500 text-white"
-                          }`}
-                      >
-                        <Mic className="w-3.5 h-3.5" />
-                        <span>{isRecording ? "⏹️ Arrêter l'enregistrement" : "🎙️ Parler au micro (Start)"}</span>
-                      </button>
-                    </div>
+                    return (
+                      <div className="p-4 sm:p-5 rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 space-y-4 shadow-sm">
+                        {/* PHASE 2 PREPARATION COUNTDOWN BANNER (TÂCHE 2 ONLY) */}
+                        {isPrepActive && prepSecs > 0 && (
+                          <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/60 border-2 border-amber-400 dark:border-amber-700 flex items-center justify-between gap-3 text-xs font-bold text-amber-900 dark:text-amber-200 shadow-sm animate-pulse">
+                            <div className="flex items-center gap-2">
+                              <Timer className="w-4 h-4 text-amber-600 animate-spin" />
+                              <span>⏱️ TEMPS DE PRÉPARATION TÂCHE 2 : Lisez le document ci-dessus et préparez vos questions.</span>
+                            </div>
+                            <span className="px-3 py-1 rounded-lg bg-amber-600 text-white font-mono font-black text-sm shadow">
+                              {prepMinsStr}:{prepSecsStr}
+                            </span>
+                          </div>
+                        )}
+
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <span className="text-xs font-bold text-slate-900 dark:text-slate-200 flex items-center gap-2">
+                            {isExaminerSpeaking ? (
+                              <span className="px-2.5 py-1 rounded-full bg-purple-600 text-white font-bold text-[11px] flex items-center gap-1.5 animate-pulse shadow-sm">
+                                <Volume2 className="w-3.5 h-3.5" /> ÉCOUTE DE L'EXAMINATEUR EN COURS
+                              </span>
+                            ) : isPrepActive && prepSecs > 0 ? (
+                              <span className="px-2.5 py-1 rounded-full bg-amber-500 text-amber-950 font-bold text-[11px] flex items-center gap-1.5 shadow-sm">
+                                <Timer className="w-3.5 h-3.5" /> PRÉPARATION EN COURS ({prepMinsStr}:{prepSecsStr})
+                              </span>
+                            ) : (
+                              <span className="px-2.5 py-1 rounded-full bg-emerald-600 text-white font-bold text-[11px] flex items-center gap-1.5 shadow-sm">
+                                <Mic className={`w-3.5 h-3.5 ${isRecording ? "text-red-300 animate-pulse" : "text-white"}`} />
+                                <span>{isRecording ? "🔴 ENREGISTREMENT VOCAL ACTIF (PARLEZ DANS VOTRE MICRO)" : "🟢 À VOUS DE PARLER (MICROPHONE ACTIF)"}</span>
+                              </span>
+                            )}
+                          </span>
+
+                          <button
+                            disabled={isMicLocked}
+                            onClick={() => handleToggleSpeakingRecording(task.id)}
+                            className={`px-4 py-2 rounded-xl font-bold text-xs shadow flex items-center gap-1.5 transition-all cursor-pointer ${
+                              isMicLocked
+                                ? "bg-slate-300 dark:bg-slate-800 text-slate-500 cursor-not-allowed opacity-60"
+                                : isRecording
+                                  ? "bg-red-600 hover:bg-red-500 text-white animate-pulse"
+                                  : "bg-purple-600 hover:bg-purple-500 text-white"
+                            }`}
+                          >
+                            <Mic className="w-3.5 h-3.5" />
+                            <span>
+                              {isExaminerSpeaking
+                                ? "⏸️ Écoute de l'examinateur..."
+                                : isPrepActive && prepSecs > 0
+                                  ? `⏳ Préparation (${prepMinsStr}:${prepSecsStr})...`
+                                  : isRecording
+                                    ? "⏹️ Arrêter l'enregistrement"
+                                    : "🎙️ Parler au micro (Start)"}
+                            </span>
+                          </button>
+                        </div>
 
                     <div className="p-3.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-xs min-h-[75px]">
                       <p className="font-bold text-[10px] text-slate-500 uppercase mb-1">Transcription vocale en temps réel (Speech-to-Text) :</p>
@@ -4562,6 +4610,8 @@ export function AuthenticCBTExamPage() {
                       </div>
                     )}
                   </div>
+                );
+              })()}
 
                   {/* OFFICIAL FEI 4-CRITERIA DIAGNOSTIC EVALUATION RESULT CARD */}
                   {aiEval && (
