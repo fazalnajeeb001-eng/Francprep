@@ -1,0 +1,1 @@
+fix(speaking): resolve score header fallback, bilan global zero-grade mapping, and short fragment score cap

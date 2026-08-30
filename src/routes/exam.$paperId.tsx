@@ -4626,7 +4626,7 @@ export function AuthenticCBTExamPage() {
                       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-purple-200 dark:border-purple-800 pb-2">
                         <span className="font-extrabold text-sm text-purple-700 dark:text-purple-300 flex items-center gap-1.5">
                           <Trophy className="w-4 h-4 text-purple-600" />
-                          <span>Grille Officielle FEI — Diagnostic Oral & Score TCF Canada ({aiEval.scoreOutOf20 || 15} / 20 Marks)</span>
+                          <span>Grille Officielle FEI — Diagnostic Oral & Score TCF Canada ({typeof aiEval.scoreOutOf20 === 'number' ? aiEval.scoreOutOf20 : 0} / 20 Marks)</span>
                         </span>
                         <div className="flex items-center gap-2">
                           <span className="px-2.5 py-1 rounded-full bg-purple-600 text-white font-mono font-extrabold text-[11px]">
@@ -4725,7 +4725,7 @@ export function AuthenticCBTExamPage() {
                       <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 text-slate-900 dark:text-slate-100 space-y-1.5">
                         <p className="font-bold text-purple-900 dark:text-purple-300 uppercase text-[10px]">Commentaire de Synthèse de l'Examinateur :</p>
                         <p className="leading-relaxed font-medium text-xs">
-                          {aiEval.feedback || `Évaluation officielle FEI : Note globale de ${aiEval.scoreOutOf20 || 15}/20.`}
+                          {aiEval.feedback || `Évaluation officielle FEI : Note globale de ${typeof aiEval.scoreOutOf20 === 'number' ? aiEval.scoreOutOf20 : 0}/20.`}
                         </p>
                       </div>
                     </div>
@@ -4746,7 +4746,8 @@ export function AuthenticCBTExamPage() {
                     else if (scaled450 >= 248) { overallNclc = "NCLC 7 (B2 Benchmark Target)"; overallCrs = 17; }
                     else if (scaled450 >= 181) { overallNclc = "NCLC 6 (B1 Intermediate)"; overallCrs = 12; }
                     else if (scaled450 >= 121) { overallNclc = "NCLC 5 (B1 Threshold)"; overallCrs = 6; }
-                    else { overallNclc = "NCLC 4 (A2 Elementary)"; overallCrs = 0; }
+                    else if (scaled450 >= 60) { overallNclc = "NCLC 4 (A2 Elementary)"; overallCrs = 0; }
+                    else { overallNclc = "NCLC 0 (Zero Grade — Below A1)"; overallCrs = 0; }
 
                     return (
                       <div className="p-4 sm:p-5 rounded-2xl border-2 border-emerald-400 dark:border-emerald-700 bg-emerald-50/90 dark:bg-emerald-950/60 space-y-3 shadow-lg font-sans">

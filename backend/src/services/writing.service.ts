@@ -1610,7 +1610,18 @@ Return JSON only:
           g = Math.min(1, g);
         }
 
+        const totalWords = cleanSpeech.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean).length;
+        if (totalWords < 10) {
+          t = Math.min(1, t);
+          c = Math.min(1, c);
+          l = Math.min(1, l);
+          g = Math.min(1, g);
+        }
+
         let scoreOutOf20 = typeof parsed.raw_task_score_out_of_20 === 'number' ? Math.max(0, Math.min(20, parsed.raw_task_score_out_of_20)) : (t + c + l + g);
+        if (totalWords < 10) {
+          scoreOutOf20 = Math.min(4, scoreOutOf20);
+        }
         if (t === 0) scoreOutOf20 = 0;
 
         const scorePct = Math.round((scoreOutOf20 / 20) * 100);
