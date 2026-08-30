@@ -579,7 +579,7 @@ export function AuthenticCBTExamPage() {
     const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
     const persona = activeTask?.examinerPersona || masterTask?.examinerPersona;
     const voiceId = targetVoiceId || persona?.voiceId;
-    const isMale = persona?.gender === "male" || (persona?.gender !== "female" && (activeSpeakingTaskIdx === 1 || /\b(monsieur|m\.|homme|paul|léo|marc|antoine|pierre|thomas|hugo|louis|henri|jean)\b/i.test(text)));
+    const isMale = persona?.gender === "male";
 
     const dynamicTimeoutMs = Math.max(25000, (text || '').length * 150 + 5000);
     let finished = false;
@@ -617,7 +617,8 @@ export function AuthenticCBTExamPage() {
           setIsAudioFetching(false);
           setIsPlayingAudio(true);
         },
-        handleEnded
+        handleEnded,
+        voiceId
       );
     }
   };
@@ -4121,10 +4122,10 @@ export function AuthenticCBTExamPage() {
               const aiEval = speakingAiResults[task.id];
               const paperNum = paper?.paperNumber || 1;
               const masterTask = MASTER_SPEAKING_BANK[paperNum]?.[activeSpeakingTaskIdx];
-              const examinerPersona = task.examinerPersona || masterTask?.examinerPersona;
-              const examinerName = examinerPersona?.name || (activeSpeakingTaskIdx === 1 ? "M. Laurent Dubois" : "Mme Élodie Martin");
-              const examinerRole = examinerPersona?.role || (activeSpeakingTaskIdx === 1 ? "Interlocuteur & Responsable de l'annonce" : "Examinatrice Certifiée FEI — Format TCF Canada");
-              const examinerGender = examinerPersona?.gender || (activeSpeakingTaskIdx === 1 ? "male" : "female");
+              const examinerPersona = task.examinerPersona || masterTask?.examinerPersona || MASTER_SPEAKING_BANK[paperNum]?.[0]?.examinerPersona;
+              const examinerName = examinerPersona?.name || "Examinateur TCF Canada";
+              const examinerRole = examinerPersona?.role || "Examinateur Certifié FEI — Format TCF Canada";
+              const examinerGender = examinerPersona?.gender || "female";
 
               const avatarAnimState = isPlayingAudio ? "speaking" : isRecording ? "speaking" : isChatLoading ? "thinking" : "idle";
 

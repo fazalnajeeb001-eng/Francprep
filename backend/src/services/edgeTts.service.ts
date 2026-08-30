@@ -195,21 +195,39 @@ export async function generateEdgeNeuralAudio(
   text: string,
   defaultGender: 'female' | 'male' = 'female',
   lang: string = 'fr',
-  speakingRate: number = 1.0
+  speakingRate: number = 1.0,
+  targetVoiceId?: string
 ): Promise<{ audioBase64: string; contentType: string; provider: string } | null> {
-  const cleanText = text.trim();
+  const cleanText = stripSpeakerLabels(text).trim();
   if (!cleanText) return null;
 
-  const segments = parseEdgeDialogueSegments(cleanText, defaultGender);
+  // Use explicit targetVoiceId if provided, otherwise lock voice strictly based on defaultGender
+  const assignedVoiceId = targetVoiceId || (defaultGender === 'male' ? EDGE_FRENCH_VOICE_ROSTER.maleAnnouncer : EDGE_FRENCH_VOICE_ROSTER.femaleAnnouncer);
 
-  if (segments.length === 1) {
-    const seg = segments[0];
-    const buffer = await synthesizeSingleEdgeVoice(seg.text, seg.voiceId);
+  // Check if text explicitly contains multi-speaker tags (e.g. Locuteur 1: / Locutrice 2:)
+  const hasMultipleSpeakerTags = /(?:^|\n)\s*(Locuteur|Locutrice|Homme|Femme)\s*\d*\s*:/i.test(text);
+
+  if (!hasMultipleSpeakerTags) {
+    const buffer = await synthesizeSingleEdgeVoice(cleanText, assignedVoiceId);
     if (buffer && buffer.length > 0) {
       return {
         audioBase64: buffer.toString('base64'),
         contentType: 'audio/mp3',
-        provider: `edge-neural-${seg.voiceId}`
+        provider: `edge-neural-${assignedVoiceId}`
+      };
+    }
+    return null;
+  }
+
+  const segments = parseEdgeDialogueSegments(text, defaultGender);
+  if (segments.length === 1) {
+    const seg = segments[0];
+    const buffer = await synthesizeSingleEdgeVoice(seg.text, targetVoiceId || seg.voiceId);
+    if (buffer && buffer.length > 0) {
+      return {
+        audioBase64: buffer.toString('base64'),
+        contentType: 'audio/mp3',
+        provider: `edge-neural-${targetVoiceId || seg.voiceId}`
       };
     }
     return null;

@@ -41,7 +41,9 @@ router.get('/stream', async (req: Request, res: Response) => {
       return;
     }
 
-    const edgeRes = await generateEdgeNeuralAudio(text, gender, 'fr', 1.0);
+    const voiceId = (req.query.voiceId as string || '').trim() || undefined;
+
+    const edgeRes = await generateEdgeNeuralAudio(text, gender, 'fr', 1.0, voiceId);
     if (edgeRes && edgeRes.audioBase64) {
       const buffer = Buffer.from(edgeRes.audioBase64, 'base64');
       res.setHeader('Content-Type', 'audio/mpeg');
@@ -303,8 +305,8 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
   let audioBase64 = '';
 
   try {
-    // Direct Edge Neural TTS generation (fr-FR-DeniseNeural / fr-FR-HenriNeural)
-    const audioRes = await generateEdgeNeuralAudio(content, chosenGender, 'fr', 1.0);
+    // Direct Edge Neural TTS generation with locked chosenVoice
+    const audioRes = await generateEdgeNeuralAudio(content, chosenGender, 'fr', 1.0, chosenVoice);
     if (audioRes && audioRes.audioBase64) {
       audioBase64 = audioRes.audioBase64;
     }
