@@ -35,15 +35,20 @@ router.get('/stream', async (req: Request, res: Response) => {
   try {
     const text = (req.query.text as string || '').trim();
     const gender = (req.query.gender as string || 'female') === 'male' ? 'male' : 'female';
+    const examinerName = (req.query.examinerName as string || '').trim();
+    let voiceId = (req.query.voiceId as string || '').trim() || undefined;
 
     if (!text) {
       res.status(400).send('Text parameter is required.');
       return;
     }
 
-    const voiceId = (req.query.voiceId as string || '').trim() || undefined;
+    if (!voiceId) {
+      const resolved = resolveExaminerVoiceAndGender(examinerName, undefined, gender);
+      voiceId = resolved.chosenVoice;
+    }
 
-    const edgeRes = await generateEdgeNeuralAudio(text, gender, 'fr', 1.0, voiceId);
+    const edgeRes = await generateEdgeNeuralAudio(text, gender, 'fr', 1.0, voiceId, true);
     if (edgeRes && edgeRes.audioBase64) {
       const buffer = Buffer.from(edgeRes.audioBase64, 'base64');
       res.setHeader('Content-Type', 'audio/mpeg');
@@ -343,8 +348,8 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
   let audioBase64 = '';
 
   try {
-    // Direct Edge Neural TTS generation with locked chosenVoice
-    const audioRes = await generateEdgeNeuralAudio(content, chosenGender, 'fr', 1.0, chosenVoice);
+    // Direct Edge Neural TTS generation with locked chosenVoice (isSpeakingTask = true)
+    const audioRes = await generateEdgeNeuralAudio(content, chosenGender, 'fr', 1.0, chosenVoice, true);
     if (audioRes && audioRes.audioBase64) {
       audioBase64 = audioRes.audioBase64;
     }

@@ -575,10 +575,11 @@ export function AuthenticCBTExamPage() {
     setIsPlayingAudio(true);
 
     const paperNum = paper?.paperNumber || 1;
-    const masterTask = MASTER_SPEAKING_BANK[paperNum]?.[activeSpeakingTaskIdx];
+    const masterTask = MASTER_SPEAKING_BANK[paperNum]?.[activeSpeakingTaskIdx] || MASTER_SPEAKING_BANK[paperNum]?.[0];
     const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
-    const persona = activeTask?.examinerPersona || masterTask?.examinerPersona;
-    const voiceId = targetVoiceId || persona?.voiceId;
+    const persona = activeTask?.examinerPersona || masterTask?.examinerPersona || MASTER_SPEAKING_BANK[paperNum]?.[0]?.examinerPersona;
+    const examinerName = persona?.name || "Examinateur TCF Canada";
+    const voiceId = targetVoiceId || persona?.voiceId || (persona?.gender === "male" ? "fr-FR-HenriNeural" : "fr-FR-DeniseNeural");
     const isMale = persona?.gender === "male";
 
     const dynamicTimeoutMs = Math.max(25000, (text || '').length * 150 + 5000);
@@ -618,7 +619,8 @@ export function AuthenticCBTExamPage() {
           setIsPlayingAudio(true);
         },
         handleEnded,
-        voiceId
+        voiceId,
+        examinerName
       );
     }
   };
@@ -861,6 +863,7 @@ export function AuthenticCBTExamPage() {
         };
       });
 
+      const taskVoiceId = task.examinerPersona?.voiceId || MASTER_SPEAKING_BANK[paperNum]?.[idx]?.examinerPersona?.voiceId;
       handlePlayExaminerAudio(openingText, () => {
         // ONLY start the per-tâche prep or speaking timer AFTER examiner intro finishes playing!
         if (task.prepTimeMins > 0) {
@@ -871,7 +874,7 @@ export function AuthenticCBTExamPage() {
             handleToggleSpeakingRecording(task.id);
           }
         }
-      });
+      }, taskVoiceId);
     } else {
       if (task.prepTimeMins > 0) {
         handleStartPrepTimer(task.id, task.prepTimeMins);

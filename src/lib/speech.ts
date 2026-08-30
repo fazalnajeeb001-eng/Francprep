@@ -1067,7 +1067,8 @@ export function speakSpeakingExaminerEdgeTTS(
   gender: "female" | "male" = "female",
   onStart?: () => void,
   onEnded?: () => void,
-  voiceId?: string
+  voiceId?: string,
+  examinerName?: string
 ): void {
   if (typeof window === "undefined" || !text.trim()) {
     if (onEnded) onEnded();
@@ -1108,7 +1109,8 @@ export function speakSpeakingExaminerEdgeTTS(
   try {
     const baseUrl = getApiBaseUrl();
     const voiceQuery = voiceId ? `&voiceId=${encodeURIComponent(voiceId)}` : '';
-    const streamUrl = `${baseUrl}/speaking/stream?text=${encodeURIComponent(clean)}&gender=${gender}${voiceQuery}`;
+    const nameQuery = examinerName ? `&examinerName=${encodeURIComponent(examinerName)}` : '';
+    const streamUrl = `${baseUrl}/speaking/stream?text=${encodeURIComponent(clean)}&gender=${gender}${voiceQuery}${nameQuery}`;
 
     fetch(streamUrl)
       .then(async (res) => {

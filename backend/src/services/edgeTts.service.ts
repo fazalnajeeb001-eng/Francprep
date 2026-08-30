@@ -196,7 +196,8 @@ export async function generateEdgeNeuralAudio(
   defaultGender: 'female' | 'male' = 'female',
   lang: string = 'fr',
   speakingRate: number = 1.0,
-  targetVoiceId?: string
+  targetVoiceId?: string,
+  isSpeakingTask: boolean = false
 ): Promise<{ audioBase64: string; contentType: string; provider: string } | null> {
   const cleanText = stripSpeakerLabels(text).trim();
   if (!cleanText) return null;
@@ -207,7 +208,7 @@ export async function generateEdgeNeuralAudio(
   // Check if text explicitly contains multi-speaker tags (e.g. Locuteur 1: / Locutrice 2:)
   const hasMultipleSpeakerTags = /(?:^|\n)\s*(Locuteur|Locutrice|Homme|Femme)\s*\d*\s*:/i.test(text);
 
-  if (!hasMultipleSpeakerTags) {
+  if (isSpeakingTask || targetVoiceId || !hasMultipleSpeakerTags) {
     const buffer = await synthesizeSingleEdgeVoice(cleanText, assignedVoiceId);
     if (buffer && buffer.length > 0) {
       return {
