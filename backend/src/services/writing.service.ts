@@ -1382,6 +1382,27 @@ Respond STRICTLY with a raw JSON object:
     const isTache2 = taskNumber === 2 || Boolean(lessonTitle?.includes('Tâche 2') || lessonTitle?.includes('spk-2'));
     const taskNum = taskNumber || (isTache1 ? 1 : isTache2 ? 2 : 3);
 
+    const candidateWords = cleanSpeech.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
+    if (candidateWords.length < 10) {
+      return {
+        transcription: cleanSpeech,
+        feedback: `🚨 ÉVALUATION INSUFFISANTE (${candidateWords.length} mots enregistrés) : L'intervention orale est trop courte (moins de 10 mots) pour évaluer un niveau B2/C1. Veuillez formuler des phrases complètes pour développer votre réponse.`,
+        score: 15,
+        scoreOutOf20: 3,
+        accuracy: 15,
+        fluency: 1,
+        taskFulfillmentScore: 1,
+        coherenceScore: 1,
+        lexicalScore: 1,
+        grammarScore: 1,
+        nclcGrade: 'NCLC 3 (Échantillon Oral Insuffisant / Débutant)',
+        cefrLevel: 'A1',
+        expressEntryPoints: 0,
+        corrections: [],
+        tips: ["Développez votre argumentation en utilisant plusieurs phrases structurées avec des connecteurs logiques (d'abord, en effet, cependant)."]
+      };
+    }
+
     if (!apiKey) {
       // Local calibrated oral evaluation fallback
       const words = cleanSpeech.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);

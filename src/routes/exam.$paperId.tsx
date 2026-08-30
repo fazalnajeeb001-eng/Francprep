@@ -493,7 +493,9 @@ export function AuthenticCBTExamPage() {
             const duration = currentTask?.speakingTimeMins || (taskId.includes("spk-1") ? 2 : taskId.includes("spk-2") ? 3.5 : 4.5);
 
             let announceHandled = false;
+            let fallbackTimerId: ReturnType<typeof setTimeout> | null = null;
             const startSpeakingAfterAnnounce = () => {
+              if (fallbackTimerId) clearTimeout(fallbackTimerId);
               if (!announceHandled) {
                 announceHandled = true;
                 handleStartSpeakingTimer(taskId, duration);
@@ -511,7 +513,7 @@ export function AuthenticCBTExamPage() {
             );
 
             // Fallback safety (10s) in case audio playback is blocked
-            setTimeout(() => {
+            fallbackTimerId = setTimeout(() => {
               startSpeakingAfterAnnounce();
             }, 10000);
           }
@@ -731,11 +733,7 @@ export function AuthenticCBTExamPage() {
             replyText = "Merci beaucoup. Nous avons fait le tour des questions pour cette première tâche. L'entretien est terminé, nous pouvons passer à la suite.";
           }
         } else if (isTache2) {
-          if (userTurnsCount >= 4) {
-            replyText = "Merci beaucoup, nous avons fait le tour de vos questions. L'épreuve est terminée.";
-          } else {
-            replyText = "Oui absolument, toutes ces options sont tout à fait disponibles selon vos besoins. Avez-vous d'autres questions ?";
-          }
+          replyText = "Oui absolument, toutes ces options sont tout à fait disponibles selon vos besoins. Avez-vous d'autres questions ?";
         } else {
           replyText = "Je comprends tout à fait votre point de vue, cependant ne pensez-vous pas que cette situation comporte aussi certains risques ?";
         }
@@ -1113,8 +1111,8 @@ export function AuthenticCBTExamPage() {
     setEvaluatingSpeaking((prev) => ({ ...prev, [taskId]: true }));
     try {
       const dialogue = speakingDialogueMap[taskId] || [];
-      const dialogueText = dialogue.map((m) => `${m.sender === 'candidate' ? 'Candidat' : 'Examinateur'}: ${m.text}`).join('\n');
-      const combinedSpeech = [dialogueText, (transcription || '').trim() ? `Candidat: ${(transcription || '').trim()}` : ''].filter(Boolean).join('\n');
+      const candidateDialogueTexts = dialogue.filter((m) => m.sender === 'candidate').map((m) => m.text).join(' ');
+      const combinedCandidateSpeech = [candidateDialogueTexts, (transcription || '').trim()].filter(Boolean).join(' ').trim();
 
       const taskNumber = taskId?.includes('spk-1') || taskId?.includes('task_0') ? 1
         : taskId?.includes('spk-2') || taskId?.includes('task_1') ? 2
@@ -1126,7 +1124,7 @@ export function AuthenticCBTExamPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          transcription: combinedSpeech,
+          transcription: combinedCandidateSpeech,
           scenario: expectedText,
           taskTitle: `${paper.title} - ${taskId}`,
           paperNumber: paper?.paperNumber || 1,

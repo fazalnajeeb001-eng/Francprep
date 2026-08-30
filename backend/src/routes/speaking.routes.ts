@@ -242,9 +242,6 @@ function generateDynamicFallbackReply(
   }
 
   if (isTache2) {
-    if (userTurnCount >= 4) {
-      return "Merci beaucoup, nous avons répondu à l'ensemble de vos questions. Cet exercice est terminé.";
-    }
     if (/\b(prix|tarif|coût|combien|payant|gratuit)\b/i.test(userText)) {
       return "Les tarifs varient selon la formule choisie, à partir de cinquante dollars par session. Avez-vous d'autres questions ?";
     }

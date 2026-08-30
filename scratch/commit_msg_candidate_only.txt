@@ -1,0 +1,1 @@
+fix(speaking): strictly extract candidate-only speech for evaluation, clear prep timer ghost timeout, and add short candidate speech floor check
