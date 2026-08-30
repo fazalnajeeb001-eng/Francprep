@@ -670,10 +670,12 @@ export function AuthenticCBTExamPage() {
       const paperNum = paper?.paperNumber || 1;
       const masterTask = MASTER_SPEAKING_BANK[paperNum]?.[activeSpeakingTaskIdx];
       const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
-      const persona = activeTask?.examinerPersona || masterTask?.examinerPersona;
-      const examinerName = persona?.name || "Examiner Élodie";
-      const examinerRole = persona?.role || "Examinatrice certifiée FEI — Format TCF Canada";
+      const persona = activeTask?.examinerPersona || masterTask?.examinerPersona || MASTER_SPEAKING_BANK[paperNum]?.[0]?.examinerPersona;
+      const examinerName = persona?.name || MASTER_SPEAKING_BANK[paperNum]?.[0]?.examinerPersona?.name || "Examinateur TCF Canada";
+      const examinerRole = persona?.role || "Examinateur certifié FEI — Format TCF Canada";
       const taskTitle = activeTask?.title || masterTask?.title || "Tâche 1";
+      const examinerVoice = persona?.voiceId || MASTER_SPEAKING_BANK[paperNum]?.[0]?.examinerPersona?.voiceId || (persona?.gender === "male" ? "fr-FR-HenriNeural" : "fr-FR-DeniseNeural");
+      const examinerGender = persona?.gender || MASTER_SPEAKING_BANK[paperNum]?.[0]?.examinerPersona?.gender || "female";
 
       const res = await apiFetch("/speaking/chat", {
         method: "POST",
@@ -684,8 +686,8 @@ export function AuthenticCBTExamPage() {
           scenarioText: scenarioText || activeTask?.scenario || masterTask?.scenario || "TCF Oral Interaction",
           examinerName,
           examinerRole,
-          examinerVoice: persona?.voiceId || persona?.voice || (persona?.gender === "male" ? "fr-FR-HenriNeural" : "fr-FR-DeniseNeural"),
-          gender: persona?.gender || "female",
+          examinerVoice,
+          gender: examinerGender,
           lessonLevel: "B2",
           lessonTopic: scenarioText || "TCF Oral Interaction",
           targetLanguage: "French",

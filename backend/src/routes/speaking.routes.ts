@@ -99,6 +99,45 @@ interface ChatRequestBody {
   lessonTopic?: string;
 }
 
+const EXAMINER_VOICE_MAP: Record<string, { gender: 'female' | 'male'; voiceId: string }> = {
+  'henri': { gender: 'male', voiceId: 'fr-FR-HenriNeural' },
+  'pierre': { gender: 'male', voiceId: 'fr-FR-HenriNeural' },
+  'jean': { gender: 'male', voiceId: 'fr-CA-JeanNeural' },
+  'rémy': { gender: 'male', voiceId: 'fr-FR-RemyMultilingualNeural' },
+  'remy': { gender: 'male', voiceId: 'fr-FR-RemyMultilingualNeural' },
+  'denise': { gender: 'female', voiceId: 'fr-FR-DeniseNeural' },
+  'élodie': { gender: 'female', voiceId: 'fr-FR-DeniseNeural' },
+  'elodie': { gender: 'female', voiceId: 'fr-FR-DeniseNeural' },
+  'brigitte': { gender: 'female', voiceId: 'fr-FR-DeniseNeural' },
+  'sylvie': { gender: 'female', voiceId: 'fr-CA-SylvieNeural' },
+  'vivienne': { gender: 'female', voiceId: 'fr-FR-VivienneMultilingualNeural' },
+  'sophie': { gender: 'female', voiceId: 'fr-FR-VivienneMultilingualNeural' },
+};
+
+function resolveExaminerVoiceAndGender(
+  examinerName?: string,
+  examinerVoice?: string,
+  gender?: 'female' | 'male'
+): { chosenVoice: string; chosenGender: 'female' | 'male' } {
+  if (examinerVoice && (examinerVoice.includes('Neural') || examinerVoice.includes('fr-'))) {
+    const isMale = gender === 'male' || /male|henri|pierre|jean|remy|rémy/i.test(examinerVoice);
+    return { chosenVoice: examinerVoice, chosenGender: isMale ? 'male' : 'female' };
+  }
+
+  const nameLower = (examinerName || '').toLowerCase();
+  for (const [key, val] of Object.entries(EXAMINER_VOICE_MAP)) {
+    if (nameLower.includes(key)) {
+      return { chosenVoice: val.voiceId, chosenGender: val.gender };
+    }
+  }
+
+  const isMale = gender === 'male' || (examinerName && /Henri|Jean|Gérard|Rémy|Pierre|Laurent|Antoine|Marc|Paul|Louis|Hugo|Luc/i.test(examinerName));
+  return {
+    chosenGender: isMale ? 'male' : 'female',
+    chosenVoice: isMale ? 'fr-FR-HenriNeural' : 'fr-FR-DeniseNeural',
+  };
+}
+
 async function getOpenRouterApiKey(): Promise<string> {
   try {
     const settings = await Settings.findOne();
@@ -300,8 +339,7 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
     }
   }
 
-  const chosenGender = gender || (examinerName && /Henri|Jean|Gérard|Rémy/i.test(examinerName) ? 'male' : 'female');
-  const chosenVoice = examinerVoice || (chosenGender === 'male' ? 'fr-FR-HenriNeural' : 'fr-FR-DeniseNeural');
+  const { chosenVoice, chosenGender } = resolveExaminerVoiceAndGender(examinerName, examinerVoice, gender);
   let audioBase64 = '';
 
   try {
