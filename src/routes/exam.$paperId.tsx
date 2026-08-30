@@ -8,6 +8,7 @@ import {
   PenTool,
   Mic,
   Clock,
+  Timer,
   Pause,
   Play,
   HelpCircle,

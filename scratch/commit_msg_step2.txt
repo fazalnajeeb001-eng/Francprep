@@ -1,0 +1,1 @@
+fix: lock single voice synthesis for speaking and align paper voice persona routing
