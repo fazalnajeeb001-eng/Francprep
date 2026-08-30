@@ -6,6 +6,7 @@ import Settings from '../models/Settings';
 import { generateNeuralAudio } from '../services/tts.service';
 import { generateEdgeNeuralAudio } from '../services/edgeTts.service';
 import { getSpeakingIntroAudioBase64 } from '../data/speakingIntroAudioBank';
+import { writingService } from '../services/writing.service';
 
 const router = Router();
 
@@ -385,8 +386,6 @@ router.post('/chat', optionalAuth, async (req: Request, res: Response) => {
         reply: result.reply,
         model: result.model,
         audioBase64: result.audioBase64,
-        contentType: 'audio/mp3',
-        voice: result.voice,
       },
     });
   } catch (error) {
@@ -394,6 +393,42 @@ router.post('/chat', optionalAuth, async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       error: 'Failed to get examiner response. Please try again.',
+    });
+  }
+});
+
+// POST /api/speaking/evaluate - Official FEI 4-Criteria Diagnostic Oral Evaluation Engine
+router.post('/evaluate', optionalAuth, async (req: Request, res: Response) => {
+  try {
+    const { transcription, scenario, taskTitle, paperNumber, taskNumber, acousticMetrics } = req.body;
+    const cleanTranscription = (transcription || '').trim();
+
+    if (!cleanTranscription) {
+      res.status(400).json({
+        success: false,
+        error: 'Transcription text is required for oral evaluation.',
+      });
+      return;
+    }
+
+    const result = await writingService.analyzeSpeaking(
+      cleanTranscription,
+      scenario || taskTitle || "Épreuve d'expression orale TCF Canada",
+      taskTitle || `Tâche ${taskNumber || 1}`,
+      'French',
+      taskNumber || 1,
+      acousticMetrics
+    );
+
+    res.json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    console.error('[Speaking Evaluation Route Error]:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to evaluate speaking response.',
     });
   }
 });

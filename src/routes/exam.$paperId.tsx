@@ -1122,13 +1122,14 @@ export function AuthenticCBTExamPage() {
 
       const acousticMetrics = speakingAcousticMetrics[taskId];
 
-      const res = await apiFetch("/writing/analyze-speaking", {
+      const res = await apiFetch("/speaking/evaluate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           transcription: combinedSpeech,
-          expectedText,
-          lessonTitle: `${paper.title} - ${taskId}`,
+          scenario: expectedText,
+          taskTitle: `${paper.title} - ${taskId}`,
+          paperNumber: paper?.paperNumber || 1,
           taskNumber,
           acousticMetrics
         })
@@ -4475,6 +4476,7 @@ export function AuthenticCBTExamPage() {
                     const prepSecsStr = (prepSecs % 60).toString().padStart(2, '0');
                     const isExaminerSpeaking = isAudioFetching || isPlayingAudio;
                     const isMicLocked = isExaminerSpeaking || (isPrepActive && prepSecs > 0);
+                    const isEvaluating = evaluatingSpeaking[task.id];
 
                     return (
                       <div className="p-4 sm:p-5 rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 space-y-4 shadow-sm">
