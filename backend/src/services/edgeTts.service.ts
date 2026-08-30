@@ -1,5 +1,10 @@
-import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
 import crypto from 'crypto';
+
+if (typeof (globalThis as any).crypto === 'undefined') {
+  (globalThis as any).crypto = (crypto as any).webcrypto || crypto;
+}
+
+import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
 import { stripSpeakerLabels } from './tts.service';
 
 /**

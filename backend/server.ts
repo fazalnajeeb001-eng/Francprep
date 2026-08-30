@@ -1,3 +1,9 @@
+import crypto from 'crypto';
+
+if (typeof (globalThis as any).crypto === 'undefined') {
+  (globalThis as any).crypto = (crypto as any).webcrypto || crypto;
+}
+
 import app from './src/app';
 import { connectDatabase } from './src/config/database';
 import { env } from './src/config/env';
