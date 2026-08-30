@@ -920,8 +920,8 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice souriante et très expressive.",
         "gender": "female",
         "voiceId": "fr-FR-DeniseNeural",
-        "openingPromptFrench": "Bonjour ! Je suis Denise, votre examinatrice certifiée pour le TCF Canada. Pour cet entretien dirigé de deux minutes sans préparation, pouvez-vous vous présenter et me parler de votre expérience personnelle dans l'apprentissage du français ?",
-        "openingPromptEnglish": "Hello! Welcome to your oral exam. My name is Isabelle. Tell me what you like to watch or listen to in order to relax."
+        "openingPromptFrench": "Bonjour ! Je suis Brigitte, votre examinatrice certifiée pour le TCF Canada. Pour cet entretien dirigé de deux minutes sans préparation, pouvez-vous vous présenter et me parler de votre expérience personnelle dans l'apprentissage du français ?",
+        "openingPromptEnglish": "Hello! Welcome to your oral exam. My name is Brigitte. Tell me what you like to watch or listen to in order to relax."
       },
       "prepTimeMins": 0,
       "speakingTimeMins": 2,
@@ -955,8 +955,8 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Coordonnatrice du réseau de solidarité alimentaire.",
         "gender": "female",
         "voiceId": "fr-FR-DeniseNeural",
-        "openingPromptFrench": "Bienvenue dans la deuxième tâche. Vos deux minutes de préparation sur le dépliant de la visite guidée du musée d'art moderne sont écoulées. Échangeons pendant trois minutes et demie. Je suis le guide du musée. Posez-moi toutes vos questions !",
-        "openingPromptEnglish": "Hello! Thanks for coming to see me about volunteering. I am Isabelle. What questions do you have about our actions?",
+        "openingPromptFrench": "Bienvenue dans la deuxième tâche. Vos deux minutes de préparation sur le dépliant du réseau solidaire alimentaire sont écoulées. Échangeons pendant trois minutes et demie. Je suis la coordonnatrice, Mme Brigitte. Posez-moi toutes vos questions !",
+        "openingPromptEnglish": "Welcome to the second task. Your two minutes of preparation on the food bank volunteering document are complete. I am the coordinator, Ms. Brigitte. What questions do you have for me?",
         "roleplayPrompt": "Expliquez l'importance du travail en équipe le samedi matin et demandez si le candidat est disponible."
       },
       "prepTimeMins": 2,
@@ -1043,7 +1043,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinateur expérimenté au ton posé.",
         "gender": "male",
         "voiceId": "fr-FR-HenriNeural",
-        "openingPromptFrench": "Bonjour ! Je m'appelle Henri, votre examinateur certifié pour le TCF Canada. Pour la première tâche sans préparation de deux minutes, pouvez-vous vous présenter et me décrire un projet ou une réussite dont vous êtes particulièrement fier ?",
+        "openingPromptFrench": "Bonjour ! Je m'appelle Pierre, votre examinateur certifié pour le TCF Canada. Pour la première tâche sans préparation de deux minutes, pouvez-vous vous présenter et me décrire un projet ou une réussite dont vous êtes particulièrement fier ?",
         "openingPromptEnglish": "Hello. My name is Pierre. Welcome. Explain to me what habits you adopt to stay in good health."
       },
       "prepTimeMins": 0,
@@ -1078,7 +1078,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Gestionnaire d'un espace de travail partagé innovant.",
         "gender": "male",
         "voiceId": "fr-FR-HenriNeural",
-        "openingPromptFrench": "Bienvenue dans la deuxième tâche. Après vos deux minutes de préparation sur l'annonce du centre de location de matériel de camping, nous entamons trois minutes et demie d'interaction. Je suis le responsable du magasin, M. Henri. Je vous écoute !",
+        "openingPromptFrench": "Bienvenue dans la deuxième tâche. Après vos deux minutes de préparation sur l'annonce de l'espace de coworking Innova-Work, nous entamons trois minutes et demie d'interaction. Je suis le gestionnaire du centre, M. Pierre. Je vous écoute !",
         "openingPromptEnglish": "Hello! Pierre speaking, coworking space manager. How can I introduce our office packages to you?",
         "roleplayPrompt": "Présentez la formule nomade et la formule bureau dédié puis demandez si le candidat désire faire une visite."
       },
@@ -1166,7 +1166,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice dynamique et très à l'écoute.",
         "gender": "female",
         "voiceId": "fr-FR-VivienneMultilingualNeural",
-        "openingPromptFrench": "Bonjour ! Je suis Vivienne, votre examinatrice officielle pour le TCF Canada. Commençons par la première tâche sans préparation de deux minutes. Pouvez-vous vous présenter, me parler de votre profession et me décrire ce que vous aimez faire le week-end ?",
+        "openingPromptFrench": "Bonjour ! Je suis Sophie, votre examinatrice officielle pour le TCF Canada. Commençons par la première tâche sans préparation de deux minutes. Pouvez-vous vous présenter, me parler de votre profession et me décrire ce que vous aimez faire le week-end ?",
         "openingPromptEnglish": "Hello and welcome to your oral exam. My name is Sophie. Tell me what role technology plays in your everyday life."
       },
       "prepTimeMins": 0,
@@ -1201,7 +1201,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Animatrice passionnée du club de lecture municipal.",
         "gender": "female",
         "voiceId": "fr-FR-VivienneMultilingualNeural",
-        "openingPromptFrench": "Nous abordons la deuxième tâche. Vos deux minutes de préparation sur le programme du festival de musique d'été sont terminées. Échangeons pendant trois minutes et demie. Je suis l'organisatrice du festival, Vivienne. Posez-moi vos questions !",
+        "openingPromptFrench": "Nous abordons la deuxième tâche. Vos deux minutes de préparation sur la brochure du club de lecture sont terminées. Échangeons pendant trois minutes et demie. Je suis l'animatrice du club, Mme Sophie. Posez-moi toutes vos questions !",
         "openingPromptEnglish": "Hello! Welcome to the book club, my name is Sophie. Are you interested in our literary meetings? Tell me everything!",
         "roleplayPrompt": "Expliquez que le groupe se réunit le premier mardi de chaque mois et demandez si le candidat lit des romans ou des essais."
       },
