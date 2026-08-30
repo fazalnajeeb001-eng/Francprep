@@ -4552,14 +4552,16 @@ export function AuthenticCBTExamPage() {
                         <span>💬 Envoyer à l'examinateur & Entendre sa réponse vocale</span>
                       </button>
 
-                      <button
-                        disabled={(!transcript && !(speakingDialogueMap[task.id]?.length)) || isEvaluating}
-                        onClick={() => handleEvaluateSpeakingAI(task.id, task.scenario, transcript)}
-                        className="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2 disabled:opacity-40 transition-all cursor-pointer active:scale-98"
-                      >
-                        <Sparkles className="w-3.5 h-3.5" />
-                        <span>{isEvaluating ? "Évaluation diagnostique FEI en cours..." : "🤖 Terminer cette tâche & Obtenir la note FEI"}</span>
-                      </button>
+                      {(mode === "PRACTICE" || isAdmin) && (
+                        <button
+                          disabled={(!transcript && !(speakingDialogueMap[task.id]?.length)) || isEvaluating}
+                          onClick={() => handleEvaluateSpeakingAI(task.id, task.scenario, transcript)}
+                          className="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2 disabled:opacity-40 transition-all cursor-pointer active:scale-98"
+                        >
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>{isEvaluating ? "Évaluation diagnostique FEI en cours..." : "🤖 Obtenir la note FEI (Mode Pratique)"}</span>
+                        </button>
+                      )}
                     </div>
 
                     {/* 2-WAY LIVE INTERLOCUTION DIALOGUE LOG (PLACED DIRECTLY BELOW MIC CONTROLS FOR INSTANT VISIBILITY) */}

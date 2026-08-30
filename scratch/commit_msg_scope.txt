@@ -1,0 +1,1 @@
+fix: scope manual evaluation button to practice mode only
