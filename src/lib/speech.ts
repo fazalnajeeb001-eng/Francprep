@@ -1,6 +1,6 @@
 /** Francprep Pure Engine - Build dcacc12 Deployment Trigger */
 import { useState, useEffect, useCallback } from "react";
-import { apiFetch } from "~/lib/apiFetch";
+import { apiFetch, getApiBaseUrl } from "~/lib/apiFetch";
 import { triggerAcousticSoundForQuestion } from "./soundEffects";
 
 let currentAudioPlayer: HTMLAudioElement | null = null;
@@ -1077,7 +1077,6 @@ export function speakSpeakingExaminerEdgeTTS(
   unlockAudioEngine();
 
   const clean = text.replace(/^(Locuteur|Locutrice|Examinateur|Examinatrice)\s*:\s*/i, '').trim();
-  const voiceId = gender === 'male' ? 'fr-FR-HenriNeural' : 'fr-FR-DeniseNeural';
 
   let finished = false;
   const finishOnce = () => {
@@ -1106,69 +1105,24 @@ export function speakSpeakingExaminerEdgeTTS(
   };
 
   try {
-    const wsUrl = "wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=6A5AA1D4EA634949956C97A4F10F233B";
-    const ws = new WebSocket(wsUrl);
-    const chunks: ArrayBuffer[] = [];
+    const baseUrl = getApiBaseUrl();
+    const streamUrl = `${baseUrl}/speaking/stream?text=${encodeURIComponent(clean)}&gender=${gender}`;
 
-    const safetyTimer = setTimeout(() => {
-      if (!finished) {
-        try { ws.close(); } catch {}
+    fetch(streamUrl)
+      .then(async (res) => {
+        if (res.ok) {
+          const arrayBuf = await res.arrayBuffer();
+          if (arrayBuf && arrayBuf.byteLength > 500) {
+            playDirectArrayBuffer(arrayBuf, onStart, finishOnce, 1.0);
+            return;
+          }
+        }
         fallbackWebSpeech();
-      }
-    }, 6000);
-
-    ws.onopen = () => {
-      const reqId = Math.random().toString(36).substring(2, 15);
-      const dateStr = new Date().toString();
-      const configMsg = `X-Timestamp:${dateStr}\r\nContent-Type:application/json; charset=utf-8\r\nPath:speech.config\r\n\r\n{"context":{"synthesis":{"audio":{"metadataoptions":{"sentenceBoundaryEnabled":"false","wordBoundaryEnabled":"false"},"outputFormat":"audio-24khz-48kbitrate-mono-mp3"}}}}`;
-      ws.send(configMsg);
-
-      const ssmlMsg = `X-RequestId:${reqId}\r\nContent-Type:application/ssml+xml\r\nPath:ssml\r\n\r\n<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='fr-FR'><voice name='${voiceId}'><lang xml:lang='fr-FR'>${clean}</lang></voice></speak>`;
-      ws.send(ssmlMsg);
-    };
-
-    ws.onmessage = async (event) => {
-      if (finished) return;
-      if (event.data instanceof Blob) {
-        const arrayBuf = await event.data.arrayBuffer();
-        if (arrayBuf.byteLength > 2) {
-          const view = new DataView(arrayBuf);
-          const headerLen = view.getUint16(0);
-          if (arrayBuf.byteLength > 2 + headerLen) {
-            const payload = arrayBuf.slice(2 + headerLen);
-            if (payload.byteLength > 0) {
-              chunks.push(payload);
-            }
-          }
-        }
-      } else if (typeof event.data === "string") {
-        if (event.data.includes("Path:turn.end")) {
-          clearTimeout(safetyTimer);
-          try { ws.close(); } catch {}
-
-          if (chunks.length > 0) {
-            const totalLen = chunks.reduce((acc, c) => acc + c.byteLength, 0);
-            const merged = new Uint8Array(totalLen);
-            let offset = 0;
-            for (const chunk of chunks) {
-              merged.set(new Uint8Array(chunk), offset);
-              offset += chunk.byteLength;
-            }
-
-            // Direct Web Audio RAM ArrayBuffer engine for universal iOS Safari (iPhone/iPad) & Android
-            playDirectArrayBuffer(merged.buffer, onStart, finishOnce, 1.0);
-          } else {
-            fallbackWebSpeech();
-          }
-        }
-      }
-    };
-
-    ws.onerror = () => {
-      clearTimeout(safetyTimer);
-      try { ws.close(); } catch {}
-      fallbackWebSpeech();
-    };
+      })
+      .catch((err) => {
+        console.warn("[speakSpeakingExaminerEdgeTTS Proxy Stream Error]:", err);
+        fallbackWebSpeech();
+      });
   } catch (err) {
     fallbackWebSpeech();
   }

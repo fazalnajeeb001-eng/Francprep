@@ -279,10 +279,23 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
   }
 
   const userTurnCount = (messages || []).filter((m) => m.role === 'user' || (m as any).sender === 'candidate').length;
-  const lastUserText = messages && messages.length > 0 ? messages[messages.length - 1].content || '' : '';
+  const lastUserText = (messages && messages.length > 0 ? messages[messages.length - 1].content || '' : '').trim();
+  const userWords = lastUserText.split(/\s+/).filter(Boolean);
 
-  if (!content || content.trim().length === 0) {
+  // Sparse 1-word / short fragment answer intercept protocol
+  if (userWords.length > 0 && userWords.length <= 2 && !/^(merci|d'accord|au revoir)$/i.test(lastUserText)) {
+    content = `« ${lastUserText} » ? Que voulez-vous dire par là ? Pouvez-vous me faire une phrase complète pour développer votre réponse ?`;
+  } else if (!content || content.trim().length === 0) {
     content = generateDynamicFallbackReply(taskTitle || '', lastUserText, userTurnCount);
+  }
+
+  // Tâche 2 Mandatory End-Phrase Enforcer
+  const isTache2 = /tâche\s*2|interaction|exercice en interaction|rôle|roleplay/i.test(taskTitle || '');
+  if (isTache2) {
+    const cleanContent = content.trim();
+    if (!/avez-vous d'autres questions\s*\??$/i.test(cleanContent)) {
+      content = `${cleanContent.replace(/[.!?]+$/, '')}. Avez-vous d'autres questions ?`;
+    }
   }
 
   const chosenGender = gender || (examinerName && /Henri|Jean|Gérard|Rémy/i.test(examinerName) ? 'male' : 'female');
@@ -290,8 +303,8 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
   let audioBase64 = '';
 
   try {
-    // PASS undefined for forcedProvider so it uses the primary engine properly!
-    const audioRes = await generateNeuralAudio(content, chosenGender, 'fr', undefined, undefined, undefined, 1.0);
+    // Direct Edge Neural TTS generation (fr-FR-DeniseNeural / fr-FR-HenriNeural)
+    const audioRes = await generateEdgeNeuralAudio(content, chosenGender, 'fr', 1.0);
     if (audioRes && audioRes.audioBase64) {
       audioBase64 = audioRes.audioBase64;
     }

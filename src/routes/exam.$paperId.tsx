@@ -5118,7 +5118,7 @@ export function AuthenticCBTExamPage() {
                       if (r.writingAttemptedCount > 0) {
                         return (
                           <>
-                            Writing Module (EE): <strong>{r.writingAvg}/20 Marks</strong> ({r.writingNCLC.nclcGrade})
+                            Writing Module (EE): <strong>{r.writingAvg}/20 Marks</strong> (NCLC {r.writingNCLC.nclcLevel} / {r.writingNCLC.cefrEquivalent})
                             {r.writingAttemptedCount < 3 && (
                               <span className="opacity-90 font-medium ml-1">
                                 • ({r.writingAttemptedCount}/3 tasks completed: T1 {r.writingTaskScores.t1}/20, T2 {r.writingTaskScores.t2}/20, T3 {r.writingTaskScores.t3}/20)
@@ -5137,7 +5137,7 @@ export function AuthenticCBTExamPage() {
                       if (r.speakingAttemptedCount > 0) {
                         return (
                           <>
-                            Speaking Module (EO): <strong>{r.speakingAvg}/20 Marks</strong> ({r.speakingNCLC.nclcGrade})
+                            Speaking Module (EO): <strong>{r.speakingAvg}/20 Marks</strong> (NCLC {r.speakingNCLC.nclcLevel} / {r.speakingNCLC.cefrEquivalent})
                             {r.speakingAttemptedCount < 3 && (
                               <span className="opacity-90 font-medium ml-1">
                                 • ({r.speakingAttemptedCount}/3 tasks completed: T1 {r.speakingTaskScores.s1}/20, T2 {r.speakingTaskScores.s2}/20, T3 {r.speakingTaskScores.s3}/20)
@@ -5304,12 +5304,12 @@ export function AuthenticCBTExamPage() {
                                 <p className="text-[11px] leading-relaxed">
                                   {res.writingAttemptedCount < 3 ? (
                                     <>
-                                      ⚠️ <strong>Incomplete Writing Submission:</strong> Attempted {res.writingAttemptedCount}/3 tasks (T1: {res.writingTaskScores.t1}/20, T2: {res.writingTaskScores.t2}/20, T3: {res.writingTaskScores.t3}/20), giving an overall composite grade of <strong>{res.writingAvg}/20 Marks ({res.writingNCLC.nclcGrade})</strong>. In the official TCF exam, completing all 3 tasks (20% + 30% + 50%) is mandatory for CLB 7+ benchmark scoring.
+                                      ⚠️ <strong>Incomplete Writing Submission:</strong> Attempted {res.writingAttemptedCount}/3 tasks (T1: {res.writingTaskScores.t1}/20, T2: {res.writingTaskScores.t2}/20, T3: {res.writingTaskScores.t3}/20), giving an overall composite grade of <strong>{res.writingAvg}/20 Marks (NCLC {res.writingNCLC.nclcLevel})</strong>. In the official TCF exam, completing all 3 tasks (20% + 30% + 50%) is mandatory for CLB 7+ benchmark scoring.
                                     </>
                                   ) : res.writingAvg >= 12 ? (
-                                    `✓ Strong writing score (${res.writingAvg}/20 Marks — ${res.writingNCLC.nclcGrade}). High mastery of B2 connectors and structures across all 3 tasks.`
+                                    `✓ Strong writing score (${res.writingAvg}/20 Marks — NCLC ${res.writingNCLC.nclcLevel} / ${res.writingNCLC.cefrEquivalent}). High mastery of B2 connectors and structures across all 3 tasks.`
                                   ) : (
-                                    `⚠️ Writing score is ${res.writingAvg}/20 Marks (${res.writingNCLC.nclcGrade}). Focus on reaching word count bounds (60-120 T1, 120-150 T2, 140-180 T3), inserting formal connectors (cependant, toutefois), and avoiding English word code-switching.`
+                                    `⚠️ Writing score is ${res.writingAvg}/20 Marks (NCLC ${res.writingNCLC.nclcLevel} / ${res.writingNCLC.cefrEquivalent}). Focus on reaching word count bounds (60-120 T1, 120-150 T2, 140-180 T3), inserting formal connectors (cependant, toutefois), and avoiding English word code-switching.`
                                   )}
                                 </p>
                               </div>
