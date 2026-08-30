@@ -15,17 +15,18 @@ export const STATIC_SPEAKING_INTROS = {
 
 const introAudioMemoryCache: Record<string, string> = {};
 
-export async function getSpeakingIntroAudioBase64(taskIdx: number, gender: 'female' | 'male' = 'female'): Promise<string | null> {
-  const key = `task${taskIdx + 1}_${gender}`;
-  if (introAudioMemoryCache[key]) {
-    return introAudioMemoryCache[key];
+export async function getSpeakingIntroAudioBase64(taskIdx: number, gender: 'female' | 'male' = 'female', voiceId?: string): Promise<string | null> {
+  const baseKey = `task${taskIdx + 1}_${gender}`;
+  const cacheKey = `${baseKey}_${voiceId || ''}`;
+  if (introAudioMemoryCache[cacheKey]) {
+    return introAudioMemoryCache[cacheKey];
   }
 
-  const text = (STATIC_SPEAKING_INTROS as any)[key] || STATIC_SPEAKING_INTROS.task1_female;
+  const text = (STATIC_SPEAKING_INTROS as any)[baseKey] || STATIC_SPEAKING_INTROS.task1_female;
   try {
-    const edgeRes = await generateEdgeNeuralAudio(text, gender, 'fr', 1.0);
+    const edgeRes = await generateEdgeNeuralAudio(text, gender, 'fr', 1.0, voiceId, true);
     if (edgeRes && edgeRes.audioBase64) {
-      introAudioMemoryCache[key] = edgeRes.audioBase64;
+      introAudioMemoryCache[cacheKey] = edgeRes.audioBase64;
       return edgeRes.audioBase64;
     }
   } catch (err: any) {

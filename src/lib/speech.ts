@@ -1110,7 +1110,7 @@ export function speakSpeakingExaminerEdgeTTS(
     const baseUrl = getApiBaseUrl();
     const voiceQuery = voiceId ? `&voiceId=${encodeURIComponent(voiceId)}` : '';
     const nameQuery = examinerName ? `&examinerName=${encodeURIComponent(examinerName)}` : '';
-    const streamUrl = `${baseUrl}/speaking/stream?text=${encodeURIComponent(clean)}&gender=${gender}${voiceQuery}${nameQuery}`;
+    const streamUrl = `${baseUrl}/speaking/stream?text=${encodeURIComponent(clean)}&gender=${gender}${voiceQuery}${nameQuery}&_t=${Date.now()}`;
 
     fetch(streamUrl)
       .then(async (res) => {

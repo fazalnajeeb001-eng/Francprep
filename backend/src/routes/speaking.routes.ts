@@ -53,7 +53,7 @@ router.get('/stream', async (req: Request, res: Response) => {
       const buffer = Buffer.from(edgeRes.audioBase64, 'base64');
       res.setHeader('Content-Type', 'audio/mpeg');
       res.setHeader('Content-Length', buffer.length.toString());
-      res.setHeader('Cache-Control', 'public, max-age=86400');
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.send(buffer);
       return;
     }
