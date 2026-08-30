@@ -454,18 +454,20 @@ export function AuthenticCBTExamPage() {
     return () => clearInterval(interval);
   }, [activeSectionIdx, mode, isSubmitted, showSectionDisclaimer, isTimerPaused, isAdmin, paper.sections.length, isPlayingAudio, isAudioFetching, isSpeaking, speakingChatLoading, currentSection]);
 
-  const handleStartPrepTimer = (taskId: string, prepMins = 1) => {
+  const handleStartPrepTimer = (taskId: string, prepMins = 2) => {
+    const targetSeconds = Math.round(prepMins * 60);
     setOralPrepTimeRemaining((prev) => ({
       ...prev,
-      [taskId]: (prev[taskId] && prev[taskId] > 0) ? prev[taskId] : prepMins * 60
+      [taskId]: targetSeconds
     }));
     setIsOralPrepActive((prev) => ({ ...prev, [taskId]: true }));
   };
 
-  const handleStartSpeakingTimer = (taskId: string, speakingMins = 2) => {
+  const handleStartSpeakingTimer = (taskId: string, speakingMins = 3.5) => {
+    const targetSeconds = Math.round(speakingMins * 60);
     setOralSpeakingTimeRemaining((prev) => ({
       ...prev,
-      [taskId]: (prev[taskId] && prev[taskId] > 0) ? prev[taskId] : Math.round(speakingMins * 60)
+      [taskId]: targetSeconds
     }));
     setIsOralSpeakingActive((prev) => ({ ...prev, [taskId]: true }));
   };
