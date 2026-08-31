@@ -1637,11 +1637,18 @@ Return JSON only:
           c = Math.min(1, c);
           l = Math.min(1, l);
           g = Math.min(1, g);
+        } else if (totalWords < 25) {
+          t = Math.min(2, t);
+          c = Math.min(2, c);
+          l = Math.min(2, l);
+          g = Math.min(2, g);
         }
 
         let scoreOutOf20 = typeof parsed.raw_task_score_out_of_20 === 'number' ? Math.max(0, Math.min(20, parsed.raw_task_score_out_of_20)) : (t + c + l + g);
         if (totalWords < 10) {
           scoreOutOf20 = Math.min(4, scoreOutOf20);
+        } else if (totalWords < 25) {
+          scoreOutOf20 = Math.min(6, scoreOutOf20);
         }
         if (t === 0) scoreOutOf20 = 0;
 
