@@ -1135,9 +1135,11 @@ export function AuthenticCBTExamPage() {
       const json = await res.json();
       if (json.success && json.data) {
         const data = json.data;
-        const totalScoreOutOf20 = typeof data.scoreOutOf20 === 'number'
-          ? data.scoreOutOf20
-          : (typeof data.score === 'number' ? Math.round((data.score / 100) * 20) : 15);
+        const taskFulfillmentScore = typeof data.taskFulfillmentScore === 'number' ? data.taskFulfillmentScore : 3;
+        const coherenceScore = typeof data.coherenceScore === 'number' ? data.coherenceScore : 3;
+        const lexicalScore = typeof data.lexicalScore === 'number' ? data.lexicalScore : 3;
+        const grammarScore = typeof data.grammarScore === 'number' ? data.grammarScore : 3;
+        const totalScoreOutOf20 = taskFulfillmentScore + coherenceScore + lexicalScore + grammarScore;
 
         let nclcGrade = data.nclcGrade || "NCLC 7 (B2 Benchmark Target)";
         let expressEntryPoints = data.expressEntryPoints || 17;
@@ -1175,13 +1177,15 @@ export function AuthenticCBTExamPage() {
           ...prev,
           [taskId]: {
             scoreOutOf20: totalScoreOutOf20,
-            score: data.score || Math.round((totalScoreOutOf20 / 20) * 100),
-            taskFulfillmentScore: data.taskFulfillmentScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
-            coherenceScore: data.coherenceScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
-            lexicalScore: data.lexicalScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
-            grammarScore: data.grammarScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+            score: Math.round((totalScoreOutOf20 / 20) * 100),
+            taskFulfillmentScore,
+            coherenceScore,
+            lexicalScore,
+            grammarScore,
             nclcGrade,
             expressEntryPoints,
+            feiSubScores: data.feiSubScores,
+            corrections: data.corrections || [],
             feedback: data.feedback || `Diagnostic Oral Evaluation (TCF Format): Total ${totalScoreOutOf20}/20 Marks.`,
             corrections: data.corrections || [],
             tips: data.tips || []
@@ -4741,10 +4745,11 @@ export function AuthenticCBTExamPage() {
                     if (scaled450 >= 371) { overallNclc = "NCLC 10 (C2 Mastery)"; overallCrs = 34; }
                     else if (scaled450 >= 348) { overallNclc = "NCLC 9 (C1 Advanced)"; overallCrs = 31; }
                     else if (scaled450 >= 310) { overallNclc = "NCLC 8 (B2 Upper)"; overallCrs = 23; }
-                    else if (scaled450 >= 248) { overallNclc = "NCLC 7 (B2 Benchmark Target)"; overallCrs = 17; }
-                    else if (scaled450 >= 181) { overallNclc = "NCLC 6 (B1 Intermediate)"; overallCrs = 12; }
-                    else if (scaled450 >= 121) { overallNclc = "NCLC 5 (B1 Threshold)"; overallCrs = 6; }
-                    else if (scaled450 >= 60) { overallNclc = "NCLC 4 (A2 Elementary)"; overallCrs = 0; }
+                    else if (scaled450 >= 280) { overallNclc = "NCLC 7 (B2 Benchmark Target)"; overallCrs = 17; }
+                    else if (scaled450 >= 248) { overallNclc = "NCLC 6 (B1 Intermediate)"; overallCrs = 12; }
+                    else if (scaled450 >= 181) { overallNclc = "NCLC 5 (B1 Threshold)"; overallCrs = 6; }
+                    else if (scaled450 >= 121) { overallNclc = "NCLC 4 (A2 Elementary)"; overallCrs = 0; }
+                    else if (scaled450 >= 60) { overallNclc = "NCLC 3 (A1 Beginner)"; overallCrs = 0; }
                     else { overallNclc = "NCLC 0 (Zero Grade — Below A1)"; overallCrs = 0; }
 
                     return (
