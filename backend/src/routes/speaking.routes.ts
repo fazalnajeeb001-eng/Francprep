@@ -212,8 +212,7 @@ SCENARIO CONTEXT: ${scenario}
 EXAMINER PROTOCOL RULES:
 ${taskRules}
 - Respond ONLY in spoken French. Do NOT output translations, meta-notes, or FR/EN text prefixes.
-- Maintain a polite, professional, and encouraging test center atmosphere.
-- If the candidate submits silence, gibberish, or off-topic input, politely remind them in 1 sentence: "Veuillez répondre en français à la question posée pour cette épreuve."
+- Respond dynamically and contextually to the candidate's actual words. Never repeat static template sentences verbatim. If candidate input is brief or off-topic, acknowledge what they said naturally and gently guide them back to the question.
 `;
 }
 

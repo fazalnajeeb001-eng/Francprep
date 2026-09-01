@@ -1494,6 +1494,15 @@ Respond STRICTLY with a raw JSON object:
 - Official Prompt/Scenario: "${expectedText}"
 ${acousticMetrics ? `- Real-Time Web Audio Signal Metrics: Speech Pace = ${acousticMetrics.speechRateWpm || 'N/A'} WPM, Long Hesitation Pauses (>1.5s) = ${acousticMetrics.hesitationPauseCount || 0}, Fluency Index = ${acousticMetrics.fluencyIndexPct || 100}%, Silence Duration = ${acousticMetrics.totalSilenceDurationSec || 0}s.` : ''}
 
+### CANDIDATE SPOKEN TRANSCRIPT TO EVALUATE:
+"${cleanSpeech}"
+
+---
+
+### CRITICAL QUOTATION & ERROR EXTRACTION RULE:
+- You MUST ONLY cite error quotes in "spoken_errors" if they are EXACT SUBSTRINGS present in the Candidate Spoken Transcript above.
+- You are STRICTLY FORBIDDEN from inventing or hallucinating sample expressions like "je suis un ingénieur en informatique" if they are not in the candidate's transcript!
+
 ---
 
 ### TASK SPECIFICATIONS & CEFR CEILING CHECKS:
@@ -1624,12 +1633,19 @@ Return JSON only:
         let g = Math.max(0, Math.min(5, typeof sub.morphosyntax === 'number' ? sub.morphosyntax : (typeof parsed.grammarScore === 'number' ? parsed.grammarScore : 3)));
 
         const errorsList = Array.isArray(parsed.spoken_errors) ? parsed.spoken_errors : (Array.isArray(parsed.corrections) ? parsed.corrections : []);
-        // MANDATORY ERROR-PROOF GUARDRAIL: If spoken_errors is empty [], Morphosyntax MUST be 5/5
-        if (errorsList.length === 0) {
-          g = 5;
+        
+        // STRICT SUBSTRING GUARDRAIL: Filter out hallucinated error quotes that do not exist in candidate speech
+        const textLower = cleanSpeech.toLowerCase();
+        const validErrors = errorsList.filter((err: any) => {
+          if (!err || typeof err.quote !== 'string') return false;
+          const q = err.quote.trim().toLowerCase();
+          return q.length >= 2 && textLower.includes(q);
+        });
+
+        if (validErrors.length === 0) {
+          g = Math.max(g, 4);
         }
 
-        const textLower = cleanSpeech.toLowerCase();
         if (taskNum === 2) {
           const questionMatches = cleanSpeech.match(/\?|\b(pourriez|pouvez|est-ce|quel|quelle|quels|quelles|combien|comment|où|quand|pourquoi|avez-vous)\b/gi) || [];
           if (questionMatches.length < 8) {
@@ -1652,23 +1668,23 @@ Return JSON only:
         }
 
         const totalWords = cleanSpeech.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean).length;
-        if (totalWords < 10) {
+        if (totalWords < 15) {
           t = Math.min(1, t);
           c = Math.min(1, c);
           l = Math.min(1, l);
           g = Math.min(1, g);
-        } else if (totalWords < 25) {
-          t = Math.min(2, t);
-          c = Math.min(2, c);
-          l = Math.min(2, l);
-          g = Math.min(2, g);
+        } else if (totalWords < 35) {
+          t = Math.min(1, t);
+          c = Math.min(1, c);
+          l = Math.min(1, l);
+          g = Math.min(1, g);
         }
 
         let scoreOutOf20 = t + c + l + g;
-        if (totalWords < 10) {
+        if (totalWords < 15) {
+          scoreOutOf20 = Math.min(3, scoreOutOf20);
+        } else if (totalWords < 35) {
           scoreOutOf20 = Math.min(4, scoreOutOf20);
-        } else if (totalWords < 25) {
-          scoreOutOf20 = Math.min(6, scoreOutOf20);
         }
         if (t === 0) scoreOutOf20 = 0;
 
