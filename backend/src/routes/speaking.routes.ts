@@ -443,7 +443,9 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
     const buffer = Buffer.from(cleanBase64, 'base64');
 
     const settings = await Settings.findOne().catch(() => null);
-    const openaiKey = settings?.openaiApiKey || env.openRouterKey || process.env.OPENAI_API_KEY || '';
+    const rawOpenAIKey = (settings?.openaiApiKey || process.env.OPENAI_API_KEY || '').trim();
+    const isDirectOpenAIKey = rawOpenAIKey.startsWith('sk-') && !rawOpenAIKey.startsWith('sk-or-');
+    const openaiKey = isDirectOpenAIKey ? rawOpenAIKey : '';
 
     let text = '';
     let provider = 'whisper-neural-fallback';
@@ -470,7 +472,11 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
           if (json?.text && json.text.trim()) {
             text = json.text.trim();
             provider = 'openai-whisper-1';
+            console.log(`[Whisper STT Transcribe Success]: "${text}" (${text.split(/\s+/).length} words transcribed via ${provider})`);
           }
+        } else {
+          const errText = await whisperRes.text().catch(() => '');
+          console.warn(`[Whisper STT HTTP ${whisperRes.status} Error]:`, errText);
         }
       } catch (wErr: any) {
         console.warn('[Whisper STT Transcribe Warning]:', wErr?.message || wErr);
