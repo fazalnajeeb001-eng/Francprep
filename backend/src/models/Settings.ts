@@ -45,9 +45,8 @@ const settingsSchema = new Schema<ISettingsDocument>(
     selectedOpenAIMaleVoice: { type: String, default: "onyx" },                         // Onyx HD
     selectedKokoroFemaleVoice: { type: String, default: "ff_siwis" },                  // Siwis French Female
     selectedKokoroMaleVoice: { type: String, default: "bm_george" },                   // George French Male
-    frontendUrl: { type: String, default: "" },
   },
-  { timestamps: true }
+  { timestamps: true, collection: 'settings' }
 );
 
 settingsSchema.set('toJSON', {
