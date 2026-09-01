@@ -1011,11 +1011,20 @@ export function AuthenticCBTExamPage() {
         });
         acousticAnalyzer.startAnalysis(stream);
 
-        const mimeType = typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-          ? 'audio/webm;codecs=opus'
-          : (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported('audio/mp4') ? 'audio/mp4' : 'audio/wav');
+        let mediaRecorder: MediaRecorder;
+        try {
+          if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported('audio/mp4')) {
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/mp4' });
+          } else if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+          } else {
+            mediaRecorder = new MediaRecorder(stream);
+          }
+        } catch {
+          mediaRecorder = new MediaRecorder(stream);
+        }
 
-        const mediaRecorder = new MediaRecorder(stream, { mimeType });
+        const mimeType = mediaRecorder.mimeType || 'audio/mp4';
         (window as any)[`_mediaRecorder_${taskId}`] = mediaRecorder;
         const audioChunks: Blob[] = [];
 
@@ -1148,6 +1157,7 @@ export function AuthenticCBTExamPage() {
         setSpeakingAiResults((prev) => ({
           ...prev,
           [taskId]: {
+            isEvaluated: true,
             scoreOutOf20: totalScoreOutOf20,
             score: Math.round((totalScoreOutOf20 / 20) * 100),
             taskFulfillmentScore,
@@ -1159,7 +1169,6 @@ export function AuthenticCBTExamPage() {
             feiSubScores: data.feiSubScores,
             corrections: data.corrections || [],
             feedback: data.feedback || `Diagnostic Oral Evaluation (TCF Format): Total ${totalScoreOutOf20}/20 Marks.`,
-            corrections: data.corrections || [],
             tips: data.tips || []
           }
         }));
@@ -4547,7 +4556,7 @@ export function AuthenticCBTExamPage() {
                             <span>Échange en direct avec l'examinateur ({examinerName}) :</span>
                           </span>
                           <span className="px-2 py-0.5 rounded bg-purple-600/20 text-purple-700 dark:text-purple-300 font-mono text-[10px] font-bold">
-                            {(speakingDialogueMap[task.id] || []).length} tours de parole
+                            {(() => { const count = (speakingDialogueMap[task.id] || []).length; return `${count} tour${count > 1 ? 's' : ''} de parole`; })()}
                           </span>
                         </div>
 
@@ -4595,7 +4604,7 @@ export function AuthenticCBTExamPage() {
               })()}
 
                   {/* OFFICIAL FEI 4-CRITERIA DIAGNOSTIC EVALUATION RESULT CARD */}
-                  {aiEval && (
+                  {aiEval && aiEval.isEvaluated && (
                     <div className="p-4 sm:p-5 rounded-2xl border-2 border-purple-300 dark:border-purple-800 bg-purple-50/90 dark:bg-purple-950/50 space-y-4 text-xs font-sans shadow-md">
                       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-purple-200 dark:border-purple-800 pb-2">
                         <span className="font-extrabold text-sm text-purple-700 dark:text-purple-300 flex items-center gap-1.5">
