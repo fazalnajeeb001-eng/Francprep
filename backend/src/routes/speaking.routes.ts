@@ -442,7 +442,9 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
     const buffer = Buffer.from(cleanBase64, 'base64');
 
     const settings = await Settings.findOne().catch(() => null);
-    const rawOpenAIKey = (settings?.openaiApiKey || process.env.OPENAI_API_KEY || '').trim();
+    let rawOpenAIKey = (settings?.openaiApiKey || process.env.OPENAI_API_KEY || process.env.OPENAI_KEY || '').trim();
+    
+    // Support direct OpenAI API keys (sk-...)
     const isDirectOpenAIKey = rawOpenAIKey.startsWith('sk-') && !rawOpenAIKey.startsWith('sk-or-');
     const openaiKey = isDirectOpenAIKey ? rawOpenAIKey : '';
 
@@ -451,12 +453,19 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
 
     if (openaiKey && buffer.length > 500) {
       try {
-        const ext = mimeType?.includes('mp4') ? 'mp4' : mimeType?.includes('m4a') ? 'm4a' : mimeType?.includes('wav') ? 'wav' : 'webm';
+        const mimeLower = (mimeType || '').toLowerCase();
+        const ext = mimeLower.includes('mp4') || mimeLower.includes('m4a') ? 'm4a' 
+                  : mimeLower.includes('wav') ? 'wav' 
+                  : mimeLower.includes('ogg') ? 'ogg'
+                  : mimeLower.includes('aac') ? 'aac'
+                  : 'webm';
+
         const formData = new FormData();
         const blob = new Blob([buffer], { type: mimeType || 'audio/webm' });
         formData.append('file', blob, `candidate_speech.${ext}`);
         formData.append('model', 'whisper-1');
         formData.append('language', 'fr');
+        formData.append('prompt', 'Transcription exacte en français d\'un candidat au TCF Canada (avec divers accents formels : africain, asiatique, arabe, canadien, européen, anglophone).');
         formData.append('temperature', '0.0');
 
         const whisperRes = await fetch('https://api.openai.com/v1/audio/transcriptions', {
@@ -481,6 +490,8 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
       } catch (wErr: any) {
         console.warn('[Whisper STT Transcribe Warning]:', wErr?.message || wErr);
       }
+    } else if (!openaiKey) {
+      console.warn('[Whisper STT Error]: Valid OpenAI API key (sk-...) not found in DB Settings or process.env.OPENAI_API_KEY. Configure key to enable 99%+ Whisper STT.');
     }
 
     const words = text.split(/\s+/).filter(Boolean);
