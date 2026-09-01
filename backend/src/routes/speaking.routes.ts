@@ -451,9 +451,10 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
 
     if (openaiKey && buffer.length > 500) {
       try {
+        const ext = mimeType?.includes('mp4') ? 'mp4' : mimeType?.includes('m4a') ? 'm4a' : mimeType?.includes('wav') ? 'wav' : 'webm';
         const formData = new FormData();
         const blob = new Blob([buffer], { type: mimeType || 'audio/webm' });
-        formData.append('file', blob, 'candidate_speech.webm');
+        formData.append('file', blob, `candidate_speech.${ext}`);
         formData.append('model', 'whisper-1');
         formData.append('language', 'fr');
         formData.append('temperature', '0.0');
