@@ -1000,29 +1000,6 @@ export function AuthenticCBTExamPage() {
         });
         acousticAnalyzer.startAnalysis(stream);
 
-        // Optional Live Dictation Preview during active recording
-        const SpeechRec = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-        if (SpeechRec) {
-          try {
-            const recognition = new SpeechRec();
-            recognition.lang = "fr-FR";
-            recognition.continuous = true;
-            recognition.interimResults = true;
-            recognition.onresult = (event: any) => {
-              let text = "";
-              for (let i = 0; i < event.results.length; i++) {
-                text += event.results[i][0].transcript;
-              }
-              if (text.trim()) {
-                setSpeakingTranscripts((prev) => ({ ...prev, [taskId]: text }));
-                speakingTranscriptsRef.current[taskId] = text;
-              }
-            };
-            (window as any)[`_speechRec_${taskId}`] = recognition;
-            recognition.start();
-          } catch {}
-        }
-
         let mediaRecorder: MediaRecorder;
         try {
           if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported('audio/mp4')) {
@@ -1050,57 +1027,49 @@ export function AuthenticCBTExamPage() {
           setRecordingSpeaking((prev) => ({ ...prev, [taskId]: true }));
         };
 
-        mediaRecorder.onstop = async () => {
+        mediaRecorder.onstop = () => {
           setRecordingSpeaking((prev) => ({ ...prev, [taskId]: false }));
-          try { stream.getTracks().forEach((t) => t.stop()); } catch {}
+          
+          // 200ms Flush Buffer: Guarantee all audio chunks are delivered before creating the final Blob
+          setTimeout(async () => {
+            try { stream.getTracks().forEach((t) => t.stop()); } catch {}
 
-          const audioBlob = new Blob(audioChunks, { type: mimeType });
-          const livePreviewText = (speakingTranscriptsRef.current[taskId] || "").trim();
+            const audioBlob = new Blob(audioChunks, { type: mimeType });
 
-          if (audioBlob.size >= 500) {
-            const reader = new FileReader();
-            reader.readAsDataURL(audioBlob);
-            reader.onloadend = async () => {
-              const base64Data = reader.result as string;
-              try {
-                const res = await apiFetch("/speaking/transcribe", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ audioBase64: base64Data, mimeType, durationSec: 15 })
-                });
-                const json = await res.json();
-                const transcribedText = (json.success && json.data?.text && json.data.text.trim()) ? json.data.text.trim() : livePreviewText;
+            if (audioBlob.size >= 500) {
+              const reader = new FileReader();
+              reader.readAsDataURL(audioBlob);
+              reader.onloadend = async () => {
+                const base64Data = reader.result as string;
+                try {
+                  const res = await apiFetch("/speaking/transcribe", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ audioBase64: base64Data, mimeType, durationSec: 15 })
+                  });
+                  const json = await res.json();
+                  const transcribedText = (json.success && json.data?.text && json.data.text.trim()) ? json.data.text.trim() : "";
 
-                if (transcribedText.length >= 2) {
-                  setSpeakingTranscripts((prev) => ({ ...prev, [taskId]: transcribedText }));
-                  speakingTranscriptsRef.current[taskId] = transcribedText;
+                  if (transcribedText.length >= 2) {
+                    setSpeakingTranscripts((prev) => ({ ...prev, [taskId]: transcribedText }));
+                    speakingTranscriptsRef.current[taskId] = transcribedText;
 
-                  if (json.data?.acousticMetrics) {
-                    setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: json.data.acousticMetrics }));
+                    if (json.data?.acousticMetrics) {
+                      setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: json.data.acousticMetrics }));
+                    }
+
+                    const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
+                    const scenarioText = activeTask?.scenario || "TCF Oral Interaction";
+                    if (!isAudioFetching && !isPlayingAudio && !isChatSendingRef.current[taskId]) {
+                      handleSendSpeakingQuestionToExaminer(taskId, transcribedText, scenarioText);
+                    }
                   }
-
-                  const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
-                  const scenarioText = activeTask?.scenario || "TCF Oral Interaction";
-                  if (!isAudioFetching && !isPlayingAudio && !isChatSendingRef.current[taskId]) {
-                    handleSendSpeakingQuestionToExaminer(taskId, transcribedText, scenarioText);
-                  }
+                } catch (tErr) {
+                  console.warn("Whisper STT Transcribe API error:", tErr);
                 }
-              } catch (tErr) {
-                console.warn("Whisper STT Transcribe API error:", tErr);
-                if (livePreviewText.length >= 2 && !isAudioFetching && !isPlayingAudio && !isChatSendingRef.current[taskId]) {
-                  const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
-                  const scenarioText = activeTask?.scenario || "TCF Oral Interaction";
-                  handleSendSpeakingQuestionToExaminer(taskId, livePreviewText, scenarioText);
-                }
-              }
-            };
-          } else if (livePreviewText.length >= 2) {
-            const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
-            const scenarioText = activeTask?.scenario || "TCF Oral Interaction";
-            if (!isAudioFetching && !isPlayingAudio && !isChatSendingRef.current[taskId]) {
-              handleSendSpeakingQuestionToExaminer(taskId, livePreviewText, scenarioText);
+              };
             }
-          }
+          }, 200);
         };
 
         mediaRecorder.start(250);
