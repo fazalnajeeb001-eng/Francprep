@@ -1383,6 +1383,26 @@ Respond STRICTLY with a raw JSON object:
     const taskNum = taskNumber || (isTache1 ? 1 : isTache2 ? 2 : 3);
 
     const candidateWords = cleanSpeech.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
+    if (!cleanSpeech || candidateWords.length === 0) {
+      return {
+        transcription: cleanSpeech || "",
+        feedback: "🚨 AUCUN ENREGISTREMENT VOCAL DÉTECTÉ : Aucun mot n'a été enregistré. Le candidat doit s'exprimer oralement en français pour obtenir une note. Note officielle attribuée : 0/20 (NCLC 0).",
+        score: 0,
+        scoreOutOf20: 0,
+        accuracy: 0,
+        fluency: 0,
+        taskFulfillmentScore: 0,
+        coherenceScore: 0,
+        lexicalScore: 0,
+        grammarScore: 0,
+        nclcGrade: "NCLC 0 (Zero Grade — Aucun Enregistrement)",
+        cefrLevel: "Below A1",
+        expressEntryPoints: 0,
+        corrections: [],
+        tips: ["Cliquez sur 'Parler au micro' et formulez vos réponses en français avant d'évaluer."]
+      };
+    }
+
     if (candidateWords.length < 10) {
       return {
         transcription: cleanSpeech,
@@ -1726,21 +1746,21 @@ Return JSON only:
     }
 
     return {
-      transcription: cleanSpeech,
-      feedback: 'Official FEI Oral response recorded successfully.',
-      score: 75,
-      scoreOutOf20: 15,
-      accuracy: 75,
-      fluency: 75,
-      taskFulfillmentScore: 4,
-      coherenceScore: 4,
-      lexicalScore: 4,
-      grammarScore: 3,
-      nclcGrade: 'NCLC 8 (B2 Upper)',
-      cefrLevel: 'B2',
-      expressEntryPoints: 23,
+      transcription: cleanSpeech || "",
+      feedback: "🚨 ÉVALUATION INDISPONIBLE : L'enregistrement est vide ou incomplet. Note officielle attribuée : 0/20 (NCLC 0).",
+      score: 0,
+      scoreOutOf20: 0,
+      accuracy: 0,
+      fluency: 0,
+      taskFulfillmentScore: 0,
+      coherenceScore: 0,
+      lexicalScore: 0,
+      grammarScore: 0,
+      nclcGrade: "NCLC 0 (Zero Grade — Échantillon Insuffisant)",
+      cefrLevel: "Below A1",
+      expressEntryPoints: 0,
       corrections: [],
-      tips: ['Continue practicing complex question structures and connectors.'],
+      tips: ["Exprimez-vous au micro avant de demander une évaluation diagnostique."],
     };
   }
 

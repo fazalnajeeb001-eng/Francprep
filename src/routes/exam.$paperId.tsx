@@ -1176,17 +1176,18 @@ export function AuthenticCBTExamPage() {
         setSpeakingAiResults((prev) => ({
           ...prev,
           [taskId]: {
-            scoreOutOf20: 15,
-            score: 75,
-            taskFulfillmentScore: 4,
-            coherenceScore: 4,
-            lexicalScore: 4,
-            grammarScore: 3,
-            nclcGrade: "NCLC 8 (B2 Upper)",
-            expressEntryPoints: 23,
-            feedback: "Speech fluency and question formulation match official test-center B2 standards.",
+            isEvaluated: true,
+            scoreOutOf20: 0,
+            score: 0,
+            taskFulfillmentScore: 0,
+            coherenceScore: 0,
+            lexicalScore: 0,
+            grammarScore: 0,
+            nclcGrade: "NCLC 0 (Zero Grade — Aucun Enregistrement)",
+            expressEntryPoints: 0,
+            feedback: "🚨 AUCUN ENREGISTREMENT VOCAL DÉTECTÉ : Veuillez formuler votre réponse au micro en français avant d'évaluer.",
             corrections: [],
-            tips: []
+            tips: ["Parlez au micro avant de demander une évaluation diagnostique."]
           }
         }));
       }
@@ -1194,17 +1195,18 @@ export function AuthenticCBTExamPage() {
       setSpeakingAiResults((prev) => ({
         ...prev,
         [taskId]: {
-          scoreOutOf20: 15,
-          score: 75,
-          taskFulfillmentScore: 4,
-          coherenceScore: 4,
-          lexicalScore: 4,
-          grammarScore: 3,
-          nclcGrade: "NCLC 8 (B2 Upper)",
-          expressEntryPoints: 23,
-          feedback: "Speech fluency and pronunciation match official test-center B2 standards.",
+          isEvaluated: true,
+          scoreOutOf20: 0,
+          score: 0,
+          taskFulfillmentScore: 0,
+          coherenceScore: 0,
+          lexicalScore: 0,
+          grammarScore: 0,
+          nclcGrade: "NCLC 0 (Zero Grade — Aucun Enregistrement)",
+          expressEntryPoints: 0,
+          feedback: "🚨 AUCUN ENREGISTREMENT VOCAL DÉTECTÉ : Veuillez formuler votre réponse au micro en français avant d'évaluer.",
           corrections: [],
-          tips: []
+          tips: ["Parlez au micro avant de demander une évaluation diagnostique."]
         }
       }));
     }
