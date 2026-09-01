@@ -9,6 +9,7 @@ export interface ISettingsDocument extends Document {
   anthropicApiKey: string;
   openRouterApiKey: string;
   openaiApiKey: string;
+  groqApiKey: string;
   elevenLabsApiKey: string;
   huggingFaceApiKey: string;
   huggingFaceToken: string;
@@ -34,6 +35,7 @@ const settingsSchema = new Schema<ISettingsDocument>(
     anthropicApiKey: { type: String, default: "" },
     openRouterApiKey: { type: String, default: "" },
     openaiApiKey: { type: String, default: "" },
+    groqApiKey: { type: String, default: "" },
     elevenLabsApiKey: { type: String, default: "" },
     huggingFaceApiKey: { type: String, default: "" },
     huggingFaceToken: { type: String, default: "" },

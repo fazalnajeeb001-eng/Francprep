@@ -442,30 +442,64 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
     const buffer = Buffer.from(cleanBase64, 'base64');
 
     const settings = await Settings.findOne().catch(() => null);
-    let rawOpenAIKey = (settings?.openaiApiKey || process.env.OPENAI_API_KEY || process.env.OPENAI_KEY || '').trim();
-    
-    // Support direct OpenAI API keys (sk-...)
-    const isDirectOpenAIKey = rawOpenAIKey.startsWith('sk-') && !rawOpenAIKey.startsWith('sk-or-');
-    const openaiKey = isDirectOpenAIKey ? rawOpenAIKey : '';
+    const groqKey = ((settings as any)?.groqApiKey || process.env.GROQ_API_KEY || '').trim();
+    const rawOpenAIKey = ((settings as any)?.openaiApiKey || process.env.OPENAI_API_KEY || process.env.OPENAI_KEY || '').trim();
+    const openaiKey = (rawOpenAIKey.startsWith('sk-') && !rawOpenAIKey.startsWith('sk-or-')) ? rawOpenAIKey : '';
 
     let text = '';
     let provider = 'whisper-neural-fallback';
 
-    if (openaiKey && buffer.length > 500) {
-      try {
-        const mimeLower = (mimeType || '').toLowerCase();
-        const ext = mimeLower.includes('mp4') || mimeLower.includes('m4a') ? 'm4a' 
-                  : mimeLower.includes('wav') ? 'wav' 
-                  : mimeLower.includes('ogg') ? 'ogg'
-                  : mimeLower.includes('aac') ? 'aac'
-                  : 'webm';
+    const mimeLower = (mimeType || '').toLowerCase();
+    const ext = mimeLower.includes('mp4') || mimeLower.includes('m4a') ? 'm4a' 
+              : mimeLower.includes('wav') ? 'wav' 
+              : mimeLower.includes('ogg') ? 'ogg'
+              : mimeLower.includes('aac') ? 'aac'
+              : 'webm';
 
+    // 1. PRIMARY PROVIDER: Groq Whisper-Large-v3 Engine (Ultra-Fast 0.2s, 99%+ Multi-Accent Accuracy, Free Tier)
+    if (groqKey && buffer.length > 500) {
+      try {
+        const formData = new FormData();
+        const blob = new Blob([buffer], { type: mimeType || 'audio/webm' });
+        formData.append('file', blob, `candidate_speech.${ext}`);
+        formData.append('model', 'whisper-large-v3');
+        formData.append('language', 'fr');
+        formData.append('prompt', 'Transcription exacte en français d\'un candidat au TCF Canada (accents formels : africain, asiatique, arabe, canadien, européen, anglophone).');
+        formData.append('temperature', '0.0');
+
+        const groqRes = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${groqKey}`,
+          },
+          body: formData,
+        });
+
+        if (groqRes.ok) {
+          const json = await groqRes.json() as any;
+          if (json?.text && json.text.trim()) {
+            text = json.text.trim();
+            provider = 'groq-whisper-large-v3';
+            console.log(`[Groq Whisper STT Transcribe Success]: "${text}" (${text.split(/\s+/).length} words transcribed via ${provider})`);
+          }
+        } else {
+          const errText = await groqRes.text().catch(() => '');
+          console.warn(`[Groq Whisper STT HTTP ${groqRes.status} Warning]:`, errText);
+        }
+      } catch (gErr: any) {
+        console.warn('[Groq Whisper STT Transcribe Exception]:', gErr?.message || gErr);
+      }
+    }
+
+    // 2. SECONDARY PROVIDER FALLBACK: OpenAI Whisper-1 Engine
+    if (!text && openaiKey && buffer.length > 500) {
+      try {
         const formData = new FormData();
         const blob = new Blob([buffer], { type: mimeType || 'audio/webm' });
         formData.append('file', blob, `candidate_speech.${ext}`);
         formData.append('model', 'whisper-1');
         formData.append('language', 'fr');
-        formData.append('prompt', 'Transcription exacte en français d\'un candidat au TCF Canada (avec divers accents formels : africain, asiatique, arabe, canadien, européen, anglophone).');
+        formData.append('prompt', 'Transcription exacte en français d\'un candidat au TCF Canada.');
         formData.append('temperature', '0.0');
 
         const whisperRes = await fetch('https://api.openai.com/v1/audio/transcriptions', {
@@ -481,17 +515,15 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
           if (json?.text && json.text.trim()) {
             text = json.text.trim();
             provider = 'openai-whisper-1';
-            console.log(`[Whisper STT Transcribe Success]: "${text}" (${text.split(/\s+/).length} words transcribed via ${provider})`);
+            console.log(`[OpenAI Whisper STT Transcribe Success]: "${text}" (${text.split(/\s+/).length} words transcribed via ${provider})`);
           }
         } else {
           const errText = await whisperRes.text().catch(() => '');
-          console.warn(`[Whisper STT HTTP ${whisperRes.status} Error]:`, errText);
+          console.warn(`[OpenAI Whisper STT HTTP ${whisperRes.status} Error]:`, errText);
         }
       } catch (wErr: any) {
-        console.warn('[Whisper STT Transcribe Warning]:', wErr?.message || wErr);
+        console.warn('[OpenAI Whisper STT Transcribe Warning]:', wErr?.message || wErr);
       }
-    } else if (!openaiKey) {
-      console.warn('[Whisper STT Error]: Valid OpenAI API key (sk-...) not found in DB Settings or process.env.OPENAI_API_KEY. Configure key to enable 99%+ Whisper STT.');
     }
 
     const words = text.split(/\s+/).filter(Boolean);
