@@ -1406,21 +1406,51 @@ Respond STRICTLY with a raw JSON object:
     if (candidateWords.length < 10) {
       return {
         transcription: cleanSpeech,
-        feedback: `🚨 ÉVALUATION INSUFFISANTE (${candidateWords.length} mots enregistrés) : L'intervention orale est trop courte (moins de 10 mots) pour évaluer un niveau B2/C1. Veuillez formuler des phrases complètes pour développer votre réponse.`,
-        score: 15,
-        scoreOutOf20: 3,
-        accuracy: 15,
-        fluency: 1,
-        taskFulfillmentScore: 1,
-        coherenceScore: 1,
-        lexicalScore: 1,
-        grammarScore: 1,
-        nclcGrade: 'NCLC 3 (Échantillon Oral Insuffisant / Débutant)',
-        cefrLevel: 'A1',
+        feedback: `🚨 ZERO GRADE (0/20 Marks — NCLC 0): Production orale insuffisante (${candidateWords.length} mots enregistrés, minimum 10 mots requis). Impossible d'évaluer la compétence linguistique du candidat (A1 Non Atteint).`,
+        score: 0,
+        scoreOutOf20: 0,
+        accuracy: 0,
+        fluency: 0,
+        taskFulfillmentScore: 0,
+        coherenceScore: 0,
+        lexicalScore: 0,
+        grammarScore: 0,
+        nclcGrade: 'NCLC 0 (Zero Grade — Élocution insuffisante / <10 mots)',
+        cefrLevel: 'Non Atteint',
         expressEntryPoints: 0,
         corrections: [],
-        tips: ["Développez votre argumentation en utilisant plusieurs phrases structurées avec des connecteurs logiques (d'abord, en effet, cependant)."]
+        tips: ["Formulez des phrases complètes et développez votre réponse orale pour atteindre au moins 10 mots."]
       };
+    }
+
+    // PHASE 2 CAS DE ZÉRO: Prompt Plagiarism / Consigne Recopying Filter (>80% verbatim scenario overlap)
+    if (expectedText && expectedText.length > 20) {
+      const scenarioWords = expectedText.toLowerCase().replace(/['’]/g, ' ').split(/\s+/).filter((w) => w.length > 3);
+      if (scenarioWords.length >= 6) {
+        const candidateWordsLower = cleanSpeech.toLowerCase().replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
+        const matchingWords = scenarioWords.filter((sw) => candidateWordsLower.includes(sw));
+        const overlapRatio = matchingWords.length / scenarioWords.length;
+
+        if (overlapRatio >= 0.85 && candidateWordsLower.length <= scenarioWords.length + 5) {
+          return {
+            transcription: cleanSpeech,
+            feedback: `🚨 ZERO GRADE (0/20 Marks — NCLC 0): Reprise intégrale de la consigne du sujet (Plagiat / Lecture du sujet). Aucune production linguistique personnelle du candidat.`,
+            score: 0,
+            scoreOutOf20: 0,
+            accuracy: 0,
+            fluency: 0,
+            taskFulfillmentScore: 0,
+            coherenceScore: 0,
+            lexicalScore: 0,
+            grammarScore: 0,
+            nclcGrade: 'NCLC 0 (Zero Grade — Plagiat de la consigne)',
+            cefrLevel: 'Non Atteint',
+            expressEntryPoints: 0,
+            corrections: [],
+            tips: ["Ne récitez pas le sujet. Formulez vos propres phrases d'introduction et vos propres arguments."]
+          };
+        }
+      }
     }
 
     if (!apiKey) {
