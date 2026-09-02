@@ -1036,12 +1036,18 @@ export function AuthenticCBTExamPage() {
 
             const audioBlob = new Blob(audioChunks, { type: mimeType });
 
-            if (audioBlob.size >= 500) {
+            if (audioBlob.size >= 100) {
+              setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: true }));
               const reader = new FileReader();
               reader.readAsDataURL(audioBlob);
               reader.onloadend = async () => {
                 const base64Data = reader.result as string;
                 try {
+                  // Reset any lingering audio player state
+                  try { stopAudioEngine(); } catch {}
+                  setIsPlayingAudio(false);
+                  setIsAudioFetching(false);
+
                   const res = await apiFetch("/speaking/transcribe", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -1060,12 +1066,16 @@ export function AuthenticCBTExamPage() {
 
                     const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
                     const scenarioText = activeTask?.scenario || "TCF Oral Interaction";
-                    if (!isAudioFetching && !isPlayingAudio && !isChatSendingRef.current[taskId]) {
+                    
+                    // Send candidate transcribed text to examiner dialogue unconditionally
+                    if (!isChatSendingRef.current[taskId]) {
                       handleSendSpeakingQuestionToExaminer(taskId, transcribedText, scenarioText);
                     }
                   }
                 } catch (tErr) {
                   console.warn("Whisper STT Transcribe API error:", tErr);
+                } finally {
+                  setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
                 }
               };
             }
