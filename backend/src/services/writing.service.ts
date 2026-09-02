@@ -1487,66 +1487,65 @@ Respond STRICTLY with a raw JSON object:
       };
     }
 
-    const prompt = `You are an official France Éducation International (FEI) TCF Canada Speaking Examiner. Your sole task is to evaluate the candidate's spoken response transcript with 100% fidelity to official TCF Canada assessment criteria.
+    const prompt = `You are a Senior Certified France Éducation International (FEI) TCF Canada Oral Examiner. Your sole directive is to evaluate the candidate's spoken transcript with 100% fidelity to official FEI TCF Canada oral examination criteria.
 
 ### DYNAMIC INPUT CONTEXT:
-- Task Number: ${taskNum} (${taskNum === 1 ? 'Tâche 1: Entretien dirigé' : taskNum === 2 ? 'Tâche 2: Exercice en interaction' : 'Tâche 3: Expression d\'un point de vue'})
-- Official Prompt/Scenario: "${expectedText}"
-${acousticMetrics ? `- Real-Time Web Audio Signal Metrics: Speech Pace = ${acousticMetrics.speechRateWpm || 'N/A'} WPM, Long Hesitation Pauses (>1.5s) = ${acousticMetrics.hesitationPauseCount || 0}, Fluency Index = ${acousticMetrics.fluencyIndexPct || 100}%, Silence Duration = ${acousticMetrics.totalSilenceDurationSec || 0}s.` : ''}
+- Task Number: ${taskNum} (${taskNum === 1 ? 'Tâche 1: Entretien dirigé (2 min, Max CEFR B1)' : taskNum === 2 ? 'Tâche 2: Exercice en interaction (3 min 30, Max CEFR B2)' : 'Tâche 3: Expression d\'un point de vue (4 min 30, CEFR Scope B2-C2)'})
+- Official Prompt / Scenario: "${expectedText}"
+${acousticMetrics ? `- Real-Time Web Audio Signal Metrics: Speech Pace = ${acousticMetrics.speechRateWpm || 'N/A'} WPM (Target Native B2/C1: 100-140 WPM), Long Hesitation Pauses (>1.5s) = ${acousticMetrics.hesitationPauseCount || 0}, Silence Duration = ${acousticMetrics.totalSilenceDurationSec || 0}s, Acoustic Fluency Index = ${acousticMetrics.fluencyIndexPct || 100}%.` : ''}
 
 ### CANDIDATE SPOKEN TRANSCRIPT TO EVALUATE:
 "${cleanSpeech}"
 
 ---
 
-### CRITICAL QUOTATION & ERROR EXTRACTION RULE:
-- You MUST ONLY cite error quotes in "spoken_errors" if they are EXACT SUBSTRINGS present in the Candidate Spoken Transcript above.
-- You are STRICTLY FORBIDDEN from inventing or hallucinating sample expressions like "je suis un ingénieur en informatique" if they are not in the candidate's transcript!
-
----
-
-### TASK SPECIFICATIONS & CEFR CEILING CHECKS:
+### OFFICIAL FEI TASK-SPECIFIC RUBRICS (FICHES DE CADRAGE):
 
 1. TÂCHE 1 (Entretien dirigé - 2 minutes):
-   - Focus: Self-presentation, personal environment, daily life.
-   - Max Natural CEFR Ceiling: B1 (NCLC 5-6).
-   - Expected Output: Simple, continuous presentation and answers about oneself.
+   - Scope: Guided interview about self, personal environment, profession, city, or immigration plans.
+   - Formal Register: Formal "vous" is MANDATORY when addressing the examiner.
+   - CEFR Ceiling: B1 (NCLC 5-6 max). Simple, continuous presentation about oneself.
 
-2. TÂCHE 2 (Exercice en interaction - 3 minutes 30):
-   - Focus: Roleplay / Information seeking.
-   - Max Natural CEFR Ceiling: B2 (NCLC 7-8).
-   - Expected Output: Asking relevant, varied questions (formal/informal) to obtain specific details from the interlocutor based on the scenario.
+2. TÂCHE 2 (Exercice en interaction / Roleplay - 3 minutes 30):
+   - Scope: Candidate-driven information gathering.
+   - Requirement: Candidate MUST ask at least 8 to 10 varied, relevant questions (formal "vous") to obtain details based on the scenario document.
+   - CEFR Ceiling: B2 (NCLC 7-8 max).
 
-3. TÂCHE 3 (Expression d'un point de vue - 4 minutes 30):
-   - Focus: Argumentative discourse / Opinion on a societal topic.
-   - Natural CEFR Scope: B2 to C2 (NCLC 7-12).
-   - Expected Output: Clear opinion, structured arguments, concrete examples, logical connectors, elevated lexicon.
+3. TÂCHE 3 (Expression d'un point de vue / Monologue & Débat - 4 minutes 30):
+   - Scope: Argumentative discourse & debate on a societal topic.
+   - Requirement: Clear opinion statement, at least 2 structured arguments with examples, formal logical connectors (en effet, par conséquent, néanmoins, certes, d'une part, d'autre part), elevated lexicon.
+   - CEFR Scope: B2 to C2 (NCLC 7-12).
 
 ---
 
-### EVALUATION STEP 1: TOPIC RELEVANCE & OFF-TOPIC CHECK (CRITICAL)
+### CRITICAL QUOTATION & ERROR EXTRACTION RULE (ZERO HALLUCINATION):
+- You MUST ONLY cite error quotes in "spoken_errors" if they are EXACT SUBSTRINGS present in the Candidate Spoken Transcript above.
+- You are STRICTLY FORBIDDEN from inventing or hallucinating expressions like "je suis un ingénieur" if they are not in the candidate's transcript!
+
+---
+
+### EVALUATION STEP 1: TOPIC RELEVANCE & OFF-TOPIC CHECK (HORS-SUJET)
 Analyze whether the transcript directly addresses "${expectedText}".
-- IF the transcript is completely off-topic (e.g., candidate speaks about their family when Tâche 3 asks about environmental policy):
+- IF the transcript is completely off-topic (e.g., candidate speaks about sports when Tâche 3 asks about environmental policy):
   * Task Fulfillment MUST be set to 0/5.
   * Overall Raw Task Score MUST be set to 0.
   * Set "is_off_topic": true.
-  * Set "off_topic_reason": "The candidate's response does not address the required topic/scenario."
-  * STOP further scoring for this task.
+  * Set "off_topic_reason": "La réponse du candidat ne traite pas du sujet demandé (Hors-sujet)."
 
 ---
 
 ### EVALUATION STEP 2: SCORING CRITERIA (1 to 5 scale per metric)
 
 1. Task Fulfillment & Pragmatic Competence (Consigne & Intention de communication):
-   - 5/5: Fully addresses all aspects of the scenario with appropriate register (formal/informal).
-   - 3-4/5: Addresses the topic well but misses minor details or exhibits slight register inconsistencies.
+   - 5/5: Fully addresses all aspects of the scenario with appropriate formal register ("vous").
+   - 3-4/5: Addresses topic well but misses minor details or exhibits slight register inconsistencies.
    - 1-2/5: Minimal response, fails to maintain roleplay or construct an argument.
    - 0/5: Off-topic, silent, or incoherent.
 
-2. Coherence, Flow & Interaction (Fluidité & Structuration):
-   - 5/5: Fluid delivery, natural pauses, logical progression with advanced connectors (en effet, par conséquent, certes).
+2. Coherence, Flow & Interaction (Fluidité, Débit & Structuration):
+   - 5/5: Fluid delivery (100-140 WPM), natural pauses, logical progression with advanced connectors (en effet, par conséquent, certes).
    - 4/5: Clear discourse with minor hesitation, basic logical organization.
-   - 3/5: Noticeable hesitation, choppy delivery, repetitive transition words.
+   - 3/5: Noticeable hesitation (>3 pauses >1.5s), choppy delivery, repetitive connectors.
    - 1-2/5: Fragmented speech, severe hesitation halting communication.
 
 3. Lexical Variety & Precision (Richesse Lexicale):
@@ -1559,13 +1558,7 @@ Analyze whether the transcript directly addresses "${expectedText}".
    - 5/5: Masterful control of complex structures (subjunctive, conditionals, relative clauses) with zero systemic errors.
    - 4/5: Good control of complex tenses with minor, non-systemic mistakes.
    - 3/5: Frequent grammar errors in complex sentences, but basic tenses (présent, passé composé) are generally correct.
-   - 1-2/5: Systematic grammar errors impacting comprehension, heavy English/foreign language interference.
-
----
-
-### EVALUATION STEP 3: MANDATORY ERROR-PROOF GUARDRAIL
-- You MUST extract every identified grammatical or lexical error into the "spoken_errors" array with its exact substring quote from the transcript.
-- CRITICAL RULE: IF the "spoken_errors" array is EMPTY [], Morphosyntax MUST BE 5/5. You are STRICTLY FORBIDDEN from deducting points or writing generic feedback like "minor grammatical errors are present" if you cannot cite the exact error quote from the transcript.
+   - 1-2/5: Systematic grammar errors impacting comprehension, heavy foreign language interference.
 
 ---
 
@@ -1597,7 +1590,7 @@ Return JSON only:
       const content = await generateAICompletion({
         model: 'gpt-4o-mini',
         prompt,
-        systemPrompt: `You are an official France Éducation International (FEI) Senior Oral Examiner evaluating TCF Canada speaking with strict, uninflated accuracy.`,
+        systemPrompt: `You are an official France Éducation International (FEI) Senior Oral Examiner evaluating TCF Canada speaking with strict, uninflated accuracy according to official FEI criteria.`,
         temperature: 0.1,
         maxTokens: 600,
       });
@@ -1609,7 +1602,7 @@ Return JSON only:
         if (parsed.is_off_topic) {
           return {
             transcription: cleanSpeech,
-            feedback: `🚨 ZERO GRADE (0/20 Marks): ${parsed.off_topic_reason || "The candidate's response does not address the required topic/scenario (Hors-sujet)."}`,
+            feedback: `🚨 ZERO GRADE (0/20 Marks): ${parsed.off_topic_reason || "La réponse du candidat ne traite pas du sujet demandé (Hors-sujet)."}`,
             score: 0,
             scoreOutOf20: 0,
             accuracy: 0,
@@ -1627,10 +1620,10 @@ Return JSON only:
         }
 
         const sub = parsed.subscores || {};
-        let t = Math.max(0, Math.min(5, typeof sub.task_fulfillment === 'number' ? sub.task_fulfillment : (typeof parsed.taskFulfillmentScore === 'number' ? parsed.taskFulfillmentScore : 3)));
-        let c = Math.max(0, Math.min(5, typeof sub.coherence_and_flow === 'number' ? sub.coherence_and_flow : (typeof parsed.coherenceScore === 'number' ? parsed.coherenceScore : 3)));
-        let l = Math.max(0, Math.min(5, typeof sub.lexical_variety === 'number' ? sub.lexical_variety : (typeof parsed.lexicalScore === 'number' ? parsed.lexicalScore : 3)));
-        let g = Math.max(0, Math.min(5, typeof sub.morphosyntax === 'number' ? sub.morphosyntax : (typeof parsed.grammarScore === 'number' ? parsed.grammarScore : 3)));
+        let t = Math.max(0, Math.min(5, typeof sub.task_fulfillment === 'number' ? sub.task_fulfillment : 3));
+        let c = Math.max(0, Math.min(5, typeof sub.coherence_and_flow === 'number' ? sub.coherence_and_flow : 3));
+        let l = Math.max(0, Math.min(5, typeof sub.lexical_variety === 'number' ? sub.lexical_variety : 3));
+        let g = Math.max(0, Math.min(5, typeof sub.morphosyntax === 'number' ? sub.morphosyntax : 3));
 
         const errorsList = Array.isArray(parsed.spoken_errors) ? parsed.spoken_errors : (Array.isArray(parsed.corrections) ? parsed.corrections : []);
         
@@ -1646,8 +1639,9 @@ Return JSON only:
           g = Math.max(g, 4);
         }
 
+        // FEI TÂCHE 2 QUESTION FORM CAP: Candidate MUST ask at least 8 to 10 distinct question forms
         if (taskNum === 2) {
-          const questionMatches = cleanSpeech.match(/\?|\b(pourriez|pouvez|est-ce|quel|quelle|quels|quelles|combien|comment|où|quand|pourquoi|avez-vous)\b/gi) || [];
+          const questionMatches = cleanSpeech.match(/\?|\b(pourriez|pouvez|est-ce|quel|quelle|quels|quelles|combien|comment|où|quand|pourquoi|avez-vous|existe-t-il)\b/gi) || [];
           if (questionMatches.length < 8) {
             t = Math.min(3, t);
           }
@@ -1661,12 +1655,14 @@ Return JSON only:
           }
         }
 
+        // ENGLISH WORD PENALTY FILTER
         const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|like|you|know|actually)\b/i.test(textLower);
         if (hasEnglishWords) {
           l = Math.min(1, l);
           g = Math.min(1, g);
         }
 
+        // WORD COUNT CEILING CHECKS
         const totalWords = cleanSpeech.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean).length;
         if (totalWords < 15) {
           t = Math.min(1, t);
@@ -1674,17 +1670,17 @@ Return JSON only:
           l = Math.min(1, l);
           g = Math.min(1, g);
         } else if (totalWords < 35) {
-          t = Math.min(1, t);
-          c = Math.min(1, c);
-          l = Math.min(1, l);
-          g = Math.min(1, g);
+          t = Math.min(2, t);
+          c = Math.min(2, c);
+          l = Math.min(2, l);
+          g = Math.min(2, g);
         }
 
         let scoreOutOf20 = t + c + l + g;
         if (totalWords < 15) {
           scoreOutOf20 = Math.min(3, scoreOutOf20);
         } else if (totalWords < 35) {
-          scoreOutOf20 = Math.min(4, scoreOutOf20);
+          scoreOutOf20 = Math.min(6, scoreOutOf20);
         }
         if (t === 0) scoreOutOf20 = 0;
 
@@ -1703,7 +1699,7 @@ Return JSON only:
         else if (scoreOutOf20 >= 3) { nclcGrade = "NCLC 3 (A1 Beginner)"; cefrLevel = "A1"; expressEntryPoints = 0; }
         else { nclcGrade = "NCLC 0 (Zero Grade — Below A1)"; cefrLevel = "Below A1"; expressEntryPoints = 0; }
 
-        const corrections = errorsList.map((err: any) => ({
+        const corrections = validErrors.map((err: any) => ({
           original: err.quote || err.original || '',
           corrected: err.correction || '',
           explanation: err.explanation || ''
@@ -1714,7 +1710,7 @@ Return JSON only:
             score: t,
             max: 5,
             label: "Consigne & Respect du Scénario",
-            feedback: t >= 4 ? "Respect parfait des consignes et du registre de communication." : "Imprécision dans le traitement de la consigne ou du registre."
+            feedback: t >= 4 ? "Respect parfait des consignes et du registre de communication formel (vous)." : "Imprécision dans le traitement de la consigne ou du registre de langue."
           },
           fluencyPace: {
             score: c,
@@ -1722,7 +1718,7 @@ Return JSON only:
             label: "Aisance, Débit & Cohérence Orale",
             feedback: acousticMetrics?.speechRateWpm
               ? `Débit mesuré à ${acousticMetrics.speechRateWpm} WPM (${acousticMetrics.hesitationPauseCount || 0} hésitations >1.5s, fluidité ${acousticMetrics.fluencyIndexPct || 100}%).`
-              : (c >= 4 ? "Discours fluide avec enchaînement logique et connecteurs formels." : "Hesitations marquées ou interruptions du rythme oral.")
+              : (c >= 4 ? "Discours fluide avec enchaînement logique et connecteurs formels." : "Hésitations marquées ou interruptions du rythme oral.")
           },
           lexicalPrecision: {
             score: l,
@@ -1733,8 +1729,8 @@ Return JSON only:
           morphosyntaxPhonetics: {
             score: g,
             max: 5,
-            label: "Morphosyntaxe & Prononciation",
-            feedback: g >= 4 ? "Maîtrise solide des structures complexes (conditionnel, subjonctif)." : "Fautes de syntaxe ou interférences linguistiques."
+            label: "Morphosyntaxe & Structure Grammaticale",
+            feedback: g >= 4 ? "Maîtrise solide des structures complexes (conditionnel, subjonctif, tenses)." : "Fautes de syntaxe ou interférences linguistiques."
           }
         };
 
