@@ -657,9 +657,12 @@ export function AuthenticCBTExamPage() {
       autoSendTimerRef.current[taskId] = null as any;
     }
 
-    const existingChat = speakingDialogueMap[taskId] || [];
-    const updatedMessages = [...existingChat, { sender: 'candidate' as const, text: clean }];
-    setSpeakingDialogueMap((prev) => ({ ...prev, [taskId]: updatedMessages }));
+    let updatedMessages: Array<{ sender: 'examiner' | 'candidate'; text: string }> = [];
+    setSpeakingDialogueMap((prev) => {
+      const existing = prev[taskId] || [];
+      updatedMessages = [...existing, { sender: 'candidate' as const, text: clean }];
+      return { ...prev, [taskId]: updatedMessages };
+    });
     setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: true }));
     setIsAudioFetching(true);
 
@@ -739,10 +742,12 @@ export function AuthenticCBTExamPage() {
         }
       }
 
-      setSpeakingDialogueMap((prev) => ({
-        ...prev,
-        [taskId]: [...updatedMessages, { sender: 'examiner' as const, text: replyText }],
-      }));
+      setSpeakingDialogueMap((prev) => {
+        const existing = prev[taskId] || [];
+        const hasCand = existing.length > 0 && existing[existing.length - 1].sender === 'candidate' && existing[existing.length - 1].text === clean;
+        const base = hasCand ? existing : [...existing, { sender: 'candidate' as const, text: clean }];
+        return { ...prev, [taskId]: [...base, { sender: 'examiner' as const, text: replyText }] };
+      });
       setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
       isChatSendingRef.current[taskId] = false;
 
@@ -4529,27 +4534,18 @@ export function AuthenticCBTExamPage() {
                       </p>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
-                      <button
-                        disabled={!transcript || isChatLoading}
-                        onClick={() => handleSendSpeakingQuestionToExaminer(task.id, transcript, task.scenario)}
-                        className="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2 disabled:opacity-40 transition-all cursor-pointer active:scale-98"
-                      >
-                        <Send className="w-3.5 h-3.5" />
-                        <span>💬 Envoyer à l'examinateur & Entendre sa réponse vocale</span>
-                      </button>
-
-                      {(mode === "PRACTICE" || isAdmin) && (
+                    {(mode === "PRACTICE" || isAdmin) && (
+                      <div className="pt-1">
                         <button
                           disabled={(!transcript && !(speakingDialogueMap[task.id]?.length)) || isEvaluating}
                           onClick={() => handleEvaluateSpeakingAI(task.id, task.scenario, transcript)}
-                          className="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2 disabled:opacity-40 transition-all cursor-pointer active:scale-98"
+                          className="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2 disabled:opacity-40 transition-all cursor-pointer active:scale-98"
                         >
                           <Sparkles className="w-3.5 h-3.5" />
                           <span>{isEvaluating ? "Évaluation diagnostique FEI en cours..." : "🤖 Obtenir la note FEI (Mode Pratique)"}</span>
                         </button>
-                      )}
-                    </div>
+                      </div>
+                    )}
 
                     {/* 2-WAY LIVE INTERLOCUTION DIALOGUE LOG (PLACED DIRECTLY BELOW MIC CONTROLS FOR INSTANT VISIBILITY) */}
                     {( (speakingDialogueMap[task.id] && speakingDialogueMap[task.id].length > 0) || isChatLoading ) && (
