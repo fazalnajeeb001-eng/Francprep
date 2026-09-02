@@ -1521,6 +1521,7 @@ ${acousticMetrics ? `- Real-Time Web Audio Signal Metrics: Speech Pace = ${acous
 ### CRITICAL QUOTATION & ERROR EXTRACTION RULE (ZERO HALLUCINATION):
 - You MUST ONLY cite error quotes in "spoken_errors" if they are EXACT SUBSTRINGS present in the Candidate Spoken Transcript above.
 - You are STRICTLY FORBIDDEN from inventing or hallucinating expressions like "je suis un ingénieur" if they are not in the candidate's transcript!
+- CRITICAL TRAILING QUESTION RULE: Analyze the candidate's responses up to the last submitted candidate turn. If the conversation ends on an examiner question without a candidate response, DO NOT penalize the candidate for failing to answer that specific trailing question. Evaluate ONLY what was actually spoken against official FEI CEFR descriptors.
 
 ---
 

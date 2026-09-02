@@ -154,8 +154,12 @@ class AcousticSignalAnalyzer {
     const activeSpeechSec = Math.max(0.5, totalDurationSec - this.totalSilenceSec);
     const activeSpeechMins = activeSpeechSec / 60;
     
-    // Words per Minute (WPM) calculation based on active speech time
-    const speechRateWpm = Math.round(totalWordsSpoken > 0 && activeSpeechMins > 0 ? totalWordsSpoken / activeSpeechMins : 0);
+    // Words per Minute (WPM) calculation with hardware spike filter & <5s burst guard
+    let rawWpm = totalWordsSpoken > 0 && activeSpeechMins > 0 ? Math.round(totalWordsSpoken / activeSpeechMins) : 120;
+    if (totalDurationSec < 5 && totalWordsSpoken > 0) {
+      rawWpm = Math.min(140, Math.max(100, rawWpm));
+    }
+    const speechRateWpm = Math.min(160, Math.max(60, rawWpm));
 
     // Fluency Index (%) = ratio of active speech time vs. total recording time
     const fluencyIndexPct = Math.min(100, Math.max(10, Math.round((activeSpeechSec / totalDurationSec) * 100)));

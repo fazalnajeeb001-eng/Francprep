@@ -268,6 +268,7 @@ export function AuthenticCBTExamPage() {
   const [evaluatingSpeaking, setEvaluatingSpeaking] = useState<Record<string, boolean>>({});
   const [speakingDialogueMap, setSpeakingDialogueMap] = useState<Record<string, Array<{ sender: 'examiner' | 'candidate'; text: string }>>>({});
   const [speakingChatLoading, setSpeakingChatLoading] = useState<Record<string, boolean>>({});
+  const [pendingEvalTask, setPendingEvalTask] = useState<{ taskId: string; scenario: string; transcript: string } | null>(null);
   const [oralPrepTimeRemaining, setOralPrepTimeRemaining] = useState<Record<string, number>>({});
   const [isOralPrepActive, setIsOralPrepActive] = useState<Record<string, boolean>>({});
   const speakingFallbackTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -1096,6 +1097,18 @@ export function AuthenticCBTExamPage() {
   };
 
   const handleEvaluateSpeakingAI = async (taskId: string, expectedText: string, transcription: string) => {
+    const dialogue = speakingDialogueMap[taskId] || [];
+    const lastMsg = dialogue.length > 0 ? dialogue[dialogue.length - 1] : null;
+    const isTrailingExaminerQuestion = lastMsg && lastMsg.sender === 'examiner';
+
+    if (isTrailingExaminerQuestion) {
+      setPendingEvalTask({ taskId, scenario: expectedText, transcript: transcription });
+      return;
+    }
+    await executeEvaluateSpeakingAI(taskId, expectedText, transcription);
+  };
+
+  const executeEvaluateSpeakingAI = async (taskId: string, expectedText: string, transcription: string) => {
     setEvaluatingSpeaking((prev) => ({ ...prev, [taskId]: true }));
     try {
       const dialogue = speakingDialogueMap[taskId] || [];
@@ -5774,6 +5787,43 @@ export function AuthenticCBTExamPage() {
               </div>
             </div>
           </motion.div>
+        )}
+        {/* MID-DIALOGUE EVALUATION WARNING CONFIRMATION MODAL */}
+        {pendingEvalTask && (
+          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-white dark:bg-slate-900 border-2 border-amber-500/80 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 font-sans text-slate-900 dark:text-slate-100 animate-fadeIn">
+              <div className="flex items-center gap-3 text-amber-600 dark:text-amber-400 border-b border-amber-200 dark:border-amber-900/60 pb-3">
+                <AlertTriangle className="w-6 h-6 shrink-0 text-amber-500" />
+                <h3 className="text-base font-extrabold">⚠️ Échange non terminé</h3>
+              </div>
+              <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+                L'examinateur attend votre réponse à sa dernière question. Évaluer maintenant clôturera l'entretien oral pour cette tâche.
+              </p>
+              <p className="text-[11px] text-amber-800 dark:text-amber-300/90 italic font-semibold bg-amber-50 dark:bg-amber-950/60 p-2.5 rounded-xl border border-amber-200 dark:border-amber-900/50">
+                💡 Recommandation TCF Canada : Répondez d'abord à la question de l'examinateur avant d'évaluer pour maximiser votre note globale.
+              </p>
+              <div className="flex items-center justify-end gap-2 pt-2">
+                <button
+                  onClick={() => setPendingEvalTask(null)}
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all cursor-pointer"
+                >
+                  💬 Continuer l'épreuve & Répondre
+                </button>
+                <button
+                  onClick={() => {
+                    const task = pendingEvalTask;
+                    setPendingEvalTask(null);
+                    if (task) {
+                      executeEvaluateSpeakingAI(task.taskId, task.scenario, task.transcript);
+                    }
+                  }}
+                  className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-extrabold shadow-md transition-all cursor-pointer"
+                >
+                  🤖 Évaluer quand même
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </AnimatePresence>
     </div>
