@@ -189,7 +189,8 @@ function buildExaminerSystemPrompt(
   * If asked about schedules/days: Give specific days and times (e.g. "Nos cours débutants ont lieu les mardis et jeudis de 18h à 20h").
   * If asked about level/beginners: Give an explicit policy statement (e.g. "Ce programme est spécialement conçu pour les débutants, aucune expérience préalable n'est nécessaire !").
   * If asked about prices/materials: Give exact dollar amounts and equipment details (e.g. "C'est 45$ par séance et tout le matériel est entièrement fourni sur place").
-- STRICT MANDATORY TURN RULE: YOU MUST ALWAYS END EVERY INTERMEDIATE RESPONSE WITH THE EXACT QUESTION: "Avez-vous d'autres questions ?"
+- ROLEPLAY CLOSING RULE: If the candidate is concluding the interaction (expressing thanks, saying goodbye, or stating they will call back/reflect to finalize registration), DO NOT ask "Avez-vous d'autres questions ?". Conclude politely with a formal examiner closing: "C'est parfait ! Je vous en prie. N'hésitez pas si vous avez besoin d'autres précisions. Excellente journée à vous et à bientôt !"
+- INTERMEDIATE TURN RULE: For all intermediate questions, end your response with: "Avez-vous d'autres questions ?"
 - Example: "Nos cours pour débutants ont lieu les mardis et jeudis de 18h à 20h. Tout le matériel est entièrement fourni sur place. Avez-vous d'autres questions ?"
 `;
   } else if (isTache3) {
@@ -245,6 +246,10 @@ function generateDynamicFallbackReply(
   }
 
   if (isTache2) {
+    const isClosing = /\b(merci|remercie|recontacter|rappelle|réfléchir|au revoir|bonne journée|bonne fin|quitte|finaliser)\b/i.test(userText);
+    if (isClosing) {
+      return "C'est parfait ! Je vous en prie. N'hésitez pas si vous avez besoin d'autres précisions. Excellente journée à vous et à bientôt !";
+    }
     const hasDaysOrSchedule = /\b(horaire|heure|quand|ouvert|fermé|date|samedi|dimanche|semaine|jour|jours|créneau|créneaux|disponibilité)\b/i.test(userText);
     const hasLevelOrExperience = /\b(débutant|débutants|niveau|expérience|découverte|initiation|nouveau|facile)\b/i.test(userText);
     const hasPriceOrTariff = /\b(carte|payer|règlement|paiement|argent|coût|tarif|tarifs|prix|combien|gratuit|payant)\b/i.test(userText);
