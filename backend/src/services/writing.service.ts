@@ -1686,8 +1686,18 @@ Return JSON only:
         } else if (totalWords < 15) {
           scoreOutOf20 = Math.min(3, scoreOutOf20);
         } else if (totalWords < 35) {
-          scoreOutOf20 = Math.min(6, scoreOutOf20);
+          scoreOutOf20 = Math.min(7, scoreOutOf20);
+        } else if (totalWords < 55 && taskNum >= 2) {
+          scoreOutOf20 = Math.min(11, scoreOutOf20);
         }
+
+        // OFFICIAL FEI TASK CEILING CAPS
+        if (taskNum === 1) {
+          scoreOutOf20 = Math.min(11, scoreOutOf20); // Tâche 1 ceiling: Max 11/20 (B1 Intermediate)
+        } else if (taskNum === 2) {
+          scoreOutOf20 = Math.min(15, scoreOutOf20); // Tâche 2 ceiling: Max 15/20 (B2 Upper)
+        }
+
         if (parsed.is_off_topic) scoreOutOf20 = 0;
 
         // FIDELIA PHASE 4 LAYER 3: SENIOR CHIEF EXAMINER BORDERLINE SCORE TIE-BREAKER
