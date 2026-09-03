@@ -537,6 +537,16 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
       }
     }
 
+    // POST-TRANSCRIPTION NEURAL HALLUCINATION STRIPPER
+    // Strips known Whisper training corpus hallucinations triggered by mic silence/static (subtitles, French news broadcasts)
+    if (text) {
+      text = text
+        .replace(/^.*?(les sous-titres sont en anglais|description de la vidéo).*?(\.|\!|\?|$)/gi, '')
+        .replace(/^.*?(les idées de l'université de paris|commission de l'état de france|conseil des ministres des sciences).*?(\.|\!|\?|$)/gi, '')
+        .replace(/\b(les sous-titres sont en anglais|description de la vidéo|commission de l'état de france|conseil des ministres des sciences)\b/gi, '')
+        .trim();
+    }
+
     const words = text.split(/\s+/).filter(Boolean);
     const wordCount = words.length;
     const estimatedDuration = typeof durationSec === 'number' && durationSec > 0 ? durationSec : Math.max(5, Math.round(wordCount / 2.2));
