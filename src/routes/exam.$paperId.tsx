@@ -273,6 +273,7 @@ export function AuthenticCBTExamPage() {
   const [oralPrepTimeRemaining, setOralPrepTimeRemaining] = useState<Record<string, number>>({});
   const [isOralPrepActive, setIsOralPrepActive] = useState<Record<string, boolean>>({});
   const speakingFallbackTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const taskStartTimestampRef = useRef<Record<string, number>>({});
 
   const handleRestartSessionClean = () => {
     if (typeof window !== "undefined") {
@@ -472,6 +473,10 @@ export function AuthenticCBTExamPage() {
       currentTaskIdx === 1 || taskId.includes("spk-2") || taskId.includes("task-1") ? 3.5 : 4.5
     );
     const targetSeconds = Math.round(defaultMins * 60);
+
+    if (!taskStartTimestampRef.current[taskId]) {
+      taskStartTimestampRef.current[taskId] = Date.now();
+    }
 
     setOralSpeakingTimeRemaining((prev) => ({
       ...prev,
@@ -735,12 +740,22 @@ export function AuthenticCBTExamPage() {
       const altKey2 = `spk-${activeSpeakingTaskIdx + 1}`;
       const altKey3 = `paper-1-task-${activeSpeakingTaskIdx}`;
 
-      const taskRemainingSecs = 
+      // Calculate real-world unpaused remaining time using Date.now() timestamp
+      const targetMins = activeSpeakingTaskIdx === 0 ? 2 : activeSpeakingTaskIdx === 1 ? 3.5 : 4.5;
+      const targetDurationSecs = targetMins * 60;
+      const activeTaskStartMs = taskStartTimestampRef.current[taskId] || taskStartTimestampRef.current[altKey1] || taskStartTimestampRef.current[altKey2] || taskStartTimestampRef.current[altKey3];
+      const realElapsedSecs = activeTaskStartMs ? Math.floor((Date.now() - activeTaskStartMs) / 1000) : 0;
+      const realRemainingSecs = Math.max(0, targetDurationSecs - realElapsedSecs);
+
+      const stateRemainingSecs = 
         typeof oralSpeakingTimeRemaining[taskId] === 'number' ? oralSpeakingTimeRemaining[taskId] :
         typeof oralSpeakingTimeRemaining[altKey1] === 'number' ? oralSpeakingTimeRemaining[altKey1] :
         typeof oralSpeakingTimeRemaining[altKey2] === 'number' ? oralSpeakingTimeRemaining[altKey2] :
         typeof oralSpeakingTimeRemaining[altKey3] === 'number' ? oralSpeakingTimeRemaining[altKey3] :
         120;
+
+      // Use the strict minimum between real-world unpaused clock and state clock
+      const taskRemainingSecs = activeTaskStartMs ? Math.min(stateRemainingSecs, realRemainingSecs) : stateRemainingSecs;
 
       if (taskRemainingSecs <= 15) {
         const isT1 = activeSpeakingTaskIdx === 0 || /tâche\s*1|entretien|dirigé/i.test(taskTitle);
