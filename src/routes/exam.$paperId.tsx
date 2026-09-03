@@ -5415,9 +5415,9 @@ export function AuthenticCBTExamPage() {
                               <div className="p-2.5 rounded bg-white dark:bg-slate-900 border border-purple-200 dark:border-purple-900 space-y-1">
                                 <p className="font-bold text-purple-900 dark:text-purple-300 text-[11px]">🎙️ Speaking (EO Focus):</p>
                                 <p className="text-[11px] leading-relaxed">
-                                  {res.speakingAvg >= 60
-                                    ? `✓ Strong oral fluency (${res.speakingAvg}% — CLB ${res.speakingNCLC.nclcLevel} / ${res.speakingNCLC.cefrEquivalent}).`
-                                    : `⚠️ Oral score is ${res.speakingAvg}% (CLB ${res.speakingNCLC.nclcLevel} / ${res.speakingNCLC.cefrEquivalent}). Focus on formal question structures and argument organization.`}
+                                  {res.speakingAvg >= 12
+                                    ? `✓ Strong oral fluency (${Math.round((res.speakingAvg / 20) * 100)}% — CLB ${res.speakingNCLC.nclcLevel} / ${res.speakingNCLC.cefrEquivalent}).`
+                                    : `⚠️ Oral score is ${Math.round((res.speakingAvg / 20) * 100)}% (CLB ${res.speakingNCLC.nclcLevel} / ${res.speakingNCLC.cefrEquivalent}). Focus on formal question structures and argument organization.`}
                                 </p>
                               </div>
                             )}
