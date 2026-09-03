@@ -465,11 +465,17 @@ export function AuthenticCBTExamPage() {
     setIsOralPrepActive((prev) => ({ ...prev, [taskId]: true }));
   };
 
-  const handleStartSpeakingTimer = (taskId: string, speakingMins = 3.5) => {
-    const targetSeconds = Math.round(speakingMins * 60);
+  const handleStartSpeakingTimer = (taskId: string, speakingMins?: number) => {
+    const currentTaskIdx = currentSection?.speakingTasks?.findIndex(t => t.id === taskId);
+    const defaultMins = speakingMins || (
+      currentTaskIdx === 0 || taskId.includes("spk-1") || taskId.includes("task-0") ? 2 :
+      currentTaskIdx === 1 || taskId.includes("spk-2") || taskId.includes("task-1") ? 3.5 : 4.5
+    );
+    const targetSeconds = Math.round(defaultMins * 60);
+
     setOralSpeakingTimeRemaining((prev) => ({
       ...prev,
-      [taskId]: targetSeconds
+      [taskId]: prev[taskId] && prev[taskId] > 0 ? prev[taskId] : targetSeconds
     }));
     setIsOralSpeakingActive((prev) => ({ ...prev, [taskId]: true }));
   };
@@ -528,7 +534,7 @@ export function AuthenticCBTExamPage() {
   }, [isOralPrepActive, oralPrepTimeRemaining, currentSection, isSpeaking, isAudioFetching, isPlayingAudio, speakingChatLoading, isTimerPaused]);
 
   useEffect(() => {
-    const activeTasks = Object.keys(isOralSpeakingActive).filter((k) => isOralSpeakingActive[k] && (oralSpeakingTimeRemaining[k] || 0) > 0);
+    const activeTasks = Object.keys(isOralSpeakingActive).filter((k) => isOralSpeakingActive[k] && typeof oralSpeakingTimeRemaining[k] === 'number' && oralSpeakingTimeRemaining[k] > 0);
     const isChatLoading = Object.values(speakingChatLoading).some(Boolean);
     // CRITICAL FORENSIC GUARD: Freeze speaking timer while examiner audio is playing, fetching, or simulator is paused
     if (activeTasks.length === 0 || isSpeaking || isAudioFetching || isPlayingAudio || isChatLoading || isTimerPaused) return;
@@ -537,6 +543,8 @@ export function AuthenticCBTExamPage() {
       setOralSpeakingTimeRemaining((prev) => {
         const next = { ...prev };
         activeTasks.forEach((taskId) => {
+          if (typeof next[taskId] !== 'number' || next[taskId] <= 0) return;
+
           if (next[taskId] > 1) {
             next[taskId] -= 1;
           } else {
@@ -550,7 +558,14 @@ export function AuthenticCBTExamPage() {
               const metrics = acousticAnalyzer.stopAnalysis(wordCount);
               setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
             }
-            setActiveSpeakingTaskIdx((prevIdx) => Math.min(2, prevIdx + 1));
+            // Safely advance task tab index ONLY if the user is currently on this exact task
+            const taskIdx = currentSection?.speakingTasks?.findIndex(t => t.id === taskId);
+            setActiveSpeakingTaskIdx((prevIdx) => {
+              if (taskIdx === undefined || taskIdx === -1 || prevIdx === taskIdx) {
+                return Math.min(2, prevIdx + 1);
+              }
+              return prevIdx;
+            });
           }
         });
         return next;
@@ -558,7 +573,7 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isOralSpeakingActive, oralSpeakingTimeRemaining, isSpeaking, isAudioFetching, isPlayingAudio, speakingChatLoading, isTimerPaused, recordingSpeaking]);
+  }, [isOralSpeakingActive, oralSpeakingTimeRemaining, isSpeaking, isAudioFetching, isPlayingAudio, speakingChatLoading, isTimerPaused, recordingSpeaking, currentSection]);
 
   // Page visibility & phone lock lifecycle control for Speaking: pause audio and stop mic if tab is hidden or screen is locked
   useEffect(() => {
