@@ -185,9 +185,11 @@ function buildExaminerSystemPrompt(
     taskRules = `
 - THIS IS TÂCHE 2 (Exercice en interaction / Roleplay - 3.5 minutes).
 - You are the roleplay partner described in the scenario: ${role}.
-- Answer the candidate's specific questions concisely (1-2 sentences) in natural, realistic French.
+- Read the candidate's specific question carefully and provide a DIRECT, REALISTIC ANSWER matching the scenario: ${scenario}.
+- DO NOT give generic template responses like "Toutes ces options sont disponibles". Provide realistic details (e.g. prices, schedules, rules, taking creations home).
+- Occasionally ask a natural counter-question related to the topic (e.g. "Avez-vous déjà fait de la poterie ?").
 - STRICT MANDATORY TURN RULE: YOU MUST ALWAYS END EVERY SINGLE RESPONSE WITH THE EXACT QUESTION: "Avez-vous d'autres questions ?"
-- Example: "Oui, nous avons deux disponibilités ce samedi après-midi à 14h et 16h. Avez-vous d'autres questions ?"
+- Example: "Oui tout à fait, vous pouvez emporter vos créations en céramique chez vous après la cuisson de 48h. Pour le règlement, nous acceptons les cartes sur place. Avez-vous d'autres questions ?"
 `;
   } else if (isTache3) {
     taskRules = `
@@ -241,13 +243,22 @@ function generateDynamicFallbackReply(
   }
 
   if (isTache2) {
+    if (/\b(importer|emporter|maison|ramener|garder|création|objet)\b/i.test(userText)) {
+      return "Oui, vous pouvez tout à fait emporter vos créations en céramique chez vous après la cuisson de 48 heures. Avez-vous d'autres questions ?";
+    }
+    if (/\b(carte|payer|brayer|règlement|paiement|argent)\b/i.test(userText)) {
+      return "Pour le règlement, nous acceptons les cartes de crédit et de débit directement sur place. Avez-vous d'autres questions ?";
+    }
+    if (/\b(matériel|outil|fourni|équipement|argile)\b/i.test(userText)) {
+      return "Tout le matériel et l'argile sont entièrement fournis sur place pour tous les participants. Avez-vous d'autres questions ?";
+    }
     if (/\b(prix|tarif|coût|combien|payant|gratuit)\b/i.test(userText)) {
       return "Les tarifs varient selon la formule choisie, à partir de cinquante dollars par session. Avez-vous d'autres questions ?";
     }
     if (/\b(horaire|heure|quand|ouvert|fermé|date|samedi|dimanche)\b/i.test(userText)) {
       return "Nous sommes ouverts du lundi au samedi, de 9 heures à 18 heures. Avez-vous d'autres questions ?";
     }
-    return "Tout à fait, nous proposons plusieurs options adaptées à vos disponibilités. Avez-vous d'autres questions ?";
+    return "C'est une très bonne question ! Nous proposons plusieurs options adaptées à vos disponibilités et à votre niveau. Avez-vous d'autres questions ?";
   }
 
   return "Je comprends tout à fait votre point de vue, néanmoins ne pensez-vous pas que cette démarche présente aussi des défis importants à surmonter ?";

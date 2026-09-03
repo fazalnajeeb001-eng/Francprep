@@ -754,7 +754,19 @@ export function AuthenticCBTExamPage() {
             replyText = "Merci beaucoup. Nous avons fait le tour des questions pour cette première tâche. L'entretien est terminé, nous pouvons passer à la suite.";
           }
         } else if (isTache2) {
-          replyText = "Oui absolument, toutes ces options sont tout à fait disponibles selon vos besoins. Avez-vous d'autres questions ?";
+          if (/\b(importer|emporter|maison|ramener|garder|création|objet)\b/i.test(clean)) {
+            replyText = "Oui, vous pouvez tout à fait emporter vos créations en céramique chez vous après la cuisson de 48 heures. Avez-vous d'autres questions ?";
+          } else if (/\b(carte|payer|brayer|règlement|paiement|argent)\b/i.test(clean)) {
+            replyText = "Pour le règlement, nous acceptons les cartes de crédit et de débit directement sur place. Avez-vous d'autres questions ?";
+          } else if (/\b(matériel|outil|fourni|équipement|argile)\b/i.test(clean)) {
+            replyText = "Tout le matériel et l'argile sont entièrement fournis sur place pour tous les participants. Avez-vous d'autres questions ?";
+          } else if (/\b(prix|tarif|coût|combien|payant|gratuit)\b/i.test(clean)) {
+            replyText = "Les tarifs varient selon la formule choisie, à partir de cinquante dollars par session. Avez-vous d'autres questions ?";
+          } else if (/\b(horaire|heure|quand|ouvert|fermé|date|samedi|dimanche)\b/i.test(clean)) {
+            replyText = "Nous sommes ouverts du lundi au samedi, de 9 heures à 18 heures. Avez-vous d'autres questions ?";
+          } else {
+            replyText = "C'est une très bonne question ! Nous proposons plusieurs options adaptées à vos disponibilités et à votre niveau. Avez-vous d'autres questions ?";
+          }
         } else {
           replyText = "Je comprends tout à fait votre point de vue, cependant ne pensez-vous pas que cette situation comporte aussi certains risques ?";
         }

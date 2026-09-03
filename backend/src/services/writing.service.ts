@@ -1694,6 +1694,16 @@ Return JSON only:
           g = Math.min(1, g);
         }
 
+        // BACKGROUND BROADCAST NOISE / LEAKED AUDIO SANITY FILTER
+        // Detects when microphone buffer captures unrelated background YouTube/news broadcast text (political campaigns, Alzheimer's, video subtitles)
+        const hasLeakedBroadcastNoise = /\b(sous-titres|description de la vidéo|campagne a été déroulée|président de la campagne|infirmières d'alzheimer|théâtre d'isle|diplôme d'aiglone|saint-mégane)\b/i.test(textLower);
+        if (hasLeakedBroadcastNoise) {
+          t = Math.min(1, t); // Cap Consigne at 1/5 because candidate text is dominated by off-topic background audio
+          c = Math.min(2, c);
+          l = Math.min(2, l);
+          g = Math.min(2, g);
+        }
+
         // WORD COUNT CEILING CHECKS
         const totalWords = cleanSpeech.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean).length;
         if (totalWords < 15) {
@@ -1706,13 +1716,15 @@ Return JSON only:
           c = Math.min(2, c);
           l = Math.min(2, l);
           g = Math.min(2, g);
-        } else if (!parsed.is_off_topic) {
+        } else if (!parsed.is_off_topic && !hasLeakedBroadcastNoise) {
           // On-topic speech >=35 words: Consigne (t) MUST be at least 2/5 (never 0/5)
           t = Math.max(2, t);
         }
 
         let scoreOutOf20 = t + c + l + g;
-        if (totalWords < 15) {
+        if (hasLeakedBroadcastNoise) {
+          scoreOutOf20 = Math.min(6, scoreOutOf20); // Cap at A2 (max 6/20) for background noise submissions
+        } else if (totalWords < 15) {
           scoreOutOf20 = Math.min(3, scoreOutOf20);
         } else if (totalWords < 35) {
           scoreOutOf20 = Math.min(6, scoreOutOf20);
