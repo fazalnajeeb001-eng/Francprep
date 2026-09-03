@@ -245,19 +245,40 @@ function generateDynamicFallbackReply(
   }
 
   if (isTache2) {
-    if (/\b(carte|payer|règlement|paiement|argent|coût|tarif|prix|combien|gratuit)\b/i.test(userText)) {
-      return "Pour le règlement, nous acceptons les cartes de crédit, de débit et les paiements en ligne. Des tarifs préférentiels sont également disponibles. Avez-vous d'autres questions ?";
+    const hasDaysOrSchedule = /\b(horaire|heure|quand|ouvert|fermé|date|samedi|dimanche|semaine|jour|jours|créneau|créneaux|disponibilité)\b/i.test(userText);
+    const hasLevelOrExperience = /\b(débutant|débutants|niveau|expérience|découverte|initiation|nouveau|facile)\b/i.test(userText);
+    const hasPriceOrTariff = /\b(carte|payer|règlement|paiement|argent|coût|tarif|tarifs|prix|combien|gratuit|payant)\b/i.test(userText);
+    const hasMaterialOrEquipment = /\b(matériel|outil|fourni|équipement|serviette|casier|installation|infrastructure|tenue)\b/i.test(userText);
+    const hasRegistration = /\b(inscription|inscrire|réserver|réservation|place|conditions|règles|forfait)\b/i.test(userText);
+
+    // MULTI-INTENT COMPOUND QUERY MATCHES
+    if (hasDaysOrSchedule && hasLevelOrExperience) {
+      return "Nos cours pour débutants ont lieu les mardis et jeudis de 18h à 20h. Aucune expérience préalable n'est nécessaire ! Avez-vous d'autres questions ?";
     }
-    if (/\b(matériel|outil|fourni|équipement|serviette|casier|installation|infrastructure)\b/i.test(userText)) {
+    if (hasPriceOrTariff && hasMaterialOrEquipment) {
+      return "Le tarif est de 45$ par session, et l'ensemble du matériel ainsi que les équipements sont entièrement fournis sur place sans aucun supplément. Avez-vous d'autres questions ?";
+    }
+    if (hasRegistration && hasDaysOrSchedule) {
+      return "L'inscription se fait directement en ligne ou à l'accueil. Nos créneaux sont ouverts du lundi au samedi de 8h à 21h. Avez-vous d'autres questions ?";
+    }
+
+    // SINGLE-INTENT SPECIFIC FACTUAL MATCHES
+    if (hasLevelOrExperience) {
+      return "Tous nos programmes sont spécialement conçus pour accueillir les débutants, et nos moniteurs vous accompagnent pas à pas. Avez-vous d'autres questions ?";
+    }
+    if (hasPriceOrTariff) {
+      return "Pour le règlement, nous acceptons les cartes de crédit, de débit et les paiements en ligne. Nos forfaits débutent à partir de 45$ par séance. Avez-vous d'autres questions ?";
+    }
+    if (hasMaterialOrEquipment) {
       return "Toutes les infrastructures et le matériel nécessaire sont entièrement fournis sur place pour tous nos usagers. Avez-vous d'autres questions ?";
     }
-    if (/\b(horaire|heure|quand|ouvert|fermé|date|samedi|dimanche|semaine|disponibilité)\b/i.test(userText)) {
-      return "Nos installations sont ouvertes du lundi au samedi, de 8 heures à 21 heures. Avez-vous d'autres questions ?";
+    if (hasDaysOrSchedule) {
+      return "Nos installations et cours se déroulent du lundi au samedi, de 8 heures à 21 heures. Avez-vous d'autres questions ?";
     }
-    if (/\b(inscription|réserver|réservation|place|conditions|règles)\b/i.test(userText)) {
-      return "La réservation préalable est fortement recommandée directement sur notre plateforme web ou à l'accueil. Avez-vous d'autres questions ?";
+    if (hasRegistration) {
+      return "La réservation préalable est fortement recommandée directement sur notre plateforme web ou auprès de l'accueil. Avez-vous d'autres questions ?";
     }
-    return "C'est une excellente question ! Nous proposons plusieurs formules adaptées aux besoins de chacun. Avez-vous d'autres questions ?";
+    return "C'est une très bonne question ! Nos séances se déroulent en petits groupes et tout le matériel est fourni sur place. Avez-vous d'autres questions ?";
   }
 
   // TÂCHE 3 DYNAMIC MULTI-TEMPLATE DEBATE MATRIX (NEVER REPEATS SAME SENTENCE VERBATIM)
