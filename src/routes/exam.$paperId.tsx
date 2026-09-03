@@ -730,9 +730,29 @@ export function AuthenticCBTExamPage() {
         audioBase64 = json?.data?.audioBase64 || json?.audioBase64 || "";
       } catch {}
 
-      const taskRemainingSecs = typeof oralSpeakingTimeRemaining[taskId] === 'number' ? oralSpeakingTimeRemaining[taskId] : (typeof sectionTimeRemaining[activeSectionIdx] === 'number' ? sectionTimeRemaining[activeSectionIdx] : 120);
+      const activeTaskObj = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
+      const altKey1 = activeTaskObj?.id || "";
+      const altKey2 = `spk-${activeSpeakingTaskIdx + 1}`;
+      const altKey3 = `paper-1-task-${activeSpeakingTaskIdx}`;
+
+      const taskRemainingSecs = 
+        typeof oralSpeakingTimeRemaining[taskId] === 'number' ? oralSpeakingTimeRemaining[taskId] :
+        typeof oralSpeakingTimeRemaining[altKey1] === 'number' ? oralSpeakingTimeRemaining[altKey1] :
+        typeof oralSpeakingTimeRemaining[altKey2] === 'number' ? oralSpeakingTimeRemaining[altKey2] :
+        typeof oralSpeakingTimeRemaining[altKey3] === 'number' ? oralSpeakingTimeRemaining[altKey3] :
+        120;
+
       if (taskRemainingSecs <= 15) {
-        replyText = "Merci pour cet échange ! Le temps imparti pour cette tâche est à présent écoulé. Vous pouvez maintenant évaluer votre prestation.";
+        const isT1 = activeSpeakingTaskIdx === 0 || /tâche\s*1|entretien|dirigé/i.test(taskTitle);
+        const isT2 = activeSpeakingTaskIdx === 1 || /tâche\s*2|interaction|questions/i.test(taskTitle);
+
+        if (isT1) {
+          replyText = "Merci beaucoup pour cette présentation ! Le temps imparti pour cette première tâche est à présent écoulé. Nous avons fait le tour des questions pour l'entretien dirigé.";
+        } else if (isT2) {
+          replyText = "Merci pour toutes vos questions ! Le temps imparti pour cet échange est terminé. J'ai répondu à vos demandes pour cet atelier, nous pouvons passer à la suite.";
+        } else {
+          replyText = "Merci pour cet échange très intéressant et pour la qualité de vos arguments ! Le temps imparti pour cette épreuve orale est à présent écoulé. L'examen est terminé.";
+        }
         audioBase64 = "";
       }
 
