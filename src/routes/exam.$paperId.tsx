@@ -444,15 +444,6 @@ export function AuthenticCBTExamPage() {
               const nextSec = paper.sections[nextIdx];
               return getSectionDurationSeconds(nextSec?.type, nextSec?.durationMins);
             } else {
-              if (currentSection?.type === "EXPRESSION_ORALE") {
-                setSectionTransitionModal({
-                  show: true,
-                  targetIdx: activeSectionIdx,
-                  targetTitle: "Bilan Final",
-                  autoAdvanceSeconds: 15,
-                });
-                return 0;
-              }
               handleFinishTest();
               return 0;
             }
