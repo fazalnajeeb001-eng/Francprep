@@ -1431,11 +1431,36 @@ Respond STRICTLY with a raw JSON object:
       };
     }
 
+    // PHASE 3: FICHE DE CADRAGE DYNAMIC FALLBACK MAP
+    // Extracts specific pragmatic task requirements based on scenario keywords, with a universal fallback for custom/legacy prompts.
+    const scenarioLower = (expectedText || '').toLowerCase();
+    let ficheDeCadrageDirective = '';
+
+    if (taskNum === 2) {
+      if (scenarioLower.includes('logement') || scenarioLower.includes('appartement') || scenarioLower.includes('maison') || scenarioLower.includes('loyer')) {
+        ficheDeCadrageDirective = 'Scénario Location/Logement : Le candidat doit obligatoirement poser des questions sur le loyer, les charges, la localisation, la disponibilité et les règles (animaux/visiteurs).';
+      } else if (scenarioLower.includes('emploi') || scenarioLower.includes('travail') || scenarioLower.includes('stage') || scenarioLower.includes('recrutement')) {
+        ficheDeCadrageDirective = 'Scénario Emploi/Recrutement : Le candidat doit obligatoirement poser des questions sur les missions, les horaires, le salaire, la localisation et le profil recherché.';
+      } else if (scenarioLower.includes('activité') || scenarioLower.includes('cours') || scenarioLower.includes('sport') || scenarioLower.includes('inscription')) {
+        ficheDeCadrageDirective = 'Scénario Inscription/Activité : Le candidat doit obligatoirement poser des questions sur les tarifs, le planning des cours, le niveau requis et les modalités d\'inscription.';
+      } else if (scenarioLower.includes('voyage') || scenarioLower.includes('hôtel') || scenarioLower.includes('séjour') || scenarioLower.includes('excursion')) {
+        ficheDeCadrageDirective = 'Scénario Tourisme/Voyage : Le candidat doit obligatoirement poser des questions sur la réservation, les prix, les prestations incluses et les annulations.';
+      } else {
+        // GENERAL PRAGMATIC DYNAMIC FALLBACK (GEMINI SAFEGUARD)
+        ficheDeCadrageDirective = 'Scénario Général d\'Interaction (Fallback Dynamique) : Le candidat doit solliciter des informations pratiques adaptées au contexte, maintenir le registre formel "vous", et diversifier ses formules d\'interrogation (est-ce que, pourriez-vous, quel est, etc.).';
+      }
+    } else if (taskNum === 3) {
+      ficheDeCadrageDirective = 'Scénario Expression d\'un Point de Vue (Tâche 3) : Le candidat doit exprimer une prise de position claire, étayer son propos avec au moins 2 arguments structurés et exemples concrets, utiliser des connecteurs logiques formels (en effet, néanmoins, par conséquent, certes), et réagir poliment aux contre-arguments de l\'examinateur.';
+    } else {
+      ficheDeCadrageDirective = 'Scénario Entretien Dirigé (Tâche 1) : Le candidat doit se présenter, décrire son environnement personnel, sa profession ou ses projets d\'immigration au Canada en utilisant le registre formel "vous".';
+    }
+
     const prompt = `You are a Senior Certified France Éducation International (FEI) TCF Canada Oral Examiner. Your sole directive is to evaluate the candidate's spoken transcript with 100% fidelity to official FEI TCF Canada oral examination criteria.
 
 ### DYNAMIC INPUT CONTEXT:
 - Task Number: ${taskNum} (${taskNum === 1 ? 'Tâche 1: Entretien dirigé (2 min, Max CEFR B1)' : taskNum === 2 ? 'Tâche 2: Exercice en interaction (3 min 30, Max CEFR B2)' : 'Tâche 3: Expression d\'un point de vue (4 min 30, CEFR Scope B2-C2)'})
 - Official Prompt / Scenario: "${expectedText}"
+- Specific Fiche de Cadrage Target: "${ficheDeCadrageDirective}"
 ${acousticMetrics ? `- Real-Time Web Audio Signal Metrics: Speech Pace = ${acousticMetrics.speechRateWpm || 'N/A'} WPM (Target Native B2/C1: 100-140 WPM), Long Hesitation Pauses (>1.5s) = ${acousticMetrics.hesitationPauseCount || 0}, Silence Duration = ${acousticMetrics.totalSilenceDurationSec || 0}s, Acoustic Fluency Index = ${acousticMetrics.fluencyIndexPct || 100}%.` : ''}
 
 ### CANDIDATE SPOKEN TRANSCRIPT TO EVALUATE:
@@ -1444,6 +1469,7 @@ ${acousticMetrics ? `- Real-Time Web Audio Signal Metrics: Speech Pace = ${acous
 ---
 
 ### OFFICIAL FEI TASK-SPECIFIC RUBRICS (FICHES DE CADRAGE):
+- Scenario-Specific Target Checklist: ${ficheDeCadrageDirective}
 
 1. TÂCHE 1 (Entretien dirigé - 2 minutes):
    - Scope: Guided interview about self, personal environment, profession, city, or immigration plans.
