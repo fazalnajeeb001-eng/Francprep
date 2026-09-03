@@ -1719,6 +1719,33 @@ Return JSON only:
         }
         if (parsed.is_off_topic) scoreOutOf20 = 0;
 
+        // FIDELIA PHASE 4 LAYER 3: SENIOR CHIEF EXAMINER BORDERLINE SCORE TIE-BREAKER
+        // Deterministically resolves boundary scores (7/20, 11/20, 15/20) that impact Canadian Express Entry NCLC thresholds
+        if (scoreOutOf20 === 11 && totalWords >= 55) {
+          // Check NCLC 7 (B2 Target Boundary): Requires B2 grammar structures + formal connectors
+          const hasB2Grammar = /\b(pourriez|serait|aimerais|puisse|soit|dont|auquel|bien que|afin de|avons|sommes|ai fait|ai visité)\b/i.test(textLower);
+          const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part|en somme|selon moi|à mon avis|en effet)\b/i.test(textLower);
+          if (hasB2Grammar && hasB2Connectors) {
+            scoreOutOf20 = 12; // Upgrade to NCLC 7 Benchmark Target
+            if (t < 3) t = 3;
+            if (g < 3) g = 3;
+          }
+        } else if (scoreOutOf20 === 7 && totalWords >= 35) {
+          // Check NCLC 5 (B1 Threshold Boundary): Requires B1 past tenses / expressivity
+          const hasB1PastTenses = /\b(j'ai|nous avons|j'étais|c'était|je suis allé|j'ai fait|j'ai visité|j'ai étudié)\b/i.test(textLower);
+          if (hasB1PastTenses) {
+            scoreOutOf20 = 8; // Upgrade to NCLC 5 B1 Threshold
+            if (t < 2) t = 2;
+          }
+        } else if (scoreOutOf20 === 15 && totalWords >= 75) {
+          // Check NCLC 9 (C1 Advanced Boundary): Requires C1 abstract lexicon
+          const hasC1Lexicon = /\b(envisager|perspective|retombées|nuancer|préconiser|enjeu|problématique|fondamental|substantiel|prépondérant)\b/i.test(textLower);
+          if (hasC1Lexicon) {
+            scoreOutOf20 = 16; // Upgrade to NCLC 9 C1 Advanced
+            if (l < 4) l = 4;
+          }
+        }
+
         let cleanFeedbackSummary = typeof parsed.feedback_summary === 'string' ? parsed.feedback_summary : '';
         // Strip any accidental "🚨 ZERO GRADE" prefix if total score is > 0
         if (scoreOutOf20 > 0) {
