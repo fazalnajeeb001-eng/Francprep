@@ -1117,8 +1117,11 @@ export function AuthenticCBTExamPage() {
   const executeEvaluateSpeakingAI = async (taskId: string, expectedText: string, transcription: string) => {
     setEvaluatingSpeaking((prev) => ({ ...prev, [taskId]: true }));
     try {
-      const dialogue = speakingDialogueMap[taskId] || [];
-      const candidateDialogueTexts = dialogue.filter((m) => m.sender === 'candidate').map((m) => m.text).join(' ');
+      const taskDialogue = speakingDialogueMap[taskId] || [];
+      const taskCandidateMsgs = taskDialogue.filter((m) => m.sender === 'candidate').map((m) => m.text);
+      const allCandidateMsgs = Object.values(speakingDialogueMap).flat().filter((m) => m.sender === 'candidate').map((m) => m.text);
+      const candidateTextsToUse = taskCandidateMsgs.length > 0 ? taskCandidateMsgs : allCandidateMsgs;
+      const candidateDialogueTexts = candidateTextsToUse.join(' ');
       const combinedCandidateSpeech = [candidateDialogueTexts, (transcription || '').trim()].filter(Boolean).join(' ').trim();
 
       const taskNumber = taskId?.includes('spk-1') || taskId?.includes('task_0') ? 1
