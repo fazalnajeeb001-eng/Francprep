@@ -713,6 +713,12 @@ export function AuthenticCBTExamPage() {
         audioBase64 = json?.data?.audioBase64 || json?.audioBase64 || "";
       } catch {}
 
+      const remainingSecs = typeof sectionTimeRemaining[activeSectionIdx] === 'number' ? sectionTimeRemaining[activeSectionIdx] : 120;
+      if (remainingSecs <= 15) {
+        replyText = "Merci pour cet échange ! Le temps imparti pour cette tâche est à présent écoulé. Vous pouvez maintenant évaluer votre prestation.";
+        audioBase64 = "";
+      }
+
       if (!replyText || typeof replyText !== 'string' || !replyText.trim()) {
         const userTurnsCount = updatedMessages.filter(m => m.sender === 'candidate').length;
         const isTache1 = /tâche\s*1|entretien|dirigé|présentation/i.test(taskTitle);

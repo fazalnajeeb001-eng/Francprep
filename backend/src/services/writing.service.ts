@@ -1556,8 +1556,9 @@ ${acousticMetrics ? `- Real-Time Web Audio Signal Metrics: Speech Pace = ${acous
 ---
 
 ### EVALUATION STEP 1: TOPIC RELEVANCE & OFF-TOPIC CHECK (HORS-SUJET)
-Analyze whether the transcript directly addresses "${expectedText}".
-- IF the transcript is completely off-topic (e.g., candidate speaks about sports when Tâche 3 asks about environmental policy):
+Analyze whether the candidate's transcript directly addresses the scenario or Examiner Élodie's follow-up questions.
+- CRITICAL MULTI-TURN DIALOGUE RELEVANCE RULE: In interactive speaking tasks (Tâche 1 & Tâche 2), candidate turns are direct responses to Examiner Élodie's follow-up questions (e.g. asking about their current city, hobbies, or Canadian immigration motives). If the candidate's response directly answers Examiner Élodie's follow-up questions, it is 100% ON-TOPIC. You MUST award Task Fulfillment (Consigne) at least 2/5 to 4/5 based on their CEFR level. You are STRICTLY FORBIDDEN from marking a candidate response as Hors-sujet (0/5) if they answered Élodie's question!
+- IF AND ONLY IF the transcript is completely off-topic (e.g., candidate speaks about sports when Tâche 3 asks about environmental policy):
   * Task Fulfillment MUST be set to 0/5.
   * Overall Raw Task Score MUST be set to 0.
   * Set "is_off_topic": true.
@@ -1705,6 +1706,9 @@ Return JSON only:
           c = Math.min(2, c);
           l = Math.min(2, l);
           g = Math.min(2, g);
+        } else if (!parsed.is_off_topic) {
+          // On-topic speech >=35 words: Consigne (t) MUST be at least 2/5 (never 0/5)
+          t = Math.max(2, t);
         }
 
         let scoreOutOf20 = t + c + l + g;
@@ -1713,7 +1717,13 @@ Return JSON only:
         } else if (totalWords < 35) {
           scoreOutOf20 = Math.min(6, scoreOutOf20);
         }
-        if (t === 0) scoreOutOf20 = 0;
+        if (parsed.is_off_topic) scoreOutOf20 = 0;
+
+        let cleanFeedbackSummary = typeof parsed.feedback_summary === 'string' ? parsed.feedback_summary : '';
+        // Strip any accidental "🚨 ZERO GRADE" prefix if total score is > 0
+        if (scoreOutOf20 > 0) {
+          cleanFeedbackSummary = cleanFeedbackSummary.replace(/🚨\s*ZERO\s*GRADE\s*\([^)]*\):?\s*/gi, '').trim();
+        }
 
         const scorePct = Math.round((scoreOutOf20 / 20) * 100);
         let nclcGrade = "NCLC 7 (B2 Benchmark Target)";
@@ -1767,7 +1777,7 @@ Return JSON only:
 
         return {
           transcription: cleanSpeech,
-          feedback: parsed.feedback_summary || parsed.feedback || `Official FEI Oral Evaluation: Total ${scoreOutOf20}/20 Marks.`,
+          feedback: cleanFeedbackSummary || parsed.feedback_summary || parsed.feedback || `Official FEI Oral Evaluation: Total ${scoreOutOf20}/20 Marks.`,
           score: scorePct,
           scoreOutOf20,
           accuracy: scorePct,
