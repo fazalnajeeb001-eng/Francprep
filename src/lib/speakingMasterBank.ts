@@ -832,7 +832,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Responsable du complexe aquatique et sportif de Gatineau.",
         "gender": "female",
         "voiceId": "fr-FR-DeniseNeural",
-        "openingPromptFrench": "Bienvenue dans la deuxième tâche. Vous avez préparé vos questions pendant deux minutes d'après la fiche de l'atelier de poterie et céramique. Nous échangeons pendant trois minutes et demie. Je suis la responsable de l'atelier, Élodie. Je vous écoute !",
+        "openingPromptFrench": "Bienvenue dans la deuxième tâche. Vous avez préparé vos questions pendant deux minutes d'après la fiche du complexe aquatique et sportif de Gatineau. Nous échangeons pendant trois minutes et demie. Je suis la responsable du centre, Élodie. Je vous écoute !",
         "openingPromptEnglish": "Hello! Welcome to Gatineau Sports Complex, I am Élodie. Would you like information about our facilities?",
         "roleplayPrompt": "Présentez la piscine olympique et la salle d'entraînement puis demandez si le candidat désire une séance d'essai."
       },

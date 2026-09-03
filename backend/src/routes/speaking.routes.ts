@@ -186,10 +186,10 @@ function buildExaminerSystemPrompt(
 - THIS IS TÂCHE 2 (Exercice en interaction / Roleplay - 3.5 minutes).
 - You are the roleplay partner described in the scenario: ${role}.
 - Read the candidate's specific question carefully and provide a DIRECT, REALISTIC ANSWER matching the scenario: ${scenario}.
-- DO NOT give generic template responses like "Toutes ces options sont disponibles". Provide realistic details (e.g. prices, schedules, rules, taking creations home).
-- Occasionally ask a natural counter-question related to the topic (e.g. "Avez-vous déjà fait de la poterie ?").
+- DO NOT give generic template responses like "Toutes ces options sont disponibles". Provide realistic details (e.g. prices, schedules, rules, memberships).
+- Occasionally ask a natural counter-question related to the topic (e.g. "Avez-vous déjà pratiqué cette activité ?").
 - STRICT MANDATORY TURN RULE: YOU MUST ALWAYS END EVERY SINGLE RESPONSE WITH THE EXACT QUESTION: "Avez-vous d'autres questions ?"
-- Example: "Oui tout à fait, vous pouvez emporter vos créations en céramique chez vous après la cuisson de 48h. Pour le règlement, nous acceptons les cartes sur place. Avez-vous d'autres questions ?"
+- Example: "Oui tout à fait, les équipements sont en libre accès pour tous les membres. Pour le règlement, nous acceptons les cartes sur place. Avez-vous d'autres questions ?"
 `;
   } else if (isTache3) {
     taskRules = `
@@ -221,7 +221,8 @@ ${taskRules}
 function generateDynamicFallbackReply(
   taskTitle: string,
   userText: string,
-  userTurnCount: number
+  userTurnCount: number,
+  scenarioText?: string
 ): string {
   const isTache1 = /tâche\s*1|entretien|dirigé|présentation/i.test(taskTitle);
   const isTache2 = /tâche\s*2|interaction|questions|document|rôle|roleplay/i.test(taskTitle);
@@ -243,25 +244,31 @@ function generateDynamicFallbackReply(
   }
 
   if (isTache2) {
-    if (/\b(importer|emporter|maison|ramener|garder|création|objet)\b/i.test(userText)) {
-      return "Oui, vous pouvez tout à fait emporter vos créations en céramique chez vous après la cuisson de 48 heures. Avez-vous d'autres questions ?";
+    if (/\b(carte|payer|règlement|paiement|argent|coût|tarif|prix|combien|gratuit)\b/i.test(userText)) {
+      return "Pour le règlement, nous acceptons les cartes de crédit, de débit et les paiements en ligne. Des tarifs préférentiels sont également disponibles. Avez-vous d'autres questions ?";
     }
-    if (/\b(carte|payer|brayer|règlement|paiement|argent)\b/i.test(userText)) {
-      return "Pour le règlement, nous acceptons les cartes de crédit et de débit directement sur place. Avez-vous d'autres questions ?";
+    if (/\b(matériel|outil|fourni|équipement|serviette|casier|installation|infrastructure)\b/i.test(userText)) {
+      return "Toutes les infrastructures et le matériel nécessaire sont entièrement fournis sur place pour tous nos usagers. Avez-vous d'autres questions ?";
     }
-    if (/\b(matériel|outil|fourni|équipement|argile)\b/i.test(userText)) {
-      return "Tout le matériel et l'argile sont entièrement fournis sur place pour tous les participants. Avez-vous d'autres questions ?";
+    if (/\b(horaire|heure|quand|ouvert|fermé|date|samedi|dimanche|semaine|disponibilité)\b/i.test(userText)) {
+      return "Nos installations sont ouvertes du lundi au samedi, de 8 heures à 21 heures. Avez-vous d'autres questions ?";
     }
-    if (/\b(prix|tarif|coût|combien|payant|gratuit)\b/i.test(userText)) {
-      return "Les tarifs varient selon la formule choisie, à partir de cinquante dollars par session. Avez-vous d'autres questions ?";
+    if (/\b(inscription|réserver|réservation|place|conditions|règles)\b/i.test(userText)) {
+      return "La réservation préalable est fortement recommandée directement sur notre plateforme web ou à l'accueil. Avez-vous d'autres questions ?";
     }
-    if (/\b(horaire|heure|quand|ouvert|fermé|date|samedi|dimanche)\b/i.test(userText)) {
-      return "Nous sommes ouverts du lundi au samedi, de 9 heures à 18 heures. Avez-vous d'autres questions ?";
-    }
-    return "C'est une très bonne question ! Nous proposons plusieurs options adaptées à vos disponibilités et à votre niveau. Avez-vous d'autres questions ?";
+    return "C'est une excellente question ! Nous proposons plusieurs formules adaptées aux besoins de chacun. Avez-vous d'autres questions ?";
   }
 
-  return "Je comprends tout à fait votre point de vue, néanmoins ne pensez-vous pas que cette démarche présente aussi des défis importants à surmonter ?";
+  // TÂCHE 3 DYNAMIC MULTI-TEMPLATE DEBATE MATRIX (NEVER REPEATS SAME SENTENCE VERBATIM)
+  const debateResponses = [
+    "Je comprends tout à fait votre point de vue, néanmoins ne pensez-vous pas que cette mesure comporte également des risques économiques ou sociaux importants ?",
+    "C'est un argument tout à fait pertinent. Cependant, d'autres experts soutiennent que cette approche pourrait créer des inégalités. Comment répondez-vous à cette objection ?",
+    "Certes, mais si l'on regarde la situation sur le long terme, ne craignez-vous pas un manque d'encadrement ou de régulation ?",
+    "En effet, c'est une perspective intéressante. Mais au-delà des avantages immédiats, quels sont selon vous les freins principaux à sa mise en œuvre ?"
+  ];
+
+  const index = Math.max(0, (userTurnCount - 1) % debateResponses.length);
+  return debateResponses[index];
 }
 
 // Multi-Model Fail-Safe Array
