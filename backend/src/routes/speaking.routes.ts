@@ -474,8 +474,7 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
         const blob = new Blob([buffer], { type: mimeType || 'audio/webm' });
         formData.append('file', blob, `candidate_speech.${ext}`);
         formData.append('model', 'whisper-large-v3');
-        formData.append('language', 'fr');
-        formData.append('prompt', 'Transcription exacte en français d\'un candidat au TCF Canada (accents formels : africain, asiatique, arabe, canadien, européen, anglophone).');
+        formData.append('prompt', 'Bonjour, TCF Canada.');
         formData.append('temperature', '0.0');
 
         const groqRes = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
@@ -510,7 +509,7 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
         formData.append('file', blob, `candidate_speech.${ext}`);
         formData.append('model', 'whisper-1');
         formData.append('language', 'fr');
-        formData.append('prompt', 'Transcription exacte en français d\'un candidat au TCF Canada.');
+        formData.append('prompt', 'Bonjour, TCF Canada.');
         formData.append('temperature', '0.0');
 
         const whisperRes = await fetch('https://api.openai.com/v1/audio/transcriptions', {
@@ -538,13 +537,20 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
     }
 
     // POST-TRANSCRIPTION NEURAL HALLUCINATION STRIPPER
-    // Strips known Whisper training corpus hallucinations triggered by mic silence/static (subtitles, French news broadcasts)
+    // Strips known Whisper prompt leakage and training corpus hallucinations triggered by mic silence/static
     if (text) {
       text = text
         .replace(/^.*?(les sous-titres sont en anglais|description de la vidéo).*?(\.|\!|\?|$)/gi, '')
         .replace(/^.*?(les idées de l'université de paris|commission de l'état de france|conseil des ministres des sciences).*?(\.|\!|\?|$)/gi, '')
         .replace(/\b(les sous-titres sont en anglais|description de la vidéo|commission de l'état de france|conseil des ministres des sciences)\b/gi, '')
+        .replace(/\b(d'un candidat au tcf canada|tcf canadaoiceents|oiceents|accents formels|africain|asiatique|arabe|canadien|européen|anglophone)\b/gi, '')
+        .replace(/^(d'un candidat|transcription exacte|accents formels).*?(\.|\!|\?|$)/gi, '')
         .trim();
+
+      // If text contains ONLY prompt artifact fragments, clear it to empty string so Gatekeeper handles silent audio
+      if (/^(d'un candidat|accents formels|tcf canada|bonjour, tcf canada\.?)$/i.test(text)) {
+        text = '';
+      }
     }
 
     const words = text.split(/\s+/).filter(Boolean);
