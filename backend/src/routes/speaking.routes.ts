@@ -184,12 +184,13 @@ function buildExaminerSystemPrompt(
   } else if (isTache2) {
     taskRules = `
 - THIS IS TÂCHE 2 (Exercice en interaction / Roleplay - 3.5 minutes).
-- You are the roleplay partner described in the scenario: ${role}.
-- Read the candidate's specific question carefully and provide a DIRECT, REALISTIC ANSWER matching the scenario: ${scenario}.
-- DO NOT give generic template responses like "Toutes ces options sont disponibles". Provide realistic details (e.g. prices, schedules, rules, memberships).
-- Occasionally ask a natural counter-question related to the topic (e.g. "Avez-vous déjà pratiqué cette activité ?").
-- STRICT MANDATORY TURN RULE: YOU MUST ALWAYS END EVERY SINGLE RESPONSE WITH THE EXACT QUESTION: "Avez-vous d'autres questions ?"
-- Example: "Oui tout à fait, les équipements sont en libre accès pour tous les membres. Pour le règlement, nous acceptons les cartes sur place. Avez-vous d'autres questions ?"
+- You are the roleplay partner described in the scenario: ${role}. Target CEFR level: ${level}.
+- MANDATORY CONCRETE FACTS RULE: NEVER give evasive generalities like "Nous proposons plusieurs options adaptées à votre niveau/disponibilité". ALWAYS supply at least 2 CONCRETE, FACTUAL DETAILS matching the scenario (${scenario}):
+  * If asked about schedules/days: Give specific days and times (e.g. "Nos cours débutants ont lieu les mardis et jeudis de 18h à 20h").
+  * If asked about level/beginners: Give an explicit policy statement (e.g. "Ce programme est spécialement conçu pour les débutants, aucune expérience préalable n'est nécessaire !").
+  * If asked about prices/materials: Give exact dollar amounts and equipment details (e.g. "C'est 45$ par séance et tout le matériel est entièrement fourni sur place").
+- STRICT MANDATORY TURN RULE: YOU MUST ALWAYS END EVERY INTERMEDIATE RESPONSE WITH THE EXACT QUESTION: "Avez-vous d'autres questions ?"
+- Example: "Nos cours pour débutants ont lieu les mardis et jeudis de 18h à 20h. Tout le matériel est entièrement fourni sur place. Avez-vous d'autres questions ?"
 `;
   } else if (isTache3) {
     taskRules = `
