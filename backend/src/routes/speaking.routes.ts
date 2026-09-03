@@ -537,18 +537,18 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
     }
 
     // POST-TRANSCRIPTION NEURAL HALLUCINATION STRIPPER
-    // Strips known Whisper prompt leakage and training corpus hallucinations triggered by mic silence/static
+    // Strips known Whisper prompt leakage and training corpus hallucinations triggered by mic silence/static (subtitles, YouTube credits, TV news)
     if (text) {
       text = text
-        .replace(/^.*?(les sous-titres sont en anglais|description de la vidéo).*?(\.|\!|\?|$)/gi, '')
+        .replace(/^.*?(les sous-titres sont en anglais|description de la vidéo|sous-titres réalisés|amara\.org).*?(\.|\!|\?|$)/gi, '')
         .replace(/^.*?(les idées de l'université de paris|commission de l'état de france|conseil des ministres des sciences).*?(\.|\!|\?|$)/gi, '')
-        .replace(/\b(les sous-titres sont en anglais|description de la vidéo|commission de l'état de france|conseil des ministres des sciences)\b/gi, '')
+        .replace(/\b(les sous-titres sont en anglais|description de la vidéo|commission de l'état de france|conseil des ministres des sciences|sous-titres réalisés|amara\.org|sous-titrage|abonnez-vous|merci d'avoir regardé)\b/gi, '')
         .replace(/\b(d'un candidat au tcf canada|tcf canadaoiceents|oiceents|accents formels|africain|asiatique|arabe|canadien|européen|anglophone)\b/gi, '')
         .replace(/^(d'un candidat|transcription exacte|accents formels).*?(\.|\!|\?|$)/gi, '')
         .trim();
 
-      // If text contains ONLY prompt artifact fragments, clear it to empty string so Gatekeeper handles silent audio
-      if (/^(d'un candidat|accents formels|tcf canada|bonjour, tcf canada\.?)$/i.test(text)) {
+      // If text contains ONLY prompt artifact fragments or subtitle credits, clear it to empty string so Gatekeeper handles silent audio
+      if (/^(d'un candidat|accents formels|tcf canada|bonjour, tcf canada\.?|sous-titres|description de la vidéo)$/i.test(text) || text.length < 3) {
         text = '';
       }
     }
