@@ -1467,6 +1467,11 @@ ${acousticMetrics ? `- Real-Time Web Audio Signal Metrics: Speech Pace = ${acous
 - You are STRICTLY FORBIDDEN from inventing or hallucinating expressions like "je suis un ingénieur" if they are not in the candidate's transcript!
 - CRITICAL TRAILING QUESTION RULE: Analyze the candidate's responses up to the last submitted candidate turn. If the conversation ends on an examiner question without a candidate response, DO NOT penalize the candidate for failing to answer that specific trailing question. Evaluate ONLY what was actually spoken against official FEI CEFR descriptors.
 
+### CRITICAL ACOUSTIC TOKEN FRAMING DIRECTIVE (SYNTAX SAFEGUARD):
+- Strings matching [pause Xs], [pause_Xs], or [hésitation] represent acoustic silence intervals measured by the audio signal engine.
+- Use them EXCLUSIVELY to grade Coherence, Flow & Interaction (Fluidité, Débit & Cohérence).
+- Under NO CIRCUMSTANCES should acoustic pause tokens be counted as grammatical or lexical errors in Morphosyntax or Lexical Variety!
+
 ---
 
 ### EVALUATION STEP 1: TOPIC RELEVANCE & OFF-TOPIC CHECK (HORS-SUJET)
@@ -1570,6 +1575,20 @@ Return JSON only:
         let c = Math.max(0, Math.min(5, typeof sub.coherence_and_flow === 'number' ? sub.coherence_and_flow : 3));
         let l = Math.max(0, Math.min(5, typeof sub.lexical_variety === 'number' ? sub.lexical_variety : 3));
         let g = Math.max(0, Math.min(5, typeof sub.morphosyntax === 'number' ? sub.morphosyntax : 3));
+
+        // PHASE 2 ACOUSTIC METRICS ALIGNMENT: Calibrate Cohérence & Débit based on signal WPM and hesitation pauses
+        if (acousticMetrics) {
+          const wpm = acousticMetrics.speechRateWpm || 0;
+          const pauseCount = acousticMetrics.hesitationPauseCount || 0;
+
+          if (wpm > 0 && wpm < 50) {
+            c = Math.min(2, c); // Slow speech rate (<50 WPM) caps flow at 2/5
+          } else if (wpm > 0 && wpm < 75 && pauseCount >= 3) {
+            c = Math.min(3, c); // Moderate slow pace with frequent hesitations caps flow at 3/5
+          } else if (wpm >= 100 && pauseCount <= 2 && c >= 3) {
+            c = Math.max(4, c); // Native B2/C1 pace (100+ WPM) ensures flow score is at least 4/5
+          }
+        }
 
         const errorsList = Array.isArray(parsed.spoken_errors) ? parsed.spoken_errors : (Array.isArray(parsed.corrections) ? parsed.corrections : []);
         
