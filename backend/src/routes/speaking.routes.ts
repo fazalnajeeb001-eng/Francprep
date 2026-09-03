@@ -103,6 +103,7 @@ interface ChatRequestBody {
   gender?: 'female' | 'male';
   lessonLevel?: string;
   lessonTopic?: string;
+  remainingTimeSec?: number;
 }
 
 const EXAMINER_VOICE_MAP: Record<string, { gender: 'female' | 'male'; voiceId: string }> = {
@@ -160,7 +161,8 @@ function buildExaminerSystemPrompt(
   examinerName?: string,
   examinerRole?: string,
   lessonLevel?: string,
-  lessonTopic?: string
+  lessonTopic?: string,
+  remainingTimeSec?: number
 ): string {
   const name = examinerName || "Examinateur Henri";
   const role = examinerRole || "Examinateur certifié FEI — Format TCF Canada";
@@ -172,6 +174,15 @@ function buildExaminerSystemPrompt(
   const isTache2 = /Tâche 2|interaction|exercice en interaction|rôle/i.test(title);
   const isTache3 = /Tâche 3|point de vue|débat|argumentation/i.test(title);
 
+  let timeWarningDirective = "";
+  if (remainingTimeSec !== undefined && remainingTimeSec <= 25) {
+    timeWarningDirective = `
+- CRITICAL TIME WRAP-UP DIRECTIVE: Only ${remainingTimeSec} seconds remain on the active exam clock!
+- DO NOT ask any new questions or say "Avez-vous d'autres questions ?".
+- Conclude this task politely and concisely in 1 sentence (e.g., "Je vous remercie. Le temps pour cette tâche est presque écoulé, nous avons fait le tour des questions.").
+`;
+  }
+
   let taskRules = "";
   if (isTache1) {
     taskRules = `
@@ -180,6 +191,7 @@ function buildExaminerSystemPrompt(
 - Conduct a formal, progressive guided interview (target CEFR level: ${level}).
 - Listen carefully to the candidate's response, extract key contextual details (e.g. their profession, city, hobbies, or plans), and ask 1 dynamic, natural follow-up question.
 - Always use formal register ("vous"). Keep your response concise, polite, and encouraging (1-2 sentences maximum).
+${timeWarningDirective}
 `;
   } else if (isTache2) {
     taskRules = `
@@ -192,6 +204,7 @@ function buildExaminerSystemPrompt(
 - ROLEPLAY CLOSING RULE: If the candidate is concluding the interaction (expressing thanks, saying goodbye, or stating they will call back/reflect to finalize registration), DO NOT ask "Avez-vous d'autres questions ?". Conclude politely with a formal examiner closing: "C'est parfait ! Je vous en prie. N'hésitez pas si vous avez besoin d'autres précisions. Excellente journée à vous et à bientôt !"
 - INTERMEDIATE TURN RULE: For all intermediate questions, end your response with: "Avez-vous d'autres questions ?"
 - Example: "Nos cours pour débutants ont lieu les mardis et jeudis de 18h à 20h. Tout le matériel est entièrement fourni sur place. Avez-vous d'autres questions ?"
+${timeWarningDirective}
 `;
   } else if (isTache3) {
     taskRules = `
@@ -200,12 +213,14 @@ function buildExaminerSystemPrompt(
 - Listen to the candidate's thesis statement and introduce a polite C1/C2 counter-argument or nuance to test their argumentation skills under debate pressure.
 - Start politely with: "Je comprends votre point de vue, cependant ne pensez-vous pas que..." or "C'est un argument intéressant, mais...".
 - Use formal logical connectors ("néanmoins", "en revanche", "or"). Keep your counter-argument concise (2 sentences maximum).
+${timeWarningDirective}
 `;
   } else {
     taskRules = `
 - You are an official FEI TCF Canada examiner named ${name} (${role}).
 - Target level: ${level}. Scenario: ${scenario}.
 - Respond naturally, professionally, and concisely in immaculate French (1-2 sentences).
+${timeWarningDirective}
 `;
   }
 
@@ -224,8 +239,13 @@ function generateDynamicFallbackReply(
   taskTitle: string,
   userText: string,
   userTurnCount: number,
-  scenarioText?: string
+  scenarioText?: string,
+  remainingTimeSec?: number
 ): string {
+  if (remainingTimeSec !== undefined && remainingTimeSec <= 25) {
+    return "Je vous remercie. Le temps imparti pour cette tâche est presque écoulé, nous avons fait le tour des questions. Excellente journée à vous !";
+  }
+
   const isTache1 = /tâche\s*1|entretien|dirigé|présentation/i.test(taskTitle);
   const isTache2 = /tâche\s*2|interaction|questions|document|rôle|roleplay/i.test(taskTitle);
 
@@ -313,7 +333,7 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
   model: string;
   voice: string;
 }> {
-  const { messages, taskTitle, scenarioText, examinerName, examinerRole, examinerVoice, gender, lessonLevel, lessonTopic } = body;
+  const { messages, taskTitle, scenarioText, examinerName, examinerRole, examinerVoice, gender, lessonLevel, lessonTopic, remainingTimeSec } = body;
 
   const apiKey = await getOpenRouterApiKey();
   const systemPrompt = buildExaminerSystemPrompt(
@@ -322,7 +342,8 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
     examinerName,
     examinerRole,
     lessonLevel,
-    lessonTopic
+    lessonTopic,
+    remainingTimeSec
   );
 
   const apiMessages: ChatMessage[] = [
@@ -371,18 +392,27 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
   const userWords = lastUserText.split(/\s+/).filter(Boolean);
 
   // Sparse 1-word / short fragment answer intercept protocol
-  if (userWords.length > 0 && userWords.length <= 2 && !/^(merci|d'accord|au revoir)$/i.test(lastUserText)) {
+  if (userWords.length > 0 && userWords.length <= 2 && !/^(merci|d'accord|au revoir)$/i.test(lastUserText) && (remainingTimeSec === undefined || remainingTimeSec > 25)) {
     content = `« ${lastUserText} » ? Que voulez-vous dire par là ? Pouvez-vous me faire une phrase complète pour développer votre réponse ?`;
   } else if (!content || content.trim().length === 0) {
-    content = generateDynamicFallbackReply(taskTitle || '', lastUserText, userTurnCount);
+    content = generateDynamicFallbackReply(taskTitle || '', lastUserText, userTurnCount, scenarioText, remainingTimeSec);
   }
 
-  // Tâche 2 Mandatory End-Phrase Enforcer
   const isTache2 = /tâche\s*2|interaction|exercice en interaction|rôle|roleplay/i.test(taskTitle || '');
-  if (isTache2) {
-    const cleanContent = content.trim();
-    if (!/avez-vous d'autres questions\s*\??$/i.test(cleanContent)) {
-      content = `${cleanContent.replace(/[.!?]+$/, '')}. Avez-vous d'autres questions ?`;
+  
+  if (remainingTimeSec !== undefined && remainingTimeSec <= 25) {
+    // WRAP-UP MODE: Strip any trailing questions
+    content = content.replace(/avez-vous d'autres questions\s*\??/gi, '').trim();
+    if (!content || content.length < 5) {
+      content = "Je vous remercie. Le temps pour cette tâche est presque écoulé, nous avons fait le tour des questions.";
+    }
+  } else if (isTache2) {
+    const isClosing = /\b(merci|remercie|recontacter|rappelle|réfléchir|au revoir|bonne journée|bonne fin|quitte|finaliser)\b/i.test(lastUserText);
+    if (!isClosing) {
+      const cleanContent = content.trim();
+      if (!/avez-vous d'autres questions\s*\??$/i.test(cleanContent)) {
+        content = `${cleanContent.replace(/[.!?]+$/, '')}. Avez-vous d'autres questions ?`;
+      }
     }
   }
 

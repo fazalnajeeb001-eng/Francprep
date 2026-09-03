@@ -710,6 +710,8 @@ export function AuthenticCBTExamPage() {
       const examinerVoice = persona?.voiceId || MASTER_SPEAKING_BANK[paperNum]?.[0]?.examinerPersona?.voiceId || (persona?.gender === "male" ? "fr-FR-HenriNeural" : "fr-FR-DeniseNeural");
       const examinerGender = persona?.gender || MASTER_SPEAKING_BANK[paperNum]?.[0]?.examinerPersona?.gender || "female";
 
+      const remainingTimeSec = speakingTimersRef.current[taskId];
+
       const res = await apiFetch("/speaking/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -724,6 +726,7 @@ export function AuthenticCBTExamPage() {
           lessonLevel: "B2",
           lessonTopic: scenarioText || "TCF Oral Interaction",
           targetLanguage: "French",
+          remainingTimeSec,
         }),
       });
 
