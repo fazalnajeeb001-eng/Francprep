@@ -724,8 +724,8 @@ export function AuthenticCBTExamPage() {
         audioBase64 = json?.data?.audioBase64 || json?.audioBase64 || "";
       } catch {}
 
-      const remainingSecs = typeof sectionTimeRemaining[activeSectionIdx] === 'number' ? sectionTimeRemaining[activeSectionIdx] : 120;
-      if (remainingSecs <= 15) {
+      const taskRemainingSecs = typeof oralSpeakingTimeRemaining[taskId] === 'number' ? oralSpeakingTimeRemaining[taskId] : (typeof sectionTimeRemaining[activeSectionIdx] === 'number' ? sectionTimeRemaining[activeSectionIdx] : 120);
+      if (taskRemainingSecs <= 15) {
         replyText = "Merci pour cet échange ! Le temps imparti pour cette tâche est à présent écoulé. Vous pouvez maintenant évaluer votre prestation.";
         audioBase64 = "";
       }
