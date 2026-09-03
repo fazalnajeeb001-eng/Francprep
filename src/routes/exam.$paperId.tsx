@@ -268,6 +268,7 @@ export function AuthenticCBTExamPage() {
   const [evaluatingSpeaking, setEvaluatingSpeaking] = useState<Record<string, boolean>>({});
   const [speakingDialogueMap, setSpeakingDialogueMap] = useState<Record<string, Array<{ sender: 'examiner' | 'candidate'; text: string }>>>({});
   const [speakingChatLoading, setSpeakingChatLoading] = useState<Record<string, boolean>>({});
+  const [completedSpeakingTaskIds, setCompletedSpeakingTaskIds] = useState<Record<string, boolean>>({});
   const [pendingEvalTask, setPendingEvalTask] = useState<{ taskId: string; scenario: string; transcript: string } | null>(null);
   const [oralPrepTimeRemaining, setOralPrepTimeRemaining] = useState<Record<string, number>>({});
   const [isOralPrepActive, setIsOralPrepActive] = useState<Record<string, boolean>>({});
@@ -443,6 +444,15 @@ export function AuthenticCBTExamPage() {
               const nextSec = paper.sections[nextIdx];
               return getSectionDurationSeconds(nextSec?.type, nextSec?.durationMins);
             } else {
+              if (currentSection?.type === "EXPRESSION_ORALE") {
+                setSectionTransitionModal({
+                  show: true,
+                  targetIdx: activeSectionIdx,
+                  targetTitle: "Bilan Final",
+                  autoAdvanceSeconds: 15,
+                });
+                return 0;
+              }
               handleFinishTest();
               return 0;
             }
@@ -541,6 +551,7 @@ export function AuthenticCBTExamPage() {
           } else {
             next[taskId] = 0;
             setIsOralSpeakingActive((p) => ({ ...p, [taskId]: false }));
+            setCompletedSpeakingTaskIds((prev) => ({ ...prev, [taskId]: true }));
             if (recordingSpeaking[taskId]) {
               setRecordingSpeaking((prev) => ({ ...prev, [taskId]: false }));
               const currentText = speakingTranscripts[taskId] || "";
@@ -889,6 +900,11 @@ export function AuthenticCBTExamPage() {
         }
       }, taskVoiceId);
     } else {
+      if (completedSpeakingTaskIds[task.id]) {
+        setIsAudioFetching(false);
+        setIsPlayingAudio(false);
+        return;
+      }
       if (task.prepTimeMins > 0) {
         handleStartPrepTimer(task.id, task.prepTimeMins);
       } else {
@@ -896,6 +912,13 @@ export function AuthenticCBTExamPage() {
       }
     }
   };
+
+  // Auto-trigger examiner intro audio on activeSpeakingTaskIdx state change (e.g. per-task timer auto-shift)
+  useEffect(() => {
+    if (currentSection?.type === "EXPRESSION_ORALE" && !isSubmitted) {
+      startSpeakingTaskSession(activeSpeakingTaskIdx);
+    }
+  }, [activeSpeakingTaskIdx, currentSection?.type, isSubmitted]);
 
   // Auto-save candidate progress continuously to localStorage
   useEffect(() => {
