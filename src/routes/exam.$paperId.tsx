@@ -931,12 +931,14 @@ export function AuthenticCBTExamPage() {
             : "Bonjour ! Bienvenue dans la troisième tâche. Vous allez exprimer votre point de vue de manière fluide et argumentée sur ce sujet de société pendant environ 3 minutes, puis nous en débattrons ensemble. Présentez-moi vos arguments et votre position."
       );
 
-      // DYNAMIC SCENARIO DESYNC GUARD: Ensure opening preamble never mismatches the on-screen document card
+      // DYNAMIC FAIL-SAFE SYNCHRONIZATION GUARD: Guarantee spoken opening preamble matches on-screen topic 100%
       if (idx === 1 || task.title?.includes("Tâche 2")) {
-        const scenarioTopic = task.scenario || task.title || "";
-        if (/poterie|céramique/i.test(openingText) && !/poterie|céramique/i.test(scenarioTopic)) {
-          openingText = `Bienvenue dans la deuxième tâche. Vous avez préparé vos questions pendant deux minutes d'après la fiche support. Nous échangeons pendant trois minutes et demie. Je suis la responsable du centre, Élodie. Je vous écoute !`;
-        }
+        const scenarioDocTitle = task.stimulusDocument?.title || task.scenario || "document support";
+        const personaName = task.examinerPersona?.name || "votre examinateur";
+        openingText = `Bienvenue dans la deuxième tâche. Vous avez préparé vos questions pendant deux minutes d'après le document : ${scenarioDocTitle}. Nous échangeons pendant trois minutes et demie. Je suis ${personaName}. Je vous écoute, quelles sont vos questions ?`;
+      } else if (idx === 2 || task.title?.includes("Tâche 3")) {
+        const debateTopic = task.scenario || task.title || "ce sujet de société";
+        openingText = `Passons à la troisième tâche d'une durée de quatre minutes et demie. Débattez sur le sujet suivant : '${debateTopic}'. Présentez vos arguments.`;
       }
 
       // Pre-populate chatbox with examiner opening preamble as Message #1

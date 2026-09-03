@@ -116,18 +116,18 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "speakingCoach": "• Varier vos questions : utilisez l'inversion ('Auriez-vous... ?'), le conditionnel ('Serait-il possible de... ?') et l'interrogation indirecte ('Je souhaiterais savoir si...').\n• Balayez les thèmes clé : tarifs, équipements, localisation, modalités de réservation, conditions d'annulation.\n• Réagissez aux réponses du propriétaire : 'Très bien', 'Parfait', 'D'accord, je comprends'.",
       "speakingCoachEn": "• Vary your interrogative forms: use inversion ('Would you have...?'), conditional ('Would it be possible to...?'), and indirect forms ('I would like to know if...').\n• Cover key themes: pricing, amenities, location, booking procedure, cancellation policy.\n• Acknowledge landlord replies naturally: 'Very good', 'Perfect', 'Alright, I understand'.",
       "stimulusDocument": {
-        "title": "INSTITUT LINGUISTIQUE INTERNATIONAL DE MONTRÉAL",
-        "category": "Formation Professionnelle & Perfectionnement",
-        "organization": "Institut Linguistique Montréal (Agréé FEI & Ministère de l'Immigration)",
-        "content": "Sessions intensives de français professionnel et préparation aux examens officiels. Groupes réduits (max 10 apprenants). Cours en présentiel au centre-ville ou formule hybride interactive.",
+        "title": "RÉSIDENCE ÉCO-RESPONSABLE DU VIEUX-QUÉBEC",
+        "category": "Immobilier & Location Saisonnière",
+        "organization": "Gestion Immobilière Québec Panoramique",
+        "content": "Superbes appartements meublés de 2 à 4 pièces situés au cœur du quartier historique. Idéal pour séjours de vacances ou déplacements professionnels.",
         "details": [
-          "📅 Sessions : Début chaque lundi, sessions de 4 à 12 semaines",
-          "⏰ Horaires : Du lundi au vendredi (9h00 - 13h00 ou 18h00 - 21h00)",
-          "💰 Tarifs : 380 $ CAD / semaine (Matériel pédagogique inclus)",
-          "💻 Options : Ateliers de rédaction professionnelle et simulations d'entretien",
-          "🎓 Attestation officielle remise en fin de cursus"
+          "🏢 Logements : T2 et T3 entièrement équipés avec balcon",
+          "🔑 Disponibilité : Location à la semaine ou au mois",
+          "💰 Tarifs : À partir de 750 $ CAD / semaine (charges comprises)",
+          "🌱 Équipements : Wi-Fi haut débit, stationnement privé, lave-linge",
+          "🐾 Animaux : Acceptés sur demande préalable"
         ],
-        "contactInfo": "📍 1250 Boulevard René-Lévesque Ouest, Montréal • 📞 514-555-0192 • ✉️ admission@institut-montreal.qc.ca"
+        "contactInfo": "📍 45 Rue Saint-Jean, Québec (QC) • 📞 418-555-0144 • ✉️ contact@quebec-loc.ca"
       }
     },
     {
@@ -239,18 +239,18 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
       "speakingCoach": "• Saluez et présentez le motif : 'Bonjour, je vous appelle suite à votre annonce pour les cours de langue'.\n• Posez 8 à 10 questions précises : test de niveau, horaires du soir, certificats délivrés, méthodes d'apprentissage.\n• Proposez un rendez-vous ou une séance d'essai pour conclure l'échange.",
       "speakingCoachEn": "• Greet and state your objective: 'Hello, I am calling regarding your language course advertisement'.\n• Ask 8 to 10 targeted questions: placement test, evening schedules, certificates issued, teaching materials.\n• Propose a trial lesson or appointment to conclude the phone conversation.",
       "stimulusDocument": {
-        "title": "RÉSIDENCE ÉCO-RESPONSABLE DU VIEUX-QUÉBEC",
-        "category": "Immobilier & Location Saisonnière",
-        "organization": "Gestion Immobilière Québec Panoramique",
-        "content": "Superbes appartements meublés de 2 à 4 pièces situés au cœur du quartier historique. Idéal pour séjours de vacances ou déplacements professionnels.",
+        "title": "INSTITUT LINGUISTIQUE INTERNATIONAL DE MONTRÉAL",
+        "category": "Formation Professionnelle & Perfectionnement",
+        "organization": "Institut Linguistique Montréal (Agréé FEI & Ministère de l'Immigration)",
+        "content": "Sessions intensives de français professionnel et préparation aux examens officiels. Groupes réduits (max 10 apprenants). Cours en présentiel au centre-ville ou formule hybride interactive.",
         "details": [
-          "🏢 Logements : T2 et T3 entièrement équipés avec balcon",
-          "🔑 Disponibilité : Location à la semaine ou au mois",
-          "💰 Tarifs : À partir de 750 $ CAD / semaine (charges comprises)",
-          "🌱 Équipements : Wi-Fi haut débit, stationnement privé, lave-linge",
-          "🐾 Animaux : Acceptés sur demande préalable"
+          "📅 Sessions : Début chaque lundi, sessions de 4 à 12 semaines",
+          "⏰ Horaires : Du lundi au vendredi (9h00 - 13h00 ou 18h00 - 21h00)",
+          "💰 Tarifs : 380 $ CAD / semaine (Matériel pédagogique inclus)",
+          "💻 Options : Ateliers de rédaction professionnelle et simulations d'entretien",
+          "🎓 Attestation officielle remise en fin de cursus"
         ],
-        "contactInfo": "📍 45 Rue Saint-Jean, Québec (QC) • 📞 418-555-0144 • ✉️ contact@quebec-loc.ca"
+        "contactInfo": "📍 1250 Boulevard René-Lévesque Ouest, Montréal • 📞 514-555-0192 • ✉️ admission@institut-montreal.qc.ca"
       }
     },
     {
@@ -340,7 +340,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Agent des services communautaires de la Ville d'Ottawa.",
         "gender": "male",
         "voiceId": "fr-CA-JeanNeural",
-        "openingPromptFrench": "Nous abordons la deuxième tâche. Vous avez préparé vos questions pendant deux minutes d'après le prospectus du centre sportif municipal. Nous entamons trois minutes et demie d'interaction. Je suis le responsable du centre, M. Jean. Je vous écoute !",
+        "openingPromptFrench": "Nous abordons la deuxième tâche. Vous avez préparé vos questions pendant deux minutes d'après le programme de nettoyage écologique à Ottawa. Nous entamons trois minutes et demie d'interaction. Je suis l'agent des services citoyens, M. Jean. Je vous écoute !",
         "openingPromptEnglish": "Hello, City of Ottawa citizen services, Jean speaking. I'm listening regarding your green day project.",
         "roleplayPrompt": "Répondez clairement sur la fourniture de sacs et de gants puis demandez si le candidat souhaite d'autres détails."
       },
@@ -463,7 +463,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Propriétaire engagée d'une librairie culturelle à Sherbrooke.",
         "gender": "female",
         "voiceId": "fr-CA-SylvieNeural",
-        "openingPromptFrench": "Bienvenue dans la deuxième tâche. Vos deux minutes de préparation sur la brochure du programme de bénévolat environnemental sont écoulées. Échangeons pendant trois minutes et demie. Je suis la coordinatrice de l'association, Sylvie. Posez-moi vos questions !",
+        "openingPromptFrench": "Bienvenue dans la deuxième tâche. Vos deux minutes de préparation sur l'annonce de la librairie-café de Sherbrooke sont écoulées. Échangeons pendant trois minutes et demie. Je suis la gérante de la librairie, Sylvie. Posez-moi vos questions !",
         "openingPromptEnglish": "Hello! I am Sylvie, the bookstore manager. You came to inquire about the assistant position? I'm listening.",
         "roleplayPrompt": "Donnez des réponses précises sur le travail du samedi et le taux horaire puis demandez si tout est clair."
       },
@@ -586,7 +586,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Responsable de la billetterie et des groupes culturels.",
         "gender": "male",
         "voiceId": "fr-FR-RemyMultilingualNeural",
-        "openingPromptFrench": "Bienvenue dans la deuxième tâche. Après vos deux minutes de préparation sur l'annonce du séjour linguistique d'été, nous entamons trois minutes et demie d'échange. Je suis le conseiller de l'agence, Rémy. Je vous écoute, quelles sont vos questions ?",
+        "openingPromptFrench": "Bienvenue dans la deuxième tâche. Après vos deux minutes de préparation sur la brochure du Musée national des beaux-arts du Québec, nous entamons trois minutes et demie d'échange. Je suis le responsable des visites de groupe, Rémy. Je vous écoute, quelles sont vos questions ?",
         "openingPromptEnglish": "Hello, museum booking department, Marc at your service. How can I help you plan your visit?",
         "roleplayPrompt": "Expliquez la gratuité pour les accompagnateurs et demandez si le candidat souhaite réserver un créneau horaire précis."
       },
@@ -709,7 +709,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Conseillère chez Auto-Location Express.",
         "gender": "female",
         "voiceId": "fr-FR-VivienneMultilingualNeural",
-        "openingPromptFrench": "Nous entamons la deuxième tâche. Vos deux minutes de préparation sur l'organisation de la fête de quartier sont terminées. Échangeons pendant trois minutes et demie. Je suis la responsable du comité, Vivienne. Posez-moi vos questions !",
+        "openingPromptFrench": "Nous entamons la deuxième tâche. Vos deux minutes de préparation sur la brochure d'Auto-Express Trois-Rivières sont terminées. Échangeons pendant trois minutes et demie. Je suis la conseillère d'agence, Vivienne. Posez-moi vos questions !",
         "openingPromptEnglish": "Hello! Welcome to Auto-Express, I am Claire. What type of vehicle are you looking for during your trip?",
         "roleplayPrompt": "Répondez aux questions sur les formules tout compris puis demandez si le candidat souhaite ajouter un conducteur secondaire."
       },
@@ -882,7 +882,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice stimulant le débat environnemental.",
         "gender": "female",
         "voiceId": "fr-FR-DeniseNeural",
-        "openingPromptFrench": "Passons à la troisième tâche d'une durée de quatre minutes et demie. Débattez sur le sujet suivant : 'La semaine de travail de quatre jours devrait-elle être généralisée dans toutes les entreprises ?' Présentez vos arguments.",
+        "openingPromptFrench": "Passons à la troisième tâche d'une durée de quatre minutes et demie. Débattez sur le sujet suivant : 'Devrions-nous interdire la vente de produits à usage unique non recyclables pour imposer une économie circulaire intégrale ?' Présentez vos arguments.",
         "openingPromptEnglish": "For the third task, do you think the State should totally ban plastics and disposable packaging to force ecological transition?",
         "followUpCounterQuestion": "Relancez sur le coût supplémentaire répercuté sur le pouvoir d'achat des consommateurs modestes."
       },
