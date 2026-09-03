@@ -935,7 +935,11 @@ export function AuthenticCBTExamPage() {
       );
 
       // DYNAMIC FAIL-SAFE SYNCHRONIZATION GUARD: Guarantee spoken opening preamble matches on-screen topic 100%
-      if (idx === 1 || task.title?.includes("Tâche 2")) {
+      if (idx === 0 || task.title?.includes("Tâche 1")) {
+        const scenarioPrompt = task.scenario || "présentez-vous à l'examinateur.";
+        const personaName = task.examinerPersona?.name || "votre examinateur";
+        openingText = `Bonjour ! Je suis ${personaName}, votre examinatrice officielle pour le TCF Canada. Pour cette première tâche de deux minutes sans préparation, ${scenarioPrompt}`;
+      } else if (idx === 1 || task.title?.includes("Tâche 2")) {
         const scenarioDocTitle = task.stimulusDocument?.title || task.scenario || "document support";
         const personaName = task.examinerPersona?.name || "votre examinateur";
         openingText = `Bienvenue dans la deuxième tâche. Vous avez préparé vos questions pendant deux minutes d'après le document : ${scenarioDocTitle}. Nous échangeons pendant trois minutes et demie. Je suis ${personaName}. Je vous écoute, quelles sont vos questions ?`;

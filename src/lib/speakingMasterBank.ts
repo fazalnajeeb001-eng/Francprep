@@ -305,7 +305,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinateur canadien chaleureux et à l'écoute.",
         "gender": "male",
         "voiceId": "fr-CA-JeanNeural",
-        "openingPromptFrench": "Bonjour ! Je m'appelle Jean, votre examinateur certifié TCF Canada. Pour cette première tâche de deux minutes sans préparation, nous menons un entretien dirigé. Pouvez-vous vous présenter, me décrire votre ville natale et m'expliquer ce que vous aimez faire pendant votre temps libre ?",
+        "openingPromptFrench": "Bonjour ! Je m'appelle Jean, votre examinateur certifié TCF Canada. Pour cette première tâche de deux minutes sans préparation, nous menons un entretien dirigé. Pouvez-vous vous présenter, me décrire votre quartier, votre logement et m'expliquer ce que vous appréciez dans votre cadre de vie ?",
         "openingPromptEnglish": "Hello! My name is Jean. Welcome to the oral examination. Tell me a bit about where you live and your daily routine."
       },
       "prepTimeMins": 0,
@@ -428,7 +428,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice canadienne bienveillante et communicative.",
         "gender": "female",
         "voiceId": "fr-CA-SylvieNeural",
-        "openingPromptFrench": "Bonjour ! Je suis Sylvie, votre examinatrice officielle pour le TCF Canada. Pour cette première tâche sans préparation de deux minutes, nous faisons un entretien dirigé. Pouvez-vous vous présenter et me raconter un voyage ou un événement marquant de votre vie ?",
+        "openingPromptFrench": "Bonjour ! Je suis Sylvie, votre examinatrice officielle pour le TCF Canada. Pour cette première tâche sans préparation de deux minutes, nous faisons un entretien dirigé. Pouvez-vous vous présenter, me parler de vos habitudes alimentaires, de vos plats préférés et de vos sorties au restaurant ?",
         "openingPromptEnglish": "Hello! Welcome to your oral exam. I am Sylvie. Tell me about your favorite food and meals shared with family."
       },
       "prepTimeMins": 0,
@@ -674,7 +674,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice attentive et bienveillante.",
         "gender": "female",
         "voiceId": "fr-FR-VivienneMultilingualNeural",
-        "openingPromptFrench": "Bonjour ! Je suis Vivienne, votre examinatrice officielle pour le TCF Canada. Pour cette première tâche de deux minutes sans préparation, pouvez-vous vous présenter, me décrire votre environnement quotidien et me parler des personnes qui vous entourent ?",
+        "openingPromptFrench": "Bonjour ! Je suis Vivienne, votre examinatrice officielle pour le TCF Canada. Pour cette première tâche de deux minutes sans préparation, pouvez-vous vous présenter et me décrire une journée habituelle dans votre vie (matin, travail, repas, soirée) ?",
         "openingPromptEnglish": "Hello! My name is Claire. Welcome. Tell me how your typical weekday usually unfolds."
       },
       "prepTimeMins": 0,
@@ -759,7 +759,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice interrogeant l'humain face à la technologie.",
         "gender": "female",
         "voiceId": "fr-FR-VivienneMultilingualNeural",
-        "openingPromptFrench": "Voici la troisième et dernière tâche de quatre minutes et demie. Votre sujet de réflexion est le suivant : 'Le tourisme de masse est-il un danger irréversible pour l'environnement et le patrimoine culturel ?' Exprimez votre point de vue.",
+        "openingPromptFrench": "Voici la troisième et dernière tâche de quatre minutes et demie. Votre sujet de réflexion est le suivant : 'Les applications mobiles et l'intelligence artificielle remplaceront-elles à terme les enseignants de langues en classe ?' Exprimez votre point de vue.",
         "openingPromptEnglish": "Let's address our third topic. Do you think digital educational tools can make human language teachers obsolete?",
         "followUpCounterQuestion": "Insistez sur la disponibilité 24/7 et la personnalisation instantanée offertes par les algorithmes."
       },
@@ -797,7 +797,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice certifiée FEI — Format TCF Canada.",
         "gender": "female",
         "voiceId": "fr-FR-DeniseNeural",
-        "openingPromptFrench": "Bonjour ! Je m'appelle Élodie, votre examinatrice certifiée pour le TCF Canada. Pour la première tâche sans préparation de deux minutes, nous menons un entretien dirigé. Pouvez-vous vous présenter et me décrire vos activités culturelles et artistiques préférées ?",
+        "openingPromptFrench": "Bonjour ! Je m'appelle Élodie, votre examinatrice certifiée pour le TCF Canada. Pour la première tâche sans préparation de deux minutes, nous menons un entretien dirigé. Pouvez-vous vous présenter, me décrire votre domaine d'activité actuel et m'expliquer vos objectifs professionnels pour le Canada ?",
         "openingPromptEnglish": "Hello! I am Élodie Martin. Welcome. Tell me what sector you work in and what your future project is in Canada."
       },
       "prepTimeMins": 0,
@@ -920,7 +920,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice souriante et très expressive.",
         "gender": "female",
         "voiceId": "fr-FR-DeniseNeural",
-        "openingPromptFrench": "Bonjour ! Je suis Brigitte, votre examinatrice certifiée pour le TCF Canada. Pour cet entretien dirigé de deux minutes sans préparation, pouvez-vous vous présenter et me parler de votre expérience personnelle dans l'apprentissage du français ?",
+        "openingPromptFrench": "Bonjour ! Je suis Brigitte, votre examinatrice certifiée pour le TCF Canada. Pour cet entretien dirigé de deux minutes sans préparation, pouvez-vous vous présenter, me parler de vos goûts musicaux, de vos films préférés et de vos dernières activités culturelles ?",
         "openingPromptEnglish": "Hello! Welcome to your oral exam. My name is Brigitte. Tell me what you like to watch or listen to in order to relax."
       },
       "prepTimeMins": 0,
@@ -1005,7 +1005,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice attentive au débat éducatif.",
         "gender": "female",
         "voiceId": "fr-FR-DeniseNeural",
-        "openingPromptFrench": "Voici la troisième tâche de quatre minutes et demie. Exprimez votre avis argumenté sur la question : 'La préservation du patrimoine historique doit-elle primer sur les projets de modernisation urbaine ?' À vous la parole.",
+        "openingPromptFrench": "Voici la troisième tâche de quatre minutes et demie. Exprimez votre avis argumenté sur la question : 'Le port de l'uniforme obligatoire à l'école est-il une mesure efficace pour réduire les inégalités sociales et favoriser l'égalité ?' À vous la parole.",
         "openingPromptEnglish": "Moving to the educational topic. What do you think about bringing back school uniforms in educational institutions?",
         "followUpCounterQuestion": "Opposez le risque d'étouffer l'individualité et l'expression personnelle des élèves."
       },
@@ -1043,7 +1043,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinateur expérimenté au ton posé.",
         "gender": "male",
         "voiceId": "fr-FR-HenriNeural",
-        "openingPromptFrench": "Bonjour ! Je m'appelle Pierre, votre examinateur certifié pour le TCF Canada. Pour la première tâche sans préparation de deux minutes, pouvez-vous vous présenter et me décrire un projet ou une réussite dont vous êtes particulièrement fier ?",
+        "openingPromptFrench": "Bonjour ! Je m'appelle Pierre, votre examinateur certifié pour le TCF Canada. Pour la première tâche sans préparation de deux minutes, pouvez-vous vous présenter, me parler de votre hygiène de vie, de vos activités physiques et de la manière dont vous gérez le stress ?",
         "openingPromptEnglish": "Hello. My name is Pierre. Welcome. Explain to me what habits you adopt to stay in good health."
       },
       "prepTimeMins": 0,
@@ -1128,7 +1128,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinateur évaluant l'analyse socio-économique approfondie.",
         "gender": "male",
         "voiceId": "fr-FR-HenriNeural",
-        "openingPromptFrench": "Passons à la troisième tâche d'une durée de quatre minutes et demie. Défendez votre opinion sur le sujet : 'L'apprentissage en ligne peut-il remplacer définitivement l'enseignement traditionnel en présentiel ?' Présentez votre argumentation.",
+        "openingPromptFrench": "Passons à la troisième tâche d'une durée de quatre minutes et demie. Défendez votre opinion sur le sujet : 'L'instauration d'un revenu universel inconditionnel versé à tous les citoyens permettrait-elle d'éliminer la pauvreté ou découragerait-elle le travail ?' Présentez votre argumentation.",
         "openingPromptEnglish": "Moving to the third topic. Do you think a guaranteed basic income for everyone is a viable solution facing employment shifts?",
         "followUpCounterQuestion": "Invoquez le risque d'une hausse massive des prélèvements fiscaux et de la démotivation au travail."
       },
@@ -1166,7 +1166,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice dynamique et très à l'écoute.",
         "gender": "female",
         "voiceId": "fr-FR-VivienneMultilingualNeural",
-        "openingPromptFrench": "Bonjour ! Je suis Sophie, votre examinatrice officielle pour le TCF Canada. Commençons par la première tâche sans préparation de deux minutes. Pouvez-vous vous présenter, me parler de votre profession et me décrire ce que vous aimez faire le week-end ?",
+        "openingPromptFrench": "Bonjour ! Je suis Sophie, votre examinatrice officielle pour le TCF Canada. Commençons par la première tâche sans préparation de deux minutes. Pouvez-vous vous présenter, me parler de votre utilisation d'Internet, de votre téléphone portable et des applications qui vous aident au quotidien ?",
         "openingPromptEnglish": "Hello and welcome to your oral exam. My name is Sophie. Tell me what role technology plays in your everyday life."
       },
       "prepTimeMins": 0,
@@ -1251,7 +1251,7 @@ export const MASTER_SPEAKING_BANK: Record<number, MasterSpeakingTask[]> = {
         "role": "Examinatrice sollicitant une réflexion sociolinguistique poussée.",
         "gender": "female",
         "voiceId": "fr-FR-VivienneMultilingualNeural",
-        "openingPromptFrench": "Voici la troisième et dernière tâche de quatre minutes et demie. Exprimez votre opinion de manière structurée sur le sujet : 'L'automatisation et l'intelligence artificielle menacent-elles l'avenir de l'emploi humain ?' Développez vos arguments.",
+        "openingPromptFrench": "Voici la troisième et dernière tâche de quatre minutes et demie. Exprimez votre opinion de manière structurée sur le sujet : 'Les gouvernements doivent-ils accorder des financements prioritaires pour sauvegarder les langues et cultures minoritaires menacées d'extinction ?' Développez vos arguments.",
         "openingPromptEnglish": "To conclude this exam, do you believe defending minority linguistic heritage should be funded by priority public money?",
         "followUpCounterQuestion": "Relancez sur l'urgence d'investir plutôt dans la santé et la transition énergétique globale."
       },
