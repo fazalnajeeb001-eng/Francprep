@@ -2058,13 +2058,19 @@ GENERAL EXAMINER RULES:
       };
     }
 
-    // 2. English / Foreign Language Code-Switching Rejection
+    // 2. English / Foreign Language Code-Switching Rejection (N-gram Sequence & >25% Density Guard)
     const textLower = cleanSpeech.toLowerCase();
-    const englishMatches = textLower.match(/\b(the|is|are|was|were|with|because|please|thanks|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had|about|into|after|before|house|work|help|repair|cold|night|urgent)\b/gi) || [];
-    if (englishMatches.length >= 2) {
+    // Exclude valid French loanwords (co-working, workflow, start-up, manager, service, urgent, hotel, taxi, project)
+    const englishTokens = textLower.match(/\b(the|is|are|was|were|with|because|please|thanks|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had|about|into|after|before|house|work|help|repair|cold|night)\b/gi) || [];
+    const has3WordEnglishNgram = /\b(the|is|are|was|were|with|because|please|thanks|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had)\s+(the|is|are|was|were|with|because|please|thanks|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had|house|work|help|repair|cold|night)\s+(the|is|are|was|were|with|because|please|thanks|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had|house|work|help|repair|cold|night)\b/gi.test(textLower);
+    
+    const englishDensityPct = (englishTokens.length / wordCount) * 100;
+    const isDominantEnglish = has3WordEnglishNgram || (englishTokens.length >= 4 && englishDensityPct >= 25);
+
+    if (isDominantEnglish) {
       return {
         transcription: cleanSpeech,
-        feedback: `🚨 ZERO GRADE (0/20 Marks — NCLC 0): Langue étrangère détectée (${englishMatches.length} mots en anglais). Les examinateurs officiels du TCF Canada attribuent la note 0/20 en cas d'utilisation de l'anglais.`,
+        feedback: `🚨 ZERO GRADE (0/20 Marks — NCLC 0): Langue étrangère dominante détectée (${englishTokens.length} mots en anglais). Les examinateurs officiels du TCF Canada attribuent la note 0/20 en cas d'utilisation de l'anglais.`,
         score: 0,
         scoreOutOf20: 0,
         accuracy: 0,
@@ -2076,12 +2082,12 @@ GENERAL EXAMINER RULES:
         nclcGrade: 'NCLC 0 (Zero Grade — Langue Étrangère / Anglais)',
         cefrLevel: 'Below A1',
         expressEntryPoints: 0,
-        corrections: englishMatches.slice(0, 3).map((w: string) => ({
+        corrections: englishTokens.slice(0, 3).map((w: string) => ({
           original: w,
           corrected: 'Traduisez en français',
-          explanation: "L'utilisation de mots anglais est strictement interdite aux épreuves du TCF Canada."
+          explanation: "L'utilisation de la langue anglaise est strictement interdite aux épreuves du TCF Canada."
         })),
-        tips: ['Exprimez-vous exclusivement en français sans recourir au vocabulaire anglais.']
+        tips: ['Exprimez-vous exclusivement en français sans recourir à la langue anglaise.']
       };
     }
 
