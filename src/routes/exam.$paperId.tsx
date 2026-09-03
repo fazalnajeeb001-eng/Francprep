@@ -710,7 +710,26 @@ export function AuthenticCBTExamPage() {
       const examinerVoice = persona?.voiceId || MASTER_SPEAKING_BANK[paperNum]?.[0]?.examinerPersona?.voiceId || (persona?.gender === "male" ? "fr-FR-HenriNeural" : "fr-FR-DeniseNeural");
       const examinerGender = persona?.gender || MASTER_SPEAKING_BANK[paperNum]?.[0]?.examinerPersona?.gender || "female";
 
-      const remainingTimeSec = speakingTimersRef.current[taskId];
+      const activeTaskObj = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
+      const altKey1 = activeTaskObj?.id || "";
+      const altKey2 = `spk-${activeSpeakingTaskIdx + 1}`;
+      const altKey3 = `paper-1-task-${activeSpeakingTaskIdx}`;
+
+      // Calculate real-world remaining time for active task clock
+      const targetMins = activeSpeakingTaskIdx === 0 ? 2 : activeSpeakingTaskIdx === 1 ? 3.5 : 4.5;
+      const targetDurationSecs = targetMins * 60;
+      const activeTaskStartMs = taskStartTimestampRef.current[taskId] || taskStartTimestampRef.current[altKey1] || taskStartTimestampRef.current[altKey2] || taskStartTimestampRef.current[altKey3];
+      const realElapsedSecs = activeTaskStartMs ? Math.floor((Date.now() - activeTaskStartMs) / 1000) : 0;
+      const realRemainingSecs = Math.max(0, targetDurationSecs - realElapsedSecs);
+
+      const stateRemainingSecs = 
+        typeof oralSpeakingTimeRemaining[taskId] === 'number' ? oralSpeakingTimeRemaining[taskId] :
+        typeof oralSpeakingTimeRemaining[altKey1] === 'number' ? oralSpeakingTimeRemaining[altKey1] :
+        typeof oralSpeakingTimeRemaining[altKey2] === 'number' ? oralSpeakingTimeRemaining[altKey2] :
+        typeof oralSpeakingTimeRemaining[altKey3] === 'number' ? oralSpeakingTimeRemaining[altKey3] :
+        120;
+
+      const taskRemainingSecs = activeTaskStartMs ? Math.min(stateRemainingSecs, realRemainingSecs) : stateRemainingSecs;
 
       const res = await apiFetch("/speaking/chat", {
         method: "POST",
@@ -726,7 +745,7 @@ export function AuthenticCBTExamPage() {
           lessonLevel: "B2",
           lessonTopic: scenarioText || "TCF Oral Interaction",
           targetLanguage: "French",
-          remainingTimeSec,
+          remainingTimeSec: taskRemainingSecs,
         }),
       });
 
@@ -737,28 +756,6 @@ export function AuthenticCBTExamPage() {
         replyText = json?.data?.reply || json?.reply || "";
         audioBase64 = json?.data?.audioBase64 || json?.audioBase64 || "";
       } catch {}
-
-      const activeTaskObj = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
-      const altKey1 = activeTaskObj?.id || "";
-      const altKey2 = `spk-${activeSpeakingTaskIdx + 1}`;
-      const altKey3 = `paper-1-task-${activeSpeakingTaskIdx}`;
-
-      // Calculate real-world unpaused remaining time using Date.now() timestamp
-      const targetMins = activeSpeakingTaskIdx === 0 ? 2 : activeSpeakingTaskIdx === 1 ? 3.5 : 4.5;
-      const targetDurationSecs = targetMins * 60;
-      const activeTaskStartMs = taskStartTimestampRef.current[taskId] || taskStartTimestampRef.current[altKey1] || taskStartTimestampRef.current[altKey2] || taskStartTimestampRef.current[altKey3];
-      const realElapsedSecs = activeTaskStartMs ? Math.floor((Date.now() - activeTaskStartMs) / 1000) : 0;
-      const realRemainingSecs = Math.max(0, targetDurationSecs - realElapsedSecs);
-
-      const stateRemainingSecs = 
-        typeof oralSpeakingTimeRemaining[taskId] === 'number' ? oralSpeakingTimeRemaining[taskId] :
-        typeof oralSpeakingTimeRemaining[altKey1] === 'number' ? oralSpeakingTimeRemaining[altKey1] :
-        typeof oralSpeakingTimeRemaining[altKey2] === 'number' ? oralSpeakingTimeRemaining[altKey2] :
-        typeof oralSpeakingTimeRemaining[altKey3] === 'number' ? oralSpeakingTimeRemaining[altKey3] :
-        120;
-
-      // Use the strict minimum between real-world unpaused clock and state clock
-      const taskRemainingSecs = activeTaskStartMs ? Math.min(stateRemainingSecs, realRemainingSecs) : stateRemainingSecs;
 
       if (taskRemainingSecs <= 15) {
         const isT1 = activeSpeakingTaskIdx === 0 || /tâche\s*1|entretien|dirigé/i.test(taskTitle);
