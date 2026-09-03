@@ -1357,100 +1357,14 @@ Respond STRICTLY with a raw JSON object:
     const apiKey = await this.getOpenRouterKey();
     const cleanSpeech = (transcription || '').trim();
 
-    // Zero grade for empty, refusal, or non-French gibberish
-    if (!cleanSpeech || cleanSpeech.length < 5 || !this.isFrenchText(cleanSpeech)) {
-      return {
-        transcription: cleanSpeech || '(No speech recorded)',
-        feedback: '🚨 ZERO GRADE (0/20 Marks): Unintelligible, non-French, or insufficient oral speech recorded. Official FEI oral examiners award 0 marks for non-French or uninterpretable oral submissions.',
-        score: 0,
-        scoreOutOf20: 0,
-        accuracy: 0,
-        fluency: 0,
-        taskFulfillmentScore: 0,
-        coherenceScore: 0,
-        lexicalScore: 0,
-        grammarScore: 0,
-        nclcGrade: 'NCLC 0 (Zero Grade — Gibberish / Inaudible / Non-French)',
-        cefrLevel: 'N/A',
-        expressEntryPoints: 0,
-        corrections: [{ original: cleanSpeech.slice(0, 60), corrected: 'Exprimez-vous clairement en français.', explanation: 'Non-French speech receives an automatic 0 grade in official TCF exams.' }],
-        tips: ['Parlez distinctement en français en répondant directement à la consigne orale.']
-      };
-    }
-
     const isTache1 = taskNumber === 1 || Boolean(lessonTitle?.includes('Tâche 1') || lessonTitle?.includes('spk-1'));
     const isTache2 = taskNumber === 2 || Boolean(lessonTitle?.includes('Tâche 2') || lessonTitle?.includes('spk-2'));
     const taskNum = taskNumber || (isTache1 ? 1 : isTache2 ? 2 : 3);
 
-    const candidateWords = cleanSpeech.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
-    if (!cleanSpeech || candidateWords.length === 0) {
-      return {
-        transcription: cleanSpeech || "",
-        feedback: "🚨 AUCUN ENREGISTREMENT VOCAL DÉTECTÉ : Aucun mot n'a été enregistré. Le candidat doit s'exprimer oralement en français pour obtenir une note. Note officielle attribuée : 0/20 (NCLC 0).",
-        score: 0,
-        scoreOutOf20: 0,
-        accuracy: 0,
-        fluency: 0,
-        taskFulfillmentScore: 0,
-        coherenceScore: 0,
-        lexicalScore: 0,
-        grammarScore: 0,
-        nclcGrade: "NCLC 0 (Zero Grade — Aucun Enregistrement)",
-        cefrLevel: "Below A1",
-        expressEntryPoints: 0,
-        corrections: [],
-        tips: ["Cliquez sur 'Parler au micro' et formulez vos réponses en français avant d'évaluer."]
-      };
-    }
-
-    if (candidateWords.length < 10) {
-      return {
-        transcription: cleanSpeech,
-        feedback: `🚨 ZERO GRADE (0/20 Marks — NCLC 0): Production orale insuffisante (${candidateWords.length} mots enregistrés, minimum 10 mots requis). Impossible d'évaluer la compétence linguistique du candidat (A1 Non Atteint).`,
-        score: 0,
-        scoreOutOf20: 0,
-        accuracy: 0,
-        fluency: 0,
-        taskFulfillmentScore: 0,
-        coherenceScore: 0,
-        lexicalScore: 0,
-        grammarScore: 0,
-        nclcGrade: 'NCLC 0 (Zero Grade — Élocution insuffisante / <10 mots)',
-        cefrLevel: 'Non Atteint',
-        expressEntryPoints: 0,
-        corrections: [],
-        tips: ["Formulez des phrases complètes et développez votre réponse orale pour atteindre au moins 10 mots."]
-      };
-    }
-
-    // PHASE 2 CAS DE ZÉRO: Prompt Plagiarism / Consigne Recopying Filter (>80% verbatim scenario overlap)
-    if (expectedText && expectedText.length > 20) {
-      const scenarioWords = expectedText.toLowerCase().replace(/['’]/g, ' ').split(/\s+/).filter((w) => w.length > 3);
-      if (scenarioWords.length >= 6) {
-        const candidateWordsLower = cleanSpeech.toLowerCase().replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
-        const matchingWords = scenarioWords.filter((sw) => candidateWordsLower.includes(sw));
-        const overlapRatio = matchingWords.length / scenarioWords.length;
-
-        if (overlapRatio >= 0.85 && candidateWordsLower.length <= scenarioWords.length + 5) {
-          return {
-            transcription: cleanSpeech,
-            feedback: `🚨 ZERO GRADE (0/20 Marks — NCLC 0): Reprise intégrale de la consigne du sujet (Plagiat / Lecture du sujet). Aucune production linguistique personnelle du candidat.`,
-            score: 0,
-            scoreOutOf20: 0,
-            accuracy: 0,
-            fluency: 0,
-            taskFulfillmentScore: 0,
-            coherenceScore: 0,
-            lexicalScore: 0,
-            grammarScore: 0,
-            nclcGrade: 'NCLC 0 (Zero Grade — Plagiat de la consigne)',
-            cefrLevel: 'Non Atteint',
-            expressEntryPoints: 0,
-            corrections: [],
-            tips: ["Ne récitez pas le sujet. Formulez vos propres phrases d'introduction et vos propres arguments."]
-          };
-        }
-      }
+    // PHASE 1 OPERATIONAL GATEKEEPER: Pre-LLM Les Cas de Zéro Rejection Filter (0ms Latency)
+    const gatekeeperResult = this.evaluateSpeakingGatekeeper(cleanSpeech, taskNum, expectedText);
+    if (gatekeeperResult) {
+      return gatekeeperResult;
     }
 
     if (!apiKey) {
@@ -2092,6 +2006,138 @@ GENERAL EXAMINER RULES:
       expressEntryPoints,
       taskResults
     };
+  }
+
+  private evaluateSpeakingGatekeeper(
+    cleanSpeech: string,
+    taskNum: number,
+    expectedText?: string
+  ): SpeakingResult | null {
+    if (!cleanSpeech || cleanSpeech.length < 5 || !this.isFrenchText(cleanSpeech)) {
+      return {
+        transcription: cleanSpeech || '(No speech recorded)',
+        feedback: '🚨 ZERO GRADE (0/20 Marks — NCLC 0): Unintelligible, non-French, or insufficient oral speech recorded. Official FEI oral examiners award 0 marks for non-French or uninterpretable oral submissions.',
+        score: 0,
+        scoreOutOf20: 0,
+        accuracy: 0,
+        fluency: 0,
+        taskFulfillmentScore: 0,
+        coherenceScore: 0,
+        lexicalScore: 0,
+        grammarScore: 0,
+        nclcGrade: 'NCLC 0 (Zero Grade — Gibberish / Inaudible / Non-French)',
+        cefrLevel: 'Below A1',
+        expressEntryPoints: 0,
+        corrections: [{ original: cleanSpeech.slice(0, 60), corrected: 'Exprimez-vous clairement en français.', explanation: 'Non-French speech receives an automatic 0 grade in official TCF exams.' }],
+        tips: ['Parlez distinctement en français en répondant directement à la consigne orale.']
+      };
+    }
+
+    const words = cleanSpeech.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
+    const wordCount = words.length;
+
+    // 1. Task-Specific Minimum Word Count Gatekeeper
+    const minWordsRequired = taskNum === 1 ? 15 : taskNum === 2 ? 25 : 40;
+    if (wordCount < minWordsRequired) {
+      return {
+        transcription: cleanSpeech,
+        feedback: `🚨 ZERO GRADE (0/20 Marks — NCLC 0): Production orale insuffisante (${wordCount} mots enregistrés, minimum ${minWordsRequired} mots requis pour la Tâche ${taskNum}). Impossible d'évaluer la compétence linguistique du candidat (A1 Non Atteint).`,
+        score: 0,
+        scoreOutOf20: 0,
+        accuracy: 0,
+        fluency: 0,
+        taskFulfillmentScore: 0,
+        coherenceScore: 0,
+        lexicalScore: 0,
+        grammarScore: 0,
+        nclcGrade: `NCLC 0 (Zero Grade — Élocution insuffisante / <${minWordsRequired} mots)`,
+        cefrLevel: 'Below A1',
+        expressEntryPoints: 0,
+        corrections: [],
+        tips: [`Formulez des phrases complètes et développez votre réponse orale pour atteindre au moins ${minWordsRequired} mots pour la Tâche ${taskNum}.`]
+      };
+    }
+
+    // 2. English / Foreign Language Code-Switching Rejection
+    const textLower = cleanSpeech.toLowerCase();
+    const englishMatches = textLower.match(/\b(the|is|are|was|were|with|because|please|thanks|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had|about|into|after|before|house|work|help|repair|cold|night|urgent)\b/gi) || [];
+    if (englishMatches.length >= 2) {
+      return {
+        transcription: cleanSpeech,
+        feedback: `🚨 ZERO GRADE (0/20 Marks — NCLC 0): Langue étrangère détectée (${englishMatches.length} mots en anglais). Les examinateurs officiels du TCF Canada attribuent la note 0/20 en cas d'utilisation de l'anglais.`,
+        score: 0,
+        scoreOutOf20: 0,
+        accuracy: 0,
+        fluency: 0,
+        taskFulfillmentScore: 0,
+        coherenceScore: 0,
+        lexicalScore: 0,
+        grammarScore: 0,
+        nclcGrade: 'NCLC 0 (Zero Grade — Langue Étrangère / Anglais)',
+        cefrLevel: 'Below A1',
+        expressEntryPoints: 0,
+        corrections: englishMatches.slice(0, 3).map((w: string) => ({
+          original: w,
+          corrected: 'Traduisez en français',
+          explanation: "L'utilisation de mots anglais est strictement interdite aux épreuves du TCF Canada."
+        })),
+        tips: ['Exprimez-vous exclusivement en français sans recourir au vocabulaire anglais.']
+      };
+    }
+
+    // 3. Ambient Broadcast Noise Bleed Filter
+    const hasLeakedBroadcastNoise = /\b(sous-titres|description de la vidéo|campagne a été déroulée|président de la campagne|infirmières d'alzheimer|théâtre d'isle|diplôme d'aiglone|saint-mégane)\b/i.test(textLower);
+    if (hasLeakedBroadcastNoise) {
+      return {
+        transcription: cleanSpeech,
+        feedback: `🚨 ZERO GRADE (0/20 Marks — NCLC 0): Bruit de fond médiatique détecté (Sous-titres / Émission TV / Radio capture). Aucune réponse orale personnelle du candidat.`,
+        score: 0,
+        scoreOutOf20: 0,
+        accuracy: 0,
+        fluency: 0,
+        taskFulfillmentScore: 0,
+        coherenceScore: 0,
+        lexicalScore: 0,
+        grammarScore: 0,
+        nclcGrade: 'NCLC 0 (Zero Grade — Bruit de fond médiatique)',
+        cefrLevel: 'Below A1',
+        expressEntryPoints: 0,
+        corrections: [],
+        tips: ['Enregistrez votre voix dans un environnement calme sans télévision ni radio en arrière-plan.']
+      };
+    }
+
+    // 4. Scenario Recopying / Plagiarism Filter
+    if (expectedText && expectedText.length > 20) {
+      const scenarioWords = expectedText.toLowerCase().replace(/['’]/g, ' ').split(/\s+/).filter((w) => w.length > 3);
+      if (scenarioWords.length >= 6) {
+        const candidateWordsLower = cleanSpeech.toLowerCase().replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
+        const matchingWords = scenarioWords.filter((sw) => candidateWordsLower.includes(sw));
+        const overlapRatio = matchingWords.length / scenarioWords.length;
+
+        if (overlapRatio >= 0.85 && candidateWordsLower.length <= scenarioWords.length + 5) {
+          return {
+            transcription: cleanSpeech,
+            feedback: `🚨 ZERO GRADE (0/20 Marks — NCLC 0): Reprise intégrale de la consigne du sujet (Plagiat / Lecture du sujet). Aucune production linguistique personnelle du candidat.`,
+            score: 0,
+            scoreOutOf20: 0,
+            accuracy: 0,
+            fluency: 0,
+            taskFulfillmentScore: 0,
+            coherenceScore: 0,
+            lexicalScore: 0,
+            grammarScore: 0,
+            nclcGrade: 'NCLC 0 (Zero Grade — Recopilage du sujet / Plagiat)',
+            cefrLevel: 'Below A1',
+            expressEntryPoints: 0,
+            corrections: [],
+            tips: ["Ne récitez pas le sujet. Formulez vos propres phrases d'introduction et vos propres arguments."]
+          };
+        }
+      }
+    }
+
+    return null;
   }
 }
 
