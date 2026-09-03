@@ -5322,9 +5322,15 @@ export function AuthenticCBTExamPage() {
                           {res.speakingAttemptedCount === 0 ? "No submission" : `${res.speakingAvg}/20 Marks (${res.speakingNCLC.cefrEquivalent})`}
                         </p>
                         {res.speakingAttemptedCount > 0 && res.speakingAttemptedCount < 3 && (
-                          <p className="text-[10px] font-medium text-amber-700 dark:text-amber-300 leading-tight">
-                            ⚠️ {res.speakingAttemptedCount}/3 tasks completed (T1: {res.speakingTaskScores.s1}/20, T2: {res.speakingTaskScores.s2}/20, T3: {res.speakingTaskScores.s3}/20). Real TCF requires all 3 tasks (20%+30%+50%).
-                          </p>
+                          <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-950/80 border border-amber-300 dark:border-amber-700 text-[10.5px] font-medium text-amber-900 dark:text-amber-200 leading-relaxed space-y-1">
+                            <p className="font-bold text-amber-950 dark:text-amber-100 flex items-center gap-1">
+                              ⚠️ Tâche 3 Non Effectuée (Pondération 50%)
+                            </p>
+                            <p>
+                              Vous avez complété {res.speakingAttemptedCount}/3 tâches (T1: {res.speakingTaskScores.s1}/20, T2: {res.speakingTaskScores.s2}/20, T3: {res.speakingTaskScores.s3}/20).
+                              {res.speakingTaskScores.s1 >= 12 ? ` Votre performance à la Tâche 1 (${res.speakingTaskScores.s1}/20) montrait un niveau B2, mais l'absence de réponse à la Tâche 3 fait chuter la moyenne globale à ${res.speakingAvg}/20 (${res.speakingNCLC.cefrEquivalent}).` : ''}
+                            </p>
+                          </div>
                         )}
                         <p className="text-[10px] font-semibold text-indigo-700 dark:text-indigo-300 pt-0.5">
                           {res.speakingPoints > 0 ? `+${res.speakingPoints} CRS Points` : "0 CRS Points"}
