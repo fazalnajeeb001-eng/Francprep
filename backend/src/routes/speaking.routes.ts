@@ -504,6 +504,49 @@ router.post('/evaluate', optionalAuth, async (req: Request, res: Response) => {
   }
 });
 
+// Multi-pass Neural Hallucination Sanitizer for Whisper Speech-to-Text
+function sanitizeWhisperTranscript(rawText: string): string {
+  if (!rawText || !rawText.trim()) return '';
+
+  let text = rawText.trim();
+
+  // 1. Remove bracketed/parenthesized metadata & noise tags ([Musique], (Applaudissements), [Silence], [Music], etc.)
+  text = text.replace(/[\(\[\{]\s*(?:musique|music|applaudissements|applause|rires|laughter|silence|bruit|bruits|noise|soupirs|sighs|chuchotements|cheering|static)\s*[\)\]\}]/gi, '');
+
+  // 2. Remove subtitle / Amara / YouTube channel credits & URLs
+  text = text
+    .replace(/(?:sous-titres?\s+(?:réalisés|fournis|en|par|de)|sous-titrage|subtitles?\s+by|captioned\s+by|translated\s+by|transcrit\s+par|transcription\s+par)\b.*?(?=\.|\!|\?|$)/gi, '')
+    .replace(/(?:amara\.org|youtube|subscribe|abonnez-vous|merci\s+d'avoir\s+regardé|thanks\s+for\s+watching|like\s+and\s+subscribe|description\s+de\s+la\s+vidéo)\b.*?(?=\.|\!|\?|$)/gi, '');
+
+  // 3. Remove prompt leakage & YouTube English subtitle artifacts
+  text = text
+    .replace(/^(?:thank\s+you|thanks|i['’]m\s+going\s+to\s+be\s+a\s+little\s+bit\s+more\s+serious\s+about\s+this|thanks\s+for\s+watching|subscribe|subtitles\s+by|translated\s+by).*?(?=\b(?:je|j'|bonjour|salut|monsieur|madame|en|au|dans|je\s+m'appelle|j'habite)\b)/gi, '')
+    .replace(/\b(?:thank\s+you(?:\s+very\s+much)?|i['’]m\s+going\s+to\s+be\s+a\s+little\s+bit\s+more\s+serious(?:\s+about\s+this)?|thanks\s+for\s+watching|subscribe\s+to\s+my\s+channel)\b/gi, '');
+
+  // 4. Remove hallucinated institutional boilerplate
+  text = text
+    .replace(/(?:les\s+idées\s+de\s+l'université|commission\s+de\s+l'état|conseil\s+des\s+ministres|république\s+française|ministère\s+de\s+l'éducation)\b.*?(?=\.|\!|\?|$)/gi, '');
+
+  // 5. Remove prompt echo fragments
+  text = text
+    .replace(/^(?:discours\s+en\s+français|épreuve\s+d'expression\s+orale(?:\s+du\s+tcf\s+canada)?|tcf\s+canada|bonjour,?\s*tcf\s+canada)\b[\.\!\?\:\,-]?\s*/gi, '');
+
+  // 6. Deduplicate 1-word repetition loops (e.g. "euh euh euh euh euh" -> "euh euh")
+  text = text.replace(/\b(\w+)(?:\s+\1){3,}\b/gi, '$1 $1');
+
+  // 7. Deduplicate 2-word phrase loops (e.g. "de la de la de la" -> "de la")
+  text = text.replace(/\b(\w+\s+\w+)(?:\s+\1){3,}\b/gi, '$1');
+
+  text = text.trim();
+
+  // 8. Gatekeeper residual check: if remaining text is purely residual fragments or < 2 characters
+  if (/^(?:tcf\s+canada|bonjour|merci|d'un\s+candidat|accents?\s+formels|sous-titres?|description)$/i.test(text) || text.length < 2) {
+    return '';
+  }
+
+  return text;
+}
+
 // POST /api/speaking/transcribe - Universal Whisper Neural Speech-to-Text Endpoint (99%+ Multi-Accent Recognition)
 router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => {
   try {
@@ -515,6 +558,25 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
 
     const cleanBase64 = audioBase64.includes(';base64,') ? audioBase64.split(';base64,')[1] : audioBase64;
     const buffer = Buffer.from(cleanBase64, 'base64');
+
+    // PRE-FLIGHT BUFFER GUARD: Silent micro-recordings (< 3,000 bytes ~ 0.5s) returned as empty string in 0ms
+    if (buffer.length < 3000) {
+      res.json({
+        success: true,
+        data: {
+          text: '',
+          wordCount: 0,
+          provider: 'preflight-silence-guard',
+          acousticMetrics: {
+            speechRateWpm: 0,
+            hesitationPauseCount: 0,
+            totalSilenceDurationSec: Math.round(durationSec || 1),
+            fluencyIndexPct: 100,
+          }
+        }
+      });
+      return;
+    }
 
     const settings = await Settings.findOne().catch(() => null);
     const groqKey = ((settings as any)?.groqApiKey || process.env.GROQ_API_KEY || '').trim();
@@ -532,14 +594,14 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
               : 'webm';
 
     // 1. PRIMARY PROVIDER: Groq Whisper-Large-v3 Engine (Ultra-Fast 0.2s, 99%+ Multi-Accent Accuracy, Free Tier)
-    if (groqKey && buffer.length > 500) {
+    if (groqKey && buffer.length >= 3000) {
       try {
         const formData = new FormData();
         const blob = new Blob([buffer], { type: mimeType || 'audio/webm' });
         formData.append('file', blob, `candidate_speech.${ext}`);
         formData.append('model', 'whisper-large-v3');
         formData.append('language', 'fr');
-        formData.append('prompt', 'Épreuve d\'expression orale du TCF Canada. Discours en français.');
+        formData.append('prompt', 'Discours en français pour l\'épreuve d\'expression orale.');
         formData.append('temperature', '0.0');
 
         const groqRes = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
@@ -553,9 +615,9 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
         if (groqRes.ok) {
           const json = await groqRes.json() as any;
           if (json?.text && json.text.trim()) {
-            text = json.text.trim();
+            text = sanitizeWhisperTranscript(json.text);
             provider = 'groq-whisper-large-v3';
-            console.log(`[Groq Whisper STT Transcribe Success]: "${text}" (${text.split(/\s+/).length} words transcribed via ${provider})`);
+            console.log(`[Groq Whisper STT Transcribe Success]: "${text}" (${text ? text.split(/\s+/).length : 0} words transcribed via ${provider})`);
           }
         } else {
           const errText = await groqRes.text().catch(() => '');
@@ -567,14 +629,14 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
     }
 
     // 2. SECONDARY PROVIDER FALLBACK: OpenAI Whisper-1 Engine
-    if (!text && openaiKey && buffer.length > 500) {
+    if (!text && openaiKey && buffer.length >= 3000) {
       try {
         const formData = new FormData();
         const blob = new Blob([buffer], { type: mimeType || 'audio/webm' });
         formData.append('file', blob, `candidate_speech.${ext}`);
         formData.append('model', 'whisper-1');
         formData.append('language', 'fr');
-        formData.append('prompt', 'Bonjour, TCF Canada.');
+        formData.append('prompt', 'Discours en français.');
         formData.append('temperature', '0.0');
 
         const whisperRes = await fetch('https://api.openai.com/v1/audio/transcriptions', {
@@ -588,9 +650,9 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
         if (whisperRes.ok) {
           const json = await whisperRes.json() as any;
           if (json?.text && json.text.trim()) {
-            text = json.text.trim();
+            text = sanitizeWhisperTranscript(json.text);
             provider = 'openai-whisper-1';
-            console.log(`[OpenAI Whisper STT Transcribe Success]: "${text}" (${text.split(/\s+/).length} words transcribed via ${provider})`);
+            console.log(`[OpenAI Whisper STT Transcribe Success]: "${text}" (${text ? text.split(/\s+/).length : 0} words transcribed via ${provider})`);
           }
         } else {
           const errText = await whisperRes.text().catch(() => '');
@@ -601,29 +663,13 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
       }
     }
 
-    // POST-TRANSCRIPTION NEURAL HALLUCINATION STRIPPER
-    // Strips known Whisper prompt leakage and training corpus hallucinations triggered by mic silence/static (subtitles, YouTube credits, TV news)
-    if (text) {
-      text = text
-        .replace(/^(?:thank\s+you|i['’]m\s+going\s+to\s+be\s+a\s+little\s+bit\s+more\s+serious\s+about\s+this|thanks\s+for\s+watching|subscribe|subtitles\s+by|translated\s+by).*?(?=\b(?:je|j'|bonjour|salut|monsieur|madame|en|au|dans|je\s+m'appelle|j'habite)\b)/gi, '')
-        .replace(/\b(?:thank\s+you|i['’]m\s+going\s+to\s+be\s+a\s+little\s+bit\s+more\s+serious\s+about\s+this|thanks\s+for\s+watching)\b/gi, '')
-        .replace(/^.*?(les sous-titres sont en anglais|description de la vidéo|sous-titres réalisés|amara\.org).*?(\.|\!|\?|$)/gi, '')
-        .replace(/^.*?(les idées de l'université de paris|commission de l'état de france|conseil des ministres des sciences).*?(\.|\!|\?|$)/gi, '')
-        .replace(/\b(les sous-titres sont en anglais|description de la vidéo|commission de l'état de france|conseil des ministres des sciences|sous-titres réalisés|amara\.org|sous-titrage|abonnez-vous|merci d'avoir regardé)\b/gi, '')
-        .replace(/\b(d'un candidat au tcf canada|tcf canadaoiceents|oiceents|accents formels|africain|asiatique|arabe|canadien|européen|anglophone)\b/gi, '')
-        .replace(/^(d'un candidat|transcription exacte|accents formels).*?(\.|\!|\?|$)/gi, '')
-        .trim();
+    // Final multi-pass neural sanitizer pass
+    text = sanitizeWhisperTranscript(text);
 
-      // If text contains ONLY prompt artifact fragments or subtitle credits, clear it to empty string so Gatekeeper handles silent audio
-      if (/^(d'un candidat|accents formels|tcf canada|bonjour, tcf canada\.?|sous-titres|description de la vidéo)$/i.test(text) || text.length < 3) {
-        text = '';
-      }
-    }
-
-    const words = text.split(/\s+/).filter(Boolean);
+    const words = text ? text.split(/\s+/).filter(Boolean) : [];
     const wordCount = words.length;
     const estimatedDuration = typeof durationSec === 'number' && durationSec > 0 ? durationSec : Math.max(5, Math.round(wordCount / 2.2));
-    const speechRateWpm = Math.round((wordCount / (estimatedDuration / 60))) || 110;
+    const speechRateWpm = wordCount > 0 ? Math.round((wordCount / (estimatedDuration / 60))) : 0;
 
     res.json({
       success: true,
@@ -635,7 +681,7 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
           speechRateWpm,
           hesitationPauseCount: text.includes('...') || text.includes('euh') ? 3 : 1,
           totalSilenceDurationSec: Math.max(1, Math.round(estimatedDuration * 0.15)),
-          fluencyIndexPct: speechRateWpm >= 110 ? 90 : 75,
+          fluencyIndexPct: speechRateWpm >= 110 ? 90 : speechRateWpm > 0 ? 75 : 100,
         }
       }
     });

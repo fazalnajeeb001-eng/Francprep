@@ -150,29 +150,40 @@ export function SpeakingRecorder({ onSave, expectedText, lessonTitle }: {
     try {
       const res = await fetch(audioUrl);
       const blob = await res.blob();
-      const { WhisperTranscriber } = await import("whisper-web-transcriber");
-      const transcriber = new WhisperTranscriber({
-        modelSize: "base-en-q5_1",
-      });
-      await transcriber.loadModel();
-      const ext = blob.type.includes('mp4') ? 'm4a' : blob.type.includes('ogg') ? 'ogg' : 'webm';
-      const audioFile = new File([blob], `recording.${ext}`, { type: blob.type });
-      const result = await (transcriber as any).transcribe(audioFile);
-      const transcription = result.text || "";
-      if (expectedText && transcription) {
-        const analyzeRes = await apiFetch("/writing/speaking-analysis", {
-          method: "POST",
-          body: JSON.stringify({ transcription, expectedText, lessonTitle }),
-        });
-        const json = await analyzeRes.json();
-        if (json.success && json.data) {
-          setFeedback(json.data);
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = async () => {
+        try {
+          const base64Data = reader.result as string;
+          const tRes = await apiFetch("/speaking/transcribe", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ audioBase64: base64Data, mimeType: blob.type, durationSec: 10 }),
+          });
+          const tJson = await tRes.json();
+          const transcription = (tJson.success && tJson.data?.text) ? tJson.data.text.trim() : "";
+
+          if (expectedText && transcription) {
+            const analyzeRes = await apiFetch("/writing/speaking-analysis", {
+              method: "POST",
+              body: JSON.stringify({ transcription, expectedText, lessonTitle }),
+            });
+            const json = await analyzeRes.json();
+            if (json.success && json.data) {
+              setFeedback(json.data);
+            }
+          }
+        } catch (innerErr) {
+          console.error("Transcribe inner error:", innerErr);
+          setError("Failed to transcribe speech audio.");
+        } finally {
+          setTranscribing(false);
         }
-      }
+      };
+      return;
     } catch (e) {
       console.error("Whisper failed:", e);
-      setError("Transcription not available on this device. Try Chrome on desktop.");
-    } finally {
+      setError("Transcription service unavailable.");
       setTranscribing(false);
     }
   };

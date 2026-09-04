@@ -1138,7 +1138,7 @@ export function AuthenticCBTExamPage() {
 
             const audioBlob = new Blob(audioChunks, { type: mimeType });
 
-            if (audioBlob.size >= 100) {
+            if (audioBlob.size >= 3000) {
               setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: true }));
               const reader = new FileReader();
               reader.readAsDataURL(audioBlob);
