@@ -538,7 +538,8 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
         const blob = new Blob([buffer], { type: mimeType || 'audio/webm' });
         formData.append('file', blob, `candidate_speech.${ext}`);
         formData.append('model', 'whisper-large-v3');
-        formData.append('prompt', 'Bonjour, TCF Canada.');
+        formData.append('language', 'fr');
+        formData.append('prompt', 'Épreuve d\'expression orale du TCF Canada. Discours en français.');
         formData.append('temperature', '0.0');
 
         const groqRes = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
@@ -604,6 +605,8 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
     // Strips known Whisper prompt leakage and training corpus hallucinations triggered by mic silence/static (subtitles, YouTube credits, TV news)
     if (text) {
       text = text
+        .replace(/^(?:thank\s+you|i['’]m\s+going\s+to\s+be\s+a\s+little\s+bit\s+more\s+serious\s+about\s+this|thanks\s+for\s+watching|subscribe|subtitles\s+by|translated\s+by).*?(?=\b(?:je|j'|bonjour|salut|monsieur|madame|en|au|dans|je\s+m'appelle|j'habite)\b)/gi, '')
+        .replace(/\b(?:thank\s+you|i['’]m\s+going\s+to\s+be\s+a\s+little\s+bit\s+more\s+serious\s+about\s+this|thanks\s+for\s+watching)\b/gi, '')
         .replace(/^.*?(les sous-titres sont en anglais|description de la vidéo|sous-titres réalisés|amara\.org).*?(\.|\!|\?|$)/gi, '')
         .replace(/^.*?(les idées de l'université de paris|commission de l'état de france|conseil des ministres des sciences).*?(\.|\!|\?|$)/gi, '')
         .replace(/\b(les sous-titres sont en anglais|description de la vidéo|commission de l'état de france|conseil des ministres des sciences|sous-titres réalisés|amara\.org|sous-titrage|abonnez-vous|merci d'avoir regardé)\b/gi, '')
