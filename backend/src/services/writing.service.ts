@@ -2113,19 +2113,21 @@ GENERAL EXAMINER RULES:
       };
     }
 
-    // 2. English / Foreign Language Code-Switching Rejection (N-gram Sequence & >25% Density Guard)
+    // 2. Comprehensive English / Foreign Language Code-Switching Rejection (N-gram Sequence & >15% Density Guard)
     const textLower = cleanSpeech.toLowerCase();
-    // Exclude valid French loanwords (co-working, workflow, start-up, manager, service, urgent, hotel, taxi, project)
-    const englishTokens = textLower.match(/\b(the|is|are|was|were|with|because|please|thanks|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had|about|into|after|before|house|work|help|repair|cold|night)\b/gi) || [];
-    const has3WordEnglishNgram = /\b(the|is|are|was|were|with|because|please|thanks|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had)\s+(the|is|are|was|were|with|because|please|thanks|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had|house|work|help|repair|cold|night)\s+(the|is|are|was|were|with|because|please|thanks|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had|house|work|help|repair|cold|night)\b/gi.test(textLower);
+    // Comprehensive English token pattern (excluding valid French loanwords)
+    const engWordPattern = "\\b(the|is|are|was|were|with|because|please|thanks|thank|you|your|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had|about|into|after|before|house|work|help|repair|cold|night|going|to|be|am|im|i'm|a|an|little|bit|more|serious|very|much|well|so|now|good|fine|ok|okay|hi|hello|bye|goodbye|can|will|want|like|need|think|say|said|tell|speaking|speak|french|english)\\b";
+    
+    const englishTokens = textLower.match(new RegExp(engWordPattern, "gi")) || [];
+    const has3WordEnglishNgram = new RegExp(`${engWordPattern}\\s+${engWordPattern}\\s+${engWordPattern}`, "gi").test(textLower);
     
     const englishDensityPct = (englishTokens.length / wordCount) * 100;
-    const isDominantEnglish = has3WordEnglishNgram || (englishTokens.length >= 4 && englishDensityPct >= 25);
+    const isDominantEnglish = has3WordEnglishNgram || (englishTokens.length >= 3 && englishDensityPct >= 15);
 
     if (isDominantEnglish) {
       return {
         transcription: cleanSpeech,
-        feedback: `🚨 ZERO GRADE (0/20 Marks — NCLC 0): Langue étrangère dominante détectée (${englishTokens.length} mots en anglais). Les examinateurs officiels du TCF Canada attribuent la note 0/20 en cas d'utilisation de l'anglais.`,
+        feedback: `🚨 ZERO GRADE (0/20 Marks — NCLC 0): Langue étrangère dominante détectée (${englishTokens.length} mots en anglais). Les examinateurs officiels du TCF Canada attribuent l'échec automatique 0/20 en cas d'utilisation de l'anglais.`,
         score: 0,
         scoreOutOf20: 0,
         accuracy: 0,
@@ -2137,7 +2139,7 @@ GENERAL EXAMINER RULES:
         nclcGrade: 'NCLC 0 (Zero Grade — Langue Étrangère / Anglais)',
         cefrLevel: 'Below A1',
         expressEntryPoints: 0,
-        corrections: englishTokens.slice(0, 3).map((w: string) => ({
+        corrections: englishTokens.slice(0, 4).map((w: string) => ({
           original: w,
           corrected: 'Traduisez en français',
           explanation: "L'utilisation de la langue anglaise est strictement interdite aux épreuves du TCF Canada."
