@@ -1407,8 +1407,8 @@ Respond STRICTLY with a raw JSON object:
       else if (scoreOutOf20 >= 14) { nclcGrade = "NCLC 8 (B2 Upper)"; cefrLevel = "B2"; expressEntryPoints = 23; }
       else if (scoreOutOf20 >= 12) { nclcGrade = "NCLC 7 (B2 Benchmark Target)"; cefrLevel = "B2"; expressEntryPoints = 17; }
       else if (scoreOutOf20 >= 10) { nclcGrade = "NCLC 6 (B1 Intermediate)"; cefrLevel = "B1"; expressEntryPoints = 12; }
-      else if (scoreOutOf20 >= 8) { nclcGrade = "NCLC 5 (B1 Threshold)"; cefrLevel = "B1"; expressEntryPoints = 6; }
-      else if (scoreOutOf20 >= 5) { nclcGrade = "NCLC 4 (A2 Elementary)"; cefrLevel = "A2"; expressEntryPoints = 0; }
+      else if (scoreOutOf20 >= 9) { nclcGrade = "NCLC 5 (B1 Threshold)"; cefrLevel = "B1"; expressEntryPoints = 6; }
+      else if (scoreOutOf20 >= 6) { nclcGrade = "NCLC 4 (A2 Elementary)"; cefrLevel = "A2"; expressEntryPoints = 0; }
       else if (scoreOutOf20 >= 3) { nclcGrade = "NCLC 3 (A1 Beginner)"; cefrLevel = "A1"; expressEntryPoints = 0; }
       else { nclcGrade = "NCLC 1-2 (Below A1 / Beginner)"; cefrLevel = "Below A1"; expressEntryPoints = 0; }
 
@@ -1743,8 +1743,8 @@ Return JSON only:
         else if (scoreOutOf20 >= 14) { nclcGrade = "NCLC 8 (B2 Upper)"; cefrLevel = "B2"; expressEntryPoints = 23; }
         else if (scoreOutOf20 >= 12) { nclcGrade = "NCLC 7 (B2 Benchmark Target)"; cefrLevel = "B2"; expressEntryPoints = 17; }
         else if (scoreOutOf20 >= 10) { nclcGrade = "NCLC 6 (B1 Intermediate)"; cefrLevel = "B1"; expressEntryPoints = 12; }
-        else if (scoreOutOf20 >= 8) { nclcGrade = "NCLC 5 (B1 Threshold)"; cefrLevel = "B1"; expressEntryPoints = 6; }
-        else if (scoreOutOf20 >= 5) { nclcGrade = "NCLC 4 (A2 Elementary)"; cefrLevel = "A2"; expressEntryPoints = 0; }
+        else if (scoreOutOf20 >= 9) { nclcGrade = "NCLC 5 (B1 Threshold)"; cefrLevel = "B1"; expressEntryPoints = 6; }
+        else if (scoreOutOf20 >= 6) { nclcGrade = "NCLC 4 (A2 Elementary)"; cefrLevel = "A2"; expressEntryPoints = 0; }
         else if (scoreOutOf20 >= 3) { nclcGrade = "NCLC 3 (A1 Beginner)"; cefrLevel = "A1"; expressEntryPoints = 0; }
         else { nclcGrade = "NCLC 0 (Zero Grade — Below A1)"; cefrLevel = "Below A1"; expressEntryPoints = 0; }
 
