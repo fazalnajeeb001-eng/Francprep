@@ -2088,7 +2088,15 @@ GENERAL EXAMINER RULES:
       };
     }
 
-    const words = cleanSpeech.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
+    // Candidate-only speech extraction for accurate length and token density analysis
+    const candidateOnlyLines = cleanSpeech
+      .split('\n')
+      .filter((line) => !line.trim().startsWith('[Examinateur]') && !line.trim().startsWith('Examinateur:'))
+      .map((line) => line.replace(/^\[Tour\s+\d+\s+Candidat\]:\s*/i, '').replace(/^Candidat:\s*/i, '').trim())
+      .filter(Boolean);
+
+    const candidateSpeech = candidateOnlyLines.length > 0 ? candidateOnlyLines.join(' ') : cleanSpeech;
+    const words = candidateSpeech.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
     const wordCount = words.length;
 
     // 1. Task-Specific Minimum Word Count Gatekeeper
@@ -2096,7 +2104,7 @@ GENERAL EXAMINER RULES:
     if (wordCount < minWordsRequired) {
       return {
         transcription: cleanSpeech,
-        feedback: `🚨 ZERO GRADE (0/20 Marks — NCLC 0): Production orale insuffisante (${wordCount} mots enregistrés, minimum ${minWordsRequired} mots requis pour la Tâche ${taskNum}). Impossible d'évaluer la compétence linguistique du candidat (A1 Non Atteint).`,
+        feedback: `🚨 ZERO GRADE (0/20 Marks — NCLC 0): Production orale insuffisante (${wordCount} mots enregistrés par le candidat, minimum ${minWordsRequired} mots requis pour la Tâche ${taskNum}). Impossible d'évaluer la compétence linguistique du candidat (A1 Non Atteint).`,
         score: 0,
         scoreOutOf20: 0,
         accuracy: 0,
@@ -2113,21 +2121,20 @@ GENERAL EXAMINER RULES:
       };
     }
 
-    // 2. Comprehensive English / Foreign Language Code-Switching Rejection (N-gram Sequence & >15% Density Guard)
-    const textLower = cleanSpeech.toLowerCase();
-    // Comprehensive English token pattern (excluding valid French loanwords)
-    const engWordPattern = "\\b(the|is|are|was|were|with|because|please|thanks|thank|you|your|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had|about|into|after|before|house|work|help|repair|cold|night|going|to|be|am|im|i'm|a|an|little|bit|more|serious|very|much|well|so|now|good|fine|ok|okay|hi|hello|bye|goodbye|can|will|want|like|need|think|say|said|tell|speaking|speak|french|english)\\b";
+    // 2. Comprehensive Foreign Language Code-Switching Rejection (English, Spanish, German, Italian)
+    const textLower = candidateSpeech.toLowerCase();
+    const foreignWordPattern = "\\b(the|is|are|was|were|with|because|please|thanks|thank|you|your|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had|about|into|after|before|house|work|help|repair|cold|night|going|to|be|am|im|i'm|a|an|little|bit|more|serious|very|much|well|so|now|good|fine|ok|okay|hi|hello|bye|goodbye|can|will|want|like|need|think|say|said|tell|speaking|speak|french|english|hola|como|esta|estás|amigo|amiga|gracias|buenos|días|noches|tardes|por|favor|hablar|español|guten|tag|danke|bitte|ich|ist|deutsch|ciao|grazie|prego|buongiorno|italiano)\\b";
     
-    const englishTokens = textLower.match(new RegExp(engWordPattern, "gi")) || [];
-    const has3WordEnglishNgram = new RegExp(`${engWordPattern}\\s+${engWordPattern}\\s+${engWordPattern}`, "gi").test(textLower);
+    const foreignTokens = textLower.match(new RegExp(foreignWordPattern, "gi")) || [];
+    const has3WordForeignNgram = new RegExp(`${foreignWordPattern}\\s+${foreignWordPattern}\\s+${foreignWordPattern}`, "gi").test(textLower);
     
-    const englishDensityPct = (englishTokens.length / wordCount) * 100;
-    const isDominantEnglish = has3WordEnglishNgram || (englishTokens.length >= 3 && englishDensityPct >= 15);
+    const foreignDensityPct = (foreignTokens.length / wordCount) * 100;
+    const isDominantForeign = has3WordForeignNgram || (foreignTokens.length >= 3 && foreignDensityPct >= 15);
 
-    if (isDominantEnglish) {
+    if (isDominantForeign) {
       return {
         transcription: cleanSpeech,
-        feedback: `🚨 ZERO GRADE (0/20 Marks — NCLC 0): Langue étrangère dominante détectée (${englishTokens.length} mots en anglais). Les examinateurs officiels du TCF Canada attribuent l'échec automatique 0/20 en cas d'utilisation de l'anglais.`,
+        feedback: `🚨 ZERO GRADE (0/20 Marks — NCLC 0): Langue étrangère non-française dominante détectée (${foreignTokens.length} mots non-français). Les examinateurs officiels du TCF Canada attribuent l'échec automatique 0/20 en cas d'utilisation d'une langue étrangère.`,
         score: 0,
         scoreOutOf20: 0,
         accuracy: 0,
@@ -2136,15 +2143,15 @@ GENERAL EXAMINER RULES:
         coherenceScore: 0,
         lexicalScore: 0,
         grammarScore: 0,
-        nclcGrade: 'NCLC 0 (Zero Grade — Langue Étrangère / Anglais)',
+        nclcGrade: 'NCLC 0 (Zero Grade — Langue Étrangère / Non-Français)',
         cefrLevel: 'Below A1',
         expressEntryPoints: 0,
-        corrections: englishTokens.slice(0, 4).map((w: string) => ({
+        corrections: foreignTokens.slice(0, 4).map((w: string) => ({
           original: w,
           corrected: 'Traduisez en français',
-          explanation: "L'utilisation de la langue anglaise est strictement interdite aux épreuves du TCF Canada."
+          explanation: "L'utilisation d'une langue étrangère est strictement interdite aux épreuves du TCF Canada."
         })),
-        tips: ['Exprimez-vous exclusivement en français sans recourir à la langue anglaise.']
+        tips: ['Exprimez-vous exclusivement en français sans recourir à une langue étrangère.']
       };
     }
 

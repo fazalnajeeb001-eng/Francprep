@@ -1401,8 +1401,15 @@ export function AuthenticCBTExamPage() {
           await Promise.all(
             pendingSpeaking.map(async (t) => {
               const dialogue = speakingDialogueMap[t.id] || [];
+              let turnIdx = 0;
               const combinedSpeech = dialogue.length > 0
-                ? dialogue.map((m) => `${m.sender === 'candidate' ? 'Candidat' : 'Examinateur'}: ${m.text}`).join('\n')
+                ? dialogue.map((m) => {
+                    if (m.sender === 'candidate') {
+                      turnIdx += 1;
+                      return `[Tour ${turnIdx} Candidat]: ${m.text}`;
+                    }
+                    return `[Examinateur]: ${m.text}`;
+                  }).join('\n')
                 : (speakingTranscripts[t.id] || '');
               try {
                 const taskNumber = t.taskNumber || (t.id?.includes('spk-1') ? 1 : t.id?.includes('spk-2') ? 2 : t.id?.includes('spk-3') ? 3 : 1);
