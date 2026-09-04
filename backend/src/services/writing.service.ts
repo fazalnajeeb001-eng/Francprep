@@ -1602,12 +1602,15 @@ Return JSON only:
         let l = Math.max(0, Math.min(5, typeof sub.lexical_variety === 'number' ? sub.lexical_variety : 3));
         let g = Math.max(0, Math.min(5, typeof sub.morphosyntax === 'number' ? sub.morphosyntax : 3));
 
-        // PHASE 2 ACOUSTIC METRICS ALIGNMENT: Calibrate Cohérence & Débit based on signal WPM and hesitation pauses
+        // PHASE 2 ACOUSTIC METRICS ALIGNMENT: Calibrate Cohérence & Débit based on signal WPM, silence duration and hesitation pauses
         if (acousticMetrics) {
           const wpm = acousticMetrics.speechRateWpm || 0;
           const pauseCount = acousticMetrics.hesitationPauseCount || 0;
+          const silenceSec = acousticMetrics.totalSilenceDurationSec || 0;
 
-          if (wpm > 0 && wpm < 50) {
+          if (silenceSec > 25) {
+            c = Math.min(2, c); // >25s total dead-air silence caps flow at 2/5 per FEI guidelines
+          } else if (wpm > 0 && wpm < 50) {
             c = Math.min(2, c); // Slow speech rate (<50 WPM) caps flow at 2/5
           } else if (wpm > 0 && wpm < 75 && pauseCount >= 3) {
             c = Math.min(3, c); // Moderate slow pace with frequent hesitations caps flow at 3/5
@@ -1663,8 +1666,12 @@ Return JSON only:
           g = Math.min(2, g);
         }
 
-        // WORD COUNT CEILING CHECKS
+        // WORD COUNT CEILING CHECKS & TURN-COUNT AWARE THRESHOLDS
         const totalWords = cleanSpeech.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean).length;
+        const candidateTurnsMatch = cleanSpeech.match(/\[Tour\s+\d+\s+Candidat\]/gi) || [];
+        const turnCount = candidateTurnsMatch.length;
+        const lengthCapThreshold = (taskNum === 2 && turnCount >= 4) ? 35 : 55;
+
         if (totalWords < 15) {
           t = Math.min(1, t);
           c = Math.min(1, c);
@@ -1687,7 +1694,7 @@ Return JSON only:
           scoreOutOf20 = Math.min(3, scoreOutOf20);
         } else if (totalWords < 35) {
           scoreOutOf20 = Math.min(7, scoreOutOf20);
-        } else if (totalWords < 55 && taskNum >= 2) {
+        } else if (totalWords < lengthCapThreshold && taskNum >= 2) {
           scoreOutOf20 = Math.min(11, scoreOutOf20);
         }
 
@@ -1703,8 +1710,8 @@ Return JSON only:
         // FIDELIA PHASE 4 LAYER 3: SENIOR CHIEF EXAMINER BORDERLINE SCORE TIE-BREAKER
         // Deterministically resolves boundary scores (7/20, 11/20, 15/20) that impact Canadian Express Entry NCLC thresholds
         if (scoreOutOf20 === 11 && totalWords >= 55) {
-          // Check NCLC 7 (B2 Target Boundary): Requires B2 grammar structures + formal connectors
-          const hasB2Grammar = /\b(pourriez|serait|aimerais|puisse|soit|dont|auquel|bien que|afin de|avons|sommes|ai fait|ai visité)\b/i.test(textLower);
+          // Check NCLC 7 (B2 Target Boundary): Requires B2 grammar structures + formal connectors (including oral homophones)
+          const hasB2Grammar = /\b(pourriez|pourrais|pourrait|serait|seraient|aimerais|aimerait|puisse|puissent|soit|soient|fasse|fassent|dont|auquel|auxquels|bien que|afin de|avons|sommes|ai fait|ai visité)\b/i.test(textLower);
           const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part|en somme|selon moi|à mon avis|en effet)\b/i.test(textLower);
           if (hasB2Grammar && hasB2Connectors) {
             scoreOutOf20 = 12; // Upgrade to NCLC 7 Benchmark Target

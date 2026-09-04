@@ -461,7 +461,7 @@ export function AuthenticCBTExamPage() {
     const targetSeconds = Math.round(prepMins * 60);
     setOralPrepTimeRemaining((prev) => ({
       ...prev,
-      [taskId]: targetSeconds
+      [taskId]: prev[taskId] && prev[taskId] > 0 ? prev[taskId] : targetSeconds
     }));
     setIsOralPrepActive((prev) => ({ ...prev, [taskId]: true }));
   };
@@ -486,7 +486,8 @@ export function AuthenticCBTExamPage() {
   };
 
   useEffect(() => {
-    const activeTasks = Object.keys(isOralPrepActive).filter((k) => isOralPrepActive[k] && (oralPrepTimeRemaining[k] || 0) > 0);
+    const currentTaskId = currentSection?.speakingTasks?.[activeSpeakingTaskIdx]?.id;
+    const activeTasks = Object.keys(isOralPrepActive).filter((k) => k === currentTaskId && isOralPrepActive[k] && (oralPrepTimeRemaining[k] || 0) > 0);
     const isChatLoading = Object.values(speakingChatLoading).some(Boolean);
     // CRITICAL FORENSIC GUARD: Freeze prep timer while examiner audio is playing, fetching, or simulator is paused
     if (activeTasks.length === 0 || isSpeaking || isAudioFetching || isPlayingAudio || isChatLoading || isTimerPaused) return;
@@ -536,10 +537,11 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isOralPrepActive, oralPrepTimeRemaining, currentSection, isSpeaking, isAudioFetching, isPlayingAudio, speakingChatLoading, isTimerPaused]);
+  }, [isOralPrepActive, oralPrepTimeRemaining, currentSection, isSpeaking, isAudioFetching, isPlayingAudio, speakingChatLoading, isTimerPaused, activeSpeakingTaskIdx]);
 
   useEffect(() => {
-    const activeTasks = Object.keys(isOralSpeakingActive).filter((k) => isOralSpeakingActive[k] && typeof oralSpeakingTimeRemaining[k] === 'number' && oralSpeakingTimeRemaining[k] > 0);
+    const currentTaskId = currentSection?.speakingTasks?.[activeSpeakingTaskIdx]?.id;
+    const activeTasks = Object.keys(isOralSpeakingActive).filter((k) => k === currentTaskId && isOralSpeakingActive[k] && typeof oralSpeakingTimeRemaining[k] === 'number' && oralSpeakingTimeRemaining[k] > 0);
     const isChatLoading = Object.values(speakingChatLoading).some(Boolean);
     // CRITICAL FORENSIC GUARD: Freeze speaking timer while examiner audio is playing, fetching, or simulator is paused
     if (activeTasks.length === 0 || isSpeaking || isAudioFetching || isPlayingAudio || isChatLoading || isTimerPaused) return;
@@ -578,7 +580,7 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isOralSpeakingActive, oralSpeakingTimeRemaining, isSpeaking, isAudioFetching, isPlayingAudio, speakingChatLoading, isTimerPaused, recordingSpeaking, currentSection]);
+  }, [isOralSpeakingActive, oralSpeakingTimeRemaining, isSpeaking, isAudioFetching, isPlayingAudio, speakingChatLoading, isTimerPaused, recordingSpeaking, currentSection, activeSpeakingTaskIdx]);
 
   // Page visibility & phone lock lifecycle control for Speaking: pause audio and stop mic if tab is hidden or screen is locked
   useEffect(() => {
