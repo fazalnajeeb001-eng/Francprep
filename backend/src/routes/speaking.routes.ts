@@ -197,13 +197,14 @@ ${timeWarningDirective}
     taskRules = `
 - THIS IS TÂCHE 2 (Exercice en interaction / Roleplay - 3.5 minutes).
 - You are the roleplay partner described in the scenario: ${role}. Target CEFR level: ${level}.
-- MANDATORY CONCRETE FACTS RULE: NEVER give evasive generalities like "Nous proposons plusieurs options adaptées à votre niveau/disponibilité". ALWAYS supply at least 2 CONCRETE, FACTUAL DETAILS matching the scenario (${scenario}):
-  * If asked about schedules/days: Give specific days and times (e.g. "Nos cours débutants ont lieu les mardis et jeudis de 18h à 20h").
-  * If asked about level/beginners: Give an explicit policy statement (e.g. "Ce programme est spécialement conçu pour les débutants, aucune expérience préalable n'est nécessaire !").
-  * If asked about prices/materials: Give exact dollar amounts and equipment details (e.g. "C'est 45$ par séance et tout le matériel est entièrement fourni sur place").
-- ROLEPLAY CLOSING RULE: If the candidate is concluding the interaction (expressing thanks, saying goodbye, or stating they will call back/reflect to finalize registration), DO NOT ask "Avez-vous d'autres questions ?". Conclude politely with a formal examiner closing: "C'est parfait ! Je vous en prie. N'hésitez pas si vous avez besoin d'autres précisions. Excellente journée à vous et à bientôt !"
+- ABSOLUTE DOCUMENT CARD FACT LOCKING DIRECTIVE:
+  * You MUST use ONLY the exact details, prices, schedules, and conditions specified in the active scenario text:
+    ${scenario}
+  * NEVER invent or state fake prices, fees, rates, or session costs not found in the scenario text above (e.g., NEVER say "$50 per session" or "45$ par séance").
+  * If the candidate asks about prices/tariffs, cite ONLY the exact price/rent/fee given in the scenario card (e.g. "750 $ CAD par semaine").
+  * If asked about schedules/opening hours, cite ONLY the schedule given in the scenario card.
+- ROLEPLAY CLOSING RULE: If the candidate is concluding the interaction (expressing thanks, saying goodbye, or stating they will reflect/call back to finalize), DO NOT ask "Avez-vous d'autres questions ?". Conclude politely: "C'est parfait ! Je vous en prie. N'hésitez pas si vous avez besoin d'autres précisions. Excellente journée à vous et à bientôt !"
 - INTERMEDIATE TURN RULE: For all intermediate questions, end your response with: "Avez-vous d'autres questions ?"
-- Example: "Nos cours pour débutants ont lieu les mardis et jeudis de 18h à 20h. Tout le matériel est entièrement fourni sur place. Avez-vous d'autres questions ?"
 ${timeWarningDirective}
 `;
   } else if (isTache3) {
@@ -211,7 +212,11 @@ ${timeWarningDirective}
 - THIS IS TÂCHE 3 (Expression d'un point de vue & Débat - 4.5 minutes).
 - You are an official FEI TCF Canada oral examiner named ${name} (${role}).
 - Listen to the candidate's thesis statement and introduce a polite C1/C2 counter-argument or nuance to test their argumentation skills under debate pressure.
-- Start politely with: "Je comprends votre point de vue, cependant ne pensez-vous pas que..." or "C'est un argument intéressant, mais...".
+- ANTI-REPETITION LOCK DIRECTIVE:
+  * Inspect the conversation history provided below.
+  * You are STRICTLY FORBIDDEN from repeating any counter-argument, question, phrasing, or sentence that you have already spoken in this session.
+  * Always advance the debate with a NEW perspective, economic/social counter-example, or deeper nuance.
+- Start politely with: "Je comprends votre point de vue, néanmoins..." or "C'est une perspective intéressante, mais...".
 - Use formal logical connectors ("néanmoins", "en revanche", "or"). Keep your counter-argument concise (2 sentences maximum).
 ${timeWarningDirective}
 `;
@@ -231,7 +236,7 @@ SCENARIO CONTEXT: ${scenario}
 EXAMINER PROTOCOL RULES:
 ${taskRules}
 - Respond ONLY in spoken French. Do NOT output translations, meta-notes, or FR/EN text prefixes.
-- Respond dynamically and contextually to the candidate's actual words. Never repeat static template sentences verbatim. If candidate input is brief or off-topic, acknowledge what they said naturally and gently guide them back to the question.
+- Respond dynamically and contextually to the candidate's actual words. Never repeat static template sentences.
 `;
 }
 
@@ -270,40 +275,29 @@ function generateDynamicFallbackReply(
     if (isClosing) {
       return "C'est parfait ! Je vous en prie. N'hésitez pas si vous avez besoin d'autres précisions. Excellente journée à vous et à bientôt !";
     }
-    const hasDaysOrSchedule = /\b(horaire|heure|quand|ouvert|fermé|date|samedi|dimanche|semaine|jour|jours|créneau|créneaux|disponibilité)\b/i.test(userText);
-    const hasLevelOrExperience = /\b(débutant|débutants|niveau|expérience|découverte|initiation|nouveau|facile)\b/i.test(userText);
+
+    // Extract dynamic price/tariff detail from scenarioText if available
+    let dynamicPriceDetail = "";
+    if (scenarioText) {
+      const priceMatch = scenarioText.match(/(?:tarifs?|prix|loyer|coût|montant|frais)\s*[:=]?\s*([^,.\n]+)/i) || scenarioText.match(/(\d+[\d\s]*\$\s*(?:CAD)?(?:\s*\/\s*\w+)?)/i);
+      if (priceMatch && priceMatch[1]) {
+        dynamicPriceDetail = priceMatch[1].trim();
+      }
+    }
+
     const hasPriceOrTariff = /\b(carte|payer|règlement|paiement|argent|coût|tarif|tarifs|prix|combien|gratuit|payant)\b/i.test(userText);
-    const hasMaterialOrEquipment = /\b(matériel|outil|fourni|équipement|serviette|casier|installation|infrastructure|tenue)\b/i.test(userText);
-    const hasRegistration = /\b(inscription|inscrire|réserver|réservation|place|conditions|règles|forfait)\b/i.test(userText);
+    const hasDaysOrSchedule = /\b(horaire|heure|quand|ouvert|fermé|date|samedi|dimanche|semaine|jour|jours|créneau|créneaux|disponibilité)\b/i.test(userText);
 
-    // MULTI-INTENT COMPOUND QUERY MATCHES
-    if (hasDaysOrSchedule && hasLevelOrExperience) {
-      return "Nos cours pour débutants ont lieu les mardis et jeudis de 18h à 20h. Aucune expérience préalable n'est nécessaire ! Avez-vous d'autres questions ?";
-    }
-    if (hasPriceOrTariff && hasMaterialOrEquipment) {
-      return "Le tarif est de 45$ par session, et l'ensemble du matériel ainsi que les équipements sont entièrement fournis sur place sans aucun supplément. Avez-vous d'autres questions ?";
-    }
-    if (hasRegistration && hasDaysOrSchedule) {
-      return "L'inscription se fait directement en ligne ou à l'accueil. Nos créneaux sont ouverts du lundi au samedi de 8h à 21h. Avez-vous d'autres questions ?";
-    }
-
-    // SINGLE-INTENT SPECIFIC FACTUAL MATCHES
-    if (hasLevelOrExperience) {
-      return "Tous nos programmes sont spécialement conçus pour accueillir les débutants, et nos moniteurs vous accompagnent pas à pas. Avez-vous d'autres questions ?";
+    if (hasPriceOrTariff && dynamicPriceDetail) {
+      return `Concernant le tarif, il s'agit de ${dynamicPriceDetail}. Avez-vous d'autres questions ?`;
     }
     if (hasPriceOrTariff) {
-      return "Pour le règlement, nous acceptons les cartes de crédit, de débit et les paiements en ligne. Nos forfaits débutent à partir de 45$ par séance. Avez-vous d'autres questions ?";
-    }
-    if (hasMaterialOrEquipment) {
-      return "Toutes les infrastructures et le matériel nécessaire sont entièrement fournis sur place pour tous nos usagers. Avez-vous d'autres questions ?";
+      return "Les détails tarifaires et conditions de règlement figurant sur la fiche sont pleinement applicables. Avez-vous d'autres questions ?";
     }
     if (hasDaysOrSchedule) {
-      return "Nos installations et cours se déroulent du lundi au samedi, de 8 heures à 21 heures. Avez-vous d'autres questions ?";
+      return "Nos horaires d'ouverture et créneaux sont conformes aux indications de la fiche d'information. Avez-vous d'autres questions ?";
     }
-    if (hasRegistration) {
-      return "La réservation préalable est fortement recommandée directement sur notre plateforme web ou auprès de l'accueil. Avez-vous d'autres questions ?";
-    }
-    return "C'est une très bonne question ! Nos séances se déroulent en petits groupes et tout le matériel est fourni sur place. Avez-vous d'autres questions ?";
+    return "C'est une très bonne question ! Tous les détails figurant sur notre fiche d'information sont à votre disposition. Avez-vous d'autres questions ?";
   }
 
   // TÂCHE 3 DYNAMIC MULTI-TEMPLATE DEBATE MATRIX (NEVER REPEATS SAME SENTENCE VERBATIM)
@@ -311,19 +305,21 @@ function generateDynamicFallbackReply(
     "Je comprends tout à fait votre point de vue, néanmoins ne pensez-vous pas que cette mesure comporte également des risques économiques ou sociaux importants ?",
     "C'est un argument tout à fait pertinent. Cependant, d'autres experts soutiennent que cette approche pourrait créer des inégalités. Comment répondez-vous à cette objection ?",
     "Certes, mais si l'on regarde la situation sur le long terme, ne craignez-vous pas un manque d'encadrement ou de régulation ?",
-    "En effet, c'est une perspective intéressante. Mais au-delà des avantages immédiats, quels sont selon vous les freins principaux à sa mise en œuvre ?"
+    "En effet, c'est une perspective intéressante. Mais au-delà des avantages immédiats, quels sont selon vous les freins principaux à sa mise en œuvre ?",
+    "Votre analyse se défend, mais n'y a-t-il pas là une contradiction avec les principes de responsabilité collective ?"
   ];
 
   const index = Math.max(0, (userTurnCount - 1) % debateResponses.length);
   return debateResponses[index];
 }
 
-// Multi-Model Fail-Safe Array
+// Multi-Model Fail-Safe Provider Array (Groq Low-Latency -> OpenRouter -> OpenAI)
 const CANDIDATE_LLM_MODELS = [
-  'google/gemini-2.0-flash-exp:free',
-  'openai/gpt-4o-mini',
   'meta-llama/llama-3.3-70b-instruct:free',
-  'qwen/qwen-2.5-72b-instruct:free',
+  'openai/gpt-4o-mini',
+  'mistralai/mistral-large-2411',
+  'anthropic/claude-3.5-haiku',
+  'google/gemini-2.0-flash-exp:free',
   'deepseek/deepseek-chat'
 ];
 
@@ -335,7 +331,6 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
 }> {
   const { messages, taskTitle, scenarioText, examinerName, examinerRole, examinerVoice, gender, lessonLevel, lessonTopic, remainingTimeSec } = body;
 
-  const apiKey = await getOpenRouterApiKey();
   const systemPrompt = buildExaminerSystemPrompt(
     taskTitle,
     scenarioText,
@@ -354,35 +349,72 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
   let content = '';
   let usedModel = 'dynamic-context-fallback';
 
-  if (apiKey) {
-    for (const model of CANDIDATE_LLM_MODELS) {
-      try {
-        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`,
-            'HTTP-Referer': env.frontendUrl || 'https://francprep.com',
-            'X-Title': 'FrancPrep Official TCF Examiner',
-          },
-          body: JSON.stringify({
-            model,
-            messages: apiMessages,
-            temperature: 0.7,
-            max_tokens: 220,
-          }),
-        });
+  // 1. TIER 1 LLM PROVIDER: Ultra-low latency Groq llama-3.3-70b-versatile (<400ms)
+  try {
+    const settings = await Settings.findOne().lean().catch(() => null);
+    const groqKey = ((settings as any)?.groqApiKey || process.env.GROQ_API_KEY || '').trim();
+    if (groqKey) {
+      const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${groqKey}`,
+        },
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          messages: apiMessages,
+          temperature: 0.65,
+          max_tokens: 220,
+        }),
+      });
 
-        if (response.ok) {
-          const data = await response.json() as any;
-          content = data.choices?.[0]?.message?.content || '';
-          if (content && content.trim().length > 0) {
-            usedModel = model;
-            break;
-          }
+      if (groqRes.ok) {
+        const groqJson = await groqRes.json() as any;
+        const groqText = groqJson.choices?.[0]?.message?.content || '';
+        if (groqText && groqText.trim().length > 0) {
+          content = groqText.trim();
+          usedModel = 'groq-llama-3.3-70b-versatile';
         }
-      } catch (err: any) {
-        console.warn(`[Speaking LLM Failover] Model ${model} failed:`, err?.message || err);
+      }
+    }
+  } catch (groqErr: any) {
+    console.warn('[Speaking Groq LLM Failover Warning]:', groqErr?.message || groqErr);
+  }
+
+  // 2. TIER 2 LLM PROVIDER: OpenRouter Multi-Model Failover Array
+  if (!content) {
+    const apiKey = await getOpenRouterApiKey();
+    if (apiKey) {
+      for (const model of CANDIDATE_LLM_MODELS) {
+        try {
+          const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`,
+              'HTTP-Referer': env.frontendUrl || 'https://francprep.com',
+              'X-Title': 'FrancPrep Official TCF Examiner',
+            },
+            body: JSON.stringify({
+              model,
+              messages: apiMessages,
+              temperature: 0.7,
+              max_tokens: 220,
+            }),
+          });
+
+          if (response.ok) {
+            const data = await response.json() as any;
+            const text = data.choices?.[0]?.message?.content || '';
+            if (text && text.trim().length > 0) {
+              content = text.trim();
+              usedModel = model;
+              break;
+            }
+          }
+        } catch (err: any) {
+          console.warn(`[Speaking LLM Failover] Model ${model} failed:`, err?.message || err);
+        }
       }
     }
   }
@@ -516,7 +548,9 @@ function sanitizeWhisperTranscript(rawText: string): string {
   // 2. Remove subtitle / Amara / YouTube channel credits & URLs
   text = text
     .replace(/(?:sous-titres?\s+(?:réalisés|fournis|en|par|de)|sous-titrage|subtitles?\s+by|captioned\s+by|translated\s+by|transcrit\s+par|transcription\s+par)\b.*?(?=\.|\!|\?|$)/gi, '')
-    .replace(/(?:amara\.org|youtube|subscribe|abonnez-vous|merci\s+d'avoir\s+regardé|thanks\s+for\s+watching|like\s+and\s+subscribe|description\s+de\s+la\s+vidéo)\b.*?(?=\.|\!|\?|$)/gi, '');
+    .replace(/(?:amara\.org|youtube|subscribe|abonnez-vous|merci\s+d'avoir\s+regardé|thanks\s+for\s+watching|like\s+and\s+subscribe|description\s+de\s+la\s+vidéo)\b.*?(?=\.|\!|\?|$)/gi, '')
+    .replace(/(?:merci\s+enfant|c'est\s+un\s+peu\s+comme\s+ça|merci\s+de\s+votre\s+attention|à\s+bientôt\s+dans\s+une\s+prochaine\s+vidéo|merci\s+et\s+à\s+bientôt|sous-titrage\s+stv|transcription\s+par\s+le\s+groupe)\b.*?(?=\.|\!|\?|$)/gi, '')
+    .replace(/\b(?:merci\s+enfant|c'est\s+un\s+peu\s+comme\s+ça)\b\.?\s*$/gi, '');
 
   // 3. Remove prompt leakage & YouTube English subtitle artifacts
   text = text
@@ -537,10 +571,13 @@ function sanitizeWhisperTranscript(rawText: string): string {
   // 7. Deduplicate 2-word phrase loops (e.g. "de la de la de la" -> "de la")
   text = text.replace(/\b(\w+\s+\w+)(?:\s+\1){3,}\b/gi, '$1');
 
+  // 7b. Deduplicate full sentence loops (e.g. "Je ne l'ai pas vu. Je ne l'ai pas vu." -> "Je ne l'ai pas vu.")
+  text = text.replace(/([^.!?]+[.!?])\s*\1+/gi, '$1');
+
   text = text.trim();
 
   // 8. Gatekeeper residual check: if remaining text is purely residual fragments or < 2 characters
-  if (/^(?:tcf\s+canada|bonjour|merci|d'un\s+candidat|accents?\s+formels|sous-titres?|description)$/i.test(text) || text.length < 2) {
+  if (/^(?:tcf\s+canada|bonjour|merci|d'un\s+candidat|accents?\s+formels|sous-titres?|description|merci\s+enfant|c'est\s+un\s+peu\s+comme\s+ça)$/i.test(text) || text.length < 2) {
     return '';
   }
 
