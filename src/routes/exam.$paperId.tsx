@@ -801,17 +801,24 @@ export function AuthenticCBTExamPage() {
         }
       }
 
-      // Emergency Dynamic Safety Net (Context-neutral, zero static fake prices or ceramic strings)
+      // Emergency Dynamic Safety Net (Fully dynamic probe echoing candidate's exact utterance)
       if (!replyText || typeof replyText !== 'string' || !replyText.trim()) {
         const isTache1 = /tâche\s*1|entretien|dirigé|présentation/i.test(taskTitle);
         const isTache2 = /tâche\s*2|interaction|questions|document|rôle|roleplay/i.test(taskTitle);
+        const snippet = clean.length > 35 ? `${clean.slice(0, 35)}...` : clean;
 
         if (isTache1) {
-          replyText = `Merci pour ces précisions. Pouvez-vous développer davantage votre point de vue sur ce sujet ?`;
+          replyText = snippet 
+            ? `Merci pour ces précisions sur « ${snippet} ». Pouvez-vous développer davantage votre point de vue ?`
+            : `Merci pour ces précisions. Pouvez-vous développer davantage votre point de vue sur ce sujet ?`;
         } else if (isTache2) {
-          replyText = `C'est une excellente question. Concernant votre demande, tous les détails figurant sur le document sont valables. Avez-vous d'autres questions ?`;
+          replyText = snippet
+            ? `Concernant votre question sur « ${snippet} », les informations figurant sur la fiche d'information sont applicables. Avez-vous d'autres questions ?`
+            : `C'est une très bonne question. Tous les détails figurant sur la fiche d'information sont à votre disposition. Avez-vous d'autres questions ?`;
         } else {
-          replyText = `C'est une réflexion intéressante. Quel autre argument pourriez-vous présenter pour appuyer cette position ?`;
+          replyText = snippet
+            ? `Votre argument sur « ${snippet} » est intéressant. Quel autre aspect pourriez-vous présenter pour appuyer cette position ?`
+            : `C'est une réflexion intéressante. Quel autre argument pourriez-vous présenter pour appuyer cette position ?`;
         }
       }
 

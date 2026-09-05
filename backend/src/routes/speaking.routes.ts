@@ -459,6 +459,40 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
       }
     }
   }
+
+  // 3. TIER 3 LLM PROVIDER: Direct OpenAI gpt-4o-mini Failover
+  if (!content) {
+    try {
+      const settings = await Settings.findOne().lean().catch(() => null);
+      const openAiKey = ((settings as any)?.openaiApiKey || process.env.OPENAI_API_KEY || '').trim();
+      if (openAiKey) {
+        const oaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${openAiKey}`,
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: apiMessages,
+            temperature: 0.7,
+            max_tokens: 220,
+          }),
+        });
+
+        if (oaiRes.ok) {
+          const oaiJson = await oaiRes.json() as any;
+          const oaiText = oaiJson.choices?.[0]?.message?.content || '';
+          if (oaiText && oaiText.trim().length > 0) {
+            content = oaiText.trim();
+            usedModel = 'openai-gpt-4o-mini';
+          }
+        }
+      }
+    } catch (oaiErr: any) {
+      console.warn('[Speaking Direct OpenAI LLM Failover Warning]:', oaiErr?.message || oaiErr);
+    }
+  }
   }
 
   const userTurnCount = (messages || []).filter((m) => m.role === 'user' || (m as any).sender === 'candidate').length;
