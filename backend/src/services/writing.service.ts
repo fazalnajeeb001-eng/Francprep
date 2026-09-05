@@ -1694,9 +1694,9 @@ Return JSON only:
 
         if (isElementaryPresentTenseOnly && !parsed.is_off_topic) {
           t = Math.min(2, t);
-          c = Math.min(2, c);
-          l = Math.min(2, l);
-          g = Math.min(2, g);
+          c = Math.min(1, c);
+          l = Math.min(1, l);
+          g = Math.min(1, g);
         }
 
         let scoreOutOf20 = t + c + l + g;
