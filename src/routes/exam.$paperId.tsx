@@ -4490,6 +4490,74 @@ export function AuthenticCBTExamPage() {
                       </div>
                     )}
 
+                    {/* Sub-Phase 9C: Real-Time FEI Subscore Preview Badges */}
+                    {speakingDialogueMap[task.id]?.some(m => m.sender === 'candidate') && (
+                      <div className="flex flex-wrap items-center gap-2 p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs font-sans">
+                        <span className="text-slate-400 font-bold uppercase text-[10px] tracking-wider shrink-0">
+                          🏆 Subscores FEI en direct :
+                        </span>
+                        <span className="px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold flex items-center gap-1.5">
+                          <span>🎯 Consignes :</span>
+                          <span className="bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded text-[11px]">
+                            {(() => {
+                              const dialog = speakingDialogueMap[task.id] || [];
+                              const candTurns = dialog.filter(m => m.sender === 'candidate').length;
+                              const hasWarning = dialog.some(m => m.sender === 'examiner' && /exclusivement en langue française|uniquement en français/i.test(m.text));
+                              if (hasWarning) return "1/5";
+                              if (candTurns >= 3) return "5/5";
+                              if (candTurns === 2) return "4/5";
+                              return "3/5";
+                            })()}
+                          </span>
+                        </span>
+                        <span className="px-2.5 py-1 rounded-md bg-blue-500/10 border border-blue-500/30 text-blue-400 font-bold flex items-center gap-1.5">
+                          <span>⚡ Fluidité :</span>
+                          <span className="bg-blue-500/20 text-blue-300 px-1.5 py-0.5 rounded text-[11px]">
+                            {(() => {
+                              const metrics = speakingAcousticMetrics[task.id];
+                              const fluencyPct = metrics?.fluencyIndexPct || 75;
+                              if (fluencyPct >= 80) return "5/5";
+                              if (fluencyPct >= 65) return "4/5";
+                              if (fluencyPct >= 50) return "3/5";
+                              return "2/5";
+                            })()}
+                          </span>
+                        </span>
+                        <span className="px-2.5 py-1 rounded-md bg-purple-500/10 border border-purple-500/30 text-purple-400 font-bold flex items-center gap-1.5">
+                          <span>💬 Lexique :</span>
+                          <span className="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded text-[11px]">
+                            {(() => {
+                              const dialog = speakingDialogueMap[task.id] || [];
+                              const candMessages = dialog.filter(m => m.sender === 'candidate');
+                              if (candMessages.length === 0) return "3/5";
+                              const totalWords = candMessages.reduce((sum, m) => sum + m.text.split(/\s+/).filter(Boolean).length, 0);
+                              const avgWords = totalWords / candMessages.length;
+                              if (avgWords >= 20) return "5/5";
+                              if (avgWords >= 12) return "4/5";
+                              if (avgWords >= 6) return "3/5";
+                              return "2/5";
+                            })()}
+                          </span>
+                        </span>
+                        <span className="px-2.5 py-1 rounded-md bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 font-bold flex items-center gap-1.5">
+                          <span>📐 Grammaire :</span>
+                          <span className="bg-indigo-500/20 text-indigo-300 px-1.5 py-0.5 rounded text-[11px]">
+                            {(() => {
+                              const dialog = speakingDialogueMap[task.id] || [];
+                              const candMessages = dialog.filter(m => m.sender === 'candidate');
+                              if (candMessages.length === 0) return "3/5";
+                              const lastMsg = candMessages[candMessages.length - 1].text || '';
+                              const sentenceCount = (lastMsg.match(/[.!?]+/g) || []).length;
+                              const wordCount = lastMsg.split(/\s+/).filter(Boolean).length;
+                              if (sentenceCount >= 2 && wordCount >= 15) return "5/5";
+                              if (sentenceCount >= 1 && wordCount >= 8) return "4/5";
+                              return "3/5";
+                            })()}
+                          </span>
+                        </span>
+                      </div>
+                    )}
+
                     {/* Official Exam Timers Banner */}
                     <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-xs font-mono">
                       <div className="flex items-center gap-3">
