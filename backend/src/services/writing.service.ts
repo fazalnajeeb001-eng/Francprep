@@ -2128,9 +2128,9 @@ GENERAL EXAMINER RULES:
       };
     }
 
-    // 2. Comprehensive Foreign Language Code-Switching Rejection (English, Spanish, German, Italian)
+    // 2. Comprehensive Foreign Language Code-Switching Rejection (English, Spanish, German, Italian, South/East Asian & Semitic translated fragments)
     const textLower = candidateSpeech.toLowerCase();
-    const foreignWordPattern = "\\b(the|is|are|was|were|with|because|please|thanks|thank|you|your|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had|about|into|after|before|house|work|help|repair|cold|night|going|to|be|am|im|i'm|a|an|little|bit|more|serious|very|much|well|so|now|good|fine|ok|okay|hi|hello|bye|goodbye|can|will|want|like|need|think|say|said|tell|speaking|speak|french|english|hola|como|esta|estás|amigo|amiga|gracias|buenos|días|noches|tardes|por|favor|hablar|español|guten|tag|danke|bitte|ich|ist|deutsch|ciao|grazie|prego|buongiorno|italiano)\\b";
+    const foreignWordPattern = "\\b(the|is|are|was|were|with|because|please|thanks|thank|you|your|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had|about|into|after|before|house|work|help|repair|cold|night|going|to|be|am|im|i'm|it's|its|that's|thats|there's|theres|don't|dont|can't|cant|a|an|little|bit|more|serious|very|much|well|so|now|good|fine|ok|okay|hi|hello|bye|goodbye|can|will|want|like|need|think|say|said|tell|speaking|speak|french|english|call|phone|talking|language|malayalam|hindi|spanish|german|italian|arabic|portuguese|chinese|russian|hola|como|esta|estás|amigo|amiga|gracias|buenos|días|noches|tardes|por|favor|hablar|español|guten|tag|danke|bitte|ich|ist|deutsch|ciao|grazie|prego|buongiorno|italiano)\\b";
     
     const foreignTokens = textLower.match(new RegExp(foreignWordPattern, "gi")) || [];
     const has3WordForeignNgram = new RegExp(`${foreignWordPattern}\\s+${foreignWordPattern}\\s+${foreignWordPattern}`, "gi").test(textLower);
@@ -2141,7 +2141,7 @@ GENERAL EXAMINER RULES:
     if (isDominantForeign) {
       return {
         transcription: cleanSpeech,
-        feedback: `🚨 ZERO GRADE (0/20 Marks — NCLC 0): Langue étrangère non-française dominante détectée (${foreignTokens.length} mots non-français). Les examinateurs officiels du TCF Canada attribuent l'échec automatique 0/20 en cas d'utilisation d'une langue étrangère.`,
+        feedback: `🚨 ZERO GRADE (0/20 Marks — NCLC 0): Langue non française détectée (${foreignTokens.length} mots étrangers). Les examinateurs officiels du TCF Canada attribuent la note 0/20 en cas d'utilisation d'une langue étrangère.`,
         score: 0,
         scoreOutOf20: 0,
         accuracy: 0,
@@ -2150,7 +2150,7 @@ GENERAL EXAMINER RULES:
         coherenceScore: 0,
         lexicalScore: 0,
         grammarScore: 0,
-        nclcGrade: 'NCLC 0 (Zero Grade — Langue Étrangère / Non-Français)',
+        nclcGrade: 'NCLC 0 (Zero Grade — Langue non française / Cas de Zéro)',
         cefrLevel: 'Below A1',
         expressEntryPoints: 0,
         corrections: foreignTokens.slice(0, 4).map((w: string) => ({
