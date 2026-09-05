@@ -1251,17 +1251,21 @@ export function AuthenticCBTExamPage() {
   };
 
   const handleEvaluateSpeakingAI = async (taskId: string, expectedText: string, transcription: string) => {
-    const dialogue = speakingDialogueMap[taskId] || Object.values(speakingDialogueMap).flat();
+    const activeTaskObj = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
+    const activeTaskId = activeTaskObj?.id || taskId;
+
+    const dialogue = speakingDialogueMap[taskId] || speakingDialogueMap[activeTaskId] || Object.values(speakingDialogueMap).flat();
     const lastMsg = dialogue.length > 0 ? dialogue[dialogue.length - 1] : null;
 
-    // Check if examiner's last message is a wrap-up / closing statement vs an active trailing question
-    const isClosingStatement = lastMsg && lastMsg.sender === 'examiner' && (
+    // Check if examiner's last message is a wrap-up statement or standard Tâche 2 roleplay prompt ("Avez-vous d'autres questions ?")
+    const isClosingOrRoleplayPrompt = lastMsg && lastMsg.sender === 'examiner' && (
       /\b(temps|épreuve|entretien|tâche)\b.*?\b(écoulé|terminé|fini|fait le tour)\b/i.test(lastMsg.text) ||
       /\b(merci\s+beaucoup|excellente\s+journée|au\s+revoir|à\s+bientôt)\b/i.test(lastMsg.text) ||
+      /avez-vous d'autres questions\s*\??$/i.test(lastMsg.text.trim()) ||
       !lastMsg.text.includes('?')
     );
 
-    const isTrailingExaminerQuestion = lastMsg && lastMsg.sender === 'examiner' && !isClosingStatement && lastMsg.text.includes('?');
+    const isTrailingExaminerQuestion = lastMsg && lastMsg.sender === 'examiner' && !isClosingOrRoleplayPrompt && lastMsg.text.includes('?');
 
     if (isTrailingExaminerQuestion) {
       setPendingEvalTask({ taskId, scenario: expectedText, transcript: transcription });
@@ -1273,15 +1277,35 @@ export function AuthenticCBTExamPage() {
   const executeEvaluateSpeakingAI = async (taskId: string, expectedText: string, transcription: string) => {
     setEvaluatingSpeaking((prev) => ({ ...prev, [taskId]: true }));
     try {
-      // 100% Robust Multi-Turn Dialogue Candidate Speech Aggregator
+      // Universal Multi-Key Candidate Speech Aggregator across all key formats
       const activeSpeakingTaskObj = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
       const activeTaskId = activeSpeakingTaskObj?.id || taskId;
 
-      const taskDialogue = speakingDialogueMap[taskId] || speakingDialogueMap[activeTaskId] || [];
-      const taskCandidateMsgs = taskDialogue.filter((m) => m.sender === 'candidate').map((m) => m.text);
-      const allCandidateMsgs = Object.values(speakingDialogueMap).flat().filter((m) => m.sender === 'candidate').map((m) => m.text);
-      const candidateTextsToUse = taskCandidateMsgs.length > 0 ? taskCandidateMsgs : allCandidateMsgs;
-      const candidateDialogueTexts = candidateTextsToUse.join(' ');
+      const keyCandidates = [
+        taskId,
+        activeTaskId,
+        `spk-${activeSpeakingTaskIdx + 1}`,
+        `task_${activeSpeakingTaskIdx}`,
+        `spk-1`, `spk-2`, `spk-3`,
+        `task_0`, `task_1`, `task_2`
+      ];
+
+      let aggregatedCandidateMsgs: string[] = [];
+      for (const key of keyCandidates) {
+        const msgs = speakingDialogueMap[key];
+        if (msgs && Array.isArray(msgs)) {
+          const candidateTexts = msgs.filter((m) => m.sender === 'candidate').map((m) => m.text);
+          if (candidateTexts.length > aggregatedCandidateMsgs.length) {
+            aggregatedCandidateMsgs = candidateTexts;
+          }
+        }
+      }
+
+      if (aggregatedCandidateMsgs.length === 0) {
+        aggregatedCandidateMsgs = Object.values(speakingDialogueMap).flat().filter((m) => m.sender === 'candidate').map((m) => m.text);
+      }
+
+      const candidateDialogueTexts = Array.from(new Set(aggregatedCandidateMsgs)).join(' ');
       const combinedCandidateSpeech = [candidateDialogueTexts, (transcription || '').trim()].filter(Boolean).join(' ').trim();
 
       const taskNumber = taskId?.includes('spk-1') || taskId?.includes('task_0') ? 1
