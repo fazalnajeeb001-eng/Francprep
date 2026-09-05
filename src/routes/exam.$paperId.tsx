@@ -1251,9 +1251,17 @@ export function AuthenticCBTExamPage() {
   };
 
   const handleEvaluateSpeakingAI = async (taskId: string, expectedText: string, transcription: string) => {
-    const dialogue = speakingDialogueMap[taskId] || [];
+    const dialogue = speakingDialogueMap[taskId] || Object.values(speakingDialogueMap).flat();
     const lastMsg = dialogue.length > 0 ? dialogue[dialogue.length - 1] : null;
-    const isTrailingExaminerQuestion = lastMsg && lastMsg.sender === 'examiner';
+
+    // Check if examiner's last message is a wrap-up / closing statement vs an active trailing question
+    const isClosingStatement = lastMsg && lastMsg.sender === 'examiner' && (
+      /\b(temps|épreuve|entretien|tâche)\b.*?\b(écoulé|terminé|fini|fait le tour)\b/i.test(lastMsg.text) ||
+      /\b(merci\s+beaucoup|excellente\s+journée|au\s+revoir|à\s+bientôt)\b/i.test(lastMsg.text) ||
+      !lastMsg.text.includes('?')
+    );
+
+    const isTrailingExaminerQuestion = lastMsg && lastMsg.sender === 'examiner' && !isClosingStatement && lastMsg.text.includes('?');
 
     if (isTrailingExaminerQuestion) {
       setPendingEvalTask({ taskId, scenario: expectedText, transcript: transcription });
@@ -1265,7 +1273,11 @@ export function AuthenticCBTExamPage() {
   const executeEvaluateSpeakingAI = async (taskId: string, expectedText: string, transcription: string) => {
     setEvaluatingSpeaking((prev) => ({ ...prev, [taskId]: true }));
     try {
-      const taskDialogue = speakingDialogueMap[taskId] || [];
+      // 100% Robust Multi-Turn Dialogue Candidate Speech Aggregator
+      const activeSpeakingTaskObj = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
+      const activeTaskId = activeSpeakingTaskObj?.id || taskId;
+
+      const taskDialogue = speakingDialogueMap[taskId] || speakingDialogueMap[activeTaskId] || [];
       const taskCandidateMsgs = taskDialogue.filter((m) => m.sender === 'candidate').map((m) => m.text);
       const allCandidateMsgs = Object.values(speakingDialogueMap).flat().filter((m) => m.sender === 'candidate').map((m) => m.text);
       const candidateTextsToUse = taskCandidateMsgs.length > 0 ? taskCandidateMsgs : allCandidateMsgs;
@@ -6084,7 +6096,9 @@ export function AuthenticCBTExamPage() {
                     const task = pendingEvalTask;
                     setPendingEvalTask(null);
                     if (task) {
-                      executeEvaluateSpeakingAI(task.taskId, task.scenario, task.transcript);
+                      const activeId = currentSection?.speakingTasks?.[activeSpeakingTaskIdx]?.id;
+                      const targetId = task.taskId || activeId || '';
+                      executeEvaluateSpeakingAI(targetId, task.scenario, task.transcript);
                     }
                   }}
                   className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-extrabold shadow-md transition-all cursor-pointer"
