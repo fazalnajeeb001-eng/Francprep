@@ -4862,7 +4862,7 @@ export function AuthenticCBTExamPage() {
                       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-purple-200 dark:border-purple-800 pb-2">
                         <span className="font-extrabold text-sm text-purple-700 dark:text-purple-300 flex items-center gap-1.5">
                           <Trophy className="w-4 h-4 text-purple-600" />
-                          <span>Grille Officielle FEI — Diagnostic Oral & Score TCF Canada ({typeof aiEval.scoreOutOf20 === 'number' ? aiEval.scoreOutOf20 : 0} / 20 Marks)</span>
+                          <span>Diagnostic Pratique : {task.title} ({typeof aiEval.scoreOutOf20 === 'number' ? aiEval.scoreOutOf20 : 0} / 20 Marks)</span>
                         </span>
                         <div className="flex items-center gap-2">
                           <span className="px-2.5 py-1 rounded-full bg-purple-600 text-white font-mono font-extrabold text-[11px]">
@@ -4873,6 +4873,10 @@ export function AuthenticCBTExamPage() {
                           </span>
                         </div>
                       </div>
+
+                      <p className="text-[11px] font-semibold text-purple-800 dark:text-purple-300 bg-purple-100/70 dark:bg-purple-900/40 p-2 rounded-lg border border-purple-200 dark:border-purple-800">
+                        💡 Score indicatif de la tâche : <span className="font-extrabold">{typeof aiEval.scoreOutOf20 === 'number' ? aiEval.scoreOutOf20 : 0} / 20</span> — Complétez les 3 tâches pour générer votre attestation globale /450 pts et vos points CRS.
+                      </p>
 
                       {/* 4 Official FEI Sub-Score Cards with Progress Indicators */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
@@ -4964,11 +4968,21 @@ export function AuthenticCBTExamPage() {
                           {aiEval.feedback || `Évaluation officielle FEI : Note globale de ${typeof aiEval.scoreOutOf20 === 'number' ? aiEval.scoreOutOf20 : 0}/20.`}
                         </p>
                       </div>
+
+                      {/* SUB-PHASE 2A: NEXT TASK TRANSITION CTA BUTTON */}
+                      {activeSpeakingTaskIdx < (currentSection.speakingTasks?.length || 3) - 1 && (
+                        <button
+                          onClick={() => setActiveSpeakingTaskIdx((prev) => prev + 1)}
+                          className="w-full py-3 px-4 rounded-xl bg-purple-600 hover:bg-purple-700 active:scale-[0.99] text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer mt-3"
+                        >
+                          <span>Continuer vers la Tâche {activeSpeakingTaskIdx + 2} ({currentSection.speakingTasks[activeSpeakingTaskIdx + 1]?.title || `Tâche ${activeSpeakingTaskIdx + 2}`}) ➔</span>
+                        </button>
+                      )}
                     </div>
                   )}
 
-                  {/* 🏆 CUMULATIVE 3-TASK SCORECARD (OFFICIAL TCF CANADA 450-POINT SCALE) */}
-                  {Object.keys(speakingAiResults).length > 0 && (() => {
+                  {/* 🏆 SUB-PHASE 2B: CUMULATIVE 3-TASK SCORECARD (OFFICIAL TCF CANADA 450-POINT SCALE - LOCKED UNTIL ALL 3 TASKS COMPLETED) */}
+                  {Object.keys(speakingAiResults).length >= (currentSection.speakingTasks?.length || 3) ? (() => {
                     const results = Object.values(speakingAiResults);
                     const evalCount = results.length;
                     const sum20 = results.reduce((acc, curr) => acc + (curr?.scoreOutOf20 || 0), 0);
@@ -5024,7 +5038,17 @@ export function AuthenticCBTExamPage() {
                         </div>
                       </div>
                     );
-                  })()}
+                  })() : (
+                    <div className="p-4 rounded-2xl border border-dashed border-purple-300 dark:border-purple-800 bg-purple-50/40 dark:bg-purple-950/20 text-center space-y-1.5 font-sans mt-3">
+                      <div className="flex items-center justify-center gap-2 text-purple-700 dark:text-purple-300 font-extrabold text-xs">
+                        <Lock className="w-4 h-4 text-purple-600" />
+                        <span>Attestation Globale /450 Points & Calculateur CRS (Verrouillé)</span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-medium">
+                        Complétez les {currentSection.speakingTasks?.length || 3} tâches d'expression orale pour débloquer votre attestation officielle FEI et le calcul de vos points CRS pour l'Entrée Express Canada.
+                      </p>
+                    </div>
+                  )}
                 </div>
               );
             })()}
