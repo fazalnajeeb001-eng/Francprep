@@ -15,6 +15,40 @@ router.get('/health', (_req: Request, res: Response) => {
   res.json({ success: true, message: 'Speaking 2-Way AI Examiner routes active' });
 });
 
+// SUB-PHASE 9B: Sub-500ms Groq GPU Warmup Keep-Alive Ping Protocol
+async function warmupGroqGpuModel(): Promise<boolean> {
+  try {
+    const settings = await Settings.findOne().lean().catch(() => null);
+    const groqKey = ((settings as any)?.groqApiKey || process.env.GROQ_API_KEY || '').trim();
+    if (!groqKey) return false;
+
+    const pingRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${groqKey}`,
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [{ role: 'user', content: 'ping' }],
+        max_tokens: 1,
+      }),
+    });
+    return pingRes.ok;
+  } catch (err) {
+    return false;
+  }
+}
+
+// Background warmup every 4 minutes to keep GPU model weights hot in memory (<500ms turnaround)
+setInterval(warmupGroqGpuModel, 4 * 60 * 1000);
+warmupGroqGpuModel().catch(() => {});
+
+router.get('/ping-llm', async (_req: Request, res: Response) => {
+  const status = await warmupGroqGpuModel();
+  res.json({ success: status, message: status ? 'Groq GPU model warmed up' : 'Warmup skipped or key missing' });
+});
+
 // Direct Base64 intro audio route for instant task preamble playback
 router.get('/intro-audio', async (req: Request, res: Response) => {
   try {

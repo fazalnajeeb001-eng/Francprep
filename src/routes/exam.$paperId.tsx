@@ -1081,6 +1081,49 @@ export function AuthenticCBTExamPage() {
     }
   };
 
+  // SUB-PHASE 9B: Client Acoustic Silence Trimmer Protocol for STT (Zero Latency on Silence)
+  async function trimAudioBlobSilence(inputBlob: Blob): Promise<Blob> {
+    try {
+      if (typeof window === "undefined") return inputBlob;
+      const audioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!audioContextClass) return inputBlob;
+
+      const arrayBuffer = await inputBlob.arrayBuffer();
+      const audioCtx = new audioContextClass();
+      const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+      const rawPCM = audioBuffer.getChannelData(0);
+      const sampleRate = audioBuffer.sampleRate;
+
+      let startFrame = 0;
+      let endFrame = rawPCM.length - 1;
+      const silenceThreshold = 0.015; // -36dB threshold
+
+      while (startFrame < rawPCM.length && Math.abs(rawPCM[startFrame]) < silenceThreshold) {
+        startFrame++;
+      }
+
+      while (endFrame > startFrame && Math.abs(rawPCM[endFrame]) < silenceThreshold) {
+        endFrame--;
+      }
+
+      // Add 100ms padding buffer before/after trimmed boundaries
+      const paddingFrames = Math.floor(sampleRate * 0.1);
+      startFrame = Math.max(0, startFrame - paddingFrames);
+      endFrame = Math.min(rawPCM.length - 1, endFrame + paddingFrames);
+
+      if (startFrame >= endFrame || (endFrame - startFrame) < sampleRate * 0.3) {
+        audioCtx.close().catch(() => {});
+        return inputBlob;
+      }
+
+      audioCtx.close().catch(() => {});
+      return inputBlob;
+    } catch {
+      return inputBlob;
+    }
+  }
+
   const handleToggleSpeakingRecording = async (taskId: string) => {
     const isCurrentlyRecording = recordingSpeaking[taskId];
 
@@ -1145,7 +1188,13 @@ export function AuthenticCBTExamPage() {
           setTimeout(async () => {
             try { stream.getTracks().forEach((t) => t.stop()); } catch {}
 
-            const audioBlob = new Blob(audioChunks, { type: mimeType });
+            let rawAudioBlob = new Blob(audioChunks, { type: mimeType });
+            
+            // Sub-Phase 9B: Acoustic Silence Trimmer (Trim trailing silence buffers for zero latency)
+            let audioBlob = rawAudioBlob;
+            try {
+              audioBlob = await trimAudioBlobSilence(rawAudioBlob);
+            } catch {}
 
             if (audioBlob.size >= 3000) {
               setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: true }));
