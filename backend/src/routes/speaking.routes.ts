@@ -323,6 +323,40 @@ const CANDIDATE_LLM_MODELS = [
   'deepseek/deepseek-chat'
 ];
 
+function detectLiveForeignLanguage(text: string): boolean {
+  if (!text || !text.trim()) return false;
+  const clean = text.toLowerCase().trim();
+  const words = clean.split(/\s+/).filter(Boolean);
+  if (words.length === 0) return false;
+
+  const englishTokens = [
+    'the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'i', 'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you',
+    'do', 'at', 'this', 'but', 'his', 'by', 'from', 'they', 'we', 'say', 'her', 'she', 'or', 'an', 'will', 'my', 'one',
+    'all', 'would', 'there', 'their', 'what', 'so', 'up', 'out', 'if', 'about', 'who', 'get', 'which', 'go', 'me', 'when',
+    'make', 'can', 'like', 'time', 'no', 'just', 'him', 'know', 'take', 'people', 'into', 'year', 'your', 'good', 'some',
+    'could', 'them', 'see', 'other', 'than', 'then', 'now', 'look', 'only', 'come', 'its', 'over', 'think', 'also', 'back',
+    'after', 'use', 'two', 'how', 'our', 'work', 'first', 'well', 'way', 'even', 'new', 'want', 'because', 'any', 'these',
+    'give', 'day', 'most', 'us', 'is', 'am', 'are', 'was', 'were', 'been', 'hello', 'hi', 'please', 'speak', 'speaking',
+    'call', 'phone', 'talking'
+  ];
+
+  const foreignTokens = [
+    'hola', 'como', 'esta', 'gracias', 'por', 'favor', 'bien', 'buenos', 'dias', 'tarde', 'amigo',
+    'guten', 'tag', 'danke', 'bitte', 'ja', 'nein', 'wie', 'gehts', 'schön',
+    'ciao', 'grazie', 'prego', 'buongiorno', 'bene'
+  ];
+
+  let foreignCount = 0;
+  for (const w of words) {
+    if (englishTokens.includes(w) || foreignTokens.includes(w)) {
+      foreignCount++;
+    }
+  }
+
+  const density = foreignCount / words.length;
+  return foreignCount >= 3 || (words.length >= 4 && density >= 0.2);
+}
+
 export async function processSpeakingChatRequest(body: ChatRequestBody): Promise<{
   reply: string;
   audioBase64: string;
@@ -331,23 +365,30 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
 }> {
   const { messages, taskTitle, scenarioText, examinerName, examinerRole, examinerVoice, gender, lessonLevel, lessonTopic, remainingTimeSec } = body;
 
-  const systemPrompt = buildExaminerSystemPrompt(
-    taskTitle,
-    scenarioText,
-    examinerName,
-    examinerRole,
-    lessonLevel,
-    lessonTopic,
-    remainingTimeSec
-  );
-
-  const apiMessages: ChatMessage[] = [
-    { role: 'system', content: systemPrompt },
-    ...(messages || []),
-  ];
+  const lastUserText = (messages && messages.length > 0 ? messages[messages.length - 1].content || '' : '').trim();
 
   let content = '';
   let usedModel = 'dynamic-context-fallback';
+
+  // SUB-PHASE 8A: Live Universal Foreign Language Intercept Protocol
+  if (detectLiveForeignLanguage(lastUserText)) {
+    content = "Attention : l'épreuve d'expression orale du TCF Canada se déroule exclusivement en langue française. Veuillez formuler vos réponses uniquement en français.";
+    usedModel = 'foreign-language-warning-gatekeeper';
+  } else {
+    const systemPrompt = buildExaminerSystemPrompt(
+      taskTitle,
+      scenarioText,
+      examinerName,
+      examinerRole,
+      lessonLevel,
+      lessonTopic,
+      remainingTimeSec
+    );
+
+    const apiMessages: ChatMessage[] = [
+      { role: 'system', content: systemPrompt },
+      ...(messages || []),
+    ];
 
   // 1. TIER 1 LLM PROVIDER: Ultra-low latency Groq llama-3.3-70b-versatile (<400ms)
   try {
@@ -418,9 +459,9 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
       }
     }
   }
+  }
 
   const userTurnCount = (messages || []).filter((m) => m.role === 'user' || (m as any).sender === 'candidate').length;
-  const lastUserText = (messages && messages.length > 0 ? messages[messages.length - 1].content || '' : '').trim();
   const userWords = lastUserText.split(/\s+/).filter(Boolean);
 
   // Sparse 1-word / short fragment answer intercept protocol
