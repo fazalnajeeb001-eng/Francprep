@@ -4410,6 +4410,14 @@ export function AuthenticCBTExamPage() {
                       </div>
                     </div>
 
+                    {/* Live Non-French Foreign Language Amber Warning Toast */}
+                    {speakingDialogueMap[task.id]?.some(m => m.sender === 'examiner' && /exclusivement en langue française|uniquement en français/i.test(m.text)) && (
+                      <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/40 text-amber-900 dark:text-amber-200 text-xs font-semibold flex items-center gap-2 font-sans animate-pulse">
+                        <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
+                        <span>⚠️ Langue non française détectée. L'épreuve d'expression orale du TCF Canada se déroule exclusivement en français.</span>
+                      </div>
+                    )}
+
                     {/* Web Audio API Acoustic Signal Metrics Badge */}
                     {speakingAcousticMetrics[task.id] && (
                       <div className="flex flex-wrap items-center gap-2.5 p-3 rounded-xl bg-slate-950 border border-purple-900/60 text-xs font-mono">
