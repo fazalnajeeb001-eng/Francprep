@@ -1684,8 +1684,26 @@ Return JSON only:
           t = Math.max(2, t);
         }
 
+        // SUB-PHASE 1B: CEFR STRUCTURAL COMPLEXITY & SUBORDINATION CEILING CHECK
+        // If candidate uses only elementary present-tense S+V+O clauses without formal B1/B2 connectors or complex subordination, CAP overall grade at A2 (Max 5/20)
+        const hasFormalB1B2Connectors = /\b(afin de|cependant|néanmoins|bien que|d'une part|d'autre part|par conséquent|en effet|toutefois|ainsi|donc|de plus|en outre|par contre|alors que|tandis que)\b/i.test(textLower);
+        const hasComplexSubordinationOrTenses = /\b(pourriez|pourrais|serait|aimerais|voudrais|puisse|soit|dont|auquel|auxquels|j'ai|nous avons|j'étais|c'était|je suis|j'ai fait|j'ai visité|j'ai étudié|je ferai|je serai)\b/i.test(textLower);
+        const closesWithElementaryFiller = /\b(c'est tout|c'est bien|c'est bon|voilà c'est tout|merci c'est tout)\.?\s*$/i.test(textLower);
+
+        const isElementaryPresentTenseOnly = (!hasFormalB1B2Connectors && !hasComplexSubordinationOrTenses) || closesWithElementaryFiller;
+
+        if (isElementaryPresentTenseOnly && !parsed.is_off_topic) {
+          t = Math.min(2, t);
+          c = Math.min(2, c);
+          l = Math.min(2, l);
+          g = Math.min(2, g);
+        }
+
         let scoreOutOf20 = t + c + l + g;
-        if (hasLeakedBroadcastNoise) {
+
+        if (isElementaryPresentTenseOnly && !parsed.is_off_topic) {
+          scoreOutOf20 = Math.min(5, scoreOutOf20); // Strict FEI A2 Ceiling: Max 5/20 Marks (NCLC 4) for elementary unlinked speech
+        } else if (hasLeakedBroadcastNoise) {
           scoreOutOf20 = Math.min(6, scoreOutOf20); // Cap at A2 (max 6/20) for background noise submissions
         } else if (totalWords < 15) {
           scoreOutOf20 = Math.min(3, scoreOutOf20);
