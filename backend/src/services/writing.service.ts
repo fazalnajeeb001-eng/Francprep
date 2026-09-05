@@ -1402,15 +1402,14 @@ Respond STRICTLY with a raw JSON object:
       let cefrLevel = "B2";
       let expressEntryPoints = 17;
 
-      if (scoreOutOf20 >= 18) { nclcGrade = "NCLC 10 (C2 Mastery)"; cefrLevel = "C2"; expressEntryPoints = 34; }
-      else if (scoreOutOf20 >= 16) { nclcGrade = "NCLC 9 (C1 Advanced)"; cefrLevel = "C1"; expressEntryPoints = 31; }
-      else if (scoreOutOf20 >= 14) { nclcGrade = "NCLC 8 (B2 Upper)"; cefrLevel = "B2"; expressEntryPoints = 23; }
-      else if (scoreOutOf20 >= 12) { nclcGrade = "NCLC 7 (B2 Benchmark Target)"; cefrLevel = "B2"; expressEntryPoints = 17; }
-      else if (scoreOutOf20 >= 10) { nclcGrade = "NCLC 6 (B1 Intermediate)"; cefrLevel = "B1"; expressEntryPoints = 12; }
-      else if (scoreOutOf20 >= 9) { nclcGrade = "NCLC 5 (B1 Threshold)"; cefrLevel = "B1"; expressEntryPoints = 6; }
-      else if (scoreOutOf20 >= 6) { nclcGrade = "NCLC 4 (A2 Elementary)"; cefrLevel = "A2"; expressEntryPoints = 0; }
-      else if (scoreOutOf20 >= 3) { nclcGrade = "NCLC 3 (A1 Beginner)"; cefrLevel = "A1"; expressEntryPoints = 0; }
-      else { nclcGrade = "NCLC 1-2 (Below A1 / Beginner)"; cefrLevel = "Below A1"; expressEntryPoints = 0; }
+      if (scoreOutOf20 >= 16) { nclcGrade = "NCLC 10 (C2 Mastery)"; cefrLevel = "C2"; expressEntryPoints = 34; }
+      else if (scoreOutOf20 >= 14) { nclcGrade = "NCLC 9 (C1 Advanced)"; cefrLevel = "C1"; expressEntryPoints = 31; }
+      else if (scoreOutOf20 >= 12) { nclcGrade = "NCLC 8 (B2 Upper)"; cefrLevel = "B2"; expressEntryPoints = 23; }
+      else if (scoreOutOf20 >= 10) { nclcGrade = "NCLC 7 (B2 Benchmark Target)"; cefrLevel = "B2"; expressEntryPoints = 17; }
+      else if (scoreOutOf20 >= 8) { nclcGrade = "NCLC 6 (B1 Intermediate)"; cefrLevel = "B1"; expressEntryPoints = 12; }
+      else if (scoreOutOf20 >= 6) { nclcGrade = "NCLC 5 (B1 Threshold)"; cefrLevel = "B1"; expressEntryPoints = 6; }
+      else if (scoreOutOf20 >= 4) { nclcGrade = "NCLC 4 (A2 Elementary)"; cefrLevel = "A2"; expressEntryPoints = 0; }
+      else { nclcGrade = "NCLC 1-3 (Below A2 / Beginner)"; cefrLevel = "Below A2"; expressEntryPoints = 0; }
 
       return {
         transcription: cleanSpeech,
@@ -1614,8 +1613,6 @@ Return JSON only:
             c = Math.min(2, c); // Slow speech rate (<50 WPM) caps flow at 2/5
           } else if (wpm > 0 && wpm < 75 && pauseCount >= 3) {
             c = Math.min(3, c); // Moderate slow pace with frequent hesitations caps flow at 3/5
-          } else if (wpm >= 100 && pauseCount <= 2 && c >= 3) {
-            c = Math.max(4, c); // Native B2/C1 pace (100+ WPM) ensures flow score is at least 4/5
           }
         }
 
@@ -1745,15 +1742,14 @@ Return JSON only:
         let cefrLevel = "B2";
         let expressEntryPoints = 17;
 
-        if (scoreOutOf20 >= 18) { nclcGrade = "NCLC 10 (C2 Mastery)"; cefrLevel = "C2"; expressEntryPoints = 34; }
-        else if (scoreOutOf20 >= 16) { nclcGrade = "NCLC 9 (C1 Advanced)"; cefrLevel = "C1"; expressEntryPoints = 31; }
-        else if (scoreOutOf20 >= 14) { nclcGrade = "NCLC 8 (B2 Upper)"; cefrLevel = "B2"; expressEntryPoints = 23; }
-        else if (scoreOutOf20 >= 12) { nclcGrade = "NCLC 7 (B2 Benchmark Target)"; cefrLevel = "B2"; expressEntryPoints = 17; }
-        else if (scoreOutOf20 >= 10) { nclcGrade = "NCLC 6 (B1 Intermediate)"; cefrLevel = "B1"; expressEntryPoints = 12; }
-        else if (scoreOutOf20 >= 9) { nclcGrade = "NCLC 5 (B1 Threshold)"; cefrLevel = "B1"; expressEntryPoints = 6; }
-        else if (scoreOutOf20 >= 6) { nclcGrade = "NCLC 4 (A2 Elementary)"; cefrLevel = "A2"; expressEntryPoints = 0; }
-        else if (scoreOutOf20 >= 3) { nclcGrade = "NCLC 3 (A1 Beginner)"; cefrLevel = "A1"; expressEntryPoints = 0; }
-        else { nclcGrade = "NCLC 0 (Zero Grade — Below A1)"; cefrLevel = "Below A1"; expressEntryPoints = 0; }
+        if (scoreOutOf20 >= 16) { nclcGrade = "NCLC 10 (C2 Mastery)"; cefrLevel = "C2"; expressEntryPoints = 34; }
+        else if (scoreOutOf20 >= 14) { nclcGrade = "NCLC 9 (C1 Advanced)"; cefrLevel = "C1"; expressEntryPoints = 31; }
+        else if (scoreOutOf20 >= 12) { nclcGrade = "NCLC 8 (B2 Upper)"; cefrLevel = "B2"; expressEntryPoints = 23; }
+        else if (scoreOutOf20 >= 10) { nclcGrade = "NCLC 7 (B2 Benchmark Target)"; cefrLevel = "B2"; expressEntryPoints = 17; }
+        else if (scoreOutOf20 >= 8) { nclcGrade = "NCLC 6 (B1 Intermediate)"; cefrLevel = "B1"; expressEntryPoints = 12; }
+        else if (scoreOutOf20 >= 6) { nclcGrade = "NCLC 5 (B1 Threshold)"; cefrLevel = "B1"; expressEntryPoints = 6; }
+        else if (scoreOutOf20 >= 4) { nclcGrade = "NCLC 4 (A2 Elementary)"; cefrLevel = "A2"; expressEntryPoints = 0; }
+        else { nclcGrade = "NCLC 1-3 (Below A2 / Beginner)"; cefrLevel = "Below A2"; expressEntryPoints = 0; }
 
         const corrections = validErrors.map((err: any) => ({
           original: err.quote || err.original || '',
