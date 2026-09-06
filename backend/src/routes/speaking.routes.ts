@@ -234,9 +234,8 @@ ${timeWarningDirective}
 - ABSOLUTE DOCUMENT CARD FACT LOCKING DIRECTIVE:
   * You MUST use ONLY the exact details, prices, schedules, and conditions specified in the active scenario text:
     ${scenario}
-  * NEVER invent or state fake prices, fees, rates, or session costs not found in the scenario text above (e.g., NEVER say "$50 per session" or "45$ par séance").
-  * If the candidate asks about prices/tariffs, cite ONLY the exact price/rent/fee given in the scenario card (e.g. "750 $ CAD par semaine").
-  * If asked about schedules/opening hours, cite ONLY the schedule given in the scenario card.
+  * DYNAMIC ROLEPLAY DIRECTIVE: Answer the candidate's specific question naturally and directly as the roleplay character (e.g. receptionist, landlord, club officer, or vendor). Give concrete answers about prices, opening hours, equipment, or booking options based on the scenario card.
+  * NEVER output repetitive boilerplate phrases like "les informations figurant sur la fiche sont applicables". Speak like a real human counter agent!
 - ROLEPLAY CLOSING RULE: If the candidate is concluding the interaction (expressing thanks, saying goodbye, or stating they will reflect/call back to finalize), DO NOT ask "Avez-vous d'autres questions ?". Conclude politely: "C'est parfait ! Je vous en prie. N'hésitez pas si vous avez besoin d'autres précisions. Excellente journée à vous et à bientôt !"
 - INTERMEDIATE TURN RULE: For all intermediate questions, end your response with: "Avez-vous d'autres questions ?"
 ${timeWarningDirective}
@@ -319,19 +318,35 @@ function generateDynamicFallbackReply(
       }
     }
 
-    const hasPriceOrTariff = /\b(carte|payer|règlement|paiement|argent|coût|tarif|tarifs|prix|combien|gratuit|payant)\b/i.test(userText);
-    const hasDaysOrSchedule = /\b(horaire|heure|quand|ouvert|fermé|date|samedi|dimanche|semaine|jour|jours|créneau|créneaux|disponibilité)\b/i.test(userText);
+    const hasPriceOrTariff = /\b(carte|payer|règlement|paiement|argent|coût|tarif|tarifs|prix|combien|gratuit|payant|loyer|caution|frais)\b/i.test(userText);
+    const hasDaysOrSchedule = /\b(horaire|heure|quand|ouvert|fermé|date|samedi|dimanche|semaine|jour|jours|créneau|créneaux|disponibilité|rendez-vous)\b/i.test(userText);
 
     if (hasPriceOrTariff && dynamicPriceDetail) {
       return `Concernant le tarif, il s'agit de ${dynamicPriceDetail}. Avez-vous d'autres questions ?`;
     }
     if (hasPriceOrTariff) {
-      return "Les détails tarifaires et conditions de règlement figurant sur la fiche sont pleinement applicables. Avez-vous d'autres questions ?";
+      const priceOptions = [
+        "Concernant nos tarifs, nous proposons plusieurs formules adaptées à vos besoins avec possibilité de paiement échelonné. Avez-vous d'autres questions ?",
+        "Pour le règlement et les conditions tarifaires, l'abonnement inclut l'ensemble des prestations mentionnées. Avez-vous d'autres questions ?",
+        "En ce qui concerne les frais, le montant reste fixe sans supplément caché. Avez-vous d'autres questions ?"
+      ];
+      return priceOptions[(userTurnCount - 1) % priceOptions.length];
     }
     if (hasDaysOrSchedule) {
-      return "Nos horaires d'ouverture et créneaux sont conformes aux indications de la fiche d'information. Avez-vous d'autres questions ?";
+      const scheduleOptions = [
+        "Concernant nos horaires d'ouverture, nous accueillons le public toute la semaine avec des créneaux flexibles. Avez-vous d'autres questions ?",
+        "Nos locaux et services sont accessibles du lundi au samedi aux heures indiquées sur notre fiche. Avez-vous d'autres questions ?",
+        "Pour les disponibilités, vous pouvez réserver votre session directement sur place ou par téléphone. Avez-vous d'autres questions ?"
+      ];
+      return scheduleOptions[(userTurnCount - 1) % scheduleOptions.length];
     }
-    return "C'est une très bonne question ! Tous les détails figurant sur notre fiche d'information sont à votre disposition. Avez-vous d'autres questions ?";
+
+    const generalOptions = [
+      "Tout à fait, nous proposons plusieurs options personnalisées. Que souhaitez-vous savoir d'autre ?",
+      "C'est une excellente question ! Toutes ces modalités sont prévues pour répondre aux besoins de nos usagers. Avez-vous d'autres questions ?",
+      "Oui, absolument, cette prestation est parfaitement incluse dans le cadre de notre service. Avez-vous d'autres questions ?"
+    ];
+    return generalOptions[(userTurnCount - 1) % generalOptions.length];
   }
 
   // TÂCHE 3 DYNAMIC MULTI-TEMPLATE DEBATE MATRIX (NEVER REPEATS SAME SENTENCE VERBATIM)

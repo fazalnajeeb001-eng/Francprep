@@ -2577,7 +2577,33 @@ export function AuthenticCBTExamPage() {
 
     const speakingAvg = speakingWeightedScore;
     const speakingPct = Math.round((speakingWeightedScore / 20) * 100);
-    const speakingNCLC = calculateNCLCScore(speakingPct, paper.type, "EXPRESSION_ORALE");
+
+    // OFFICIAL TCF CANADA 450-POINT SCALE CONCORDANCE FOR FINISH TEST SUMMARY
+    let speakingScaled450 = 0;
+    let speakingNclcLevelNum = 0;
+
+    if (speakingAttemptedCount > 0) {
+      const results = Object.values(speakingAiResults);
+      const evalCount = results.length || speakingAttemptedCount || 1;
+      const sum20 = results.reduce((acc, curr) => acc + (typeof curr?.scoreOutOf20 === 'number' ? curr.scoreOutOf20 : (curr?.score ? Math.round((curr.score / 100) * 20) : 0)), 0);
+      speakingScaled450 = Math.round((sum20 / (evalCount * 20)) * 450);
+
+      if (speakingScaled450 >= 371) speakingNclcLevelNum = 10;
+      else if (speakingScaled450 >= 348) speakingNclcLevelNum = 9;
+      else if (speakingScaled450 >= 310) speakingNclcLevelNum = 8;
+      else if (speakingScaled450 >= 280) speakingNclcLevelNum = 7;
+      else if (speakingScaled450 >= 248) speakingNclcLevelNum = 6;
+      else if (speakingScaled450 >= 181) speakingNclcLevelNum = 5;
+      else if (speakingScaled450 >= 121) speakingNclcLevelNum = 4;
+      else if (speakingScaled450 >= 60) speakingNclcLevelNum = 3;
+      else speakingNclcLevelNum = 0;
+    }
+
+    const speakingNCLC = (speakingAttemptedCount > 0 && speakingNclcLevelNum > 0) ? {
+      nclcLevel: speakingNclcLevelNum,
+      cefrLevel: speakingNclcLevelNum >= 10 ? 'C2' : speakingNclcLevelNum >= 9 ? 'C1' : speakingNclcLevelNum >= 7 ? 'B2' : speakingNclcLevelNum >= 5 ? 'B1' : 'A2',
+      label: `NCLC ${speakingNclcLevelNum}`
+    } : calculateNCLCScore(speakingPct, paper.type, "EXPRESSION_ORALE");
 
     // Calculate individual skill CRS points according to official IRCC scale
     const getModulePoints = (nclc: number) => {
