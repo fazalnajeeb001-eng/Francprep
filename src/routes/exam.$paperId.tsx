@@ -2634,6 +2634,7 @@ export function AuthenticCBTExamPage() {
 
     const speakingNCLC = (speakingAttemptedCount > 0 && speakingNclcLevelNum > 0) ? {
       nclcLevel: speakingNclcLevelNum,
+      cefrEquivalent: speakingNclcLevelNum >= 10 ? 'C2' : speakingNclcLevelNum >= 9 ? 'C1' : speakingNclcLevelNum >= 7 ? 'B2' : speakingNclcLevelNum >= 5 ? 'B1' : 'A2',
       cefrLevel: speakingNclcLevelNum >= 10 ? 'C2' : speakingNclcLevelNum >= 9 ? 'C1' : speakingNclcLevelNum >= 7 ? 'B2' : speakingNclcLevelNum >= 5 ? 'B1' : 'A2',
       label: `NCLC ${speakingNclcLevelNum}`
     } : calculateNCLCScore(speakingPct, paper.type, "EXPRESSION_ORALE");
@@ -5557,7 +5558,7 @@ export function AuthenticCBTExamPage() {
                       if (r.speakingAttemptedCount > 0) {
                         return (
                           <>
-                            Speaking Module (EO): <strong>{r.speakingAvg}/20 Marks</strong> (NCLC {r.speakingNCLC.nclcLevel} / {r.speakingNCLC.cefrEquivalent})
+                            Speaking Module (EO): <strong>{r.speakingAvg}/20 Marks</strong> (NCLC {r.speakingNCLC.nclcLevel} / {r.speakingNCLC.cefrEquivalent || r.speakingNCLC.cefrLevel || 'A2'})
                             {r.speakingAttemptedCount < 3 && (
                               <span className="opacity-90 font-medium ml-1">
                                 • ({r.speakingAttemptedCount}/3 tasks completed: T1 {r.speakingTaskScores.s1}/20, T2 {r.speakingTaskScores.s2}/20, T3 {r.speakingTaskScores.s3}/20)
@@ -5643,7 +5644,7 @@ export function AuthenticCBTExamPage() {
                           </span>
                         </div>
                         <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
-                          {res.speakingAttemptedCount === 0 ? "No submission" : `${res.speakingAvg}/20 Marks (${res.speakingNCLC.cefrEquivalent})`}
+                          {res.speakingAttemptedCount === 0 ? "No submission" : `${res.speakingAvg}/20 Marks (${res.speakingNCLC.cefrEquivalent || res.speakingNCLC.cefrLevel || 'A2'})`}
                         </p>
                         {res.speakingAttemptedCount > 0 && res.speakingAttemptedCount < 3 && (
                           <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-950/80 border border-amber-300 dark:border-amber-700 text-[10.5px] font-medium text-amber-900 dark:text-amber-200 leading-relaxed space-y-1">
@@ -5652,7 +5653,7 @@ export function AuthenticCBTExamPage() {
                             </p>
                             <p>
                               Vous avez complété {res.speakingAttemptedCount}/3 tâches (T1: {res.speakingTaskScores.s1}/20, T2: {res.speakingTaskScores.s2}/20, T3: {res.speakingTaskScores.s3}/20).
-                              {res.speakingTaskScores.s1 >= 12 ? ` Votre performance à la Tâche 1 (${res.speakingTaskScores.s1}/20) montrait un niveau B2, mais l'absence de réponse à la Tâche 3 fait chuter la moyenne globale à ${res.speakingAvg}/20 (${res.speakingNCLC.cefrEquivalent}).` : ''}
+                              {res.speakingTaskScores.s1 >= 12 ? ` Votre performance à la Tâche 1 (${res.speakingTaskScores.s1}/20) montrait un niveau B2, mais l'absence de réponse à la Tâche 3 fait chuter la moyenne globale à ${res.speakingAvg}/20 (${res.speakingNCLC.cefrEquivalent || res.speakingNCLC.cefrLevel || 'A2'}).` : ''}
                             </p>
                           </div>
                         )}
@@ -5746,8 +5747,8 @@ export function AuthenticCBTExamPage() {
                                 <p className="font-bold text-purple-900 dark:text-purple-300 text-[11px]">🎙️ Speaking (EO Focus):</p>
                                 <p className="text-[11px] leading-relaxed">
                                   {res.speakingAvg >= 12
-                                    ? `✓ Strong oral fluency (${Math.round((res.speakingAvg / 20) * 100)}% — CLB ${res.speakingNCLC.nclcLevel} / ${res.speakingNCLC.cefrEquivalent}).`
-                                    : `⚠️ Oral score is ${Math.round((res.speakingAvg / 20) * 100)}% (CLB ${res.speakingNCLC.nclcLevel} / ${res.speakingNCLC.cefrEquivalent}). Focus on formal question structures and argument organization.`}
+                                    ? `✓ Strong oral fluency (${Math.round((res.speakingAvg / 20) * 100)}% — CLB ${res.speakingNCLC.nclcLevel} / ${res.speakingNCLC.cefrEquivalent || res.speakingNCLC.cefrLevel || 'A2'}).`
+                                    : `⚠️ Oral score is ${Math.round((res.speakingAvg / 20) * 100)}% (CLB ${res.speakingNCLC.nclcLevel} / ${res.speakingNCLC.cefrEquivalent || res.speakingNCLC.cefrLevel || 'A2'}). Focus on formal question structures and argument organization.`}
                                 </p>
                               </div>
                             )}
