@@ -959,7 +959,10 @@ Respond STRICTLY with a valid JSON object matching this schema:
     let taskFulfillmentScore = 1;
     const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test(clean) && /(cordialement|bien à vous|salutations|respectueusement)/i.test(clean);
 
-    if (isTache3 && isLetterFormat) {
+    const minSeverelyShort = isTache1 ? 15 : 30;
+    if (wordCount < minSeverelyShort) {
+      taskFulfillmentScore = 0;
+    } else if (isTache3 && isLetterFormat) {
       taskFulfillmentScore = 0;
     } else if (wordCount >= minWords && wordCount <= maxWords + 30) {
       taskFulfillmentScore = 5;
@@ -973,11 +976,11 @@ Respond STRICTLY with a valid JSON object matching this schema:
       taskFulfillmentScore = 1;
     }
 
-    // Formal register check in Tâche 1 (Informal tu/ton/ta in formal email caps fulfillment at 3/5)
-    const isFormalRecipientPrompt = /(propriétaire|directeur|responsable|service client|organisateur|administration|bureau|supérieur|manager)/i.test((lessonTitle || '') + (taskPrompt || '') + (expectedAnswer || ''));
+    // Formal vs Informal Register Check for Tâche 1 (Tutoiement in formal email caps fulfillment at 2/5)
+    const isFormalRecipientPrompt = /(propriétaire|directeur|responsable|service client|organisateur|administration|bureau|supérieur|manager|maire|président)/i.test((lessonTitle || '') + (taskPrompt || '') + (expectedAnswer || ''));
     const hasInformalTu = /\b(tu|te|t'|ton|ta|tes|toi)\b/i.test(textLower);
     if (isTache1 && isFormalRecipientPrompt && hasInformalTu && taskFulfillmentScore > 0) {
-      taskFulfillmentScore = Math.min(3, taskFulfillmentScore);
+      taskFulfillmentScore = Math.min(2, taskFulfillmentScore);
     }
 
     const c1c2Connectors = [
