@@ -805,8 +805,15 @@ export function AuthenticCBTExamPage() {
       if (!replyText || typeof replyText !== 'string' || !replyText.trim()) {
         const isTache1 = /tâche\s*1|entretien|dirigé|présentation/i.test(taskTitle);
         const isTache2 = /tâche\s*2|interaction|questions|document|rôle|roleplay/i.test(taskTitle);
-        const userTurnsCount = (speakingDialogueMap[taskId] || []).filter(m => m.sender === 'candidate').length + 1;
+        const currentDialogue = speakingDialogueMap[taskId] || [];
+        const examinerTexts = currentDialogue.filter(m => m.sender === 'examiner').map(m => m.text);
         const isClosingTurn = /\b(merci|remercie|recontacter|rappelle|réfléchir|au revoir|bonne journée|bonne fin|quitte|finaliser)\b/i.test(clean);
+
+        const selectFreshOption = (opts: string[]) => {
+          const unused = opts.filter(o => !examinerTexts.some(prev => prev.includes(o.slice(0, 25))));
+          if (unused.length > 0) return unused[0];
+          return opts[examinerTexts.length % opts.length];
+        };
 
         if (isTache1) {
           const t1Options = [
@@ -814,7 +821,7 @@ export function AuthenticCBTExamPage() {
             `C'est une expérience très enrichissante. Qu'est-ce qui vous attire particulièrement dans votre projet d'immigration ?`,
             `Merci pour cette présentation. Quels sont vos projets professionnels à moyen terme ?`
           ];
-          replyText = t1Options[(userTurnsCount - 1) % t1Options.length];
+          replyText = selectFreshOption(t1Options);
         } else if (isTache2) {
           if (isClosingTurn) {
             replyText = "C'est parfait ! Je vous en prie. N'hésitez pas si vous avez besoin d'autres précisions. Excellente journée à vous et à bientôt !";
@@ -828,21 +835,21 @@ export function AuthenticCBTExamPage() {
                 "Pour le règlement et les conditions tarifaires, l'abonnement inclut l'ensemble des prestations. Avez-vous d'autres questions ?",
                 "En ce qui concerne les frais, le montant est fixe sans supplément caché. Avez-vous d'autres questions ?"
               ];
-              replyText = pOptions[(userTurnsCount - 1) % pOptions.length];
+              replyText = selectFreshOption(pOptions);
             } else if (hasSchedule) {
               const sOptions = [
                 "Concernant nos horaires d'ouverture, nous accueillons le public toute la semaine avec des créneaux flexibles. Avez-vous d'autres questions ?",
                 "Nos locaux et services sont accessibles du lundi au samedi aux heures indiquées. Avez-vous d'autres questions ?",
                 "Pour les disponibilités, vous pouvez réserver votre session directement sur place. Avez-vous d'autres questions ?"
               ];
-              replyText = sOptions[(userTurnsCount - 1) % sOptions.length];
+              replyText = selectFreshOption(sOptions);
             } else {
               const gOptions = [
                 "Tout à fait, nous proposons plusieurs options personnalisées. Que souhaitez-vous savoir d'autre ?",
                 "C'est une excellente question ! Toutes ces prestations sont prévues pour nos usagers. Avez-vous d'autres questions ?",
                 "Oui, absolument, cette option est tout à fait incluse. Avez-vous d'autres questions ?"
               ];
-              replyText = gOptions[(userTurnsCount - 1) % gOptions.length];
+              replyText = selectFreshOption(gOptions);
             }
           }
         } else {
@@ -851,7 +858,7 @@ export function AuthenticCBTExamPage() {
             `C'est un argument tout à fait pertinent. Cependant, d'autres perspectives mettent en avant des limites. Comment réagissez-vous à cela ?`,
             `Certes, mais si l'on regarde la situation sur le long terme, n'y a-t-il pas là un besoin de régulation supplémentaire ?`
           ];
-          replyText = t3Options[(userTurnsCount - 1) % t3Options.length];
+          replyText = selectFreshOption(t3Options);
         }
       }
 
