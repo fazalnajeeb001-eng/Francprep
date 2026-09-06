@@ -1248,7 +1248,7 @@ export function AuthenticCBTExamPage() {
               audioBlob = await trimAudioBlobSilence(rawAudioBlob);
             } catch { }
 
-            if (audioBlob.size >= 3000) {
+            if (audioBlob.size >= 3500) {
               setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: true }));
               const reader = new FileReader();
               reader.readAsDataURL(audioBlob);
