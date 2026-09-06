@@ -805,20 +805,53 @@ export function AuthenticCBTExamPage() {
       if (!replyText || typeof replyText !== 'string' || !replyText.trim()) {
         const isTache1 = /tâche\s*1|entretien|dirigé|présentation/i.test(taskTitle);
         const isTache2 = /tâche\s*2|interaction|questions|document|rôle|roleplay/i.test(taskTitle);
-        const snippet = clean.length > 35 ? `${clean.slice(0, 35)}...` : clean;
+        const userTurnsCount = (speakingDialogueMap[taskId] || []).filter(m => m.sender === 'candidate').length + 1;
+        const isClosingTurn = /\b(merci|remercie|recontacter|rappelle|réfléchir|au revoir|bonne journée|bonne fin|quitte|finaliser)\b/i.test(clean);
 
         if (isTache1) {
-          replyText = snippet 
-            ? `Merci pour ces précisions sur « ${snippet} ». Pouvez-vous développer davantage votre point de vue ?`
-            : `Merci pour ces précisions. Pouvez-vous développer davantage votre point de vue sur ce sujet ?`;
+          const t1Options = [
+            `Merci pour ces précisions sur votre parcours ! Pouvez-vous développer davantage vos motivations pour le Canada ?`,
+            `C'est une expérience très enrichissante. Qu'est-ce qui vous attire particulièrement dans votre projet d'immigration ?`,
+            `Merci pour cette présentation. Quels sont vos projets professionnels à moyen terme ?`
+          ];
+          replyText = t1Options[(userTurnsCount - 1) % t1Options.length];
         } else if (isTache2) {
-          replyText = snippet
-            ? `Concernant votre question sur « ${snippet} », les informations figurant sur la fiche d'information sont applicables. Avez-vous d'autres questions ?`
-            : `C'est une très bonne question. Tous les détails figurant sur la fiche d'information sont à votre disposition. Avez-vous d'autres questions ?`;
+          if (isClosingTurn) {
+            replyText = "C'est parfait ! Je vous en prie. N'hésitez pas si vous avez besoin d'autres précisions. Excellente journée à vous et à bientôt !";
+          } else {
+            const hasPrice = /\b(carte|payer|règlement|paiement|argent|coût|tarif|tarifs|prix|combien|gratuit|payant|loyer|caution|frais)\b/i.test(clean);
+            const hasSchedule = /\b(horaire|heure|quand|ouvert|fermé|date|samedi|dimanche|semaine|jour|jours|créneau|créneaux|disponibilité|rendez-vous)\b/i.test(clean);
+
+            if (hasPrice) {
+              const pOptions = [
+                "Concernant nos tarifs, nous proposons plusieurs formules adaptées à vos besoins avec possibilité de paiement échelonné. Avez-vous d'autres questions ?",
+                "Pour le règlement et les conditions tarifaires, l'abonnement inclut l'ensemble des prestations. Avez-vous d'autres questions ?",
+                "En ce qui concerne les frais, le montant est fixe sans supplément caché. Avez-vous d'autres questions ?"
+              ];
+              replyText = pOptions[(userTurnsCount - 1) % pOptions.length];
+            } else if (hasSchedule) {
+              const sOptions = [
+                "Concernant nos horaires d'ouverture, nous accueillons le public toute la semaine avec des créneaux flexibles. Avez-vous d'autres questions ?",
+                "Nos locaux et services sont accessibles du lundi au samedi aux heures indiquées. Avez-vous d'autres questions ?",
+                "Pour les disponibilités, vous pouvez réserver votre session directement sur place. Avez-vous d'autres questions ?"
+              ];
+              replyText = sOptions[(userTurnsCount - 1) % sOptions.length];
+            } else {
+              const gOptions = [
+                "Tout à fait, nous proposons plusieurs options personnalisées. Que souhaitez-vous savoir d'autre ?",
+                "C'est une excellente question ! Toutes ces prestations sont prévues pour nos usagers. Avez-vous d'autres questions ?",
+                "Oui, absolument, cette option est tout à fait incluse. Avez-vous d'autres questions ?"
+              ];
+              replyText = gOptions[(userTurnsCount - 1) % gOptions.length];
+            }
+          }
         } else {
-          replyText = snippet
-            ? `Votre argument sur « ${snippet} » est intéressant. Quel autre aspect pourriez-vous présenter pour appuyer cette position ?`
-            : `C'est une réflexion intéressante. Quel autre argument pourriez-vous présenter pour appuyer cette position ?`;
+          const t3Options = [
+            `Je comprends tout à fait votre point de vue, néanmoins ne pensez-vous pas que cette mesure comporte également des risques importants ?`,
+            `C'est un argument tout à fait pertinent. Cependant, d'autres perspectives mettent en avant des limites. Comment réagissez-vous à cela ?`,
+            `Certes, mais si l'on regarde la situation sur le long terme, n'y a-t-il pas là un besoin de régulation supplémentaire ?`
+          ];
+          replyText = t3Options[(userTurnsCount - 1) % t3Options.length];
         }
       }
 
