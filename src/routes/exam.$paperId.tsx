@@ -470,7 +470,7 @@ export function AuthenticCBTExamPage() {
     const currentTaskIdx = currentSection?.speakingTasks?.findIndex(t => t.id === taskId);
     const defaultMins = speakingMins || (
       currentTaskIdx === 0 || taskId.includes("spk-1") || taskId.includes("task-0") ? 2 :
-      currentTaskIdx === 1 || taskId.includes("spk-2") || taskId.includes("task-1") ? 3.5 : 4.5
+        currentTaskIdx === 1 || taskId.includes("spk-2") || taskId.includes("task-1") ? 3.5 : 4.5
     );
     const targetSeconds = Math.round(defaultMins * 60);
 
@@ -621,7 +621,7 @@ export function AuthenticCBTExamPage() {
         setIsAudioFetching(false);
         setIsPlayingAudio(false);
         if (onEnded) {
-          try { onEnded(); } catch {}
+          try { onEnded(); } catch { }
         }
       }
     }, dynamicTimeoutMs);
@@ -672,7 +672,7 @@ export function AuthenticCBTExamPage() {
     // Clear transcript state & ref immediately & cancel pending auto-send timers to prevent duplicates
     const speechRec = (window as any)[`_speechRec_${taskId}`];
     if (speechRec) {
-      try { speechRec.stop(); } catch {}
+      try { speechRec.stop(); } catch { }
       delete (window as any)[`_speechRec_${taskId}`];
     }
     speakingTranscriptsRef.current[taskId] = "";
@@ -724,12 +724,12 @@ export function AuthenticCBTExamPage() {
       const realElapsedSecs = activeTaskStartMs ? Math.floor((Date.now() - activeTaskStartMs) / 1000) : 0;
       const realRemainingSecs = Math.max(0, targetDurationSecs - realElapsedSecs);
 
-      const stateRemainingSecs = 
+      const stateRemainingSecs =
         typeof oralSpeakingTimeRemaining[taskId] === 'number' ? oralSpeakingTimeRemaining[taskId] :
-        typeof oralSpeakingTimeRemaining[altKey1] === 'number' ? oralSpeakingTimeRemaining[altKey1] :
-        typeof oralSpeakingTimeRemaining[altKey2] === 'number' ? oralSpeakingTimeRemaining[altKey2] :
-        typeof oralSpeakingTimeRemaining[altKey3] === 'number' ? oralSpeakingTimeRemaining[altKey3] :
-        120;
+          typeof oralSpeakingTimeRemaining[altKey1] === 'number' ? oralSpeakingTimeRemaining[altKey1] :
+            typeof oralSpeakingTimeRemaining[altKey2] === 'number' ? oralSpeakingTimeRemaining[altKey2] :
+              typeof oralSpeakingTimeRemaining[altKey3] === 'number' ? oralSpeakingTimeRemaining[altKey3] :
+                120;
 
       const taskRemainingSecs = activeTaskStartMs ? Math.min(stateRemainingSecs, realRemainingSecs) : stateRemainingSecs;
 
@@ -757,7 +757,7 @@ export function AuthenticCBTExamPage() {
         const json = await res.json();
         replyText = json?.data?.reply || json?.reply || "";
         audioBase64 = json?.data?.audioBase64 || json?.audioBase64 || "";
-      } catch {}
+      } catch { }
 
       if (taskRemainingSecs <= 15) {
         const isT1 = activeSpeakingTaskIdx === 0 || /tâche\s*1|entretien|dirigé/i.test(taskTitle);
@@ -872,9 +872,13 @@ export function AuthenticCBTExamPage() {
       handlePlayExaminerAudio(
         replyText,
         () => {
+          setIsAudioFetching(false);
+          setIsPlayingAudio(false);
           // 1.2s Speaker Echo Decay Buffer before auto-arming candidate mic for Turn #2
           setTimeout(() => {
             if (currentSection?.type === "EXPRESSION_ORALE" && !isSubmitted) {
+              setIsAudioFetching(false);
+              setIsPlayingAudio(false);
               handleToggleSpeakingRecording(taskId);
             }
           }, 1200);
@@ -1146,11 +1150,11 @@ export function AuthenticCBTExamPage() {
       endFrame = Math.min(rawPCM.length - 1, endFrame + paddingFrames);
 
       if (startFrame >= endFrame || (endFrame - startFrame) < sampleRate * 0.3) {
-        audioCtx.close().catch(() => {});
+        audioCtx.close().catch(() => { });
         return inputBlob;
       }
 
-      audioCtx.close().catch(() => {});
+      audioCtx.close().catch(() => { });
       return inputBlob;
     } catch {
       return inputBlob;
@@ -1164,12 +1168,12 @@ export function AuthenticCBTExamPage() {
       setRecordingSpeaking((prev) => ({ ...prev, [taskId]: false }));
       const rec = (window as any)[`_mediaRecorder_${taskId}`];
       if (rec && rec.state !== "inactive") {
-        try { rec.stop(); } catch {}
+        try { rec.stop(); } catch { }
         delete (window as any)[`_mediaRecorder_${taskId}`];
       }
       const speechRec = (window as any)[`_speechRec_${taskId}`];
       if (speechRec) {
-        try { speechRec.stop(); } catch {}
+        try { speechRec.stop(); } catch { }
         delete (window as any)[`_speechRec_${taskId}`];
       }
       return;
@@ -1177,7 +1181,7 @@ export function AuthenticCBTExamPage() {
 
     try {
       unlockAudioEngine();
-    } catch {}
+    } catch { }
 
     // Universal MediaRecorder + Server-Side Whisper Neural STT Engine (99%+ Multi-Accent Recognition)
     try {
@@ -1216,18 +1220,18 @@ export function AuthenticCBTExamPage() {
 
         mediaRecorder.onstop = () => {
           setRecordingSpeaking((prev) => ({ ...prev, [taskId]: false }));
-          
+
           // 200ms Flush Buffer: Guarantee all audio chunks are delivered before creating the final Blob
           setTimeout(async () => {
-            try { stream.getTracks().forEach((t) => t.stop()); } catch {}
+            try { stream.getTracks().forEach((t) => t.stop()); } catch { }
 
             let rawAudioBlob = new Blob(audioChunks, { type: mimeType });
-            
+
             // Sub-Phase 9B: Acoustic Silence Trimmer (Trim trailing silence buffers for zero latency)
             let audioBlob = rawAudioBlob;
             try {
               audioBlob = await trimAudioBlobSilence(rawAudioBlob);
-            } catch {}
+            } catch { }
 
             if (audioBlob.size >= 3000) {
               setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: true }));
@@ -1237,7 +1241,7 @@ export function AuthenticCBTExamPage() {
                 const base64Data = reader.result as string;
                 try {
                   // Reset any lingering audio player state
-                  try { stopAudioEngine(); } catch {}
+                  try { stopAudioEngine(); } catch { }
                   setIsPlayingAudio(false);
                   setIsAudioFetching(false);
 
@@ -1259,7 +1263,7 @@ export function AuthenticCBTExamPage() {
 
                     const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
                     const scenarioText = activeTask?.scenario || "TCF Oral Interaction";
-                    
+
                     // Send candidate transcribed text to examiner dialogue unconditionally
                     if (!isChatSendingRef.current[taskId]) {
                       handleSendSpeakingQuestionToExaminer(taskId, transcribedText, scenarioText);
@@ -1531,12 +1535,12 @@ export function AuthenticCBTExamPage() {
               let turnIdx = 0;
               const combinedSpeech = dialogue.length > 0
                 ? dialogue.map((m) => {
-                    if (m.sender === 'candidate') {
-                      turnIdx += 1;
-                      return `[Tour ${turnIdx} Candidat]: ${m.text}`;
-                    }
-                    return `[Examinateur]: ${m.text}`;
-                  }).join('\n')
+                  if (m.sender === 'candidate') {
+                    turnIdx += 1;
+                    return `[Tour ${turnIdx} Candidat]: ${m.text}`;
+                  }
+                  return `[Examinateur]: ${m.text}`;
+                }).join('\n')
                 : (speakingTranscripts[t.id] || '');
               try {
                 const taskNumber = t.taskNumber || (t.id?.includes('spk-1') ? 1 : t.id?.includes('spk-2') ? 2 : t.id?.includes('spk-3') ? 3 : 1);
@@ -2579,9 +2583,28 @@ export function AuthenticCBTExamPage() {
 
     if (spkTasks.length >= 3) {
       const getSpkScore = (t: any, idx: number) => {
-        const res = speakingAiResults[t.id] || speakingAiResults[idx];
-        if (res?.scoreOutOf20 !== undefined) return res.scoreOutOf20;
-        if (res?.score !== undefined) return Math.round((res.score / 100) * 20);
+        const results = speakingAiResults;
+        const keysToTry = [
+          t?.id,
+          `spk-${idx + 1}`,
+          `task_${idx + 1}`,
+          `task_${idx}`,
+          String(idx),
+          Object.keys(results)[idx]
+        ].filter(Boolean);
+
+        for (const k of keysToTry) {
+          const res = results[k];
+          if (res?.scoreOutOf20 !== undefined && res.scoreOutOf20 > 0) return res.scoreOutOf20;
+          if (res?.score !== undefined && res.score > 0) return Math.round((res.score / 100) * 20);
+        }
+
+        const arr = Object.values(results);
+        if (arr[idx]) {
+          const res: any = arr[idx];
+          if (res?.scoreOutOf20 !== undefined && res.scoreOutOf20 > 0) return res.scoreOutOf20;
+          if (res?.score !== undefined && res.score > 0) return Math.round((res.score / 100) * 20);
+        }
         return 0;
       };
       s1 = getSpkScore(spkTasks[0], 0);
@@ -2897,10 +2920,10 @@ export function AuthenticCBTExamPage() {
           <button
             onClick={() => setShowHints(!showHints)}
             className={`px-2.5 py-1 rounded border text-[11px] font-semibold transition-all shrink-0 flex items-center gap-1 ${showHints
-                ? "bg-amber-600 text-white border-amber-600"
-                : cbtDark
-                  ? "bg-[#1E293B] text-slate-200 border-slate-700"
-                  : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
+              ? "bg-amber-600 text-white border-amber-600"
+              : cbtDark
+                ? "bg-[#1E293B] text-slate-200 border-slate-700"
+                : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
               }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -2920,10 +2943,10 @@ export function AuthenticCBTExamPage() {
               <button
                 onClick={() => setShowTranscript(!showTranscript)}
                 className={`px-2.5 py-1 rounded border text-[11px] font-semibold transition-all shrink-0 flex items-center gap-1 ${showTranscript
-                    ? "bg-purple-600 text-white border-purple-600"
-                    : cbtDark
-                      ? "bg-[#1E293B] text-slate-200 border-slate-700"
-                      : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
+                  ? "bg-purple-600 text-white border-purple-600"
+                  : cbtDark
+                    ? "bg-[#1E293B] text-slate-200 border-slate-700"
+                    : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
                   }`}
               >
                 <FileText className="w-3.5 h-3.5" />
@@ -2933,10 +2956,10 @@ export function AuthenticCBTExamPage() {
               <button
                 onClick={() => setShowTranslation(!showTranslation)}
                 className={`px-2.5 py-1 rounded border text-[11px] font-semibold transition-all shrink-0 flex items-center gap-1 ${showTranslation
-                    ? "bg-indigo-600 text-white border-indigo-600"
-                    : cbtDark
-                      ? "bg-[#1E293B] text-slate-200 border-slate-700"
-                      : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
+                  ? "bg-indigo-600 text-white border-indigo-600"
+                  : cbtDark
+                    ? "bg-[#1E293B] text-slate-200 border-slate-700"
+                    : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
                   }`}
               >
                 <Globe className="w-3.5 h-3.5" />
@@ -2949,10 +2972,10 @@ export function AuthenticCBTExamPage() {
             <button
               onClick={() => setShowPassageTranslation(!showPassageTranslation)}
               className={`px-2.5 py-1 rounded border text-[11px] font-semibold transition-all shrink-0 flex items-center gap-1 ${showPassageTranslation
-                  ? "bg-blue-600 text-white border-blue-600"
-                  : cbtDark
-                    ? "bg-[#1E293B] text-slate-200 border-slate-700"
-                    : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
+                ? "bg-blue-600 text-white border-blue-600"
+                : cbtDark
+                  ? "bg-[#1E293B] text-slate-200 border-slate-700"
+                  : "bg-white text-slate-950 border-slate-300 font-bold shadow-sm"
                 }`}
             >
               <Globe className="w-3.5 h-3.5" />
@@ -2980,14 +3003,14 @@ export function AuthenticCBTExamPage() {
                 }
               }}
               className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded transition-all shrink-0 flex items-center gap-1 sm:gap-1.5 ${isSelected
-                  ? "bg-blue-600 text-white shadow ring-2 ring-blue-400"
-                  : isLocked
-                    ? "opacity-50 cursor-not-allowed bg-slate-300 dark:bg-slate-800 text-slate-500 border border-slate-400/30"
-                    : isCompleted && mode === "EXAM" && !isAdmin
-                      ? "opacity-75 cursor-not-allowed bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300"
-                      : cbtDark
-                        ? "bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer"
-                        : "bg-slate-100 text-slate-900 hover:bg-slate-300 font-bold border border-slate-300 cursor-pointer"
+                ? "bg-blue-600 text-white shadow ring-2 ring-blue-400"
+                : isLocked
+                  ? "opacity-50 cursor-not-allowed bg-slate-300 dark:bg-slate-800 text-slate-500 border border-slate-400/30"
+                  : isCompleted && mode === "EXAM" && !isAdmin
+                    ? "opacity-75 cursor-not-allowed bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300"
+                    : cbtDark
+                      ? "bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer"
+                      : "bg-slate-100 text-slate-900 hover:bg-slate-300 font-bold border border-slate-300 cursor-pointer"
                 }`}
               title={isLocked ? "🔒 Section verrouillée en mode examen (Progression séquentielle)" : isCompleted ? "✓ Épreuve terminée" : ""}
             >
@@ -3068,8 +3091,8 @@ export function AuthenticCBTExamPage() {
                       type="button"
                       onClick={() => toggleFlag(currentQ.id)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold border flex items-center gap-1.5 shrink-0 cursor-pointer transition-all shadow-xs active:scale-95 ${flaggedQuestions[currentQ.id]
-                          ? "bg-amber-500 hover:bg-amber-600 text-white border-amber-600 ring-2 ring-amber-400/40"
-                          : "bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                        ? "bg-amber-500 hover:bg-amber-600 text-white border-amber-600 ring-2 ring-amber-400/40"
+                        : "bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300"
                         }`}
                     >
                       <Flag className={`w-3.5 h-3.5 ${flaggedQuestions[currentQ.id] ? "fill-white text-white" : "text-amber-500"}`} />
@@ -3156,8 +3179,8 @@ export function AuthenticCBTExamPage() {
                               type="button"
                               onClick={() => setShowQuestionPrompt(!showQuestionPrompt)}
                               className={`px-2.5 sm:px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border cursor-pointer ${showQuestionPrompt
-                                  ? "bg-amber-600 text-white border-amber-700"
-                                  : "bg-amber-100 text-amber-950 border-amber-300 hover:bg-amber-200"
+                                ? "bg-amber-600 text-white border-amber-700"
+                                : "bg-amber-100 text-amber-950 border-amber-300 hover:bg-amber-200"
                                 }`}
                             >
                               <FileText className="w-3.5 h-3.5" />
@@ -3168,8 +3191,8 @@ export function AuthenticCBTExamPage() {
                               type="button"
                               onClick={() => setShowTranscript(!showTranscript)}
                               className={`px-2.5 sm:px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border cursor-pointer ${showTranscript
-                                  ? "bg-purple-700 text-white border-purple-800"
-                                  : "bg-purple-100 text-purple-950 border-purple-300 hover:bg-purple-200"
+                                ? "bg-purple-700 text-white border-purple-800"
+                                : "bg-purple-100 text-purple-950 border-purple-300 hover:bg-purple-200"
                                 }`}
                             >
                               <FileText className="w-3.5 h-3.5" />
@@ -3181,8 +3204,8 @@ export function AuthenticCBTExamPage() {
                                 type="button"
                                 onClick={() => setShowTranslation(!showTranslation)}
                                 className={`px-2.5 sm:px-3 py-1.5 rounded text-xs font-bold transition-all flex items-center gap-1 shadow-sm border cursor-pointer ${showTranslation
-                                    ? "bg-indigo-700 text-white border-indigo-800"
-                                    : "bg-indigo-100 text-indigo-950 border-indigo-300 hover:bg-indigo-200"
+                                  ? "bg-indigo-700 text-white border-indigo-800"
+                                  : "bg-indigo-100 text-indigo-950 border-indigo-300 hover:bg-indigo-200"
                                   }`}
                               >
                                 <Globe className="w-3.5 h-3.5" />
@@ -3621,18 +3644,18 @@ export function AuthenticCBTExamPage() {
                                 if (!isLocked) handleSelectOption(currentQ.id, idx);
                               }}
                               className={`group relative rounded-xl border-2 overflow-hidden cursor-pointer transition-all duration-200 shadow-sm flex flex-col justify-between active:scale-[0.98] ${isChosen
-                                  ? "border-blue-600 ring-2 ring-blue-500/50 bg-blue-50/20 dark:bg-blue-950/30 shadow-md"
-                                  : cbtDark
-                                    ? "bg-slate-800/80 border-slate-700 hover:border-blue-400"
-                                    : "bg-white border-slate-300 hover:border-blue-500 hover:shadow-md"
+                                ? "border-blue-600 ring-2 ring-blue-500/50 bg-blue-50/20 dark:bg-blue-950/30 shadow-md"
+                                : cbtDark
+                                  ? "bg-slate-800/80 border-slate-700 hover:border-blue-400"
+                                  : "bg-white border-slate-300 hover:border-blue-500 hover:shadow-md"
                                 } ${isLocked ? "cursor-not-allowed opacity-90" : ""}`}
                             >
                               {/* Card Top Letter Header */}
                               <div className={`px-3 py-2 flex items-center justify-between font-extrabold text-xs border-b ${isChosen
-                                  ? "bg-blue-600 text-white border-blue-600"
-                                  : cbtDark
-                                    ? "bg-slate-700/80 text-slate-200 border-slate-700"
-                                    : "bg-slate-100 text-slate-900 border-slate-200"
+                                ? "bg-blue-600 text-white border-blue-600"
+                                : cbtDark
+                                  ? "bg-slate-700/80 text-slate-200 border-slate-700"
+                                  : "bg-slate-100 text-slate-900 border-slate-200"
                                 }`}>
                                 <span className="flex items-center gap-1.5 font-mono">
                                   <span className={`w-5 h-5 rounded-md flex items-center justify-center font-black ${isChosen ? "bg-white text-blue-600" : "bg-slate-200 dark:bg-slate-600 text-slate-900 dark:text-slate-100"
@@ -3764,18 +3787,18 @@ export function AuthenticCBTExamPage() {
                             if (!isLocked) handleSelectOption(currentQ.id, idx);
                           }}
                           className={`p-3.5 sm:p-4 rounded-xl border text-xs sm:text-sm font-semibold cursor-pointer transition-all flex items-center justify-between min-h-[48px] touch-manipulation active:scale-[0.99] ${isChosen
-                              ? "bg-blue-600 text-white border-blue-600 shadow-md font-bold"
-                              : cbtDark
-                                ? "bg-slate-800/80 text-slate-200 border-slate-700 hover:border-blue-400"
-                                : "bg-slate-50 text-slate-950 border-slate-300 hover:border-blue-500 hover:bg-blue-50/50"
+                            ? "bg-blue-600 text-white border-blue-600 shadow-md font-bold"
+                            : cbtDark
+                              ? "bg-slate-800/80 text-slate-200 border-slate-700 hover:border-blue-400"
+                              : "bg-slate-50 text-slate-950 border-slate-300 hover:border-blue-500 hover:bg-blue-50/50"
                             } ${isLocked ? "cursor-not-allowed opacity-90" : ""}`}
                         >
                           <div className="flex items-center gap-3 min-w-0">
                             <span className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ${isChosen
-                                ? "bg-white text-blue-600"
-                                : cbtDark
-                                  ? "bg-slate-700 text-slate-200"
-                                  : "bg-slate-200 text-slate-900 font-extrabold"
+                              ? "bg-white text-blue-600"
+                              : cbtDark
+                                ? "bg-slate-700 text-slate-200"
+                                : "bg-slate-200 text-slate-900 font-extrabold"
                               }`}>
                               {letter}
                             </span>
@@ -3821,8 +3844,8 @@ export function AuthenticCBTExamPage() {
 
                       return (
                         <div className={`p-4 rounded-xl border space-y-2 text-xs font-sans ${isCorrect
-                            ? cbtDark ? "bg-emerald-950/40 border-emerald-800 text-emerald-200" : "bg-emerald-50 border-emerald-300 text-emerald-950"
-                            : cbtDark ? "bg-rose-950/40 border-rose-800 text-rose-200" : "bg-rose-50 border-rose-300 text-rose-950"
+                          ? cbtDark ? "bg-emerald-950/40 border-emerald-800 text-emerald-200" : "bg-emerald-50 border-emerald-300 text-emerald-950"
+                          : cbtDark ? "bg-rose-950/40 border-rose-800 text-rose-200" : "bg-rose-50 border-rose-300 text-rose-950"
                           }`}>
                           <div className="flex items-center gap-2 font-extrabold text-sm">
                             {isCorrect ? (
@@ -3903,8 +3926,8 @@ export function AuthenticCBTExamPage() {
                   disabled={currentQuestionIdx === 0 || (!isAdmin && mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE")}
                   onClick={() => setCurrentQuestionIdx((prev) => Math.max(0, prev - 1))}
                   className={`px-4 py-2 rounded text-xs font-bold transition-all ${currentQuestionIdx === 0 || (!isAdmin && mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE")
-                      ? "opacity-40 cursor-not-allowed bg-slate-200 text-slate-500 border-slate-300"
-                      : "bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-300 cursor-pointer"
+                    ? "opacity-40 cursor-not-allowed bg-slate-200 text-slate-500 border-slate-300"
+                    : "bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-300 cursor-pointer"
                     }`}
                   title={!isAdmin && mode === "EXAM" && currentSection.type === "COMPREHENSION_ORALE" ? "Navigation verrouillée en mode examen (Règles CBT)" : ""}
                 >
@@ -3966,17 +3989,17 @@ export function AuthenticCBTExamPage() {
                     key={t.id}
                     onClick={() => setActiveWritingTaskIdx(idx)}
                     className={`px-3.5 py-2 rounded-t-lg text-xs font-bold transition-all flex items-center gap-2 shrink-0 border-b-2 ${activeWritingTaskIdx === idx
-                        ? "bg-pink-600 text-white border-pink-600 shadow"
-                        : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-transparent hover:bg-slate-200"
+                      ? "bg-pink-600 text-white border-pink-600 shadow"
+                      : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-transparent hover:bg-slate-200"
                       }`}
                   >
                     <PenTool className="w-3.5 h-3.5" />
                     <span>{t.title}</span>
                     <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-extrabold ${tValid
-                        ? activeWritingTaskIdx === idx ? "bg-emerald-500 text-white" : "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
-                        : tWords > 0
-                          ? activeWritingTaskIdx === idx ? "bg-amber-400 text-slate-900" : "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
-                          : "bg-black/10 dark:bg-white/10 text-slate-400"
+                      ? activeWritingTaskIdx === idx ? "bg-emerald-500 text-white" : "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+                      : tWords > 0
+                        ? activeWritingTaskIdx === idx ? "bg-amber-400 text-slate-900" : "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+                        : "bg-black/10 dark:bg-white/10 text-slate-400"
                       }`}>
                       {tWords > 0 ? `${tWords}w ${tValid ? "✓" : ""}` : "0w"}
                     </span>
@@ -4143,10 +4166,10 @@ export function AuthenticCBTExamPage() {
 
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-semibold">
                     <span className={`px-2.5 py-1 rounded-md font-mono font-bold ${isValid
-                        ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
-                        : isOverMax
-                          ? "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
-                          : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                      ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+                      : isOverMax
+                        ? "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+                        : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
                       }`}>
                       Mots : <strong>{wordCount}</strong> / {task.wordCountMin}–{task.wordCountMax} {
                         isValid ? "✓ (Cible atteinte)" : isOverMax ? "⚠️ (Dépassement de la longueur maximale)" : isUnderMin && wordCount > 0 ? "⚠️ (Sous le seuil minimum requis)" : ""
@@ -4201,8 +4224,8 @@ export function AuthenticCBTExamPage() {
                   {/* AI Writing Evaluation Result Card */}
                   {aiEval && (
                     <div className={`p-4 rounded-xl border space-y-3 text-xs font-sans shadow-sm ${aiEval.isPlagiarized
-                        ? "bg-amber-50 dark:bg-amber-950/50 border-amber-400 dark:border-amber-700 text-amber-950 dark:text-amber-200"
-                        : "bg-pink-50 dark:bg-pink-950/40 border-pink-300 dark:border-pink-800 text-slate-950 dark:text-slate-100"
+                      ? "bg-amber-50 dark:bg-amber-950/50 border-amber-400 dark:border-amber-700 text-amber-950 dark:text-amber-200"
+                      : "bg-pink-50 dark:bg-pink-950/40 border-pink-300 dark:border-pink-800 text-slate-950 dark:text-slate-100"
                       }`}>
                       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-pink-200 dark:border-pink-800 pb-2">
                         <span className="font-extrabold text-sm text-pink-700 dark:text-pink-400 flex items-center gap-1.5">
@@ -4374,8 +4397,8 @@ export function AuthenticCBTExamPage() {
                     startSpeakingTaskSession(idx);
                   }}
                   className={`px-4 py-2 rounded-t-lg text-xs font-bold transition-all flex items-center gap-2 shrink-0 border-b-2 ${activeSpeakingTaskIdx === idx
-                      ? "bg-purple-600 text-white border-purple-600 shadow"
-                      : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-transparent hover:bg-slate-200"
+                    ? "bg-purple-600 text-white border-purple-600 shadow"
+                    : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-transparent hover:bg-slate-200"
                     }`}
                 >
                   <Mic className="w-3.5 h-3.5" />
@@ -4669,8 +4692,8 @@ export function AuthenticCBTExamPage() {
                       <div className="flex items-center gap-2">
                         {task.prepTimeMins > 0 && (
                           <span className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 ${isOralPrepActive[task.id]
-                              ? "bg-amber-600 text-white animate-pulse"
-                              : "bg-slate-800 text-slate-300"
+                            ? "bg-amber-600 text-white animate-pulse"
+                            : "bg-slate-800 text-slate-300"
                             }`}>
                             <Clock className="w-3.5 h-3.5" />
                             <span>
@@ -4682,8 +4705,8 @@ export function AuthenticCBTExamPage() {
                         )}
 
                         <span className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 ${isOralSpeakingActive[task.id]
-                            ? "bg-emerald-600 text-white animate-pulse"
-                            : "bg-slate-800 text-slate-300"
+                          ? "bg-emerald-600 text-white animate-pulse"
+                          : "bg-slate-800 text-slate-300"
                           }`}>
                           <Mic className="w-3.5 h-3.5 text-emerald-400" />
                           <span>
@@ -4855,13 +4878,12 @@ export function AuthenticCBTExamPage() {
                           <button
                             disabled={isMicLocked}
                             onClick={() => handleToggleSpeakingRecording(task.id)}
-                            className={`px-4 py-2 rounded-xl font-bold text-xs shadow flex items-center gap-1.5 transition-all cursor-pointer ${
-                              isMicLocked
+                            className={`px-4 py-2 rounded-xl font-bold text-xs shadow flex items-center gap-1.5 transition-all cursor-pointer ${isMicLocked
                                 ? "bg-slate-300 dark:bg-slate-800 text-slate-500 cursor-not-allowed opacity-60"
                                 : isRecording
                                   ? "bg-red-600 hover:bg-red-500 text-white animate-pulse"
                                   : "bg-purple-600 hover:bg-purple-500 text-white"
-                            }`}
+                              }`}
                           >
                             <Mic className="w-3.5 h-3.5" />
                             <span>
@@ -4876,81 +4898,81 @@ export function AuthenticCBTExamPage() {
                           </button>
                         </div>
 
-                    <div className="p-3.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-xs min-h-[75px]">
-                      <p className="font-bold text-[10px] text-slate-500 uppercase mb-1">Transcription vocale en temps réel (Speech-to-Text) :</p>
-                      <p className="font-sans italic text-slate-900 dark:text-slate-200">
-                        {transcript || "(Cliquez sur 'Parler au micro' et formulez votre réponse en français. Votre voix sera transcrite automatiquement...)"}
-                      </p>
-                    </div>
-
-                    {(mode === "PRACTICE" || isAdmin) && (
-                      <div className="pt-1">
-                        <button
-                          disabled={(!transcript && !(speakingDialogueMap[task.id]?.length)) || isEvaluating}
-                          onClick={() => handleEvaluateSpeakingAI(task.id, task.scenario, transcript)}
-                          className="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2 disabled:opacity-40 transition-all cursor-pointer active:scale-98"
-                        >
-                          <Sparkles className="w-3.5 h-3.5" />
-                          <span>{isEvaluating ? "Évaluation diagnostique FEI en cours..." : "🤖 Obtenir la note FEI (Mode Pratique)"}</span>
-                        </button>
-                      </div>
-                    )}
-
-                    {/* 2-WAY LIVE INTERLOCUTION DIALOGUE LOG (PLACED DIRECTLY BELOW MIC CONTROLS FOR INSTANT VISIBILITY) */}
-                    {( (speakingDialogueMap[task.id] && speakingDialogueMap[task.id].length > 0) || isChatLoading ) && (
-                      <div id={`dialogue-box-${task.id}`} className="mt-4 p-4 rounded-xl border-2 border-purple-400/80 dark:border-purple-800 bg-white dark:bg-[#0c1220] space-y-3 text-xs shadow-md animate-fadeIn">
-                        <div className="flex items-center justify-between border-b border-purple-200 dark:border-purple-800/80 pb-2">
-                          <span className="font-extrabold text-[11px] uppercase tracking-wide text-purple-700 dark:text-purple-300 flex items-center gap-1.5">
-                            <Mic className="w-3.5 h-3.5 text-purple-600" />
-                            <span>Échange en direct avec l'examinateur ({examinerName}) :</span>
-                          </span>
-                          <span className="px-2 py-0.5 rounded bg-purple-600/20 text-purple-700 dark:text-purple-300 font-mono text-[10px] font-bold">
-                            {(() => { const count = (speakingDialogueMap[task.id] || []).length; return `${count} tour${count > 1 ? 's' : ''} de parole`; })()}
-                          </span>
+                        <div className="p-3.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-xs min-h-[75px]">
+                          <p className="font-bold text-[10px] text-slate-500 uppercase mb-1">Transcription vocale en temps réel (Speech-to-Text) :</p>
+                          <p className="font-sans italic text-slate-900 dark:text-slate-200">
+                            {transcript || "(Cliquez sur 'Parler au micro' et formulez votre réponse en français. Votre voix sera transcrite automatiquement...)"}
+                          </p>
                         </div>
 
-                        <div id={`dialogue-container-${task.id}`} className="space-y-3 max-h-[450px] overflow-y-auto overscroll-contain touch-pan-y webkit-overflow-scrolling-touch pr-1">
-                          {(speakingDialogueMap[task.id] || []).map((msg, mIdx) => (
-                            <div
-                              key={mIdx}
-                              className={`p-3.5 rounded-2xl max-w-[90%] sm:max-w-[85%] text-xs font-sans leading-relaxed shadow-sm ${msg.sender === "examiner"
-                                  ? "bg-purple-100 dark:bg-purple-950/90 border border-purple-300 dark:border-purple-800 text-purple-950 dark:text-purple-100 mr-auto"
-                                  : "bg-blue-600 text-white ml-auto"
-                                }`}
+                        {(mode === "PRACTICE" || isAdmin) && (
+                          <div className="pt-1">
+                            <button
+                              disabled={(!transcript && !(speakingDialogueMap[task.id]?.length)) || isEvaluating}
+                              onClick={() => handleEvaluateSpeakingAI(task.id, task.scenario, transcript)}
+                              className="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2 disabled:opacity-40 transition-all cursor-pointer active:scale-98"
                             >
-                              <div className="flex items-center justify-between gap-2 mb-1.5 font-bold text-[10px] uppercase opacity-85">
-                                <span>{msg.sender === "examiner" ? `🎙️ ${examinerName}` : "👤 Candidat (Vous)"}</span>
-                                {msg.sender === "examiner" && (
-                                  <button
-                                    onClick={() => {
-                                      if (currentSection.type === "EXPRESSION_ORALE") {
-                                        unlockAudioEngine();
-                                      }
-                                      handlePlayExaminerAudio(msg.text);
-                                    }}
-                                    className="hover:underline flex items-center gap-0.5 cursor-pointer text-purple-800 dark:text-purple-300 font-bold"
-                                    title="Réécouter la réponse audio"
-                                  >
-                                    <Volume2 className="w-3 h-3" /> Réécouter
-                                  </button>
-                                )}
-                              </div>
-                              <p className="font-medium text-xs whitespace-pre-line">{msg.text}</p>
-                            </div>
-                          ))}
+                              <Sparkles className="w-3.5 h-3.5" />
+                              <span>{isEvaluating ? "Évaluation diagnostique FEI en cours..." : "🤖 Obtenir la note FEI (Mode Pratique)"}</span>
+                            </button>
+                          </div>
+                        )}
 
-                          {isChatLoading && (
-                            <div className="p-3.5 rounded-2xl bg-purple-100/90 dark:bg-purple-950/80 border-2 border-purple-400 text-purple-950 dark:text-purple-200 mr-auto animate-pulse flex items-center gap-2 shadow-sm">
-                              <Sparkles className="w-4 h-4 animate-spin text-purple-600" />
-                              <span className="font-bold text-xs">{examinerName} écoute votre réponse et prépare sa réponse orale...</span>
+                        {/* 2-WAY LIVE INTERLOCUTION DIALOGUE LOG (PLACED DIRECTLY BELOW MIC CONTROLS FOR INSTANT VISIBILITY) */}
+                        {((speakingDialogueMap[task.id] && speakingDialogueMap[task.id].length > 0) || isChatLoading) && (
+                          <div id={`dialogue-box-${task.id}`} className="mt-4 p-4 rounded-xl border-2 border-purple-400/80 dark:border-purple-800 bg-white dark:bg-[#0c1220] space-y-3 text-xs shadow-md animate-fadeIn">
+                            <div className="flex items-center justify-between border-b border-purple-200 dark:border-purple-800/80 pb-2">
+                              <span className="font-extrabold text-[11px] uppercase tracking-wide text-purple-700 dark:text-purple-300 flex items-center gap-1.5">
+                                <Mic className="w-3.5 h-3.5 text-purple-600" />
+                                <span>Échange en direct avec l'examinateur ({examinerName}) :</span>
+                              </span>
+                              <span className="px-2 py-0.5 rounded bg-purple-600/20 text-purple-700 dark:text-purple-300 font-mono text-[10px] font-bold">
+                                {(() => { const count = (speakingDialogueMap[task.id] || []).length; return `${count} tour${count > 1 ? 's' : ''} de parole`; })()}
+                              </span>
                             </div>
-                          )}
-                        </div>
+
+                            <div id={`dialogue-container-${task.id}`} className="space-y-3 max-h-[450px] overflow-y-auto overscroll-contain touch-pan-y webkit-overflow-scrolling-touch pr-1">
+                              {(speakingDialogueMap[task.id] || []).map((msg, mIdx) => (
+                                <div
+                                  key={mIdx}
+                                  className={`p-3.5 rounded-2xl max-w-[90%] sm:max-w-[85%] text-xs font-sans leading-relaxed shadow-sm ${msg.sender === "examiner"
+                                    ? "bg-purple-100 dark:bg-purple-950/90 border border-purple-300 dark:border-purple-800 text-purple-950 dark:text-purple-100 mr-auto"
+                                    : "bg-blue-600 text-white ml-auto"
+                                    }`}
+                                >
+                                  <div className="flex items-center justify-between gap-2 mb-1.5 font-bold text-[10px] uppercase opacity-85">
+                                    <span>{msg.sender === "examiner" ? `🎙️ ${examinerName}` : "👤 Candidat (Vous)"}</span>
+                                    {msg.sender === "examiner" && (
+                                      <button
+                                        onClick={() => {
+                                          if (currentSection.type === "EXPRESSION_ORALE") {
+                                            unlockAudioEngine();
+                                          }
+                                          handlePlayExaminerAudio(msg.text);
+                                        }}
+                                        className="hover:underline flex items-center gap-0.5 cursor-pointer text-purple-800 dark:text-purple-300 font-bold"
+                                        title="Réécouter la réponse audio"
+                                      >
+                                        <Volume2 className="w-3 h-3" /> Réécouter
+                                      </button>
+                                    )}
+                                  </div>
+                                  <p className="font-medium text-xs whitespace-pre-line">{msg.text}</p>
+                                </div>
+                              ))}
+
+                              {isChatLoading && (
+                                <div className="p-3.5 rounded-2xl bg-purple-100/90 dark:bg-purple-950/80 border-2 border-purple-400 text-purple-950 dark:text-purple-200 mr-auto animate-pulse flex items-center gap-2 shadow-sm">
+                                  <Sparkles className="w-4 h-4 animate-spin text-purple-600" />
+                                  <span className="font-bold text-xs">{examinerName} écoute votre réponse et prépare sa réponse orale...</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                );
-              })()}
+                    );
+                  })()}
 
                   {/* OFFICIAL FEI 4-CRITERIA DIAGNOSTIC EVALUATION RESULT CARD */}
                   {aiEval && aiEval.isEvaluated && (
@@ -5181,12 +5203,12 @@ export function AuthenticCBTExamPage() {
                       : `Item N°${q.questionNumber}`
                   }
                   className={`w-7 h-7 sm:w-8 sm:h-8 rounded text-xs font-bold transition-all relative shrink-0 ${isCurrent
-                      ? "ring-2 ring-blue-600 bg-blue-600 text-white"
-                      : isAnswered
-                        ? "bg-blue-800 text-white"
-                        : isLockedExamItem
-                          ? "opacity-50 cursor-not-allowed bg-slate-300 dark:bg-slate-800 text-slate-500"
-                          : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
+                    ? "ring-2 ring-blue-600 bg-blue-600 text-white"
+                    : isAnswered
+                      ? "bg-blue-800 text-white"
+                      : isLockedExamItem
+                        ? "opacity-50 cursor-not-allowed bg-slate-300 dark:bg-slate-800 text-slate-500"
+                        : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
                     }`}
                 >
                   {q.questionNumber}
@@ -5224,8 +5246,8 @@ export function AuthenticCBTExamPage() {
               className="w-full max-w-lg p-6 sm:p-8 rounded-2xl border bg-white dark:bg-[#101828] border-purple-300 dark:border-purple-800 shadow-2xl space-y-5 text-center my-auto"
             >
               <div className={`w-16 h-16 rounded-2xl text-white flex items-center justify-center mx-auto shadow-xl ${currentSection.type === "COMPREHENSION_ORALE" ? "bg-blue-600" :
-                  currentSection.type === "COMPREHENSION_ECRITE" ? "bg-emerald-600" :
-                    currentSection.type === "EXPRESSION_ECRITE" ? "bg-amber-600" : "bg-purple-600"
+                currentSection.type === "COMPREHENSION_ECRITE" ? "bg-emerald-600" :
+                  currentSection.type === "EXPRESSION_ECRITE" ? "bg-amber-600" : "bg-purple-600"
                 }`}>
                 {currentSection.type === "COMPREHENSION_ORALE" && <Headphones className="w-8 h-8" />}
                 {currentSection.type === "COMPREHENSION_ECRITE" && <BookOpen className="w-8 h-8" />}
@@ -5377,8 +5399,8 @@ export function AuthenticCBTExamPage() {
                   }
                 }}
                 className={`w-full py-3.5 rounded-xl font-extrabold text-sm shadow-xl flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 text-white ${currentSection.type === "COMPREHENSION_ORALE" ? "bg-blue-600 hover:bg-blue-500" :
-                    currentSection.type === "COMPREHENSION_ECRITE" ? "bg-emerald-600 hover:bg-emerald-500" :
-                      currentSection.type === "EXPRESSION_ECRITE" ? "bg-amber-600 hover:bg-amber-500" : "bg-purple-600 hover:bg-purple-500"
+                  currentSection.type === "COMPREHENSION_ECRITE" ? "bg-emerald-600 hover:bg-emerald-500" :
+                    currentSection.type === "EXPRESSION_ECRITE" ? "bg-amber-600 hover:bg-amber-500" : "bg-purple-600 hover:bg-purple-500"
                   }`}
               >
                 <Sparkles className="w-4 h-4" />
@@ -5646,17 +5668,30 @@ export function AuthenticCBTExamPage() {
                         <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
                           {res.speakingAttemptedCount === 0 ? "No submission" : `${res.speakingAvg}/20 Marks (${res.speakingNCLC.cefrEquivalent || res.speakingNCLC.cefrLevel || 'A2'})`}
                         </p>
-                        {res.speakingAttemptedCount > 0 && res.speakingAttemptedCount < 3 && (
-                          <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-950/80 border border-amber-300 dark:border-amber-700 text-[10.5px] font-medium text-amber-900 dark:text-amber-200 leading-relaxed space-y-1">
-                            <p className="font-bold text-amber-950 dark:text-amber-100 flex items-center gap-1">
-                              ⚠️ Tâche 3 Non Effectuée (Pondération 50%)
-                            </p>
-                            <p>
-                              Vous avez complété {res.speakingAttemptedCount}/3 tâches (T1: {res.speakingTaskScores.s1}/20, T2: {res.speakingTaskScores.s2}/20, T3: {res.speakingTaskScores.s3}/20).
-                              {res.speakingTaskScores.s1 >= 12 ? ` Votre performance à la Tâche 1 (${res.speakingTaskScores.s1}/20) montrait un niveau B2, mais l'absence de réponse à la Tâche 3 fait chuter la moyenne globale à ${res.speakingAvg}/20 (${res.speakingNCLC.cefrEquivalent || res.speakingNCLC.cefrLevel || 'A2'}).` : ''}
-                            </p>
-                          </div>
-                        )}
+                        {res.speakingAttemptedCount > 0 && res.speakingAttemptedCount < 3 && (() => {
+                          const s1 = res.speakingTaskScores.s1;
+                          const s2 = res.speakingTaskScores.s2;
+                          const s3 = res.speakingTaskScores.s3;
+                          const missingTitle = s3 === 0
+                            ? "⚠️ Tâche 3 Non Effectuée (Pondération 50%)"
+                            : s2 === 0
+                            ? "⚠️ Tâche 2 Non Effectuée (Pondération 30%)"
+                            : s1 === 0
+                            ? "⚠️ Tâche 1 Non Effectuée (Pondération 20%)"
+                            : "⚠️ Épreuve Incomplète";
+
+                          return (
+                            <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-950/80 border border-amber-300 dark:border-amber-700 text-[10.5px] font-medium text-amber-900 dark:text-amber-200 leading-relaxed space-y-1">
+                              <p className="font-bold text-amber-950 dark:text-amber-100 flex items-center gap-1">
+                                {missingTitle}
+                              </p>
+                              <p>
+                                Vous avez complété {res.speakingAttemptedCount}/3 tâches (T1: {s1}/20, T2: {s2}/20, T3: {s3}/20).
+                                {s1 >= 12 && s3 === 0 ? ` Votre performance à la Tâche 1 (${s1}/20) montrait un niveau B2, mais l'absence de réponse à la Tâche 3 fait chuter la moyenne globale à ${res.speakingAvg}/20 (${res.speakingNCLC.cefrEquivalent || res.speakingNCLC.cefrLevel || 'A2'}).` : ''}
+                              </p>
+                            </div>
+                          );
+                        })()}
                         <p className="text-[10px] font-semibold text-indigo-700 dark:text-indigo-300 pt-0.5">
                           {res.speakingPoints > 0 ? `+${res.speakingPoints} CRS Points` : "0 CRS Points"}
                         </p>
@@ -5664,8 +5699,8 @@ export function AuthenticCBTExamPage() {
                     </div>
 
                     <div className={`p-4 rounded-xl text-xs text-left space-y-2 border ${res.isNCLC7TargetReached
-                        ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300"
-                        : "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-300"
+                      ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300"
+                      : "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-300"
                       }`}>
                       <p className="font-bold flex items-center justify-between">
                         <span>🍁 Official Express Entry CRS Point Contribution:</span>
