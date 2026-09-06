@@ -1193,9 +1193,13 @@ export function AuthenticCBTExamPage() {
     // Universal MediaRecorder + Server-Side Whisper Neural STT Engine (99%+ Multi-Accent Recognition)
     try {
       if (typeof window !== "undefined" && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-        });
+        let stream: MediaStream | null = (window as any)[`_activeSpeakingStream_${taskId}`];
+        if (!stream || !stream.active || !stream.getAudioTracks().some((t: any) => t.readyState === 'live')) {
+          stream = await navigator.mediaDevices.getUserMedia({
+            audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+          });
+          (window as any)[`_activeSpeakingStream_${taskId}`] = stream;
+        }
         acousticAnalyzer.startAnalysis(stream);
 
         let mediaRecorder: MediaRecorder;
@@ -1230,7 +1234,11 @@ export function AuthenticCBTExamPage() {
 
           // 200ms Flush Buffer: Guarantee all audio chunks are delivered before creating the final Blob
           setTimeout(async () => {
-            try { stream.getTracks().forEach((t) => t.stop()); } catch { }
+            const isTaskDone = completedSpeakingTaskIds[taskId] || currentSection?.type !== "EXPRESSION_ORALE";
+            if (isTaskDone && stream) {
+              try { stream.getTracks().forEach((t) => t.stop()); } catch { }
+              delete (window as any)[`_activeSpeakingStream_${taskId}`];
+            }
 
             let rawAudioBlob = new Blob(audioChunks, { type: mimeType });
 
