@@ -523,6 +523,17 @@ export class WritingService {
     const targetMin = wordCountMin ?? (isTache2 ? 120 : isTache3 ? 140 : 60);
     const targetMax = wordCountMax ?? (isTache2 ? 150 : isTache3 ? 180 : 120);
 
+    const textCleanPre = (text || '').trim();
+    const wordsPre = textCleanPre.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
+    const actualWordCount = wordsPre.length;
+    const maxTargetBuffer = isTache3 ? 200 : targetMax + 30;
+
+    const wordCountStatusDesc = actualWordCount < targetMin
+      ? `UNDER MINIMUM TARGET (${targetMin - actualWordCount} words below target minimum of ${targetMin} words)`
+      : (actualWordCount > maxTargetBuffer
+        ? `EXCEEDS MAXIMUM TARGET (${actualWordCount - targetMax} words above target maximum of ${targetMax} words)`
+        : `WITHIN REQUIRED TARGET RANGE (${actualWordCount} words; target is ${targetMin}–${targetMax} words; soft margin up to ${maxTargetBuffer} words)`);
+
     if (!apiKey) {
       return this.evaluateLocalCEFR(text, lessonTitle, expectedAnswer, targetLanguage, taskNumber, targetMin, targetMax, taskPrompt, sampleResponse);
     }
@@ -549,6 +560,7 @@ TASK-SPECIFIC CALIBRATION RULES:
    - Nuanced balanced debate examining two opposing viewpoints ("D'un côté... D'un autre côté... En conclusion..."), complex connectors ("de surcroît", "néanmoins", "par conséquent", "en revanche"), sophisticated modalization and abstract vocabulary = 18–20/20 (C2 Mastery / NCLC 10+) or 16–17/20 (C1 Advanced / NCLC 9).
    - Good balanced essay with formal B2 connectors ("de plus", "cependant", "afin de", "ainsi") = 12–15/20 (B2 / NCLC 7–8).
    - Simple one-sided opinion with basic connectors = 9–11/20 (B1 / NCLC 5–6).
+   - EXPLICIT FORMAT PENALTY: If Tâche 3 is written in correspondence / letter format with epistolary formulas ("Cher Monsieur", "salutations distinguées", "cordialement", "cette lettre"), taskFulfillmentScore MUST be capped at <= 1/5 with diagnostic explanation: "Format Inadéquat : essai rédigé sous forme de lettre/courriel au lieu d'un essai argumentatif neutre."
 
 OFFICIAL FEI 4-CRITERIA MARKS (0–5 EACH):
 1. taskFulfillmentScore (0-5): Meets prompt scenario, appropriate register (tu vs vous), respects word count bounds (${targetMin}-${targetMax} words). (0/5 if Off-Topic).
@@ -561,7 +573,17 @@ Task / Topic: "${lessonTitle || `${targetLanguage} Writing Examination`}"
 ${taskPrompt ? `Task Prompt Scenario:\n"""\n${taskPrompt}\n"""` : (expectedAnswer ? `Task Prompt & Model Expectations:\n"""\n${expectedAnswer}\n"""` : '')}
 ${checklist && checklist.length > 0 ? `Required Checklist Elements:\n${checklist.map((item, i) => `${i + 1}. ${item}`).join('\n')}` : ''}
 
-Candidate Submission (${targetLanguage}):
+CANDIDATE SUBMISSION & CALCULATED WORD COUNT METRICS (${targetLanguage}):
+- System Exact Calculated Word Count: ${actualWordCount} words
+- Required Word Count Bounds: ${targetMin} to ${targetMax} words (Soft grace margin up to ${maxTargetBuffer} words)
+- Word Count Status: ${wordCountStatusDesc}
+
+CRITICAL WORD COUNT EVALUATION INSTRUCTIONS (ZERO HALLUCINATION):
+- You MUST strictly rely on the system-calculated Exact Word Count (${actualWordCount} words).
+- IF Word Count Status is WITHIN REQUIRED TARGET RANGE, you are STRICTLY FORBIDDEN from reporting any length violation, claiming the candidate exceeded the limit, or claiming the candidate failed length requirements in your feedback.
+- IF Word Count Status is UNDER MINIMUM TARGET, state clearly in your diagnostic that the text is below the ${targetMin}-word minimum threshold.
+
+Candidate Submission Text:
 """
 ${text}
 """
@@ -574,7 +596,7 @@ Respond STRICTLY with a valid JSON object matching this schema:
   "grammarScore": 3, 
   "feedback": "2-3 sentence precise official examiner diagnostic summary in English analyzing communicative effectiveness, structural coherence, vocabulary, and morphosyntax.",
   "criterionFeedback": {
-    "taskFulfillment": "1-2 sentences in English explaining the task fulfillment score, word count respect, and register suitability.",
+    "taskFulfillment": "1-2 sentences in English explaining task fulfillment, register suitability, and word count compliance. Explicitly state the exact word count (${actualWordCount} words) and target range (${targetMin}-${targetMax}). Do NOT report length violations when word count is within target range.",
     "coherence": "1-2 sentences in English analyzing discourse connectors, paragraph organization, and transitions.",
     "lexical": "1-2 sentences in English evaluating vocabulary richness, precision, and spelling accuracy.",
     "morphosyntax": "1-2 sentences in English reviewing grammatical accuracy, verb tense agreements, conditional/subjunctive mood, and accents."
@@ -646,9 +668,9 @@ Respond STRICTLY with a valid JSON object matching this schema:
         }
 
         // Detect Tâche 1 Personal Email format pasted in Tâche 3 (Argumentative Essay)
-        const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test(textClean) && /(cordialement|bien à vous|salutations|haute considération|respectueusement)/i.test(textClean);
+        const isLetterFormat = /^\s*(bonjour|salut|cher|chère|monsieur|madame)/i.test(textClean) || /(cordialement|bien à vous|salutations|haute considération|respectueusement|je vous prie d'agréer|cette lettre)/i.test(textClean);
         if (isTache3 && isLetterFormat) {
-          t = 0;
+          t = Math.min(1, t); // Cap Adéquation at <= 1/5 for epistolary format mismatch in Tâche 3
         }
 
         // Formal register check in Tâche 1 (Informal tu/ton/ta in formal email caps fulfillment at 3/5)
@@ -803,12 +825,19 @@ Respond STRICTLY with a valid JSON object matching this schema:
             cefrLevel: "N/A",
             expressEntryPoints: 0,
             taskFulfillmentScore: 0,
-            coherenceScore: typeof parsed.coherenceScore === 'number' ? Math.min(2, parsed.coherenceScore) : 1,
-            lexicalScore: typeof parsed.lexicalScore === 'number' ? Math.min(2, parsed.lexicalScore) : 1,
-            grammarScore: typeof parsed.grammarScore === 'number' ? Math.min(2, parsed.grammarScore) : 1,
+            coherenceScore: 0,
+            lexicalScore: 0,
+            grammarScore: 0,
             feedback: parsed.feedback || "🚨 ZERO GRADE (0/20 Marks): Official FEI rules mandate an automatic zero score for off-topic (hors-sujet) submissions that do not answer the specific prompt scenario.",
+            criterionFeedback: {
+              taskFulfillment: 'Task Fulfillment: 0/5 (Hors-Sujet). The submission does not address the required topic scenario.',
+              coherence: 'Coherence & Cohesion: 0/5. Discourse is off-topic.',
+              lexical: 'Lexical Variety: 0/5. Unrelated vocabulary.',
+              morphosyntax: 'Morphosyntax: 0/5. Zero grade awarded due to off-topic submission.'
+            },
+            levelUpAdvice: 'To receive marks, you MUST strictly answer the prompt scenario. Read the task instructions carefully before drafting.',
             corrections: mergedCorrections,
-            tips: Array.isArray(parsed.tips) ? parsed.tips : ["Lisez attentivement la consigne et répondez directement au sujet proposé."]
+            tips: Array.isArray(parsed.tips) && parsed.tips.length > 0 ? parsed.tips : ["Lisez attentivement la consigne et répondez directement au sujet proposé."]
           };
         }
 
@@ -851,7 +880,7 @@ Respond STRICTLY with a valid JSON object matching this schema:
           expressEntryPoints = 0;
         }
 
-        const criterionFeedback = parsed.criterionFeedback && typeof parsed.criterionFeedback === 'object' ? {
+        let criterionFeedback = parsed.criterionFeedback && typeof parsed.criterionFeedback === 'object' ? {
           taskFulfillment: parsed.criterionFeedback.taskFulfillment || `Task Fulfillment: ${t}/5 points. Evaluated based on prompt adherence, scenario context, and word count bounds (${targetMin}–${targetMax} words).`,
           coherence: parsed.criterionFeedback.coherence || `Coherence & Cohesion: ${c}/5 points. Evaluated based on paragraph structuring, logical progression, and French discourse connectors.`,
           lexical: parsed.criterionFeedback.lexical || `Lexical Variety: ${l}/5 points. Evaluated based on thematic vocabulary range, precision, and spelling accuracy.`,
@@ -862,6 +891,22 @@ Respond STRICTLY with a valid JSON object matching this schema:
           lexical: `Lexical Variety: ${l}/5 points. Evaluated based on range and register suitability.`,
           morphosyntax: `Morphosyntax: ${g}/5 points. Evaluated based on verb agreements, syntax, and diacritics.`
         };
+
+        // Format Mismatch Diagnostic Enforcer for Tâche 3
+        if (isTache3 && isLetterFormat) {
+          const letterDiag = "Format Inadéquat : essai rédigé sous forme de lettre/courriel au lieu d'un essai argumentatif neutre.";
+          if (!criterionFeedback.taskFulfillment.includes("Format Inadéquat")) {
+            criterionFeedback.taskFulfillment = `${letterDiag} ${criterionFeedback.taskFulfillment}`;
+          }
+        }
+
+        // Clean up length hallucination in taskFulfillment if word count is within bounds
+        if (wordCount >= targetMin && wordCount <= maxTargetBuffer) {
+          criterionFeedback.taskFulfillment = criterionFeedback.taskFulfillment
+            .replace(/slightly exceeds the word count limit/gi, 'meets the word count target')
+            .replace(/exceeds the word count limit/gi, 'meets the word count target')
+            .replace(/fails to meet the word count/gi, 'meets the word count target');
+        }
 
         const levelUpAdvice = parsed.levelUpAdvice || (
           scoreOutOf20 < 8
@@ -1119,12 +1164,19 @@ Respond STRICTLY with a valid JSON object matching this schema:
         cefrLevel: "N/A",
         expressEntryPoints: 0,
         taskFulfillmentScore: 0,
-        coherenceScore: 1,
-        lexicalScore: 1,
-        grammarScore: 1,
+        coherenceScore: 0,
+        lexicalScore: 0,
+        grammarScore: 0,
         feedback: "🚨 ZERO GRADE (0/20 Marks): Off-topic submission.",
+        criterionFeedback: {
+          taskFulfillment: 'Task Fulfillment: 0/5 (Hors-Sujet). The submission does not address the required topic scenario.',
+          coherence: 'Coherence & Cohesion: 0/5. Discourse is off-topic.',
+          lexical: 'Lexical Variety: 0/5. Unrelated vocabulary.',
+          morphosyntax: 'Morphosyntax: 0/5. Zero grade awarded due to off-topic submission.'
+        },
+        levelUpAdvice: 'To receive marks, you MUST strictly answer the prompt scenario. Read the task instructions carefully before drafting.',
         corrections: [],
-        tips: ["Lisez attentivement la consigne."]
+        tips: ["Lisez attentivement la consigne et répondez directement au sujet proposé."]
       };
     }
 
