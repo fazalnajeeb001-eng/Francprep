@@ -187,7 +187,7 @@ export class WritingService {
       'plus', 'moins', 'très', 'bien', 'tout', 'tous', 'toute', 'toutes', 'aussi', 'comme',
       'tcf', 'canada', 'tâche', 'tache', 'épreuve', 'consigne', 'texte', 'mots', 'words', 'sample', 'exemplar', 'response',
       'rédigez', 'écrivez', 'donnez', 'expliquez', 'décrivez', 'présentez', 'posez', 'questions', 'message', 'courriel',
-      'numéro', 'papier', 'sujet', 'épreuve', 'partie', 'lors', 'faire', 'avoir', 'racontez'
+      'numéro', 'papier', 'sujet', 'épreuve', 'partie', 'lors', 'faire', 'avoir', 'racontez', 'villes', 'ville', 'pays'
     ]);
 
     // Extract core keywords from prompt (length >= 4 and not stop word)
@@ -561,6 +561,7 @@ TASK-SPECIFIC CALIBRATION RULES:
    - Good balanced essay with formal B2 connectors ("de plus", "cependant", "afin de", "ainsi") = 12–15/20 (B2 / NCLC 7–8).
    - Simple one-sided opinion with basic connectors = 9–11/20 (B1 / NCLC 5–6).
    - EXPLICIT FORMAT PENALTY: If Tâche 3 is written in correspondence / letter format with epistolary formulas ("Cher Monsieur", "salutations distinguées", "cordialement", "cette lettre"), taskFulfillmentScore MUST be capped at <= 1/5 with diagnostic explanation: "Format Inadéquat : essai rédigé sous forme de lettre/courriel au lieu d'un essai argumentatif neutre."
+   - CRITICAL CORRECTION RULE FOR TÂCHE 3: In Tâche 3 (Essai argumentatif), letter formulas are strictly forbidden. You MUST NEVER suggest replacing a letter formula with another formal letter sign-off (such as "Je vous prie d'agréer, Monsieur..."). If a candidate wrote letter salutations or sign-offs, instruct them to DELETE the formula entirely and end directly with their concluding sentence.
 
 OFFICIAL FEI 4-CRITERIA MARKS (0–5 EACH):
 1. taskFulfillmentScore (0-5): Meets prompt scenario, appropriate register (tu vs vous), respects word count bounds (${targetMin}-${targetMax} words). (0/5 if Off-Topic).
@@ -671,6 +672,16 @@ Respond STRICTLY with a valid JSON object matching this schema:
         const isLetterFormat = /^\s*(bonjour|salut|cher|chère|monsieur|madame)/i.test(textClean) || /(cordialement|bien à vous|salutations|haute considération|respectueusement|je vous prie d'agréer|cette lettre)/i.test(textClean);
         if (isTache3 && isLetterFormat) {
           t = Math.min(1, t); // Cap Adéquation at <= 1/5 for epistolary format mismatch in Tâche 3
+        }
+
+        // TÂCHE 2 STRICT NARRATIVE / RELEVANCE CHECK: If a candidate submits a policy/debate letter for a travel journal prompt
+        if (isTache2) {
+          const isTravelJournalPrompt = /(voyage|séjour|sejour|vacances|marquante|expérience|canada|destination|compte-rendu|journal)/i.test((lessonTitle || '') + (taskPrompt || '') + (expectedAnswer || ''));
+          const hasTravelKeywords = /(voyag|séjour|sejour|vacan|visit|hôtel|hotel|avion|trajet|escapad|aventur|découv|souvenir|touris|canada|montréal|quebec|lieux|paysage|randonnée|activité)/i.test(textClean);
+          
+          if (isTravelJournalPrompt && !hasTravelKeywords && isLetterFormat) {
+            t = 0; // Pure off-topic policy letter submitted for narrative travel journal -> Zero Grade (Cas de Zéro)
+          }
         }
 
         // Formal register check in Tâche 1 (Informal tu/ton/ta in formal email caps fulfillment at 3/5)
@@ -900,6 +911,18 @@ Respond STRICTLY with a valid JSON object matching this schema:
           }
         }
 
+        // Deterministic Epistolary Correction Sanitizer for Tâche 3 (Essai Argumentatif)
+        if (isTache3) {
+          mergedCorrections.forEach((corr) => {
+            const origLower = (corr.original || '').toLowerCase();
+            const isLetterFormula = /(cordialement|salutations|cher\s+monsieur|chère\s+madame|bien\s+à\s+vous|veuillez\s+agréer|je\s+vous\s+prie)/i.test(origLower);
+            if (isLetterFormula) {
+              corr.corrected = "(Supprimer la formule épistolaire)";
+              corr.explanation = "Dans un essai argumentatif (Tâche 3), les formules épistolaires (salutations, formules de politesse) sont interdites. Supprimez cette formule et terminez directement par votre phrase de conclusion.";
+            }
+          });
+        }
+
         // Clean up length hallucination in taskFulfillment if word count is within bounds
         if (wordCount >= targetMin && wordCount <= maxTargetBuffer) {
           criterionFeedback.taskFulfillment = criterionFeedback.taskFulfillment
@@ -1002,7 +1025,15 @@ Respond STRICTLY with a valid JSON object matching this schema:
     const hasTelegraphicGrammar = /\b(je\s+maladie|je\s+malade|moi\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances|je\s+allé|je\s+faire|nous\s+manger|prendre\s+photo|je\s+aimé|je\s+très)\b/i.test(textLower);
 
     let taskFulfillmentScore = 1;
-    const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test(clean) && /(cordialement|bien à vous|salutations|respectueusement)/i.test(clean);
+    const isLetterFormat = /^\s*(bonjour|salut|cher|chère|monsieur|madame)/i.test(clean) || /(cordialement|bien à vous|salutations|respectueusement)/i.test(clean);
+
+    if (isTache2) {
+      const isTravelJournalPrompt = /(voyage|séjour|sejour|vacances|marquante|expérience|canada|destination|compte-rendu|journal)/i.test((lessonTitle || '') + (taskPrompt || '') + (expectedAnswer || ''));
+      const hasTravelKeywords = /(voyag|séjour|sejour|vacan|visit|hôtel|hotel|avion|trajet|escapad|aventur|découv|souvenir|touris|canada|montréal|quebec|lieux|paysage|randonnée|activité)/i.test(clean);
+      if (isTravelJournalPrompt && !hasTravelKeywords && isLetterFormat) {
+        taskFulfillmentScore = 0; // Off-topic policy letter in travel journal -> Cas de Zéro
+      }
+    }
 
     const minSeverelyShort = isTache1 ? 15 : 30;
     if (wordCount < minSeverelyShort) {
