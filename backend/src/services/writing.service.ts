@@ -538,30 +538,36 @@ export class WritingService {
       return this.evaluateLocalCEFR(text, lessonTitle, expectedAnswer, targetLanguage, taskNumber, targetMin, targetMax, taskPrompt, sampleResponse);
     }
 
+    const taskSpecificDirective = isTache1
+      ? `TÂCHE 1 SPECIFIC CALIBRATION RULES (Short message / formal email, ${targetMin}–${targetMax} words | Target: A1–C1):
+- Scope: Tâche 1 is an EMAIL or MESSAGE (Courriel/Message). Epistolary formulas (e.g. "Bonjour", "Monsieur", "Cordialement", "Bien à vous", "Je vous prie d'agréer") are EXPECTED, APPROPRIATE, AND REQUIRED for an email.
+- You are STRICTLY FORBIDDEN from penalizing Tâche 1 for being written as a letter or email, or claiming it fails an argumentative essay format.
+- Advanced C1 formal email (high administrative / legal register like "Je me permets de vous contacter en toute urgence", "défaillance totale", "outre le manquement évident", "je vous somme d'ordonner", "dans les plus brefs délais", "veuillez agréer mes salutations distinguées") = 16–17/20 (C1 Advanced / NCLC 9 | +31 CRS Points).
+- Flawless B2 formal email (formal greeting "Monsieur le Propriétaire" / "Monsieur le Directeur", polite formula "je vous écris concernant", polite conditional request "pourriez-vous envoyer" / "auriez-vous l'amabilité de", formal polite sign-off "dans l'attente de votre réponse, je vous prie d'agréer mes salutations distinguées", clear logical organization) = 14–15/20 (Solid B2 Upper / NCLC 8 | +23 CRS Points).
+- Structured B1 email (semi-formal phrasing, clear paragraphing, varied B1 connectors beyond conversational coordinators, polite request like "je souhaiterais vous demander de bien vouloir intervenir") = 10–11/20 (Solid B1 Intermediate / NCLC 6 | +12 CRS Points).
+- Conversational / Elementary A2 message (basic spoken style like "Bonjour", "ne marche pas du tout", "il fait très froid", direct spoken question "vous pouvez venir réparer ?", simple coordinate words "mais", "parce que", "en plus", "Merci pour votre aide. Cordialement") = 7–8/20 (NCLC 4–5 / A2 | 0 CRS Points).
+- Beginner A1 message (broken sentences, high error rate, isolated words) = 3–5/20 (NCLC 3 / A1 | 0 CRS Points).`
+      : isTache2
+        ? `TÂCHE 2 SPECIFIC CALIBRATION RULES (Personal article / narrative report, ${targetMin}–${targetMax} words | Target: A2–C1):
+- Scope: Tâche 2 is a PERSONAL NARRATIVE or TRAVEL JOURNAL (Compte-rendu ou récit de voyage). It describes personal experience in the past.
+- You are STRICTLY FORBIDDEN from expecting a formal neutral argumentative essay or thesis statement for Tâche 2.
+- Rich past narrative (passé composé / imparfait), sensory description, emotional reflections, varied vocabulary = 14–16/20 (B2–C1 / NCLC 8–9).
+- Standard past narrative describing an event clearly = 10–13/20 (B1–B2 / NCLC 6–7).
+- Simple present narrative with minimal past tenses = 6–8/20 (A2 / NCLC 4).`
+        : `TÂCHE 3 SPECIFIC CALIBRATION RULES (Argumentative essay / Prise de position, ${targetMin}–${targetMax} words | Target: B1–C2):
+- Scope: Tâche 3 is a formal NEUTRAL ARGUMENTATIVE ESSAY (Essai argumentatif neutre pour journal/magazine). It must NOT be written as a personal letter/email to an individual.
+- Nuanced balanced debate examining two opposing viewpoints ("D'un côté... D'un autre côté... En conclusion..."), complex connectors ("de surcroît", "néanmoins", "par conséquent", "en revanche"), sophisticated modalization and abstract vocabulary = 18–20/20 (C2 Mastery / NCLC 10+) or 16–17/20 (C1 Advanced / NCLC 9).
+- Good balanced essay with formal B2 connectors ("de plus", "cependant", "afin de", "ainsi") = 12–15/20 (B2 / NCLC 7–8).
+- Simple one-sided opinion with basic connectors = 9–11/20 (B1 / NCLC 5–6).
+- EXPLICIT FORMAT PENALTY: If Tâche 3 is written in correspondence / letter format with epistolary formulas ("Cher Monsieur", "salutations distinguées", "cordialement", "cette lettre"), taskFulfillmentScore MUST be capped at <= 1/5 with diagnostic explanation: "Format Inadéquat : essai rédigé sous forme de lettre/courriel au lieu d'un essai argumentatif neutre."
+- CRITICAL CORRECTION RULE FOR TÂCHE 3: In Tâche 3 (Essai argumentatif), letter formulas are strictly forbidden. You MUST NEVER suggest replacing a letter formula with another formal letter sign-off (such as "Je vous prie d'agréer, Monsieur..."). If a candidate wrote letter salutations or sign-offs, instruct them to DELETE the formula entirely (e.g. "(Supprimer la formule épistolaire)") and end directly with their concluding sentence.`;
+
     const prompt = `You are an official France Éducation International (FEI) Senior Certified Examiner evaluating ${targetLanguage} writing for official TCF Canada.
 
 CRITICAL TASK-AWARE FEI CEFR EVALUATION STANDARDS (STRICT CALIBRATION WITHOUT INFLATION OR ARTIFICIAL DEFLATION):
 - Grade strictly according to the candidate's linguistic quality across the 4 official FEI criteria (0–5 points each, 20 total marks per task).
 
-TASK-SPECIFIC CALIBRATION RULES:
-1. TÂCHE 1 (Short message / formal email, ${targetMin}–${targetMax} words | Target: A1–C1):
-   - Advanced C1 formal email (high administrative / legal register like "Je me permets de vous contacter en toute urgence", "défaillance totale", "outre le manquement évident", "je vous somme d'ordonner", "dans les plus brefs délais", "veuillez agréer mes salutations distinguées") = 16–17/20 (C1 Advanced / NCLC 9 | +31 CRS Points).
-   - Flawless B2 formal email (formal greeting "Monsieur le Propriétaire" / "Monsieur le Directeur", polite formula "je vous écris concernant", polite conditional request "pourriez-vous envoyer" / "auriez-vous l'amabilité de", formal polite sign-off "dans l'attente de votre réponse, je vous prie d'agréer mes salutations distinguées", clear logical organization) = 14–15/20 (Solid B2 Upper / NCLC 8 | +23 CRS Points).
-   - Structured B1 email (semi-formal phrasing, clear paragraphing, varied B1 connectors beyond conversational coordinators, polite request like "je souhaiterais vous demander de bien vouloir intervenir") = 10–11/20 (Solid B1 Intermediate / NCLC 6 | +12 CRS Points).
-   - Conversational / Elementary A2 message (basic spoken style like "Bonjour", "ne marche pas du tout", "il fait très froid", direct spoken question "vous pouvez venir réparer ?", simple coordinate words "mais", "parce que", "en plus", "Merci pour votre aide. Cordialement") = 7–8/20 (NCLC 4–5 / A2 | 0 CRS Points).
-   - Beginner A1 message (broken sentences, high error rate, isolated words) = 3–5/20 (NCLC 3 / A1 | 0 CRS Points).
-
-2. TÂCHE 2 (Personal article / narrative report, ${targetMin}–${targetMax} words | Target: A2–C1):
-   - Rich past narrative (passé composé / imparfait), sensory description, emotional reflections, varied vocabulary = 14–16/20 (B2–C1 / NCLC 8–9).
-   - Standard past narrative describing an event clearly = 10–13/20 (B1–B2 / NCLC 6–7).
-   - Simple present narrative with minimal past tenses = 6–8/20 (A2 / NCLC 4).
-
-3. TÂCHE 3 (Argumentative essay / Prise de position, ${targetMin}–${targetMax} words | Target: B1–C2):
-   - Nuanced balanced debate examining two opposing viewpoints ("D'un côté... D'un autre côté... En conclusion..."), complex connectors ("de surcroît", "néanmoins", "par conséquent", "en revanche"), sophisticated modalization and abstract vocabulary = 18–20/20 (C2 Mastery / NCLC 10+) or 16–17/20 (C1 Advanced / NCLC 9).
-   - Good balanced essay with formal B2 connectors ("de plus", "cependant", "afin de", "ainsi") = 12–15/20 (B2 / NCLC 7–8).
-   - Simple one-sided opinion with basic connectors = 9–11/20 (B1 / NCLC 5–6).
-   - EXPLICIT FORMAT PENALTY: If Tâche 3 is written in correspondence / letter format with epistolary formulas ("Cher Monsieur", "salutations distinguées", "cordialement", "cette lettre"), taskFulfillmentScore MUST be capped at <= 1/5 with diagnostic explanation: "Format Inadéquat : essai rédigé sous forme de lettre/courriel au lieu d'un essai argumentatif neutre."
-   - CRITICAL CORRECTION RULE FOR TÂCHE 3: In Tâche 3 (Essai argumentatif), letter formulas are strictly forbidden. You MUST NEVER suggest replacing a letter formula with another formal letter sign-off (such as "Je vous prie d'agréer, Monsieur..."). If a candidate wrote letter salutations or sign-offs, instruct them to DELETE the formula entirely and end directly with their concluding sentence.
+${taskSpecificDirective}
 
 OFFICIAL FEI 4-CRITERIA MARKS (0–5 EACH):
 1. taskFulfillmentScore (0-5): Meets prompt scenario, appropriate register (tu vs vous), respects word count bounds (${targetMin}-${targetMax} words). (0/5 if Off-Topic).
