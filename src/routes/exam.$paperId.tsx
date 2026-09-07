@@ -2569,93 +2569,56 @@ export function AuthenticCBTExamPage() {
     const writingPct = Math.round((writingWeightedScore / 20) * 100);
     const writingNCLC = calculateNCLCScore(writingPct, paper.type, "EXPRESSION_ECRITE");
 
-    const spkTasks = currentSection.speakingTasks || [];
+    const spkSec = paper.sections.find((s) => s.type === "EXPRESSION_ORALE");
+    const spkTasks = spkSec?.speakingTasks || currentSection?.speakingTasks || [];
     let speakingWeightedScore = 0;
     let s1 = 0;
     let s2 = 0;
     let s3 = 0;
     let speakingAttemptedCount = 0;
 
-    if (spkTasks.length >= 3) {
-      const getSpkScore = (t: any, idx: number) => {
-        const results = speakingAiResults;
-        const keysToTry = [
-          t?.id,
-          `spk-${idx + 1}`,
-          `task_${idx + 1}`,
-          `task_${idx}`,
-          String(idx),
-          Object.keys(results)[idx]
-        ].filter(Boolean);
+    const getSpkScore = (t: any, idx: number) => {
+      const results = speakingAiResults;
+      const keysToTry = [
+        t?.id,
+        `spk-${idx + 1}`,
+        `task_${idx + 1}`,
+        `task_${idx}`,
+        String(idx),
+        Object.keys(results)[idx]
+      ].filter(Boolean);
 
-        for (const k of keysToTry) {
-          const res = results[k];
-          if (res?.scoreOutOf20 !== undefined && res.scoreOutOf20 > 0) return res.scoreOutOf20;
-          if (res?.score !== undefined && res.score > 0) return Math.round((res.score / 100) * 20);
-        }
-
-        const arr = Object.values(results);
-        if (arr[idx]) {
-          const res: any = arr[idx];
-          if (res?.scoreOutOf20 !== undefined && res.scoreOutOf20 > 0) return res.scoreOutOf20;
-          if (res?.score !== undefined && res.score > 0) return Math.round((res.score / 100) * 20);
-        }
-        return 0;
-      };
-      s1 = getSpkScore(spkTasks[0], 0);
-      s2 = getSpkScore(spkTasks[1], 1);
-      s3 = getSpkScore(spkTasks[2], 2);
-
-      const hasAnySpk = s1 > 0 || s2 > 0 || s3 > 0;
-      speakingAttemptedCount = [s1, s2, s3].filter((s) => s > 0).length;
-
-      if (hasAnySpk) {
-        // Official FEI Speaking Weighting: 20% Task 1 + 30% Task 2 + 50% Task 3
-        speakingWeightedScore = Math.round(0.20 * s1 + 0.30 * s2 + 0.50 * s3);
-      } else {
-        speakingWeightedScore = 0;
+      for (const k of keysToTry) {
+        const res = results[k];
+        if (res?.scoreOutOf20 !== undefined && res.scoreOutOf20 > 0) return res.scoreOutOf20;
+        if (res?.score !== undefined && res.score > 0) return Math.round((res.score / 100) * 20);
       }
+
+      const arr = Object.values(results);
+      if (arr[idx]) {
+        const res: any = arr[idx];
+        if (res?.scoreOutOf20 !== undefined && res.scoreOutOf20 > 0) return res.scoreOutOf20;
+        if (res?.score !== undefined && res.score > 0) return Math.round((res.score / 100) * 20);
+      }
+      return 0;
+    };
+
+    s1 = getSpkScore(spkTasks[0], 0);
+    s2 = getSpkScore(spkTasks[1], 1);
+    s3 = getSpkScore(spkTasks[2], 2);
+
+    speakingAttemptedCount = [s1, s2, s3].filter((s) => s > 0).length;
+
+    if (speakingAttemptedCount > 0) {
+      // Official FEI Speaking Weighting: 20% Task 1 + 30% Task 2 + 50% Task 3
+      speakingWeightedScore = Math.round(0.20 * s1 + 0.30 * s2 + 0.50 * s3);
     } else {
-      const speakingScores = Object.values(speakingAiResults).map((r: any) => {
-        if (typeof r.scoreOutOf20 === 'number') return r.scoreOutOf20;
-        if (typeof r.score === 'number') return Math.round((r.score / 100) * 20);
-        return 0;
-      });
-      const validSpk = speakingScores.filter((s) => s > 0);
-      speakingAttemptedCount = validSpk.length;
-      speakingWeightedScore = validSpk.length > 0 ? Math.round(validSpk.reduce((a, b) => a + b, 0) / (spkTasks.length || 3)) : 0;
+      speakingWeightedScore = 0;
     }
 
     const speakingAvg = speakingWeightedScore;
     const speakingPct = Math.round((speakingWeightedScore / 20) * 100);
-
-    // OFFICIAL TCF CANADA 450-POINT SCALE CONCORDANCE FOR FINISH TEST SUMMARY
-    let speakingScaled450 = 0;
-    let speakingNclcLevelNum = 0;
-
-    if (speakingAttemptedCount > 0) {
-      const results = Object.values(speakingAiResults);
-      const evalCount = results.length || speakingAttemptedCount || 1;
-      const sum20 = results.reduce((acc, curr) => acc + (typeof curr?.scoreOutOf20 === 'number' ? curr.scoreOutOf20 : (curr?.score ? Math.round((curr.score / 100) * 20) : 0)), 0);
-      speakingScaled450 = Math.round((sum20 / (evalCount * 20)) * 450);
-
-      if (speakingScaled450 >= 371) speakingNclcLevelNum = 10;
-      else if (speakingScaled450 >= 348) speakingNclcLevelNum = 9;
-      else if (speakingScaled450 >= 310) speakingNclcLevelNum = 8;
-      else if (speakingScaled450 >= 280) speakingNclcLevelNum = 7;
-      else if (speakingScaled450 >= 248) speakingNclcLevelNum = 6;
-      else if (speakingScaled450 >= 181) speakingNclcLevelNum = 5;
-      else if (speakingScaled450 >= 121) speakingNclcLevelNum = 4;
-      else if (speakingScaled450 >= 60) speakingNclcLevelNum = 3;
-      else speakingNclcLevelNum = 0;
-    }
-
-    const speakingNCLC = (speakingAttemptedCount > 0 && speakingNclcLevelNum > 0) ? {
-      nclcLevel: speakingNclcLevelNum,
-      cefrEquivalent: speakingNclcLevelNum >= 10 ? 'C2' : speakingNclcLevelNum >= 9 ? 'C1' : speakingNclcLevelNum >= 7 ? 'B2' : speakingNclcLevelNum >= 5 ? 'B1' : 'A2',
-      cefrLevel: speakingNclcLevelNum >= 10 ? 'C2' : speakingNclcLevelNum >= 9 ? 'C1' : speakingNclcLevelNum >= 7 ? 'B2' : speakingNclcLevelNum >= 5 ? 'B1' : 'A2',
-      label: `NCLC ${speakingNclcLevelNum}`
-    } : calculateNCLCScore(speakingPct, paper.type, "EXPRESSION_ORALE");
+    const speakingNCLC = calculateNCLCScore(speakingPct, paper.type, "EXPRESSION_ORALE");
 
     // Calculate individual skill CRS points according to official IRCC scale
     const getModulePoints = (nclc: number) => {
