@@ -41,9 +41,13 @@ export async function generateAICompletion({
     targetModel = settings.activeAIModel;
   }
 
-  // OpenRouter API
-  const apiKey = settings?.openRouterApiKey || process.env.OPENROUTER_API_KEY;
-  if (!apiKey) throw new Error('OpenRouter API key is not configured. Add it in API Settings.');
+  const openRouterApiKey = settings?.openRouterApiKey || process.env.OPENROUTER_API_KEY;
+  const openAiApiKey = process.env.OPENAI_API_KEY;
+
+  if (!openRouterApiKey && !openAiApiKey) {
+    console.error('🚨 [AI Provider Error]: Neither OpenRouter nor OpenAI API key is configured.');
+    throw new Error('AI API key is not configured. Please set OPENROUTER_API_KEY or OPENAI_API_KEY in environment or admin settings.');
+  }
 
   const normalizedTarget = normalizeOpenRouterModelSlug(targetModel);
   const modelsToTry = [
@@ -52,46 +56,98 @@ export async function generateAICompletion({
     'google/gemini-2.0-flash-lite',
     'meta-llama/llama-3.3-70b-instruct:free',
   ];
-
-  // Remove duplicates
   const uniqueModels = Array.from(new Set(modelsToTry));
 
   let lastError: any = null;
-  for (const m of uniqueModels) {
-    try {
-      const response = await axios.post(
-        'https://openrouter.ai/api/v1/chat/completions',
-        {
-          model: m,
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: prompt }
-          ],
-          temperature,
-          max_tokens: maxTokens,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`,
-            'HTTP-Referer': settings?.frontendUrl || 'https://francprep.com',
-            'X-Title': 'FrancPrep Admin Panel',
-          },
-          timeout: 15000,
+
+  // Primary Provider Route: OpenRouter API with 45s timeout and 2 retries per model
+  if (openRouterApiKey) {
+    for (const m of uniqueModels) {
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          const response = await axios.post(
+            'https://openrouter.ai/api/v1/chat/completions',
+            {
+              model: m,
+              messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: prompt }
+              ],
+              temperature,
+              max_tokens: maxTokens,
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${openRouterApiKey}`,
+                'HTTP-Referer': settings?.frontendUrl || 'https://francprep.com',
+                'X-Title': 'FrancPrep Admin Panel',
+              },
+              timeout: 45000, // 45s timeout to prevent mid-flight cutoff during multi-criteria CEFR analysis
+            }
+          );
+
+          if (response.data?.error) {
+            throw new Error(response.data.error.message || 'OpenRouter error occurred');
+          }
+
+          const content = response.data?.choices?.[0]?.message?.content;
+          if (content && typeof content === 'string' && content.trim().length > 0) {
+            return content;
+          }
+        } catch (err: any) {
+          lastError = err;
+          const errMsg = err?.response?.data?.error?.message || err?.message || String(err);
+          const status = err?.response?.status ? `HTTP ${err.response.status}` : 'Network Error/Timeout';
+          console.warn(`⚠️ [AI Provider Attempt ${attempt}/2 Failed] Model ${m} (${status}): ${errMsg}`);
+          if (attempt < 2) {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          }
         }
-      );
-
-      if (response.data?.error) {
-        throw new Error(response.data.error.message || 'OpenRouter error occurred');
       }
-
-      const content = response.data?.choices?.[0]?.message?.content;
-      if (content) return content;
-    } catch (err: any) {
-      lastError = err;
-      console.warn(`OpenRouter model ${m} failed:`, err?.response?.data?.error?.message || err?.message || err);
     }
   }
 
-  throw lastError || new Error('All OpenRouter models failed');
+  // Secondary Provider Fallback Route: Direct OpenAI API (if OPENAI_API_KEY is available)
+  if (openAiApiKey) {
+    console.warn('🔄 [AI Provider Fallback]: Attempting direct OpenAI API completion...');
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const response = await axios.post(
+          'https://api.openai.com/v1/chat/completions',
+          {
+            model: 'gpt-4o-mini',
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: prompt }
+            ],
+            temperature,
+            max_tokens: maxTokens,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${openAiApiKey}`,
+            },
+            timeout: 45000,
+          }
+        );
+
+        const content = response.data?.choices?.[0]?.message?.content;
+        if (content && typeof content === 'string' && content.trim().length > 0) {
+          console.log('✅ [AI Provider Fallback Success]: Direct OpenAI completion succeeded.');
+          return content;
+        }
+      } catch (err: any) {
+        lastError = err;
+        console.error(`🚨 [AI Provider Direct OpenAI Attempt ${attempt}/2 Failed]:`, err?.response?.data?.error?.message || err?.message);
+        if (attempt < 2) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+      }
+    }
+  }
+
+  console.error('🚨 [AI Provider Final Error]: All primary and fallback AI completion attempts exhausted.', lastError?.message);
+  throw lastError || new Error('All AI completion providers and models failed.');
 }
