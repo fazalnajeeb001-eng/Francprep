@@ -1303,26 +1303,6 @@ export function AuthenticCBTExamPage() {
   };
 
   const handleEvaluateSpeakingAI = async (taskId: string, expectedText: string, transcription: string) => {
-    const activeTaskObj = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
-    const activeTaskId = activeTaskObj?.id || taskId;
-
-    const dialogue = speakingDialogueMap[taskId] || speakingDialogueMap[activeTaskId] || Object.values(speakingDialogueMap).flat();
-    const lastMsg = dialogue.length > 0 ? dialogue[dialogue.length - 1] : null;
-
-    // Check if examiner's last message is a wrap-up statement or standard Tâche 2 roleplay prompt ("Avez-vous d'autres questions ?")
-    const isClosingOrRoleplayPrompt = lastMsg && lastMsg.sender === 'examiner' && (
-      /\b(temps|épreuve|entretien|tâche)\b.*?\b(écoulé|terminé|fini|fait le tour)\b/i.test(lastMsg.text) ||
-      /\b(merci\s+beaucoup|excellente\s+journée|au\s+revoir|à\s+bientôt)\b/i.test(lastMsg.text) ||
-      /avez-vous d'autres questions\s*\??$/i.test(lastMsg.text.trim()) ||
-      !lastMsg.text.includes('?')
-    );
-
-    const isTrailingExaminerQuestion = lastMsg && lastMsg.sender === 'examiner' && !isClosingOrRoleplayPrompt && lastMsg.text.includes('?');
-
-    if (isTrailingExaminerQuestion) {
-      setPendingEvalTask({ taskId, scenario: expectedText, transcript: transcription });
-      return;
-    }
     await executeEvaluateSpeakingAI(taskId, expectedText, transcription);
   };
 
@@ -1333,20 +1313,20 @@ export function AuthenticCBTExamPage() {
       const activeSpeakingTaskObj = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
       const activeTaskId = activeSpeakingTaskObj?.id || taskId;
 
-      const keyCandidates = [
+      const keyCandidates = Array.from(new Set([
         taskId,
         activeTaskId,
         `spk-${activeSpeakingTaskIdx + 1}`,
         `task_${activeSpeakingTaskIdx}`,
         `spk-1`, `spk-2`, `spk-3`,
         `task_0`, `task_1`, `task_2`
-      ];
+      ]));
 
       let aggregatedCandidateMsgs: string[] = [];
       for (const key of keyCandidates) {
         const msgs = speakingDialogueMap[key];
-        if (msgs && Array.isArray(msgs)) {
-          const candidateTexts = msgs.filter((m) => m.sender === 'candidate').map((m) => m.text);
+        if (msgs && Array.isArray(msgs) && msgs.length > 0) {
+          const candidateTexts = msgs.filter((m) => m.sender === 'candidate').map((m) => m.text).filter(Boolean);
           if (candidateTexts.length > aggregatedCandidateMsgs.length) {
             aggregatedCandidateMsgs = candidateTexts;
           }
@@ -1354,11 +1334,11 @@ export function AuthenticCBTExamPage() {
       }
 
       if (aggregatedCandidateMsgs.length === 0) {
-        aggregatedCandidateMsgs = Object.values(speakingDialogueMap).flat().filter((m) => m.sender === 'candidate').map((m) => m.text);
+        aggregatedCandidateMsgs = Object.values(speakingDialogueMap).flat().filter((m) => m.sender === 'candidate').map((m) => m.text).filter(Boolean);
       }
 
-      const candidateDialogueTexts = Array.from(new Set(aggregatedCandidateMsgs)).join(' ');
-      const combinedCandidateSpeech = [candidateDialogueTexts, (transcription || '').trim()].filter(Boolean).join(' ').trim();
+      const candidateDialogueTexts = aggregatedCandidateMsgs.join(' ');
+      const combinedCandidateSpeech = Array.from(new Set([candidateDialogueTexts, (transcription || '').trim()].filter(Boolean))).join(' ').trim();
 
       const taskNumber = taskId?.includes('spk-1') || taskId?.includes('task_0') ? 1
         : taskId?.includes('spk-2') || taskId?.includes('task_1') ? 2

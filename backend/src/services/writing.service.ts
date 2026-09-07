@@ -1910,7 +1910,69 @@ Return JSON only:
         };
       }
     } catch (e) {
-      console.error('Speaking AI evaluation failed:', e);
+      console.error('Speaking AI evaluation failed, falling back to local engine:', e);
+    }
+
+    // Local calibrated fallback when AI completion fails or is unavailable but speech text exists
+    if (cleanSpeech && cleanSpeech.length >= 5) {
+      const words = cleanSpeech.replace(/['’]/g, ' ').split(/\s+/).filter(Boolean);
+      const wordCount = words.length;
+      const textLower = cleanSpeech.toLowerCase();
+
+      const englishMatches = textLower.match(/\b(the|is|are|was|were|with|because|please|thanks|would|should|could|they|them|their|what|when|where|which|who|whom|this|that|from|have|has|had|about|into|after|before)\b/gi) || [];
+      const hasEnglishWords = englishMatches.length >= 2;
+      const isQuestion = /\b(pourriez-vous|est-ce que|quel|quels|quelle|quelles|combien|comment|où|quand|pourquoi|avez-vous|pouvez-vous)\b/i.test(textLower);
+      const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part|en somme|selon moi|à mon avis|en effet)\b/i.test(textLower);
+      const hasB2Grammar = /\b(pourriez|serait|aimerais|puisse|soit|dont|auquel|bien que|afin de|avons|sommes|ai fait|ai visité)\b/i.test(textLower);
+
+      let t = 2;
+      let f = 2;
+      let l = 2;
+      let g = 2;
+
+      if (wordCount >= 60) { t = 4; f = 4; l = 4; g = 4; }
+      else if (wordCount >= 35) { t = 3; f = 3; l = 3; g = 3; }
+      else if (wordCount >= 18) { t = 2; f = 2; l = 2; g = 2; }
+
+      if (isQuestion && taskNum === 2) t = Math.min(5, t + 1);
+      if (hasB2Connectors) { f = Math.min(5, f + 1); l = Math.min(5, l + 1); }
+      if (hasB2Grammar) g = Math.min(5, g + 1);
+      if (hasEnglishWords) { l = 1; g = 1; }
+
+      const rawSum = t + f + l + g;
+      const scoreOutOf20 = hasEnglishWords ? Math.min(5, rawSum) : rawSum;
+      const scorePct = Math.round((scoreOutOf20 / 20) * 100);
+
+      let nclcGrade = "NCLC 7 (B2 Benchmark Target)";
+      let cefrLevel = "B2";
+      let expressEntryPoints = 17;
+
+      if (scoreOutOf20 >= 16) { nclcGrade = "NCLC 10 (C2 Mastery)"; cefrLevel = "C2"; expressEntryPoints = 34; }
+      else if (scoreOutOf20 >= 14) { nclcGrade = "NCLC 9 (C1 Advanced)"; cefrLevel = "C1"; expressEntryPoints = 31; }
+      else if (scoreOutOf20 >= 12) { nclcGrade = "NCLC 8 (B2 Upper)"; cefrLevel = "B2"; expressEntryPoints = 23; }
+      else if (scoreOutOf20 >= 10) { nclcGrade = "NCLC 7 (B2 Benchmark Target)"; cefrLevel = "B2"; expressEntryPoints = 17; }
+      else if (scoreOutOf20 >= 8) { nclcGrade = "NCLC 6 (B1 Intermediate)"; cefrLevel = "B1"; expressEntryPoints = 12; }
+      else if (scoreOutOf20 >= 6) { nclcGrade = "NCLC 5 (B1 Threshold)"; cefrLevel = "B1"; expressEntryPoints = 6; }
+      else if (scoreOutOf20 >= 4) { nclcGrade = "NCLC 4 (A2 Elementary)"; cefrLevel = "A2"; expressEntryPoints = 0; }
+      else { nclcGrade = "NCLC 1-3 (Below A2 / Beginner)"; cefrLevel = "Below A2"; expressEntryPoints = 0; }
+
+      return {
+        transcription: cleanSpeech,
+        feedback: `Évaluation diagnostique FEI (Moteur local) : Total ${scoreOutOf20}/20 Mots • Consigne: ${t}/5, Cohérence: ${f}/5, Lexique: ${l}/5, Grammaire: ${g}/5.`,
+        score: scorePct,
+        scoreOutOf20,
+        accuracy: scorePct,
+        fluency: Math.round((f / 5) * 100),
+        taskFulfillmentScore: t,
+        coherenceScore: f,
+        lexicalScore: l,
+        grammarScore: g,
+        nclcGrade,
+        cefrLevel,
+        expressEntryPoints,
+        corrections: [],
+        tips: ['Formulez des arguments structurés et variez vos connecteurs logiques.']
+      };
     }
 
     return {
@@ -2207,7 +2269,7 @@ GENERAL EXAMINER RULES:
     const wordCount = words.length;
 
     // 1. Task-Specific Minimum Word Count Gatekeeper
-    const minWordsRequired = taskNum === 1 ? 15 : taskNum === 2 ? 25 : 40;
+    const minWordsRequired = taskNum === 1 ? 15 : taskNum === 2 ? 20 : 20;
     if (wordCount < minWordsRequired) {
       return {
         transcription: cleanSpeech,
