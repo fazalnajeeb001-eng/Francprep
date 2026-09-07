@@ -1477,17 +1477,17 @@ Respond STRICTLY with a raw JSON object:
       let l = 1;
       let g = 1;
 
-      if (wordCount >= 60) { t = 4; f = 4; l = 4; g = 4; }
+      if (wordCount >= 60) { t = 4; f = 4; l = 4; g = 3; }
       else if (wordCount >= 35) { t = 3; f = 3; l = 3; g = 3; }
       else if (wordCount >= 18) { t = 2; f = 2; l = 2; g = 2; }
 
-      if (isQuestion && taskNum === 2) t = Math.min(5, t + 1);
-      if (hasB2Connectors) { f = Math.min(5, f + 1); l = Math.min(5, l + 1); }
-      if (hasB2Grammar) g = Math.min(5, g + 1);
+      if (isQuestion && taskNum === 2) t = Math.min(4, t + 1);
+      if (hasB2Connectors) { f = Math.min(4, f + 1); l = Math.min(4, l + 1); }
+      if (hasB2Grammar) g = Math.min(3, g + 1);
       if (hasEnglishWords) { l = 1; g = 1; }
 
       const rawSum = t + f + l + g;
-      const scoreOutOf20 = hasEnglishWords ? Math.min(5, rawSum) : rawSum;
+      const scoreOutOf20 = Math.min(15, hasEnglishWords ? Math.min(5, rawSum) : rawSum);
       const scorePct = Math.round((scoreOutOf20 / 20) * 100);
 
       let nclcGrade = "NCLC 7 (B2 Benchmark Target)";
@@ -1936,17 +1936,17 @@ Return JSON only:
       let l = 2;
       let g = 2;
 
-      if (wordCount >= 60) { t = 4; f = 4; l = 4; g = 4; }
+      if (wordCount >= 60) { t = 4; f = 4; l = 4; g = 3; }
       else if (wordCount >= 35) { t = 3; f = 3; l = 3; g = 3; }
       else if (wordCount >= 18) { t = 2; f = 2; l = 2; g = 2; }
 
-      if (isQuestion && taskNum === 2) t = Math.min(5, t + 1);
-      if (hasB2Connectors) { f = Math.min(5, f + 1); l = Math.min(5, l + 1); }
-      if (hasB2Grammar) g = Math.min(5, g + 1);
+      if (isQuestion && taskNum === 2) t = Math.min(4, t + 1);
+      if (hasB2Connectors) { f = Math.min(4, f + 1); l = Math.min(4, l + 1); }
+      if (hasB2Grammar) g = Math.min(3, g + 1);
       if (hasEnglishWords) { l = 1; g = 1; }
 
       const rawSum = t + f + l + g;
-      const scoreOutOf20 = hasEnglishWords ? Math.min(5, rawSum) : rawSum;
+      const scoreOutOf20 = Math.min(15, hasEnglishWords ? Math.min(5, rawSum) : rawSum);
       const scorePct = Math.round((scoreOutOf20 / 20) * 100);
 
       let nclcGrade = "NCLC 7 (B2 Benchmark Target)";
