@@ -259,14 +259,35 @@ export function AuthenticCBTExamPage() {
   const [checkedMap, setCheckedMap] = useState<{ [qId: string]: boolean }>({});
 
   // AI Writing Evaluation States
-  const [writingAiResults, setWritingAiResults] = useState<Record<string, any>>({});
+  const [writingAiResults, setWritingAiResults] = useState<Record<string, any>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) return JSON.parse(saved).writingAiResults || {};
+    } catch { }
+    return {};
+  });
   const [evaluatingWriting, setEvaluatingWriting] = useState<Record<string, boolean>>({});
 
   // AI Speaking Evaluation States
   const [recordingSpeaking, setRecordingSpeaking] = useState<Record<string, boolean>>({});
-  const [speakingAiResults, setSpeakingAiResults] = useState<Record<string, any>>({});
+  const [speakingAiResults, setSpeakingAiResults] = useState<Record<string, any>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) return JSON.parse(saved).speakingAiResults || {};
+    } catch { }
+    return {};
+  });
   const [evaluatingSpeaking, setEvaluatingSpeaking] = useState<Record<string, boolean>>({});
-  const [speakingDialogueMap, setSpeakingDialogueMap] = useState<Record<string, Array<{ sender: 'examiner' | 'candidate'; text: string }>>>({});
+  const [speakingDialogueMap, setSpeakingDialogueMap] = useState<Record<string, Array<{ sender: 'examiner' | 'candidate'; text: string }>>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) return JSON.parse(saved).speakingDialogueMap || {};
+    } catch { }
+    return {};
+  });
   const [speakingChatLoading, setSpeakingChatLoading] = useState<Record<string, boolean>>({});
   const [completedSpeakingTaskIds, setCompletedSpeakingTaskIds] = useState<Record<string, boolean>>({});
   const [pendingEvalTask, setPendingEvalTask] = useState<{ taskId: string; scenario: string; transcript: string } | null>(null);
@@ -284,6 +305,9 @@ export function AuthenticCBTExamPage() {
       if (answersData.flaggedQuestions) setFlaggedQuestions(answersData.flaggedQuestions);
       if (answersData.writingResponses) setWritingResponses(answersData.writingResponses);
       if (answersData.speakingTranscripts) setSpeakingTranscripts(answersData.speakingTranscripts);
+      if (answersData.writingAiResults) setWritingAiResults(answersData.writingAiResults);
+      if (answersData.speakingAiResults) setSpeakingAiResults(answersData.speakingAiResults);
+      if (answersData.speakingDialogueMap) setSpeakingDialogueMap(answersData.speakingDialogueMap);
       if (answersData.completedSectionIndices) setCompletedSectionIndices(answersData.completedSectionIndices);
       if (cloudActiveSession.sectionTimers) setSectionTimeRemaining(cloudActiveSession.sectionTimers);
       if (typeof cloudActiveSession.sectionIndex === "number" && cloudActiveSession.sectionIndex < paper.sections.length) {
@@ -1088,6 +1112,9 @@ export function AuthenticCBTExamPage() {
         flaggedQuestions,
         writingResponses,
         speakingTranscripts,
+        writingAiResults,
+        speakingAiResults,
+        speakingDialogueMap,
         completedSectionIndices,
         sectionTimeRemaining,
         activeSectionIdx,
@@ -1096,7 +1123,49 @@ export function AuthenticCBTExamPage() {
       };
       localStorage.setItem(sessionKey, JSON.stringify(payload));
     } catch { }
-  }, [selectedAnswers, flaggedQuestions, writingResponses, speakingTranscripts, completedSectionIndices, sectionTimeRemaining, activeSectionIdx, currentQuestionIdx, isSubmitted, sessionKey]);
+  }, [selectedAnswers, flaggedQuestions, writingResponses, speakingTranscripts, writingAiResults, speakingAiResults, speakingDialogueMap, completedSectionIndices, sectionTimeRemaining, activeSectionIdx, currentQuestionIdx, isSubmitted, sessionKey]);
+
+  // Cloud Active Session Cross-Device Synchronization (MongoDB + LocalStorage)
+  useEffect(() => {
+    if (!paper?.id) return;
+    apiFetch(`/exam/active-session/${paper.id}`)
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.success && json.activeSession) {
+          setCloudActiveSession(json.activeSession);
+          setShowSessionPromptModal(true);
+        }
+      })
+      .catch(() => {});
+  }, [paper?.id]);
+
+  useEffect(() => {
+    if (!paper?.id || isSubmitted) return;
+    const timer = setTimeout(() => {
+      apiFetch("/exam/active-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          paperId: paper.id,
+          paperType: paper.type,
+          sectionIndex: activeSectionIdx,
+          questionIndex: currentQuestionIdx,
+          sectionTimers: sectionTimeRemaining,
+          answers: {
+            selectedAnswers,
+            flaggedQuestions,
+            writingResponses,
+            speakingTranscripts,
+            writingAiResults,
+            speakingAiResults,
+            speakingDialogueMap,
+            completedSectionIndices,
+          },
+        }),
+      }).catch(() => {});
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, [paper?.id, activeSectionIdx, currentQuestionIdx, sectionTimeRemaining, selectedAnswers, flaggedQuestions, writingResponses, speakingTranscripts, writingAiResults, speakingAiResults, speakingDialogueMap, isSubmitted]);
 
   useEffect(() => {
     setShowQuestionPrompt(false);
@@ -2344,6 +2413,7 @@ export function AuthenticCBTExamPage() {
       const aiRes = writingAiResults[key] ||
         (task.id && writingAiResults[task.id]) ||
         (task.title && writingAiResults[task.title]) ||
+        writingAiResults[`wri-${idx + 1}`] ||
         writingAiResults[`task_${idx}`] ||
         writingAiResults[idx];
 

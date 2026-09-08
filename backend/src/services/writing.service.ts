@@ -567,6 +567,13 @@ export class WritingService {
 CRITICAL TASK-AWARE FEI CEFR EVALUATION STANDARDS (STRICT CALIBRATION WITHOUT INFLATION OR ARTIFICIAL DEFLATION):
 - Grade strictly according to the candidate's linguistic quality across the 4 official FEI criteria (0–5 points each, 20 total marks per task).
 
+CRITICAL ANTI-HALLUCINATION & VOCABULARY PROTECTION DIRECTIVES:
+- You are STRICTLY FORBIDDEN from flagging valid, elegant French expressions, vivid adjectives (e.g., "sapins enneigés", "décors féeriques", "paysages époustouflants", "belles montagnes"), or valid French idioms as errors or typos.
+- TEXT INCLUSION FILTER: You MUST NOT suggest a correction or addition where the proposed word or phrase (e.g., "pleinement") is ALREADY present in the candidate's submitted text.
+- CEFR SCORE ANCHORS (NO ARTIFICIAL RUBRIC COLLAPSE):
+  * For Tâche 2 (Narrative/Travel Report, 120–150 words): If the text exceeds 130 words, uses past tenses (passé composé / imparfait) correctly, incorporates evocative descriptions, and maintains logical flow, you MUST award 4/5 or 5/5 across criteria (Total: 14–18/20, B2 Upper to C1).
+  * Do NOT default or collapse well-developed B2/C1 essays down to 2/5 (8/20).
+
 ${taskSpecificDirective}
 
 OFFICIAL FEI 4-CRITERIA MARKS (0–5 EACH):
@@ -646,6 +653,19 @@ Respond STRICTLY with a valid JSON object matching this schema:
             mergedCorrections.push(ai);
           }
         }
+
+        // Filter out hallucinated corrections (e.g. suggesting words already in text or identical original/corrected)
+        const textLowerForFilter = (text || '').toLowerCase();
+        const validCorrections = mergedCorrections.filter((c) => {
+          if (!c.original || !c.corrected) return false;
+          if (c.original.trim().toLowerCase() === c.corrected.trim().toLowerCase()) return false;
+          // If suggested correction is a single word already present in the text, filter it out
+          const correctedWord = c.corrected.trim().toLowerCase();
+          if (correctedWord.length > 3 && textLowerForFilter.includes(correctedWord) && !textLowerForFilter.includes(c.original.trim().toLowerCase())) {
+            return false;
+          }
+          return true;
+        });
 
         if (mergedCorrections.length === 0) {
           g = 5;
@@ -1583,6 +1603,11 @@ ${acousticMetrics ? `- Real-Time Web Audio Signal Metrics: Speech Pace = ${acous
 - You MUST ONLY cite error quotes in "spoken_errors" if they are EXACT SUBSTRINGS present in the Candidate Spoken Transcript above.
 - You are STRICTLY FORBIDDEN from inventing or hallucinating expressions like "je suis un ingénieur" if they are not in the candidate's transcript!
 - CRITICAL TRAILING QUESTION RULE: Analyze the candidate's responses up to the last submitted candidate turn. If the conversation ends on an examiner question without a candidate response, DO NOT penalize the candidate for failing to answer that specific trailing question. Evaluate ONLY what was actually spoken against official FEI CEFR descriptors.
+
+### CRITICAL WHISPER STT PHONETIC TOLERANCE DIRECTIVE:
+- This candidate transcript is produced by Speech-to-Text (Groq Whisper STT).
+- If a transcribed word is phonetically close to a valid French context word (e.g. "coutière" -> "côtière", "travaile" -> "travail", "qu'elle" -> "quel", "parce-que" -> "parce que"), DO NOT penalize candidate vocabulary or grammar!
+- Evaluate candidate intent and phonetic sense rather than minor STT transcription artifacts.
 
 ### CRITICAL ACOUSTIC TOKEN FRAMING DIRECTIVE (SYNTAX SAFEGUARD):
 - Strings matching [pause Xs], [pause_Xs], or [hésitation] represent acoustic silence intervals measured by the audio signal engine.

@@ -282,7 +282,7 @@ function generateDynamicFallbackReply(
 
   if (isTache2) {
     const isClosing = /\b(merci|remercie|recontacter|rappelle|réfléchir|au revoir|bonne journée|bonne fin|quitte|finaliser)\b/i.test(userText);
-    if (isClosing) {
+    if (isClosing && userTurnCount >= 6) {
       return "C'est parfait ! Je vous en prie. N'hésitez pas si vous avez besoin d'autres précisions. Excellente journée à vous et à bientôt !";
     }
 
