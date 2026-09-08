@@ -7331,13 +7331,34 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
 
     // For questions 1 to 8, options are spoken aloud in the pre-recorded studio audio track.
     // They must maintain exact 1:1 parity with the recorded audio propositions (A, B, C, D) and MongoDB cache.
-    // For questions 9 to 39, options are purely visual and are uniformly balanced across A, B, C, D.
+    // For questions 9 to 39, options achieve a clean 25% equal distribution across A, B, C, D.
+    let finalOpt = [...topicOpt];
+    let finalAns = topicAns;
+    let finalOptEn = (t as any).optionsEnglish ? [...(t as any).optionsEnglish] : undefined;
+
+    if (i >= 9) {
+      const shift = (i * 3 + seedOffset) % 4;
+      const targetAns = (topicAns + shift) % 4;
+      if (targetAns !== topicAns && finalOpt.length === 4) {
+        // Swap correct option to targetAns position
+        const origText = finalOpt[topicAns];
+        finalOpt[topicAns] = finalOpt[targetAns];
+        finalOpt[targetAns] = origText;
+        if (finalOptEn && finalOptEn.length === 4) {
+          const origEn = finalOptEn[topicAns];
+          finalOptEn[topicAns] = finalOptEn[targetAns];
+          finalOptEn[targetAns] = origEn;
+        }
+        finalAns = targetAns;
+      }
+    }
+
     const { options, correctIndex, correctText, optionImages, optionsEnglish: shuffledOptionsEn } = {
-      options: [...topicOpt],
-      correctIndex: topicAns,
-      correctText: topicOpt[topicAns] || topicOpt[0] || "",
+      options: finalOpt,
+      correctIndex: finalAns,
+      correctText: finalOpt[finalAns] || finalOpt[0] || "",
       optionImages: rawImages,
-      optionsEnglish: (t as any).optionsEnglish
+      optionsEnglish: finalOptEn
     };
 
     const itemLevel = t.level || "A1";
@@ -7402,7 +7423,8 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       passageBodyText,
       correctTextEn,
       finalPassageEnglish,
-      finalQuestionPromptEnglish
+      finalQuestionPromptEnglish,
+      correctIndex
     );
 
     qList.push({
