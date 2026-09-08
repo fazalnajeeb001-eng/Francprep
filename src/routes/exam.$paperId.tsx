@@ -275,11 +275,35 @@ export function AuthenticCBTExamPage() {
   const speakingFallbackTimerRef = useRef<NodeJS.Timeout | null>(null);
   const taskStartTimestampRef = useRef<Record<string, number>>({});
 
+  const [cloudActiveSession, setCloudActiveSession] = useState<any>(null);
+
+  const handleResumeSession = () => {
+    if (cloudActiveSession) {
+      const answersData = cloudActiveSession.answers || {};
+      if (answersData.selectedAnswers) setSelectedAnswers(answersData.selectedAnswers);
+      if (answersData.flaggedQuestions) setFlaggedQuestions(answersData.flaggedQuestions);
+      if (answersData.writingResponses) setWritingResponses(answersData.writingResponses);
+      if (answersData.speakingTranscripts) setSpeakingTranscripts(answersData.speakingTranscripts);
+      if (answersData.completedSectionIndices) setCompletedSectionIndices(answersData.completedSectionIndices);
+      if (cloudActiveSession.sectionTimers) setSectionTimeRemaining(cloudActiveSession.sectionTimers);
+      if (typeof cloudActiveSession.sectionIndex === "number" && cloudActiveSession.sectionIndex < paper.sections.length) {
+        setActiveSectionIdx(cloudActiveSession.sectionIndex);
+      }
+      if (typeof cloudActiveSession.questionIndex === "number") {
+        setCurrentQuestionIdx(cloudActiveSession.questionIndex);
+      }
+    }
+    setShowSessionPromptModal(false);
+  };
+
   const handleRestartSessionClean = () => {
     if (typeof window !== "undefined") {
       try {
         localStorage.removeItem(sessionKey);
       } catch { }
+    }
+    if (paper?.id) {
+      apiFetch(`/exam/active-session/${paper.id}`, { method: "DELETE" }).catch(() => {});
     }
     setSelectedAnswers({});
     setFlaggedQuestions({});
@@ -289,6 +313,7 @@ export function AuthenticCBTExamPage() {
     setWritingAiResults({});
     setSpeakingAiResults({});
     setSectionTimeRemaining({});
+    setCloudActiveSession(null);
     setShowSessionPromptModal(false);
   };
   const [oralSpeakingTimeRemaining, setOralSpeakingTimeRemaining] = useState<Record<string, number>>({});

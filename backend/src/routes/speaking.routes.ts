@@ -739,7 +739,7 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
         formData.append('file', blob, `candidate_speech.${ext}`);
         formData.append('model', 'whisper-large-v3');
         formData.append('language', 'fr');
-        formData.append('prompt', 'Discours en français pour l\'épreuve d\'expression orale.');
+        formData.append('prompt', "Discours en français pour l'épreuve d'expression orale. Prénom, âge, profession, ville côtière, Kollam, Côte d'Ivoire, Montréal, Québec, superviseur, ingénieur, formation, expérience, agencement, horizons.");
         formData.append('temperature', '0.0');
 
         const groqRes = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {

@@ -7332,15 +7332,13 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
     // For questions 1 to 8, options are spoken aloud in the pre-recorded studio audio track.
     // They must maintain exact 1:1 parity with the recorded audio propositions (A, B, C, D) and MongoDB cache.
     // For questions 9 to 39, options are purely visual and are uniformly balanced across A, B, C, D.
-    const { options, correctIndex, correctText, optionImages, optionsEnglish: shuffledOptionsEn } = (isSpokenImageQuestion || isSpokenOptionQuestion)
-      ? {
-          options: [...topicOpt],
-          correctIndex: topicAns,
-          correctText: topicOpt[topicAns] || topicOpt[0] || "",
-          optionImages: rawImages,
-          optionsEnglish: (t as any).optionsEnglish
-        }
-      : shuffleOptions(topicOpt, topicAns, seed, rawImages, (t as any).optionsEnglish);
+    const { options, correctIndex, correctText, optionImages, optionsEnglish: shuffledOptionsEn } = {
+      options: [...topicOpt],
+      correctIndex: topicAns,
+      correctText: topicOpt[topicAns] || topicOpt[0] || "",
+      optionImages: rawImages,
+      optionsEnglish: (t as any).optionsEnglish
+    };
 
     const itemLevel = t.level || "A1";
     const specificHint = (t as any).hint || `Level ${itemLevel} Listening Guidance: Focus on the speaker's main intent and tone. Pay attention to key transition words (e.g. "cependant", "en revanche") to identify the correct message without guessing.`;
@@ -7555,13 +7553,11 @@ export function generateReadingQuestions(count: number, prefix: string, seedOffs
     const item = paperItems[i - 1] || paperItems[(i - 1) % paperItems.length];
     const seed = seedOffset * 100 + i;
 
-    const { options, correctIndex, optionsEnglish: shuffledOptionsEn } = shuffleOptions(
-      item.opt,
-      item.ans,
-      seed,
-      undefined,
-      item.optEn
-    );
+    const { options, correctIndex, optionsEnglish: shuffledOptionsEn } = {
+      options: [...item.opt],
+      correctIndex: item.ans,
+      optionsEnglish: item.optEn
+    };
 
     const correctLetter = String.fromCharCode(65 + correctIndex);
     const correctOptionText = options[correctIndex];

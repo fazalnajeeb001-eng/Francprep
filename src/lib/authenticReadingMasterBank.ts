@@ -6294,16 +6294,16 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       "q": "Quelle thèse majeure l'auteur soutient-il au sujet du système technicien moderne ?",
       "opt": [
         "Il s'agit d'un instrument neutre parfaitement contrôlé par les citoyens",
-        null,
-        null,
+        "Il permet d'améliorer spontanément les relations morales entre les individus",
+        "Il s'autonomise progressivement et impose sa propre logique à la société",
         "Il garantit la paix mondiale en supprimant toutes les rivalités économiques"
       ],
       "passEn": "PHILOSOPHICAL TECHNIQUE — HUMANIST STUDIES REVIEW: AUTONOMIZATION OF TECHNOLOGY AND HUMAN DISPLACEMENT.\n\nCore philosophical critiques of modern tech assert its progressive autonomization from moral human ends. Far from neutral tools serving human wellbeing, technological systems follow internal logics of self-expansion and maximum efficiency. Each technical innovation enforces operational demands on society, forcing humans to adapt to machine paces rather than vice versa.\n\nThis displacement of human agency represents a major political challenge. Transforming society into automated systems where every activity is quantified, technical rationality discards moral debate. Reclaiming control over progress demands asserting ethical deliberation over technical efficiency imperatives.",
       "qEn": "What major thesis does the author defend regarding modern technical systems?",
       "optEn": [
         "Representing neutral tools flawlessly controlled by democratic citizens",
-        null,
-        null,
+        "Spontaneously improving moral relationships between individuals",
+        "Becoming progressively autonomous and imposing its own logic on society",
         "Guaranteeing global world peace by eliminating all commercial economic rivalries"
       ],
       "ans": 2
@@ -7193,16 +7193,16 @@ export const AUTHENTIC_READING_MASTER_BANK: ReadingItem[][] = [
       "q": "En quoi consiste le véritable 'devoir de mémoire' selon l'auteur ?",
       "opt": [
         "À célébrer uniquement les victoires militaires glorieuses du pays",
-        null,
-        null,
+        "À promouvoir l'oubli sélectif pour préserver la cohésion nationale",
+        "À affronter la vérité historique dans toute sa complexité douloureuse",
         "À pardonner automatiquement tous les crimes sans jamais faire de procès"
       ],
       "passEn": "ETHICS AND HISTORY — CONTEMPORARY MEMORY REVIEW: MEMORY DUTIES VERSUS COLLECTIVE AMNESIA.\n\nErasing dark national history chapters in favor of peaceful, heroic official narratives represents a major memory drift. Obscuring past errors, minority injustices, and authoritarian drifts in the name of artificial national cohesion deprives society of learning from tragic history lessons.\n\nTrue memory duty consists not of celebrating mythologized pasts but confronting painful historical truths lucidly. Only through critical examination and recognizing victim suffering can human communities cultivate vigilant ethical consciousness preventing past barbarities from recurring.",
       "qEn": "What does true 'duty of memory' consist of according to the author?",
       "optEn": [
         "Celebrating country military victories exclusively during national holidays",
-        null,
-        null,
+        "Promoting selective amnesia to preserve national social cohesion",
+        "Confronting historical truth in all its painful complexity",
         "Automatically forgiving all crimes without ever conducting legal trials"
       ],
       "ans": 2

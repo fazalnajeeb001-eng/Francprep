@@ -7,6 +7,8 @@ node_modules
 .output
 .nitro
 .tanstack
+scratch/
+backend/src/scripts/updateKey.ts
 .vercel/output
 /dist/
 /dist-ssr/
