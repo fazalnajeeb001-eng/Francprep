@@ -4865,10 +4865,24 @@ export function AuthenticCBTExamPage() {
                                 <Timer className="w-3.5 h-3.5" /> PRÉPARATION EN COURS ({prepMinsStr}:{prepSecsStr})
                               </span>
                             ) : (
-                              <span className="px-2.5 py-1 rounded-full bg-emerald-600 text-white font-bold text-[11px] flex items-center gap-1.5 shadow-sm">
-                                <Mic className={`w-3.5 h-3.5 ${isRecording ? "text-red-300 animate-pulse" : "text-white"}`} />
-                                <span>{isRecording ? "🔴 ENREGISTREMENT VOCAL ACTIF (PARLEZ DANS VOTRE MICRO)" : "🟢 À VOUS DE PARLER (MICROPHONE ACTIF)"}</span>
-                              </span>
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="px-2.5 py-1 rounded-full bg-emerald-600 text-white font-bold text-[11px] flex items-center gap-1.5 shadow-sm">
+                                  <Mic className={`w-3.5 h-3.5 ${isRecording ? "text-red-300 animate-pulse" : "text-white"}`} />
+                                  <span>{isRecording ? "🔴 ENREGISTREMENT VOCAL ACTIF (PARLEZ DANS VOTRE MICRO)" : "🟢 À VOUS DE PARLER (MICROPHONE ACTIF)"}</span>
+                                </span>
+                                {isRecording && (
+                                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-900/90 border border-emerald-500/40 text-emerald-400 font-mono text-[10px] shadow-sm">
+                                    <span className="text-[9px] uppercase font-black text-emerald-300 tracking-wider mr-1">🎙️ MICRO</span>
+                                    <div className="flex items-end gap-0.5 h-3.5">
+                                      <div className="w-1 bg-emerald-400 rounded-full animate-bounce" style={{ height: '50%', animationDuration: '0.6s', animationDelay: '0ms' }} />
+                                      <div className="w-1 bg-emerald-400 rounded-full animate-bounce" style={{ height: '90%', animationDuration: '0.5s', animationDelay: '150ms' }} />
+                                      <div className="w-1 bg-emerald-300 rounded-full animate-bounce" style={{ height: '100%', animationDuration: '0.7s', animationDelay: '75ms' }} />
+                                      <div className="w-1 bg-emerald-400 rounded-full animate-bounce" style={{ height: '70%', animationDuration: '0.4s', animationDelay: '200ms' }} />
+                                      <div className="w-1 bg-emerald-400 rounded-full animate-bounce" style={{ height: '85%', animationDuration: '0.6s', animationDelay: '100ms' }} />
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             )}
                           </span>
 
