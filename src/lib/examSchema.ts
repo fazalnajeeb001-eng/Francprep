@@ -7542,7 +7542,9 @@ function buildDynamicReadingGuidance(
     trapAlertEn,
     readingCoach,
     readingCoachEn,
-    };
+    detailedExplanation,
+    detailedExplanationEn
+  };
 }
 
 export function buildDynamicSpeakingGuidance(task: any): {
@@ -7573,23 +7575,30 @@ export function generateReadingQuestions(count: number, prefix: string, seedOffs
 
   for (let i = 1; i <= count; i++) {
     const item = paperItems[i - 1] || paperItems[(i - 1) % paperItems.length];
-    const seed = seedOffset * 100 + i;
 
-    const { options, correctIndex, optionsEnglish: shuffledOptionsEn } = {
-      options: [...item.opt],
-      correctIndex: item.ans,
-      optionsEnglish: item.optEn
-    };
+    // Compute target answer index (0=A, 1=B, 2=C, 3=D) for equal 25% distribution and 0 3-streaks
+    const targetAnsIndex = (i * 7 + paperNum * 3) % 4;
+    const shift = (targetAnsIndex - item.ans + 4) % 4;
 
+    const options: string[] = [];
+    const shuffledOptionsEn: string[] = [];
+
+    for (let idx = 0; idx < 4; idx++) {
+      const origIdx = (idx - shift + 4) % 4;
+      options[idx] = item.opt[origIdx];
+      shuffledOptionsEn[idx] = item.optEn[origIdx];
+    }
+
+    const correctIndex = targetAnsIndex;
     const correctLetter = String.fromCharCode(65 + correctIndex);
     const correctOptionText = options[correctIndex];
-    const correctOptionEn = shuffledOptionsEn ? shuffledOptionsEn[correctIndex] : item.optEn[item.ans];
+    const correctOptionEn = shuffledOptionsEn[correctIndex];
 
     const distractors = options
       .map((optText, idx) => ({
         letter: String.fromCharCode(65 + idx),
         text: optText,
-        enText: shuffledOptionsEn ? shuffledOptionsEn[idx] : item.optEn[idx],
+        enText: shuffledOptionsEn[idx],
       }))
       .filter((_, idx) => idx !== correctIndex);
 
@@ -7611,7 +7620,7 @@ export function generateReadingQuestions(count: number, prefix: string, seedOffs
       questionPromptEnglish: item.qEn,
       text: `Question ${i} : ${item.q}`,
       options,
-      optionsEnglish: shuffledOptionsEn || item.optEn,
+      optionsEnglish: shuffledOptionsEn,
       correctIndex,
       explanation: guidance.detailedExplanation,
       detailedExplanationEn: guidance.detailedExplanationEn,
