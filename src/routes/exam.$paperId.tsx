@@ -589,6 +589,20 @@ export function AuthenticCBTExamPage() {
               const wordCount = countFrenchWords(currentText);
               const metrics = acousticAnalyzer.stopAnalysis(wordCount);
               setSpeakingAcousticMetrics((prev) => ({ ...prev, [taskId]: metrics }));
+
+              // CRITICAL TIMER EXPIRY GUARD: Auto-submit final candidate speech to AI evaluator so 0 speech is lost
+              if (currentText && currentText.trim().length >= 3) {
+                const taskObj = currentSection?.speakingTasks?.find((t) => t.id === taskId) || currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
+                const scenario = taskObj?.scenario || "Épreuve d'expression orale TCF Canada";
+                handleEvaluateSpeakingAI(taskId, scenario, currentText.trim());
+              }
+            } else {
+              const currentText = speakingTranscripts[taskId] || "";
+              if (currentText && currentText.trim().length >= 3 && !speakingAiResults[taskId]) {
+                const taskObj = currentSection?.speakingTasks?.find((t) => t.id === taskId) || currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
+                const scenario = taskObj?.scenario || "Épreuve d'expression orale TCF Canada";
+                handleEvaluateSpeakingAI(taskId, scenario, currentText.trim());
+              }
             }
             // Safely advance task tab index ONLY if the user is currently on this exact task
             const taskIdx = currentSection?.speakingTasks?.findIndex(t => t.id === taskId);
