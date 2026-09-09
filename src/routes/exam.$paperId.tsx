@@ -1225,7 +1225,10 @@ export function AuthenticCBTExamPage() {
 
   const handleCheckAnswer = (qId: string, correctIdx: number) => {
     const currentAttempts = (attemptsMap[qId] || 0) + 1;
-    const isCorrect = selectedAnswers[qId] === correctIdx;
+    const chosenIdx = selectedAnswers[qId];
+    const chosenText = (currentQ?.options?.[chosenIdx] || "").trim();
+    const correctText = (currentQ?.options?.[correctIdx] || "").trim();
+    const isCorrect = chosenIdx === correctIdx || (chosenText !== "" && chosenText === correctText);
     setAttemptsMap((prev) => ({ ...prev, [qId]: currentAttempts }));
 
     if (isCorrect || currentAttempts >= 2) {
@@ -3905,7 +3908,9 @@ export function AuthenticCBTExamPage() {
 
                     {checkedMap[currentQ.id] && (() => {
                       const chosenIdx = selectedAnswers[currentQ.id];
-                      const isCorrect = chosenIdx === currentQ.correctIndex;
+                      const chosenText = (currentQ.options?.[chosenIdx] || "").trim();
+                      const correctText = (currentQ.options?.[currentQ.correctIndex] || "").trim();
+                      const isCorrect = chosenIdx === currentQ.correctIndex || (chosenText !== "" && chosenText === correctText);
                       const correctLetter = String.fromCharCode(65 + currentQ.correctIndex);
                       const correctOptionText = currentQ.options[currentQ.correctIndex];
 

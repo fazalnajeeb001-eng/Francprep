@@ -7405,7 +7405,6 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       fullSpokenTranscript = `${cleanPassageWithSpeaker}\n${announcerLabel}: Écoutez la question. Question N°${i} : ${questionTextPrompt}`;
       spokenEnglishTranslation = `${passageSpeakerLabelEn}: ${passageTextEn}\n${announcerLabelEn}: Listen to the question. Question N°${i}: ${questionPromptEn}`;
     } else {
-      // Q30-Q39 (Advanced B2, C1, C2)
       fullSpokenTranscript = cleanPassageWithSpeaker;
       spokenEnglishTranslation = (i >= 26 && i <= 33) ? t.en : (t.en.startsWith("Speaker:") ? t.en : `Speaker: ${passageTextEn}`);
     }
@@ -7588,20 +7587,10 @@ export function generateReadingQuestions(count: number, prefix: string, seedOffs
   for (let i = 1; i <= count; i++) {
     const item = paperItems[i - 1] || paperItems[(i - 1) % paperItems.length];
 
-    // Compute target answer index (0=A, 1=B, 2=C, 3=D) for equal 25% distribution and 0 3-streaks
-    const targetAnsIndex = (i * 7 + paperNum * 3) % 4;
-    const shift = (targetAnsIndex - item.ans + 4) % 4;
+    const options: string[] = [...item.opt];
+    const shuffledOptionsEn: string[] = [...item.optEn];
 
-    const options: string[] = [];
-    const shuffledOptionsEn: string[] = [];
-
-    for (let idx = 0; idx < 4; idx++) {
-      const origIdx = (idx - shift + 4) % 4;
-      options[idx] = item.opt[origIdx];
-      shuffledOptionsEn[idx] = item.optEn[origIdx];
-    }
-
-    const correctIndex = targetAnsIndex;
+    const correctIndex = item.ans;
     const correctLetter = String.fromCharCode(65 + correctIndex);
     const correctOptionText = options[correctIndex];
     const correctOptionEn = shuffledOptionsEn[correctIndex];
