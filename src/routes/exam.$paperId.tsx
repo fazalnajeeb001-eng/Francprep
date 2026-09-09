@@ -3510,11 +3510,11 @@ export function AuthenticCBTExamPage() {
                   : ((currentQ as any).audioCoachEn || (currentQ as any).readingCoachEn);
 
                 const activeExplanation = isReadingSection
-                  ? (bankEntry?.detailedExplanation || (currentQ as any).detailedExplanation || currentQ.explanation || (currentQ as any).hint)
+                  ? ((currentQ as any).detailedExplanation || currentQ.explanation || bankEntry?.detailedExplanation || (currentQ as any).hint)
                   : ((currentQ as any).detailedExplanation || currentQ.explanation || (currentQ as any).hint);
 
                 const activeExplanationEn = isReadingSection
-                  ? (bankEntry?.detailedExplanationEn || (currentQ as any).detailedExplanationEn || (currentQ as any).explanationEnglish)
+                  ? ((currentQ as any).detailedExplanationEn || (currentQ as any).explanationEnglish || bankEntry?.detailedExplanationEn)
                   : ((currentQ as any).detailedExplanationEn || (currentQ as any).explanationEnglish || (currentQ as any).explanationEn);
 
                 if (mode !== "PRACTICE" || (!activeTrapAlert && !activeReadingCoach && !activeExplanation && !currentQ.hint)) {

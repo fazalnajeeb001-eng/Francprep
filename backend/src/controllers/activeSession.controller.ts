@@ -6,15 +6,21 @@ import { ActiveSession } from '../models/ActiveSession';
  */
 export const getActiveSession = async (req: Request, res: Response): Promise<void> => {
   try {
-    const userId = (req as any).user?.id || (req as any).user?._id || req.headers['x-user-id'];
+    const rawUserId = (req as any).user?.id || (req as any).user?._id || req.headers['x-user-id'] || req.headers['x-device-id'] || req.query.userId;
     const { paperId } = req.params;
 
-    if (!userId || !paperId) {
-      res.status(400).json({ success: false, message: 'User ID and Paper ID are required' });
+    if (!paperId) {
+      res.status(400).json({ success: false, message: 'Paper ID is required' });
       return;
     }
 
-    const session = await ActiveSession.findOne({ userId: String(userId), paperId });
+    let session = null;
+    if (rawUserId) {
+      session = await ActiveSession.findOne({ userId: String(rawUserId), paperId });
+    }
+    if (!session) {
+      session = await ActiveSession.findOne({ paperId, lastUpdated: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } }).sort({ lastUpdated: -1 });
+    }
 
     if (!session) {
       res.json({ success: true, activeSession: null });
@@ -44,18 +50,18 @@ export const getActiveSession = async (req: Request, res: Response): Promise<voi
  */
 export const saveActiveSession = async (req: Request, res: Response): Promise<void> => {
   try {
-    const userId = (req as any).user?.id || (req as any).user?._id || req.headers['x-user-id'] || req.body.userId;
+    const rawUserId = (req as any).user?.id || (req as any).user?._id || req.headers['x-user-id'] || req.headers['x-device-id'] || req.body.userId || 'guest_user';
     const { paperId, examType, sectionIndex, questionIndex, answers, sectionTimers } = req.body;
 
-    if (!userId || !paperId) {
-      res.status(400).json({ success: false, message: 'User ID and Paper ID are required' });
+    if (!paperId) {
+      res.status(400).json({ success: false, message: 'Paper ID is required' });
       return;
     }
 
     const session = await ActiveSession.findOneAndUpdate(
-      { userId: String(userId), paperId },
+      { userId: String(rawUserId), paperId },
       {
-        userId: String(userId),
+        userId: String(rawUserId),
         paperId,
         examType: examType || 'TCF',
         sectionIndex: sectionIndex ?? 0,
