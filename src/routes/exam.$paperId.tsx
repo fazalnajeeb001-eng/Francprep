@@ -3958,7 +3958,7 @@ export function AuthenticCBTExamPage() {
                                   )}
                                 </p>
 
-                                {currentQ.explanation && activeSection?.type !== "COMPREHENSION_ECRITE" && (
+                                {currentQ.explanation && currentSection?.type !== "COMPREHENSION_ECRITE" && (
                                   <div className="pt-2.5 border-t border-slate-300 dark:border-slate-700/60 space-y-2">
                                     <span className="font-bold uppercase text-[10px] tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
                                       <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
