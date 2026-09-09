@@ -7462,6 +7462,18 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
   return qList;
 }
 
+function syncGuidanceLetters(text: string, correctLetter: string, distractors: { letter: string }[]): string {
+  if (!text) return "";
+  let updated = text;
+  // Replace verified option letter references (e.g., Option B : -> Option A :)
+  updated = updated.replace(/Option [A-D]\s*([:«"])/g, `Option ${correctLetter} $1`);
+  updated = updated.replace(/Option [A-D]\s*\(/g, `Option ${correctLetter} (`);
+  // Replace distractor lists like (Option A, Option C, Option D)
+  const distractorListStr = distractors.map((d) => `Option ${d.letter}`).join(", ");
+  updated = updated.replace(/\(Option [A-D](?:,\s*Option [A-D])*\)/g, `(${distractorListStr})`);
+  return updated;
+}
+
 function buildDynamicReadingGuidance(
   item: any,
   correctLetter: string,
@@ -7478,12 +7490,12 @@ function buildDynamicReadingGuidance(
 } {
   if (item.explanation && item.explanationEn && item.trapAlert) {
     return {
-      trapAlert: item.trapAlert,
-      trapAlertEn: item.trapAlertEn || item.trapAlert,
-      readingCoach: item.readingCoach || "💡 Stratégie : Analysez attentivement la consigne et le passage.",
-      readingCoachEn: item.readingCoachEn || "💡 Reading Strategy: Carefully analyze the passage instructions.",
-      detailedExplanation: item.explanation,
-      detailedExplanationEn: item.explanationEn,
+      trapAlert: syncGuidanceLetters(item.trapAlert, correctLetter, distractors),
+      trapAlertEn: syncGuidanceLetters(item.trapAlertEn || item.trapAlert, correctLetter, distractors),
+      readingCoach: syncGuidanceLetters(item.readingCoach || "💡 Stratégie : Analysez attentivement la consigne et le passage.", correctLetter, distractors),
+      readingCoachEn: syncGuidanceLetters(item.readingCoachEn || "💡 Reading Strategy: Carefully analyze the passage instructions.", correctLetter, distractors),
+      detailedExplanation: syncGuidanceLetters(item.explanation, correctLetter, distractors),
+      detailedExplanationEn: syncGuidanceLetters(item.explanationEn, correctLetter, distractors),
     };
   }
 
