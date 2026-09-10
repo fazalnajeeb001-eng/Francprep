@@ -8,6 +8,8 @@ export interface IActiveSession extends Document {
   questionIndex: number;
   answers: Record<string, any>;
   sectionTimers: Record<string, number>;
+  sessionEpoch?: number;
+  resetAt?: Date;
   lastUpdated: Date;
 }
 
@@ -18,6 +20,8 @@ const ActiveSessionSchema: Schema = new Schema(
     examType: { type: String, default: 'TCF' },
     sectionIndex: { type: Number, default: 0 },
     questionIndex: { type: Number, default: 0 },
+    sessionEpoch: { type: Number, default: 1 },
+    resetAt: { type: Date },
     answers: { type: Schema.Types.Mixed, default: {} },
     sectionTimers: { type: Schema.Types.Mixed, default: {} },
     lastUpdated: { type: Date, default: Date.now }

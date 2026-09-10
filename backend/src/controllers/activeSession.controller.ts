@@ -7,6 +7,7 @@ import { ActiveSession } from '../models/ActiveSession';
 export const getActiveSession = async (req: Request, res: Response): Promise<void> => {
   try {
     const { paperId } = req.params;
+    const rawUserId = (req as any).user?.userId || (req as any).user?.id || (req as any).user?._id || req.headers['x-user-id'] || 'guest_user';
 
     if (!paperId) {
       res.status(400).json({ success: false, message: 'Paper ID is required' });
@@ -19,10 +20,14 @@ export const getActiveSession = async (req: Request, res: Response): Promise<voi
       ? { $or: [{ paperId }, { paperId: new RegExp(`(?:tcf|paper|tef).*?${paperNum}(?:$|[^\d])`, 'i') }] }
       : { paperId };
 
-    // Fetch the absolute newest active session across all devices for this paper in the last 24h
+    const queryFilter = rawUserId !== 'guest_user'
+      ? { userId: String(rawUserId), ...paperIdFilter }
+      : paperIdFilter;
+
+    // Fetch the newest active session across all devices for this paper
     const session = await ActiveSession.findOne({
-      ...paperIdFilter,
-      lastUpdated: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
+      ...queryFilter,
+      lastUpdated: { $gte: new Date(Date.now() - 48 * 60 * 60 * 1000) }
     }).sort({ lastUpdated: -1 });
 
     if (!session) {
@@ -39,6 +44,8 @@ export const getActiveSession = async (req: Request, res: Response): Promise<voi
         questionIndex: session.questionIndex,
         answers: session.answers,
         sectionTimers: session.sectionTimers,
+        sessionEpoch: session.sessionEpoch || 1,
+        resetAt: session.resetAt,
         lastUpdated: session.lastUpdated
       }
     });
@@ -53,8 +60,8 @@ export const getActiveSession = async (req: Request, res: Response): Promise<voi
  */
 export const saveActiveSession = async (req: Request, res: Response): Promise<void> => {
   try {
-    const rawUserId = (req as any).user?.id || (req as any).user?._id || req.headers['x-user-id'] || req.headers['x-device-id'] || req.body.userId || 'guest_user';
-    const { paperId, examType, sectionIndex, questionIndex, answers, sectionTimers } = req.body;
+    const rawUserId = (req as any).user?.userId || (req as any).user?.id || (req as any).user?._id || req.headers['x-user-id'] || req.headers['x-device-id'] || req.body.userId || 'guest_user';
+    const { paperId, examType, sectionIndex, questionIndex, answers, sectionTimers, sessionEpoch } = req.body;
 
     if (!paperId) {
       res.status(400).json({ success: false, message: 'Paper ID is required' });
@@ -67,29 +74,29 @@ export const saveActiveSession = async (req: Request, res: Response): Promise<vo
       ? { $or: [{ paperId }, { paperId: new RegExp(`(?:tcf|paper|tef).*?${paperNum}(?:$|[^\d])`, 'i') }] }
       : { paperId };
 
+    const queryFilter = rawUserId !== 'guest_user'
+      ? { userId: String(rawUserId), ...paperIdFilter }
+      : paperIdFilter;
+
     // Find the latest existing session for this paper
     const existing = await ActiveSession.findOne({
-      ...paperIdFilter,
-      lastUpdated: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
+      ...queryFilter,
+      lastUpdated: { $gte: new Date(Date.now() - 48 * 60 * 60 * 1000) }
     }).sort({ lastUpdated: -1 });
 
-    const incomingAnswerCount = answers?.selectedAnswers ? Object.keys(answers.selectedAnswers).length : 0;
-    const existingAnswerCount = existing?.answers?.selectedAnswers ? Object.keys(existing.answers.selectedAnswers).length : 0;
+    const clientEpoch = typeof sessionEpoch === 'number' ? sessionEpoch : 1;
+    const serverEpoch = existing?.sessionEpoch || 1;
 
-    // Merge answers to guarantee no progress is ever wiped out
-    let mergedAnswers = { ...(existing?.answers || {}), ...(answers || {}) };
-    if (existing?.answers?.selectedAnswers && answers?.selectedAnswers) {
-      mergedAnswers.selectedAnswers = { ...existing.answers.selectedAnswers, ...answers.selectedAnswers };
+    // Reject stale ghost re-uploads if client is behind the server's reset epoch
+    if (existing && clientEpoch < serverEpoch) {
+      res.json({
+        success: true,
+        stale: true,
+        sessionEpoch: serverEpoch,
+        message: 'Session has been reset on another device; local state discarded.'
+      });
+      return;
     }
-
-    // Pick highest question position reached
-    const targetQIndex = (questionIndex === 0 && (existing?.questionIndex ?? 0) > 0 && incomingAnswerCount <= existingAnswerCount)
-      ? existing!.questionIndex
-      : (questionIndex ?? 0);
-
-    const targetSectionIndex = (sectionIndex === 0 && (existing?.sectionIndex ?? 0) > 0 && incomingAnswerCount <= existingAnswerCount)
-      ? existing!.sectionIndex
-      : (sectionIndex ?? 0);
 
     const docId = existing?._id;
 
@@ -100,10 +107,11 @@ export const saveActiveSession = async (req: Request, res: Response): Promise<vo
             userId: String(rawUserId),
             paperId: existing.paperId || paperId,
             examType: examType || existing.examType || 'TCF',
-            sectionIndex: targetSectionIndex,
-            questionIndex: targetQIndex,
-            answers: mergedAnswers,
+            sectionIndex: typeof sectionIndex === 'number' ? sectionIndex : existing.sectionIndex,
+            questionIndex: typeof questionIndex === 'number' ? questionIndex : existing.questionIndex,
+            answers: answers || existing.answers || {},
             sectionTimers: sectionTimers || existing.sectionTimers || {},
+            sessionEpoch: Math.max(clientEpoch, serverEpoch),
             lastUpdated: new Date()
           },
           { new: true }
@@ -116,6 +124,7 @@ export const saveActiveSession = async (req: Request, res: Response): Promise<vo
           questionIndex: questionIndex ?? 0,
           answers: answers || {},
           sectionTimers: sectionTimers || {},
+          sessionEpoch: clientEpoch,
           lastUpdated: new Date()
         });
 
@@ -132,6 +141,7 @@ export const saveActiveSession = async (req: Request, res: Response): Promise<vo
 export const deleteActiveSession = async (req: Request, res: Response): Promise<void> => {
   try {
     const { paperId } = req.params;
+    const rawUserId = (req as any).user?.userId || (req as any).user?.id || (req as any).user?._id || req.headers['x-user-id'] || 'guest_user';
 
     if (!paperId) {
       res.status(400).json({ success: false, message: 'Paper ID is required' });
@@ -144,9 +154,32 @@ export const deleteActiveSession = async (req: Request, res: Response): Promise<
       ? { $or: [{ paperId }, { paperId: new RegExp(`(?:tcf|paper|tef).*?${paperNum}(?:$|[^\d])`, 'i') }] }
       : { paperId };
 
-    await ActiveSession.deleteMany(paperIdFilter);
+    const queryFilter = rawUserId !== 'guest_user'
+      ? { userId: String(rawUserId), ...paperIdFilter }
+      : paperIdFilter;
 
-    res.json({ success: true, message: 'Active session cleared successfully' });
+    // Find current session to advance the epoch tombstone
+    const existing = await ActiveSession.findOne(queryFilter).sort({ lastUpdated: -1 });
+    const nextEpoch = (existing?.sessionEpoch || 1) + 1;
+
+    // Delete existing active sessions
+    await ActiveSession.deleteMany(queryFilter);
+
+    // Create a lightweight epoch tombstone so open tabs on other devices know to reset cleanly
+    await ActiveSession.create({
+      userId: String(rawUserId),
+      paperId,
+      examType: 'TCF',
+      sectionIndex: 0,
+      questionIndex: 0,
+      answers: {},
+      sectionTimers: {},
+      sessionEpoch: nextEpoch,
+      resetAt: new Date(),
+      lastUpdated: new Date()
+    });
+
+    res.json({ success: true, sessionEpoch: nextEpoch, message: 'Active session reset successfully' });
   } catch (error: any) {
     console.error('Error deleting active session:', error);
     res.status(500).json({ success: false, message: error.message || 'Failed to delete active session' });

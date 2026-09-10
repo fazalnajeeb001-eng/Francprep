@@ -192,6 +192,9 @@ export function AuthenticCBTExamPage() {
   const [isAudioFetching, setIsAudioFetching] = useState(false);
   const [sectionTransitionModal, setSectionTransitionModal] = useState<{ show: boolean; targetIdx: number; targetTitle: string; autoAdvanceSeconds?: number } | null>(null);
 
+  const hasHydratedCloudRef = useRef(false);
+  const sessionEpochRef = useRef<number>(1);
+
   // Existing Session Prompt Modal State (Triggers when student reopens an exam with saved progress)
   const [showSessionPromptModal, setShowSessionPromptModal] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
@@ -340,8 +343,16 @@ export function AuthenticCBTExamPage() {
         localStorage.removeItem(sessionKey);
       } catch { }
     }
+    sessionEpochRef.current += 1;
     if (paper?.id) {
-      apiFetch(`/exam/active-session/${paper.id}`, { method: "DELETE" }).catch(() => {});
+      apiFetch(`/exam/active-session/${paper.id}`, { method: "DELETE" })
+        .then((res) => res.json())
+        .then((json) => {
+          if (json?.sessionEpoch) {
+            sessionEpochRef.current = json.sessionEpoch;
+          }
+        })
+        .catch(() => {});
     }
     setSelectedAnswers({});
     setFlaggedQuestions({});
@@ -1139,8 +1150,6 @@ export function AuthenticCBTExamPage() {
     } catch { }
   }, [selectedAnswers, flaggedQuestions, writingResponses, speakingTranscripts, writingAiResults, speakingAiResults, speakingDialogueMap, completedSectionIndices, sectionTimeRemaining, activeSectionIdx, currentQuestionIdx, isSubmitted, sessionKey]);
 
-  const hasHydratedCloudRef = useRef(false);
-
   // Cloud Active Session Cross-Device Synchronization (MongoDB + LocalStorage)
   useEffect(() => {
     if (!paper?.id) return;
@@ -1149,43 +1158,31 @@ export function AuthenticCBTExamPage() {
       .then((json) => {
         hasHydratedCloudRef.current = true;
         if (json.success && json.activeSession) {
-          setCloudActiveSession(json.activeSession);
+          if (json.activeSession.sessionEpoch) {
+            sessionEpochRef.current = json.activeSession.sessionEpoch;
+          }
           const answersData = json.activeSession.answers || {};
           const hasCloudAnswers = Object.keys(answersData.selectedAnswers || {}).length > 0 ||
             Object.keys(answersData.writingResponses || {}).some((k: string) => Boolean(answersData.writingResponses[k])) ||
             Object.keys(answersData.speakingTranscripts || {}).some((k: string) => Boolean(answersData.speakingTranscripts[k]));
 
           if (hasCloudAnswers) {
-            if (answersData.selectedAnswers) setSelectedAnswers((prev) => ({ ...answersData.selectedAnswers, ...prev }));
-            if (answersData.flaggedQuestions) setFlaggedQuestions((prev) => ({ ...answersData.flaggedQuestions, ...prev }));
-            if (answersData.writingResponses) setWritingResponses((prev) => ({ ...answersData.writingResponses, ...prev }));
-            if (answersData.speakingTranscripts) setSpeakingTranscripts((prev) => ({ ...answersData.speakingTranscripts, ...prev }));
-            if (answersData.writingAiResults) setWritingAiResults((prev) => ({ ...answersData.writingAiResults, ...prev }));
-            if (answersData.speakingAiResults) setSpeakingAiResults((prev) => ({ ...answersData.speakingAiResults, ...prev }));
-            if (answersData.speakingDialogueMap) setSpeakingDialogueMap((prev) => ({ ...answersData.speakingDialogueMap, ...prev }));
-            if (answersData.completedSectionIndices) setCompletedSectionIndices(answersData.completedSectionIndices);
-            if (json.activeSession.sectionTimers) setSectionTimeRemaining(json.activeSession.sectionTimers);
-            if (typeof json.activeSession.sectionIndex === "number" && json.activeSession.sectionIndex < paper.sections.length) {
-              setActiveSectionIdx(json.activeSession.sectionIndex);
+            setCloudActiveSession(json.activeSession);
+            setShowSessionPromptModal(true);
+          } else if (json.activeSession.resetAt) {
+            // Cloud session was reset recently; ensure local device does not resurrect stale cache
+            setSelectedAnswers({});
+            setFlaggedQuestions({});
+            setWritingResponses({});
+            setSpeakingTranscripts({});
+            setSpeakingDialogueMap({});
+            setWritingAiResults({});
+            setSpeakingAiResults({});
+            setSectionTimeRemaining({});
+            if (typeof window !== "undefined") {
+              try { localStorage.removeItem(sessionKey); } catch {}
             }
-
-            const answeredKeys = Object.keys(answersData.selectedAnswers || {});
-            let highestAnsweredIdx = -1;
-            answeredKeys.forEach((k) => {
-              const m = k.match(/(\d+)$/);
-              if (m) {
-                const qNum = parseInt(m[1], 10);
-                if (qNum - 1 > highestAnsweredIdx) highestAnsweredIdx = qNum - 1;
-              }
-            });
-            const smartQIdx = typeof json.activeSession.questionIndex === "number" && json.activeSession.questionIndex > 0
-              ? json.activeSession.questionIndex
-              : highestAnsweredIdx >= 0
-                ? Math.min(highestAnsweredIdx + 1, (currentQuestions.length || 39) - 1)
-                : 0;
-            setCurrentQuestionIdx(smartQIdx);
           }
-          setShowSessionPromptModal(true);
         }
       })
       .catch(() => {
@@ -1193,7 +1190,7 @@ export function AuthenticCBTExamPage() {
       });
   }, [paper?.id]);
 
-  // Live 4-Second Background Sync Pulse between active devices
+  // Live Background Sync Pulse between active devices (Epoch-Guarded & Non-Destructive)
   useEffect(() => {
     if (!paper?.id || isSubmitted) return;
     const interval = setInterval(() => {
@@ -1201,24 +1198,51 @@ export function AuthenticCBTExamPage() {
       apiFetch(`/exam/active-session/${paper.id}`)
         .then((res) => res.json())
         .then((json) => {
-          if (json.success && json.activeSession?.answers?.selectedAnswers) {
+          if (!json.success || !json.activeSession) return;
+          const remoteEpoch = json.activeSession.sessionEpoch || 1;
+
+          // If another device clicked "Start New", respect the reset and clear stale in-memory state
+          if (remoteEpoch > sessionEpochRef.current) {
+            sessionEpochRef.current = remoteEpoch;
+            setSelectedAnswers({});
+            setFlaggedQuestions({});
+            setWritingResponses({});
+            setSpeakingTranscripts({});
+            setSpeakingDialogueMap({});
+            setWritingAiResults({});
+            setSpeakingAiResults({});
+            setSectionTimeRemaining({});
+            if (typeof window !== "undefined") {
+              try { localStorage.removeItem(sessionKey); } catch {}
+            }
+            return;
+          }
+
+          // Non-destructive live sync: merge remote answers without overwriting the candidate's active question
+          if (json.activeSession.answers?.selectedAnswers) {
             const remoteAnswers = json.activeSession.answers.selectedAnswers;
             setSelectedAnswers((local) => {
-              const localKeys = Object.keys(local);
-              const remoteKeys = Object.keys(remoteAnswers);
-              if (remoteKeys.length > localKeys.length) {
-                return { ...remoteAnswers, ...local };
+              const currentQKey = currentQ?.id || `q_${currentQuestionIdx + 1}`;
+              let hasChanges = false;
+              const merged = { ...local };
+              for (const [key, val] of Object.entries(remoteAnswers)) {
+                // Never overwrite candidate's current actively viewed question
+                if (key === currentQKey && local[key] !== undefined) continue;
+                if (local[key] !== val) {
+                  merged[key] = val as number;
+                  hasChanges = true;
+                }
               }
-              return local;
+              return hasChanges ? merged : local;
             });
           }
         })
         .catch(() => {});
-    }, 4000);
+    }, 5000);
     return () => clearInterval(interval);
-  }, [paper?.id, isSubmitted]);
+  }, [paper?.id, isSubmitted, currentQ?.id, currentQuestionIdx]);
 
-  // Periodic Auto-Save to MongoDB Cloud (Guarded against blank overwrite)
+  // Periodic Auto-Save to MongoDB Cloud (Epoch-tagged snapshot)
   useEffect(() => {
     if (!paper?.id || isSubmitted || !hasHydratedCloudRef.current) return;
     const hasData = Object.keys(selectedAnswers).length > 0 ||
@@ -1236,6 +1260,7 @@ export function AuthenticCBTExamPage() {
           sectionIndex: activeSectionIdx,
           questionIndex: currentQuestionIdx,
           sectionTimers: sectionTimeRemaining,
+          sessionEpoch: sessionEpochRef.current,
           answers: {
             selectedAnswers,
             flaggedQuestions,
@@ -1247,7 +1272,26 @@ export function AuthenticCBTExamPage() {
             completedSectionIndices,
           },
         }),
-      }).catch(() => {});
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          if (json?.stale && json?.sessionEpoch) {
+            // Remote reset detected; discard stale local memory
+            sessionEpochRef.current = json.sessionEpoch;
+            setSelectedAnswers({});
+            setFlaggedQuestions({});
+            setWritingResponses({});
+            setSpeakingTranscripts({});
+            setSpeakingDialogueMap({});
+            setWritingAiResults({});
+            setSpeakingAiResults({});
+            setSectionTimeRemaining({});
+            if (typeof window !== "undefined") {
+              try { localStorage.removeItem(sessionKey); } catch {}
+            }
+          }
+        })
+        .catch(() => {});
     }, 2500);
     return () => clearTimeout(timer);
   }, [paper?.id, activeSectionIdx, currentQuestionIdx, sectionTimeRemaining, selectedAnswers, flaggedQuestions, writingResponses, speakingTranscripts, writingAiResults, speakingAiResults, speakingDialogueMap, isSubmitted]);
