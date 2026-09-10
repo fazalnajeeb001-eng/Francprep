@@ -6294,6 +6294,65 @@ export function AuthenticCBTExamPage() {
             </div>
           </div>
         )}
+
+        {/* ─── CLOUD ACTIVE SESSION CROSS-DEVICE RESUME MODAL ─── */}
+        {showSessionPromptModal && (
+          <div className="fixed inset-0 z-[10001] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+            <div className="bg-white dark:bg-slate-900 border-2 border-indigo-500/80 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 font-sans text-slate-900 dark:text-slate-100 animate-in zoom-in-95 duration-150">
+              <div className="flex items-center gap-3 border-b border-indigo-200 dark:border-indigo-900/60 pb-3">
+                <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-950/80 border border-indigo-300 dark:border-indigo-800 flex items-center justify-center shrink-0">
+                  <RotateCcw className="w-5 h-5 text-indigo-600 dark:text-indigo-400 animate-spin-slow" />
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-slate-950 dark:text-white">🔄 In-Progress Test Detected</h3>
+                  <p className="text-[11px] text-indigo-600 dark:text-indigo-400 font-mono font-bold uppercase">Cloud Cross-Device Sync Active</p>
+                </div>
+              </div>
+
+              <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+                An active test session for <strong>{paper?.title || 'this paper'}</strong> was found saved in the cloud. Would you like to resume your progress or start fresh?
+              </p>
+
+              {cloudActiveSession && (
+                <div className="p-3 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 space-y-1.5 text-xs">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-indigo-900 dark:text-indigo-300">
+                    <span>Last Saved Section:</span>
+                    <span className="font-mono">{paper?.sections?.[cloudActiveSession.sectionIndex]?.title || 'In Progress'}</span>
+                  </div>
+                  {typeof cloudActiveSession.questionIndex === "number" && (
+                    <div className="flex items-center justify-between text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+                      <span>Question Position:</span>
+                      <span className="font-mono">Item #{cloudActiveSession.questionIndex + 1}</span>
+                    </div>
+                  )}
+                  {cloudActiveSession.lastUpdated && (
+                    <div className="flex items-center justify-between text-[10px] text-slate-500 font-mono">
+                      <span>Last Updated:</span>
+                      <span>{new Date(cloudActiveSession.lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="flex flex-col sm:flex-row items-center justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={handleRestartSessionClean}
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all cursor-pointer"
+                >
+                  🚀 Start Fresh Test
+                </button>
+                <button
+                  type="button"
+                  onClick={handleResumeSession}
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <span>Resume Saved Progress →</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </AnimatePresence>
     </div>
   );
