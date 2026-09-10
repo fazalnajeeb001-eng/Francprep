@@ -6,7 +6,6 @@ import { ActiveSession } from '../models/ActiveSession';
  */
 export const getActiveSession = async (req: Request, res: Response): Promise<void> => {
   try {
-    const rawUserId = (req as any).user?.id || (req as any).user?._id || req.headers['x-user-id'] || req.headers['x-device-id'] || req.query.userId;
     const { paperId } = req.params;
 
     if (!paperId) {
@@ -14,13 +13,17 @@ export const getActiveSession = async (req: Request, res: Response): Promise<voi
       return;
     }
 
-    let session = null;
-    if (rawUserId) {
-      session = await ActiveSession.findOne({ userId: String(rawUserId), paperId });
-    }
-    if (!session) {
-      session = await ActiveSession.findOne({ paperId, lastUpdated: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } }).sort({ lastUpdated: -1 });
-    }
+    const paperNumberMatch = paperId.match(/\d+/);
+    const paperNum = paperNumberMatch ? parseInt(paperNumberMatch[0], 10) : null;
+    const paperIdFilter = paperNum
+      ? { $or: [{ paperId }, { paperId: new RegExp(`(?:tcf|paper|tef).*?${paperNum}(?:$|[^\d])`, 'i') }] }
+      : { paperId };
+
+    // Fetch the absolute newest active session across all devices for this paper in the last 24h
+    const session = await ActiveSession.findOne({
+      ...paperIdFilter,
+      lastUpdated: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
+    }).sort({ lastUpdated: -1 });
 
     if (!session) {
       res.json({ success: true, activeSession: null });
@@ -58,36 +61,63 @@ export const saveActiveSession = async (req: Request, res: Response): Promise<vo
       return;
     }
 
-    const hasIncomingData = answers && (
-      (answers.selectedAnswers && Object.keys(answers.selectedAnswers).length > 0) ||
-      (answers.writingResponses && Object.keys(answers.writingResponses).some((k: string) => Boolean(answers.writingResponses[k]))) ||
-      (answers.speakingTranscripts && Object.keys(answers.speakingTranscripts).some((k: string) => Boolean(answers.speakingTranscripts[k]))) ||
-      (answers.speakingDialogueMap && Object.keys(answers.speakingDialogueMap).some((k: string) => (answers.speakingDialogueMap[k] || []).length > 0))
-    );
+    const paperNumberMatch = paperId.match(/\d+/);
+    const paperNum = paperNumberMatch ? parseInt(paperNumberMatch[0], 10) : null;
+    const paperIdFilter = paperNum
+      ? { $or: [{ paperId }, { paperId: new RegExp(`(?:tcf|paper|tef).*?${paperNum}(?:$|[^\d])`, 'i') }] }
+      : { paperId };
 
-    // If incoming data is empty, do not overwrite a recent active session that already has answers!
-    if (!hasIncomingData) {
-      const existing = await ActiveSession.findOne({ paperId, lastUpdated: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } }).sort({ lastUpdated: -1 });
-      if (existing && existing.answers && Object.keys(existing.answers.selectedAnswers || {}).length > 0) {
-        res.json({ success: true, activeSession: existing });
-        return;
-      }
+    // Find the latest existing session for this paper
+    const existing = await ActiveSession.findOne({
+      ...paperIdFilter,
+      lastUpdated: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
+    }).sort({ lastUpdated: -1 });
+
+    const incomingAnswerCount = answers?.selectedAnswers ? Object.keys(answers.selectedAnswers).length : 0;
+    const existingAnswerCount = existing?.answers?.selectedAnswers ? Object.keys(existing.answers.selectedAnswers).length : 0;
+
+    // Merge answers to guarantee no progress is ever wiped out
+    let mergedAnswers = { ...(existing?.answers || {}), ...(answers || {}) };
+    if (existing?.answers?.selectedAnswers && answers?.selectedAnswers) {
+      mergedAnswers.selectedAnswers = { ...existing.answers.selectedAnswers, ...answers.selectedAnswers };
     }
 
-    const session = await ActiveSession.findOneAndUpdate(
-      { paperId, ...(rawUserId && rawUserId !== 'guest_user' ? { userId: String(rawUserId) } : {}) },
-      {
-        userId: String(rawUserId),
-        paperId,
-        examType: examType || 'TCF',
-        sectionIndex: sectionIndex ?? 0,
-        questionIndex: questionIndex ?? 0,
-        answers: answers || {},
-        sectionTimers: sectionTimers || {},
-        lastUpdated: new Date()
-      },
-      { upsert: true, new: true, setDefaultsOnInsert: true }
-    );
+    // Pick highest question position reached
+    const targetQIndex = (questionIndex === 0 && (existing?.questionIndex ?? 0) > 0 && incomingAnswerCount <= existingAnswerCount)
+      ? existing!.questionIndex
+      : (questionIndex ?? 0);
+
+    const targetSectionIndex = (sectionIndex === 0 && (existing?.sectionIndex ?? 0) > 0 && incomingAnswerCount <= existingAnswerCount)
+      ? existing!.sectionIndex
+      : (sectionIndex ?? 0);
+
+    const docId = existing?._id;
+
+    const session = docId
+      ? await ActiveSession.findByIdAndUpdate(
+          docId,
+          {
+            userId: String(rawUserId),
+            paperId: existing.paperId || paperId,
+            examType: examType || existing.examType || 'TCF',
+            sectionIndex: targetSectionIndex,
+            questionIndex: targetQIndex,
+            answers: mergedAnswers,
+            sectionTimers: sectionTimers || existing.sectionTimers || {},
+            lastUpdated: new Date()
+          },
+          { new: true }
+        )
+      : await ActiveSession.create({
+          userId: String(rawUserId),
+          paperId,
+          examType: examType || 'TCF',
+          sectionIndex: sectionIndex ?? 0,
+          questionIndex: questionIndex ?? 0,
+          answers: answers || {},
+          sectionTimers: sectionTimers || {},
+          lastUpdated: new Date()
+        });
 
     res.json({ success: true, activeSession: session });
   } catch (error: any) {
@@ -101,15 +131,20 @@ export const saveActiveSession = async (req: Request, res: Response): Promise<vo
  */
 export const deleteActiveSession = async (req: Request, res: Response): Promise<void> => {
   try {
-    const userId = (req as any).user?.id || (req as any).user?._id || req.headers['x-user-id'] || req.body.userId;
     const { paperId } = req.params;
 
-    if (!userId || !paperId) {
-      res.status(400).json({ success: false, message: 'User ID and Paper ID are required' });
+    if (!paperId) {
+      res.status(400).json({ success: false, message: 'Paper ID is required' });
       return;
     }
 
-    await ActiveSession.deleteOne({ userId: String(userId), paperId });
+    const paperNumberMatch = paperId.match(/\d+/);
+    const paperNum = paperNumberMatch ? parseInt(paperNumberMatch[0], 10) : null;
+    const paperIdFilter = paperNum
+      ? { $or: [{ paperId }, { paperId: new RegExp(`(?:tcf|paper|tef).*?${paperNum}(?:$|[^\d])`, 'i') }] }
+      : { paperId };
+
+    await ActiveSession.deleteMany(paperIdFilter);
 
     res.json({ success: true, message: 'Active session cleared successfully' });
   } catch (error: any) {

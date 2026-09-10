@@ -313,9 +313,23 @@ export function AuthenticCBTExamPage() {
       if (typeof cloudActiveSession.sectionIndex === "number" && cloudActiveSession.sectionIndex < paper.sections.length) {
         setActiveSectionIdx(cloudActiveSession.sectionIndex);
       }
-      if (typeof cloudActiveSession.questionIndex === "number") {
-        setCurrentQuestionIdx(cloudActiveSession.questionIndex);
-      }
+
+      // Smart resume positioning: advance to next unanswered or furthest question reached
+      const answeredKeys = Object.keys(answersData.selectedAnswers || {});
+      let highestAnsweredIdx = -1;
+      answeredKeys.forEach((k) => {
+        const m = k.match(/(\d+)$/);
+        if (m) {
+          const qNum = parseInt(m[1], 10);
+          if (qNum - 1 > highestAnsweredIdx) highestAnsweredIdx = qNum - 1;
+        }
+      });
+      const smartQIdx = typeof cloudActiveSession.questionIndex === "number" && cloudActiveSession.questionIndex > 0
+        ? cloudActiveSession.questionIndex
+        : highestAnsweredIdx >= 0
+          ? Math.min(highestAnsweredIdx + 1, (currentQuestions.length || 39) - 1)
+          : 0;
+      setCurrentQuestionIdx(smartQIdx);
     }
     setShowSessionPromptModal(false);
   };
@@ -1125,12 +1139,15 @@ export function AuthenticCBTExamPage() {
     } catch { }
   }, [selectedAnswers, flaggedQuestions, writingResponses, speakingTranscripts, writingAiResults, speakingAiResults, speakingDialogueMap, completedSectionIndices, sectionTimeRemaining, activeSectionIdx, currentQuestionIdx, isSubmitted, sessionKey]);
 
+  const hasHydratedCloudRef = useRef(false);
+
   // Cloud Active Session Cross-Device Synchronization (MongoDB + LocalStorage)
   useEffect(() => {
     if (!paper?.id) return;
     apiFetch(`/exam/active-session/${paper.id}`)
       .then((res) => res.json())
       .then((json) => {
+        hasHydratedCloudRef.current = true;
         if (json.success && json.activeSession) {
           setCloudActiveSession(json.activeSession);
           const answersData = json.activeSession.answers || {};
@@ -1139,30 +1156,76 @@ export function AuthenticCBTExamPage() {
             Object.keys(answersData.speakingTranscripts || {}).some((k: string) => Boolean(answersData.speakingTranscripts[k]));
 
           if (hasCloudAnswers) {
-            if (answersData.selectedAnswers) setSelectedAnswers(answersData.selectedAnswers);
-            if (answersData.flaggedQuestions) setFlaggedQuestions(answersData.flaggedQuestions);
-            if (answersData.writingResponses) setWritingResponses(answersData.writingResponses);
-            if (answersData.speakingTranscripts) setSpeakingTranscripts(answersData.speakingTranscripts);
-            if (answersData.writingAiResults) setWritingAiResults(answersData.writingAiResults);
-            if (answersData.speakingAiResults) setSpeakingAiResults(answersData.speakingAiResults);
-            if (answersData.speakingDialogueMap) setSpeakingDialogueMap(answersData.speakingDialogueMap);
+            if (answersData.selectedAnswers) setSelectedAnswers((prev) => ({ ...answersData.selectedAnswers, ...prev }));
+            if (answersData.flaggedQuestions) setFlaggedQuestions((prev) => ({ ...answersData.flaggedQuestions, ...prev }));
+            if (answersData.writingResponses) setWritingResponses((prev) => ({ ...answersData.writingResponses, ...prev }));
+            if (answersData.speakingTranscripts) setSpeakingTranscripts((prev) => ({ ...answersData.speakingTranscripts, ...prev }));
+            if (answersData.writingAiResults) setWritingAiResults((prev) => ({ ...answersData.writingAiResults, ...prev }));
+            if (answersData.speakingAiResults) setSpeakingAiResults((prev) => ({ ...answersData.speakingAiResults, ...prev }));
+            if (answersData.speakingDialogueMap) setSpeakingDialogueMap((prev) => ({ ...answersData.speakingDialogueMap, ...prev }));
             if (answersData.completedSectionIndices) setCompletedSectionIndices(answersData.completedSectionIndices);
             if (json.activeSession.sectionTimers) setSectionTimeRemaining(json.activeSession.sectionTimers);
             if (typeof json.activeSession.sectionIndex === "number" && json.activeSession.sectionIndex < paper.sections.length) {
               setActiveSectionIdx(json.activeSession.sectionIndex);
             }
-            if (typeof json.activeSession.questionIndex === "number") {
-              setCurrentQuestionIdx(json.activeSession.questionIndex);
-            }
+
+            const answeredKeys = Object.keys(answersData.selectedAnswers || {});
+            let highestAnsweredIdx = -1;
+            answeredKeys.forEach((k) => {
+              const m = k.match(/(\d+)$/);
+              if (m) {
+                const qNum = parseInt(m[1], 10);
+                if (qNum - 1 > highestAnsweredIdx) highestAnsweredIdx = qNum - 1;
+              }
+            });
+            const smartQIdx = typeof json.activeSession.questionIndex === "number" && json.activeSession.questionIndex > 0
+              ? json.activeSession.questionIndex
+              : highestAnsweredIdx >= 0
+                ? Math.min(highestAnsweredIdx + 1, (currentQuestions.length || 39) - 1)
+                : 0;
+            setCurrentQuestionIdx(smartQIdx);
           }
           setShowSessionPromptModal(true);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        hasHydratedCloudRef.current = true;
+      });
   }, [paper?.id]);
 
+  // Live 4-Second Background Sync Pulse between active devices
   useEffect(() => {
     if (!paper?.id || isSubmitted) return;
+    const interval = setInterval(() => {
+      if (typeof document !== "undefined" && document.visibilityState !== "visible") return;
+      apiFetch(`/exam/active-session/${paper.id}`)
+        .then((res) => res.json())
+        .then((json) => {
+          if (json.success && json.activeSession?.answers?.selectedAnswers) {
+            const remoteAnswers = json.activeSession.answers.selectedAnswers;
+            setSelectedAnswers((local) => {
+              const localKeys = Object.keys(local);
+              const remoteKeys = Object.keys(remoteAnswers);
+              if (remoteKeys.length > localKeys.length) {
+                return { ...remoteAnswers, ...local };
+              }
+              return local;
+            });
+          }
+        })
+        .catch(() => {});
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [paper?.id, isSubmitted]);
+
+  // Periodic Auto-Save to MongoDB Cloud (Guarded against blank overwrite)
+  useEffect(() => {
+    if (!paper?.id || isSubmitted || !hasHydratedCloudRef.current) return;
+    const hasData = Object.keys(selectedAnswers).length > 0 ||
+      Object.keys(writingResponses).some((k) => Boolean(writingResponses[k])) ||
+      Object.keys(speakingTranscripts).some((k) => Boolean(speakingTranscripts[k]));
+    if (!hasData) return;
+
     const timer = setTimeout(() => {
       apiFetch("/exam/active-session", {
         method: "POST",
