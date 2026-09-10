@@ -2,33 +2,49 @@ import { Request, Response } from 'express';
 import { ActiveSession } from '../models/ActiveSession';
 
 /**
+ * Helper to produce a standardized canonical paper ID
+ */
+const getCanonicalPaperId = (paperId: string): string => {
+  if (!paperId) return 'default';
+  const paperNumberMatch = paperId.match(/\d+/);
+  const paperNum = paperNumberMatch ? parseInt(paperNumberMatch[0], 10) : null;
+  if (!paperNum) return paperId;
+  const isOfficial = paperId.toLowerCase().includes('official') || paperId.toLowerCase().includes('exam');
+  return isOfficial
+    ? `tcf-canada-official-exam-paper-${paperNum}`
+    : `tcf-canada-practice-paper-${paperNum}`;
+};
+
+/**
  * Get active session for a specific paper and user
  */
 export const getActiveSession = async (req: Request, res: Response): Promise<void> => {
   try {
     const { paperId } = req.params;
-    const rawUserId = (req as any).user?.userId || (req as any).user?.id || (req as any).user?._id || req.headers['x-user-id'] || 'guest_user';
+    const rawUserId = (req as any).user?.userId || (req as any).user?.id || (req as any).user?._id || req.headers['x-user-id'] || req.headers['x-device-id'] || 'guest_user';
 
     if (!paperId) {
       res.status(400).json({ success: false, message: 'Paper ID is required' });
       return;
     }
 
-    const paperNumberMatch = paperId.match(/\d+/);
-    const paperNum = paperNumberMatch ? parseInt(paperNumberMatch[0], 10) : null;
-    const paperIdFilter = paperNum
-      ? { $or: [{ paperId }, { paperId: new RegExp(`(?:tcf|paper|tef).*?${paperNum}(?:$|[^\d])`, 'i') }] }
-      : { paperId };
+    const canonicalPaperId = getCanonicalPaperId(paperId);
 
-    const queryFilter = rawUserId !== 'guest_user'
-      ? { userId: String(rawUserId), ...paperIdFilter }
-      : paperIdFilter;
-
-    // Fetch the newest active session across all devices for this paper
-    const session = await ActiveSession.findOne({
-      ...queryFilter,
+    // Primary lookup: exact match on (userId, canonicalPaperId)
+    let session = await ActiveSession.findOne({
+      userId: String(rawUserId),
+      paperId: canonicalPaperId,
       lastUpdated: { $gte: new Date(Date.now() - 48 * 60 * 60 * 1000) }
     }).sort({ lastUpdated: -1 });
+
+    // Secondary fallback: if guest or legacy, check raw paperId
+    if (!session && canonicalPaperId !== paperId) {
+      session = await ActiveSession.findOne({
+        userId: String(rawUserId),
+        paperId,
+        lastUpdated: { $gte: new Date(Date.now() - 48 * 60 * 60 * 1000) }
+      }).sort({ lastUpdated: -1 });
+    }
 
     if (!session) {
       res.json({ success: true, activeSession: null });
@@ -57,6 +73,7 @@ export const getActiveSession = async (req: Request, res: Response): Promise<voi
 
 /**
  * Save or update active session (cloud auto-sync)
+ * Uses atomic MongoDB findOneAndUpdate with upsert to prevent any E11000 duplicate key errors
  */
 export const saveActiveSession = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -68,65 +85,47 @@ export const saveActiveSession = async (req: Request, res: Response): Promise<vo
       return;
     }
 
-    const paperNumberMatch = paperId.match(/\d+/);
-    const paperNum = paperNumberMatch ? parseInt(paperNumberMatch[0], 10) : null;
-    const paperIdFilter = paperNum
-      ? { $or: [{ paperId }, { paperId: new RegExp(`(?:tcf|paper|tef).*?${paperNum}(?:$|[^\d])`, 'i') }] }
-      : { paperId };
-
-    const queryFilter = rawUserId !== 'guest_user'
-      ? { userId: String(rawUserId), ...paperIdFilter }
-      : paperIdFilter;
-
-    // Find the latest existing session for this paper
-    const existing = await ActiveSession.findOne({
-      ...queryFilter,
-      lastUpdated: { $gte: new Date(Date.now() - 48 * 60 * 60 * 1000) }
-    }).sort({ lastUpdated: -1 });
-
+    const canonicalPaperId = getCanonicalPaperId(paperId);
     const clientEpoch = typeof sessionEpoch === 'number' ? sessionEpoch : 1;
+
+    // Check if there is an existing session to verify epoch
+    const existing = await ActiveSession.findOne({
+      userId: String(rawUserId),
+      paperId: canonicalPaperId
+    });
+
     const serverEpoch = existing?.sessionEpoch || 1;
 
-    // Reject stale ghost re-uploads if client is behind the server's reset epoch
+    // Reject stale ghost re-uploads if client is behind server's reset epoch
     if (existing && clientEpoch < serverEpoch) {
       res.json({
         success: true,
         stale: true,
         sessionEpoch: serverEpoch,
-        message: 'Session has been reset on another device; local state discarded.'
+        message: 'Session has been reset; local state discarded.'
       });
       return;
     }
 
-    const docId = existing?._id;
-
-    const session = docId
-      ? await ActiveSession.findByIdAndUpdate(
-          docId,
-          {
-            userId: String(rawUserId),
-            paperId: existing.paperId || paperId,
-            examType: examType || existing.examType || 'TCF',
-            sectionIndex: typeof sectionIndex === 'number' ? sectionIndex : existing.sectionIndex,
-            questionIndex: typeof questionIndex === 'number' ? questionIndex : existing.questionIndex,
-            answers: answers || existing.answers || {},
-            sectionTimers: sectionTimers || existing.sectionTimers || {},
-            sessionEpoch: Math.max(clientEpoch, serverEpoch),
-            lastUpdated: new Date()
-          },
-          { new: true }
-        )
-      : await ActiveSession.create({
-          userId: String(rawUserId),
-          paperId,
-          examType: examType || 'TCF',
-          sectionIndex: sectionIndex ?? 0,
-          questionIndex: questionIndex ?? 0,
-          answers: answers || {},
-          sectionTimers: sectionTimers || {},
-          sessionEpoch: clientEpoch,
+    // Atomic findOneAndUpdate with upsert: GUARANTEED ZERO E11000 duplicate key errors
+    const session = await ActiveSession.findOneAndUpdate(
+      { userId: String(rawUserId), paperId: canonicalPaperId },
+      {
+        $set: {
+          examType: examType || existing?.examType || 'TCF',
+          sectionIndex: typeof sectionIndex === 'number' ? sectionIndex : (existing?.sectionIndex ?? 0),
+          questionIndex: typeof questionIndex === 'number' ? questionIndex : (existing?.questionIndex ?? 0),
+          answers: answers || existing?.answers || {},
+          sectionTimers: sectionTimers || existing?.sectionTimers || {},
+          sessionEpoch: Math.max(clientEpoch, serverEpoch),
           lastUpdated: new Date()
-        });
+        },
+        $unset: {
+          resetAt: 1
+        }
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
 
     res.json({ success: true, activeSession: session });
   } catch (error: any) {
@@ -141,34 +140,30 @@ export const saveActiveSession = async (req: Request, res: Response): Promise<vo
 export const deleteActiveSession = async (req: Request, res: Response): Promise<void> => {
   try {
     const { paperId } = req.params;
-    const rawUserId = (req as any).user?.userId || (req as any).user?.id || (req as any).user?._id || req.headers['x-user-id'] || 'guest_user';
+    const rawUserId = (req as any).user?.userId || (req as any).user?.id || (req as any).user?._id || req.headers['x-user-id'] || req.headers['x-device-id'] || 'guest_user';
 
     if (!paperId) {
       res.status(400).json({ success: false, message: 'Paper ID is required' });
       return;
     }
 
-    const paperNumberMatch = paperId.match(/\d+/);
-    const paperNum = paperNumberMatch ? parseInt(paperNumberMatch[0], 10) : null;
-    const paperIdFilter = paperNum
-      ? { $or: [{ paperId }, { paperId: new RegExp(`(?:tcf|paper|tef).*?${paperNum}(?:$|[^\d])`, 'i') }] }
-      : { paperId };
+    const canonicalPaperId = getCanonicalPaperId(paperId);
+    const filter = {
+      userId: String(rawUserId),
+      $or: [{ paperId: canonicalPaperId }, { paperId }]
+    };
 
-    const queryFilter = rawUserId !== 'guest_user'
-      ? { userId: String(rawUserId), ...paperIdFilter }
-      : paperIdFilter;
-
-    // Find current session to advance the epoch tombstone
-    const existing = await ActiveSession.findOne(queryFilter).sort({ lastUpdated: -1 });
+    // Advance the epoch tombstone
+    const existing = await ActiveSession.findOne(filter).sort({ lastUpdated: -1 });
     const nextEpoch = (existing?.sessionEpoch || 1) + 1;
 
-    // Delete existing active sessions
-    await ActiveSession.deleteMany(queryFilter);
+    // Delete existing active sessions for this user & paper
+    await ActiveSession.deleteMany(filter);
 
-    // Create a lightweight epoch tombstone so open tabs on other devices know to reset cleanly
+    // Create a lightweight epoch tombstone so any other open device drops its stale state
     await ActiveSession.create({
       userId: String(rawUserId),
-      paperId,
+      paperId: canonicalPaperId,
       examType: 'TCF',
       sectionIndex: 0,
       questionIndex: 0,

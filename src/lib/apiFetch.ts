@@ -23,9 +23,16 @@ export async function apiFetch(
   const isServer = typeof window === "undefined";
   const baseUrl = getApiBaseUrl();
   const targetUrl = path.startsWith("http") ? path : `${baseUrl}${path.startsWith("/") ? path : `/${path}`}`;
-
   try {
     const token = !isServer ? localStorage.getItem(STORAGE_KEY) : null;
+    let deviceId = "";
+    if (!isServer) {
+      deviceId = localStorage.getItem("francprep_device_id") || "";
+      if (!deviceId) {
+        deviceId = "dev_" + Math.random().toString(36).substring(2, 11) + Date.now().toString(36);
+        localStorage.setItem("francprep_device_id", deviceId);
+      }
+    }
 
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
@@ -33,6 +40,9 @@ export async function apiFetch(
     };
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
+    }
+    if (deviceId) {
+      headers["x-device-id"] = deviceId;
     }
 
     const res = await fetch(targetUrl, { ...options, headers });
