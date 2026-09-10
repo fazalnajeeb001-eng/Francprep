@@ -58,8 +58,24 @@ export const saveActiveSession = async (req: Request, res: Response): Promise<vo
       return;
     }
 
+    const hasIncomingData = answers && (
+      (answers.selectedAnswers && Object.keys(answers.selectedAnswers).length > 0) ||
+      (answers.writingResponses && Object.keys(answers.writingResponses).some((k: string) => Boolean(answers.writingResponses[k]))) ||
+      (answers.speakingTranscripts && Object.keys(answers.speakingTranscripts).some((k: string) => Boolean(answers.speakingTranscripts[k]))) ||
+      (answers.speakingDialogueMap && Object.keys(answers.speakingDialogueMap).some((k: string) => (answers.speakingDialogueMap[k] || []).length > 0))
+    );
+
+    // If incoming data is empty, do not overwrite a recent active session that already has answers!
+    if (!hasIncomingData) {
+      const existing = await ActiveSession.findOne({ paperId, lastUpdated: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } }).sort({ lastUpdated: -1 });
+      if (existing && existing.answers && Object.keys(existing.answers.selectedAnswers || {}).length > 0) {
+        res.json({ success: true, activeSession: existing });
+        return;
+      }
+    }
+
     const session = await ActiveSession.findOneAndUpdate(
-      { userId: String(rawUserId), paperId },
+      { paperId, ...(rawUserId && rawUserId !== 'guest_user' ? { userId: String(rawUserId) } : {}) },
       {
         userId: String(rawUserId),
         paperId,

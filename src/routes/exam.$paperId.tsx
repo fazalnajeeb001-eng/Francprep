@@ -1133,6 +1133,28 @@ export function AuthenticCBTExamPage() {
       .then((json) => {
         if (json.success && json.activeSession) {
           setCloudActiveSession(json.activeSession);
+          const answersData = json.activeSession.answers || {};
+          const hasCloudAnswers = Object.keys(answersData.selectedAnswers || {}).length > 0 ||
+            Object.keys(answersData.writingResponses || {}).some((k: string) => Boolean(answersData.writingResponses[k])) ||
+            Object.keys(answersData.speakingTranscripts || {}).some((k: string) => Boolean(answersData.speakingTranscripts[k]));
+
+          if (hasCloudAnswers) {
+            if (answersData.selectedAnswers) setSelectedAnswers(answersData.selectedAnswers);
+            if (answersData.flaggedQuestions) setFlaggedQuestions(answersData.flaggedQuestions);
+            if (answersData.writingResponses) setWritingResponses(answersData.writingResponses);
+            if (answersData.speakingTranscripts) setSpeakingTranscripts(answersData.speakingTranscripts);
+            if (answersData.writingAiResults) setWritingAiResults(answersData.writingAiResults);
+            if (answersData.speakingAiResults) setSpeakingAiResults(answersData.speakingAiResults);
+            if (answersData.speakingDialogueMap) setSpeakingDialogueMap(answersData.speakingDialogueMap);
+            if (answersData.completedSectionIndices) setCompletedSectionIndices(answersData.completedSectionIndices);
+            if (json.activeSession.sectionTimers) setSectionTimeRemaining(json.activeSession.sectionTimers);
+            if (typeof json.activeSession.sectionIndex === "number" && json.activeSession.sectionIndex < paper.sections.length) {
+              setActiveSectionIdx(json.activeSession.sectionIndex);
+            }
+            if (typeof json.activeSession.questionIndex === "number") {
+              setCurrentQuestionIdx(json.activeSession.questionIndex);
+            }
+          }
           setShowSessionPromptModal(true);
         }
       })
