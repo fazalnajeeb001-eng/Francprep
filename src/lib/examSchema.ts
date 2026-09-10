@@ -7336,23 +7336,6 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
     let finalAns = topicAns;
     let finalOptEn = (t as any).optionsEnglish ? [...(t as any).optionsEnglish] : undefined;
 
-    if (i >= 9) {
-      const shift = (i * 3 + seedOffset) % 4;
-      const targetAns = (topicAns + shift) % 4;
-      if (targetAns !== topicAns && finalOpt.length === 4) {
-        // Swap correct option to targetAns position
-        const origText = finalOpt[topicAns];
-        finalOpt[topicAns] = finalOpt[targetAns];
-        finalOpt[targetAns] = origText;
-        if (finalOptEn && finalOptEn.length === 4) {
-          const origEn = finalOptEn[topicAns];
-          finalOptEn[topicAns] = finalOptEn[targetAns];
-          finalOptEn[targetAns] = origEn;
-        }
-        finalAns = targetAns;
-      }
-    }
-
     const { options, correctIndex, correctText, optionImages, optionsEnglish: shuffledOptionsEn } = {
       options: finalOpt,
       correctIndex: finalAns,

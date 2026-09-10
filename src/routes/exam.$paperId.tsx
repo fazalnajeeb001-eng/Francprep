@@ -3962,26 +3962,6 @@ export function AuthenticCBTExamPage() {
                                     </>
                                   )}
                                 </p>
-
-                                {currentQ.explanation && currentSection?.type !== "COMPREHENSION_ECRITE" && (
-                                  <div className="pt-2.5 border-t border-slate-300 dark:border-slate-700/60 space-y-2">
-                                    <span className="font-bold uppercase text-[10px] tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                                      <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                                      <span>Analyse Pédagogique Détaillée :</span>
-                                    </span>
-                                    <div className="p-3 rounded-xl bg-purple-50/80 dark:bg-purple-950/40 border border-purple-200/80 dark:border-purple-800/60 whitespace-pre-line leading-relaxed font-medium text-xs text-slate-900 dark:text-slate-200">
-                                      {currentQ.explanation}
-                                    </div>
-                                    {explanationEn && (
-                                      <div className="p-3 rounded-xl bg-purple-100/70 dark:bg-purple-950/50 border border-purple-300/80 dark:border-purple-800/70 whitespace-pre-line leading-relaxed text-xs font-sans text-purple-950 dark:text-purple-200">
-                                        <div className="font-bold text-purple-800 dark:text-purple-300 mb-1 flex items-center gap-1">
-                                          <span>🇬🇧 English Pedagogical Translation:</span>
-                                        </div>
-                                        {explanationEn}
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
                               </>
                             );
                           })()}
