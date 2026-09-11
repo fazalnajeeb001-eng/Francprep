@@ -303,8 +303,25 @@ export function AuthenticCBTExamPage() {
   const [cloudActiveSession, setCloudActiveSession] = useState<any>(null);
 
   const handleResumeSession = () => {
-    if (cloudActiveSession) {
-      const answersData = cloudActiveSession.answers || {};
+    let answersData = cloudActiveSession?.answers;
+    let secIdx = cloudActiveSession?.sectionIndex;
+    let qIdx = cloudActiveSession?.questionIndex;
+    let timers = cloudActiveSession?.sectionTimers;
+
+    if ((!answersData || Object.keys(answersData.selectedAnswers || {}).length === 0) && typeof window !== "undefined") {
+      try {
+        const local = localStorage.getItem(sessionKey);
+        if (local) {
+          const parsed = JSON.parse(local);
+          answersData = parsed;
+          secIdx = parsed.activeSectionIdx;
+          qIdx = parsed.currentQuestionIdx;
+          timers = parsed.sectionTimeRemaining;
+        }
+      } catch {}
+    }
+
+    if (answersData) {
       if (answersData.selectedAnswers) setSelectedAnswers(answersData.selectedAnswers);
       if (answersData.flaggedQuestions) setFlaggedQuestions(answersData.flaggedQuestions);
       if (answersData.writingResponses) setWritingResponses(answersData.writingResponses);
@@ -313,9 +330,9 @@ export function AuthenticCBTExamPage() {
       if (answersData.speakingAiResults) setSpeakingAiResults(answersData.speakingAiResults);
       if (answersData.speakingDialogueMap) setSpeakingDialogueMap(answersData.speakingDialogueMap);
       if (answersData.completedSectionIndices) setCompletedSectionIndices(answersData.completedSectionIndices);
-      if (cloudActiveSession.sectionTimers) setSectionTimeRemaining(cloudActiveSession.sectionTimers);
-      if (typeof cloudActiveSession.sectionIndex === "number" && cloudActiveSession.sectionIndex < paper.sections.length) {
-        setActiveSectionIdx(cloudActiveSession.sectionIndex);
+      if (timers) setSectionTimeRemaining(timers);
+      if (typeof secIdx === "number" && secIdx < paper.sections.length) {
+        setActiveSectionIdx(secIdx);
       }
 
       // Smart resume positioning: advance to next unanswered or furthest question reached
@@ -328,14 +345,59 @@ export function AuthenticCBTExamPage() {
           if (qNum - 1 > highestAnsweredIdx) highestAnsweredIdx = qNum - 1;
         }
       });
-      const smartQIdx = typeof cloudActiveSession.questionIndex === "number" && cloudActiveSession.questionIndex > 0
-        ? cloudActiveSession.questionIndex
+      const smartQIdx = typeof qIdx === "number" && qIdx > 0
+        ? qIdx
         : highestAnsweredIdx >= 0
           ? Math.min(highestAnsweredIdx + 1, (currentQuestions.length || 39) - 1)
           : 0;
       setCurrentQuestionIdx(smartQIdx);
     }
     setShowSessionPromptModal(false);
+  };
+
+  const flushCloudSession = (overrideAnswers?: Record<string, number>, overrideSectionIdx?: number, overrideQIdx?: number) => {
+    if (!paper?.id || isSubmitted) return;
+    const currentSelected = overrideAnswers || selectedAnswers;
+    const currentSec = typeof overrideSectionIdx === "number" ? overrideSectionIdx : activeSectionIdx;
+    const currentQ = typeof overrideQIdx === "number" ? overrideQIdx : currentQuestionIdx;
+
+    const payload = {
+      paperId: paper.id,
+      paperType: paper.type,
+      sectionIndex: currentSec,
+      questionIndex: currentQ,
+      sectionTimers: sectionTimeRemaining,
+      sessionEpoch: sessionEpochRef.current,
+      answers: {
+        selectedAnswers: currentSelected,
+        flaggedQuestions,
+        writingResponses,
+        speakingTranscripts,
+        writingAiResults,
+        speakingAiResults,
+        speakingDialogueMap,
+        completedSectionIndices,
+      },
+    };
+
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem(sessionKey, JSON.stringify({ ...payload, timestamp: Date.now() }));
+      } catch {}
+    }
+
+    apiFetch("/exam/active-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        if (json?.stale && json?.sessionEpoch) {
+          sessionEpochRef.current = json.sessionEpoch;
+        }
+      })
+      .catch(() => {});
   };
 
   const handleRestartSessionClean = () => {
@@ -1254,10 +1316,28 @@ export function AuthenticCBTExamPage() {
     if (!hasData) return;
 
     const timer = setTimeout(() => {
-      apiFetch("/exam/active-session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      flushCloudSession();
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [paper?.id, activeSectionIdx, currentQuestionIdx, selectedAnswers, flaggedQuestions, writingResponses, speakingTranscripts, writingAiResults, speakingAiResults, speakingDialogueMap, isSubmitted]);
+
+  // Fail-Safe Exit Flush on Page Leave / Back Navigation (Keepalive Beacon)
+  useEffect(() => {
+    if (typeof window === "undefined" || !paper?.id || isSubmitted) return;
+
+    const handleExitFlush = () => {
+      try {
+        const baseUrl = getApiBaseUrl();
+        const targetUrl = `${baseUrl}/exam/active-session`;
+        const token = localStorage.getItem("francprep_access_token");
+        let userIdHeader = "";
+        const storedUser = localStorage.getItem("francprep_user");
+        if (storedUser) {
+          const parsed = JSON.parse(storedUser);
+          userIdHeader = parsed.id || parsed._id || parsed.userId || "";
+        }
+
+        const payload = JSON.stringify({
           paperId: paper.id,
           paperType: paper.type,
           sectionIndex: activeSectionIdx,
@@ -1274,30 +1354,28 @@ export function AuthenticCBTExamPage() {
             speakingDialogueMap,
             completedSectionIndices,
           },
-        }),
-      })
-        .then((res) => res.json())
-        .then((json) => {
-          if (json?.stale && json?.sessionEpoch) {
-            // Remote reset detected; discard stale local memory
-            sessionEpochRef.current = json.sessionEpoch;
-            setSelectedAnswers({});
-            setFlaggedQuestions({});
-            setWritingResponses({});
-            setSpeakingTranscripts({});
-            setSpeakingDialogueMap({});
-            setWritingAiResults({});
-            setSpeakingAiResults({});
-            setSectionTimeRemaining({});
-            if (typeof window !== "undefined") {
-              try { localStorage.removeItem(sessionKey); } catch {}
-            }
-          }
-        })
-        .catch(() => {});
-    }, 2500);
-    return () => clearTimeout(timer);
-  }, [paper?.id, activeSectionIdx, currentQuestionIdx, sectionTimeRemaining, selectedAnswers, flaggedQuestions, writingResponses, speakingTranscripts, writingAiResults, speakingAiResults, speakingDialogueMap, isSubmitted]);
+        });
+
+        fetch(targetUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            ...(userIdHeader ? { "x-user-id": userIdHeader } : {}),
+          },
+          body: payload,
+          keepalive: true,
+        }).catch(() => {});
+      } catch {}
+    };
+
+    window.addEventListener("pagehide", handleExitFlush);
+    window.addEventListener("beforeunload", handleExitFlush);
+    return () => {
+      window.removeEventListener("pagehide", handleExitFlush);
+      window.removeEventListener("beforeunload", handleExitFlush);
+    };
+  }, [paper?.id, isSubmitted, activeSectionIdx, currentQuestionIdx, sectionTimeRemaining, selectedAnswers, flaggedQuestions, writingResponses, speakingTranscripts, writingAiResults, speakingAiResults, speakingDialogueMap, completedSectionIndices]);
 
   useEffect(() => {
     setShowQuestionPrompt(false);
@@ -1889,7 +1967,9 @@ export function AuthenticCBTExamPage() {
 
   const handleSelectOption = (qId: string, optionIdx: number) => {
     if (isSubmitted || (mode === "PRACTICE" && checkedMap[qId])) return;
-    setSelectedAnswers((prev) => ({ ...prev, [qId]: optionIdx }));
+    const nextAnswers = { ...selectedAnswers, [qId]: optionIdx };
+    setSelectedAnswers(nextAnswers);
+    flushCloudSession(nextAnswers);
     // In Practice Mode, if audio is not actively playing, selecting a choice also unlocks the response timer countdown!
     if (mode === "PRACTICE" && !isSpeaking && !isAudioPaused) {
       setIsAudioFinished(true);

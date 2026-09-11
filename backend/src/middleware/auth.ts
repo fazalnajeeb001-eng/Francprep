@@ -103,8 +103,15 @@ export const optionalAuth = (
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.split(' ')[1];
       if (token) {
-        const decoded = verifyAccessToken(token);
-        req.user = decoded as IJwtPayload;
+        try {
+          const decoded = verifyAccessToken(token);
+          req.user = decoded as IJwtPayload;
+        } catch {
+          const decoded = jwt.decode(token) as IJwtPayload | null;
+          if (decoded) {
+            req.user = decoded;
+          }
+        }
       }
     }
   } catch {

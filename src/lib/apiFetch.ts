@@ -26,9 +26,20 @@ export async function apiFetch(
 
   try {
     const token = !isServer ? localStorage.getItem(STORAGE_KEY) : null;
+    let userIdHeader = "";
+    if (!isServer) {
+      try {
+        const storedUser = localStorage.getItem("francprep_user");
+        if (storedUser) {
+          const parsed = JSON.parse(storedUser);
+          userIdHeader = parsed.id || parsed._id || parsed.userId || "";
+        }
+      } catch {}
+    }
 
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
+      ...(userIdHeader ? { "x-user-id": userIdHeader } : {}),
       ...(options.headers as Record<string, string>),
     };
     if (token) {
