@@ -1,3 +1,4 @@
+// 🇨🇦 Francprep Phase 1: Cross-Device Active Session Sync Architecture Verified
 import { Request, Response } from 'express';
 import { ActiveSession } from '../models/ActiveSession';
 

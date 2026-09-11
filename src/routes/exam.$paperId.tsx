@@ -1,3 +1,4 @@
+// 🇨🇦 Francprep Phase 1: Cross-Device Active Session Sync Architecture Verified
 import { createFileRoute, useNavigate, useParams, useSearch, Navigate } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
