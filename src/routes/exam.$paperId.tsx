@@ -135,6 +135,13 @@ export function AuthenticCBTExamPage() {
     sections: []
   };
 
+  // Canonical paper number derivation (Robust across Practice Papers 1-5 and Official Papers 6-10)
+  const paperNumber: number = (typeof paper?.paperNumber === "number" && paper.paperNumber > 0)
+    ? paper.paperNumber
+    : (paper?.id?.includes("official-exam") || paper?.code?.includes("EXAM"))
+      ? ((paper?.code ? parseInt(paper.code.replace(/\D/g, ""), 10) : null) || (paper?.id ? parseInt(paper.id.match(/\d+/)?.[0] || "1", 10) : 1)) + 5
+      : ((paper?.code ? parseInt(paper.code.replace(/\D/g, ""), 10) : null) || (paper?.id ? parseInt(paper.id.match(/\d+/)?.[0] || "1", 10) : 1));
+
   // Official Real Exam Duration Helper (France Éducation International CBT Standards)
   const getSectionDurationSeconds = (secType?: string, customDurationMins?: number) => {
     if (secType === "COMPREHENSION_ECRITE") return 60 * 60; // Strict 60 mins (3600s)
@@ -157,7 +164,10 @@ export function AuthenticCBTExamPage() {
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const currentQuestions = currentSection?.questions || [];
   const rawCurrentQ = currentQuestions[currentQuestionIdx] || currentQuestions[0];
-  const readingGuidanceKey = `p${paper?.paperNumber || 1}_q${rawCurrentQ?.questionNumber || 1}`;
+  const qPaperNum = rawCurrentQ?.id?.match(/(?:tcf|tef)(\d+)/)?.[1]
+    ? parseInt(rawCurrentQ.id.match(/(?:tcf|tef)(\d+)/)![1], 10)
+    : paperNumber;
+  const readingGuidanceKey = `p${qPaperNum}_q${rawCurrentQ?.questionNumber || 1}`;
   const readingGuidance = (currentSection?.type === "COMPREHENSION_ECRITE" && rawCurrentQ) ? (READING_GUIDANCE_BANK[readingGuidanceKey] || {}) : {};
   const currentQ = rawCurrentQ ? { ...rawCurrentQ, ...readingGuidance } : rawCurrentQ;
 
@@ -768,7 +778,7 @@ export function AuthenticCBTExamPage() {
     setIsAudioFetching(true);
     setIsPlayingAudio(true);
 
-    const paperNum = paper?.paperNumber || 1;
+    const paperNum = paperNumber;
     const masterTask = MASTER_SPEAKING_BANK[paperNum]?.[activeSpeakingTaskIdx] || MASTER_SPEAKING_BANK[paperNum]?.[0];
     const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
     const persona = activeTask?.examinerPersona || masterTask?.examinerPersona || MASTER_SPEAKING_BANK[paperNum]?.[0]?.examinerPersona;
@@ -866,7 +876,7 @@ export function AuthenticCBTExamPage() {
         content: m.text,
       }));
 
-      const paperNum = paper?.paperNumber || 1;
+      const paperNum = paperNumber;
       const masterTask = MASTER_SPEAKING_BANK[paperNum]?.[activeSpeakingTaskIdx];
       const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
       const persona = activeTask?.examinerPersona || masterTask?.examinerPersona || MASTER_SPEAKING_BANK[paperNum]?.[0]?.examinerPersona;
@@ -1171,7 +1181,7 @@ export function AuthenticCBTExamPage() {
         };
       });
 
-      const taskVoiceId = task.examinerPersona?.voiceId || MASTER_SPEAKING_BANK[paperNum]?.[idx]?.examinerPersona?.voiceId;
+      const taskVoiceId = task.examinerPersona?.voiceId || MASTER_SPEAKING_BANK[paperNumber]?.[idx]?.examinerPersona?.voiceId;
       handlePlayExaminerAudio(openingText, () => {
         // ONLY start the per-tâche prep or speaking timer AFTER examiner intro finishes playing!
         if (task.prepTimeMins > 0) {
@@ -1687,7 +1697,7 @@ export function AuthenticCBTExamPage() {
           transcription: combinedCandidateSpeech,
           scenario: expectedText,
           taskTitle: `${paper.title} - ${taskId}`,
-          paperNumber: paper?.paperNumber || 1,
+          paperNumber: paperNumber,
           taskNumber,
           acousticMetrics
         })
@@ -3740,8 +3750,10 @@ export function AuthenticCBTExamPage() {
               {/* Practice Hint Bar - Desktop Only (Mobile uses ergonomic bottom pill above options) */}
               {(() => {
                 const isReadingSection = currentSection.type === "COMPREHENSION_ECRITE";
-                const paperNum = paper?.paperNumber || 1;
-                const guidanceKey = `p${paperNum}_q${currentQ.questionNumber}`;
+                const qPaperNum = currentQ?.id?.match(/(?:tcf|tef)(\d+)/)?.[1]
+                  ? parseInt(currentQ.id.match(/(?:tcf|tef)(\d+)/)![1], 10)
+                  : paperNumber;
+                const guidanceKey = `p${qPaperNum}_q${currentQ.questionNumber}`;
                 const bankEntry = isReadingSection ? READING_GUIDANCE_BANK[guidanceKey] : null;
 
                 const activeTrapAlert = isReadingSection
@@ -4717,7 +4729,7 @@ export function AuthenticCBTExamPage() {
               const isEvaluating = evaluatingSpeaking[task.id];
               const isChatLoading = speakingChatLoading[task.id];
               const aiEval = speakingAiResults[task.id];
-              const paperNum = paper?.paperNumber || 1;
+              const paperNum = paperNumber;
               const masterTask = MASTER_SPEAKING_BANK[paperNum]?.[activeSpeakingTaskIdx];
               const examinerPersona = task.examinerPersona || masterTask?.examinerPersona || MASTER_SPEAKING_BANK[paperNum]?.[0]?.examinerPersona;
               const examinerName = examinerPersona?.name || "Examinateur TCF Canada";

@@ -115,6 +115,7 @@ export interface ExamPaper {
   title: string;
   type: ExamType;
   code: string; // e.g. "TCF-PRAC-01" or "TCF-EXAM-01"
+  paperNumber?: number;
   description: string;
   totalDurationMins: number;
   isSamplePaper: boolean;
@@ -7921,6 +7922,7 @@ export function getExamRegistry(): ExamPaper[] {
       id: isPractice ? `tcf-canada-practice-paper-${paperNum}` : `tcf-canada-official-exam-paper-${paperNum}`,
       title: isPractice ? `TCF Canada Guided Practice Paper ${paperNum}` : `TCF Canada Official Real Exam Paper ${paperNum}`,
       code: isPractice ? `TCF-PRAC-${numStr}` : `TCF-EXAM-${numStr}`,
+      paperNumber: i,
       type: "TCF_CANADA",
       recommendedMode: isPractice ? "PRACTICE" : "EXAM",
       description: isPractice
@@ -7998,6 +8000,7 @@ export function getExamRegistry(): ExamPaper[] {
       id: isPractice ? `tef-canada-practice-paper-${paperNum}` : `tef-canada-official-exam-paper-${paperNum}`,
       title: isPractice ? `TEF Canada Guided Practice Paper ${paperNum}` : `TEF Canada Official Real Exam Paper ${paperNum}`,
       code: isPractice ? `TEF-PRAC-${numStr}` : `TEF-EXAM-${numStr}`,
+      paperNumber: i,
       type: "TEF_CANADA",
       recommendedMode: isPractice ? "PRACTICE" : "EXAM",
       description: isPractice
