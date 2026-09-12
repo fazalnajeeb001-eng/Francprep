@@ -37,6 +37,10 @@ const corsOptions: cors.CorsOptions = {
     'X-Requested-With',
     'Accept',
     'Origin',
+    'X-User-Id',
+    'x-user-id',
+    'X-Device-Id',
+    'x-device-id',
   ],
   exposedHeaders: ['Set-Cookie'],
   maxAge: 86400, // 24 hours

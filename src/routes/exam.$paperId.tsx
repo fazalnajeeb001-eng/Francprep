@@ -1338,6 +1338,7 @@ export function AuthenticCBTExamPage() {
         }
 
         const payload = JSON.stringify({
+          userId: userIdHeader || undefined,
           paperId: paper.id,
           paperType: paper.type,
           sectionIndex: activeSectionIdx,
@@ -1361,7 +1362,6 @@ export function AuthenticCBTExamPage() {
           headers: {
             "Content-Type": "application/json",
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            ...(userIdHeader ? { "x-user-id": userIdHeader } : {}),
           },
           body: payload,
           keepalive: true,
