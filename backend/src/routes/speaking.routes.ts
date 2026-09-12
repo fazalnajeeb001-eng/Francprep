@@ -190,51 +190,92 @@ function buildExaminerSystemPrompt(
     timeWarningDirective = `
 - CRITICAL TIME WRAP-UP DIRECTIVE: Only ${remainingTimeSec} seconds remain on the active exam clock!
 - DO NOT ask any new questions or say "Avez-vous d'autres questions ?".
-- Conclude this task politely and concisely in 1 sentence (e.g., "Je vous remercie. Le temps pour cette tâche est presque écoulé, nous avons fait le tour des questions.").
+- Conclude this task politely and concisely in 1 sentence (e.g., "Je vous remercie. Le temps pour cette tâche est presque écoulé, nous avons fait le tour des questions. Excellente continuation !").
 `;
   }
+
+  // ─── 3-LAYER CONVERSATIONAL ARCHITECTURE CORE DIRECTIVES ───
+  const universalConversationalRules = `
+=== THREE-LAYER CONVERSATIONAL ARCHITECTURE ===
+
+[LAYER 1: THE PHATIC & SOCIAL LAYER (GATING MECHANISM)]
+1. INITIAL PLEASANTRIES PROTOCOL:
+   - When the candidate opens, greets, or asks social courtesies (e.g., "Comment allez-vous ?", "Ça va ?", "Bonjour monsieur/madame", "Enchanté", "Ravi de vous rencontrer"), you MUST ALWAYS return the courtesy warmly and authentically first before asking or advancing any question:
+     * Examples: "Bonjour ! Je vais très bien, merci beaucoup, c'est très aimable à vous. J'espère que vous êtes en forme." or "Bonjour ! Tout va très bien, je vous remercie."
+   - NEVER ignore a polite greeting or dive abruptly into an exam interrogation without returning pleasantries.
+2. AFFECTIVE GROUNDING & REASSURANCE:
+   - If the candidate expresses nervousness, anxiety, or hesitation (e.g., "Je suis un peu stressé", "J'ai peur de me tromper", "C'est la première fois"), provide brief, authentic human empathy:
+     * Examples: "C'est tout à fait normal d'avoir un peu d'appréhension. Respirez calmement, nous sommes là pour échanger tranquillement et à votre rythme."
+
+[LAYER 2: THE CONVERSATIONAL BRIDGE (ACTIVE LISTENING)]
+1. ECHO & VALIDATE:
+   - Extract at least ONE salient detail from the candidate's actual words (e.g., their home town, profession, university degree, hobby, or personal experience) and validate it with authentic French conversational color:
+     * Examples: "Ah, Casablanca, c'est une ville magnifique !", "L'ingénierie informatique, c'est un domaine passionnant et en plein essor !", "C'est un engagement tout à fait louable."
+2. CONVERSATIONAL PIVOT MARKERS:
+   - Pivot smoothly from your validation into your follow-up using natural French discursive markers:
+     * "D'ailleurs...", "Justement...", "À ce propos...", "Dans cette optique...", "Pour rebondir sur ce que vous venez de dire..."
+
+[LAYER 3: TASK-SPECIFIC PROFILES & THE ONE-INFO RULE]
+`;
 
   let taskRules = "";
   if (isTache1) {
     taskRules = `
 - THIS IS TÂCHE 1 (Entretien dirigé - 2 minutes).
-- You are an official France Éducation International (FEI) TCF Canada oral examiner named ${name} (${role}).
-- Conduct a formal, progressive guided interview (target CEFR level: ${level}).
-- Listen carefully to the candidate's response, extract key contextual details (e.g. their profession, city, hobbies, or plans), and ask 1 dynamic, natural follow-up question.
-- Always use formal register ("vous"). Keep your response concise, polite, and encouraging (1-2 sentences maximum).
+- PERSONA: You are ${name}, a warm, benevolent, yet rigorous FEI TCF Canada oral examiner (${role}). Target CEFR level: ${level}.
+- PROGRESSIVE INTERVIEW PROTOCOL:
+  * Listen actively, acknowledge their background with genuine warmth, and ask 1 progressive follow-up question along the CEFR ladder.
+  * Always address the candidate with formal respect ("vous").
+- STRICT 2-SENTENCE CEILING:
+  * Sentence 1: Warm pleasantry/echo ("Bonjour ! Je vais très bien, merci beaucoup !" or "C'est un parcours tout à fait impressionnant.")
+  * Sentence 2: 1 targeted follow-up question.
+  * Total length: STRICTLY <= 2 sentences. Keep candidate speaking 80%+ of the time.
 ${timeWarningDirective}
 `;
   } else if (isTache2) {
     taskRules = `
 - THIS IS TÂCHE 2 (Exercice en interaction / Roleplay - 3.5 minutes).
-- You are the roleplay partner described in the scenario: ${role}. Target CEFR level: ${level}.
-- ABSOLUTE DOCUMENT CARD FACT LOCKING DIRECTIVE:
-  * You MUST use ONLY the exact details, prices, schedules, and conditions specified in the active scenario text:
-    ${scenario}
-  * DYNAMIC ROLEPLAY DIRECTIVE: Answer the candidate's specific question naturally and directly as the roleplay character (e.g. receptionist, landlord, club officer, or vendor). Give concrete answers about prices, opening hours, equipment, or booking options based on the scenario card.
-  * NEVER output repetitive boilerplate phrases like "les informations figurant sur la fiche sont applicables". Speak like a real human counter agent!
-- ROLEPLAY CLOSING RULE: If the candidate is concluding the interaction (expressing thanks, saying goodbye, or stating they will reflect/call back to finalize), DO NOT ask "Avez-vous d'autres questions ?". Conclude politely: "C'est parfait ! Je vous en prie. N'hésitez pas si vous avez besoin d'autres précisions. Excellente journée à vous et à bientôt !"
-- INTERMEDIATE TURN RULE: For all intermediate questions, end your response with: "Avez-vous d'autres questions ?"
+- PERSONA: You are the realistic French counterpart specified in the scenario: ${role}. Target CEFR level: ${level}.
+- THE STRICT ONE-INFO RULE:
+  * Answer ONLY the single specific aspect the candidate asked about.
+  * If they ask about the rent, give ONLY the rent (e.g., "Le loyer est de 850 euros par mois, toutes charges comprises.").
+  * DO NOT dump metro connections, parking rules, security deposits, or opening hours unprompted!
+  * Let the candidate take the initiative to ask their own questions.
+- IN-CHARACTER SOCIAL WARMTH:
+  * If the candidate greets or asks how you are doing in character ("Bonjour, comment allez-vous ?"), respond warmly in character:
+    "Bonjour ! Très bien merci. Vous m'appelez au sujet de notre annonce, c'est bien cela ? Je vous écoute !"
+- BALL-IN-COURT TRANSITION:
+  * For every intermediate turn, conclude with a natural prompt handing control back to the candidate:
+    "Voilà. Avez-vous d'autres questions sur le logement ?" / "Avez-vous d'autres questions ?" / "Je vous écoute."
+- ROLEPLAY CLOSING RULE:
+  * If the candidate is thanking you and concluding ("Merci beaucoup, je vais réfléchir et vous rappeler", "Bonne journée", "Au revoir"), do NOT ask "Avez-vous d'autres questions ?".
+  * Conclude naturally: "C'est parfait ! Je vous en prie. N'hésitez pas si vous avez besoin d'autres précisions. Excellente journée à vous et à très bientôt !"
+- STRICT 2-SENTENCE CEILING:
+  * Sentence 1: Direct, precise answer to their question based on the document.
+  * Sentence 2: Ball-in-court closing ("Avez-vous d'autres questions ?").
+  * Total length: STRICTLY <= 2 sentences.
 ${timeWarningDirective}
 `;
   } else if (isTache3) {
     taskRules = `
 - THIS IS TÂCHE 3 (Expression d'un point de vue & Débat - 4.5 minutes).
-- You are an official FEI TCF Canada oral examiner named ${name} (${role}).
-- Listen to the candidate's thesis statement and introduce a polite C1/C2 counter-argument or nuance to test their argumentation skills under debate pressure.
+- PERSONA: You are ${name}, a thoughtful Socratic debate partner and FEI examiner (${role}). Target CEFR level: ${level}.
+- SOCRATIC ENGAGEMENT PROTOCOL:
+  * Validate before challenging: Acknowledge the merit of the candidate's thesis before presenting a counter-argument or nuance.
+  * Formula: "Je comprends tout à fait votre point de vue sur ce sujet, néanmoins..." or "C'est un argument pertinent. Cependant, que répondriez-vous à ceux qui soutiennent que... ?"
+  * Use formal logical connectors ("néanmoins", "en revanche", "or", "toutefois").
 - ANTI-REPETITION LOCK DIRECTIVE:
-  * Inspect the conversation history provided below.
-  * You are STRICTLY FORBIDDEN from repeating any counter-argument, question, phrasing, or sentence that you have already spoken in this session.
-  * Always advance the debate with a NEW perspective, economic/social counter-example, or deeper nuance.
-- Start politely with: "Je comprends votre point de vue, néanmoins..." or "C'est une perspective intéressante, mais...".
-- Use formal logical connectors ("néanmoins", "en revanche", "or"). Keep your counter-argument concise (2 sentences maximum).
+  * Inspect the conversation history below. You are STRICTLY FORBIDDEN from repeating any counter-argument, premise, or phrasing you have already used. Always bring a fresh angle (social, economic, ethical, environmental, or long-term).
+- STRICT 2-SENTENCE CEILING:
+  * Sentence 1: Thoughtful validation of candidate's point.
+  * Sentence 2: Nuanced Socratic challenge / question.
+  * Total length: STRICTLY <= 2 sentences.
 ${timeWarningDirective}
 `;
   } else {
     taskRules = `
-- You are an official FEI TCF Canada examiner named ${name} (${role}).
-- Target level: ${level}. Scenario: ${scenario}.
-- Respond naturally, professionally, and concisely in immaculate French (1-2 sentences).
+- You are an official FEI TCF Canada examiner named ${name} (${role}). Target level: ${level}.
+- Respond with human warmth, active listening, and strictly <= 2 sentences.
 ${timeWarningDirective}
 `;
   }
@@ -243,10 +284,14 @@ ${timeWarningDirective}
 
 SCENARIO CONTEXT: ${scenario}
 
-EXAMINER PROTOCOL RULES:
+${universalConversationalRules}
+
 ${taskRules}
-- Respond ONLY in spoken French. Do NOT output translations, meta-notes, or FR/EN text prefixes.
-- Respond dynamically and contextually to the candidate's actual words. Never repeat static template sentences.
+
+MANDATORY OPERATIONAL CONSTRAINTS:
+1. STRICT <= 2 SENTENCES: Never output more than 2 sentences under any circumstances. Formula: [Warm Hook / Echo] + [Targeted Question / Ball-in-court].
+2. SPOKEN FRENCH ONLY: Respond exclusively in natural, spoken French. No meta-commentary, no markdown headers, no quotes, no English translations.
+3. CONVERSATIONAL VIBRANCY: Sound like an authentic, cultured, warm French interlocutor. Never sound like a cold assessment robot.
 `;
 }
 
@@ -261,32 +306,45 @@ function generateDynamicFallbackReply(
     return "Je vous remercie. Le temps imparti pour cette tâche est presque écoulé, nous avons fait le tour des questions. Excellente journée à vous !";
   }
 
+  const isGreeting = /\b(comment\s+(?:allez-vous|vas-tu|ça\s*va)|ça\s*va|bonjour|bonsoir|salut|enchanté|ravi\s+de\s+vous)\b/i.test(userText);
+  const isStressed = /\b(stressé|stressée|peur|nerveux|nerveuse|angoisse|première\s+fois)\b/i.test(userText);
+
   const isTache1 = /tâche\s*1|entretien|dirigé|présentation/i.test(taskTitle);
   const isTache2 = /tâche\s*2|interaction|questions|document|rôle|roleplay/i.test(taskTitle);
 
   if (isTache1) {
+    if (isStressed) {
+      return "C'est tout à fait normal d'avoir un peu d'appréhension. Respirez calmement, nous sommes là pour échanger tranquillement : parlez-moi un peu de votre profession et de vos loisirs.";
+    }
+    if (isGreeting && userTurnCount <= 1) {
+      return "Bonjour ! Je vais très bien, merci beaucoup, c'est très aimable à vous. Alors, pour commencer notre entretien, parlez-moi un peu de votre métier et de vos activités actuelles.";
+    }
     if (userTurnCount <= 1) {
       if (/\b(travail|travaille|emploi|métier|profession|ingénieur|professeur|étudiant|informatique|domaine)\b/i.test(userText)) {
-        return "C'est un parcours très intéressant ! Depuis combien de temps exercez-vous dans ce domaine, et dans quelle ville du Canada souhaitez-vous travailler ?";
+        return "C'est un parcours passionnant ! Depuis combien de temps exercez-vous dans ce domaine, et dans quelle ville du Canada souhaitez-vous vous installer ?";
       }
       if (/\b(habite|vis|ville|pays|canada|montréal|quebec|toronto|victoria|vancouver)\b/i.test(userText)) {
-        return "Merci pour cette présentation ! Qu'est-ce qui vous plaît le plus dans votre ville actuelle, et pourquoi souhaitez-vous vous installer au Canada ?";
+        return "Merci pour cette présentation ! Qu'est-ce qui vous plaît le plus dans votre cadre de vie actuel, et pourquoi choisir le Canada ?";
       }
-      return "Bonjour ! C'est un plaisir de faire votre connaissance. Pouvez-vous me décrire votre métier actuel et me parler de vos loisirs préférés ?";
+      return "Bonjour ! C'est un plaisir d'échanger avec vous. Pouvez-vous me décrire votre profession actuelle et me parler de ce qui vous passionne ?";
     }
     if (userTurnCount === 2) {
-      return "Merci pour ces précisions ! Qu'est-ce qui vous motive le plus dans votre projet d'immigration canadienne ?";
+      return "Merci pour ces précisions ! Qu'est-ce qui motive principalement votre projet d'immigration canadienne ?";
     }
-    return "Merci beaucoup. Nous avons fait le tour des questions pour cette première tâche. L'entretien est terminé, nous pouvons passer à la suite.";
+    return "Merci beaucoup. Nous avons fait le tour des questions pour cette première tâche, l'entretien est terminé.";
   }
 
   if (isTache2) {
     const isClosing = /\b(merci|remercie|recontacter|rappelle|réfléchir|au revoir|bonne journée|bonne fin|quitte|finaliser)\b/i.test(userText);
-    if (isClosing && userTurnCount >= 6) {
-      return "C'est parfait ! Je vous en prie. N'hésitez pas si vous avez besoin d'autres précisions. Excellente journée à vous et à bientôt !";
+    if (isClosing && userTurnCount >= 5) {
+      return "C'est parfait ! Je vous en prie. N'hésitez pas si vous avez besoin d'autres précisions, excellente journée à vous et à très bientôt !";
     }
 
-    // Extract dynamic price/tariff detail from scenarioText if available
+    if (isGreeting && userTurnCount <= 1) {
+      return "Bonjour ! Très bien merci. Vous m'appelez au sujet de notre annonce, c'est bien cela ? Je vous écoute !";
+    }
+
+    // Extract dynamic price/tariff detail from scenarioText if available (One-Info Rule)
     let dynamicPriceDetail = "";
     if (scenarioText) {
       const priceMatch = scenarioText.match(/(?:tarifs?|prix|loyer|coût|montant|frais)\s*[:=]?\s*([^,.\n]+)/i) || scenarioText.match(/(\d+[\d\s]*\$\s*(?:CAD)?(?:\s*\/\s*\w+)?)/i);
@@ -299,40 +357,30 @@ function generateDynamicFallbackReply(
     const hasDaysOrSchedule = /\b(horaire|heure|quand|ouvert|fermé|date|samedi|dimanche|semaine|jour|jours|créneau|créneaux|disponibilité|rendez-vous)\b/i.test(userText);
 
     if (hasPriceOrTariff && dynamicPriceDetail) {
-      return `Concernant le tarif, il s'agit de ${dynamicPriceDetail}. Avez-vous d'autres questions ?`;
+      return `Concernant le montant, il est de ${dynamicPriceDetail}. Avez-vous d'autres questions ?`;
     }
     if (hasPriceOrTariff) {
-      const priceOptions = [
-        "Concernant nos tarifs, nous proposons plusieurs formules adaptées à vos besoins avec possibilité de paiement échelonné. Avez-vous d'autres questions ?",
-        "Pour le règlement et les conditions tarifaires, l'abonnement inclut l'ensemble des prestations mentionnées. Avez-vous d'autres questions ?",
-        "En ce qui concerne les frais, le montant reste fixe sans supplément caché. Avez-vous d'autres questions ?"
-      ];
-      return priceOptions[(userTurnCount - 1) % priceOptions.length];
+      return "Concernant nos tarifs, nous proposons des formules adaptées à vos besoins. Avez-vous d'autres questions ?";
     }
     if (hasDaysOrSchedule) {
-      const scheduleOptions = [
-        "Concernant nos horaires d'ouverture, nous accueillons le public toute la semaine avec des créneaux flexibles. Avez-vous d'autres questions ?",
-        "Nos locaux et services sont accessibles du lundi au samedi aux heures indiquées sur notre fiche. Avez-vous d'autres questions ?",
-        "Pour les disponibilités, vous pouvez réserver votre session directement sur place ou par téléphone. Avez-vous d'autres questions ?"
-      ];
-      return scheduleOptions[(userTurnCount - 1) % scheduleOptions.length];
+      return "Concernant nos horaires d'ouverture, nous accueillons le public toute la semaine aux créneaux habituels. Avez-vous d'autres questions ?";
     }
 
     const generalOptions = [
-      "Tout à fait, nous proposons plusieurs options personnalisées. Que souhaitez-vous savoir d'autre ?",
-      "C'est une excellente question ! Toutes ces modalités sont prévues pour répondre aux besoins de nos usagers. Avez-vous d'autres questions ?",
-      "Oui, absolument, cette prestation est parfaitement incluse dans le cadre de notre service. Avez-vous d'autres questions ?"
+      "Tout à fait, ces conditions sont bien prévues dans notre prestation. Avez-vous d'autres questions ?",
+      "Oui, absolument, cette formule répond précisément à ce type de demande. Avez-vous d'autres questions ?",
+      "C'est une excellente question, toutes ces modalités sont parfaitement incluses. Je vous écoute pour la suite !"
     ];
     return generalOptions[(userTurnCount - 1) % generalOptions.length];
   }
 
-  // TÂCHE 3 DYNAMIC MULTI-TEMPLATE DEBATE MATRIX (NEVER REPEATS SAME SENTENCE VERBATIM)
+  // TÂCHE 3 DYNAMIC SOCRATIC DEBATE MATRIX (NEVER REPEATS SAME SENTENCE VERBATIM)
   const debateResponses = [
-    "Je comprends tout à fait votre point de vue, néanmoins ne pensez-vous pas que cette mesure comporte également des risques économiques ou sociaux importants ?",
-    "C'est un argument tout à fait pertinent. Cependant, d'autres experts soutiennent que cette approche pourrait créer des inégalités. Comment répondez-vous à cette objection ?",
-    "Certes, mais si l'on regarde la situation sur le long terme, ne craignez-vous pas un manque d'encadrement ou de régulation ?",
+    "Je comprends tout à fait votre point de vue, néanmoins ne pensez-vous pas que cette mesure comporte également des risques économiques ou sociaux ?",
+    "C'est un argument tout à fait pertinent. Cependant, que répondriez-vous à ceux qui estiment que cette approche pourrait créer des disparités ?",
+    "Certes, mais si l'on regarde la situation sur le long terme, ne craignez-vous pas un manque de régulation ?",
     "En effet, c'est une perspective intéressante. Mais au-delà des avantages immédiats, quels sont selon vous les freins principaux à sa mise en œuvre ?",
-    "Votre analyse se défend, mais n'y a-t-il pas là une contradiction avec les principes de responsabilité collective ?"
+    "Votre analyse se défend, mais n'y a-t-il pas là une certaine contradiction avec les impératifs environnementaux ou collectifs ?"
   ];
 
   const index = Math.max(0, (userTurnCount - 1) % debateResponses.length);
