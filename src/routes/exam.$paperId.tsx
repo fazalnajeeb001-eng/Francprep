@@ -2126,33 +2126,12 @@ export function AuthenticCBTExamPage() {
     }
   });
 
+  // Section Disclaimer Modal Check on Section Change
   useEffect(() => {
-    setTimeLeft(currentSection.durationMins * 60);
-    setCurrentQuestionIdx(0);
-
     if (!acceptedSectionDisclaimers[currentSection.type]) {
       setShowSectionDisclaimer(true);
     }
-
-    // Strategy guide remains accessible anytime via header button in Practice Mode
-  }, [activeSectionIdx, currentSection.durationMins, mode, currentSection.type, paper.id, acceptedSectionDisclaimers]);
-
-  // Timer Countdown
-  useEffect(() => {
-    const activeSpeakingTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
-    const isSpeakingPendingStart = currentSection?.type === "EXPRESSION_ORALE" && activeSpeakingTask && !hasStartedTaskSession[activeSpeakingTask.id];
-    if (isSubmitted || isTimerPaused || isSpeaking || isAudioFetching || isPlayingAudio || isSpeakingPendingStart) return;
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [isSubmitted, isTimerPaused, isSpeaking, isAudioFetching, isPlayingAudio]);
+  }, [activeSectionIdx, currentSection.type, acceptedSectionDisclaimers]);
 
   const formatTime = (secs: number) => {
     const m = Math.floor(secs / 60);
@@ -3644,7 +3623,13 @@ export function AuthenticCBTExamPage() {
                           ) : (
                             <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-emerald-900 text-emerald-100 border border-emerald-700 shadow-sm flex items-center gap-1.5">
                               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                              <span>⏱️ {qTimeLeft !== null ? `${qTimeLeft}s restantes` : `${currentQ.questionNumber <= 10 ? 15 : currentQ.questionNumber <= 26 ? 20 : 25}s (Pace)`}</span>
+                              <span>
+                                {checkedMap[currentQ.id]
+                                  ? "✅ Répondu"
+                                  : qTimeLeft !== null
+                                    ? `⏱️ ${qTimeLeft}s restantes`
+                                    : `⏱️ ${currentQ.questionNumber <= 10 ? 15 : currentQ.questionNumber <= 26 ? 20 : 25}s (Pace)`}
+                              </span>
                             </span>
                           )}
                         </div>
