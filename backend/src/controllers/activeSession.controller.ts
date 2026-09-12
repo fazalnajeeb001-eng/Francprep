@@ -7,13 +7,15 @@ import { ActiveSession } from '../models/ActiveSession';
  */
 const getCanonicalPaperId = (paperId: string): string => {
   if (!paperId) return 'default';
-  const paperNumberMatch = paperId.match(/\d+/);
-  const paperNum = paperNumberMatch ? parseInt(paperNumberMatch[0], 10) : null;
+  const lower = paperId.toLowerCase();
+  const paperMatch = lower.match(/(?:paper-?)(\d+)/) || lower.match(/(\d+)$/);
+  const paperNum = paperMatch ? parseInt(paperMatch[1], 10) : null;
   if (!paperNum) return paperId;
-  const isOfficial = paperId.toLowerCase().includes('official') || paperId.toLowerCase().includes('exam');
+  const isOfficial = lower.includes('official') || lower.includes('exam');
+  const prefix = lower.includes('tef') ? 'tef-canada' : lower.includes('delf') ? 'delf-b2' : 'tcf-canada';
   return isOfficial
-    ? `tcf-canada-official-exam-paper-${paperNum}`
-    : `tcf-canada-practice-paper-${paperNum}`;
+    ? `${prefix}-official-exam-paper-${paperNum}`
+    : `${prefix}-practice-paper-${paperNum}`;
 };
 
 /**

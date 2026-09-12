@@ -171,8 +171,9 @@ export function AuthenticCBTExamPage() {
   const readingGuidance = (currentSection?.type === "COMPREHENSION_ECRITE" && rawCurrentQ) ? (READING_GUIDANCE_BANK[readingGuidanceKey] || {}) : {};
   const currentQ = rawCurrentQ ? { ...rawCurrentQ, ...readingGuidance } : rawCurrentQ;
 
-  // Session Key
-  const sessionKey = `fp_exam_session_${paper?.id || "default"}_${mode}`;
+  // User-Scoped Session Key (Guarantees zero bleed across candidate accounts on shared devices)
+  const userId = user?.id || (user as any)?._id || (user as any)?.userId || "guest";
+  const sessionKey = `fp_exam_session_${userId}_${paper?.id || "default"}_${mode}`;
 
   // Completed Section Indices (Enforces Linear Exam Flow in Real Exam Mode)
   const [completedSectionIndices, setCompletedSectionIndices] = useState<number[]>(() => {
@@ -428,10 +429,10 @@ export function AuthenticCBTExamPage() {
           if (qNum - 1 > highestAnsweredIdx) highestAnsweredIdx = qNum - 1;
         }
       });
-      const smartQIdx = typeof qIdx === "number" && qIdx > 0
+      const smartQIdx = typeof qIdx === "number" && qIdx >= 0
         ? qIdx
         : highestAnsweredIdx >= 0
-          ? Math.min(highestAnsweredIdx + 1, (currentQuestions.length || 39) - 1)
+          ? Math.min(highestAnsweredIdx + 1, (paper.sections[targetSec]?.questions?.length || 39) - 1)
           : 0;
       setCurrentQuestionIdx(smartQIdx);
     }
@@ -543,6 +544,13 @@ export function AuthenticCBTExamPage() {
     setOralSpeakingTimeRemaining({});
     setOralScratchNotes({});
     setCompletedSpeakingTaskIds({});
+    setCompletedSectionIndices([]);
+    setHasStartedTaskSession({});
+    setQTimeLeft(null);
+    targetEndTimeRef.current = null;
+    const firstSec = paper?.sections?.[0];
+    const fullDuration = getSectionDurationSeconds(firstSec?.type, firstSec?.durationMins);
+    setTimeLeft(fullDuration);
     setActiveSectionIdx(0);
     setCurrentQuestionIdx(0);
     setCloudActiveSession(null);
@@ -624,7 +632,7 @@ export function AuthenticCBTExamPage() {
 
   // Per-Question CBT Countdown Timer & Auto-Advance (Locked Target Ref Timestamp Engine)
   useEffect(() => {
-    if (currentSection.type !== "COMPREHENSION_ORALE" || !currentQ || isSubmitted) {
+    if (currentSection.type !== "COMPREHENSION_ORALE" || !currentQ || isSubmitted || showSectionDisclaimer || showSessionPromptModal) {
       setQTimeLeft(null);
       targetEndTimeRef.current = null;
       return;
@@ -715,7 +723,7 @@ export function AuthenticCBTExamPage() {
 
   // Active Section-Level CBT Countdown Timer (60 Mins for Reading, 60 Mins for Writing, 35 Mins for Listening, 12 Mins for Speaking)
   useEffect(() => {
-    if (isSubmitted || showSectionDisclaimer) return;
+    if (isSubmitted || showSectionDisclaimer || showSessionPromptModal) return;
 
     // In practice mode or for admin, allow pausing the main timer
     if (isTimerPaused && (mode === "PRACTICE" || isAdmin)) return;
@@ -759,7 +767,7 @@ export function AuthenticCBTExamPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [activeSectionIdx, mode, isSubmitted, showSectionDisclaimer, isTimerPaused, isAdmin, paper.sections.length, isPlayingAudio, isAudioFetching, isSpeaking, speakingChatLoading, currentSection]);
+  }, [activeSectionIdx, mode, isSubmitted, showSectionDisclaimer, showSessionPromptModal, isTimerPaused, isAdmin, paper.sections.length, isPlayingAudio, isAudioFetching, isSpeaking, speakingChatLoading, currentSection]);
 
   const handleStartPrepTimer = (taskId: string, prepMins = 2) => {
     const targetSeconds = Math.round(prepMins * 60);
@@ -1479,11 +1487,80 @@ export function AuthenticCBTExamPage() {
               return hasChanges ? merged : local;
             });
           }
+
+          // Live sync checkedMap so feedback explanations & Répondu badges appear across open devices
+          if (json.activeSession.answers?.checkedMap) {
+            const remoteChecked = json.activeSession.answers.checkedMap;
+            setCheckedMap((local) => {
+              let hasChanges = false;
+              const merged = { ...local };
+              for (const [k, v] of Object.entries(remoteChecked)) {
+                if (v && !merged[k]) {
+                  merged[k] = true;
+                  hasChanges = true;
+                }
+              }
+              return hasChanges ? merged : local;
+            });
+          }
+
+          // Live sync attemptsMap
+          if (json.activeSession.answers?.attemptsMap) {
+            const remoteAttempts = json.activeSession.answers.attemptsMap;
+            setAttemptsMap((local) => {
+              let hasChanges = false;
+              const merged = { ...local };
+              for (const [k, v] of Object.entries(remoteAttempts)) {
+                if (typeof v === "number" && (merged[k] || 0) < v) {
+                  merged[k] = v;
+                  hasChanges = true;
+                }
+              }
+              return hasChanges ? merged : local;
+            });
+          }
+
+          // Live sync writing responses
+          if (json.activeSession.answers?.writingResponses) {
+            const remoteWriting = json.activeSession.answers.writingResponses;
+            setWritingResponses((local) => {
+              let hasChanges = false;
+              const merged = { ...local };
+              for (const [k, v] of Object.entries(remoteWriting)) {
+                if (typeof v === "string" && v !== merged[k] && v.length >= (merged[k]?.length || 0)) {
+                  merged[k] = v;
+                  hasChanges = true;
+                }
+              }
+              return hasChanges ? merged : local;
+            });
+          }
+
+          // Live sync & reconcile section timer if remote device is further ahead (more elapsed time)
+          const remoteSecTimer = json.activeSession.sectionTimers?.[activeSectionIdx];
+          if (typeof remoteSecTimer === "number" && remoteSecTimer > 0) {
+            setTimeLeft((localTime) => {
+              if (localTime - remoteSecTimer > 3) {
+                return remoteSecTimer;
+              }
+              return localTime;
+            });
+          }
         })
         .catch(() => {});
     }, 5000);
     return () => clearInterval(interval);
-  }, [paper?.id, isSubmitted, currentQ?.id, currentQuestionIdx]);
+  }, [paper?.id, isSubmitted, currentQ?.id, currentQuestionIdx, activeSectionIdx]);
+
+  // Active Exam 15s Timer Heartbeat to MongoDB (Keeps Cloud Timer Fresh Across Devices)
+  useEffect(() => {
+    if (!paper?.id || isSubmitted || showSessionPromptModal || showSectionDisclaimer) return;
+    const interval = setInterval(() => {
+      if (typeof document !== "undefined" && document.visibilityState !== "visible") return;
+      flushCloudSession();
+    }, 15000);
+    return () => clearInterval(interval);
+  }, [paper?.id, isSubmitted, showSessionPromptModal, showSectionDisclaimer]);
 
   // Periodic Auto-Save to MongoDB Cloud (Epoch-tagged snapshot)
   useEffect(() => {
@@ -2112,6 +2189,9 @@ export function AuthenticCBTExamPage() {
     } finally {
       setIsSubmittingExam(false);
       try { localStorage.removeItem(sessionKey); } catch { }
+      if (paper?.id) {
+        apiFetch(`/exam/active-session/${paper.id}`, { method: "DELETE" }).catch(() => {});
+      }
       setIsSubmitted(true);
     }
   };
@@ -6248,17 +6328,7 @@ export function AuthenticCBTExamPage() {
 
                 <button
                   onClick={() => {
-                    try { localStorage.removeItem(sessionKey); } catch { }
-                    setSelectedAnswers({});
-                    setWritingResponses({});
-                    setSpeakingTranscripts({});
-                    setWritingAiResults({});
-                    setSpeakingAiResults({});
-                    setFlaggedQuestions({});
-                    setAttemptsMap({});
-                    setCheckedMap({});
-                    setActiveSectionIdx(0);
-                    setCurrentQuestionIdx(0);
+                    handleRestartSessionClean();
                     setIsSubmitted(false);
                   }}
                   className="w-full sm:w-1/3 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs shadow flex items-center justify-center gap-2 cursor-pointer transition-all"
