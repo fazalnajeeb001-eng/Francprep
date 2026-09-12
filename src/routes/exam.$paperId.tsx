@@ -1395,7 +1395,7 @@ export function AuthenticCBTExamPage() {
   // Cloud Active Session Cross-Device Synchronization (MongoDB + LocalStorage)
   useEffect(() => {
     if (!paper?.id) return;
-    apiFetch(`/exam/active-session/${paper.id}`)
+    apiFetch(`/exam/active-session/${paper.id}?_t=${Date.now()}`, { cache: "no-store" })
       .then((res) => res.json())
       .then((json) => {
         hasHydratedCloudRef.current = true;
@@ -1455,7 +1455,7 @@ export function AuthenticCBTExamPage() {
     if (!paper?.id || isSubmitted) return;
     const interval = setInterval(() => {
       if (typeof document !== "undefined" && document.visibilityState !== "visible") return;
-      apiFetch(`/exam/active-session/${paper.id}`)
+      apiFetch(`/exam/active-session/${paper.id}?_t=${Date.now()}`, { cache: "no-store" })
         .then((res) => res.json())
         .then((json) => {
           if (!json.success || !json.activeSession) return;

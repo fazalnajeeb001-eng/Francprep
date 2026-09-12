@@ -56,10 +56,10 @@ export function ExamHubPage() {
   const { dark } = useTheme();
   const { user } = useAuth();
 
-  // Wizard Step State: 1 = Exam Type, 2 = Mode, 3 = Select Paper
   const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1);
   const [selectedType, setSelectedType] = useState<ExamType>("TCF_CANADA");
   const [selectedMode, setSelectedMode] = useState<ExamMode>("PRACTICE");
+  const [showDisclaimerDetails, setShowDisclaimerDetails] = useState(false);
 
   const activeLang = getActiveLanguageCode(user);
 
@@ -120,7 +120,7 @@ export function ExamHubPage() {
   const cardBg = dark ? "bg-[#101828]/90 border-[#1e2a4a]" : "bg-white border-slate-200 shadow-sm shadow-slate-200/50";
   const txtSec = dark ? "text-gray-400" : "text-slate-600";
   return (
-    <div className={`min-h-screen ${bg} p-4 md:p-8 transition-colors duration-300`}>
+    <div className={`min-h-screen ${bg} px-4 pb-20 pt-28 sm:pt-32 md:p-8 transition-colors duration-300`}>
       <div className="max-w-5xl mx-auto space-y-8 pb-20">
 
         {/* ─── TOP HEADER ─── */}
@@ -146,22 +146,34 @@ export function ExamHubPage() {
           </div>
         </div>
 
-        {/* ─── INDEPENDENT PRACTICE LEGAL DISCLAIMER BANNER ─── */}
-        <div className={`p-4 rounded-2xl border text-xs leading-relaxed ${dark ? "bg-amber-500/10 border-amber-500/20 text-amber-300" : "bg-amber-50 border-amber-200 text-amber-900"}`}>
-          <p className="font-bold flex items-center gap-1.5 mb-1">
-            <span>🛑</span> Independent Diagnostic Practice Disclaimer:
-          </p>
-          <p className="opacity-90">
-            {examConfig.brand} is an independent learning platform powered by the FrancPrep engine and is not affiliated with, endorsed by, or accredited by Goethe-Institut, TestDaF-Institut, Instituto Cervantes, FEI, CCI, or official testing organizations. This CBT simulator provides diagnostic practice for self-assessment purposes only.
-          </p>
+        {/* ─── INDEPENDENT PRACTICE LEGAL DISCLAIMER BANNER (Collapsible) ─── */}
+        <div className={`p-3.5 sm:p-4 rounded-2xl border text-xs leading-relaxed transition-all ${dark ? "bg-amber-500/10 border-amber-500/20 text-amber-300" : "bg-amber-50 border-amber-200 text-amber-900"}`}>
+          <div className="flex items-center justify-between gap-2 cursor-pointer select-none" onClick={() => setShowDisclaimerDetails(!showDisclaimerDetails)}>
+            <p className="font-bold flex items-center gap-1.5 text-[11px] sm:text-xs">
+              <span>🛑</span>
+              <span>Independent Diagnostic Practice Disclaimer</span>
+            </p>
+            <button
+              type="button"
+              className="text-[11px] font-semibold underline hover:opacity-80 flex items-center gap-1 cursor-pointer shrink-0 text-amber-500 dark:text-amber-400"
+            >
+              <span>{showDisclaimerDetails ? "Masquer détails" : "Afficher détails"}</span>
+              <ChevronRight className={`w-3.5 h-3.5 transition-transform duration-200 ${showDisclaimerDetails ? "rotate-90" : ""}`} />
+            </button>
+          </div>
+          {showDisclaimerDetails && (
+            <p className="opacity-90 pt-2 text-[11px] sm:text-xs border-t border-amber-500/20 mt-2 leading-relaxed">
+              {examConfig.brand} is an independent learning platform powered by the FrancPrep engine and is not affiliated with, endorsed by, or accredited by France Éducation international (FEI), the Chambre de Commerce et d'Industrie de Paris (CCI Paris Île-de-France), or official testing organizations. This CBT simulator provides diagnostic practice for self-assessment purposes only.
+            </p>
+          )}
         </div>
 
-        {/* ─── 3-STEP WIZARD PROGRESS BAR ─── */}
-        <div className="flex items-center justify-between max-w-3xl mx-auto px-4 py-2">
+        {/* ─── 3-STEP WIZARD PROGRESS BAR (Responsive & Scroll-Safe) ─── */}
+        <div className="flex items-center justify-between max-w-3xl mx-auto px-1 sm:px-4 py-2 overflow-x-auto no-scrollbar gap-1.5 sm:gap-2">
           {/* Step 1 Pill */}
           <button
             onClick={() => setActiveStep(1)}
-            className={`flex items-center gap-2.5 px-4 py-2 rounded-2xl transition-all ${
+            className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-2xl transition-all shrink-0 cursor-pointer ${
               activeStep === 1
                 ? "bg-purple-600 text-white font-bold shadow-lg shadow-purple-600/30 scale-105"
                 : activeStep > 1
@@ -169,20 +181,20 @@ export function ExamHubPage() {
                 : `${dark ? "bg-white/5 text-gray-400" : "bg-gray-200 text-gray-600"}`
             }`}
           >
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-extrabold ${
+            <span className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-extrabold shrink-0 ${
               activeStep === 1 ? "bg-white text-purple-600" : activeStep > 1 ? "bg-emerald-500 text-white" : "bg-gray-400 text-white"
             }`}>
               {activeStep > 1 ? "✓" : "1"}
             </span>
-            <span className="text-xs font-semibold">1. Exam Target</span>
+            <span className="text-[11px] sm:text-xs font-semibold whitespace-nowrap">1. Exam Target</span>
           </button>
 
-          <ChevronRight className="w-4 h-4 text-gray-400" />
+          <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 shrink-0" />
 
           {/* Step 2 Pill */}
           <button
             onClick={() => setActiveStep(2)}
-            className={`flex items-center gap-2.5 px-4 py-2 rounded-2xl transition-all ${
+            className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-2xl transition-all shrink-0 cursor-pointer ${
               activeStep === 2
                 ? "bg-purple-600 text-white font-bold shadow-lg shadow-purple-600/30 scale-105"
                 : activeStep > 2
@@ -190,31 +202,31 @@ export function ExamHubPage() {
                 : `${dark ? "bg-white/5 text-gray-400" : "bg-gray-200 text-gray-600"}`
             }`}
           >
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-extrabold ${
+            <span className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-extrabold shrink-0 ${
               activeStep === 2 ? "bg-white text-purple-600" : activeStep > 2 ? "bg-emerald-500 text-white" : "bg-gray-400 text-white"
             }`}>
               {activeStep > 2 ? "✓" : "2"}
             </span>
-            <span className="text-xs font-semibold">2. Execution Mode</span>
+            <span className="text-[11px] sm:text-xs font-semibold whitespace-nowrap">2. Execution Mode</span>
           </button>
 
-          <ChevronRight className="w-4 h-4 text-gray-400" />
+          <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 shrink-0" />
 
           {/* Step 3 Pill */}
           <button
             onClick={() => setActiveStep(3)}
-            className={`flex items-center gap-2.5 px-4 py-2 rounded-2xl transition-all ${
+            className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-2xl transition-all shrink-0 cursor-pointer ${
               activeStep === 3
                 ? "bg-purple-600 text-white font-bold shadow-lg shadow-purple-600/30 scale-105"
                 : `${dark ? "bg-white/5 text-gray-400" : "bg-gray-200 text-gray-600"}`
             }`}
           >
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-extrabold ${
+            <span className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-extrabold shrink-0 ${
               activeStep === 3 ? "bg-white text-purple-600" : "bg-gray-400 text-white"
             }`}>
               3
             </span>
-            <span className="text-xs font-semibold">3. Select Set & Launch</span>
+            <span className="text-[11px] sm:text-xs font-semibold whitespace-nowrap">3. Select Set & Launch</span>
           </button>
         </div>
 

@@ -110,24 +110,33 @@ export const saveActiveSession = async (req: Request, res: Response): Promise<vo
       return;
     }
 
-    // Merge incoming answers with existing answers to guarantee checkedMap and attemptsMap are never wiped out by empty payloads
-    const incomingAnswers = answers || {};
-    const existingAnswers = existing?.answers || {};
-    const mergedSelected = { ...(existingAnswers.selectedAnswers || {}), ...(incomingAnswers.selectedAnswers || {}) };
-    const mergedChecked = { ...(existingAnswers.checkedMap || {}), ...(incomingAnswers.checkedMap || {}) };
-    const mergedAttempts = { ...(existingAnswers.attemptsMap || {}) };
-    for (const [k, v] of Object.entries(incomingAnswers.attemptsMap || {})) {
-      if (typeof v === 'number') {
-        mergedAttempts[k] = Math.max(mergedAttempts[k] || 0, v);
+    // Check if this save belongs to a brand new epoch or reset session
+    const isNewEpoch = clientEpoch > serverEpoch || Boolean(existing?.resetAt);
+    let finalAnswers: Record<string, any>;
+
+    if (isNewEpoch) {
+      // Clean start or reset: Do NOT merge with dead data from the previous epoch
+      finalAnswers = answers || {};
+    } else {
+      // Same epoch: Merge incoming answers with existing answers to guarantee checkedMap and attemptsMap are never wiped out
+      const incomingAnswers = answers || {};
+      const existingAnswers = existing?.answers || {};
+      const mergedSelected = { ...(existingAnswers.selectedAnswers || {}), ...(incomingAnswers.selectedAnswers || {}) };
+      const mergedChecked = { ...(existingAnswers.checkedMap || {}), ...(incomingAnswers.checkedMap || {}) };
+      const mergedAttempts = { ...(existingAnswers.attemptsMap || {}) };
+      for (const [k, v] of Object.entries(incomingAnswers.attemptsMap || {})) {
+        if (typeof v === 'number') {
+          mergedAttempts[k] = Math.max(mergedAttempts[k] || 0, v);
+        }
       }
+      finalAnswers = {
+        ...existingAnswers,
+        ...incomingAnswers,
+        selectedAnswers: mergedSelected,
+        checkedMap: mergedChecked,
+        attemptsMap: mergedAttempts,
+      };
     }
-    const finalAnswers = {
-      ...existingAnswers,
-      ...incomingAnswers,
-      selectedAnswers: mergedSelected,
-      checkedMap: mergedChecked,
-      attemptsMap: mergedAttempts,
-    };
 
     // Atomic findOneAndUpdate with upsert: GUARANTEED ZERO E11000 duplicate key errors
     const session = await ActiveSession.findOneAndUpdate(

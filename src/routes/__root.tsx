@@ -177,7 +177,10 @@ function NavBarInner() {
   }, [isAuthenticated]);
 
   return (
-    <header className="sticky top-0 z-50 w-full dark:bg-[#070B17] bg-white transition-colors duration-300">
+    <header
+      className="sticky top-0 z-50 w-full dark:bg-[#070B17] bg-white transition-colors duration-300"
+      style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
+    >
       {isAuthenticated && user?.role === "admin" && (
         <div className="bg-gradient-to-r from-purple-950 to-indigo-950 border-b border-purple-800 text-white px-3 sm:px-4 py-1.5 flex items-center justify-between gap-2 text-xs">
           <div className="flex items-center gap-2">
