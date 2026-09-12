@@ -174,41 +174,67 @@ export function AuthenticCBTExamPage() {
   // User-Scoped Session Key (Guarantees zero bleed across candidate accounts on shared devices)
   const userId = user?.id || (user as any)?._id || (user as any)?.userId || "guest";
   const sessionKey = `fp_exam_session_${userId}_${paper?.id || "default"}_${mode}`;
+  const legacySessionKey = `fp_exam_session_${paper?.id || "default"}_${mode}`;
+
+  // Robust multi-key session reader that automatically checks user-scoped key, falls back to legacy key, and migrates data
+  const getPersistedSession = () => {
+    if (typeof window === "undefined") return null;
+    try {
+      // 1. Try user-scoped sessionKey
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const hasData = Boolean(
+          Object.keys(parsed.selectedAnswers || parsed.answers?.selectedAnswers || {}).length > 0 ||
+          Object.keys(parsed.checkedMap || parsed.answers?.checkedMap || {}).length > 0 ||
+          Object.keys(parsed.attemptsMap || parsed.answers?.attemptsMap || {}).length > 0 ||
+          Object.keys(parsed.writingResponses || parsed.answers?.writingResponses || {}).some((k: string) => Boolean(parsed.writingResponses?.[k] || parsed.answers?.writingResponses?.[k]))
+        );
+        if (hasData) return parsed;
+      }
+
+      // 2. Fallback to legacy un-scoped key and migrate forward
+      const legacy = localStorage.getItem(legacySessionKey);
+      if (legacy) {
+        const parsedLegacy = JSON.parse(legacy);
+        const hasLegacyData = Boolean(
+          Object.keys(parsedLegacy.selectedAnswers || parsedLegacy.answers?.selectedAnswers || {}).length > 0 ||
+          Object.keys(parsedLegacy.checkedMap || parsedLegacy.answers?.checkedMap || {}).length > 0 ||
+          Object.keys(parsedLegacy.attemptsMap || parsedLegacy.answers?.attemptsMap || {}).length > 0 ||
+          Object.keys(parsedLegacy.writingResponses || parsedLegacy.answers?.writingResponses || {}).some((k: string) => Boolean(parsedLegacy.writingResponses?.[k] || parsedLegacy.answers?.writingResponses?.[k]))
+        );
+        if (hasLegacyData) {
+          try { localStorage.setItem(sessionKey, legacy); } catch { }
+          return parsedLegacy;
+        }
+      }
+    } catch { }
+    return null;
+  };
 
   // Completed Section Indices (Enforces Linear Exam Flow in Real Exam Mode)
   const [completedSectionIndices, setCompletedSectionIndices] = useState<number[]>(() => {
-    if (typeof window === "undefined") return [];
-    try {
-      const saved = localStorage.getItem(sessionKey);
-      if (saved) return JSON.parse(saved).completedSectionIndices || [];
-    } catch { }
+    const saved = getPersistedSession();
+    if (saved) return saved.completedSectionIndices || saved.answers?.completedSectionIndices || [];
     return [];
   });
 
   // Track Remaining Time per Section (Persisted in localStorage)
   const [sectionTimeRemaining, setSectionTimeRemaining] = useState<Record<number, number>>(() => {
-    if (typeof window === "undefined") return {};
-    try {
-      const saved = localStorage.getItem(sessionKey);
-      if (saved) return JSON.parse(saved).sectionTimeRemaining || {};
-    } catch { }
+    const saved = getPersistedSession();
+    if (saved) return saved.sectionTimers || saved.sectionTimeRemaining || {};
     return {};
   });
 
   // Active Section Countdown Timer State (Hydrated from local/cloud session)
   const [timeLeft, setTimeLeft] = useState(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = localStorage.getItem(sessionKey);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          const timers = parsed.sectionTimers || parsed.sectionTimeRemaining;
-          const sIdx = typeof parsed.sectionIndex === "number" ? parsed.sectionIndex : (parsed.activeSectionIdx || 0);
-          if (timers && typeof timers[sIdx] === "number" && timers[sIdx] > 0) {
-            return timers[sIdx];
-          }
-        }
-      } catch { }
+    const saved = getPersistedSession();
+    if (saved) {
+      const timers = saved.sectionTimers || saved.sectionTimeRemaining;
+      const sIdx = typeof saved.sectionIndex === "number" ? saved.sectionIndex : (saved.activeSectionIdx || 0);
+      if (timers && typeof timers[sIdx] === "number" && timers[sIdx] > 0) {
+        return timers[sIdx];
+      }
     }
     return getSectionDurationSeconds(currentSection?.type, currentSection?.durationMins);
   });
@@ -222,19 +248,13 @@ export function AuthenticCBTExamPage() {
 
   // Existing Session Prompt Modal State (Triggers when student reopens an exam with saved progress)
   const [showSessionPromptModal, setShowSessionPromptModal] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    try {
-      const saved = localStorage.getItem(sessionKey);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        const hasAnswers = Object.keys(parsed.selectedAnswers || parsed.answers?.selectedAnswers || {}).length > 0;
-        const hasChecked = Object.keys(parsed.checkedMap || parsed.answers?.checkedMap || {}).length > 0;
-        const hasWriting = Object.keys(parsed.writingResponses || parsed.answers?.writingResponses || {}).some((k: string) => Boolean(parsed.writingResponses?.[k] || parsed.answers?.writingResponses?.[k]));
-        const hasSpeaking = Object.keys(parsed.speakingDialogueMap || parsed.answers?.speakingDialogueMap || {}).some((k: string) => (parsed.speakingDialogueMap?.[k] || parsed.answers?.speakingDialogueMap?.[k] || []).length > 0);
-        return hasAnswers || hasChecked || hasWriting || hasSpeaking;
-      }
-    } catch { }
-    return false;
+    const parsed = getPersistedSession();
+    if (!parsed) return false;
+    const hasAnswers = Object.keys(parsed.selectedAnswers || parsed.answers?.selectedAnswers || {}).length > 0;
+    const hasChecked = Object.keys(parsed.checkedMap || parsed.answers?.checkedMap || {}).length > 0;
+    const hasWriting = Object.keys(parsed.writingResponses || parsed.answers?.writingResponses || {}).some((k: string) => Boolean(parsed.writingResponses?.[k] || parsed.answers?.writingResponses?.[k]));
+    const hasSpeaking = Object.keys(parsed.speakingDialogueMap || parsed.answers?.speakingDialogueMap || {}).some((k: string) => (parsed.speakingDialogueMap?.[k] || parsed.answers?.speakingDialogueMap?.[k] || []).length > 0);
+    return hasAnswers || hasChecked || hasWriting || hasSpeaking;
   });
 
   // Audio Speech Hook (Declared at top of component to prevent TDZ ReferenceError)
@@ -248,63 +268,43 @@ export function AuthenticCBTExamPage() {
 
   // User Responses State (with localStorage Session Restoration)
   const [selectedAnswers, setSelectedAnswers] = useState<{ [qId: string]: number }>(() => {
-    if (typeof window === "undefined") return {};
-    try {
-      const saved = localStorage.getItem(sessionKey);
-      if (saved) return JSON.parse(saved).selectedAnswers || {};
-    } catch { }
+    const saved = getPersistedSession();
+    if (saved) return saved.selectedAnswers || saved.answers?.selectedAnswers || {};
     return {};
   });
 
   const [flaggedQuestions, setFlaggedQuestions] = useState<{ [qId: string]: boolean }>(() => {
-    if (typeof window === "undefined") return {};
-    try {
-      const saved = localStorage.getItem(sessionKey);
-      if (saved) return JSON.parse(saved).flaggedQuestions || {};
-    } catch { }
+    const saved = getPersistedSession();
+    if (saved) return saved.flaggedQuestions || saved.answers?.flaggedQuestions || {};
     return {};
   });
 
   const [writingResponses, setWritingResponses] = useState<{ [taskId: string]: string }>(() => {
-    if (typeof window === "undefined") return {};
-    try {
-      const saved = localStorage.getItem(sessionKey);
-      if (saved) return JSON.parse(saved).writingResponses || {};
-    } catch { }
+    const saved = getPersistedSession();
+    if (saved) return saved.writingResponses || saved.answers?.writingResponses || {};
     return {};
   });
 
   const [speakingTranscripts, setSpeakingTranscripts] = useState<Record<string, string>>(() => {
-    if (typeof window === "undefined") return {};
-    try {
-      const saved = localStorage.getItem(sessionKey);
-      if (saved) return JSON.parse(saved).speakingTranscripts || {};
-    } catch { }
+    const saved = getPersistedSession();
+    if (saved) return saved.speakingTranscripts || saved.answers?.speakingTranscripts || {};
     return {};
   });
 
   // Practice Mode Attempt & Check Answer Logic (Persisted in localStorage & Cloud)
   const [attemptsMap, setAttemptsMap] = useState<{ [qId: string]: number }>(() => {
-    if (typeof window === "undefined") return {};
-    try {
-      const saved = localStorage.getItem(sessionKey);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        return parsed.attemptsMap || parsed.answers?.attemptsMap || {};
-      }
-    } catch { }
+    const saved = getPersistedSession();
+    if (saved) {
+      return saved.attemptsMap || saved.answers?.attemptsMap || {};
+    }
     return {};
   });
 
   const [checkedMap, setCheckedMap] = useState<{ [qId: string]: boolean }>(() => {
-    if (typeof window === "undefined") return {};
-    try {
-      const saved = localStorage.getItem(sessionKey);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        return parsed.checkedMap || parsed.answers?.checkedMap || {};
-      }
-    } catch { }
+    const saved = getPersistedSession();
+    if (saved) {
+      return saved.checkedMap || saved.answers?.checkedMap || {};
+    }
     return {};
   });
 
@@ -482,8 +482,9 @@ export function AuthenticCBTExamPage() {
 
     if (typeof window !== "undefined") {
       try {
-        localStorage.setItem(sessionKey, JSON.stringify({
+        const localData = JSON.stringify({
           ...payload,
+          selectedAnswers: currentSelected,
           checkedMap: currentChecked,
           attemptsMap: currentAttempts,
           sectionTimeRemaining,
@@ -495,7 +496,9 @@ export function AuthenticCBTExamPage() {
           oralScratchNotes,
           completedSpeakingTaskIds,
           timestamp: Date.now(),
-        }));
+        });
+        localStorage.setItem(sessionKey, localData);
+        try { localStorage.setItem(legacySessionKey, localData); } catch {}
       } catch {}
     }
 
@@ -517,6 +520,7 @@ export function AuthenticCBTExamPage() {
     if (typeof window !== "undefined") {
       try {
         localStorage.removeItem(sessionKey);
+        localStorage.removeItem(legacySessionKey);
       } catch { }
     }
     sessionEpochRef.current += 1;
@@ -1409,23 +1413,34 @@ export function AuthenticCBTExamPage() {
             setCloudActiveSession(json.activeSession);
             setShowSessionPromptModal(true);
           } else if (json.activeSession.resetAt) {
-            // Cloud session was reset recently; ensure local device does not resurrect stale cache
-            setSelectedAnswers({});
-            setFlaggedQuestions({});
-            setWritingResponses({});
-            setSpeakingTranscripts({});
-            setSpeakingDialogueMap({});
-            setWritingAiResults({});
-            setSpeakingAiResults({});
-            setSectionTimeRemaining({});
-            setAttemptsMap({});
-            setCheckedMap({});
-            setOralPrepTimeRemaining({});
-            setOralSpeakingTimeRemaining({});
-            setOralScratchNotes({});
-            setCompletedSpeakingTaskIds({});
-            if (typeof window !== "undefined") {
-              try { localStorage.removeItem(sessionKey); } catch {}
+            // Only wipe local state if candidate has NOT answered or checked any questions locally
+            const localSaved = getPersistedSession();
+            const hasLocalAnswers = localSaved && (
+              Object.keys(localSaved.selectedAnswers || localSaved.answers?.selectedAnswers || {}).length > 0 ||
+              Object.keys(localSaved.checkedMap || localSaved.answers?.checkedMap || {}).length > 0 ||
+              Object.keys(localSaved.attemptsMap || localSaved.answers?.attemptsMap || {}).length > 0
+            );
+            if (!hasLocalAnswers) {
+              setSelectedAnswers({});
+              setFlaggedQuestions({});
+              setWritingResponses({});
+              setSpeakingTranscripts({});
+              setSpeakingDialogueMap({});
+              setWritingAiResults({});
+              setSpeakingAiResults({});
+              setSectionTimeRemaining({});
+              setAttemptsMap({});
+              setCheckedMap({});
+              setOralPrepTimeRemaining({});
+              setOralSpeakingTimeRemaining({});
+              setOralScratchNotes({});
+              setCompletedSpeakingTaskIds({});
+              if (typeof window !== "undefined") {
+                try {
+                  localStorage.removeItem(sessionKey);
+                  localStorage.removeItem(legacySessionKey);
+                } catch {}
+              }
             }
           }
         }

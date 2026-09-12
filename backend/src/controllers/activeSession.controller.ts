@@ -110,6 +110,25 @@ export const saveActiveSession = async (req: Request, res: Response): Promise<vo
       return;
     }
 
+    // Merge incoming answers with existing answers to guarantee checkedMap and attemptsMap are never wiped out by empty payloads
+    const incomingAnswers = answers || {};
+    const existingAnswers = existing?.answers || {};
+    const mergedSelected = { ...(existingAnswers.selectedAnswers || {}), ...(incomingAnswers.selectedAnswers || {}) };
+    const mergedChecked = { ...(existingAnswers.checkedMap || {}), ...(incomingAnswers.checkedMap || {}) };
+    const mergedAttempts = { ...(existingAnswers.attemptsMap || {}) };
+    for (const [k, v] of Object.entries(incomingAnswers.attemptsMap || {})) {
+      if (typeof v === 'number') {
+        mergedAttempts[k] = Math.max(mergedAttempts[k] || 0, v);
+      }
+    }
+    const finalAnswers = {
+      ...existingAnswers,
+      ...incomingAnswers,
+      selectedAnswers: mergedSelected,
+      checkedMap: mergedChecked,
+      attemptsMap: mergedAttempts,
+    };
+
     // Atomic findOneAndUpdate with upsert: GUARANTEED ZERO E11000 duplicate key errors
     const session = await ActiveSession.findOneAndUpdate(
       { userId: String(rawUserId), paperId: canonicalPaperId },
@@ -118,7 +137,7 @@ export const saveActiveSession = async (req: Request, res: Response): Promise<vo
           examType: examType || existing?.examType || 'TCF',
           sectionIndex: typeof sectionIndex === 'number' ? sectionIndex : (existing?.sectionIndex ?? 0),
           questionIndex: typeof questionIndex === 'number' ? questionIndex : (existing?.questionIndex ?? 0),
-          answers: answers || existing?.answers || {},
+          answers: finalAnswers,
           sectionTimers: sectionTimers || existing?.sectionTimers || {},
           sessionEpoch: Math.max(clientEpoch, serverEpoch),
           lastUpdated: new Date()
