@@ -194,8 +194,21 @@ export function AuthenticCBTExamPage() {
     return {};
   });
 
-  // Active Section Countdown Timer State
+  // Active Section Countdown Timer State (Hydrated from local/cloud session)
   const [timeLeft, setTimeLeft] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem(sessionKey);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          const timers = parsed.sectionTimers || parsed.sectionTimeRemaining;
+          const sIdx = typeof parsed.sectionIndex === "number" ? parsed.sectionIndex : (parsed.activeSectionIdx || 0);
+          if (timers && typeof timers[sIdx] === "number" && timers[sIdx] > 0) {
+            return timers[sIdx];
+          }
+        }
+      } catch { }
+    }
     return getSectionDurationSeconds(currentSection?.type, currentSection?.durationMins);
   });
   const [isTimerPaused, setIsTimerPaused] = useState(false);
@@ -213,10 +226,11 @@ export function AuthenticCBTExamPage() {
       const saved = localStorage.getItem(sessionKey);
       if (saved) {
         const parsed = JSON.parse(saved);
-        const hasAnswers = Object.keys(parsed.selectedAnswers || {}).length > 0;
-        const hasWriting = Object.keys(parsed.writingResponses || {}).some((k: string) => Boolean(parsed.writingResponses[k]));
-        const hasSpeaking = Object.keys(parsed.speakingDialogueMap || {}).some((k: string) => (parsed.speakingDialogueMap[k] || []).length > 0);
-        return hasAnswers || hasWriting || hasSpeaking;
+        const hasAnswers = Object.keys(parsed.selectedAnswers || parsed.answers?.selectedAnswers || {}).length > 0;
+        const hasChecked = Object.keys(parsed.checkedMap || parsed.answers?.checkedMap || {}).length > 0;
+        const hasWriting = Object.keys(parsed.writingResponses || parsed.answers?.writingResponses || {}).some((k: string) => Boolean(parsed.writingResponses?.[k] || parsed.answers?.writingResponses?.[k]));
+        const hasSpeaking = Object.keys(parsed.speakingDialogueMap || parsed.answers?.speakingDialogueMap || {}).some((k: string) => (parsed.speakingDialogueMap?.[k] || parsed.answers?.speakingDialogueMap?.[k] || []).length > 0);
+        return hasAnswers || hasChecked || hasWriting || hasSpeaking;
       }
     } catch { }
     return false;
@@ -268,16 +282,37 @@ export function AuthenticCBTExamPage() {
     return {};
   });
 
-  // Practice Mode Attempt & Check Answer Logic
-  const [attemptsMap, setAttemptsMap] = useState<{ [qId: string]: number }>({});
-  const [checkedMap, setCheckedMap] = useState<{ [qId: string]: boolean }>({});
+  // Practice Mode Attempt & Check Answer Logic (Persisted in localStorage & Cloud)
+  const [attemptsMap, setAttemptsMap] = useState<{ [qId: string]: number }>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.attemptsMap || parsed.answers?.attemptsMap || {};
+      }
+    } catch { }
+    return {};
+  });
+
+  const [checkedMap, setCheckedMap] = useState<{ [qId: string]: boolean }>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.checkedMap || parsed.answers?.checkedMap || {};
+      }
+    } catch { }
+    return {};
+  });
 
   // AI Writing Evaluation States
   const [writingAiResults, setWritingAiResults] = useState<Record<string, any>>(() => {
     if (typeof window === "undefined") return {};
     try {
       const saved = localStorage.getItem(sessionKey);
-      if (saved) return JSON.parse(saved).writingAiResults || {};
+      if (saved) return JSON.parse(saved).writingAiResults || JSON.parse(saved).answers?.writingAiResults || {};
     } catch { }
     return {};
   });
@@ -289,7 +324,7 @@ export function AuthenticCBTExamPage() {
     if (typeof window === "undefined") return {};
     try {
       const saved = localStorage.getItem(sessionKey);
-      if (saved) return JSON.parse(saved).speakingAiResults || {};
+      if (saved) return JSON.parse(saved).speakingAiResults || JSON.parse(saved).answers?.speakingAiResults || {};
     } catch { }
     return {};
   });
@@ -298,14 +333,28 @@ export function AuthenticCBTExamPage() {
     if (typeof window === "undefined") return {};
     try {
       const saved = localStorage.getItem(sessionKey);
-      if (saved) return JSON.parse(saved).speakingDialogueMap || {};
+      if (saved) return JSON.parse(saved).speakingDialogueMap || JSON.parse(saved).answers?.speakingDialogueMap || {};
     } catch { }
     return {};
   });
   const [speakingChatLoading, setSpeakingChatLoading] = useState<Record<string, boolean>>({});
-  const [completedSpeakingTaskIds, setCompletedSpeakingTaskIds] = useState<Record<string, boolean>>({});
+  const [completedSpeakingTaskIds, setCompletedSpeakingTaskIds] = useState<Record<string, boolean>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) return JSON.parse(saved).completedSpeakingTaskIds || JSON.parse(saved).answers?.completedSpeakingTaskIds || {};
+    } catch { }
+    return {};
+  });
   const [pendingEvalTask, setPendingEvalTask] = useState<{ taskId: string; scenario: string; transcript: string } | null>(null);
-  const [oralPrepTimeRemaining, setOralPrepTimeRemaining] = useState<Record<string, number>>({});
+  const [oralPrepTimeRemaining, setOralPrepTimeRemaining] = useState<Record<string, number>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) return JSON.parse(saved).oralPrepTimeRemaining || JSON.parse(saved).answers?.oralPrepTimeRemaining || {};
+    } catch { }
+    return {};
+  });
   const [isOralPrepActive, setIsOralPrepActive] = useState<Record<string, boolean>>({});
   const speakingFallbackTimerRef = useRef<NodeJS.Timeout | null>(null);
   const taskStartTimestampRef = useRef<Record<string, number>>({});
@@ -320,6 +369,7 @@ export function AuthenticCBTExamPage() {
 
     const hasCloudAnswers = answersData && (
       Object.keys(answersData.selectedAnswers || {}).length > 0 ||
+      Object.keys(answersData.checkedMap || {}).length > 0 ||
       Object.keys(answersData.writingResponses || {}).some((k: string) => Boolean(answersData.writingResponses[k])) ||
       Object.keys(answersData.speakingTranscripts || {}).some((k: string) => Boolean(answersData.speakingTranscripts[k])) ||
       Object.keys(answersData.speakingDialogueMap || {}).some((k: string) => (answersData.speakingDialogueMap[k] || []).length > 0)
@@ -341,15 +391,29 @@ export function AuthenticCBTExamPage() {
     if (answersData) {
       if (answersData.selectedAnswers) setSelectedAnswers(answersData.selectedAnswers);
       if (answersData.flaggedQuestions) setFlaggedQuestions(answersData.flaggedQuestions);
+      if (answersData.checkedMap) setCheckedMap(answersData.checkedMap);
+      if (answersData.attemptsMap) setAttemptsMap(answersData.attemptsMap);
       if (answersData.writingResponses) setWritingResponses(answersData.writingResponses);
       if (answersData.speakingTranscripts) setSpeakingTranscripts(answersData.speakingTranscripts);
       if (answersData.writingAiResults) setWritingAiResults(answersData.writingAiResults);
       if (answersData.speakingAiResults) setSpeakingAiResults(answersData.speakingAiResults);
       if (answersData.speakingDialogueMap) setSpeakingDialogueMap(answersData.speakingDialogueMap);
       if (answersData.completedSectionIndices) setCompletedSectionIndices(answersData.completedSectionIndices);
+      if (answersData.oralPrepTimeRemaining) setOralPrepTimeRemaining(answersData.oralPrepTimeRemaining);
+      if (answersData.oralSpeakingTimeRemaining) setOralSpeakingTimeRemaining(answersData.oralSpeakingTimeRemaining);
+      if (answersData.oralScratchNotes) setOralScratchNotes(answersData.oralScratchNotes);
+      if (answersData.completedSpeakingTaskIds) setCompletedSpeakingTaskIds(answersData.completedSpeakingTaskIds);
       if (typeof answersData.activeWritingTaskIdx === "number") setActiveWritingTaskIdx(answersData.activeWritingTaskIdx);
       if (typeof answersData.activeSpeakingTaskIdx === "number") setActiveSpeakingTaskIdx(answersData.activeSpeakingTaskIdx);
-      if (timers) setSectionTimeRemaining(timers);
+
+      const targetSec = typeof secIdx === "number" && secIdx < paper.sections.length ? secIdx : activeSectionIdx;
+      if (timers) {
+        setSectionTimeRemaining(timers);
+        const savedTime = timers[targetSec];
+        if (typeof savedTime === "number" && savedTime > 0) {
+          setTimeLeft(savedTime);
+        }
+      }
       if (typeof secIdx === "number" && secIdx < paper.sections.length) {
         setActiveSectionIdx(secIdx);
       }
@@ -374,11 +438,19 @@ export function AuthenticCBTExamPage() {
     setShowSessionPromptModal(false);
   };
 
-  const flushCloudSession = (overrideAnswers?: Record<string, number>, overrideSectionIdx?: number, overrideQIdx?: number) => {
+  const flushCloudSession = (
+    overrideAnswers?: Record<string, number>,
+    overrideSectionIdx?: number,
+    overrideQIdx?: number,
+    overrideCheckedMap?: Record<string, boolean>,
+    overrideAttemptsMap?: Record<string, number>
+  ) => {
     if (!paper?.id || isSubmitted) return;
     const currentSelected = overrideAnswers || selectedAnswers;
     const currentSec = typeof overrideSectionIdx === "number" ? overrideSectionIdx : activeSectionIdx;
     const currentQ = typeof overrideQIdx === "number" ? overrideQIdx : currentQuestionIdx;
+    const currentChecked = overrideCheckedMap || checkedMap;
+    const currentAttempts = overrideAttemptsMap || attemptsMap;
 
     const payload = {
       paperId: paper.id,
@@ -398,12 +470,31 @@ export function AuthenticCBTExamPage() {
         completedSectionIndices,
         activeWritingTaskIdx,
         activeSpeakingTaskIdx,
+        checkedMap: currentChecked,
+        attemptsMap: currentAttempts,
+        oralPrepTimeRemaining,
+        oralSpeakingTimeRemaining,
+        oralScratchNotes,
+        completedSpeakingTaskIds,
       },
     };
 
     if (typeof window !== "undefined") {
       try {
-        localStorage.setItem(sessionKey, JSON.stringify({ ...payload, timestamp: Date.now() }));
+        localStorage.setItem(sessionKey, JSON.stringify({
+          ...payload,
+          checkedMap: currentChecked,
+          attemptsMap: currentAttempts,
+          sectionTimeRemaining,
+          writingResponses,
+          speakingTranscripts,
+          speakingDialogueMap,
+          oralPrepTimeRemaining,
+          oralSpeakingTimeRemaining,
+          oralScratchNotes,
+          completedSpeakingTaskIds,
+          timestamp: Date.now(),
+        }));
       } catch {}
     }
 
@@ -446,14 +537,34 @@ export function AuthenticCBTExamPage() {
     setWritingAiResults({});
     setSpeakingAiResults({});
     setSectionTimeRemaining({});
+    setAttemptsMap({});
+    setCheckedMap({});
+    setOralPrepTimeRemaining({});
+    setOralSpeakingTimeRemaining({});
+    setOralScratchNotes({});
+    setCompletedSpeakingTaskIds({});
     setActiveSectionIdx(0);
     setCurrentQuestionIdx(0);
     setCloudActiveSession(null);
     setShowSessionPromptModal(false);
   };
-  const [oralSpeakingTimeRemaining, setOralSpeakingTimeRemaining] = useState<Record<string, number>>({});
+  const [oralSpeakingTimeRemaining, setOralSpeakingTimeRemaining] = useState<Record<string, number>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) return JSON.parse(saved).oralSpeakingTimeRemaining || JSON.parse(saved).answers?.oralSpeakingTimeRemaining || {};
+    } catch { }
+    return {};
+  });
   const [isOralSpeakingActive, setIsOralSpeakingActive] = useState<Record<string, boolean>>({});
-  const [oralScratchNotes, setOralScratchNotes] = useState<Record<string, string>>({});
+  const [oralScratchNotes, setOralScratchNotes] = useState<Record<string, string>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) return JSON.parse(saved).oralScratchNotes || JSON.parse(saved).answers?.oralScratchNotes || {};
+    } catch { }
+    return {};
+  });
   const [speakingAcousticMetrics, setSpeakingAcousticMetrics] = useState<Record<string, AcousticAnalysisResult>>({});
   const [hasStartedTaskSession, setHasStartedTaskSession] = useState<Record<string, boolean>>({});
 
@@ -462,8 +573,30 @@ export function AuthenticCBTExamPage() {
   const [showTranslation, setShowTranslation] = useState(false);
   const [showReadingHint, setShowReadingHint] = useState(false);
   const [failedImagesMap, setFailedImagesMap] = useState<Record<string, boolean>>({});
-  const [activeWritingTaskIdx, setActiveWritingTaskIdx] = useState(0);
-  const [activeSpeakingTaskIdx, setActiveSpeakingTaskIdx] = useState(0);
+  const [activeWritingTaskIdx, setActiveWritingTaskIdx] = useState(() => {
+    if (typeof window === "undefined") return 0;
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const idx = parsed.activeWritingTaskIdx ?? parsed.answers?.activeWritingTaskIdx;
+        if (typeof idx === "number") return idx;
+      }
+    } catch { }
+    return 0;
+  });
+  const [activeSpeakingTaskIdx, setActiveSpeakingTaskIdx] = useState(() => {
+    if (typeof window === "undefined") return 0;
+    try {
+      const saved = localStorage.getItem(sessionKey);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const idx = parsed.activeSpeakingTaskIdx ?? parsed.answers?.activeSpeakingTaskIdx;
+        if (typeof idx === "number") return idx;
+      }
+    } catch { }
+    return 0;
+  });
   const [showSpeakingDisclaimer, setShowSpeakingDisclaimer] = useState(false);
   const [hasAcceptedSpeakingDisclaimer, setHasAcceptedSpeakingDisclaimer] = useState(false);
   const [showSectionDisclaimer, setShowSectionDisclaimer] = useState(false);
@@ -497,6 +630,13 @@ export function AuthenticCBTExamPage() {
       return;
     }
 
+    // In Practice Mode: if question is already checked, freeze per-question timer completely
+    if (mode === "PRACTICE" && checkedMap[currentQ.id]) {
+      setQTimeLeft(null);
+      targetEndTimeRef.current = null;
+      return;
+    }
+
     // Do NOT count down while audio is playing, while student has paused the timer/audio, OR before audio has finished playing!
     if (isSpeaking || isAudioPaused || isTimerPaused || !isAudioFinished) {
       targetEndTimeRef.current = null;
@@ -517,6 +657,10 @@ export function AuthenticCBTExamPage() {
       if (remainingSecs <= 0) {
         clearInterval(interval);
         targetEndTimeRef.current = null;
+        if (mode === "PRACTICE") {
+          // In Practice Mode: respect student pacing and do not force-advance
+          return;
+        }
         if (currentQuestionIdx < currentQuestions.length - 1) {
           setCurrentQuestionIdx((idx) => idx + 1);
         } else if (activeSectionIdx < paper.sections.length - 1) {
@@ -534,7 +678,7 @@ export function AuthenticCBTExamPage() {
     }, 200);
 
     return () => clearInterval(interval);
-  }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, isSpeaking, isAudioPaused, isTimerPaused, isAudioFinished, currentQuestions.length, paper.sections.length]);
+  }, [currentQuestionIdx, activeSectionIdx, mode, currentSection.type, currentQ, isSubmitted, isSpeaking, isAudioPaused, isTimerPaused, isAudioFinished, checkedMap, currentQuestions.length, paper.sections.length]);
 
   // Hands-Free 10s Countdown Timer for CBT Section Transitions
   useEffect(() => {
@@ -1249,6 +1393,7 @@ export function AuthenticCBTExamPage() {
           }
           const answersData = json.activeSession.answers || {};
           const hasCloudAnswers = Object.keys(answersData.selectedAnswers || {}).length > 0 ||
+            Object.keys(answersData.checkedMap || {}).length > 0 ||
             Object.keys(answersData.writingResponses || {}).some((k: string) => Boolean(answersData.writingResponses[k])) ||
             Object.keys(answersData.speakingTranscripts || {}).some((k: string) => Boolean(answersData.speakingTranscripts[k]));
 
@@ -1265,6 +1410,12 @@ export function AuthenticCBTExamPage() {
             setWritingAiResults({});
             setSpeakingAiResults({});
             setSectionTimeRemaining({});
+            setAttemptsMap({});
+            setCheckedMap({});
+            setOralPrepTimeRemaining({});
+            setOralSpeakingTimeRemaining({});
+            setOralScratchNotes({});
+            setCompletedSpeakingTaskIds({});
             if (typeof window !== "undefined") {
               try { localStorage.removeItem(sessionKey); } catch {}
             }
@@ -1298,6 +1449,12 @@ export function AuthenticCBTExamPage() {
             setWritingAiResults({});
             setSpeakingAiResults({});
             setSectionTimeRemaining({});
+            setAttemptsMap({});
+            setCheckedMap({});
+            setOralPrepTimeRemaining({});
+            setOralSpeakingTimeRemaining({});
+            setOralScratchNotes({});
+            setCompletedSpeakingTaskIds({});
             if (typeof window !== "undefined") {
               try { localStorage.removeItem(sessionKey); } catch {}
             }
@@ -1332,6 +1489,7 @@ export function AuthenticCBTExamPage() {
   useEffect(() => {
     if (!paper?.id || isSubmitted || !hasHydratedCloudRef.current) return;
     const hasData = Object.keys(selectedAnswers).length > 0 ||
+      Object.keys(checkedMap).length > 0 ||
       Object.keys(writingResponses).some((k) => Boolean(writingResponses[k])) ||
       Object.keys(speakingTranscripts).some((k) => Boolean(speakingTranscripts[k]));
     if (!hasData) return;
@@ -1340,7 +1498,7 @@ export function AuthenticCBTExamPage() {
       flushCloudSession();
     }, 400);
     return () => clearTimeout(timer);
-  }, [paper?.id, activeSectionIdx, currentQuestionIdx, selectedAnswers, flaggedQuestions, writingResponses, speakingTranscripts, writingAiResults, speakingAiResults, speakingDialogueMap, isSubmitted]);
+  }, [paper?.id, activeSectionIdx, currentQuestionIdx, selectedAnswers, checkedMap, attemptsMap, flaggedQuestions, writingResponses, speakingTranscripts, writingAiResults, speakingAiResults, speakingDialogueMap, oralPrepTimeRemaining, oralSpeakingTimeRemaining, completedSpeakingTaskIds, isSubmitted]);
 
   // Fail-Safe Exit Flush on Page Leave / Back Navigation (Keepalive Beacon)
   useEffect(() => {
@@ -1377,6 +1535,12 @@ export function AuthenticCBTExamPage() {
             completedSectionIndices,
             activeWritingTaskIdx,
             activeSpeakingTaskIdx,
+            checkedMap,
+            attemptsMap,
+            oralPrepTimeRemaining,
+            oralSpeakingTimeRemaining,
+            oralScratchNotes,
+            completedSpeakingTaskIds,
           },
         });
 
@@ -1398,7 +1562,7 @@ export function AuthenticCBTExamPage() {
       window.removeEventListener("pagehide", handleExitFlush);
       window.removeEventListener("beforeunload", handleExitFlush);
     };
-  }, [paper?.id, isSubmitted, activeSectionIdx, currentQuestionIdx, sectionTimeRemaining, selectedAnswers, flaggedQuestions, writingResponses, speakingTranscripts, writingAiResults, speakingAiResults, speakingDialogueMap, completedSectionIndices]);
+  }, [paper?.id, isSubmitted, activeSectionIdx, currentQuestionIdx, sectionTimeRemaining, selectedAnswers, checkedMap, attemptsMap, flaggedQuestions, writingResponses, speakingTranscripts, writingAiResults, speakingAiResults, speakingDialogueMap, completedSectionIndices, oralPrepTimeRemaining, oralSpeakingTimeRemaining, oralScratchNotes, completedSpeakingTaskIds]);
 
   useEffect(() => {
     setShowQuestionPrompt(false);
@@ -1462,11 +1626,19 @@ export function AuthenticCBTExamPage() {
     const chosenText = (currentQ?.options?.[chosenIdx] || "").trim();
     const correctText = (currentQ?.options?.[correctIdx] || "").trim();
     const isCorrect = chosenIdx === correctIdx || (chosenText !== "" && chosenText === correctText);
-    setAttemptsMap((prev) => ({ ...prev, [qId]: currentAttempts }));
+    const nextAttempts = { ...attemptsMap, [qId]: currentAttempts };
+    setAttemptsMap(nextAttempts);
 
+    let nextChecked = checkedMap;
     if (isCorrect || currentAttempts >= 2) {
-      setCheckedMap((prev) => ({ ...prev, [qId]: true }));
+      nextChecked = { ...checkedMap, [qId]: true };
+      setCheckedMap(nextChecked);
+      setQTimeLeft(null);
+      targetEndTimeRef.current = null;
     }
+
+    // Immediately flush to local storage & cloud active session so feedback card persists on reload
+    flushCloudSession(undefined, undefined, undefined, nextChecked, nextAttempts);
   };
 
   // SUB-PHASE 9B: Client Acoustic Silence Trimmer Protocol for STT (Zero Latency on Silence)
