@@ -176,6 +176,11 @@ function NavBarInner() {
     };
   }, [isAuthenticated]);
 
+  // Dedicated admin portal has its own full sidebar and header
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
+
   return (
     <header
       className="sticky top-0 z-50 w-full dark:bg-[#070B17] bg-white transition-colors duration-300"

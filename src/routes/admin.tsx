@@ -129,7 +129,7 @@ function AdminLayout() {
           className={`fixed lg:sticky top-0 z-50 h-screen w-72 max-w-[85vw] lg:w-64 dark:bg-[#070B17]/98 bg-white/98 backdrop-blur-xl border-r ${border} flex flex-col transition-transform duration-300 ease-in-out ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
           }`}
-          style={{ paddingTop: "max(env(safe-area-inset-top, 0px), 8px)" }}
+          style={{ paddingTop: "max(env(safe-area-inset-top, 0px), 16px)" }}
         >
           {/* Logo */}
           <div className={`p-4 sm:p-5 border-b ${border} flex items-center justify-between`}>
@@ -204,9 +204,9 @@ function AdminLayout() {
           {/* Top navbar */}
           <header
             className={`sticky top-0 z-30 dark:bg-[#070B17]/80 bg-white/80 backdrop-blur-xl border-b ${border} transition-colors`}
-            style={{ paddingTop: "max(env(safe-area-inset-top, 0px), 8px)" }}
+            style={{ paddingTop: "max(env(safe-area-inset-top, 0px), 16px)" }}
           >
-            <div className="flex items-center justify-between px-3 sm:px-6 py-3">
+            <div className="flex items-center justify-between px-3 sm:px-6 pt-3.5 pb-3 sm:py-3">
               <div className="flex items-center gap-2 sm:gap-3">
                 <button className="lg:hidden p-2 rounded-xl dark:hover:bg-white/5 hover:bg-gray-100 transition-colors" onClick={() => setSidebarOpen(true)} aria-label="Open menu">
                   <Menu className="w-5 h-5 dark:text-gray-400 text-gray-600" />
