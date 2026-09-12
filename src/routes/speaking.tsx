@@ -334,7 +334,7 @@ function SpeakingPage() {
     return (
       <div className={`min-h-screen ${pageBg} transition-colors duration-300 flex flex-col`}>
         {/* Header Bar */}
-        <header className={`sticky top-0 z-30 ${dark ? "bg-[#070B17]/80 border-[#1e2a4a]" : "bg-white/90 border-slate-200 shadow-sm"} backdrop-blur-xl border-b px-4 py-3`}>
+        <header className={`relative z-20 ${dark ? "bg-[#070B17]/80 border-[#1e2a4a]" : "bg-white/90 border-slate-200 shadow-sm"} backdrop-blur-xl border-b px-4 py-3`}>
           <div className="max-w-4xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Link to="/dashboard" className={`p-2 rounded-xl ${btnHover} transition-colors`}>

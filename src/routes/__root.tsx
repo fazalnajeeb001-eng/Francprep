@@ -177,88 +177,88 @@ function NavBarInner() {
   }, [isAuthenticated]);
 
   return (
-    <>
+    <header className="sticky top-0 z-50 w-full dark:bg-[#070B17] bg-white transition-colors duration-300"
+      style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}>
       {isAuthenticated && user?.role === "admin" && (
-        <div className="bg-gradient-to-r from-purple-950 to-indigo-950 border-b border-purple-800 text-white px-4 py-2 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
+        <div className="bg-gradient-to-r from-purple-950 to-indigo-950 border-b border-purple-800 text-white px-3 sm:px-4 py-1.5 flex items-center justify-between gap-2 text-xs">
           <div className="flex items-center gap-2">
             <span className="bg-purple-600 px-1.5 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider animate-pulse">Preview Mode</span>
-            <span>Browse as student, click and edit any content in place to stage drafts.</span>
+            <span className="hidden sm:inline text-purple-200 text-xs">Browse as student, click and edit content in place.</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] text-purple-300">Edit-in-Place Controls:</span>
+            <span className="text-[10px] text-purple-300 hidden sm:inline">Edit Controls:</span>
             <button type="button" onClick={() => togglePreview(!isAdminPreview)}
-              className="relative w-8 h-4.5 rounded-full transition-all bg-gray-600"
+              className="relative w-8 h-4.5 rounded-full transition-all bg-gray-600 shrink-0 cursor-pointer"
               style={{ backgroundColor: isAdminPreview ? "#10b981" : "#4b5563" }}>
               <div className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-white shadow transition-all ${isAdminPreview ? "left-4" : "left-0.5"}`} />
             </button>
-            <span className="font-semibold">{isAdminPreview ? "Active" : "Inactive"}</span>
+            <span className="font-semibold text-[11px]">{isAdminPreview ? "Active" : "Off"}</span>
           </div>
         </div>
       )}
-      <nav className="sticky top-0 z-50 border-b dark:border-[#1e2a4a] border-gray-200 dark:bg-[#070B17]/80 bg-white/80 backdrop-blur-xl transition-colors duration-300"
-        style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}>
-      <div className="mx-auto flex h-14 min-h-[44px] max-w-7xl items-center justify-between px-4">
-        <div className="flex items-center gap-4 sm:gap-6">
-          {(() => {
-            const activeLang = getActiveLanguageCode(user);
-            const branding = getTrackBranding(activeLang);
-            return (
-              <Link to={isAuthenticated ? "/dashboard" : "/"} className="flex items-center gap-2 text-lg font-bold min-h-[44px]">
-                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
-                  {isAuthenticated ? branding.flag : "L"}
-                </div>
-                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent hidden sm:inline">
-                  {isAuthenticated ? branding.shortBrand : "LingoPrep"}
-                </span>
-              </Link>
-            );
-          })()}
-          {isAuthenticated && user?.role === "admin" && (
-            <div className="flex items-center gap-1 text-sm">
-              <Link to="/admin" className="px-3 py-1.5 sm:py-2 min-h-[44px] sm:min-h-0 flex items-center gap-1.5 text-purple-400 hover:text-purple-300 bg-purple-500/10 border border-purple-500/30 rounded-xl transition-all text-xs sm:text-sm">
-                <Shield className="w-3.5 h-3.5" /> Admin
-              </Link>
-            </div>
-          )}
-        </div>
-        <div className="flex items-center gap-2 sm:gap-3 text-sm">
-          {isLoading ? null : isAuthenticated && user ? (
-            <div className="flex items-center gap-2">
-              {!isOnboarding && (
-                <>
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-extrabold shadow-sm" title="Daily Streak">
-                    <span className="text-sm animate-pulse">🔥</span> {(user as any).stats?.streak ?? (user as any).streak ?? 0} Days
+      <nav className="border-b dark:border-[#1e2a4a] border-gray-200 dark:bg-[#070B17]/90 bg-white/90 backdrop-blur-xl">
+        <div className="mx-auto flex h-14 min-h-[44px] max-w-7xl items-center justify-between px-4">
+          <div className="flex items-center gap-4 sm:gap-6">
+            {(() => {
+              const activeLang = getActiveLanguageCode(user);
+              const branding = getTrackBranding(activeLang);
+              return (
+                <Link to={isAuthenticated ? "/dashboard" : "/"} className="flex items-center gap-2 text-lg font-bold min-h-[44px]">
+                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
+                    {isAuthenticated ? branding.flag : "L"}
                   </div>
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-extrabold shadow-sm hidden sm:flex" title="Total XP">
-                    <span className="text-xs">⚡</span> {(user as any).stats?.xp ?? (user as any).xp ?? 0} XP
-                  </div>
-                </>
-              )}
-              {!pathname.startsWith("/dashboard") && (
-                <button
-                  onClick={() => navigate({ to: "/dashboard/settings" })}
-                  className="w-9 h-9 rounded-full overflow-hidden shadow-lg hover:opacity-90 hover:scale-110 transition-all border border-purple-500/30"
-                  aria-label="Settings"
-                >
-                  <img
-                    src={avatarGender === "male" ? "/models/leo-avatar.png" : "/models/chloe-avatar.png"}
-                    alt="Avatar"
-                    className="w-full h-full object-cover object-top"
-                    style={{ objectPosition: "50% 15%" }}
-                  />
-                </button>
-              )}
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <Link to="/login" className="px-4 py-2 min-h-[44px] flex items-center rounded-xl border dark:border-[#1e2a4a] border-gray-200 dark:text-gray-400 text-gray-600 hover:text-purple-400 transition-all text-sm">Login</Link>
-              <Link to="/signup" className="px-4 py-2 min-h-[44px] flex items-center rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 text-sm">Sign Up</Link>
-            </div>
-          )}
+                  <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent hidden sm:inline">
+                    {isAuthenticated ? branding.shortBrand : "LingoPrep"}
+                  </span>
+                </Link>
+              );
+            })()}
+            {isAuthenticated && user?.role === "admin" && (
+              <div className="flex items-center gap-1 text-sm">
+                <Link to="/admin" className="px-3 py-1.5 sm:py-2 min-h-[44px] sm:min-h-0 flex items-center gap-1.5 text-purple-400 hover:text-purple-300 bg-purple-500/10 border border-purple-500/30 rounded-xl transition-all text-xs sm:text-sm font-semibold">
+                  <Shield className="w-3.5 h-3.5" /> Admin
+                </Link>
+              </div>
+            )}
+          </div>
+          <div className="flex items-center gap-2 sm:gap-3 text-sm">
+            {isLoading ? null : isAuthenticated && user ? (
+              <div className="flex items-center gap-2">
+                {!isOnboarding && (
+                  <>
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-extrabold shadow-sm" title="Daily Streak">
+                      <span className="text-sm animate-pulse">🔥</span> {(user as any).stats?.streak ?? (user as any).streak ?? 0} Days
+                    </div>
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-extrabold shadow-sm hidden sm:flex" title="Total XP">
+                      <span className="text-xs">⚡</span> {(user as any).stats?.xp ?? (user as any).xp ?? 0} XP
+                    </div>
+                  </>
+                )}
+                {!pathname.startsWith("/dashboard") && (
+                  <button
+                    onClick={() => navigate({ to: "/dashboard/settings" })}
+                    className="w-9 h-9 rounded-full overflow-hidden shadow-lg hover:opacity-90 hover:scale-110 transition-all border border-purple-500/30 cursor-pointer"
+                    aria-label="Settings"
+                  >
+                    <img
+                      src={avatarGender === "male" ? "/models/leo-avatar.png" : "/models/chloe-avatar.png"}
+                      alt="Avatar"
+                      className="w-full h-full object-cover object-top"
+                      style={{ objectPosition: "50% 15%" }}
+                    />
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link to="/login" className="px-4 py-2 min-h-[44px] flex items-center rounded-xl border dark:border-[#1e2a4a] border-gray-200 dark:text-gray-400 text-gray-600 hover:text-purple-400 transition-all text-sm">Login</Link>
+                <Link to="/signup" className="px-4 py-2 min-h-[44px] flex items-center rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 text-sm">Sign Up</Link>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </nav>
-    </>
+      </nav>
+    </header>
   );
 }
 
@@ -338,7 +338,7 @@ function RootDocument({ children }: { children: ReactNode }) {
         }} />
       </head>
       <body className="dark:bg-[#070B17] bg-gray-50 antialiased transition-colors duration-300 overflow-x-hidden"
-        style={{ paddingTop: "env(safe-area-inset-top, 0px)", paddingBottom: "env(safe-area-inset-bottom, 0px)", paddingLeft: "env(safe-area-inset-left, 0px)", paddingRight: "env(safe-area-inset-right, 0px)" }}>
+        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)", paddingLeft: "env(safe-area-inset-left, 0px)", paddingRight: "env(safe-area-inset-right, 0px)" }}>
         {children}
         <Scripts />
       </body>

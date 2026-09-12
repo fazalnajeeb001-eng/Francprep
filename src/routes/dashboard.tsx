@@ -127,7 +127,7 @@ function DashboardPage() {
       <div className="flex">
         <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} dark={dark} />
         <div className="flex-1 min-h-screen">
-          <header className={`sticky top-0 z-30 ${dark ? "bg-[#070B17]/80 border-[#1e2a4a]" : "bg-white/90 border-slate-200 shadow-sm shadow-slate-200/50"} backdrop-blur-xl border-b transition-colors`}>
+          <header className={`relative z-20 ${dark ? "bg-[#070B17]/80 border-[#1e2a4a]" : "bg-white/90 border-slate-200 shadow-sm shadow-slate-200/50"} backdrop-blur-xl border-b transition-colors`}>
             <div className="flex items-center justify-between px-4 md:px-6 py-3">
               <div className="flex items-center gap-4">
                 <button className="lg:hidden text-xl" onClick={() => setSidebarOpen(true)} aria-label="Open menu">☰</button>
