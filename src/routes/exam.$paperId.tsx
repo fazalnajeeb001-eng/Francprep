@@ -308,15 +308,22 @@ export function AuthenticCBTExamPage() {
     let qIdx = cloudActiveSession?.questionIndex;
     let timers = cloudActiveSession?.sectionTimers;
 
-    if ((!answersData || Object.keys(answersData.selectedAnswers || {}).length === 0) && typeof window !== "undefined") {
+    const hasCloudAnswers = answersData && (
+      Object.keys(answersData.selectedAnswers || {}).length > 0 ||
+      Object.keys(answersData.writingResponses || {}).some((k: string) => Boolean(answersData.writingResponses[k])) ||
+      Object.keys(answersData.speakingTranscripts || {}).some((k: string) => Boolean(answersData.speakingTranscripts[k])) ||
+      Object.keys(answersData.speakingDialogueMap || {}).some((k: string) => (answersData.speakingDialogueMap[k] || []).length > 0)
+    );
+
+    if (!hasCloudAnswers && typeof window !== "undefined") {
       try {
         const local = localStorage.getItem(sessionKey);
         if (local) {
           const parsed = JSON.parse(local);
-          answersData = parsed;
-          secIdx = parsed.activeSectionIdx;
-          qIdx = parsed.currentQuestionIdx;
-          timers = parsed.sectionTimeRemaining;
+          answersData = parsed.answers || parsed;
+          secIdx = typeof parsed.sectionIndex === "number" ? parsed.sectionIndex : parsed.activeSectionIdx;
+          qIdx = typeof parsed.questionIndex === "number" ? parsed.questionIndex : parsed.currentQuestionIdx;
+          timers = parsed.sectionTimers || parsed.sectionTimeRemaining;
         }
       } catch {}
     }
@@ -330,6 +337,8 @@ export function AuthenticCBTExamPage() {
       if (answersData.speakingAiResults) setSpeakingAiResults(answersData.speakingAiResults);
       if (answersData.speakingDialogueMap) setSpeakingDialogueMap(answersData.speakingDialogueMap);
       if (answersData.completedSectionIndices) setCompletedSectionIndices(answersData.completedSectionIndices);
+      if (typeof answersData.activeWritingTaskIdx === "number") setActiveWritingTaskIdx(answersData.activeWritingTaskIdx);
+      if (typeof answersData.activeSpeakingTaskIdx === "number") setActiveSpeakingTaskIdx(answersData.activeSpeakingTaskIdx);
       if (timers) setSectionTimeRemaining(timers);
       if (typeof secIdx === "number" && secIdx < paper.sections.length) {
         setActiveSectionIdx(secIdx);
@@ -377,6 +386,8 @@ export function AuthenticCBTExamPage() {
         speakingAiResults,
         speakingDialogueMap,
         completedSectionIndices,
+        activeWritingTaskIdx,
+        activeSpeakingTaskIdx,
       },
     };
 
@@ -1354,6 +1365,8 @@ export function AuthenticCBTExamPage() {
             speakingAiResults,
             speakingDialogueMap,
             completedSectionIndices,
+            activeWritingTaskIdx,
+            activeSpeakingTaskIdx,
           },
         });
 
@@ -2169,17 +2182,40 @@ export function AuthenticCBTExamPage() {
     recognition.start();
   };
 
+  const handleWritingChange = (taskId: string, val: string) => {
+    const nextWriting = { ...writingResponses, [taskId]: val };
+    setWritingResponses(nextWriting);
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem(sessionKey);
+        const parsed = stored ? JSON.parse(stored) : {};
+        localStorage.setItem(sessionKey, JSON.stringify({
+          ...parsed,
+          answers: {
+            ...(parsed.answers || {}),
+            writingResponses: nextWriting,
+            activeWritingTaskIdx,
+            activeSpeakingTaskIdx,
+          },
+          writingResponses: nextWriting,
+          activeWritingTaskIdx,
+          timestamp: Date.now()
+        }));
+      } catch {}
+    }
+  };
+
   const handleInsertAccent = (taskId: string, char: string) => {
     const textarea = document.getElementById(`writing-textarea-${taskId}`) as HTMLTextAreaElement | null;
     if (!textarea) {
-      setWritingResponses((prev) => ({ ...prev, [taskId]: (prev[taskId] || "") + char }));
+      handleWritingChange(taskId, (writingResponses[taskId] || "") + char);
       return;
     }
     const start = textarea.selectionStart ?? 0;
     const end = textarea.selectionEnd ?? 0;
     const oldText = writingResponses[taskId] || "";
     const newText = oldText.substring(0, start) + char + oldText.substring(end);
-    setWritingResponses((prev) => ({ ...prev, [taskId]: newText }));
+    handleWritingChange(taskId, newText);
 
     setTimeout(() => {
       textarea.focus();
@@ -4422,7 +4458,7 @@ export function AuthenticCBTExamPage() {
                     id={`writing-textarea-${task.id}`}
                     rows={9}
                     value={textVal}
-                    onChange={(e) => setWritingResponses((prev) => ({ ...prev, [task.id]: e.target.value }))}
+                    onChange={(e) => handleWritingChange(task.id, e.target.value)}
                     placeholder="Saisissez votre texte officiel ici..."
                     className={`w-full p-3.5 sm:p-4 rounded-xl border text-sm font-sans leading-relaxed ${cbtDark ? "bg-[#090D16] border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-950"
                       } focus:outline-none focus:ring-2 focus:ring-blue-500`}
