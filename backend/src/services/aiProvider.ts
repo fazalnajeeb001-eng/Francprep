@@ -100,10 +100,17 @@ export async function generateAICompletion({
           const errMsg = err?.response?.data?.error?.message || err?.message || String(err);
           const status = err?.response?.status ? `HTTP ${err.response.status}` : 'Network Error/Timeout';
           console.warn(`⚠️ [AI Provider Attempt ${attempt}/2 Failed] Model ${m} (${status}): ${errMsg}`);
+          if (err?.response?.status === 402) {
+            console.warn(`⚠️ [AI Provider]: OpenRouter account has insufficient credits (HTTP 402). Bailing out to secondary fallback.`);
+            break;
+          }
           if (attempt < 2) {
             await new Promise((resolve) => setTimeout(resolve, 1000));
           }
         }
+      }
+      if (lastError?.response?.status === 402) {
+        break;
       }
     }
   }
