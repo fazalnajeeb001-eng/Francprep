@@ -336,9 +336,16 @@ function generateDynamicFallbackReply(
   }
 
   if (isTache2) {
-    const isClosing = /\b(merci|remercie|recontacter|rappelle|réfléchir|au revoir|bonne journée|bonne fin|quitte|finaliser)\b/i.test(userText);
-    if (isClosing && userTurnCount >= 5) {
-      return "C'est parfait ! Je vous en prie. N'hésitez pas si vous avez besoin d'autres précisions, excellente journée à vous et à très bientôt !";
+    const hasQuestionIndicator = /\?|(\b(quel|quels|quelle|quelles|combien|comment|est-ce que|quand|où|pourquoi|pourriez-vous|pouvez-vous|serait-il|y a-t-il)\b)/i.test(userText);
+    const hasExplicitSignoff = /\b(au revoir|bonne journ[eé]e|bonne fin de journ[eé]e|[aà] bient[oô]t|je vais r[eé]fl[eé]chir|je n'ai plus de question|ce sera tout|c'est tout pour moi|je vous rappellerai|je vous rappelle)\b/i.test(userText);
+    const isClosing = hasExplicitSignoff && !hasQuestionIndicator;
+
+    if (isClosing) {
+      return "C'est parfait ! Nous avons fait le tour complet de vos questions. N'hésitez pas si vous avez besoin d'autres précisions, excellente journée à vous et à très bientôt !";
+    }
+
+    if (userTurnCount >= 8 && !hasQuestionIndicator) {
+      return "Merci beaucoup pour toutes vos questions ! Vous avez posé l'ensemble des questions recommandées et couvert le sujet de l'annonce. Nous avons terminé cette tâche, vous pouvez passer à la suivante.";
     }
 
     if (isGreeting && userTurnCount <= 1) {
@@ -596,8 +603,15 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
     const hasExplicitSignoff = /\b(au revoir|bonne journ[eé]e|bonne fin de journ[eé]e|[aà] bient[oô]t|je vais r[eé]fl[eé]chir|je n'ai plus de question|ce sera tout|c'est tout pour moi|je vous rappellerai|je vous rappelle)\b/i.test(lastUserText);
 
     const isClosing = hasExplicitSignoff && !hasQuestionIndicator;
+    const isCompletedTurns = userTurnCount >= 8;
 
-    if (!isClosing) {
+    if (isClosing) {
+      content = "C'est parfait ! Nous avons fait le tour complet de toutes vos questions. N'hésitez pas si vous avez besoin d'autres précisions, excellente journée à vous et à très bientôt !";
+    } else if (isCompletedTurns) {
+      // 8-10 turns fulfilled: Candidate reached official target
+      const cleanContent = content.trim().replace(/avez-vous d'autres questions\s*\??/gi, '').trim();
+      content = `${cleanContent} Nous avons fait le tour très complet de l'annonce avec vos questions. Vous avez atteint l'objectif de cette tâche, vous pouvez continuer vers la Tâche 3 !`;
+    } else {
       const cleanContent = content.trim();
       // Ensure ball-in-court prompt is preserved if the LLM dropped it
       if (!/avez-vous d'autres questions\s*\??$/i.test(cleanContent)) {
@@ -864,8 +878,15 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
 
     const words = text ? text.split(/\s+/).filter(Boolean) : [];
     const wordCount = words.length;
-    const estimatedDuration = typeof durationSec === 'number' && durationSec > 0 ? durationSec : Math.max(5, Math.round(wordCount / 2.2));
-    const speechRateWpm = wordCount > 0 ? Math.round((wordCount / (estimatedDuration / 60))) : 0;
+
+    // Physical human speech bounds: realistic conversational speech maxes out at ~3 words/sec (180 WPM)
+    const passedDuration = typeof durationSec === 'number' && durationSec > 0 ? durationSec : 0;
+    const minRealisticDuration = wordCount > 0 ? Math.round(wordCount / 2.8) : 5;
+    const estimatedDuration = Math.max(passedDuration, minRealisticDuration, 5);
+
+    const rawWpm = wordCount > 0 ? Math.round((wordCount / (estimatedDuration / 60))) : 0;
+    // Physiological human speech rate clamp (standard French: 100-160 WPM, strictly clamped [40, 180] WPM)
+    const speechRateWpm = rawWpm > 0 ? Math.min(180, Math.max(40, rawWpm)) : 0;
 
     res.json({
       success: true,

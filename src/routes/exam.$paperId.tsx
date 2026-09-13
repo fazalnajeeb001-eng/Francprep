@@ -1860,6 +1860,7 @@ export function AuthenticCBTExamPage() {
         };
 
         mediaRecorder.onstart = () => {
+          (window as any)[`_recordingStart_${taskId}`] = Date.now();
           setRecordingSpeaking((prev) => ({ ...prev, [taskId]: true }));
         };
 
@@ -1894,10 +1895,14 @@ export function AuthenticCBTExamPage() {
                   setIsPlayingAudio(false);
                   setIsAudioFetching(false);
 
+                  const startTs = (window as any)[`_recordingStart_${taskId}`] || 0;
+                  const measuredDurationSec = startTs > 0 ? Math.max(1, Math.round((Date.now() - startTs) / 1000)) : 15;
+                  delete (window as any)[`_recordingStart_${taskId}`];
+
                   const res = await apiFetch("/speaking/transcribe", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ audioBase64: base64Data, mimeType, durationSec: 15 })
+                    body: JSON.stringify({ audioBase64: base64Data, mimeType, durationSec: measuredDurationSec })
                   });
                   const json = await res.json();
                   const transcribedText = (json.success && json.data?.text && json.data.text.trim()) ? json.data.text.trim() : "";
@@ -5572,6 +5577,27 @@ export function AuthenticCBTExamPage() {
                                 </div>
                               )}
                             </div>
+
+                            {/* TÂCHE 2 INTERACTION COMPLETION BADGE (8+ TURNS ACHIEVED) */}
+                            {(() => {
+                              const candidateTurns = (speakingDialogueMap[task.id] || []).filter((m) => m.sender === 'candidate').length;
+                              if (activeSpeakingTaskIdx === 1 && candidateTurns >= 8) {
+                                return (
+                                  <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 border-2 border-emerald-500 text-emerald-900 dark:text-emerald-200 flex items-center justify-between gap-3 shadow-sm animate-fadeIn">
+                                    <div className="flex items-center gap-2.5">
+                                      <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                                      <div>
+                                        <p className="font-extrabold text-xs">✅ Objectif Tâche 2 atteint : {candidateTurns} questions posées !</p>
+                                        <p className="text-[11px] text-emerald-800 dark:text-emerald-300 font-medium">
+                                          Vous avez posé le nombre de questions recommandé (8 à 10 questions). L'ensemble des points de l'annonce a été couvert avec succès. Cliquez sur &laquo; Continuer vers la Tâche 3 &raquo; ci-dessous pour poursuivre votre épreuve.
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              }
+                              return null;
+                            })()}
                           </div>
                         )}
                       </div>
@@ -5705,10 +5731,8 @@ export function AuthenticCBTExamPage() {
 
                   {/* 🏆 SUB-PHASE 2B: CUMULATIVE 3-TASK SCORECARD (OFFICIAL TCF CANADA 450-POINT SCALE - LOCKED UNTIL ALL 3 TASKS COMPLETED) */}
                   {Object.keys(speakingAiResults).length >= (currentSection.speakingTasks?.length || 3) ? (() => {
-                    const results = Object.values(speakingAiResults);
-                    const evalCount = results.length;
-                    const sum20 = results.reduce((acc, curr) => acc + (curr?.scoreOutOf20 || 0), 0);
-                    const scaled450 = Math.round((sum20 / (evalCount * 20)) * 450);
+                    const r = calculateResults();
+                    const scaled450 = Math.round((r.speakingAvg / 20) * 450);
 
                     let overallNclc = "NCLC 7 (B2 Benchmark Target)";
                     let overallCrs = 17;
@@ -6128,9 +6152,10 @@ export function AuthenticCBTExamPage() {
                         return <>Reading Accuracy: <strong>{r.readingPct}%</strong> ({r.readingCorrect}/{r.readingTotal} Correct) • <strong>+{r.expressEntryPoints} CRS Points</strong></>;
                       }
                       if (r.speakingAttemptedCount > 0) {
+                        const scaledOral = Math.round((r.speakingAvg / 20) * 450);
                         return (
                           <>
-                            Speaking Module (EO): <strong>{r.speakingAvg}/20 Marks</strong> (NCLC {r.speakingNCLC.nclcLevel} / {r.speakingNCLC.cefrEquivalent || r.speakingNCLC.cefrLevel || 'A2'})
+                            Speaking Module (EO): <strong>{scaledOral} / 450 pts</strong> ({r.speakingAvg}/20 Marks) • <strong>CLB / NCLC {r.speakingNCLC.nclcLevel} ({r.speakingNCLC.cefrEquivalent || r.speakingNCLC.cefrLevel || 'B1'})</strong>
                             {r.speakingAttemptedCount < 3 && (
                               <span className="opacity-90 font-medium ml-1">
                                 • ({r.speakingAttemptedCount}/3 tasks completed: T1 {r.speakingTaskScores.s1}/20, T2 {r.speakingTaskScores.s2}/20, T3 {r.speakingTaskScores.s3}/20)
@@ -6216,7 +6241,7 @@ export function AuthenticCBTExamPage() {
                           </span>
                         </div>
                         <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
-                          {res.speakingAttemptedCount === 0 ? "No submission" : `${res.speakingAvg}/20 Marks (${res.speakingNCLC.cefrEquivalent || res.speakingNCLC.cefrLevel || 'A2'})`}
+                          {res.speakingAttemptedCount === 0 ? "No submission" : `${Math.round((res.speakingAvg / 20) * 450)} / 450 pts (${res.speakingAvg}/20 Marks • ${res.speakingNCLC.cefrEquivalent || res.speakingNCLC.cefrLevel || 'B1'})`}
                         </p>
                         {res.speakingAttemptedCount > 0 && res.speakingAttemptedCount < 3 && (() => {
                           const s1 = res.speakingTaskScores.s1;

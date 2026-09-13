@@ -8111,45 +8111,52 @@ export function calculateNCLCScore(pctScore: number, _examType: ExamType, sectio
     expressEntryPoints = 0;
     isNCLC7TargetReached = false;
   } else if (sectionType === "EXPRESSION_ECRITE" || sectionType === "EXPRESSION_ORALE") {
-    // Official IRCC 20-Point Scale Cutoffs for Writing & Speaking (TCF Canada Standards)
-    if (pct >= 80.0) { // 16-20 / 20 (C2 Mastery / NCLC 10+)
+    // Official IRCC / France Éducation International 450-Point Standard Conversion
+    // Scale: C2 (371-450 / >=82.0%), C1 (348-370 / >=77.0%), B2 Upper (310-347 / >=68.0%),
+    // B2 Target (280-309 / >=62.0%), B1 Intermediate (248-279 / >=55.0%), B1 Threshold (181-247 / >=40.0%)
+    if (pct >= 82.0) {
       nclcLevel = 10;
       cefrEquivalent = "C2";
       expressEntryPoints = 34;
       isNCLC7TargetReached = true;
-    } else if (pct >= 70.0) { // 14-15 / 20 (C1 Advanced / NCLC 9)
+    } else if (pct >= 77.0) {
       nclcLevel = 9;
       cefrEquivalent = "C1";
       expressEntryPoints = 31;
       isNCLC7TargetReached = true;
-    } else if (pct >= 60.0) { // 12-13 / 20 (B2 Upper / NCLC 8)
+    } else if (pct >= 68.0) {
       nclcLevel = 8;
       cefrEquivalent = "B2";
       expressEntryPoints = 23;
       isNCLC7TargetReached = true;
-    } else if (pct >= 50.0) { // 10-11 / 20 (B2 Target Benchmark / NCLC 7)
+    } else if (pct >= 62.0) {
       nclcLevel = 7;
       cefrEquivalent = "B2";
       expressEntryPoints = 17;
       isNCLC7TargetReached = true;
-    } else if (pct >= 40.0) { // 8-9 / 20 (B1 Intermediate / NCLC 6)
+    } else if (pct >= 55.0) {
       nclcLevel = 6;
       cefrEquivalent = "B1";
       expressEntryPoints = 12;
       isNCLC7TargetReached = false;
-    } else if (pct >= 35.0) { // 7 / 20 (B1 Threshold / NCLC 5)
+    } else if (pct >= 40.0) {
       nclcLevel = 5;
       cefrEquivalent = "B1";
       expressEntryPoints = 6;
       isNCLC7TargetReached = false;
-    } else if (pct >= 20.0) { // 4-6 / 20 (A2 Elementary / NCLC 4)
+    } else if (pct >= 26.0) {
       nclcLevel = 4;
       cefrEquivalent = "A2";
       expressEntryPoints = 0;
       isNCLC7TargetReached = false;
-    } else { // 0-3 / 20 (A1 Beginner / NCLC 1-3)
+    } else if (pct >= 13.0) {
       nclcLevel = 3;
       cefrEquivalent = "A1";
+      expressEntryPoints = 0;
+      isNCLC7TargetReached = false;
+    } else {
+      nclcLevel = 0;
+      cefrEquivalent = "Unrated";
       expressEntryPoints = 0;
       isNCLC7TargetReached = false;
     }
