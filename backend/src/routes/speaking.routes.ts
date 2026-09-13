@@ -622,15 +622,16 @@ router.post('/chat', optionalAuth, async (req: Request, res: Response) => {
   try {
     const { messages } = req.body as ChatRequestBody;
 
-    if (!messages || !Array.isArray(messages) || messages.length === 0) {
-      res.status(400).json({
-        success: false,
-        error: 'Messages array is required.',
-      });
-      return;
+    let reqMessages = messages;
+    if (!reqMessages || !Array.isArray(reqMessages) || reqMessages.length === 0) {
+      const fallbackUserText = (req.body?.userText || req.body?.cleanText || req.body?.lastUserText || req.body?.scenarioText || 'Bonjour').trim();
+      reqMessages = [{ role: 'user', content: fallbackUserText }];
     }
 
-    const result = await processSpeakingChatRequest(req.body as ChatRequestBody);
+    const result = await processSpeakingChatRequest({
+      ...req.body,
+      messages: reqMessages,
+    });
 
     res.json({
       success: true,

@@ -338,6 +338,10 @@ export function AuthenticCBTExamPage() {
     } catch { }
     return {};
   });
+  const speakingDialogueMapRef = useRef<Record<string, Array<{ sender: 'examiner' | 'candidate'; text: string }>>>({});
+  useEffect(() => {
+    speakingDialogueMapRef.current = speakingDialogueMap;
+  }, [speakingDialogueMap]);
   const [speakingChatLoading, setSpeakingChatLoading] = useState<Record<string, boolean>>({});
   const [completedSpeakingTaskIds, setCompletedSpeakingTaskIds] = useState<Record<string, boolean>>(() => {
     if (typeof window === "undefined") return {};
@@ -1012,12 +1016,13 @@ export function AuthenticCBTExamPage() {
       autoSendTimerRef.current[taskId] = null as any;
     }
 
-    let updatedMessages: Array<{ sender: 'examiner' | 'candidate'; text: string }> = [];
-    setSpeakingDialogueMap((prev) => {
-      const existing = prev[taskId] || [];
-      updatedMessages = [...existing, { sender: 'candidate' as const, text: clean }];
-      return { ...prev, [taskId]: updatedMessages };
-    });
+    const existingDialogue = speakingDialogueMapRef.current[taskId] || speakingDialogueMap[taskId] || [];
+    const updatedMessages: Array<{ sender: 'examiner' | 'candidate'; text: string }> = [
+      ...existingDialogue,
+      { sender: 'candidate' as const, text: clean }
+    ];
+    speakingDialogueMapRef.current[taskId] = updatedMessages;
+    setSpeakingDialogueMap((prev) => ({ ...prev, [taskId]: updatedMessages }));
     setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: true }));
     setIsAudioFetching(true);
 
@@ -1027,10 +1032,14 @@ export function AuthenticCBTExamPage() {
     }, 100);
 
     try {
-      const messagesPayload = updatedMessages.map((m) => ({
+      let messagesPayload = updatedMessages.map((m) => ({
         role: m.sender === 'candidate' ? 'user' : 'assistant',
         content: m.text,
       }));
+      // Bulletproof Fail-Safe: Under no circumstances can messagesPayload be empty!
+      if (!messagesPayload || messagesPayload.length === 0) {
+        messagesPayload = [{ role: 'user', content: clean }];
+      }
 
       const paperNum = paperNumber;
       const masterTask = MASTER_SPEAKING_BANK[paperNum]?.[activeSpeakingTaskIdx];
@@ -1068,6 +1077,8 @@ export function AuthenticCBTExamPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: messagesPayload,
+          userText: clean,
+          lastUserText: clean,
           taskTitle,
           scenarioText: scenarioText || activeTask?.scenario || masterTask?.scenario || "TCF Oral Interaction",
           examinerName,
@@ -1085,9 +1096,12 @@ export function AuthenticCBTExamPage() {
       let audioBase64 = "";
       try {
         const json = await res.json();
+        console.log("[Examiner AI Response Status]:", res.status, json);
         replyText = json?.data?.reply || json?.reply || "";
         audioBase64 = json?.data?.audioBase64 || json?.audioBase64 || "";
-      } catch { }
+      } catch (parseErr) {
+        console.warn("[Examiner AI Parse Warning]:", parseErr);
+      }
 
       if (taskRemainingSecs <= 15) {
         const isT1 = activeSpeakingTaskIdx === 0 || /tâche\s*1|entretien|dirigé/i.test(taskTitle);
@@ -1111,6 +1125,8 @@ export function AuthenticCBTExamPage() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               messages: messagesPayload,
+              userText: clean,
+              lastUserText: clean,
               taskTitle,
               scenarioText: scenarioText || activeTask?.scenario || masterTask?.scenario || "TCF Oral Interaction",
               examinerName,
@@ -1124,6 +1140,7 @@ export function AuthenticCBTExamPage() {
             }),
           });
           const retryJson = await retryRes.json();
+          console.log("[Examiner AI Retry Status]:", retryRes.status, retryJson);
           replyText = retryJson?.data?.reply || retryJson?.reply || "";
           audioBase64 = retryJson?.data?.audioBase64 || retryJson?.audioBase64 || "";
         } catch (retryErr) {
@@ -1196,7 +1213,9 @@ export function AuthenticCBTExamPage() {
         const existing = prev[taskId] || [];
         const hasCand = existing.length > 0 && existing[existing.length - 1].sender === 'candidate' && existing[existing.length - 1].text === clean;
         const base = hasCand ? existing : [...existing, { sender: 'candidate' as const, text: clean }];
-        return { ...prev, [taskId]: [...base, { sender: 'examiner' as const, text: replyText }] };
+        const finalDialogue = [...base, { sender: 'examiner' as const, text: replyText }];
+        speakingDialogueMapRef.current[taskId] = finalDialogue;
+        return { ...prev, [taskId]: finalDialogue };
       });
       setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
       isChatSendingRef.current[taskId] = false;
@@ -1330,10 +1349,15 @@ export function AuthenticCBTExamPage() {
 
       // Pre-populate chatbox with examiner opening preamble as Message #1
       setSpeakingDialogueMap((prev) => {
-        if (prev[task.id] && prev[task.id].length > 0) return prev;
+        if (prev[task.id] && prev[task.id].length > 0) {
+          speakingDialogueMapRef.current[task.id] = prev[task.id];
+          return prev;
+        }
+        const initialMessages = [{ sender: "examiner" as const, text: openingText }];
+        speakingDialogueMapRef.current[task.id] = initialMessages;
         return {
           ...prev,
-          [task.id]: [{ sender: "examiner", text: openingText }]
+          [task.id]: initialMessages
         };
       });
 

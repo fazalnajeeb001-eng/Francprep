@@ -64,6 +64,19 @@ export async function apiFetch(
       } catch {}
     }
 
+    // If a critical speaking API call failed via relative proxy (e.g. Vercel timeout/504), failover directly to Railway production
+    if ((res.status >= 500 || !res.ok) && !isServer && path.includes("/speaking") && !targetUrl.includes("railway.app")) {
+      const railwayFallbackUrl = `https://francprep-production.up.railway.app/api${path.startsWith("/") ? path : `/${path}`}`;
+      try {
+        const railwayRes = await fetch(railwayFallbackUrl, { ...options, headers });
+        if (railwayRes.ok) {
+          return railwayRes;
+        }
+      } catch (railwayErr) {
+        console.warn("[apiFetch Railway Failover]", railwayErr);
+      }
+    }
+
     // Catch 5xx backend proxy failures (e.g. 502 Bad Gateway from Railway or 503 Service Unavailable)
     // to prevent TanStack Start / Nitro SSR loaders from crashing with unhandled HTTPError!
     if (res.status >= 500 || (isServer && !res.ok)) {
@@ -76,6 +89,17 @@ export async function apiFetch(
 
     return res;
   } catch (err: any) {
+    if (!isServer && path.includes("/speaking") && !targetUrl.includes("railway.app")) {
+      const railwayFallbackUrl = `https://francprep-production.up.railway.app/api${path.startsWith("/") ? path : `/${path}`}`;
+      try {
+        const railwayRes = await fetch(railwayFallbackUrl, { ...options, headers: { ...(options.headers as Record<string, string>), "Content-Type": "application/json" } });
+        if (railwayRes.ok) {
+          return railwayRes;
+        }
+      } catch (railwayErr) {
+        console.warn("[apiFetch Railway Failover Catch]", railwayErr);
+      }
+    }
     console.warn("[apiFetch Fallback]", err?.message || err);
     return new Response(JSON.stringify({ success: false, fallback: true, error: err?.message || "Service unavailable" }), {
       status: 200,
