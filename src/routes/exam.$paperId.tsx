@@ -175,6 +175,18 @@ export function AuthenticCBTExamPage() {
   const userId = user?.id || (user as any)?._id || (user as any)?.userId || "guest";
   const sessionKey = `fp_exam_session_${userId}_${paper?.id || "default"}_${mode}`;
   const legacySessionKey = `fp_exam_session_${paper?.id || "default"}_${mode}`;
+  const submissionKey = `fp_submitted_result_${userId}_${paper?.id || "default"}_${mode}`;
+  const legacySubmissionKey = `fp_submitted_result_${paper?.id || "default"}_${mode}`;
+
+  // Robust submission reader that restores final evaluated scorecards on page reload
+  const getPersistedSubmission = () => {
+    if (typeof window === "undefined") return null;
+    try {
+      const saved = localStorage.getItem(submissionKey) || localStorage.getItem(legacySubmissionKey);
+      if (saved) return JSON.parse(saved);
+    } catch { }
+    return null;
+  };
 
   // Robust multi-key session reader that automatically checks user-scoped key, falls back to legacy key, and migrates data
   const getPersistedSession = () => {
@@ -188,7 +200,10 @@ export function AuthenticCBTExamPage() {
           Object.keys(parsed.selectedAnswers || parsed.answers?.selectedAnswers || {}).length > 0 ||
           Object.keys(parsed.checkedMap || parsed.answers?.checkedMap || {}).length > 0 ||
           Object.keys(parsed.attemptsMap || parsed.answers?.attemptsMap || {}).length > 0 ||
-          Object.keys(parsed.writingResponses || parsed.answers?.writingResponses || {}).some((k: string) => Boolean(parsed.writingResponses?.[k] || parsed.answers?.writingResponses?.[k]))
+          Object.keys(parsed.writingResponses || parsed.answers?.writingResponses || {}).some((k: string) => Boolean(parsed.writingResponses?.[k] || parsed.answers?.writingResponses?.[k])) ||
+          Object.keys(parsed.writingAiResults || parsed.answers?.writingAiResults || {}).length > 0 ||
+          Object.keys(parsed.speakingAiResults || parsed.answers?.speakingAiResults || {}).length > 0 ||
+          Object.keys(parsed.speakingTranscripts || parsed.answers?.speakingTranscripts || {}).some((k: string) => Boolean(parsed.speakingTranscripts?.[k] || parsed.answers?.speakingTranscripts?.[k]))
         );
         if (hasData) return parsed;
       }
@@ -201,7 +216,10 @@ export function AuthenticCBTExamPage() {
           Object.keys(parsedLegacy.selectedAnswers || parsedLegacy.answers?.selectedAnswers || {}).length > 0 ||
           Object.keys(parsedLegacy.checkedMap || parsedLegacy.answers?.checkedMap || {}).length > 0 ||
           Object.keys(parsedLegacy.attemptsMap || parsedLegacy.answers?.attemptsMap || {}).length > 0 ||
-          Object.keys(parsedLegacy.writingResponses || parsedLegacy.answers?.writingResponses || {}).some((k: string) => Boolean(parsedLegacy.writingResponses?.[k] || parsedLegacy.answers?.writingResponses?.[k]))
+          Object.keys(parsedLegacy.writingResponses || parsedLegacy.answers?.writingResponses || {}).some((k: string) => Boolean(parsedLegacy.writingResponses?.[k] || parsedLegacy.answers?.writingResponses?.[k])) ||
+          Object.keys(parsedLegacy.writingAiResults || parsedLegacy.answers?.writingAiResults || {}).length > 0 ||
+          Object.keys(parsedLegacy.speakingAiResults || parsedLegacy.answers?.speakingAiResults || {}).length > 0 ||
+          Object.keys(parsedLegacy.speakingTranscripts || parsedLegacy.answers?.speakingTranscripts || {}).some((k: string) => Boolean(parsedLegacy.speakingTranscripts?.[k] || parsedLegacy.answers?.speakingTranscripts?.[k]))
         );
         if (hasLegacyData) {
           try { localStorage.setItem(sessionKey, legacy); } catch { }
@@ -248,6 +266,10 @@ export function AuthenticCBTExamPage() {
 
   // Existing Session Prompt Modal State (Triggers when student reopens an exam with saved progress)
   const [showSessionPromptModal, setShowSessionPromptModal] = useState<boolean>(() => {
+    // If exam was already submitted, do not prompt to resume in-progress session
+    if (typeof window !== "undefined" && (localStorage.getItem(submissionKey) || localStorage.getItem(legacySubmissionKey))) {
+      return false;
+    }
     const parsed = getPersistedSession();
     if (!parsed) return false;
     const hasAnswers = Object.keys(parsed.selectedAnswers || parsed.answers?.selectedAnswers || {}).length > 0;
@@ -268,24 +290,32 @@ export function AuthenticCBTExamPage() {
 
   // User Responses State (with localStorage Session Restoration)
   const [selectedAnswers, setSelectedAnswers] = useState<{ [qId: string]: number }>(() => {
+    const sub = getPersistedSubmission();
+    if (sub && sub.selectedAnswers) return sub.selectedAnswers;
     const saved = getPersistedSession();
     if (saved) return saved.selectedAnswers || saved.answers?.selectedAnswers || {};
     return {};
   });
 
   const [flaggedQuestions, setFlaggedQuestions] = useState<{ [qId: string]: boolean }>(() => {
+    const sub = getPersistedSubmission();
+    if (sub && sub.flaggedQuestions) return sub.flaggedQuestions;
     const saved = getPersistedSession();
     if (saved) return saved.flaggedQuestions || saved.answers?.flaggedQuestions || {};
     return {};
   });
 
   const [writingResponses, setWritingResponses] = useState<{ [taskId: string]: string }>(() => {
+    const sub = getPersistedSubmission();
+    if (sub && sub.writingResponses) return sub.writingResponses;
     const saved = getPersistedSession();
     if (saved) return saved.writingResponses || saved.answers?.writingResponses || {};
     return {};
   });
 
   const [speakingTranscripts, setSpeakingTranscripts] = useState<Record<string, string>>(() => {
+    const sub = getPersistedSubmission();
+    if (sub && sub.speakingTranscripts) return sub.speakingTranscripts;
     const saved = getPersistedSession();
     if (saved) return saved.speakingTranscripts || saved.answers?.speakingTranscripts || {};
     return {};
@@ -310,11 +340,10 @@ export function AuthenticCBTExamPage() {
 
   // AI Writing Evaluation States
   const [writingAiResults, setWritingAiResults] = useState<Record<string, any>>(() => {
-    if (typeof window === "undefined") return {};
-    try {
-      const saved = localStorage.getItem(sessionKey);
-      if (saved) return JSON.parse(saved).writingAiResults || JSON.parse(saved).answers?.writingAiResults || {};
-    } catch { }
+    const sub = getPersistedSubmission();
+    if (sub && sub.writingAiResults) return sub.writingAiResults;
+    const saved = getPersistedSession();
+    if (saved) return saved.writingAiResults || saved.answers?.writingAiResults || {};
     return {};
   });
   const [evaluatingWriting, setEvaluatingWriting] = useState<Record<string, boolean>>({});
@@ -322,20 +351,18 @@ export function AuthenticCBTExamPage() {
   // AI Speaking Evaluation States
   const [recordingSpeaking, setRecordingSpeaking] = useState<Record<string, boolean>>({});
   const [speakingAiResults, setSpeakingAiResults] = useState<Record<string, any>>(() => {
-    if (typeof window === "undefined") return {};
-    try {
-      const saved = localStorage.getItem(sessionKey);
-      if (saved) return JSON.parse(saved).speakingAiResults || JSON.parse(saved).answers?.speakingAiResults || {};
-    } catch { }
+    const sub = getPersistedSubmission();
+    if (sub && sub.speakingAiResults) return sub.speakingAiResults;
+    const saved = getPersistedSession();
+    if (saved) return saved.speakingAiResults || saved.answers?.speakingAiResults || {};
     return {};
   });
   const [evaluatingSpeaking, setEvaluatingSpeaking] = useState<Record<string, boolean>>({});
   const [speakingDialogueMap, setSpeakingDialogueMap] = useState<Record<string, Array<{ sender: 'examiner' | 'candidate'; text: string }>>>(() => {
-    if (typeof window === "undefined") return {};
-    try {
-      const saved = localStorage.getItem(sessionKey);
-      if (saved) return JSON.parse(saved).speakingDialogueMap || JSON.parse(saved).answers?.speakingDialogueMap || {};
-    } catch { }
+    const sub = getPersistedSubmission();
+    if (sub && sub.speakingDialogueMap) return sub.speakingDialogueMap;
+    const saved = getPersistedSession();
+    if (saved) return saved.speakingDialogueMap || saved.answers?.speakingDialogueMap || {};
     return {};
   });
   const speakingDialogueMapRef = useRef<Record<string, Array<{ sender: 'examiner' | 'candidate'; text: string }>>>({});
@@ -525,6 +552,8 @@ export function AuthenticCBTExamPage() {
       try {
         localStorage.removeItem(sessionKey);
         localStorage.removeItem(legacySessionKey);
+        localStorage.removeItem(submissionKey);
+        localStorage.removeItem(legacySubmissionKey);
       } catch { }
     }
     sessionEpochRef.current += 1;
@@ -563,6 +592,8 @@ export function AuthenticCBTExamPage() {
     setCurrentQuestionIdx(0);
     setCloudActiveSession(null);
     setShowSessionPromptModal(false);
+    setIsSubmitted(false);
+    setIsSubmittingExam(false);
   };
   const [oralSpeakingTimeRemaining, setOralSpeakingTimeRemaining] = useState<Record<string, number>>(() => {
     if (typeof window === "undefined") return {};
@@ -619,7 +650,7 @@ export function AuthenticCBTExamPage() {
   const [acceptedSectionDisclaimers, setAcceptedSectionDisclaimers] = useState<Record<string, boolean>>({});
 
   // Submission & Results & Strategy Modals State
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(() => Boolean(getPersistedSubmission()));
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isAudioPaused, setIsAudioPaused] = useState(false);
   const [isAudioFinished, setIsAudioFinished] = useState(false);
@@ -2102,13 +2133,15 @@ export function AuthenticCBTExamPage() {
   const handleFinishTest = async () => {
     if (isSubmittingExam) return;
     setIsSubmittingExam(true);
+    const currentWritingAiResults: Record<string, any> = { ...writingAiResults };
+    const currentSpeakingAiResults: Record<string, any> = { ...speakingAiResults };
     try {
       // 1. Batch evaluate any completed writing tasks that do not yet have AI results
       const writingSec = paper.sections.find((s) => s.type === "EXPRESSION_ECRITE");
       if (writingSec?.writingTasks) {
         const pendingWriting = writingSec.writingTasks.filter((t) => {
           const typed = writingResponses[t.id];
-          const hasAI = writingAiResults[t.id];
+          const hasAI = writingAiResults[t.id] || writingAiResults[`wri-${t.taskNumber || 1}`];
           return typed && typed.trim().length > 0 && !hasAI;
         });
 
@@ -2133,15 +2166,27 @@ export function AuthenticCBTExamPage() {
             if (json.success && json.data) {
               const { taskResults, compositeScoreOutOf20, nclcGrade, cefrLevel, expressEntryPoints } = json.data;
               if (taskResults) {
+                Object.entries(taskResults).forEach(([k, res]: [string, any]) => {
+                  currentWritingAiResults[k] = res;
+                });
+                writingSec.writingTasks.forEach((t, idx) => {
+                  const taskNum = t.taskNumber || idx + 1;
+                  const res = taskResults[t.id] || taskResults[`task_${idx}`] || taskResults[`wri-${taskNum}`];
+                  if (res) {
+                    currentWritingAiResults[t.id] = res;
+                    currentWritingAiResults[`wri-${taskNum}`] = res;
+                    currentWritingAiResults[`task_${idx}`] = res;
+                  }
+                });
+                currentWritingAiResults._sectionSummary = {
+                  compositeScoreOutOf20,
+                  nclcGrade,
+                  cefrLevel,
+                  expressEntryPoints,
+                };
                 setWritingAiResults((prev) => ({
                   ...prev,
-                  ...taskResults,
-                  _sectionSummary: {
-                    compositeScoreOutOf20,
-                    nclcGrade,
-                    cefrLevel,
-                    expressEntryPoints,
-                  },
+                  ...currentWritingAiResults,
                 }));
               }
             }
@@ -2157,7 +2202,7 @@ export function AuthenticCBTExamPage() {
         const pendingSpeaking = speakingSec.speakingTasks.filter((t) => {
           const transcript = speakingTranscripts[t.id];
           const dialogue = speakingDialogueMap[t.id];
-          const hasAI = speakingAiResults[t.id];
+          const hasAI = speakingAiResults[t.id] || speakingAiResults[`spk-${t.taskNumber || 1}`];
           const hasSpoken = (transcript && transcript.trim().length > 0) || (dialogue && dialogue.length > 0);
           return hasSpoken && !hasAI;
         });
@@ -2206,21 +2251,26 @@ export function AuthenticCBTExamPage() {
                   else if (totalScoreOutOf20 >= 3) { nclcGrade = "NCLC 3 (A1 Beginner)"; expressEntryPoints = 0; }
                   else { nclcGrade = "NCLC 0 (Zero Grade — Gibberish / Non-French)"; expressEntryPoints = 0; }
 
+                  const spkItem = {
+                    scoreOutOf20: totalScoreOutOf20,
+                    score: data.score || Math.round((totalScoreOutOf20 / 20) * 100),
+                    taskFulfillmentScore: data.taskFulfillmentScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+                    coherenceScore: data.coherenceScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+                    lexicalScore: data.lexicalScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+                    grammarScore: data.grammarScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+                    nclcGrade,
+                    expressEntryPoints,
+                    feedback: data.feedback || `Diagnostic Oral Evaluation (TCF Format): Total ${totalScoreOutOf20}/20 Marks.`,
+                    corrections: data.corrections || [],
+                    tips: data.tips || [],
+                  };
+                  const spkAliases = [t.id, `spk-${taskNumber}`, `task_${t.taskNumber ? t.taskNumber - 1 : 0}`];
+                  spkAliases.forEach((alias) => {
+                    if (alias) currentSpeakingAiResults[alias] = spkItem;
+                  });
                   setSpeakingAiResults((prev) => ({
                     ...prev,
-                    [t.id]: {
-                      scoreOutOf20: totalScoreOutOf20,
-                      score: data.score || Math.round((totalScoreOutOf20 / 20) * 100),
-                      taskFulfillmentScore: data.taskFulfillmentScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
-                      coherenceScore: data.coherenceScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
-                      lexicalScore: data.lexicalScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
-                      grammarScore: data.grammarScore || Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
-                      nclcGrade,
-                      expressEntryPoints,
-                      feedback: data.feedback || `Diagnostic Oral Evaluation (TCF Format): Total ${totalScoreOutOf20}/20 Marks.`,
-                      corrections: data.corrections || [],
-                      tips: data.tips || [],
-                    },
+                    ...currentSpeakingAiResults,
                   }));
                 }
               } catch (e) {
@@ -2234,7 +2284,32 @@ export function AuthenticCBTExamPage() {
       console.error("Submission evaluation error:", e);
     } finally {
       setIsSubmittingExam(false);
-      try { localStorage.removeItem(sessionKey); } catch { }
+      // Persist complete submission snapshot before clearing in-flight session
+      if (typeof window !== "undefined") {
+        try {
+          const submissionSnapshot = {
+            submittedAt: Date.now(),
+            paperId: paper.id,
+            paperType: paper.type,
+            mode,
+            selectedAnswers,
+            flaggedQuestions,
+            checkedMap,
+            attemptsMap,
+            writingResponses,
+            speakingTranscripts,
+            speakingDialogueMap,
+            writingAiResults: currentWritingAiResults,
+            speakingAiResults: currentSpeakingAiResults,
+            sectionTimeRemaining,
+            completedSectionIndices,
+          };
+          localStorage.setItem(submissionKey, JSON.stringify(submissionSnapshot));
+          try { localStorage.setItem(legacySubmissionKey, JSON.stringify(submissionSnapshot)); } catch {}
+          localStorage.removeItem(sessionKey);
+          try { localStorage.removeItem(legacySessionKey); } catch {}
+        } catch {}
+      }
       if (paper?.id) {
         apiFetch(`/exam/active-session/${paper.id}`, { method: "DELETE" }).catch(() => {});
       }
@@ -2616,23 +2691,51 @@ export function AuthenticCBTExamPage() {
           expressEntryPoints = 0;
         }
 
-        setWritingAiResults((prev) => ({
-          ...prev,
-          [taskId]: {
-            nclcGrade,
-            expressEntryPoints,
-            scoreOutOf20: totalScoreOutOf20,
-            taskFulfillmentScore: typeof data.taskFulfillmentScore === 'number' ? data.taskFulfillmentScore : (typeof data.taskCompletionScore === 'number' ? data.taskCompletionScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4))),
-            coherenceScore: typeof data.coherenceScore === 'number' ? data.coherenceScore : (typeof data.cohesionScore === 'number' ? data.cohesionScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4))),
-            lexicalScore: typeof data.lexicalScore === 'number' ? data.lexicalScore : (typeof data.vocabularyScore === 'number' ? data.vocabularyScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4))),
-            grammarScore: typeof data.grammarScore === 'number' ? data.grammarScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
-            feedback: data.feedback || `Diagnostic Evaluation (TCF Format): Total ${totalScoreOutOf20}/20.`,
-            criterionFeedback: data.criterionFeedback,
-            levelUpAdvice: data.levelUpAdvice,
-            corrections: Array.isArray(data.corrections) ? data.corrections : [],
-            tips: Array.isArray(data.tips) ? data.tips : []
-          }
-        }));
+        const evaluatedItem = {
+          nclcGrade,
+          expressEntryPoints,
+          scoreOutOf20: totalScoreOutOf20,
+          taskFulfillmentScore: typeof data.taskFulfillmentScore === 'number' ? data.taskFulfillmentScore : (typeof data.taskCompletionScore === 'number' ? data.taskCompletionScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4))),
+          coherenceScore: typeof data.coherenceScore === 'number' ? data.coherenceScore : (typeof data.cohesionScore === 'number' ? data.cohesionScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4))),
+          lexicalScore: typeof data.lexicalScore === 'number' ? data.lexicalScore : (typeof data.vocabularyScore === 'number' ? data.vocabularyScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4))),
+          grammarScore: typeof data.grammarScore === 'number' ? data.grammarScore : Math.min(5, Math.ceil(totalScoreOutOf20 / 4)),
+          feedback: data.feedback || `Diagnostic Evaluation (TCF Format): Total ${totalScoreOutOf20}/20.`,
+          criterionFeedback: data.criterionFeedback,
+          levelUpAdvice: data.levelUpAdvice,
+          corrections: Array.isArray(data.corrections) ? data.corrections : [],
+          tips: Array.isArray(data.tips) ? data.tips : []
+        };
+
+        const wKeyAliases = [
+          taskId,
+          `wri-${taskNumber}`,
+          `task_${taskNumber - 1}`,
+          `w${taskNumber}`,
+        ].filter(Boolean);
+
+        setWritingAiResults((prev) => {
+          const updated = { ...prev };
+          wKeyAliases.forEach((alias) => {
+            updated[alias] = evaluatedItem;
+          });
+          return updated;
+        });
+
+        if (typeof window !== "undefined") {
+          try {
+            const raw = localStorage.getItem(sessionKey) || localStorage.getItem(legacySessionKey);
+            const curr = raw ? JSON.parse(raw) : {};
+            if (!curr.writingAiResults) curr.writingAiResults = {};
+            wKeyAliases.forEach((alias) => {
+              curr.writingAiResults[alias] = evaluatedItem;
+            });
+            if (!curr.answers) curr.answers = {};
+            curr.answers.writingAiResults = curr.writingAiResults;
+            localStorage.setItem(sessionKey, JSON.stringify(curr));
+            try { localStorage.setItem(legacySessionKey, JSON.stringify(curr)); } catch {}
+          } catch {}
+        }
+
         setEvaluatingWriting((prev) => ({ ...prev, [taskId]: false }));
         return;
       }
@@ -2886,19 +2989,46 @@ export function AuthenticCBTExamPage() {
       expressEntryPoints = 0;
     }
 
-    setWritingAiResults((prev) => ({
-      ...prev,
-      [taskId]: {
-        nclcGrade,
-        expressEntryPoints,
-        scoreOutOf20: totalScoreOutOf20,
-        taskFulfillmentScore,
-        coherenceScore,
-        lexicalScore,
-        grammarScore,
-        feedback: `Diagnostic Evaluation (TCF Format): Total ${totalScoreOutOf20}/20 • Task Fulfillment: ${taskFulfillmentScore}/5, Coherence & Connectors: ${coherenceScore}/5, Lexical Range: ${lexicalScore}/5, Morphosyntax & Grammar: ${grammarScore}/5.`
-      }
-    }));
+    const fallbackItem = {
+      nclcGrade,
+      expressEntryPoints,
+      scoreOutOf20: totalScoreOutOf20,
+      taskFulfillmentScore,
+      coherenceScore,
+      lexicalScore,
+      grammarScore,
+      feedback: `Diagnostic Evaluation (TCF Format): Total ${totalScoreOutOf20}/20 • Task Fulfillment: ${taskFulfillmentScore}/5, Coherence & Connectors: ${coherenceScore}/5, Lexical Range: ${lexicalScore}/5, Morphosyntax & Grammar: ${grammarScore}/5.`
+    };
+
+    const wKeyAliases = [
+      taskId,
+      `wri-${taskNumber}`,
+      `task_${taskNumber - 1}`,
+      `w${taskNumber}`,
+    ].filter(Boolean);
+
+    setWritingAiResults((prev) => {
+      const updated = { ...prev };
+      wKeyAliases.forEach((alias) => {
+        updated[alias] = fallbackItem;
+      });
+      return updated;
+    });
+
+    if (typeof window !== "undefined") {
+      try {
+        const raw = localStorage.getItem(sessionKey) || localStorage.getItem(legacySessionKey);
+        const curr = raw ? JSON.parse(raw) : {};
+        if (!curr.writingAiResults) curr.writingAiResults = {};
+        wKeyAliases.forEach((alias) => {
+          curr.writingAiResults[alias] = fallbackItem;
+        });
+        if (!curr.answers) curr.answers = {};
+        curr.answers.writingAiResults = curr.writingAiResults;
+        localStorage.setItem(sessionKey, JSON.stringify(curr));
+        try { localStorage.setItem(legacySessionKey, JSON.stringify(curr)); } catch {}
+      } catch {}
+    }
 
     setEvaluatingWriting((prev) => ({ ...prev, [taskId]: false }));
   };
@@ -2947,18 +3077,31 @@ export function AuthenticCBTExamPage() {
     let writingWeightedScore = 0;
 
     const getTaskScore = (task: any, idx: number) => {
-      const key = task.id || task.title || `task_${idx}`;
-      const aiRes = writingAiResults[key] ||
-        (task.id && writingAiResults[task.id]) ||
-        (task.title && writingAiResults[task.title]) ||
-        writingAiResults[`wri-${idx + 1}`] ||
-        writingAiResults[`task_${idx}`] ||
-        writingAiResults[idx];
+      const key = task?.id || task?.title || `task_${idx}`;
+      const keysToTry = [
+        task?.id,
+        task?.title,
+        `wri-${idx + 1}`,
+        `task_${idx + 1}`,
+        `task_${idx}`,
+        String(idx),
+        Object.keys(writingAiResults)[idx],
+      ].filter(Boolean);
 
-      if (aiRes?.scoreOutOf20 !== undefined) {
-        return aiRes.scoreOutOf20;
+      for (const k of keysToTry) {
+        const res = writingAiResults[k];
+        if (res?.scoreOutOf20 !== undefined && res.scoreOutOf20 > 0) return res.scoreOutOf20;
+        if (res?.score !== undefined && res.score > 0) return Math.round((res.score / 100) * 20);
       }
-      const typedText = writingResponses[key] || (task.id && writingResponses[task.id]) || (task.title && writingResponses[task.title]) || writingResponses[idx] || writingResponses[`task_${idx}`] || "";
+
+      const arr = Object.values(writingAiResults).filter((v: any) => v && typeof v === "object" && !v.compositeScoreOutOf20);
+      if (arr[idx]) {
+        const res: any = arr[idx];
+        if (res?.scoreOutOf20 !== undefined && res.scoreOutOf20 > 0) return res.scoreOutOf20;
+        if (res?.score !== undefined && res.score > 0) return Math.round((res.score / 100) * 20);
+      }
+
+      const typedText = writingResponses[key] || (task?.id && writingResponses[task.id]) || (task?.title && writingResponses[task.title]) || writingResponses[idx] || writingResponses[`task_${idx}`] || "";
       if (typedText && typedText.trim().length > 0) {
         const clean = typedText.trim();
 
@@ -3198,11 +3341,24 @@ export function AuthenticCBTExamPage() {
       const hasAnyWriting = t1Score > 0 || t2Score > 0 || t3Score > 0;
       writingAttemptedCount = [t1Score, t2Score, t3Score].filter((s) => s > 0).length;
 
-      if (hasAnyWriting) {
-        // Official France Éducation International (FEI) Composite Weighting:
-        // Tâche 1 = 20% (max 4.0 pts) | Tâche 2 = 30% (max 6.0 pts) | Tâche 3 = 50% (max 10.0 pts)
-        // Any unattempted tasks receive 0 marks and count towards the total exam average.
-        writingWeightedScore = Math.round(0.20 * t1Score + 0.30 * t2Score + 0.50 * t3Score);
+      if (writingAiResults._sectionSummary?.compositeScoreOutOf20 !== undefined && writingAiResults._sectionSummary.compositeScoreOutOf20 > 0) {
+        writingWeightedScore = writingAiResults._sectionSummary.compositeScoreOutOf20;
+      } else if (hasAnyWriting) {
+        if (mode === "PRACTICE" && writingAttemptedCount < 3) {
+          // In Guided Practice mode, when student intentionally practices only 1 or 2 specific tasks,
+          // normalize weight across attempted tasks rather than penalizing unpracticed tasks with 0.
+          let weightSum = 0;
+          let weightedPoints = 0;
+          if (t1Score > 0) { weightedPoints += 0.20 * t1Score; weightSum += 0.20; }
+          if (t2Score > 0) { weightedPoints += 0.30 * t2Score; weightSum += 0.30; }
+          if (t3Score > 0) { weightedPoints += 0.50 * t3Score; weightSum += 0.50; }
+          writingWeightedScore = weightSum > 0 ? Math.round(weightedPoints / weightSum) : 0;
+        } else {
+          // Official France Éducation International (FEI) Composite Weighting:
+          // Tâche 1 = 20% (max 4.0 pts) | Tâche 2 = 30% (max 6.0 pts) | Tâche 3 = 50% (max 10.0 pts)
+          // Any unattempted tasks receive 0 marks and count towards the total exam average.
+          writingWeightedScore = Math.round(0.20 * t1Score + 0.30 * t2Score + 0.50 * t3Score);
+        }
       } else {
         writingWeightedScore = 0;
       }
@@ -3210,7 +3366,11 @@ export function AuthenticCBTExamPage() {
       const scores = wTasks.map((t, idx) => getTaskScore(t, idx));
       const validScores = scores.filter((s) => s > 0);
       writingAttemptedCount = validScores.length;
-      writingWeightedScore = validScores.length > 0 ? Math.round(validScores.reduce((a, b) => a + b, 0) / (wTasks.length || 3)) : 0;
+      if (mode === "PRACTICE" && validScores.length > 0) {
+        writingWeightedScore = Math.round(validScores.reduce((a, b) => a + b, 0) / validScores.length);
+      } else {
+        writingWeightedScore = validScores.length > 0 ? Math.round(validScores.reduce((a, b) => a + b, 0) / (wTasks.length || 3)) : 0;
+      }
     }
 
     const writingPct = Math.round((writingWeightedScore / 20) * 100);
@@ -4613,7 +4773,11 @@ export function AuthenticCBTExamPage() {
               const isValid = wordCount >= task.wordCountMin && wordCount <= task.wordCountMax;
               const isUnderMin = wordCount < task.wordCountMin;
               const isOverMax = wordCount > task.wordCountMax;
-              const aiEval = writingAiResults[task.id];
+              const aiEval = writingAiResults[task.id] ||
+                writingAiResults[`wri-${activeWritingTaskIdx + 1}`] ||
+                writingAiResults[`task_${activeWritingTaskIdx}`] ||
+                writingAiResults[task.title || ""] ||
+                writingAiResults[activeWritingTaskIdx];
               const isEvaluating = evaluatingWriting[task.id];
 
               return (
@@ -4929,6 +5093,52 @@ export function AuthenticCBTExamPage() {
                       )}
                     </div>
                   )}
+                </div>
+              );
+            })()}
+
+            {/* Expression Écrite Official Bilan Global & Scorecard Banner */}
+            {(() => {
+              const res = calculateResults();
+              const hasWritingResults = res.writingAttemptedCount > 0 && res.writingAvg > 0;
+              if (!hasWritingResults) return null;
+              const scaledWriting = Math.round((res.writingAvg / 20) * 450);
+              return (
+                <div className="p-4 sm:p-5 rounded-2xl border-2 border-pink-400 dark:border-pink-700 bg-pink-50/90 dark:bg-pink-950/60 space-y-3 shadow-lg font-sans">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-pink-200 dark:border-pink-800 pb-2">
+                    <span className="font-extrabold text-sm text-pink-900 dark:text-pink-200 flex items-center gap-2">
+                      <Trophy className="w-5 h-5 text-pink-600 dark:text-pink-400 animate-bounce" />
+                      <span>Bilan Global Officiel — Expression Écrite TCF Canada ({scaledWriting} / 450 Points)</span>
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="px-3 py-1 rounded-full bg-pink-600 text-white font-mono font-extrabold text-xs shadow">
+                        NCLC {res.writingNCLC.nclcLevel} ({res.writingNCLC.cefrEquivalent})
+                      </span>
+                      <span className="px-2.5 py-1 rounded bg-purple-700 text-white font-mono font-bold text-xs shadow">
+                        +{res.writingPoints} Points CRS
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                    <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-pink-200 dark:border-pink-900">
+                      <span className="text-[10px] font-bold text-slate-500 block uppercase mb-1">Score Cumulé Escalé :</span>
+                      <span className="text-xl font-extrabold text-pink-700 dark:text-pink-300 font-mono">{scaledWriting} / 450 pts</span>
+                      <p className="text-[10px] text-slate-500 mt-1">Note moyenne : {res.writingAvg}/20 Marks</p>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-pink-200 dark:border-pink-900">
+                      <span className="text-[10px] font-bold text-slate-500 block uppercase mb-1">Niveau NCLC Identifié :</span>
+                      <span className="text-sm font-bold text-purple-700 dark:text-purple-300 font-mono">NCLC {res.writingNCLC.nclcLevel} ({res.writingNCLC.cefrEquivalent})</span>
+                      <p className="text-[10px] text-slate-500 mt-1">Seuil minimal d'immigration : NCLC 7 (B2)</p>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-pink-200 dark:border-pink-900">
+                      <span className="text-[10px] font-bold text-slate-500 block uppercase mb-1">Points CRS Entrée Express :</span>
+                      <span className="text-xl font-extrabold text-purple-700 dark:text-purple-300 font-mono">+{res.writingPoints} Points</span>
+                      <p className="text-[10px] text-slate-500 mt-1">Maximum accordé pour l'Écrit : 34 points</p>
+                    </div>
+                  </div>
                 </div>
               );
             })()}
@@ -6133,9 +6343,10 @@ export function AuthenticCBTExamPage() {
                     const r = calculateResults();
                     if (r.attemptedCount === 1) {
                       if (r.writingAttemptedCount > 0) {
+                        const scaledWriting = Math.round((r.writingAvg / 20) * 450);
                         return (
                           <>
-                            Writing Module (EE): <strong>{r.writingAvg}/20 Marks</strong> (NCLC {r.writingNCLC.nclcLevel} / {r.writingNCLC.cefrEquivalent})
+                            Writing Module (EE): <strong>{scaledWriting} / 450 pts</strong> ({r.writingAvg}/20 Marks) • <strong>CLB / NCLC {r.writingNCLC.nclcLevel} ({r.writingNCLC.cefrEquivalent})</strong>
                             {r.writingAttemptedCount < 3 && (
                               <span className="opacity-90 font-medium ml-1">
                                 • ({r.writingAttemptedCount}/3 tasks completed: T1 {r.writingTaskScores.t1}/20, T2 {r.writingTaskScores.t2}/20, T3 {r.writingTaskScores.t3}/20)
@@ -6220,7 +6431,7 @@ export function AuthenticCBTExamPage() {
                           </span>
                         </div>
                         <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
-                          {res.writingAttemptedCount === 0 ? "No submission" : `${res.writingAvg}/20 Marks (${res.writingNCLC.cefrEquivalent})`}
+                          {res.writingAttemptedCount === 0 ? "No submission" : `${Math.round((res.writingAvg / 20) * 450)} / 450 pts (${res.writingAvg}/20 Marks • ${res.writingNCLC.cefrEquivalent})`}
                         </p>
                         {res.writingAttemptedCount > 0 && res.writingAttemptedCount < 3 && (
                           <p className="text-[10px] font-medium text-amber-700 dark:text-amber-300 leading-tight">

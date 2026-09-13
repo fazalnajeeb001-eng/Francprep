@@ -28,10 +28,10 @@ router.post('/speaking-chat', optionalAuth, (req, res, next) =>
 );
 
 // POST /api/writing/evaluate-writing-section & /api/writing/analyze-full-writing
-router.post('/evaluate-writing-section', authenticate, (req, res, next) =>
+router.post('/evaluate-writing-section', optionalAuth, (req, res, next) =>
   writingController.evaluateWritingSection(req, res, next)
 );
-router.post('/analyze-full-writing', authenticate, (req, res, next) =>
+router.post('/analyze-full-writing', optionalAuth, (req, res, next) =>
   writingController.evaluateWritingSection(req, res, next)
 );
 
