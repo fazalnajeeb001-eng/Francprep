@@ -5,7 +5,7 @@ import { authenticate, optionalAuth } from '../middleware/auth';
 const router = Router();
 
 // POST /api/writing/feedback - Submit writing for AI feedback
-router.post('/feedback', authenticate, (req, res, next) =>
+router.post('/feedback', optionalAuth, (req, res, next) =>
   writingController.submit(req, res, next)
 );
 

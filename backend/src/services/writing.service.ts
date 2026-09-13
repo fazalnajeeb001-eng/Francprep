@@ -1173,13 +1173,10 @@ Respond STRICTLY with a valid JSON object matching this schema:
             .replace(/fails to meet the word count/gi, 'meets the word count target');
         }
 
-        const levelUpAdvice = parsed.levelUpAdvice || (
-          scoreOutOf20 < 8
-            ? "To jump to B1 (NCLC 5-6), replace spoken conversational phrasing with polite request structures ('Je souhaiterais vous demander...'), use basic linking words ('donc', 'car', 'alors'), and expand your text to at least 50-60 words."
-            : scoreOutOf20 < 12
-            ? "To reach B2 (NCLC 7-8), use polite conditional formulas ('Pourriez-vous m'indiquer...', 'Je vous saurais gré...'), add 2-3 formal connectors ('afin de', 'en outre', 'par ailleurs'), and use a complete formal closing ('Je vous prie d'agréer mes salutations distinguées')."
-            : "To target C1 (NCLC 9+), integrate high administrative/academic register ('par la présente', 'défaillance critique', 'salubrité publique'), use subjunctive clauses, and construct nuanced complex arguments."
-        );
+        let levelUpAdvice = parsed.levelUpAdvice;
+        if (!levelUpAdvice || (isTache3 && /(salutations|lettre|courriel|agréer|demander\s+au\s+responsable)/i.test(levelUpAdvice)) || (isTache2 && /(salutations|lettre|agréer|demander\s+au\s+responsable)/i.test(levelUpAdvice))) {
+          levelUpAdvice = this.getCalibratedLevelUpAdvice(scoreOutOf20, isTache1, isTache2, isTache3);
+        }
 
         return {
           score: scorePct,
@@ -1350,7 +1347,9 @@ Respond STRICTLY with a valid JSON object matching this schema:
       "pérenne", "équité", "disparités", "substantiels", "substantielle", "déploiement", "incontestablement",
       "intergénérationnel", "sollicitation", "infrastructure", "mobilisation", "écosystème", "automatisation", "cybersécurité",
       "défaillance", "manquement", "invivable", "sanitaires inacceptables", "inacceptables", "je vous somme", "règlement immédiat",
-      "dans les plus brefs délais", "cristallise", "dilemme", "vecteur", "émancipation", "redistributive", "efficience"
+      "dans les plus brefs délais", "cristallise", "dilemme", "vecteur", "émancipation", "redistributive", "efficience",
+      "mosaïque", "flamboyante", "flamboyant", "cristallin", "cristallins", "boréale", "immersion", "ressourcement",
+      "déconnexion", "apaisement", "circulaire", "viabilité", "subvention", "prédation", "prolifération"
     ];
     const b2Lexical = [
       "autorisation", "absence", "exceptionnelle", "impératif", "familial", "majeur", "perturber", "fonctionnement",
@@ -1358,7 +1357,8 @@ Respond STRICTLY with a valid JSON object matching this schema:
       "absolue", "compréhension", "salutations", "distinguées", "disponibilité", "substitut", "remplacement", "directeur",
       "responsable", "avantage", "inconvénient", "participation", "installation", "inscription", "abonnement", "formation",
       "réclamation", "matériel", "garantie", "écologique", "bénévole", "solidaire", "développement", "numérique", "culturel",
-      "festival", "conférence", "débat", "opinion", "argument", "mesure", "citoyen", "société", "températures", "glaciales", "chute"
+      "festival", "conférence", "débat", "opinion", "argument", "mesure", "citoyen", "société", "températures", "glaciales", "chute",
+      "faune", "flore", "panoramique", "sentier", "excursion", "privilège", "environnemental", "pollution", "plastique", "durable", "biodiversité"
     ];
     const b1Lexical = [
       "appartement", "problème", "réparer", "système", "séjour", "randonnée", "région", "traditionnel", "activité", "participer",
@@ -1491,7 +1491,7 @@ Respond STRICTLY with a valid JSON object matching this schema:
       // ─── TÂCHE 2 UNIVERSAL CEFR BENCHMARK MATRIX (A1 to C2) ───
       const hasC2NarrativeLex = /(liturgie|prométhéenne|Bénarès|ghâts|Gange|alchimie millénaire|futaie primaire|transcendance|dramaturgie|mélopées|impassible majesté|sérénissime|détachement philosophique|authentique gravité|marteler le métal|enclume d'acier ancestral)/i.test(clean);
       const hasC1NarrativeLex = /(Atacama|joute oratoire|nuit de controverse|sublimer la confrontation|sanctuaire|acuité|plénitude|introspection|vertigineuse|insignifiance|pureté cristalline|délibération démocratique|émulation réciproque|dénouer|inestimable)/i.test(clean);
-      const hasB2NarrativeLex = /(raquettes au cœur des Alpes|Alpes savoyardes|sommets majestueux|manteau de neige|ébénisterie|marqueterie|matière ligneuse|Vancouver|montagnes Rocheuses|traversée mémorable|canyons vertigineux|kayakiste en détresse|sang-froid|vestiges d'une cité antique|brigade de secours|inondations dévastatrices|élan de solidarité|vue à couper le souffle|randonnée alpine)/i.test(clean);
+      const hasB2NarrativeLex = /(parc national|forêt\s+boréale|mosaïque flamboyante|lacs? cristallins?|immersion exceptionnelle|faune sauvage|sentiers? sauvages?|apaisement profond|ressourcement|déconnexion totale|nature préservée|raquettes au cœur des Alpes|Alpes savoyardes|sommets majestueux|manteau de neige|ébénisterie|marqueterie|matière ligneuse|Vancouver|montagnes Rocheuses|traversée mémorable|canyons vertigineux|kayakiste en détresse|sang-froid|vestiges d'une cité antique|brigade de secours|inondations dévastatrices|élan de solidarité|vue à couper le souffle|randonnée alpine)/i.test(clean);
       const hasB1Transitions = /(d'abord.*ensuite|soudainement|après avoir\s+\w+|vers midi.*soudainement|heureusement.*dès que|au fil des semaines|au départ.*cependant|pourtant.*dès que|après six mois|bénévole dans une association|toutefois.*facilité)/i.test(clean);
 
       if (hasTelegraphicGrammar || wordCount < 50) {
@@ -1510,8 +1510,8 @@ Respond STRICTLY with a valid JSON object matching this schema:
     } else if (isTache3) {
       // ─── TÂCHE 3 UNIVERSAL CEFR BENCHMARK MATRIX (A1 to C2) ───
       const hasC2Philosophy = /(prométhéen|Jacques Ellul|téléologique|déliquescence|habermassiens|solipsiste|sanctuarisation|Simone Weil|nœuds gordiens|démiurgique|réification ontologique|computationalistes|arbitrage éthique|l'autonomie de la technique|agir communicationnel|gratuité souveraine|antinomie|sacralité du vivant|agentivité morale)/i.test(clean);
-      const hasC1Dialectic = /(CRISPR-Cas9|moratoire international|ciseaux moléculaires|revenu de base universel|ubérisation|multilatéralisme|souverainismes|hégémoni(que|e)|dilemmes bioéthiques|recherche translationnelle|tentation eugéniste|ingénierie génétique|ciment républicain|multipolaires|décroissance|aporie|souveraineté numérique|infonuagique|méritocratie|méritocratique|mixité sociale|parangon|découplage substantiel|prédation environnementale|ingérences informationnelles)/i.test(clean);
-      const hasB2Dialectic = /(d'un côté.*d'un autre côté|d'une part.*d'autre part|les partisans.*d'autres|en revanche|néanmoins|par conséquent|toutefois.*selon moi|en conclusion)/is.test(clean);
+      const hasC1Dialectic = /(catastrophe écologique|économie circulaire|viabilité économique|subventions ciblées|prolifération des plastiques|CRISPR-Cas9|moratoire international|ciseaux moléculaires|revenu de base universel|ubérisation|multilatéralisme|souverainismes|hégémoni(que|e)|dilemmes bioéthiques|recherche translationnelle|tentation eugéniste|ingénierie génétique|ciment républicain|multipolaires|décroissance|aporie|souveraineté numérique|infonuagique|méritocratie|méritocratique|mixité sociale|parangon|découplage substantiel|prédation environnementale|ingérences informationnelles)/i.test(clean);
+      const hasB2Dialectic = /(d'un côté.*d'un autre côté|d'une part.*d'autre part|les partisans.*d'autres|en revanche|néanmoins|par conséquent|toutefois.*selon moi|en conclusion|en définitive|sur le plan économique|sur le plan écologique)/is.test(clean);
       const hasB1Opinion = /(d'un côté|d'une part|cependant|en conclusion|selon moi|à mon avis|je pense que|de plus)/i.test(clean);
 
       if (hasTelegraphicGrammar || wordCount < 50) {
@@ -1625,11 +1625,7 @@ Respond STRICTLY with a valid JSON object matching this schema:
         lexical: `Lexical Variety: ${lexicalScore}/5 points. Thematic vocabulary richness and precision evaluated.`,
         morphosyntax: `Morphosyntax: ${grammarScore}/5 points. Verb tense accuracy, sentence structures, and accents evaluated (${localAccentIssues.length} accent issue${localAccentIssues.length === 1 ? '' : 's'} detected).`
       },
-      levelUpAdvice: scoreOutOf20 < 8
-        ? "To jump to B1 (NCLC 5-6), replace spoken conversational phrasing with polite request structures ('Je souhaiterais vous demander...'), use basic linking words ('donc', 'car', 'alors'), and expand your text to at least 50-60 words."
-        : scoreOutOf20 < 12
-        ? "To reach B2 (NCLC 7-8), use polite conditional formulas ('Pourriez-vous m'indiquer...', 'Je vous saurais gré...'), add 2-3 formal connectors ('afin de', 'en outre', 'par ailleurs'), and use a complete formal closing ('Je vous prie d'agréer mes salutations distinguées')."
-        : "To target C1 (NCLC 9+), integrate high administrative/academic register ('par la présente', 'défaillance critique', 'salubrité publique'), use subjunctive clauses, and construct nuanced complex arguments.",
+      levelUpAdvice: this.getCalibratedLevelUpAdvice(scoreOutOf20, isTache1, isTache2, isTache3),
       corrections: localAccentIssues,
       tips: [
         isTache1 ? "Respectez la structure formelle : salutation, demande polie au conditionnel, et formule de politesse complète." :
@@ -1638,6 +1634,35 @@ Respond STRICTLY with a valid JSON object matching this schema:
       ],
       layer3AdjustmentApplied: tieBreaker.layer3AdjustmentApplied,
     };
+  }
+
+  private getCalibratedLevelUpAdvice(scoreOutOf20: number, isTache1: boolean, isTache2: boolean, isTache3: boolean): string {
+    if (isTache1) {
+      if (scoreOutOf20 < 8) {
+        return "To jump to B1 (NCLC 5-6), replace spoken conversational phrasing with polite request structures ('Je souhaiterais vous demander...'), use basic linking words ('donc', 'car', 'alors'), and expand your text to at least 60 words.";
+      } else if (scoreOutOf20 < 12) {
+        return "To reach B2 (NCLC 7-8), use polite conditional formulas ('Pourriez-vous m'indiquer...', 'Je vous saurais gré...'), add 2-3 formal connectors ('afin de', 'en outre', 'par ailleurs'), and use a complete formal closing ('Je vous prie d'agréer mes salutations distinguées').";
+      } else {
+        return "To target C1 (NCLC 9+), integrate high administrative/academic register ('par la présente', 'défaillance critique', 'salubrité publique'), use subjunctive clauses, and construct nuanced complex arguments.";
+      }
+    } else if (isTache2) {
+      if (scoreOutOf20 < 8) {
+        return "To jump to B1 (NCLC 5-6), enrich your narrative with chronological connectors ('d'abord', 'ensuite', 'enfin'), alternate between simple sentences and basic past tense descriptions, and reach at least 100-120 words.";
+      } else if (scoreOutOf20 < 12) {
+        return "To reach B2 (NCLC 7-8), master the alternation between passé composé (for chronological events) and imparfait (for descriptions and atmosphere), add sensory details ('vue imprenable', 'paysage féerique'), and integrate temporal transitions ('au cours de', 'après avoir').";
+      } else {
+        return "To target C1 (NCLC 9+), employ evocative literary vocabulary ('mosaïque flamboyante', 'immersion saisissante', 'apaisement profond'), use participle clauses, and craft an immersive narrative arc with reflective closing insights.";
+      }
+    } else {
+      // Tâche 3 (Dialectical Argumentative Essay)
+      if (scoreOutOf20 < 8) {
+        return "To jump to B1 (NCLC 5-6), clearly state your opinion with introductory markers ('selon moi', 'à mon avis'), present at least two distinct reasons linked by connectors ('de plus', 'en revanche'), and reach at least 100-120 words.";
+      } else if (scoreOutOf20 < 12) {
+        return "To reach B2 (NCLC 7-8), structure your essay with a balanced dialectical plan (opposing perspectives), use formal debate connectors ('d'une part / d'autre part', 'toutefois', 'néanmoins'), and never include letter greetings or sign-offs.";
+      } else {
+        return "To target C1 (NCLC 9+), integrate abstract debate discourse ('économie circulaire', 'aporie', 'souveraineté', 'viabilité'), formulate a sophisticated thesis-antithesis-synthesis progression, and deliver an impartial, nuanced conclusion.";
+      }
+    }
   }
 
   async checkGrammar(prompt: string, answer: string, expectedAnswer?: string, lessonTitle?: string, targetLanguage = 'French'): Promise<GrammarCheckResult> {

@@ -2591,7 +2591,8 @@ export function AuthenticCBTExamPage() {
     textVal: string,
     sampleResponse?: string,
     minWords = 60,
-    maxWords = 180
+    maxWords = 180,
+    taskNumberExplicit?: number
   ) => {
     const clean = textVal ? textVal.trim() : "";
     const wordCount = countFrenchWords(clean);
@@ -2627,9 +2628,11 @@ export function AuthenticCBTExamPage() {
       }
     }
 
-    const taskNumber = taskId?.includes('w1') || taskId?.includes('task_0') || minWords === 60 ? 1
-      : taskId?.includes('w2') || taskId?.includes('task_1') || minWords === 120 ? 2
-        : taskId?.includes('w3') || taskId?.includes('task_2') || minWords >= 140 ? 3 : 1;
+    const taskNumber = taskNumberExplicit
+      ?? (taskId?.includes('w1') || taskId?.includes('task_0') ? 1
+      : taskId?.includes('w2') || taskId?.includes('task_1') ? 2
+      : taskId?.includes('w3') || taskId?.includes('task_2') ? 3
+      : (activeWritingTaskIdx + 1));
 
     try {
       // Call backend AI writing evaluation API endpoint
@@ -2745,9 +2748,9 @@ export function AuthenticCBTExamPage() {
     const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|travel|city|park|food|good|experience|like|you|know|actually)\b/i.test(clean);
     const hasTelegraphicGrammar = /\b(je\s+allé|je\s+faire|nous\s+manger|je\s+aimé|je\s+très|lieu\s+est|parce\s+que\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances|prendre\s+photo)\b/i.test(clean);
 
-    const isTache1 = Boolean(taskId?.includes('w1') || taskId?.includes('task_0') || minWords === 60);
-    const isTache2 = Boolean(taskId?.includes('w2') || taskId?.includes('task_1') || minWords === 120);
-    const isTache3 = Boolean(taskId?.includes('w3') || taskId?.includes('task_2') || minWords >= 140);
+    const isTache1 = taskNumber === 1;
+    const isTache2 = taskNumber === 2;
+    const isTache3 = taskNumber === 3;
 
     let taskFulfillmentScore = 1;
     const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test(clean) && /(cordialement|bien à vous|salutations|respectueusement)/i.test(clean);
@@ -4949,7 +4952,7 @@ export function AuthenticCBTExamPage() {
                       {(mode === "PRACTICE" || isSubmitted) && (
                         <button
                           disabled={isEvaluating}
-                          onClick={() => handleEvaluateWritingAI(task.id, task.prompt, textVal, task.sampleResponse, task.wordCountMin, task.wordCountMax)}
+                          onClick={() => handleEvaluateWritingAI(task.id, task.prompt, textVal, task.sampleResponse, task.wordCountMin, task.wordCountMax, task.taskNumber || (activeWritingTaskIdx + 1))}
                           className="px-4 py-2 rounded-lg bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs shadow flex items-center justify-center gap-1.5 disabled:opacity-40 transition-all cursor-pointer"
                         >
                           <Sparkles className="w-3.5 h-3.5" />
@@ -5100,7 +5103,8 @@ export function AuthenticCBTExamPage() {
             {/* Expression Écrite Official Bilan Global & Scorecard Banner */}
             {(() => {
               const res = calculateResults();
-              const hasWritingResults = res.writingAttemptedCount > 0 && res.writingAvg > 0;
+              const isAllWritingEvaluated = res.writingAttemptedCount >= currentSection.writingTasks.length;
+              const hasWritingResults = (isAllWritingEvaluated || isSubmitted) && res.writingAttemptedCount > 0 && res.writingAvg > 0;
               if (!hasWritingResults) return null;
               const scaledWriting = Math.round((res.writingAvg / 20) * 450);
               return (
