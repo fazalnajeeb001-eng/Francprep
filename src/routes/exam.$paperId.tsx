@@ -996,38 +996,43 @@ export function AuthenticCBTExamPage() {
     const clean = (userText || '').trim();
     if (!clean) return;
 
-    if (isChatSendingRef.current[taskId]) return;
-    isChatSendingRef.current[taskId] = true;
+    const paperNum = paperNumber;
+    const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
+    const masterTask = MASTER_SPEAKING_BANK[paperNum]?.[activeSpeakingTaskIdx];
+    const resolvedTaskId = taskId || activeTask?.id || masterTask?.id || `spk-p${paperNum}-t${activeSpeakingTaskIdx + 1}`;
+
+    if (isChatSendingRef.current[resolvedTaskId]) return;
+    isChatSendingRef.current[resolvedTaskId] = true;
 
     try {
       unlockAudioEngine();
     } catch { }
 
     // Clear transcript state & ref immediately & cancel pending auto-send timers to prevent duplicates
-    const speechRec = (window as any)[`_speechRec_${taskId}`];
+    const speechRec = (window as any)[`_speechRec_${resolvedTaskId}`];
     if (speechRec) {
       try { speechRec.stop(); } catch { }
-      delete (window as any)[`_speechRec_${taskId}`];
+      delete (window as any)[`_speechRec_${resolvedTaskId}`];
     }
-    speakingTranscriptsRef.current[taskId] = "";
-    setSpeakingTranscripts((prev) => ({ ...prev, [taskId]: "" }));
-    if (autoSendTimerRef.current[taskId]) {
-      clearTimeout(autoSendTimerRef.current[taskId]);
-      autoSendTimerRef.current[taskId] = null as any;
+    speakingTranscriptsRef.current[resolvedTaskId] = "";
+    setSpeakingTranscripts((prev) => ({ ...prev, [resolvedTaskId]: "" }));
+    if (autoSendTimerRef.current[resolvedTaskId]) {
+      clearTimeout(autoSendTimerRef.current[resolvedTaskId]);
+      autoSendTimerRef.current[resolvedTaskId] = null as any;
     }
 
-    const existingDialogue = speakingDialogueMapRef.current[taskId] || speakingDialogueMap[taskId] || [];
+    const existingDialogue = speakingDialogueMapRef.current[resolvedTaskId] || speakingDialogueMap[resolvedTaskId] || [];
     const updatedMessages: Array<{ sender: 'examiner' | 'candidate'; text: string }> = [
       ...existingDialogue,
       { sender: 'candidate' as const, text: clean }
     ];
-    speakingDialogueMapRef.current[taskId] = updatedMessages;
-    setSpeakingDialogueMap((prev) => ({ ...prev, [taskId]: updatedMessages }));
-    setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: true }));
+    speakingDialogueMapRef.current[resolvedTaskId] = updatedMessages;
+    setSpeakingDialogueMap((prev) => ({ ...prev, [resolvedTaskId]: updatedMessages }));
+    setSpeakingChatLoading((prev) => ({ ...prev, [resolvedTaskId]: true }));
     setIsAudioFetching(true);
 
     setTimeout(() => {
-      const el = document.getElementById(`dialogue-box-${taskId}`);
+      const el = document.getElementById(`dialogue-box-${resolvedTaskId}`);
       if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }, 100);
 
@@ -1041,9 +1046,6 @@ export function AuthenticCBTExamPage() {
         messagesPayload = [{ role: 'user', content: clean }];
       }
 
-      const paperNum = paperNumber;
-      const masterTask = MASTER_SPEAKING_BANK[paperNum]?.[activeSpeakingTaskIdx];
-      const activeTask = currentSection?.speakingTasks?.[activeSpeakingTaskIdx];
       const persona = activeTask?.examinerPersona || masterTask?.examinerPersona || MASTER_SPEAKING_BANK[paperNum]?.[0]?.examinerPersona;
       const examinerName = persona?.name || MASTER_SPEAKING_BANK[paperNum]?.[0]?.examinerPersona?.name || "Examinateur TCF Canada";
       const examinerRole = persona?.role || "Examinateur certifié FEI — Format TCF Canada";
@@ -1059,12 +1061,12 @@ export function AuthenticCBTExamPage() {
       // Calculate real-world remaining time for active task clock
       const targetMins = activeSpeakingTaskIdx === 0 ? 2 : activeSpeakingTaskIdx === 1 ? 3.5 : 4.5;
       const targetDurationSecs = targetMins * 60;
-      const activeTaskStartMs = taskStartTimestampRef.current[taskId] || taskStartTimestampRef.current[altKey1] || taskStartTimestampRef.current[altKey2] || taskStartTimestampRef.current[altKey3];
+      const activeTaskStartMs = taskStartTimestampRef.current[resolvedTaskId] || taskStartTimestampRef.current[altKey1] || taskStartTimestampRef.current[altKey2] || taskStartTimestampRef.current[altKey3];
       const realElapsedSecs = activeTaskStartMs ? Math.floor((Date.now() - activeTaskStartMs) / 1000) : 0;
       const realRemainingSecs = Math.max(0, targetDurationSecs - realElapsedSecs);
 
       const stateRemainingSecs =
-        typeof oralSpeakingTimeRemaining[taskId] === 'number' ? oralSpeakingTimeRemaining[taskId] :
+        typeof oralSpeakingTimeRemaining[resolvedTaskId] === 'number' ? oralSpeakingTimeRemaining[resolvedTaskId] :
           typeof oralSpeakingTimeRemaining[altKey1] === 'number' ? oralSpeakingTimeRemaining[altKey1] :
             typeof oralSpeakingTimeRemaining[altKey2] === 'number' ? oralSpeakingTimeRemaining[altKey2] :
               typeof oralSpeakingTimeRemaining[altKey3] === 'number' ? oralSpeakingTimeRemaining[altKey3] :
@@ -1152,7 +1154,7 @@ export function AuthenticCBTExamPage() {
       if (!replyText || typeof replyText !== 'string' || !replyText.trim()) {
         const isTache1 = /tâche\s*1|entretien|dirigé|présentation/i.test(taskTitle);
         const isTache2 = /tâche\s*2|interaction|questions|document|rôle|roleplay/i.test(taskTitle);
-        const currentDialogue = speakingDialogueMap[taskId] || [];
+        const currentDialogue = speakingDialogueMap[resolvedTaskId] || [];
         const examinerTexts = currentDialogue.filter(m => m.sender === 'examiner').map(m => m.text);
         const isClosingTurn = /\b(merci|remercie|recontacter|rappelle|réfléchir|au revoir|bonne journée|bonne fin|quitte|finaliser)\b/i.test(clean);
 
@@ -1210,18 +1212,18 @@ export function AuthenticCBTExamPage() {
       }
 
       setSpeakingDialogueMap((prev) => {
-        const existing = prev[taskId] || [];
+        const existing = prev[resolvedTaskId] || [];
         const hasCand = existing.length > 0 && existing[existing.length - 1].sender === 'candidate' && existing[existing.length - 1].text === clean;
         const base = hasCand ? existing : [...existing, { sender: 'candidate' as const, text: clean }];
         const finalDialogue = [...base, { sender: 'examiner' as const, text: replyText }];
-        speakingDialogueMapRef.current[taskId] = finalDialogue;
-        return { ...prev, [taskId]: finalDialogue };
+        speakingDialogueMapRef.current[resolvedTaskId] = finalDialogue;
+        return { ...prev, [resolvedTaskId]: finalDialogue };
       });
-      setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
-      isChatSendingRef.current[taskId] = false;
+      setSpeakingChatLoading((prev) => ({ ...prev, [resolvedTaskId]: false }));
+      isChatSendingRef.current[resolvedTaskId] = false;
 
       setTimeout(() => {
-        const box = document.getElementById(`dialogue-container-${taskId}`);
+        const box = document.getElementById(`dialogue-container-${resolvedTaskId}`);
         if (box) box.scrollTop = box.scrollHeight;
       }, 100);
 
@@ -1235,7 +1237,7 @@ export function AuthenticCBTExamPage() {
             if (currentSection?.type === "EXPRESSION_ORALE" && !isSubmitted) {
               setIsAudioFetching(false);
               setIsPlayingAudio(false);
-              handleToggleSpeakingRecording(taskId);
+              handleToggleSpeakingRecording(resolvedTaskId);
             }
           }, 1200);
         },
@@ -1254,12 +1256,12 @@ export function AuthenticCBTExamPage() {
       }
       setSpeakingDialogueMap((prev) => ({
         ...prev,
-        [taskId]: [...updatedMessages, { sender: 'examiner' as const, text: emergencyReply }],
+        [resolvedTaskId]: [...updatedMessages, { sender: 'examiner' as const, text: emergencyReply }],
       }));
       handlePlayExaminerAudio(emergencyReply);
     }
-    setSpeakingChatLoading((prev) => ({ ...prev, [taskId]: false }));
-    isChatSendingRef.current[taskId] = false;
+    setSpeakingChatLoading((prev) => ({ ...prev, [resolvedTaskId]: false }));
+    isChatSendingRef.current[resolvedTaskId] = false;
   };
 
   const hasPlayedIntroRef = useRef<Record<string, boolean>>({});

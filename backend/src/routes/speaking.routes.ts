@@ -248,8 +248,9 @@ ${timeWarningDirective}
   * For every intermediate turn, conclude with a natural prompt handing control back to the candidate:
     "Voilà. Avez-vous d'autres questions sur le logement ?" / "Avez-vous d'autres questions ?" / "Je vous écoute."
 - ROLEPLAY CLOSING RULE:
-  * If the candidate is thanking you and concluding ("Merci beaucoup, je vais réfléchir et vous rappeler", "Bonne journée", "Au revoir"), do NOT ask "Avez-vous d'autres questions ?".
-  * Conclude naturally: "C'est parfait ! Je vous en prie. N'hésitez pas si vous avez besoin d'autres précisions. Excellente journée à vous et à très bientôt !"
+  * If the candidate says "merci" as a conversational transition but proceeds to ask another question (e.g. "Merci, et quel est le loyer ?", "D'accord, et pour les horaires ?"), DO NOT treat this as a goodbye. Answer the question directly using the One-Info Rule and append: "Avez-vous d'autres questions ?".
+  * ONLY conclude the roleplay if the candidate explicitly signs off without asking anything further (e.g., "Je n'ai plus de questions, je vais réfléchir, merci et au revoir !").
+  * When concluding: "C'est parfait ! Je vous en prie. N'hésitez pas si vous avez besoin d'autres précisions. Excellente journée à vous et à très bientôt !"
 - STRICT 2-SENTENCE CEILING:
   * Sentence 1: Direct, precise answer to their question based on the document.
   * Sentence 2: Ball-in-court closing ("Avez-vous d'autres questions ?").
@@ -582,15 +583,23 @@ export async function processSpeakingChatRequest(body: ChatRequestBody): Promise
   const isTache2 = /tâche\s*2|interaction|exercice en interaction|rôle|roleplay/i.test(taskTitle || '');
   
   if (remainingTimeSec !== undefined && remainingTimeSec <= 25) {
-    // WRAP-UP MODE: Strip any trailing questions
+    // WRAP-UP MODE: Time is running out, strip any trailing invitations
     content = content.replace(/avez-vous d'autres questions\s*\??/gi, '').trim();
     if (!content || content.length < 5) {
       content = "Je vous remercie. Le temps pour cette tâche est presque écoulé, nous avons fait le tour des questions.";
     }
   } else if (isTache2) {
-    const isClosing = /\b(merci|remercie|recontacter|rappelle|réfléchir|au revoir|bonne journée|bonne fin|quitte|finaliser)\b/i.test(lastUserText);
+    // 1. Check if user is actively asking a question despite polite bridge words
+    const hasQuestionIndicator = /\?|(\b(quel|quels|quelle|quelles|combien|comment|est-ce que|quand|où|pourquoi|pourriez-vous|pouvez-vous|serait-il|y a-t-il)\b)/i.test(lastUserText);
+
+    // 2. Genuine closing requires explicit wrap-up phrases AND no active question follow-up
+    const hasExplicitSignoff = /\b(au revoir|bonne journ[eé]e|bonne fin de journ[eé]e|[aà] bient[oô]t|je vais r[eé]fl[eé]chir|je n'ai plus de question|ce sera tout|c'est tout pour moi|je vous rappellerai|je vous rappelle)\b/i.test(lastUserText);
+
+    const isClosing = hasExplicitSignoff && !hasQuestionIndicator;
+
     if (!isClosing) {
       const cleanContent = content.trim();
+      // Ensure ball-in-court prompt is preserved if the LLM dropped it
       if (!/avez-vous d'autres questions\s*\??$/i.test(cleanContent)) {
         content = `${cleanContent.replace(/[.!?]+$/, '')}. Avez-vous d'autres questions ?`;
       }
