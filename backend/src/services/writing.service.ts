@@ -654,9 +654,9 @@ export class WritingService {
     }
 
     // Task Type & Official FEI Target CEFR Bounds
-    const isTache1 = taskNumber === 1 || Boolean(lessonTitle?.includes('Tâche 1') || lessonTitle?.includes('-w1') || (wordCountMin === 60 && (wordCountMax ?? 120) <= 120) || (expectedAnswer && expectedAnswer.includes('60') && !expectedAnswer.includes('140')));
-    const isTache2 = taskNumber === 2 || Boolean(lessonTitle?.includes('Tâche 2') || lessonTitle?.includes('-w2') || (wordCountMin === 120 && (wordCountMax ?? 150) <= 150) || (expectedAnswer && expectedAnswer.includes('120') && !expectedAnswer.includes('140')));
-    const isTache3 = taskNumber === 3 || Boolean(lessonTitle?.includes('Tâche 3') || lessonTitle?.includes('-w3') || (wordCountMin !== undefined && wordCountMin >= 140) || (expectedAnswer && expectedAnswer.includes('140')));
+    const isTache1 = taskNumber !== undefined ? taskNumber === 1 : Boolean(lessonTitle?.includes('Tâche 1') || lessonTitle?.includes('-w1') || (wordCountMin === 60 && (wordCountMax ?? 120) <= 120) || (expectedAnswer && expectedAnswer.includes('60') && !expectedAnswer.includes('140')));
+    const isTache2 = taskNumber !== undefined ? taskNumber === 2 : Boolean(lessonTitle?.includes('Tâche 2') || lessonTitle?.includes('-w2') || (wordCountMin === 120 && (wordCountMax ?? 150) <= 150) || (expectedAnswer && expectedAnswer.includes('120') && !expectedAnswer.includes('180') && !expectedAnswer.includes('140')));
+    const isTache3 = taskNumber !== undefined ? taskNumber === 3 : Boolean(lessonTitle?.includes('Tâche 3') || lessonTitle?.includes('-w3') || (wordCountMin !== undefined && wordCountMin >= 140) || (expectedAnswer && (expectedAnswer.includes('140') || expectedAnswer.includes('180'))));
 
     const targetMin = wordCountMin ?? (isTache2 ? 120 : isTache3 ? 140 : 60);
     const targetMax = wordCountMax ?? (isTache2 ? 150 : isTache3 ? 180 : 120);
@@ -1224,9 +1224,9 @@ Respond STRICTLY with a valid JSON object matching this schema:
     const wordCount = words.length;
     const textLower = clean.toLowerCase();
 
-    const isTache1 = taskNumber === 1 || Boolean(lessonTitle?.includes('Tâche 1') || lessonTitle?.includes('-w1') || (targetMin === 60 && (targetMax ?? 120) <= 120) || (expectedAnswer && expectedAnswer.includes('60') && !expectedAnswer.includes('140')));
-    const isTache2 = taskNumber === 2 || Boolean(lessonTitle?.includes('Tâche 2') || lessonTitle?.includes('-w2') || (targetMin === 120 && (targetMax ?? 150) <= 150) || (expectedAnswer && expectedAnswer.includes('120') && !expectedAnswer.includes('140')));
-    const isTache3 = taskNumber === 3 || Boolean(lessonTitle?.includes('Tâche 3') || lessonTitle?.includes('-w3') || (targetMin !== undefined && targetMin >= 140) || (expectedAnswer && expectedAnswer.includes('140')));
+    const isTache1 = taskNumber !== undefined ? taskNumber === 1 : Boolean(lessonTitle?.includes('Tâche 1') || lessonTitle?.includes('-w1') || (targetMin === 60 && (targetMax ?? 120) <= 120) || (expectedAnswer && expectedAnswer.includes('60') && !expectedAnswer.includes('140')));
+    const isTache2 = taskNumber !== undefined ? taskNumber === 2 : Boolean(lessonTitle?.includes('Tâche 2') || lessonTitle?.includes('-w2') || (targetMin === 120 && (targetMax ?? 150) <= 150) || (expectedAnswer && expectedAnswer.includes('120') && !expectedAnswer.includes('180') && !expectedAnswer.includes('140')));
+    const isTache3 = taskNumber !== undefined ? taskNumber === 3 : Boolean(lessonTitle?.includes('Tâche 3') || lessonTitle?.includes('-w3') || (targetMin !== undefined && targetMin >= 140) || (expectedAnswer && (expectedAnswer.includes('140') || expectedAnswer.includes('180'))));
 
     const relevance = this.checkThematicRelevance(text, taskPrompt, lessonTitle, expectedAnswer);
     if (!relevance.isRelevant) {
@@ -1510,8 +1510,8 @@ Respond STRICTLY with a valid JSON object matching this schema:
     } else if (isTache3) {
       // ─── TÂCHE 3 UNIVERSAL CEFR BENCHMARK MATRIX (A1 to C2) ───
       const hasC2Philosophy = /(prométhéen|Jacques Ellul|téléologique|déliquescence|habermassiens|solipsiste|sanctuarisation|Simone Weil|nœuds gordiens|démiurgique|réification ontologique|computationalistes|arbitrage éthique|l'autonomie de la technique|agir communicationnel|gratuité souveraine|antinomie|sacralité du vivant|agentivité morale)/i.test(clean);
-      const hasC1Dialectic = /(catastrophe écologique|économie circulaire|viabilité économique|subventions ciblées|prolifération des plastiques|CRISPR-Cas9|moratoire international|ciseaux moléculaires|revenu de base universel|ubérisation|multilatéralisme|souverainismes|hégémoni(que|e)|dilemmes bioéthiques|recherche translationnelle|tentation eugéniste|ingénierie génétique|ciment républicain|multipolaires|décroissance|aporie|souveraineté numérique|infonuagique|méritocratie|méritocratique|mixité sociale|parangon|découplage substantiel|prédation environnementale|ingérences informationnelles)/i.test(clean);
-      const hasB2Dialectic = /(d'un côté.*d'un autre côté|d'une part.*d'autre part|les partisans.*d'autres|en revanche|néanmoins|par conséquent|toutefois.*selon moi|en conclusion|en définitive|sur le plan économique|sur le plan écologique)/is.test(clean);
+      const hasC1Dialectic = /(gratuité des transports|transports collectifs|tarification sociale|désengorger les artères|mobilité durable|catastrophe écologique|économie circulaire|viabilité économique|subventions ciblées|prolifération des plastiques|CRISPR-Cas9|moratoire international|ciseaux moléculaires|revenu de base universel|ubérisation|multilatéralisme|souverainismes|hégémoni(que|e)|dilemmes bioéthiques|recherche translationnelle|tentation eugéniste|ingénierie génétique|ciment républicain|multipolaires|décroissance|aporie|souveraineté numérique|infonuagique|méritocratie|méritocratique|mixité sociale|parangon|découplage substantiel|prédation environnementale|ingérences informationnelles)/i.test(clean);
+      const hasB2Dialectic = /(d'un côté.*d'un autre côté|d'une part.*d'autre part|les partisans.*d'autres|en revanche|néanmoins|par conséquent|toutefois.*selon moi|en conclusion|en définitive|sur le plan économique|sur le plan écologique|plutôt qu'une gratuité|selon les revenus|accès solidaire)/is.test(clean);
       const hasB1Opinion = /(d'un côté|d'une part|cependant|en conclusion|selon moi|à mon avis|je pense que|de plus)/i.test(clean);
 
       if (hasTelegraphicGrammar || wordCount < 50) {

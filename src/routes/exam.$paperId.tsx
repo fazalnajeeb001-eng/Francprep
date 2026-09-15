@@ -2628,11 +2628,7 @@ export function AuthenticCBTExamPage() {
       }
     }
 
-    const taskNumber = taskNumberExplicit
-      ?? (taskId?.includes('w1') || taskId?.includes('task_0') ? 1
-      : taskId?.includes('w2') || taskId?.includes('task_1') ? 2
-      : taskId?.includes('w3') || taskId?.includes('task_2') ? 3
-      : (activeWritingTaskIdx + 1));
+    const taskNumber = activeWritingTaskIdx + 1;
 
     try {
       // Call backend AI writing evaluation API endpoint
@@ -2748,9 +2744,9 @@ export function AuthenticCBTExamPage() {
     const hasEnglishWords = /\b(is|no|work|not|the|and|my|house|very|cold|night|please|help|repair|hot|urgent|thanks|travel|city|park|food|good|experience|like|you|know|actually)\b/i.test(clean);
     const hasTelegraphicGrammar = /\b(je\s+allé|je\s+faire|nous\s+manger|je\s+aimé|je\s+très|lieu\s+est|parce\s+que\s+très|pas\s+possible\s+dormir|la\s+maison\s+vacances|prendre\s+photo)\b/i.test(clean);
 
-    const isTache1 = taskNumber === 1;
-    const isTache2 = taskNumber === 2;
-    const isTache3 = taskNumber === 3;
+    const isTache1 = activeWritingTaskIdx === 0;
+    const isTache2 = activeWritingTaskIdx === 1;
+    const isTache3 = activeWritingTaskIdx === 2;
 
     let taskFulfillmentScore = 1;
     const isLetterFormat = /^\s*(bonjour|cher|chère|monsieur|madame)/i.test(clean) && /(cordialement|bien à vous|salutations|respectueusement)/i.test(clean);
@@ -3097,12 +3093,7 @@ export function AuthenticCBTExamPage() {
         if (res?.score !== undefined && res.score > 0) return Math.round((res.score / 100) * 20);
       }
 
-      const arr = Object.values(writingAiResults).filter((v: any) => v && typeof v === "object" && !v.compositeScoreOutOf20);
-      if (arr[idx]) {
-        const res: any = arr[idx];
-        if (res?.scoreOutOf20 !== undefined && res.scoreOutOf20 > 0) return res.scoreOutOf20;
-        if (res?.score !== undefined && res.score > 0) return Math.round((res.score / 100) * 20);
-      }
+
 
       const typedText = writingResponses[key] || (task?.id && writingResponses[task.id]) || (task?.title && writingResponses[task.title]) || writingResponses[idx] || writingResponses[`task_${idx}`] || "";
       if (typedText && typedText.trim().length > 0) {
@@ -5103,7 +5094,14 @@ export function AuthenticCBTExamPage() {
             {/* Expression Écrite Official Bilan Global & Scorecard Banner */}
             {(() => {
               const res = calculateResults();
-              const isAllWritingEvaluated = res.writingAttemptedCount >= currentSection.writingTasks.length;
+              const isAllWritingEvaluated = Boolean(
+                currentSection?.writingTasks &&
+                currentSection.writingTasks.length > 0 &&
+                currentSection.writingTasks.every((t, i) => {
+                  const keys = [t.id, `wri-${i + 1}`, `task_${i}`, t.title].filter(Boolean);
+                  return keys.some((k) => Boolean(writingAiResults[k]?.scoreOutOf20 !== undefined || writingAiResults[k]?.score !== undefined));
+                })
+              );
               const hasWritingResults = (isAllWritingEvaluated || isSubmitted) && res.writingAttemptedCount > 0 && res.writingAvg > 0;
               if (!hasWritingResults) return null;
               const scaledWriting = Math.round((res.writingAvg / 20) * 450);
