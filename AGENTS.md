@@ -1,45 +1,75 @@
-# 🛡️ FRANCPREP MULTI-AGENT ISOLATION & SYSTEM INTEGRITY PROTOCOL
+# 🛡️ FRANCPREP MULTI-AGENT ISOLATION & TCF CANADA IMMUTABILITY PROTOCOL
 
-To ensure 100% platform stability, zero downtime, and guarantee that work performed by different AI coding agents never breaks existing functionality, ALL agents operating on this repository MUST strictly follow these rules:
-
----
-
-## 🛑 MANDATORY RULES FOR ALL AI AGENTS & DEVELOPERS
-
-### Rule 1: STRICT ZERO-TOUCH SCOPE LOCK DIRECTIVE (LISTENING, READING, WRITING)
-- **FROZEN & IMMUTABLE MODULES**:
-  1. **Compréhension Orale (Listening)** — All audio files, transcripts, question prompts, timers, state hooks, schemas, API routes, and audio caching services are **100% LOCKED AND FROZEN**.
-  2. **Compréhension Écrite (Reading)** — Passages, questions, navigation, timers, and scoring are **100% LOCKED AND FROZEN**.
-  3. **Expression Écrite (Writing)** — Prompts, word counters, timers, and AI evaluation services are **100% LOCKED AND FROZEN**.
-  4. **Core Shared Infrastructure** — `src/lib/speech.ts`, `src/lib/apiFetch.ts`, track branding, and global layout routes are **100% READ-ONLY**.
-- **Scoped Changes Only**: Work on Expression Orale (Speaking) MUST ONLY touch Speaking code inside `src/routes/exam.$paperId.tsx` (enclosed in `if (currentSection.type === "EXPRESSION_ORALE")`) and `backend/src/routes/speaking.routes.ts`.
+> [!IMPORTANT]
+> **MANDATORY INSTRUCTION FOR ALL AI AGENTS & DEVELOPERS:**
+> TCF Canada is **100% COMPLETE, CALIBRATED, AND PRODUCTION-LOCKED**.
+> All 10 papers $\times$ 4 skill modules (Compréhension Orale, Compréhension Écrite, Expression Écrite, Expression Orale) are **FROZEN AND IMMUTABLE**.
+> Under NO circumstances may any agent modify, regenerate, or tamper with TCF Canada files without the user's explicit, direct command for a targeted edit.
 
 ---
 
-### Rule 2: Mandatory Pre-Commit Build & Test Verification
-Before declaring any task complete or committing code to Git `main`, you MUST execute the following build verification commands:
-1. `npm --prefix backend run build` (Must complete with 0 TypeScript compilation errors)
-2. `npm run build` (Must complete with 0 Vite / Nitro SSR bundle errors)
-3. Run test suites if modifying evaluation logic (`npx ts-node backend/src/scripts/test-all-10-tcf-papers.ts`).
+## 🔒 1. TCF CANADA IMMUTABLE ASSET VAULT (STRICTLY READ-ONLY)
 
-If ANY build command fails, you MUST resolve the error locally. **NEVER push broken code to Git `main`.**
+The following files and banks are **PERMANENTLY FROZEN**. Agents are strictly forbidden from modifying, refactoring, or overwriting them:
 
----
-
-### Rule 3: Preservation of Core Platform Architecture
-- **Multi-Language Branding (`trackBranding.ts`)**: Always resolve active branding using `getTrackBranding(getActiveLanguageCode(user))`. Never hardcode static brand strings or remove `fp_active_language` from `localStorage` on logout.
-- **Admin Sovereignty**: Student settings MUST ONLY show active published languages (`isPublished: true`). If a student's active language is disabled by Admin, auto-fallback to `res.data[0].code` dynamically.
-- **Evaluation Calibration**: Do NOT modify the 10-level CEFR/NCLC benchmark matrix in `writing.service.ts` or `exam.$paperId.tsx`.
-- **TCF Listening Audio CBT Rules**: Questions 1 to 29 in Compréhension Orale MUST include the spoken question prompt (*"Écoutez la question. Question N°[X] : [Prompt]"*) appended to the audio transcript.
+| Skill Module | Frozen Source Files & Guidance Banks |
+|---|---|
+| **Compréhension Orale** | `src/lib/authenticListeningAdvancedBank.ts`<br>`src/lib/listeningGuidanceBank.ts`<br>`src/lib/practiceListeningTranslations.ts`<br>`src/lib/masterOptionsDictionary.ts`<br>`src/lib/50_50_visual_bank.ts`<br>`scripts/build_comprehensive_listening_guidance.ts` |
+| **Compréhension Écrite** | `src/lib/authenticReadingMasterBank.ts`<br>`src/lib/readingGuidanceBank.ts`<br>`scripts/build_comprehensive_reading_guidance.ts`<br>`scripts/audit_reading_guidance_zero_leaks.ts` |
+| **Expression Écrite** | `src/lib/authenticWritingMasterBank.ts`<br>`backend/src/services/writing.service.ts`<br>`backend/src/scripts/calibrate-writing-evaluation.ts` |
+| **Expression Orale** | `src/lib/speakingMasterBank.ts`<br>`src/lib/acousticAnalyzer.ts`<br>`backend/src/routes/speaking.routes.ts` |
+| **Simulators & CBT Timers** | TCF-specific execution paths in `src/routes/exam.$paperId.tsx`<br>TCF durations (CO 35m, CE 65m, EE 60m, EO 12m) in `src/lib/examSchema.ts` |
 
 ---
 
-### Rule 4: Error Boundary & Graceful Degradation
-- All main routes and critical widgets MUST remain wrapped in React `<ErrorBoundary>` containers.
-- In case of network errors or missing third-party keys (e.g. Resend email API or ElevenLabs TTS), the system MUST gracefully fall back (e.g., auto-filling `devOtpCode` or using Web Speech / Kokoro TTS) so no page ever crashes or displays raw error screens to students.
+## 🚀 2. TEF CANADA & PLATFORM DEVELOPMENT RULES (STRICT ISOLATION)
+
+All future work on **TEF Canada**, platform features, lessons, community, or billing MUST strictly adhere to the **Namespaced Isolation Architecture**:
+
+1. **Dedicated TEF Data Banks**:
+   - All TEF question data, transcripts, reading passages, and writing/speaking prompts MUST reside in dedicated files (e.g. `src/lib/tefReadingMasterBank.ts`, `src/lib/tefListeningMasterBank.ts`, `src/lib/tefWritingMasterBank.ts`, `src/lib/tefSpeakingMasterBank.ts`).
+   - TEF code must NEVER import or re-use TCF master banks.
+2. **Conditional Gateways in the Simulator**:
+   - In shared routes (such as `src/routes/exam.$paperId.tsx`), any TEF-specific logic (e.g. *Fait Divers*, 2-task writing format, 15-minute speaking format, 0–699 scoring scale) MUST be placed inside an explicit branch:
+     ```typescript
+     if (paper.type === "TEF_CANADA") {
+       // TEF Canada specific logic
+     } else {
+       // TCF Canada - STRICTLY UNTOUCHED & PRESERVED
+     }
+     ```
+3. **No Cross-Contamination**:
+   - Modifying TEF logic, CSS, or backend endpoints must NEVER alter the state hooks, persistence keys, or calculation flows of TCF Canada.
 
 ---
 
-### Rule 5: MANDATORY ISOLATION OF COMPLETED MODULES
-- `authenticListeningAdvancedBank.ts`, `authenticReadingMasterBank.ts`, `authenticWritingMasterBank.ts`, and all Listening/Reading/Writing question handlers are 100% COMPLETED and MUST NEVER BE TOUCHED OR MODIFIED IN ANY WAY.
+## 🚦 3. MANDATORY PRE-COMMIT VERIFICATION GATEWAYS
 
+Before committing any code or declaring any task finished, the agent MUST run and verify the following 3 commands:
+
+1. **TCF Regression & Scorecard Guardian Test**:
+   ```bash
+   npx tsx scripts/test_dual_mode_full_simulation.ts
+   ```
+   *Must pass with 100% success (0 leaks, all 4 sections evaluated, +127 CRS points in Exam Mode, +136 CRS cap in Practice Mode).*
+2. **Backend Compilation**:
+   ```bash
+   npm --prefix backend run build
+   ```
+   *Must complete with Exit code 0 (zero TypeScript errors).*
+3. **Frontend Production Build**:
+   ```bash
+   npm run build
+   ```
+   *Must complete with Exit code 0 (zero Vite/SSR/Nitro bundle errors).*
+
+If ANY of these 3 checks fail, the change is invalid and must be fixed immediately. **NEVER push broken code to Git `main`.**
+
+---
+
+## 🔑 4. USER OVERRIDE PROTOCOL
+
+If the user explicitly requests an edit to TCF Canada (e.g., *"I want to fix a typo in TCF Paper 3 Question 5"*):
+1. The agent is authorized to make **only** that specific, requested edit.
+2. The agent must immediately run `npx tsx scripts/test_dual_mode_full_simulation.ts` to confirm 0 regression.
+3. Once verified, the TCF module is **immediately re-locked**.
