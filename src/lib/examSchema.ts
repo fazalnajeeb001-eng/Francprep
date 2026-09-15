@@ -7943,9 +7943,9 @@ export function getExamRegistry(): ExamPaper[] {
       type: "TCF_CANADA",
       recommendedMode: isPractice ? "PRACTICE" : "EXAM",
       description: isPractice
-        ? `Guided practice paper with step-by-step hints, audio transcripts, and 2-attempt answer validation (84 Items / 119 Mins).`
-        : `Full-length standardized TCF test simulator paper with unpausable timers, zero hints, and authentic candidate scoring (84 Items / 119 Mins).`,
-      totalDurationMins: 119,
+        ? `Guided practice paper with step-by-step hints, audio transcripts, and 2-attempt answer validation (84 Items / 172 Mins).`
+        : `Full-length standardized TCF test simulator paper with unpausable timers, zero hints, and authentic candidate scoring (84 Items / 172 Mins).`,
+      totalDurationMins: 172,
       isSamplePaper: isPractice,
       published: true,
       sections: [
@@ -7960,8 +7960,8 @@ export function getExamRegistry(): ExamPaper[] {
         {
           type: "COMPREHENSION_ECRITE",
           title: "Compréhension Écrite (Reading)",
-          description: "Read French articles, emails, administrative notices, and academic texts (39 Questions / 60 Mins).",
-          durationMins: 60,
+          description: "Read French articles, emails, administrative notices, and academic texts (39 Questions / 65 Mins).",
+          durationMins: 65,
           totalQuestions: 39,
           questions: generateReadingQuestions(39, `tcf${i}`, seedOffset)
         },

@@ -145,10 +145,13 @@ export function AuthenticCBTExamPage() {
 
   // Official Real Exam Duration Helper (France Éducation International CBT Standards)
   const getSectionDurationSeconds = (secType?: string, customDurationMins?: number) => {
-    if (secType === "COMPREHENSION_ECRITE") return 60 * 60; // Strict 60 mins (3600s)
-    if (secType === "EXPRESSION_ECRITE") return 60 * 60;    // Strict 60 mins (3600s)
-    if (secType === "COMPREHENSION_ORALE") return 35 * 60;   // ~35 mins (2100s)
-    if (secType === "EXPRESSION_ORALE") return 12 * 60;      // ~12 mins (720s)
+    if (secType === "COMPREHENSION_ECRITE") {
+      if (paper?.type === "TEF_CANADA") return (customDurationMins || 60) * 60; // TEF Canada standard: 60 mins (3600s)
+      return (customDurationMins || 65) * 60; // Official FEI TCF Canada standard: 65 mins (3900s)
+    }
+    if (secType === "EXPRESSION_ECRITE") return (customDurationMins || 60) * 60;    // Strict 60 mins (3600s)
+    if (secType === "COMPREHENSION_ORALE") return (customDurationMins || 35) * 60;   // ~35 mins (2100s)
+    if (secType === "EXPRESSION_ORALE") return (customDurationMins || 12) * 60;      // ~12 mins (720s)
     return (customDurationMins || 35) * 60;
   };
 
@@ -3794,11 +3797,19 @@ export function AuthenticCBTExamPage() {
                 <Mic className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               )}
               <span className="truncate max-w-[120px] sm:max-w-none">{sec.title}</span>
+              {sec.type === "COMPREHENSION_ORALE" && (
+                <span className="text-[9px] px-1 py-0.2 rounded bg-purple-900 text-purple-200 font-mono hidden md:inline">35m</span>
+              )}
               {sec.type === "COMPREHENSION_ECRITE" && (
-                <span className="text-[9px] px-1 py-0.2 rounded bg-blue-900 text-blue-200 font-mono hidden md:inline">60m</span>
+                <span className="text-[9px] px-1 py-0.2 rounded bg-blue-900 text-blue-200 font-mono hidden md:inline">
+                  {sec.durationMins || (paper?.type === "TEF_CANADA" ? 60 : 65)}m
+                </span>
               )}
               {sec.type === "EXPRESSION_ECRITE" && (
                 <span className="text-[9px] px-1 py-0.2 rounded bg-pink-900 text-pink-200 font-mono hidden md:inline">60m</span>
+              )}
+              {sec.type === "EXPRESSION_ORALE" && (
+                <span className="text-[9px] px-1 py-0.2 rounded bg-emerald-900 text-emerald-200 font-mono hidden md:inline">12m</span>
               )}
             </button>
           );
