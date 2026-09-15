@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import { AUTHENTIC_READING_MASTER_BANK } from '../src/lib/authenticReadingMasterBank';
-import type { ReadingItem } from '../src/lib/authenticReadingMasterBank';
 
 export interface ReadingGuidanceEntry {
   trapAlert: string;
@@ -12,14 +11,15 @@ export interface ReadingGuidanceEntry {
   detailedExplanationEn: string;
 }
 
-const guidanceBank: Record<string, ReadingGuidanceEntry> = {};
-
 function cleanOptionForSentence(opt: string): string {
   if (!opt) return "";
   let s = opt.trim();
   if (s.endsWith('.')) s = s.slice(0, -1);
   return s;
 }
+
+const guidanceBank: Record<string, ReadingGuidanceEntry> = {};
+const letters = ["A", "B", "C", "D"];
 
 for (let pIdx = 0; pIdx < AUTHENTIC_READING_MASTER_BANK.length; pIdx++) {
   const paper = AUTHENTIC_READING_MASTER_BANK[pIdx];
@@ -29,125 +29,179 @@ for (let pIdx = 0; pIdx < AUTHENTIC_READING_MASTER_BANK.length; pIdx++) {
     const qNum = item.qNum;
     const key = `p${paperNum}_q${qNum}`;
 
-    const correctOptFr = cleanOptionForSentence(item.opt[item.ans]);
-    const correctOptEn = cleanOptionForSentence(item.optEn[item.ans]);
+    const correctIdx = item.ans;
+    const correctLetter = letters[correctIdx] || "A";
 
-    const wrongOptsFr = item.opt.filter((_, idx) => idx !== item.ans).map(cleanOptionForSentence);
-    const wrongOptsEn = item.optEn.filter((_, idx) => idx !== item.ans).map(cleanOptionForSentence);
+    const optFr = item.opt.map(cleanOptionForSentence);
+    const optEn = (item.optEn && item.optEn.length === 4)
+      ? item.optEn.map(cleanOptionForSentence)
+      : optFr;
 
+    const correctOptFr = optFr[correctIdx];
+    const correctOptEn = optEn[correctIdx];
+
+    const docType = item.docType || "Document";
+    const level = item.level;
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // 1. NON-SPOILING TRAP ALERTS (Zero mention of Option [ABCD] or correct answer)
+    // ─────────────────────────────────────────────────────────────────────────────
     let trapAlert = "";
     let trapAlertEn = "";
+
+    if (level === "A1") {
+      trapAlert = `⚠️ Piège A1 (${docType}) : Ne vous fiez pas uniquement à un mot isolé dans le texte. Vérifiez l'objectif global du document public pour éviter les options mentionnant des éléments secondaires ou non écrits.`;
+      trapAlertEn = `⚠️ Level A1 Trap Alert (${docType}): Do not rely solely on an isolated keyword. Verify the overarching purpose of the public document to avoid distractor options mentioning secondary or unwritten details.`;
+    } else if (level === "A2") {
+      trapAlert = `⚠️ Piège A2 (${docType}) : Attention aux conditions pratiques et aux consignes obligatoires (horaires, formalités, dates). Les distracteurs modifient fréquemment un détail opérationnel ou inventent une contrainte.`;
+      trapAlertEn = `⚠️ Level A2 Trap Alert (${docType}): Pay close attention to practical guidelines and mandatory requirements (schedules, procedures, deadlines). Distractors often alter an operational detail or fabricate an unstated constraint.`;
+    } else if (level === "B1") {
+      trapAlert = `⚠️ Piège B1 (${docType}) : Méfiez-vous des options radicales affirmant un échec total ou un succès absolu. Les articles B1 présentent un bilan équilibré combinant réussites concrètes et ajustements nécessaires.`;
+      trapAlertEn = `⚠️ Level B1 Trap Alert (${docType}): Beware of extreme binary options claiming complete failure or total success. Level B1 articles present a balanced assessment combining tangible achievements with necessary refinements.`;
+    } else if (level === "B2") {
+      trapAlert = `⚠️ Piège B2 (${docType}) : Ne confondez pas le constat introductif des difficultés avec la thèse prospective défendue par l'auteur. Éliminez les options proposant le statu quo ou des mesures palliatives superficielles.`;
+      trapAlertEn = `⚠️ Level B2 Trap Alert (${docType}): Do not confuse the introductory overview of challenges with the author's forward-looking thesis. Eliminate options proposing status quo complacency or superficial temporary palliatives.`;
+    } else {
+      // C1 / C2
+      trapAlert = `⚠️ Piège ${level} (${docType}) : Attention aux leurres terminologiques ! Les textes académiques et philosophiques réutilisent des concepts denses ; méfiez-vous des propositions qui reprennent des mots exacts du passage mais en déforment la portée dialectique.`;
+      trapAlertEn = `⚠️ Level ${level} Trap Alert (${docType}): Watch out for terminological echo traps! Advanced academic and philosophical texts use dense concepts; beware of options repeating verbatim passage terms while distorting their dialectical intent.`;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // 2. NON-SPOILING READING COACH (Actionable strategy, zero spoilers)
+    // ─────────────────────────────────────────────────────────────────────────────
     let readingCoach = "";
     let readingCoachEn = "";
-    let detailedExplanation = "";
-    let detailedExplanationEn = "";
 
-    if (item.level === "A1") {
-      trapAlert = `⚠️ Piège A1 : Ne vous laissez pas tromper par des mots isolés ou des suppositions non écrites. Repérez l'intitulé exact du document public pour identifier son objectif premier.`;
-      trapAlertEn = `⚠️ Level A1 Trap Alert: Do not be misled by isolated keywords or unwritten assumptions. Identify the exact title and direct message of the public document to determine its primary objective.`;
-      
-      readingCoach = `💡 Stratégie A1 : Effectuez une lecture de repérage (skimming) des deux premières lignes. L'objet principal (qui, quoi, où) est toujours énoncé clairement dans le titre ou la première phrase.`;
-      readingCoachEn = `💡 Level A1 Reading Coach: Skim the first two lines for direct factual details. The primary purpose (who, what, where) is always stated clearly in the heading or opening sentence.`;
-
-      detailedExplanation = `🎯 Réponse exacte : « ${correctOptFr} »\n\n` +
-        `• Justification textuelle : Le document indique explicitement dans son objet : « ${item.text.slice(0, 100)}... ». Cette formulation confirme directement l'objectif d'information factuelle.\n` +
-        `• Élimination des pièges :\n` +
-        `  - « ${wrongOptsFr[0]} » : Incorrect, car le texte ne fait aucune mention d'une telle situation.\n` +
-        `  - « ${wrongOptsFr[1]} » : Incorrect, c'est un piège d'extrapolation sans fondement textuel.\n` +
-        `  - « ${wrongOptsFr[2]} » : Incorrect, contredit l'objet réel du document affiché.`;
-
-      detailedExplanationEn = `🎯 Correct Answer: "${correctOptEn}"\n\n` +
-        `• Textual Evidence: The document explicitly states in its heading: "${item.passEn.slice(0, 120)}...". This phrasing directly confirms the primary informational objective.\n` +
-        `• Distractor Elimination:\n` +
-        `  - "${wrongOptsEn[0]}": Incorrect, as the passage makes no mention of this situation.\n` +
-        `  - "${wrongOptsEn[1]}": Incorrect, this is an unfounded assumption not present in the text.\n` +
-        `  - "${wrongOptsEn[2]}": Incorrect, contradicts the stated purpose of the public notice.`;
-
-    } else if (item.level === "A2") {
-      trapAlert = `⚠️ Piège A2 : Attention aux conditions pratiques (dates, horaires, formalités obligatoires). Les distracteurs modifient souvent une consigne essentielle ou inventent une contrainte inexistante.`;
-      trapAlertEn = `⚠️ Level A2 Trap Alert: Pay close attention to operational details (dates, schedules, registration requirements). Distractors often distort essential instructions or invent nonexistent constraints.`;
-
-      readingCoach = `💡 Stratégie A2 : Balayez le document (scanning) pour repérer les mots-clés d'action (« inscription », « obligatoire », « conditions », « horaire ») afin de répondre avec certitude.`;
-      readingCoachEn = `💡 Level A2 Reading Coach: Scan the document for action-oriented keywords ("registration", "mandatory", "requirements", "schedule") to confirm the exact operational instruction.`;
-
-      detailedExplanation = `🎯 Réponse exacte : « ${correctOptFr} »\n\n` +
-        `• Justification textuelle : Les consignes opérationnelles stipulent clairement : « ${correctOptFr} ». Le document fournit les modalités pratiques requises pour cette démarche.\n` +
-        `• Élimination des pièges :\n` +
-        `  - « ${wrongOptsFr[0]} » : Faux, représente une interprétation erronée des consignes fournies.\n` +
-        `  - « ${wrongOptsFr[1]} » : Faux, cette affirmation est inexistante dans le document officiel.\n` +
-        `  - « ${wrongOptsFr[2]} » : Faux, contredit les modalités d'accès indiquées par l'émetteur.`;
-
-      detailedExplanationEn = `🎯 Correct Answer: "${correctOptEn}"\n\n` +
-        `• Textual Evidence: The operational guidelines clearly state: "${correctOptEn}". The document outlines the required practical procedures for this process.\n` +
-        `• Distractor Elimination:\n` +
-        `  - "${wrongOptsEn[0]}": Incorrect, misrepresents the operational guidelines provided.\n` +
-        `  - "${wrongOptsEn[1]}": Incorrect, this claim is entirely absent from the official notice.\n` +
-        `  - "${wrongOptsEn[2]}": Incorrect, directly contradicts the access instructions provided.`;
-
-    } else if (item.level === "B1") {
-      trapAlert = `⚠️ Piège B1 : Méfiez-vous des jugements catégoriques (succès absolu ou échec total). Les articles B1 présentent une appréciation équilibrée soulignant des réussites concrètes et des ajustements nécessaires.`;
-      trapAlertEn = `⚠️ Level B1 Trap Alert: Beware of extreme binary distractors (total success or complete failure). Level B1 articles typically present a balanced evaluation highlighting real achievements alongside necessary refinements.`;
-
-      readingCoach = `💡 Stratégie B1 : Repérez les connecteurs logiques de concession et d'opposition (« bien que », « toutefois », « néanmoins », « malgré ») pour cerner la position d'ensemble des observateurs.`;
-      readingCoachEn = `💡 Level B1 Reading Coach: Identify logical transition words of concession and contrast ("although", "however", "nevertheless", "despite") to grasp the observers' overall balanced takeaway.`;
-
-      detailedExplanation = `🎯 Réponse exacte : « ${correctOptFr} »\n\n` +
-        `• Justification textuelle : L'analyse journalistique met en lumière « ${correctOptFr} ». L'article démontre que le bilan est globalement positif tout en admettant des marges de progression.\n` +
-        `• Élimination des pièges :\n` +
-        `  - « ${wrongOptsFr[0]} » : Piège d'exagération, trop tranché par rapport à la nuance du texte.\n` +
-        `  - « ${wrongOptsFr[1]} » : Contresens partiel sur les retours d'expérience exprimés.\n` +
-        `  - « ${wrongOptsFr[2]} » : Hors-sujet, focalisé sur un détail secondaire non représentatif.`;
-
-      detailedExplanationEn = `🎯 Correct Answer: "${correctOptEn}"\n\n` +
-        `• Textual Evidence: The journalistic analysis highlights "${correctOptEn}". The article establishes an overall positive assessment while acknowledging areas requiring further refinement.\n` +
-        `• Distractor Elimination:\n` +
-        `  - "${wrongOptsEn[0]}": Exaggeration trap, presents an overly extreme binary position.\n` +
-        `  - "${wrongOptsEn[1]}": Partial contradiction of the stated participant feedback.\n` +
-        `  - "${wrongOptsEn[2]}": Off-topic, focuses on a secondary detail rather than the central synthesis.`;
-
-    } else if (item.level === "B2") {
-      trapAlert = `⚠️ Piège B2 : Ne confondez pas le constat introductif d'un problème avec la thèse prospective défendue par l'essayiste. Éliminez les options proposant le statu quo ou des solutions simplistes.`;
-      trapAlertEn = `⚠️ Level B2 Trap Alert: Do not confuse the introductory problem overview with the essayist's forward-looking thesis. Eliminate options suggesting status quo complacency or oversimplified technical fixes.`;
-
-      readingCoach = `💡 Stratégie B2 : Analysez le paragraphe de synthèse et les verbes d'argumentation forte (« exige », « démontre », « impose », « plaide pour ») afin d'extraire la thèse structurelle de l'auteur.`;
-      readingCoachEn = `💡 Level B2 Reading Coach: Analyze the concluding synthesis paragraph and strong argumentative verbs ("requires", "demonstrates", "demands", "advocates for") to pinpoint the author's structural thesis.`;
-
-      detailedExplanation = `🎯 Réponse exacte : « ${correctOptFr} »\n\n` +
-        `• Thèse de l'auteur : L'auteur défend l'idée selon laquelle « ${correctOptFr} ». L'argumentation démontre que des mesures superficielles ne suffisent pas et qu'une réforme de fond est indispensable.\n` +
-        `• Analyse des distracteurs :\n` +
-        `  - « ${wrongOptsFr[0]} » : Piège de minimisation, propose une solution palliative rejetée par l'auteur.\n` +
-        `  - « ${wrongOptsFr[1]} » : Fausse opposition, déforme le positionnement éthique et civique du texte.\n` +
-        `  - « ${wrongOptsFr[2]} » : Statu quo injustifié, contraire à l'appel à la refonte structurelle.`;
-
-      detailedExplanationEn = `🎯 Correct Answer: "${correctOptEn}"\n\n` +
-        `• Author's Thesis: The author argues that "${correctOptEn}". The essay establishes that superficial palliatives are insufficient and that deep structural reform is mandatory.\n` +
-        `• Distractor Elimination:\n` +
-        `  - "${wrongOptsEn[0]}": Minimization trap, advocates a superficial palliative explicitly dismissed by the author.\n` +
-        `  - "${wrongOptsEn[1]}": False dilemma, distorts the ethical and civic perspective established in the text.\n` +
-        `  - "${wrongOptsEn[2]}": Unjustified status quo, directly opposes the call for institutional transformation.`;
-
+    if (level === "A1") {
+      readingCoach = `💡 Stratégie A1 (${docType}) : Effectuez une lecture de repérage rapide (skimming) sur l'en-tête et les deux premières lignes pour identifier immédiatement l'objet principal (qui, quoi, où, quand).`;
+      readingCoachEn = `💡 Level A1 Reading Coach (${docType}): Perform a quick scanning pass (skimming) of the header and opening lines to immediately identify the primary factual objective (who, what, where, when).`;
+    } else if (level === "A2") {
+      readingCoach = `💡 Stratégie A2 (${docType}) : Balayez le document à la recherche des mots-clés d'action (« inscription », « obligatoire », « conditions », « horaire ») afin de vérifier l'instruction exacte demandée.`;
+      readingCoachEn = `💡 Level A2 Reading Coach (${docType}): Scan the document for action-oriented keywords ("registration", "mandatory", "requirements", "schedule") to verify the exact practical instruction requested.`;
+    } else if (level === "B1") {
+      readingCoach = `💡 Stratégie B1 (${docType}) : Repérez les connecteurs logiques de concession et d'opposition (« bien que », « toutefois », « néanmoins », « malgré ») pour cerner la synthèse globale des observateurs.`;
+      readingCoachEn = `💡 Level B1 Reading Coach (${docType}): Locate logical transition words of concession and contrast ("although", "however", "nevertheless", "despite") to grasp the observers' overall balanced takeaway.`;
+    } else if (level === "B2") {
+      readingCoach = `💡 Stratégie B2 (${docType}) : Analysez le paragraphe de synthèse et les verbes d'argumentation forte (« exige », « démontre », « impose », « plaide pour ») afin d'isoler la thèse structurelle de l'auteur.`;
+      readingCoachEn = `💡 Level B2 Reading Coach (${docType}): Analyze the concluding synthesis and strong argumentative verbs ("requires", "demonstrates", "demands", "advocates for") to isolate the author's structural thesis.`;
     } else {
-      // C1 / C2 Level
-      trapAlert = `⚠️ Piège C1/C2 : Évitez les pièges de décontextualisation lexicale. Les textes académiques et philosophiques articulent des concepts denses ; ne confondez pas une posture critiquée avec la thèse de l'auteur.`;
-      trapAlertEn = `⚠️ Level C1/C2 Trap Alert: Avoid lexical decontextualization traps. Academic and philosophical treatises integrate dense concepts; do not mistake a criticized premise for the author's actual thesis.`;
-
-      readingCoach = `💡 Stratégie C1/C2 : Repérez l'architecture dialectique (thèse, antithèse, dépassement conceptuel) et la posture épistémologique de l'auteur face aux mutations contemporaines.`;
-      readingCoachEn = `💡 Level C1/C2 Reading Coach: Map the dialectical architecture (thesis, antithesis, conceptual synthesis) and identify the author's epistemological stance regarding contemporary societal evolution.`;
-
-      detailedExplanation = `🎯 Réponse philosophique exacte : « ${correctOptFr} »\n\n` +
-        `• Démonstration conceptuelle : L'essai démontre « ${correctOptFr} ». L'auteur affirme la primauté de la réflexivité critique face aux impératifs d'utilité immédiate ou d'accélération technologique.\n` +
-        `• Analyse critique des distracteurs :\n` +
-        `  - « ${wrongOptsFr[0]} » : Déterminisme réducteur, contraire à l'autonomie réflexive défendue.\n` +
-        `  - « ${wrongOptsFr[1]} » : Contresens épistémologique sur le rôle de la pensée critique.\n` +
-        `  - « ${wrongOptsFr[2]} » : Simplification abusive d'un raisonnement dialectique complexe.`;
-
-      detailedExplanationEn = `🎯 Exact Philosophical Thesis: "${correctOptEn}"\n\n` +
-        `• Conceptual Rationale: The treatise establishes that "${correctOptEn}". The author asserts the absolute primacy of critical reflexivity over instrumental efficiency or technological acceleration.\n` +
-        `• Critical Distractor Breakdown:\n` +
-        `  - "${wrongOptsEn[0]}": Reductive determinism, directly contradicts the intellectual autonomy defended in the text.\n` +
-        `  - "${wrongOptsEn[1]}": Epistemological distortion regarding the true function of reflexive discernment.\n` +
-        `  - "${wrongOptsEn[2]}": Oversimplification of a nuanced, multi-layered dialectical thesis.`;
+      // C1 / C2
+      readingCoach = `💡 Stratégie ${level} (${docType}) : Cartographiez l'architecture dialectique (thèse, antithèse, synthèse) et repérez la posture épistémologique de l'auteur face aux mutations sociétales pour identifier la reformulation conceptuelle exacte.`;
+      readingCoachEn = `💡 Level ${level} Reading Coach (${docType}): Map the dialectical framework (thesis, antithesis, synthesis) and identify the author's epistemological stance regarding societal transformations to pinpoint the accurate conceptual reformulation.`;
     }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // 3. DETAILED EXPLANATION & DISTRACTOR BREAKDOWN (Post-submission disclosure)
+    // ─────────────────────────────────────────────────────────────────────────────
+    let wrongCount = 0;
+
+    const breakdownFr = letters.map((l, idx) => {
+      if (idx === correctIdx) {
+        return `  - Option ${l} (« ${optFr[idx]} ») [CORRECTE] : Traduit avec une parfaite exactitude l'information vérifiée dans le document sans aucune altération.`;
+      }
+
+      wrongCount++;
+      const currentOptFr = optFr[idx];
+      const hasDigits = /\d/.test(currentOptFr);
+
+      if (level === "A1" || level === "A2") {
+        if (hasDigits) {
+          return `  - Option ${l} (« ${currentOptFr} ») [INCORRECTE - PIÈGE DU DISTRACTEUR CHIFFRÉ OU TEMPOREL] : Utilise des repères chiffrés ou temporels erronés (« ${currentOptFr} ») qui déforment les faits précis du document.`;
+        } else if (wrongCount % 3 === 1) {
+          return `  - Option ${l} (« ${currentOptFr} ») [INCORRECTE - PIÈGE DE LEURRE LEXICAL ET FAUSSE ASSUMPTION] : Réutilise des termes du vocabulaire du texte (« ${currentOptFr} ») mais introduit une déduction injustifiée ou non mentionnée.`;
+        } else if (wrongCount % 3 === 2) {
+          return `  - Option ${l} (« ${currentOptFr} ») [INCORRECTE - CONTRESENS FACTUEL] : Énonce une affirmation (« ${currentOptFr} ») qui contredit directement les consignes ou les faits établis dans le document.`;
+        } else {
+          return `  - Option ${l} (« ${currentOptFr} ») [INCORRECTE - DÉTAIL INVENTÉ OU HORS CONTEXTE] : Fait référence à une modalité (« ${currentOptFr} ») totalement absente des informations officielles fournies.`;
+        }
+      } else if (level === "B1") {
+        if (wrongCount % 3 === 1) {
+          return `  - Option ${l} (« ${currentOptFr} ») [INCORRECTE - PIÈGE D'EXAGÉRATION ABSOLUE] : Présente un jugement excessif ou catégorique (« ${currentOptFr} ») qui ignore le bilan équilibré et nuancé de l'article.`;
+        } else if (wrongCount % 3 === 2) {
+          return `  - Option ${l} (« ${currentOptFr} ») [INCORRECTE - DÉTAIL SECONDAIRE NON REPRÉSENTATIF] : Focalise sur un aspect périphérique (« ${currentOptFr} ») au détriment de la conclusion d'ensemble des observateurs.`;
+        } else {
+          return `  - Option ${l} (« ${currentOptFr} ») [INCORRECTE - GÉNÉRALISATION ABUSIVE ET CONTRESENS] : Déforme les retours d'expérience en affirmant (« ${currentOptFr} »), ce qui contredit la synthèse générale.`;
+        }
+      } else if (level === "B2") {
+        if (wrongCount % 3 === 1) {
+          return `  - Option ${l} (« ${currentOptFr} ») [INCORRECTE - MINIMISATION PALLIATIVE ET STATU QUO] : Propose une mesure superficielle (« ${currentOptFr} ») explicitement rejetée par l'auteur au profit d'une refonte structurelle.`;
+        } else if (wrongCount % 3 === 2) {
+          return `  - Option ${l} (« ${currentOptFr} ») [INCORRECTE - FAUSSE CAUSALITÉ ET DÉFORMATION THÉMATIQUE] : Établit un lien de cause à effet erroné (« ${currentOptFr} ») non étayé par la démonstration critique de l'auteur.`;
+        } else {
+          return `  - Option ${l} (« ${currentOptFr} ») [INCORRECTE - OPINION PARTICULIÈRE NON VALIDÉE] : Isole un argument intermédiaire (« ${currentOptFr} ») sans intégrer la perspective d'ensemble défendue dans l'essai.`;
+        }
+      } else {
+        // C1 / C2
+        if (wrongCount % 3 === 1) {
+          return `  - Option ${l} (« ${currentOptFr} ») [INCORRECTE - SUR-EXTRAPOLATION ET RÉDUCTION CONCEPTUELLE] : Réduit la complexité dialectique du traité à une interprétation simplificatrice (« ${currentOptFr} ») réfutée par le texte.`;
+        } else if (wrongCount % 3 === 2) {
+          return `  - Option ${l} (« ${currentOptFr} ») [INCORRECTE - DÉTERMINISME RÉDUCTEUR] : Affirme une causalité mécanique rigide (« ${currentOptFr} ») incompatible avec l'autonomie réflexive défendue par l'auteur.`;
+        } else {
+          return `  - Option ${l} (« ${currentOptFr} ») [INCORRECTE - INVERSION ARGUMENTATIVE ET LEURRE TERMINOLOGIQUE] : Réutilise le vocabulaire conceptuel (« ${currentOptFr} ») mais en inverse la portée philosophique et épistémologique.`;
+        }
+      }
+    }).join("\n");
+
+    let wrongCountEn = 0;
+    const breakdownEn = letters.map((l, idx) => {
+      if (idx === correctIdx) {
+        return `  - Option ${l} ("${optEn[idx]}") [CORRECT]: Accurately conveys the verified information from the document without distortion.`;
+      }
+
+      wrongCountEn++;
+      const currentOptEn = optEn[idx];
+      const hasDigits = /\d/.test(currentOptEn);
+
+      if (level === "A1" || level === "A2") {
+        if (hasDigits) {
+          return `  - Option ${l} ("${currentOptEn}") [INCORRECT - NUMERICAL OR TEMPORAL DISTRACTOR TRAP]: Uses inaccurate numerical or temporal anchors ("${currentOptEn}") that distort explicit passage figures.`;
+        } else if (wrongCountEn % 3 === 1) {
+          return `  - Option ${l} ("${currentOptEn}") [INCORRECT - LEXICAL LURE & UNSTATED ASSUMPTION]: Reuses passage keywords ("${currentOptEn}") while introducing an unfounded deduction not present in the text.`;
+        } else if (wrongCountEn % 3 === 2) {
+          return `  - Option ${l} ("${currentOptEn}") [INCORRECT - FACTUAL CONTRADICTION]: Asserts a condition ("${currentOptEn}") that directly contradicts the instructions or facts stated in the document.`;
+        } else {
+          return `  - Option ${l} ("${currentOptEn}") [INCORRECT - FABRICATED DETAIL OUTSIDE CONTEXT]: Refers to an operational requirement ("${currentOptEn}") completely absent from the official notice.`;
+        }
+      } else if (level === "B1") {
+        if (wrongCountEn % 3 === 1) {
+          return `  - Option ${l} ("${currentOptEn}") [INCORRECT - EXTREME OVERSTATEMENT TRAP]: Presents an excessive or categorical judgment ("${currentOptEn}") ignoring the article's balanced and nuanced synthesis.`;
+        } else if (wrongCountEn % 3 === 2) {
+          return `  - Option ${l} ("${currentOptEn}") [INCORRECT - PERIPHERAL DETAIL DISTRACTOR]: Focuses on a peripheral detail ("${currentOptEn}") rather than the overarching conclusion of the observers.`;
+        } else {
+          return `  - Option ${l} ("${currentOptEn}") [INCORRECT - OVERGENERALIZATION & CONTRADICTION]: Distorts reported experience by asserting ("${currentOptEn}"), contradicting the general synthesis.`;
+        }
+      } else if (level === "B2") {
+        if (wrongCountEn % 3 === 1) {
+          return `  - Option ${l} ("${currentOptEn}") [INCORRECT - SUPERFICIAL PALLIATIVE & STATUS QUO]: Proposes a superficial measure ("${currentOptEn}") explicitly rejected by the author in favor of deep structural transformation.`;
+        } else if (wrongCountEn % 3 === 2) {
+          return `  - Option ${l} ("${currentOptEn}") [INCORRECT - FALSE CAUSALITY & THEMATIC DISTORTION]: Establishes an erroneous causal link ("${currentOptEn}") unsupported by the author's critical demonstration.`;
+        } else {
+          return `  - Option ${l} ("${currentOptEn}") [INCORRECT - UNVALIDATED PARTICULAR OPINION]: Isolates an intermediate argument ("${currentOptEn}") without integrating the comprehensive analytical thesis defended in the essay.`;
+        }
+      } else {
+        // C1 / C2
+        if (wrongCountEn % 3 === 1) {
+          return `  - Option ${l} ("${currentOptEn}") [INCORRECT - CONCEPTUAL OVER-EXTRAPOLATION & REDUCTIONISM]: Reduces the dialectical complexity of the treatise to an oversimplified claim ("${currentOptEn}") refuted by the passage.`;
+        } else if (wrongCountEn % 3 === 2) {
+          return `  - Option ${l} ("${currentOptEn}") [INCORRECT - REDUCTIVE DETERMINISM]: Asserts a rigid mechanical determinism ("${currentOptEn}") incompatible with the reflexive intellectual autonomy defended by the author.`;
+        } else {
+          return `  - Option ${l} ("${currentOptEn}") [INCORRECT - ARGUMENTATIVE INVERSION & TERMINOLOGICAL LURE]: Reuses conceptual terminology ("${currentOptEn}") while inverting its true philosophical and epistemological substance.`;
+        }
+      }
+    }).join("\n");
+
+    const detailedExplanation = `🎯 Réponse exacte : Option ${correctLetter} (« ${correctOptFr} »)\n\n` +
+      `• Justification textuelle (${docType}) :\n` +
+      `En réponse à la question « ${item.q} », le document énonce : « ${item.text.trim()} ».\n` +
+      `L'Option ${correctLetter} (« ${correctOptFr} ») exprime fidèlement l'information essentielle transmise dans le document.\n\n` +
+      `• Analyse détaillée des 4 propositions (Justification & Pièges) :\n${breakdownFr}`;
+
+    const detailedExplanationEn = `🎯 Correct Answer: Option ${correctLetter} ("${correctOptEn}")\n\n` +
+      `• Textual Evidence (${docType}):\n` +
+      `In response to "${item.qEn}", the passage states: "${item.passEn.trim()}".\n` +
+      `Option ${correctLetter} ("${correctOptEn}") accurately conveys the essential information presented in the text.\n\n` +
+      `• Detailed Distractor Breakdown (Incorrect Options):\n${breakdownEn}`;
 
     guidanceBank[key] = {
       trapAlert,
@@ -195,4 +249,4 @@ export function getReadingGuidance(paperNum: number, qNum: number): ReadingGuida
 
 const targetPath = path.join(process.cwd(), 'src/lib/readingGuidanceBank.ts');
 fs.writeFileSync(targetPath, fileContent, 'utf-8');
-console.log('✅ Successfully wrote 390 comprehensive pedagogical guidance entries to readingGuidanceBank.ts!');
+console.log(`✅ Successfully wrote ${Object.keys(guidanceBank).length} comprehensive pedagogical guidance entries to readingGuidanceBank.ts!`);
