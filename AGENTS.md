@@ -14,7 +14,7 @@ The following files and banks are **PERMANENTLY FROZEN**. Agents are strictly fo
 
 | Skill Module | Frozen Source Files & Guidance Banks |
 |---|---|
-| **Compréhension Orale** | `src/lib/authenticListeningAdvancedBank.ts`<br>`src/lib/listeningGuidanceBank.ts`<br>`src/lib/practiceListeningTranslations.ts`<br>`src/lib/masterOptionsDictionary.ts`<br>`src/lib/50_50_visual_bank.ts`<br>`scripts/build_comprehensive_listening_guidance.ts` |
+| **Compréhension Orale** | `src/lib/authenticListeningAdvancedBank.ts`<br>`src/lib/listeningGuidanceBank.ts`<br>`src/lib/practiceListeningTranslations.ts`<br>`src/lib/masterOptionsDictionary.ts`<br>`src/lib/hdIllustrationAssets.ts`<br>`scripts/build_comprehensive_listening_guidance.ts` |
 | **Compréhension Écrite** | `src/lib/authenticReadingMasterBank.ts`<br>`src/lib/readingGuidanceBank.ts`<br>`scripts/build_comprehensive_reading_guidance.ts`<br>`scripts/audit_reading_guidance_zero_leaks.ts` |
 | **Expression Écrite** | `src/lib/authenticWritingMasterBank.ts`<br>`backend/src/services/writing.service.ts`<br>`backend/src/scripts/calibrate-writing-evaluation.ts` |
 | **Expression Orale** | `src/lib/speakingMasterBank.ts`<br>`src/lib/acousticAnalyzer.ts`<br>`backend/src/routes/speaking.routes.ts` |

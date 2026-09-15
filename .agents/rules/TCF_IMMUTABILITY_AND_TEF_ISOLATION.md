@@ -14,7 +14,7 @@ The following files are strictly read-only:
 - `src/lib/speakingMasterBank.ts`
 - `src/lib/practiceListeningTranslations.ts`
 - `src/lib/masterOptionsDictionary.ts`
-- `src/lib/50_50_visual_bank.ts`
+- `src/lib/hdIllustrationAssets.ts`
 - `scripts/build_comprehensive_reading_guidance.ts`
 - `scripts/build_comprehensive_listening_guidance.ts`
 
