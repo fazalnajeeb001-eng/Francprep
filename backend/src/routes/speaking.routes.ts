@@ -760,7 +760,8 @@ function sanitizeWhisperTranscript(rawText: string): string {
 /**
  * PHASE 6: DOMAIN & SCENARIO-OPTIMIZED WHISPER STT PROMPT BIASING
  * Biases Whisper neural beam search decoder on both Groq (whisper-large-v3) and OpenAI (whisper-1)
- * with essential Canadian geography, Francophone origin demographics, professional titles, and TCF examination vocabulary.
+ * with essential Canadian geography, Francophone origin demographics, professional titles,
+ * TCF examination vocabulary, and explicit numerical/currency/time formatting anchors.
  * Kept strictly under Whisper's 224-token prompt boundary (~800 characters).
  */
 export function buildWhisperBiasingPrompt(taskNumber?: number, scenario?: string): string {
@@ -769,17 +770,23 @@ export function buildWhisperBiasingPrompt(taskNumber?: number, scenario?: string
   const professionalTitles = "ingénieur, informaticien, superviseur, gestionnaire, enseignant, comptable, technicien, développeur, stage, formation.";
 
   let taskSpecificLexicon = "";
+  let numericAndFormatAnchors = "";
+
   if (taskNumber === 1) {
     taskSpecificLexicon = "Présentation personnelle, parcours professionnel, loisirs, ville d'origine, projets d'immigration au Canada, résidence permanente.";
+    numericAndFormatAnchors = "J'ai 32 ans, 8 ans d'expérience, arrivé en 2024, au 514-123-4567, 438, 581, 819.";
   } else if (taskNumber === 2) {
     taskSpecificLexicon = "Exercice en interaction, questions formelles, logement, appartement, loyer, charges comprises, caution, bail, horaires, tarifs, inscription, activités.";
+    numericAndFormatAnchors = "850 $ par mois, 1 200 dollars, charges comprises, dépôt de 500 $, de 9 h à 17 h, à 14 h 30, au 514-123-4567.";
   } else if (taskNumber === 3) {
     taskSpecificLexicon = "Expression d'un point de vue, argumentation, débat d'idées, en effet, par conséquent, néanmoins, certes, transition écologique, intelligence artificielle.";
+    numericAndFormatAnchors = "Plus de 75 % des citoyens, 3,5 millions d'habitants, en 2026, quatre-vingt-dix pour cent.";
   } else {
     taskSpecificLexicon = "Épreuve d'expression orale TCF Canada. Présentation, questions d'interaction, argumentation et point de vue.";
+    numericAndFormatAnchors = "850 $ par mois, de 9 h à 17 h, à 14 h 30, au 514-123-4567, plus de 75 %, 3,5 millions.";
   }
 
-  return `Discours en français. ${taskSpecificLexicon} ${canadianGeo} ${francophoneDemographics} ${professionalTitles}`;
+  return `Discours en français. ${taskSpecificLexicon} ${numericAndFormatAnchors} ${canadianGeo} ${francophoneDemographics} ${professionalTitles}`;
 }
 
 // POST /api/speaking/transcribe - Universal Whisper Neural Speech-to-Text Endpoint (99%+ Multi-Accent Recognition)

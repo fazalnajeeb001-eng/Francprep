@@ -31,8 +31,11 @@ async function runPhase6Verification() {
   assert(promptT1.includes("Côte d'Ivoire") && promptT1.includes('Kollam') && promptT1.includes('Casablanca'), 'T1 includes Francophone demographics');
   assert(promptT1.includes('ingénieur') && promptT1.includes('superviseur') && promptT1.includes('informaticien'), 'T1 includes professional titles');
   assert(promptT1.includes('Présentation personnelle'), 'T1 includes presentation vocabulary');
+  assert(promptT1.includes('514-123-4567') && promptT1.includes('32 ans'), 'T1 includes phone and age numeric anchors');
   assert(promptT2.includes('logement') && promptT2.includes('loyer') && promptT2.includes('caution'), 'T2 includes roleplay/interaction lexicon');
+  assert(promptT2.includes('850 $') && promptT2.includes('14 h 30'), 'T2 includes currency ($) and time (14 h 30) anchors');
   assert(promptT3.includes('argumentation') && promptT3.includes('débat d\'idées') && promptT3.includes('néanmoins'), 'T3 includes argumentative lexicon');
+  assert(promptT3.includes('75 %') && promptT3.includes('3,5 millions'), 'T3 includes percentage (%) and decimal statistic anchors');
 
   // Verify prompt lengths are strictly within Whisper's context bounds (< 224 tokens ~ 800 chars)
   assert(promptT1.length <= 800 && promptT1.length >= 200, `T1 Prompt length is optimal (${promptT1.length} chars)`);
