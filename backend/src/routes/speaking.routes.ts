@@ -757,10 +757,35 @@ function sanitizeWhisperTranscript(rawText: string): string {
   return text;
 }
 
+/**
+ * PHASE 6: DOMAIN & SCENARIO-OPTIMIZED WHISPER STT PROMPT BIASING
+ * Biases Whisper neural beam search decoder on both Groq (whisper-large-v3) and OpenAI (whisper-1)
+ * with essential Canadian geography, Francophone origin demographics, professional titles, and TCF examination vocabulary.
+ * Kept strictly under Whisper's 224-token prompt boundary (~800 characters).
+ */
+export function buildWhisperBiasingPrompt(taskNumber?: number, scenario?: string): string {
+  const canadianGeo = "Montréal, Québec, Gatineau, Laval, Sherbrooke, Trois-Rivières, Ottawa, Toronto, Vancouver, Saint-Laurent, Mauricie.";
+  const francophoneDemographics = "Côte d'Ivoire, Abidjan, Sénégal, Dakar, Cameroun, Douala, Maroc, Casablanca, Algérie, Tunisie, Haïti, Bénin, Togo, Kinshasa, Kollam.";
+  const professionalTitles = "ingénieur, informaticien, superviseur, gestionnaire, enseignant, comptable, technicien, développeur, stage, formation.";
+
+  let taskSpecificLexicon = "";
+  if (taskNumber === 1) {
+    taskSpecificLexicon = "Présentation personnelle, parcours professionnel, loisirs, ville d'origine, projets d'immigration au Canada, résidence permanente.";
+  } else if (taskNumber === 2) {
+    taskSpecificLexicon = "Exercice en interaction, questions formelles, logement, appartement, loyer, charges comprises, caution, bail, horaires, tarifs, inscription, activités.";
+  } else if (taskNumber === 3) {
+    taskSpecificLexicon = "Expression d'un point de vue, argumentation, débat d'idées, en effet, par conséquent, néanmoins, certes, transition écologique, intelligence artificielle.";
+  } else {
+    taskSpecificLexicon = "Épreuve d'expression orale TCF Canada. Présentation, questions d'interaction, argumentation et point de vue.";
+  }
+
+  return `Discours en français. ${taskSpecificLexicon} ${canadianGeo} ${francophoneDemographics} ${professionalTitles}`;
+}
+
 // POST /api/speaking/transcribe - Universal Whisper Neural Speech-to-Text Endpoint (99%+ Multi-Accent Recognition)
 router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => {
   try {
-    const { audioBase64, mimeType, durationSec } = req.body;
+    const { audioBase64, mimeType, durationSec, taskNumber, scenario, scenarioText } = req.body;
     if (!audioBase64) {
       res.status(400).json({ success: false, error: 'Audio data in Base64 format is required.' });
       return;
@@ -803,6 +828,10 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
               : mimeLower.includes('aac') ? 'aac'
               : 'webm';
 
+    // Build optimized domain & phonetic biasing prompt
+    const parsedTaskNum = typeof taskNumber === 'number' ? taskNumber : (parseInt(taskNumber, 10) || undefined);
+    const biasingPrompt = buildWhisperBiasingPrompt(parsedTaskNum, scenario || scenarioText);
+
     // 1. PRIMARY PROVIDER: Groq Whisper-Large-v3 Engine (Ultra-Fast 0.2s, 99%+ Multi-Accent Accuracy, Free Tier)
     if (groqKey && buffer.length >= 3000) {
       try {
@@ -811,7 +840,7 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
         formData.append('file', blob, `candidate_speech.${ext}`);
         formData.append('model', 'whisper-large-v3');
         formData.append('language', 'fr');
-        formData.append('prompt', "Discours en français pour l'épreuve d'expression orale. Prénom, âge, profession, ville côtière, Kollam, Côte d'Ivoire, Montréal, Québec, superviseur, ingénieur, formation, expérience, agencement, horizons.");
+        formData.append('prompt', biasingPrompt);
         formData.append('temperature', '0.0');
 
         const groqRes = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
@@ -846,7 +875,7 @@ router.post('/transcribe', optionalAuth, async (req: Request, res: Response) => 
         formData.append('file', blob, `candidate_speech.${ext}`);
         formData.append('model', 'whisper-1');
         formData.append('language', 'fr');
-        formData.append('prompt', 'Discours en français.');
+        formData.append('prompt', biasingPrompt);
         formData.append('temperature', '0.0');
 
         const whisperRes = await fetch('https://api.openai.com/v1/audio/transcriptions', {

@@ -1770,7 +1770,7 @@ Respond STRICTLY with a raw JSON object:
       const hasEnglishWords = englishMatches.length >= 2;
       const isQuestion = /\b(pourriez-vous|est-ce que|quel|quels|quelle|quelles|combien|comment|où|quand|pourquoi|avez-vous|pouvez-vous)\b/i.test(textLower);
       const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part|en somme|selon moi|à mon avis|en effet)\b/i.test(textLower);
-      const hasB2Grammar = /\b(pourriez|serait|aimerais|puisse|soit|dont|auquel|bien que|afin de|avons|sommes|ai fait|ai visité)\b/i.test(textLower);
+      const hasB2Grammar = /\b(pourriez|serait|aimerais|puisse|soit|dont|auquel|bien que|afin de|avons|sommes|ai fait|ai visité|ai visiter|ai travaillé|ai travailler|ai étudié|ai étudier|suis allé|suis aller)\b/i.test(textLower);
 
       let t = 1;
       let f = 1;
@@ -1787,7 +1787,12 @@ Respond STRICTLY with a raw JSON object:
       if (hasEnglishWords) { l = 1; g = 1; }
 
       const rawSum = t + f + l + g;
-      const scoreOutOf20 = Math.min(15, hasEnglishWords ? Math.min(5, rawSum) : rawSum);
+      let scoreOutOf20 = Math.min(15, hasEnglishWords ? Math.min(5, rawSum) : rawSum);
+      if (taskNum === 1) {
+        scoreOutOf20 = Math.min(11, scoreOutOf20); // Official FEI Tâche 1 ceiling: Max 11/20 (B1 Intermediate)
+      } else if (taskNum === 2) {
+        scoreOutOf20 = Math.min(15, scoreOutOf20); // Official FEI Tâche 2 ceiling: Max 15/20 (B2 Upper)
+      }
       const scorePct = Math.round((scoreOutOf20 / 20) * 100);
 
       let nclcGrade = "NCLC 7 (B2 Benchmark Target)";
@@ -1884,10 +1889,20 @@ ${acousticMetrics ? `- Real-Time Web Audio Signal Metrics: Speech Pace = ${acous
 - You are STRICTLY FORBIDDEN from inventing or hallucinating expressions like "je suis un ingénieur" if they are not in the candidate's transcript!
 - CRITICAL TRAILING QUESTION RULE: Analyze the candidate's responses up to the last submitted candidate turn. If the conversation ends on an examiner question without a candidate response, DO NOT penalize the candidate for failing to answer that specific trailing question. Evaluate ONLY what was actually spoken against official FEI CEFR descriptors.
 
-### CRITICAL WHISPER STT PHONETIC TOLERANCE DIRECTIVE:
-- This candidate transcript is produced by Speech-to-Text (Groq Whisper STT).
-- If a transcribed word is phonetically close to a valid French context word (e.g. "coutière" -> "côtière", "travaile" -> "travail", "qu'elle" -> "quel", "parce-que" -> "parce que"), DO NOT penalize candidate vocabulary or grammar!
-- Evaluate candidate intent and phonetic sense rather than minor STT transcription artifacts.
+### CRITICAL WHISPER STT PHONETIC TOLERANCE DIRECTIVE (FEI ORAL EVALUATION RULE):
+- This candidate transcript is produced automatically by Speech-to-Text (Groq/OpenAI Whisper STT). The candidate spoke aloud; they did not type or spell words!
+- In an official FEI oral exam, candidates are evaluated purely on pronunciation, oral communication, fluency, spoken syntax, and vocabulary—NEVER on orthography or written spelling.
+- You MUST FORGIVE the following STT transcription artifacts and NEVER dock candidate Morphosyntax or Lexical Variety points for them:
+  1. VERBAL HOMOPHONES (-é / -er / -ez / -ait / -ais / -aient):
+     - If candidate says [ʒe travaje], STT may write "j'ai travailler" instead of "j'ai travaillé", or "je vais mangé" instead of "je vais manger". Because both sound identical in spoken French, treat this as 100% grammatically valid oral speech!
+  2. GRAMMATICAL HOMOPHONES:
+     - Forgive "c'est / ces / ses / s'est", "a / à", "ou / où", "et / est", "ce / se", "leur / leurs", "qu'elle / quel".
+  3. ACOUSTIC APPROXIMATIONS & REGIONAL PROPER NOUNS:
+     - Forgive transcription quirks for foreign cities, proper nouns, or slight vowel shifts (e.g. "coutière" -> "côtière", "Kollam", "Sherbrooke", "travaile" -> "travail", "parce-que" -> "parce que").
+  4. LIAISON & ELISION PHENOMENA:
+     - French liaisons often cause STT to transcribe phantom consonants (e.g. "les z'amis", "un n'avion", "tout à fait"). Do not treat liaisons as errors.
+- STRICT PROHIBITION ON HOMOPHONE CITATIONS IN "spoken_errors":
+  - You are STRICTLY FORBIDDEN from reporting any error quote in "spoken_errors" where the difference between what the candidate said and the "correction" is merely an STT spelling homophone (such as writing "j'ai travailler" -> "j'ai travaillé" or "c'est vacances" -> "ces vacances"). Only report GENUINE spoken grammatical errors (e.g. wrong gender "un belle maison", wrong preposition "aller en Québec", or broken syntax).
 
 ### CRITICAL ACOUSTIC TOKEN FRAMING DIRECTIVE (SYNTAX SAFEGUARD):
 - Strings matching [pause Xs], [pause_Xs], or [hésitation] represent acoustic silence intervals measured by the audio signal engine.
@@ -2015,12 +2030,34 @@ Return JSON only:
 
         const errorsList = Array.isArray(parsed.spoken_errors) ? parsed.spoken_errors : (Array.isArray(parsed.corrections) ? parsed.corrections : []);
         
-        // STRICT SUBSTRING GUARDRAIL: Filter out hallucinated error quotes that do not exist in candidate speech
+        // STRICT SUBSTRING GUARDRAIL & DETERMINISTIC HOMOPHONE FILTER
         const textLower = cleanSpeech.toLowerCase();
         const validErrors = errorsList.filter((err: any) => {
           if (!err || typeof err.quote !== 'string') return false;
           const q = err.quote.trim().toLowerCase();
-          return q.length >= 2 && textLower.includes(q);
+          if (q.length < 2 || !textLower.includes(q)) return false;
+
+          // PHASE 6: DETERMINISTIC HOMOPHONE ERROR FILTER
+          // If the difference between quote and correction is merely an STT homophone/diacritic artifact, discard it
+          const corr = typeof err.correction === 'string' ? err.correction.trim().toLowerCase() : '';
+          if (corr) {
+            const normalizePhonetic = (str: string) => str
+              .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove accents/diacritics
+              .replace(/[-'’]/g, ' ')
+              .replace(/\b(c est|ses|ces|s est)\b/g, 'ces')
+              .replace(/\b(a|a)\b/g, 'a')
+              .replace(/\b(ou|ou)\b/g, 'ou')
+              .replace(/\b(et|est)\b/g, 'est')
+              .replace(/(\w+)(er|ez|e|ait|ais|aient)\b/g, '$1e') // normalize oral verb endings
+              .replace(/\s+/g, ' ')
+              .trim();
+
+            if (normalizePhonetic(q) === normalizePhonetic(corr)) {
+              return false; // Pure STT homophone / spelling artifact, NOT a spoken grammar error!
+            }
+          }
+
+          return true;
         });
 
         if (validErrors.length === 0) {
@@ -2084,7 +2121,7 @@ Return JSON only:
         // SUB-PHASE 1B: CEFR STRUCTURAL COMPLEXITY & SUBORDINATION CEILING CHECK
         // If candidate uses only elementary present-tense S+V+O clauses without formal B1/B2 connectors or complex subordination, CAP overall grade at A2 (Max 5/20)
         const hasFormalB1B2Connectors = /\b(afin de|cependant|néanmoins|bien que|d'une part|d'autre part|par conséquent|en effet|toutefois|ainsi|donc|de plus|en outre|par contre|alors que|tandis que)\b/i.test(textLower);
-        const hasComplexSubordinationOrTenses = /\b(pourriez|pourrais|serait|aimerais|voudrais|puisse|soit|dont|auquel|auxquels|j'ai|nous avons|j'étais|c'était|je suis|j'ai fait|j'ai visité|j'ai étudié|je ferai|je serai)\b/i.test(textLower);
+        const hasComplexSubordinationOrTenses = /\b(pourriez|pourrais|serait|aimerais|voudrais|puisse|soit|dont|auquel|auxquels|j'ai|nous avons|j'étais|c'était|je suis|j'ai fait|j'ai visité|j'ai visiter|j'ai travaillé|j'ai travailler|j'ai étudié|j'ai étudier|je ferai|je serai)\b/i.test(textLower);
         const closesWithElementaryFiller = /\b(c'est tout|c'est bien|c'est bon|voilà c'est tout|merci c'est tout)\.?\s*$/i.test(textLower);
 
         const isElementaryPresentTenseOnly = (!hasFormalB1B2Connectors && !hasComplexSubordinationOrTenses) || closesWithElementaryFiller;
@@ -2123,7 +2160,7 @@ Return JSON only:
         // Deterministically resolves boundary scores (7/20, 11/20, 15/20) that impact Canadian Express Entry NCLC thresholds
         if (scoreOutOf20 === 11 && totalWords >= 55) {
           // Check NCLC 7 (B2 Target Boundary): Requires B2 grammar structures + formal connectors (including oral homophones)
-          const hasB2Grammar = /\b(pourriez|pourrais|pourrait|serait|seraient|aimerais|aimerait|puisse|puissent|soit|soient|fasse|fassent|dont|auquel|auxquels|bien que|afin de|avons|sommes|ai fait|ai visité)\b/i.test(textLower);
+          const hasB2Grammar = /\b(pourriez|pourrais|pourrait|serait|seraient|aimerais|aimerait|puisse|puissent|soit|soient|fasse|fassent|dont|auquel|auxquels|bien que|afin de|avons|sommes|ai fait|ai visité|ai visiter|ai travaillé|ai travailler|ai étudié|ai étudier|suis allé|suis aller)\b/i.test(textLower);
           const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part|en somme|selon moi|à mon avis|en effet)\b/i.test(textLower);
           if (hasB2Grammar && hasB2Connectors) {
             scoreOutOf20 = 12; // Upgrade to NCLC 7 Benchmark Target
@@ -2131,8 +2168,8 @@ Return JSON only:
             if (g < 3) g = 3;
           }
         } else if (scoreOutOf20 === 7 && totalWords >= 35) {
-          // Check NCLC 5 (B1 Threshold Boundary): Requires B1 past tenses / expressivity
-          const hasB1PastTenses = /\b(j'ai|nous avons|j'étais|c'était|je suis allé|j'ai fait|j'ai visité|j'ai étudié)\b/i.test(textLower);
+          // Check NCLC 5 (B1 Threshold Boundary): Requires B1 past tenses / expressivity (including oral homophones)
+          const hasB1PastTenses = /\b(j'ai|nous avons|j'étais|c'était|je suis allé|je suis aller|j'ai fait|j'ai visité|j'ai visiter|j'ai étudié|j'ai étudier|j'ai travaillé|j'ai travailler)\b/i.test(textLower);
           if (hasB1PastTenses) {
             scoreOutOf20 = 8; // Upgrade to NCLC 5 B1 Threshold
             if (t < 2) t = 2;
@@ -2234,7 +2271,7 @@ Return JSON only:
       const hasEnglishWords = englishMatches.length >= 2;
       const isQuestion = /\b(pourriez-vous|est-ce que|quel|quels|quelle|quelles|combien|comment|où|quand|pourquoi|avez-vous|pouvez-vous)\b/i.test(textLower);
       const hasB2Connectors = /\b(cependant|toutefois|en outre|par conséquent|néanmoins|ainsi|d'une part|d'autre part|en somme|selon moi|à mon avis|en effet)\b/i.test(textLower);
-      const hasB2Grammar = /\b(pourriez|serait|aimerais|puisse|soit|dont|auquel|bien que|afin de|avons|sommes|ai fait|ai visité)\b/i.test(textLower);
+      const hasB2Grammar = /\b(pourriez|serait|aimerais|puisse|soit|dont|auquel|bien que|afin de|avons|sommes|ai fait|ai visité|ai visiter|ai travaillé|ai travailler|ai étudié|ai étudier|suis allé|suis aller)\b/i.test(textLower);
 
       let t = 2;
       let f = 2;
@@ -2251,7 +2288,12 @@ Return JSON only:
       if (hasEnglishWords) { l = 1; g = 1; }
 
       const rawSum = t + f + l + g;
-      const scoreOutOf20 = Math.min(15, hasEnglishWords ? Math.min(5, rawSum) : rawSum);
+      let scoreOutOf20 = Math.min(15, hasEnglishWords ? Math.min(5, rawSum) : rawSum);
+      if (taskNum === 1) {
+        scoreOutOf20 = Math.min(11, scoreOutOf20); // Official FEI Tâche 1 ceiling: Max 11/20 (B1 Intermediate)
+      } else if (taskNum === 2) {
+        scoreOutOf20 = Math.min(15, scoreOutOf20); // Official FEI Tâche 2 ceiling: Max 15/20 (B2 Upper)
+      }
       const scorePct = Math.round((scoreOutOf20 / 20) * 100);
 
       let nclcGrade = "NCLC 7 (B2 Benchmark Target)";
