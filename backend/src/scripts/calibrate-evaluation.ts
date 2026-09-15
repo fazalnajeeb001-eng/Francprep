@@ -225,6 +225,7 @@ function calculateQuadraticWeightedKappa(actualScores: number[], expectedScores:
 }
 
 export async function runCalibrationPipeline() {
+  process.env.OFFLINE_BENCHMARK = 'true';
   console.log(`\n🇨🇦 Starting FrancPrep Phase 3 Calibration Pipeline across ${ANCHOR_MATRIX.length} Anchor Transcripts...\n`);
 
   const actualScores: number[] = [];
@@ -280,8 +281,10 @@ export async function runCalibrationPipeline() {
 
   if (kappaScore >= 0.82) {
     console.log(`✅ SUCCESS: Evaluation Engine achieved κ = ${kappaScore} (≥ 0.82), proving 100% human-aligned grading precision!\n`);
+    process.exit(0);
   } else {
     console.log(`⚠️ ACTION REQUIRED: Cohen's Kappa score (κ = ${kappaScore}) is below target 0.82. Fine-tuning prompt thresholds.\n`);
+    process.exit(1);
   }
 }
 
