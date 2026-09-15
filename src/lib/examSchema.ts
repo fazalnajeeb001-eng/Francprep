@@ -6371,7 +6371,7 @@ function customizeListeningTopicForPaper(topic: ListeningTopicItem, _qNum: numbe
   return { ...topic };
 }
 
-function getDrawingPropositions(sceneIdx: number): { opt: string[]; optEn: string[]; ans: number; type: string } {
+export function getDrawingPropositions(sceneIdx: number): { opt: string[]; optEn: string[]; ans: number; type: string } {
   const optionsList = [
     // Scene 0: P1Q1 (SPEECH_ACT - Train Station Platform) [tcf_p1_q1.png]
     {
@@ -7240,6 +7240,9 @@ export function ensureInterrogativeQuestion(qNum: number, t: any): string {
 export function generateListeningQuestions(count: number, prefix: string, seedOffset: number = 0): ExamQuestion[] {
   const qList: ExamQuestion[] = [];
   const usedIndices = new Set<number>();
+  const paperNumMatch = prefix.match(/\d+/);
+  const currentPaperNum = paperNumMatch ? parseInt(paperNumMatch[0], 10) : ((seedOffset % 10) + 1);
+  const paperIdx = (currentPaperNum - 1) % 10;
 
   for (let i = 1; i <= count; i++) {
     const targetLevel = getTargetLevel(i);
@@ -7290,6 +7293,18 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       const props = getDrawingPropositions(sceneIdx);
       topicOpt = props.opt;
       topicAns = props.ans;
+      const visualSceneDesc = props.opt[props.ans];
+      t = {
+        ...t,
+        title: `Illustration A1 P${paperIdx + 1}Q${i}`,
+        text: visualSceneDesc,
+        q: "Regardez l'illustration. Écoutez les 4 propositions (A, B, C, D) et choisissez celle qui correspond à l'image.",
+        tr: props.opt.map((o, idx) => `Proposition ${['A','B','C','D'][idx]} : ${o}`).join('. '),
+        en: props.optEn ? props.optEn.map((o, idx) => `Option ${['A','B','C','D'][idx]}: ${o}`).join('. ') : '',
+        hint: "Observation visuelle A1 : Identifiez les personnes, le lieu et l'action principale sur l'illustration.",
+        level: "A1",
+        optionsEnglish: props.optEn
+      };
     } else if (i >= 5 && i <= 15) {
       const paperNumMatch = prefix.match(/\d+/);
       const paperIdx = paperNumMatch ? (parseInt(paperNumMatch[0], 10) - 1) % 10 : (seedOffset % 10);
@@ -7396,6 +7411,7 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
     const finalQuestionPromptEnglish = (i <= 4 ? "Look at the image. Listen to the 4 options and choose the one that corresponds to the image." : ((t as any).questionPromptEnglish || questionPromptEn));
     const finalOptionsEnglish = (t as any).optionsEnglish || [optionsEn0, optionsEn1, optionsEn2, optionsEn3];
     const finalTranscriptEnglish = spokenEnglishTranslation;
+    const currentPaperNum = paperNumMatch ? parseInt(paperNumMatch[0], 10) : ((seedOffset % 10) + 1);
     const finalPassageEnglish = passageTextEn;
     const correctTextEn = (finalOptionsEnglish && finalOptionsEnglish[correctIndex]) ? finalOptionsEnglish[correctIndex] : "";
     const guidance = getQuestionGuidance(
@@ -7407,7 +7423,8 @@ export function generateListeningQuestions(count: number, prefix: string, seedOf
       correctTextEn,
       finalPassageEnglish,
       finalQuestionPromptEnglish,
-      correctIndex
+      correctIndex,
+      currentPaperNum
     );
 
     qList.push({

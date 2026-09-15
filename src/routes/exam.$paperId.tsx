@@ -43,6 +43,7 @@ import { SmartAvatar } from "~/components/dashboard/widgets/SmartAvatar";
 import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } from "~/lib/examSchema";
 import { MASTER_SPEAKING_BANK } from "~/lib/speakingMasterBank";
 import { READING_GUIDANCE_BANK } from "~/lib/readingGuidanceBank";
+import { LISTENING_GUIDANCE_BANK } from "~/lib/listeningGuidanceBank";
 import { acousticAnalyzer, type AcousticAnalysisResult } from "~/lib/acousticAnalyzer";
 
 function countFrenchWords(str: string): number {
@@ -167,9 +168,13 @@ export function AuthenticCBTExamPage() {
   const qPaperNum = rawCurrentQ?.id?.match(/(?:tcf|tef)(\d+)/)?.[1]
     ? parseInt(rawCurrentQ.id.match(/(?:tcf|tef)(\d+)/)![1], 10)
     : paperNumber;
-  const readingGuidanceKey = `p${qPaperNum}_q${rawCurrentQ?.questionNumber || 1}`;
-  const readingGuidance = (currentSection?.type === "COMPREHENSION_ECRITE" && rawCurrentQ) ? (READING_GUIDANCE_BANK[readingGuidanceKey] || {}) : {};
-  const currentQ = rawCurrentQ ? { ...rawCurrentQ, ...readingGuidance } : rawCurrentQ;
+  const guidanceKey = `p${qPaperNum}_q${rawCurrentQ?.questionNumber || 1}`;
+  const sectionGuidance = (currentSection?.type === "COMPREHENSION_ECRITE" && rawCurrentQ)
+    ? (READING_GUIDANCE_BANK[guidanceKey] || {})
+    : (currentSection?.type === "COMPREHENSION_ORALE" && rawCurrentQ)
+      ? (LISTENING_GUIDANCE_BANK[guidanceKey] || {})
+      : {};
+  const currentQ = rawCurrentQ ? { ...rawCurrentQ, ...sectionGuidance } : rawCurrentQ;
 
   // User-Scoped Session Key (Guarantees zero bleed across candidate accounts on shared devices)
   const userId = user?.id || (user as any)?._id || (user as any)?.userId || "guest";
@@ -619,6 +624,7 @@ export function AuthenticCBTExamPage() {
   const [showTranscript, setShowTranscript] = useState(false);
   const [showTranslation, setShowTranslation] = useState(false);
   const [showReadingHint, setShowReadingHint] = useState(false);
+  const [showDetailedAnalysis, setShowDetailedAnalysis] = useState(false);
   const [failedImagesMap, setFailedImagesMap] = useState<Record<string, boolean>>({});
   const [activeWritingTaskIdx, setActiveWritingTaskIdx] = useState(() => {
     if (typeof window === "undefined") return 0;
@@ -1718,6 +1724,7 @@ export function AuthenticCBTExamPage() {
     setShowTranscript(false);
     setShowTranslation(false);
     setShowReadingHint(false);
+    setShowDetailedAnalysis(false);
   }, [currentQuestionIdx, activeSectionIdx]);
 
   useEffect(() => {
@@ -4187,35 +4194,36 @@ export function AuthenticCBTExamPage() {
               {/* Practice Hint Bar - Desktop Only (Mobile uses ergonomic bottom pill above options) */}
               {(() => {
                 const isReadingSection = currentSection.type === "COMPREHENSION_ECRITE";
+                const isListeningSection = currentSection.type === "COMPREHENSION_ORALE";
                 const qPaperNum = currentQ?.id?.match(/(?:tcf|tef)(\d+)/)?.[1]
                   ? parseInt(currentQ.id.match(/(?:tcf|tef)(\d+)/)![1], 10)
                   : paperNumber;
                 const guidanceKey = `p${qPaperNum}_q${currentQ.questionNumber}`;
-                const bankEntry = isReadingSection ? READING_GUIDANCE_BANK[guidanceKey] : null;
+                const bankEntry = isReadingSection
+                  ? READING_GUIDANCE_BANK[guidanceKey]
+                  : isListeningSection
+                    ? LISTENING_GUIDANCE_BANK[guidanceKey]
+                    : null;
 
                 const activeTrapAlert = isReadingSection
                   ? (bankEntry?.trapAlert || (currentQ as any).trapAlert)
-                  : ((currentQ as any).audioTrapAlert || (currentQ as any).trapAlert);
+                  : (bankEntry?.trapAlert || (currentQ as any).audioTrapAlert || (currentQ as any).trapAlert);
 
                 const activeTrapAlertEn = isReadingSection
                   ? (bankEntry?.trapAlertEn || (currentQ as any).trapAlertEn)
-                  : ((currentQ as any).audioTrapAlertEn || (currentQ as any).trapAlertEn);
+                  : (bankEntry?.trapAlertEn || (currentQ as any).audioTrapAlertEn || (currentQ as any).trapAlertEn);
 
                 const activeReadingCoach = isReadingSection
                   ? (bankEntry?.readingCoach || (currentQ as any).readingCoach)
-                  : ((currentQ as any).audioCoach || (currentQ as any).readingCoach);
+                  : (bankEntry?.audioCoach || bankEntry?.readingCoach || (currentQ as any).audioCoach || (currentQ as any).readingCoach);
 
                 const activeReadingCoachEn = isReadingSection
                   ? (bankEntry?.readingCoachEn || (currentQ as any).readingCoachEn)
-                  : ((currentQ as any).audioCoachEn || (currentQ as any).readingCoachEn);
+                  : (bankEntry?.audioCoachEn || bankEntry?.readingCoachEn || (currentQ as any).audioCoachEn || (currentQ as any).readingCoachEn);
 
-                const activeExplanation = isReadingSection
-                  ? ((currentQ as any).detailedExplanation || currentQ.explanation || bankEntry?.detailedExplanation || (currentQ as any).hint)
-                  : ((currentQ as any).detailedExplanation || currentQ.explanation || (currentQ as any).hint);
+                const activeExplanation = bankEntry?.detailedExplanation || (currentQ as any).detailedExplanation || currentQ.explanation || (currentQ as any).hint;
 
-                const activeExplanationEn = isReadingSection
-                  ? ((currentQ as any).detailedExplanationEn || (currentQ as any).explanationEnglish || bankEntry?.detailedExplanationEn)
-                  : ((currentQ as any).detailedExplanationEn || (currentQ as any).explanationEnglish || (currentQ as any).explanationEn);
+                const activeExplanationEn = bankEntry?.detailedExplanationEn || (currentQ as any).detailedExplanationEn || (currentQ as any).explanationEnglish || (currentQ as any).explanationEn;
 
                 if (mode !== "PRACTICE" || (!activeTrapAlert && !activeReadingCoach && !activeExplanation && !currentQ.hint)) {
                   return null;
@@ -4301,20 +4309,47 @@ export function AuthenticCBTExamPage() {
                         {/* Detailed Pedagogical Analysis Section */}
                         {activeExplanation ? (
                           <div className="space-y-2 pt-2.5 border-t border-amber-500/20">
-                            <div className="flex items-center gap-1.5 font-bold text-purple-900 dark:text-purple-300">
-                              <Sparkles className="w-3.5 h-3.5 text-purple-600" />
-                              <span>Analyse Pédagogique Détaillée</span>
-                            </div>
-                            <div className="p-3 rounded-xl bg-purple-50/80 dark:bg-purple-950/40 border border-purple-200/80 dark:border-purple-800/60 whitespace-pre-line leading-relaxed text-xs font-medium text-slate-900 dark:text-slate-100">
-                              {activeExplanation}
-                            </div>
-                            {activeExplanationEn && (
-                              <div className="p-3 rounded-xl bg-purple-100/70 dark:bg-purple-950/50 border border-purple-300/80 dark:border-purple-800/70 whitespace-pre-line leading-relaxed text-xs font-sans text-purple-950 dark:text-purple-200">
-                                <div className="font-bold text-purple-800 dark:text-purple-300 mb-1 flex items-center gap-1">
-                                  <span>🇬🇧 English Pedagogical Translation:</span>
+                            {(!showDetailedAnalysis && selectedAnswers[currentQ.id] === undefined && !checkedMap[currentQ.id]) ? (
+                              <button
+                                type="button"
+                                onClick={() => setShowDetailedAnalysis(true)}
+                                className="w-full py-2.5 px-3.5 rounded-lg bg-purple-600/10 hover:bg-purple-600/20 border border-purple-500/30 text-purple-900 dark:text-purple-200 text-xs font-bold flex items-center justify-between transition-all cursor-pointer group"
+                              >
+                                <span className="flex items-center gap-2">
+                                  <Sparkles className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform" />
+                                  <span>Afficher la réponse exacte et l'analyse détaillée</span>
+                                </span>
+                                <span className="text-[10px] px-2 py-0.5 rounded bg-purple-600/20 font-mono font-bold">
+                                  Dévoiler ▼
+                                </span>
+                              </button>
+                            ) : (
+                              <>
+                                <div className="flex items-center justify-between font-bold text-purple-900 dark:text-purple-300">
+                                  <div className="flex items-center gap-1.5">
+                                    <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+                                    <span>Analyse Pédagogique Détaillée</span>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => setShowDetailedAnalysis(false)}
+                                    className="text-[10px] px-2 py-0.5 rounded bg-purple-600/20 hover:bg-purple-600/30 text-purple-800 dark:text-purple-200 font-mono font-bold cursor-pointer"
+                                  >
+                                    Masquer ▲
+                                  </button>
                                 </div>
-                                {activeExplanationEn}
-                              </div>
+                                <div className="p-3 rounded-xl bg-purple-50/80 dark:bg-purple-950/40 border border-purple-200/80 dark:border-purple-800/60 whitespace-pre-line leading-relaxed text-xs font-medium text-slate-900 dark:text-slate-100">
+                                  {activeExplanation}
+                                </div>
+                                {activeExplanationEn && (
+                                  <div className="p-3 rounded-xl bg-purple-100/70 dark:bg-purple-950/50 border border-purple-300/80 dark:border-purple-800/70 whitespace-pre-line leading-relaxed text-xs font-sans text-purple-950 dark:text-purple-200">
+                                    <div className="font-bold text-purple-800 dark:text-purple-300 mb-1 flex items-center gap-1">
+                                      <span>🇬🇧 English Pedagogical Translation:</span>
+                                    </div>
+                                    {activeExplanationEn}
+                                  </div>
+                                )}
+                              </>
                             )}
                           </div>
                         ) : null}
@@ -6872,18 +6907,45 @@ export function AuthenticCBTExamPage() {
                 {/* Detailed Explanation */}
                 {((currentQ as any).detailedExplanation || currentQ.explanation) && (
                   <div className="p-3.5 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-300 dark:border-purple-800/60 space-y-2">
-                    <div className="flex items-center gap-1.5 font-bold text-purple-900 dark:text-purple-300">
-                      <Sparkles className="w-3.5 h-3.5 text-purple-600" />
-                      <span>Analyse Pédagogique Détaillée</span>
-                    </div>
-                    <div className="whitespace-pre-line leading-relaxed font-medium text-slate-900 dark:text-slate-100">
-                      {(currentQ as any).detailedExplanation || currentQ.explanation}
-                    </div>
-                    {((currentQ as any).detailedExplanationEn || (currentQ as any).explanationEnglish || (currentQ as any).explanationEn) && (
-                      <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-950/60 border border-purple-200 dark:border-purple-900 text-[11px] text-purple-950 dark:text-purple-200 whitespace-pre-line leading-relaxed">
-                        <span className="font-bold mr-1 block text-purple-800 dark:text-purple-300">🇬🇧 English Pedagogical Translation:</span>
-                        {(currentQ as any).detailedExplanationEn || (currentQ as any).explanationEnglish || (currentQ as any).explanationEn}
-                      </div>
+                    {(!showDetailedAnalysis && selectedAnswers[currentQ.id] === undefined && !checkedMap[currentQ.id]) ? (
+                      <button
+                        type="button"
+                        onClick={() => setShowDetailedAnalysis(true)}
+                        className="w-full py-2.5 px-3 rounded-xl bg-purple-600/10 hover:bg-purple-600/20 border border-purple-500/30 text-purple-900 dark:text-purple-200 text-xs font-bold flex items-center justify-between transition-all cursor-pointer"
+                      >
+                        <span className="flex items-center gap-2">
+                          <Sparkles className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+                          <span>Afficher la réponse exacte</span>
+                        </span>
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-purple-600/20 font-mono font-bold">
+                          Dévoiler ▼
+                        </span>
+                      </button>
+                    ) : (
+                      <>
+                        <div className="flex items-center justify-between font-bold text-purple-900 dark:text-purple-300">
+                          <div className="flex items-center gap-1.5">
+                            <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+                            <span>Analyse Pédagogique Détaillée</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setShowDetailedAnalysis(false)}
+                            className="text-[10px] px-2 py-0.5 rounded bg-purple-600/20 font-mono font-bold cursor-pointer"
+                          >
+                            Masquer ▲
+                          </button>
+                        </div>
+                        <div className="whitespace-pre-line leading-relaxed font-medium text-slate-900 dark:text-slate-100">
+                          {(currentQ as any).detailedExplanation || currentQ.explanation}
+                        </div>
+                        {((currentQ as any).detailedExplanationEn || (currentQ as any).explanationEnglish || (currentQ as any).explanationEn) && (
+                          <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-950/60 border border-purple-200 dark:border-purple-900 text-[11px] text-purple-950 dark:text-purple-200 whitespace-pre-line leading-relaxed">
+                            <span className="font-bold mr-1 block text-purple-800 dark:text-purple-300">🇬🇧 English Pedagogical Translation:</span>
+                            {(currentQ as any).detailedExplanationEn || (currentQ as any).explanationEnglish || (currentQ as any).explanationEn}
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 )}

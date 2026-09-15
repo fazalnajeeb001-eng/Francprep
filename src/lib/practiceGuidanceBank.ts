@@ -1,9 +1,4 @@
-/**
- * 🇨🇦 FrancPrep Master Practice Mode Guidance Bank
- * Provides 100% comprehensive, bilingual (French + 100% Pure English Translations) Trap Alerts,
- * Audio Coach Strategies, and Pedagogical Explanations across all 390 TCF Canada Listening questions (10 Papers).
- * Structured 100% identically to the Reading Strategy Coach benchmark.
- */
+import { LISTENING_GUIDANCE_BANK } from "./listeningGuidanceBank";
 
 export interface QuestionGuidance {
   trapAlert: string;
@@ -24,20 +19,37 @@ export function getQuestionGuidance(
   correctTextEn?: string,
   passageEn?: string,
   questionPromptEn?: string,
-  correctIndex: number = 0
+  correctIndex: number = 0,
+  paperNum?: number
 ): QuestionGuidance {
+  if (paperNum) {
+    const key = `p${paperNum}_q${qNum}`;
+    const entry = LISTENING_GUIDANCE_BANK[key];
+    if (entry) {
+      return {
+        trapAlert: entry.trapAlert,
+        trapAlertEn: entry.trapAlertEn,
+        audioCoach: entry.audioCoach,
+        audioCoachEn: entry.audioCoachEn,
+        detailedExplanation: entry.detailedExplanation,
+        detailedExplanationEn: entry.detailedExplanationEn,
+        combinedHint: `${entry.trapAlert}\n\n${entry.audioCoach}`
+      };
+    }
+  }
+
   const letters = ["A", "B", "C", "D"];
   const correctLetter = letters[correctIndex] || "A";
   const finalCorrectEn = (correctTextEn && correctTextEn.trim()) ? correctTextEn.trim() : correctText;
   const finalPassageEn = (passageEn && passageEn.trim()) ? passageEn.trim() : passage;
 
-  let trapAlert = `⚠️ Piège ${level} (Compréhension Orale) : Attention aux pièges d'association phonétique et aux leurres de débit rapide ! Ne confondez pas la réponse vérifiée (Option ${correctLetter} : « ${correctText} ») avec les options pièges qui réutilisent des termes du document sonore mais en altèrent le sens profond.`;
+  let trapAlert = `⚠️ Piège ${level} (Compréhension Orale) : Attention aux pièges d'association phonétique et aux leurres de débit rapide ! Ne vous fiez pas aux mots isolés qui réutilisent des sonorités du document sonore mais en déforment le sens global.`;
   
-  let trapAlertEn = `⚠️ Level ${level} Acoustic Trap Alert: Watch out for phonetic lure traps and rapid speech distractors! Do not confuse the verified answer (Option ${correctLetter}: "${finalCorrectEn}") with distractor options which reuse text words but distort the core meaning.`;
+  let trapAlertEn = `⚠️ Level ${level} Acoustic Trap Alert: Watch out for phonetic lure traps and rapid speech distractors! Do not rely on isolated keywords that mimic sounds from the audio clip while distorting overall meaning.`;
 
-  let audioCoach = `💡 Stratégie ${level} (Écoute Ciblée) : Lisez la question et effectuez une écoute ciblée du document sonore. Repérez les connecteurs logiques pivots (ex: « cependant », « en revanche », « par contre ») et identifiez l'intention principale du locuteur. Éliminez immédiatement les propositions contenant des contresens ou des exagérations absolues, et validez l'Option ${correctLetter} (« ${correctText} »).`;
+  let audioCoach = `💡 Stratégie ${level} (Écoute Ciblée) : Lisez attentivement la question et effectuez une écoute ciblée du document sonore. Repérez l'intention principale du locuteur et les connecteurs logiques pivots. Éliminez immédiatement les propositions contenant des contresens ou des exagérations absolues.`;
 
-  let audioCoachEn = `💡 Level ${level} Listening Coach: Read the prompt and perform targeted acoustic scanning of the audio clip. Listen for key pivot connectors (e.g., "however", "on the other hand", "instead") and main intent. Eliminate options containing direct contradictions or unstated extreme claims, and validate Option ${correctLetter} ("${finalCorrectEn}").`;
+  let audioCoachEn = `💡 Level ${level} Listening Coach: Read the prompt carefully and perform targeted acoustic scanning of the audio clip. Identify the speaker's core intent and pivot transition markers. Immediately rule out options containing direct contradictions or unstated extreme claims.`;
 
   const breakdownFr = letters.map((l, idx) => {
     if (idx === correctIndex) {
@@ -71,3 +83,4 @@ export function getQuestionGuidance(
     combinedHint
   };
 }
+
