@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 550" width="800" height="550">
+  <rect width="800" height="550" fill="#ffffff"/>
+  <!-- Title Header -->
+  <rect x="0" y="0" width="800" height="70" fill="#0f172a"/>
+  <text x="400" y="42" font-family="system-ui, sans-serif" font-size="20" font-weight="bold" fill="#ffffff" text-anchor="middle">BAROMÈTRE DE L'EMPLOI : PART DU TÉLÉTRAVAIL HYBRIDE</text>
+  
+  <!-- Graph Frame -->
+  <g transform="translate(100, 110)">
+    <!-- Y Axis Grid & Labels -->
+    <line x1="0" y1="0" x2="620" y2="0" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="4,4"/>
+    <text x="-20" y="5" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" fill="#64748b" text-anchor="end">70%</text>
+
+    <line x1="0" y1="50" x2="620" y2="50" stroke="#fca5a5" stroke-width="2" stroke-dasharray="6,4"/>
+    <text x="-20" y="55" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" fill="#ef4444" text-anchor="end">65%</text>
+    <text x="130" y="40" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" fill="#ef4444">Pic d'urgence (2020) : 65%</text>
+
+    <line x1="0" y1="165" x2="620" y2="165" stroke="#60a5fa" stroke-width="2.5"/>
+    <text x="-20" y="170" font-family="system-ui, sans-serif" font-size="16" font-weight="bold" fill="#2563eb" text-anchor="end">42%</text>
+    <rect x="360" y="135" width="250" height="26" rx="6" fill="#dbeafe"/>
+    <text x="485" y="153" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" fill="#1e40af" text-anchor="middle">🎯 PLATEAU STABILISÉ : 42%</text>
+
+    <line x1="0" y1="270" x2="620" y2="270" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="4,4"/>
+    <text x="-20" y="275" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" fill="#64748b" text-anchor="end">20%</text>
+
+    <line x1="0" y1="310" x2="620" y2="310" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="-20" y="315" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" fill="#475569" text-anchor="end">8%</text>
+    <text x="25" y="300" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" fill="#475569">2019 : 8%</text>
+
+    <!-- Axes -->
+    <line x1="0" y1="0" x2="0" y2="330" stroke="#334155" stroke-width="3"/>
+    <line x1="0" y1="330" x2="620" y2="330" stroke="#334155" stroke-width="3"/>
+
+    <!-- Data Line Curve -->
+    <!-- 2019 (0, 310) -> 2020 (100, 50) -> 2021 (200, 115) -> 2022 (300, 150) -> 2023 (400, 165) -> 2024 (500, 165) -> 2025 (600, 165) -->
+    <path d="M 0,310 L 100,50 L 200,115 L 300,150 L 400,165 L 500,165 L 600,165" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Data Points -->
+    <circle cx="0" cy="310" r="7" fill="#1e293b"/>
+    <circle cx="100" cy="50" r="8" fill="#ef4444"/>
+    <circle cx="200" cy="115" r="7" fill="#2563eb"/>
+    <circle cx="300" cy="150" r="7" fill="#2563eb"/>
+    <circle cx="400" cy="165" r="9" fill="#2563eb"/>
+    <circle cx="500" cy="165" r="9" fill="#2563eb"/>
+    <circle cx="600" cy="165" r="9" fill="#2563eb"/>
+
+    <!-- X Axis Labels -->
+    <text x="0" y="360" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" fill="#334155" text-anchor="middle">2019</text>
+    <text x="100" y="360" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" fill="#334155" text-anchor="middle">2020</text>
+    <text x="200" y="360" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" fill="#334155" text-anchor="middle">2021</text>
+    <text x="300" y="360" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" fill="#334155" text-anchor="middle">2022</text>
+    <text x="400" y="360" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" fill="#1d4ed8" text-anchor="middle">2023</text>
+    <text x="500" y="360" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" fill="#1d4ed8" text-anchor="middle">2024</text>
+    <text x="600" y="360" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" fill="#1d4ed8" text-anchor="middle">2025</text>
+  </g>
+</svg>

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f4f5f7"/>
+      <stop offset="100%" stop-color="#e2e6ea"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#374151"/>
+      <stop offset="100%" stop-color="#1f2937"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="420" fill="url(#wall)"/>
+  <rect y="420" width="800" height="180" fill="url(#floor)"/>
+  
+  <!-- Tool Pegboard in Background -->
+  <rect x="50" y="40" width="300" height="200" rx="8" fill="#d1d5db" stroke="#9ca3af" stroke-width="2"/>
+  <text x="65" y="70" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" fill="#4b5563">ATELIER CYCLE • OUTILLAGE</text>
+  <!-- Wrench, pliers, spanners on wall -->
+  <path d="M80,90 L80,180 M95,90 L95,160 M110,90 L110,190 M140,110 L180,110" stroke="#6b7280" stroke-width="6" stroke-linecap="round"/>
+  <!-- Spare bike wheels hanging -->
+  <circle cx="280" cy="130" r="45" fill="none" stroke="#4b5563" stroke-width="5"/>
+  <circle cx="280" cy="130" r="8" fill="#4b5563"/>
+  <line x1="280" y1="85" x2="280" y2="175" stroke="#9ca3af" stroke-width="2"/>
+  <line x1="235" y1="130" x2="325" y2="130" stroke="#9ca3af" stroke-width="2"/>
+
+  <!-- Workshop Stand with Bicycle -->
+  <rect x="420" y="200" width="20" height="250" fill="#1e293b"/>
+  <rect x="380" y="430" width="100" height="20" rx="4" fill="#0f172a"/>
+  
+  <!-- Bicycle Frame Mounted on Stand -->
+  <circle cx="360" cy="320" r="55" fill="none" stroke="#2563eb" stroke-width="6"/>
+  <circle cx="560" cy="320" r="55" fill="none" stroke="#2563eb" stroke-width="6"/>
+  <polyline points="360,320 440,320 520,250 440,250 360,320" fill="none" stroke="#1d4ed8" stroke-width="7" stroke-linejoin="round"/>
+  <line x1="440" y1="250" x2="440" y2="320" stroke="#1d4ed8" stroke-width="7"/>
+  <line x1="520" y1="250" x2="560" y2="320" stroke="#1d4ed8" stroke-width="7"/>
+  <!-- Handlebars and Seat -->
+  <line x1="520" y1="250" x2="510" y2="210" stroke="#111827" stroke-width="6"/>
+  <line x1="490" y1="210" x2="530" y2="210" stroke="#111827" stroke-width="8" stroke-linecap="round"/>
+  <path d="M425,230 L455,230" stroke="#111827" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- Mechanic (Right) pointing to rear brake -->
+  <g transform="translate(480, 220)">
+    <circle cx="70" cy="50" r="30" fill="#fbcfe8"/> <!-- Head -->
+    <path d="M40,40 Q70,10 100,40" fill="#374151"/> <!-- Hair -->
+    <rect x="35" y="80" width="70" height="150" rx="10" fill="#1e3a8a"/> <!-- Overalls -->
+    <text x="70" y="140" font-family="system-ui, sans-serif" font-size="12" fill="#93c5fd" text-anchor="middle" font-weight="bold">SERVICE</text>
+    <!-- Arm holding tool near rear brake -->
+    <line x1="35" y1="100" x2="-80" y2="95" stroke="#fbcfe8" stroke-width="16" stroke-linecap="round"/>
+    <rect x="-95" y="85" width="20" height="20" rx="2" fill="#e11d48"/> <!-- Tool -->
+  </g>
+
+  <!-- Cyclist Customer (Left) -->
+  <g transform="translate(180, 220)">
+    <circle cx="50" cy="50" r="30" fill="#fed7aa"/> <!-- Head -->
+    <path d="M20,45 Q50,15 80,45" fill="#1f2937"/> <!-- Hair -->
+    <rect x="20" y="80" width="60" height="140" rx="8" fill="#047857"/> <!-- Green commuter jacket -->
+    <!-- Arm pointing toward brake -->
+    <line x1="70" y1="100" x2="160" y2="100" stroke="#fed7aa" stroke-width="14" stroke-linecap="round"/>
+  </g>
+
+  <!-- Label Badge -->
+  <rect x="250" y="520" width="300" height="50" rx="25" fill="rgba(15, 23, 42, 0.85)"/>
+  <text x="400" y="552" font-family="system-ui, sans-serif" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">ATELIER CYCLE : RÉPARATION DE FREIN</text>
+</svg>

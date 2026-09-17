@@ -150,8 +150,14 @@ export function AuthenticCBTExamPage() {
       return (customDurationMins || 65) * 60; // Official FEI TCF Canada standard: 65 mins (3900s)
     }
     if (secType === "EXPRESSION_ECRITE") return (customDurationMins || 60) * 60;    // Strict 60 mins (3600s)
-    if (secType === "COMPREHENSION_ORALE") return (customDurationMins || 35) * 60;   // ~35 mins (2100s)
-    if (secType === "EXPRESSION_ORALE") return (customDurationMins || 12) * 60;      // ~12 mins (720s)
+    if (secType === "COMPREHENSION_ORALE") {
+      if (paper?.type === "TEF_CANADA") return (customDurationMins || 40) * 60; // Official CCI Paris standard: 40 mins (2400s)
+      return (customDurationMins || 35) * 60;   // ~35 mins (2100s)
+    }
+    if (secType === "EXPRESSION_ORALE") {
+      if (paper?.type === "TEF_CANADA") return (customDurationMins || 15) * 60; // Official CCI Paris standard: 15 mins (900s)
+      return (customDurationMins || 12) * 60;      // ~12 mins (720s)
+    }
     return (customDurationMins || 35) * 60;
   };
 

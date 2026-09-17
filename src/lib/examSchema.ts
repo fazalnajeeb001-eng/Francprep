@@ -8,6 +8,9 @@ import { getReadingGuidance } from "./readingGuidanceBank";
 import { getWritingPaperTasks } from "./authenticWritingMasterBank";
 import { getWritingGuidance } from "./writingGuidanceBank";
 import { getMasterSpeakingTasks, type MasterSpeakingTask } from "./speakingMasterBank";
+import { TEF_PAPER_1_LISTENING_ITEMS } from "./tefListeningMasterBank";
+import { TEF_PAPER_1_LISTENING_GUIDANCE } from "./tefListeningGuidanceBank";
+import { calculateTefListeningScore } from "./tefScoringEngine";
 
 export type ExamType = "TCF_CANADA" | "TEF_CANADA";
 export type ExamMode = "PRACTICE" | "EXAM";
@@ -8004,6 +8007,41 @@ export function getExamRegistry(): ExamPaper[] {
     });
   }
 
+function getTefListeningQuestions(paperNum: number, isPractice: boolean, fallbackSeed: number): ExamQuestion[] {
+  if (paperNum === 1) {
+    return TEF_PAPER_1_LISTENING_ITEMS.map((item) => {
+      const g = TEF_PAPER_1_LISTENING_GUIDANCE[item.id];
+      return {
+        id: item.id,
+        questionNumber: item.questionNumber,
+        level: item.level,
+        speakingRate: item.speakingRate,
+        text: item.questionFr,
+        questionPrompt: item.questionFr,
+        questionPromptEnglish: item.questionEn,
+        options: [...item.optionsFr],
+        optionsEnglish: [...item.optionsEn],
+        mainImage: item.mainImage,
+        correctIndex: item.correctIndex,
+        explanation: g?.detailedExplanation || "",
+        detailedExplanationEn: g?.detailedExplanationEn || "",
+        explanationEnglish: g?.detailedExplanationEn || "",
+        hint: isPractice ? (g?.trapAlert || "") : "",
+        trapAlert: isPractice ? g?.trapAlert : undefined,
+        trapAlertEn: isPractice ? g?.trapAlertEn : undefined,
+        audioCoach: isPractice ? g?.audioCoach : undefined,
+        audioCoachEn: isPractice ? g?.audioCoachEn : undefined,
+        transcript: item.audioFr,
+        transcriptEnglish: item.audioEn,
+        passage: item.audioFr,
+        passageEnglish: item.audioEn,
+        perQuestionTimerSeconds: item.prepTimeSeconds + item.answerTimeSeconds
+      };
+    });
+  }
+  return generateListeningQuestions(40, `tef${paperNum}`, fallbackSeed);
+}
+
   // Generate 10 TEF Canada Papers (5 Practice Mode Papers + 5 Real Exam Mode Papers)
   for (let i = 1; i <= 10; i++) {
     const isPractice = i <= 5;
@@ -8021,9 +8059,9 @@ export function getExamRegistry(): ExamPaper[] {
       type: "TEF_CANADA",
       recommendedMode: isPractice ? "PRACTICE" : "EXAM",
       description: isPractice
-        ? `Guided practice paper tailored for TEF Canada Paris Chamber of Commerce (CCI) standards with hints and transcripts (84 Items / 135 Mins).`
-        : `Strict official CCI test-center exam paper with unpausable timers, zero hints, and authentic candidate scoring (84 Items / 135 Mins).`,
-      totalDurationMins: 135,
+        ? `Guided practice paper tailored for TEF Canada Paris Chamber of Commerce (CCI) standards with hints and transcripts (84 Items / 175 Mins).`
+        : `Strict official CCI test-center exam paper with unpausable timers, zero hints, and authentic candidate scoring (84 Items / 175 Mins).`,
+      totalDurationMins: 175,
       isSamplePaper: isPractice,
       published: true,
       sections: [
@@ -8033,7 +8071,7 @@ export function getExamRegistry(): ExamPaper[] {
           description: "Audio passages, public announcements, and conversations (40 Questions / 40 Mins).",
           durationMins: 40,
           totalQuestions: 40,
-          questions: generateListeningQuestions(40, `tef${i}`, seedOffset)
+          questions: getTefListeningQuestions(paperNum, isPractice, seedOffset)
         },
         {
           type: "COMPREHENSION_ECRITE",
@@ -8127,6 +8165,17 @@ export function calculateNCLCScore(pctScore: number, _examType: ExamType, sectio
     cefrEquivalent = "Unrated";
     expressEntryPoints = 0;
     isNCLC7TargetReached = false;
+  } else if (_examType === "TEF_CANADA" && sectionType === "COMPREHENSION_ORALE") {
+    // Official CCI Paris 0-699 Scale Conversion for TEF Listening
+    const raw = Math.round((pct / 100) * 40);
+    const tefRes = calculateTefListeningScore(raw);
+    return {
+      nclcLevel: tefRes.nclcLevel,
+      cefrEquivalent: tefRes.cefrEquivalent,
+      expressEntryPoints: tefRes.expressEntryPoints,
+      statusMessage: `Score CCI: ${tefRes.cciScore}/699 (NCLC ${tefRes.nclcLevel})`,
+      isNCLC7TargetReached: tefRes.isNCLC7TargetReached
+    };
   } else if (sectionType === "EXPRESSION_ECRITE" || sectionType === "EXPRESSION_ORALE") {
     // Official IRCC / France Éducation International 450-Point Standard Conversion
     // Scale: C2 (371-450 / >=82.0%), C1 (348-370 / >=77.0%), B2 Upper (310-347 / >=68.0%),
