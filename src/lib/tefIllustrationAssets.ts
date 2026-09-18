@@ -7,10 +7,7 @@ export const AVAILABLE_TEF_HD_IMAGES = new Set<string>([
   "tef_p1_q1",
   "tef_p1_q2",
   "tef_p1_q3",
-  "tef_p1_q4",
-  "tef_p1_q35",
-  "tef_p1_q36",
-  "tef_p1_q37"
+  "tef_p1_q4"
 ]);
 
 export function getTefHdIllustration(paperIdx: number, qNum: number): string | undefined {

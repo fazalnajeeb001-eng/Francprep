@@ -5,12 +5,12 @@
  */
 
 export type TefListeningTypology =
-  | "DESSINS"           // Q1-Q4: Conversations de la vie quotidienne avec dessins
-  | "MESSAGES"          // Q5-Q12: Messages sur répondeur & annonces publiques
-  | "MICRO_TROTTOIR"    // Q13-Q18: Sondages d'opinion / micro-trottoirs (4-6 intervenants)
-  | "RADIO"             // Q19-Q28: Émissions de radio, chroniques & flashes d'information
+  | "DESSINS"           // Q1-Q4: Conversations de la vie quotidienne avec 4 dessins (A1-A2)
+  | "MESSAGES"          // Q5-Q12: Messages sur répondeur & annonces publiques (A2-B1)
+  | "MICRO_TROTTOIR"    // Q13-Q18: Sondages d'opinion / micro-trottoirs (4-6 intervenants) (B1-B2)
+  | "RADIO"             // Q19-Q28: Émissions de radio, chroniques & flashes d'information (B2)
   | "GRAND_ENTRETIEN"   // Q29-Q34: Entretiens approfondis & débats spécialisés (B2/C1)
-  | "GRAPHIQUES"        // Q35-Q37: Statistiques, diagrammes & schémas chiffrés
+  | "REPORTAGE_DEBAT"   // Q35-Q37: Reportages sociétaux, chroniques de fond & controverses (B2/C1)
   | "DISCRIMINATION";   // Q38-Q40: Discrimination phonétique fine & actes de parole (C1/C2)
 
 export type TefLevel = "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
@@ -41,7 +41,7 @@ export interface TefListeningItem {
   optionsEn: [string, string, string, string];
   correctIndex: number; // 0, 1, 2, 3
   
-  // Visuals (for DESSINS Q1-Q4 and GRAPHIQUES Q35-Q37)
+  // Visuals (Exclusively for DESSINS Q1-Q4 in authentic e-TEF)
   mainImage?: string;
   optionImages?: [string, string, string, string];
   

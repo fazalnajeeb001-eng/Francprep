@@ -70,9 +70,9 @@ examListening.questions.forEach((q, idx) => {
 });
 console.log("✓ All 40 questions verified: valid French/English text, 4 options, transcripts, and correct indices.");
 
-// 4. Visual Image Assets Audit
-console.log("\n[Audit 2] Auditing Visual Illustrations for Q1-Q4 and Q35-Q37...");
-const visualIndices = [1, 2, 3, 4, 35, 36, 37];
+// 4. Visual Image Assets Audit (Authentic e-TEF: Q1-Q4 only)
+console.log("\n[Audit 2] Auditing Visual Illustrations for Q1-Q4 (2x2 Drawing Grid)...");
+const visualIndices = [1, 2, 3, 4];
 visualIndices.forEach((qNum) => {
   const q = examListening.questions[qNum - 1];
   if (!q.mainImage) {
@@ -85,8 +85,12 @@ visualIndices.forEach((qNum) => {
     console.error(`❌ Visual asset file not found on disk: ${fullPath}`);
     process.exit(1);
   }
+  if (!Array.isArray(q.optionImages) || q.optionImages.length !== 4) {
+    console.error(`❌ Question Q${qNum} missing 4 optionImages for 2x2 grid.`);
+    process.exit(1);
+  }
   const stats = fs.statSync(fullPath);
-  console.log(`   ✓ Q${qNum} Asset [${q.mainImage}] (${(stats.size / 1024).toFixed(1)} KB) — VERIFIED`);
+  console.log(`   ✓ Q${qNum} Asset [${q.mainImage}] (${(stats.size / 1024).toFixed(1)} KB) + 4 optionImages — VERIFIED`);
 });
 
 // 5. Dual-Mode Verification: Exam Mode (Zero Leaks) vs Practice Mode (Guidance Bar)
@@ -122,16 +126,17 @@ console.log("✓ Guided Practice Mode Pedagogy: 100% VERIFIED (40/40 Trap Alerts
 // 6. Scoring Engine Verification
 console.log("\n[Audit 4] Auditing Official CCI Paris 0-699 Scoring Engine & NCLC Scale...");
 const testCases = [
-  { raw: 40, expectedNclc: 10, expectedCefr: "C2", expectedCrs: 34, target: true },
-  { raw: 38, expectedNclc: 10, expectedCefr: "C2", expectedCrs: 34, target: true },
-  { raw: 35, expectedNclc: 9, expectedCefr: "C1", expectedCrs: 31, target: true },
-  { raw: 33, expectedNclc: 9, expectedCefr: "C1", expectedCrs: 31, target: true },
-  { raw: 30, expectedNclc: 8, expectedCefr: "B2", expectedCrs: 23, target: true },
-  { raw: 25, expectedNclc: 7, expectedCefr: "B2", expectedCrs: 17, target: true }, // NCLC 7 PR Target
-  { raw: 20, expectedNclc: 6, expectedCefr: "B1", expectedCrs: 9, target: false },
-  { raw: 15, expectedNclc: 5, expectedCefr: "B1", expectedCrs: 6, target: false },
-  { raw: 10, expectedNclc: 4, expectedCefr: "A2", expectedCrs: 0, target: false },
-  { raw: 4, expectedNclc: 2, expectedCefr: "Unrated", expectedCrs: 0, target: false }
+  { raw: 40, expectedNclc: 10, expectedCefr: "C2", expectedCrs: 34, target: true, safety: true },
+  { raw: 38, expectedNclc: 10, expectedCefr: "C2", expectedCrs: 34, target: true, safety: true },
+  { raw: 35, expectedNclc: 9, expectedCefr: "C1", expectedCrs: 31, target: true, safety: true },
+  { raw: 33, expectedNclc: 9, expectedCefr: "C1", expectedCrs: 31, target: true, safety: true },
+  { raw: 30, expectedNclc: 8, expectedCefr: "B2", expectedCrs: 23, target: true, safety: true },
+  { raw: 27, expectedNclc: 7, expectedCefr: "B2", expectedCrs: 17, target: true, safety: true }, // 442 pts (Safety buffer reached)
+  { raw: 24, expectedNclc: 7, expectedCefr: "B2", expectedCrs: 17, target: true, safety: false }, // 398 pts (IRCC Legal Cutoff)
+  { raw: 20, expectedNclc: 6, expectedCefr: "B1", expectedCrs: 9, target: false, safety: false },
+  { raw: 15, expectedNclc: 5, expectedCefr: "B1", expectedCrs: 6, target: false, safety: false },
+  { raw: 10, expectedNclc: 4, expectedCefr: "A2", expectedCrs: 0, target: false, safety: false },
+  { raw: 4, expectedNclc: 2, expectedCefr: "Unrated", expectedCrs: 0, target: false, safety: false }
 ];
 
 testCases.forEach((tc) => {
@@ -140,12 +145,14 @@ testCases.forEach((tc) => {
     res.nclcLevel !== tc.expectedNclc ||
     res.cefrEquivalent !== tc.expectedCefr ||
     res.expressEntryPoints !== tc.expectedCrs ||
-    res.isNCLC7TargetReached !== tc.target
+    res.isNCLC7TargetReached !== tc.target ||
+    res.isSafetyZoneReached !== tc.safety ||
+    !res.legacyEquivalent
   ) {
     console.error(`❌ Scoring error on raw score ${tc.raw}:`, res, tc);
     process.exit(1);
   }
-  console.log(`   • Raw ${tc.raw}/40 ➔ CCI Score: ${res.cciScore}/699 | CEFR: ${res.cefrEquivalent} | NCLC ${res.nclcLevel} | CRS +${res.expressEntryPoints} Points | PR Target: ${res.isNCLC7TargetReached ? 'PASS' : 'FAIL'}`);
+  console.log(`   • Raw ${tc.raw}/40 ➔ CCI: ${res.cciScore}/699 | Legacy: ${res.legacyEquivalent} | CEFR: ${res.cefrEquivalent} | NCLC ${res.nclcLevel} | CRS +${res.expressEntryPoints} pts | PR Target: ${res.isNCLC7TargetReached ? 'PASS' : 'FAIL'} | Safety Buffer: ${res.isSafetyZoneReached ? 'YES' : 'NO'}`);
 });
 
 console.log("\n╔══════════════════════════════════════════════════════════════════════════════════╗");

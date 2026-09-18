@@ -3945,9 +3945,11 @@ export function AuthenticCBTExamPage() {
                             <div className="px-3.5 py-2.5 rounded-lg bg-blue-900 text-white border border-blue-700 text-xs font-mono font-bold flex items-center justify-between shadow-md">
                               <div className="flex items-center gap-2">
                                 <Volume2 className="w-4 h-4 text-blue-300 animate-pulse" />
-                                <span>🎧 Document Sonore TCF N°{currentQ.questionNumber} — Lecture unique en cours...</span>
+                                <span>🎧 Document Sonore {paper?.type === "TEF_CANADA" ? "TEF" : "TCF"} N°{currentQ.questionNumber} — Lecture unique en cours...</span>
                               </div>
-                              <span className="text-[10px] px-2 py-0.5 rounded bg-blue-800 text-blue-200 border border-blue-600 hidden sm:inline">Format Conforme TCF</span>
+                              <span className="text-[10px] px-2 py-0.5 rounded bg-blue-800 text-blue-200 border border-blue-600 hidden sm:inline">
+                                {paper?.type === "TEF_CANADA" ? "Format Conforme e-TEF" : "Format Conforme TCF"}
+                              </span>
                             </div>
                           ) : (
                             <div className="px-3.5 py-2.5 rounded-lg bg-emerald-900 text-white border border-emerald-700 text-xs font-mono font-bold flex items-center justify-between shadow-md">
@@ -4481,7 +4483,7 @@ export function AuthenticCBTExamPage() {
                                     }`}>
                                     {letter}
                                   </span>
-                                  <span>Image {letter}</span>
+                                  <span>{paper?.type === "TEF_CANADA" ? `Dessin ${letter}` : `Image ${letter}`}</span>
                                 </span>
                                 {isChosen && <CheckCircle2 className="w-4 h-4 text-white" />}
                               </div>

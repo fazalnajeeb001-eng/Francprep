@@ -7,7 +7,7 @@
  *   - Groupe 3 (Q13-Q18): Micro-trottoirs / Sondages d'opinion (B1-B2)
  *   - Groupe 4 (Q19-Q28): Émissions de radio & chroniques d'actualité (B2)
  *   - Groupe 5 (Q29-Q34): Grands entretiens & débats de société (B2-C1)
- *   - Groupe 6 (Q35-Q37): Graphiques & schémas chiffrés (B1-B2)
+ *   - Groupe 6 (Q35-Q37): Reportages sociétaux & controverses d'actualité (B2-C1)
  *   - Groupe 7 (Q38-Q40): Discrimination phonétique & actes de parole (C1-C2)
  */
 
@@ -29,22 +29,28 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
     speakers: ["Voyageuse", "Agent de gare"],
     audioFr: "Voyageuse : Bonjour monsieur, excusez-moi, est-ce que le train pour Québec part bien de la voie 4 ?\nAgent : Bonjour madame. Non, attention, il y a eu un changement d'affichage. Il partira de la voie 7 dans dix minutes.",
     audioEn: "Traveler: Hello sir, excuse me, is the train for Quebec City really departing from platform 4?\nStation Agent: Hello ma'am. No, watch out, there was a display change. It will depart from platform 7 in ten minutes.",
-    questionFr: "Regardez les illustrations. Quelle situation correspond à la conversation entendue ?",
-    questionEn: "Look at the illustrations. Which situation corresponds to the conversation heard?",
+    questionFr: "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
+    questionEn: "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     optionsFr: [
-      "Une voyageuse demandant son quai de départ à un agent ferroviaire",
-      "Une cliente achetant un billet de cinéma au guichet",
-      "Une passagère enregistrant ses bagages à l'aéroport",
-      "Une automobiliste demandant son chemin à une station-service"
+      "Dessin A",
+      "Dessin B",
+      "Dessin C",
+      "Dessin D"
     ],
     optionsEn: [
-      "A traveler asking a railway agent for her departure platform",
-      "A customer buying a movie ticket at the box office",
-      "A passenger checking her luggage at the airport",
-      "A motorist asking for directions at a gas station"
+      "Drawing A",
+      "Drawing B",
+      "Drawing C",
+      "Drawing D"
     ],
     correctIndex: 0,
-    mainImage: "/illustrations/tef/tef_p1_q1.png"
+    mainImage: "/illustrations/tef/tef_p1_q1.png",
+    optionImages: [
+      "/illustrations/tef/tef_p1_q1.png",
+      "/illustrations/tef/tef_p1_q2.png",
+      "/illustrations/tef/tef_p1_q3.png",
+      "/illustrations/tef/tef_p1_q4.png"
+    ]
   },
   {
     id: "tef-p1-co-q02",
@@ -60,22 +66,28 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
     speakers: ["Client", "Boulangère"],
     audioFr: "Client : Bonjour madame, je vais prendre deux baguettes bien cuites et trois croissants au beurre, s'il vous plaît.\nBoulangère : Très bien monsieur. Et avec ceci, ce sera tout pour aujourd'hui ?",
     audioEn: "Customer: Hello ma'am, I'll take two well-done baguettes and three butter croissants, please.\nBaker: Very good sir. And along with this, will that be all for today?",
-    questionFr: "Regardez les illustrations. Que souhaite acheter le client ?",
-    questionEn: "Look at the illustrations. What does the customer wish to purchase?",
+    questionFr: "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
+    questionEn: "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     optionsFr: [
-      "Du pain et des viennoiseries dans une boulangerie",
-      "Des fruits frais et des légumes au marché",
-      "Des médicaments sur ordonnance dans une pharmacie",
-      "Un repas chaud à emporter dans un restaurant rapide"
+      "Dessin A",
+      "Dessin B",
+      "Dessin C",
+      "Dessin D"
     ],
     optionsEn: [
-      "Bread and pastries in a bakery",
-      "Fresh fruits and vegetables at the open market",
-      "Prescription medication at a pharmacy",
-      "A hot takeaway meal at a fast-food counter"
+      "Drawing A",
+      "Drawing B",
+      "Drawing C",
+      "Drawing D"
     ],
     correctIndex: 0,
-    mainImage: "/illustrations/tef/tef_p1_q2.png"
+    mainImage: "/illustrations/tef/tef_p1_q2.png",
+    optionImages: [
+      "/illustrations/tef/tef_p1_q2.png",
+      "/illustrations/tef/tef_p1_q1.png",
+      "/illustrations/tef/tef_p1_q3.png",
+      "/illustrations/tef/tef_p1_q4.png"
+    ]
   },
   {
     id: "tef-p1-co-q03",
@@ -91,22 +103,28 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
     speakers: ["Patient", "Secrétaire médicale"],
     audioFr: "Patient : Bonjour, j'ai rendez-vous avec le docteur Laurent à 14 heures 30 pour mon rappel de vaccin.\nSecrétaire : Bonjour. Veuillez patienter dans la salle d'attente à droite, le médecin va venir vous chercher.",
     audioEn: "Patient: Hello, I have an appointment with Dr. Laurent at 2:30 PM for my booster vaccine.\nSecretary: Hello. Please wait in the waiting room to the right, the doctor will come to fetch you shortly.",
-    questionFr: "Regardez les illustrations. Où se déroule cet échange ?",
-    questionEn: "Look at the illustrations. Where does this exchange take place?",
+    questionFr: "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
+    questionEn: "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     optionsFr: [
-      "À l'accueil d'un cabinet médical",
-      "Au comptoir de prêt d'une bibliothèque municipale",
-      "À la caisse d'un supermarché de quartier",
-      "Dans le hall d'un hôtel de voyageurs"
+      "Dessin A",
+      "Dessin B",
+      "Dessin C",
+      "Dessin D"
     ],
     optionsEn: [
-      "At the reception of a medical practice",
-      "At the checkout desk of a municipal library",
-      "At the checkout counter of a neighborhood supermarket",
-      "In the lobby of a travelers' hotel"
+      "Drawing A",
+      "Drawing B",
+      "Drawing C",
+      "Drawing D"
     ],
     correctIndex: 0,
-    mainImage: "/illustrations/tef/tef_p1_q3.png"
+    mainImage: "/illustrations/tef/tef_p1_q3.png",
+    optionImages: [
+      "/illustrations/tef/tef_p1_q3.png",
+      "/illustrations/tef/tef_p1_q1.png",
+      "/illustrations/tef/tef_p1_q2.png",
+      "/illustrations/tef/tef_p1_q4.png"
+    ]
   },
   {
     id: "tef-p1-co-q04",
@@ -122,22 +140,28 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
     speakers: ["Cycliste", "Mécanicien vélo"],
     audioFr: "Cycliste : Bonjour, le câble de mon frein arrière s'est détendu ce matin en venant au travail. Vous pourriez y jeter un coup d'œil ?\nMécanicien : Laissez-moi votre bicyclette pour l'après-midi, je remplace le câble et vérifie la tension des patins.",
     audioEn: "Cyclist: Hello, the cable on my rear brake became loose this morning while biking to work. Could you take a look at it?\nMechanic: Leave your bicycle with me for the afternoon, I will replace the cable and verify the brake pad tension.",
-    questionFr: "Regardez les illustrations. Quel service le cycliste sollicite-t-il ?",
-    questionEn: "Look at the illustrations. What service is the cyclist requesting?",
+    questionFr: "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
+    questionEn: "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     optionsFr: [
-      "La réparation mécanique d'un système de freinage de vélo",
-      "L'achat d'un casque de protection pour enfant",
-      "La location d'une trottinette électrique pour la journée",
-      "Le gonflage gratuit des pneumatiques d'une voiture"
+      "Dessin A",
+      "Dessin B",
+      "Dessin C",
+      "Dessin D"
     ],
     optionsEn: [
-      "Mechanical repair of a bicycle braking system",
-      "The purchase of a protective helmet for a child",
-      "Rental of an electric scooter for the day",
-      "Complimentary air inflation for car tires"
+      "Drawing A",
+      "Drawing B",
+      "Drawing C",
+      "Drawing D"
     ],
     correctIndex: 0,
-    mainImage: "/illustrations/tef/tef_p1_q4.png"
+    mainImage: "/illustrations/tef/tef_p1_q4.png",
+    optionImages: [
+      "/illustrations/tef/tef_p1_q4.png",
+      "/illustrations/tef/tef_p1_q1.png",
+      "/illustrations/tef/tef_p1_q2.png",
+      "/illustrations/tef/tef_p1_q3.png"
+    ]
   },
 
   // ─── GROUPE 2 : MESSAGES TÉLÉPHONIQUES & ANNONCES PUBLIQUES (Q5 - Q12) ───
@@ -1051,99 +1075,96 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
     correctIndex: 0
   },
 
-  // ─── GROUPE 6 : GRAPHIQUES & SCHÉMAS CHIFFRÉS (Q35 - Q37) ───
+  // ─── GROUPE 6 : REPORTAGES SOCIÉTAUX & CONTROVERSES D'ACTUALITÉ (Q35 - Q37) ───
   {
     id: "tef-p1-co-q35",
     paperNumber: 1,
     questionNumber: 35,
-    typology: "GRAPHIQUES",
-    level: "B1",
-    title: "Graphique — Évolution du télétravail hybride (2019-2025)",
-    speakingRate: 1.02,
+    typology: "REPORTAGE_DEBAT",
+    level: "B2",
+    title: "Reportage — L'essor du réemploi solidaire et de la seconde main",
+    speakingRate: 1.05,
     prepTimeSeconds: 15,
     answerTimeSeconds: 20,
     speakerCount: 1,
-    speakers: ["Commentatrice de statistiques économiques"],
-    audioFr: "Examinons les données du baromètre de l'emploi métropolitain. En 2019, seuls 8 % des salariés du secteur tertiaire pratiquaient régulièrement le télétravail. Après le pic exceptionnel de 2020 où cette proportion a atteint 65 % sous la contrainte sanitaire, le rythme s'est stabilisé : depuis 2023, nous observons un plateau durable où exactement 42 % des effectifs effectuent deux à trois jours par semaine depuis leur domicile.",
-    audioEn: "Let's examine data from the metropolitan employment barometer. In 2019, a mere 8% of service-sector employees practiced telework on a regular basis. Following the exceptional 2020 peak where this proportion surged to 65% under emergency mandates, rhythms stabilized: since 2023, we observe a steady plateau where exactly 42% of personnel work two to three days weekly from home.",
-    questionFr: "Regardez le graphique. Quel chiffre illustre la part stabilisée du travail à distance hybride ?",
-    questionEn: "Look at the graph. Which figure illustrates the stabilized share of hybrid remote work?",
+    speakers: ["Journaliste d'investigation économique"],
+    audioFr: "Longtemps cantonnée aux brocantes de quartier et aux réseaux d'entraide caritatifs, la filière de la seconde main s'impose aujourd'hui comme un rouage économique à part entière. Poussés par l'inflation et une volonté de réduire leur empreinte carbone, près de six ménages sur dix déclarent désormais privilégier le matériel électronique ou vestimentaire reconditionné, incitant les géants de la distribution à ouvrir leurs propres rayons de réemploi.",
+    audioEn: "Long confined to neighborhood flea markets and charitable mutual-aid networks, the second-hand economy is establishing itself as a full-fledged financial driver. Spurred by inflation and a desire to shrink their carbon footprint, nearly six in ten households now report prioritizing refurbished electronics or garments, prompting retail powerhouses to launch their own in-house reconditioned aisles.",
+    questionFr: "D'après la chronique, quelle évolution majeure caractérise le marché de la seconde main ?",
+    questionEn: "According to the broadcast, what major development characterizes the second-hand market?",
     optionsFr: [
-      "Un plateau pérenne établi autour de 42 % des salariés",
-      "Un retour complet au niveau initial d'avant-crise de 8 %",
-      "Un maintien durable du pic maximal d'urgence à 65 %",
-      "Une baisse continue tombant à zéro dans toutes les entreprises"
+      "Sa transformation en secteur économique majeur adopté par la grande distribution",
+      "Son déclin progressif en raison du manque d'intérêt des consommateurs",
+      "Sa limitation exclusive aux structures caritatives d'urgence",
+      "L'interdiction légale de commercialiser des appareils reconditionnés"
     ],
     optionsEn: [
-      "A permanent plateau established around 42% of workforce personnel",
-      "A complete return back down to the baseline pre-crisis rate of 8%",
-      "A sustained continuation of the emergency peak ceiling at 65%",
-      "A perpetual downward slump tapering to zero across all enterprises"
+      "Its transformation into a major economic sector embraced by mainstream retail",
+      "Its gradual decline due to a widespread lack of consumer interest",
+      "Its strict containment within emergency non-profit charities",
+      "A legal prohibition preventing the sale of refurbished consumer electronics"
     ],
-    correctIndex: 0,
-    mainImage: "/illustrations/tef/tef_p1_q35.png"
+    correctIndex: 0
   },
   {
     id: "tef-p1-co-q36",
     paperNumber: 1,
     questionNumber: 36,
-    typology: "GRAPHIQUES",
+    typology: "REPORTAGE_DEBAT",
     level: "B2",
-    title: "Graphique — Répartition modale des déplacements urbains",
-    speakingRate: 1.06,
+    title: "Chronique Environnement — La transition agroécologique en zone périurbaine",
+    speakingRate: 1.08,
     prepTimeSeconds: 15,
     answerTimeSeconds: 20,
     speakerCount: 1,
-    speakers: ["Urbaniste consultant"],
-    audioFr: "L'enquête sur la mobilité quotidienne révèle un basculement historique dans les centres urbains. La part de la voiture individuelle en solo s'est contractée à 28 %, talonnée désormais par les transports en commun à 38 %. Mais l'évolution la plus marquante provient des mobilités actives : le vélo et la marche réunissent désormais 34 % de l'ensemble des trajets quotidiens enregistrés.",
-    audioEn: "The urban mobility survey reveals a historic tipping point across downtown corridors. The share of single-occupancy driving contracted to 28%, now closely outpaced by public mass transit at 38%. But the most striking surge stems from active transportation: cycling and walking now account for 34% of all logged daily journeys.",
-    questionFr: "Regardez le schéma en secteurs. Quelle tranche correspond aux mobilités douces et actives ?",
-    questionEn: "Look at the pie chart. Which slice corresponds to active, low-carbon transportation modes?",
+    speakers: ["Chroniqueuse scientifique"],
+    audioFr: "Dans les ceintures vertes encerclant nos grandes métropoles, les parcelles maraîchères expérimentent de nouveaux modèles d'agroécologie régénérative. En associant haies bocagères, cultures intercalaires et zéro intrant chimique, ces fermes périurbaines parviennent non seulement à préserver les nappes phréatiques, mais elles approvisionnent directement les cantines scolaires des communes avoisinantes en circuits ultra-courts.",
+    audioEn: "Across greenbelts encircling major metropolitan hubs, vegetable farming plots are testing novel models of regenerative agroecology. By pairing hedgerows, companion planting, and zero synthetic chemical inputs, these peri-urban farms not only safeguard groundwater tables, but directly supply neighboring municipal school cafeterias through hyper-localized distribution loops.",
+    questionFr: "Quel double avantage les fermes maraîchères périurbaines apportent-elles ?",
+    questionEn: "What dual advantage do peri-urban vegetable farms deliver?",
     optionsFr: [
-      "La part cumulée du vélo et de la marche à pied représentant 34 % des trajets",
-      "La part dominante de la voiture individuelle en solo à 55 %",
-      "La part des transports collectifs plafonnant à moins de 15 %",
-      "Une part égale de 25 % pour chacun des quatre modes de transport"
+      "La préservation écologique des eaux et l'approvisionnement direct des cantines locales",
+      "Une hausse spectaculaire des exportations de denrées vers les marchés étrangers",
+      "La suppression de toutes les terres agricoles au profit de nouveaux lotissements",
+      "L'obligation pour les élèves de financer eux-mêmes leurs repas scolaires"
     ],
     optionsEn: [
-      "The combined cycling and walking share accounting for 34% of trips",
-      "The dominant single-occupancy automobile share standing at 55%",
-      "The mass public transit slice plateauing below 15%",
-      "An equal 25% distribution share across all four transport categories"
+      "Ecological water table protection and direct supply to local cafeterias",
+      "A dramatic increase in food exports targeting overseas markets",
+      "The complete conversion of farmland into residential housing tracts",
+      "A mandatory requirement that students personally finance their school meals"
     ],
-    correctIndex: 0,
-    mainImage: "/illustrations/tef/tef_p1_q36.png"
+    correctIndex: 0
   },
   {
     id: "tef-p1-co-q37",
     paperNumber: 1,
     questionNumber: 37,
-    typology: "GRAPHIQUES",
-    level: "B2",
-    title: "Graphique — Taux comparatif de valorisation des déchets",
-    speakingRate: 1.08,
+    typology: "REPORTAGE_DEBAT",
+    level: "C1",
+    title: "Débat de Société — L'impact de la dématérialisation administrative",
+    speakingRate: 1.10,
     prepTimeSeconds: 15,
     answerTimeSeconds: 20,
     speakerCount: 1,
-    speakers: ["Ingénieur en valorisation des matières résiduelles"],
-    audioFr: "Le bilan annuel de la filière circulaire met en évidence des disparités considérables selon les matériaux d'emballage. Alors que le verre atteint un taux exemplaire de réemploi et de recyclage effectif de 86 %, et que les cartons et papiers s'élèvent honorablement à 72 %, la filière des plastiques composites stagne dramatiquement à seulement 23 % de matière régénérée.",
-    audioEn: "The annual circular economy audit highlights staggering discrepancies across packaging materials. While glass attains an exemplary closed-loop recovery and recycling rate of 86%, and cardboard and paper paperboard register a commendable 72%, the composite plastics stream languishes dramatically at merely 23% recycled resin.",
-    questionFr: "Regardez l'histogramme comparatif. Quelle barre correspond au taux de recyclage du verre ?",
-    questionEn: "Look at the comparative bar chart. Which bar corresponds to the glass recycling rate?",
+    speakers: ["Médiatrice des services publics"],
+    audioFr: "Si la numérisation des démarches administratives a indéniablement allégé les délais de traitement pour une large majorité de citoyens connectés, elle a simultanément creusé une fracture insidieuse pour les publics vulnérables. Sans accompagnement humain de proximité au sein de guichets physiques, l'obligation du tout-en-ligne risque de transformer un outil de modernisation en un facteur d'exclusion civique et de non-recours aux droits.",
+    audioEn: "While streamlining administrative procedures online has undeniably shortened processing delays for a tech-savvy majority, it has concurrently widened an insidious divide for vulnerable populations. Without localized face-to-face assistance at physical service counters, all-digital mandates risk converting a modernization instrument into an engine of civic disenfranchisement and unclaimed social benefits.",
+    questionFr: "Quelle mise en garde la médiatrice formule-t-elle à l'égard du tout-numérique ?",
+    questionEn: "What cautionary warning does the ombudsman issue regarding all-digital procedures?",
     optionsFr: [
-      "La barre culminante affichant une performance supérieure de 86 %",
-      "La barre médiane intermédiaire située aux alentours de 50 %",
-      "La barre la plus faible atteignant difficilement le seuil de 23 %",
-      "Une barre inexistante en raison de l'absence de données vérifiées"
+      "Le risque d'exclure les populations fragiles privées d'accompagnement physique",
+      "L'impossibilité technique de stocker des données sur des serveurs sécurisés",
+      "La disparition programmée de tout formulaire ou document administratif",
+      "L'obligation générale de retourner aux dossiers exclusivement manuscrits"
     ],
     optionsEn: [
-      "The peak bar displaying an outstanding recovery performance of 86%",
-      "The middle intermediate bar situated in the vicinity of 50%",
-      "The lowest bar struggling to meet the threshold of 23%",
-      "A nonexistent bar due to a total lack of verified sorting data"
+      "The hazard of disenfranchising vulnerable groups deprived of physical in-person guidance",
+      "The technical impossibility of storing citizen records on secured servers",
+      "The scheduled complete disappearance of all administrative forms and documents",
+      "A blanket mandate enforcing a total return to handwritten paper files"
     ],
-    correctIndex: 0,
-    mainImage: "/illustrations/tef/tef_p1_q37.png"
+    correctIndex: 0
   },
 
   // ─── GROUPE 7 : DISCRIMINATION PHONÉTIQUE & ACTES DE PAROLE (Q38 - Q40) ───
