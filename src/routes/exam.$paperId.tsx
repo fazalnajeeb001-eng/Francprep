@@ -3870,10 +3870,12 @@ export function AuthenticCBTExamPage() {
               qTimeLeft={qTimeLeft}
               selectedOption={selectedAnswers[currentQ.id]}
               isFlagged={!!flaggedQuestions[currentQ.id]}
+              isChecked={!!checkedMap[currentQ.id]}
               onSelectOption={(idx) => handleSelectOption(currentQ.id, idx)}
               onToggleFlag={() => toggleFlag(currentQ.id)}
               onPlayAudio={() => handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || 1.0)}
               onPauseResumeAudio={handlePauseResumeAudio}
+              onCheckAnswer={() => handleCheckAnswer(currentQ.id, currentQ.correctIndex)}
               onPrevious={() => setCurrentQuestionIdx((prev) => Math.max(0, prev - 1))}
               onNext={() => {
                 if (currentQuestionIdx < currentQuestions.length - 1) {
