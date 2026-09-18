@@ -45,6 +45,7 @@ import { MASTER_SPEAKING_BANK } from "~/lib/speakingMasterBank";
 import { READING_GUIDANCE_BANK } from "~/lib/readingGuidanceBank";
 import { LISTENING_GUIDANCE_BANK } from "~/lib/listeningGuidanceBank";
 import { acousticAnalyzer, type AcousticAnalysisResult } from "~/lib/acousticAnalyzer";
+import { TefListeningDessinViewport } from "~/components/tef/TefListeningDessinViewport";
 
 function countFrenchWords(str: string): number {
   if (!str || !str.trim()) return 0;
@@ -3854,7 +3855,42 @@ export function AuthenticCBTExamPage() {
 
         {/* LISTENING & READING SPLIT SCREEN */}
         {currentQuestions.length > 0 && currentQ && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-6 h-full">
+          paper?.type === "TEF_CANADA" && currentSection.type === "COMPREHENSION_ORALE" && (currentQ.questionNumber <= 4 || (currentQ as any).typology === "DESSINS") ? (
+            <TefListeningDessinViewport
+              currentQ={currentQ}
+              currentQuestionIdx={currentQuestionIdx}
+              totalQuestions={currentQuestions.length}
+              mode={mode}
+              cbtCard={cbtCard}
+              cbtDark={cbtDark}
+              isAudioFinished={isAudioFinished}
+              isSpeaking={isSpeaking}
+              isAudioPaused={isAudioPaused}
+              isTimerPaused={isTimerPaused}
+              qTimeLeft={qTimeLeft}
+              selectedOption={selectedAnswers[currentQ.id]}
+              isFlagged={!!flaggedQuestions[currentQ.id]}
+              onSelectOption={(idx) => handleSelectOption(currentQ.id, idx)}
+              onToggleFlag={() => toggleFlag(currentQ.id)}
+              onPlayAudio={() => handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || 1.0)}
+              onPauseResumeAudio={handlePauseResumeAudio}
+              onPrevious={() => setCurrentQuestionIdx((prev) => Math.max(0, prev - 1))}
+              onNext={() => {
+                if (currentQuestionIdx < currentQuestions.length - 1) {
+                  setCurrentQuestionIdx((prev) => prev + 1);
+                } else if (activeSectionIdx < paper.sections.length - 1) {
+                  setActiveSectionIdx((prev) => prev + 1);
+                  setCurrentQuestionIdx(0);
+                } else {
+                  handleFinishTest();
+                }
+              }}
+              isAdmin={isAdmin}
+              showTranslation={showTranslation}
+              onToggleTranslation={() => setShowTranslation(!showTranslation)}
+            />
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-6 h-full">
 
             {/* LEFT PANEL: PASSAGE / AUDIO STIMULUS (7 COLS) */}
             <div className={`lg:col-span-7 p-3 sm:p-4 lg:p-5 rounded-xl border ${cbtCard} shadow-sm space-y-3 sm:space-y-4 flex flex-col justify-between overflow-y-auto max-lg:max-h-[30vh] lg:max-h-none`}>
@@ -4776,6 +4812,7 @@ export function AuthenticCBTExamPage() {
             </div>
 
           </div>
+          )
         )}
 
         {/* WRITING SECTION WORKSPACE WITH CBT TASK TABS */}

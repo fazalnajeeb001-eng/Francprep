@@ -44,12 +44,12 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
       "Drawing D"
     ],
     correctIndex: 0,
-    mainImage: "/illustrations/tef/tef_p1_q1.png",
+    mainImage: "/illustrations/tef/tef_p1_q1_a.png",
     optionImages: [
-      "/illustrations/tef/tef_p1_q1.png",
-      "/illustrations/tef/tef_p1_q2.png",
-      "/illustrations/tef/tef_p1_q3.png",
-      "/illustrations/tef/tef_p1_q4.png"
+      "/illustrations/tef/tef_p1_q1_a.png",
+      "/illustrations/tef/tef_p1_q1_b.png",
+      "/illustrations/tef/tef_p1_q1_c.png",
+      "/illustrations/tef/tef_p1_q1_d.png"
     ]
   },
   {
@@ -81,12 +81,12 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
       "Drawing D"
     ],
     correctIndex: 0,
-    mainImage: "/illustrations/tef/tef_p1_q2.png",
+    mainImage: "/illustrations/tef/tef_p1_q2_a.png",
     optionImages: [
-      "/illustrations/tef/tef_p1_q2.png",
-      "/illustrations/tef/tef_p1_q1.png",
-      "/illustrations/tef/tef_p1_q3.png",
-      "/illustrations/tef/tef_p1_q4.png"
+      "/illustrations/tef/tef_p1_q2_a.png",
+      "/illustrations/tef/tef_p1_q2_b.png",
+      "/illustrations/tef/tef_p1_q2_c.png",
+      "/illustrations/tef/tef_p1_q2_d.png"
     ]
   },
   {
@@ -118,12 +118,12 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
       "Drawing D"
     ],
     correctIndex: 0,
-    mainImage: "/illustrations/tef/tef_p1_q3.png",
+    mainImage: "/illustrations/tef/tef_p1_q3_a.png",
     optionImages: [
-      "/illustrations/tef/tef_p1_q3.png",
-      "/illustrations/tef/tef_p1_q1.png",
-      "/illustrations/tef/tef_p1_q2.png",
-      "/illustrations/tef/tef_p1_q4.png"
+      "/illustrations/tef/tef_p1_q3_a.png",
+      "/illustrations/tef/tef_p1_q3_b.png",
+      "/illustrations/tef/tef_p1_q3_c.png",
+      "/illustrations/tef/tef_p1_q3_d.png"
     ]
   },
   {
@@ -155,12 +155,12 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
       "Drawing D"
     ],
     correctIndex: 0,
-    mainImage: "/illustrations/tef/tef_p1_q4.png",
+    mainImage: "/illustrations/tef/tef_p1_q4_a.png",
     optionImages: [
-      "/illustrations/tef/tef_p1_q4.png",
-      "/illustrations/tef/tef_p1_q1.png",
-      "/illustrations/tef/tef_p1_q2.png",
-      "/illustrations/tef/tef_p1_q3.png"
+      "/illustrations/tef/tef_p1_q4_a.png",
+      "/illustrations/tef/tef_p1_q4_b.png",
+      "/illustrations/tef/tef_p1_q4_c.png",
+      "/illustrations/tef/tef_p1_q4_d.png"
     ]
   },
 
