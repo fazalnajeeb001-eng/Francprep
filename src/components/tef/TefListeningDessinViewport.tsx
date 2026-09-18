@@ -63,6 +63,7 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
   onToggleTranslation
 }) => {
   const [showTranscript, setShowTranscript] = useState(false);
+  const [showCoaching, setShowCoaching] = useState(true);
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
 
   const optionDrawings = (currentQ as any).optionImages && (currentQ as any).optionImages.length === 4
@@ -316,24 +317,35 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
         })}
       </div>
 
-      {/* ─── 5. PRACTICE MODE PEDAGOGICAL GUIDANCE ─── */}
+      {/* ─── 5. PRACTICE MODE PEDAGOGICAL GUIDANCE (Strictly hidden in Exam Mode) ─── */}
       {mode === "PRACTICE" && ((currentQ as any).trapAlert || (currentQ as any).audioCoach || currentQ.hint) && (
-        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-slate-900 dark:text-slate-100 space-y-2">
+        <div className="p-3.5 sm:p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-slate-900 dark:text-slate-100 space-y-2">
           <div className="flex items-center justify-between text-xs font-bold text-amber-800 dark:text-amber-300">
             <span className="flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
               <span>💡 Conseil Pédagogique TEF (Section A - Dessins)</span>
             </span>
+            <button
+              type="button"
+              onClick={() => setShowCoaching(!showCoaching)}
+              className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-900 dark:text-amber-200 font-mono font-bold cursor-pointer transition-colors"
+            >
+              {showCoaching ? "Masquer ▲" : "Afficher ▼"}
+            </button>
           </div>
-          {(currentQ as any).trapAlert && (
-            <p className="text-xs text-slate-800 dark:text-slate-200 font-medium leading-relaxed">
-              {(currentQ as any).trapAlert}
-            </p>
-          )}
-          {(currentQ as any).audioCoach && (
-            <p className="text-xs text-blue-800 dark:text-blue-300 font-medium leading-relaxed">
-              {(currentQ as any).audioCoach}
-            </p>
+          {showCoaching && (
+            <div className="space-y-2 pt-1">
+              {(currentQ as any).trapAlert && (
+                <p className="text-xs text-slate-800 dark:text-slate-200 font-medium leading-relaxed">
+                  {(currentQ as any).trapAlert}
+                </p>
+              )}
+              {(currentQ as any).audioCoach && (
+                <p className="text-xs text-blue-800 dark:text-blue-300 font-medium leading-relaxed">
+                  {(currentQ as any).audioCoach}
+                </p>
+              )}
+            </div>
           )}
         </div>
       )}
