@@ -44,8 +44,8 @@ import { getExamRegistry, calculateNCLCScore, type ExamPaper, type ExamMode } fr
 import { MASTER_SPEAKING_BANK } from "~/lib/speakingMasterBank";
 import { READING_GUIDANCE_BANK } from "~/lib/readingGuidanceBank";
 import { LISTENING_GUIDANCE_BANK } from "~/lib/listeningGuidanceBank";
-import { acousticAnalyzer, type AcousticAnalysisResult } from "~/lib/acousticAnalyzer";
 import { TefListeningDessinViewport } from "~/components/tef/TefListeningDessinViewport";
+import { TefListeningTextViewport } from "~/components/tef/TefListeningTextViewport";
 
 function countFrenchWords(str: string): number {
   if (!str || !str.trim()) return 0;
@@ -3855,42 +3855,80 @@ export function AuthenticCBTExamPage() {
 
         {/* LISTENING & READING SPLIT SCREEN */}
         {currentQuestions.length > 0 && currentQ && (
-          paper?.type === "TEF_CANADA" && currentSection.type === "COMPREHENSION_ORALE" && (currentQ.questionNumber <= 4 || (currentQ as any).typology === "DESSINS") ? (
-            <TefListeningDessinViewport
-              currentQ={currentQ}
-              currentQuestionIdx={currentQuestionIdx}
-              totalQuestions={currentQuestions.length}
-              mode={mode}
-              cbtCard={cbtCard}
-              cbtDark={cbtDark}
-              isAudioFinished={isAudioFinished}
-              isSpeaking={isSpeaking}
-              isAudioPaused={isAudioPaused}
-              isTimerPaused={isTimerPaused}
-              qTimeLeft={qTimeLeft}
-              selectedOption={selectedAnswers[currentQ.id]}
-              isFlagged={!!flaggedQuestions[currentQ.id]}
-              isChecked={!!checkedMap[currentQ.id]}
-              onSelectOption={(idx) => handleSelectOption(currentQ.id, idx)}
-              onToggleFlag={() => toggleFlag(currentQ.id)}
-              onPlayAudio={() => handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || 1.0)}
-              onPauseResumeAudio={handlePauseResumeAudio}
-              onCheckAnswer={() => handleCheckAnswer(currentQ.id, currentQ.correctIndex)}
-              onPrevious={() => setCurrentQuestionIdx((prev) => Math.max(0, prev - 1))}
-              onNext={() => {
-                if (currentQuestionIdx < currentQuestions.length - 1) {
-                  setCurrentQuestionIdx((prev) => prev + 1);
-                } else if (activeSectionIdx < paper.sections.length - 1) {
-                  setActiveSectionIdx((prev) => prev + 1);
-                  setCurrentQuestionIdx(0);
-                } else {
-                  handleFinishTest();
-                }
-              }}
-              isAdmin={isAdmin}
-              showTranslation={showTranslation}
-              onToggleTranslation={() => setShowTranslation(!showTranslation)}
-            />
+          paper?.type === "TEF_CANADA" && currentSection.type === "COMPREHENSION_ORALE" ? (
+            (currentQ.questionNumber <= 4 || (currentQ as any).typology === "DESSINS") ? (
+              <TefListeningDessinViewport
+                currentQ={currentQ}
+                currentQuestionIdx={currentQuestionIdx}
+                totalQuestions={currentQuestions.length}
+                mode={mode}
+                cbtCard={cbtCard}
+                cbtDark={cbtDark}
+                isAudioFinished={isAudioFinished}
+                isSpeaking={isSpeaking}
+                isAudioPaused={isAudioPaused}
+                isTimerPaused={isTimerPaused}
+                qTimeLeft={qTimeLeft}
+                selectedOption={selectedAnswers[currentQ.id]}
+                isFlagged={!!flaggedQuestions[currentQ.id]}
+                isChecked={!!checkedMap[currentQ.id]}
+                onSelectOption={(idx) => handleSelectOption(currentQ.id, idx)}
+                onToggleFlag={() => toggleFlag(currentQ.id)}
+                onPlayAudio={() => handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || 1.0)}
+                onPauseResumeAudio={handlePauseResumeAudio}
+                onCheckAnswer={() => handleCheckAnswer(currentQ.id, currentQ.correctIndex)}
+                onPrevious={() => setCurrentQuestionIdx((prev) => Math.max(0, prev - 1))}
+                onNext={() => {
+                  if (currentQuestionIdx < currentQuestions.length - 1) {
+                    setCurrentQuestionIdx((prev) => prev + 1);
+                  } else if (activeSectionIdx < paper.sections.length - 1) {
+                    setActiveSectionIdx((prev) => prev + 1);
+                    setCurrentQuestionIdx(0);
+                  } else {
+                    handleFinishTest();
+                  }
+                }}
+                isAdmin={isAdmin}
+                showTranslation={showTranslation}
+                onToggleTranslation={() => setShowTranslation(!showTranslation)}
+              />
+            ) : (
+              <TefListeningTextViewport
+                currentQ={currentQ}
+                currentQuestionIdx={currentQuestionIdx}
+                totalQuestions={currentQuestions.length}
+                mode={mode}
+                cbtCard={cbtCard}
+                cbtDark={cbtDark}
+                isAudioFinished={isAudioFinished}
+                isSpeaking={isSpeaking}
+                isAudioPaused={isAudioPaused}
+                isTimerPaused={isTimerPaused}
+                qTimeLeft={qTimeLeft}
+                selectedOption={selectedAnswers[currentQ.id]}
+                isFlagged={!!flaggedQuestions[currentQ.id]}
+                isChecked={!!checkedMap[currentQ.id]}
+                onSelectOption={(idx) => handleSelectOption(currentQ.id, idx)}
+                onToggleFlag={() => toggleFlag(currentQ.id)}
+                onPlayAudio={() => handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || 1.0)}
+                onPauseResumeAudio={handlePauseResumeAudio}
+                onCheckAnswer={() => handleCheckAnswer(currentQ.id, currentQ.correctIndex)}
+                onPrevious={() => setCurrentQuestionIdx((prev) => Math.max(0, prev - 1))}
+                onNext={() => {
+                  if (currentQuestionIdx < currentQuestions.length - 1) {
+                    setCurrentQuestionIdx((prev) => prev + 1);
+                  } else if (activeSectionIdx < paper.sections.length - 1) {
+                    setActiveSectionIdx((prev) => prev + 1);
+                    setCurrentQuestionIdx(0);
+                  } else {
+                    handleFinishTest();
+                  }
+                }}
+                isAdmin={isAdmin}
+                showTranslation={showTranslation}
+                onToggleTranslation={() => setShowTranslation(!showTranslation)}
+              />
+            )
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-6 h-full">
 
@@ -4558,7 +4596,7 @@ export function AuthenticCBTExamPage() {
                         });
                       })()}
                     </div>
-                  ) : (currentSection.type === "COMPREHENSION_ORALE" && (currentQ.hasSpokenOptions || (currentQ.questionNumber >= 5 && currentQ.questionNumber <= 8))) ? (
+                  ) : (paper?.type !== "TEF_CANADA" && currentSection.type === "COMPREHENSION_ORALE" && (currentQ.hasSpokenOptions || (currentQ.questionNumber >= 5 && currentQ.questionNumber <= 8))) ? (
                     <div className="space-y-3 p-4 rounded-xl bg-slate-900/60 border border-slate-700 text-slate-100 shadow-md">
                       <div className="flex items-center justify-between">
                         <p className="text-xs font-black uppercase text-amber-300 tracking-wider flex items-center gap-1.5">

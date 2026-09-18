@@ -11,12 +11,13 @@ import {
   Sparkles,
   Search,
   X,
-  AlertTriangle
+  AlertTriangle,
+  Radio
 } from "lucide-react";
 import type { ExamQuestion, ExamMode } from "~/lib/examSchema";
 import { TEF_PAPER_1_LISTENING_GUIDANCE } from "~/lib/tefListeningGuidanceBank";
 
-export interface TefListeningDessinViewportProps {
+export interface TefListeningTextViewportProps {
   currentQ: ExamQuestion;
   currentQuestionIdx: number;
   totalQuestions: number;
@@ -43,7 +44,7 @@ export interface TefListeningDessinViewportProps {
   onToggleTranslation: () => void;
 }
 
-export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProps> = ({
+export const TefListeningTextViewport: React.FC<TefListeningTextViewportProps> = ({
   currentQ,
   currentQuestionIdx,
   totalQuestions,
@@ -72,9 +73,8 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
   const [showTranscript, setShowTranscript] = useState(false);
   const [showCoaching, setShowCoaching] = useState(false);
   const [showDrawerTranslation, setShowDrawerTranslation] = useState(true);
-  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
 
-  // When answer is checked in practice mode, automatically expand coaching drawer
+  // Automatically unroll coaching drawer upon answer verification in practice mode
   useEffect(() => {
     if (isChecked) {
       setShowCoaching(true);
@@ -82,16 +82,28 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
   }, [isChecked]);
 
   const guidance = TEF_PAPER_1_LISTENING_GUIDANCE[currentQ.id];
-  const isSelectedCorrect = selectedOption !== undefined && selectedOption === currentQ.correctIndex;
 
-  const optionDrawings = (currentQ as any).optionImages && (currentQ as any).optionImages.length === 4
-    ? (currentQ as any).optionImages
-    : [
-        (currentQ as any).mainImage || `/illustrations/tef/tef_p1_q${currentQ.questionNumber}_a.png`,
-        `/illustrations/tef/tef_p1_q${currentQ.questionNumber}_b.png`,
-        `/illustrations/tef/tef_p1_q${currentQ.questionNumber}_c.png`,
-        `/illustrations/tef/tef_p1_q${currentQ.questionNumber}_d.png`
-      ];
+  // Derive official e-TEF section metadata
+  const qNum = currentQ.questionNumber;
+  let sectionLabel = "Section B (Questions 5 à 14)";
+  let sectionTitle = "Messages téléphoniques et annonces publiques";
+  let consigneText = "Vous allez entendre une annonce publique ou un message téléphonique. Lisez la question et choisissez la réponse exacte.";
+
+  if (qNum >= 15 && qNum <= 20) {
+    sectionLabel = "Section C (Questions 15 à 20)";
+    sectionTitle = "Micro-trottoirs et sondages d'opinion";
+    consigneText = "Vous allez entendre 6 personnes donner leur avis sur un sujet d'actualité. Identifiez l'opinion de chaque intervenant.";
+  } else if (qNum >= 21 && qNum <= 37) {
+    sectionLabel = "Section D (Questions 21 à 37)";
+    sectionTitle = "Reportages d'actualité et débats radiophoniques";
+    consigneText = "Vous allez entendre un extrait d'émission radiophonique. Lisez attentivement la question et cochez la bonne réponse.";
+  } else if (qNum >= 38 && qNum <= 40) {
+    sectionLabel = "Section E (Questions 38 à 40)";
+    sectionTitle = "Discrimination phonétique et reconnaissance de sons";
+    consigneText = "Vous allez entendre une phrase courte. Identifiez la formulation entendue ou la nuance acoustique exacte.";
+  }
+
+  const isSelectedCorrect = selectedOption !== undefined && selectedOption === currentQ.correctIndex;
 
   return (
     <div className="max-w-4xl mx-auto w-full space-y-4 px-2 sm:px-4 py-2">
@@ -103,11 +115,11 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
               TEF Canada — Compréhension Orale
             </span>
             <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 font-bold border border-emerald-500/30">
-              Section A (Questions 1 à 4)
+              {sectionLabel}
             </span>
           </div>
           <h2 className="text-sm sm:text-base font-extrabold text-slate-950 dark:text-slate-100">
-            Question N°{currentQ.questionNumber} / {totalQuestions} — Identification de dessin
+            Question N°{currentQ.questionNumber} / {totalQuestions} — {sectionTitle}
           </h2>
         </div>
 
@@ -137,22 +149,17 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
       {/* ─── 2. OFFICIAL E-TEF CONSIGNE BOX ─── */}
       <div className={`p-3.5 sm:p-4 rounded-xl border ${cbtCard} shadow-sm space-y-1.5`}>
         <div className="flex items-center justify-between">
-          <span className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
-            Consigne de l'épreuve
+          <span className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+            <Radio className="w-3.5 h-3.5" />
+            <span>Consigne de l'épreuve</span>
           </span>
           <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-800 dark:text-emerald-200 border border-emerald-500/30 font-mono font-bold">
             1 Écoute Unique
           </span>
         </div>
         <p className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 leading-snug">
-          Vous allez entendre une conversation. Indiquez à quel dessin correspond cette conversation.
+          {consigneText}
         </p>
-        {showTranslation && (
-          <p className="text-xs font-semibold text-indigo-700 dark:text-indigo-300 italic pt-1 flex items-center gap-1">
-            <Globe className="w-3 h-3 shrink-0" />
-            <span>Question (EN): "Look at the 4 drawings. Which drawing corresponds to the conversation heard?"</span>
-          </p>
-        )}
       </div>
 
       {/* ─── 3. OFFICIAL CBT AUDIO BAR ─── */}
@@ -170,7 +177,7 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
               <>
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                 <span className="text-slate-200">
-                  ✅ Écoute terminée — Enregistrez votre réponse en cliquant sur le dessin choisi.
+                  ✅ Écoute terminée — Enregistrez votre réponse parmi les 4 propositions ci-dessous.
                 </span>
               </>
             )}
@@ -262,21 +269,35 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
         </div>
       )}
 
-      {/* ─── 4. THE 2x2 GRID OF FOUR DRAWING CARDS ─── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {currentQ.options.map((_, idx) => {
+      {/* ─── 4. PROMINENT WRITTEN QUESTION STEM ─── */}
+      <div className={`p-4 sm:p-5 rounded-xl border-2 ${cbtCard} shadow-sm space-y-1.5`}>
+        <span className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
+          Question posée :
+        </span>
+        <h3 className="text-base sm:text-lg font-extrabold text-slate-950 dark:text-slate-50 leading-snug">
+          {currentQ.text}
+        </h3>
+        {showTranslation && currentQ.questionEnglish && (
+          <p className="text-xs font-semibold text-indigo-700 dark:text-indigo-300 italic pt-1 flex items-center gap-1">
+            <Globe className="w-3 h-3 shrink-0" />
+            <span>Question (EN): "{currentQ.questionEnglish}"</span>
+          </p>
+        )}
+      </div>
+
+      {/* ─── 5. THE 4 VERTICALLY STACKED FULL-TEXT OPTION CARDS ─── */}
+      <div className="space-y-3">
+        {currentQ.options.map((optionText, idx) => {
           const letter = String.fromCharCode(65 + idx); // A, B, C, D
           const isChosen = selectedOption === idx;
           const isCorrect = idx === currentQ.correctIndex;
-          const imgUrl = optionDrawings[idx] || (currentQ as any).mainImage;
 
-          // Compute dynamic card style based on verification state
           let cardStyle = "";
           let badgeElement = null;
 
           if (isChecked) {
             if (isCorrect) {
-              cardStyle = "border-emerald-600 ring-4 ring-emerald-500/40 bg-emerald-50/20 dark:bg-emerald-950/30 shadow-lg scale-[1.01]";
+              cardStyle = "border-emerald-600 ring-4 ring-emerald-500/40 bg-emerald-50/20 dark:bg-emerald-950/30 shadow-lg scale-[1.005]";
               badgeElement = (
                 <span className="text-[11px] font-mono font-bold uppercase tracking-wider bg-emerald-600 text-white px-2.5 py-0.5 rounded flex items-center gap-1 shadow">
                   <CheckCircle2 className="w-3 h-3" />
@@ -296,9 +317,9 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
             }
           } else {
             if (isChosen) {
-              cardStyle = "border-emerald-600 ring-2 ring-emerald-500 bg-emerald-50/25 dark:bg-emerald-950/20 shadow-md scale-[1.01]";
+              cardStyle = "border-emerald-600 ring-2 ring-emerald-500 bg-emerald-50/25 dark:bg-emerald-950/20 shadow-md scale-[1.005]";
               badgeElement = (
-                <span className="text-[11px] font-mono font-bold uppercase tracking-wider bg-white/25 text-white px-2 py-0.5 rounded">
+                <span className="text-[11px] font-mono font-bold uppercase tracking-wider bg-emerald-600 text-white px-2 py-0.5 rounded">
                   Choisi ✓
                 </span>
               );
@@ -315,69 +336,47 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
               onClick={() => {
                 if (!isChecked) onSelectOption(idx);
               }}
-              className={`group relative rounded-2xl border-2 overflow-hidden transition-all duration-200 shadow-sm flex flex-col justify-between ${
+              className={`group p-4 rounded-xl border-2 transition-all duration-200 flex items-center justify-between gap-4 ${
                 isChecked ? "cursor-default" : "cursor-pointer active:scale-[0.99]"
               } ${cardStyle}`}
             >
-              {/* Card Image Viewport */}
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-white flex items-center justify-center p-3">
-                <img
-                  src={imgUrl}
-                  alt={`Dessin ${letter}`}
-                  className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
-                />
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setZoomedImage(imgUrl);
-                  }}
-                  className="absolute bottom-2 right-2 p-1.5 rounded-md bg-slate-900/70 hover:bg-slate-900 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                  title="Agrandir"
+              <div className="flex items-center gap-3.5 sm:gap-4 flex-1">
+                {/* Circular Letter Badge */}
+                <div
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 flex items-center justify-center font-mono font-bold text-xs sm:text-sm shrink-0 transition-all ${
+                    isChecked && isCorrect
+                      ? "border-emerald-600 bg-emerald-600 text-white"
+                      : isChecked && isChosen
+                        ? "border-rose-600 bg-rose-600 text-white"
+                        : isChosen
+                          ? "border-emerald-600 bg-emerald-600 text-white"
+                          : "border-slate-400 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 group-hover:border-emerald-500"
+                  }`}
                 >
-                  <Search className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              {/* Card Bottom Label Bar with Radio Button */}
-              <div
-                className={`px-4 py-3 flex items-center justify-between font-bold text-sm border-t transition-colors ${
-                  isChecked && isCorrect
-                    ? "bg-emerald-600 text-white border-emerald-600"
-                    : isChecked && isChosen
-                      ? "bg-rose-600 text-white border-rose-600"
-                      : isChosen
-                        ? "bg-emerald-600 text-white border-emerald-600"
-                        : cbtDark
-                          ? "bg-slate-900 text-slate-200 border-slate-700 group-hover:bg-slate-800"
-                          : "bg-slate-50 text-slate-800 border-slate-200 group-hover:bg-emerald-50/40"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                      isChecked && isCorrect
-                        ? "border-white bg-white text-emerald-600 font-bold"
-                        : isChecked && isChosen
-                          ? "border-white bg-white text-rose-600 font-bold"
-                          : isChosen
-                            ? "border-white bg-white text-emerald-600 font-bold"
-                            : "border-slate-400 bg-white dark:bg-slate-800"
-                    }`}
-                  >
-                    {isChosen && <div className={`w-2.5 h-2.5 rounded-full ${isChecked && !isCorrect ? "bg-rose-600" : "bg-emerald-600"}`} />}
-                  </div>
-                  <span className="font-sans font-bold text-sm tracking-wide">Dessin {letter}</span>
+                  {letter}
                 </div>
 
-                {badgeElement}
+                {/* Proposition Full Text */}
+                <div className="space-y-0.5">
+                  <p className="text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-100 leading-snug">
+                    {optionText}
+                  </p>
+                  {showTranslation && (currentQ as any).optionsEnglish && (currentQ as any).optionsEnglish[idx] && (
+                    <p className="text-xs text-indigo-700 dark:text-indigo-300 italic">
+                      EN: {(currentQ as any).optionsEnglish[idx]}
+                    </p>
+                  )}
+                </div>
               </div>
+
+              {/* Status Badge */}
+              {badgeElement}
             </div>
           );
         })}
       </div>
 
-      {/* ─── 5. POST-VALIDATION SUMMARY CARD (Practice Mode only) ─── */}
+      {/* ─── 6. POST-VALIDATION SUMMARY CARD (Practice Mode only) ─── */}
       {mode === "PRACTICE" && isChecked && (
         <div
           className={`p-4 rounded-xl border-2 shadow-sm ${
@@ -390,12 +389,12 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
             {isSelectedCorrect ? (
               <>
                 <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                <span>✓ Bonne Réponse ! (Dessin {String.fromCharCode(65 + currentQ.correctIndex)})</span>
+                <span>✓ Bonne Réponse ! (Option {String.fromCharCode(65 + currentQ.correctIndex)})</span>
               </>
             ) : (
               <>
                 <AlertTriangle className="w-5 h-5 text-amber-600" />
-                <span>Attention : La bonne réponse était le Dessin {String.fromCharCode(65 + currentQ.correctIndex)}</span>
+                <span>Attention : La bonne réponse était l'Option {String.fromCharCode(65 + currentQ.correctIndex)}</span>
               </>
             )}
           </div>
@@ -405,13 +404,13 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
         </div>
       )}
 
-      {/* ─── 6. PRACTICE MODE EXPANDED PEDAGOGICAL GUIDANCE (Strictly hidden in Exam Mode) ─── */}
+      {/* ─── 7. INLINE BILINGUAL PEDAGOGICAL DRAWER (Practice Mode Only) ─── */}
       {mode === "PRACTICE" && (
         <div className="rounded-xl border border-amber-500/30 bg-amber-50/40 dark:bg-amber-950/20 overflow-hidden shadow-sm">
           <div className="p-3 sm:p-3.5 flex items-center justify-between text-xs font-bold text-amber-900 dark:text-amber-200 bg-amber-500/10 border-b border-amber-500/20">
             <span className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-amber-600 animate-pulse" />
-              <span>💡 Conseil Pédagogique TEF & Analyse Détaillée (Section A - Dessins)</span>
+              <span>💡 Conseil Pédagogique TEF & Analyse Détaillée ({sectionTitle})</span>
             </span>
             <div className="flex items-center gap-2">
               <button
@@ -440,14 +439,14 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
                 <div className="p-3.5 rounded-xl bg-amber-100/70 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-800 text-amber-950 dark:text-amber-200 space-y-2">
                   <div className="font-extrabold flex items-center gap-1.5 text-amber-800 dark:text-amber-300">
                     <AlertTriangle className="w-4 h-4" />
-                    <span>⚠️ Alerte Piège Concours ({currentQ.level || "A1/A2"}) :</span>
+                    <span>⚠️ Alerte Piège Concours ({currentQ.level || "A2/B1"}) :</span>
                   </div>
                   <p className="leading-relaxed font-sans">{guidance.trapAlert}</p>
 
                   {showDrawerTranslation && guidance.trapAlertEn && (
                     <div className="mt-2 pt-2 border-t border-amber-300/70 dark:border-amber-700/60 text-amber-900 dark:text-amber-300 italic text-[11px] space-y-1">
                       <span className="font-bold not-italic block text-amber-950 dark:text-amber-200">
-                        🇬🇧 Level {currentQ.level || "A1/A2"} Trap Alert:
+                        🇬🇧 Level {currentQ.level || "A2/B1"} Trap Alert:
                       </span>
                       <p>{guidance.trapAlertEn}</p>
                     </div>
@@ -475,12 +474,12 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
                 </div>
               )}
 
-              {/* 📝 Tier 3: Analyse Détaillée des 4 Dessins (Inline Bilingual) */}
+              {/* 📝 Tier 3: Analyse Détaillée des 4 Propositions (Inline Bilingual) */}
               {(guidance?.detailedExplanation || currentQ.explanation) && (
                 <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm">
                   <div className="font-extrabold text-slate-900 dark:text-slate-100 flex items-center gap-1.5 text-xs">
                     <Sparkles className="w-4 h-4 text-emerald-600" />
-                    <span>📝 Justification textuelle & Analyse complète des 4 dessins :</span>
+                    <span>📝 Analyse Pédagogique Détaillée des 4 Propositions :</span>
                   </div>
 
                   {/* French Detailed Explanation */}
@@ -506,7 +505,7 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
         </div>
       )}
 
-      {/* ─── 6. BOTTOM NAVIGATION & VERIFICATION BAR ─── */}
+      {/* ─── 8. BOTTOM NAVIGATION & VERIFICATION BAR ─── */}
       <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-700 gap-3">
         <button
           disabled={currentQuestionIdx === 0 || (!isAdmin && mode === "EXAM")}
@@ -547,18 +546,6 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
           </button>
         </div>
       </div>
-
-      {/* Zoom Modal if candidate clicks search icon */}
-      {zoomedImage && (
-        <div
-          onClick={() => setZoomedImage(null)}
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 cursor-pointer"
-        >
-          <div className="max-w-3xl max-h-[85vh] bg-white rounded-2xl overflow-hidden p-2">
-            <img src={zoomedImage} alt="Zoomed Drawing" className="w-full h-full object-contain" />
-          </div>
-        </div>
-      )}
     </div>
   );
 };
