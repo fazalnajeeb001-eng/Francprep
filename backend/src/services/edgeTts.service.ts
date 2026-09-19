@@ -88,8 +88,8 @@ export function parseEdgeDialogueSegments(
       // Check contextual clues
       const isCanadianText = /\b(Montréal|Montreal|Québec|Quebec|Gatineau|Sherbrooke|Laval|Trois-Rivières|Moncton|Canada|dollar|saint-laurent)\b/i.test(segmentText);
       const isPublicStoreAnnouncement = /\b(annonce supermarché|annonce gare|annonce magasin|annonce aéroport|avis à la clientèle|offre spéciale|bulletin météo)\b/i.test(lowerText);
-      const isExplicitChild = lowerTag.includes('enfant') || lowerTag.includes('fillette') || lowerTag.includes('ado') || 
-                              lowerTag.includes('soraya') || lowerTag.includes('étudiante') || lowerTag.includes('etudiante');
+      const isExplicitChild = lowerTag.includes('enfant') || lowerTag.includes('fillette') || lowerTag.includes('ado');
+      const isYoungStudent = lowerTag.includes('soraya') || lowerTag.includes('étudiante') || lowerTag.includes('etudiante');
 
       const isFemaleKeyword = [
         'femme', 'locutrice', 'voyageuse', 'cliente', 'patiente', 'passagère', 'passagere', 
@@ -113,8 +113,11 @@ export function parseEdgeDialogueSegments(
       let voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleInterlocutor1;
 
       if (isExplicitChild) {
-        // University Student / Youth Persona (Soraya)
+        // Child Persona (actual children/kids)
         voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleChild;
+      } else if (isYoungStudent) {
+        // University Student / Young Adult Woman (Soraya)
+        voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleInterlocutor2; // fr-FR-VivienneMultilingualNeural
       } else if (lowerTag.includes('vasseur') || lowerTag.includes('maxime') || (lowerTag.includes('docteur') && !lowerTag.includes('secrétaire'))) {
         // Dr. Maxime Vasseur / Academic Specialist (distinct from radio host)
         voiceId = EDGE_FRENCH_VOICE_ROSTER.maleInterlocutor2; // fr-FR-RemyMultilingualNeural
