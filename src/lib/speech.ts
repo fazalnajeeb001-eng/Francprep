@@ -80,6 +80,18 @@ function base64ToArrayBuffer(base64: string): ArrayBuffer {
 
 
 /**
+ * Sanitizes script text by stripping speaker role labels, cues, and bracketed stage directions.
+ * Ensures the synthetic TTS voice NEVER pronounces speaker prefixes (e.g. "Voyageuse :", "Agent :") out loud.
+ */
+export function stripSpeakerLabels(script: string): string {
+  if (!script) return "";
+  return script
+    .replace(/^(?:Voyageur|Voyageuse|Agent(?:\s+de\s+\w+)?|Passager|Passagère|Homme|Femme|Client|Cliente|Boulangère|Boulanger|Mécanicien|Secrétaire|Patient|Patiente|Chef\s+d'atelier|Hôtesse(?:\s+d'accueil)?|Directrice|Directeur|Collègue|Négociatrice|Diplomate|Haut\s+fonctionnaire(?:\s+diplomate)?|Voix\s+d'annonce(?:\s+de\s+\w+)?|Locuteur\s*\d*|Locutrice\s*\d*|Intervenant\s*\d*|Intervenante\s*\d*|Examinateur|Examinatrice)\s*[:—]\s*/gim, "")
+    .replace(/\[.*?\]|\(.*?\)/g, "")
+    .trim();
+}
+
+/**
  * Text-to-speech helper. Strictly uses Neural AI Engine (/api/tts/speak)
  * configured in Admin Panel (Kokoro-82M, ElevenLabs, or OpenAI).
  * Browser Web Speech API (speechSynthesis) is 100% disabled to eliminate robotic OS audio.
@@ -95,7 +107,8 @@ export function speak(
   onEnded?: () => void
 ): boolean {
   if (typeof window === "undefined") return false;
-  const cleanText = text.trim();
+  // Always strip speaker prefixes from text so the TTS voice NEVER pronounces "Voyageuse :" or "Agent :" out loud
+  const cleanText = stripSpeakerLabels(text);
   if (!cleanText) return false;
 
   stopAudio();
@@ -103,9 +116,9 @@ export function speak(
 
   // Respect explicit gender parameter or auto-detect speaker labels in dialogue text
   let finalGender = gender;
-  if (/^\s*(Locuteur|Annonceur|Monsieur|M\.|Paul|Léo|Marc|Antoine|Pierre|Thomas|Hugo|Louis)\s*:/i.test(cleanText)) {
+  if (/^\s*(Locuteur|Annonceur|Monsieur|M\.|Paul|Léo|Marc|Antoine|Pierre|Thomas|Hugo|Louis|Voyageur|Client|Patient|Agent|Mécanicien|Directeur|Diplomate|Homme)\b/i.test(text)) {
     finalGender = "male";
-  } else if (/^\s*(Locutrice|Annonceuse|Madame|Mme|Chloé|Marie|Sophie|Camille|Emma|Léa)\s*:/i.test(cleanText)) {
+  } else if (/^\s*(Locutrice|Annonceuse|Madame|Mme|Chloé|Marie|Sophie|Camille|Emma|Léa|Voyageuse|Cliente|Patiente|Boulangère|Secrétaire|Hôtesse|Directrice|Négociatrice|Femme)\b/i.test(text)) {
     finalGender = "female";
   }
 
@@ -600,9 +613,15 @@ export function speakDialogue(
 
   const parsedDialogue: { speaker: string; text: string; gender: "male" | "female" }[] = [];
 
-  let isMaleNext = true;
-  const knownFemaleNames = ["marie", "chloé", "chloe", "sophie", "laura", "alice", "sarah", "femme", "female", "madame", "speaker b", "speaker 2", "julie", "camille", "clara", "emma"];
-  const knownMaleNames = ["paul", "léo", "leo", "henri", "marc", "antoine", "pierre", "thomas", "homme", "male", "monsieur", "speaker a", "speaker 1", "lucas", "hugo", "louis"];
+  let isMaleNext = false;
+  const knownFemaleNames = [
+    "marie", "chloé", "chloe", "sophie", "laura", "alice", "sarah", "femme", "female", "madame", "speaker b", "speaker 2", "julie", "camille", "clara", "emma",
+    "voyageuse", "cliente", "patiente", "passagère", "passagere", "boulangère", "boulangere", "secrétaire", "secretaire", "hôtesse", "hotesse", "auditrice", "voix d'annonce", "annonceuse", "négociatrice", "negociatrice", "animatrice", "directrice"
+  ];
+  const knownMaleNames = [
+    "paul", "léo", "leo", "henri", "marc", "antoine", "pierre", "thomas", "homme", "male", "monsieur", "speaker a", "speaker 1", "lucas", "hugo", "louis", "éric", "eric",
+    "voyageur", "client", "patient", "passager", "agent", "mécanicien", "mecanicien", "docteur", "médecin", "medecin", "garagiste", "auditeur", "journaliste", "expert", "directeur", "professeur", "animateur", "chef d'atelier", "fonctionnaire", "diplomate", "collègue", "collegue", "annonceur", "examinateur"
+  ];
 
   for (const line of lines) {
     let speakerName = "";
@@ -618,24 +637,25 @@ export function speakDialogue(
       speechText = parts.slice(1).join("—").trim();
     }
 
-    if (!speechText) continue;
+    const cleanSpeech = stripSpeakerLabels(speechText);
+    if (!cleanSpeech) continue;
 
     const lowerSpeaker = speakerName.toLowerCase();
     let gender: "male" | "female" = "female";
 
-    if (lowerSpeaker.includes("annonceuse")) {
+    if (knownFemaleNames.some((f) => lowerSpeaker.includes(f))) {
       gender = "female";
-    } else if (lowerSpeaker.includes("annonceur") || lowerSpeaker.includes("examinateur")) {
+      isMaleNext = true;
+    } else if (knownMaleNames.some((m) => lowerSpeaker.includes(m))) {
       gender = "male";
-    } else if (lowerSpeaker.includes("locutrice") || knownFemaleNames.some((f) => lowerSpeaker.includes(f))) {
-      gender = "female";
-    } else if (lowerSpeaker.includes("locuteur") || knownMaleNames.some((m) => lowerSpeaker.includes(m))) {
-      gender = "male";
+      isMaleNext = false;
     } else {
-      gender = "female";
+      gender = isMaleNext ? "male" : "female";
+      isMaleNext = !isMaleNext;
     }
 
-    parsedDialogue.push({ speaker: speakerName, text: line.trim(), gender });
+    // Strictly push cleanSpeech with ZERO speaker prefix
+    parsedDialogue.push({ speaker: speakerName, text: cleanSpeech, gender });
   }
 
   if (parsedDialogue.length === 0) {
@@ -812,7 +832,12 @@ export function speakListeningQuestion(
   }
 
   stopAudio();
-  speak(text, lang, rate, gender, undefined, undefined, undefined, cb);
+  const hasDialogueTurns = text.includes("\n") && (text.includes(":") || text.includes("—"));
+  if (hasDialogueTurns) {
+    speakDialogue(text, lang, rate, undefined, cb);
+  } else {
+    speak(text, lang, rate, gender, undefined, undefined, undefined, cb);
+  }
 }
 
 /**

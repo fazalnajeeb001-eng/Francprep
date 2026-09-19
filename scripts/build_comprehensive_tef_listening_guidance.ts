@@ -278,7 +278,14 @@ for (const q of TEF_PAPER_1_LISTENING_ITEMS) {
   }
 
   // 3. Detailed Explanation (FR)
-  let detailedFr = `🎯 Réponse exacte : ${isDessin ? `Dessin ${correctLetter}` : `Option ${correctLetter}`} (« ${correctFr} »)\n\n`;
+  const targetSceneFr = isDessin && sectionAScenes[qNum]
+    ? sectionAScenes[qNum].fr[correctIdx].replace(/^Dessin\s+[A-D]\s+\((.*?)\)$/, "$1")
+    : correctFr;
+  const targetSceneEn = isDessin && sectionAScenes[qNum]
+    ? sectionAScenes[qNum].en[correctIdx].replace(/^Drawing\s+[A-D]\s+\((.*?)\)$/, "$1")
+    : correctEn;
+
+  let detailedFr = `🎯 Réponse exacte : ${isDessin ? `Dessin ${correctLetter} (« ${targetSceneFr} »)` : `Option ${correctLetter} (« ${correctFr} »)`}\n\n`;
   detailedFr += `• Justification textuelle & auditive :\n`;
   detailedFr += `Le document sonore énonce explicitement : « ${audioSnippetFr} ».\n`;
   detailedFr += `La proposition ${correctLetter} exprime avec une rigueur absolue l'information authentifiée dans l'enregistrement.\n\n`;
@@ -315,7 +322,7 @@ for (const q of TEF_PAPER_1_LISTENING_ITEMS) {
   }
 
   // 4. Detailed Explanation (EN)
-  let detailedEn = `🎯 Correct Answer: ${isDessin ? `Drawing ${correctLetter}` : `Option ${correctLetter}`} ("${correctEn}")\n\n`;
+  let detailedEn = `🎯 Correct Answer: ${isDessin ? `Drawing ${correctLetter} ("${targetSceneEn}")` : `Option ${correctLetter} ("${correctEn}")`}\n\n`;
   detailedEn += `• Acoustic & Textual Evidence:\n`;
   detailedEn += `The audio recording explicitly states: "${audioSnippetEn}".\n`;
   detailedEn += `Choice ${correctLetter} accurately expresses the key information verified in the audio recording.\n\n`;
