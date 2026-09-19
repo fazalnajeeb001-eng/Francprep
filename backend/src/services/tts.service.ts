@@ -15,7 +15,7 @@ function getHash(text: string, gender: string = 'female', lang: string = 'fr', r
 /**
  * Strips ID3v2 header metadata to isolate pure MPEG Audio Layer III frames.
  */
-function extractMpegPayload(buf: Buffer): Buffer {
+export function extractMpegPayload(buf: Buffer): Buffer {
   if (!buf || buf.length < 10) return buf;
   if (buf.slice(0, 3).toString() === 'ID3') {
     const b0 = buf[6], b1 = buf[7], b2 = buf[8], b3 = buf[9];
@@ -32,7 +32,7 @@ function extractMpegPayload(buf: Buffer): Buffer {
  * Stitches multiple MP3 audio buffers into a single 100% browser-compliant stream.
  * Retains the primary ID3 header and ensures all subsequent segments contain only continuous MPEG frames.
  */
-function stitchMp3Buffers(buffers: Buffer[]): Buffer {
+export function stitchMp3Buffers(buffers: Buffer[]): Buffer {
   if (!buffers || buffers.length === 0) return Buffer.alloc(0);
   if (buffers.length === 1) return buffers[0];
 

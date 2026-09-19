@@ -89,7 +89,7 @@ export function stripSpeakerLabels(script: string): string {
     .replace(/\[[^\]]*\]/g, " ")
     .replace(/\([^\)]*(?:pause|ton|voix|rire|accent|soupir|sarcastique|ironique|chuchote)[^\)]*\)/gi, " ")
     .replace(/(?:^|\n)\s*([A-ZÀ-ÖØ-ß][a-zA-ZÀ-ÿ0-9\s.'’\(\)\/\-–—]{1,45})\s*[:—–]\s*/gm, "\n")
-    .replace(/^(?:Voyageur|Voyageuse|Agent(?:\s+de\s+\w+)?|Passager|Passagère|Homme|Femme|Client|Cliente|Boulangère|Boulanger|Mécanicien|Secrétaire|Patient|Patiente|Chef\s+d'atelier|Hôtesse(?:\s+d'accueil)?|Directrice|Directeur|Collègue|Négociatrice|Diplomate|Haut\s+fonctionnaire(?:\s+diplomate)?|Voix\s+d'annonce(?:\s+de\s+\w+)?|Locuteur\s*\d*|Locutrice\s*\d*|Intervenant\s*\d*|Intervenante\s*\d*|Examinateur|Examinatrice|Soraya|Alain|Élodie|Laurent|Martine)\s*[:—–]\s*/gim, "")
+    .replace(/^(?:Voyageur|Voyageuse|Agent(?:\s+de\s+\w+)?|Passager|Passagère|Homme|Femme|Client|Cliente|Boulangère|Boulanger|Mécanicien|Secrétaire|Patient|Patiente|Chef\s+d'atelier|Hôtesse(?:\s+d'accueil)?|Directrice|Directeur|Collègue|Négociatrice|Diplomate|Haut\s+fonctionnaire(?:\s+diplomate)?|Voix\s+d'annonce(?:\s+de\s+\w+)?|Locuteur\s*\d*|Locutrice\s*\d*|Intervenant\s*\d*|Intervenante\s*\d*|Examinateur|Examinatrice|Soraya|Alain|Élodie|Laurent|Martine|Dr\.?\s*(?:Maxime\s*)?Vasseur|Animateur|Journaliste)\s*[:—–]\s*/gim, "")
     .replace(/[ \t]+/g, " ")
     .trim();
 }
@@ -808,7 +808,68 @@ export function speakDialogue(
       });
   }
 
-  playNextLine();
+  // Pre-attempt: Synthesize full multi-voice dialogue as a single seamless stitched MP3
+  let langCode = typeof lang === "string" && lang ? (lang.split("-")[0].toLowerCase() || "fr") : "fr";
+  let effectiveRate = typeof rate === "number" ? rate : (parseFloat(rate as any) || 1.0);
+
+  apiFetch("/tts/speak", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      text: clean,
+      lang: langCode,
+      rate: effectiveRate,
+      speakingRate: effectiveRate,
+      gender: parsedDialogue[0]?.gender || "female",
+    }),
+  })
+    .then(async (res) => {
+      if (myDialogueId !== currentDialogueId) return;
+      if (res.ok) {
+        const json = await res.json();
+        if (myDialogueId !== currentDialogueId) return;
+        if (json.success && json.data?.audioUrl) {
+          let src = json.data.audioUrl;
+          if (src.startsWith("data:audio/")) {
+            const parts = src.split(";base64,");
+            if (parts.length === 2) {
+              const mimeType = parts[0].replace("data:", "");
+              const blob = base64ToBlob(parts[1], mimeType);
+              src = URL.createObjectURL(blob);
+            }
+          }
+          if (myDialogueId !== currentDialogueId) return;
+
+          audio.src = src;
+          audio.playbackRate = effectiveRate;
+          audio.preservesPitch = true;
+          (audio as any).webkitPreservesPitch = true;
+          (audio as any).mozPreservesPitch = true;
+
+          audio.onended = () => {
+            activeAudioPlayers.delete(audio);
+            if (currentAudioPlayer === audio) currentAudioPlayer = null;
+            if (onPlaybackStateChange) onPlaybackStateChange(false);
+            if (onEnded) onEnded();
+          };
+
+          audio.onerror = () => {
+            playNextLine();
+          };
+
+          audio.play().catch(() => {
+            playNextLine();
+          });
+          return;
+        }
+      }
+      playNextLine();
+    })
+    .catch(() => {
+      if (myDialogueId === currentDialogueId) {
+        playNextLine();
+      }
+    });
 }
 
 export function speakListeningQuestion(

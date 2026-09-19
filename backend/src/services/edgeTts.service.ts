@@ -5,7 +5,7 @@ if (typeof (globalThis as any).crypto === 'undefined') {
 }
 
 import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
-import { stripSpeakerLabels } from './tts.service';
+import { stripSpeakerLabels, stitchMp3Buffers } from './tts.service';
 
 /**
  * Full Studio Roster for TCF Canada & Official French Exams:
@@ -70,6 +70,8 @@ export function parseEdgeDialogueSegments(
   }
 
   let lastAssignedMale = false;
+  let lastMaleVoice: string | null = null;
+  let lastFemaleVoice: string | null = null;
 
   for (let i = 0; i < matches.length; i++) {
     const currentMatch = matches[i];
@@ -111,21 +113,54 @@ export function parseEdgeDialogueSegments(
       let voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleInterlocutor1;
 
       if (isExplicitChild) {
+        // University Student / Youth Persona (Soraya)
         voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleChild;
+      } else if (lowerTag.includes('vasseur') || lowerTag.includes('maxime') || (lowerTag.includes('docteur') && !lowerTag.includes('secrétaire'))) {
+        // Dr. Maxime Vasseur / Academic Specialist (distinct from radio host)
+        voiceId = EDGE_FRENCH_VOICE_ROSTER.maleInterlocutor2; // fr-FR-RemyMultilingualNeural
+      } else if (lowerTag.includes('animateur') || (lowerTag.includes('journaliste') && isMale)) {
+        // Radio Host / Journalist Interviewer
+        voiceId = EDGE_FRENCH_VOICE_ROSTER.maleAnnouncer; // fr-FR-HenriNeural
+      } else if (lowerTag.includes('alain') || lowerTag.includes('julien') || lowerTag.includes('plombier')) {
+        // Citizen Interviewees (distinct from journalist Henri)
+        voiceId = EDGE_FRENCH_VOICE_ROSTER.maleInterlocutor2; // fr-FR-RemyMultilingualNeural
+      } else if (lowerTag.includes('secrétaire') || lowerTag.includes('secretaire')) {
+        // Medical / Office Receptionist
+        voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleInterlocutor2; // fr-FR-VivienneMultilingualNeural
+      } else if (lowerTag.includes('mécanicien') || lowerTag.includes('mecanicien') || lowerTag.includes('chef d\'atelier')) {
+        // Bicycle workshop / mechanic
+        voiceId = EDGE_FRENCH_VOICE_ROSTER.maleInterlocutor2; // fr-FR-RemyMultilingualNeural
+      } else if (lowerTag.includes('voyageuse') && isCanadianText) {
+        // Canadian Traveler (asking for train to Quebec)
+        voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleCanadian; // fr-CA-SylvieNeural
       } else if (lowerTag.includes('annonceuse') || (isPublicStoreAnnouncement && !isMale)) {
         voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.femaleCanadian : EDGE_FRENCH_VOICE_ROSTER.femaleAnnouncer;
       } else if (lowerTag.includes('annonceur') || (isPublicStoreAnnouncement && isMale)) {
         voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.maleCanadian : EDGE_FRENCH_VOICE_ROSTER.maleAnnouncer;
       } else if (lowerTag.includes('journaliste') || lowerTag.includes('présentatrice')) {
         voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.femaleCanadian : (isMale ? EDGE_FRENCH_VOICE_ROSTER.maleLecturer : EDGE_FRENCH_VOICE_ROSTER.femaleJournalist);
-      } else if (lowerTag.includes('professeur') || lowerTag.includes('intervenant') || lowerTag.includes('docteur') || lowerTag.includes('vasseur')) {
-        voiceId = EDGE_FRENCH_VOICE_ROSTER.maleLecturer;
       } else if (isCanadianText) {
         voiceId = isMale ? EDGE_FRENCH_VOICE_ROSTER.maleCanadian : EDGE_FRENCH_VOICE_ROSTER.femaleCanadian;
       } else if (isMale) {
-        voiceId = EDGE_FRENCH_VOICE_ROSTER.maleInterlocutor1;
+        // Automatic turn-taking alternation for male voices:
+        if (lastMaleVoice === EDGE_FRENCH_VOICE_ROSTER.maleInterlocutor1) {
+          voiceId = EDGE_FRENCH_VOICE_ROSTER.maleInterlocutor2;
+        } else {
+          voiceId = EDGE_FRENCH_VOICE_ROSTER.maleInterlocutor1;
+        }
       } else {
-        voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleInterlocutor1;
+        // Automatic turn-taking alternation for female voices:
+        if (lastFemaleVoice === EDGE_FRENCH_VOICE_ROSTER.femaleInterlocutor1) {
+          voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleInterlocutor2;
+        } else {
+          voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleInterlocutor1;
+        }
+      }
+
+      if (isMale) {
+        lastMaleVoice = voiceId;
+      } else {
+        lastFemaleVoice = voiceId;
       }
 
       segments.push({
@@ -278,7 +313,7 @@ export async function generateEdgeNeuralAudio(
   }
 
   if (turnBuffers.length === segments.length) {
-    const stitched = Buffer.concat(turnBuffers);
+    const stitched = stitchMp3Buffers(turnBuffers);
     return {
       audioBase64: stitched.toString('base64'),
       contentType: 'audio/mp3',
