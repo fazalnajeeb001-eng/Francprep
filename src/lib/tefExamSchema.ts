@@ -7,11 +7,13 @@
 export type TefListeningTypology =
   | "DESSINS"           // Q1-Q4: Conversations de la vie quotidienne avec 4 dessins (A1-A2)
   | "MESSAGES"          // Q5-Q12: Messages sur répondeur & annonces publiques (A2-B1)
-  | "MICRO_TROTTOIR"    // Q13-Q18: Sondages d'opinion / micro-trottoirs (4-6 intervenants) (B1-B2)
-  | "RADIO"             // Q19-Q28: Émissions de radio, chroniques & flashes d'information (B2)
-  | "GRAND_ENTRETIEN"   // Q29-Q34: Entretiens approfondis & débats spécialisés (B2/C1)
-  | "REPORTAGE_DEBAT"   // Q35-Q37: Reportages sociétaux, chroniques de fond & controverses (B2/C1)
-  | "DISCRIMINATION";   // Q38-Q40: Discrimination phonétique fine & actes de parole (C1/C2)
+  | "CONSIGNES"         // Q13-Q16: Informations et consignes pratiques (B1-B2)
+  | "MICRO_TROTTOIR"    // Q17-Q20: Sondages d'opinion / micro-trottoirs (4-6 intervenants) (B1-B2)
+  | "RADIO"             // Émissions de radio, chroniques & flashes d'information (B2)
+  | "GRAND_ENTRETIEN"   // Grands entretiens & débats spécialisés (B2/C1)
+  | "REPORTAGE_DEBAT"   // Reportages sociétaux, chroniques de fond & controverses (B2/C1)
+  | "ACTES_DE_PAROLE"   // Q38-Q40: Actes de parole et intentions implicites (C1/C2)
+  | "DISCRIMINATION";   // Discrimination phonétique fine (C1/C2)
 
 export type TefLevel = "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
 

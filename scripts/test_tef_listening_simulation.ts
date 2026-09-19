@@ -155,6 +155,23 @@ testCases.forEach((tc) => {
   console.log(`   • Raw ${tc.raw}/40 ➔ CCI: ${res.cciScore}/699 | Legacy: ${res.legacyEquivalent} | CEFR: ${res.cefrEquivalent} | NCLC ${res.nclcLevel} | CRS +${res.expressEntryPoints} pts | PR Target: ${res.isNCLC7TargetReached ? 'PASS' : 'FAIL'} | Safety Buffer: ${res.isSafetyZoneReached ? 'YES' : 'NO'}`);
 });
 
+// 7. Answer Key Distribution Audit (10 A, 10 B, 10 C, 10 D)
+console.log("\n[Audit 5] Auditing Balanced Answer Key Distribution across all 40 items...");
+const keyCounts: Record<number, number> = { 0: 0, 1: 0, 2: 0, 3: 0 };
+examListening.questions.forEach((q) => {
+  keyCounts[q.correctIndex] = (keyCounts[q.correctIndex] || 0) + 1;
+});
+console.log(`   • Option A: ${keyCounts[0]} / 40 (${((keyCounts[0]/40)*100).toFixed(1)}%)`);
+console.log(`   • Option B: ${keyCounts[1]} / 40 (${((keyCounts[1]/40)*100).toFixed(1)}%)`);
+console.log(`   • Option C: ${keyCounts[2]} / 40 (${((keyCounts[2]/40)*100).toFixed(1)}%)`);
+console.log(`   • Option D: ${keyCounts[3]} / 40 (${((keyCounts[3]/40)*100).toFixed(1)}%)`);
+
+if (keyCounts[0] !== 10 || keyCounts[1] !== 10 || keyCounts[2] !== 10 || keyCounts[3] !== 10) {
+  console.error("❌ FAILED: Answer keys are not evenly balanced (Expected exactly 10 of each A, B, C, D)!", keyCounts);
+  process.exit(1);
+}
+console.log("✓ Answer Key Distribution: 100% BALANCED & UNBIASED (10 A, 10 B, 10 C, 10 D).");
+
 console.log("\n╔══════════════════════════════════════════════════════════════════════════════════╗");
 console.log("║     🎉 TEF CANADA COMPRÉHENSION ORALE (PAPER 1): 100% CERTIFIED & PASSED!        ║");
 console.log("╚══════════════════════════════════════════════════════════════════════════════════╝\n");

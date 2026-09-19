@@ -98,9 +98,9 @@ export const TefListeningTextViewport: React.FC<TefListeningTextViewportProps> =
     sectionTitle = "Reportages d'actualité et débats radiophoniques";
     consigneText = "Vous allez entendre un extrait d'émission radiophonique. Lisez attentivement la question et cochez la bonne réponse.";
   } else if (qNum >= 38 && qNum <= 40) {
-    sectionLabel = "Section E (Questions 38 à 40)";
-    sectionTitle = "Discrimination phonétique et reconnaissance de sons";
-    consigneText = "Vous allez entendre une phrase courte. Identifiez la formulation entendue ou la nuance acoustique exacte.";
+    sectionLabel = "Section E / Groupe 7 (Questions 38 à 40)";
+    sectionTitle = "Actes de parole et intentions implicites (Niveau C1-C2)";
+    consigneText = "Vous allez entendre une déclaration brève. Analysez le sous-entendu, la nuance modale ou l'acte de parole accompli par le locuteur.";
   }
 
   const isSelectedCorrect = selectedOption !== undefined && selectedOption === currentQ.correctIndex;
@@ -256,6 +256,40 @@ export const TefListeningTextViewport: React.FC<TefListeningTextViewportProps> =
             </div>
           </div>
 
+          {/* Active Audio Playhead & Equalizer in Practice Mode */}
+          <div className="pt-1 space-y-1.5 border-t border-slate-800">
+            <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono">
+              <span className="flex items-center gap-1.5">
+                {isSpeaking && !isAudioPaused && !isTimerPaused ? (
+                  <span className="flex items-center gap-1">
+                    <span className="w-1.5 h-3 bg-emerald-400 animate-pulse rounded-full" />
+                    <span className="w-1.5 h-4 bg-emerald-500 animate-bounce rounded-full" />
+                    <span className="w-1.5 h-2 bg-emerald-300 animate-pulse rounded-full" />
+                    <span className="text-emerald-400 font-semibold ml-1">Diffusion audio active</span>
+                  </span>
+                ) : isAudioPaused || isTimerPaused ? (
+                  <span className="text-amber-400 font-semibold">⏸ Lecture en pause</span>
+                ) : (
+                  <span className="text-slate-400">Prêt — Cliquez sur Écouter ▶️ pour lancer l'audio</span>
+                )}
+              </span>
+              <span className="text-[10px] text-slate-500 font-sans">
+                Mode Pratique (Guidé)
+              </span>
+            </div>
+            <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden relative">
+              <div
+                className={`h-full transition-all duration-300 rounded-full ${
+                  isSpeaking && !isAudioPaused && !isTimerPaused
+                    ? "w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-400 animate-pulse"
+                    : isAudioPaused || isTimerPaused
+                      ? "w-1/2 bg-amber-500"
+                      : "w-0 bg-slate-700"
+                }`}
+              />
+            </div>
+          </div>
+
           {showTranscript && currentQ.transcript && (
             <div className="p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-200 whitespace-pre-line leading-relaxed">
               {currentQ.transcript}
@@ -376,32 +410,31 @@ export const TefListeningTextViewport: React.FC<TefListeningTextViewportProps> =
         })}
       </div>
 
-      {/* ─── 6. POST-VALIDATION SUMMARY CARD (Practice Mode only) ─── */}
+      {/* ─── 6. POST-VALIDATION SUMMARY CARD (Practice Mode only: Strictly Mutually Exclusive) ─── */}
       {mode === "PRACTICE" && isChecked && (
-        <div
-          className={`p-4 rounded-xl border-2 shadow-sm ${
-            isSelectedCorrect
-              ? "bg-emerald-50/70 dark:bg-emerald-950/40 border-emerald-500 text-emerald-950 dark:text-emerald-100"
-              : "bg-amber-50/70 dark:bg-amber-950/40 border-amber-500 text-amber-950 dark:text-amber-100"
-          }`}
-        >
-          <div className="flex items-center gap-2 font-bold text-sm">
-            {isSelectedCorrect ? (
-              <>
-                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                <span>✓ Bonne Réponse ! (Option {String.fromCharCode(65 + currentQ.correctIndex)})</span>
-              </>
-            ) : (
-              <>
-                <AlertTriangle className="w-5 h-5 text-amber-600" />
-                <span>Attention : La bonne réponse était l'Option {String.fromCharCode(65 + currentQ.correctIndex)}</span>
-              </>
-            )}
+        isSelectedCorrect ? (
+          <div className="p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50/80 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-100 shadow-sm transition-all">
+            <div className="flex items-center gap-2 font-bold text-sm">
+              <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <span>✓ Excellente réponse ! (Option {String.fromCharCode(65 + currentQ.correctIndex)})</span>
+            </div>
+            <p className="text-xs mt-1 leading-relaxed text-emerald-900/90 dark:text-emerald-200">
+              {currentQ.options[currentQ.correctIndex]}
+            </p>
           </div>
-          <p className="text-xs mt-1 leading-relaxed">
-            {currentQ.options[currentQ.correctIndex]}
-          </p>
-        </div>
+        ) : (
+          <div className="p-4 rounded-xl border-2 border-amber-500 bg-amber-50/80 dark:bg-amber-950/40 text-amber-950 dark:text-amber-100 shadow-sm transition-all">
+            <div className="flex items-center gap-2 font-bold text-sm">
+              <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
+              <span>
+                ⚠️ Attention : Vous avez sélectionné l'Option {selectedOption !== undefined ? String.fromCharCode(65 + selectedOption) : ""}. La bonne réponse était l'Option {String.fromCharCode(65 + currentQ.correctIndex)}.
+              </span>
+            </div>
+            <p className="text-xs mt-1 leading-relaxed text-amber-900/90 dark:text-amber-200">
+              <strong>Réponse exacte : </strong>{currentQ.options[currentQ.correctIndex]}
+            </p>
+          </div>
+        )
       )}
 
       {/* ─── 7. INLINE BILINGUAL PEDAGOGICAL DRAWER (Practice Mode Only) ─── */}
