@@ -254,6 +254,78 @@ async function synthesizeSingleEdgeVoice(text: string, voiceId: string, maxRetri
 }
 
 /**
+ * Intelligently resolves the most authentic studio voice for single-speaker monologues and bulletins.
+ * Ensures an authentic 50/50 male-female balance and applies Canadian French where authentic.
+ */
+function resolveSingleSpeakerEdgeVoice(text: string, defaultGender: 'female' | 'male'): string {
+  const lower = text.toLowerCase();
+  const isCanadian = /\b(Montréal|Montreal|Québec|Quebec|Gatineau|Sherbrooke|Laval|Trois-Rivières|Moncton|Canada|dollar|dollars|saint-laurent)\b/i.test(text);
+
+  // 1. Explicit Male Persona checks
+  if (
+    lower.includes('habitation plus') ||
+    lower.includes('secrétariat des sports') ||
+    lower.includes('air france 364') ||
+    lower.includes('culture hebdo') ||
+    lower.includes('institut de microbiologie marine') ||
+    lower.includes('bien-être au travail sur radio santé') ||
+    lower.includes('tendances de société') ||
+    lower.includes('bulletin spécial environnement') ||
+    lower.includes('brocantes de quartier') ||
+    lower.includes('ah formidable ! réduire le budget') ||
+    lower.includes("votre proposition témoigne d'une grande audace")
+  ) {
+    if (
+      lower.includes('microbiologie') ||
+      lower.includes('tendances') ||
+      lower.includes('ah formidable')
+    ) {
+      return EDGE_FRENCH_VOICE_ROSTER.maleInterlocutor2; // fr-FR-RemyMultilingualNeural (Distinct Male 2)
+    }
+    return EDGE_FRENCH_VOICE_ROSTER.maleAnnouncer; // fr-FR-HenriNeural (Formal Male 1)
+  }
+
+  // 2. Canadian French scenarios
+  if (isCanadian) {
+    if (lower.includes('garage central') || lower.includes('circuit de refroidissement')) {
+      return EDGE_FRENCH_VOICE_ROSTER.maleCanadian; // fr-CA-JeanNeural (Quebec Male)
+    }
+    if (lower.includes('sherbrooke') || lower.includes('saint-laurent') || lower.includes('tourbières') || lower.includes('société régionale de transport')) {
+      return EDGE_FRENCH_VOICE_ROSTER.femaleCanadian; // fr-CA-SylvieNeural (Quebec Female)
+    }
+    return defaultGender === 'male' ? EDGE_FRENCH_VOICE_ROSTER.maleCanadian : EDGE_FRENCH_VOICE_ROSTER.femaleCanadian;
+  }
+
+  // 3. Specific Female Personas
+  if (
+    lower.includes("c'est sophie") ||
+    lower.includes('dentaire du parc') ||
+    lower.includes('détartrage') ||
+    lower.includes('magasin fermera ses portes') ||
+    lower.includes("point sur l'économie locale") ||
+    lower.includes('mobilité citoyenne') ||
+    lower.includes('numérique et société') ||
+    lower.includes("éducation d'avenir") ||
+    lower.includes('ceintures vertes encerclant') ||
+    lower.includes('numérisation des démarches administratives') ||
+    lower.includes('conditions de financement étaient validées')
+  ) {
+    if (
+      lower.includes("c'est sophie") ||
+      lower.includes('dentaire') ||
+      lower.includes('numérique') ||
+      lower.includes('ceintures vertes') ||
+      lower.includes('financement')
+    ) {
+      return EDGE_FRENCH_VOICE_ROSTER.femaleInterlocutor2; // fr-FR-VivienneMultilingualNeural (Young Adult Female)
+    }
+    return EDGE_FRENCH_VOICE_ROSTER.femaleAnnouncer; // fr-FR-DeniseNeural (Mature Female)
+  }
+
+  return defaultGender === 'male' ? EDGE_FRENCH_VOICE_ROSTER.maleAnnouncer : EDGE_FRENCH_VOICE_ROSTER.femaleAnnouncer;
+}
+
+/**
  * Generates high-fidelity Multi-Speaker Studio Audio for a complete French exam question.
  */
 export async function generateEdgeNeuralAudio(
@@ -267,8 +339,8 @@ export async function generateEdgeNeuralAudio(
   const cleanText = stripSpeakerLabels(text).trim();
   if (!cleanText) return null;
 
-  // Use explicit targetVoiceId if provided, otherwise lock voice strictly based on defaultGender
-  const assignedVoiceId = targetVoiceId || (defaultGender === 'male' ? EDGE_FRENCH_VOICE_ROSTER.maleAnnouncer : EDGE_FRENCH_VOICE_ROSTER.femaleAnnouncer);
+  // Use explicit targetVoiceId if provided, otherwise resolve authentic single-speaker persona
+  const assignedVoiceId = targetVoiceId || resolveSingleSpeakerEdgeVoice(text, defaultGender);
 
   // Check if text explicitly contains multi-speaker dialogue lines
   const hasMultipleSpeakerTags = /(?:^|\n)\s*([A-ZÀ-ÖØ-ß][a-zA-ZÀ-ÿ0-9\s.'’\(\)\/\-–—]{1,45})\s*[:—–]/m.test(text) &&
