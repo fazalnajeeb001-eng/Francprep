@@ -96,13 +96,13 @@ export function parseEdgeDialogueSegments(
         'boulangère', 'boulangere', 'secrétaire', 'secretaire', 'hôtesse', 'hotesse', 
         'auditrice', 'annonceuse', 'animatrice', 'directrice', 'médiatrice', 'mediatrice',
         'chroniqueuse', 'négociatrice', 'negociatrice', 'soraya', 'élodie', 'elodie', 'martine',
-        'madame', 'fille', 'fillette', 'retraitée', 'retraitee', 'étudiante', 'etudiante'
+        'chantal', 'madame', 'fille', 'fillette', 'retraitée', 'retraitee', 'étudiante', 'etudiante'
       ].some(kw => lowerTag.includes(kw));
 
       const isMaleKeyword = [
         'homme', 'locuteur', 'voyageur', 'client', 'patient', 'passager', 'agent',
         'mécanicien', 'mecanicien', 'médecin', 'medecin', 'docteur', 'garagiste',
-        'chef', 'artisan', 'plombier', 'alain', 'laurent', 'maxime', 'vasseur',
+        'chef', 'artisan', 'plombier', 'alain', 'julien', 'marc', 'laurent', 'maxime', 'vasseur',
         'journaliste', 'animateur', 'directeur', 'professeur', 'auditeur', 'monsieur',
         'diplomate', 'fonctionnaire', 'collègue', 'collegue', 'expert', 'météorologue', 'meteorologue'
       ].some(kw => lowerTag.includes(kw));
@@ -121,7 +121,7 @@ export function parseEdgeDialogueSegments(
       } else if (lowerTag.includes('animateur') || (lowerTag.includes('journaliste') && isMale)) {
         // Radio Host / Journalist Interviewer
         voiceId = EDGE_FRENCH_VOICE_ROSTER.maleAnnouncer; // fr-FR-HenriNeural
-      } else if (lowerTag.includes('alain') || lowerTag.includes('julien') || lowerTag.includes('plombier')) {
+      } else if (lowerTag.includes('alain') || lowerTag.includes('julien') || lowerTag.includes('marc') || lowerTag.includes('plombier')) {
         // Citizen Interviewees (distinct from journalist Henri)
         voiceId = EDGE_FRENCH_VOICE_ROSTER.maleInterlocutor2; // fr-FR-RemyMultilingualNeural
       } else if (lowerTag.includes('secrétaire') || lowerTag.includes('secretaire')) {

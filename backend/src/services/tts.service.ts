@@ -64,7 +64,7 @@ export function stripSpeakerLabels(text: string): string {
     // Strip speaker role prefixes: any Word(s) followed by a colon or em-dash at the start of line or string
     .replace(/(?:^|\n)\s*([A-ZÀ-ÖØ-ß][a-zA-ZÀ-ÿ0-9\s.'’\(\)\/\-–—]{1,45})\s*[:—–]\s*/gm, '\n')
     // Fallback for known role prefixes
-    .replace(/(?:^|\n)\s*(?:Locuteur\s*\d*|Locutrice\s*\d*|Homme\s*\d*|Femme\s*\d*|Annonceur|Annonceuse|Journaliste|Intervenant(?:e)?|Voyageuse|Voyageur|Agent|Cliente|Client|Boulangère|Boulanger|Patiente|Patient|Médecin|Docteur|Passagère|Passager|Mécanicien|Soraya|Alain|Élodie|Laurent|Martine|Maxime|Vasseur)\s*[:—–]\s*/gi, '\n')
+    .replace(/(?:^|\n)\s*(?:Locuteur\s*\d*|Locutrice\s*\d*|Homme\s*\d*|Femme\s*\d*|Annonceur|Annonceuse|Journaliste|Intervenant(?:e)?|Voyageuse|Voyageur|Agent|Cliente|Client|Boulangère|Boulanger|Patiente|Patient|Médecin|Docteur|Passagère|Passager|Mécanicien|Soraya|Alain|Élodie|Laurent|Martine|Maxime|Vasseur|Julien|Chantal|Marc)\s*[:—–]\s*/gi, '\n')
     .replace(/[ \t]+/g, ' ')
     .trim();
 }
