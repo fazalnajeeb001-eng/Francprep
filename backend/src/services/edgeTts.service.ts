@@ -107,7 +107,7 @@ export function parseEdgeDialogueSegments(
         'diplomate', 'fonctionnaire', 'collègue', 'collegue', 'expert', 'météorologue', 'meteorologue'
       ].some(kw => lowerTag.includes(kw));
 
-      const isMale = isMaleKeyword ? true : (isFemaleKeyword ? false : !lastAssignedMale);
+      const isMale: boolean = isMaleKeyword ? true : (isFemaleKeyword ? false : !lastAssignedMale);
       lastAssignedMale = isMale;
 
       let voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleInterlocutor1;

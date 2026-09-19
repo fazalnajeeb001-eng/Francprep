@@ -132,7 +132,7 @@ function parseDialogueSegments(
         'diplomate', 'fonctionnaire', 'collègue', 'collegue', 'expert', 'météorologue', 'meteorologue'
       ].some(kw => lowerTag.includes(kw));
 
-      const isMale = isMaleKeyword ? true : (isFemaleKeyword ? false : !lastAssignedMale);
+      const isMale: boolean = isMaleKeyword ? true : (isFemaleKeyword ? false : !lastAssignedMale);
       lastAssignedMale = isMale;
 
       const isAnnouncerFemale = lowerTag.includes('annonceuse');
