@@ -297,18 +297,17 @@ export async function generateEdgeNeuralAudio(
     return null;
   }
 
-  // Parallel multi-speaker synthesis: synthesize each dialogue turn with trailing pause for natural flow
-  const results = await Promise.all(
-    segments.map((seg, idx) => {
-      const turnSpeech = seg.text + (idx < segments.length - 1 ? ' ... ' : '');
-      return synthesizeSingleEdgeVoice(turnSpeech, seg.voiceId);
-    })
-  );
-
+  // Sequential multi-speaker synthesis: synthesize each dialogue turn with trailing pause for natural flow
   const turnBuffers: Buffer[] = [];
-  for (const buf of results) {
+  for (let i = 0; i < segments.length; i++) {
+    const seg = segments[i];
+    const turnSpeech = seg.text + (i < segments.length - 1 ? ' ... ' : '');
+    const buf = await synthesizeSingleEdgeVoice(turnSpeech, seg.voiceId);
     if (buf && buf.length > 0) {
       turnBuffers.push(buf);
+    }
+    if (i < segments.length - 1) {
+      await new Promise((r) => setTimeout(r, 80));
     }
   }
 
