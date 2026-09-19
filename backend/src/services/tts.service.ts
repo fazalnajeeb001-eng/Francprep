@@ -50,14 +50,22 @@ function stitchMp3Buffers(buffers: Buffer[]): Buffer {
 }
 
 /**
- * Strips speaker prefixes (e.g. "Locuteur 1:", "Locutrice 2:", "Annonceur:", "Homme:", "Femme:")
+ * Strips speaker prefixes (e.g. "Voyageuse :", "Agent de gare :", "Locuteur 1:", "Annonceur:", "Homme:", "Femme:")
  * so that the synthesized studio voice only speaks the actual dialogue/instructions,
  * never reading aloud the speaker tag name.
  */
 export function stripSpeakerLabels(text: string): string {
   if (!text) return '';
   return text
-    .replace(/(?:^|\n)\s*(?:Locuteur\s*\d*|Locutrice\s*\d*|Homme\s*\d*|Femme\s*\d*|Annonceur|Annonceuse|Journaliste|Intervenant(?:e)?)\s*:\s*/gi, ' ')
+    // Strip bracketed instructions e.g. "[pause 2s]", "[bruit de cloche]"
+    .replace(/\[[^\]]*\]/g, ' ')
+    // Strip parenthetical tone/sound cues e.g. "(sarcastique)", "(rires)"
+    .replace(/\([^\)]*(?:pause|ton|voix|rire|accent|soupir|sarcastique|ironique|chuchote)[^\)]*\)/gi, ' ')
+    // Strip speaker role prefixes: any Word(s) followed by a colon or em-dash at the start of line or string
+    .replace(/(?:^|\n)\s*([A-ZÀ-ÖØ-ß][a-zA-ZÀ-ÿ0-9\s.'’\(\)\/\-–—]{1,45})\s*[:—–]\s*/gm, '\n')
+    // Fallback for known role prefixes
+    .replace(/(?:^|\n)\s*(?:Locuteur\s*\d*|Locutrice\s*\d*|Homme\s*\d*|Femme\s*\d*|Annonceur|Annonceuse|Journaliste|Intervenant(?:e)?|Voyageuse|Voyageur|Agent|Cliente|Client|Boulangère|Boulanger|Patiente|Patient|Médecin|Docteur|Passagère|Passager|Mécanicien|Soraya|Alain|Élodie|Laurent|Martine|Maxime|Vasseur)\s*[:—–]\s*/gi, '\n')
+    .replace(/[ \t]+/g, ' ')
     .trim();
 }
 
@@ -80,13 +88,13 @@ function parseDialogueSegments(
   const clean = text.trim();
   const segments: DialogueSegment[] = [];
 
-  // Match all standard French TCF speaker prefixes
-  const speakerRegex = /(?:^|\n)\s*(Locuteur\s*\d*|Locutrice\s*\d*|Homme\s*\d*|Femme\s*\d*|Annonceur|Annonceuse|Journaliste|Intervenant(?:e)?)\s*:\s*/gi;
+  // Universal speaker matching: captures any "Speaker Name :" at start of line or string
+  const speakerRegex = /(?:^|\n)\s*([A-ZÀ-ÖØ-ß][a-zA-ZÀ-ÿ0-9\s.'’\(\)\/\-–—]{1,45})\s*[:—–]\s*/gm;
   const matches = [...clean.matchAll(speakerRegex)];
 
   if (matches.length === 0) {
     const isMale = defaultGender === 'male';
-    const isAnnouncer = clean.toLowerCase().startsWith('consigne') || clean.toLowerCase().startsWith('question');
+    const isAnnouncer = clean.toLowerCase().startsWith('consigne') || clean.toLowerCase().startsWith('question') || clean.toLowerCase().startsWith('annonce');
     segments.push({
       speakerTag: isAnnouncer ? (isMale ? 'Annonceur' : 'Annonceuse') : (isMale ? 'Locuteur' : 'Locutrice'),
       voiceId: isMale ? defaultMaleVoice : defaultFemaleVoice,
@@ -96,35 +104,46 @@ function parseDialogueSegments(
     return segments;
   }
 
+  let lastAssignedMale = false;
+
   for (let i = 0; i < matches.length; i++) {
     const currentMatch = matches[i];
     const speakerTag = currentMatch[1].trim();
     const startIndex = currentMatch.index! + currentMatch[0].length;
     const endIndex = (i + 1 < matches.length) ? matches[i + 1].index! : clean.length;
-    const segmentText = stripSpeakerLabels(clean.slice(startIndex, endIndex).trim());
+    const rawSegment = clean.slice(startIndex, endIndex).trim();
+    const segmentText = stripSpeakerLabels(rawSegment);
 
     if (segmentText) {
       const lowerTag = speakerTag.toLowerCase();
-      const isMale = lowerTag.includes('locuteur 1') || lowerTag.includes('homme 1') || lowerTag.includes('homme') || lowerTag === 'locuteur';
-      const isFemale2 = lowerTag.includes('locutrice 2') || lowerTag.includes('femme 2');
-      const isMale2 = lowerTag.includes('locuteur 2') || lowerTag.includes('homme 2');
+      const isFemaleKeyword = [
+        'femme', 'locutrice', 'voyageuse', 'cliente', 'patiente', 'passagère', 'passagere', 
+        'boulangère', 'boulangere', 'secrétaire', 'secretaire', 'hôtesse', 'hotesse', 
+        'auditrice', 'annonceuse', 'animatrice', 'directrice', 'médiatrice', 'mediatrice',
+        'chroniqueuse', 'négociatrice', 'negociatrice', 'soraya', 'élodie', 'elodie', 'martine',
+        'madame', 'fille', 'fillette', 'retraitée', 'retraitee', 'étudiante', 'etudiante'
+      ].some(kw => lowerTag.includes(kw));
+
+      const isMaleKeyword = [
+        'homme', 'locuteur', 'voyageur', 'client', 'patient', 'passager', 'agent',
+        'mécanicien', 'mecanicien', 'médecin', 'medecin', 'docteur', 'garagiste',
+        'chef', 'artisan', 'plombier', 'alain', 'laurent', 'maxime', 'vasseur',
+        'journaliste', 'animateur', 'directeur', 'professeur', 'auditeur', 'monsieur',
+        'diplomate', 'fonctionnaire', 'collègue', 'collegue', 'expert', 'météorologue', 'meteorologue'
+      ].some(kw => lowerTag.includes(kw));
+
+      const isMale = isMaleKeyword ? true : (isFemaleKeyword ? false : !lastAssignedMale);
+      lastAssignedMale = isMale;
+
       const isAnnouncerFemale = lowerTag.includes('annonceuse');
-      const isAnnouncerMale = lowerTag.includes('annonceur') || lowerTag.includes('journaliste');
+      const isAnnouncerMale = lowerTag.includes('annonceur');
       const isAnnouncer = isAnnouncerFemale || isAnnouncerMale;
 
-      let voiceId = defaultFemaleVoice;
+      let voiceId = isMale ? defaultMaleVoice : defaultFemaleVoice;
       if (isAnnouncerFemale) {
         voiceId = 'EXAVITQu4vr4xnSDxMaL'; // Sarah
       } else if (isAnnouncerMale) {
         voiceId = 'JBFqnCBsd6RMkjVDRZzb'; // George
-      } else if (isFemale2) {
-        voiceId = '21m00Tcm4TlvDq8ikWAM'; // Rachel
-      } else if (isMale2) {
-        voiceId = 'ErXwobaYiN019PkySvjV'; // Antoni
-      } else if (isMale) {
-        voiceId = defaultMaleVoice;
-      } else {
-        voiceId = defaultFemaleVoice;
       }
 
       segments.push({

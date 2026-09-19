@@ -86,8 +86,11 @@ function base64ToArrayBuffer(base64: string): ArrayBuffer {
 export function stripSpeakerLabels(script: string): string {
   if (!script) return "";
   return script
-    .replace(/^(?:Voyageur|Voyageuse|Agent(?:\s+de\s+\w+)?|Passager|Passagère|Homme|Femme|Client|Cliente|Boulangère|Boulanger|Mécanicien|Secrétaire|Patient|Patiente|Chef\s+d'atelier|Hôtesse(?:\s+d'accueil)?|Directrice|Directeur|Collègue|Négociatrice|Diplomate|Haut\s+fonctionnaire(?:\s+diplomate)?|Voix\s+d'annonce(?:\s+de\s+\w+)?|Locuteur\s*\d*|Locutrice\s*\d*|Intervenant\s*\d*|Intervenante\s*\d*|Examinateur|Examinatrice)\s*[:—]\s*/gim, "")
-    .replace(/\[.*?\]|\(.*?\)/g, "")
+    .replace(/\[[^\]]*\]/g, " ")
+    .replace(/\([^\)]*(?:pause|ton|voix|rire|accent|soupir|sarcastique|ironique|chuchote)[^\)]*\)/gi, " ")
+    .replace(/(?:^|\n)\s*([A-ZÀ-ÖØ-ß][a-zA-ZÀ-ÿ0-9\s.'’\(\)\/\-–—]{1,45})\s*[:—–]\s*/gm, "\n")
+    .replace(/^(?:Voyageur|Voyageuse|Agent(?:\s+de\s+\w+)?|Passager|Passagère|Homme|Femme|Client|Cliente|Boulangère|Boulanger|Mécanicien|Secrétaire|Patient|Patiente|Chef\s+d'atelier|Hôtesse(?:\s+d'accueil)?|Directrice|Directeur|Collègue|Négociatrice|Diplomate|Haut\s+fonctionnaire(?:\s+diplomate)?|Voix\s+d'annonce(?:\s+de\s+\w+)?|Locuteur\s*\d*|Locutrice\s*\d*|Intervenant\s*\d*|Intervenante\s*\d*|Examinateur|Examinatrice|Soraya|Alain|Élodie|Laurent|Martine)\s*[:—–]\s*/gim, "")
+    .replace(/[ \t]+/g, " ")
     .trim();
 }
 

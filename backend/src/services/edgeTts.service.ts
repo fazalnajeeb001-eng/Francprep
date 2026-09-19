@@ -8,16 +8,18 @@ import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
 import { stripSpeakerLabels } from './tts.service';
 
 /**
- * Full 8-Voice Studio Roster for TCF Canada & Official French Exams:
+ * Full Studio Roster for TCF Canada & Official French Exams:
  */
 export const EDGE_FRENCH_VOICE_ROSTER = {
   // Official Test Announcers & Certified FEI Examiners
   femaleAnnouncer: 'fr-FR-DeniseNeural',                // Formal, mature adult Parisian female examiner
   maleAnnouncer: 'fr-FR-HenriNeural',                   // Formal, mature adult Parisian male examiner
   
-  // Conversational Interlocutors (Certified FEI Examiners)
-  femaleInterlocutor1: 'fr-FR-DeniseNeural',             // Warm, natural adult French female examiner
-  maleInterlocutor1: 'fr-FR-HenriNeural',                // Warm, natural adult French male examiner
+  // Conversational Interlocutors (Certified FEI Examiners / Native Speakers)
+  femaleInterlocutor1: 'fr-FR-DeniseNeural',             // Warm, natural adult French female
+  maleInterlocutor1: 'fr-FR-HenriNeural',                // Warm, natural adult French male
+  femaleInterlocutor2: 'fr-FR-VivienneMultilingualNeural', // Distinct adult female voice
+  maleInterlocutor2: 'fr-FR-RemyMultilingualNeural',     // Distinct adult male voice
   
   // Media / Academic Broadcasters
   femaleJournalist: 'fr-FR-DeniseNeural',                // Expressive adult host
@@ -26,9 +28,10 @@ export const EDGE_FRENCH_VOICE_ROSTER = {
   // Authentic Canadian French (Quebec / Montreal Adults)
   femaleCanadian: 'fr-CA-SylvieNeural',                   // Authentic adult Montreal woman
   maleCanadian: 'fr-CA-JeanNeural',                       // Authentic adult Quebec male speaker
+  maleCanadian2: 'fr-CA-AntoineNeural',                   // Quebec male speaker 2
 
-  // Youth / Child (Strictly reserved for explicit child dialogues)
-  femaleChild: 'fr-FR-EloiseNeural',                      // Young girl / teenager
+  // Youth / Student (Strictly reserved for young characters / students)
+  femaleChild: 'fr-FR-EloiseNeural',                      // Young woman / student / teenager
 };
 
 interface EdgeDialogueSegment {
@@ -48,7 +51,8 @@ export function parseEdgeDialogueSegments(
   const clean = text.trim();
   const segments: EdgeDialogueSegment[] = [];
 
-  const speakerRegex = /(?:^|\n)\s*(Locuteur\s*\d*|Locutrice\s*\d*|Homme\s*\d*|Femme\s*\d*|Annonceur|Annonceuse|Journaliste|Intervenant(?:e)?|Professeur|Enfant|Fillette)\s*:\s*/gi;
+  // Universal speaker matching: captures any "Speaker Name :" at start of line or string
+  const speakerRegex = /(?:^|\n)\s*([A-ZÀ-ÖØ-ß][a-zA-ZÀ-ÿ0-9\s.'’\(\)\/\-–—]{1,45})\s*[:—–]\s*/gm;
   const matches = [...clean.matchAll(speakerRegex)];
 
   if (matches.length === 0) {
@@ -65,42 +69,63 @@ export function parseEdgeDialogueSegments(
     return segments;
   }
 
+  let lastAssignedMale = false;
+
   for (let i = 0; i < matches.length; i++) {
     const currentMatch = matches[i];
     const speakerTag = currentMatch[1].trim();
     const startIndex = currentMatch.index! + currentMatch[0].length;
     const endIndex = (i + 1 < matches.length) ? matches[i + 1].index! : clean.length;
-    const segmentText = stripSpeakerLabels(clean.slice(startIndex, endIndex).trim());
+    const rawSegment = clean.slice(startIndex, endIndex).trim();
+    const segmentText = stripSpeakerLabels(rawSegment);
 
     if (segmentText) {
       const lowerTag = speakerTag.toLowerCase();
       const lowerText = segmentText.toLowerCase();
 
       // Check contextual clues
-      const isCanadianText = /\b(Montréal|Québec|Gatineau|Sherbrooke|Laval|Trois-Rivières|Moncton|Canada|dollar)\b/i.test(segmentText);
+      const isCanadianText = /\b(Montréal|Montreal|Québec|Quebec|Gatineau|Sherbrooke|Laval|Trois-Rivières|Moncton|Canada|dollar|saint-laurent)\b/i.test(segmentText);
       const isPublicStoreAnnouncement = /\b(annonce supermarché|annonce gare|annonce magasin|annonce aéroport|avis à la clientèle|offre spéciale|bulletin météo)\b/i.test(lowerText);
-      const isExplicitChild = lowerTag.includes('enfant') || lowerTag.includes('fillette') || lowerTag.includes('ado');
+      const isExplicitChild = lowerTag.includes('enfant') || lowerTag.includes('fillette') || lowerTag.includes('ado') || 
+                              lowerTag.includes('soraya') || lowerTag.includes('étudiante') || lowerTag.includes('etudiante');
+
+      const isFemaleKeyword = [
+        'femme', 'locutrice', 'voyageuse', 'cliente', 'patiente', 'passagère', 'passagere', 
+        'boulangère', 'boulangere', 'secrétaire', 'secretaire', 'hôtesse', 'hotesse', 
+        'auditrice', 'annonceuse', 'animatrice', 'directrice', 'médiatrice', 'mediatrice',
+        'chroniqueuse', 'négociatrice', 'negociatrice', 'soraya', 'élodie', 'elodie', 'martine',
+        'madame', 'fille', 'fillette', 'retraitée', 'retraitee', 'étudiante', 'etudiante'
+      ].some(kw => lowerTag.includes(kw));
+
+      const isMaleKeyword = [
+        'homme', 'locuteur', 'voyageur', 'client', 'patient', 'passager', 'agent',
+        'mécanicien', 'mecanicien', 'médecin', 'medecin', 'docteur', 'garagiste',
+        'chef', 'artisan', 'plombier', 'alain', 'laurent', 'maxime', 'vasseur',
+        'journaliste', 'animateur', 'directeur', 'professeur', 'auditeur', 'monsieur',
+        'diplomate', 'fonctionnaire', 'collègue', 'collegue', 'expert', 'météorologue', 'meteorologue'
+      ].some(kw => lowerTag.includes(kw));
+
+      const isMale = isMaleKeyword ? true : (isFemaleKeyword ? false : !lastAssignedMale);
+      lastAssignedMale = isMale;
 
       let voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleInterlocutor1;
 
       if (isExplicitChild) {
         voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleChild;
-      } else if (lowerTag.includes('annonceuse') || (isPublicStoreAnnouncement && !lowerTag.includes('homme') && !lowerTag.includes('locuteur'))) {
+      } else if (lowerTag.includes('annonceuse') || (isPublicStoreAnnouncement && !isMale)) {
         voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.femaleCanadian : EDGE_FRENCH_VOICE_ROSTER.femaleAnnouncer;
-      } else if (lowerTag.includes('annonceur') || (isPublicStoreAnnouncement && (lowerTag.includes('homme') || lowerTag.includes('locuteur')))) {
+      } else if (lowerTag.includes('annonceur') || (isPublicStoreAnnouncement && isMale)) {
         voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.maleCanadian : EDGE_FRENCH_VOICE_ROSTER.maleAnnouncer;
       } else if (lowerTag.includes('journaliste') || lowerTag.includes('présentatrice')) {
-        voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.femaleCanadian : EDGE_FRENCH_VOICE_ROSTER.femaleJournalist;
-      } else if (lowerTag.includes('professeur') || lowerTag.includes('intervenant')) {
+        voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.femaleCanadian : (isMale ? EDGE_FRENCH_VOICE_ROSTER.maleLecturer : EDGE_FRENCH_VOICE_ROSTER.femaleJournalist);
+      } else if (lowerTag.includes('professeur') || lowerTag.includes('intervenant') || lowerTag.includes('docteur') || lowerTag.includes('vasseur')) {
         voiceId = EDGE_FRENCH_VOICE_ROSTER.maleLecturer;
-      } else if (lowerTag.includes('locutrice 2') || lowerTag.includes('femme 2')) {
-        voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.femaleCanadian : EDGE_FRENCH_VOICE_ROSTER.femaleAnnouncer;
-      } else if (lowerTag.includes('locuteur 2') || lowerTag.includes('homme 2')) {
-        voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.maleCanadian : EDGE_FRENCH_VOICE_ROSTER.maleLecturer;
-      } else if (lowerTag.includes('locuteur') || lowerTag.includes('homme')) {
-        voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.maleCanadian : EDGE_FRENCH_VOICE_ROSTER.maleInterlocutor1;
+      } else if (isCanadianText) {
+        voiceId = isMale ? EDGE_FRENCH_VOICE_ROSTER.maleCanadian : EDGE_FRENCH_VOICE_ROSTER.femaleCanadian;
+      } else if (isMale) {
+        voiceId = EDGE_FRENCH_VOICE_ROSTER.maleInterlocutor1;
       } else {
-        voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.femaleCanadian : EDGE_FRENCH_VOICE_ROSTER.femaleInterlocutor1;
+        voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleInterlocutor1;
       }
 
       segments.push({
@@ -115,9 +140,6 @@ export function parseEdgeDialogueSegments(
   return segments;
 }
 
-/**
- * Synthesizes a single segment buffer using Microsoft Azure Edge Neural TTS with retry.
- */
 /**
  * Synthesizes a single segment buffer using Microsoft Azure Edge Neural TTS with retry.
  */
@@ -210,8 +232,9 @@ export async function generateEdgeNeuralAudio(
   // Use explicit targetVoiceId if provided, otherwise lock voice strictly based on defaultGender
   const assignedVoiceId = targetVoiceId || (defaultGender === 'male' ? EDGE_FRENCH_VOICE_ROSTER.maleAnnouncer : EDGE_FRENCH_VOICE_ROSTER.femaleAnnouncer);
 
-  // Check if text explicitly contains multi-speaker tags (e.g. Locuteur 1: / Locutrice 2:)
-  const hasMultipleSpeakerTags = /(?:^|\n)\s*(Locuteur|Locutrice|Homme|Femme)\s*\d*\s*:/i.test(text);
+  // Check if text explicitly contains multi-speaker dialogue lines
+  const hasMultipleSpeakerTags = /(?:^|\n)\s*([A-ZÀ-ÖØ-ß][a-zA-ZÀ-ÿ0-9\s.'’\(\)\/\-–—]{1,45})\s*[:—–]/m.test(text) &&
+    (text.includes('\n') || (text.match(/[:—–]/g) || []).length >= 2);
 
   if (isSpeakingTask || targetVoiceId || !hasMultipleSpeakerTags) {
     const buffer = await synthesizeSingleEdgeVoice(cleanText, assignedVoiceId);
@@ -239,9 +262,12 @@ export async function generateEdgeNeuralAudio(
     return null;
   }
 
-  // Parallel multi-speaker synthesis: synthesize each dialogue turn concurrently
+  // Parallel multi-speaker synthesis: synthesize each dialogue turn with trailing pause for natural flow
   const results = await Promise.all(
-    segments.map(seg => synthesizeSingleEdgeVoice(seg.text, seg.voiceId))
+    segments.map((seg, idx) => {
+      const turnSpeech = seg.text + (idx < segments.length - 1 ? ' ... ' : '');
+      return synthesizeSingleEdgeVoice(turnSpeech, seg.voiceId);
+    })
   );
 
   const turnBuffers: Buffer[] = [];
