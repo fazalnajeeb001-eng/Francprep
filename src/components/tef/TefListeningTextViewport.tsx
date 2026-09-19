@@ -42,6 +42,9 @@ export interface TefListeningTextViewportProps {
   isAdmin: boolean;
   showTranslation: boolean;
   onToggleTranslation: () => void;
+  isTefPreviewActive?: boolean;
+  tefPreviewTimeLeft?: number | null;
+  onSkipTefPreview?: () => void;
 }
 
 export const TefListeningTextViewport: React.FC<TefListeningTextViewportProps> = ({
@@ -68,7 +71,10 @@ export const TefListeningTextViewport: React.FC<TefListeningTextViewportProps> =
   onNext,
   isAdmin,
   showTranslation,
-  onToggleTranslation
+  onToggleTranslation,
+  isTefPreviewActive = false,
+  tefPreviewTimeLeft = null,
+  onSkipTefPreview
 }) => {
   const [showTranscript, setShowTranscript] = useState(false);
   const [showCoaching, setShowCoaching] = useState(false);
@@ -166,7 +172,14 @@ export const TefListeningTextViewport: React.FC<TefListeningTextViewportProps> =
       {mode === "EXAM" ? (
         <div className="p-3.5 rounded-xl bg-slate-900 text-white border border-slate-700 shadow-sm flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs font-mono font-bold">
-            {!isAudioFinished || isSpeaking ? (
+            {isTefPreviewActive ? (
+              <>
+                <Clock className="w-4 h-4 text-amber-400 animate-spin" />
+                <span className="text-amber-300">
+                  ⏱️ [Temps de préparation : {tefPreviewTimeLeft ?? 10}s] — Prenez connaissance de la question et des 4 choix.
+                </span>
+              </>
+            ) : !isAudioFinished || isSpeaking ? (
               <>
                 <Volume2 className="w-4 h-4 text-emerald-400 animate-pulse" />
                 <span className="text-emerald-300">
@@ -183,14 +196,40 @@ export const TefListeningTextViewport: React.FC<TefListeningTextViewportProps> =
             )}
           </div>
           <span className="text-[10px] px-2.5 py-1 rounded bg-slate-800 text-slate-300 border border-slate-700 font-mono font-bold">
-            {qTimeLeft !== null ? `⏱️ ${qTimeLeft}s restantes` : "Temps de réponse"}
+            {isTefPreviewActive
+              ? `⏱️ ${tefPreviewTimeLeft ?? 10}s lecture`
+              : qTimeLeft !== null
+                ? `⏱️ ${qTimeLeft}s restantes`
+                : "Temps de réponse"}
           </span>
         </div>
       ) : (
         <div className="p-3.5 rounded-xl bg-slate-900 text-white border border-slate-700 shadow-sm space-y-2.5">
+          {isTefPreviewActive && (
+            <div className="flex items-center justify-between bg-amber-950/60 p-2.5 rounded-lg border border-amber-700/50 text-amber-200">
+              <div className="flex items-center gap-2 text-xs font-mono font-bold text-amber-300">
+                <Clock className="w-4 h-4 text-amber-400 animate-spin" />
+                <span>⏱️ Préparation : {tefPreviewTimeLeft ?? 10}s avant diffusion sonore (Lisez la question et les choix)</span>
+              </div>
+              {onSkipTefPreview && (
+                <button
+                  type="button"
+                  onClick={onSkipTefPreview}
+                  className="px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold transition cursor-pointer"
+                >
+                  Passer la préparation ▶️
+                </button>
+              )}
+            </div>
+          )}
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2 text-xs font-mono font-bold">
-              {isSpeaking ? (
+              {isTefPreviewActive ? (
+                <>
+                  <Clock className="w-4 h-4 text-amber-400 animate-spin" />
+                  <span className="text-amber-300">⏱️ Préparation en cours ({tefPreviewTimeLeft ?? 10}s)...</span>
+                </>
+              ) : isSpeaking ? (
                 <>
                   <Volume2 className="w-4 h-4 text-emerald-400 animate-pulse" />
                   <span className="text-emerald-300">🎧 Lecture audio en cours...</span>

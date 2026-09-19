@@ -273,6 +273,9 @@ export function AuthenticCBTExamPage() {
   });
   const [isTimerPaused, setIsTimerPaused] = useState(false);
   const [qTimeLeft, setQTimeLeft] = useState<number | null>(null);
+  const [tefPreviewTimeLeft, setTefPreviewTimeLeft] = useState<number | null>(null);
+  const [isTefPreviewActive, setIsTefPreviewActive] = useState<boolean>(false);
+  const tefPreviewIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [isAudioFetching, setIsAudioFetching] = useState(false);
   const [sectionTransitionModal, setSectionTransitionModal] = useState<{ show: boolean; targetIdx: number; targetTitle: string; autoAdvanceSeconds?: number } | null>(null);
 
@@ -707,7 +710,10 @@ export function AuthenticCBTExamPage() {
     }
 
     if (targetEndTimeRef.current === null) {
-      const timerSecs = (currentQ as any).perQuestionTimerSeconds || (currentQ.questionNumber <= 10 ? 15 : currentQ.questionNumber <= 26 ? 20 : 25);
+      const isTef = paper?.type === "TEF_CANADA";
+      const defaultTefSecs = currentQ.questionNumber <= 18 ? 10 : 15;
+      const defaultTcfSecs = currentQ.questionNumber <= 10 ? 15 : currentQ.questionNumber <= 26 ? 20 : 25;
+      const timerSecs = (currentQ as any).perQuestionTimerSeconds || (isTef ? defaultTefSecs : defaultTcfSecs);
       const startSecs = qTimeLeft !== null && qTimeLeft > 0 ? qTimeLeft : timerSecs;
       targetEndTimeRef.current = Date.now() + (startSecs * 1000);
     }
@@ -2372,10 +2378,51 @@ export function AuthenticCBTExamPage() {
 
   const handleStopAudio = () => {
     playAudioSessionRef.current++;
+    if (tefPreviewIntervalRef.current) {
+      clearInterval(tefPreviewIntervalRef.current);
+      tefPreviewIntervalRef.current = null;
+    }
+    setIsTefPreviewActive(false);
+    setTefPreviewTimeLeft(null);
     ttsStop();
     setIsAudioPaused(false);
     setIsTimerPaused(false);
     setIsAudioFinished(false);
+  };
+
+  const handleSkipTefPreview = () => {
+    if (tefPreviewIntervalRef.current) {
+      clearInterval(tefPreviewIntervalRef.current);
+      tefPreviewIntervalRef.current = null;
+    }
+    setIsTefPreviewActive(false);
+    setTefPreviewTimeLeft(null);
+
+    if (currentQ) {
+      const qNum = currentQ.questionNumber;
+      const fullText = currentQ.transcript || currentQ.text;
+      const gender = (fullText.toLowerCase().includes("annonceur:") || qNum % 2 === 0) ? "male" : "female";
+      const rate = (currentQ as any).speakingRate || getListeningSpeakingRate(qNum);
+      const currentSession = playAudioSessionRef.current;
+
+      try {
+        triggerAcousticSoundForQuestion(qNum);
+      } catch { }
+
+      const dynamicWatchdogMs = Math.max(45000, (fullText?.length || 100) * 150);
+      const watchdogTimer = setTimeout(() => {
+        if (playAudioSessionRef.current === currentSession) {
+          setIsAudioFinished(true);
+        }
+      }, dynamicWatchdogMs);
+
+      ttsSpeakListening(fullText, "fr-FR", rate, gender, () => {
+        clearTimeout(watchdogTimer);
+        if (playAudioSessionRef.current === currentSession) {
+          setIsAudioFinished(true);
+        }
+      });
+    }
   };
 
   // Clean up audio playback when component unmounts (e.g. user leaves page or changes route)
@@ -2400,15 +2447,24 @@ export function AuthenticCBTExamPage() {
     handleStopAudio();
     setIsAudioFinished(false);
     targetEndTimeRef.current = null;
+    if (tefPreviewIntervalRef.current) {
+      clearInterval(tefPreviewIntervalRef.current);
+      tefPreviewIntervalRef.current = null;
+    }
+    setIsTefPreviewActive(false);
+    setTefPreviewTimeLeft(null);
 
     if (currentSection?.type === "COMPREHENSION_ORALE" && currentQ) {
       const currentSession = ++playAudioSessionRef.current;
       const qNum = currentQ.questionNumber;
-      const initialTimer = (currentQ as any).perQuestionTimerSeconds || (qNum <= 10 ? 15 : qNum <= 26 ? 20 : 25);
+      const isTef = paper?.type === "TEF_CANADA";
+      const defaultTefSecs = qNum <= 18 ? 10 : 15;
+      const defaultTcfSecs = qNum <= 10 ? 15 : qNum <= 26 ? 20 : 25;
+      const initialTimer = (currentQ as any).perQuestionTimerSeconds || (isTef ? defaultTefSecs : defaultTcfSecs);
       setQTimeLeft(initialTimer);
 
-      // Q30-Q39 prompt text is printed on screen per FEI rules. Q1-Q29 prompt text stays strictly hidden by default.
-      if (qNum >= 30) {
+      // In TEF Canada: Question prompt & options are ALWAYS visible from the start. In TCF: Q1-Q29 prompt is hidden by default.
+      if (isTef || qNum >= 30) {
         setShowQuestionPrompt(true);
       } else {
         setShowQuestionPrompt(false);
@@ -2433,23 +2489,68 @@ export function AuthenticCBTExamPage() {
           }
         }, dynamicWatchdogMs);
 
-        const timer = setTimeout(() => {
-          if (playAudioSessionRef.current !== currentSession) return;
-          try {
-            triggerAcousticSoundForQuestion(qNum);
-          } catch { }
-          ttsSpeakListening(fullText, "fr-FR", rate, gender, () => {
-            clearTimeout(watchdogTimer);
-            if (playAudioSessionRef.current === currentSession) {
-              setIsAudioFinished(true);
-            }
-          });
-        }, 300);
+        if (isTef) {
+          // 🇨🇦 Official TEF Canada CBT 4-Stage Lifecycle:
+          // Stage 1: Strict 10-second silent preview window with question & options visible
+          setIsTefPreviewActive(true);
+          setTefPreviewTimeLeft(10);
+          let previewRemaining = 10;
 
-        return () => {
-          clearTimeout(timer);
-          clearTimeout(watchdogTimer);
-        };
+          tefPreviewIntervalRef.current = setInterval(() => {
+            if (playAudioSessionRef.current !== currentSession) {
+              if (tefPreviewIntervalRef.current) clearInterval(tefPreviewIntervalRef.current);
+              return;
+            }
+            previewRemaining -= 1;
+            setTefPreviewTimeLeft(previewRemaining);
+
+            if (previewRemaining <= 0) {
+              if (tefPreviewIntervalRef.current) clearInterval(tefPreviewIntervalRef.current);
+              tefPreviewIntervalRef.current = null;
+              setIsTefPreviewActive(false);
+              setTefPreviewTimeLeft(null);
+
+              // Stage 2: Audio playback starts automatically with acoustic chime
+              try {
+                triggerAcousticSoundForQuestion(qNum);
+              } catch { }
+
+              ttsSpeakListening(fullText, "fr-FR", rate, gender, () => {
+                clearTimeout(watchdogTimer);
+                if (playAudioSessionRef.current === currentSession) {
+                  setIsAudioFinished(true);
+                }
+              });
+            }
+          }, 1000);
+
+          return () => {
+            if (tefPreviewIntervalRef.current) {
+              clearInterval(tefPreviewIntervalRef.current);
+              tefPreviewIntervalRef.current = null;
+            }
+            clearTimeout(watchdogTimer);
+          };
+        } else {
+          // TCF Canada standard (300ms immediate audio launch)
+          const timer = setTimeout(() => {
+            if (playAudioSessionRef.current !== currentSession) return;
+            try {
+              triggerAcousticSoundForQuestion(qNum);
+            } catch { }
+            ttsSpeakListening(fullText, "fr-FR", rate, gender, () => {
+              clearTimeout(watchdogTimer);
+              if (playAudioSessionRef.current === currentSession) {
+                setIsAudioFinished(true);
+              }
+            });
+          }, 300);
+
+          return () => {
+            clearTimeout(timer);
+            clearTimeout(watchdogTimer);
+          };
+        }
       }
     }
   }, [currentQuestionIdx, activeSectionIdx, acceptedSectionDisclaimers, mode, isSubmitted]);
@@ -3891,6 +3992,9 @@ export function AuthenticCBTExamPage() {
                 isAdmin={isAdmin}
                 showTranslation={showTranslation}
                 onToggleTranslation={() => setShowTranslation(!showTranslation)}
+                isTefPreviewActive={isTefPreviewActive}
+                tefPreviewTimeLeft={tefPreviewTimeLeft}
+                onSkipTefPreview={handleSkipTefPreview}
               />
             ) : (
               <TefListeningTextViewport
@@ -3927,6 +4031,9 @@ export function AuthenticCBTExamPage() {
                 isAdmin={isAdmin}
                 showTranslation={showTranslation}
                 onToggleTranslation={() => setShowTranslation(!showTranslation)}
+                isTefPreviewActive={isTefPreviewActive}
+                tefPreviewTimeLeft={tefPreviewTimeLeft}
+                onSkipTefPreview={handleSkipTefPreview}
               />
             )
           ) : (
@@ -6701,8 +6808,8 @@ export function AuthenticCBTExamPage() {
                                 <p className="font-bold text-purple-900 dark:text-purple-300 text-[11px]">🎙️ Speaking (EO Focus):</p>
                                 <p className="text-[11px] leading-relaxed">
                                   {res.speakingAvg >= 12
-                                    ? `✓ Strong oral fluency (${Math.round((res.speakingAvg / 20) * 100)}% — CLB ${res.speakingNCLC.nclcLevel} / ${res.speakingNCLC.cefrEquivalent || res.speakingNCLC.cefrLevel || 'A2'}).`
-                                    : `⚠️ Oral score is ${Math.round((res.speakingAvg / 20) * 100)}% (CLB ${res.speakingNCLC.nclcLevel} / ${res.speakingNCLC.cefrEquivalent || res.speakingNCLC.cefrLevel || 'A2'}). Focus on formal question structures and argument organization.`}
+                                    ? `✓ Strong oral fluency (${Math.round((res.speakingAvg / 20) * 100)}% — CLB ${res.speakingNCLC.nclcLevel} / ${res.speakingNCLC.cefrEquivalent || 'A2'}).`
+                                    : `⚠️ Oral score is ${Math.round((res.speakingAvg / 20) * 100)}% (CLB ${res.speakingNCLC.nclcLevel} / ${res.speakingNCLC.cefrEquivalent || 'A2'}). Focus on formal question structures and argument organization.`}
                                 </p>
                               </div>
                             )}
