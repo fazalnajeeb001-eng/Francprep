@@ -118,12 +118,22 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
         </div>
 
         <div className="flex items-center gap-2">
-          {qTimeLeft !== null && (
-            <div className="px-3 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 font-mono font-bold text-xs flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-emerald-600" />
-              <span>⏱️ {qTimeLeft}s</span>
+          {isTefPreviewActive ? (
+            <div className="px-3 py-1.5 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-800 dark:text-amber-300 font-mono font-bold text-xs flex items-center gap-1.5 shadow-sm">
+              <Clock className="w-3.5 h-3.5 text-amber-600 animate-spin" />
+              <span>⏱️ Préparation : {tefPreviewTimeLeft ?? 10}s</span>
             </div>
-          )}
+          ) : isSpeaking ? (
+            <div className="px-3 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 font-mono font-bold text-xs flex items-center gap-1.5 shadow-sm">
+              <Volume2 className="w-3.5 h-3.5 text-emerald-600 animate-pulse" />
+              <span>🎧 Écoute en cours</span>
+            </div>
+          ) : qTimeLeft !== null ? (
+            <div className="px-3 py-1.5 rounded-lg bg-purple-500/15 border border-purple-500/30 text-purple-800 dark:text-purple-300 font-mono font-bold text-xs flex items-center gap-1.5 shadow-sm">
+              <Clock className="w-3.5 h-3.5 text-purple-600" />
+              <span>⏱️ Réponse : {qTimeLeft}s</span>
+            </div>
+          ) : null}
 
           <button
             type="button"
@@ -191,9 +201,11 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
           <span className="text-[10px] px-2.5 py-1 rounded bg-slate-800 text-slate-300 border border-slate-700 font-mono font-bold">
             {isTefPreviewActive
               ? `⏱️ ${tefPreviewTimeLeft ?? 10}s lecture`
-              : qTimeLeft !== null
-                ? `⏱️ ${qTimeLeft}s restantes`
-                : "Temps de réponse"}
+              : isSpeaking
+                ? "🎧 Écoute en cours"
+                : qTimeLeft !== null
+                  ? `⏱️ ${qTimeLeft}s restantes`
+                  : "Temps de réponse"}
           </span>
         </div>
       ) : (

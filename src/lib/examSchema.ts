@@ -8036,7 +8036,9 @@ function getTefListeningQuestions(paperNum: number, isPractice: boolean, fallbac
         transcriptEnglish: item.audioEn,
         passage: item.audioFr,
         passageEnglish: item.audioEn,
-        perQuestionTimerSeconds: item.prepTimeSeconds + item.answerTimeSeconds
+        prepTimeSeconds: 10,
+        answerTimeSeconds: item.questionNumber <= 18 ? 10 : 15,
+        perQuestionTimerSeconds: item.questionNumber <= 18 ? 10 : 15
       };
     });
   }

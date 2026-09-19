@@ -713,7 +713,7 @@ export function AuthenticCBTExamPage() {
       const isTef = paper?.type === "TEF_CANADA";
       const defaultTefSecs = currentQ.questionNumber <= 18 ? 10 : 15;
       const defaultTcfSecs = currentQ.questionNumber <= 10 ? 15 : currentQ.questionNumber <= 26 ? 20 : 25;
-      const timerSecs = (currentQ as any).perQuestionTimerSeconds || (isTef ? defaultTefSecs : defaultTcfSecs);
+      const timerSecs = isTef ? defaultTefSecs : ((currentQ as any).perQuestionTimerSeconds || defaultTcfSecs);
       const startSecs = qTimeLeft !== null && qTimeLeft > 0 ? qTimeLeft : timerSecs;
       targetEndTimeRef.current = Date.now() + (startSecs * 1000);
     }
@@ -727,7 +727,12 @@ export function AuthenticCBTExamPage() {
         clearInterval(interval);
         targetEndTimeRef.current = null;
         if (mode === "PRACTICE") {
-          // In Practice Mode: respect student pacing and do not force-advance
+          // In TEF Practice Mode: automatically advance to next question when timer expires, but candidate retains full freedom to navigate back (Question précédente / Grid)
+          if (isTef) {
+            if (currentQuestionIdx < currentQuestions.length - 1) {
+              setCurrentQuestionIdx((idx) => idx + 1);
+            }
+          }
           return;
         }
         if (currentQuestionIdx < currentQuestions.length - 1) {
@@ -2451,8 +2456,15 @@ export function AuthenticCBTExamPage() {
       clearInterval(tefPreviewIntervalRef.current);
       tefPreviewIntervalRef.current = null;
     }
-    setIsTefPreviewActive(false);
-    setTefPreviewTimeLeft(null);
+    const isTefCheck = paper?.type === "TEF_CANADA";
+    const isListeningCheck = currentSection?.type === "COMPREHENSION_ORALE";
+    if (isTefCheck && isListeningCheck && !isSubmitted) {
+      setIsTefPreviewActive(true);
+      setTefPreviewTimeLeft(10);
+    } else {
+      setIsTefPreviewActive(false);
+      setTefPreviewTimeLeft(null);
+    }
 
     if (currentSection?.type === "COMPREHENSION_ORALE" && currentQ) {
       const currentSession = ++playAudioSessionRef.current;
@@ -2460,7 +2472,7 @@ export function AuthenticCBTExamPage() {
       const isTef = paper?.type === "TEF_CANADA";
       const defaultTefSecs = qNum <= 18 ? 10 : 15;
       const defaultTcfSecs = qNum <= 10 ? 15 : qNum <= 26 ? 20 : 25;
-      const initialTimer = (currentQ as any).perQuestionTimerSeconds || (isTef ? defaultTefSecs : defaultTcfSecs);
+      const initialTimer = isTef ? defaultTefSecs : ((currentQ as any).perQuestionTimerSeconds || defaultTcfSecs);
       setQTimeLeft(initialTimer);
 
       // In TEF Canada: Question prompt & options are ALWAYS visible from the start. In TCF: Q1-Q29 prompt is hidden by default.
@@ -2475,8 +2487,11 @@ export function AuthenticCBTExamPage() {
         return;
       }
 
-      // Auto-play audio on question load in Exam Mode
-      if (mode === "EXAM" && !isSubmitted) {
+      // Auto-play audio on question load:
+      // - TEF Canada CBT: Runs 10s preparation preview -> auto-play audio in BOTH Exam and Practice modes
+      // - TCF Canada: Runs auto-play in Exam mode only
+      const shouldLaunchAudio = (isTef || mode === "EXAM") && !isSubmitted;
+      if (shouldLaunchAudio) {
         const fullText = currentQ.transcript || currentQ.text;
         const gender = (fullText.toLowerCase().includes("annonceur:") || qNum % 2 === 0) ? "male" : "female";
         const rate = (currentQ as any).speakingRate || getListeningSpeakingRate(qNum);
@@ -2494,17 +2509,17 @@ export function AuthenticCBTExamPage() {
           // Stage 1: Strict 10-second silent preview window with question & options visible
           setIsTefPreviewActive(true);
           setTefPreviewTimeLeft(10);
-          let previewRemaining = 10;
+          const previewTargetTime = Date.now() + 10000;
 
           tefPreviewIntervalRef.current = setInterval(() => {
             if (playAudioSessionRef.current !== currentSession) {
               if (tefPreviewIntervalRef.current) clearInterval(tefPreviewIntervalRef.current);
               return;
             }
-            previewRemaining -= 1;
-            setTefPreviewTimeLeft(previewRemaining);
+            const remaining = Math.max(0, Math.ceil((previewTargetTime - Date.now()) / 1000));
+            setTefPreviewTimeLeft(remaining);
 
-            if (previewRemaining <= 0) {
+            if (remaining <= 0) {
               if (tefPreviewIntervalRef.current) clearInterval(tefPreviewIntervalRef.current);
               tefPreviewIntervalRef.current = null;
               setIsTefPreviewActive(false);
@@ -2522,7 +2537,7 @@ export function AuthenticCBTExamPage() {
                 }
               });
             }
-          }, 1000);
+          }, 500);
 
           return () => {
             if (tefPreviewIntervalRef.current) {
@@ -2531,7 +2546,7 @@ export function AuthenticCBTExamPage() {
             }
             clearTimeout(watchdogTimer);
           };
-        } else {
+        } else if (mode === "EXAM") {
           // TCF Canada standard (300ms immediate audio launch)
           const timer = setTimeout(() => {
             if (playAudioSessionRef.current !== currentSession) return;
@@ -2557,7 +2572,7 @@ export function AuthenticCBTExamPage() {
 
   // Silent Background Pre-Fetcher for Next Question Audio in Exam Mode (Guarantees 0ms latency on Q1 -> Q39 transitions)
   useEffect(() => {
-    if (mode === "EXAM" && currentSection?.type === "COMPREHENSION_ORALE" && acceptedSectionDisclaimers["COMPREHENSION_ORALE"]) {
+    if ((mode === "EXAM" || paper?.type === "TEF_CANADA") && currentSection?.type === "COMPREHENSION_ORALE" && acceptedSectionDisclaimers["COMPREHENSION_ORALE"]) {
       const questions = currentSection.questions || [];
       const nextQ = questions[currentQuestionIdx + 1];
       if (nextQ) {
