@@ -696,8 +696,8 @@ export function AuthenticCBTExamPage() {
       return;
     }
 
-    // In Practice Mode: if question is already checked, freeze per-question timer completely
-    if (mode === "PRACTICE" && checkedMap[currentQ.id]) {
+    // In Practice Mode: completely untimed (relaxed pedagogical study mode)
+    if (mode === "PRACTICE") {
       setQTimeLeft(null);
       targetEndTimeRef.current = null;
       return;
@@ -726,15 +726,6 @@ export function AuthenticCBTExamPage() {
       if (remainingSecs <= 0) {
         clearInterval(interval);
         targetEndTimeRef.current = null;
-        if (mode === "PRACTICE") {
-          // In TEF Practice Mode: automatically advance to next question when timer expires, but candidate retains full freedom to navigate back (Question précédente / Grid)
-          if (isTef) {
-            if (currentQuestionIdx < currentQuestions.length - 1) {
-              setCurrentQuestionIdx((idx) => idx + 1);
-            }
-          }
-          return;
-        }
         if (currentQuestionIdx < currentQuestions.length - 1) {
           setCurrentQuestionIdx((idx) => idx + 1);
         } else if (activeSectionIdx < paper.sections.length - 1) {
@@ -2458,7 +2449,7 @@ export function AuthenticCBTExamPage() {
     }
     const isTefCheck = paper?.type === "TEF_CANADA";
     const isListeningCheck = currentSection?.type === "COMPREHENSION_ORALE";
-    if (isTefCheck && isListeningCheck && !isSubmitted) {
+    if (mode === "EXAM" && isTefCheck && isListeningCheck && !isSubmitted) {
       setIsTefPreviewActive(true);
       setTefPreviewTimeLeft(10);
     } else {
@@ -2472,7 +2463,9 @@ export function AuthenticCBTExamPage() {
       const isTef = paper?.type === "TEF_CANADA";
       const defaultTefSecs = qNum <= 18 ? 10 : 15;
       const defaultTcfSecs = qNum <= 10 ? 15 : qNum <= 26 ? 20 : 25;
-      const initialTimer = isTef ? defaultTefSecs : ((currentQ as any).perQuestionTimerSeconds || defaultTcfSecs);
+      const initialTimer = mode === "EXAM"
+        ? (isTef ? defaultTefSecs : ((currentQ as any).perQuestionTimerSeconds || defaultTcfSecs))
+        : null;
       setQTimeLeft(initialTimer);
 
       // In TEF Canada: Question prompt & options are ALWAYS visible from the start. In TCF: Q1-Q29 prompt is hidden by default.
@@ -2488,9 +2481,9 @@ export function AuthenticCBTExamPage() {
       }
 
       // Auto-play audio on question load:
-      // - TEF Canada CBT: Runs 10s preparation preview -> auto-play audio in BOTH Exam and Practice modes
-      // - TCF Canada: Runs auto-play in Exam mode only
-      const shouldLaunchAudio = (isTef || mode === "EXAM") && !isSubmitted;
+      // - Runs strictly in EXAM Mode (official CBT exam conditions)
+      // - In PRACTICE Mode, candidate controls audio manually via "Écouter ▶️" button
+      const shouldLaunchAudio = mode === "EXAM" && !isSubmitted;
       if (shouldLaunchAudio) {
         const fullText = currentQ.transcript || currentQ.text;
         const gender = (fullText.toLowerCase().includes("annonceur:") || qNum % 2 === 0) ? "male" : "female";
