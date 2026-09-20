@@ -363,6 +363,28 @@ export async function generateEdgeNeuralAudio(
     (text.includes('\n') || (text.match(/[:—–]/g) || []).length >= 2);
 
   if (isSpeakingTask || targetVoiceId || !hasMultipleSpeakerTags) {
+    // If monologue contains multiple sentences, split and stitch for natural human breathing intervals
+    const sentences = cleanText
+      .split(/(?<=[.?!])\s+(?=[A-ZÀ-ÖØ-ß0-9«"])/)
+      .map(s => s.trim())
+      .filter(Boolean);
+
+    if (sentences.length > 1 && sentences.length <= 6) {
+      const sentenceBuffers: Buffer[] = [];
+      for (const s of sentences) {
+        const buf = await synthesizeSingleEdgeVoice(s, assignedVoiceId, speakingRate);
+        if (buf && buf.length > 0) sentenceBuffers.push(buf);
+      }
+      if (sentenceBuffers.length === sentences.length) {
+        const stitched = stitchMp3Buffers(sentenceBuffers);
+        return {
+          audioBase64: stitched.toString('base64'),
+          contentType: 'audio/mp3',
+          provider: `edge-neural-${assignedVoiceId}`
+        };
+      }
+    }
+
     const buffer = await synthesizeSingleEdgeVoice(cleanText, assignedVoiceId, speakingRate);
     if (buffer && buffer.length > 0) {
       return {

@@ -2430,12 +2430,12 @@ export function AuthenticCBTExamPage() {
   }, []);
 
   const getListeningSpeakingRate = (qNum: number): number => {
-    if (qNum <= 4) return 0.90;   // A1/A2: Dessins (deliberate, clear articulation)
-    if (qNum <= 12) return 0.96;  // A2/B1: Voicemail & store announcements
-    if (qNum <= 18) return 1.02;  // B1/B2: Street vox-pops (Micro-trottoirs)
-    if (qNum <= 28) return 1.08;  // B2: Radio broadcasts & regional reports
-    if (qNum <= 34) return 1.12;  // B2/C1: Grand Entretien academic debate
-    return 1.15;                  // C1/C2: Fast native discourse & subtle opinions
+    if (qNum <= 4) return 0.92;   // A1/A2: Dessins (deliberate, clear articulation)
+    if (qNum <= 12) return 0.97;  // A2/B1: Voicemail & store announcements
+    if (qNum <= 18) return 1.01;  // B1/B2: Street vox-pops (Micro-trottoirs)
+    if (qNum <= 28) return 1.05;  // B2: Radio broadcasts & regional reports
+    if (qNum <= 34) return 1.08;  // B2/C1: Grand Entretien academic debate
+    return 1.10;                  // C1/C2: Natural native nuance & speech acts (calibrated from 1.15 down to 1.10)
   };
 
   // Automatically kill audio and manage audio completion state / auto-play when switching questions!
