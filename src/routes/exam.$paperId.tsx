@@ -2430,12 +2430,12 @@ export function AuthenticCBTExamPage() {
   }, []);
 
   const getListeningSpeakingRate = (qNum: number): number => {
-    if (qNum <= 7) return 0.90;   // A1: Articulated & clear native pace
-    if (qNum <= 15) return 0.95;  // A2: Moderate everyday conversational pace
-    if (qNum <= 25) return 1.00;  // B1: Standard natural native studio rate
-    if (qNum <= 33) return 1.08;  // B2: Fast native studio rate (FEI Benchmark)
-    if (qNum <= 36) return 1.15;  // C1: Rapid native speech (Lectures & news)
-    return 1.20;                  // C2: Elite native speed (Fast argumentation)
+    if (qNum <= 4) return 0.90;   // A1/A2: Dessins (deliberate, clear articulation)
+    if (qNum <= 12) return 0.96;  // A2/B1: Voicemail & store announcements
+    if (qNum <= 18) return 1.02;  // B1/B2: Street vox-pops (Micro-trottoirs)
+    if (qNum <= 28) return 1.08;  // B2: Radio broadcasts & regional reports
+    if (qNum <= 34) return 1.12;  // B2/C1: Grand Entretien academic debate
+    return 1.15;                  // C1/C2: Fast native discourse & subtle opinions
   };
 
   // Automatically kill audio and manage audio completion state / auto-play when switching questions!
@@ -3983,7 +3983,7 @@ export function AuthenticCBTExamPage() {
                 isChecked={!!checkedMap[currentQ.id]}
                 onSelectOption={(idx) => handleSelectOption(currentQ.id, idx)}
                 onToggleFlag={() => toggleFlag(currentQ.id)}
-                onPlayAudio={() => handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || 1.0)}
+                onPlayAudio={() => handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || getListeningSpeakingRate(currentQ.questionNumber))}
                 onPauseResumeAudio={handlePauseResumeAudio}
                 onCheckAnswer={() => handleCheckAnswer(currentQ.id, currentQ.correctIndex)}
                 onPrevious={() => setCurrentQuestionIdx((prev) => Math.max(0, prev - 1))}
@@ -4022,7 +4022,7 @@ export function AuthenticCBTExamPage() {
                 isChecked={!!checkedMap[currentQ.id]}
                 onSelectOption={(idx) => handleSelectOption(currentQ.id, idx)}
                 onToggleFlag={() => toggleFlag(currentQ.id)}
-                onPlayAudio={() => handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || 1.0)}
+                onPlayAudio={() => handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || getListeningSpeakingRate(currentQ.questionNumber))}
                 onPauseResumeAudio={handlePauseResumeAudio}
                 onCheckAnswer={() => handleCheckAnswer(currentQ.id, currentQ.correctIndex)}
                 onPrevious={() => setCurrentQuestionIdx((prev) => Math.max(0, prev - 1))}

@@ -179,11 +179,27 @@ export function parseEdgeDialogueSegments(
 }
 
 /**
+ * Formats numeric speakingRate into SSML prosody percentage string (e.g. 0.90 -> "-10%", 1.15 -> "+15%").
+ */
+export function formatEdgeRate(rate: number = 1.0): string {
+  const clamped = Math.max(0.7, Math.min(1.3, rate));
+  const diffPercent = Math.round((clamped - 1.0) * 100);
+  return diffPercent >= 0 ? `+${diffPercent}%` : `${diffPercent}%`;
+}
+
+/**
  * Synthesizes a single segment buffer using Microsoft Azure Edge Neural TTS with retry.
  */
-async function synthesizeSingleEdgeVoice(text: string, voiceId: string, maxRetries = 3): Promise<Buffer | null> {
+async function synthesizeSingleEdgeVoice(
+  text: string,
+  voiceId: string,
+  speakingRate: number = 1.0,
+  maxRetries = 3
+): Promise<Buffer | null> {
   const clean = stripSpeakerLabels(text).trim();
   if (!clean) return null;
+
+  const rateStr = formatEdgeRate(speakingRate);
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
@@ -201,7 +217,7 @@ async function synthesizeSingleEdgeVoice(text: string, voiceId: string, maxRetri
           const tts = new MsEdgeTTS();
           tts.setMetadata(voiceId, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3)
             .then(() => {
-              const { audioStream } = tts.toStream(clean);
+              const { audioStream } = tts.toStream(clean, { rate: rateStr });
               const chunks: Buffer[] = [];
 
               audioStream.on('data', (chunk: Buffer) => chunks.push(chunk));
@@ -347,7 +363,7 @@ export async function generateEdgeNeuralAudio(
     (text.includes('\n') || (text.match(/[:—–]/g) || []).length >= 2);
 
   if (isSpeakingTask || targetVoiceId || !hasMultipleSpeakerTags) {
-    const buffer = await synthesizeSingleEdgeVoice(cleanText, assignedVoiceId);
+    const buffer = await synthesizeSingleEdgeVoice(cleanText, assignedVoiceId, speakingRate);
     if (buffer && buffer.length > 0) {
       return {
         audioBase64: buffer.toString('base64'),
@@ -361,7 +377,7 @@ export async function generateEdgeNeuralAudio(
   const segments = parseEdgeDialogueSegments(text, defaultGender);
   if (segments.length === 1) {
     const seg = segments[0];
-    const buffer = await synthesizeSingleEdgeVoice(seg.text, targetVoiceId || seg.voiceId);
+    const buffer = await synthesizeSingleEdgeVoice(seg.text, targetVoiceId || seg.voiceId, speakingRate);
     if (buffer && buffer.length > 0) {
       return {
         audioBase64: buffer.toString('base64'),
@@ -377,7 +393,7 @@ export async function generateEdgeNeuralAudio(
   for (let i = 0; i < segments.length; i++) {
     const seg = segments[i];
     const turnSpeech = seg.text + (i < segments.length - 1 ? ' ... ' : '');
-    const buf = await synthesizeSingleEdgeVoice(turnSpeech, seg.voiceId);
+    const buf = await synthesizeSingleEdgeVoice(turnSpeech, seg.voiceId, speakingRate);
     if (buf && buf.length > 0) {
       turnBuffers.push(buf);
     }
