@@ -31,6 +31,7 @@ import {
   Lock,
   FastForward,
   ShieldAlert,
+  BarChart3,
   X
 } from "lucide-react";
 import { useTheme } from "~/lib/ThemeContext";
@@ -46,6 +47,7 @@ import { READING_GUIDANCE_BANK } from "~/lib/readingGuidanceBank";
 import { LISTENING_GUIDANCE_BANK } from "~/lib/listeningGuidanceBank";
 import { TefListeningDessinViewport } from "~/components/tef/TefListeningDessinViewport";
 import { TefListeningTextViewport } from "~/components/tef/TefListeningTextViewport";
+import { calculateTefListeningScore, type TefScoreResult } from "~/lib/tefScoringEngine";
 
 function countFrenchWords(str: string): number {
   if (!str || !str.trim()) return 0;
@@ -610,6 +612,8 @@ export function AuthenticCBTExamPage() {
     setCurrentQuestionIdx(0);
     setCloudActiveSession(null);
     setShowSessionPromptModal(false);
+    setShowScorecardModal(false);
+    setShowRetakeConfirmModal(false);
     setIsSubmitted(false);
     setIsSubmittingExam(false);
   };
@@ -670,6 +674,8 @@ export function AuthenticCBTExamPage() {
 
   // Submission & Results & Strategy Modals State
   const [isSubmitted, setIsSubmitted] = useState<boolean>(() => Boolean(getPersistedSubmission()));
+  const [showScorecardModal, setShowScorecardModal] = useState<boolean>(() => Boolean(getPersistedSubmission()));
+  const [showRetakeConfirmModal, setShowRetakeConfirmModal] = useState<boolean>(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isAudioPaused, setIsAudioPaused] = useState(false);
   const [isAudioFinished, setIsAudioFinished] = useState(false);
@@ -2333,6 +2339,7 @@ export function AuthenticCBTExamPage() {
         apiFetch(`/exam/active-session/${paper.id}`, { method: "DELETE" }).catch(() => {});
       }
       setIsSubmitted(true);
+      setShowScorecardModal(true);
     }
   };
 
@@ -2671,6 +2678,7 @@ export function AuthenticCBTExamPage() {
   };
 
   const handleWritingChange = (taskId: string, val: string) => {
+    if (isSubmitted) return;
     const nextWriting = { ...writingResponses, [taskId]: val };
     setWritingResponses(nextWriting);
     if (typeof window !== "undefined") {
@@ -2694,6 +2702,7 @@ export function AuthenticCBTExamPage() {
   };
 
   const handleInsertAccent = (taskId: string, char: string) => {
+    if (isSubmitted) return;
     const textarea = document.getElementById(`writing-textarea-${taskId}`) as HTMLTextAreaElement | null;
     if (!textarea) {
       handleWritingChange(taskId, (writingResponses[taskId] || "") + char);
@@ -3194,7 +3203,63 @@ export function AuthenticCBTExamPage() {
     const listeningPct = listeningTotal > 0 && listeningCorrect > 0 ? Math.round((listeningCorrect / listeningTotal) * 100) : 0;
     const readingPct = readingTotal > 0 && readingCorrect > 0 ? Math.round((readingCorrect / readingTotal) * 100) : 0;
 
-    const listeningNCLC = calculateNCLCScore(listeningPct, paper.type, "COMPREHENSION_ORALE");
+    const isTefPaper = paper.type === "TEF_CANADA";
+    const tefListeningResult = isTefPaper
+      ? calculateTefListeningScore(listeningCorrect)
+      : null;
+
+    let tefTypologyBreakdown: {
+      groupName: string;
+      range: string;
+      level: string;
+      correct: number;
+      total: number;
+      pct: number;
+    }[] = [];
+
+    if (isTefPaper) {
+      const g1 = { groupName: "Dessins & Situations", range: "Q1–Q4", level: "A1/A2", correct: 0, total: 0, pct: 0 };
+      const g2 = { groupName: "Messages Quotidiens", range: "Q5–Q12", level: "A2/B1", correct: 0, total: 0, pct: 0 };
+      const g3 = { groupName: "Micro-Trottoirs (Opinions)", range: "Q13–Q18", level: "B1/B2", correct: 0, total: 0, pct: 0 };
+      const g4 = { groupName: "Reportages & Monologues", range: "Q19–Q28", level: "B2", correct: 0, total: 0, pct: 0 };
+      const g5 = { groupName: "Grand Entretien (Débat)", range: "Q29–Q34", level: "B2/C1", correct: 0, total: 0, pct: 0 };
+      const g6 = { groupName: "Actes de Parole & Nuances", range: "Q35–Q40", level: "C1/C2", correct: 0, total: 0, pct: 0 };
+
+      paper.sections.forEach((sec) => {
+        if (sec.type === "COMPREHENSION_ORALE" && sec.questions) {
+          sec.questions.forEach((q) => {
+            const qNum = q.questionNumber;
+            const isCorrect = selectedAnswers[q.id] === q.correctIndex;
+            let targetGroup = g1;
+            if (qNum <= 4) targetGroup = g1;
+            else if (qNum <= 12) targetGroup = g2;
+            else if (qNum <= 18) targetGroup = g3;
+            else if (qNum <= 28) targetGroup = g4;
+            else if (qNum <= 34) targetGroup = g5;
+            else targetGroup = g6;
+
+            targetGroup.total += 1;
+            if (isCorrect) targetGroup.correct += 1;
+          });
+        }
+      });
+
+      [g1, g2, g3, g4, g5, g6].forEach((g) => {
+        g.pct = g.total > 0 ? Math.round((g.correct / g.total) * 100) : 0;
+      });
+
+      tefTypologyBreakdown = [g1, g2, g3, g4, g5, g6];
+    }
+
+    const listeningNCLC = isTefPaper && tefListeningResult
+      ? {
+          nclcLevel: tefListeningResult.nclcLevel,
+          cefrEquivalent: tefListeningResult.cefrEquivalent,
+          expressEntryPoints: tefListeningResult.expressEntryPoints,
+          statusMessage: `Score CCI: ${tefListeningResult.cciScore}/699`,
+          isNCLC7TargetReached: tefListeningResult.isNCLC7TargetReached
+        }
+      : calculateNCLCScore(listeningPct, paper.type, "COMPREHENSION_ORALE");
     const readingNCLC = calculateNCLCScore(readingPct, paper.type, "COMPREHENSION_ECRITE");
 
     const writingSec = paper.sections.find((s) => s.type === "EXPRESSION_ECRITE");
@@ -3563,7 +3628,7 @@ export function AuthenticCBTExamPage() {
     const writingPoints = (writingWeightedScore > 0 && writingNCLC.nclcLevel > 0) ? getModulePoints(writingNCLC.nclcLevel) : 0;
     const speakingPoints = (speakingWeightedScore > 0 && speakingNCLC.nclcLevel > 0) ? getModulePoints(speakingNCLC.nclcLevel) : 0;
 
-    const cumulativeCRSPoints = listeningPoints + readingPoints + writingPoints + speakingPoints;
+    let cumulativeCRSPoints = listeningPoints + readingPoints + writingPoints + speakingPoints;
 
     // Collect all valid NCLC levels from attempted skills (IRCC lowest-skill benchmark rule)
     const attemptedNCLCs: number[] = [];
@@ -3620,6 +3685,14 @@ export function AuthenticCBTExamPage() {
           ? `🎉 Excellent! Attempted skill modules achieve overall benchmark of CLB / NCLC ${finalNCLCLevel} (${finalCEFREquivalent}) — Total +${cumulativeCRSPoints} Express Entry CRS Points Earned!`
           : `💪 CLB / NCLC ${finalNCLCLevel} (${finalCEFREquivalent}) recorded as overall benchmark across ${attemptedNCLCs.length} attempted modules (+${cumulativeCRSPoints} Total CRS Points). Aim for NCLC 7+ (B2) in all sections.`;
       }
+
+      if (isTefPaper && tefListeningResult) {
+        finalNCLCLevel = tefListeningResult.nclcLevel;
+        finalCEFREquivalent = tefListeningResult.cefrEquivalent;
+        isTargetReached = tefListeningResult.isNCLC7TargetReached;
+        statusMsg = tefListeningResult.performanceFeedbackFr;
+        cumulativeCRSPoints = tefListeningResult.expressEntryPoints;
+      }
     }
 
     return {
@@ -3630,7 +3703,7 @@ export function AuthenticCBTExamPage() {
       listeningTotal,
       listeningPct,
       listeningNCLC,
-      listeningPoints,
+      listeningPoints: (isTefPaper && tefListeningResult) ? tefListeningResult.expressEntryPoints : listeningPoints,
       readingCorrect,
       readingTotal,
       readingPct,
@@ -3652,7 +3725,9 @@ export function AuthenticCBTExamPage() {
       cefrEquivalent: finalCEFREquivalent,
       expressEntryPoints: cumulativeCRSPoints,
       statusMessage: statusMsg,
-      isNCLC7TargetReached: isTargetReached
+      isNCLC7TargetReached: isTargetReached,
+      tefListeningResult,
+      tefTypologyBreakdown
     };
   };
 
@@ -3719,27 +3794,56 @@ export function AuthenticCBTExamPage() {
             )}
           </div>
 
-          {/* Submit Button */}
-          <button
-            disabled={isSubmittingExam}
-            onClick={handleFinishTest}
-            className="px-3 sm:px-4 py-1 sm:py-1.5 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow shrink-0 cursor-pointer disabled:opacity-50 transition-all active:scale-95"
-          >
-            {isSubmittingExam ? (
-              <>
-                <Sparkles className="w-3.5 h-3.5 animate-spin" />
-                <span>Evaluating...</span>
-              </>
-            ) : (
-              <>
-                <Send className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Finish Test</span>
-                <span className="sm:hidden">Finish</span>
-              </>
-            )}
-          </button>
+          {/* Submit / Scorecard Button */}
+          {isSubmitted ? (
+            <button
+              onClick={() => setShowScorecardModal(true)}
+              className="px-3 sm:px-4 py-1 sm:py-1.5 rounded bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold flex items-center gap-1.5 shadow shrink-0 cursor-pointer transition-all active:scale-95"
+            >
+              <Trophy className="w-3.5 h-3.5 text-amber-300" />
+              <span className="hidden sm:inline">Scorecard</span>
+              <span className="sm:hidden">Score</span>
+              <span>📊</span>
+            </button>
+          ) : (
+            <button
+              disabled={isSubmittingExam}
+              onClick={handleFinishTest}
+              className="px-3 sm:px-4 py-1 sm:py-1.5 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow shrink-0 cursor-pointer disabled:opacity-50 transition-all active:scale-95"
+            >
+              {isSubmittingExam ? (
+                <>
+                  <Sparkles className="w-3.5 h-3.5 animate-spin" />
+                  <span>Evaluating...</span>
+                </>
+              ) : (
+                <>
+                  <Send className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Finish Test</span>
+                  <span className="sm:hidden">Finish</span>
+                </>
+              )}
+            </button>
+          )}
         </div>
       </header>
+
+      {/* ─── REVIEW MODE IMMUTABLE BANNER ─── */}
+      {isSubmitted && (
+        <div className="bg-purple-900 text-white px-3 sm:px-4 py-2 text-xs font-semibold flex flex-wrap items-center justify-between gap-2 shadow-md border-b border-purple-800 shrink-0">
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 rounded bg-purple-700 font-bold uppercase text-[10px] shrink-0">Lecture Seule</span>
+            <span>🔒 Mode Consultation des Réponses — Vos réponses sont figées et validées.</span>
+          </div>
+          <button
+            onClick={() => setShowScorecardModal(true)}
+            className="px-3 py-1 rounded-md bg-white text-purple-900 hover:bg-purple-100 font-bold text-xs shadow flex items-center gap-1 cursor-pointer transition-all active:scale-95 shrink-0"
+          >
+            <Trophy className="w-3.5 h-3.5 text-amber-500" />
+            <span>Revoir le Scorecard 📊</span>
+          </button>
+        </div>
+      )}
 
       {/* ─── ADMIN FREE-ROAM CONTROLLER BAR (Visible strictly for Admin Accounts) ─── */}
       {isAdmin && (
@@ -3980,7 +4084,7 @@ export function AuthenticCBTExamPage() {
                 qTimeLeft={qTimeLeft}
                 selectedOption={selectedAnswers[currentQ.id]}
                 isFlagged={!!flaggedQuestions[currentQ.id]}
-                isChecked={!!checkedMap[currentQ.id]}
+                isChecked={isSubmitted || !!checkedMap[currentQ.id]}
                 onSelectOption={(idx) => handleSelectOption(currentQ.id, idx)}
                 onToggleFlag={() => toggleFlag(currentQ.id)}
                 onPlayAudio={() => handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || getListeningSpeakingRate(currentQ.questionNumber))}
@@ -3994,7 +4098,11 @@ export function AuthenticCBTExamPage() {
                     setActiveSectionIdx((prev) => prev + 1);
                     setCurrentQuestionIdx(0);
                   } else {
-                    handleFinishTest();
+                    if (isSubmitted) {
+                      setShowScorecardModal(true);
+                    } else {
+                      handleFinishTest();
+                    }
                   }
                 }}
                 isAdmin={isAdmin}
@@ -4019,7 +4127,7 @@ export function AuthenticCBTExamPage() {
                 qTimeLeft={qTimeLeft}
                 selectedOption={selectedAnswers[currentQ.id]}
                 isFlagged={!!flaggedQuestions[currentQ.id]}
-                isChecked={!!checkedMap[currentQ.id]}
+                isChecked={isSubmitted || !!checkedMap[currentQ.id]}
                 onSelectOption={(idx) => handleSelectOption(currentQ.id, idx)}
                 onToggleFlag={() => toggleFlag(currentQ.id)}
                 onPlayAudio={() => handlePlayAudio(currentQ.transcript || currentQ.text, "fr-FR", (currentQ as any).speakingRate || getListeningSpeakingRate(currentQ.questionNumber))}
@@ -4033,7 +4141,11 @@ export function AuthenticCBTExamPage() {
                     setActiveSectionIdx((prev) => prev + 1);
                     setCurrentQuestionIdx(0);
                   } else {
-                    handleFinishTest();
+                    if (isSubmitted) {
+                      setShowScorecardModal(true);
+                    } else {
+                      handleFinishTest();
+                    }
                   }
                 }}
                 isAdmin={isAdmin}
@@ -5144,8 +5256,9 @@ export function AuthenticCBTExamPage() {
                       <button
                         key={char}
                         type="button"
+                        disabled={isSubmitted}
                         onClick={() => handleInsertAccent(task.id, char)}
-                        className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-pink-950/60 border border-slate-300 dark:border-slate-700 hover:border-pink-400 dark:hover:border-pink-600 text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 hover:text-pink-600 dark:hover:text-pink-400 transition-all shadow-xs active:scale-95 cursor-pointer font-serif"
+                        className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-pink-950/60 border border-slate-300 dark:border-slate-700 hover:border-pink-400 dark:hover:border-pink-600 text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 hover:text-pink-600 dark:hover:text-pink-400 transition-all shadow-xs active:scale-95 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed font-serif"
                         title={`Insérer ${char} à la position du curseur`}
                       >
                         {char}
@@ -5157,10 +5270,11 @@ export function AuthenticCBTExamPage() {
                     id={`writing-textarea-${task.id}`}
                     rows={9}
                     value={textVal}
+                    disabled={isSubmitted}
                     onChange={(e) => handleWritingChange(task.id, e.target.value)}
-                    placeholder="Saisissez votre texte officiel ici..."
+                    placeholder={isSubmitted ? "Épreuve terminée — Réponse enregistrée en lecture seule." : "Saisissez votre texte officiel ici..."}
                     className={`w-full p-3.5 sm:p-4 rounded-xl border text-sm font-sans leading-relaxed ${cbtDark ? "bg-[#090D16] border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-950"
-                      } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                      } focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-80 disabled:cursor-not-allowed`}
                   />
 
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-semibold">
@@ -6536,7 +6650,7 @@ export function AuthenticCBTExamPage() {
 
       {/* ─── SUBMISSION & DIAGNOSTIC RESULT MODAL ─── */}
       <AnimatePresence>
-        {isSubmitted && !isSubmittingExam && (
+        {showScorecardModal && !isSubmittingExam && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -6560,6 +6674,13 @@ export function AuthenticCBTExamPage() {
                   </span>
                   {(() => {
                     const r = calculateResults();
+                    if (paper?.type === "TEF_CANADA") {
+                      return (
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-extrabold bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-200">
+                          TEF Canada CBT • 40 Questions
+                        </span>
+                      );
+                    }
                     if (r.attemptedCount === 1) {
                       return (
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-200">
@@ -6581,14 +6702,46 @@ export function AuthenticCBTExamPage() {
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
                   {(() => {
                     const r = calculateResults();
-                    if (r.nclcLevel === 0) return "Unrated Session (0 Items Attempted)";
+                    if (r.nclcLevel === 0) return "Session Non Notée (0 Réponse)";
+                    if (paper?.type === "TEF_CANADA" && r.tefListeningResult) {
+                      return `Score Officiel TEF : ${r.tefListeningResult.cciScore} / 699 pts`;
+                    }
                     return `Overall Benchmark: CLB / NCLC ${r.nclcLevel} (${r.cefrEquivalent})`;
                   })()}
                 </h2>
 
+                {paper?.type === "TEF_CANADA" && (() => {
+                  const r = calculateResults();
+                  const tef = r.tefListeningResult;
+                  if (!tef) return null;
+                  return (
+                    <div className="flex flex-wrap items-center justify-center gap-2 pt-1 pb-1">
+                      <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-blue-600 text-white shadow-sm">
+                        Niveau NCLC {tef.nclcLevel} ({tef.cefrEquivalent})
+                      </span>
+                      <span className="px-3 py-1 rounded-full text-xs font-mono font-extrabold bg-emerald-600 text-white shadow-sm">
+                        +{tef.expressEntryPoints} Points CRS
+                      </span>
+                      {tef.isSafetyZoneReached && (
+                        <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-purple-600 text-white shadow-sm flex items-center gap-1">
+                          🛡️ Zone de Confort Validée (434+)
+                        </span>
+                      )}
+                    </div>
+                  );
+                })()}
+
                 <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
                   {(() => {
                     const r = calculateResults();
+                    if (paper?.type === "TEF_CANADA" && r.tefListeningResult) {
+                      const tef = r.tefListeningResult;
+                      return (
+                        <>
+                          Compréhension Orale : <strong>{r.listeningCorrect} / 40</strong> ({r.listeningPct}% exactitude) • Barème CCI Paris {tef.legacyEquivalent ? `• Ancien barème : ${tef.legacyEquivalent}` : ""}
+                        </>
+                      );
+                    }
                     if (r.attemptedCount === 1) {
                       if (r.writingAttemptedCount > 0) {
                         const scaledWriting = Math.round((r.writingAvg / 20) * 450);
@@ -6641,16 +6794,29 @@ export function AuthenticCBTExamPage() {
                       {/* Listening Scorecard */}
                       <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 space-y-1">
                         <div className="flex items-center justify-between text-[11px] font-bold text-purple-900 dark:text-purple-300">
-                          <span className="flex items-center gap-1">🎧 Listening (CO)</span>
+                          <span className="flex items-center gap-1">🎧 Compréhension Orale (CO)</span>
                           <span className="px-2 py-0.5 rounded bg-purple-600 text-white font-mono text-[10px]">
-                            {res.listeningNCLC.nclcLevel === 0 ? "Unrated" : `CLB ${res.listeningNCLC.nclcLevel}`}
+                            {paper?.type === "TEF_CANADA" && res.tefListeningResult
+                              ? (res.tefListeningResult.nclcLevel === 0 ? "Niveau 0" : `NCLC ${res.tefListeningResult.nclcLevel} (${res.tefListeningResult.cefrLevel})`)
+                              : (res.listeningNCLC.nclcLevel === 0 ? "Unrated" : `CLB ${res.listeningNCLC.nclcLevel}`)}
                           </span>
                         </div>
                         <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
-                          {res.listeningNCLC.nclcLevel === 0 ? "Unattempted (0/39)" : `${res.listeningPct}% Correct (${res.listeningCorrect}/${res.listeningTotal})`}
+                          {paper?.type === "TEF_CANADA" && res.tefListeningResult
+                            ? `${res.tefListeningResult.cciScore} / 699 pts (${res.listeningCorrect}/40 • ${res.listeningPct}%)`
+                            : (res.listeningNCLC.nclcLevel === 0 ? "Unattempted (0/39)" : `${res.listeningPct}% Correct (${res.listeningCorrect}/${res.listeningTotal})`)}
                         </p>
-                        <p className="text-[10px] font-semibold text-purple-700 dark:text-purple-300 pt-0.5">
-                          {res.listeningPoints > 0 ? `+${res.listeningPoints} CRS Points` : "0 CRS Points"}
+                        <p className="text-[10px] font-semibold text-purple-700 dark:text-purple-300 pt-0.5 flex items-center justify-between">
+                          <span>
+                            {paper?.type === "TEF_CANADA" && res.tefListeningResult
+                              ? (res.tefListeningResult.crsPoints > 0 ? `+${res.tefListeningResult.crsPoints} CRS Points` : "0 CRS Points")
+                              : (res.listeningPoints > 0 ? `+${res.listeningPoints} CRS Points` : "0 CRS Points")}
+                          </span>
+                          {paper?.type === "TEF_CANADA" && res.tefListeningResult?.isSafeComfortZone && (
+                            <span className="text-[9.5px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/70 px-1.5 py-0.5 rounded">
+                              ✓ Marge de sécurité
+                            </span>
+                          )}
                         </p>
                       </div>
 
@@ -6753,6 +6919,71 @@ export function AuthenticCBTExamPage() {
                       </p>
                     </div>
 
+                    {/* 📊 TEF CANADA 6-TYPOLOGY CO COGNITIVE DIAGNOSTIC BREAKDOWN */}
+                    {paper?.type === "TEF_CANADA" && res.tefTypologyBreakdown && res.tefTypologyBreakdown.length > 0 && (
+                      <div className="p-4 rounded-xl border border-indigo-300 dark:border-indigo-800 bg-indigo-50/70 dark:bg-indigo-950/40 text-xs text-left space-y-3 font-sans">
+                        <div className="flex items-center justify-between border-b border-indigo-200 dark:border-indigo-800 pb-2">
+                          <span className="font-bold text-indigo-900 dark:text-indigo-300 flex items-center gap-1.5 uppercase text-[11px]">
+                            <BarChart3 className="w-4 h-4 text-indigo-600" />
+                            <span>Ventilation par Typologie TEF (6 Épreuves CO)</span>
+                          </span>
+                          <span className="px-2 py-0.5 rounded bg-indigo-600 text-white font-mono font-bold text-[10px]">
+                            CCI PARIS DIAGNOSTIC
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                          {res.tefTypologyBreakdown.map((t) => {
+                            const isStrong = t.pct >= 70;
+                            const isMedium = t.pct >= 50 && t.pct < 70;
+                            return (
+                              <div
+                                key={t.range}
+                                className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-indigo-100 dark:border-indigo-900/60 shadow-xs space-y-1.5"
+                              >
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[11px] font-bold text-slate-900 dark:text-slate-100 truncate max-w-[170px]" title={t.groupName}>
+                                    {t.groupName}
+                                  </span>
+                                  <span className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400">
+                                    {t.range} • {t.level}
+                                  </span>
+                                </div>
+                                <div className="flex items-center justify-between text-[11px]">
+                                  <span className="font-semibold text-slate-700 dark:text-slate-300">
+                                    {t.correct} / {t.total} réussies
+                                  </span>
+                                  <span
+                                    className={`px-1.5 py-0.5 rounded font-mono font-bold text-[10px] ${
+                                      isStrong
+                                        ? "bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300"
+                                        : isMedium
+                                        ? "bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300"
+                                        : "bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300"
+                                    }`}
+                                  >
+                                    {t.pct}%
+                                  </span>
+                                </div>
+                                <div className="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                                  <div
+                                    className={`h-full rounded-full transition-all duration-500 ${
+                                      isStrong
+                                        ? "bg-emerald-500"
+                                        : isMedium
+                                        ? "bg-amber-500"
+                                        : "bg-rose-500"
+                                    }`}
+                                    style={{ width: `${t.pct}%` }}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
                     {/* 🎯 POST-EXAM DIAGNOSTIC WEAKNESS & GUIDANCE BREAKDOWN CARD */}
                     <div className="p-4 rounded-xl border border-purple-300 dark:border-purple-800 bg-purple-50/70 dark:bg-purple-950/40 text-xs text-left space-y-3 font-sans">
                       <div className="flex items-center justify-between border-b border-purple-200 dark:border-purple-800 pb-2">
@@ -6841,36 +7072,92 @@ export function AuthenticCBTExamPage() {
 
               <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
                 <button
+                  type="button"
                   onClick={() => {
-                    setIsSubmitted(false);
+                    setShowScorecardModal(false);
                     setShowReadingHint(true);
                   }}
                   className="w-full sm:w-1/3 py-3.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2 cursor-pointer transition-all"
                 >
                   <Search className="w-4 h-4 text-white" />
-                  <span>Review Answers</span>
+                  <span>Consulter les réponses 🔍</span>
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => {
-                    handleRestartSessionClean();
-                    setIsSubmitted(false);
+                    setShowRetakeConfirmModal(true);
                   }}
                   className="w-full sm:w-1/3 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs shadow flex items-center justify-center gap-2 cursor-pointer transition-all"
                 >
                   <RotateCcw className="w-4 h-4 text-emerald-400" />
-                  <span>Retake Test</span>
+                  <span>Recommencer le test 🔄</span>
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => {
+                    handleStopAudio();
                     try { localStorage.removeItem(sessionKey); } catch { }
                     navigate({ to: "/exam" });
                   }}
                   className="w-full sm:w-1/3 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2 cursor-pointer transition-all"
                 >
                   <Home className="w-4 h-4 text-white" />
-                  <span>Exam Hub</span>
+                  <span>Hub Examens 🍁</span>
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ─── RETAKE CONFIRMATION MODAL ─── */}
+      <AnimatePresence>
+        {showRetakeConfirmModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 text-center space-y-4"
+            >
+              <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto">
+                <AlertTriangle className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                  Recommencer cette épreuve ?
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Toutes vos réponses sélectionnées, notes et résultats seront effacés. Le test sera réinitialisé à la Question 1 dans des conditions vierges.
+                </p>
+              </div>
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowRetakeConfirmModal(false)}
+                  className="w-1/2 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs transition cursor-pointer"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleRestartSessionClean();
+                    setIsSubmitted(false);
+                    setShowRetakeConfirmModal(false);
+                    setShowScorecardModal(false);
+                  }}
+                  className="w-1/2 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow transition cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Confirmer & Repartir</span>
                 </button>
               </div>
             </motion.div>
