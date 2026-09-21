@@ -92,15 +92,15 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
     "answerTimeSeconds": 15,
     "speakerCount": 2,
     "speakers": [
-      "Client",
-      "Boulangère"
+      "Cliente",
+      "Boulanger"
     ],
     "speakerPersonas": [
-      { "role": "Client", "gender": "male", "voiceId": "fr-FR-HenriNeural" },
-      { "role": "Boulangère", "gender": "female", "voiceId": "fr-FR-DeniseNeural" }
+      { "role": "Cliente", "gender": "female", "voiceId": "fr-FR-DeniseNeural" },
+      { "role": "Boulanger", "gender": "male", "voiceId": "fr-FR-HenriNeural" }
     ],
-    "audioFr": "Client : Bonjour madame, je vais prendre deux baguettes bien cuites et trois croissants au beurre, s'il vous plaît.\nBoulangère : Très bien monsieur. Et avec ceci, ce sera tout pour aujourd'hui ?",
-    "audioEn": "Customer: Hello ma'am, I'll take two well-done baguettes and three butter croissants, please.\nBaker: Very good sir. And along with this, will that be all for today?",
+    "audioFr": "Cliente : Bonjour monsieur, je vais prendre deux baguettes bien cuites et trois croissants au beurre, s'il vous plaît.\nBoulanger : Très bien madame. Et avec ceci, ce sera tout pour aujourd'hui ?",
+    "audioEn": "Customer: Hello sir, I'll take two well-done baguettes and three butter croissants, please.\nBaker: Very good ma'am. And along with this, will that be all for today?",
     "questionFr": "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
     "questionEn": "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     "optionsFr": [
