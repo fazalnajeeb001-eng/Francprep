@@ -118,8 +118,8 @@ function parseDialogueSegments(
       const lowerTag = speakerTag.toLowerCase();
       const isFemaleKeyword = [
         'femme', 'locutrice', 'voyageuse', 'cliente', 'patiente', 'passagère', 'passagere', 
-        'boulangère', 'boulangere', 'secrétaire', 'secretaire', 'hôtesse', 'hotesse', 
-        'auditrice', 'annonceuse', 'animatrice', 'directrice', 'médiatrice', 'mediatrice',
+        'boulangère', 'boulangere', 'agente', 'secrétaire', 'secretaire', 'hôtesse', 'hotesse', 
+        'auditrice', 'annonceuse', 'animatrice', 'directrice', 'médiatrice', 'mediatrice', 
         'chroniqueuse', 'négociatrice', 'negociatrice', 'soraya', 'élodie', 'elodie', 'martine',
         'madame', 'fille', 'fillette', 'retraitée', 'retraitee', 'étudiante', 'etudiante'
       ].some(kw => lowerTag.includes(kw));
@@ -132,7 +132,7 @@ function parseDialogueSegments(
         'diplomate', 'fonctionnaire', 'collègue', 'collegue', 'expert', 'météorologue', 'meteorologue'
       ].some(kw => lowerTag.includes(kw));
 
-      const isMale: boolean = isMaleKeyword ? true : (isFemaleKeyword ? false : !lastAssignedMale);
+      const isMale: boolean = isFemaleKeyword ? false : (isMaleKeyword ? true : !lastAssignedMale);
       lastAssignedMale = isMale;
 
       const isAnnouncerFemale = lowerTag.includes('annonceuse');

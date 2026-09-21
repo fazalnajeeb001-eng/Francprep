@@ -96,7 +96,7 @@ export function parseEdgeDialogueSegments(
 
       const isFemaleKeyword = [
         'femme', 'locutrice', 'voyageuse', 'cliente', 'patiente', 'passagère', 'passagere', 
-        'boulangère', 'boulangere', 'secrétaire', 'secretaire', 'hôtesse', 'hotesse', 
+        'boulangère', 'boulangere', 'agente', 'secrétaire', 'secretaire', 'hôtesse', 'hotesse', 
         'auditrice', 'annonceuse', 'animatrice', 'directrice', 'médiatrice', 'mediatrice',
         'chroniqueuse', 'négociatrice', 'negociatrice', 'soraya', 'élodie', 'elodie', 'martine',
         'chantal', 'madame', 'fille', 'fillette', 'retraitée', 'retraitee', 'étudiante', 'etudiante'
@@ -110,12 +110,15 @@ export function parseEdgeDialogueSegments(
         'diplomate', 'fonctionnaire', 'collègue', 'collegue', 'expert', 'météorologue', 'meteorologue'
       ].some(kw => lowerTag.includes(kw));
 
-      const isMale: boolean = isMaleKeyword ? true : (isFemaleKeyword ? false : !lastAssignedMale);
+      // Female keywords MUST be checked first so feminine nouns ending in 'e' (agente, cliente, patiente) take precedence over masculine bases (agent, client, patient)
+      const isMale: boolean = isFemaleKeyword ? false : (isMaleKeyword ? true : !lastAssignedMale);
       lastAssignedMale = isMale;
 
       let voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleInterlocutor1;
 
-      if (isExplicitChild) {
+      if (customSpeakerPersonas && (customSpeakerPersonas[speakerTag] || customSpeakerPersonas[lowerTag])) {
+        voiceId = customSpeakerPersonas[speakerTag] || customSpeakerPersonas[lowerTag];
+      } else if (isExplicitChild) {
         // Child Persona (actual children/kids)
         voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleChild;
       } else if (isYoungStudent) {
@@ -136,9 +139,15 @@ export function parseEdgeDialogueSegments(
       } else if (lowerTag.includes('mécanicien') || lowerTag.includes('mecanicien') || lowerTag.includes('chef d\'atelier')) {
         // Bicycle workshop / mechanic
         voiceId = EDGE_FRENCH_VOICE_ROSTER.maleInterlocutor2; // fr-FR-RemyMultilingualNeural
+      } else if (lowerTag.includes('agente') || (lowerTag.includes('agent') && !isMale)) {
+        // Female station agent / counter agent
+        voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.femaleCanadian : EDGE_FRENCH_VOICE_ROSTER.femaleAnnouncer;
       } else if (lowerTag.includes('voyageuse') && isCanadianText) {
         // Canadian Traveler (asking for train to Quebec)
         voiceId = EDGE_FRENCH_VOICE_ROSTER.femaleCanadian; // fr-CA-SylvieNeural
+      } else if (lowerTag.includes('voyageur') && isCanadianText) {
+        // Canadian Traveler (male)
+        voiceId = EDGE_FRENCH_VOICE_ROSTER.maleCanadian; // fr-CA-JeanNeural
       } else if (lowerTag.includes('annonceuse') || (isPublicStoreAnnouncement && !isMale)) {
         voiceId = isCanadianText ? EDGE_FRENCH_VOICE_ROSTER.femaleCanadian : EDGE_FRENCH_VOICE_ROSTER.femaleAnnouncer;
       } else if (lowerTag.includes('annonceur') || (isPublicStoreAnnouncement && isMale)) {
