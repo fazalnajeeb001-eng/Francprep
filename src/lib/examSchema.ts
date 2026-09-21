@@ -8023,6 +8023,7 @@ function getTefListeningQuestions(paperNum: number, isPractice: boolean, fallbac
         optionsEnglish: [...item.optionsEn],
         mainImage: item.mainImage,
         optionImages: item.optionImages ? [...item.optionImages] : undefined,
+        speakerPersonas: item.speakerPersonas,
         correctIndex: item.correctIndex,
         explanation: g?.detailedExplanation || "",
         detailedExplanationEn: g?.detailedExplanationEn || "",

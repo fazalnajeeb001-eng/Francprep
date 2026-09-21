@@ -89,22 +89,26 @@ export const TefListeningTextViewport: React.FC<TefListeningTextViewportProps> =
 
   const guidance = TEF_PAPER_1_LISTENING_GUIDANCE[currentQ.id];
 
-  // Derive official e-TEF section metadata
+  // Derive official e-TEF section metadata matching the 6 master typologies
   const qNum = currentQ.questionNumber;
-  let sectionLabel = "Section B (Questions 5 à 14)";
-  let sectionTitle = "Messages téléphoniques et annonces publiques";
+  let sectionLabel = "Section B (Questions 5 à 12)";
+  let sectionTitle = "Messages téléphoniques et annonces publiques (A2-B1)";
   let consigneText = "Vous allez entendre une annonce publique ou un message téléphonique. Lisez la question et choisissez la réponse exacte.";
 
-  if (qNum >= 15 && qNum <= 20) {
-    sectionLabel = "Section C (Questions 15 à 20)";
-    sectionTitle = "Micro-trottoirs et sondages d'opinion";
+  if (qNum >= 13 && qNum <= 18) {
+    sectionLabel = "Section C (Questions 13 à 18)";
+    sectionTitle = "Micro-trottoirs et sondages d'opinion (B1-B2)";
     consigneText = "Vous allez entendre 6 personnes donner leur avis sur un sujet d'actualité. Identifiez l'opinion de chaque intervenant.";
-  } else if (qNum >= 21 && qNum <= 37) {
-    sectionLabel = "Section D (Questions 21 à 37)";
-    sectionTitle = "Reportages d'actualité et débats radiophoniques";
-    consigneText = "Vous allez entendre un extrait d'émission radiophonique. Lisez attentivement la question et cochez la bonne réponse.";
-  } else if (qNum >= 38 && qNum <= 40) {
-    sectionLabel = "Section E / Groupe 7 (Questions 38 à 40)";
+  } else if (qNum >= 19 && qNum <= 28) {
+    sectionLabel = "Section D (Questions 19 à 28)";
+    sectionTitle = "Reportages d'actualité et monologues (Niveau B2)";
+    consigneText = "Vous allez entendre un extrait d'émission ou un reportage. Lisez attentivement la question et cochez la bonne réponse.";
+  } else if (qNum >= 29 && qNum <= 34) {
+    sectionLabel = "Section D (Questions 29 à 34)";
+    sectionTitle = "Grand entretien et débats spécialisés (B2-C1)";
+    consigneText = "Vous allez entendre un grand entretien radiophonique. Suivez l'argumentation des intervenants et répondez aux questions.";
+  } else if (qNum >= 35 && qNum <= 40) {
+    sectionLabel = "Section E (Questions 35 à 40)";
     sectionTitle = "Actes de parole et intentions implicites (Niveau C1-C2)";
     consigneText = "Vous allez entendre une déclaration brève. Analysez le sous-entendu, la nuance modale ou l'acte de parole accompli par le locuteur.";
   }

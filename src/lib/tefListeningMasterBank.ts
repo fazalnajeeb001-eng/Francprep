@@ -51,6 +51,10 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
       "Voyageuse",
       "Agent de gare"
     ],
+    "speakerPersonas": [
+      { "role": "Voyageuse", "gender": "female", "voiceId": "fr-CA-SylvieNeural" },
+      { "role": "Agent de gare", "gender": "male", "voiceId": "fr-FR-HenriNeural" }
+    ],
     "audioFr": "Voyageuse : Bonjour monsieur, excusez-moi, est-ce que le train pour Québec part bien de la voie 4 ?\nAgent : Bonjour madame. Non, attention, il y a eu un changement d'affichage. Il partira de la voie 7 dans dix minutes.",
     "audioEn": "Traveler: Hello sir, excuse me, is the train for Quebec City really departing from platform 4?\nStation Agent: Hello ma'am. No, watch out, there was a display change. It will depart from platform 7 in ten minutes.",
     "questionFr": "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
@@ -90,6 +94,10 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
     "speakers": [
       "Client",
       "Boulangère"
+    ],
+    "speakerPersonas": [
+      { "role": "Client", "gender": "male", "voiceId": "fr-FR-HenriNeural" },
+      { "role": "Boulangère", "gender": "female", "voiceId": "fr-FR-DeniseNeural" }
     ],
     "audioFr": "Client : Bonjour madame, je vais prendre deux baguettes bien cuites et trois croissants au beurre, s'il vous plaît.\nBoulangère : Très bien monsieur. Et avec ceci, ce sera tout pour aujourd'hui ?",
     "audioEn": "Customer: Hello ma'am, I'll take two well-done baguettes and three butter croissants, please.\nBaker: Very good sir. And along with this, will that be all for today?",
@@ -131,6 +139,10 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
       "Patient",
       "Secrétaire médicale"
     ],
+    "speakerPersonas": [
+      { "role": "Patient", "gender": "male", "voiceId": "fr-FR-HenriNeural" },
+      { "role": "Secrétaire médicale", "gender": "female", "voiceId": "fr-FR-VivienneMultilingualNeural" }
+    ],
     "audioFr": "Patient : Bonjour, j'ai rendez-vous avec le docteur Laurent à 14 heures 30 pour mon rappel de vaccin.\nSecrétaire : Bonjour. Veuillez patienter dans la salle d'attente à droite, le médecin va venir vous chercher.",
     "audioEn": "Patient: Hello, I have an appointment with Dr. Laurent at 2:30 PM for my booster vaccine.\nSecretary: Hello. Please wait in the waiting room to the right, the doctor will come to fetch you shortly.",
     "questionFr": "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
@@ -170,6 +182,10 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
     "speakers": [
       "Cycliste",
       "Mécanicien vélo"
+    ],
+    "speakerPersonas": [
+      { "role": "Cycliste", "gender": "male", "voiceId": "fr-FR-HenriNeural" },
+      { "role": "Mécanicien vélo", "gender": "male", "voiceId": "fr-FR-RemyMultilingualNeural" }
     ],
     "audioFr": "Cycliste : Bonjour, le câble de mon frein arrière s'est détendu ce matin en venant au travail. Vous pourriez y jeter un coup d'œil ?\nMécanicien : Laissez-moi votre bicyclette pour l'après-midi, je remplace le câble et vérifie la tension des patins.",
     "audioEn": "Cyclist: Hello, the cable on my rear brake became loose this morning while biking to work. Could you take a look at it?\nMechanic: Leave your bicycle with me for the afternoon, I will replace the cable and verify the brake pad tension.",

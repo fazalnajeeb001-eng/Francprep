@@ -46,14 +46,17 @@ interface EdgeDialogueSegment {
  */
 export function parseEdgeDialogueSegments(
   text: string,
-  defaultGender: 'female' | 'male' = 'female'
+  defaultGender: 'female' | 'male' = 'female',
+  customSpeakerPersonas?: Record<string, string>
 ): EdgeDialogueSegment[] {
   const clean = text.trim();
   const segments: EdgeDialogueSegment[] = [];
 
   // Universal speaker matching: captures any "Speaker Name :" at start of line or string
   const speakerRegex = /(?:^|\n)\s*([A-ZÀ-ÖØ-ß][a-zA-ZÀ-ÿ0-9\s.'’\(\)\/\-–—]{1,45})\s*[:—–]\s*/gm;
-  const matches = [...clean.matchAll(speakerRegex)];
+  const rawMatches = [...clean.matchAll(speakerRegex)];
+  // Filter out multiple-choice options (e.g. "A :", "B :", "Proposition A :", "... A :") so options are NEVER treated as dialogue actors
+  const matches = rawMatches.filter(m => !/^(?:\.{0,3}\s*)?(?:Proposition\s+)?[A-D]$/i.test(m[1].trim()));
 
   if (matches.length === 0) {
     const isMale = defaultGender === 'male';
@@ -358,9 +361,10 @@ export async function generateEdgeNeuralAudio(
   // Use explicit targetVoiceId if provided, otherwise resolve authentic single-speaker persona
   const assignedVoiceId = targetVoiceId || resolveSingleSpeakerEdgeVoice(text, defaultGender);
 
-  // Check if text explicitly contains multi-speaker dialogue lines
-  const hasMultipleSpeakerTags = /(?:^|\n)\s*([A-ZÀ-ÖØ-ß][a-zA-ZÀ-ÿ0-9\s.'’\(\)\/\-–—]{1,45})\s*[:—–]/m.test(text) &&
-    (text.includes('\n') || (text.match(/[:—–]/g) || []).length >= 2);
+  // Check if text explicitly contains multi-speaker dialogue lines (excluding multiple-choice option markers like A:, B:, Proposition A:)
+  const nonOptionText = text.replace(/(?:^|\n)\s*(?:\.{0,3}\s*)?(?:Proposition\s+)?[A-D]\s*[:—–][^\n]*/gi, '');
+  const hasMultipleSpeakerTags = /(?:^|\n)\s*([A-ZÀ-ÖØ-ß][a-zA-ZÀ-ÿ0-9\s.'’\(\)\/\-–—]{1,45})\s*[:—–]/m.test(nonOptionText) &&
+    (nonOptionText.includes('\n') || (nonOptionText.match(/[:—–]/g) || []).length >= 2);
 
   if (isSpeakingTask || targetVoiceId || !hasMultipleSpeakerTags) {
     // If monologue contains multiple sentences, split and stitch for natural human breathing intervals

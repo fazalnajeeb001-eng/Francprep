@@ -2405,7 +2405,8 @@ export function AuthenticCBTExamPage() {
       const qNum = currentQ.questionNumber;
       const fullText = currentQ.transcript || currentQ.text;
       const gender = (fullText.toLowerCase().includes("annonceur:") || qNum % 2 === 0) ? "male" : "female";
-      const rate = (currentQ as any).speakingRate || getListeningSpeakingRate(qNum);
+      const isTefCheck = paper?.type === "TEF_CANADA";
+      const rate = isTefCheck ? ((currentQ as any).speakingRate || getListeningSpeakingRate(qNum)) : 1.0;
       const currentSession = playAudioSessionRef.current;
 
       try {
@@ -2494,7 +2495,7 @@ export function AuthenticCBTExamPage() {
       if (shouldLaunchAudio) {
         const fullText = currentQ.transcript || currentQ.text;
         const gender = (fullText.toLowerCase().includes("annonceur:") || qNum % 2 === 0) ? "male" : "female";
-        const rate = (currentQ as any).speakingRate || getListeningSpeakingRate(qNum);
+        const rate = isTef ? ((currentQ as any).speakingRate || getListeningSpeakingRate(qNum)) : 1.0;
 
         // Dynamic Fail-Safe Watchdog: Ensures isAudioFinished only fires if network drops completely after full text length duration (45s+ for long Q1-Q8 prompts)
         const dynamicWatchdogMs = Math.max(45000, (fullText?.length || 100) * 150);
@@ -2580,7 +2581,7 @@ export function AuthenticCBTExamPage() {
         if (nextText) {
           const nextQNum = nextQ.questionNumber || (currentQuestionIdx + 2);
           const nextGender = (nextText.toLowerCase().includes("annonceur:") || nextQNum % 2 === 0) ? "male" : "female";
-          const nextRate = (nextQ as any).speakingRate || getListeningSpeakingRate(nextQNum);
+          const nextRate = (paper?.type === "TEF_CANADA") ? ((nextQ as any).speakingRate || getListeningSpeakingRate(nextQNum)) : 1.0;
           try {
             apiFetch("/tts/speak", {
               method: "POST",
@@ -6735,10 +6736,9 @@ export function AuthenticCBTExamPage() {
                   {(() => {
                     const r = calculateResults();
                     if (paper?.type === "TEF_CANADA" && r.tefListeningResult) {
-                      const tef = r.tefListeningResult;
                       return (
                         <>
-                          Compréhension Orale : <strong>{r.listeningCorrect} / 40</strong> ({r.listeningPct}% exactitude) • Barème CCI Paris {tef.legacyEquivalent ? `• Ancien barème : ${tef.legacyEquivalent}` : ""}
+                          Compréhension Orale : <strong>{r.listeningCorrect} / 40</strong> ({r.listeningPct}% exactitude) • Échelle officielle CCI Paris (0 – 699 pts)
                         </>
                       );
                     }
@@ -6788,20 +6788,21 @@ export function AuthenticCBTExamPage() {
               {/* 4-SKILL MODULE CLB / NCLC SCORECARD GRID */}
               {(() => {
                 const res = calculateResults();
+                const isSingleSkillTef = paper?.type === "TEF_CANADA" && res.attemptedCount <= 1;
                 return (
                   <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-3 text-left">
+                    <div className={isSingleSkillTef ? "space-y-3 text-left" : "grid grid-cols-2 gap-3 text-left"}>
                       {/* Listening Scorecard */}
-                      <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 space-y-1">
+                      <div className="p-3.5 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 space-y-1.5">
                         <div className="flex items-center justify-between text-[11px] font-bold text-purple-900 dark:text-purple-300">
                           <span className="flex items-center gap-1">🎧 Compréhension Orale (CO)</span>
                           <span className="px-2 py-0.5 rounded bg-purple-600 text-white font-mono text-[10px]">
                             {paper?.type === "TEF_CANADA" && res.tefListeningResult
-                              ? (res.tefListeningResult.nclcLevel === 0 ? "Niveau 0" : `NCLC ${res.tefListeningResult.nclcLevel} (${res.tefListeningResult.cefrLevel})`)
+                              ? (res.tefListeningResult.nclcLevel === 0 ? "Niveau 0" : `NCLC ${res.tefListeningResult.nclcLevel} (${res.tefListeningResult.cefrEquivalent})`)
                               : (res.listeningNCLC.nclcLevel === 0 ? "Unrated" : `CLB ${res.listeningNCLC.nclcLevel}`)}
                           </span>
                         </div>
-                        <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
+                        <p className="text-sm font-extrabold text-slate-900 dark:text-slate-100">
                           {paper?.type === "TEF_CANADA" && res.tefListeningResult
                             ? `${res.tefListeningResult.cciScore} / 699 pts (${res.listeningCorrect}/40 • ${res.listeningPct}%)`
                             : (res.listeningNCLC.nclcLevel === 0 ? "Unattempted (0/39)" : `${res.listeningPct}% Correct (${res.listeningCorrect}/${res.listeningTotal})`)}
@@ -6820,82 +6821,87 @@ export function AuthenticCBTExamPage() {
                         </p>
                       </div>
 
-                      {/* Reading Scorecard */}
-                      <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 space-y-1">
-                        <div className="flex items-center justify-between text-[11px] font-bold text-blue-900 dark:text-blue-300">
-                          <span className="flex items-center gap-1">📖 Reading (CE)</span>
-                          <span className="px-2 py-0.5 rounded bg-blue-600 text-white font-mono text-[10px]">
-                            {res.readingNCLC.nclcLevel === 0 ? "Unrated" : `CLB ${res.readingNCLC.nclcLevel}`}
-                          </span>
-                        </div>
-                        <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
-                          {res.readingNCLC.nclcLevel === 0 ? "Unattempted (0/39)" : `${res.readingPct}% Correct (${res.readingCorrect}/${res.readingTotal})`}
-                        </p>
-                        <p className="text-[10px] font-semibold text-blue-700 dark:text-blue-300 pt-0.5">
-                          {res.readingPoints > 0 ? `+${res.readingPoints} CRS Points` : "0 CRS Points"}
-                        </p>
-                      </div>
-
-                      {/* Writing Scorecard */}
-                      <div className="p-3 rounded-xl bg-pink-50 dark:bg-pink-950/40 border border-pink-200 dark:border-pink-800 space-y-1">
-                        <div className="flex items-center justify-between text-[11px] font-bold text-pink-900 dark:text-pink-300">
-                          <span className="flex items-center gap-1">✍️ Writing (EE)</span>
-                          <span className="px-2 py-0.5 rounded bg-pink-600 text-white font-mono text-[10px]">
-                            {res.writingAttemptedCount === 0 ? "Unrated" : `CLB ${res.writingNCLC.nclcLevel}`}
-                          </span>
-                        </div>
-                        <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
-                          {res.writingAttemptedCount === 0 ? "No submission" : `${Math.round((res.writingAvg / 20) * 450)} / 450 pts (${res.writingAvg}/20 Marks • ${res.writingNCLC.cefrEquivalent})`}
-                        </p>
-                        {res.writingAttemptedCount > 0 && res.writingAttemptedCount < 3 && (
-                          <p className="text-[10px] font-medium text-amber-700 dark:text-amber-300 leading-tight">
-                            ⚠️ {res.writingAttemptedCount}/3 tasks completed (T1: {res.writingTaskScores.t1}/20, T2: {res.writingTaskScores.t2}/20, T3: {res.writingTaskScores.t3}/20). Real TCF requires all 3 tasks (20%+30%+50%).
-                          </p>
-                        )}
-                        <p className="text-[10px] font-semibold text-pink-700 dark:text-pink-300 pt-0.5">
-                          {res.writingPoints > 0 ? `+${res.writingPoints} CRS Points` : "0 CRS Points"}
-                        </p>
-                      </div>
-
-                      {/* Speaking Scorecard */}
-                      <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 space-y-1">
-                        <div className="flex items-center justify-between text-[11px] font-bold text-indigo-900 dark:text-indigo-300">
-                          <span className="flex items-center gap-1">🎙️ Speaking (EO)</span>
-                          <span className="px-2 py-0.5 rounded bg-indigo-600 text-white font-mono text-[10px]">
-                            {res.speakingAttemptedCount === 0 ? "Unrated" : `CLB ${res.speakingNCLC.nclcLevel}`}
-                          </span>
-                        </div>
-                        <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
-                          {res.speakingAttemptedCount === 0 ? "No submission" : `${Math.round((res.speakingAvg / 20) * 450)} / 450 pts (${res.speakingAvg}/20 Marks • ${res.speakingNCLC.cefrEquivalent || res.speakingNCLC.cefrLevel || 'B1'})`}
-                        </p>
-                        {res.speakingAttemptedCount > 0 && res.speakingAttemptedCount < 3 && (() => {
-                          const s1 = res.speakingTaskScores.s1;
-                          const s2 = res.speakingTaskScores.s2;
-                          const s3 = res.speakingTaskScores.s3;
-                          const missingTitle = s3 === 0
-                            ? "⚠️ Tâche 3 Non Effectuée (Pondération 50%)"
-                            : s2 === 0
-                            ? "⚠️ Tâche 2 Non Effectuée (Pondération 30%)"
-                            : s1 === 0
-                            ? "⚠️ Tâche 1 Non Effectuée (Pondération 20%)"
-                            : "⚠️ Épreuve Incomplète";
-
-                          return (
-                            <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-950/80 border border-amber-300 dark:border-amber-700 text-[10.5px] font-medium text-amber-900 dark:text-amber-200 leading-relaxed space-y-1">
-                              <p className="font-bold text-amber-950 dark:text-amber-100 flex items-center gap-1">
-                                {missingTitle}
-                              </p>
-                              <p>
-                                Vous avez complété {res.speakingAttemptedCount}/3 tâches (T1: {s1}/20, T2: {s2}/20, T3: {s3}/20).
-                                {s1 >= 12 && s3 === 0 ? ` Votre performance à la Tâche 1 (${s1}/20) montrait un niveau B2, mais l'absence de réponse à la Tâche 3 fait chuter la moyenne globale à ${res.speakingAvg}/20 (${res.speakingNCLC.cefrEquivalent || res.speakingNCLC.cefrLevel || 'A2'}).` : ''}
-                              </p>
+                      {/* Reading, Writing, Speaking Cards (Displayed only for full 4-skill evaluations) */}
+                      {!isSingleSkillTef && (
+                        <>
+                          {/* Reading Scorecard */}
+                          <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 space-y-1">
+                            <div className="flex items-center justify-between text-[11px] font-bold text-blue-900 dark:text-blue-300">
+                              <span className="flex items-center gap-1">📖 Reading (CE)</span>
+                              <span className="px-2 py-0.5 rounded bg-blue-600 text-white font-mono text-[10px]">
+                                {res.readingNCLC.nclcLevel === 0 ? "Unrated" : `CLB ${res.readingNCLC.nclcLevel}`}
+                              </span>
                             </div>
-                          );
-                        })()}
-                        <p className="text-[10px] font-semibold text-indigo-700 dark:text-indigo-300 pt-0.5">
-                          {res.speakingPoints > 0 ? `+${res.speakingPoints} CRS Points` : "0 CRS Points"}
-                        </p>
-                      </div>
+                            <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
+                              {res.readingNCLC.nclcLevel === 0 ? (paper?.type === "TEF_CANADA" ? "Unattempted (0/40)" : "Unattempted (0/39)") : `${res.readingPct}% Correct (${res.readingCorrect}/${res.readingTotal})`}
+                            </p>
+                            <p className="text-[10px] font-semibold text-blue-700 dark:text-blue-300 pt-0.5">
+                              {res.readingPoints > 0 ? `+${res.readingPoints} CRS Points` : "0 CRS Points"}
+                            </p>
+                          </div>
+
+                          {/* Writing Scorecard */}
+                          <div className="p-3 rounded-xl bg-pink-50 dark:bg-pink-950/40 border border-pink-200 dark:border-pink-800 space-y-1">
+                            <div className="flex items-center justify-between text-[11px] font-bold text-pink-900 dark:text-pink-300">
+                              <span className="flex items-center gap-1">✍️ Writing (EE)</span>
+                              <span className="px-2 py-0.5 rounded bg-pink-600 text-white font-mono text-[10px]">
+                                {res.writingAttemptedCount === 0 ? "Unrated" : `CLB ${res.writingNCLC.nclcLevel}`}
+                              </span>
+                            </div>
+                            <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
+                              {res.writingAttemptedCount === 0 ? "No submission" : `${Math.round((res.writingAvg / 20) * 450)} / 450 pts (${res.writingAvg}/20 Marks • ${res.writingNCLC.cefrEquivalent})`}
+                            </p>
+                            {res.writingAttemptedCount > 0 && res.writingAttemptedCount < 3 && (
+                              <p className="text-[10px] font-medium text-amber-700 dark:text-amber-300 leading-tight">
+                                ⚠️ {res.writingAttemptedCount}/3 tasks completed (T1: {res.writingTaskScores.t1}/20, T2: {res.writingTaskScores.t2}/20, T3: {res.writingTaskScores.t3}/20). Real TCF requires all 3 tasks (20%+30%+50%).
+                              </p>
+                            )}
+                            <p className="text-[10px] font-semibold text-pink-700 dark:text-pink-300 pt-0.5">
+                              {res.writingPoints > 0 ? `+${res.writingPoints} CRS Points` : "0 CRS Points"}
+                            </p>
+                          </div>
+
+                          {/* Speaking Scorecard */}
+                          <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 space-y-1">
+                            <div className="flex items-center justify-between text-[11px] font-bold text-indigo-900 dark:text-indigo-300">
+                              <span className="flex items-center gap-1">🎙️ Speaking (EO)</span>
+                              <span className="px-2 py-0.5 rounded bg-indigo-600 text-white font-mono text-[10px]">
+                                {res.speakingAttemptedCount === 0 ? "Unrated" : `CLB ${res.speakingNCLC.nclcLevel}`}
+                              </span>
+                            </div>
+                            <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100">
+                              {res.speakingAttemptedCount === 0 ? "No submission" : `${Math.round((res.speakingAvg / 20) * 450)} / 450 pts (${res.speakingAvg}/20 Marks • ${res.speakingNCLC.cefrEquivalent || res.speakingNCLC.cefrLevel || 'B1'})`}
+                            </p>
+                            {res.speakingAttemptedCount > 0 && res.speakingAttemptedCount < 3 && (() => {
+                              const s1 = res.speakingTaskScores.s1;
+                              const s2 = res.speakingTaskScores.s2;
+                              const s3 = res.speakingTaskScores.s3;
+                              const missingTitle = s3 === 0
+                                ? "⚠️ Tâche 3 Non Effectuée (Pondération 50%)"
+                                : s2 === 0
+                                ? "⚠️ Tâche 2 Non Effectuée (Pondération 30%)"
+                                : s1 === 0
+                                ? "⚠️ Tâche 1 Non Effectuée (Pondération 20%)"
+                                : "⚠️ Épreuve Incomplète";
+
+                              return (
+                                <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-950/80 border border-amber-300 dark:border-amber-700 text-[10.5px] font-medium text-amber-900 dark:text-amber-200 leading-relaxed space-y-1">
+                                  <p className="font-bold text-amber-950 dark:text-amber-100 flex items-center gap-1">
+                                    {missingTitle}
+                                  </p>
+                                  <p>
+                                    Vous avez complété {res.speakingAttemptedCount}/3 tâches (T1: {s1}/20, T2: {s2}/20, T3: {s3}/20).
+                                    {s1 >= 12 && s3 === 0 ? ` Votre performance à la Tâche 1 (${s1}/20) montrait un niveau B2, mais l'absence de réponse à la Tâche 3 fait chuter la moyenne globale à ${res.speakingAvg}/20 (${res.speakingNCLC.cefrEquivalent || res.speakingNCLC.cefrLevel || 'A2'}).` : ''}
+                                  </p>
+                                </div>
+                              );
+                            })()}
+                            <p className="text-[10px] font-semibold text-indigo-700 dark:text-indigo-300 pt-0.5">
+                              {res.speakingPoints > 0 ? `+${res.speakingPoints} CRS Points` : "0 CRS Points"}
+                            </p>
+                          </div>
+                        </>
+                      )}
                     </div>
 
                     <div className={`p-4 rounded-xl text-xs text-left space-y-2 border ${res.isNCLC7TargetReached
@@ -6942,10 +6948,10 @@ export function AuthenticCBTExamPage() {
                                 className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-indigo-100 dark:border-indigo-900/60 shadow-xs space-y-1.5"
                               >
                                 <div className="flex items-center justify-between">
-                                  <span className="text-[11px] font-bold text-slate-900 dark:text-slate-100 truncate max-w-[170px]" title={t.groupName}>
+                                  <span className="text-[11px] font-bold text-slate-900 dark:text-slate-100 leading-tight whitespace-normal min-w-0 pr-1" title={t.groupName}>
                                     {t.groupName}
                                   </span>
-                                  <span className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400">
+                                  <span className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 shrink-0">
                                     {t.range} • {t.level}
                                   </span>
                                 </div>
@@ -7079,8 +7085,8 @@ export function AuthenticCBTExamPage() {
                   }}
                   className="w-full sm:w-1/3 py-3.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2 cursor-pointer transition-all"
                 >
-                  <Search className="w-4 h-4 text-white" />
-                  <span>Consulter les réponses 🔍</span>
+                  <Search className="w-4 h-4 text-white shrink-0" />
+                  <span>Consulter les réponses</span>
                 </button>
 
                 <button
@@ -7090,8 +7096,8 @@ export function AuthenticCBTExamPage() {
                   }}
                   className="w-full sm:w-1/3 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs shadow flex items-center justify-center gap-2 cursor-pointer transition-all"
                 >
-                  <RotateCcw className="w-4 h-4 text-emerald-400" />
-                  <span>Recommencer le test 🔄</span>
+                  <RotateCcw className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Recommencer le test</span>
                 </button>
 
                 <button
@@ -7103,8 +7109,8 @@ export function AuthenticCBTExamPage() {
                   }}
                   className="w-full sm:w-1/3 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2 cursor-pointer transition-all"
                 >
-                  <Home className="w-4 h-4 text-white" />
-                  <span>Hub Examens 🍁</span>
+                  <Home className="w-4 h-4 text-white shrink-0" />
+                  <span>Hub Examens</span>
                 </button>
               </div>
             </motion.div>

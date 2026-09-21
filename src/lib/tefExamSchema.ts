@@ -17,6 +17,12 @@ export type TefListeningTypology =
 
 export type TefLevel = "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
 
+export interface TefSpeakerPersona {
+  role: string;
+  gender: "female" | "male";
+  voiceId: string;
+}
+
 export interface TefListeningItem {
   id: string;
   paperNumber: number;
@@ -33,6 +39,7 @@ export interface TefListeningItem {
   audioEn: string;
   speakerCount: number;
   speakers?: string[]; // e.g. ["Annonceur", "Passant 1", "Passant 2"]
+  speakerPersonas?: TefSpeakerPersona[]; // Explicit visual-acoustic persona binding
   
   // Question Prompt
   questionFr: string;

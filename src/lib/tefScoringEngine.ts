@@ -119,14 +119,14 @@ export function calculateTefListeningScore(rawScore: number): TefScoreResult {
     performanceFeedbackFr = "Niveau élémentaire A2. Repérage des mots familiers uniquement.";
     performanceFeedbackEn = "Elementary A2 level. Recognition of familiar vocabulary only.";
   } else {
-    // A1 / Unrated : 0 - 248 CCI Points (Legacy: 0 - 144)
+    // A1 / Débutant : 0 - 248 CCI Points
     cciScore = Math.round((clampedRaw / 8) * 248);
     nclcLevel = clampedRaw >= 5 ? 3 : clampedRaw >= 3 ? 2 : clampedRaw >= 1 ? 1 : 0;
-    cefrEquivalent = clampedRaw >= 5 ? "A1" : "Unrated";
+    cefrEquivalent = clampedRaw >= 3 ? "A1" : "< A1";
     expressEntryPoints = 0;
     isNCLC7TargetReached = false;
     isSafetyZoneReached = false;
-    legacyEquivalent = "0 – 144 pts";
+    legacyEquivalent = "Échelle officielle : 0 – 699 pts";
     performanceFeedbackFr = "Score insuffisant pour l'évaluation NCLC. Renforcement linguistique nécessaire.";
     performanceFeedbackEn = "Insufficient score for NCLC benchmark. Core language reinforcement required.";
   }
