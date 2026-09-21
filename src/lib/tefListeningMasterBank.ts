@@ -48,15 +48,15 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
     "answerTimeSeconds": 15,
     "speakerCount": 2,
     "speakers": [
-      "Voyageuse",
-      "Agent de gare"
+      "Voyageur",
+      "Agente"
     ],
     "speakerPersonas": [
-      { "role": "Voyageuse", "gender": "female", "voiceId": "fr-CA-SylvieNeural" },
-      { "role": "Agent de gare", "gender": "male", "voiceId": "fr-FR-HenriNeural" }
+      { "role": "Voyageur", "gender": "male", "voiceId": "fr-FR-HenriNeural" },
+      { "role": "Agente", "gender": "female", "voiceId": "fr-CA-SylvieNeural" }
     ],
-    "audioFr": "Voyageuse : Bonjour monsieur, excusez-moi, est-ce que le train pour Québec part bien de la voie 4 ?\nAgent : Bonjour madame. Non, attention, il y a eu un changement d'affichage. Il partira de la voie 7 dans dix minutes.",
-    "audioEn": "Traveler: Hello sir, excuse me, is the train for Quebec City really departing from platform 4?\nStation Agent: Hello ma'am. No, watch out, there was a display change. It will depart from platform 7 in ten minutes.",
+    "audioFr": "Voyageur : Bonjour madame, excusez-moi, est-ce que le train pour Québec part bien de la voie 4 ?\nAgente : Bonjour monsieur. Non, attention, il y a eu un changement d'affichage. Il partira de la voie 7 dans dix minutes.",
+    "audioEn": "Traveler: Hello ma'am, excuse me, is the train for Quebec City really departing from platform 4?\nStation Agent: Hello sir. No, watch out, there was a display change. It will depart from platform 7 in ten minutes.",
     "questionFr": "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
     "questionEn": "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     "optionsFr": [
