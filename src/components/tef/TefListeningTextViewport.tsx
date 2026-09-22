@@ -188,6 +188,108 @@ export const TefListeningTextViewport: React.FC<TefListeningTextViewportProps> =
         </p>
       </div>
 
+      {/* ─── 2.5 SUPER-ADMIN QA INSPECTOR (Visible only for Admin Accounts in Exam Mode) ─── */}
+      {isAdmin && mode === "EXAM" && (
+        <div className="p-3 sm:p-3.5 rounded-xl border border-amber-500/40 bg-amber-950/30 text-amber-100 shadow-sm space-y-2.5">
+          <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-2 font-mono font-bold text-amber-400">
+              <Sparkles className="w-4 h-4 animate-pulse text-amber-400" />
+              <span>👑 SUPER-ADMIN QA INSPECTOR (Mode Examen)</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setShowTranscript(!showTranscript)}
+                className={`px-2.5 py-1 rounded text-xs font-bold transition-all flex items-center gap-1 border cursor-pointer ${
+                  showTranscript
+                    ? "bg-purple-700 text-white border-purple-800"
+                    : "bg-slate-800 text-slate-200 border-slate-700 hover:bg-slate-700"
+                }`}
+                title="Afficher/Masquer la transcription textuelle pour audit"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span>{showTranscript ? "Masquer Transcr." : "📄 Transcription"}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={onToggleTranslation}
+                className={`px-2.5 py-1 rounded text-xs font-bold transition-all flex items-center gap-1 border cursor-pointer ${
+                  showTranslation
+                    ? "bg-indigo-700 text-white border-indigo-800"
+                    : "bg-slate-800 text-slate-200 border-slate-700 hover:bg-slate-700"
+                }`}
+                title="Afficher/Masquer la traduction anglaise"
+              >
+                <Globe className="w-3.5 h-3.5" />
+                <span>{showTranslation ? "Masquer EN" : "🌐 Translation"}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (isSpeaking && !isAudioPaused && !isTimerPaused) {
+                    onPauseResumeAudio();
+                  } else {
+                    onPlayAudio();
+                  }
+                }}
+                className="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1 cursor-pointer transition-all shadow"
+                title="Rejouer ou mettre en pause l'audio pour vérifier la prononciation"
+              >
+                {isSpeaking && !isAudioPaused && !isTimerPaused ? (
+                  <>
+                    <Pause className="w-3.5 h-3.5" />
+                    <span>Pause</span>
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-3.5 h-3.5" />
+                    <span>Réécouter ▶️</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowCoaching(!showCoaching)}
+                className={`px-2.5 py-1 rounded text-xs font-bold transition-all flex items-center gap-1 border cursor-pointer ${
+                  showCoaching
+                    ? "bg-amber-600 text-white border-amber-700"
+                    : "bg-slate-800 text-amber-300 border-amber-500/50 hover:bg-slate-700"
+                }`}
+                title="Afficher/Masquer l'analyse pédagogique et les pièges"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>{showCoaching ? "Masquer Pièges" : "💡 Clés & Pièges"}</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between text-[11px] text-amber-200/80 font-mono border-t border-amber-500/20 pt-1.5">
+            <span>
+              Locuteurs : <strong>{(currentQ as any).speakers ? (currentQ as any).speakers.join(", ") : "Audio standard"}</strong> • Clé : <strong>Option {String.fromCharCode(65 + currentQ.correctIndex)}</strong>
+            </span>
+            <span className="text-[10px] text-amber-400 font-sans italic">
+              Strictement invisible pour les candidats réels
+            </span>
+          </div>
+
+          {showTranscript && currentQ.transcript && (
+            <div className="p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-200 whitespace-pre-line leading-relaxed font-sans">
+              <strong className="text-amber-400 block mb-1 font-mono text-[11px]">FR TRANSCRIPTION :</strong>
+              {currentQ.transcript}
+            </div>
+          )}
+          {showTranslation && currentQ.transcriptEnglish && (
+            <div className="p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs text-indigo-300 italic whitespace-pre-line leading-relaxed font-sans">
+              <strong className="text-indigo-400 not-italic block mb-1 font-mono text-[11px]">EN TRANSLATION :</strong>
+              "{currentQ.transcriptEnglish}"
+            </div>
+          )}
+        </div>
+      )}
+
       {/* ─── 3. OFFICIAL CBT AUDIO BAR ─── */}
       {mode === "EXAM" ? (
         <div className="p-3.5 rounded-xl bg-slate-900 text-white border border-slate-700 shadow-sm flex items-center justify-between">
@@ -418,6 +520,14 @@ export const TefListeningTextViewport: React.FC<TefListeningTextViewportProps> =
                   Choisi ✓
                 </span>
               );
+            } else if (isAdmin && mode === "EXAM" && isCorrect) {
+              cardStyle = "border-amber-500/80 ring-1 ring-amber-500/40 bg-amber-500/5 dark:bg-amber-950/20";
+              badgeElement = (
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" />
+                  <span>Clé Admin ({letter})</span>
+                </span>
+              );
             } else {
               cardStyle = cbtDark
                 ? "bg-slate-800/90 border-slate-700 hover:border-emerald-500/60"
@@ -498,8 +608,8 @@ export const TefListeningTextViewport: React.FC<TefListeningTextViewportProps> =
         )
       )}
 
-      {/* ─── 7. INLINE BILINGUAL PEDAGOGICAL DRAWER (Practice Mode Only) ─── */}
-      {mode === "PRACTICE" && (
+      {/* ─── 7. INLINE BILINGUAL PEDAGOGICAL DRAWER (Practice Mode or Admin QA Inspection) ─── */}
+      {(mode === "PRACTICE" || (isAdmin && showCoaching)) && (
         <div className="rounded-xl border border-amber-500/30 bg-amber-50/40 dark:bg-amber-950/20 overflow-hidden shadow-sm">
           <div className="p-3 sm:p-3.5 flex items-center justify-between text-xs font-bold text-amber-900 dark:text-amber-200 bg-amber-500/10 border-b border-amber-500/20">
             <span className="flex items-center gap-2">
