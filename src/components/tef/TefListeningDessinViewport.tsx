@@ -90,7 +90,8 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
   const guidance = getTefListeningGuidance(currentQ.id);
   const isSelectedCorrect = selectedOption !== undefined && selectedOption === currentQ.correctIndex;
 
-  const paperPrefix = currentQ.id.startsWith('tef-p2') ? 'tef_p2' : 'tef_p1';
+  const match = currentQ.id.match(/tef-p(\d+)-/);
+  const paperPrefix = match ? `tef_p${match[1]}` : 'tef_p1';
   const optionDrawings = (currentQ as any).optionImages && (currentQ as any).optionImages.length === 4
     ? (currentQ as any).optionImages
     : [
