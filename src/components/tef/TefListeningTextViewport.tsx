@@ -15,7 +15,7 @@ import {
   Radio
 } from "lucide-react";
 import type { ExamQuestion, ExamMode } from "~/lib/examSchema";
-import { TEF_PAPER_1_LISTENING_GUIDANCE } from "~/lib/tefListeningGuidanceBank";
+import { getTefListeningGuidance } from "~/lib/tefListeningGuidanceBank";
 
 export interface TefListeningTextViewportProps {
   currentQ: ExamQuestion;
@@ -87,7 +87,7 @@ export const TefListeningTextViewport: React.FC<TefListeningTextViewportProps> =
     }
   }, [isChecked]);
 
-  const guidance = TEF_PAPER_1_LISTENING_GUIDANCE[currentQ.id];
+  const guidance = getTefListeningGuidance(currentQ.id);
 
   // Derive official e-TEF section metadata matching the 6 master typologies
   const qNum = currentQ.questionNumber;

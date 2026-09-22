@@ -8,8 +8,8 @@ import { getReadingGuidance } from "./readingGuidanceBank";
 import { getWritingPaperTasks } from "./authenticWritingMasterBank";
 import { getWritingGuidance } from "./writingGuidanceBank";
 import { getMasterSpeakingTasks, type MasterSpeakingTask } from "./speakingMasterBank";
-import { TEF_PAPER_1_LISTENING_ITEMS } from "./tefListeningMasterBank";
-import { TEF_PAPER_1_LISTENING_GUIDANCE } from "./tefListeningGuidanceBank";
+import { TEF_PAPER_1_LISTENING_ITEMS, TEF_PAPER_2_LISTENING_ITEMS } from "./tefListeningMasterBank";
+import { TEF_PAPER_1_LISTENING_GUIDANCE, TEF_PAPER_2_LISTENING_GUIDANCE } from "./tefListeningGuidanceBank";
 import { calculateTefListeningScore } from "./tefScoringEngine";
 
 export type ExamType = "TCF_CANADA" | "TEF_CANADA";
@@ -8008,9 +8008,11 @@ export function getExamRegistry(): ExamPaper[] {
   }
 
 function getTefListeningQuestions(paperNum: number, isPractice: boolean, fallbackSeed: number): ExamQuestion[] {
-  if (paperNum === 1) {
-    return TEF_PAPER_1_LISTENING_ITEMS.map((item) => {
-      const g = TEF_PAPER_1_LISTENING_GUIDANCE[item.id];
+  if (paperNum === 1 || paperNum === 2) {
+    const items = paperNum === 1 ? TEF_PAPER_1_LISTENING_ITEMS : TEF_PAPER_2_LISTENING_ITEMS;
+    const guidanceBank = paperNum === 1 ? TEF_PAPER_1_LISTENING_GUIDANCE : TEF_PAPER_2_LISTENING_GUIDANCE;
+    return items.map((item) => {
+      const g = guidanceBank[item.id];
       return {
         id: item.id,
         questionNumber: item.questionNumber,

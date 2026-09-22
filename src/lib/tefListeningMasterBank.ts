@@ -1377,3 +1377,5 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
     "correctIndex": 2
   }
 ];
+
+export { TEF_PAPER_2_LISTENING_ITEMS } from "./tefListeningPaper2Master";

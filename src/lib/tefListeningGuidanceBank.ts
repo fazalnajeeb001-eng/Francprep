@@ -378,3 +378,10 @@ export const TEF_PAPER_1_LISTENING_GUIDANCE: Record<string, TefListeningGuidance
     "detailedExplanationEn": "🎯 Correct Answer: Option C (\"A courteous refusal conveying a diplomatic, veiled rejection\")\n\n• Acoustic & Textual Evidence:\nThe audio recording explicitly states: \"Your proposal demonstrates great intellectual boldness which we salute with interest. However, in light of current budgetary constraints and the status of bilateral talks, we consider it opportune to reserve our ruling for subsequent cycles.\".\nChoice C accurately recognizes the true communicative function of the coded diplomatic refusal.\n\n• Detailed Distractor Breakdown (Incorrect Options & Refutations):\n  - Option A (\"A formal summons to initiate final contractual drafting proceedings\") [INCORRECT - CONTRACT SUMMONS LURE]: The official is not initiating contract closing; postponing deliberation to \"subsequent cycles\" represents an indefinite bureaucratic deferral.\n  - Option B (\"An enthusiastic acceptance paired with immediate funds disbursement\") [INCORRECT - DECEPTIVE COURTESY TRAP]: Opening praise (\"great intellectual boldness\", \"salute with interest\") is conventional diplomatic etiquette preceding a financial refusal.\n  - Option C (\"A courteous refusal conveying a diplomatic, veiled rejection\") [CORRECT]: The veiled phrasing \"reserve our ruling for subsequent cycles\" citing budget caps represents a classic diplomatic euphemism for a polite but definitive rejection.\n  - Option D (\"A legal formal notice demanding the immediate cessation of project operations\") [INCORRECT - AGGRESSIVE LEGAL NOTICE DISTRACTOR]: The speaker maintains a suave, cordial register, completely contrary to the confrontational tone of an injunction or formal notice."
   }
 };
+
+import { TEF_PAPER_2_LISTENING_GUIDANCE } from "./tefListeningPaper2Guidance";
+export { TEF_PAPER_2_LISTENING_GUIDANCE };
+
+export function getTefListeningGuidance(questionId: string): TefListeningGuidance | undefined {
+  return TEF_PAPER_1_LISTENING_GUIDANCE[questionId] || TEF_PAPER_2_LISTENING_GUIDANCE[questionId];
+}

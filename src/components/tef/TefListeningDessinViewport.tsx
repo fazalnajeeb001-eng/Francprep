@@ -14,7 +14,7 @@ import {
   AlertTriangle
 } from "lucide-react";
 import type { ExamQuestion, ExamMode } from "~/lib/examSchema";
-import { TEF_PAPER_1_LISTENING_GUIDANCE } from "~/lib/tefListeningGuidanceBank";
+import { getTefListeningGuidance } from "~/lib/tefListeningGuidanceBank";
 
 export interface TefListeningDessinViewportProps {
   currentQ: ExamQuestion;
@@ -87,16 +87,17 @@ export const TefListeningDessinViewport: React.FC<TefListeningDessinViewportProp
     }
   }, [isChecked]);
 
-  const guidance = TEF_PAPER_1_LISTENING_GUIDANCE[currentQ.id];
+  const guidance = getTefListeningGuidance(currentQ.id);
   const isSelectedCorrect = selectedOption !== undefined && selectedOption === currentQ.correctIndex;
 
+  const paperPrefix = currentQ.id.startsWith('tef-p2') ? 'tef_p2' : 'tef_p1';
   const optionDrawings = (currentQ as any).optionImages && (currentQ as any).optionImages.length === 4
     ? (currentQ as any).optionImages
     : [
-        (currentQ as any).mainImage || `/illustrations/tef/tef_p1_q${currentQ.questionNumber}_a.png`,
-        `/illustrations/tef/tef_p1_q${currentQ.questionNumber}_b.png`,
-        `/illustrations/tef/tef_p1_q${currentQ.questionNumber}_c.png`,
-        `/illustrations/tef/tef_p1_q${currentQ.questionNumber}_d.png`
+        (currentQ as any).mainImage || `/illustrations/tef/${paperPrefix}_q${currentQ.questionNumber}_a.png`,
+        `/illustrations/tef/${paperPrefix}_q${currentQ.questionNumber}_b.png`,
+        `/illustrations/tef/${paperPrefix}_q${currentQ.questionNumber}_c.png`,
+        `/illustrations/tef/${paperPrefix}_q${currentQ.questionNumber}_d.png`
       ];
 
   return (
