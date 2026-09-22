@@ -71,12 +71,12 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
       "Drawing C",
       "Drawing D"
     ],
-    "correctIndex": 0,
+    "correctIndex": 1,
     "mainImage": "/illustrations/tef/tef_p1_q1_a.png",
     "optionImages": [
+      "/illustrations/tef/tef_p1_q1_c.png",
       "/illustrations/tef/tef_p1_q1_a.png",
       "/illustrations/tef/tef_p1_q1_b.png",
-      "/illustrations/tef/tef_p1_q1_c.png",
       "/illustrations/tef/tef_p1_q1_d.png"
     ]
   },
@@ -115,13 +115,13 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
       "Drawing C",
       "Drawing D"
     ],
-    "correctIndex": 1,
+    "correctIndex": 3,
     "mainImage": "/illustrations/tef/tef_p1_q2_a.png",
     "optionImages": [
       "/illustrations/tef/tef_p1_q2_b.png",
-      "/illustrations/tef/tef_p1_q2_a.png",
+      "/illustrations/tef/tef_p1_q2_d.png",
       "/illustrations/tef/tef_p1_q2_c.png",
-      "/illustrations/tef/tef_p1_q2_d.png"
+      "/illustrations/tef/tef_p1_q2_a.png"
     ]
   },
   {
@@ -136,15 +136,15 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
     "answerTimeSeconds": 15,
     "speakerCount": 2,
     "speakers": [
-      "Patient",
+      "Patiente",
       "Secrétaire médicale"
     ],
     "speakerPersonas": [
-      { "role": "Patient", "gender": "male", "voiceId": "fr-FR-HenriNeural" },
+      { "role": "Patiente", "gender": "female", "voiceId": "fr-FR-DeniseNeural" },
       { "role": "Secrétaire médicale", "gender": "female", "voiceId": "fr-FR-VivienneMultilingualNeural" }
     ],
-    "audioFr": "Patient : Bonjour, j'ai rendez-vous avec le docteur Laurent à 14 heures 30 pour mon rappel de vaccin.\nSecrétaire : Bonjour. Veuillez patienter dans la salle d'attente à droite, le médecin va venir vous chercher.",
-    "audioEn": "Patient: Hello, I have an appointment with Dr. Laurent at 2:30 PM for my booster vaccine.\nSecretary: Hello. Please wait in the waiting room to the right, the doctor will come to fetch you shortly.",
+    "audioFr": "Patiente : Bonjour, j'ai rendez-vous avec le docteur Laurent à 14 heures 30 pour mon rappel de vaccin.\nSecrétaire : Bonjour. Veuillez patienter dans la salle d'attente à droite, le médecin va venir vous chercher.",
+    "audioEn": "Patient (Woman): Hello, I have an appointment with Dr. Laurent at 2:30 PM for my booster vaccine.\nSecretary: Hello. Please wait in the waiting room to the right, the doctor will come to fetch you shortly.",
     "questionFr": "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
     "questionEn": "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     "optionsFr": [
@@ -159,12 +159,12 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
       "Drawing C",
       "Drawing D"
     ],
-    "correctIndex": 2,
+    "correctIndex": 0,
     "mainImage": "/illustrations/tef/tef_p1_q3_a.png",
     "optionImages": [
-      "/illustrations/tef/tef_p1_q3_b.png",
-      "/illustrations/tef/tef_p1_q3_c.png",
       "/illustrations/tef/tef_p1_q3_a.png",
+      "/illustrations/tef/tef_p1_q3_c.png",
+      "/illustrations/tef/tef_p1_q3_b.png",
       "/illustrations/tef/tef_p1_q3_d.png"
     ]
   },
@@ -203,13 +203,13 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
       "Drawing C",
       "Drawing D"
     ],
-    "correctIndex": 3,
+    "correctIndex": 2,
     "mainImage": "/illustrations/tef/tef_p1_q4_a.png",
     "optionImages": [
       "/illustrations/tef/tef_p1_q4_b.png",
       "/illustrations/tef/tef_p1_q4_c.png",
-      "/illustrations/tef/tef_p1_q4_d.png",
-      "/illustrations/tef/tef_p1_q4_a.png"
+      "/illustrations/tef/tef_p1_q4_a.png",
+      "/illustrations/tef/tef_p1_q4_d.png"
     ]
   },
   {
