@@ -136,7 +136,7 @@ const testCases = [
   { raw: 20, expectedNclc: 6, expectedCefr: "B1", expectedCrs: 9, target: false, safety: false },
   { raw: 15, expectedNclc: 5, expectedCefr: "B1", expectedCrs: 6, target: false, safety: false },
   { raw: 10, expectedNclc: 4, expectedCefr: "A2", expectedCrs: 0, target: false, safety: false },
-  { raw: 4, expectedNclc: 2, expectedCefr: "Unrated", expectedCrs: 0, target: false, safety: false }
+  { raw: 4, expectedNclc: 2, expectedCefr: "A1", expectedCrs: 0, target: false, safety: false }
 ];
 
 testCases.forEach((tc) => {

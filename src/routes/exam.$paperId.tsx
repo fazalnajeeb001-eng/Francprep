@@ -6718,7 +6718,7 @@ export function AuthenticCBTExamPage() {
                   return (
                     <div className="flex flex-wrap items-center justify-center gap-2 pt-1 pb-1">
                       <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-blue-600 text-white shadow-sm">
-                        Niveau NCLC {tef.nclcLevel} ({tef.cefrEquivalent})
+                        {tef.nclcLevel === 0 ? "Niveau < A1" : `Niveau NCLC ${tef.nclcLevel} (${tef.cefrEquivalent})`}
                       </span>
                       <span className="px-3 py-1 rounded-full text-xs font-mono font-extrabold bg-emerald-600 text-white shadow-sm">
                         +{tef.expressEntryPoints} Points CRS
@@ -6798,7 +6798,7 @@ export function AuthenticCBTExamPage() {
                           <span className="flex items-center gap-1">🎧 Compréhension Orale (CO)</span>
                           <span className="px-2 py-0.5 rounded bg-purple-600 text-white font-mono text-[10px]">
                             {paper?.type === "TEF_CANADA" && res.tefListeningResult
-                              ? (res.tefListeningResult.nclcLevel === 0 ? "Niveau 0" : `NCLC ${res.tefListeningResult.nclcLevel} (${res.tefListeningResult.cefrEquivalent})`)
+                              ? (res.tefListeningResult.nclcLevel === 0 ? "Niveau < A1" : `NCLC ${res.tefListeningResult.nclcLevel} (${res.tefListeningResult.cefrEquivalent})`)
                               : (res.listeningNCLC.nclcLevel === 0 ? "Unrated" : `CLB ${res.listeningNCLC.nclcLevel}`)}
                           </span>
                         </div>
