@@ -8,8 +8,9 @@ import { getReadingGuidance } from "./readingGuidanceBank";
 import { getWritingPaperTasks } from "./authenticWritingMasterBank";
 import { getWritingGuidance } from "./writingGuidanceBank";
 import { getMasterSpeakingTasks, type MasterSpeakingTask } from "./speakingMasterBank";
-import { TEF_PAPER_1_LISTENING_ITEMS, TEF_PAPER_2_LISTENING_ITEMS, TEF_PAPER_3_LISTENING_ITEMS, TEF_PAPER_4_LISTENING_ITEMS } from "./tefListeningMasterBank";
-import { TEF_PAPER_1_LISTENING_GUIDANCE, TEF_PAPER_2_LISTENING_GUIDANCE, TEF_PAPER_3_LISTENING_GUIDANCE, TEF_PAPER_4_LISTENING_GUIDANCE } from "./tefListeningGuidanceBank";
+import { TEF_PAPER_1_LISTENING_ITEMS, TEF_PAPER_2_LISTENING_ITEMS, TEF_PAPER_3_LISTENING_ITEMS, TEF_PAPER_4_LISTENING_ITEMS, TEF_PAPER_5_LISTENING_ITEMS } from "./tefListeningMasterBank";
+import { TEF_PAPER_1_LISTENING_GUIDANCE, TEF_PAPER_2_LISTENING_GUIDANCE, TEF_PAPER_3_LISTENING_GUIDANCE, TEF_PAPER_4_LISTENING_GUIDANCE, TEF_PAPER_5_LISTENING_GUIDANCE } from "./tefListeningGuidanceBank";
+
 
 import { calculateTefListeningScore } from "./tefScoringEngine";
 
@@ -8009,9 +8010,23 @@ export function getExamRegistry(): ExamPaper[] {
   }
 
 function getTefListeningQuestions(paperNum: number, isPractice: boolean, fallbackSeed: number): ExamQuestion[] {
-  if (paperNum === 1 || paperNum === 2 || paperNum === 3 || paperNum === 4) {
-    const items = paperNum === 1 ? TEF_PAPER_1_LISTENING_ITEMS : (paperNum === 2 ? TEF_PAPER_2_LISTENING_ITEMS : (paperNum === 3 ? TEF_PAPER_3_LISTENING_ITEMS : TEF_PAPER_4_LISTENING_ITEMS));
-    const guidanceBank = paperNum === 1 ? TEF_PAPER_1_LISTENING_GUIDANCE : (paperNum === 2 ? TEF_PAPER_2_LISTENING_GUIDANCE : (paperNum === 3 ? TEF_PAPER_3_LISTENING_GUIDANCE : TEF_PAPER_4_LISTENING_GUIDANCE));
+  if (paperNum >= 1 && paperNum <= 5) {
+    const itemsMap = {
+      1: TEF_PAPER_1_LISTENING_ITEMS,
+      2: TEF_PAPER_2_LISTENING_ITEMS,
+      3: TEF_PAPER_3_LISTENING_ITEMS,
+      4: TEF_PAPER_4_LISTENING_ITEMS,
+      5: TEF_PAPER_5_LISTENING_ITEMS
+    };
+    const guidanceMap = {
+      1: TEF_PAPER_1_LISTENING_GUIDANCE,
+      2: TEF_PAPER_2_LISTENING_GUIDANCE,
+      3: TEF_PAPER_3_LISTENING_GUIDANCE,
+      4: TEF_PAPER_4_LISTENING_GUIDANCE,
+      5: TEF_PAPER_5_LISTENING_GUIDANCE
+    };
+    const items = itemsMap[paperNum as 1 | 2 | 3 | 4 | 5];
+    const guidanceBank = guidanceMap[paperNum as 1 | 2 | 3 | 4 | 5];
 
     return items.map((item) => {
       const g = guidanceBank[item.id];

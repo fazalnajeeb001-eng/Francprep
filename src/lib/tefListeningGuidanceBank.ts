@@ -382,9 +382,11 @@ export const TEF_PAPER_1_LISTENING_GUIDANCE: Record<string, TefListeningGuidance
 import { TEF_PAPER_2_LISTENING_GUIDANCE } from "./tefListeningPaper2Guidance";
 import { TEF_PAPER_3_LISTENING_GUIDANCE } from "./tefListeningPaper3Guidance";
 import { TEF_PAPER_4_LISTENING_GUIDANCE } from "./tefListeningPaper4Guidance";
-export { TEF_PAPER_2_LISTENING_GUIDANCE, TEF_PAPER_3_LISTENING_GUIDANCE, TEF_PAPER_4_LISTENING_GUIDANCE };
+import { TEF_PAPER_5_LISTENING_GUIDANCE } from "./tefListeningPaper5Guidance";
+export { TEF_PAPER_2_LISTENING_GUIDANCE, TEF_PAPER_3_LISTENING_GUIDANCE, TEF_PAPER_4_LISTENING_GUIDANCE, TEF_PAPER_5_LISTENING_GUIDANCE };
 
 export function getTefListeningGuidance(questionId: string): TefListeningGuidance | undefined {
-  return TEF_PAPER_1_LISTENING_GUIDANCE[questionId] || TEF_PAPER_2_LISTENING_GUIDANCE[questionId] || TEF_PAPER_3_LISTENING_GUIDANCE[questionId] || TEF_PAPER_4_LISTENING_GUIDANCE[questionId];
+  return TEF_PAPER_1_LISTENING_GUIDANCE[questionId] || TEF_PAPER_2_LISTENING_GUIDANCE[questionId] || TEF_PAPER_3_LISTENING_GUIDANCE[questionId] || TEF_PAPER_4_LISTENING_GUIDANCE[questionId] || TEF_PAPER_5_LISTENING_GUIDANCE[questionId];
 }
+
 

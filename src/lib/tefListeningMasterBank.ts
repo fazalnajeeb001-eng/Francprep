@@ -1381,4 +1381,6 @@ export const TEF_PAPER_1_LISTENING_ITEMS: TefListeningItem[] = [
 export { TEF_PAPER_2_LISTENING_ITEMS } from "./tefListeningPaper2Master";
 export { TEF_PAPER_3_LISTENING_ITEMS } from "./tefListeningPaper3Master";
 export { TEF_PAPER_4_LISTENING_ITEMS } from "./tefListeningPaper4Master";
+export { TEF_PAPER_5_LISTENING_ITEMS } from "./tefListeningPaper5Master";
+
 
