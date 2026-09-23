@@ -7,7 +7,8 @@
     "dev": "vite dev",
     "test:tcf": "npx --yes tsx scripts/test_dual_mode_full_simulation.ts",
     "test:isolation": "npx --yes tsx scripts/verify_tcf_tef_isolation.ts",
-    "test:tef-listening": "npx --yes tsx scripts/test_tef_listening_simulation.ts && npx --yes tsx scripts/test_tef_listening_paper2_simulation.ts && npx --yes tsx scripts/test_tef_listening_paper3_simulation.ts",
+    "test:tef-listening": "npx --yes tsx scripts/test_tef_listening_simulation.ts && npx --yes tsx scripts/test_tef_listening_paper2_simulation.ts && npx --yes tsx scripts/test_tef_listening_paper3_simulation.ts && npx --yes tsx scripts/test_tef_listening_paper4_simulation.ts",
+
     "build": "npm run test:tcf && vite build",
     "precompress": "npx --yes @gltf-transform/cli optimize public/models/male-avatar.glb public/models/male-avatar.glb --compress draco && npx --yes @gltf-transform/cli optimize public/models/female-avatar.glb public/models/female-avatar.glb --compress draco",
     "start": "bun run serve.ts",
