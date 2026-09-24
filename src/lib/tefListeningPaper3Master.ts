@@ -202,13 +202,13 @@ export const TEF_PAPER_3_LISTENING_ITEMS: TefListeningItem[] = [
     "questionFr": "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
     "questionEn": "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     "optionsFr": [
-      "Dessin A : Un client retirant un colis au comptoir d'un point relais de quartier",
+      "Dessin A : Un client essayant une guitare acoustique dans un magasin d'instruments de musique",
       "Dessin B : Un peintre en bâtiment appliquant un rouleau de peinture sur un mur intérieur",
       "Dessin C : Un client recevant sa carte magnétique à la réception d'un hôtel",
       "Dessin D : Un spectateur achetant son billet d'entrée à la caisse d'un cinéma"
     ],
     "optionsEn": [
-      "Drawing A: A customer picking up a package at a parcel pickup counter",
+      "Drawing A: A customer testing an acoustic guitar in a musical instrument shop",
       "Drawing B: A house painter rolling fresh paint onto an interior room wall",
       "Drawing C: A hotel guest receiving his keycard at the reception front desk",
       "Drawing D: A moviegoer buying an admission ticket at a cinema box office"
