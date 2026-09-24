@@ -46,16 +46,16 @@ export const TEF_PAPER_4_LISTENING_ITEMS: TefListeningItem[] = [
     "questionFr": "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
     "questionEn": "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     "optionsFr": [
-      "Dessin A : Un client faisant peser des bananes à la balance d'une épicerie",
+      "Dessin A : Un employé scannant un carton de livraison dans un entrepôt de logistique",
       "Dessin B : Un vétérinaire examinant un chat posé sur une table d'auscultation",
-      "Dessin C : Une femme achetant des médicaments au comptoir d'une pharmacie",
-      "Dessin D : Un voyageur présentant son passeport à la douane d'un aéroport"
+      "Dessin C : Un serrurier taillant le double d'une clé dans un atelier minute",
+      "Dessin D : Un jardinier taillant une haie d'arbustes avec un sécateur dans un parc public"
     ],
     "optionsEn": [
-      "Drawing A: A customer weighing bananas on a scale in a grocery shop",
+      "Drawing A: An employee scanning a delivery carton in a logistics warehouse",
       "Drawing B: A veterinarian examining a cat placed on an examination table",
-      "Drawing C: A woman buying medication at a pharmacy medicine counter",
-      "Drawing D: A passenger presenting his passport at an airport customs checkpoint"
+      "Drawing C: A locksmith cutting a duplicate key in a quick-service key shop",
+      "Drawing D: A gardener trimming a shrub hedge with shears in a public park"
     ],
     "correctIndex": 1,
     "mainImage": "/illustrations/tef/tef_p4_q1_b.png",
@@ -98,15 +98,15 @@ export const TEF_PAPER_4_LISTENING_ITEMS: TefListeningItem[] = [
     "questionFr": "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
     "questionEn": "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     "optionsFr": [
-      "Dessin A : Une serveuse apportant une carafe d'eau à la terrasse d'une brasserie",
-      "Dessin B : Un étudiant consultant un plan mural dans le couloir d'une université",
-      "Dessin C : Un homme mesurant une planche en bois avec un mètre dans un atelier",
+      "Dessin A : Un crêpier étalant une pâte fine sur un bilig en fonte chaude",
+      "Dessin B : Un paysagiste empotant de jeunes arbustes dans une pépinière horticole",
+      "Dessin C : Un mécanicien ajustant la chaîne de transmission d'un kart sur un circuit",
       "Dessin D : Une fleuriste attachant un ruban autour d'un bouquet de fleurs fraîches"
     ],
     "optionsEn": [
-      "Drawing A: A waitress serving a water pitcher on a brasserie outdoor terrace",
-      "Drawing B: A student looking at a wall map inside a university hallway",
-      "Drawing C: A man measuring a wooden board with a tape in a carpentry workshop",
+      "Drawing A: A crepe maker spreading batter onto a round hot cast-iron griddle",
+      "Drawing B: A landscaper potting young shrubs in a botanical plant nursery",
+      "Drawing C: A mechanic adjusting the drive chain on a karting track vehicle",
       "Drawing D: A florist tying a decorative ribbon around a fresh floral bouquet"
     ],
     "correctIndex": 3,
@@ -120,45 +120,45 @@ export const TEF_PAPER_4_LISTENING_ITEMS: TefListeningItem[] = [
   },
   {
     "id": "tef-p4-co-q03",
-    "paperNumber": 3,
+    "paperNumber": 4,
     "questionNumber": 3,
     "typology": "DESSINS",
     "level": "A2",
-    "title": "Atelier de réparation de cycles — Crevaison et réglage des freins",
+    "title": "Épicerie fine — Pesée de fruits frais au marché",
     "speakingRate": 0.95,
     "prepTimeSeconds": 10,
     "answerTimeSeconds": 15,
     "speakerCount": 2,
     "speakers": [
-      "Cycliste",
-      "Mécanicien vélo"
+      "Cliente",
+      "Épicier"
     ],
     "speakerPersonas": [
       {
-        "role": "Cycliste",
+        "role": "Cliente",
         "gender": "female",
         "voiceId": "fr-FR-VivienneMultilingualNeural"
       },
       {
-        "role": "Mécanicien",
+        "role": "Épicier",
         "gender": "male",
         "voiceId": "fr-FR-HenriNeural"
       }
     ],
-    "audioFr": "Cycliste : Bonjour, ma roue arrière est complètement à plat et les patins de frein avant grincent quand je m'arrête.\nMécanicien : Laissez-moi regarder... Oui, la chambre à air est percée. Je vais la remplacer et resserrer les câbles de frein. Votre vélo sera prêt à 17 heures.",
-    "audioEn": "Cyclist: Hello, my rear bicycle tire is completely flat and the front brake pads screech when I stop.\nMechanic: Let me take a look... Yes, the inner tube is punctured. I will replace it and tighten your brake cables. Your bike will be ready at 5:00 PM.",
+    "audioFr": "Cliente : Bonjour, je voudrais deux kilos de pommes reinettes et cette barquette de fraises fraîches, s'il vous plaît.\nÉpicier : Très bien madame. Posez votre panier sur la balance... Voilà, cela nous fait quatre euros quatre-vingts au total.",
+    "audioEn": "Customer: Hello, I would like two kilograms of russet apples and this basket of fresh strawberries, please.\nGrocer: Very well ma'am. Place your basket on the scale... There you go, that comes to four euros eighty in total.",
     "questionFr": "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
     "questionEn": "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     "optionsFr": [
-      "Dessin A : Un réparateur travaillant sur la roue d'une bicyclette dans un atelier de vélo",
+      "Dessin A : Une cliente faisant peser des fruits et légumes frais sur la balance d'une épicerie primeur",
       "Dessin B : Un automobiliste lavant son pare-brise dans une station de lavage",
-      "Dessin C : Un voyageur poinçonnant son ticket au portillon d'accès d'un métro",
+      "Dessin C : Un pompier inspectant un extincteur mural dans un couloir d'immeuble",
       "Dessin D : Un client essayant un casque audio au rayon multimédia d'un magasin"
     ],
     "optionsEn": [
-      "Drawing A: A mechanic working on a bicycle wheel inside a bike repair shop",
+      "Drawing A: A customer having fresh fruits and vegetables weighed on a grocery scale",
       "Drawing B: A motorist wiping his car windshield at an automotive carwash",
-      "Drawing C: A subway commuter stamping a transit pass at a station turnstile",
+      "Drawing C: A firefighter inspecting a wall-mounted fire extinguisher in a hallway",
       "Drawing D: A shopper trying on headphones in an electronics store department"
     ],
     "correctIndex": 0,
@@ -176,42 +176,42 @@ export const TEF_PAPER_4_LISTENING_ITEMS: TefListeningItem[] = [
     "questionNumber": 4,
     "typology": "DESSINS",
     "level": "A2",
-    "title": "Kiosque de presse — Achat d'un hebdomadaire et de carnets de timbres",
+    "title": "Office de tourisme — Renseignements et plan de ville",
     "speakingRate": 0.96,
     "prepTimeSeconds": 10,
     "answerTimeSeconds": 15,
     "speakerCount": 2,
     "speakers": [
-      "Client",
-      "Kiosquière"
+      "Touriste",
+      "Conseillère"
     ],
     "speakerPersonas": [
       {
-        "role": "Client",
+        "role": "Touriste",
         "gender": "male",
         "voiceId": "fr-FR-AlainNeural"
       },
       {
-        "role": "Kiosquière",
+        "role": "Conseillère",
         "gender": "female",
         "voiceId": "fr-FR-DeniseNeural"
       }
     ],
-    "audioFr": "Client : Bonjour madame, je vais prendre le journal d'aujourd'hui, ce magazine scientifique et un carnet de dix tickets de bus s'il vous plaît.\nKiosquière : Voilà pour vous monsieur. Ça vous fait un total de vingt-deux euros cinquante. Vous réglez par carte ou en liquide ?",
-    "audioEn": "Customer: Hello ma'am, I will take today's newspaper, this science magazine, and a book of ten bus tickets, please.\nKiosk Clerk: Here you are, sir. That comes to a total of twenty-two euros fifty. Will you pay by card or in cash?",
+    "audioFr": "Touriste : Bonjour madame, auriez-vous un plan du centre historique et la liste des musées ouverts le dimanche ?\nConseillère : Bonjour monsieur. Bien sûr ! Voici le plan avec les circuits piétons, et ce dépliant détaille les horaires et les tarifs réduits.",
+    "audioEn": "Tourist: Hello ma'am, do you have a map of the historic center and the list of museums open on Sundays?\nAdvisor: Hello sir. Of course! Here is the map with walking routes, and this brochure details hours and discounted rates.",
     "questionFr": "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
     "questionEn": "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     "optionsFr": [
-      "Dessin A : Un patient tendant une ordonnance au pharmacien devant des flacons",
-      "Dessin B : Un usager rendant un chariot à roulettes à l'entrée d'un supermarché",
-      "Dessin C : Un client achetant un journal et des revues au comptoir d'un kiosque de presse",
-      "Dessin D : Un passager récupérant une valise volumineuse sur le tapis roulant d'une gare"
+      "Dessin A : Un agent d'accueil guidant un visiteur à l'entrée d'un salon d'exposition",
+      "Dessin B : Un moniteur de voile gréant un mât de dériveur sur une cale de mise à l'eau",
+      "Dessin C : Un touriste demandant un plan et des brochures au comptoir d'un office de tourisme",
+      "Dessin D : Un agent immobilier présentant les plans d'un logement sur tablette tactile"
     ],
     "optionsEn": [
-      "Drawing A: A patient handing a prescription slip to a pharmacist in front of bottles",
-      "Drawing B: A shopper returning a grocery rolling cart at a supermarket entrance",
-      "Drawing C: A customer buying a newspaper and magazines at a street newsstand counter",
-      "Drawing D: A passenger retrieving heavy luggage from a train station luggage carousel"
+      "Drawing A: A reception attendant welcoming a visitor at an exhibition hall entry",
+      "Drawing B: A sailing instructor rigging a dinghy mast at a waterfront boat launch",
+      "Drawing C: A tourist asking for a map and brochures at a tourist information office counter",
+      "Drawing D: A real estate agent displaying housing floor plans on a touchscreen tablet"
     ],
     "correctIndex": 2,
     "mainImage": "/illustrations/tef/tef_p4_q4_c.png",

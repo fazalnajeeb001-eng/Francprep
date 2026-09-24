@@ -21,34 +21,34 @@ export const TEF_PAPER_2_LISTENING_ITEMS: TefListeningItem[] = [
     questionNumber: 1,
     typology: "DESSINS",
     level: "A1",
-    title: "Boulangerie artisanale — Commande de viennoiseries et pain",
+    title: "Kiosque de presse — Achat d'un journal et d'un magazine",
     speakingRate: 0.92,
     prepTimeSeconds: 10,
     answerTimeSeconds: 15,
     speakerCount: 2,
-    speakers: ["Client", "Boulangère"],
+    speakers: ["Client", "Kiosquière"],
     speakerPersonas: [
       { role: "Client", gender: "male", voiceId: "fr-FR-HenriNeural" },
-      { role: "Boulangère", gender: "female", voiceId: "fr-FR-DeniseNeural" }
+      { role: "Kiosquière", gender: "female", voiceId: "fr-FR-DeniseNeural" }
     ],
-    audioFr: "Client : Bonjour madame. Je voudrais deux croissants au beurre et une baguette tradition bien dorée, s'il vous plaît.\nBoulangère : Très bien monsieur. Et avec ceci ? Ce sera tout ? Ça vous fera trois euros cinquante.",
-    audioEn: "Customer: Hello ma'am. I would like two butter croissants and a well-baked traditional baguette, please.\nBaker: Very well, sir. And with that? Will that be all? That will be three euros fifty.",
+    audioFr: "Client : Bonjour madame. Je vais prendre le journal d'aujourd'hui et ce magazine d'actualité, s'il vous plaît.\nKiosquière : Très bien monsieur. Voilà pour vous. Et avec ceci, ce sera tout ? Ça vous fera six euros cinquante.",
+    audioEn: "Customer: Hello ma'am. I'll take today's newspaper and this current affairs magazine, please.\nKiosk Clerk: Very well, sir. Here you are. And with this, will that be all? That will be six euros fifty.",
     questionFr: "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
     questionEn: "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     optionsFr: [
-      "Dessin A : Un client achète un journal dans un kiosque de presse",
-      "Dessin B : Un client choisit des fruits et légumes sur un étal de marché",
-      "Dessin C : Un client achète du pain et des viennoiseries au comptoir d'une boulangerie",
-      "Dessin D : Un client commande une tasse de café au comptoir d'un bistrot"
+      "Dessin A : Un client achetant des cartes postales sur le présentoir d'une boutique de souvenirs",
+      "Dessin B : Un marchand ambulant servant une boule de glace à un passant",
+      "Dessin C : Un client achète un journal du matin et un magazine dans un kiosque de presse",
+      "Dessin D : Un artisan horloger examinant le mécanisme d'une montre à son atelier"
     ],
     optionsEn: [
-      "Drawing A: A customer buys a newspaper at a street newsstand",
-      "Drawing B: A customer selects fruits and vegetables at a market stall",
-      "Drawing C: A customer buys bread and pastries at a bakery counter",
-      "Drawing D: A customer orders a cup of coffee at a bistro counter"
+      "Drawing A: A customer buying postcards from a rack at a souvenir shop",
+      "Drawing B: A street vendor serving an ice cream cone to a passerby",
+      "Drawing C: A customer buys a morning newspaper and a magazine at a newsstand",
+      "Drawing D: A watchmaker inspecting a watch mechanism in his workshop"
     ],
     correctIndex: 2, // Key C
-    mainImage: "/illustrations/tef/tef_p2_q1_a.png",
+    mainImage: "/illustrations/tef/tef_p2_q1_c.png",
     optionImages: [
       "/illustrations/tef/tef_p2_q1_a.png",
       "/illustrations/tef/tef_p2_q1_b.png",
@@ -78,15 +78,15 @@ export const TEF_PAPER_2_LISTENING_ITEMS: TefListeningItem[] = [
     questionEn: "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     optionsFr: [
       "Dessin A : Une cliente demande conseil à un pharmacien devant des rayonnages de médicaments",
-      "Dessin B : Une patiente consulte un médecin dans un cabinet d'auscultation stéthoscope en main",
+      "Dessin B : Un opticien faisant essayer une monture de lunettes à une cliente",
       "Dessin C : Une cliente paie des cosmétiques au comptoir d'un salon de beauté",
-      "Dessin D : Une chercheuse manipule des tubes à essai dans un laboratoire d'analyses"
+      "Dessin D : Une chercheuse manipulant des éprouvettes dans un laboratoire de chimie"
     ],
     optionsEn: [
       "Drawing A: A customer asks advice from a pharmacist in front of medicine shelves",
-      "Drawing B: A patient consults a doctor in an examination room with a stethoscope",
+      "Drawing B: An optician helping a customer try on eyeglass frames",
       "Drawing C: A customer pays for cosmetics at a beauty salon checkout",
-      "Drawing D: A researcher handles test tubes in an analytical laboratory"
+      "Drawing D: A researcher handling test tubes in a chemistry laboratory"
     ],
     correctIndex: 0, // Key A
     mainImage: "/illustrations/tef/tef_p2_q2_a.png",
@@ -118,19 +118,19 @@ export const TEF_PAPER_2_LISTENING_ITEMS: TefListeningItem[] = [
     questionFr: "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
     questionEn: "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     optionsFr: [
-      "Dessin A : Un étudiant achète un roman dans les allées d'une librairie commerciale",
-      "Dessin B : Une conférence universitaire dispensée par un professeur dans un grand amphithéâtre",
-      "Dessin C : Deux étudiants révisent en silence assis à une table dans une cafétéria",
+      "Dessin A : Une salle d'archives historiques avec des dossiers et boîtes de rangement",
+      "Dessin B : Un guichet bancaire avec un client demandant des devises étrangères",
+      "Dessin C : Un espace multimédia avec des bornes informatiques et écrans publics",
       "Dessin D : Un usager demande l'emplacement d'un livre à la banque d'accueil d'une bibliothèque"
     ],
     optionsEn: [
-      "Drawing A: A student purchases a novel in the aisles of a commercial bookstore",
-      "Drawing B: A university lecture delivered by a professor in a large amphitheater",
-      "Drawing C: Two students review silently seated at a cafeteria table",
+      "Drawing A: A historic archives room with filing boxes and document shelves",
+      "Drawing B: A bank teller counter with a customer requesting foreign currency exchange",
+      "Drawing C: A multimedia center with public computer terminals and screens",
       "Drawing D: A patron inquires about a book's shelf location at a library help desk"
     ],
     correctIndex: 3, // Key D
-    mainImage: "/illustrations/tef/tef_p2_q3_a.png",
+    mainImage: "/illustrations/tef/tef_p2_q3_d.png",
     optionImages: [
       "/illustrations/tef/tef_p2_q3_a.png",
       "/illustrations/tef/tef_p2_q3_b.png",
@@ -144,7 +144,7 @@ export const TEF_PAPER_2_LISTENING_ITEMS: TefListeningItem[] = [
     questionNumber: 4,
     typology: "DESSINS",
     level: "A2",
-    title: "Magasin de chaussures — Essayage de pointure",
+    title: "Boutique de prêt-à-porter — Essayage d'un manteau d'hiver",
     speakingRate: 0.94,
     prepTimeSeconds: 10,
     answerTimeSeconds: 15,
@@ -154,24 +154,24 @@ export const TEF_PAPER_2_LISTENING_ITEMS: TefListeningItem[] = [
       { role: "Cliente", gender: "female", voiceId: "fr-FR-DeniseNeural" },
       { role: "Vendeur", gender: "male", voiceId: "fr-FR-AlainNeural" }
     ],
-    audioFr: "Cliente : Bonjour monsieur, ces bottines en cuir marron me plaisent beaucoup en vitrine. Les auriez-vous en pointure 39 ?\nVendeur : Bonjour madame. Je vais voir en réserve tout de suite. Asseyez-vous sur la banquette, je vous apporte la boîte dans un instant.",
-    audioEn: "Customer: Hello sir, I really like these brown leather ankle boots in the window. Would you have them in shoe size 39?\nSalesperson: Hello ma'am. I will check in the back room right away. Please have a seat on the bench, I'll bring you the box in a moment.",
+    audioFr: "Cliente : Bonjour monsieur, ce manteau d'hiver en laine me plaît beaucoup, mais est-ce que vous l'auriez en taille 40 ?\nVendeur : Bonjour madame. Oui, il nous en reste un exemplaire en réserve. Je vous l'apporte pour que vous puissiez l'essayer devant le miroir.",
+    audioEn: "Customer: Hello sir, I like this wool winter coat very much, but would you have it in size 40?\nSalesperson: Hello ma'am. Yes, we have one left in our stockroom. I'll bring it to you so you can try it on in front of the mirror.",
     questionFr: "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
     questionEn: "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     optionsFr: [
-      "Dessin A : Une cliente essaie un manteau d'hiver devant une cabine d'habillage",
-      "Dessin B : Une cliente assise sur une banquette fait vérifier une pointure de chaussures par un vendeur",
-      "Dessin C : Un artisan cordonnier répare une semelle avec une machine dans son atelier",
-      "Dessin D : Une cliente règle des sacs à main à la caisse d'une maroquinerie de luxe"
+      "Dessin A : Un atelier de tapisserie d'ameublement avec réfection d'un fauteuil",
+      "Dessin B : Une cliente essaie un manteau d'hiver en laine devant le miroir d'une boutique de vêtements",
+      "Dessin C : Une boutique de maroquinerie avec sacs à main et ceintures en vitrine",
+      "Dessin D : Une agence immobilière présentant des annonces de logements en vitrine"
     ],
     optionsEn: [
-      "Drawing A: A customer tries on a winter coat in front of a clothing fitting room",
-      "Drawing B: A customer seated on a bench has shoe sizing checked by a store clerk",
-      "Drawing C: A cobbler repairs a shoe sole with machinery in his workshop",
-      "Drawing D: A customer pays for handbags at the counter of a luxury leather boutique"
+      "Drawing A: An upholstery workshop refurbishing an antique armchair",
+      "Drawing B: A customer tries on a wool winter coat before the mirror in a clothing boutique",
+      "Drawing C: A leather goods shop displaying handbags and belts in the window",
+      "Drawing D: A real estate agency displaying property listings in the storefront"
     ],
     correctIndex: 1, // Key B
-    mainImage: "/illustrations/tef/tef_p2_q4_a.png",
+    mainImage: "/illustrations/tef/tef_p2_q4_b.png",
     optionImages: [
       "/illustrations/tef/tef_p2_q4_a.png",
       "/illustrations/tef/tef_p2_q4_b.png",

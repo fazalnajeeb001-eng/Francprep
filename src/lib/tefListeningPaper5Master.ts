@@ -20,14 +20,14 @@ export const TEF_PAPER_5_LISTENING_ITEMS: TefListeningItem[] = [
     "questionNumber": 1,
     "typology": "DESSINS",
     "level": "A1",
-    "title": "Pharmacie d'officine — Délivrance d'ordonnance et conseils posologiques",
+    "title": "Pressing — Dépôt d'une veste de costume pour nettoyage à sec",
     "speakingRate": 0.94,
     "prepTimeSeconds": 10,
     "answerTimeSeconds": 15,
     "speakerCount": 2,
     "speakers": [
       "Client",
-      "Pharmacienne"
+      "Employée"
     ],
     "speakerPersonas": [
       {
@@ -36,25 +36,25 @@ export const TEF_PAPER_5_LISTENING_ITEMS: TefListeningItem[] = [
         "voiceId": "fr-FR-HenriNeural"
       },
       {
-        "role": "Pharmacienne",
+        "role": "Employée",
         "gender": "female",
         "voiceId": "fr-CA-SylvieNeural"
       }
     ],
-    "audioFr": "Client : Bonjour madame, voici l'ordonnance de mon médecin pour mon sirop contre la toux et des pastilles pour la gorge.\nPharmacienne : Bonjour monsieur. Prenez deux cuillères à soupe du sirop le soir au coucher et une pastille toutes les quatre heures si besoin.",
-    "audioEn": "Customer: Hello ma'am, here is my doctor's prescription for cough syrup and throat lozenges.\nPharmacist: Hello sir. Take two tablespoons of syrup at bedtime and one lozenge every four hours if needed.",
+    "audioFr": "Client : Bonjour madame, j'ai taché cette veste de costume avec de la sauce. Est-ce que ce sera prêt pour vendredi soir ?\nEmployée : Bonjour monsieur. Ne vous inquiétez pas, notre traitement à sec élimine parfaitement ce type de tache. Vous pourrez venir la chercher vendredi dès 16 heures.",
+    "audioEn": "Customer: Hello ma'am, I stained this suit jacket with sauce. Will it be ready by Friday evening?\nClerk: Hello sir. Don't worry, our dry cleaning treatment removes this type of stain completely. You can pick it up Friday starting at 4:00 PM.",
     "questionFr": "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
     "questionEn": "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     "optionsFr": [
-      "Dessin A : Un voyageur présentant sa carte d'embarquement à la porte d'un aéroport",
-      "Dessin B : Un client commandant des viennoiseries au comptoir d'une boulangerie",
-      "Dessin C : Une pharmacienne remettant des boîtes de médicaments à un patient au comptoir d'officine",
+      "Dessin A : Un horloger réparant les aiguilles d'une pendule ancienne dans son atelier",
+      "Dessin B : Un agent de tri postal séparant des enveloppes dans des casiers numérotés",
+      "Dessin C : Un client déposant une veste de costume sur le comptoir d'un pressing pour un nettoyage à sec",
       "Dessin D : Un conducteur payant son stationnement à la barrière de péage d'un parking"
     ],
     "optionsEn": [
-      "Drawing A: A passenger presenting his boarding pass at an airport gate",
-      "Drawing B: A customer ordering pastries at a bakery counter",
-      "Drawing C: A pharmacist handing medicine boxes to a patient at a pharmacy counter",
+      "Drawing A: A clockmaker repairing the hands of an antique pendulum clock in his workshop",
+      "Drawing B: A mail sorting clerk distributing envelopes into numbered cubbies",
+      "Drawing C: A customer dropping off a suit jacket at a dry cleaner's counter for dry cleaning",
       "Drawing D: A driver paying parking fees at an automated exit barrier"
     ],
     "correctIndex": 2,
@@ -99,15 +99,15 @@ export const TEF_PAPER_5_LISTENING_ITEMS: TefListeningItem[] = [
     "questionEn": "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     "optionsFr": [
       "Dessin A : Un artisan cordonnier inspectant une botte en cuir sur son établi de travail",
-      "Dessin B : Une coiffeuse effectuant une coloration sur une cliente dans un salon",
-      "Dessin C : Un serveur dressant des couverts sur les tables d'un restaurant gastronomique",
-      "Dessin D : Un libraire rangeant des romans sur les étagères d'un rayon de littérature"
+      "Dessin B : Un céramiste façonnant une poterie en argile sur son tour de potier",
+      "Dessin C : Un maçon posant une rangée de briques sur un chantier de rénovation",
+      "Dessin D : Un luthier ajustant les cordes d'un violon dans son atelier musical"
     ],
     "optionsEn": [
       "Drawing A: A master cobbler inspecting a leather boot on his workshop workbench",
-      "Drawing B: A hairdresser applying hair coloring to a customer in a salon",
-      "Drawing C: A waiter setting silverware on tables in a gourmet restaurant",
-      "Drawing D: A bookseller shelving novels in a bookstore literature section"
+      "Drawing B: A ceramic artist shaping clay pottery on an electric pottery wheel",
+      "Drawing C: A bricklayer aligning masonry blocks on a renovation construction site",
+      "Drawing D: A luthier tuning and adjusting strings on a handcrafted violin"
     ],
     "correctIndex": 0,
     "mainImage": "/illustrations/tef/tef_p5_q2_a.png",
@@ -150,13 +150,13 @@ export const TEF_PAPER_5_LISTENING_ITEMS: TefListeningItem[] = [
     "questionFr": "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
     "questionEn": "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     "optionsFr": [
-      "Dessin A : Un voyageur consultant les horaires de départ sur le grand panneau d'une gare",
+      "Dessin A : Un archéologue dégageant avec précaution un fragment sur un site de fouilles",
       "Dessin B : Un chef d'orchestre dirigeant des musiciens lors d'une répétition classique",
       "Dessin C : Un mécanicien réparant le moteur d'une voiture sous un pont élévateur",
       "Dessin D : Un moniteur remettant des gilets de sauvetage et des pagaies de kayak sur un ponton de plage"
     ],
     "optionsEn": [
-      "Drawing A: A commuter checking departures on a railway station display board",
+      "Drawing A: An archaeologist meticulously dusting artifacts at an excavation site",
       "Drawing B: A conductor leading musicians during an orchestral rehearsal",
       "Drawing C: A mechanic servicing a car engine beneath a hydraulic lift",
       "Drawing D: An instructor handing out life vests and kayak paddles at a beach pontoon"
@@ -202,16 +202,16 @@ export const TEF_PAPER_5_LISTENING_ITEMS: TefListeningItem[] = [
     "questionFr": "Regardez les 4 dessins. Quel dessin correspond à la conversation entendue ?",
     "questionEn": "Look at the 4 drawings. Which drawing corresponds to the conversation heard?",
     "optionsFr": [
-      "Dessin A : Une vendeuse faisant essayer des montures de lunettes à un client",
+      "Dessin A : Un commissaire-priseur adjugeant un tableau de maître d'un coup de marteau",
       "Dessin B : Une agente municipale vérifiant les empreintes digitales d'une usagère au guichet d'état civil",
-      "Dessin C : Un cuisinier surveillant des casseroles sur les plaques de cuisson d'un grand hôtel",
-      "Dessin D : Un client déposant des articles sur le tapis roulant d'une caisse de supermarché"
+      "Dessin C : Un régisseur réglant les projecteurs suspendus sur la scène d'un théâtre",
+      "Dessin D : Un moniteur d'équitation ajustant une selle sur un poney dans un centre équestre"
     ],
     "optionsEn": [
-      "Drawing A: An optician assisting a customer with trying on eyeglass frames",
+      "Drawing A: An auctioneer striking the gavel to award an artwork at an art auction",
       "Drawing B: A municipal civil clerk verifying a citizen's fingerprint at a service counter",
-      "Drawing C: A chef overseeing simmering pans on restaurant kitchen stove burners",
-      "Drawing D: A shopper unloading groceries onto a supermarket conveyor checkout"
+      "Drawing C: A stage technician adjusting overhead spotlight beams in a theater auditorium",
+      "Drawing D: A horse riding trainer adjusting a saddle on a pony at an equestrian club"
     ],
     "correctIndex": 1,
     "mainImage": "/illustrations/tef/tef_p5_q4_b.png",
