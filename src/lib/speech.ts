@@ -456,7 +456,9 @@ export function stopAudio(): void {
   activeAudioPlayers.forEach((player) => {
     try {
       player.pause();
-      player.src = "";
+      if (player !== masterAudioPlayer) {
+        player.src = "";
+      }
       player.currentTime = 0;
     } catch {}
   });
@@ -464,7 +466,9 @@ export function stopAudio(): void {
   if (currentAudioPlayer) {
     try {
       currentAudioPlayer.pause();
-      currentAudioPlayer.src = "";
+      if (currentAudioPlayer !== masterAudioPlayer) {
+        currentAudioPlayer.src = "";
+      }
       currentAudioPlayer.currentTime = 0;
     } catch {}
     currentAudioPlayer = null;
@@ -667,7 +671,11 @@ export function speakDialogue(
   }
 
   let currentIndex = 0;
-  const audio = new Audio();
+  // Reuse masterAudioPlayer on iOS/Safari so the pre-unlocked user interaction state is preserved across question transitions
+  const audio = masterAudioPlayer || new Audio();
+  if (!masterAudioPlayer) {
+    masterAudioPlayer = audio;
+  }
   activeAudioPlayers.add(audio);
   currentAudioPlayer = audio;
   if (onPlaybackStateChange) onPlaybackStateChange(true);
@@ -778,16 +786,34 @@ export function speakDialogue(
             audio.play().then(() => {
               if (myDialogueId !== currentDialogueId || isAudioPausedState) {
                 audio.pause();
-                if (myDialogueId !== currentDialogueId) audio.src = "";
+                if (myDialogueId !== currentDialogueId && audio !== masterAudioPlayer) audio.src = "";
                 return;
               }
               audio.playbackRate = rate;
               audio.preservesPitch = true;
-            }).catch(() => {
+            }).catch((err) => {
+              console.warn("[speakDialogue audio.play rejection, executing WebAudio fallback for iOS/Safari]:", err);
               if (myDialogueId === currentDialogueId && !isAudioPausedState) {
-                playDirectHDFallback(current.text, langCode, rate, audio, undefined, () => {
-                  if (audio.onended) (audio.onended as any)(new Event("ended"));
-                });
+                if (src.startsWith("blob:") || src.startsWith("http")) {
+                  fetch(src)
+                    .then((r) => r.arrayBuffer())
+                    .then((ab) => {
+                      if (myDialogueId === currentDialogueId && !isAudioPausedState) {
+                        playDirectArrayBuffer(ab, undefined, () => {
+                          if (audio.onended) (audio.onended as any)(new Event("ended"));
+                        }, rate);
+                      }
+                    })
+                    .catch(() => {
+                      playDirectHDFallback(current.text, langCode, rate, audio, undefined, () => {
+                        if (audio.onended) (audio.onended as any)(new Event("ended"));
+                      });
+                    });
+                } else {
+                  playDirectHDFallback(current.text, langCode, rate, audio, undefined, () => {
+                    if (audio.onended) (audio.onended as any)(new Event("ended"));
+                  });
+                }
               }
             });
             return;
